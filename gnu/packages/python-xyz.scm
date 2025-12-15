@@ -20198,24 +20198,24 @@ that deprecated code is eventually removed.")
 
 (define-public python-jmespath
   (package
-   (name "python-jmespath")
-   (version "1.0.1")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (pypi-uri "jmespath" version))
-     (sha256
-      (base32
-       "1gpdc1f0q5c9scmbw1l9g40jjfk3pxwg91ayvn7xbvvddlh1n9lh"))))
-   (build-system python-build-system)
-   (native-inputs
-    (list python-pytest python-setuptools-67))
-   (synopsis "JSON Matching Expressions")
-   (description "JMESPath (pronounced “james path”) is a Python library that
-allows one to declaratively specify how to extract elements from a JSON
-document.")
-   (home-page "https://github.com/jmespath/jmespath.py")
-   (license license:expat)))
+    (name "python-jmespath")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jmespath" version))
+       (sha256
+        (base32 "1gpdc1f0q5c9scmbw1l9g40jjfk3pxwg91ayvn7xbvvddlh1n9lh"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/jmespath/jmespath.py")
+    (synopsis "JSON Matching Expressions")
+    (description
+     "JMESPath (pronounced “james path”) is a Python library that allows one
+to declaratively specify how to extract elements from a JSON document.")
+    (license license:expat)))
 
 (define-public python-asteval
   (package
