@@ -10470,7 +10470,6 @@ playing media, scanning, and much more.")
    (propagated-inputs
      (list baobab
            cheese
-           eog
            epiphany
            evince
            file-roller
@@ -10490,6 +10489,7 @@ playing media, scanning, and much more.")
            gnome-text-editor
            gnome-weather
            localsearch
+           loupe
            nautilus
            simple-scan
            totem
