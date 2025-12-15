@@ -10171,16 +10171,17 @@ translation.")
 (define-public python-plaster
   (package
     (name "python-plaster")
-    (version "1.0")
+    (version "1.1.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "plaster" version))
               (sha256
                (base32
-                "1hy8k0nv2mxq94y5aysk6hjk9ryb4bsd13g83m60hcyzxz3wflc3"))))
-    (build-system python-build-system)
+                "167gfh0ahdll9m96ypgasji6yry2hkn9f0ml1b0lf4ccpxagrgpq"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools))
     (home-page "https://docs.pylonsproject.org/projects/plaster/en/latest/")
     (synopsis "Configuration loader for multiple config file formats")
     (description
