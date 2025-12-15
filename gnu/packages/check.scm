@@ -3787,28 +3787,6 @@ system.  The code under test requires no modification to work with pyfakefs.")
 asynchronous code in Python (asyncio).")
     (license license:expat)))
 
-(define-public python-pytest-dependency
-  (package
-    (name "python-pytest-dependency")
-    (version "0.6.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pytest-dependency" version))
-        (sha256
-          (base32
-            "1hdcidq4miqd5fvg9khvzw3gm3waxnp7wgqr5h39anfr75m0wjwk"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-      (list python-pytest-bootstrap
-            python-setuptools))
-    (home-page "https://github.com/RKrahl/pytest-dependency")
-    (synopsis "Manage dependencies of tests")
-    (description "This pytest plugin manages dependencies of tests.  It allows
-to mark some tests as dependent from other tests.  These tests will then be
-skipped if any of the dependencies did fail or has been skipped.")
-    (license license:asl2.0)))
-
 (define-public python-pytest-datadir
   (package
     (name "python-pytest-datadir")

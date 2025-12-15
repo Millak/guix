@@ -15,6 +15,7 @@
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020, 2021, 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
+;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Giacomo Leidi <therewasa@fishinthecalculator.me>
@@ -2614,6 +2615,28 @@ it adds to the Pytest command line interface (CLI).")
      "A pytest plugin to create a tmpdir containing a preconfigured set of
 files and/or directories.")
     (license license:expat)))
+
+(define-public python-pytest-dependency
+  (package
+    (name "python-pytest-dependency")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-dependency" version))
+       (sha256
+        (base32 "1hdcidq4miqd5fvg9khvzw3gm3waxnp7wgqr5h39anfr75m0wjwk"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest-bootstrap
+           python-setuptools))
+    (home-page "https://github.com/RKrahl/pytest-dependency")
+    (synopsis "Manage dependencies of tests")
+    (description
+     "This pytest plugin manages dependencies of tests.  It allows
+to mark some tests as dependent from other tests.  These tests will then be
+skipped if any of the dependencies did fail or has been skipped.")
+    (license license:asl2.0)))
 
 (define-public python-pytest-doctest-custom
   (package
