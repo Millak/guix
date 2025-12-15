@@ -10153,14 +10153,17 @@ displaying warnings when usaged in application code.")
 (define-public python-translationstring
   (package
     (name "python-translationstring")
-    (version "1.3")
+    (version "1.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "translationstring" version))
               (sha256
                (base32
-                "0bdpcnd9pv0131dl08h4zbcwmgc45lyvq3pa224xwan5b3x4rr2f"))))
-    (build-system python-build-system)
+                "1wvncdzi1wj37x226qcf0yycz7js6l83na0pmc9blsbfsww7b55z"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (home-page "https://docs.pylonsproject.org/projects/translationstring")
     (synopsis "Internationalization tooling for the Pylons project")
     (description "This package provides a library used by various Pylons
