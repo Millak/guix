@@ -27161,38 +27161,6 @@ commit, but it also includes some other useful statistics.")
 binding is created using the standard @code{ctypes} library.")
     (license license:isc)))
 
-(define-public python-fusepyng
-  (package
-    (name "python-fusepyng")
-    (version "1.0.7")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "fusepyng" version))
-        (sha256
-         (base32
-          "17w9iw6m6zjbmnhs4ikd27pq4mb1nan6k4ahlwyz40463vw6wkwb"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-libfuse-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((fuse (assoc-ref inputs "fuse")))
-               (substitute* "fusepyng.py"
-                 (("os.environ.get\\('FUSE_LIBRARY_PATH'\\)")
-                  (string-append "\"" fuse "/lib/libfuse.so\"")))))))))
-    (inputs
-     (list fuse-2))
-    (propagated-inputs
-     (list python-paramiko))
-    (home-page "https://github.com/rianhunter/fusepyng")
-    (synopsis "Simple ctypes bindings for FUSE")
-    (description "@code{fusepyng} is a Python module that provides a simple
-interface to FUSE on various operating systems.  It's just one file and is
-implemented using @code{ctypes}.")
-    (license license:isc)))
-
 (define-public pybind11
   (package
     (name "pybind11")
