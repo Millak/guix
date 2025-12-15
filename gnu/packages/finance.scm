@@ -1486,12 +1486,18 @@ the KeepKey Hardware Wallet.")
     (version "0.9.0")
     (source
       (origin
+       ;; TODO: Figure out how to build from
+       ;; https://github.com/romanz/trezor-agent
         (method url-fetch)
         (uri (pypi-uri "keepkey_agent" version))
         (sha256
           (base32
             "03779gvlx70i0nnry98i4pl1d92604ix5x6jgdfkrdgzqbh5vj27"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))                ;no tests in PyPI package
+    (native-inputs
+     (list python-setuptools))
     (inputs
      (list python-keepkey python-packaging python-trezor-agent))
     (home-page "https://github.com/romanz/trezor-agent")
