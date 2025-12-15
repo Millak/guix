@@ -6104,7 +6104,7 @@ UCSC genome browser.")
 (define-public tetoolkit
   (package
     (name "tetoolkit")
-    (version "2.2.1b")
+    (version "2.2.3")
     (source
      (origin
        (method git-fetch)
@@ -6113,10 +6113,11 @@ UCSC genome browser.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m3xsydakhdan9gp9mfdz7llka5g6ak91d0mbl1cmmxq9qs6an4y"))))
+        (base32 "1jgwnm1kmj2mgvc3gib6d73rvyy3l54icjcj2gw0p1ay6kqkzs0p"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
+     `(#:tests? #f ;no tests
+       #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'adjust-requirements
                     (lambda _
                       (substitute* "setup.py"
@@ -6163,7 +6164,7 @@ UCSC genome browser.")
                   python-pysam
                   r-minimal
                   r-deseq2))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/mhammell-laboratory/TEtranscripts")
     (synopsis "Transposable elements in differential enrichment analysis")
     (description
