@@ -34145,47 +34145,47 @@ and comments.")
       (license license:gpl3+))))
 
 (define-public emacs-yeetube
-  (let ((commit "b8877e61b58dfabcc30044680d0975b3c6b12052")) ;version bump
-    (package
-      (name "emacs-yeetube")
-      (version "2.1.8")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.thanosapollo.org/yeetube")
-               (commit commit)))
-         (sha256
-          (base32
-           "1gii2y4cvw795039kdky1mdmgpfrfm4s48ld7z4gv7bvb0fs9hpq"))
-         (file-name (git-file-name name version))))
-      (build-system emacs-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'locate-binaries
-              (lambda* (#:key inputs #:allow-other-keys)
-                (substitute* (find-files "." "\\.el$")
-                  (("\\(executable-find \"mpv\"\\)")
-                   (format #f "~s"
-                           (search-input-file inputs "/bin/mpv")))
-                  (("\\(executable-find \"torsocks\"\\)")
-                   (format #f "~s"
-                           (search-input-file inputs "/bin/torsocks")))
-                  (("\\(executable-find \"yt-dlp\"\\)")
-                   (format #f "~s"
-                           (search-input-file inputs "/bin/yt-dlp")))))))))
-      (inputs (list mpv torsocks yt-dlp))
-      (propagated-inputs (list emacs-compat))
-      (home-page "https://thanosapollo.org/projects/yeetube/")
-      (synopsis "Youtube front-end for Emacs")
-      (description
-       "This package provides the ability to scrape YouTube, with the results
+  (package
+    (name "emacs-yeetube")
+    (version "2.1.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.thanosapollo.org/yeetube")
+              (commit version)))
+       (sha256
+        (base32
+         "0krd2x0vyysqsgb7r3ca2qc7cl1s929gm52j5rihnqw0yfjpwgpv"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'locate-binaries
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "." "\\.el$")
+                (("\\(executable-find \"mpv\"\\)")
+                 (format #f "~s"
+                         (search-input-file inputs "/bin/mpv")))
+                (("\\(executable-find \"torsocks\"\\)")
+                 (format #f "~s"
+                         (search-input-file inputs "/bin/torsocks")))
+                (("\\(executable-find \"yt-dlp\"\\)")
+                 (format #f "~s"
+                         (search-input-file inputs "/bin/yt-dlp")))))))))
+    (inputs (list mpv torsocks yt-dlp))
+    (propagated-inputs (list emacs-compat))
+    (home-page "https://thanosapollo.org/projects/yeetube/")
+    (synopsis "Youtube front-end for Emacs")
+    (description
+     "This package provides the ability to scrape YouTube, with the results
 displayed in a tabulated list format.  The videos can be opened with a user-defined
 video player (by default @command{mpv}) or downloaded using @command{yt-dlp}.
 This package also includes a minimal @code{yt-dlp} wrapper.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-org-web-tools
   (package
