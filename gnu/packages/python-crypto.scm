@@ -924,18 +924,22 @@ Cyclic Redundancy Check.")
 (define-public python-ecpy
   (package
     (name "python-ecpy")
-    (version "0.10.0")
+    (version "1.2.5")
     (source
       (origin
-        (method url-fetch)
-        (uri (pypi-uri "ECPy" version))
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/cslashm/ECPy")
+               (commit version)))
+        (file-name (git-file-name name version))
         (sha256
           (base32
-            "1gc3i5s93zq6x1nkaxkq1dvmsc12vmrw0hns9f5s1hcb78ni52c8"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-future))
-    (home-page "https://github.com/ubinity/ECPy")
+            "0p642bpqicxjkwqk4q46wqkbxhad1qiir6xz4w7xx0d4cdq7yps8"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/cslashm/ECPy")
     (synopsis "Pure Python Elliptic Curve Library")
     (description "This package provides a Elliptic Curve Library in pure
 Python.")
