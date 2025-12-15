@@ -9464,19 +9464,9 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
               "tests")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-slope-fitter
-            (lambda _
-              (substitute* "src/stcal/ramp_fitting/src/slope_fitter.c"
-                ;; It's failing to build, it looks like Guix's NumPy does not
-                ;; contain the variable: error: ‘NPY_NTYPES_LEGACY’ undeclared
-                ;; (first use in this function)
-                ((".*NPY_NTYPES_LEGACY.*") ""))))
           (add-before 'build 'relax-requirements
             (lambda _
               (substitute* "pyproject.toml"
-                ;; Relax some requirements as all tests passed successfully.
-                ;; scipy>=1.14.1
-                (("1.14.1") "1.12.0")
                 ;; XXX: Can't detect opencv-python version. The input opencv
                 ;; might not set the version correctly.
                 ((".*opencv-python-headless.*") "")))))))
@@ -9487,8 +9477,7 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
            python-pytest-xdist
            python-pytest-doctestplus
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list opencv        ;Provides OpenCV-Python
            python-asdf
