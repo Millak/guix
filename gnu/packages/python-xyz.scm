@@ -18613,7 +18613,7 @@ convert an @code{.ipynb} notebook file into various static formats including:
            python-traitlets python-widgetsnbextension))
     (native-inputs
      (list python-ipykernel python-jsonschema python-pytest python-pytest-cov
-           python-pytz))
+           python-pytz python-setuptools-67))
     (home-page "https://ipython.org")
     (synopsis "IPython HTML widgets for Jupyter")
     (description "Ipywidgets are interactive HTML widgets for Jupyter
