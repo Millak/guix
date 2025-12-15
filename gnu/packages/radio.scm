@@ -3382,7 +3382,7 @@ of devices than RTL-SDR.")
            gnuradio
            gr-osmosdr
            hackrf
-           python-numpy
+           python-numpy-1
            python-psutil
            python-pyaudio
            python-pyqt
