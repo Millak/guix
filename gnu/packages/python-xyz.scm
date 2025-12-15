@@ -7927,11 +7927,12 @@ connecting ClickHouse to Python, Pandas, and Superset.")
         (sha256
           (base32
             "09vbkik6kyn6yrqzl2r74vaybjk8kjykvi975hy3fsrm4gb17g54"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs
+      (list python-pytest
+            python-setuptools))
     (propagated-inputs
       (list python-click))
-    (native-inputs
-      (list python-pytest-cov))
     (home-page "https://github.com/mapbox/cligj")
     (synopsis "Click params for command line interfaces to GeoJSON")
     (description
