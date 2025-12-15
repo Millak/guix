@@ -5271,7 +5271,7 @@ interface utility to parse @url{https://hjson.github.io/, HJSON}) documents.")
 (define-public python-hnswlib
   (package
     (name "python-hnswlib")
-    (version "0.5.2")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
@@ -5280,7 +5280,7 @@ interface utility to parse @url{https://hjson.github.io/, HJSON}) documents.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ixhpsqlikjf7id1zlgqakq2ihpvq5h3npxj7mqjbx09ncsjam1m"))))
+        (base32 "0l5ry8c1qkck8w5acdl4k3acs9qfxiq0lc7f50x8vz53imgh1afl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5291,8 +5291,12 @@ interface utility to parse @url{https://hjson.github.io/, HJSON}) documents.")
               (substitute* "setup.py"
                 ((", '-march=native'")
                  "")))))))
-    (propagated-inputs (list python-numpy))
-    (native-inputs (list pybind11 python-pytest python-setuptools))
+    (native-inputs
+     (list pybind11
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-numpy))
     (home-page "https://github.com/nmslib/hnswlib")
     (synopsis "Fast approximate nearest neighbor search")
     (description "Hnswlib is a header-only C++ implementation of fast
