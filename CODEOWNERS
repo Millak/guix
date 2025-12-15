@@ -195,6 +195,7 @@ gnu/packages/glib\.scm                             @guix/gnome
 gnu/packages/gstreamer\.scm                        @guix/gnome
 gnu/packages/gtk\.scm                              @guix/gnome
 gnu/packages/gnome\.scm                            @guix/gnome
+gnu/packages/gnome-circle\.scm                     @guix/gnome
 gnu/packages/gnome-xyz\.scm                        @guix/gnome
 gnu/packages/webkit\.scm                           @guix/gnome
 gnu/services/desktop\.scm                          @guix/gnome

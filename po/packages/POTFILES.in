@@ -171,6 +171,7 @@ gnu/packages/gdb.scm
 gnu/packages/genimage.scm
 gnu/packages/gettext.scm
 gnu/packages/gkrellm.scm
+gnu/packages/gnome-circle.scm
 gnu/packages/gnome-xyz.scm
 gnu/packages/gnome.scm
 gnu/packages/gnu-doc.scm
