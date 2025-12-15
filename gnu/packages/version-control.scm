@@ -1273,17 +1273,13 @@ other git-like projects such as @code{libgit2}.")
                             %build-inputs
                             (string-append "/bin/" ,(%current-target-system)
                                            "-pkg-config"))))
-                        '())))
+                        '())
+                  ;; See https://github.com/libgit2/libgit2/issues/7169
+                  ,@(if (target-64bit?)
+                        '()
+                        '("-DCMAKE_C_FLAGS=-D_FILE_OFFSET_BITS=64"))))
        #:phases
        (modify-phases %standard-phases
-         ,@(if (or (target-arm32?) (target-hurd?))
-             ;; Some tests are flaky on armhf.
-             ;; On GNU/Hurd, the 'diff/workdir' test in libgit2 1.7.1 fails
-             ;; while comparing st.st_size to zero.
-             '((add-before 'check 'pre-check
-                 (lambda _
-                   (setenv "GITTEST_FLAKY_STAT" "true"))))
-             '())
          ;; Run checks more verbosely, unless we are cross-compiling.
          (replace 'check
            (lambda* (#:key (tests? #t) #:allow-other-keys)
