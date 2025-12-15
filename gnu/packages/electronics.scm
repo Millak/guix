@@ -2057,48 +2057,43 @@ and Verilog RTL using Python.")
     (license license:bsd-3)))
 
 (define-public python-cocotb-bus
-  ;; XXX: The latest tagged release (2.6.1) was placed on <2023-07-01>, switch
-  ;; to tag when the fresh release is available.
-  (let ((commit "f5578a4d451ef6bc1efdd4919de5facdb381b781")
-        (revision "2"))
-    (package
-      (name "python-cocotb-bus")
-      ;; Version from src/cocotb_bus/_version.py
-      (version (git-version "0.2.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/cocotb/cocotb-bus/")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "13zdqalzhzrfv1lcn6l71zhi4hns89y093hvz9swkcr2kzwfn08r"))))
-      (build-system pyproject-build-system)
-      ;; TODO: Build documentation from <docs>.
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  (invoke "make" "-k" "-C" "tests")
-                  (invoke "make" "-k" "-C" "examples")))))))
-      (native-inputs
-       (list iverilog
-             nvc
-             python-pytest
-             python-setuptools))
-      (propagated-inputs
-       (list python-cocotb
-             python-packaging
-             python-scapy))
-      (home-page "https://github.com/cocotb/cocotb-bus/")
-      (synopsis "Cocotb reusable tools")
-      (description "@code{Cocotb-bus} provides a set of utilities, test benches
+  (package
+    (name "python-cocotb-bus")
+    ;; Version from src/cocotb_bus/_version.py
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cocotb/cocotb-bus/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0aqk78w5gg23rwf93gidw8yazmidwgmahqcmm3x0qx380mbdxjl4"))))
+    (build-system pyproject-build-system)
+    ;; TODO: Build documentation from <docs>.
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "-k" "-C" "tests")
+                (invoke "make" "-k" "-C" "examples")))))))
+    (native-inputs
+     (list iverilog
+           nvc
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-cocotb
+           python-scapy))
+    (home-page "https://github.com/cocotb/cocotb-bus/")
+    (synopsis "Cocotb reusable tools")
+    (description "@code{Cocotb-bus} provides a set of utilities, test benches
 and reusable bus interfaces to be used with @code{cocotb}.")
-      (license license:bsd-3))))
+    (license license:bsd-3)))
 
 (define-public python-edalize
   (package
