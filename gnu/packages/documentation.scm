@@ -435,7 +435,6 @@ the Net to search for documents which are not on the local system.")
            qtwayland
            qtwebchannel
            qtwebengine
-           qtx11extras
            xcb-util-keysyms))
     (home-page "https://zealdocs.org/")
     (synopsis "Offline documentation browser inspired by Dash")
