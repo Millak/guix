@@ -23906,7 +23906,9 @@ instruments, or Pacific Biosciences RSII or Sequel sequencers.")
        (sha256
         (base32
          "1z1gy8n56lhriy6hdkh9r82ndikndipq2cy2wh8q185qig4rimr6"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools))
+    (arguments (list #:tests? #f))      ;No tests on either PyPI or Git.
     (inputs
      (list curl zlib))
     (propagated-inputs
