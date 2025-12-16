@@ -10257,6 +10257,52 @@ WGS84 (GPS) latitude/longitude as input as well as an UTC or local datetime
 object.")
     (license license:lgpl3+)))
 
+(define-public python-swiftgalaxy
+  (package
+    (name "python-swiftgalaxy")
+    (version "1.2.1") ;the latest compatible with python-swiftsimio@9.0.1
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/SWIFTSIM/swiftgalaxy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ywgjhv6h9cm052gjfhsiavy9s2czv1m9y8fnrfcidh72fks81d4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;tests need to download remote datasets
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-h5py
+           python-numpy
+           python-scipy
+           python-swiftsimio
+           python-unyt))
+    (home-page "https://github.com/SWIFTSIM/swiftgalaxy")
+    (synopsis "Code abstraction of objects (galaxies) in simulations")
+    (description
+     "SWIFTGalaxy is an astrophysics module that extends
+@url{http://swiftsimio.readthedocs.org/, SWIFTSimIO} tailored to analyses of
+particles belonging to individual galaxies simulated with
+@url{https://swift.strw.leidenuniv.nl/, SWIFT}.  It inherits from and extends
+the functionality of the @code{SWIFTDataset}.  It understands the content of
+halo catalogues (supported:
+@url{https://ui.adsabs.harvard.edu/abs/2019PASA...36...21E/abstract,
+Velociraptor}, @url{https://caesar.readthedocs.io/en/latest/, Caesar},
+@url{https://github.com/SWIFTSIM/SOAP, SOAP}) and therefore which particles
+belong to a galaxy or other group of particles, and its integrated properties.
+The particles occupy a coordinate frame that is enforced to be consistent,
+such that particles loaded on-the-fly will match e.g.  rotations and
+translations of particles already in memory.  Intuitive masking of particle
+datasets is also enabled.  Utilities to make working in cylindrical and
+spherical coordinate systems more convenient are also provided.  Finally,
+tools to iterate efficiently over multiple galaxies are also provided.")
+    (license license:gpl3+)))
+
 (define-public python-swiftsimio
   (package
     (name "python-swiftsimio")
