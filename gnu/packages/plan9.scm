@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 宋文武 <iyzsong@member.fsf.org>
 ;;; Copyright © 2023 Antero Mejr <antero@mailbox.org>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -72,11 +73,11 @@ protocol.")
       (license license:gpl2+))))
 
 (define-public drawterm
-  (let ((revision "1")
-        (commit "f11139d4c918802a87730bc14d094670ee4ce572"))
+  (let ((revision "2")
+        (commit "e551ef409ae2b004595f38323ce212ed152f6c3f"))
     (package
       (name "drawterm")
-      (version (git-version "20240703" revision commit))
+      (version (git-version "20251123" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -85,7 +86,7 @@ protocol.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0ggh5g19899iq9bb5r03bvhamndyai4ylr3ajkbd02xkhz65fh5y"))))
+          (base32 "1b34x0vz0djsvnjq4zib9sq348x13w27i6jyn1ynxl9ynf64rnhl"))))
       (build-system gnu-build-system)
       (arguments
        `(#:make-flags (list "CONF=unix"
@@ -123,7 +124,7 @@ reconstruct a Plan 9 terminal-like experience from a non-Plan 9 system.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list libxkbcommon pipewire wayland wayland-protocols wlr-protocols))))
+     (list libdecor libxkbcommon pipewire wayland wayland-protocols wlr-protocols))))
 
 (define-public plan9port
   ;; no releases
