@@ -2041,7 +2041,13 @@ files as specified in IEEE 1364-2005.")
     (arguments
      (list
       #:test-flags
-      #~(list "-k" "not test_toplevel_library")));requires questasim simulator
+      #~(list "-k" "not test_toplevel_library") ;requires questasim simulator
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'check 'run-examples
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "-k" "-C" "examples")))))))
     (native-inputs
      (list iverilog
            nvc
