@@ -10257,6 +10257,41 @@ WGS84 (GPS) latitude/longitude as input as well as an UTC or local datetime
 object.")
     (license license:lgpl3+)))
 
+(define-public python-swiftsimio
+  (package
+    (name "python-swiftsimio")
+    (version "9.0.1") ; higher versions require NumPy 2+
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/SWIFTSIM/swiftsimio")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16f4vfdjfhhm4mriwm3x32mn6f85bksaymzq1n5abn807zmgjyz2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;tests need to download remote datasets
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-astropy
+           python-h5py
+           python-numba
+           python-numpy
+           python-unyt))
+    (home-page "https://github.com/SWIFTSIM/swiftsimio")
+    (synopsis "SWIFTsim I/O routines for Python")
+    (description
+     "@code{swiftsimio} is a toolkit for reading data produced by the
+@url{https://swift.strw.leidenuniv.nl/,SWIFT} astrophysics simulation code.
+It is used to ensure that all data have a symbolic unit attached, and can be
+used for visualisation.  Another key feature is the use of the cell metadata
+in @code{SWIFT} snapshots to enable efficient reading of sub-regions.")
+    (license (list license:lgpl3+
+                   license:gpl3+))))
+
 (define-public python-synphot
   (package
     (name "python-synphot")
