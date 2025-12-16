@@ -2101,6 +2101,28 @@ and Verilog RTL using Python.")
 and reusable bus interfaces to be used with @code{cocotb}.")
     (license license:bsd-3)))
 
+(define-public python-cocotb-test
+  (package
+    (name "python-cocotb-test")
+    (version "0.2.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cocotb_test" version))
+       (sha256
+        (base32 "14h62sr2prxd0iy1axq68b9zdfggnms230xgrimywphlr941jrm4"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;requires examples folder from python-cocotb
+    (propagated-inputs
+     (list python-cocotb))
+    (native-inputs
+     (list python-pytest python-setuptools))
+    (home-page "https://pypi.org/project/cocotb-test/")
+    (synopsis
+     "Standard python unit testing cababilities for @code{python-cocotb}")
+    (description "This package provides the look and feel of Python unit
+testing to @code{cocotb}, removing the need of manipulating Makefiles.")
+    (license license:bsd-3)))
 (define-public python-edalize
   (package
     (name "python-edalize")
