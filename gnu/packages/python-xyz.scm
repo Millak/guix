@@ -14812,98 +14812,78 @@ connect strings, then issue SQL commands within IPython or IPython Notebook.")
 container data structures in Python).")
     (license license:asl2.0)))
 
+(define-public python-jupyter-client
+  (package
+    (name "python-jupyter-client")
+    (version "7.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jupyter_client" version))
+       (sha256
+        (base32 "0ck8fb0d582r8izkcn7087zmbmmqf9jkv2abd8p44867k9hdn5jn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 176 passed, 4 skipped, 2 warnings
+      #:tests? (not (%current-target-system))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; Do not fail on warnings.
+                (("\"error\",") ""))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Some tests try to write to $HOME.
+              (setenv "HOME" "/tmp")
+              ;; jupyter-core demands this be set.
+              (setenv "JUPYTER_PLATFORM_DIRS" "1")))
+          (add-after 'check 'fix-syntax-error
+            ;; Hatchling seems to generate entry scripts with invalid imports.
+            (lambda _
+              (substitute* (string-append #$output "/bin/.jupyter-kernelspec-real")
+                (("import KernelSpecApp.launch_instance") "import KernelSpecApp")))))))
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-timeout
+           python-async-generator
+           python-ipython
+           python-ipykernel-bootstrap))
+    (inputs
+     (list iproute))
+    (propagated-inputs
+     (list python-dateutil
+           python-entrypoints
+           python-jupyter-core
+           python-nest-asyncio
+           python-pyzmq
+           python-tornado-6
+           python-traitlets))
+    (home-page "https://jupyter.org/")
+    (synopsis "Jupyter protocol implementation and client libraries")
+    (description
+     "The @code{jupyter_client} package contains the reference implementation
+of the Jupyter protocol.  It also provides client and kernel management APIs
+for working with kernels, and the @code{jupyter kernelspec} entrypoint for
+installing @code{kernelspec}s for use with Jupyter frontends.")
+    (license license:bsd-3)))
+
 ;; Bootstrap variant of jupyter-client, which breaks the loop between ipykernel
 ;; and jupyter-client by removing the former from its native-inputs and
 ;; disabling tests.
 (define-public python-jupyter-client-bootstrap
   (hidden-package
-   (package
+   (package/inherit python-jupyter-client
      (name "python-jupyter-client-bootstrap")
-     (version "7.4.4")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "jupyter_client" version))
-        (sha256
-         (base32
-          "0ck8fb0d582r8izkcn7087zmbmmqf9jkv2abd8p44867k9hdn5jn"))))
-     (build-system pyproject-build-system)
      (arguments
-      (list
-       #:tests? #f
-       #:phases
-       #~(modify-phases %standard-phases
-           ;; The deprecation warnings break the tests.
-           (add-after 'unpack 'hide-zmq-deprecation-warnings
-             (lambda _
-               (substitute* "pyproject.toml"
-                 (("\"ignore:There is no current event loop:DeprecationWarning:zmq\"," m)
-                  (string-append m "
-\"ignore:zmq.eventloop.ioloop.*:DeprecationWarning\",
-\"ignore:zmq.tests.BaseZMQTestCase.*:DeprecationWarning\"")))))
-           (add-after 'unpack 'set-tool-file-names
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "jupyter_client/localinterfaces.py"
-                 (("'ip'")
-                  (format #f "'~a'" (search-input-file inputs "sbin/ip"))))))
-           ;; Hatchling seems to generate entry scripts with invalid imports.
-           (add-after 'check 'fix-syntax-error
-             (lambda _
-               (substitute* (string-append #$output "/bin/.jupyter-kernelspec-real")
-                 (("import KernelSpecApp.launch_instance") "import KernelSpecApp")))))))
-     (inputs (list iproute))
-     (propagated-inputs
-      (list python-dateutil
-            python-entrypoints
-            python-jupyter-core
-            python-nest-asyncio
-            python-pyzmq
-            python-tornado-6
-            python-traitlets))
+      (substitute-keyword-arguments (package-arguments python-jupyter-client)
+        ((#:tests? _) #f)))
      (native-inputs
-      (list python-hatchling))
-     (home-page "https://jupyter.org/")
-     (synopsis "Jupyter protocol implementation and client libraries")
-     (description
-      "The @code{jupyter_client} package contains the reference implementation
-of the Jupyter protocol.  It also provides client and kernel management APIs
-for working with kernels, and the @code{jupyter kernelspec} entrypoint for
-installing @code{kernelspec}s for use with Jupyter frontends.")
-     (license license:bsd-3))))
-
-(define-public python-jupyter-client
-  (let ((base python-jupyter-client-bootstrap))
-    (package
-      (inherit base)
-      (name "python-jupyter-client")
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:tests? _ #f)
-          (not (%current-target-system)))
-         ((#:phases phases #~%standard-phases)
-          #~(modify-phases #$phases
-              (replace 'check
-                (lambda* (#:key tests? #:allow-other-keys)
-                  (when tests?
-                    ;; Some tests try to write to $HOME.
-                    (setenv "HOME" "/tmp")
-                    ;; jupyter-core demands this be set.
-                    (setenv "JUPYTER_PLATFORM_DIRS" "1")
-                    (invoke "pytest" "-vv" "-Wignore::DeprecationWarning"
-                            "-k"
-                            ;; XXX "RuntimeError: Kernel died before replying
-                            ;; to kernel_info", but there's no more
-                            ;; information.
-                            "not test_start_parallel_process_kernels"))))))))
-      (native-inputs
-       (list python-hatchling
-             python-pytest
-             python-pytest-asyncio
-             python-pytest-timeout
-             python-async-generator
-             python-ipython
-             python-ipykernel-bootstrap))
-      (properties (alist-delete 'hidden? (package-properties base))))))
+      (list python-hatchling)))))
 
 (define-public python-backcall
   (package
