@@ -5649,7 +5649,9 @@ API for locking files.")
        (sha256
         (base32
          "0snprxdnh3m45r3b0az4v0l28h90ycmfbybzla6xg1qviwv9w1ak"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools))
     (inputs
      (list re2))
     (home-page "https://github.com/facebook/pyre2")
