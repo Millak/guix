@@ -336,29 +336,13 @@ templates under @file{/etc/configuration}.")))
     "Load the @code{uvesafb} kernel module with the right options.")
    (default-value #t)))
 
-(define (guix-package-commit guix)
-  ;; Extract the commit of the GUIX package.
-  (match (package-source guix)
-    ((? channel? source)
-     (channel-commit source))
-    (_
-     (apply (lambda* (#:key commit #:allow-other-keys) commit)
-            (package-arguments guix)))))
-
 (define* (%installation-services
           #:key
           (system (or (and=>
                        (%current-target-system)
                        platform-target->system)
                       (%current-system)))
-          (guix-for-system
-           (let ((guix (current-guix)))
-             (package
-               (inherit guix)
-               ;; Do not leak the local checkout URL.
-               (source (channel
-                         (inherit %default-guix-channel)
-                         (commit (guix-package-commit guix))))))))
+          (guix-for-system (current-guix)))
   ;; List of services of the installation system.
   (let ((motd (plain-file "motd" "
 \x1b[1;37mWelcome to the installation of GNU Guix!\x1b[0m
