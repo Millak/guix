@@ -113,40 +113,29 @@ simulation, statistical modeling, machine learning and much more.")
 (define-public python-ipykernel
   (package
     (name "python-ipykernel")
-    (version "6.29.4")
+    (version "7.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ipykernel" version))
        (sha256
-        (base32 "0p5g897pq6k9nr44ihlk4hp5s46zz8ih2xib1715lizrc000fi1x"))))
+        (base32 "1nzhkkfcbvb53q0f40gqwk6qla3ddk3fmivdak1k0n9xaf4gr8sq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:modules '((guix build pyproject-build-system)
-                  (guix build utils)
-                  (ice-9 match))
+      ;; tests: 191 passed, 17 skipped, 1 deselected, 22 warnings
       #:test-flags
-      ;; XXX: probably not good that this fails
-      '(list "-k" "not test_copy_to_globals" "-Wignore::DeprecationWarning")
+      ;; ImportError: Cannot load backend 'tkagg' which requires the 'tk'
+      ;; interactive framework, as 'headless' is currently running
+      #~(list "--deselect=tests/test_matplotlib_eventloops.py::test_matplotlib_gui[tk]")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-a-bit
+          (add-after 'unpack 'fix-pytest-config
             (lambda _
-              ;; I'm sure nobody will notice.
               (substitute* "pyproject.toml"
-                (("debugpy>=1.6.5") "debugpy>=1.6.0"))))
+                ;; Do not fail on warnings.
+                (("\"error\",") ""))))
           ;; The deprecation warnings break the tests.
-          (add-after 'unpack 'hide-deprecation-warnings
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("\"ignore:There is no current event loop:DeprecationWarning\"" m)
-                 (string-append m ",
-\"ignore:the imp module is deprecated:DeprecationWarning\",
-\"ignore:pytest-asyncio detected an unclosed event loop:DeprecationWarning\",
-\"ignore:make_current is deprecated.*:DeprecationWarning\",
-\"ignore:zmq.eventloop.ioloop.*:DeprecationWarning\",
-\"ignore:zmq.tests.BaseZMQTestCase.*:DeprecationWarning\"")))))
            (add-before 'check 'pre-check
              (lambda _
                ;; jupyter-core demands this be set.
