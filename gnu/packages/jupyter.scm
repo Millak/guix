@@ -433,33 +433,25 @@ to Jupyter Server for their Python Web application backend.")
 (define-public python-jupyter-core
   (package
     (name "python-jupyter-core")
-    (version "5.7.2")
+    (version "5.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append (pypi-uri "jupyter_core" version)))
        (sha256
-        (base32 "1n9nyp1skljbbkqp4j7mnihnyp83j9rxm5h4hfn33d7npcr8spxa"))))
+        (base32 "022mbd3dyg3chkcgg77qyn8mrzw9s05mhzv5rv1nd59v63zsl2ad"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 73 passed, 20 skipped, 4 deselected
       #:test-flags
-      #~(list "-k" (string-join
-                    ;; XXX: These tests fail with "ModuleNotFoundError: No
-                    ;; module named 'jupyter_core'".
-                    (list "not test_argv0"
-                          "test_path_priority "
-                          "test_not_on_path"
-                          ;; These fail with: An incompatible sibling of
-                          ;; 'AsyncTornadoApp' is already instantiated as
-                          ;; singleton: SyncTornadoApp
-                          "test_async_app"
-                          "test_async_tornado_app"
-                          ;; Fails with a deprecation warning
-                          "test_sync_tornado_run"
-                          ;; Expecting pip in the PATH.
-                          "test_troubleshoot")
-                    " and not "))
+      ;; These tests try to unset environment variables, search for `jupyter`,
+      ;; write test files and fail eventually.
+      #~(list "--deselect=tests/test_command.py::test_not_on_path"
+              "--deselect=tests/test_command.py::test_path_priority"
+              "--deselect=tests/test_command.py::test_argv0"
+              ;; Expecting `pip` in the PATH.
+              "--deselect=tests/test_troubleshoot.py::test_troubleshoot")
       #:phases
       #~(modify-phases %standard-phases
           ;; Migration is running whenever etc/jupyter exists, but the
@@ -468,15 +460,17 @@ to Jupyter Server for their Python Web application backend.")
           ;; already did that.
           (add-after 'install 'disable-migration
             (lambda _
-              (mkdir-p (string-append #$output "/etc/jupyter"))
-              (invoke "touch" (string-append #$output "/etc/jupyter/migrated"))))
+              (let* ((etc      (string-append #$output "/etc/jupyter"))
+                     (migrated (string-append etc "/migrated")))
+                (mkdir-p etc)
+                (with-output-to-file migrated
+                  (const (display "\n"))))))
           (add-before 'check 'pre-check
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-hatchling
-           python-pytest
-           python-pytest-timeout))
+           python-pytest))
     (propagated-inputs
      (list python-platformdirs
            python-traitlets))
