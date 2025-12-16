@@ -4249,7 +4249,7 @@ Observatory}.")
 (define-public python-czml3
   (package
     (name "python-czml3")
-    (version "3.0.0")
+    (version "3.1.0")
     (source
      (origin
        (method git-fetch)
@@ -4260,8 +4260,9 @@ Observatory}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jqzhhw51q8cbgcwxdc9a5dfkxz5xs7f3x95darvslh9fdd09xgc"))))
+        (base32 "1ra0m0c4y6k2v0lzi73xfvq26pcvsspimzz237fcs4mbg35hjd4z"))))
     (build-system pyproject-build-system)
+    ;; tests: 229 passed, 3 xfailed, 1 warning
     (native-inputs
      (list python-pytest
            python-setuptools))
