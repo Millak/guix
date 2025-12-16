@@ -68,6 +68,7 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages ssh)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages version-control)
@@ -435,17 +436,17 @@ to Jupyter Server for their Python Web application backend.")
 (define-public python-jupyter-client
   (package
     (name "python-jupyter-client")
-    (version "7.4.4")
+    (version "8.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jupyter_client" version))
        (sha256
-        (base32 "0ck8fb0d582r8izkcn7087zmbmmqf9jkv2abd8p44867k9hdn5jn"))))
+        (base32 "07akcardg15d6c21x3g8yjj8gwz1lyinf3qrb6g200dykhnj2mrk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 176 passed, 4 skipped, 2 warnings
+      ;; tests: 227 passed, 7 skipped, 27 warnings
       #:tests? (not (%current-target-system))
       #:phases
       #~(modify-phases %standard-phases
@@ -466,20 +467,19 @@ to Jupyter Server for their Python Web application backend.")
               (substitute* (string-append #$output "/bin/.jupyter-kernelspec-real")
                 (("import KernelSpecApp.launch_instance") "import KernelSpecApp")))))))
     (native-inputs
-     (list python-hatchling
+     (list python-anyio
+           python-hatchling
+           python-ipykernel-bootstrap
            python-pytest
-           python-pytest-asyncio
-           python-pytest-timeout
-           python-async-generator
-           python-ipython
-           python-ipykernel-bootstrap))
+           python-pytest-jupyter-minimal
+           python-pytest-timeout))
     (inputs
-     (list iproute))
+     (list iproute    ;ip       jupyter_client/localinterfaces.py
+           net-tools  ;ifconfig jupyter_client/localinterfaces.py
+           openssh))  ;ssh      jupyter_client/ssh/tunnel.py
     (propagated-inputs
      (list python-dateutil
-           python-entrypoints
            python-jupyter-core
-           python-nest-asyncio
            python-pyzmq
            python-tornado-6
            python-traitlets))
