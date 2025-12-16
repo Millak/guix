@@ -7429,7 +7429,7 @@ and Sensitivities.")
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-cython
-           python-ipython
+           python-ipython-minimal
            python-pandas
            python-pytest
            python-setuptools))
