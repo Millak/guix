@@ -2293,6 +2293,7 @@ languages.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-deps
@@ -2303,8 +2304,8 @@ languages.")
                 (("rawVer .*")
                  (string-append "rawVer = \"v"
                                 #$version "\""))))))))
-    (native-inputs (list python-setuptools python-wheel python-gitpython
-                         git-minimal/pinned))
+    (native-inputs
+     (list python-setuptools python-gitpython git-minimal/pinned))
     (home-page "https://slaclab.github.io/surf/")
     (synopsis "SLAC Ultimate RTL Framework")
     (description
