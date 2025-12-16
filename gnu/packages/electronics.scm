@@ -2123,6 +2123,32 @@ and reusable bus interfaces to be used with @code{cocotb}.")
     (description "This package provides the look and feel of Python unit
 testing to @code{cocotb}, removing the need of manipulating Makefiles.")
     (license license:bsd-3)))
+
+(define-public python-cocotbext-axi
+  (package
+    (name "python-cocotbext-axi")
+    (version "0.1.26")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/alexforencich/cocotbext-axi/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xgfvvpff9r7g7fiswv1m0dklyw6c8v2r3qpd6qq3rzvnvrhsrin"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-cocotb python-cocotb-bus))
+    (native-inputs
+     (list iverilog python-cocotb-test python-pytest python-setuptools))
+    (home-page "https://github.com/alexforencich/cocotbext-axi/")
+    (synopsis
+     "Extra @acronym{AXI, Advanced Extensible Interface} modules for cocotb")
+    (description "This package provides an extension to @code{cocotb} in the
+form of AXI, AXI lite, and AXI stream modules.")
+    (license license:expat)))
+
 (define-public python-edalize
   (package
     (name "python-edalize")
