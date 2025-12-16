@@ -10021,13 +10021,13 @@ SunPy.")
 (define-public python-sunpy
   (package
     (name "python-sunpy")
-    (version "7.0.3")
+    (version "7.0.4")   ; higher versions require NumPy 2+
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunpy" version))
        (sha256
-        (base32 "03qpg64a5gb82fv8w0j7ba5xsf6g3x8gzmiiqh0qhv1npwh8c2c7"))))
+        (base32 "0ylzxb52ii8s7i9imc0mpj3pgsa1lz4b8dmjk3kwnf8hrdzzd1ry"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -10071,12 +10071,12 @@ SunPy.")
            python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
+           python-fsspec
            python-numpy
            python-packaging
            python-parfive
            python-pyerfa
            python-requests
-           python-fsspec
            ;; [optional]
            opencv
            python-aiobotocore
