@@ -16158,6 +16158,27 @@ in memory.  The library operates on channels and uses temporary disk storage
 to handle datasets larger than available RAM.")
     (license license:asl2.0)))
 
+;; For s5cmd@2.3.0, remove when a fresh version is released.
+(define-public go-github-com-lanrat-extsort-1.0.2
+  (hidden-package
+   (package
+     (inherit go-github-com-lanrat-extsort)
+     (name "go-github-com-lanrat-extsort")
+     (version "1.0.2")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/lanrat/extsort")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0blsif4qzmmlqxhgc6dyl7rn9zws7mvlc6ckjj43cxlp517ravk8"))))
+     (arguments
+      (list
+       #:tests? #f
+       #:import-path "github.com/lanrat/extsort")))))
+
 (define-public go-github-com-layeh-gopher-luar
   (package
     (name "go-github-com-layeh-gopher-luar")

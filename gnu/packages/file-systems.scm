@@ -88,6 +88,7 @@
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell-xyz)
@@ -2139,6 +2140,75 @@ rewriting the location of configuration files of software that doesn't follow
 the XDG directory specification from @file{~/.@var{name}} to
 @file{~/.config/@var{name}}.")
       (license license:gpl2+))))
+
+(define-public s5cmd
+  (package
+    (name "s5cmd")
+    (version "2.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/peak/s5cmd")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y1bwma6f68j00jfdjxvw5flp9l4cdys7dgkrr0yvfz68lk9a17v"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/peak/s5cmd/v2"
+      #:test-flags
+      #~(list "-vet=off"
+              ;; cp_test.go:74: assertion failed: text/plain; charset=utf-8
+              ;; (tc.expectedContentType string) != text/html; charset=utf-8
+              ;; (string)
+              "-skip" "TestGuessContentType")
+      #:test-subdirs
+      ;; build flag -mod=vendor only valid when using modules
+      ;; /<...>/peak/s5cmd/v2/e2e/util_test.go:417 +0x3b9
+      ;; /<...>/peak/s5cmd/v2/e2e/main_test.go:12 +0x65
+      #~(list "command/..."
+              "orderedwriter/..."
+              "progressbar/..."
+              "storage/..."
+              "storage/url/..."
+              "strutil/...")
+      #:phases
+      #~(modify-phases %standard-phases
+	  (add-after 'install 'rename-binaries
+	    (lambda _
+	      (rename-file
+	       (string-append #$output "/bin/v2")
+	       (string-append #$output "/bin/s5cmd")))))))
+    (native-inputs
+     (list go-github-com-aws-aws-sdk-go
+           go-github-com-cheggaaa-pb-v3
+           go-github-com-google-go-cmp
+           go-github-com-hashicorp-go-multierror
+           go-github-com-iancoleman-strcase
+           go-github-com-igungor-gofakes3
+           go-github-com-karrick-godirwalk
+           go-github-com-kballard-go-shellquote
+           go-github-com-lanrat-extsort-1.0.2
+           go-github-com-termie-go-shutil
+           go-github-com-urfave-cli-v2
+           go-go-uber-org-mock
+           go-gotest-tools-v3
+           go-honnef-co-go-tools
+           go-mvdan-cc-unparam))
+    (home-page "https://github.com/peak/s5cmd")
+    (synopsis "Parallel S3 and local filesystem execution tool")
+    (description
+     "@code{s5cmd} is a fast S3 and local filesystem execution tool.  It comes
+with support for a multitude of operations including tab completion and
+wildcard support for files, which can be handy for object storage workflow
+while working with large number of files.")
+    (license license:expat)))
 
 (define-public squashfuse
   (package
