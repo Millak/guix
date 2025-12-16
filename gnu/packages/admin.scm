@@ -5134,36 +5134,102 @@ support forum.  It runs with the @code{/exec} command in most IRC clients.")
 (define-public python-pyudev
   (package
     (name "python-pyudev")
-    (version "0.22.0")
+    (version "0.24.4")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pyudev" version))
-        (sha256
-          (base32
-            "0xmj6l08iih2js9skjqpv4w7y0dhxyg91zmrs6v5aa65gbmipfv9"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pyudev/pyudev")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1m7xrsazbij5dcmnirn9hq6cwrfmzam5mr3kmvvcgnh24nhm401x"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f ; Tests require /sys
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-ctypes-udev
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((eudev (assoc-ref inputs "eudev")))
-               (substitute* "src/pyudev/core.py"
-                (("'udev'")
-                 (string-append "'" eudev "/lib/libudev.so'")))
-               (substitute* "src/pyudev/_ctypeslib/utils.py"
+     (list
+      ;; tests: 46 passed, 36 skipped, 79 deselected, 2 warnings
+      #:test-flags
+      ;; These tests actually try to read /sys/devices:
+      #~(list "-k" (string-join
+                    (list "not  test_action"
+                          "test_action_mock"
+                          "test_ancestors"
+                          "test_anything"
+                          "test_asbool"
+                          "test_asint"
+                          "test_asstring"
+                          "test_attributes"
+                          "test_contains_mock"
+                          "test_deprecated_handler"
+                          "test_device_node"
+                          "test_device_number"
+                          "test_device_ordering"
+                          "test_device_path"
+                          "test_device_sys_name"
+                          "test_driver"
+                          "test_equality"
+                          "test_fake"
+                          "test_fake_monitor"
+                          "test_find_parent_no_devtype_mock"
+                          "test_find_parent_with_devtype_mock"
+                          "test_from_device_file"
+                          "test_from_device_number"
+                          "test_from_device_number_wrong_type"
+                          "test_from_name"
+                          "test_from_name_no_device_in_existing_subsystem"
+                          "test_from_path"
+                          "test_from_path_strips_leading_slash"
+                          "test_from_sys_path"
+                          "test_getitem"
+                          "test_getitem"
+                          "test_getitem_nonexisting"
+                          "test_hash"
+                          "test_inequality"
+                          "test_is_initialized"
+                          "test_is_initialized_mock"
+                          "test_iteration"
+                          "test_iteration_mock"
+                          "test_key_subset"
+                          "test_length"
+                          "test_links"
+                          "test_match"
+                          "test_match_parent"
+                          "test_match_property_bool"
+                          "test_match_subsystem"
+                          "test_match_subsystem_nomatch_complete"
+                          "test_match_subsystem_nomatch_unfulfillable"
+                          "test_name"
+                          "test_non_iterable"
+                          "test_parent"
+                          "test_path"
+                          "test_sequence_number"
+                          "test_subsystem"
+                          "test_sys_number"
+                          "test_sys_path"
+                          "test_tags"
+                          "test_time_since_initialized"
+                          "test_time_since_initialized_mock"
+                          "test_traverse"
+                          "test_type"
+                          "test_unsetitem")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-ctypes-udev
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/pyudev/core.py"
+                (("\"udev\"")
+                 (format #f "~s"
+                         (search-input-file inputs "/lib/libudev.so"))))
+              (substitute* "src/pyudev/_ctypeslib/utils.py"
                 ;; Use absolute paths instead of keys.
-                (("= find_library") "= "))
-               #t))))))
+                (("= find_library") "= ")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (inputs
      (list eudev))
-    (propagated-inputs
-     (list python-six))
-    (native-inputs
-     (list python-docutils python-hypothesis python-mock python-pytest
-           python-sphinx))
     (home-page "https://pyudev.readthedocs.io/")
     (synopsis "Python udev binding")
     (description "This package provides @code{udev} bindings for Python.")
