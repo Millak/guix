@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014 Danny Milosavljevic <dannym@friendly-machines.com>
+;;; Copyright © 2014, 2024 Danny Milosavljevic <dannym@friendly-machines.com>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2019, 2021-2025 Ricardo Wurmus <rekado@elephly.net>
@@ -13,6 +13,7 @@
 ;;; Copyright © 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2023 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2024 Danny Milosavljevic <dannym@friendly-machines.com>
@@ -44,6 +45,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix utils)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
@@ -429,6 +431,79 @@ interactive computing.")
      "This project provides a way for JupyterLab and other frontends to switch
 to Jupyter Server for their Python Web application backend.")
     (license license:bsd-3)))
+
+(define-public python-jupyter-client
+  (package
+    (name "python-jupyter-client")
+    (version "7.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jupyter_client" version))
+       (sha256
+        (base32 "0ck8fb0d582r8izkcn7087zmbmmqf9jkv2abd8p44867k9hdn5jn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 176 passed, 4 skipped, 2 warnings
+      #:tests? (not (%current-target-system))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; Do not fail on warnings.
+                (("\"error\",") ""))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Some tests try to write to $HOME.
+              (setenv "HOME" "/tmp")
+              ;; jupyter-core demands this be set.
+              (setenv "JUPYTER_PLATFORM_DIRS" "1")))
+          (add-after 'check 'fix-syntax-error
+            ;; Hatchling seems to generate entry scripts with invalid imports.
+            (lambda _
+              (substitute* (string-append #$output "/bin/.jupyter-kernelspec-real")
+                (("import KernelSpecApp.launch_instance") "import KernelSpecApp")))))))
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-timeout
+           python-async-generator
+           python-ipython
+           python-ipykernel-bootstrap))
+    (inputs
+     (list iproute))
+    (propagated-inputs
+     (list python-dateutil
+           python-entrypoints
+           python-jupyter-core
+           python-nest-asyncio
+           python-pyzmq
+           python-tornado-6
+           python-traitlets))
+    (home-page "https://jupyter.org/")
+    (synopsis "Jupyter protocol implementation and client libraries")
+    (description
+     "The @code{jupyter_client} package contains the reference implementation
+of the Jupyter protocol.  It also provides client and kernel management APIs
+for working with kernels, and the @code{jupyter kernelspec} entrypoint for
+installing @code{kernelspec}s for use with Jupyter frontends.")
+    (license license:bsd-3)))
+
+;; Bootstrap variant of jupyter-client, which breaks the loop between ipykernel
+;; and jupyter-client by removing the former from its native-inputs and
+;; disabling tests.
+(define-public python-jupyter-client-bootstrap
+  (hidden-package
+   (package/inherit python-jupyter-client
+     (name "python-jupyter-client-bootstrap")
+     (arguments
+      (substitute-keyword-arguments (package-arguments python-jupyter-client)
+        ((#:tests? _) #f)))
+     (native-inputs
+      (list python-hatchling)))))
 
 (define-public python-jupyter-core
   (package
