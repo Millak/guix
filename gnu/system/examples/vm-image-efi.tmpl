@@ -30,15 +30,6 @@ Run '\x1b[1;37minfo guix\x1b[0m' to browse documentation.
 accounts.\x1b[0m
 "))
 
-(define (guix-package-commit guix)
-  ;; Extract the commit of the GUIX package.
-  (match (package-source guix)
-    ((? channel? source)
-     (channel-commit source))
-    (_
-     (apply (lambda* (#:key commit #:allow-other-keys) commit)
-            (package-arguments guix)))))
-
 (operating-system
   (host-name "gnu")
   (timezone "Etc/UTC")
@@ -148,14 +139,7 @@ root ALL=(ALL) ALL
                      (guix-service-type config =>
                                         (guix-configuration
                                          (inherit config)
-                                         (guix
-                                          (let ((guix (current-guix)))
-                                            (package
-                                              (inherit guix)
-                                              ;; Do not leak the local checkout URL.
-                                              (source (channel
-                                                        (inherit %default-guix-channel)
-                                                        (commit (guix-package-commit guix)))))))))))))
+                                         (guix (current-guix))))))))
 
   ;; Allow resolution of '.local' host names with mDNS.
   (name-service-switch %mdns-host-lookup-nss))
