@@ -1878,22 +1878,18 @@ R. Seaman's protocol}
     (license license:gpl3+)))
 
 (define-public phd2
-  ;; The tag 2.6.13 was placed in 2023, but there are a lot of changes, fixes
-  ;; and compatability with indi@2, use the latest commit from master branch.
-  (let ((commit "7ed00ec3e05fddb81b2026a07db9431e551f150e")
-        (revision "2"))
     (package
       (name "phd2")
-      (version (git-version "2.6.13" revision commit))
+      (version "2.6.14")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                 (url "https://github.com/OpenPHDGuiding/phd2")
-                (commit commit)))
+                (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1x9068w6x7hghkval5dq8c33zhyvfh5bsrb3g3lq6bxz0abw6s2l"))
+          (base32 "0n2jzlpwvjgj8ydg7hsqxnvy8s9pdi5z96id0231kgi87pyfkh7s"))
          (modules '((guix build utils)
                     (ice-9 ftw)
                     (srfi srfi-26)))
@@ -1939,7 +1935,7 @@ R. Seaman's protocol}
       (description
        "PHD2 is the enhanced,second generation version of the PHD guiding
 software from Stark Labs.")
-      (license license:bsd-3))))
+      (license license:bsd-3)))
 
 (define-public psfex
   (package
