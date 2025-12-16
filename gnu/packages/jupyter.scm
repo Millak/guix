@@ -430,6 +430,71 @@ interactive computing.")
 to Jupyter Server for their Python Web application backend.")
     (license license:bsd-3)))
 
+(define-public python-jupyter-core
+  (package
+    (name "python-jupyter-core")
+    (version "5.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append (pypi-uri "jupyter_core" version)))
+       (sha256
+        (base32 "1n9nyp1skljbbkqp4j7mnihnyp83j9rxm5h4hfn33d7npcr8spxa"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; XXX: These tests fail with "ModuleNotFoundError: No
+                    ;; module named 'jupyter_core'".
+                    (list "not test_argv0"
+                          "test_path_priority "
+                          "test_not_on_path"
+                          ;; These fail with: An incompatible sibling of
+                          ;; 'AsyncTornadoApp' is already instantiated as
+                          ;; singleton: SyncTornadoApp
+                          "test_async_app"
+                          "test_async_tornado_app"
+                          ;; Fails with a deprecation warning
+                          "test_sync_tornado_run"
+                          ;; Expecting pip in the PATH.
+                          "test_troubleshoot")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Migration is running whenever etc/jupyter exists, but the
+          ;; Guix-managed directory will never contain any migratable IPython
+          ;; config files and cannot be written to anyway, so just pretend we
+          ;; already did that.
+          (add-after 'install 'disable-migration
+            (lambda _
+              (mkdir-p (string-append #$output "/etc/jupyter"))
+              (invoke "touch" (string-append #$output "/etc/jupyter/migrated"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-pytest-timeout))
+    (propagated-inputs
+     (list python-platformdirs
+           python-traitlets))
+    ;; This package provides the `jupyter` binary and thus also exports the
+    ;; search paths.
+    (native-search-paths
+     (list (search-path-specification
+             (variable "JUPYTER_CONFIG_PATH")
+             (files '("etc/jupyter")))
+           (search-path-specification
+             (variable "JUPYTER_PATH")
+             (files '("share/jupyter")))))
+    (home-page "https://jupyter.org/")
+    (synopsis "Jupyter base package")
+    (description
+     "Jupyter core is the base package on which Jupyter projects rely.")
+    (license license:bsd-3)))
+
 (define-public python-jupyter-lsp
   (package
     (name "python-jupyter-lsp")
