@@ -317,6 +317,8 @@ the namespace @code{/nbclassic/}.")
 (define-public python-notebook
   (package
     (name "python-notebook")
+    ;; XXX: Newer version requires Jupyterlab, see:
+    ;; <https://codeberg.org/guix/guix/pulls/2073>.
     (version "6.5.7")
     (source (origin
               (method url-fetch)
@@ -327,6 +329,7 @@ the namespace @code{/nbclassic/}.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 307 passed, 7 skipped, 16 deselected, 9 warnings
       #:test-flags
       '(list "-k" (string-append
                    ;; TODO: This tests fails because nbconvert does not
@@ -338,7 +341,10 @@ the namespace @code{/nbclassic/}.")
                    " and not test_merge_config"
                    " and not test_load_ordered"
                    " and not test_list_running_sock_servers"
-                   " and not test_run")
+                   " and not test_run"
+                   ;; tornado.simple_httpclient.HTTPTimeoutError: Timeout
+                   ;; during request
+                   " and not test_connections")
         ;; These tests require a browser.
         "--ignore=notebook/tests/selenium")
       #:phases
@@ -370,7 +376,7 @@ the namespace @code{/nbclassic/}.")
            python-ipykernel
            python-ipython-genutils
            python-jinja2
-           python-jupyter-client
+           python-jupyter-client-7
            python-jupyter-core
            python-nest-asyncio
            python-nbclassic
