@@ -714,6 +714,16 @@ Messaging Protocol}.")
 extensions.")
     (license license:bsd-4)))
 
+(define-public python-pytest-jupyter-minimal
+  (package/inherit python-pytest-jupyter
+    (name "python-pytest-jupyter-minimal")
+    (arguments
+     (list #:tests? #f))
+    (native-inputs
+     (list python-hatchling))
+    (propagated-inputs
+     (list python-jupyter-core))))
+
 (define-public python-terminado
   (package
     (name "python-terminado")
