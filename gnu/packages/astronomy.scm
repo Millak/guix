@@ -4004,19 +4004,20 @@ lens models possibly obtained from different modeling codes.")
 (define-public python-corsikaio
   (package
     (name "python-corsikaio")
-    (version "0.5.0")
+    (version "0.6.1")
     (source
      (origin
-       (method git-fetch) ; no tests in the PyPI tarball
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/cta-observatory/pycorsikaio")
-             (commit (string-append "v" version))))
+              (url "https://github.com/cta-observatory/pycorsikaio")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1afv7jra31fi2g85z8jzmjr6w1wk9xs4v2cg06df2zffqfgfjnjj"))))
+        (base32 "0rnp1myhilkcr7mnv6x3cmxqjn0adgmb89crszn536qphsisyc35"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 51 passed
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-env-version
@@ -4028,7 +4029,8 @@ lens models possibly obtained from different modeling codes.")
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
-     (list python-numpy))
+     (list python-numpy
+           python-zstandard))
     (home-page "https://github.com/cta-observatory/pycorsikaio")
     (synopsis "Reader for CORSIKA binary output files")
     (description
