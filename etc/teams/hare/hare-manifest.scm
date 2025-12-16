@@ -16,8 +16,8 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; This file returns a manifest of packages built using the cargo-build-system.
-;;; It is used to assist continuous integration of the rust-team branch.
+;;; This file returns a manifest of packages built using the hare-build-system.
+;;; It is used to assist continuous integration of the hare-team branch.
 
 (use-modules (guix packages)
              (guix profiles)
