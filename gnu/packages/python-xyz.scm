@@ -18724,30 +18724,6 @@ Jupyter kernels.  It also allows for console-based interaction with non-Python
 Jupyter kernels such as IJulia and IRKernel.")
     (license license:bsd-3)))
 
-;; The python-ipython and python-jupyter-console require each other. To get
-;; the functionality in both packages working, strip down the
-;; python-jupyter-console package when using it as an input to python-ipython.
-(define python-jupyter-console-minimal
-  (package/inherit python-jupyter-console
-    (name "python-jupyter-console-minimal")
-    (arguments
-     (substitute-keyword-arguments
-         (package-arguments python-jupyter-console)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'install 'delete-bin
-             (lambda* (#:key outputs #:allow-other-keys)
-               ;; Delete the bin files, to avoid conflicts in profiles
-               ;; where python-ipython and python-jupyter-console are
-               ;; both present.
-               (delete-file-recursively
-                (string-append
-                 (assoc-ref outputs "out") "/bin"))))))))
-    ;; Remove the python-ipython propagated input, to avoid the cycle
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-jupyter-console)
-       (delete "python-ipython")))))
-
 (define-public python-jsbeautifier
   (package
     (name "python-jsbeautifier")
