@@ -2098,7 +2098,7 @@ and reusable bus interfaces to be used with @code{cocotb}.")
 (define-public python-edalize
   (package
     (name "python-edalize")
-    (version "0.6.1")
+    (version "0.6.3")
     (source
      (origin
        (method git-fetch)
@@ -2107,7 +2107,7 @@ and reusable bus interfaces to be used with @code{cocotb}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03mkzkmi96jkrpgcnawixvy832p3b8li8lrirdjhfp9dmp7d5kg5"))))
+        (base32 "1ml6b17jp4vwjaw16v0agajzksig92q5qmk2psm51ck4q076lm3m"))))
     (build-system pyproject-build-system)
     (arguments
      (list
