@@ -330,6 +330,10 @@ Run the container with the given options."))
                 #:namespaces (if #$shared-network?
                                  (delq 'net %namespaces)
                                  %namespaces)
+
+                ;; XXX: Work around <https://codeberg.org/guix/guix/issues/4788>.
+                #:lock-mounts? #f
+
                 #:writable-root? #t
                 #:process-spawned-hook (lambda (pid)
                                          ;; Write out the PID to the requested files
