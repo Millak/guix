@@ -674,6 +674,10 @@ used in the image. "
        (uuid-bytevector (partition-uuid partition)))))
 
   (let* ((os (image-operating-system image))
+         (image-name (image-name image))
+         (name (if image-name
+                   (symbol->string image-name)
+                   name))
          (bootloader (bootloader-package bootloader))
          (compression? (image-compression? image))
          (substitutable? (image-substitutable? image))
