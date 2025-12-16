@@ -4982,6 +4982,42 @@ Python.")
            python-pyyaml
            python-qtpy))))
 
+(define-public python-gizmo-analysis
+  (package
+    (name "python-gizmo-analysis")
+    (version "1.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "gizmo_analysis" version))
+       (sha256
+        (base32 "199wvy9jnb76dp1xvh8r3gyjrxipvh51fpvhqgc6gq0frkjxxnf9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            ;; XXX: remove on python-team merge
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((">=1.13") ">=1.11")))))))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-h5py
+           python-matplotlib
+           python-numpy
+           python-scipy
+           python-utilities-awetzel))
+    (home-page "https://bitbucket.org/awetzel/gizmo_analysis")
+    (synopsis "Read and analyze Gizmo simulations")
+    (description
+     "Python package for reading and analyzing simulations generated using
+the Gizmo code, in particular, the FIRE cosmological simulations.")
+    (license license:expat)))
+
 (define-public python-glue-astronomy
   (package
     (name "python-glue-astronomy")
