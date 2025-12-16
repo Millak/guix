@@ -639,6 +639,29 @@ supported algorithm is chosen to ensure interoperability with
 Emacs Lisp.")
     (license license:gpl3)))
 
+(define-public emacs-perl-doc
+  (package
+    (name "emacs-perl-doc")
+    (version "0.82")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/perl-doc-" version
+                           ".tar"))
+       (sha256
+        (base32 "1fj13361a9pgmlda8yix0p805r2gwzv1gxf43pq6y79a8hxbm8yn"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/HaraldJoerg/emacs-perl-doc")
+    (synopsis "Read Perl documentation from Emacs")
+    (description
+     "This package contains a command to read Perl documentation in Emacs: @samp{M-x
+perl-doc}.  It uses two external commands which come with Perl:
+@command{perldoc} to locate the Perl documentation for the Perl modules
+installed on your system, and @command{pod2html} to format the documentation
+to HTML.  This HTML version is then displayed using the Emacs simple HTML
+renderer, @code{shr}.")
+    (license license:gpl3+)))
+
 (define-public emacs-sops
   (package
     (name "emacs-sops")
