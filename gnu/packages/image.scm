@@ -87,6 +87,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
@@ -1608,17 +1609,20 @@ channels.")
 (define-public exiv2
   (package
     (name "exiv2")
-    (version "0.27.5")
+    (version "0.28.7")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.exiv2.org/builds/exiv2-" version
-                           "-Source.tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/exiv2/exiv2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1qm6bvj28l42km009nc60gffn1qhngc0m2wjlhf90si3mcc8d99m"))))
+        (base32 "1l0f8dijv4r09fqj9cas7bv2y6xdnvy4ch1agc80nwyk726czfbb"))))
     (build-system cmake-build-system)
     (arguments
      (list
+      #:tests? #f ;no tests
       #:configure-flags
       #~(list "-DEXIV2_BUILD_UNIT_TESTS=ON"
               ;; darktable needs BMFF to support
@@ -1659,7 +1663,7 @@ channels.")
                          (("retval = \\[1\\]") "retval = [0]")))))
                  '()))))
     (propagated-inputs
-     (list expat zlib))
+     (list brotli expat libinih zlib))
     (native-inputs
      (list googletest python))
     (home-page "https://www.exiv2.org/")
