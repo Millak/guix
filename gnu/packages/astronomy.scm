@@ -11745,14 +11745,15 @@ traveling to a star 100 light years away looks like.")
 (define-public wcslib
   (package
     (name "wcslib")
-    (version "8.4")
+    (version "8.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.atnf.csiro.au/computing/software/wcs/"
+                           "wcslib-releases/"
                            "wcslib-" version ".tar.bz2"))
        (sha256
-        (base32 "1p1606jscky6cw32qwx7k7nwv24jm9c85mzfrm9qnjni4r2882wn"))
+        (base32 "1kpacbh6zrci44qab0jllkn3a9z3b465w17qcfivvfpxzdw1pzgi"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "C/flexed")))))
@@ -11777,7 +11778,7 @@ traveling to a star 100 light years away looks like.")
      (list cfitsio))
     (native-inputs
      (list flex))
-    (home-page "https://www.atnf.csiro.au/people/mcalabre/WCS/WCS")
+    (home-page "https://www.atnf.csiro.au/computing/software/wcs/")
     (synopsis "Library which implements the FITS WCS standard")
     (description "The FITS \"World Coordinate System\" (@dfn{WCS}) standard
 defines keywords and usage that provide for the description of astronomical
