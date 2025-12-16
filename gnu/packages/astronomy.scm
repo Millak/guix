@@ -3692,37 +3692,42 @@ bad pixel tracking throughout the reduction process.")
 (define-public python-cdflib
   (package
     (name "python-cdflib")
-    (version "1.3.6")
+    (version "1.3.7")
     (source
      (origin
-       (method git-fetch)               ; no tests in PyPI release
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/MAVENSDC/cdflib")
-             (commit version)))
+              (url "https://github.com/lasp/cdflib")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rlzmwnlz77n8c62h050jc2njy10bfby671p3w7y6r6y6642xrdi"))))
+        (base32 "1ky54sg21g9mcgg8cimkb5bpmz4kl3yfgd1gk99s687lj1qm9v31"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'build 'set-env-version
-                 (lambda _
-                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
-               (add-before 'check 'set-home-env
-                 (lambda _
-                   (setenv "HOME" (getcwd)))))))
+     (list
+      ;; tests: 71 passed, 26 skipped, 7 warnings
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((" --cov=cdflib --cov-report=xml") ""))))
+          (add-before 'build 'set-env-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (add-before 'check 'set-home-env
+            (lambda _
+              (setenv "HOME" (getcwd)))))))
     (native-inputs
      (list python-astropy-minimal
            python-pytest
-           python-pytest-cov
            python-pytest-remotedata
            python-setuptools
            python-setuptools-scm
            python-xarray))
     (propagated-inputs
      (list python-numpy))
-    (home-page "https://github.com/MAVENSDC/cdflib")
+    (home-page "https://github.com/lasp/cdflib")
     (synopsis "Python library to deal with NASA's CDF astronmical data format")
     (description
      "This package provides a Python @acronym{CDF, Computable Document Format}
