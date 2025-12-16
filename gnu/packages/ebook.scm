@@ -45,6 +45,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cmake)
@@ -120,18 +121,23 @@
     (version "0.8.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pychm" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dottedmag/pychm")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0wpn9ijlsmrpyiwg3drmgz4dms1i1i347adgqw37bkrh3vn6yq16"))))
-    (build-system python-build-system)
+         "0zf2vnrby2m31nvi6p3isspbrjmzjw1vwfx3xl7bkvjs7sli1wbw"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools))
     (inputs
      (list chmlib))
     (home-page "https://github.com/dottedmag/pychm")
     (synopsis "Handle CHM files")
     (description "This package provides a Python module for interacting
-with Microsoft Compiled HTML (CHM) files")
+with Microsoft Compiled HTML (CHM) files.")
     (license license:gpl2+)))
 
 (define-public calibre
