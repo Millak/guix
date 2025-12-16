@@ -838,7 +838,7 @@ environment variable.")
 (define-public fortify-headers
   (package
     (name "fortify-headers")
-    (version "2.3.3")
+    (version "3.0")
     (source
      (origin
        (method git-fetch)
@@ -847,7 +847,7 @@ environment variable.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w2jrscncq1jrg4wnsrr3a00p6h9mvkk3g1qkh1jdw1m747yjsci"))))
+        (base32 "1jyqcxang020r55l7wnlm9s1kl5z3hqb83cryd3gnl34748gs06k"))))
     (build-system gnu-build-system)
     (arguments
      (list
