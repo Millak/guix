@@ -12398,21 +12398,20 @@ Python code against some of the style conventions in
 (define-public python-pycollada
   (package
     (name "python-pycollada")
-    (version "0.8")
+    (version "0.9.2")
     (source
      (origin
-       (method git-fetch)   ; no tests data in PyPi package
+       (method git-fetch)
        (uri (git-reference
              (url "https://github.com/pycollada/pycollada")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0by8b46gji9npsgnx91cvzjrfcsm7r4d23gvn7h2h9ninaxlv7zw"))))
+        (base32 "13pj179p9gdiza409n8mdl7cpfasc3mrmk40p1vqplfdshks75dy"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-numpy
            python-dateutil))
