@@ -2871,7 +2871,7 @@ simulated Astronomical data in Python.")
 (define-public python-astromartini
   (package
     (name "python-astromartini")
-    (version "2.1.11")
+    (version "2.1.13")
     (source
      (origin
        (method git-fetch)
@@ -2880,11 +2880,11 @@ simulated Astronomical data in Python.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xbddyxnm8vy60x5d9bs3y09d4w1wm3yvyr89zmkapdn4qsxjjmr"))))
+        (base32 "1y36jblj2ibr91v967nfzczbm7mlvhjpgbd519s5ybsxay27qj4g"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 2527 passed, 11 skipped, 4 xfailed
+      ;; tests: 2529 passed, 11 skipped, 4 xfailed
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))))
     (native-inputs
@@ -2898,15 +2898,15 @@ simulated Astronomical data in Python.")
            python-tqdm
            ;; [optional]
            ;; python-eaglesqltools
-           ;; python-gizmo-analysis
+           python-gizmo-analysis
            python-h5py
            ;; python-halo-analysis
            ;; python-hdecompose
            ;; python-pyread-eagle
            python-requests
-           ;; python-swiftgalaxy
-           ;; python-swiftsimio
-           ;; python-utilities-awetzel
+           python-swiftgalaxy
+           python-swiftsimio
+           python-utilities-awetzel
            #;python-velociraptor))
     (home-page "https://github.com/kyleaoman/martini")
     (synopsis "Synthetic datacube creation from simulations")
