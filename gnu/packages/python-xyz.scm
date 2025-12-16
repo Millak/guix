@@ -18700,48 +18700,6 @@ widgets are used.  Users gain control of their data and can visualize changes
 in the data.")
     (license license:bsd-3)))
 
-(define-public python-jupyter-console
-  (package
-    (name "python-jupyter-console")
-    (version "6.6.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "jupyter_console" version))
-       (sha256
-        (base32
-         "0f9mllaavanqlimiv9sxxmqrmdb961p89prcyanvzbc73krlnsjn"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; ModuleNotFoundError: No module named 'traitlets'
-      #~(list "--deselect=jupyter_console/tests/test_console.py::test_generate_config")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda _
-              (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list python-flaky
-           python-hatchling
-           python-pytest))
-    (propagated-inputs
-     (list python-ipykernel
-           python-ipython
-           python-jupyter-client
-           python-jupyter-core
-           python-prompt-toolkit
-           python-pygments
-           python-pyzmq
-           python-traitlets))
-    (home-page "https://jupyter.org")
-    (synopsis "Jupyter terminal console")
-    (description "This package provides a terminal-based console frontend for
-Jupyter kernels.  It also allows for console-based interaction with non-Python
-Jupyter kernels such as IJulia and IRKernel.")
-    (license license:bsd-3)))
-
 (define-public python-jsbeautifier
   (package
     (name "python-jsbeautifier")

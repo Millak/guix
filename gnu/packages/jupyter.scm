@@ -1,12 +1,13 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2024 Danny Milosavljevic <dannym@friendly-machines.com>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
-;;; Copyright © 2016, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016, 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2019, 2021-2025 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
-;;; Copyright © 2019, 2021-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2019, 2021-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2022 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2019 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
@@ -18,6 +19,7 @@
 ;;; Copyright © 2023 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2024 Danny Milosavljevic <dannym@friendly-machines.com>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2024, 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
 ;;;
@@ -493,6 +495,48 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
         ((#:tests? _) #f)))
      (native-inputs
       (list python-hatchling)))))
+
+(define-public python-jupyter-console
+  (package
+    (name "python-jupyter-console")
+    (version "6.6.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jupyter_console" version))
+       (sha256
+        (base32
+         "0f9mllaavanqlimiv9sxxmqrmdb961p89prcyanvzbc73krlnsjn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; ModuleNotFoundError: No module named 'traitlets'
+      #~(list "--deselect=jupyter_console/tests/test_console.py::test_generate_config")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-flaky
+           python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-ipykernel
+           python-ipython
+           python-jupyter-client
+           python-jupyter-core
+           python-prompt-toolkit
+           python-pygments
+           python-pyzmq
+           python-traitlets))
+    (home-page "https://jupyter.org")
+    (synopsis "Jupyter terminal console")
+    (description "This package provides a terminal-based console frontend for
+Jupyter kernels.  It also allows for console-based interaction with non-Python
+Jupyter kernels such as IJulia and IRKernel.")
+    (license license:bsd-3)))
 
 (define-public python-jupyter-core
   (package
