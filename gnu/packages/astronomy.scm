@@ -10413,6 +10413,42 @@ between image and reference catalogs.  Currently only aligning images with
 @code{FITS WCS} and @code{JWST gWCS} are supported.")
     (license license:bsd-3)))
 
+(define-public python-utilities-awetzel
+  (package
+    (name "python-utilities-awetzel")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "utilities_awetzel" version))
+       (sha256
+        (base32 "049caadnxny330jday9hbg643b1fxpmkccjbxn1w9n6pmsx0ypql"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            ;; XXX: remove on python-team merge
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((">=1.13") ">=1.11")))))))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-h5py
+           python-matplotlib
+           python-numpy
+           python-scipy))
+    (home-page "https://bitbucket.org/awetzel/utilities")
+    (synopsis "General routines for analyzing astrophysical data sets")
+    (description
+     "Python package of utility functions that are useful in analyzing various
+datasets, in particular, catalogs of particles or galaxies/halos from
+cosmological simulations.")
+    (license license:expat)))
+
 (define-public python-viresclient
   (package
     (name "python-viresclient")
