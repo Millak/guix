@@ -18703,20 +18703,38 @@ in the data.")
 (define-public python-jupyter-console
   (package
     (name "python-jupyter-console")
-    (version "6.4.0")
+    (version "6.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jupyter_console" version))
        (sha256
         (base32
-         "1iqrxhd8hvlyf8cqbc731ssnwm61wrycnbiczy5wsfahd3hlh8i4"))))
+         "0f9mllaavanqlimiv9sxxmqrmdb961p89prcyanvzbc73krlnsjn"))))
     (build-system pyproject-build-system)
-    (arguments (list #:test-backend #~'unittest))
-    (native-inputs (list python-pytest python-setuptools))
+    (arguments
+     (list
+      #:test-flags
+      ;; ModuleNotFoundError: No module named 'traitlets'
+      #~(list "--deselect=jupyter_console/tests/test_console.py::test_generate_config")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-flaky
+           python-hatchling
+           python-pytest))
     (propagated-inputs
-     (list python-ipykernel python-jupyter-client python-prompt-toolkit
-           python-pygments))
+     (list python-ipykernel
+           python-ipython
+           python-jupyter-client
+           python-jupyter-core
+           python-prompt-toolkit
+           python-pygments
+           python-pyzmq
+           python-traitlets))
     (home-page "https://jupyter.org")
     (synopsis "Jupyter terminal console")
     (description "This package provides a terminal-based console frontend for
