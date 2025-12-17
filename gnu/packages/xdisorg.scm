@@ -677,9 +677,10 @@ function keys.")
        (sha256
         (base32
          "1xyqp6yqxcwmxaqj86qcsiz0ly7bwr0a2w835myz909irhip3ngf"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))                    ;tests need /dev/uinput
+    (native-inputs (list python-setuptools))
     (inputs
      (list python-appdirs python-evdev python-inotify-simple python-xlib
            python-six))
