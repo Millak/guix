@@ -1235,6 +1235,26 @@ algorithm to keep the most used entries in the cache.")
  refreshing classes at runtime.")
     (license license:perl-license)))
 
+(define-public perl-config-ini-reader-ordered
+  (package
+    (name "perl-config-ini-reader-ordered")
+    (version "0.022")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/R/RJ/RJBS/Config-INI-Reader-Ordered-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0m33n23y7hn8s1l547q26rgjx2xj9b9cfwn1dqrgh6pl68xzyaq7"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-config-ini))
+    (home-page "https://metacpan.org/release/Config-INI-Reader-Ordered")
+    (synopsis "Perl ordered INI parser")
+    (description "@code{Config::INI::Reader::Ordered} is a Perl library
+ for parsing @samp{.ini} files that returns the sections in order.")
+    (license license:perl-license)))
+
 (define-public perl-file-map
   (package
     (name "perl-file-map")
