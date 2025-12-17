@@ -24,6 +24,7 @@
 ;;; Copyright © 2023 muradm <mail@muradm.net>
 ;;; Copyright © 2024 Nigko Yerden <nigko.yerden@gmail.com>
 ;;; Copyright © 2025 45mg <45mg.writes@gmail.com>
+;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2885,7 +2886,7 @@ See @command{yggdrasil -genconf} for config options.")
   make-ipfs-configuration
   ipfs-configuration?
   (package ipfs-configuration-package
-           (default go-ipfs))
+           (default kubo))
   (gateway ipfs-configuration-gateway
            (default "/ip4/127.0.0.1/tcp/8082"))
   (api     ipfs-configuration-api
