@@ -134,6 +134,7 @@
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages code)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
@@ -7828,12 +7829,27 @@ system.")
     (version "0.16.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "py-ubjson" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Iotic-Labs/py-ubjson/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "10m4lmlhqqai90sd0z6qvm2ysrxz8g4q7yq0x0r3czhwb9lvigxr"))))
-    (build-system python-build-system)
+         "1frn97xfa88zrfmpnvdk1pc03yihlchhph99bhjayvzlfcrhm5v3"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-coverage lcov))
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'avoid-git-clean
+                    (lambda _
+                      (substitute* "coverage_test.sh"
+                        (("git clean.*")
+                         ""))))
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (if tests?
+                          (invoke "./coverage_test.sh")))))))
     (home-page "https://github.com/Iotic-Labs/py-ubjson")
     (synopsis "Universal Binary JSON encoder/decoder")
     (description
