@@ -474,28 +474,7 @@ without requiring the source code to be rewritten.")
             (variable "GUILE_EXTENSIONS_PATH")
             (files '("lib/guile/3.0/extensions")))))))
 
-(define-public guile-3.0.11
-  (package
-    (inherit guile-3.0)
-    (name "guile")
-    (version "3.0.11")
-    (source (origin
-              (inherit (package-source guile-2.2))
-              (uri (string-append "mirror://gnu/guile/guile-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "0q4laxcraxh3r9s62p6nw3g3n6xlqxy16r5kdylpyyk56v97k341"))
-              (patches '())
-              ;; Replace the snippet because the oom-test still
-              ;; fails on some 32-bit architectures.
-              (snippet '(for-each delete-file
-                                  (find-files "prebuilt" "\\.go$")))))))
-
-(define-public guile-3.0-latest
-  ;; Note: At the moment 3.0.11 leads to test failures in the 'guix' package
-  ;; so we cannot switch just yet.
-  guile-3.0)
+(define-public guile-3.0-latest guile-3.0)
 
 ;;; The symbol guile-3.0/fixed should be used when guile-3.0 needs fixes
 ;;; (security or else) and this deprecation could be removed.
