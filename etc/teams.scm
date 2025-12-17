@@ -1410,6 +1410,11 @@ the \"texlive\" importer."
                        "delitrem")
   beam)
 
+(define-member (person "Nguyễn Gia Phong"
+                       "cnx@loang.net"
+                       "cnx")
+  python)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
