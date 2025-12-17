@@ -3172,6 +3172,7 @@ using a system-independent interface.")
 (define-public python-abjad
   (package
     (name "python-abjad")
+    ;; 3.19 is the last version that supports Python 3.11; newer require 3.12.
     (version "3.19")
     (source
      (origin
@@ -3183,6 +3184,16 @@ using a system-independent interface.")
        (sha256
         (base32 "1cgcnmwzxx2hr21pqm1hbsknpad748yw3gf7jncsb3w1azhjypzm"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Error message changed in latest python-roman; fixed in abjad 3.21.
+          (add-after 'unpack 'fix-docstring
+            (lambda _
+              (substitute* "abjad/string.py"
+                (("roman.InvalidRomanNumeralError: Invalid Roman numeral: Allegro")
+                 "roman.InvalidRomanNumeralError...")))))))
     (inputs
      (list lilypond))
     (native-inputs
