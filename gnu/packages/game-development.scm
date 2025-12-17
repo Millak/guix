@@ -591,17 +591,54 @@ types (revolute, prismatic, wheel, etc.).")
     (description "This package provides an Anvil file format parser.")
     (license license:expat))))
 
+;;~4MiB of test files.
+(define python-nbt-testdata
+  (file-union
+   "python-nbt-testdata"
+   (list
+    (let ((file "Sample_World.tar.gz"))
+      `(,file
+        ,(origin
+           (method url-fetch)
+           (uri (string-append
+                 "https://github.com/twoolie/NBT/files/13199373/"
+                 file))
+           (sha256
+            (base32
+             "1s58g5zicx8ghdai2qix2aqq0fc675vfajica4h78c397crwjrl9"))))))))
+
 (define-public python-nbt
   (package
     (name "python-nbt")
     (version "1.5.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "NBT" version))
-              (sha256
-               (base32
-                "1i9ncrzy5zcfnxzkh2j31n9ayzxfncckzwa6fkz9vjq5fq9v4fys"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/twoolie/NBT")
+              (commit (string-append "version-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a3mj7c18m1n5iqzwwvvlk7n65kxp3xbmccsqyap36apwpbbxyd9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "tests/regiontests.py" "tests/nbttests.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'fake-download
+            ;; Fake the download of the test tarball.
+            (lambda _
+              (substitute*
+                  "tests/downloadsample.py"
+                (("tar_file = .*")
+                 (string-append
+                  "tar_file = '"
+                  #+python-nbt-testdata
+                  "/Sample_World.tar.gz'"))))))))
+    (native-inputs
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/twoolie/NBT")
     (synopsis "Named Binary Tag reader and writer")
     (description
