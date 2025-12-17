@@ -2172,36 +2172,40 @@ robust and compatible with many systems and operating systems.")
     (license license:zlib)))
 
 (define-public mc2mt
+  ;; No tags in the repository.
   (let ((commit "039dbc26466a430e03c646dc5a9bd0822637a87a")
         (revision "0"))
-  (package
-    (name "mc2mt")
-    (version (git-version "0.1" revision commit))
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/listia/mc2mt")
-             (commit commit)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1vnaznwgm87x0n5dp14363p2h54lpzalynrrd6lbs6wgrqq7fq9i"))
-       (patches (search-patches "mc2mt-add-packaging-support.patch"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            (substitute* "mc2mtlib/argument_parser.py"
-              (("mineclone2") "mineclone"))))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools))
-    (propagated-inputs (list python-anvil-parser))
-    (arguments
-     (list #:tests? #f)) ; no tests
-    (synopsis "Minecraft to Minetest world converter")
-    (description "@code{mc2mt} is a Minecraft to Minetest world converter.
+    (package
+      (name "mc2mt")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/listia/mc2mt")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1vnaznwgm87x0n5dp14363p2h54lpzalynrrd6lbs6wgrqq7fq9i"))
+         (patches (search-patches "mc2mt-add-packaging-support.patch"))
+         (modules '((guix build utils)))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:tests? #f ; no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-code
+              (lambda* _
+                (substitute* "mc2mtlib/argument_parser.py"
+                  (("mineclone2") "mineclone")))))))
+      (native-inputs (list python-pytest python-setuptools))
+      (propagated-inputs (list python-anvil-parser))
+      (synopsis "Minecraft to Minetest world converter")
+      (description "@code{mc2mt} is a Minecraft to Minetest world converter.
 It can convert worlds from Minecraft 1.9 and later.")
-    (home-page "https://github.com/listia/mc2mt")
-    (license license:expat))))
+      (home-page "https://github.com/listia/mc2mt")
+      (license license:expat))))
 
 (define-public mygui
   (package

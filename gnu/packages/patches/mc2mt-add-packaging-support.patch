@@ -77,7 +77,7 @@ index 0000000..cf9a70d
 +[project]
 +name = 'mc2mt'
 +version = '0.1'
-+dependencies = ['anvil-parser']
++dependencies = ['anvil-parser2']
 +
 +[project.scripts]
 +mc2mt = 'mc2mtlib:mc2mt.mc2mt'
