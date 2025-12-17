@@ -2,7 +2,7 @@
 ;;; Copyright © 2021, 2022 Olivier Dion <olivier.dion@polymtl.ca>
 ;;; Copyright © 2023 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2024 Nguyễn Gia Phong <cnx@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

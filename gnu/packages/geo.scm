@@ -28,7 +28,7 @@
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2025 Lars Bilke <lars.bilke@ufz.de>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2025 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2025 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.

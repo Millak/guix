@@ -32,7 +32,7 @@
 ;;; Copyright © 2023, 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2025 Nguyễn Gia Phong <cnx@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

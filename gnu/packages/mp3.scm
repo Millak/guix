@@ -14,7 +14,7 @@
 ;;; Copyright © 2022 Joeke de Graaf <joeke@posteo.net>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2025 Nguyễn Gia Phong <cnx@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

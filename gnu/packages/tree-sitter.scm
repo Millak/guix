@@ -9,7 +9,7 @@
 ;;; Copyright © 2023-2025 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
-;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2025 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2025 Evgenii Klimov <eugene.dev@lipklim.org>
 ;;; Copyright © 2025 Felipe Silva <git@felipeqq2.rocks>
 ;;;

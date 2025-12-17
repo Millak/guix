@@ -74,7 +74,7 @@
 ;;; Copyright © 2024, 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 normally_js <normally_js@posteo.net>
 ;;; Copyright © 2024 Markku Korkeala <markku.korkeala@iki.fi>
-;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2024 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
 ;;; Copyright © 2024 Attila Lendvai <attila@lendvai.name>

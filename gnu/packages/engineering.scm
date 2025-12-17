@@ -40,7 +40,7 @@
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 pinoaffe <pinoaffe@gmail.com>
 ;;; Copyright © 2024 Juliana Sims <juli@incana.org>
-;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2024 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2025 Frederick Muriuki Muriithi <fredmanglis@gmail.com>
 ;;; Copyright © 2025 nomike Postmann <nomike@nomike.com>
 ;;; Copyright © 2025 Matthew Elwin <elwin@northwestern.edu>

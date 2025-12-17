@@ -14,7 +14,7 @@
 ;;; Copyright © 2023 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
-;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2025 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2025 Robin Templeton <robin@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.

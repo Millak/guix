@@ -51,7 +51,7 @@
 ;;; Copyright © 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
-;;; Copyright © 2022 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2022 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2023 Arnaud Lechevallier <arnaud.lechevallier@free.fr>

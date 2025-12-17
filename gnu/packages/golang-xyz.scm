@@ -40,7 +40,7 @@
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2023 Miguel Ángel Moreno <mail@migalmoreno.com>
-;;; Copyright © 2023 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2023 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Sergey Trofimov <sarg@sarg.org.ru>
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>

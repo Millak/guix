@@ -16,7 +16,7 @@
 ;;; Copyright © 2024, 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
-;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2024 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Leo Nikkilä <hello@lnikki.la>
 ;;;

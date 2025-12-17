@@ -15,7 +15,7 @@
 ;;; Copyright © 2022, 2023 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2023 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
-;;; Copyright © 2023, 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2023, 2024 Nguyễn Gia Phong <cnx@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

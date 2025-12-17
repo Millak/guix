@@ -43,7 +43,7 @@
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024, 2025 Igor Goryachev <igor@goryachev.org>
-;;; Copyright © 2024 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2024 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;

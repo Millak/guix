@@ -35,7 +35,7 @@
 ;;; Copyright © 2024 Rick Huijzer <ikbenrickhuyzer@gmail.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Mark Walker <mark.damon.walker@gmail.com>
-;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2025 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
