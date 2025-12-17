@@ -4773,12 +4773,17 @@ based on asyncio.")
     (version "3.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "imaplib2" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jazzband/imaplib2/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0nqyb274hq30agg1c0zkb5ijmcirgg35sp4dp4n292l665dlijwn"))))
-    (build-system python-build-system)
+        (base32 "14asi3xnvf4bb394k5j8c3by6svvmrr75pawzy6kaax5jx0h793m"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/jazzband/imaplib2/")
     (synopsis "Threaded Python IMAP4 client")
     (description "This package provides a threaded Python IMAP4 client, based
