@@ -1,6 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2019-2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2019, 2024, 2025 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2025 Noé Lopez <noelopez@free.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -26,18 +29,25 @@
 ;;; Code:
 
 (define-module (gnu packages gnome-circle)
+  #:use-module (gnu packages aidc)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages enchant)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-xyz)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages rust)
+  #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix gexp)
@@ -109,3 +119,96 @@
     (description "Apostrophe is a GTK+ based distraction-free Markdown editor.
 It uses pandoc as back-end for parsing Markdown.")
     (license license:gpl3)))
+
+(define-public gnome-authenticator
+  (package
+    (name "gnome-authenticator")
+    (version "4.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.gnome.org/World/Authenticator.git/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zavax35n048spx097ymiq31s8b879qwbg8xmcxcx73r6m823mic"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%meson-build-system-modules
+                           ,@%cargo-build-system-modules)
+      #:modules `(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build meson-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-for-build
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")
+                (("update_desktop_database: true")
+                 "update_desktop_database: false"))
+              ;; Help the tests find the Cargo.toml in the sources.
+              (substitute* "src/meson.build"
+                (("'test'") "'test', cargo_options"))
+              (delete-file "Cargo.lock")))
+          ;; The meson 'configure phase changes to a different directory and
+          ;; we need it created before unpacking the crates.
+          (add-after 'configure 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:vendor-dir "vendor"
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums)))))))
+    (native-inputs
+     (append
+      (list gettext-minimal
+            `(,glib "bin") ; for glib-compile-schemas
+            pkg-config
+            rust
+            `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
+    (inputs (cons* bash-minimal
+                   glib
+                   gstreamer
+                   gst-plugins-base
+                   gst-plugins-bad
+                   gtk
+                   libadwaita
+                   openssl
+                   pipewire             ; Needed but not listed
+                   sqlite
+                   zbar
+                   (cargo-inputs 'gnome-authenticator)))
+    (home-page "https://apps.gnome.org/Authenticator")
+    (synopsis "Generate two-factor codes")
+    (description "Simple application for generating Two-Factor Authentication
+Codes:
+
+It features:
+
+@itemize
+@item Time-based/Counter-based/Steam methods support
+@item SHA-1/SHA-256/SHA-512 algorithms support
+@item QR code scanner using a camera or from a screenshot
+@item Lock the application with a password
+@item Beautiful UI
+@item GNOME Shell search provider
+@item Backup/Restore from/into known applications like FreeOTP+,
+Aegis (encrypted / plain-text), andOTP, Google Authenticator
+@end itemize")
+    (license license:gpl3+)))
+
+(define-deprecated-package authenticator
+  gnome-authenticator)
