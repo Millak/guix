@@ -5061,27 +5061,27 @@ means--it's all programmable).")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32
-                "0rmcwvf8whf49qq5rgp5hhmhfjli1vhjlc7fjhj24gyy1kkjir2k"))))
-    (build-system python-build-system)
+               (base32 "0rmcwvf8whf49qq5rgp5hhmhfjli1vhjlc7fjhj24gyy1kkjir2k"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:build-backend "poetry.core.masonry.api"
+      #:test-backend #~'unittest
+      #:test-flags #~(list "discover" "test")
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion "test"
-                  ;; Skip networking tests
-                  (substitute* "test.py"
-                    (("( *)class (:?TestSend|TestFetch).*" match indent)
-                     (string-append indent
-                                    "@unittest.skip(\"Networking stuff skipped\")\n"
-                                    indent match)))
-                  (invoke "python" "-m" "unittest")))))
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              ;; Skip networking tests
+              (substitute* "test/test.py"
+                (("( *)class (:?TestSend|TestFetch).*" match indent)
+                 (string-append indent
+                                "@unittest.skip(\"Networking stuff skipped\")\n"
+                                indent match)))))
           (add-after 'install 'install-documentation
             (lambda _
               (install-file "r2e.1" (string-append #$output "share/man/man1")))))))
+    (native-inputs (list python-poetry-core))
     (inputs
      (list python-feedparser python-html2text))
     (home-page "https://github.com/rss2email/rss2email")
