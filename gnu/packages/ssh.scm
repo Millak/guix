@@ -1010,7 +1010,7 @@ clients at a time.")
 (define-public webssh
   (package
     (name "webssh")
-    (version "1.6.2")
+    (version "1.6.3")
     (source
      (origin
        (method git-fetch)
@@ -1019,15 +1019,14 @@ clients at a time.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v0dxnqac9xdj06lhljv6bhi8hd16rn6h0qr7fkm640nvr55a8i1"))))
+        (base32 "0gvs64xjm1pfwv6jyc71hsj0pwfhvmw8ahbx4y9p6isfwspcbmr0"))))
     (build-system pyproject-build-system)
     ;; FIXME: Errors with:
     ;; "AttributeError: 'AsyncHTTPTestCase' object has no attribute 'runTest'"
     (arguments (list #:tests? #f))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-paramiko
            python-tornado))
