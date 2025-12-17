@@ -1155,47 +1155,37 @@ tools in a live programming environment.")
     (license license:lgpl3)))
 
 (define-public quickswitch-i3
-  (let ((commit "ed692b1e8f43b95bd907ced26238ce8ccb2ed28f")
-        (revision "1")) ; Guix package revision
-    (package
-      (name "quickswitch-i3")
-      (version (string-append "2.2-" revision "."
-                              (string-take commit 7)))
-      (source
-       (origin
-         ;; The latest commit is a few years old and just a couple commits
-         ;; after the last tagged release, so we use that latest commit
-         ;; instead of the release.
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/proxypoke/quickswitch-for-i3")
-               (commit commit)))
-         (sha256
-          (base32
-           "0447077sama80jcdg5p64zjsvafmz5rbdrirhm1adcdjhkh6iqc5"))
-         (patches (search-patches "quickswitch-fix-dmenu-check.patch"))
-         (file-name (string-append name "-" version "-checkout"))))
-      (build-system python-build-system)
-      (arguments
-       `(#:tests? #f ; no tests yet
-         #:phases (modify-phases %standard-phases
-                    (add-after 'install 'install-doc
-                      ;; Copy readme file to documentation directory.
-                      (lambda* (#:key outputs #:allow-other-keys)
-                        (let ((doc (string-append (assoc-ref outputs "out")
-                                                  "/share/doc/" ,name)))
-                          (install-file "README.rst" doc)
-                          ;; Avoid unspecified return value.
-                          #t))))))
-      (inputs
-       (list python-i3-py dmenu))
-      (home-page "https://github.com/proxypoke/quickswitch-for-i3")
-      (synopsis "Quickly change to and locate windows in the i3 window manager")
-      (description
-       "This utility for the i3 window manager allows you to quickly switch to
+  (package
+    (name "quickswitch-i3")
+    (version "2.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tyjak/quickswitch-for-i3")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d28l66j4nb3636j2xqd6gi7q55fy9prn4d1hv6glgykb0x4kw65"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'install 'install-doc
+                          (lambda _
+                            (install-file "README.rst"
+                                          (string-append
+                                           #$output "/share/doc/"
+                                           #$name "-" #$version)))))
+           #:tests? #f))                ; no tests yet
+    (native-inputs (list python-setuptools))
+    (inputs (list python-i3-py dmenu))
+    (home-page "https://github.com/tyjak/quickswitch-for-i3")
+    (synopsis "Quickly change to and locate windows in the i3 window manager")
+    (description
+     "This utility for the i3 window manager allows you to quickly switch to
 and locate windows on all your workspaces, using an interactive dmenu
 prompt.")
-      (license license:wtfpl2))))
+    (license license:wtfpl2)))
 
 (define-public quicktile
   ;; Latest release, 0.4.0, is 5 years old and does not use pyproject.toml yet.
