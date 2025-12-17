@@ -1897,19 +1897,22 @@ repository")
 (define-public python-ghp-import
   (package
     (name "python-ghp-import")
-    (version "2.0.2")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/davisp/ghp-import")
+             (url "https://github.com/c-w/ghp-import")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0i4lxsgqri1y8sw4k44bkwbzmdmk4vpmdi882mw148j8gk4i7vvj"))))
-    (build-system python-build-system)
+        (base32 "1v6kay6yr8sz0601ib8lrvbgpxslhll20b28i04bdwj1f1cjygy4"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
+     (list
+      #:tests? #f                       ;no tests, also not in Git
+      #:phases
+      #~(modify-phases %standard-phases
                   (add-after 'install 'install-documentation
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
@@ -1917,8 +1920,10 @@ repository")
                              (licenses (string-append out "/share/licenses")))
                         (install-file "README.md" doc)
                         (install-file "LICENSE" licenses)))))))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs (list python-dateutil))
-    (home-page "https://github.com/davisp/ghp-import")
+    (home-page "https://github.com/c-w/ghp-import")
     (synopsis "Copy directory to the gh-pages branch")
     (description "Script that copies a directory to the gh-pages branch (by
 default) of the repository.")
