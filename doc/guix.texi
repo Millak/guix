@@ -46281,6 +46281,127 @@ Mode for filter.
 
 @c End of auto-generated fail2ban documentation.
 
+@cindex OpenSnitch
+@subsubheading OpenSnitch Service
+
+@uref{https://github.com/evilsocket/opensnitch, OpenSnitch} is an
+application-level firewall that monitors outbound connections and prompts
+users to allow or deny them on a per-application basis.
+
+@code{opensnitch-service-type} is provided by the @code{(gnu services
+opensnitch)} module.
+
+@defvar opensnitch-service-type
+This is the service type for the OpenSnitch application firewall daemon.
+Its value must be an @code{opensnitch-configuration} record.
+
+Below is an example configuration:
+
+@lisp
+(service opensnitch-service-type)
+@end lisp
+
+This service depends on the @code{networking} service.
+@end defvar
+
+@deftp {Data Type} opensnitch-configuration
+Available @code{opensnitch-configuration} fields are:
+
+@table @asis
+@item @code{opensnitch} (default: @code{opensnitch-daemon}) (type: package)
+The @code{opensnitch-daemon} package to use.
+
+@item @code{server-address} (default: @code{"unix:///tmp/osui.sock"}) (type: string)
+Address for the UI to connect to the daemon.
+
+@item @code{server-log-file} (default: @code{"/var/log/opensnitchd.log"}) (type: string)
+Path to the daemon log file.
+
+@item @code{authentication-type} (default: @code{"simple"}) (type: string)
+Authentication type for UI-daemon communication.
+
+@item @code{tls-ca-cert} (default: @code{""}) (type: string)
+Path to TLS CA certificate.
+
+@item @code{tls-server-cert} (default: @code{""}) (type: string)
+Path to TLS server certificate.
+
+@item @code{tls-client-cert} (default: @code{""}) (type: string)
+Path to TLS client certificate.
+
+@item @code{tls-client-key} (default: @code{""}) (type: string)
+Path to TLS client key.
+
+@item @code{tls-skip-verify?} (default: @code{#f}) (type: boolean)
+Whether to skip TLS verification.
+
+@item @code{tls-client-auth-type} (default: @code{"no-client-cert"}) (type: string)
+TLS client authentication type.
+
+@item @code{default-action} (default: @code{"allow"}) (type: string)
+Default action for connections: @code{"allow"} or @code{"deny"}.
+
+@item @code{default-duration} (default: @code{"once"}) (type: string)
+Default duration for rules: @code{"once"}, @code{"until-restart"},
+@code{"always"}, etc.
+
+@item @code{intercept-unknown?} (default: @code{#f}) (type: boolean)
+Whether to intercept connections from unknown processes.
+
+@item @code{proc-monitor-method} (default: @code{"ebpf"}) (type: string)
+Method for monitoring processes: @code{"ebpf"}, @code{"proc"}, or
+@code{"audit"}.
+
+@item @code{log-level} (default: @code{2}) (type: integer)
+Log level: 0=silent, 1=error, 2=warning, 3=important, 4=debug.
+
+@item @code{log-utc?} (default: @code{#t}) (type: boolean)
+Whether to log timestamps in UTC.
+
+@item @code{log-micro?} (default: @code{#f}) (type: boolean)
+Whether to include microseconds in log timestamps.
+
+@item @code{firewall} (default: @code{"nftables"}) (type: string)
+Firewall backend: @code{"nftables"} or @code{"iptables"}.
+
+@item @code{fw-config-path} (default: @code{"/etc/opensnitchd/system-fw.json"}) (type: string)
+Path to the system firewall configuration file.
+
+@item @code{fw-monitor-interval} (default: @code{"15s"}) (type: string)
+Interval for monitoring firewall rules.
+
+@item @code{fw-queue-bypass?} (default: @code{#t}) (type: boolean)
+Whether to bypass the queue when the daemon is not running.
+
+@item @code{rules-path} (default: @code{"/etc/opensnitchd/rules/"}) (type: string)
+Directory where firewall rules are stored.
+
+@item @code{rules-enable-checksums?} (default: @code{#f}) (type: boolean)
+Whether to enable checksums for rules.
+
+@item @code{ebpf-events-workers} (default: @code{8}) (type: integer)
+Number of eBPF event worker threads.
+
+@item @code{ebpf-queue-events-size} (default: @code{0}) (type: integer)
+Size of the eBPF events queue (0 = default).
+
+@item @code{stats-max-events} (default: @code{250}) (type: integer)
+Maximum number of events to keep in statistics.
+
+@item @code{stats-max-stats} (default: @code{25}) (type: integer)
+Maximum number of statistics entries.
+
+@item @code{stats-workers} (default: @code{6}) (type: integer)
+Number of statistics worker threads.
+
+@item @code{internal-gc-percent} (default: @code{100}) (type: integer)
+Go garbage collector percentage.
+
+@item @code{internal-flush-conns-on-start?} (default: @code{#t}) (type: boolean)
+Whether to flush existing connections on daemon start.
+@end table
+@end deftp
+
 @cindex resize-file-system
 @subsubheading Resize File System Service
 

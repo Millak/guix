@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 muradm <mail@muradm.net>
+;;; Copyright © 2025 Danny Milosavljevic <dannym@friendly-machines.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,8 +20,10 @@
 (define-module (gnu tests security)
   #:use-module (guix gexp)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages linux)
   #:use-module (gnu services)
   #:use-module (gnu services base)
+  #:use-module (gnu services opensnitch)
   #:use-module (gnu services security)
   #:use-module (gnu services ssh)
   #:use-module (gnu system)
@@ -28,7 +31,8 @@
   #:use-module (gnu tests)
   #:export (%test-fail2ban-basic
             %test-fail2ban-extension
-            %test-fail2ban-simple))
+            %test-fail2ban-simple
+            %test-opensnitch))
 
 
 ;;;
@@ -238,3 +242,85 @@
    (name "fail2ban-extension")
    (description "Test extension fail2ban running capability.")
    (value (run-fail2ban-extension-test))))
+
+
+;;;
+;;; OpenSnitch tests
+;;;
+
+(define (run-opensnitch-test)
+  (define os
+    (marionette-operating-system
+     (simple-operating-system
+      (service opensnitch-service-type)
+      (service static-networking-service-type
+               (list %qemu-static-networking)))
+     #:imported-modules '((gnu services herd))))
+
+  (define vm
+    (virtual-machine
+     (operating-system os)
+     (port-forwardings '())))
+
+  (define test
+    (with-imported-modules '((gnu build marionette)
+                             (guix build utils))
+      #~(begin
+          (use-modules (srfi srfi-64)
+                       (gnu build marionette))
+
+          (define marionette (make-marionette (list #$vm)))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "opensnitch")
+
+          (test-assert "opensnitch running"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (start-service 'opensnitch))
+             marionette))
+
+          (test-assert "opensnitch log file"
+            (marionette-eval
+             '(file-exists? "/var/log/opensnitchd.log")
+             marionette))
+
+          (test-assert "opensnitch rules directory"
+            (marionette-eval
+             '(file-exists? "/etc/opensnitchd/rules")
+             marionette))
+
+          (test-assert "opensnitch process running"
+            (marionette-eval
+             `(zero? (system* ,#$(file-append procps "/bin/pgrep")
+                              "-x" "opensnitchd"))
+             marionette))
+
+          (test-assert "opensnitch running after restart"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (restart-service 'opensnitch))
+             marionette))
+
+          (test-assert "opensnitch process running after restart"
+            (marionette-eval
+             `(let loop ((tries 0))
+                (if (zero? (system* ,#$(file-append procps "/bin/pgrep")
+                                    "-x" "opensnitchd"))
+                    #t
+                    (if (< tries 30)
+                        (begin (sleep 1) (loop (+ tries 1)))
+                        #f)))
+             marionette))
+
+          (test-end))))
+
+  (gexp->derivation "opensnitch-test" test))
+
+(define %test-opensnitch
+  (system-test
+   (name "opensnitch")
+   (description "Test OpenSnitch application firewall daemon.")
+   (value (run-opensnitch-test))))
