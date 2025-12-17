@@ -1028,6 +1028,12 @@ When using this option, you only need to create one user account, and
           --system guix-daemon
 @end example
 
+@quotation Warning
+If the @command{nologin} binary is not found by @command{which nologin},
+you may need to specify its path manually.  This will usually be
+@file{/sbin/nologin} or @file{/usr/sbin/nologin}.
+@end quotation
+
 In this configuration, @file{/gnu/store} is owned by the
 @code{guix-daemon} user.
 
