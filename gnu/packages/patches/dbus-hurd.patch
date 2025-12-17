@@ -1,0 +1,42 @@
+Taken from
+https://gitlab.freedesktop.org/dbus/dbus/-/commit/9a2ccd09c089a7c8fc1adb908d3a71586061cfa3
+
+From 5d7b87496f3bb094b926692036ae656c31efdd8e Mon Sep 17 00:00:00 2001
+From: Simon McVittie <smcv@collabora.com>
+Date: Mon, 9 Dec 2024 23:22:17 +0000
+Subject: [PATCH] sysdeps: Don't check for PROC_SUPER_MAGIC if it isn't defined
+
+Debian GNU/Hurd has fstatfs() but not PROC_SUPER_MAGIC.
+
+Resolves: https://gitlab.freedesktop.org/dbus/dbus/-/issues/539
+Bug-Debian: https://bugs.debian.org/1089641
+Signed-off-by: Simon McVittie <smcv@collabora.com>
+---
+ dbus/dbus-file-unix.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/dbus/dbus-file-unix.c b/dbus/dbus-file-unix.c
+index d5fa029e8..19228a958 100644
+--- a/dbus/dbus-file-unix.c
++++ b/dbus/dbus-file-unix.c
+@@ -66,7 +66,7 @@ _dbus_file_get_contents (DBusString       *str,
+ {
+   int fd;
+   struct stat sb;
+-#ifdef HAVE_FSTATFS
++#if defined(HAVE_FSTATFS) && defined(PROC_SUPER_MAGIC)
+   struct statfs sfs;
+ #endif
+   int orig_len;
+@@ -119,7 +119,7 @@ _dbus_file_get_contents (DBusString       *str,
+   /* procfs has different semantics - most files are 0 size,
+    * we can do only one read, and at most we can read 4M.
+    */
+-#ifdef HAVE_FSTATFS
++#if defined(HAVE_FSTATFS) && defined(PROC_SUPER_MAGIC)
+   if (sb.st_size == 0)
+     {
+       if (fstatfs(fd, &sfs) < 0)
+-- 
+GitLab
+

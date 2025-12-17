@@ -147,6 +147,13 @@
          "--sysconfdir=/etc")
       #:phases
       #~(modify-phases %standard-phases
+          #$@(if (target-hurd?)
+                 #~((add-after 'unpack 'patch-hurd
+                      (lambda _
+                        (let ((patch #$(local-file
+                                        (search-patch "dbus-hurd.patch"))))
+                          (invoke "patch" "--force" "-p1" "-i" patch)))))
+                 #~())
           (replace 'install
             (lambda _
               ;; Don't try to create /var and /etc.

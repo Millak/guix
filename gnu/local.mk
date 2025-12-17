@@ -1166,6 +1166,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/dbacl-icheck-multiple-definitions.patch	\
   %D%/packages/patches/dblatex-inkscape-1.0.patch		\
   %D%/packages/patches/dbus-helper-search-path.patch		\
+  %D%/packages/patches/dbus-hurd.patch				\
   %D%/packages/patches/dbus-c++-gcc-compat.patch		\
   %D%/packages/patches/dbus-c++-threading-mutex.patch		\
   %D%/packages/patches/ddd-build.patch				\
