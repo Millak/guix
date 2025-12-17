@@ -13265,6 +13265,11 @@ be a list of keywords with values accepted by procedure
 @end example
 @end deffn
 
+@deffn {REPL command} graft? @var{graft?}
+Set whether grafts should be performed as part of the build.  Equivalent
+to @code{--no-grafts} argument to @code{guix build}.
+@end deffn
+
 @deffn {REPL command} lower @var{object}
 Lower @var{object} into a derivation or store file name and return it.
 @end deffn

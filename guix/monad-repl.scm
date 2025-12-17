@@ -149,6 +149,11 @@ Must be a list of keywords with values accepted by procedure
   (repl-print repl %build-options)
   (set! %build-options (repl-eval repl opts)))
 
+(define-meta-command ((graft? guix) repl (graft?))
+  "build-graft GRAFT?
+Set whether grafts should be performed."
+  (%graft? (repl-eval repl graft?)))
+
 (define-meta-command ((enter-store-monad guix) repl)
   "enter-store-monad
 Enter a REPL for values in the store monad."
