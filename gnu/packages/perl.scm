@@ -4658,6 +4658,55 @@ SHA-3 message digest algorithm for use by Perl programs.")
 modules separately and deal with them after the module is done installing.")
     (license (package-license perl))))
 
+(define-public perl-reply
+  (package
+    (name "perl-reply")
+    (version "0.42")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/D/DO/DOY/Reply-" version
+                           ".tar.gz"))
+       (sha256
+        (base32 "1wkrmc1ksy4zdribj305mmwmsvc2x9283979qh8awm3slx2jmnja"))))
+    (build-system perl-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-reply-command
+            (lambda _
+              (wrap-program (string-append #$output "/bin/reply")
+                `("PERL5LIB" ":" prefix
+                  (,(getenv "PERL5LIB")
+                   ,(string-append #$output "/lib/perl5/site_perl")))))))))
+    (native-inputs (list bash-minimal)) ;for wrap-program
+    (inputs
+     (list perl-app-nopaste
+           perl-b-keywords
+           perl-carp-always
+           perl-class-refresh
+           perl-config-ini-reader-ordered
+           perl-data-dump
+           perl-data-printer
+           perl-eval-closure
+           perl-file-homedir
+           perl-io-pager
+           perl-module-runtime
+           perl-package-stash
+           perl-padwalker
+           perl-proc-invokeeditor
+           perl-term-readline-gnu
+           perl-termreadkey
+           perl-try-tiny))
+    (home-page "https://metacpan.org/release/Reply")
+    (synopsis "Read-Eval-Print Loop (REPL) for Perl")
+    (description "Reply is a lightweight, extensible REPL for Perl.
+It is plugin-based (see Reply::Plugin), and through plugins supports many
+advanced features such as coloring and pretty printing, readline support, and
+pluggable commands.")
+    (license license:x11)))
+
 (define-public perl-sort-versions
   (package
     (name "perl-sort-versions")
