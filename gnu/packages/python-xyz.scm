@@ -16770,27 +16770,45 @@ structures.")
     (license license:epl1.0)))
 
 (define-public python-pulp
-  ;; When updating, check snakemake@N builds still fine, see:
-  ;; <https://codeberg.org/guix/guix/issues/4782>.
   (package
     (name "python-pulp")
-    (version "2.4")
+    (version "3.3.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "PuLP" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/coin-or/pulp")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1dammrg0f1v0r028i3rpxbf2bsyxmjq0q6ihb4x2wsdki44z3bxj"))))
+        (base32 "1vagp2xg4kl7swrd7snf1dlrj5mgccbascy30j4zncvi9cplyxfk"))
+       (snippet
+        #~(begin
+            ;; The solverdir contains several binaries; use the Guix cbc
+            ;; package instead.
+            (use-modules (guix build utils))
+            (delete-file-recursively "pulp/solverdir")))))
     (build-system pyproject-build-system)
     (arguments
-     ;; TODO: They need a special setup, see:
-     ;; <https://codeberg.org/guix/guix/pulls/4908>.
-     (list #:tests? #f))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-system-cbc
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "pyproject.toml"
+                ;; Do not copy the binaries.
+                ((".*solverdir.*") ""))
+              (let ((cbc (search-input-file inputs "/bin/cbc")))
+                ;; PuLP default points to pulp/solverdir/../cbc,
+                ;; use cbc from Guix instead.
+                (substitute* "pulp/apis/coin_api.py"
+                  ((".*solverdir.*")
+                   (string-append "    r\"" cbc "\"\n")))))))))
     (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-amply))
+     (list python-pytest
+           python-setuptools))
+    (inputs
+     (list cbc))   ;TODO: Add more solvers? Like highs
     (home-page "https://github.com/coin-or/pulp")
     (synopsis "Linear Programming modeler")
     (description
