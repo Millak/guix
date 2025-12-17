@@ -18689,15 +18689,26 @@ cases include:
   (package
    (name "python-mappy")
    (version "2.24")
-   (source (origin
-            (method url-fetch)
-            (uri (pypi-uri "mappy" version))
-            (sha256
-             (base32
-              "1ycszza87p9qvx8mis9v1hry0ac465x1xcxbsn1k45qlxxrzp8im"))))
-   (build-system python-build-system)
+   (source
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+             (url "https://github.com/lh3/minimap2")
+             (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "0k658659ivxk2xnyawrfqdhcji6a3xcqdr5a9r5myzb2ivypnjmh"))))
+   (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags
+      #~(list "-c" (string-append "import mappy;"
+                                 " print(mappy.revcomp("
+                                 "mappy.Aligner('test/MT-human.fa')"
+                                 ".seq('MT_human', 100, 200)))"))))
    (native-inputs
-    (list python-cython))
+    (list python-cython python-setuptools))
    (inputs
     (list zlib))
    (home-page "https://github.com/lh3/minimap2")
