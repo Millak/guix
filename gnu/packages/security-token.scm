@@ -475,7 +475,7 @@ authentication, encryption and digital signatures.  OpenSC implements the PKCS
 (define-public pkcs11-helper
   (package
     (name "pkcs11-helper")
-    (version "1.30.0")
+    (version "1.31.0")
     (source
      (origin
        (method url-fetch)
@@ -483,7 +483,7 @@ authentication, encryption and digital signatures.  OpenSC implements the PKCS
              "https://github.com/OpenSC/pkcs11-helper/releases/download/pkcs11-helper-"
              version "/pkcs11-helper-" version ".tar.bz2"))
        (sha256
-        (base32 "1ac86jfj4qfwzbvsg6l9r4w4bbwxj2i9qi4dy1nz5aqcj6x1an2c"))))
+        (base32 "1ygy6ca87fx89js804pwnqpybfbja5vwm2wbz0l2rgnprixhdw26"))))
     (build-system gnu-build-system)
     (inputs (list openssl pcsc-lite))
     (native-inputs (list pkg-config))
