@@ -73,16 +73,3 @@ simple tools through complex programming languages.
 
 Bison also provides an implementation of @command{yacc}, as specified by POSIX.")
     (license gpl3+)))
-
-(define-public bison-3.0
-  (package
-    (inherit bison)
-    (version "3.0.5")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnu/bison/bison-"
-                          version ".tar.xz"))
-      (sha256
-       (base32
-        "0f7kjygrckkx8vas2nm673592jif0a9mw5g8207f6hj6h4pfyp07"))))))
