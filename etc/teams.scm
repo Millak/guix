@@ -977,14 +977,13 @@ release."
         #:name "Crypto team"
         #:description
         "Secrets, passwords, cryptography and security related packages."
-        #:scope (list
-                 "gnu/packages/crypto.scm"
-                 "gnu/packages/gnupg.scm"
-                 "gnu/packages/nettle.scm"
-                 "gnu/packages/password-utils.scm"
-                 "gnu/packages/security-token.scm"
-                 "gnu/packages/ssh.scm"
-                 "gnu/packages/tls.scm")))
+        #:scope (list (make-regexp* "^gnu/packages/(.*-|)crypto\\.scm$")
+                      "gnu/packages/gnupg.scm"
+                      "gnu/packages/nettle.scm"
+                      "gnu/packages/password-utils.scm"
+                      "gnu/packages/security-token.scm"
+                      "gnu/packages/ssh.scm"
+                      "gnu/packages/tls.scm")))
 
 (define-team science
   (team 'science

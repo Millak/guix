@@ -129,7 +129,7 @@ guix/build/gnu-build-system\.scm                   @guix/core-packages
 guix/build/utils\.scm                              @guix/core-packages
 guix/build-system/gnu\.scm                         @guix/core-packages
 
-gnu/packages/crypto\.scm                           @guix/crypto
+gnu/packages/(.*-|)crypto\.scm$                    @guix/crypto
 gnu/packages/gnupg\.scm                            @guix/crypto
 gnu/packages/nettle\.scm                           @guix/crypto
 gnu/packages/password-utils\.scm                   @guix/crypto
