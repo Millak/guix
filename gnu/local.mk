@@ -971,11 +971,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/adb-add-libraries.patch			\
   %D%/packages/patches/adb-libssl_11-compatibility.patch	\
   %D%/packages/patches/accountsservice-extensions.patch		\
-  %D%/packages/patches/aegis-constness-error.patch         	\
-  %D%/packages/patches/aegis-perl-tempdir1.patch           	\
-  %D%/packages/patches/aegis-perl-tempdir2.patch           	\
-  %D%/packages/patches/aegis-test-fixup-1.patch            	\
-  %D%/packages/patches/aegis-test-fixup-2.patch            	\
   %D%/packages/patches/aegisub-icu59-include-unistr.patch	\
   %D%/packages/patches/aegisub-boost68.patch			\
   %D%/packages/patches/aegisub-boost81.patch			\
