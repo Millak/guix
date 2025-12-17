@@ -45,7 +45,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages audio)
@@ -68,6 +68,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages pkg-config)
@@ -329,30 +330,34 @@ command-line interface.  In addition, it is possible to use named sources and
 sinks.")
     (license l:expat)))
 
+;; XXX: The project is potentially abandoned, consider to remove when stops
+;; building, see: <https://github.com/GeorgeFilipkin/pulsemixer/issues/65>.
 (define-public pulsemixer
   (package
     (name "pulsemixer")
     (version "1.5.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/GeorgeFilipkin/pulsemixer")
-                     (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1jagx9zmz5pfsld8y2rj2kqg6ww9f6vqiawfy3vhqc49x3xx92p4"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/GeorgeFilipkin/pulsemixer")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jagx9zmz5pfsld8y2rj2kqg6ww9f6vqiawfy3vhqc49x3xx92p4"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((pulse (assoc-ref inputs "pulseaudio")))
-               (substitute* "pulsemixer"
-                 (("libpulse.so.0")
-                  (string-append pulse "/lib/libpulse.so.0")))
-               #t))))))
+     (list
+      #:tests? #f ;no tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "pulsemixer"
+                (("libpulse.so.0")
+                 (search-input-file inputs "/lib/libpulse.so.0"))))))))
+    (native-inputs
+     (list python-setuptools))
     (inputs
      (list pulseaudio))
     (home-page "https://github.com/GeorgeFilipkin/pulsemixer/")
