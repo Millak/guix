@@ -469,23 +469,19 @@ program.")
   (package
     (name "autorandr")
     (version "1.15")
-    (home-page "https://github.com/phillipberndt/autorandr")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url home-page)
-             (commit version)))
+              (url "https://github.com/phillipberndt/autorandr")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1n4cmgisk1p199zny8zrdpfrbakchd6pvpkp9vzqqdw2f75iylzh"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list xrandr libxcb))
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? #f ;no tests
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'configure
@@ -508,6 +504,13 @@ program.")
                       "BASH_COMPLETIONS_DIR=etc/bash_completion.d"
                       "install"
                       "TARGETS=autorandr launcher manpage bash_completion"))))))
+    (native-inputs
+     (list pkg-config
+           python-setuptools))
+    (inputs
+     (list xrandr
+           libxcb))
+    (home-page "https://github.com/phillipberndt/autorandr")
     (synopsis "Auto-detect connected displays and load appropriate setup")
     (description "Autorandr wraps around xrandr to help with X11
 multi-screen configuration management.  It allows the user to create profiles
