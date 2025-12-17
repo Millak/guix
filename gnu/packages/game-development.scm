@@ -570,23 +570,26 @@ types (revolute, prismatic, wheel, etc.).")
     (license license:zlib)))
 
 (define-public python-anvil-parser
-  (let ((commit "27544bb41f035617be130a209a84371cbaf837cc")
+  ;; Github project does not have tags.
+  (let ((commit "91a7eda55f0fb55a948d1072896430c29d906809")
         (revision "0"))
   (package
     (name "python-anvil-parser")
-    (version (git-version "0.9.0" revision commit))
+    (version (git-version "0.10.6" revision commit))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/0xTiger/anvil-parser")
+             (url "https://github.com/0xTiger/anvil-parser2")
              (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "196nli36pz4sllx1m8jlys661hgbxhcxr2c4545fqb4nd27hhwy7"))))
-    (build-system python-build-system)
+        (base32 "16j7kv6v782nz1fafkxkb7v2vpwfhpi1a66ak04xawg9h1fz7vkc"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools))
     (propagated-inputs (list python-frozendict python-nbt))
-    (home-page "https://github.com/0xTiger/anvil-parser")
+    (home-page "https://github.com/0xTiger/anvil-parser2")
     (synopsis "Anvil file format parser")
     (description "This package provides an Anvil file format parser.")
     (license license:expat))))
