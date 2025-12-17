@@ -18687,36 +18687,36 @@ cases include:
 
 (define-public python-mappy
   (package
-   (name "python-mappy")
-   (version "2.24")
-   (source
-    (origin
-      (method git-fetch)
-      (uri (git-reference
-             (url "https://github.com/lh3/minimap2")
-             (commit (string-append "v" version))))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32 "0k658659ivxk2xnyawrfqdhcji6a3xcqdr5a9r5myzb2ivypnjmh"))))
-   (build-system pyproject-build-system)
+    (name "python-mappy")
+    (version "2.24")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lh3/minimap2")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k658659ivxk2xnyawrfqdhcji6a3xcqdr5a9r5myzb2ivypnjmh"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:test-backend #~'custom
       #:test-flags
       #~(list "-c" (string-append "import mappy;"
-                                 " print(mappy.revcomp("
-                                 "mappy.Aligner('test/MT-human.fa')"
-                                 ".seq('MT_human', 100, 200)))"))))
-   (native-inputs
-    (list python-cython python-setuptools))
-   (inputs
-    (list zlib))
-   (home-page "https://github.com/lh3/minimap2")
-   (synopsis "Python binding for minimap2")
-   (description "This package provides a convenient interface to minimap2,
+                                  " print(mappy.revcomp("
+                                  "mappy.Aligner('test/MT-human.fa')"
+                                  ".seq('MT_human', 100, 200)))"))))
+    (native-inputs
+     (list python-cython python-setuptools))
+    (inputs
+     (list zlib))
+    (home-page "https://github.com/lh3/minimap2")
+    (synopsis "Python binding for minimap2")
+    (description "This package provides a convenient interface to minimap2,
 a fast and accurate C program to align genomic and transcribe nucleotide
 sequences.")
-   (license license:expat)))
+    (license license:expat)))
 
 (define-public miniasm
   (package
