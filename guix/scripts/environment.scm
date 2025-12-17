@@ -828,7 +828,13 @@ WHILE-LIST."
      (let* ((cwd      (getcwd))
             (home     (getenv "HOME"))
             (uid      (if user 1000 (getuid)))
-            (gid      (if user 1000 (getgid)))
+            (gid      (if user
+                          1000
+                          ;; When running as root, always map a non-zero GID
+                          ;; or writing to 'gid_map' would fail with EPERM.
+                          (match (getgid)
+                            (0 1000)
+                            (gid gid))))
 
             ;; On a foreign distro, the name service switch might be
             ;; dysfunctional and 'getpwuid' throws.  Don't let that hamper
