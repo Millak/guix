@@ -4356,38 +4356,38 @@ arbitrary parameters.")
                        (binaries (find-files bindir))
                        (wrap.pl (lambda (scripts keys)
                                   (for-each
-                                    (lambda (script)
-                                        (wrap-program script
-                                          `("PERL5LIB" ":" prefix
-                                             ,(cons*
-                                                (getenv "PERL5LIB")
-                                                (string-append #$output
-                                                               "/lib/perl5/site_perl")
-                                                (map
-                                                  (lambda (key)
-                                                    (string-append
-                                                      (assoc-ref inputs key)
-                                                      "/lib/perl5/site_perl"))
-                                                 keys)))))
-                                        scripts))))
+                                   (lambda (script)
+                                     (wrap-program script
+                                       `("PERL5LIB" ":" prefix
+                                         ,(cons*
+                                           (getenv "PERL5LIB")
+                                           (string-append #$output
+                                                          "/lib/perl5/site_perl")
+                                           (map
+                                            (lambda (key)
+                                              (string-append
+                                               (assoc-ref inputs key)
+                                               "/lib/perl5/site_perl"))
+                                            keys)))))
+                                   scripts))))
 
-                        (wrap.pl binaries
-                               (list "perl-app-nopaste"
-                                     "perl-b-keywords"
-                                     "perl-data-dump-streamer"
-                                     "perl-data-dumper-concise"
-                                     "perl-file-next"
-                                     "perl-lexical-persistence"
-                                     "perl-module-refresh"
-                                     "perl-module-runtime"
-                                     "perl-moose"
-                                     "perl-moosex-getopt"
-                                     "perl-moosex-object-pluggable"
-                                     "perl-namespace-autoclean"
-                                     "perl-ppi"
-                                     "perl-ppi-xs"
-                                     "perl-sys-sigaction"
-                                     "perl-task-weaken"))))))))
+                  (wrap.pl binaries
+                           (list "perl-app-nopaste"
+                                 "perl-b-keywords"
+                                 "perl-data-dump-streamer"
+                                 "perl-data-dumper-concise"
+                                 "perl-file-next"
+                                 "perl-lexical-persistence"
+                                 "perl-module-refresh"
+                                 "perl-module-runtime"
+                                 "perl-moose"
+                                 "perl-moosex-getopt"
+                                 "perl-moosex-object-pluggable"
+                                 "perl-namespace-autoclean"
+                                 "perl-ppi"
+                                 "perl-ppi-xs"
+                                 "perl-sys-sigaction"
+                                 "perl-task-weaken"))))))))
     (native-inputs (list perl-test-fatal))
     (inputs (list bash-minimal
                   perl-app-nopaste
