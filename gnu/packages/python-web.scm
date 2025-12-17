@@ -8754,9 +8754,13 @@ for httplib2 transport.")
        (uri (pypi-uri "google-auth-oauthlib" version))
        (sha256
         (base32 "1yvsjd1vh440nsh9vpnig23sq4k1ia749x5g1dwm7r4110xqrsl3"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-google-auth python-requests-oauthlib))
-    (native-inputs (list python-flask))
+    (native-inputs
+     (list python-flask
+           python-pytest
+           python-mock
+           python-setuptools))
     (home-page
      "https://github.com/GoogleCloudPlatform/google-auth-library-python-oauthlib")
     (synopsis "Google Authentication Library: oauthlib")
