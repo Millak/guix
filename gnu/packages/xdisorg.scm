@@ -437,7 +437,7 @@ window) or a native DRM session.  It is agnostic of the rendering API (Vulkan
                   (substitute* "setup.py"
                     (("gzip\\.open\\(gzfile, 'w', 9\\)")
                      "gzip.GzipFile('', 'wb', 9, open(gzfile, 'wb'), 0.)"))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -454,7 +454,7 @@ window) or a native DRM session.  It is agnostic of the rendering API (Vulkan
                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))
        #:tests? #f)) ;no tests
     (inputs (list bash-minimal gtk+ python-pycairo python-pygobject xrandr))
-    (native-inputs (list gettext-minimal python-docutils))
+    (native-inputs (list gettext-minimal python-docutils python-setuptools))
     (home-page "https://christian.amsuess.com/tools/arandr/")
     (synopsis "Another RandR graphical user interface")
     ;; TRANSLATORS: "X11 resize-and-rotate" should not be translated.
