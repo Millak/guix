@@ -1055,18 +1055,19 @@ devices.")
 (define-public ausweisapp
   (package
     (name "ausweisapp")
-    (version "2.3.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/Governikus/AusweisApp/releases"
-                                  "/download/" version "/AusweisApp-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0d6zc9vz6g37a6vkb4jzwcrh77q217nbr5mvj9vqkvqhkzwwfkgb"))))
-
+    (version "2.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Governikus/AusweisApp/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fm98wzf3l498yjg8y6p4rp3c0i7b1fpabka9j22xvx3hjfw5jxw"))))
     (build-system qt-build-system)
     (native-inputs
-     (list pkg-config qttools))
+     (list qttools pkg-config python-wrapper))
     (inputs
      (list qtbase
            qtsvg
@@ -1079,15 +1080,17 @@ devices.")
            openssl
            eudev))
     (arguments
-     `(#:qtbase ,qtbase
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
-             (when tests? (invoke "ctest" "--output-on-failure" "-j"
-                                  (if parallel-tests?
-                                      (number->string (parallel-job-count))
-                                      "1"))))))))
+     (list
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ctest" "--output-on-failure" "-j"
+                        (if parallel-tests?
+                            (number->string (parallel-job-count))
+                            "1"))))))))
     (home-page "https://github.com/Governikus/AusweisApp")
     (synopsis
      "Authentication program for German ID cards and residence permits")
