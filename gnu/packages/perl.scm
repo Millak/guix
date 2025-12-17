@@ -4680,9 +4680,9 @@ modules separately and deal with them after the module is done installing.")
                 `("PERL5LIB" ":" prefix
                   (,(getenv "PERL5LIB")
                    ,(string-append #$output "/lib/perl5/site_perl")))))))))
-    (native-inputs (list bash-minimal)) ;for wrap-program
     (inputs
-     (list perl-app-nopaste
+     (list bash-minimal                 ;for wrap-program
+           perl-app-nopaste
            perl-b-keywords
            perl-carp-always
            perl-class-refresh
