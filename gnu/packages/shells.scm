@@ -771,8 +771,8 @@ operating system.")
       (license license:bsd-3))))
 
 (define-public linenoise
-  (let ((commit "93b2db9bd4968f76148dd62cdadf050ed50b84b3")
-        (revision "2"))
+  (let ((commit "e26268de5e56bfaad773786471844578fe9f7f4b")
+        (revision "3"))
     (package
       (name "linenoise")
       (version (string-append "1.0-" revision "." (string-take commit 7)))
@@ -785,7 +785,7 @@ operating system.")
          (file-name (string-append name "-" version "-checkout"))
          (sha256
           (base32
-           "102gwq6bzjq2b1lf55wrpgym58yfhry56hkajbj339m0bs1xijhs"))))
+           "1pwil7pv6zqmy5l0r0hcr5gw25d8vrlh2sc9n5bv8vj3abg64zqs"))))
       (build-system gnu-build-system)
       (arguments
        `(#:tests? #f                    ; no tests are included
