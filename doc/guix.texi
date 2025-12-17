@@ -769,33 +769,24 @@ This section only applies to systems without Guix.  Following it for
 existing Guix installations will overwrite important system files.
 @end quotation
 
-Some GNU/Linux distributions, such as Debian, Ubuntu, and openSUSE
-provide Guix through their own package managers.  The version of Guix
-may be older than @value{VERSION} but you can update it afterwards by
-running @samp{guix pull}.
+Some GNU/Linux distributions, such as openSUSE, Alpine and NixOS provide
+Guix through their own package managers.  The version of Guix may be
+older than @value{VERSION} but you can update it afterwards by running
+@samp{guix pull}.
 
 We advise system administrators who install Guix, both from the
 installation script or @i{via} the native package manager of their
 foreign distribution, to also regularly read and follow security
 notices, as shown by @command{guix pull}.
 
-For Debian or derivatives such as Ubuntu or Trisquel, call:
-
-@example
-sudo apt install guix
-@end example
-
-Likewise, on openSUSE:
-
-@example
-sudo zypper install guix
-@end example
-
 If you are running Parabola, after enabling the pcr (Parabola
 Community Repo) repository, you can install Guix with:
 @example
 sudo pacman -S guix
 @end example
+
+For other package managers with a @var{guix} package, you should be able
+to install it like any other package.
 
 The Guix project also provides a shell script, @file{guix-install.sh},
 which automates the binary installation process without use of a foreign
