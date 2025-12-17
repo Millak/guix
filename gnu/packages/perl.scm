@@ -1255,6 +1255,26 @@ algorithm to keep the most used entries in the cache.")
  for parsing @samp{.ini} files that returns the sections in order.")
     (license license:perl-license)))
 
+(define-public perl-devel-overrideglobalrequire
+  (package
+    (name "perl-devel-overrideglobalrequire")
+    (version "0.001")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/D/DA/DAGOLDEN/Devel-OverrideGlobalRequire-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "1yayg0838b58dqg8acahhw885s0yvchjyf2fm7s2ladfwcnqk487"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Devel-OverrideGlobalRequire")
+    (synopsis "Override CORE::GLOBAL::require safely")
+    (description "This module overrides @code{CORE::GLOBAL::require}
+with a code reference in a way that plays nice with any existing overloading
+and ensures the right calling package is in scope.")
+    (license license:perl-license)))
+
 (define-public perl-file-map
   (package
     (name "perl-file-map")
