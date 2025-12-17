@@ -15,7 +15,7 @@
 ;;; Copyright © 2016 Ivan Vilata i Balaguer <ivan@selidor.net>
 ;;; Copyright © 2017 Mekeor Melire <mekeor.melire@gmail.com>
 ;;; Copyright © 2017, 2019, 2020 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2017, 2020, 2021 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2017, 2020, 2021, 2025 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <contact@parouby.fr>
 ;;; Copyright © 2018, 2019 Meiyo Peng <meiyo@riseup.net>
@@ -2190,7 +2190,7 @@ limited size and a few external dependencies.  It is configurable via
 (define-public niri
   (package
    (name "niri")
-   (version "25.08")
+   (version "25.11")
    (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -2199,7 +2199,7 @@ limited size and a few external dependencies.  It is configurable via
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "09nsxd211mly8r1ys2lq6ia4jxgb980h1axrbgw748r0knfbbj7n"))))
+               "0752qm245wc2gak0jhp0fnr0rdj3z54m2h97k3cxbjym9pcn658n"))))
    (build-system cargo-build-system)
    (arguments
     (list #:install-source? #f
