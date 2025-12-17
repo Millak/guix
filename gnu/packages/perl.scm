@@ -1214,6 +1214,27 @@ processes can safely access the cache at the same time.  It uses a basic LRU
 algorithm to keep the most used entries in the cache.")
     (license (package-license perl))))
 
+(define-public perl-class-refresh
+  (package
+    (name "perl-class-refresh")
+    (version "0.07")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/D/DO/DOY/Class-Refresh-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1cxyshgxpk98icwws2jpgix6m53qsn43c8izxqm5mcybam9h7c73"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-test-fatal perl-test-requires))
+    (propagated-inputs (list perl-class-load perl-class-unload
+                             perl-devel-overrideglobalrequire perl-try-tiny))
+    (home-page "https://metacpan.org/release/Class-Refresh")
+    (synopsis "Perl library for refreshing classes at runtime")
+    (description "This package provides a Perl library that allows
+ refreshing classes at runtime.")
+    (license license:perl-license)))
+
 (define-public perl-file-map
   (package
     (name "perl-file-map")
