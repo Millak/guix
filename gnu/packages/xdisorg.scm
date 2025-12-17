@@ -735,7 +735,9 @@ state.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "0057988l5l7pmwg7dp6cqvj5l4lr0g5z3wq189g6kz36l9rmh675"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
+      (arguments '(#:tests? #f))        ;no test
+      (native-inputs (list python-setuptools))
       (synopsis "XKB layout template generator")
       (description "xkblayout is a CLI application to generate templates for
 a new XKB layout, either in the user's home directory or the system directory.")
