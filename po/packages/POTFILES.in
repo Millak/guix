@@ -77,7 +77,6 @@ gnu/packages/conky.scm
 gnu/packages/connman.scm
 gnu/packages/containers.scm
 gnu/packages/convmv.scm
-gnu/packages/cook.scm
 gnu/packages/coq.scm
 gnu/packages/cpio.scm
 gnu/packages/cpp.scm

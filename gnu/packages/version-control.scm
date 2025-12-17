@@ -110,7 +110,6 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
-  #:use-module (gnu packages cook)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
