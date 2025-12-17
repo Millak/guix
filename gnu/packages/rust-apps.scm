@@ -45,6 +45,7 @@
 ;;; Copyright © 2025 Samuel Sehnert <mail@buffersquid.com>
 ;;; Copyright © 2025 Julian Flake <julian@flake.de>
 ;;; Copyright © 2025 Ahmad Jarara <ajarara@fastmail.com>
+;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1179,13 +1180,13 @@ JSON, so you have a lot of control over the search and cleanup process.")
                 (unless #$(%current-target-system)
                   (invoke "make" "completions")
                   (install-file "autocomplete/fd.bash"
-                                (string-append out "/etc/bash_completion.d"))
+                                (string-append out "/share/bash-completion/completions"))
                   (install-file "autocomplete/fd.fish"
                                 (string-append out "/share/fish/vendor_completions.d"))
                   (install-file "autocomplete/_fd"
                                 (string-append out "/share/zsh/site-functions"))
-                  (rename-file (string-append out "/etc/bash_completion.d/fd.bash")
-                               (string-append out "/etc/bash_completion.d/fd")))))))))
+                  (rename-file (string-append out "/share/bash-completion/completions/fd.bash")
+                               (string-append out "/share/bash-completion/completions/fd")))))))))
      (inputs (cons jemalloc (cargo-inputs 'fd)))
      (home-page "https://github.com/sharkdp/fd")
      (synopsis "Simple, fast and user-friendly alternative to find")
