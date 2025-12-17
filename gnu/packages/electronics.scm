@@ -348,6 +348,44 @@ supporting gerber, excellon and g-code.  It is part of the RiNgDove EDA
 suite.")
     (license license:gpl2+)))
 
+(define-public charlib
+  (package
+    (name "charlib")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/stineje/CharLib")
+             (commit version)))
+       (sha256
+        (base32 "0phklm6wcpvwdfx00k0q8qvpvdqf6wjvzirkfji7vc7ils7wz2sl"))
+       (file-name (git-file-name name version))))
+    (build-system pyproject-build-system)
+    (inputs
+     (list ngspice
+           pyspice
+           python-liberty-parser
+           python-matplotlib
+           python-numpy
+           python-ply
+           python-pyyaml
+           python-requests
+           python-schema
+           python-scipy
+           python-tqdm))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-setuptools))
+    (home-page "https://stineje.github.io/CharLib")
+    (synopsis "CMOS standard-cell characterization")
+    (description
+     "@code{Charlib} is an @acronym{EDA, Electronic Design Automation} tool used to
+extract timing and power characteristics from CMOS combinational and sequential
+standard-cells.  It is compatible with @code{ngspice} and @code{Xyce}.")
+    (license license:gpl2)))
+
 (define-public ciel
   (package
     (name "ciel")
