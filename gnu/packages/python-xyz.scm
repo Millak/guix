@@ -8218,21 +8218,28 @@ cutting and pasting that code over and over.")
 (define-public python-roman
   (package
     (name "python-roman")
-    (version "3.3")
+    (version "5.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "roman" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zopefoundation/roman")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0gyp2bmw47jgpm8j64gydzqq838bgxz5gh6cm57lxlr7p26sqiic"))))
-    (build-system python-build-system)
+         "0zvg6pmv0yxm0b96dx104jzlxnsi3wy4swbj1lmc3mym5nahgp36"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/zopefoundation/roman")
     (synopsis "Integer to Roman numerals converter")
     (description
      "This package provides a small helper library to convert Arabic Numbers
 to Roman Numerals.")
-    (license license:psfl)))
+    (license license:zpl2.1)))
 
 (define-public python-rollbar
   (package
