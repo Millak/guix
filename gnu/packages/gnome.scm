@@ -10784,44 +10784,8 @@ desktop.  It supports multiple calendars, month, week and year view.")
 to perfectly fit the GNOME desktop.")
     (license license:gpl3+)))
 
-(define-public dialect
-  (package
-    (name "dialect")
-    (version "2.1.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/dialect-app/dialect")
-                    (commit version)
-                    (recursive? #t))) ;po module
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0wac9r33zslyhvadyj7iaapskk7f9pfvia7zlqfksfhkaji6gmna"))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:glib-or-gtk? #t))
-    (native-inputs (list blueprint-compiler
-                         desktop-file-utils
-                         `(,glib "bin")
-                         gettext-minimal
-                         gobject-introspection
-                         `(,gtk "bin")
-                         pkg-config))
-    (propagated-inputs (list gstreamer
-                             libadwaita
-                             libsoup
-                             python
-                             python-gtts
-                             python-pygobject
-                             python-requests))
-    (home-page "https://apps.gnome.org/app/app.drey.Dialect")
-    (synopsis "Translation application for GNOME")
-    (description
-     "Dialect is a simple translation application that uses Google Translate
-(default), LibreTranslate or Lingva Translate.  It includes features
-like automatic language detection, text-to-speech and clipboard buttons.")
-    (license license:gpl3+)))
+(define-deprecated/public-alias dialect
+  (@ (gnu packages gnome-circle) dialect))
 
 (define-public gnome-dictionary
   (package

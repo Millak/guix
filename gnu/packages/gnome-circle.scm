@@ -5,6 +5,7 @@
 ;;; Copyright © 2019, 2024, 2025 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
 ;;; Copyright © 2025 Noé Lopez <noelopez@free.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -45,6 +46,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages sqlite)
@@ -204,6 +206,45 @@ It uses pandoc as back-end for parsing Markdown.")
      "Déjà Dup is a simple backup tool, for regular encrypted backups.  It
 uses duplicity as the backend, which supports incremental backups and storage
 either on a local, or remote machine via a number of methods.")
+    (license license:gpl3+)))
+
+(define-public dialect
+  (package
+    (name "dialect")
+    (version "2.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dialect-app/dialect")
+                    (commit version)
+                    (recursive? #t))) ;po module
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0wac9r33zslyhvadyj7iaapskk7f9pfvia7zlqfksfhkaji6gmna"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:glib-or-gtk? #t))
+    (native-inputs (list blueprint-compiler
+                         desktop-file-utils
+                         `(,glib "bin")
+                         gettext-minimal
+                         gobject-introspection
+                         `(,gtk "bin")
+                         pkg-config))
+    (propagated-inputs (list gstreamer
+                             libadwaita
+                             libsoup
+                             python
+                             python-gtts
+                             python-pygobject
+                             python-requests))
+    (home-page "https://apps.gnome.org/app/app.drey.Dialect")
+    (synopsis "Translation application for GNOME")
+    (description
+     "Dialect is a simple translation application that uses Google Translate
+(default), LibreTranslate or Lingva Translate.  It includes features
+like automatic language detection, text-to-speech and clipboard buttons.")
     (license license:gpl3+)))
 
 (define-public gnome-authenticator
