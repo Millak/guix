@@ -36,6 +36,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages enchant)
+  #:use-module (gnu packages fonts)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -46,7 +47,10 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-compression)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rust)
@@ -54,6 +58,8 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
+  #:use-module (gnu packages xml)
+  #:use-module (gnu packages)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
@@ -337,6 +343,102 @@ It features:
 Aegis (encrypted / plain-text), andOTP, Google Authenticator
 @end itemize")
     (license license:gpl3+)))
+
+(define-public komikku
+  (package
+    (name "komikku")
+    (version "1.72.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/valos/Komikku/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "13mz3ijrmfh002pw977mzdnilgkfl0knr3xrxr0zdicx8nf7inr9"))
+       (patches (search-patches "komikku-python-3.11-compat.patch"
+                                "komikku-future-servers-compat.patch"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-sources
+            (lambda _
+              (substitute* "komikku/utils.py"
+                (("from komikku\\.servers import get_servers_list")
+                 ;; code following that line should migrate old databases
+                 ;; but the line itself results in an import error
+                 "return data_dir_path"))))
+          (add-after 'unpack 'unpack-fonts
+            (lambda* (#:key inputs #:allow-other-keys)
+              (mkdir-p "data/fonts")
+              (copy-file (search-input-file
+                          inputs
+                          "share/fonts/opentype/0xPropo-Medium.otf")
+                         "data/fonts/0xPropo-Medium.otf")))
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson.build"
+                (("([a-z_]*): true" all option)
+                 (cond                ; cond rather than match saves an import
+                  ((string=? option "gtk_update_icon_cache")
+                   (string-append option ": false"))
+                  (else all))))))
+          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+            (lambda* (#:key outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/komikku")
+                `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
+                `("GDK_PIXBUF_MODULE_FILE" =
+                  (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))
+    (inputs
+     (list bash-minimal
+           font-0xpropo
+           gtk
+           libadwaita
+           libnotify
+           libsecret
+           python
+           python-beautifulsoup4
+           python-brotli
+           python-cloudscraper
+           python-colorthief
+           python-dateparser
+           python-emoji
+           python-keyring
+           python-lxml
+           python-magic
+           python-natsort
+           python-piexif
+           python-pillow
+           python-pillow-heif-0.22
+           python-pure-protobuf
+           python-pycairo
+           python-pygobject
+           python-rarfile
+           python-requests
+           python-unidecode
+           webkitgtk
+           webp-pixbuf-loader))
+    (native-inputs
+     (list blueprint-compiler
+           desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           pkg-config))
+    (home-page "https://apps.gnome.org/Komikku")
+    (synopsis "Manga reader for GNOME")
+    (description "Komikku is an online/offline manga reader for GNOME,
+developed with the aim of being used with the Librem 5 phone.")
+    (license license:gpl3+)
+    (native-search-paths (list (search-path-specification
+                                (variable "KOMIKKU_SERVERS_PATH")
+                                (files '("lib/komikku/servers")))))))
 
 (define-public raider
   (package
