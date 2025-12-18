@@ -363,15 +363,26 @@ set to the given OS."
                        (guix build utils))
           gexp* ...))))
 
+(define (partition-has-flag? partition flag)
+  "Return true if PARTITION's flags include FLAG."
+  (member flag (partition-flags partition)))
+
+(define (find-partition-with-flag image flag)
+  "Return partition of the given IMAGE that has FLAG, or #f if not found."
+  (srfi-1:find (cut partition-has-flag? <> flag)
+               (image-partitions image)))
+
 (define (root-partition? partition)
   "Return true if PARTITION is the root partition, false otherwise."
-  (member 'boot (partition-flags partition)))
+  (partition-has-flag? partition 'boot))
 
 (define (find-root-partition image)
-  "Return the root partition of the given IMAGE."
-  (or (srfi-1:find root-partition? (image-partitions image))
+  (or (find-partition-with-flag image 'boot)
       (raise (formatted-message
               (G_ "image lacks a partition with the 'boot' flag")))))
+
+(define (find-esp-partition image)
+  (find-partition-with-flag image 'esp))
 
 (define (root-partition-index image)
   "Return the index of the root partition of the given IMAGE."
@@ -980,6 +991,19 @@ it can be used for bootloading."
 
   (let* ((root-file-system-type (image->root-file-system image))
          (base-os (image-operating-system image))
+         (esp-partition (find-esp-partition image))
+         ;; In case the user has added /boot/efi file-system,
+         ;; try to respect it and add a file-system pointing
+         ;; to the correct esp.
+         (wants-boot-efi? (and
+                         (srfi-1:any
+                          (lambda (fs)
+                            (let ((mount-point (file-system-mount-point fs)))
+                              (string=? mount-point "/boot/efi")))
+                          (operating-system-file-systems base-os))
+                         esp-partition))
+         ;; Replace root file system with one with proper UUID that the
+         ;; target image will have. Similarly for /boot/efi.
          (file-systems-to-keep
           (srfi-1:remove
            (lambda (fs)
@@ -1006,19 +1030,22 @@ it can be used for bootloading."
                               (inherit
                                (operating-system-bootloader base-os))
                               (bootloader grub-mkrescue-bootloader))
-                            (operating-system-bootloader base-os)))
-            (file-systems (cons (file-system
-                                  (mount-point "/")
-                                  (device "/dev/placeholder")
-                                  (type root-file-system-type))
-                                file-systems-to-keep))))
+                            (operating-system-bootloader base-os)))))
          (uuid (root-uuid os)))
-    (operating-system
-      (inherit os)
-      (file-systems (cons (file-system
-                            (mount-point "/")
-                            (device uuid)
-                            (type root-file-system-type))
+         (operating-system
+           (inherit os)
+           (file-systems (append
+                          (list (file-system
+                                  (mount-point "/")
+                                  (device uuid)
+                                  (type root-file-system-type)))
+                          (if wants-boot-efi?
+                              (list (file-system
+                                      (mount-point "/boot/efi")
+                                      (type "vfat")
+                                      (device (file-system-label
+                                               (partition-label esp-partition)))))
+                              '())
                           file-systems-to-keep)))))
 
 (define* (system-image image)
