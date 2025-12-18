@@ -60,6 +60,7 @@
 
 (define-module (gnu packages text-editors)
   #:use-module (guix packages)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -1427,63 +1428,8 @@ and Corrector} written in C that strives to keep the original behavior.")
       (home-page "https://github.com/blakemcbride/TECOC")
       (license license:bsd-3))))
 
-(define-public textpieces
-  (package
-    (name "textpieces")
-    (version "3.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/liferooter/textpieces")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "14zq2c7js80m4cq8wpdb3kyz5sw96l8znbz027w8s94gqhm632ff"))))
-    (arguments
-     '(;; The test suite fails to validate appstream file due to lack of
-       ;; network access
-       #:tests? #f
-       #:glib-or-gtk? #t))
-    (build-system meson-build-system)
-    (native-inputs
-     (list appstream-glib
-           blueprint-compiler-0.4
-           desktop-file-utils
-           gettext-minimal
-           `(,glib "bin")
-           `(,gtk "bin")
-           pkg-config
-           vala))
-    (inputs
-     (list gtk
-           gtksourceview
-           json-glib
-           libadwaita
-           libgee
-           python
-           python-pygobject
-           python-pyyaml))
-    (home-page "https://github.com/liferooter/textpieces")
-    (synopsis "Quick text processor")
-    (description
-     "Text Pieces is a tool for quick text transformations such as checksums,
-encoding, decoding, etc.
-
-The basic features of Text Pieces are:
-@itemize
-@item Base64 encoding and decoding
-@item SHA-1, SHA-2 and MD5 checksums
-@item Prettify and minify JSON
-@item Convert JSON to YAML and vice versa
-@item Count lines, symbols and words
-@item Escape and unescape string, URL and HTML
-@item Remove leading and trailing whitespaces
-@item Sort and reverse sort lines
-@item Reverse lines and whole text
-@item You can write your own scripts and create custom tools
-@end itemize")
-    (license license:gpl3)))
+(define-deprecated/public-alias textpieces
+  (@ (gnu packages gnome-circle) textpieces))
 
 (define-public typstwriter
   (package
