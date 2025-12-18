@@ -7784,13 +7784,26 @@ files.")
     (version "2.0.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "PyLD" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/digitalbazaar/pyld")
+              ;; Not all tags have the 'v' prefix.
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1k7ars8n6kramkvadxgy0qfsi5g1hipyha4wqw8l75mw1l7ka7ii"))))
-    (build-system python-build-system)
-    (native-inputs (list python-lxml))
-    (propagated-inputs (list python-cachetools python-frozendict))
+        (base32 "12lb4vk7m5y5943fm4r8hixdvlxh6qm21pbv7aalsbpfw8cc18sw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; TODO: Commit history shows next version (>2.0.4) will have pytest tests.
+     (list #:tests? #f))
+    (native-inputs
+     (list python-lxml
+           python-setuptools))
+    (propagated-inputs
+     (list python-aiohttp
+           python-cachetools
+           python-frozendict
+           python-requests))
     (home-page "https://github.com/digitalbazaar/pyld")
     (synopsis "Python implementation of the JSON-LD specification")
     (description "PyLD is an implementation of the JSON-LD specification.")
