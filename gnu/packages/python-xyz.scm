@@ -15389,6 +15389,8 @@ structures.")
     (license license:epl1.0)))
 
 (define-public python-pulp
+  ;; When updating, check snakemake@N builds still fine, see:
+  ;; <https://codeberg.org/guix/guix/issues/4782>.
   (package
     (name "python-pulp")
     (version "2.4")
@@ -15399,7 +15401,13 @@ structures.")
        (sha256
         (base32
          "1dammrg0f1v0r028i3rpxbf2bsyxmjq0q6ihb4x2wsdki44z3bxj"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     ;; TODO: They need a special setup, see:
+     ;; <https://codeberg.org/guix/guix/pulls/4908>.
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-amply))
     (home-page "https://github.com/coin-or/pulp")
