@@ -1393,7 +1393,7 @@ the \"texlive\" importer."
 (define-member (person "Danny Milosavljevic"
                        "dannym@friendly-machines.com"
                        "daym")
-  bootstrap hpc rust science)
+  bootstrap hpc python rust science)
 
 (define-member (person "Andy Tai"
                        "atai@atai.org"
