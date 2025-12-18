@@ -12376,41 +12376,8 @@ of the FAM (File Alteration Monitor) system.  This is a service provided by a
 library which detects when a file or a directory has been modified.")
     (license license:gpl2+)))
 
-(define-public gnome-mahjongg
-  (package
-    (name "gnome-mahjongg")
-    (version "3.40.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://gitlab.gnome.org/GNOME/gnome-mahjongg")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0mc9379lmkcn08gr1wdny8gdwgdadkv11vxmgsiazcdy8bsj5860"))))
-    (build-system meson-build-system)
-    (arguments (list #:glib-or-gtk? #t))
-    (native-inputs
-     (list appstream-glib
-           gettext-minimal
-           `(,glib "bin")             ;for glib-compile-resources
-           `(,gtk "bin")              ;for gtk-update-icon-cache
-           itstool
-           pkg-config
-           vala))
-    (propagated-inputs
-     (list dconf))
-    (inputs
-     (list glib
-           gtk
-           libadwaita))
-    (synopsis "Mahjongg tile-matching game")
-    (description "GNOME Mahjongg is a game based on the classic Chinese
-tile-matching game Mahjongg.  It features multiple board layouts, tile themes,
-and a high score table.")
-    (home-page "https://wiki.gnome.org/Apps/Mahjongg")
-    (license license:gpl2+)))
+(define-deprecated/public-alias gnome-mahjongg
+  (@ (gnu packages gnome-circle) gnome-mahjongg))
 
 (define-public gnome-themes-extra
   (package

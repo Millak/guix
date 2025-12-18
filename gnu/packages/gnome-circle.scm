@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2019 David Wilson <david@daviwil.com>
 ;;; Copyright © 2019-2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019, 2024, 2025 Giacomo Leidi <goodoldpaul@autistici.org>
@@ -347,6 +348,42 @@ It features:
 Aegis (encrypted / plain-text), andOTP, Google Authenticator
 @end itemize")
     (license license:gpl3+)))
+
+(define-public gnome-mahjongg
+  (package
+    (name "gnome-mahjongg")
+    (version "3.40.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.gnome.org/GNOME/gnome-mahjongg")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0mc9379lmkcn08gr1wdny8gdwgdadkv11vxmgsiazcdy8bsj5860"))))
+    (build-system meson-build-system)
+    (arguments (list #:glib-or-gtk? #t))
+    (native-inputs
+     (list appstream-glib
+           gettext-minimal
+           `(,glib "bin")             ;for glib-compile-resources
+           `(,gtk "bin")              ;for gtk-update-icon-cache
+           itstool
+           pkg-config
+           vala))
+    (propagated-inputs
+     (list dconf))
+    (inputs
+     (list glib
+           gtk
+           libadwaita))
+    (synopsis "Mahjongg tile-matching game")
+    (description "GNOME Mahjongg is a game based on the classic Chinese
+tile-matching game Mahjongg.  It features multiple board layouts, tile themes,
+and a high score table.")
+    (home-page "https://wiki.gnome.org/Apps/Mahjongg")
+    (license license:gpl2+)))
 
 (define-public komikku
   (package
