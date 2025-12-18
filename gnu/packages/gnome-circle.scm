@@ -3,6 +3,7 @@
 ;;; Copyright © 2019-2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019, 2024, 2025 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2020 raingloom <raingloom@riseup.net>
 ;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
@@ -46,6 +47,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages password-utils)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
@@ -597,4 +599,66 @@ integrate seamlessly with the GNOME desktop.")
      "Raider is a simple shredding program built for GNOME.  Also known as
 File Shredder, it uses the GNU Core Utility called shred to securely delete
 files.")
+    (license license:gpl3+)))
+
+(define-public secrets
+  (package
+    (name "secrets")
+    (version "6.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.gnome.org/World/secrets")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11jd9f0d3fyrs29p8cyzb6i2ib6mzhwwvjnznl55gkggrgnrcb8z"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:imported-modules (append %meson-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '((guix build meson-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-postinstall-script
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))
+              (setenv "DESTDIR" "/")))
+          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/secrets")
+                `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
+                                       ,(py:site-packages inputs outputs)))
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
+    (native-inputs
+     (list desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           pkg-config))
+    (inputs
+     (list bash-minimal
+           glib
+           gsettings-desktop-schemas
+           gtk
+           libadwaita
+           libhandy
+           libpwquality
+           python
+           python-pygobject
+           python-pykeepass
+           python-pyotp))
+    (home-page "https://gitlab.gnome.org/World/secrets")
+    (synopsis "Password manager for the GNOME desktop")
+    (description
+     "Secrets is a password manager which makes use of the KeePass v4
+format.  It integrates perfectly with the GNOME desktop and provides an easy
+and uncluttered interface for the management of password databases.")
     (license license:gpl3+)))

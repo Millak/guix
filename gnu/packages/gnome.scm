@@ -11690,67 +11690,8 @@ photo-booth-like software, such as Cheese.")
 apply fancy special effects and lets you share the fun with others.")
       (license license:gpl2+))))
 
-(define-public secrets
-  (package
-    (name "secrets")
-    (version "6.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.gnome.org/World/secrets")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "11jd9f0d3fyrs29p8cyzb6i2ib6mzhwwvjnznl55gkggrgnrcb8z"))))
-    (build-system meson-build-system)
-    (arguments
-     (list
-      #:glib-or-gtk? #t
-      #:imported-modules (append %meson-build-system-modules
-                                 %pyproject-build-system-modules)
-      #:modules '((guix build meson-build-system)
-                  ((guix build pyproject-build-system) #:prefix py:)
-                  (guix build utils))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-postinstall-script
-            (lambda _
-              (substitute* "meson.build"
-                (("gtk_update_icon_cache: true")
-                 "gtk_update_icon_cache: false"))
-              (setenv "DESTDIR" "/")))
-          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (wrap-program (search-input-file outputs "bin/secrets")
-                `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
-                                       ,(py:site-packages inputs outputs)))
-                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
-    (native-inputs
-     (list desktop-file-utils
-           gettext-minimal
-           `(,glib "bin")
-           gobject-introspection
-           pkg-config))
-    (inputs
-     (list bash-minimal
-           glib
-           gsettings-desktop-schemas
-           gtk
-           libadwaita
-           libhandy
-           libpwquality
-           python
-           python-pygobject
-           python-pykeepass
-           python-pyotp))
-    (home-page "https://gitlab.gnome.org/World/secrets")
-    (synopsis "Password manager for the GNOME desktop")
-    (description
-     "Secrets is a password manager which makes use of the KeePass v4
-format.  It integrates perfectly with the GNOME desktop and provides an easy
-and uncluttered interface for the management of password databases.")
-    (license license:gpl3+)))
+(define-deprecated/public-alias secrets
+  (@ (gnu packages gnome-circle) secrets))
 
 (define-public sound-juicer
   (package
