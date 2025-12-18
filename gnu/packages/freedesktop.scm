@@ -2820,35 +2820,57 @@ to the C library @code{uchardet} to increase performance.")
     (version "2.5.8")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "udiskie" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/coldfix/udiskie")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0c6i7i7yb0lqrfxjrh63y6amw2npkp1n3dxdfjf9zh4pgbnaivd3"))))
-    (build-system python-build-system)
+        (base32 "0ccp55fgmcc4fsd7jsqla6k1m6v8zkn03i4axw446zh2nzxpanhl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "test/test_match.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'check 'fix-entry-points
+            ;; FIXME: See: <https://codeberg.org/guix/guix/issues/4509>.
+            (lambda _
+              (substitute* (string-append #$output "/bin/.udiskie-real")
+                (("from udiskie.cli import Daemon.main")
+                 "from udiskie.cli import Daemon"))
+              (substitute* (string-append #$output "/bin/.udiskie-info-real")
+                (("from udiskie.cli import Info.main")
+                 "from udiskie.cli import Info"))
+              (substitute* (string-append #$output "/bin/.udiskie-mount-real")
+                (("from udiskie.cli import Mount.main")
+                 "from udiskie.cli import Mount"))
+              (substitute* (string-append #$output "/bin/.udiskie-umount-real")
+                (("from udiskie.cli import Umount.main")
+                 "from udiskie.cli import Umount"))))
+          (add-after 'wrap 'wrap-gi-typelib
+            (lambda _
+              (wrap-program (string-append #$output "/bin/udiskie")
+                `("GI_TYPELIB_PATH" ":" prefix
+                  (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
      (list asciidoc
            gettext-minimal
-           gobject-introspection))
+           gobject-introspection
+           python-setuptools))
     (inputs
      (list bash-minimal
            gobject-introspection
            gtk+
            libappindicator
            libnotify
+           python-docopt
+           python-keyutils
+           python-pygobject
+           python-pyxdg
+           python-pyyaml
            udisks))
-    (propagated-inputs
-     (list python-docopt python-pygobject python-keyutils python-pyxdg
-           python-pyyaml))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-gi-typelib
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
-               (wrap-program (string-append out "/bin/udiskie")
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))))
     (home-page "https://github.com/coldfix/udiskie")
     (synopsis "Automounter for removable media")
     (description
