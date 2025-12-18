@@ -6159,14 +6159,16 @@ overriding a method.")
 (define-public python-argparse-addons
   (package
     (name "python-argparse-addons")
-    (version "0.7.0")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "argparse_addons" version))
        (sha256
-        (base32 "1yx54dmnr3xggjcjk6bbdafvzp6cynrakl56wyz3jglmfvk0znpm"))))
-    (build-system python-build-system)
+        (base32 "1bv0nh8147bhjrjdr0m2fnmhxnl6bdni68wd61v7x206szfa08k3"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/eerimoq/argparse_addons")
     (synopsis "Extensions for Python's @code{argparse} library")
     (description "This Python library provides additional types and actions
