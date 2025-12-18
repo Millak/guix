@@ -1728,6 +1728,7 @@ existing compilers together.")
     (outputs '("out"))
     (arguments
      (list
+      #:test-backend #~'unittest
       #:phases #~(modify-phases %standard-phases
                    (add-before 'build 'change-directory
                      (lambda _
