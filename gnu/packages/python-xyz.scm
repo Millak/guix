@@ -7394,7 +7394,9 @@ locking..")
        (sha256
         (base32
          "1pflivs6j22frz0v3dqxnvc8yb8fb52g11lqr88z0i8cg2m5csg2"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/hackebrot/poyo")
     (synopsis "Lightweight YAML Parser for Python")
     (description
