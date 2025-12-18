@@ -34167,15 +34167,9 @@ and comments.")
           (add-after 'unpack 'locate-binaries
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* (find-files "." "\\.el$")
-                (("\\(executable-find \"mpv\"\\)")
-                 (format #f "~s"
-                         (search-input-file inputs "/bin/mpv")))
-                (("\\(executable-find \"torsocks\"\\)")
-                 (format #f "~s"
-                         (search-input-file inputs "/bin/torsocks")))
-                (("\\(executable-find \"yt-dlp\"\\)")
-                 (format #f "~s"
-                         (search-input-file inputs "/bin/yt-dlp")))))))))
+                (("\\(executable-find \"(mpv|torsocks|yt-dlp)\"\\)" all program)
+                 (format #f "~s" (search-input-file inputs
+                                            (string-append "/bin/" program))))))))))
     (inputs (list mpv torsocks yt-dlp))
     (propagated-inputs (list emacs-compat))
     (home-page "https://thanosapollo.org/projects/yeetube/")
