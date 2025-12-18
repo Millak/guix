@@ -11,9 +11,14 @@
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021, 2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Antero Mejr <antero@mailbox.org>
+;;; Copyright © 2023 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2024 Danny Milosavljevic <dannym@friendly-machines.com>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -197,6 +202,70 @@ simulation, statistical modeling, machine learning and much more.")
         (propagated-inputs
          (modify-inputs (package-propagated-inputs parent)
            (replace "python-jupyter-client" python-jupyter-client-bootstrap)))))))
+
+(define-public python-jupytext
+  (package
+    (name "python-jupytext")
+    (version "1.18.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mwouts/jupytext")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01vvi5aab7lahj57ng5v4svjw18xrlgnasz877lqvdf4m6cpi8s9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 4017 passed, 173 skipped, 2 deselected, 1 warning
+      #:test-flags
+      #~(list
+         ;; Requires git.
+         "--ignore=tests/external"
+         ;; Requires python-black.
+         "--ignore=tests/functional/contents_manager"
+         ;; Failed: DID NOT RAISE <class 'ValueError'>.
+         (string-append "--deselect=tests/functional/cli/test_source_is_newer.py"
+                        "::test_check_source_is_newer_when_using_jupytext_to")
+         ;; Failed: DID NOT RAISE <class 'jupytext.cli.SynchronousModificationError'>.
+         (string-append "--deselect=tests/functional/cli/test_synchronous_changes.py"
+                        "::test_jupytext_to_raises_on_synchronous_edits"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; some tests fail when HOME=/homeless-shelter.
+              (setenv "HOME" "/tmp")
+              ;; OSError: [Errno 18] Invalid cross-device link
+              (setenv "TMPDIR" "/tmp"))))))
+    (native-inputs
+     (list python-hatchling
+           python-jupyter-client
+           python-jupyter-server
+           python-pytest
+           python-pytest-asyncio))
+    (propagated-inputs
+     (list python-markdown-it-py
+           python-mdit-py-plugins
+           python-nbformat
+           python-packaging
+           python-pyyaml))
+    (home-page "https://jupytext.readthedocs.io/")
+    (synopsis
+     "Jupyter notebooks as Markdown documents, Julia, Python or R scripts")
+    (description
+     "Jupytext is a plugin for Jupyter that can save Jupyter notebooks as
+either Markdown files or scripts in many languages.  Common use cases for
+Jupytext are:
+
+@itemize
+@item version control on Jupyter Notebooks
+@item editing, merging or refactoring notebooks in your favorite text editor
+@item applying Q&A checks on notebooks.
+@end itemize ")
+    (license license:expat)))
 
 (define-public python-nbclassic
   (package
