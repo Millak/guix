@@ -1733,17 +1733,21 @@ rendering of the file through the Pango Cairo back end.")
        (sha256
         (base32
          "0b2lbm3f79cdxcsagwhzihbzwahjabxqmbws0c8ki25gpdnygdd7"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-more-itertools-version-requirement
-           (lambda _
-             ;; Tests require an version of the more-itertools module older
-             ;; than the one we have packaged.
-             (substitute* "setup.py"
-               (("more-itertools>=2\\.2,<6\\.0\\.0") "more-itertools>=2.2"))
-             #t)))))
+     (list
+      #:test-flags #~(list "staplelib/tests.py") ; from tox.ini
+      #:build-backend "poetry.core.masonry.api"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-more-itertools-version-requirement
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; Tests require an version of the more-itertools module older
+                ;; than the one we have packaged.
+                (("more-itertools = \">=2.2,<6.0.0\"")
+                 "more-itertools = \">=2.2\"")))))))
+    (native-inputs (list python-poetry-core python-pytest python-setuptools))
     (propagated-inputs
      (list python-more-itertools python-pypdf2))
     (home-page "https://github.com/hellerbarde/stapler")
