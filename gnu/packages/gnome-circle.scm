@@ -4,6 +4,7 @@
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019, 2024, 2025 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2025 Noé Lopez <noelopez@free.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -30,11 +31,14 @@
 
 (define-module (gnu packages gnome-circle)
   #:use-module (gnu packages aidc)
+  #:use-module (gnu packages backup)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages enchant)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-xyz)
@@ -50,6 +54,7 @@
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
+  #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -119,6 +124,87 @@
     (description "Apostrophe is a GTK+ based distraction-free Markdown editor.
 It uses pandoc as back-end for parsing Markdown.")
     (license license:gpl3)))
+
+(define-public deja-dup
+  (package
+    (name "deja-dup")
+    (version "45.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://gitlab.gnome.org/World/deja-dup/-/archive/"
+                                  version "/deja-dup-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "000cwy1haiglkvn5plmhrs2a1fhpcpw6z4mdzck7ybmky795amza"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags
+      #~(list
+         ;; Otherwise, the RUNPATH will lack the final path component.
+         (string-append "-Dc_link_args=-Wl,-rpath="
+                        (assoc-ref %outputs "out") "/lib/deja-dup"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((python (assoc-ref inputs "python")))
+                (substitute* '("libdeja/duplicity/DuplicityInstance.vala"
+                               "libdeja/tests/scripts/instance-error.test")
+                  (("/bin/rm")
+                   (which "rm")))
+                (substitute* "libdeja/tests/runner.vala"
+                  (("/bin/sh")
+                   (which "sh")))
+                (substitute* "libdeja/tests/scripts/instance-error.test"
+                  (("`which python3`")
+                   (string-append python "/bin/python3"))))))
+          (add-after 'unpack 'patch-libgpg-error
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((libgpg-error (assoc-ref inputs "libgpg-error")))
+                (substitute* "meson.build"
+                  (("(gpgerror_libs = ).*" _ var)
+                   (format #f "~a '-L~a/lib -lgpg-error'\n" var libgpg-error))))))
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Add duplicity to the search path
+              (wrap-program (string-append (assoc-ref outputs "out")
+                                           "/bin/deja-dup")
+                `("PATH" ":" prefix
+                  (,(dirname (search-input-file inputs "/bin/duplicity"))))))))))
+    (inputs
+     (list bash-minimal
+           duplicity
+           gsettings-desktop-schemas
+           gtk
+           json-glib
+           libadwaita
+           libgpg-error
+           libnotify
+           libsecret
+           libsoup
+           libhandy
+           packagekit
+           python
+           python-pygobject))
+    (native-inputs
+     (list appstream-glib
+           desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")               ;for glib-compile-schemas
+           gobject-introspection
+           `(,gtk "bin")                ;for gtk-update-icon-cache
+           itstool
+           pkg-config
+           vala))
+    (home-page "https://wiki.gnome.org/Apps/DejaDup")
+    (synopsis "Simple backup tool, for regular encrypted backups")
+    (description
+     "Déjà Dup is a simple backup tool, for regular encrypted backups.  It
+uses duplicity as the backend, which supports incremental backups and storage
+either on a local, or remote machine via a number of methods.")
+    (license license:gpl3+)))
 
 (define-public gnome-authenticator
   (package

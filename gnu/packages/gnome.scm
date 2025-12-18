@@ -1732,86 +1732,8 @@ configuration files for the GNOME menu, as well as a simple menu editor.")
     (home-page "https://gitlab.gnome.org/GNOME/gnome-menus")
     (license license:lgpl2.0+)))
 
-(define-public deja-dup
-  (package
-    (name "deja-dup")
-    (version "45.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://gitlab.gnome.org/World/deja-dup/-/archive/"
-                                  version "/deja-dup-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "000cwy1haiglkvn5plmhrs2a1fhpcpw6z4mdzck7ybmky795amza"))))
-    (build-system meson-build-system)
-    (arguments
-     (list
-      #:glib-or-gtk? #t
-      #:configure-flags
-      #~(list
-         ;; Otherwise, the RUNPATH will lack the final path component.
-         (string-append "-Dc_link_args=-Wl,-rpath="
-                        (assoc-ref %outputs "out") "/lib/deja-dup"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-paths
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((python (assoc-ref inputs "python")))
-                (substitute* '("libdeja/duplicity/DuplicityInstance.vala"
-                               "libdeja/tests/scripts/instance-error.test")
-                  (("/bin/rm")
-                   (which "rm")))
-                (substitute* "libdeja/tests/runner.vala"
-                  (("/bin/sh")
-                   (which "sh")))
-                (substitute* "libdeja/tests/scripts/instance-error.test"
-                  (("`which python3`")
-                   (string-append python "/bin/python3"))))))
-          (add-after 'unpack 'patch-libgpg-error
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((libgpg-error (assoc-ref inputs "libgpg-error")))
-                (substitute* "meson.build"
-                  (("(gpgerror_libs = ).*" _ var)
-                   (format #f "~a '-L~a/lib -lgpg-error'\n" var libgpg-error))))))
-          (add-after 'install 'wrap-program
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              ;; Add duplicity to the search path
-              (wrap-program (string-append (assoc-ref outputs "out")
-                                           "/bin/deja-dup")
-                `("PATH" ":" prefix
-                  (,(dirname (search-input-file inputs "/bin/duplicity"))))))))))
-    (inputs
-     (list bash-minimal
-           duplicity
-           gsettings-desktop-schemas
-           gtk
-           json-glib
-           libadwaita
-           libgpg-error
-           libnotify
-           libsecret
-           libsoup
-           libhandy
-           packagekit
-           python
-           python-pygobject))
-    (native-inputs
-     (list appstream-glib
-           desktop-file-utils
-           gettext-minimal
-           `(,glib "bin")               ;for glib-compile-schemas
-           gobject-introspection
-           `(,gtk "bin")                ;for gtk-update-icon-cache
-           itstool
-           pkg-config
-           vala))
-    (home-page "https://wiki.gnome.org/Apps/DejaDup")
-    (synopsis "Simple backup tool, for regular encrypted backups")
-    (description
-     "Déjà Dup is a simple backup tool, for regular encrypted backups.  It
-uses duplicity as the backend, which supports incremental backups and storage
-either on a local, or remote machine via a number of methods.")
-    (license license:gpl3+)))
+(define-deprecated/public-alias deja-dup
+  (@ (gnu packages gnome-circle) deja-dup))
 
 (define-public gnome-commander
   (package
