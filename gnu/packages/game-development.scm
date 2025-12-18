@@ -38,6 +38,7 @@
 ;;; Copyright © 2025 Arnaud Lechevallier <arnaud.lechevallier@free.fr>
 ;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2025 Simen Endsjø <contact@simendsjo.me>
+;;; Copyright © 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1948,6 +1949,41 @@ programming languages.")
     (description "This package provides an interactive tutorial for the Ren'py
 visual novel engine, explaining all of its features.")
     (license license:expat)))
+
+(define-public rpatool
+  (let ((revision "0")
+        (commit "74f26d5dfdd645483e02552aa766ca447ad6b191"))
+    (package
+      (name "rpatool")
+      (version (git-version "0.8" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/shiz/rpatool")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "10dm8bak0dm84d1ciwzw6jd5y64invddlmcdnawnpp7jn3wrg1jb"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:tests? #f ;no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'build)
+            (replace 'install
+              (lambda _
+                (install-file "rpatool"
+                              (string-append #$output "/bin")))))))
+      (home-page "https://codeberg.org/shiz/rpatool")
+      (synopsis "Tool to work with Ren'Py archives")
+      (description
+       "@samp{rpatool} is a simple tool allowing you to create, modify and
+extract @url{https://www.renpy.org/,Ren'Py} Archive files
+(@code{.rpa}/@code{.rpi}).  Currently, only writing RPAv2/RPAv3 archives is
+supported.")
+      (license license:wtfpl2))))
 
 (define-public python-pyxel
   ;; Note to updaters: Use commit and revision even if you're bumping
