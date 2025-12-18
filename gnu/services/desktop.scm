@@ -2073,7 +2073,8 @@ CONFIG, a <gnome-desktop-configuration> object."
 (define-record-type* <xfce-desktop-configuration> xfce-desktop-configuration
   make-xfce-desktop-configuration
   xfce-desktop-configuration?
-  (xfce xfce-package (default xfce)))
+  (xfce xfce-package (default xfce))
+  (allow-empty-passwords? xfce-allow-empty-passwords? (default #t)))
 
 (define (xfce-polkit-settings config)
   "Return the list of XFCE dependencies that provide polkit actions and
@@ -2085,7 +2086,9 @@ rules."
            "xfce4-power-manager"))))
 
 (define (xfce-pam-services config)
-  (list (unix-pam-service "xfce4-screensaver")))
+  (list (unix-pam-service "xfce4-screensaver"
+                          #:allow-empty-passwords?
+                          (xfce-allow-empty-passwords? config))))
 
 (define xfce-desktop-service-type
   (service-type
