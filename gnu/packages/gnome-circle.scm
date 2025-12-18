@@ -67,6 +67,7 @@
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages))
 
@@ -482,6 +483,71 @@ developed with the aim of being used with the Librem 5 phone.")
     (synopsis "Servers for Komikku")
     (description "This package provides more recent servers for Komikku.")
     (license license:gpl3+)))
+
+(define-public polari
+  (package
+    (name "polari")
+    (version "46.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/polari/"
+                                  (version-major version)
+                                  "/polari-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0c8a6q6g1mgpc9g423rgqplbpjwb7zq1bvylad7jk2ci6yg71cfj"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:glib-or-gtk? #t
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'skip-gtk-update-icon-cache
+           (lambda _
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false"))))
+         (add-after 'install 'fix-desktop-file
+           ;; Hard-code launcher to be on the safe side.
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* (search-input-file
+                           outputs
+                           "share/applications/org.gnome.Polari.desktop")
+               (("Exec=.*")
+                (string-append "Exec=" (search-input-file outputs "bin/polari")
+                               "\n")))))
+         (add-after 'glib-or-gtk-wrap 'wrap-typelib
+           (lambda* (#:key outputs #:allow-other-keys)
+             (wrap-program (search-input-file outputs "bin/polari")
+               `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
+    (native-inputs
+     (list desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           pkg-config
+           yelp-tools))
+    (inputs
+     (list bash-minimal
+           glib
+           gsettings-desktop-schemas
+           gspell
+           gtk
+           gjs
+           libadwaita
+           libsecret
+           libsoup
+           telepathy-glib
+           telepathy-logger
+           tinysparql))
+    (propagated-inputs
+     (list telepathy-idle
+           telepathy-mission-control))
+    (synopsis "Simple IRC Client")
+    (description
+     "Polari is a simple Internet Relay Chat (IRC) client that is designed to
+integrate seamlessly with the GNOME desktop.")
+    (home-page "https://wiki.gnome.org/Apps/Polari")
+    (license license:gpl2+)))
 
 (define-public raider
   (package
