@@ -995,29 +995,33 @@ generator")
 (define-public python-zopfli
   (package
     (name "python-zopfli")
-    (version "0.2.2")
+    (version "0.4.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "zopfli" version ".zip"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fonttools/py-zopfli")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1z1akqx3fjnwa75insch9p08hafikqdvqkj6mxv1k6fr81sxnj9d"))))
-    (build-system python-build-system)
+        (base32 "1figk175w1q8ww8ryh2ypg7jjlkjbnry3gwhn8d56xh5icwgwi5g"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'use-system-zopfli
-                     (lambda _
-                       (setenv "USE_SYSTEM_ZOPFLI" "1")))
-                   (add-before 'build 'set-version
-                     (lambda _
-                       (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
-                   (replace 'check
-                     (lambda* (#:key tests? #:allow-other-keys)
-                       (when tests?
-                         (invoke "pytest" "-vv")))))))
-    (native-inputs (list unzip python-pytest python-setuptools-scm))
-    (inputs (list zopfli))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-system-zopfli
+            (lambda _
+              (setenv "USE_SYSTEM_ZOPFLI" "1")))
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (inputs
+     (list zopfli))
     (home-page "https://github.com/fonttools/py-zopfli")
     (synopsis "Python bindings for Zopfli")
     (description "@code{pyzopfli} is a straight forward wrapper around the
