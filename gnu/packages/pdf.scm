@@ -1340,9 +1340,15 @@ the PDF pages.")
        (uri (pypi-uri "img2pdf" version))
        (sha256
         (base32 "12gjd98gnx117d5v36gpw55iplgvm6bvd532gnfibg1jp2g2fvih"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-pikepdf python-pillow
+    (build-system pyproject-build-system)
+    (arguments
+     ;; TODO: See: <https://codeberg.org/guix/guix/issues/4932#issuecomment-9045882>.
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools))
+    (inputs
+     (list python-pikepdf
+           python-pillow
            `(,python "tk")))
     (home-page "https://gitlab.mister-muffin.de/josch/img2pdf")
     (synopsis "Convert images to PDF via direct JPEG inclusion")
