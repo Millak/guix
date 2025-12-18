@@ -498,25 +498,20 @@ or text interfaces) or as a C++ library.")
 (define-public flint
   (package
    (name "flint")
-   (version "3.2.1")
+   (version "3.2.2")
    (source
     (origin
       (method url-fetch)
       (uri (string-append "https://flintlib.org/download/flint-"
                           version ".tar.gz"))
       (sha256
-       (base32 "0gyjbkhwrmx2vgb1gailnmmzacl4aikzgi70dzmpf8lpfxny8yya"))))
+       (base32 "09cypha859dhwqkw44ixr07p83ax5vb45jkaf535lrhpg9gn8c4j"))))
    (build-system gnu-build-system)
-   (inputs
-    (list ntl))
    (propagated-inputs
     (list gmp mpfr)) ; header files included by flint.h or mpfr_mat.h
    (arguments
-      ;; Parallel tests failed in the past on ARM, this may need to be
-      ;; tested again.
-    `(#:parallel-tests? #f
       ;; Prevent build machine specifics from ending up in the binary.
-      #:configure-flags '("--disable-assembly")))
+    '(#:configure-flags '("--disable-assembly")))
    (synopsis "Fast library for number theory")
    (description
     "FLINT is a C library for number theory.  It supports arithmetic
