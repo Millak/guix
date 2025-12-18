@@ -2016,7 +2016,7 @@ Expressions, and being faster to type than grep.")
 (define-public yq
   (package
     (name "yq")
-    (version "4.49.1")
+    (version "4.50.1")
     (source
      (origin
        (method git-fetch)
@@ -2025,7 +2025,7 @@ Expressions, and being faster to type than grep.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d73ln533xqbr9cxlkzpa5f5kfldzw381zwf6ln45cbjsgms7591"))))
+        (base32 "1jlnnvqq0f7bm0km2zccwfhga1rqrgyhmx5glvbrkpgjipmlx9fh"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -2052,6 +2052,7 @@ Expressions, and being faster to type than grep.")
            go-github-com-go-ini-ini
            go-github-com-goccy-go-json
            go-github-com-goccy-go-yaml
+           go-github-com-hashicorp-hcl-v2
            go-github-com-jinzhu-copier
            go-github-com-magiconair-properties
            go-github-com-pelletier-go-toml-v2
@@ -2059,6 +2060,7 @@ Expressions, and being faster to type than grep.")
            go-github-com-spf13-cobra
            go-github-com-spf13-pflag
            go-github-com-yuin-gopher-lua
+           go-github-com-zclconf-go-cty
            go-go-yaml-in-yaml-v4
            go-golang-org-x-net
            go-golang-org-x-text
