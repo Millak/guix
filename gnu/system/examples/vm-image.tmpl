@@ -79,6 +79,10 @@ accounts.\x1b[0m
 root ALL=(ALL) ALL
 %wheel ALL=NOPASSWD: ALL\n"))
 
+  (pam-services
+   ;; Explicitly allow for empty passwords.
+   (base-pam-services #:allow-empty-passwords? #t))
+
   (packages
    (append (list font-bitstream-vera
                  ;; Auto-started script providing SPICE dynamic resizing for
