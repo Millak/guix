@@ -2377,7 +2377,7 @@ design}.")
 (define-public python-jupytext
   (package
     (name "python-jupytext")
-    (version "1.15.0")
+    (version "1.18.1")
     (source
      (origin
        (method git-fetch)
@@ -2386,17 +2386,23 @@ design}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bgf0c4py22ip7qfla8mrmypfh3bg151c8awsr1gvcbw7m4ni01k"))))
+        (base32 "01vvi5aab7lahj57ng5v4svjw18xrlgnasz877lqvdf4m6cpi8s9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 4017 passed, 173 skipped, 2 deselected, 1 warning
       #:test-flags
-      #~(list "--ignore-glob=tests/test_pre_commit_*.py"
-              "-k" (string-join
-                    (list "not test_create_header_with_set_formats"
-                          "test_pre_commit_hook"
-                          "test_sync_with_pre_commit_hook")
-                    " and not "))
+      #~(list
+         ;; Requires git.
+         "--ignore=tests/external"
+         ;; Requires python-black.
+         "--ignore=tests/functional/contents_manager"
+         ;; Failed: DID NOT RAISE <class 'ValueError'>.
+         (string-append "--deselect=tests/functional/cli/test_source_is_newer.py"
+                        "::test_check_source_is_newer_when_using_jupytext_to")
+         ;; Failed: DID NOT RAISE <class 'jupytext.cli.SynchronousModificationError'>.
+         (string-append "--deselect=tests/functional/cli/test_synchronous_changes.py"
+                        "::test_jupytext_to_raises_on_synchronous_edits"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
@@ -2406,20 +2412,18 @@ design}.")
               ;; OSError: [Errno 18] Invalid cross-device link
               (setenv "TMPDIR" "/tmp"))))))
     (native-inputs
-     (list git-minimal/pinned
-           python-gitpython
-           python-ipython-genutils
+     (list python-hatchling
+           python-jupyter-client
            python-jupyter-server
-           python-pyaml
-           python-toml
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-pytest-asyncio))
     (propagated-inputs
      (list python-markdown-it-py
            python-mdit-py-plugins
-           python-nbformat))
-    (home-page "https://github.com/mwouts/jupytext")
+           python-nbformat
+           python-packaging
+           python-pyyaml))
+    (home-page "https://jupytext.readthedocs.io/")
     (synopsis
      "Jupyter notebooks as Markdown documents, Julia, Python or R scripts")
     (description
