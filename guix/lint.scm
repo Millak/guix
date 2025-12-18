@@ -1237,13 +1237,6 @@ upstream status")
                       '()
                       str)))
 
-(define official-gnu-packages*
-  (mlambda ()
-    "A memoizing version of 'official-gnu-packages' that returns the empty
-list when something goes wrong, such as a networking issue."
-    (let ((gnus (false-if-exception (official-gnu-packages))))
-      (or gnus '()))))
-
 (define (check-gnu-synopsis+description package)
   "Make sure that, if PACKAGE is a GNU package, it uses the synopsis and
 descriptions maintained upstream."

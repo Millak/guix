@@ -61,6 +61,7 @@
             gnu-package-download-url
 
             official-gnu-packages
+            official-gnu-packages*
             find-package
             gnu-package?
 
@@ -181,6 +182,13 @@ to fetch the list of GNU packages over HTTP."
          (close-port port)
          lst)))
 
+(define official-gnu-packages*
+  (mlambda ()
+    "A memoizing version of 'official-gnu-packages' that returns the empty
+list when something goes wrong, such as a networking issue."
+    (let ((gnus (false-if-exception (official-gnu-packages))))
+      (or gnus '()))))
+
 (define (find-package name)
   "Find GNU package called NAME and return it.  Return #f if it was not
 found."
@@ -189,51 +197,50 @@ found."
         (official-gnu-packages)))
 
 (define gnu-package?
-  (let ((official-gnu-packages (memoize official-gnu-packages)))
-    (mlambdaq (package)
-      "Return true if PACKAGE is a GNU package.  This procedure may access the
+  (mlambdaq (package)
+    "Return true if PACKAGE is a GNU package.  This procedure may access the
 network to check in GNU's database."
-      (define (mirror-type url)
-        (let ((uri (string->uri url)))
-          (and (eq? (uri-scheme uri) 'mirror)
-               (cond
-                ((member (uri-host uri)
-                         '("gnu" "gnupg" "gcc" "gnome"))
-                 ;; Definitely GNU.
-                 'gnu)
-                ((equal? (uri-host uri) "cran")
-                 ;; Possibly GNU: mirror://cran could be either GNU R itself
-                 ;; or a non-GNU package.
-                 #f)
-                (else
-                 ;; Definitely non-GNU.
-                 'non-gnu)))))
+    (define (mirror-type url)
+      (let ((uri (string->uri url)))
+        (and (eq? (uri-scheme uri) 'mirror)
+             (cond
+              ((member (uri-host uri)
+                       '("gnu" "gnupg" "gcc" "gnome"))
+               ;; Definitely GNU.
+               'gnu)
+              ((equal? (uri-host uri) "cran")
+               ;; Possibly GNU: mirror://cran could be either GNU R itself
+               ;; or a non-GNU package.
+               #f)
+              (else
+               ;; Definitely non-GNU.
+               'non-gnu)))))
 
-      (define (gnu-home-page? package)
-        (letrec-syntax ((>> (syntax-rules ()
-                              ((_ value proc)
-                               (and=> value proc))
-                              ((_ value proc rest ...)
-                               (and=> value
-                                      (lambda (next)
-                                        (>> (proc next) rest ...)))))))
-          (>> package package-home-page
-              string->uri uri-host
-              (lambda (host)
-                (member host '("www.gnu.org" "gnu.org"))))))
+    (define (gnu-home-page? package)
+      (letrec-syntax ((>> (syntax-rules ()
+                            ((_ value proc)
+                             (and=> value proc))
+                            ((_ value proc rest ...)
+                             (and=> value
+                                    (lambda (next)
+                                      (>> (proc next) rest ...)))))))
+        (>> package package-home-page
+            string->uri uri-host
+            (lambda (host)
+              (member host '("www.gnu.org" "gnu.org"))))))
 
-      (or (gnu-home-page? package)
-          (match (package-source package)
-            ((? origin? origin)
-             (let ((url  (origin-uri origin))
-                   (name (package-upstream-name package)))
-               (case (and (string? url) (mirror-type url))
-                 ((gnu) #t)
-                 ((non-gnu) #f)
-                 (else
-                  (and (member name (map gnu-package-name (official-gnu-packages)))
-                       #t)))))
-            (_ #f))))))
+    (or (gnu-home-page? package)
+        (match (package-source package)
+          ((? origin? origin)
+           (let ((url  (origin-uri origin))
+                 (name (package-upstream-name package)))
+             (case (and (string? url) (mirror-type url))
+               ((gnu) #t)
+               ((non-gnu) #f)
+               (else
+                (and (member name (map gnu-package-name (official-gnu-packages*)))
+                     #t)))))
+          (_ #f)))))
 
 
 ;;;
