@@ -367,11 +367,10 @@ purposes."
      'unknown)
     ((channels ...)
      (map (lambda (channel)
-            (let* ((uri (string->uri (channel-url channel)))
-                   (url (if (or (not uri) (eq? 'file (uri-scheme uri)))
-                            "local checkout"
-                            (channel-url channel))))
-             `(channel ,(channel-name channel) ,url ,(channel-commit channel))))
+            ;; NOTE: URL is not logged to synchronize the derivations
+            ;; coming out of pre-inst-env, time-machine and Cuirass
+            ;; for generating release artifacts.
+            `(channel ,(channel-name channel) ,(channel-commit channel)))
           channels))))
 
 (define* (installer-program #:key dry-run? (guix-for-installer (current-guix)))
