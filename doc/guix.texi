@@ -18931,7 +18931,7 @@ options, along with @option{--allow-discards}:
   (arguments '(#:allow-discards? #t
                #:extra-options
                ("--perf-no_read_workqueue"
-                "--perf-no_write_workqueue")))))
+                "--perf-no_write_workqueue"))))
 @end lisp
 
 @end table
