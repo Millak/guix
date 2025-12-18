@@ -7853,18 +7853,31 @@ with sensible defaults out of the box.")
 (define-public python-clickgen
   (package
     (name "python-clickgen")
-    (version "2.1.3")
+    (version "2.2.5")
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "clickgen" version))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/ful1e5/clickgen")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "010j9zz0gd2za5l4hibicypnfw721x0gxp3rr0329bc97vw5maha"))))
-    (build-system python-build-system)
+                "0gdbkdw9b52wbb0bbhs09bdfyfq979kvlv5sg5p70y3jal9j8lf8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; XXX: See: <https://github.com/ful1e5/clickgen/issues/65>.
+      '(list "-k" "not test_clickgen_raises")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
-     (list python-pillow python-toml python-numpy python-attrs))
-    (inputs (list libx11 libpng libxcursor))
-    (native-inputs (list python-wheel))
+     (list python-attrs
+           python-numpy
+           python-pillow
+           python-pyyaml
+           python-toml))
     (home-page "https://github.com/ful1e5/clickgen")
     (synopsis "The hassle-free cursor building toolbox")
     (description
@@ -19809,7 +19822,7 @@ text.")
 
                           ;; XXX: Probably will be resolved in the next
                           ;; release, as botocore's refresh pace is fast.
-                          ;; 
+                          ;;
                           ;; botocore.exceptions.UnknownServiceError: Unknown
                           ;; service: <...>
                           "test_create_app_response"
