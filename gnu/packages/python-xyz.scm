@@ -7512,13 +7512,21 @@ automatic tab-completion, color support, logging to @code{std}, etc.")
   (package
     (name "python-extract-dtb")
     (version "1.2.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "extract-dtb" version))
-              (sha256
-               (base32
-                "1a7rfvwisgri8b00pch6d9pfrl8s93w8g09yzxf4xh0qvmsxmh43"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/PabloCastellano/extract-dtb/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1kkfy8sh6bhh1w5lczaw1nym278q5xp5pxjaahwrl3zfddhdm655"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))                ;no tests
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/PabloCastellano/extract-dtb/")
     (synopsis "Extract device tree blobs (DTB) from kernel images")
     (description
