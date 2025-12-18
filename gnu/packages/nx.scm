@@ -22,6 +22,7 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -172,7 +173,8 @@ Helper script
              "https://code.x2go.org/releases/source/x2goclient/x2goclient-"
              version ".tar.gz"))
        (sha256
-        (base32 "0g6aba8kpsixq4486a8mga945lp31y0mzwa2krs5qqiiip3v72xb"))))
+        (base32 "0g6aba8kpsixq4486a8mga945lp31y0mzwa2krs5qqiiip3v72xb"))
+       (patches (search-patches "x2goclient-fix-makefile.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list

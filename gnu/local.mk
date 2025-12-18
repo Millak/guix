@@ -2488,6 +2488,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/wordnet-CVE-2008-3908-pt1.patch			\
   %D%/packages/patches/wordnet-CVE-2008-3908-pt2.patch			\
   %D%/packages/patches/wpa-supplicant-dbus-group-policy.patch		\
+  %D%/packages/patches/x2goclient-fix-makefile.patch            \
   %D%/packages/patches/x265-arm-flags.patch			\
   %D%/packages/patches/x265-4-arm-flags.patch			\
   %D%/packages/patches/xdg-desktop-portal-disable-portal-tests.patch\
