@@ -441,7 +441,7 @@ Services
 * Power Management Services::   Extending battery life, etc.
 * Audio Services::              The MPD.
 * Virtualization Services::     Virtualization services.
-* Version Control Services::    Providing remote access to Git repositories.
+* Version Control Services::    Software version control servers.
 * Game Services::               Game servers.
 * PAM Mount Service::           Service to mount volumes when logging in.
 * Guix Services::               Services relating specifically to Guix.
@@ -19918,7 +19918,7 @@ declaration.
 * Power Management Services::   Extending battery life, etc.
 * Audio Services::              The MPD.
 * Virtualization Services::     Virtualization services.
-* Version Control Services::    Providing remote access to Git repositories.
+* Version Control Services::    Software version control servers.
 * Game Services::               Game servers.
 * PAM Mount Service::           Service to mount volumes when logging in.
 * Guix Services::               Services relating specifically to Guix.
@@ -42369,13 +42369,30 @@ How often to run the node cleaning job.  The default is once per day, at
 @node Version Control Services
 @subsection Version Control Services
 
-The @code{(gnu services version-control)} module provides a service to
-allow remote access to local Git repositories.  There are three options:
-the @code{git-daemon-service-type}, which provides access to repositories via
-the @code{git://} unsecured TCP-based protocol, extending the
-@code{nginx} web server to proxy some requests to
-@code{git-http-backend}, or providing a web interface with
-@code{cgit-service-type}.
+The @code{(gnu services version-control)} module provides services to
+allow remote access to local Git and Fossil repositories.
+For Git, the following services are available.
+
+@itemize
+@item The @ref{git-daemon-service-type, Git daemon service}
+provides access via the unsecured TCP-based @code{git://} protocol.
+@item The @code{nginx} web server can proxy some requests
+to @ref{git-http-backend, Git Smart HTTP backend}.
+@item The @ref{cgit-service-type, cgit service} also implements
+Git Smart HTTP protocol, in addition to a web interface.
+@item The @ref{gitolite-service-type, Gitolite service} offers access
+through SSH.  The @ref{gitile-service-type, Gitile service}
+can be used along side it to provide a web interface.
+@end itemize
+
+Fossil repositories are served along with a web interface
+by the @ref{fossil-service-type, Fossil service}.
+
+@anchor{git-daemon-service-type}
+@subsubheading Git Daemon Service
+
+@cindex Git daemon service
+@cindex Git, hosting
 
 @defvar git-daemon-service-type
 Type for a service that runs @command{git daemon}, a simple TCP server to
@@ -42434,7 +42451,15 @@ Extra options that will be passed to @command{git daemon}.@footnote{Run
 The @code{git://} protocol lacks authentication.  When you pull from a
 repository fetched via @code{git://}, you don't know whether the data you
 receive was modified or is even coming from the specified host, and your
-connection is subject to eavesdropping.  It's better to use an authenticated
+connection is subject to eavesdropping.
+
+@anchor{git-http-backend}
+@subsubheading Git HTTP Backend
+
+@cindex Git HTTP backend
+@cindex Git, hosting
+
+It's better to use an authenticated
 and encrypted transport, such as @code{https}.  Although Git allows you
 to serve repositories using unsophisticated file-based web servers,
 there is a faster protocol implemented by the @code{git-http-backend}
@@ -42509,6 +42534,7 @@ HTTPS@.  You will also need to add an @code{fcgiwrap} proxy to your
 system services.  @xref{Web Services}.
 @end deffn
 
+@anchor{cgit-service-type}
 @subsubheading Cgit Service
 
 @cindex Cgit service
@@ -43461,6 +43487,7 @@ could instantiate a cgit service like this:
           (cgitrc "")))
 @end lisp
 
+@anchor{gitolite-service-type}
 @subsubheading Gitolite Service
 
 @cindex Gitolite service
@@ -43640,6 +43667,7 @@ Extra content to add verbatim into the git configuration file.
 @end table
 @end deftp
 
+@anchor{gitile-service-type}
 @subsubheading Gitile Service
 
 @cindex Gitile service
