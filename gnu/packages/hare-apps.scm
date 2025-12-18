@@ -61,6 +61,28 @@ The state will transition following every accepted transition.  If there is no
 more available transition, the state goes back to the initial position.")
     (license license:agpl3+)))
 
+(define-public hare-lsp
+  (package
+    (name "hare-lsp")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~whynothugo/hare-lsp")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h763ynv1zh2ili26bkd9anmv8srva63rwpv2avnmimia1bvsx81"))))
+    (build-system hare-build-system)
+    (inputs (list hare-json))
+    (supported-systems %hare-supported-systems)
+    (home-page "https://git.sr.ht/~whynothugo/hare-lsp/")
+    (synopsis "Language server implementation for Hare")
+    (description "This package provides a language server implementation for
+Hare.")
+    (license license:isc)))
+
 (define-public sxmobar
   (package
     (name "sxmobar")
