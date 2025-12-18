@@ -11752,9 +11752,6 @@ format.  It integrates perfectly with the GNOME desktop and provides an easy
 and uncluttered interface for the management of password databases.")
     (license license:gpl3+)))
 
-(define-deprecated-package passwordsafe
-  secrets)
-
 (define-public sound-juicer
   (package
     (name "sound-juicer")
