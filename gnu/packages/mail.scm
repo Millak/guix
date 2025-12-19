@@ -1833,7 +1833,7 @@ pairs have previously synchronized.")
 (define-public getmail6
   (package
     (name "getmail6")
-    (version "6.18.11")
+    (version "6.19.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1842,9 +1842,11 @@ pairs have previously synchronized.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dr2grcxnn21prv6dj8sd9c68zs1fxy00wc676rnghcs4yfnb78h"))))
-    (build-system python-build-system)
+                "04jjyjghw07yhk9hvjhhgfam26ia9xw44z32pd3lxc47p3x7ml2v"))))
+    (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ;tests require docker
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/getmail6/getmail6")
     (synopsis "Mail retriever")
     (description
