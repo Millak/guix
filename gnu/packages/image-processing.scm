@@ -180,7 +180,7 @@ Magnetic Resonance Imaging.")
 (define-public cimg
   (package
     (name "cimg")
-    (version "3.5.5")
+    (version "3.6.5")
     (source
      (origin
        (method git-fetch)
@@ -189,7 +189,7 @@ Magnetic Resonance Imaging.")
              (commit (string-append "v." version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01myf3bjbc46f977r7lvr9g1hcnpfygcv2xnqvhrl2nj7955sm5x"))))
+        (base32 "1zdw1mbwl2g0ka1gasq9l706aral0l2mfsc0vmvq2szn90l2i455"))))
     (build-system copy-build-system)
     (arguments
      (list
