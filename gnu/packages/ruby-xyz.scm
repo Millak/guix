@@ -184,6 +184,30 @@ libraries (OptionParser, HighLine), while providing many new features, and an
 elegant API.")
     (license license:expat)))
 
+(define-public ruby-completely
+  (package
+    (name "ruby-completely")
+    (version "0.7.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "completely" version))
+       (sha256
+        (base32 "00nakfa4yg4qj8m4ircg5mkr99xjzynrkisr5ihpbdpylsqgbf2f"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-colsole ruby-mister-bin))
+    (arguments
+     (list
+       #:tests? #f)) ; no tests
+    (native-inputs (list ruby-rspec))
+    (synopsis
+     "Generate Bash completion scripts using simple YAML configuration")
+    (description
+     "Command line utility and a Ruby library to generate Bash completion
+scripts from simple YAML configuration.")
+    (home-page "https://github.com/bashly-framework/completely")
+    (license license:expat)))
+
 (define-public ruby-docopt-ng
   (package
     (name "ruby-docopt-ng")
