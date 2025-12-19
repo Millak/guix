@@ -1390,9 +1390,10 @@ separately.")
               (sha256
                (base32
                 "1zp3a8mgqxn916fzj1v2yhgnl7v6s0vnd0qcghqs3qq648qmlwr5"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
+     (list #:tests? #f ;no tests
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-pass-refs
                  (lambda* (#:key inputs #:allow-other-keys)
@@ -1404,6 +1405,8 @@ separately.")
                                      "'"))
                      (("\\.password_store")
                       ".password-store")))))))
+    (native-inputs
+     (list python-setuptools))
     (inputs (list password-store))
     (propagated-inputs (list python-urwid))
     (home-page "https://github.com/OliverLew/cpass")
