@@ -1627,6 +1627,13 @@ to affiliated users who are not in the room.  This is a custom extension by
 Tigase to allow push notifications from MUCs to users who are not currently
 connected.")))
 
+(define-public prosody-rest
+  (package
+    (inherit (prosody-module "mod_rest"))
+    (synopsis "REST API support")
+    (description "This module adds an API for sending and receiving XMPP
+stanzas.")))
+
 (define-public prosody-smacks
   (package
     (inherit (prosody-module "mod_smacks"))
