@@ -1,0 +1,22 @@
+Upstream-status: Not forwarded yet.
+
+diff -u /tmp/guix-build-ceph-20.3.0.drv-0/source/CMakeLists.txt /tmp/guix-build-ceph-20.3.0.drv-0/source/CMakeLists.txt.orig
+--- a/CMakeLists.txt	2025-12-19 13:14:44.050684729 +0900
++++ b/CMakeLists.txt	2025-12-19 13:15:06.218810041 +0900
+@@ -356,12 +356,12 @@
+   find_package(QatDrv REQUIRED COMPONENTS qat_s usdm_drv_s)
+   set(HAVE_QAT TRUE)
+ elseif(WITH_QATLIB)
+-  if(NOT WITH_SYSTEM_QAT)
++  if(NOT WITH_SYSTEM_QATLIB)
+     include(BuildQAT)
+     build_qat()
+   endif()
+   find_package(QAT REQUIRED)
+-  if(NOT WITH_SYSTEM_QAT)
++  if(NOT WITH_SYSTEM_QATLIB)
+     add_dependencies(QAT::qat qatlib_ext)
+     add_dependencies(QAT::usdm qatlib_ext)
+   endif()
+
+Diff finished.  Fri Dec 19 13:15:39 2025

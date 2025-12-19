@@ -87,198 +87,207 @@
 (define-public ceph
   (package
     (name "ceph")
-    (version "17.2.9")
+    (version "20.3.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://download.ceph.com/tarballs/ceph-"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/ceph/ceph")
+                     (commit (string-append "v" version))
+                     ;; There are many source bundled libraries, and the build
+                     ;; system does not yet support using dependencies from
+                     ;; the system for all of them.
+                     (recursive? #t)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "04m4zxp9hjvppl679ilnr90zr6ij08wr4ralr0whzldy0fskc8hp"))
-              (patches
-               (search-patches
-                "ceph-disable-cpu-optimizations.patch"
-                "ceph-fix-for-newer-boost.patch" ))
+                "08k7f1nj3g1mb7h8vgw71xgpslz0dhqwr6ldzxs3naf2f73x0mh8"))
+              (patches (search-patches "ceph-fix-cmake.patch"))
               (modules '((guix build utils)))
               (snippet
+               ;; Delete bundled libraries where feasible.
                '(for-each delete-file-recursively
-                          '(;; TODO: Unbundle these:
-                            "src/arrow"
+                          '( ;; TODO: Unbundle these:
                             ;;"src/isa-l"
-                            ;;"src/lua"
                             ;;"src/xxHash"
-                            ;;"src/zstd"
-                            ;;"src/civetweb"
+                            "src/BLAKE3"
+                            "src/arrow"
                             "src/c-ares"
                             "src/fmt"
                             "src/googletest"
-                            "src/rapidjson"
+                            "src/jaegertracing"
+                            "src/qatlib"
+                            "src/qatzip"
                             "src/spdk"
                             "src/rocksdb"
-                            "src/boost"
-                            "src/utf8proc")))))
+                            "src/utf8proc"
+                            "src/zstd"
+                            "systemd")))))
     (build-system cmake-build-system)
     (arguments
      (list
-      #:parallel-build? #f ;because mgr_legacy_options.h is not built in time
       #:configure-flags
-      '(let* ((out (assoc-ref %outputs "out"))
-              (lib (assoc-ref %outputs "lib"))
-              (libdir (string-append lib "/lib")))
-         (list (string-append "-DCMAKE_INSTALL_PREFIX=" out)
-               (string-append "-DCMAKE_INSTALL_LIBDIR=" libdir)
-               (string-append "-DCMAKE_INSTALL_INCLUDEDIR="
-                              lib "/include")
-               ;; We need both libdir and libdir/ceph in RUNPATH.
-               (string-append "-DCMAKE_INSTALL_RPATH="
-                              libdir ";" libdir "/ceph")
-               (string-append "-DCMAKE_INSTALL_SYSCONFDIR=" out "/etc")
-               (string-append "-DCMAKE_INSTALL_DATADIR=" lib "/share")
-               (string-append "-DCMAKE_INSTALL_MANDIR=" out "/share/man")
-               (string-append "-DCMAKE_INSTALL_DOCDIR=" out "/share/ceph/doc")
-               (string-append "-DCMAKE_INSTALL_LIBEXECDIR=" out "/libexec")
-               (string-append "-DKEYUTILS_INCLUDE_DIR="
-                              (assoc-ref %build-inputs "keyutils") "/include")
-               (string-append "-DXFS_INCLUDE_DIR="
-                              (assoc-ref %build-inputs "xfsprogs") "/include")
-               "-DCMAKE_INSTALL_LOCALSTATEDIR=/var"
-               "-DBUILD_SHARED_LIBS=ON"
-               "-DWITH_SYSTEM_ARROW=ON"
-               "-DWITH_SYSTEM_BOOST=ON"
-               "-DWITH_SYSTEM_ROCKSDB=ON"
-               "-DWITH_SYSTEM_UTF8PROC=ON"
+      #~(list (string-append "-DCMAKE_INSTALL_RPATH="
+                             #$output "/lib" ";" #$output "/lib/ceph")
+              "-DENABLE_GIT_VERSION=OFF"
+              "-DCMAKE_INSTALL_LOCALSTATEDIR=/var"
+              "-DBUILD_SHARED_LIBS=ON"
+              "-DCEPHADM_BUNDLED_DEPENDENCIES=none"
+              "-DWITH_SYSTEM_ARROW=ON"
+              "-DWITH_SYSTEM_BOOST=ON"
+              "-DWITH_SYSTEM_FMT=ON"
+              #$@(if (target-x86-64?)
+                     #~("-DWITH_SYSTEM_QATLIB=ON"
+                        "-DWITH_SYSTEM_QATZIP=ON")
+                     #~())
+              "-DWITH_SYSTEM_LIBURING=ON"
+              "-DWITH_SYSTEM_ROCKSDB=ON"
+              "-DWITH_SYSTEM_UTF8PROC=ON"
+              "-DWITH_SYSTEM_ZSTD=ON"
 
-               ;; TODO: Enable these when available in Guix.
-               "-DWITH_MGR_DASHBOARD_FRONTEND=OFF" ;requires node + nodeenv
-               "-DWITH_BABELTRACE=OFF"
-               "-DWITH_LTTNG=OFF"
-               "-DWITH_SPDK=OFF"
-               "-DWITH_RADOSGW_AMQP_ENDPOINT=OFF"
+              ;; TODO: Enable these when available in Guix.
+              "-DWITH_MGR=OFF"        ;requires python-rook-client
+              "-DWITH_MGR_DASHBOARD_FRONTEND=OFF" ;requires node + nodeenv
+              "-DWITH_BABELTRACE=OFF"
+              "-DWITH_JAEGER=OFF"     ;requires bundled opentelemetry-cpp
+              "-DWITH_LTTNG=OFF"
+              "-DWITH_RADOSGW=OFF"    ;requires bundled libkmip and rgw
+              "-DWITH_SPDK=OFF"
+              "-DWITH_RADOSGW_AMQP_ENDPOINT=OFF"
 
-               ;; Use jemalloc instead of tcmalloc.
-               "-DALLOCATOR=jemalloc"
+              ;; Use jemalloc instead of tcmalloc.
+              "-DALLOCATOR=jemalloc"
 
-               ;; Don't install systemd unit files.
-               "-DWITH_SYSTEMD=OFF"
+              ;; Don't install systemd unit files.
+              "-DWITH_SYSTEMD=OFF"
 
-               ;; Do not bother building the tests; we are not currently running
-               ;; them, and they do not build with system googletest as of 14.2.5.
-               "-DWITH_TESTS=OFF"))
-       ;; FIXME: Some of the tests leak Btrfs subvolumes on Btrfs. See
-       ;; <https://bugs.gnu.org/29674> for details. Disable tests until
-       ;; resolved.
-       #:tests? #f
-       #:phases
-       `(modify-phases %standard-phases
+              ;; Do not bother building the tests; we are not currently running
+              ;; them, and they do not build with system googletest as of 14.2.5.
+              "-DWITH_TESTS=OFF")
+      ;; FIXME: Some of the tests leak Btrfs subvolumes on Btrfs. See
+      ;; <https://bugs.gnu.org/29674> for details. Disable tests until
+      ;; resolved.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unbundle-blake3
+            (lambda _
+              ;; Unbundle Blake3.
+              (substitute* "src/CMakeLists.txt"
+                (("add_subdirectory.*BLAKE3.*") ""))))
+          (add-after 'unpack 'relax-fmt-requirement
+            (lambda _
+              (substitute* "src/CMakeLists.txt"
+                (("11.1.4 REQUIRED")
+                 "<12 REQUIRED"))))
+          (add-after 'unpack 'fix-zstd-include
+            (lambda _
+              ;; See <https://tracker.ceph.com/issues/63194>.
+              (substitute* "src/compressor/zstd/ZstdCompressor.h"
+                (("#include \"zstd/lib/zstd.h\"")
+                 "#include \"zstd.h\""))))
+          (add-after 'unpack 'set-source-file-times-to-1980
+            (lambda _
+              (let ((circa-1980 (* 10 366 24 60 60)))
+                (for-each (lambda (f) (utime f circa-1980 circa-1980))
+                          (find-files "src")))))
+          (add-before 'build 'build-legacy-option-header
+            (lambda _
+              ;; Building this target in parallel causes races (see:
+              ;; <https://tracker.ceph.com/issues/63402>), so build it before
+              ;; the main build without parallelism.
+              (invoke "make" "legacy-option-headers")))
           (add-after 'unpack 'patch-source
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((out (assoc-ref outputs "out"))
-                    (lib (assoc-ref outputs "lib")))
-
-                (substitute* "src/rgw/store/dbstore/sqlite/CMakeLists.txt"
-                  (("add_library\\(sqlite_db \\$")
-                   "add_library(sqlite_db STATIC $"))
-                (substitute* "src/rgw/store/dbstore/CMakeLists.txt"
-                  (("add_library\\(dbstore \\$")
-                   "add_library(dbstore STATIC $")
-                  (("add_library\\(dbstore_lib \\$")
-                   "add_library(dbstore_lib STATIC $"))
-
-                (substitute* "cmake/modules/Distutils.cmake"
-                  ;; Prevent creation of Python eggs.
-                  (("setup.py install")
-                   "setup.py install --single-version-externally-managed --root=/")
-                  ;; Inject the -rpath linker argument when linking
-                  ;; Python C libraries so RUNPATH gets set up correctly.
-                  (("LDFLAGS=(.*)\n" _ flags)
-                   (string-append "LDFLAGS=\\\"" flags
-                                  " -Wl,-rpath=" lib "/lib\\\"\n")))
-
-                ;; Statically link libcrc32 because it does not get installed,
-                ;; yet several libraries end up referring to it.
-                (substitute* "src/common/CMakeLists.txt"
-                  (("add_library\\(crc32")
-                   "add_library(crc32 STATIC"))
-
-                (substitute* "udev/50-rbd.rules"
-                  (("/usr/bin/ceph-rbdnamer")
-                   (string-append out "/bin/ceph-rbdnamer"))))))
-          (add-before 'install 'set-install-environment
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (py3sitedir
-                      (string-append out "/lib/python"
-                                     ,(version-major+minor
-                                       (package-version python))
-                                     "/site-packages")))
-                ;; The Python install scripts refuses to function if
-                ;; the install directory is not on PYTHONPATH.
-                (setenv "PYTHONPATH" py3sitedir))))
+            (lambda _
+              (substitute* "cmake/modules/Distutils.cmake"
+                ;; Prevent creation of Python eggs.
+                (("setup.py install")
+                 "setup.py install --single-version-externally-managed --root=/")
+                ;; Inject the -rpath linker argument when linking
+                ;; Python C libraries so RUNPATH gets set up correctly.
+                (("LDFLAGS=(.*)\n" _ flags)
+                 (string-append "LDFLAGS=\\\"" flags
+                                " -Wl,-rpath=" #$output "/lib\\\"\n")))
+              (substitute* "udev/50-rbd.rules"
+                (("/usr/bin/ceph-rbdnamer")
+                 (string-append #$output "/bin/ceph-rbdnamer")))))
           (add-after 'install 'wrap-python-scripts
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (scripts '("bin/ceph" "bin/cephfs-top" "sbin/ceph-volume"))
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((scripts '("bin/ceph" "bin/cephfs-top" "sbin/ceph-volume"))
                      (dependencies (map (lambda (input)
                                           (assoc-ref inputs input))
                                         '("python-prettytable" "python-pyyaml")))
-                     (sitedir (lambda (package)
-                                (string-append package
-                                               "/lib/python"
-                                               ,(version-major+minor
-                                                 (package-version python))
-                                               "/site-packages")))
-                     (PYTHONPATH (string-join (map sitedir (cons out dependencies))
-                                              ":")))
-                (for-each (lambda (executable)
-                            (wrap-program (string-append out "/" executable)
-                              `("GUIX_PYTHONPATH" ":" prefix (,PYTHONPATH))))
+                     (site (lambda (package)
+                             (string-append package
+                                            "/lib/python"
+                                            #$(version-major+minor
+                                               (package-version
+                                                (this-package-input "python")))
+                                            "/site-packages")))
+                     (PYTHONPATH (string-join
+                                  (map site (cons #$output dependencies))
+                                  ":")))
+                (for-each (lambda (s)
+                            (wrap-program (string-append #$output "/" s)
+                              `("GUIX_PYTHONPATH" prefix (,PYTHONPATH))))
                           scripts)))))))
-    (outputs
-     '("out" "lib"))
     (native-inputs
-     (list git-minimal gperf pkg-config python-cython python-sphinx yasm))
-    (inputs
-     (list `(,apache-thrift "lib")
-           `(,apache-thrift "include")
-           `(,apache-arrow-for-ceph "lib")
-           bash-minimal
-           boost
-           curl
-           cryptsetup-minimal
-           eudev
-           expat
-           fcgi
-           fmt-8
-           fuse-2
-           icu4c
-           jemalloc
-           keyutils
-           leveldb
-           libaio
-           libatomic-ops
-           libcap-ng
-           libnl
-           librdkafka
-           lua
-           lz4
-           oath-toolkit
-           openldap
-           openssl
-           ncurses
-           nss
-           python-prettytable           ;used by ceph_daemon.py
-           python-pyyaml                ;from python-common/setup.py
+     (list pkg-config
            python
-           rapidjson
-           rdma-core
-           rocksdb
-           snappy
-           sqlite
-           utf8proc
-           util-linux
-           `(,util-linux "lib")
-           xfsprogs
-           zlib))
+           python-cython
+           python-sphinx
+           yasm))
+    (inputs
+     (append
+      (if (target-x86-64?)
+          (list qatlib qatzip)
+          '())
+      (list `(,apache-thrift "lib")
+            `(,apache-thrift "include")
+            `(,apache-arrow "lib")
+            `(,util-linux "lib")
+            bash-minimal
+            boost-1.88
+            cryptsetup-minimal
+            curl
+            eudev
+            expat
+            fcgi
+            fmt-11
+            fuse
+            icu4c
+            jemalloc
+            keyutils
+            leveldb
+            libaio
+            libatomic-ops
+            libcap                      ;for src/extblkdev
+            libcap-ng
+            libblake3
+            libnbd
+            libnl
+            librdkafka
+            liburing
+            lmdb
+            lua
+            lz4
+            ncurses
+            nss
+            oath-toolkit
+            openldap
+            openssl
+            python
+            python-prettytable          ;used by ceph_daemon.py
+            python-pyyaml               ;from python-common/setup.py
+            rapidjson
+            rdma-core
+            rocksdb-for-ceph
+            snappy
+            sqlite
+            utf8proc
+            util-linux
+            xfsprogs
+            zlib
+            `(,zstd "lib"))))
     (home-page "https://ceph.com/")
     (synopsis "Distributed object store and file system")
     (description
@@ -291,10 +300,10 @@ storage protocols (S3, NFS, and others) through the RADOS gateway.")
     ;; not use the GPL code. The source archive includes a number of files
     ;; carrying other licenses; consult COPYING for more information. Note
     ;; that COPYING does not cover third-party bundled software.
-    (license (list license:lgpl2.1 license:gpl2  ;some files are 'or later'
-                   license:cc-by-sa3.0           ;documentation
-                   license:bsd-3                 ;isa-l,jerasure,++
-                   license:expat))))             ;civetweb,java bindings
+    (license (list license:lgpl2.1 license:gpl2 ;some files are 'or later'
+                   license:cc-by-sa3.0          ;documentation
+                   license:bsd-3                ;isa-l,jerasure,++
+                   license:expat))))            ;java bindings
 
 (define-public libnbd
   (package
