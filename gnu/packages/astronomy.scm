@@ -6710,32 +6710,34 @@ and the use of a modern programming language, techniques, and libraries
 (define-public python-pixell
   (package
     (name "python-pixell")
-    (version "0.31.3")
+    (version "0.31.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pixell" version))
        (sha256
-        (base32 "0ff9vk6lv3rvv6kgh0pnk9zrca81q4wx12c6dwlqh4l61bqsb8ch"))))
+        (base32 "0i09gv19mpw0mr3l9yyvmq7x2ln57fmc87qz863d9blw3g1rj5za"))))
     (build-system pyproject-build-system)
+    ;; tests: 41 passed, 2 warnings
     (native-inputs
      (list gfortran
            meson-python
            perl ; fortran/Makefile
            pkg-config
            python-cython
-           python-pytest))
+           python-h5py
+           python-pytest
+           python-pyyaml))
     (propagated-inputs
      (list python-astropy
            python-dateutil
            python-ducc0
-           python-h5py
+           python-ephem
            python-healpy
            python-matplotlib
            python-numba
            python-numpy
            python-pillow
-           python-pyyaml
            python-scipy))
     (home-page "https://pixell.readthedocs.io/")
     (synopsis "Tectangular pixel map manipulation and harmonic analysis")
