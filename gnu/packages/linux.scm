@@ -12199,7 +12199,7 @@ directly by @code{make localmodconfig} as described above.")
 (define-public kernel-hardening-checker
   (package
     (name "kernel-hardening-checker")
-    (version "0.6.10")
+    (version "0.6.17.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -12208,8 +12208,12 @@ directly by @code{make localmodconfig} as described above.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01p5wcyj4w5c4264abymhvpai7bvfy8ivspgqnrmg33qplwxl443"))))
-    (build-system python-build-system)
+                "04r9bbayhs1ik84908q148k9djawy69zarxw0vc31dfbf64mni62"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no active tests, runtime only, see GitHub Actions
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/a13xp0p0v/kernel-hardening-checker")
     (synopsis
      "Tool for checking the security hardening options of the Linux kernel")
