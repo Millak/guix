@@ -498,14 +498,14 @@ or text interfaces) or as a C++ library.")
 (define-public flint
   (package
    (name "flint")
-   (version "3.3.1")
+   (version "3.4.0")
    (source
     (origin
       (method url-fetch)
       (uri (string-append "https://flintlib.org/download/flint-"
                           version ".tar.gz"))
       (sha256
-       (base32 "1yzasdcv90f6w926p9g92cli2daxvb0mh2s1w1qskkvn618hxmv4"))))
+       (base32 "0csa8n7d4l3mh892q36nhiv1r7bkb168vszz79p95bfy0jc6g5wl"))))
    (build-system gnu-build-system)
    (propagated-inputs
     (list gmp mpfr)) ; header files included by flint.h or mpfr_mat.h
@@ -528,6 +528,18 @@ fast arithmetic.")
    (home-page "https://flintlib.org/")
    (properties
     '((release-monitoring-url . "http://flintlib.org/downloads.html")))))
+
+(define-public flint-3.3
+  (package
+   (inherit flint)
+   (version "3.3.1")
+   (source
+    (origin
+      (method url-fetch)
+      (uri (string-append "https://flintlib.org/download/flint-"
+                          version ".tar.gz"))
+      (sha256
+       (base32 "1yzasdcv90f6w926p9g92cli2daxvb0mh2s1w1qskkvn618hxmv4"))))))
 
 (define-public python-flint
   (package
@@ -553,7 +565,7 @@ fast arithmetic.")
            python-pytest))
     (inputs
      (list gmp
-           flint))
+           flint-3.3))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://fredrikj.net/python-flint/")
