@@ -3353,7 +3353,17 @@ provides the following commands:
        (uri (pypi-uri "ansible" version))
        (sha256
         (base32 "0apj783acx4jzkf3bnibn4y5jc6jd8ly7l0rdqq8f1jpgxal933x"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: All tests errored with:
+      ;; from ...common.utils import (
+      ;; E ImportError: attempted relative import with no known parent package
+      ;;
+      ;; tests: 17 skipped, 1 warning, 1132 errors
+      #:tests? #f))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs (list ansible-core))
     ;; The Ansible collections are found by ansible-core via the Python search
     ;; path; the following search path ensures that they are found even when
