@@ -2046,7 +2046,7 @@ bindings for Python, Java, OCaml and more.")
 (define-public python-platypush
   (package
     (name "python-platypush")
-    (version "1.3.7")
+    (version "1.3.14")
     (source
      (origin
        (method git-fetch)
@@ -2055,19 +2055,12 @@ bindings for Python, Java, OCaml and more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nh7107j4j0l65bsqpff0ar1609n5a5lh78d8wjsmylwyg9j9kyk"))))
+        (base32 "1nmpdcjamc2nw1kq4m4kvypmilvrq59xh099cnlg0hlkrly0kigc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "requirements.txt"
-                (("zipp>=3.19.1")
-                 "zipp")
-                (("urllib3>=2.2.2")
-                 "urllib3"))))
           (add-before 'check 'pre-check
             (lambda _
               (setenv "HOME" "/tmp"))))))
