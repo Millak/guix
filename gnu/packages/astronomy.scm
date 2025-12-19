@@ -4636,7 +4636,7 @@ tools for astronomers.")
 (define-public python-eventio
   (package
     (name "python-eventio")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch) 
@@ -4645,22 +4645,16 @@ tools for astronomers.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10d2gmniwrljwgrs936v06gf5biz6h5zsjrc6kqk9qb1rcrb6gpw"))))
+        (base32 "0g548pca43iwpq1641w3jzrb3rk2kqjf5gcjbcymfpdif1982zv2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 163 passed, 3 skipped, 4 xfailed
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-env-version
             (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
-          (add-before 'build 'relax-gcc-14-strictness
-            (lambda _
-              (setenv "CFLAGS" (string-join
-                                (list "-g" "-O2"
-                                      "-Wno-error=implicit-function-declaration"
-                                      "-Wno-error=int-conversion")
-                                " ")))))))
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-cython
            python-numpy
