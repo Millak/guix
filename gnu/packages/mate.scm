@@ -972,7 +972,7 @@ hypertext navigation, and table-of-contents bookmarks.")
            startup-notification))
     (native-search-paths
      (list (search-path-specification
-             (variable "CAJA_EXTENSIONDIR")
+             (variable "CAJA_EXTENSION_DIRS")
              (files (list "lib/caja/extensions-2.0/**")))))
     (home-page "https://mate-desktop.org/")
     (synopsis "File manager for the MATE desktop")
