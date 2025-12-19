@@ -50,6 +50,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages aidc)
+  #:use-module (gnu packages assembly)
   #:use-module (gnu packages attr)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
@@ -793,6 +794,47 @@ or millennia for an attacker to try them all.
 data on your platform, so the seed itself will be as random as possible.
 @end enumerate\n")
     (license license:artistic2.0)))
+
+(define-public qatlib
+  (package
+    (name "qatlib")
+    (version "25.08.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/intel/qatlib/")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hbhrj0wlr68by7gdvsw4nh35rwg4yngn3m7awkx799pbqsw4iyc"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags #~(list "--disable-static") ;avoid large .a
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'bootstrap
+                 (lambda _
+                   ;; The script has a broken shebang (see:
+                   ;; <https://github.com/intel/qatlib/issues/128>).
+                   (invoke "sh" "autogen.sh"))))))
+    (native-inputs (list autoconf autoconf-archive automake libtool nasm))
+    (inputs (list numactl openssl zlib))
+    (propagated-inputs (list openssl))  ;in 'Requires' of libqat.pc
+    (home-page "https://github.com/intel/qatlib")
+    (synopsis "Intel QuickAssist Technology Library (QATlib)")
+    (description "Intel QuickAssist Technology provides hardware acceleration for
+offloading security, authentication and compression services from the CPU,
+thus significantly increasing the performance and efficiency of standard
+platform solutions.  Its services include symmetric encryption and
+authentication, asymmetric encryption, digital signatures, RSA, DH and ECC,
+and lossless data compression.  This package provides user space libraries
+that allow access to Intel QuickAssist devices and expose the Intel
+QuickAssist APIs and sample codes.")
+    (license license:bsd-3)
+    ;; This package only supports hardware that exists on the x86_64 platform,
+    ;; and is not portable.
+    (supported-systems (list "x86_64-linux"))))
 
 (define-public crypto++
   (package
