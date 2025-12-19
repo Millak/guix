@@ -139,6 +139,62 @@
 It uses pandoc as back-end for parsing Markdown.")
     (license license:gpl3)))
 
+(define-public blanket
+  (package
+    (name "blanket")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rafaelmardojai/blanket/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1inqb8z2vbmfybcrqbla76sny7cg2qz932agynqj4pn9a3zwnw9f"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'glib-or-gtk-wrap 'wrap-libs
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((gi-typelib-path   (getenv "GI_TYPELIB_PATH"))
+                    (gst-plugin-path   (getenv "GST_PLUGIN_SYSTEM_PATH"))
+                    (python-path       (getenv "GUIX_PYTHONPATH")))
+                (wrap-program (search-input-file outputs "/bin/blanket")
+                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
+                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
+                  `("GUIX_PYTHONPATH" ":" prefix (,python-path)))))))))
+    (native-inputs
+     (list blueprint-compiler
+           desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           `(,gtk+ "bin")
+           pkg-config))
+    (inputs
+     (list appstream-glib
+           bash-minimal
+           gsettings-desktop-schemas
+           gst-plugins-bad
+           gst-plugins-good             ;for ScaleTempo plugin
+           gtk
+           libhandy
+           libadwaita
+           python
+           python-gst
+           python-pygobject))
+    (home-page "https://github.com/rafaelmardojai/blanket")
+    (synopsis "Ambient sound and noise player")
+    (description
+     "Blanket provides different ambient sounds and types of noise to listen
+to with the goal of improving your focus and enhancing your productivity.
+You can also use it to fall asleep in a noisy environment.")
+    (license license:gpl3+)))
+
 (define-public deja-dup
   (package
     (name "deja-dup")
