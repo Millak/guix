@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2013, 2014, 2020 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2013, 2014, 2020, 2025 Ludovic Courtès <ludo@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -85,3 +85,8 @@ sed -i "$sig" -e's/^0 //g'
 echo "verify $(cat $sig)" | guix authenticate
 hash2="$(echo "verify $(cat $sig)" | guix authenticate | cut -f2 -d ' ')"
 test "$(echo $hash2 | cut -d : -f 2)" = "$hash"
+
+# Make sure an error is properly reported for unreadable key pairs, with exit
+# code zero (the process would keep running commands on standard input).
+echo "sign 9:/dev/null $hash_len:$hash" | guix authenticate
+test $(echo "sign 9:/dev/null $hash_len:$hash" | guix authenticate | cut -f1 -d ' ') = 500

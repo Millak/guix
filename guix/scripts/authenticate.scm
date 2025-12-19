@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2017, 2020, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -196,20 +196,23 @@ Sign data or verify signatures.  This tool is meant to be used internally by
            ;; Read a request on standard input and reply.
            (match (read-command (current-input-port))
              (("sign" signing-key (= base16-string->bytevector hash))
-              (let* ((key-pairs keys
-                                (match (vhash-assoc signing-key key-pairs)
-                                  ((_ . keys)
-                                   (values key-pairs keys))
-                                  (#f
-                                   (let ((keys (load-key-pair signing-key)))
-                                     (values (vhash-cons signing-key keys
-                                                         key-pairs)
-                                             keys))))))
-                (with-reply (canonical-sexp->string
-                             (match keys
-                               ((public . secret)
-                                (sign-with-key public secret hash)))))
-                (loop key-pairs)))
+              (let ((cached-keys (match (vhash-assoc signing-key key-pairs)
+                                   ((_ . keys) keys)
+                                   (#f #f)))
+                    (new-keys #f))
+                (with-reply (begin
+                              (unless cached-keys
+                                ;; Delay 'load-key-pair' call so that failure
+                                ;; to load keys is reported via 'with-reply'.
+                                (set! new-keys (load-key-pair signing-key)))
+                              (canonical-sexp->string
+                               (match (or cached-keys new-keys)
+                                 ((public . secret)
+                                  (sign-with-key public secret hash))))))
+                (loop (if new-keys
+                          (vhash-cons signing-key new-keys
+                                      key-pairs)
+                          key-pairs))))
              (("verify" signature)
               (with-reply (bytevector->base16-string
                            (validate-signature
