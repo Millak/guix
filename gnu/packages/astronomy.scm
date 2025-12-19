@@ -7217,7 +7217,7 @@ and Sensitivities.")
 (define-public python-pynbody
   (package
     (name "python-pynbody")
-    (version "2.3.3")
+    (version "2.4.0")
     (source
      (origin
        (method git-fetch)
@@ -7226,7 +7226,7 @@ and Sensitivities.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "004aq98f65qk7wy0nvm0a71mgvlcn06r6khiblpi2j249zvicqgf"))
+        (base32 "0a0m42mvdnmlkm8q6704xamnim1q5wkw29p89ikj1axpl2mmq0d3"))
        (modules '((guix build utils)))
        (snippet
         ;; Symlink goes to not existing directory.
@@ -7235,7 +7235,7 @@ and Sensitivities.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 91 passed, 6 skipped, 12 deselected
+      ;; tests: 92 passed, 6 skipped, 10 deselected
       #:test-flags
       ;; XXX: testdata is distributed via Zenodo
       ;; <https://zenodo.org/records/17084976> with total size more than 2GiB,
@@ -7270,6 +7270,7 @@ and Sensitivities.")
                             "ramses_new_ptcl_format_test.py"
                             "ramses_test.py"
                             "rockstar_test.py"
+                            "schmidtlaw_test.py"
                             "snapshot_test.py"
                             "sph_image_test.py"
                             "subfind_test.py"
@@ -7307,8 +7308,9 @@ and Sensitivities.")
            python-h5py
            python-matplotlib
            python-numpy
+           python-osfclient
            python-scipy))
-    (home-page "https://pynbody.github.io/pynbody/index.html")
+    (home-page "https://pynbody.readthedocs.io/latest/")
     (synopsis "Light-weight astronomical N-body/SPH analysis for python")
     (description
      "@code{Pynbody} is an analysis framework for N-body and hydrodynamic
