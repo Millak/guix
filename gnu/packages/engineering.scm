@@ -46,6 +46,7 @@
 ;;; Copyright © 2025 Matthew Elwin <elwin@northwestern.edu>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2025 bdunahu <bdunahu@operationnull.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1032,6 +1033,62 @@ user-level language.")
 
       ;; Mark as tunable to take advantage of SIMD code in Eigen.
       (properties '((tunable? . #t))))))
+
+(define-public iaito
+  ;; Release versions are currently out of sync with radare2,
+  ;; use most recent commit.
+  (let ((commit "27cdc1793c2f5bf71c6f2ef5116f0bfb91edd730")
+        (revision "1"))
+    (package
+      (name "iaito")
+      (version (git-version "6.0.4" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/radareorg/iaito")
+                       (commit commit)))
+                (sha256
+                 (base32
+                  "0bwjxv73nsd06al2a40r5gvm99kzlq7f7q7ial9189awlnsbnwlw"))
+                (file-name (git-file-name name version))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f ;no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; The build system assumes the sdb lib is installed alongside
+            ;; radare2. We already patch the radare2 package to use a
+            ;; system-installed sdb rather than install its own, so we must
+            ;; propagate those changes here.
+            (add-before 'configure 'add-sdb-libs
+              (lambda _
+                (substitute* '("./src/lib_radare2.pri")
+                  (("pkg-config --libs r_core" all)
+                   (string-append all " sdb")))))
+            (replace 'configure
+              (lambda _
+                ;; Does not recognize "--enable-fast-install".
+                (invoke "./configure"
+                        (string-append "--prefix=" #$output)))))))
+      (inputs
+       (list capstone
+             libuv
+             libzip
+             lz4
+             openssl
+             qtbase
+             qtsvg
+             radare2
+             sdb))
+      (native-inputs
+       (list pkg-config python-minimal-wrapper))
+      (home-page "https://github.com/radareorg/iaito")
+      (synopsis "Official radare2 GUI")
+      (description "Iaito is the official graphical interface for radare2, a
+libre reverse engineering framework.  Iaito focuses on simplicity, parity with
+commands, features, and keybindings.")
+      (license license:gpl3+))))
 
 (define-public inspekt3d
   (let ((commit "703f52ccbfedad2bf5240bf8183d1b573c9d54ef")
