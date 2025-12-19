@@ -2403,6 +2403,47 @@ well as potentially any library which conforms to a standard API. See the
 documentation for more information.")
     (license license:expat)))
 
+(define-public python-osfclient
+  (package
+    (name "python-osfclient")
+    (version "0.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/osfclient/osfclient")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ympjh028xgwkzvhwqa31rack1h8nni7zzn2alp1819m4pm8hysn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; 2 tests fail with assertion not equal:
+      ;; AssertionError: assert 16 == (4 + (4 * 2))
+      ;; See: <https://github.com/osfclient/osfclient/issues/214>.
+      #~(list "-k"
+              (string-append "not test_recursive_upload"
+                             " and not nottest_recursive_upload_with_subdir"))))
+    (native-inputs
+     (list python-pytest
+           python-mock
+           python-setuptools))
+    (propagated-inputs
+     (list python-requests
+           python-six
+           python-tqdm))
+    (home-page "https://github.com/osfclient/osfclient")
+    (synopsis "Python library and command-line client for file storage on OSF")
+    (description
+     "The @code{osfclient} is a python library and a command-line client for
+up- and downloading files to and from @url{https://osf.io/, Open Science
+Framework} projects.  The @acronym{OSF, Open Science Framework} is an open
+source project which facilitates the open collaboration of researchers on the
+web, by sharing data and other research outputs.")
+    (license license:bsd-3)))
+
 (define-public python-osqp
   (package
     (name "python-osqp")
