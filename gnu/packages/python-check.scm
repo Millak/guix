@@ -4961,14 +4961,16 @@ Python objects.  It tries to use the objects available in the standard
 (define-public python-xvfbwrapper
   (package
     (name "python-xvfbwrapper")
-    (version "0.2.9")
+    (version "0.2.16")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "xvfbwrapper" version))
               (sha256
                (base32
-                "097wxhvp01ikqpg1z3v8rqhss6f1vwr399zpz9a05d2135bsxx5w"))))
-    (build-system python-build-system)
+                "01gqp740hkb2asnfpvb0fjpjqj88rylhx4b1r2c0wzrknwshp016"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools))
     (propagated-inputs (list xorg-server-for-tests))
     (home-page "https://github.com/cgoldberg/xvfbwrapper")
     (synopsis "Python module for controlling virtual displays with Xvfb")
