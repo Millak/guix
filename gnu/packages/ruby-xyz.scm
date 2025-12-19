@@ -247,6 +247,29 @@ a menu system for providing multiple options to the user.")
     (home-page "https://github.com/JEG2/highline")
     (license (list license:gpl2 license:ruby))))
 
+(define-public ruby-mister-bin
+  (package
+    (name "ruby-mister-bin")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "mister_bin" version))
+       (sha256
+        (base32 "1zz3vpy6xrgzln2dpxgcnrq1bpzz0syl60whqc9zf8j29mayw1fy"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      ;; no tests in Gem
+      #:tests? #f))
+    (native-inputs (list ruby-rspec))
+    (propagated-inputs (list ruby-colsole ruby-docopt-ng))
+    (synopsis "Easily add a command line interface to Ruby Gems")
+    (description "Develop rich, scalable and testable command line interfaces
+for Ruby Gems or other Ruby applications.")
+    (home-page "https://github.com/dannyben/mister_bin")
+    (license license:expat)))
+
 (define-public ruby-rsync
   (package
     (name "ruby-rsync")
