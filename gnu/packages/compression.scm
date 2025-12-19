@@ -84,6 +84,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages file)
@@ -95,6 +96,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages java)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages perl)
@@ -2509,6 +2511,46 @@ download times, and other distribution and storage costs.")
     ;; These CVEs have been fixed since 4.0.2 but are still linted.
     (properties `((lint-hidden-cve . ("CVE-2023-23456" "CVE-2023-23457"))))
     (license license:gpl2+)))
+
+(define-public qatzip
+  (package
+    (name "qatzip")
+    (version "1.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/intel/QATzip")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0c7kph69cf48gr97j3gzh1zwd58wxmp64vfv34z4r9ixj3lh6ziz"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'bootstrap
+                 (lambda _
+                   ;; The script has a broken shebang (see:
+                   ;; <https://github.com/intel/QATzip/issues/143>).
+                   (invoke "sh" "autogen.sh"))))))
+    (native-inputs (list autoconf automake libtool))
+    (inputs (list numactl qatlib))
+    (propagated-inputs (list lz4 zlib)) ;in Requires of qatzip.pc
+    (home-page "https://github.com/intel/QATzip")
+    (synopsis "Compression Library accelerated by Intel QuickAssist Technology")
+    (description "QATzip is a library which builds on top of the
+ Intel QuickAssist Technology user space library, to provide extended
+accelerated compression and decompression services by offloading the actual
+compression and decompression request(s) to the Intel Chipset Series.  QATzip
+produces data using the standard gzip format (RFC1952) with extended headers
+or lz4 blocks with lz4 frame format.  The data can be decompressed with a
+compliant gzip or lz4 implementation.  QATzip is designed to take full
+advantage of the performance provided by Intel QuickAssist Technology.")
+    (license license:bsd-3)
+    ;; This package only supports hardware that exists on the x86_64 platform,
+    ;; and is not portable.
+    (supported-systems (list "x86_64-linux"))))
 
 (define-public quazip
   (package
