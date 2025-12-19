@@ -132,20 +132,6 @@
                 (start-service 'networking))
              marionette))
 
-          (test-equal "avahi-resolve-host-name"
-            0
-            (marionette-eval
-             '(system*
-               "/run/current-system/profile/bin/avahi-resolve-host-name"
-               "-v" #$mdns-host-name)
-             marionette))
-
-          (test-equal "avahi-browse"
-            0
-            (marionette-eval
-             '(system* "/run/current-system/profile/bin/avahi-browse" "-avt")
-             marionette))
-
           (test-assert "getaddrinfo .local"
             ;; Wait for the 'avahi-daemon' service and perform a resolution.
             (match (marionette-eval
@@ -168,6 +154,19 @@
                (and (string=? (hostent:name result) #$mdns-host-name)
                     (= (hostent:addrtype result) AF_INET)))))
 
+          (test-equal "avahi-resolve host name"
+            0
+            (marionette-eval
+             '(system* "/run/current-system/profile/bin/avahi-resolve"
+                       "--verbose" "--name" #$mdns-host-name)
+             marionette))
+
+          (test-equal "avahi-browse"
+            0
+            (marionette-eval
+             '(system* "/run/current-system/profile/bin/avahi-browse"
+                       "--all" "--verbose" "--terminate")
+             marionette))
 
           (test-end))))
 
