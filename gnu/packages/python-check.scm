@@ -64,6 +64,7 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages django)
   #:use-module (gnu packages docker)
   #:use-module (gnu packages jupyter)
@@ -2390,23 +2391,41 @@ functions.")
 (define-public python-pytest-celery
   (package
     (name "python-pytest-celery")
-    (version "0.0.0")
+    (version "1.2.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-celery" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/celery/pytest-celery")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "01pli108qqiiyrn8qsqqabcpazrzj27r7cji9wgglsk76by61l6g"))))
-    (build-system python-build-system)
+        (base32 "04s5j456rl2lj4zxrzkynx1lb09bb8qrkn82pladj2q89pzqxh8k"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f ; no tests and circular dependency on python-celery
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'sanity-check)))) ; checks for celery
-    (home-page "https://github.com/graingert/pytest-celery")
-    (synopsis "Shim pytest plugin to enable @code{celery.contrib.pytest}")
+     (list
+      #:test-flags
+      ;; Disable tests that require docker/rabbit/redis running.
+      #~(list "--deselect=tests/integration"
+              "-k" "not rabbit and not redis")))
+    (native-inputs
+     (list python-celery-minimal
+           python-memcached             ;optional dependency, needed for tests
+           python-poetry-core
+           python-pytest
+           python-pytest-cov            ;coverage options in pyproject.toml
+           python-redis                 ;optional dependency, needed for tests
+           python-requests))            ;for python-docker
+    (propagated-inputs
+     (list python-psutil
+           python-pytest-docker-tools
+           python-tenacity))
+    (home-page "https://github.com/celery/pytest-celery")
+    (synopsis "Pytest plugin designed for Celery application developers")
     (description
-     "This package provides a shim Pytest plugin to enable a Celery marker.")
+     "This package enables dynamic orchestration of Celery environments for
+testing tasks in isolated conditions, leveraging Docker & pytest-docker-tools
+for environment simulation.")
     (license license:bsd-3)))
 
 (define-public python-pytest-check
