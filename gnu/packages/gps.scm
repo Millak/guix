@@ -205,7 +205,7 @@ coordinates as well as partial support for adjustments in global coordinate syst
 (define-public gpxsee
   (package
     (name "gpxsee")
-    (version "13.22")
+    (version "15.6")
     (source
      (origin
        (method git-fetch)
@@ -214,7 +214,7 @@ coordinates as well as partial support for adjustments in global coordinate syst
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15m5rqky2fwsq5n6x531350x39wwhpv1hz56m1yfaxj7acxhb2p5"))))
+        (base32 "0kfbx7vv740fkx96v3m1gywl0mdfs3mxq84hmipjksm59qi4s3yy"))))
     (build-system qt-build-system)
     (arguments
      (list
