@@ -120,6 +120,32 @@
         license:gpl2+
         license:gpl3+))
 
+(define-public ruby-colsole
+  (package
+    (name "ruby-colsole")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "colsole" version))
+       (sha256
+        (base32 "1fvf6dz2wsvjk7q24z0dm8lajq3p2l6i5ywf3mxj683rmhwq49bg"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "rspec" "-c" "spec")))))))
+    (native-inputs (list ruby-rspec))
+    (synopsis "Utility functions for colorful console applications")
+    (description
+     "Utility functions for writing colorful console applications.")
+    (home-page "https://github.com/DannyBen/colsole")
+    (license license:expat)))
+
 (define-public ruby-commander
   (package
     (name "ruby-commander")
