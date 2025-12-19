@@ -300,6 +300,38 @@ barcodes of the modern ECC200 variety.  libdmtx is a shared library, allowing
 C/C++ programs to use its capabilities without restrictions or overhead.")
     (license license:bsd-3)))
 
+(define-public dmtx-utils
+  (package
+    (name "dmtx-utils")
+    (version "0.7.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dmtx/dmtx-utils/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        "06m3qncqdlcnmw83n95yrx2alaq6bld320ax26z4ndnla41yk0p4")))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (inputs (list libdmtx imagemagick libjpeg-turbo))
+    (home-page "https://github.com/dmtx/dmtx-utils/")
+    (synopsis "Utilities for working with Data Matrix barcodes")
+    (description
+     "libdmtx is a software library that enables programs to read and write Data
+Matrix barcodes of the modern ECC200 variety.  This package, dmtx-utils,
+provides command line utilities that allow scripts and command line users to
+use libdmtx functionality.
+
+This package includes the following programs:
+@enumerate
+@item @code{dmtxquery}: Extract information from dmtxread output.
+@item @code{dmtxread}: Scan Data Matrix barcodes.
+@item @code{dmtxwrite}: Create Data Matrix barcodes.
+@end enumerate")
+    (license (list license:lgpl2.1 license:gpl2))))
+
 ;; XXX: qt variant utils are broken: zbarcam-qt fails with segmentation fault.
 (define-public zbar
   (package
