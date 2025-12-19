@@ -1306,50 +1306,58 @@ emulator inside the comfort of Emacs.")
   (package
     (name "enjarify")
     (version "1.0.3")
-    (home-page "https://github.com/Storyyeller/enjarify")
     (source
      (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url home-page)
-            (commit version)))
-      (file-name (git-file-name name version))
-      (patches
-       (search-patches "enjarify-setup-py.patch"))
-      (sha256
-       (base32
-        "1nam7h1g4f1h6jla4qcjjagnyvd24dv6d5445w04q8hx07nxdapk"))))
-    (build-system python-build-system)
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Storyyeller/enjarify")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (patches
+        (search-patches "enjarify-setup-py.patch"))
+       (sha256
+        (base32 "1nam7h1g4f1h6jla4qcjjagnyvd24dv6d5445w04q8hx07nxdapk"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'fixup-expected-test-results
-           ;; Upstream adjusted this test in commit:
-           ;; 3ae884a6485af82d300515813f537685b08dd800
-           (lambda _
-             (substitute* "tests/test2/expected.txt"
-               (("^20") "0"))
-             #t))
-         (add-before 'check 'drop-java-xss-argument
-           ;; Upstream removed this argument in order to support 32-bit
-           ;; architectures.  commit: 4be0111d879aa95fdc0d9f24fe529f8c664d4093
-           (lambda _
-             (substitute* "enjarify/runtests.py"
-               (("java -Xss515m") "java "))
-             #t))
-         (add-after 'install 'install-enjarify-wrapper
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out")))
-                 (mkdir-p (string-append out "/bin/"))
-                 (copy-file "enjarify.sh" (string-append out "/bin/enjarify"))
-                 #t))))))
-    (native-inputs (list openjdk12))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'fix-tests
+            (lambda _
+              (substitute* "enjarify/runtests.py"
+                (("from \\.main") "from enjarify.main")
+                (("from \\.jvm") "from enjarify.jvm"))
+              ;; Upstream adjusted this test in commit:
+              ;; 3ae884a6485af82d300515813f537685b08dd800
+              (substitute* "tests/test2/expected.txt"
+                (("^20") "0"))
+              ;; Upstream removed this argument in order to support 32-bit
+              ;; architectures.  commit:
+              ;; 4be0111d879aa95fdc0d9f24fe529f8c664d4093
+              (substitute* "enjarify/runtests.py"
+                (("java -Xss515m") "java "))))
+          (add-after 'install 'install-enjarify-wrapper
+            (lambda _
+              (let ((bin (string-append #$output "/bin")))
+                (install-file "enjarify.sh" bin)
+                (symlink (string-append bin "/enjarify.sh")
+                         (string-append bin "/enjarify")))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (invoke "python" "-m" "enjarify.runtests")))))))
+    (native-inputs
+     (list openjdk12
+           python-setuptools))
+    (home-page "https://github.com/Storyyeller/enjarify")
     (synopsis "Translate Dalvik bytecode to equivalent Java bytecode")
-    (description "Android applications are Java programs that run on a
-customized virtual machine, which is part of the Android operating system, the
-Dalvik VM.  Their bytecode differs from the bytecode of normal Java
-applications.  Enjarify can translate the Dalvik bytecode back to equivalent
-Java bytecode, which simplifies the analysis of Android applications.")
+    (description
+     "Android applications are Java programs that run on a customized virtual
+machine, which is part of the Android operating system, the Dalvik VM.  Their
+bytecode differs from the bytecode of normal Java applications.  Enjarify can
+translate the Dalvik bytecode back to equivalent Java bytecode, which
+simplifies the analysis of Android applications.  It's an alternative fork of
+not maintained Goole's project https://github.com/google/enjarify.")
     (license license:asl2.0)))
 
 (define-public android-file-transfer
