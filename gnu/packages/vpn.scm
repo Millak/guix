@@ -292,8 +292,8 @@ Networks and The Calyx Institute, where the former is default.")
 
 (define-public gp-saml-gui
   ;; No release.
-  (let ((commit "258f47cdc4a8ed57a1eef16667f6cad0d1cb49b1")
-        (revision "1"))
+  (let ((commit "21cce40334791a533c7a263fe367f0ddc072d8fb")
+        (revision "2"))
     (package
       (name "gp-saml-gui")
       (version (git-version "0.0.0" revision commit))
@@ -306,18 +306,21 @@ Networks and The Calyx Institute, where the former is default.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0qj2mmi6lfkq5c4v6fbzgriajqc27k9kb1i9k2r776pn5pq14pc3"))))
-      (build-system python-build-system)
+                  "0h3b6yj85mrx6xymi0mmq9x0sg506i8djdj4wy49ipip9xvdg7ql"))))
+      (build-system pyproject-build-system)
       (arguments
        (list
+        #:tests? #f ;no tests
         #:phases
         #~(modify-phases %standard-phases
-            (add-after 'install 'wrap-program
+            (add-after 'wrap 'wrap-program
               (lambda _
                 (let ((prog (string-append #$output "/bin/gp-saml-gui")))
                   (wrap-program prog
                     `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
                     `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
+      (native-inputs
+       (list python-setuptools))
       (inputs
        (list bash-minimal
              python-pygobject
