@@ -5,6 +5,7 @@
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -59,6 +60,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages openldap)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
@@ -293,6 +295,63 @@ storage protocols (S3, NFS, and others) through the RADOS gateway.")
                    license:cc-by-sa3.0           ;documentation
                    license:bsd-3                 ;isa-l,jerasure,++
                    license:expat))))             ;civetweb,java bindings
+
+(define-public libnbd
+  (package
+    (name "libnbd")
+    (version "1.24.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://download.libguestfs.org/" name "/"
+                                  (version-major+minor version) "-stable/"
+                                  name "-" version ".tar.gz"))
+
+              (sha256
+               (base32
+                "1vz62w270p23787v1r51rbcfd9lh73b99mcaf7q27pldc7bazggm"))))
+    (build-system gnu-build-system)
+    (arguments
+     ;; The fork-safe-execvpe test fails for unknown reasons (see:
+     ;; <https://gitlab.com/nbdkit/libnbd/-/issues/14>).
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-python-installdir="
+                             #$output "/lib/python"
+                             #$(package-version (this-package-input
+                                                 "python-minimal"))
+                             "/site-packages"))
+      #:make-flags #~(list "XFAIL_TESTS=test-fork-safe-execvpe.sh")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-commands
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (substitute* '("lib/utils.c"
+                                      "sh/nbdsh.in")
+                         (("/bin/sh")
+                          (search-input-file inputs "bin/sh"))))))))
+    (native-inputs (list pkg-config perl))
+    (inputs (list bash-minimal fuse gnutls libxml2
+                  python-minimal))      ;match the python used by libxml2
+    (home-page "https://gitlab.com/nbdkit/libnbd")
+    (synopsis "Network Block Device client library in userspace")
+    (description "@acronym{NBD, Network Block Device} is a protocol
+for accessing block devices (hard disks and disk-like things) over a network.
+This is the NBD client library in userspace, a simple library for writing NBD
+clients.  The key features are:
+@itemize
+@item Synchronous API for ease of use.
+@item Asynchronous API for writing non-blocking, multithreaded clients.
+@item High performance.
+@item Minimal dependencies for the basic library.
+@item Well-documented, stable API.
+@item Bindings in several programming languages.
+@item Shell (nbdsh) for command line and scripting.
+@item Copying tool (nbdcopy) for high performance copying and streaming.
+@item Hexdump tool (nbddump) to print NBD content.
+@item Query tool (nbdinfo) to query NBD servers.
+@item FUSE support (nbdfuse) to mount NBD in the local file system.
+@item Linux ublk support (nbdublk) to create the userspace block device.
+@end itemize")
+    (license license:lgpl2.1+)))
 
 (define-public spdk
   (package
