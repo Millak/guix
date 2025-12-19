@@ -4638,19 +4638,20 @@ Git project instead of @command{git filter-branch}.")
 (define-public gitlint
   (package
     (name "gitlint")
-    (version "0.17.0")
+    (version "0.19.1")
     (source (origin
               (method url-fetch)
               ;; the gitlint-core pypi package contains the actual gitlint
               ;; code; the gitlint package only pulls in gitlint-core with
               ;; stricter dependency versioning
-              (uri (pypi-uri "gitlint-core" version))
+              (uri (pypi-uri "gitlint_core" version))
               (sha256
                (base32
-                "14cn89biys8r7mwcdgllv371k34km9k1941ylxf53a7sxwrzsbbp"))))
-    (build-system python-build-system)
+                "14lrlbdbnm1biczd54iymbgi5k02hnxmxxh3kr5650gm7yq7gybv"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? #f ;not included in PyPI, see pyproejct.toml
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'loosen-requirements
@@ -4663,6 +4664,9 @@ Git project instead of @command{git filter-branch}.")
                 ;; force using subprocess instead of sh so git does not need
                 ;; to be a propagated input
                 (("if USE_SH_LIB") "if False")))))))
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling))
     (inputs
      (list git python-arrow python-click python-sh))
     (home-page "https://jorisroovers.com/gitlint/")
