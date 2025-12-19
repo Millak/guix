@@ -8,7 +8,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2018, 2020, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2018, 2020, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019, 2020 Giacomo Leidi <therewasa@fishinthecalculator.me>
@@ -238,6 +238,21 @@
 across a broad spectrum of applications.")
     (license (license:x11-style "https://www.boost.org/LICENSE_1_0.txt"
                                 "Some components have other similar licences."))))
+
+(define-public boost-1.88
+  (package
+    (inherit boost)
+    (name "boost")
+    (version "1.88.0")
+    (source (origin
+              (inherit (package-source boost))
+              (uri (string-append
+                    "https://archives.boost.io/release/"
+                    version "/source/boost_"
+                    (version-with-underscores version) ".tar.bz2"))
+              (sha256
+               (base32
+                "0yrgn6syk260ckq9ld44vjv1bl6bamhy3jbp10kikcipcv0d5na6"))))))
 
 (define-public boost-1.83
   (hidden-package (package (inherit boost)
