@@ -4214,9 +4214,11 @@ framework.")
        (sha256
         (base32
          "1i17xh4dy238ibrjdgh8vn78fk5q6dj37mcznpvdfzidj57js7ca"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))                  ;the mini test suite fails
+    (native-inputs
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/farizrahman4u/pyux")
     (synopsis "Utility to check API integrity in Python libraries")
     (description "The pyux utility detects API changes in Python
