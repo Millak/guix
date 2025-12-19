@@ -50,7 +50,7 @@
                                       directory))
                                  ((_ . directory) directory))
                                (derivation->output-paths drv)))))
-              %final-inputs))
+              (%final-inputs system)))
 
 (define (assert-valid-substitute substitute)
   "Make sure SUBSTITUTE does not refer to any bootstrap inputs, and bail out
