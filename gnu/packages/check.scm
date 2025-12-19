@@ -1583,23 +1583,29 @@ interfaces and processes.")
 (define-public python-pytest
   (package
     (name "python-pytest")
-    (version "8.4.1")
+    (version "9.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest" version))
        (sha256
-        (base32 "0g593wjl45yck5g1xi8q31s08arxiapw67ipv6g3axs82xlzsrvw"))))
+        (base32 "04fz1vbhb2l6k8lmrk8wqhkxhprlnkq21z6rs48rdn1bm58nc63m"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 3933 passed, 115 skipped, 2 deselected, 11 xfailed, 1 xpassed
       #:test-flags
       ;; Just 2 tests fail:
       ;;   1. access to "/usr/" is required.
       ;;   2. assertion fails to compare length of the list.
-      ;;
-      ;; 3780 passed, 119 skipped, 3 deselected, 11 xfailed, 1 xpassed
-      #~(list "-k" "not test_remove_dir_prefix and not test_len")))
+      #~(map (lambda (ls)
+               (string-append "--deselect=" (string-join ls "::")))
+             '(("testing/test_argcomplete.py"
+                "TestArgComplete"
+                "test_remove_dir_prefix")
+               ("testing/test_assertrewrite.py"
+                "TestAssertionRewrite"
+                "test_len")))))
     (native-inputs
      ;; Tests need the "regular" bash since 'bash-final' lacks `compgen`.
      (list bash
@@ -1607,13 +1613,12 @@ interfaces and processes.")
            python-hypothesis
            python-setuptools
            python-setuptools-scm
-           python-xmlschema
-           python-wheel))
+           python-xmlschema))
     (propagated-inputs
      (list python-iniconfig
            python-packaging-bootstrap
            python-pluggy
-           python-pygments-bootstrap))  ;it is in installation dependencies
+           python-pygments-bootstrap))    ;it is in installation dependencies
     (home-page "https://docs.pytest.org/en/latest/")
     (synopsis "Python testing library")
     (description
