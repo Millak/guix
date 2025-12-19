@@ -7028,6 +7028,8 @@ Thai).")
        (sha256
         (base32 "0858wn2p14bxpv9lvaz2bz1rk6zk0g8zgxf8iy595m8fqv4q2fya"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags #~(list "CFLAGS=-Wno-implicit-int")))
     (native-inputs
      (list pkg-config))
     (inputs
