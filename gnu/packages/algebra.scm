@@ -615,7 +615,7 @@ matrices, and polynomials over the integers and over finite fields.")
 (define-public singular
   (package
    (name "singular")
-   (version "4.4.1")
+   (version "4.4.1p5")
    (source
     (origin
       (method url-fetch)
@@ -631,7 +631,7 @@ matrices, and polynomials over the integers and over finite fields.")
                       "/singular-" version ".tar.gz"))
             (sha256
               (base32
-               "16xlhar1krlskh9gxbw1gw4qi8248c95w71vzxdw72avs2pblkva"))))
+               "1pwygpmhf4sddf1v5x5fr1kbbkb29wlfd5yyj7lryvhbs45s9rdw"))))
    (build-system gnu-build-system)
    (arguments
     (list
