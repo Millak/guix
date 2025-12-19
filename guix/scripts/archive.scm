@@ -279,16 +279,33 @@ this may take time...~%"))
                             (error-source err)
                             (error-string err)))))
          (public (find-sexp-token pair 'public-key))
-         (secret (find-sexp-token pair 'private-key)))
+         (secret (find-sexp-token pair 'private-key))
+         (store  (stat (%store-prefix) #f)))
+    (define (ensure-daemon-ownership file)
+      ;; Ensure FILE is readable by the daemon, by changing ownership either
+      ;; to root or to the owner of the store.
+      (when store
+        (chown file
+               (stat:uid store)
+               (match (stat:uid store)
+                 ;; When the store is root-owned, use 0 as the GID for the
+                 ;; keys (the store's GID is usually that of 'guixbuild').
+                 (0 0)
+                 (_ (stat:gid store))))))
+
     ;; Create the following files as #o400.
     (umask #o266)
 
     (mkdir-p (dirname %public-key-file))
+    (ensure-daemon-ownership (dirname %public-key-file))
+
     (with-atomic-file-output %public-key-file
       (lambda (port)
+        (ensure-daemon-ownership port)
         (display (canonical-sexp->string public) port)))
     (with-atomic-file-output %private-key-file
       (lambda (port)
+        (ensure-daemon-ownership port)
         (display (canonical-sexp->string secret) port)))
 
     ;; Make the public key readable by everyone.
