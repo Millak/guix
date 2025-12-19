@@ -4227,28 +4227,31 @@ framework.")
 (define-public python-pytest-xvfb
   (package
     (name "python-pytest-xvfb")
-    (version "2.0.0")
+    (version "3.1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-xvfb" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/The-Compiler/pytest-xvfb")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1kyq5rg27dsnj7dc6x9y7r8vwf8rc88y2ppnnw6r96alw0nn9fn4"))))
-    (build-system python-build-system)
+        (base32 "0p27h1idqja2lz2xnk4fsb9c8kafvgy1zpa84lg9d1hlamr221ja"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:test-target "pytest"
+     (list
        #:phases
-       (modify-phases %standard-phases
+       #~(modify-phases %standard-phases
          (add-before 'build 'prepare-tests
            (lambda _
              (system "Xvfb &")
              (setenv "DISPLAY" ":0")
-
              ;; This test is meant to run on Windows.
-             (delete-file "tests/test_xvfb_windows.py")
-             #t)))))
+             (delete-file "tests/test_xvfb_windows.py"))))))
     (native-inputs
-     (list python-pytest python-pytest-runner xorg-server-for-tests))
+     (list python-pytest
+           python-setuptools
+           xorg-server-for-tests))
     (propagated-inputs
      (list python-pyvirtualdisplay))
     (home-page "https://github.com/The-Compiler/pytest-xvfb")
