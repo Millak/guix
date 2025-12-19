@@ -161,10 +161,14 @@ by colon, followed by the given number of characters."
     ;; Send a reply for the result of THUNK or for any exception raised during
     ;; its execution.
     (guard (c ((formatted-message? c)
-               (send-reply (reply-code command-failed)
-                           (apply format #f
-                                  (G_ (formatted-message-string c))
-                                  (formatted-message-arguments c)))))
+               ;; Make sure the translated message can be written to standard
+               ;; output as ISO-8859-1 no matter what (XXX).
+               (with-fluids ((%default-port-conversion-strategy 'substitute))
+                 (send-reply (reply-code command-failed)
+                             (apply format #f
+                                    (string-trim-right
+                                     (G_ (formatted-message-string c)))
+                                    (formatted-message-arguments c))))))
       (send-reply (reply-code success) (thunk))))
 
   (define-syntax-rule (with-reply exp ...)
