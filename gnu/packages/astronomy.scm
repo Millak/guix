@@ -5152,19 +5152,20 @@ across many files.")
 (define-public python-glue-qt
   (package
     (name "python-glue-qt")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
-       (method git-fetch) ; no fresh release PyPI
+       (method git-fetch)
        (uri (git-reference
               (url "https://github.com/glue-viz/glue-qt")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ay0y0g2vgy2mn1dk9yxim0449lnny9fd7lplqqwy9vxhkh4gnxp"))))
+        (base32 "1hs1njs25mzmkxr84mrmw4p3pl1fkdlagpnflcd0cvdn9g2mbdsq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 618 passed, 4 skipped, 2 xfailed, 436 warnings
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-env-version
