@@ -2258,10 +2258,13 @@ are too large to conveniently hard-code them in the tests.")
        (uri (pypi-uri "pytest-astropy" version))
        (sha256
         (base32 "1d9rcxnc57rjp96xag1gq725pwl11b3k5hdaz7c3w5lixncsmbjf"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments (list #:tests? #f)) ; there are no tests
     (native-inputs
-     (list python-attrs python-pytest-mock python-setuptools-scm))
+     (list python-attrs
+           python-pytest-mock
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
      (list python-hypothesis
            python-pytest-arraydiff
