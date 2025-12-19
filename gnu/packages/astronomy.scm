@@ -5202,13 +5202,13 @@ across many files.")
 (define-public python-glue-vispy-viewers
   (package
     (name "python-glue-vispy-viewers")
-    (version "1.2.3")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "glue_vispy_viewers" version))
        (sha256
-        (base32 "0i9539h55b95c1f2p79qbr0xgvg3c7mddykzqij939r0b5jabwbj"))))
+        (base32 "0pnlkrkc6vn6mrqlw8xknb01rp7dy3qng4vaaiz9fry50nkf4gsd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
