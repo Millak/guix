@@ -2283,7 +2283,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/rxvt-unicode-fix-cursor-position.patch	\
   %D%/packages/patches/s7-flint-3.patch                      	\
   %D%/packages/patches/safeint-disable-tests.patch		\
-  %D%/packages/patches/sage-safeguard-sage-getargspec-cython.patch \
   %D%/packages/patches/sajson-for-gemmi-numbers-as-strings.patch	\
   %D%/packages/patches/sajson-build-with-gcc10.patch		\
   %D%/packages/patches/sane-look-for-plugins-in-SANE_BACKEND_LIB_PATH.patch	\

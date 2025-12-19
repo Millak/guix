@@ -363,21 +363,16 @@ database.")
 (define-public sage
   (package
     (name "sage")
-    (version "10.6")
+    (version "10.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/sagemath/sage")
                     (commit version)))
               (file-name (git-file-name name version))
-              (patches
-               ;; This patch works around a Cython issue and can be removed
-               ;; after sage 10.7 is released.  See
-               ;; https://github.com/sagemath/sage/issues/39735
-               (search-patches "sage-safeguard-sage-getargspec-cython.patch"))
               (sha256
                (base32
-                "0m2f6k6nwgyzfhf45r0kp798aimjxhpfnmsp1k03jpj9d6mhadk4"))))
+                "0513nmym1shlj0vkb982hpj1v86f327w5kav0523wk1xljc432cx"))))
     (build-system pyproject-build-system)
     (native-inputs
       (list autoconf automake m4 pkg-config ; for ./bootstrap
