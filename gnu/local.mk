@@ -35,7 +35,7 @@
 # Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 # Copyright © 2020 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 # Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
-# Copyright © 2020, 2023 Tanguy Le Carrour <tanguy@bioneland.org>
+# Copyright © 2020, 2023, 2025 Tanguy Le Carrour <tanguy@bioneland.org>
 # Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 # Copyright © 2020 Malte Frank Gerdes <mate.f.gerdes@gmail.com>
 # Copyright © 2020, 2023 Vinicius Monego <monego@posteo.net>
@@ -803,6 +803,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/system/uuid.scm				\
   %D%/system/vm.scm				\
 						\
+  %D%/system/images/a20-olinuxino-lime2.scm			\
   %D%/system/images/hurd.scm			\
   %D%/system/images/novena.scm			\
   %D%/system/images/orangepi-r1-plus-lts-rk3328.scm	\
