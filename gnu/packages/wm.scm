@@ -647,14 +647,14 @@ commands would.")
 (define-public i3-wm
   (package
     (name "i3-wm")
-    (version "4.22")
+    (version "4.25")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://i3wm.org/downloads/i3-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0jrya4rhh46sivlmqaqc4n9abpp1yn1ajhi616gn75cxwl8rjqr8"))))
+                "0hiffrsvgi2fwibp8l7icxwsj1q5lg2h5lb44wj5cksan7wxxsvy"))))
     (build-system meson-build-system)
     (arguments
      (list
