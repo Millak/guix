@@ -4939,7 +4939,7 @@ unused.")
        (uri (pypi-uri "xunitparser" version))
        (sha256
         (base32 "00lapxi770mg7jkw16zy3a91hbdfz4a9h43ryczdsgd3z4cl6vyf"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -4949,7 +4949,9 @@ unused.")
              (substitute* "xunitparser.py"
                (("(^ +)self.stderr = None" m indent)
                 (string-append m "\n" indent "self._cleanup = False\n"))))))))
-    (home-page "http://git.p.engu.in/laurentb/xunitparser/")
+    (native-inputs
+     (list python-pytest python-setuptools))
+    (home-page "https://gitlab.com/woob/xunitparser/")
     (synopsis "Read JUnit/XUnit XML files and map them to Python objects")
     (description "xunitparser reads a JUnit/XUnit XML file and maps it to
 Python objects.  It tries to use the objects available in the standard
