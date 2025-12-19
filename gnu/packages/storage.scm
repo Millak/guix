@@ -288,7 +288,7 @@
             xfsprogs
             zlib
             `(,zstd "lib"))))
-    (home-page "https://ceph.com/")
+    (home-page "https://ceph.io/en/")
     (synopsis "Distributed object store and file system")
     (description
      "Ceph is a distributed storage system designed for reliability and
