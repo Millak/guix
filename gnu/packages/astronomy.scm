@@ -5927,7 +5927,7 @@ astronomical tables
 (define-public python-lenstronomy
   (package
     (name "python-lenstronomy")
-    (version "1.13.2")
+    (version "1.13.3")
     (source
      (origin
        (method git-fetch)
@@ -5936,11 +5936,11 @@ astronomical tables
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j0qc8vw53n9sg5yncilkfd6n5s2jixrm83an0q1gv2m2yk5dsn7"))))
+        (base32 "046695i2qapjz1r8z87kqsp2x0klsd157zhsncplrkpb3kapk7zj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1452 passed, 2163 warnings
+      ;; tests: 1483 passed, 2189 warnings
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               ;; TypeError: SparseSolverBase.__init__() got an unexpected
