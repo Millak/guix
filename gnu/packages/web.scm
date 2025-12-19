@@ -9965,40 +9965,28 @@ the Fediring.")
 (define-public awslogs
   (package
     (name "awslogs")
-    (version "0.14.0")
+    (version "0.15.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "awslogs" version))
               (sha256
                (base32
-                "0zpp72ixxz18mf1kay7l07sbmf80mik30zw6p4wsxpraza3ry90v"))))
-    ;; XXX: doesn't work with pyproject-build-system
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.py"
-               (("'jmespath>=0.7.1.*',")
-                "'jmespath>=0.7.1',"))))
-         (add-after 'unpack 'patch-tests
-           (lambda _
-             ;; XXX These tests fail for unknown reasons, and we can't easily
-             ;; figure out why, because stdout is redirected to a string.
-             (substitute* "tests/test_it.py"
-               (("test_main_get_with_color")
-                "_skip_test_main_get_with_color")
-               (("test_main_get_query")
-                "_skip_test_main_get_query")))))))
+                "1maxahp9la2jdcgrgf3abq4jjr80jg9b354xd2hcw0q73jxj7whr"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
-     (list python-boto3 python-jmespath python-dateutil python-termcolor))
+     (list python-boto3
+           python-jmespath
+           python-dateutil
+           python-termcolor))
     (home-page "https://github.com/jorgebastida/awslogs")
     (synopsis "Command line tool to read AWS CloudWatch logs")
     (description
      "This package provides awslogs, a simple command line tool to download
-and read AWS CloudWatch logs.")
+and read AWS CloudWatch logs.  The same functionality is available from
+@code{aws logs tail}.")
     (license license:bsd-3)))
 
 (define-public orcania
