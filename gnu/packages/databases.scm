@@ -2159,6 +2159,27 @@ data in a single database.  RocksDB is partially based on @code{LevelDB}.")
     ;; files carry the 3-clause BSD license.
     (license (list license:gpl2 license:asl2.0 license:bsd-3))))
 
+(define-public rocksdb-for-ceph
+  (let ((commit "9fa4990159853479a222244574ca41202e4c95c1")
+        (revision "0"))
+    (package
+      (inherit rocksdb)
+      (name "rocksdb-for-ceph")
+      (version (git-version "7.9.2" revision commit))
+      (source (origin
+                (inherit (package-source rocksdb))
+                (uri (git-reference
+                       (url "https://github.com/ceph/rocksdb")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0pdy461m9a48x4i829sirpypdlzf3q79p8iw3dng9wd4r4vyv594"))))
+      (arguments (substitute-keyword-arguments (package-arguments rocksdb)
+                   ((#:configure-flags flags ''())
+                    #~(cons "-DCMAKE_CXX_FLAGS=-Wno-error=maybe-uninitialized"
+                            #$flags)))))))
+
 (define-public sparql-query
   (package
     (name "sparql-query")
