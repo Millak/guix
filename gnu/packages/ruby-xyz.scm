@@ -184,6 +184,32 @@ libraries (OptionParser, HighLine), while providing many new features, and an
 elegant API.")
     (license license:expat)))
 
+(define-public ruby-docopt-ng
+  (package
+    (name "ruby-docopt-ng")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "docopt_ng" version))
+       (sha256
+        (base32 "0rsnl5s7k2s1gl4n4dg68ssg577kf11sl4a4l2lb2fpswj718950"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda _
+              (invoke "rspec" "-c" "spec"))))))
+    (native-inputs (list ruby-rspec))
+    (synopsis
+     "The Ruby port of Docopt, the option parser written originally in Python")
+    (description
+     "Parse command line arguments from nothing more than a usage message.")
+    (home-page "https://docopt.org/")
+    (license license:expat)))
+
 (define-public ruby-highline
   (package
     (name "ruby-highline")
