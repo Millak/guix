@@ -65,6 +65,7 @@
   #:use-module (gnu packages nss)
   #:use-module (gnu packages check)
   #:use-module (gnu packages django)
+  #:use-module (gnu packages docker)
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
@@ -2636,6 +2637,40 @@ files and/or directories.")
      "This pytest plugin manages dependencies of tests.  It allows
 to mark some tests as dependent from other tests.  These tests will then be
 skipped if any of the dependencies did fail or has been skipped.")
+    (license license:asl2.0)))
+
+(define-public python-pytest-docker-tools
+  (package
+    (name "python-pytest-docker-tools")
+    (version "3.1.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Jc2k/pytest-docker-tools")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06w89kvxqma5ns6gndmk6g048qpv10wdwf61ynii1mm1n0xy11sr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; All other tests seem to require docker daemon running.
+      #~(list "tests/test_utils.py")))
+    (native-inputs
+     (list python-pytest
+           python-requests
+           python-setuptools))
+    (propagated-inputs
+     (list python-docker))
+    (home-page "https://github.com/Jc2k/pytest-docker-tools")
+    (synopsis "Test your built docker image")
+    (description
+     "This package is a set of opinionated helpers for creating py.test fixtures
+for your smoke testing and integration testing.  It strives to keep your
+environment definition declarative, like a docker-compose.yml.  It embraces
+ py.test fixture overloading.")
     (license license:asl2.0)))
 
 (define-public python-pytest-doctest-custom
