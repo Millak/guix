@@ -1901,7 +1901,9 @@ build (current-guix) and then store a couple of full system images.")
                         #$marionette)
       (screenshot "installer-start.ppm")
 
-      (marionette-eval* '(choose-locale+keyboard installer-socket)
+      (marionette-eval* '(choose-locale+keyboard
+                          installer-socket
+                          #:timezone '("Europe" "Paris"))
                         #$marionette)
       (screenshot "installer-locale.ppm")
 
