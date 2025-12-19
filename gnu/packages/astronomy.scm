@@ -5387,25 +5387,19 @@ sensitivity or energy density
 (define-public python-healpy
   (package
     (name "python-healpy")
-    (version "1.18.1")
+    (version "1.19.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "healpy" version))
        (sha256
-        (base32 "1v7bsxz05k36cw596yyaahcx6h8blhy1qlzpwcjj5cvg4vrynnff"))))
+        (base32 "1i8f2d0zjaf35z8mn24lv9zs0wcjrfij6d7wfxnd68ssi35kks18"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 11 passed
       #:test-flags
-      #~(list "--pyargs" "healpy"
-              "-k" (string-join
-                    ;; Tests requiring network access.
-                    (list "not test_astropy_download_file"
-                          "test_pixelweights_local_datapath"
-                          "test_rotate_map_polarization_alms")
-                    " and not ")
-              "test")))
+      #~(list "--pyargs" "healpy")))
     (native-inputs
      (list nss-certs-for-test
            pkg-config
@@ -5415,17 +5409,16 @@ sensitivity or energy density
            python-pytest-cython
            python-pytest-doctestplus
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (inputs
      (list cfitsio
            healpix-cxx
            libsharp))
     (propagated-inputs
      (list python-astropy
-           python-colorlog
-           python-matplotlib
            python-numpy
+           ;; [optional]
+           python-matplotlib
            python-scipy))
     (home-page "http://healpy.readthedocs.org/")
     (synopsis "Healpix tools package for Python")
