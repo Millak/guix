@@ -3256,7 +3256,11 @@ networks.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "10fazl4kwf41mk7pnwpfms16n0ii0kg9pf8r3mz9xwnl9y04mv9x"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/sivel/speedtest-cli")
     (synopsis "Internet bandwidth tester")
     (description
