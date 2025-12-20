@@ -34018,10 +34018,9 @@ to:
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-backend #~'unittest
       ;; XXX: Unclear why this test fails.
-      #:test-flags #~(list "-k" "not test_dumps_dict")))
-    (native-inputs (list python-setuptools))
+      #:test-flags #~(list "-k" "not test_dumps_dict" "tests.py")))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/mitsuhiko/phpserialize")
     (synopsis "Python port of the serialize and unserialize functions of PHP")
     (description
