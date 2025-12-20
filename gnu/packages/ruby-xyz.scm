@@ -360,6 +360,27 @@ a menu system for providing multiple options to the user.")
     (home-page "https://github.com/ruby/logger")
     (license (list license:bsd-2))))
 
+(define-public ruby-lp
+  (package
+    (name "ruby-lp")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "lp" version))
+       (sha256
+        (base32 "0ns1aza32n929w7smg1dsn4g6qlfi7k1jrvssyn35cicmwn0gyyr"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      ;; no tests in Gem
+      #:tests? #f))
+    (native-inputs (list ruby-rspec))
+    (synopsis "Lovely print")
+    (description "Colorful YAML dump for debug purposes.")
+    (home-page "https://github.com/dannyben/lp")
+    (license license:expat)))
+
 (define-public ruby-mister-bin
   (package
     (name "ruby-mister-bin")
