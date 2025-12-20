@@ -528,6 +528,34 @@ or autoload all Ruby files in a directory.")
 hosts by wrapping the @file{rsync} binary.")
     (license license:expat)))
 
+(define-public ruby-strings
+  (package
+    (name "ruby-strings")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "strings" version))
+       (sha256
+        (base32 "1yynb0qhhhplmpzavfrrlwdnd1rh7rkwzcs4xf0mpy2wr6rr6clk"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "rspec" "-c" "spec")))))))
+    (native-inputs (list ruby-rspec))
+    (propagated-inputs (list ruby-strings-ansi ruby-unicode-display-width
+                             ruby-unicode-utils))
+    (synopsis "Ruby functions for transforming strings")
+    (description "This package provides a set of methods for working with
+strings such as align, truncate, wrap and many more.")
+    (home-page "https://github.com/piotrmurach/strings")
+    (license license:expat)))
+
 (define-public ruby-strings-ansi
   (package
     (name "ruby-strings-ansi")
