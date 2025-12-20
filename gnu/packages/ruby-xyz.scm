@@ -234,6 +234,28 @@ scripts from simple YAML configuration.")
     (home-page "https://docopt.org/")
     (license license:expat)))
 
+(define-public ruby-erb
+  (package
+    (name "ruby-erb")
+    (version "6.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "erb" version))
+       (sha256
+        (base32 "1rcpq49pyaiclpjp3c3qjl25r95hqvin2q2dczaynaj7qncxvv18"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+       ;; no tests
+       #:tests? #f))
+    (native-inputs (list ruby-rspec))
+    (synopsis "Easy to use but powerful templating system")
+    (description "ERB is an easy to use, but also very powerful, template
+processor.")
+    (home-page "https://github.com/ruby/erb")
+    (license (list license:bsd-2))))
+
 (define-public ruby-filewatcher
   (package
     (name "ruby-filewatcher")
