@@ -338,6 +338,28 @@ a menu system for providing multiple options to the user.")
     (home-page "https://github.com/JEG2/highline")
     (license (list license:gpl2 license:ruby))))
 
+(define-public ruby-logger
+  (package
+    (name "ruby-logger")
+    (version "1.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "logger" version))
+       (sha256
+        (base32 "00q2zznygpbls8asz5knjvvj2brr3ghmqxgr83xnrdj4rk3xwvhr"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      ;; no tests in Gem
+      #:tests? #f))
+    (native-inputs (list ruby-rspec))
+    (synopsis "Simple logging utility for Ruby")
+    (description
+     "This package provides a simple logging utility for outputting messages.")
+    (home-page "https://github.com/ruby/logger")
+    (license (list license:bsd-2))))
+
 (define-public ruby-mister-bin
   (package
     (name "ruby-mister-bin")
