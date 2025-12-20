@@ -294,6 +294,29 @@ for Ruby Gems or other Ruby applications.")
     (home-page "https://github.com/dannyben/mister_bin")
     (license license:expat)))
 
+(define-public ruby-module-methods
+  (package
+    (name "ruby-module-methods")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "module_methods" version))
+       (sha256
+        (base32 "1886wjscfripgzlmyvcd0jmlzwr6hxvklm2a5rm32dw5bf7bvjki"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+       #:tests? #f)) ;no tests
+    (native-inputs (list ruby-rspec))
+    (synopsis "Extendable module for modules with instance and class methods")
+    (description
+     "Extendable module for modules with instance and class methods. These
+modules can be included into each other modules and saving all chain, including
+@code{inherited} or @code{included} (class) methods.")
+    (home-page "https://github.com/AlexWayfer/module_methods")
+    (license license:expat)))
+
 (define-public ruby-rsync
   (package
     (name "ruby-rsync")
