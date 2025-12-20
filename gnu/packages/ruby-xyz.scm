@@ -451,6 +451,30 @@ class itself.")
     (home-page "https://github.com/ruby/ostruct")
     (license (list license:bsd-2))))
 
+(define-public ruby-pastel
+  (package
+    (name "ruby-pastel")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "pastel" version))
+       (sha256
+        (base32 "0xash2gj08dfjvq4hy6l1z22s5v30fhizwgs10d6nviggpxsj7a8"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      ;; no tests
+      #:tests? #f))
+    (propagated-inputs (list ruby-tty-color))
+    (synopsis "Ruby terminal output styling with an intuitive and clean API")
+    (description
+     "Ruby @code{::Pastel} is a simple, minimal and intuitive API
+for styling strings that doesn't monkey patch the String class.  Part of the
+TTY Toolkit project which provides a range of terminal application capabilities.")
+    (home-page "https://ttytoolkit.org")
+    (license license:expat)))
+
 (define-public ruby-requires
   (package
     (name "ruby-requires")
