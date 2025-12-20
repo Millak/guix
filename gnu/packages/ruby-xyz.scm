@@ -504,6 +504,30 @@ or autoload all Ruby files in a directory.")
 hosts by wrapping the @file{rsync} binary.")
     (license license:expat)))
 
+(define-public ruby-tty-color
+  (package
+    (name "ruby-tty-color")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "tty-color" version))
+       (sha256
+        (base32 "0aik4kmhwwrmkysha7qibi2nyzb4c8kp42bd5vxnf8sf7b53g73g"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      ;; no tests in Gem
+      #:tests? #f))
+    (native-inputs (list ruby-rspec))
+    (synopsis "Terminal color capabilities detection for Ruby")
+    (description
+     "@code{TTY:Color} provides an independent color support
+detection component.  It is part of the TTY Toolkit project which provides
+a range of terminal application capabilities.")
+    (home-page "https://ttytoolkit.org")
+    (license license:expat)))
+
 (define-public ruby-tty-screen
   (package
     (name "ruby-tty-screen")
