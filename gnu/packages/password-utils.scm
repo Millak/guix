@@ -2100,9 +2100,10 @@ data inside a GPG encrypted file, which we'll call a coffin.")
        (sha256
         (base32
          "11imgiiwd9ggkw7235hsdj9xm0rpv8s46v087mgb3ad0d8v48fqf"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-backend #~'unittest
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'install-manpage
@@ -2110,6 +2111,7 @@ data inside a GPG encrypted file, which we'll call a coffin.")
               (install-file
                "xkcdpass.1"
                (string-append #$output "/share/man/man1")))))))
+    (native-inputs (list python-setuptools))
     (synopsis
      "Generate secure multiword passwords/passphrases, inspired by XKCD")
     (description
