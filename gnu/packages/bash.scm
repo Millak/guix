@@ -38,6 +38,8 @@
   #:use-module (gnu packages elf)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages ruby-check)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages libffi)
@@ -54,6 +56,7 @@
   #:use-module (guix store)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system ruby)
   #:use-module (guix build-system trivial)
   #:autoload   (guix gnupg) (gnupg-verify*)
   #:autoload   (guix base32) (bytevector->nix-base32-string)
@@ -525,6 +528,46 @@ in Bash, but you can use it to test any UNIX program.")
 function interface (FFI) directly in your shell.  In other words, it allows
 you to call routines in shared libraries from within Bash.")
       (license license:expat))))
+
+(define-public bashly
+  (package
+    (name "bashly")
+    (version "1.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "bashly" version))
+       (sha256
+        (base32 "17msjzca5ifx8biimdjps655w51yc82d5ys9hwn749bi2f3n8mcz"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "rspec" "-c" "spec")))))))
+    (native-inputs (list ruby-rspec))
+    (propagated-inputs (list ruby-colsole
+                             ruby-completely
+                             ruby-filewatcher
+                             ruby-gtx
+                             ruby-logger
+                             ruby-lp
+                             ruby-mister-bin
+                             ruby-ostruct
+                             ruby-requires
+                             ruby-tty-markdown))
+    (synopsis
+     "Create feature-rich Bash scrips using simple YAML configuration")
+    (description
+     "Bashly is a CLI for generating feature-rich Bash command line
+tools.  Bashly lets you focus on your specific code, without worrying about
+command line argument parsing, usage texts, error messages and other functions
+that are usually handled by a framework in other programming languages.")
+    (home-page "https://bashly.dev/")
+    (license license:expat)))
 
 (define-public blesh
   (package
