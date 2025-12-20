@@ -3156,7 +3156,7 @@ exec -a ~s ~s \"$@\"
                             (string-append lib "/main.py"))))
                 (chmod bin #o555)))))))
     (native-inputs (list unzip python-setuptools))
-    (inputs (list python python-pygame python-tmx))
+    (inputs (list python python-pygame))
     (home-page "https://rogueboxadventures.tuxfamily.org")
     (synopsis "Classical roguelike/sandbox game")
     (description
