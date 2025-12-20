@@ -1268,7 +1268,7 @@ ca-certificates.crt file in the system profile."
             ;; Each subdir has its own service
             (name (string-append "shared-cache-" subdir "-" user))
             ;; Make sure the homes are already present
-            (requirement '(file-systems user-homes))
+            (requirement '(file-systems user-file-systems user-homes))
             ;; Mount each shared dir over the target dir in the users' .cache/
             (source      (string-append shared-directory "/" subdir))
             (destination (string-append location         "/" subdir))
