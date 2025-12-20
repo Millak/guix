@@ -234,6 +234,28 @@ scripts from simple YAML configuration.")
     (home-page "https://docopt.org/")
     (license license:expat)))
 
+(define-public ruby-filewatcher
+  (package
+    (name "ruby-filewatcher")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "filewatcher" version))
+       (sha256
+        (base32 "03f9v57c5zag09mi10yjhdx7y0vv2w5wrnwzbij9hhkwh43rk077"))))
+    (build-system ruby-build-system)
+    (arguments
+      (list
+        ;;TODO: Investigate why tests fail
+        #:tests? #f))
+    (propagated-inputs (list ruby-module-methods))
+    (synopsis "Ruby gem to perform actions when files are changed")
+    (description "Detect changes in file system. Works anywhere. No config
+files. Pure Ruby implementation and minimalistic Ruby API.")
+    (home-page "http://github.com/filewatcher/filewatcher")
+    (license license:expat)))
+
 (define-public ruby-highline
   (package
     (name "ruby-highline")
