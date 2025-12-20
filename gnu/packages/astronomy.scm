@@ -8145,14 +8145,15 @@ solar physics.")
 (define-public python-regularizepsf
   (package
     (name "python-regularizepsf")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "regularizepsf" version))
        (sha256
-        (base32 "16kk2rfcs7dkasij225j9z99gwdnxxlamj704d7f3h1lj7yl3vdv"))))
+        (base32 "1dd50dam227ifhf4d81nr0fgb9gwxrihs80svbwd86f18x5jlnwi"))))
     (build-system pyproject-build-system)
+    ;; tests: 61 passed, 26 warnings
     (native-inputs
      (list python-pytest
            python-pytest-mpl
