@@ -427,6 +427,30 @@ modules can be included into each other modules and saving all chain, including
     (home-page "https://github.com/AlexWayfer/module_methods")
     (license license:expat)))
 
+(define-public ruby-ostruct
+  (package
+    (name "ruby-ostruct")
+    (version "0.6.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "ostruct" version))
+       (sha256
+        (base32 "04nrir9wdpc4izqwqbysxyly8y7hsfr4fsv69rw91lfi9d5fv8lm"))))
+    (arguments
+     (list
+      ;; no tests
+      #:tests? #f))
+    (build-system ruby-build-system)
+    (synopsis "Class to build custom data structures, similar to a Hash")
+    (description
+     "An OpenStruct is a data structure, similar to a Hash, that
+allows the definition of arbitrary attributes with their accompanying values.
+This is accomplished by using Ruby's metaprogramming to define methods on the
+class itself.")
+    (home-page "https://github.com/ruby/ostruct")
+    (license (list license:bsd-2))))
+
 (define-public ruby-rsync
   (package
     (name "ruby-rsync")
