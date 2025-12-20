@@ -9308,16 +9308,11 @@ program and as a web server.")
               (sha256
                (base32
                 "0cssdcridadjzichz1vv1ng7jwphqkn8ihh83hpz9mcjmxyb94qc"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv" "tests.py" "anonip.py")))))))
+     (list #:test-flags #~(list "tests.py" "anonip.py")))
     (native-inputs
-     (list python-pytest python-pytest-cov))
+     (list python-pytest python-pytest-cov python-setuptools))
     (home-page "https://github.com/DigitaleGesellschaft/Anonip")
     (synopsis "Anonymize IP addresses in log files")
     (description
