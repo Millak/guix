@@ -7559,28 +7559,26 @@ user provided data sets.")
 (define-public python-pysiaf
   (package
     (name "python-pysiaf")
-    (version "0.24.1")
+    (version "0.25.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pysiaf" version))
        (sha256
-        (base32 "0jgs50jmisv7b7am677q2c3kqjk0fch8gpvijzhdllhkav9wdhs0"))))
+        (base32 "17r06dzx8r12llrhjlp23mmdb5bw4ydmnswdzyincvsz1gc55f9r"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 32 passed, 2 deselected
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
-              ;; Disable 2 failing tests, see
-              ;; <https://github.com/spacetelescope/pysiaf/issues/338>
-              "-k" (string-append "not test_write_jwst_siaf_xlsx"
+      ;; Disable 2 failing tests, see
+      ;; <https://github.com/spacetelescope/pysiaf/issues/338>
+      #~(list "-k" (string-append "not test_write_jwst_siaf_xlsx"
                                   " and not test_write_jwst_siaf_xml" ))))
     (native-inputs
      (list python-pytest
-           python-pytest-xdist
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-lxml
