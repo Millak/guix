@@ -278,6 +278,29 @@ files. Pure Ruby implementation and minimalistic Ruby API.")
     (home-page "http://github.com/filewatcher/filewatcher")
     (license license:expat)))
 
+(define-public ruby-gtx
+  (package
+    (name "ruby-gtx")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "gtx" version))
+       (sha256
+        (base32 "1w0hbr9i6jpn9spbb13ipg2fajkwa51y56jw21ziwsddmv997274"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      ;; no tests in Gem
+      #:tests? #f))
+    (native-inputs (list ruby-rspec))
+    (propagated-inputs (list ruby-erb))
+    (synopsis "Minimal template engine that transpiles to ERB")
+    (description "@code{GTX} creates templates are code-first, while also
+that transpiling to ERB.")
+    (home-page "https://github.com/dannyben/gtx")
+    (license license:expat)))
+
 (define-public ruby-highline
   (package
     (name "ruby-highline")
