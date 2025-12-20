@@ -5512,17 +5512,13 @@ Integration Center (4DN-DCIC).")
        (sha256
         (base32 "1mc4856draxac5s7acywq060a0awng195cpbs1js1wn6cixl1l69"))
        (patches (search-patches "python-feedparser-missing-import.patch"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-sgmllib3k))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "tests/runtests.py")))))))
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "tests/runtests.py")))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-sgmllib3k))
     (home-page "https://github.com/kurtmckee/feedparser")
     (synopsis "Parse feeds in Python")
     (description
