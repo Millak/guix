@@ -1476,7 +1476,7 @@ elements to their parents
 (define-public xlsx2csv
   (package
     (name "xlsx2csv")
-    (version "0.7.8")
+    (version "0.8.3")
     (source
      (origin
        (method git-fetch)
@@ -1485,19 +1485,21 @@ elements to their parents
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1p10571295f8zw1lsma8k5z07hrk9aspar0lsz8zpgjl7v35zcq7"))))
-    (build-system python-build-system)
+        (base32 "0cg2zf6dqnxdcsw0bpjz49sa7360iz9bvc9j7c50qhp9ms81vfs8"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (substitute* "test/run"
-               ;; Run tests with `python' only.
-               (("^(PYTHON_VERSIONS = ).*" all m)
-                (string-append m "['']")))
-             (when tests?
-               (invoke "test/run")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (substitute* "test/run"
+                ;; Run tests with `python' only.
+                (("^(PYTHON_VERSIONS = ).*" all m)
+                 (string-append m "['']")))
+              (when tests?
+                (invoke "test/run")))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/dilshod/xlsx2csv")
     (synopsis "XLSX to CSV converter")
     (description
