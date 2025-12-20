@@ -49227,6 +49227,11 @@ daemons are started after all the file systems have been mounted and
 that, during shutdown, they are stopped before attempting to terminate
 remaining user processes.
 
+Similarly, services that do make mounts during their startup or operation,
+should have @code{user-file-systems} as a requirement. @code{user-processes}
+does depend on @code{user-file-systems} as well.
+So direct requirement only on @code{user-processes} is sufficient.
+
 @cindex one-shot services, for the Shepherd
 @item @code{one-shot?} (default: @code{#f})
 Whether this service is @dfn{one-shot}.  One-shot services stop immediately
