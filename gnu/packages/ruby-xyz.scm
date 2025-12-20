@@ -451,6 +451,28 @@ class itself.")
     (home-page "https://github.com/ruby/ostruct")
     (license (list license:bsd-2))))
 
+(define-public ruby-requires
+  (package
+    (name "ruby-requires")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "requires" version))
+       (sha256
+        (base32 "0dlibxp6jfdl4favj2pgsm2pw84hhr2cdiizfs51ldkpddm50njp"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      ;; no tests
+      #:tests? #f))
+    (native-inputs (list ruby-rspec))
+    (synopsis "Adds Ruby functions that allow requiring a directory")
+    (description "A tiny convenience function (@code{requires}) to require
+or autoload all Ruby files in a directory.")
+    (home-page "https://github.com/DannyBen/requires/")
+    (license license:expat)))
+
 (define-public ruby-rsync
   (package
     (name "ruby-rsync")
