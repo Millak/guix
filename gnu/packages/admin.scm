@@ -7170,6 +7170,35 @@ stored in an SQL database.")
 (connects via USB OTG).")
     (license license:expat)))
 
+(define-public yoctofetch
+  (package
+    (name "yoctofetch")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/Phosphenius/yoctofetch.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0smkaydv74p2231gafibvqbwsy469w56hya8gz8wq0gw7m2l7zh3"))))
+    ; Support for other platforms not available per upstream:
+    ; https://codeberg.org/Phosphenius/yoctofetch#supported-platforms
+    (supported-systems '("x86_64-linux" "aarch64-linux"))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ; No tests available.
+    (home-page "https://codeberg.org/Phosphenius/yoctofetch")
+    (synopsis "Fast and low footprint system fetch tool for the Linux UAPI")
+    (description
+     "This package provides a system fetch tool, similar to
+@command{neofetch}, @command{fastfetch}, etc.  It is lightweight and
+has a focus on performance.  It can be used as a greeter by starting
+it from @file{~/.bashrc} for example.")
+    (license license:agpl3+)))
+
 (define-public zzz
   (package
     (name "zzz")
