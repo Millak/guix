@@ -9162,23 +9162,34 @@ easy, fast, and effective.")
 (define-public buku
   (package
     (name "buku")
-    (version "4.6")
+    (version "5.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "buku" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jarun/buku")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1n4d1mkjyvzdxbyq067p1p9skb3iwx0msd86nzr224dlqrfh9675"))))
-    (build-system python-build-system)
+        (base32 "0krg13q2fa3r29knrl7ngq28dgzzxc9gif12gxkkm4djma2c1v7d"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f                     ; FIXME: many tests need network access
-       #:phases
-       (modify-phases %standard-phases
-         ;; XXX: missing inputs, e.g. python-flask-admin
-         (delete 'sanity-check))))
-    (inputs
-     (list python-beautifulsoup4 python-certifi python-cryptography
-           python-flask python-html5lib python-urllib3))
+     (list
+      ;; XXX: missing inputs for bukuserver
+      #:test-flags
+      #~(list "--ignore=tests/test_server.py"
+              "--ignore=tests/test_views.py"
+              "--deselect=tests/test_buku.py::test_fetch_data_with_url")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'sanity-check))))
+    (native-inputs (list python-pytest python-pyyaml python-setuptools))
+    (inputs (list python-beautifulsoup4
+                  python-certifi
+                  python-cryptography
+                  python-flask
+                  python-html5lib
+                  python-urllib3))
     (home-page "https://github.com/jarun/buku")
     (synopsis "Bookmark manager")
     (description
