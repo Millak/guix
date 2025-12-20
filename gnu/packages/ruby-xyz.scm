@@ -528,6 +528,29 @@ or autoload all Ruby files in a directory.")
 hosts by wrapping the @file{rsync} binary.")
     (license license:expat)))
 
+(define-public ruby-strings-ansi
+  (package
+    (name "ruby-strings-ansi")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "strings-ansi" version))
+       (sha256
+        (base32 "120wa6yjc63b84lprglc52f40hx3fx920n4dmv14rad41rv2s9lh"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      ;; FIXME: tests seems to depend on ruby-strings
+      #:tests? #f))
+    (native-inputs (list bundler ruby-rspec))
+    (synopsis "Handle ANSI escape codes in strings")
+    (description
+     "@code{strings::ANSI} provides Ruby methods for processing ANSI escape
+codes in strings.")
+    (home-page "https://github.com/piotrmurach/strings-ansi")
+    (license license:expat)))
+
 (define-public ruby-tty-color
   (package
     (name "ruby-tty-color")
