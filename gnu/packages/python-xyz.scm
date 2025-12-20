@@ -20614,6 +20614,16 @@ Eventlet, or gevent.  Tasks can execute asynchronously (in the background) or
 synchronously (wait until ready).")
     (license license:bsd-3)))
 
+;; A bare minimal package, mainly to use in tests and reduce closure
+;; size. Tests are left out in the main package to slim down native-inputs.
+(define-public python-celery-minimal
+   (package/inherit python-celery
+     (name "python-celery-minimal")
+     (arguments
+      (list #:tests? #f))
+     (native-inputs
+      (list python-setuptools))))
+
 (define-public python-anyqt
   (package
     (name "python-anyqt")
