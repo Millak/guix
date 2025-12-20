@@ -3368,14 +3368,26 @@ Discord.")
 (define-public python-pypresence
   (package
     (name "python-pypresence")
-    (version "4.2.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pypresence" version))
-              (sha256
-               (base32
-                "0rp09lfxbc3syd1rhbai2516c3wyfxkzrsw8v4bd57qqr2cay7b9"))))
-    (build-system python-build-system)
+    (version "4.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pypresence" version))
+       (sha256
+        (base32
+         "0krk217hq8m76m7n6kv60wkm9fmpm8am9kdk6yv85qdllcb9a685"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:build-backend "setuptools.build_meta"
+      ;; Tests are broken, complaining "fixture 'client_id' not found."
+      #:tests? #f))
+    (native-inputs
+     (list
+      python-setuptools
+      python-pytest
+      python-pytest-asyncio
+      python-wheel))
     (home-page "https://github.com/qwertyquerty/pypresence")
     (synopsis "Discord RPC client")
     (description "This package provides @code{python-pypresence}, a Discord
