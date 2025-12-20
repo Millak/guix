@@ -983,29 +983,28 @@ window managers.")
              (url "https://github.com/ziberna/i3-py")
              (commit "27f88a616e9ecc340e7d041d3d00782f8a1964c1")))
        (sha256
-        (base32
-         "1nm719dc2xqlll7vj4c4m7mpjb27lpn3bg3c66gajvnrz2x1nmxs"))
+        (base32 "1nm719dc2xqlll7vj4c4m7mpjb27lpn3bg3c66gajvnrz2x1nmxs"))
        (file-name (string-append name "-" version "-checkout"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f ; no tests yet
-       #:phases (modify-phases %standard-phases
-                  (add-after 'install 'install-doc
-                    ;; Copy readme file to documentation directory.
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((doc (string-append (assoc-ref outputs "out")
-                                                "/share/doc/" ,name)))
-                        (install-file "README.md" doc)
-                        ;; Avoid unspecified return value.
-                        #t))))))
-    (propagated-inputs
-     (list i3-wm))
+     (list
+      #:tests? #f ;no tests yet
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-doc
+            ;; Copy readme file to documentation directory.
+            (lambda _
+              (install-file "README.md"
+                            (string-append #$output "/share/doc/" #$name)))))))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list i3-wm))
     (home-page "https://github.com/ziberna/i3-py")
     (synopsis "Python interface to the i3 window manager")
-    (description "This package allows you to interact from a Python program
-with the i3 window manager via its IPC socket.  It can send commands and other
-kinds of messages to i3, select the affected containers, filter results and
-subscribe to events.")
+    (description
+     "This package allows you to interact from a Python program with the i3
+window manager via its IPC socket.  It can send commands and other kinds of
+messages to i3, select the affected containers, filter results and subscribe
+to events.")
     (license license:gpl3+)))
 
 (define-public qtile
