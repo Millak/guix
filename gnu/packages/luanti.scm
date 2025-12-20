@@ -449,12 +449,12 @@ with different rules and mechanics.")
      `(#:install-plan
        '(("." "share/luanti/games/mineclonia"))))
     (home-page "https://content.luanti.org/packages/ryvnf/mineclonia/")
-    (synopsis "An unofficial Minecraft-like game for Luanti")
+    (synopsis "Unofficial Minecraft-like game for Luanti")
     (description
      "Mineclonia is a stable and performant clone of Minecraft,
-released as free software. It aims to clone Minecraft as well as
-Luanti currently permits without resorting to hacks which are too
-heavyweight or complicated to maintain.")
+released as free software.  It aims to clone Minecraft as well as Luanti
+currently permits without resorting to hacks which are too heavyweight or
+complicated to maintain.")
     (license license:gpl3+)))
 
 (define-public luanti-voxelibre
