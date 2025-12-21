@@ -28,6 +28,7 @@
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
@@ -42,6 +43,7 @@
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages swig)
@@ -314,7 +316,7 @@ based on required access.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1qvd5j6zwq4fmlahg45swjplhif2z89x7s6pnp07gvcp2fbqdsh5"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f ; the test target causes a rebuild
@@ -338,7 +340,8 @@ based on required access.")
      (list bison
            flex
            python-cython-0
-           swig))
+           swig
+           python-setuptools))
     (inputs
      (list libsepol
            libselinux
