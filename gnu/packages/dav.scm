@@ -116,13 +116,23 @@ clients.")
 (define-public xandikos
   (package
     (name "xandikos")
-    (version "0.2.12")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "xandikos" version))
-       (sha256 (base32 "0x6g5s9pkippxg429r9agp3w0xsid2vv1h45wfc3xzdfvgj6ygsr"))))
-    (build-system python-build-system)
+       (sha256
+        (base32 "10j7qmwcrwql4ah6q8si3nf1ljwrx99w8ipiy85bzjd3qz2vackj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'check-setup
+            (lambda _
+              (setenv "XANDIKOSPATH" (mkdtemp "/tmp/xandikospath-XXXXXX")))))))
+    (native-inputs (list python-setuptools))
     (propagated-inputs
      (list python-aiohttp
            python-defusedxml
@@ -131,13 +141,6 @@ clients.")
            python-jinja2
            python-multidict
            python-vobject))
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'check-setup
-            (lambda _
-              (setenv "XANDIKOSPATH" (mkdtemp "/tmp/xandikospath-XXXXXX")))))))
     (home-page "https://www.xandikos.org/")
     (synopsis "Lightweight CalDAV/CardDAV server")
     (description
