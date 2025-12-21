@@ -9,6 +9,7 @@
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;; Copyright © 2024 Jean-Pierre De Jesus DIAZ <jean@foundation.xyz>
 ;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2025 Foster Hangdaan <foster@hangdaan.email>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -702,7 +703,7 @@ To get @code{podman machine} working, install @code{qemu-minimal}, and
 (define-public podman-compose
   (package
     (name "podman-compose")
-    (version "1.2.0")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -711,11 +712,20 @@ To get @code{podman machine} working, install @code{qemu-minimal}, and
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06vm088q1x7j929n93ylq3bav716bqh6l79agj8sgzsqxjsmli73"))))
+        (base32 "08pz9axvgfyr0jd8rlndmhh8147s864mz17ng6qs07831g9ylj80"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "pytests")))
+      ;; Only run tests in `tests/unit`, skipping the ones in
+      ;; `tests/integration`. The integration tests need an environment with the
+      ;; ability to manage containers and volumes using the `podman` command.
+      #:test-flags #~(list "tests/unit")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; This fixes "ModuleNotFoundError: No module named 'tests'"
+              (invoke "touch" "tests/__init__.py"))))))
     (native-inputs (list python-pytest python-parameterized python-setuptools python-wheel))
     (propagated-inputs (list python-dotenv python-pyyaml))
     (home-page "https://github.com/containers/podman-compose")
