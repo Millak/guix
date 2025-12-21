@@ -27,6 +27,7 @@
   #:use-module (guix licenses)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages check)
@@ -48,30 +49,28 @@
 (define-public python-scrape-schema-recipe
   (package
     (name "python-scrape-schema-recipe")
-    (version "0.2.0")
-    ;; The PyPI archive lacks a VERSION file as well as the test suite.
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/micahcochran/scrape-schema-recipe")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "044c6qwhb4c710ksgiw29cd0qcp84h1m4y8yr2g4c8vdlm3kkqh5"))))
-    (build-system python-build-system)
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/micahcochran/scrape-schema-recipe")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yrqawnxp1k9ps0c920qjbbaxpmz3cf8bzyjs1kimvlxym78b614"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
+          (add-before 'check 'configure-tests
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (substitute* "test_scrape.py"
                   (("DISABLE_NETWORK_TESTS = False")
-                   "DISABLE_NETWORK_TESTS = True"))
-                (invoke "pytest" "-vv")))))))
-    (native-inputs (list python-pytest))
+                   "DISABLE_NETWORK_TESTS = True"))))))))
+    (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-extruct
            python-importlib-resources
