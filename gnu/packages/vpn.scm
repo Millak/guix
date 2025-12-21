@@ -839,72 +839,6 @@ security protocol that utilizes SSL/TLS for key exchange.  It is capable of
 traversing network address translators (@dfn{NAT}s) and firewalls.")
     (license license:gpl2)))
 
-(define-public protonvpn-cli
-  (package
-    (name "protonvpn-cli")
-    (version "2.2.6")
-    (source
-     (origin
-       ;; PyPI has a ".whl" file but not a proper source release.
-       ;; Thus, fetch code from Git.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ProtonVPN/linux-cli")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0y7v9ikrmy5dbjlpbpacp08gy838i8z54m8m4ps7ldk1j6kyia3n"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:tests? #f ; no tests in repo
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'wrap 'wrap-wrapper
-           ;; Wrap entrypoint with paths to its hard dependencies.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((entrypoint (string-append (assoc-ref outputs "out")
-                                              "/bin/protonvpn")))
-               (wrap-program entrypoint
-                            #:sh (search-input-file inputs "bin/bash")
-                            `("PATH" ":" prefix
-                              ,(map (lambda (name)
-                                      (let ((input (assoc-ref inputs name)))
-                                        (string-append input "/bin:"
-                                                       input "/sbin")))
-                                    (list "dialog"
-                                          "iproute2"
-                                          "iptables"
-                                          "ncurses"
-                                          "openvpn"
-                                          "procps"
-                                          "which")))))))
-         ;; The `protonvpn' script wants to write to `~user' to initialize its
-         ;; logger, so simply setting HOME=/tmp won't cut it.  Remove
-         ;; sanity-check.
-         (delete 'sanity-check))))
-    (native-inputs
-     (list python-docopt))
-    (inputs
-     (list bash-minimal
-           dialog
-           iproute
-           iptables
-           ncurses
-           openvpn
-           procps
-           python-dialog
-           python-jinja2
-           python-requests
-           which))
-    (synopsis "Command-line client for ProtonVPN")
-    (description
-     "This is the official command-line interface for ProtonVPN, a secure
-point-to-point virtual private networking (VPN) service with a gratis tier.
-It can automatically find and connect to the fastest servers or use Tor over
-VPN.  The gratis tier offers unlimited bandwidth for up to 10 devices.")
-    (home-page "https://github.com/ProtonVPN/linux-cli")
-    (license license:gpl3+)))
-
 (define-public python-proton-core
   (package
     (name "python-proton-core")
@@ -1194,6 +1128,8 @@ It can automatically find and connect to the fastest servers or use Tor over
 VPN.  The gratis tier offers unlimited bandwidth for up to 10 devices.")
     (home-page "https://github.com/ProtonVPN/linux-cli")
     (license license:gpl3+)))
+
+(define-deprecated-package protonvpn-cli proton-vpn-cli)
 
 (define-public tinc
   (package
