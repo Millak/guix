@@ -1415,6 +1415,11 @@ the \"texlive\" importer."
                        "cnx")
   python)
 
+(define-member (person "Lilah Tascheter"
+                       "lilah@lunabee.space"
+                       "tinystar")
+  hare)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
