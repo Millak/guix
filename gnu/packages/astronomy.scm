@@ -10274,17 +10274,17 @@ object.")
 (define-public python-synphot
   (package
     (name "python-synphot")
-    (version "1.6.0")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "synphot" version))
        (sha256
-        (base32 "0vcai5kdfv6286qdyhg58i6f980s028dh5r4fmlhdk872qci574r"))))
+        (base32 "12rmm1hr1f0bsgqsqsa7bz4lfijsv4fd978cvgw5xk66a3266z7b"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; 394 passed, 29 skipped, 12 deselected, 4 xfailed
+      ;; tests: 406 passed, 29 skipped, 4 xfailed
       #:test-flags
       #~(list "--pyargs" "synphot"
               ;; Not harmful deprecation warning as synphot is compatible with
@@ -10292,26 +10292,12 @@ object.")
               ;; cycle.
               ;;
               ;; See: <https://github.com/spacetelescope/synphot_refactor/issues/411>.
-              "-k" (string-join
-                    (list "not test_from_spectrum1d_Empirical1D_bandpass"
-                          "test_from_spectrum1d_Empirical1D_bandpass_masked"
-                          "test_from_spectrum1d_Empirical1D_source"
-                          "test_from_spectrum1d_Empirical1D_source_masked"
-                          "test_spectrum1d_source"
-                          "test_to_spectrum1d_Const1D"
-                          "test_to_spectrum1d_ConstFlux1D"
-                          "test_to_spectrum1d_Empirical1D_bandpass"
-                          "test_to_spectrum1d_Empirical1D_source"
-                          "test_to_spectrum1d_GaussianFlux1D"
-                          "test_to_spectrum1d_compound_bandpass"
-                          "test_to_spectrum1d_compound_source")
-                    " and not "))))
+              "-W" "ignore::astropy.utils.exceptions.AstropyDeprecationWarning")))
     (native-inputs
      (list python-pytest
            python-pytest-astropy
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-dust-extinction
