@@ -909,7 +909,7 @@ off' shooting directly from the controlling computer.")
 (define-public hugin
   (package
     (name "hugin")
-    (version "2024.0.1")
+    (version "2025.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/hugin/hugin/hugin-"
@@ -917,7 +917,7 @@ off' shooting directly from the controlling computer.")
                                   "/hugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "1r57bgq9dr2wi182vl6qm2kgaz2f6wz8sxikr14k3djfxgg0rv0k"))))
+                "0ydb28wj9jxmrini64sm7n42i4iqi2yg9yhnz33qr158lqrypy3w"))))
     (build-system cmake-build-system)
     (native-inputs
      (list gettext-minimal pkg-config))
