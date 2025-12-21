@@ -303,7 +303,7 @@ client.")
        (sha256
         (base32
          "1dq9kfak61xx7chjrzmkvbw9mvj9008k7g8q7mwi4x133p9dk32c"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     ;; TODO: Tests require running Docker daemon.
     (arguments
      (list
@@ -315,6 +315,7 @@ client.")
               (substitute* "setup.py"
                 ((", < 6")
                  "")))))))
+    (native-inputs (list python-setuptools))
     (inputs
      (list python-cached-property
            python-distro
