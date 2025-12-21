@@ -949,6 +949,33 @@ VPN.  The gratis tier offers unlimited bandwidth for up to 10 devices.")
 packages.")
     (license license:gpl3+)))
 
+(define-public python-proton-keyring-linux
+  (package
+    (name "python-proton-keyring-linux")
+    (version "0.2.1")
+    (home-page "https://github.com/ProtonVPN/python-proton-keyring-linux")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a2q10z44x75fvz6rmhki0vn6500v0ybi50hbhikhkpfr3a5vsbm"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools))
+    (propagated-inputs
+     (list python-keyring
+           python-proton-core))
+    (synopsis "Proton keyring plugin")
+    (description
+     "This package provides a keyring plugin for Proton technologies.")
+    (license license:gpl3+)))
+
 (define-public tinc
   (package
     (name "tinc")
