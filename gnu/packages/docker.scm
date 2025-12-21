@@ -253,10 +253,10 @@ management tool.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0m5ifgxdhcf7yci0ncgnxjas879sksrf3im0fahs573g268farz9"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     ;; Integration tests need a running Docker daemon.
     (arguments (list #:tests? #f))
-    (native-inputs '())
+    (native-inputs (list python-setuptools))
     (inputs (modify-inputs (package-inputs python-docker)
               (prepend python-six)
               (delete "python-urllib3")))
