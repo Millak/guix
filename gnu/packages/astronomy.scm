@@ -3917,11 +3917,11 @@ with Docker/Shifter and Singularity).")
 (define-public python-colossus
   ;; There is no source distribution in PyPI and no version tags, use the
   ;; latest commit from the master HEAD.
-  (let ((commit "8c5546eea1cbd35c2d78825e248928d376e9d6da")
-        (revision "1"))
+  (let ((commit "4c9d0e54969e531c1b9a7120b0e752c77b1f404a")
+        (revision "0"))
     (package
       (name "python-colossus")
-      (version (git-version "1.3.9" revision commit))
+      (version (git-version "1.3.10" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -3930,14 +3930,11 @@ with Docker/Shifter and Singularity).")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0x4kdwl05gcfkypfmv6sji54nh2jm8s4bb7ra6y8rcfw3hi8ckdk"))))
+          (base32 "1zvdpxf82fp3r8nfh65gzlfkacpagfdhpbac65p4bjfnpvm1m3cj"))))
       (build-system pyproject-build-system)
       (arguments
        (list
-        #:test-flags
-        ;; TODO: Skip test files requiring not packaged lenstronomy.
-        #~(list "--ignore=test/api/profiles/light_test.py"
-                "--ignore=test/api/profiles/mass_test.py")
+        ;; tests: 105 passed, 7 warnings
         #:phases
         #~(modify-phases %standard-phases
             (add-before 'check 'pre-check
@@ -3946,6 +3943,7 @@ with Docker/Shifter and Singularity).")
       (native-inputs
        (list python-astropy-minimal
              python-jsonpickle
+             python-lenstronomy-minimal
              python-pytest
              python-scikit-image
              python-setuptools))
