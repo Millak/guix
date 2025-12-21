@@ -901,6 +901,54 @@ VPN.  The gratis tier offers unlimited bandwidth for up to 10 devices.")
     (home-page "https://github.com/ProtonVPN/linux-cli")
     (license license:gpl3+)))
 
+(define-public python-proton-core
+  (package
+    (name "python-proton-core")
+    (version "0.7.0")
+    (home-page "https://github.com/ProtonVPN/python-proton-core")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j8pl2cx676g6akz110j0093bw6mg8g0p3nnng340y3kka9cngv5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list ;; XXX: Require network access.
+         "--ignore=tests/test_alternativerouting.py"
+         "--ignore=tests/test_session.py"
+         "--ignore=tests/test_tlsverification.py"
+         "-k"  "not test_auto_works_on_prod")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'prepare-tests
+            (lambda _
+              (setenv "HOME" (getcwd))
+              (setenv "XDG_RUNTIME_DIR" (string-append (getcwd) "/.run")))))))
+    (native-inputs
+     (list gnupg
+           python-pyotp
+           python-pytest
+           python-pytest-cov
+           python-pyxdg
+           python-setuptools))
+    (propagated-inputs
+     (list python-aiohttp
+           python-bcrypt
+           python-gnupg
+           python-pyopenssl
+           python-requests))
+    (synopsis "Core logic used by the other Proton components")
+    (description
+     "This package is a core library used by other @code{python-proton-}
+packages.")
+    (license license:gpl3+)))
+
 (define-public tinc
   (package
     (name "tinc")
