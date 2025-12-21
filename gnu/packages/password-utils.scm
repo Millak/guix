@@ -2089,12 +2089,11 @@ data inside a GPG encrypted file, which we'll call a coffin.")
   (package
     (name "xkcdpass")
     (version "1.20.0")
-    (home-page "https://github.com/redacted/XKCD-password-generator")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url home-page)
+              (url "https://github.com/redacted/XKCD-password-generator")
               (commit (string-append "xkcdpass-" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -2112,6 +2111,7 @@ data inside a GPG encrypted file, which we'll call a coffin.")
                "xkcdpass.1"
                (string-append #$output "/share/man/man1")))))))
     (native-inputs (list python-setuptools))
+    (home-page "https://github.com/redacted/XKCD-password-generator")
     (synopsis
      "Generate secure multiword passwords/passphrases, inspired by XKCD")
     (description
