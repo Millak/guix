@@ -58,6 +58,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages readline)
@@ -524,16 +525,25 @@ MPRIS 2 support.")
 (define-public cantata
   (package
     (name "cantata")
-    (version "3.3.1")
+    (version "3.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/nullobsi/cantata")
-                    (commit (string-append "v" version))))
+                     (url "https://github.com/nullobsi/cantata")
+                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0x5bm8s9cl68ybdv37w65kjlxyz40s42ddyf0cv4351vxxiiyng2"))))
+                "1hjq73w5lnh2gj51bnaqym0lds82zzlwjr2ndz2m8xrcv2w2q0lg"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   (with-directory-excursion "3rdparty"
+                     (for-each delete-file-recursively
+                               '("karchive"
+                                 "kcategorizedview"
+                                 "qtsingleapplication")))
+                   (delete-file-recursively "support/fonts")))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f)) ; No test suite
@@ -543,16 +553,13 @@ MPRIS 2 support.")
      (list avahi
            eudev
            ffmpeg
+           karchive
+           kitemviews
            libcddb
            libcdio-paranoia
-           libmusicbrainz
-           libebur128
-           libmtp
-           mpg123
            qtbase
            qtmultimedia
            qtsvg
-           taglib
            zlib))
     (synopsis "Graphical MPD Client")
     (description "Cantata is a graphical client for the Music Player Daemon
