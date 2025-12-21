@@ -510,13 +510,19 @@ PCM data.")
 (define-public nml
   (package
     (name "nml")
-    (version "0.7.6")
+    (version "0.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "nml" version))
        (sha256
-        (base32 "0if99hk9dsiw33iabkrbrpwybv8vl3hpim1cf07sklkshigwxryr"))))
+        (base32 "0krs3jac9jc0zqr59ivfl5vibqc15b4yhww73j3c01dla1shvlcj"))))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda _
+                   (invoke "make" "-C" "regression"))))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-pillow python-ply))
