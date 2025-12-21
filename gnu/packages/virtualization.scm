@@ -2953,17 +2953,20 @@ created virtual machines and the respective ssh-parameters.")
 (define-public python-vagrant
   (package
     (name "python-vagrant")
-    (version "0.5.15")
+    (version "1.1.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "python-vagrant" version))
-        (sha256
-         (base32
-          "1ikrh6canhcxg5y7pzmkcnnydikppv7s6sm9prfx90nk0ac8m6mg"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/todddeluca/python-vagrant")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "032g398vddnaxhkvhdz0x1fxvp8qbgjqiigza1racqq8gp6di6va"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f)) ; tests involve running vagrant.
+     (list #:tests? #f)) ;tests involve running vagrant.
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/todddeluca/python-vagrant")
     (synopsis "Python bindings for Vagrant")
     (description
