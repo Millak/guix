@@ -40,64 +40,60 @@
   (package
     (name "dbqn")
     (version "0.2.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/dzaima/BQN")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1zy3y9wbmaw0mrd2sp7d1r912gvs9k0mzw5d3drgmbzkbvpd6iq1"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dzaima/BQN")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zy3y9wbmaw0mrd2sp7d1r912gvs9k0mzw5d3drgmbzkbvpd6iq1"))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:imported-modules `(,@%default-gnu-imported-modules
-                           (guix build ant-build-system))
-      #:modules `((guix build gnu-build-system)
+      #:imported-modules `((guix build ant-build-system)
+                           ,@%default-gnu-imported-modules)
+      #:modules '((guix build gnu-build-system)
                   ((guix build ant-build-system)
                    #:prefix ant:)
                   (guix build utils))
-      #:phases #~(modify-phases %standard-phases
-                   (delete 'configure)
-                   (replace 'build
-                     (lambda* _
-                       (invoke "./build")
-                       (chmod "./BQN" #o755)))
-                   (replace 'check
-                     (lambda* (#:key tests? #:allow-other-keys)
-                       (when tests?
-                         (system "./BQN ./test/test"))))
-                   (add-after 'install 'reorder-jar-content
-                     (lambda* (#:key outputs #:allow-other-keys)
-                       (apply (assoc-ref ant:%standard-phases
-                                         'reorder-jar-content)
-                              #:outputs (list outputs))))
-                   (add-after 'reorder-jar-content 'jar-indices
-                     (lambda* (#:key outputs #:allow-other-keys)
-                       (apply (assoc-ref ant:%standard-phases
-                                         'generate-jar-indices)
-                              #:outputs (list outputs))))
-                   (add-after 'jar-indices 'fix-jar-timestamps
-                     (lambda* (#:key outputs #:allow-other-keys)
-                       (apply (assoc-ref ant:%standard-phases
-                                         'reorder-jar-content)
-                              #:outputs (list outputs))))
-                   (replace 'install
-                     (lambda* (#:key outputs #:allow-other-keys)
-                       (let* ((out (assoc-ref outputs "out"))
-                              (dest-bin (string-append out "/bin"))
-                              (dest-jar (string-append out "/share/java")))
-                         (mkdir-p dest-bin)
-                         (mkdir-p dest-jar)
-                         (rename-file "BQN" "dbqn")
-                         (install-file "dbqn" dest-bin)
-                         (install-file "BQN.jar" dest-jar)
-                         (substitute* (string-append dest-bin "/dbqn")
-                           (("BQN.jar")
-                            (string-append dest-jar "/BQN.jar")))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda _
+              (invoke "./build")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "./BQN" "./test/test")
+                  (begin
+                    (display "test suite not run")
+                    (newline)))))
+          (add-after 'install 'reorder-jar-content
+            (assoc-ref ant:%standard-phases
+                       'reorder-jar-content))
+          (add-after 'reorder-jar-content 'generate-jar-indices
+            (assoc-ref ant:%standard-phases
+                       'generate-jar-indices))
+          (add-after 'generate-jar-indices 'strip-jar-timestamps
+            (assoc-ref ant:%standard-phases
+                       'strip-jar-timestamps))
+          (replace 'install
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((dest-jar (string-append #$output "/share/java")))
+                (rename-file "BQN" "dbqn")
+                (substitute* "dbqn"
+                  (("java")
+                   (search-input-file inputs "/bin/java"))
+                  (("BQN.jar")
+                   (string-append dest-jar "/BQN.jar")))
+                (install-file "BQN.jar" dest-jar)
+                (install-file "dbqn"
+                              (string-append #$output "/bin"))))))))
     (native-inputs (list `(,icedtea-8 "jdk") zip))
-    (inputs (list icedtea-8 bash-minimal))
+    (inputs (list bash-minimal icedtea-8))
     (synopsis "BQN implementation based on dzaima/APL")
     (description
      "dbqn is a Java implementation of the
