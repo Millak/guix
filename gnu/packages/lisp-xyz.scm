@@ -34550,40 +34550,38 @@ arrangements.")
   (sbcl-package->clasp-package sbcl-xhtmlambda))
 
 (define-public sbcl-xkbcommon
-  (let ((commit "aa9513d93f42d7816f88dd1bd8bd21375e7d7512")
-        (revision "0"))
-    (package
-      (name "sbcl-xkbcommon")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/sdilts/cl-xkbcommon")
-               (commit commit)))
-         (file-name (git-file-name "cl-xkbcommon" version))
-         (sha256
-          (base32 "02zdbkh7yliw9vg8i8wx2xgcpfni0fr4z0w19kkxvaib8xm9rx1q"))))
-      (build-system asdf-build-system/sbcl)
-      (arguments
-       (list #:phases
-             #~(modify-phases %standard-phases
-                 (add-after 'unpack 'fix-paths
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (substitute* "xkbcommon.lisp"
-                       (("libxkbcommon.so.0")
-                        (search-input-file inputs "/lib/libxkbcommon.so"))))))))
-      (native-inputs
-       (list pkg-config))
-      (inputs
-       (list libxkbcommon
-             sbcl-cffi))
-      (home-page "https://github.com/sdilts/cl-xkbcommon")
-      (synopsis "Common Lisp FFI bindings for xkbcommon")
-      (description
-       "This package provides Common Lisp FFI bindings for xkbcommon
+  (package
+    (name "sbcl-xkbcommon")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sdilts/cl-xkbcommon")
+              (commit version)))
+       (file-name (git-file-name "cl-xkbcommon" version))
+       (sha256
+        (base32 "0qkaamc8sikpn2q6z21s8249sygszj6bhd0slr8f77k9c2ph1mbb"))))
+    (build-system asdf-build-system/sbcl)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "xkbcommon.lisp"
+                     (("libxkbcommon.so.0")
+                      (search-input-file inputs "/lib/libxkbcommon.so"))))))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list libxkbcommon
+           sbcl-cffi))
+    (home-page "https://github.com/sdilts/cl-xkbcommon")
+    (synopsis "Common Lisp FFI bindings for xkbcommon")
+    (description
+     "This package provides Common Lisp FFI bindings for xkbcommon
 (libxkbcommon) using cffi-grovel.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public cl-xkbcommon
   (sbcl-package->cl-source-package sbcl-xkbcommon))
