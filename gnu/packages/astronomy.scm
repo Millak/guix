@@ -8465,43 +8465,44 @@ to produce realistic WFI images.")
 (define-public python-sbpy
   (package
     (name "python-sbpy")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sbpy" version))
        (sha256
-        (base32 "1xqi29rrh7v05zmvyl8gffrkrw5rlcxig1w6xw1v8f7ikydb5plv"))))
+        (base32 "1dvc9ihzziyw69a0h1f3wr7jzzp4v8zm9x71fasw4sx2i0vab21v"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 591 passed, 108 skipped, 309 warnings
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count)))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'set-home-env
+          (add-before 'check 'pre-check
             (lambda _
-              ;; Tests require HOME to be set.
-              ;;  No such file or directory: '/homeless-shelter/.astropy'
               (setenv "HOME" "/tmp"))))))
-    (propagated-inputs
-     (list python-ads
-           python-astropy
-           python-astroquery
-           python-ginga
-           python-numpy
-           python-photutils
-           ;python-pyoorb ;not packed yet in Guix
-           python-pyyaml
-           python-scipy
-           python-synphot))
     (native-inputs
      (list python-pytest
            python-pytest-astropy
            python-pytest-doctestplus
            python-pytest-remotedata
            python-pytest-xdist
+           python-setuptools
            python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy
+           ;; [optional]
+           python-ads
+           python-astroquery
+           python-ginga
+           python-photutils
+           ;; python-pyoorb     ;not packed yet in Guix
+           python-pyyaml
+           python-scipy
+           python-synphot))
     (home-page "https://sbpy.org")
     (synopsis "Python module for small-body planetary astronomy")
     (description
