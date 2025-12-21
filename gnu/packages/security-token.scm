@@ -796,22 +796,24 @@ your existing infrastructure.")
 (define-public python-fido2
   (package
     (name "python-fido2")
-    (version "1.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri
-               (string-append
-                "https://github.com/Yubico/python-fido2/releases/download/"
-                version "/fido2-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1hwz0xagkmy6hhcyfl66dxf2vfa69lqqqjrv70vw7harik59bi2x"))
-              (snippet
-               ;; Remove bundled dependency.
-               '(delete-file "fido2/public_suffix_list.dat"))))
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Yubico/python-fido2")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "043ldwaxryndh6nwi0j4ysk6phzpkzdik8i15mmahnx3gl1qibif"))
+       (snippet
+        ;; Remove bundled dependency.
+        '(delete-file "fido2/public_suffix_list.dat"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; XXX: Tests timeout without this flag.
+      #:test-flags #~(list "--no-device")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'install-public-suffix-list
