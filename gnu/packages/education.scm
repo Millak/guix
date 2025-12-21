@@ -66,6 +66,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -377,47 +378,48 @@ to open the application in a web browser, for offline usage.")
        (uri (list
              ;; XXX: Upstream does not exist anymore.
              ;; (string-append "http://www.bipede.fr/downloads/logiciels/"
-             ;;                "ToutEnClic-" version "-src.zip")
-             (string-append "https://archive.org/download/tout-en-clic-" version
-                            "-src/ToutEnClic-" version "-src.zip")))
+             ;; "ToutEnClic-" version "-src.zip")
+             (string-append "https://archive.org/download/tout-en-clic-"
+                            version "-src/ToutEnClic-" version "-src.zip")))
        (sha256
         (base32 "0xg24p925rl5bfqsq3jb2lrkidb0f3kbmay5iyxxmjsn3ra0blyh"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share/toutenclic"))
-                    (pixmaps (string-append out "/share/pixmaps"))
-                    (doc (string-append out "share/doc/" ,name "-" ,version))
-                    (bin (string-append out "/bin"))
+     (list
+      #:tests? #f ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)
+          (replace 'install
+            (lambda _
+              (let ((share (string-append #$output "/share/toutenclic"))
+                    (bin (string-append #$output "/bin"))
                     (executable "toutenclic"))
-               ;; Install icon.
-               (install-file "toutenclic.png" pixmaps)
-               ;; Move files into "share/" directory.
-               (for-each (lambda (f) (install-file f share))
-                         (find-files "." "\\.py$"))
-               ;; Install documentation.
-               (install-file "ToutEnClic.pdf" doc)
-               ;; Create executable in "bin/".
-               (mkdir-p bin)
-               (with-directory-excursion bin
-                 (symlink (string-append share "/" executable ".py")
-                          executable)))))
-         (add-after 'install 'create-desktop-file
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (applications (string-append out "/share/applications")))
-               (mkdir-p applications)
-               (call-with-output-file
-                   (string-append applications "/toutenclic.desktop")
-                 (lambda (file)
-                   (format file
-                           "[Desktop Entry]~@
+                ;; Install icon.
+                (install-file "toutenclic.png"
+                              (string-append #$output "/share/pixmaps"))
+                ;; Move files into "share/" directory.
+                (for-each (lambda (f)
+                            (install-file f share))
+                          (find-files "." "\\.py$"))
+                ;; Install documentation.
+                (install-file "ToutEnClic.pdf"
+                              (string-append #$output "share/doc/"
+                                             #$name "-" #$version))
+                ;; Create executable in "bin/".
+                (mkdir-p bin)
+                (with-directory-excursion bin
+                  (symlink (string-append share "/" executable ".py")
+                           executable)))))
+          (add-after 'install 'create-desktop-file
+            (lambda _
+              (let ((applications (string-append #$output "/share/applications")))
+                (mkdir-p applications)
+                (call-with-output-file (string-append applications
+                                                      "/toutenclic.desktop")
+                  (lambda (file)
+                    (format file
+                     "[Desktop Entry]~@
                             Name=ToutEnClic~@
                             Comment=For schooling without difference~@
                             Exec=~a/bin/toutenclic~@
@@ -425,18 +427,16 @@ to open the application in a web browser, for offline usage.")
                             Terminal=false~@
                             Icon=toutenclic~@
                             Type=Application~%"
-                           out)))))))))
-    (native-inputs
-     (list unzip))
-    (inputs
-     (list python-pyqt))
+                     #$output)))))))))
+    (native-inputs (list unzip python-setuptools))
+    (inputs (list python-pyqt))
     (synopsis "School tools for physically disabled children")
-    (description "ToutEnClic is intended to facilitate the schooling
-of physically disabled children in ordinary schools.  It is both
-a multi-page virtual exercise book and a kit including pencil,
-scissors, glue, ruler, compass, protractor and square.  A virtual
-keyboard is also available if the child does not have any other
-specialized device.")
+    (description
+     "ToutEnClic is intended to facilitate the schooling of physically
+disabled children in ordinary schools.  It is both a multi-page virtual
+exercise book and a kit including pencil, scissors, glue, ruler, compass,
+protractor and square.  A virtual keyboard is also available if the child does
+not have any other specialized device.")
     (home-page "https://bipede.fr/contrib/")
     (license license:gpl3)))
 
