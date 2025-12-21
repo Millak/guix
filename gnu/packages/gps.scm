@@ -129,7 +129,7 @@ manipulate maps.")
 (define-public gpscorrelate
   (package
     (name "gpscorrelate")
-    (version "2.0")
+    (version "2.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -138,7 +138,7 @@ manipulate maps.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kvybhfnygz79q3pgwc1q2x4ccmnsfscx2hzxnmzjbnc6arnqari"))))
+                "0b074zd2jvn0rm0mkjdah61cmg3xvzqmllc9sijzpq45sm87gigq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
