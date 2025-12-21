@@ -114,32 +114,24 @@
        (file-name (git-file-name name version))
        (sha256
         (base32 "0j3xw2s44dpphdyy5bnf33s4b2y25p8igdc7lidmsrhh4afv7rp9"))))
-    (build-system gnu-build-system)
+    (build-system meson-build-system)
     (arguments
      (list
-      #:configure-flags
-      #~(list (string-append "--enable-usbdropdir="
-                             #$output
-                             "/pcsc/drivers"))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-Makefile
-            (lambda _
-              (substitute* "src/Makefile.am"
-                (("/bin/echo") (which "echo"))))))))
+        (add-after 'unpack 'patch-data-paths
+          (lambda _
+            (substitute* "meson.build"
+              (("pcsc_dep\\.get_variable\\('usbdropdir'\\)")
+                (string-append "'" #$output "/pcsc/drivers'"))
+              (("udev\\.get_variable\\(pkgconfig: 'udevdir'\\)")
+                (string-append "'" #$output "/lib/udev/'"))))))))
     (native-inputs
-     (list autoconf
-           autoconf-archive
-           automake
-           flex
-           libtool
+     (list flex
            perl
-           pkg-config
-           python-wrapper
-           which
            pkg-config))
     (inputs
-     (list libusb pcsc-lite zlib))
+     (list libusb pcsc-lite eudev zlib))
     (home-page "https://ccid.apdu.fr/")
     (synopsis "PC/SC driver for USB smart card devices")
     (description
