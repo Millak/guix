@@ -30,10 +30,13 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages python-build)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix utils))
 
@@ -95,33 +98,28 @@
 (define-public python-pylibacl
   (package
     (name "python-pylibacl")
-    (version "0.6.0")
+    (version "0.7.3")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pylibacl" version))
-        (sha256
-          (base32
-            "1zyrk2m20p5b6bdwxhrwib273i6i71zyr5hzssbxfqis5qra9848"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pylibacl" version))
+       (sha256
+        (base32 "08pr5cbipij3j591bihh72r5h14lyrspy24qwmfjsn0c1rcgp7wx"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-tests
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             ;; These tests operate on real files, but our tmpfs does not support
-             ;; ACLs.
-             (substitute* "tests/test_acls.py"
-               (("( *)def test_applyto(_extended(_mixed)?)?" match indent)
-                (string-append indent "@pytest.mark.skip(reason=\"guix\")\n"
-                               match)))))
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "tests")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-tests
+            (lambda* (#:key outputs inputs #:allow-other-keys)
+              ;; These tests operate on real files, but our tmpfs does not support
+              ;; ACLs.
+              (substitute* "tests/test_acls.py"
+                (("( *)def test_applyto(_extended(_mixed)?)?" match indent)
+                 (string-append indent "@pytest.mark.skip(reason=\"guix\")\n"
+                                match))))))))
     (inputs (list acl))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://pylibacl.k1024.org/")
     (synopsis "POSIX.1e @acronym{ACLs, access control lists} for Python")
     (description
