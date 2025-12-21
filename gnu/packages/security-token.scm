@@ -90,6 +90,7 @@
   #:use-module (gnu packages tex)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages polkit)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
@@ -257,24 +258,39 @@ with a PKCS #11 Cryptographic Token Interface.")
 (define-public pcsc-lite
   (package
     (name "pcsc-lite")
-    (version "2.0.0")
+    (version "2.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://pcsclite.apdu.fr/files/"
-                                  "pcsc-lite-" version ".tar.bz2"))
+                                  "pcsc-lite-" version ".tar.xz"))
               (sha256
                (base32
-                "0mlk32gpzmzjf5v8qn56lpyyba625jzzw8rkrmpyvr8h8nvf5hyn"))))
-    (build-system gnu-build-system)
+                "1wf4h5gvl100mpcp8v9py5k7k87c7dw3c4crrfz3s4lym4bp0c12"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:configure-flags '("--enable-usbdropdir=/var/lib/pcsc/drivers"
-                           "--disable-libsystemd")))
+     (list
+      #:configure-flags #~(list "-Dusbdropdir=/var/lib/pcsc/drivers"
+                                "-Dlibsystemd=false")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-policy-dir
+            (lambda _
+              (substitute* "meson.build"
+                (("install_dir : polkit_dep\\.get_variable\\('policydir'\\)")
+                 (string-append "install_dir : '"
+                                #$output "/share/polkit-1/actions'")))
+              (substitute* "src/libredirect.c"
+                (("libpcsclite_real.so.1")
+                 (string-append #$output "/lib/libpcsclite_real.so.1")))
+              (substitute* "src/spy/libpcscspy.c"
+                (("libpcsclite_real.so.1")
+                 (string-append #$output "/lib/libpcsclite_real.so.1"))))))))
     (native-inputs
      (list flex
            perl                         ;for pod2man
            pkg-config))
     (inputs
-     (list python eudev))
+     (list python eudev polkit))
     (home-page "https://pcsclite.apdu.fr/")
     (synopsis "Middleware to access a smart card using PC/SC")
     (description
