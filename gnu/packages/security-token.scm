@@ -635,7 +635,7 @@ PCSC API Python wrapper module.")
        (sha256
         (base32
          "0kiv5j67h66bm1d12ny6aw5sqnan33vbs2q4w4ms6f6a709c0xyl"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f ; there are no tests
@@ -655,6 +655,7 @@ PCSC API Python wrapper module.")
             (lambda _
               (invoke "make" "install"
                       (string-append "PREFIX=" #$output)))))))
+    (native-inputs (list python-setuptools))
     (inputs
      (list dmenu
            libnotify
