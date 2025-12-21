@@ -10128,16 +10128,17 @@ functionality needed for solar data analysis.")
 (define-public python-sunpy-soar
   (package
     (name "python-sunpy-soar")
-    (version "1.11.1")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunpy_soar" version))
        (sha256
-        (base32 "04zdfxb0y7m94lna6bikdc4rwa8n11wh42jyha0fxc604xhy2b3l"))))
+        (base32 "0ma4j8wy3hbshzafq1xvfifvinx9ahr4r6gvzyqahf2wp5y9rr8l"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 10 passed, 1 skipped, 21 deselected, 1 xfailed
       #:test-flags
       ;; Disable tests requiring network access to download test data from
       ;; <http://soar.esac.esa.int> and <http://docs.virtualsolar.org>.
@@ -10160,30 +10161,24 @@ functionality needed for solar data analysis.")
                           "test_wavelength_column_wavelength_exists"
                           "test_wavelength_range"
                           "test_wavelength_single"
-                          "test_when_sdac_provider_passed"
                           "test_when_soar_provider_passed"
                           "test_when_wrong_provider_passed")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: It fails to check SunPy's optional inputs versions.
-          (delete 'sanity-check)
-          (add-before 'check 'set-home-env
+          (add-before 'check 'pre-check
             (lambda _
-              ;; Tests require HOME to be set.
-              ;;  Permission denied: '/homeless-shelter'
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list nss-certs-for-test
+           python-matplotlib
            python-pytest
            python-pytest-doctestplus
            python-responses
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
-           python-matplotlib
            python-requests
            python-sunpy))
     (home-page "https://docs.sunpy.org/projects/soar")
