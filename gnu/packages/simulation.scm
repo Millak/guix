@@ -5,7 +5,8 @@
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2023 Reza Housseini <reza@housseini.me>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Francisco-Galindo <yo@franciscogalindo.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1373,6 +1374,38 @@ way the meshing of complex geometries using high-level abstractions is
 made possible.  The package provides a Python library together with a
 command-line utility for mesh optimisation.")
     (license license:gpl3+)))
+
+(define-public python-simpy
+  (package
+    (name "python-simpy")
+    (version "4.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "simpy" version))
+       (sha256
+        (base32 "19h1a3wxygyi819njmnl8cbmzvflqv3hpki0iq71xcc4g057bl06"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 141 passed, 10 deselected, 10 warnings
+      #:test-flags
+      ;; Doctests require deprecated python-py.
+      #~(list "--ignore=docs/")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (home-page "https://gitlab.com/team-simpy/simpy")
+    (synopsis "Process-based discrete-event simulation framework")
+    (description
+     "SimPy is a process-based discrete-event simulation framework based
+on standard Python.  Processes in SimPy are defined by Python generator
+functions and can, for example, be used to model active components like
+customers, vehicles or agents.  SimPy also provides various types of shared
+resources to model limited capacity congestion points (like servers, checkout
+counters and tunnels).")
+    (license license:bsd-2)))
 
 (define-public python-dolfin-adjoint
   (package
