@@ -96,6 +96,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages samba)
+  #:use-module (gnu packages security-token)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
@@ -977,6 +978,55 @@ packages.")
     (synopsis "Proton keyring plugin")
     (description
      "This package provides a keyring plugin for Proton technologies.")
+    (license license:gpl3+)))
+
+(define-public python-proton-vpn-api-core
+  (package
+    (name "python-proton-vpn-api-core")
+    (version "4.14.1")
+    (home-page "https://github.com/ProtonVPN/python-proton-vpn-api-core")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s7qasxiwd924dps1696vlnxr7626li5c31kv2kb3c4sqk6s6867"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'prepare-tests
+            (lambda _
+              (setenv "HOME" (getcwd))
+              (setenv "XDG_RUNTIME_DIR" (string-append (getcwd) "/.run")))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-cov
+           python-pyxdg
+           python-setuptools
+           network-manager
+           network-manager-openvpn))
+    (propagated-inputs
+     (list python-cryptography
+           python-distro
+           python-fido2
+           python-sentry-sdk
+           python-pynacl
+           python-packaging
+           python-proton-core
+           python-proton-vpn-local-agent
+           python-pygobject
+           python-pycairo
+           python-jinja2))
+    (synopsis "Core logic used by the other Proton VPN components")
+    (description
+     "This package is a core library used by other @code{python-proton-vpn-}
+packages.")
     (license license:gpl3+)))
 
 (define-public python-proton-vpn-local-agent
