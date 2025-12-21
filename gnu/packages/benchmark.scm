@@ -48,6 +48,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages c)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages check)
@@ -76,6 +77,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages vulkan)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xml)
   #:use-module (ice-9 match))
@@ -862,47 +864,47 @@ user-provided Lua scripts.
     (license license:gpl2+)))
 
 (define-public vkmark
-  ;; The only ever release is tagged "2017.08" and as its name suggests
-  ;; it was back in the august of 2017. That version no longer compiles
-  ;; due to changes in APIs of its libraries.
-  ;; Latest commit on the other hand seems to be fully working on xcb
-  ;; and wayland backends.
-  (let ((commit "30d2cd37f0566589d90914501fc7c51a4e51f559")
-        (revision "0"))
-    (package
-      (name "vkmark")
-      (version (git-version "2017.08" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/vkmark/vkmark")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0w0n080sb67s7dbxqi71h0vhm6dccs78rqjnxx9x524jp4jh9b7x"))))
-      (build-system meson-build-system)
-      (native-inputs (list pkg-config))
-      ;; The kms backend currently will not compile because of upstream issues.
-      ;; So I omitted this backend's dependiencies. A fix has been proposed
-      ;; on another branch, but it has not been merged yet.
-      ;; See https://github.com/vkmark/vkmark/issues/33
-      (inputs
-       (list vulkan-loader
-             vulkan-headers
-             glm
-             assimp
-             libxcb
-             xcb-util-wm
-             wayland-protocols
-             wayland))
-      (home-page "https://github.com/vkmark/vkmark")
-      (synopsis "Extensible benchmarking suite for Vulkan")
-      (description
-       "vkmark offers a suite of scenes that can be used to measure various
+  (package
+    (name "vkmark")
+    (version "2025.01")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vkmark/vkmark")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mpxyfwln1627zzi11fb6lgv7x1jz1p2w16w1mhhkdz1xsln6fj6"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unbundle-vulkan-headers
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/meson.build"
+                (("vulkan_dep.get_pkgconfig_variable\\('prefix'\\)")
+                 (string-append "'" #$(this-package-input "vulkan-headers") "'"))))))))
+    (native-inputs (list pkg-config))
+    (inputs (list vulkan-loader
+                  vulkan-headers
+                  cmake
+                  glm
+                  assimp
+                  libxcb
+                  libdrm
+                  mesa
+                  xcb-util-wm
+                  wayland-protocols
+                  wayland))
+    (home-page "https://github.com/vkmark/vkmark")
+    (synopsis "Extensible benchmarking suite for Vulkan")
+    (description
+     "vkmark offers a suite of scenes that can be used to measure various
 aspects of Vulkan performance.  The way in which each scene is rendered is
 configurable through a set of options.")
-      (license license:lgpl2.1+))))
+    (license license:lgpl2.1+)))
 
 (define-public osu-micro-benchmarks
   (package
