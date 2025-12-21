@@ -10504,19 +10504,21 @@ cosmological simulations.")
 (define-public python-viresclient
   (package
     (name "python-viresclient")
-    (version "0.13.0")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "viresclient" version))
        (sha256
-        (base32 "1bq2ippb91nxsd2rmw0wjq2x1v2xim1a28g0bkmfxvap4qr53cy6"))))
+        (base32 "1li42f7rfhj07kbihlk0d5qwhf1wzsypyjskq0rxrwwvsxd8d8lp"))))
     (build-system pyproject-build-system)
+    ;; tests: 9 passed
     (native-inputs
      (list python-flit-core
            python-pytest))
     (propagated-inputs
      (list python-cdflib
+           python-h5py
            python-jinja2
            python-netcdf4
            python-pandas
