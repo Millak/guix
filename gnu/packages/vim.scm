@@ -1032,23 +1032,29 @@ With the package comes a plugin to use vifm as a vim file selector.")
 (define-public python-pynvim
   (package
     (name "python-pynvim")
-    (version "0.4.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pynvim" version))
-              (sha256
-               (base32
-                "13qgwkqbx012j5spis1aw8rb120rw0zphgjy1j58irax8r6j1ikb"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-greenlet python-msgpack))
-    (arguments
-     `(#:tests? #f))
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/neovim/pynvim")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k98c0i14z3adx6l4ncf2zmzk9aykqkdnws6qw4m0yj5z61zh6av"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list neovim
+           python-pytest
+           python-pytest-timeout
+           python-setuptools))
+    (propagated-inputs (list python-greenlet python-msgpack))
     (home-page "https://github.com/neovim/pynvim")
     (synopsis "Python client and plugin host for neovim")
-    (description "Pynvim implements support for python plugins in neovim.  It
-also works as a library for connecting to and scripting neovim processes
-through its msgpack-rpc API.")
+    (description
+     "Pynvim implements support for python plugins in neovim.  It also works
+as a library for connecting to and scripting neovim processes through its
+msgpack-rpc API.")
     (license license:asl2.0)))
 
 (define-public vim-guix-vim
