@@ -556,10 +556,7 @@ similar to CoqIDE or ProofGeneral.")
     (native-inputs
      (modify-inputs (package-native-inputs vim-coqtail)
        (replace "vim-vader" neovim-vader)
-       (append python-minimal python-pynvim)))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs vim-coqtail)
-       (append python-pynvim)))))
+       (append python-minimal)))))
 
 (define-public vim-fugitive
   (package
