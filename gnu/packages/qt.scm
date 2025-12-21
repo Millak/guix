@@ -3876,7 +3876,9 @@ web-vitals"                             ;ASL2.0
                     "third_party/libsrtp"
                     "third_party/libsync"
                     "third_party/liburlpattern"
+                    "third_party/libva_protected_content" ;Expat
                     "third_party/libvpx"
+                    "third_party/libvpx/source/libvpx/third_party/x86inc" ;Expat
                     "third_party/libwebm"
                     "third_party/libwebp"
                     "third_party/libx11"
@@ -4057,6 +4059,10 @@ linux/libcurl_wrapper.h"
               ;; done by ffmpeg.
               "-DQT_FEATURE_webengine_proprietary_codecs=ON"
 
+              #$@(if (target-x86-64?)
+                     #~("-DQT_FEATURE_webengine_vaapi=ON")
+                     #~())
+
               ;; Use system libraries where possible (see src/core/CMakeLists.txt).
               "-DQT_FEATURE_webengine_system_alsa=ON"
               "-DQT_FEATURE_webengine_system_ffmpeg=ON"
@@ -4077,7 +4083,6 @@ linux/libcurl_wrapper.h"
               "-DQT_FEATURE_webengine_system_re2=ON"
               "-DQT_FEATURE_webengine_system_zlib=ON"
               "-DQT_FEATURE_webengine_system_glib=ON"
-              "-DQT_FEATURE_webengine_system_libvpx=ON"
               "-DQT_FEATURE_webengine_system_snappy=ON")
       #:phases
       #~(modify-phases %standard-phases
@@ -4168,6 +4173,7 @@ linux/libcurl_wrapper.h"
            libevent
            libgcrypt
            libjpeg-turbo
+           libva
            libvpx
            libwebp
            libx11
