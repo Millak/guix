@@ -212,7 +212,7 @@ private:
 
     void openDB(bool create);
 
-    void makeStoreWritable();
+    void ensureStoreWritable();
 
     uint64_t queryValidPathId(const Path & path);
 

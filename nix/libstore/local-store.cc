@@ -67,7 +67,7 @@ LocalStore::LocalStore(bool reserveSpace)
 
     /* Create missing state directories if they don't already exist. */
     createDirs(settings.nixStore);
-    makeStoreWritable();
+    ensureStoreWritable();
     createDirs(linksDir = settings.nixStore + "/.links");
     Path profilesDir = settings.nixStateDir + "/profiles";
     createDirs(profilesDir);
@@ -300,18 +300,26 @@ void LocalStore::openDB(bool create)
 }
 
 
-/* To improve purity, users may want to make the store a read-only
-   bind mount.  So make the store writable for this process. */
-void LocalStore::makeStoreWritable()
+/* To improve purity, users may want to make the store a read-only bind mount.
+   So make the store writable for this process.  In case the store is read-only
+   and cannot be made writable, throw an error. */
+void LocalStore::ensureStoreWritable()
 {
 #if HAVE_UNSHARE && HAVE_STATVFS && HAVE_SYS_MOUNT_H && defined(MS_BIND) && defined(MS_REMOUNT)
-    if (getuid() != 0) return;
     /* Check if /nix/store is on a read-only mount. */
     struct statvfs stat;
     if (statvfs(settings.nixStore.c_str(), &stat) != 0)
         throw SysError("getting info about the store mount point");
 
     if (stat.f_flag & ST_RDONLY) {
+        if (getuid() != 0) {
+          throw Error(
+              std::format(
+                 "'{}' is read-only; make sure to mount it read-write "
+                 "for proper guix-daemon operation",
+                 settings.nixStore));
+        }
+
         if (unshare(CLONE_NEWNS) == -1)
             throw SysError("setting up a private mount namespace");
 
