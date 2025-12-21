@@ -581,7 +581,10 @@ calendars, equations, and other features as extensions of Markdown syntax.")
                  (replace 'build
                    (lambda _
                      (invoke #$(cc-for-target)
-                             "-O2" "-g" "-o" "stddoc" "stddoc.c")
+                             "-O2" "-g"
+                             ;; XXX: Relax gcc 14 strictness.
+                             "-Wno-int-conversion"
+                             "-o" "stddoc" "stddoc.c")
                      (with-input-from-file "stddoc.c"
                        (lambda _
                          (with-output-to-file "stddoc.c.html"
