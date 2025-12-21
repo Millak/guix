@@ -41,6 +41,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -70,6 +71,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-web)
@@ -1173,15 +1175,11 @@ and does not rely on an online service.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0i8vwnikwd1bfpv4xlgzc51gn6s18q58nqhvcdiyjzcmy3z344c2"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)) ; No tests
-    (propagated-inputs
-     (list python-tinycss2 python-pygobject))
-    (native-inputs
-     `(("gettext" ,gettext-minimal)))
+        (base32 "0i8vwnikwd1bfpv4xlgzc51gn6s18q58nqhvcdiyjzcmy3z344c2"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ; No tests
+    (propagated-inputs (list python-tinycss2 python-pygobject))
+    (native-inputs (list gettext-minimal python-setuptools))
     (home-page "https://github.com/openSUSE/IBus-Theme-Tools")
     (synopsis "Tool for IBus Themes")
     (description "IBus Theme Tools can extract IBus-specific settings from
