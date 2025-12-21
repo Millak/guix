@@ -100,32 +100,20 @@ in the @url{https://schema.org/Recipe} format.")
           (base32
            "08fbw6zp32ws6w9czwy2sqc9c9izlkglsskshj2114d0l79z4gj8"))
          (patches (search-patches "gourmet-sqlalchemy-compat.patch"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
        (list
-        #:modules `((guix build utils)
-                    (guix build python-build-system)
-                    (ice-9 ftw)
-                    (srfi srfi-26))
+        #:test-flags
+        ;; XXX: Some tests in deeper directories or otherwise discovered by
+        ;; Pytest are broken.
+        #~(list "--ignore-glob=gourmet/tests/**/*.py")
         #:phases
         #~(modify-phases %standard-phases
-            (add-before 'check 'prepare-x
-              ;; Both the tests and the sanity-check phase need an X server to
-              ;; succeed.
+            (add-before 'check 'configure-tests
               (lambda _
+                (setenv "HOME" "/tmp") ;needed by tests
                 (system "Xvfb &")
                 (setenv "DISPLAY" ":0")))
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  (setenv "HOME" "/tmp") ;needed by tests
-                  (apply invoke "pytest" "-vv"
-                         ;; XXX: This is needed because some tests in deeper
-                         ;; directories or otherwise discovered by Pytest are
-                         ;; broken.
-                         (map (cut string-append "gourmet/tests/" <>)
-                              (scandir "gourmet/tests"
-                                       (cut string-prefix? "test_" <>)))))))
             (add-after 'install 'install-dekstop-file-and-icons
               (lambda _
                 (define share (string-append #$output "/share"))
@@ -137,6 +125,7 @@ in the @url{https://schema.org/Recipe} format.")
        (list python-dogtail
              python-pytest
              python-selenium
+             python-setuptools
              xorg-server-for-tests))
       (inputs
        (list gtk+
