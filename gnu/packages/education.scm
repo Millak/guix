@@ -88,6 +88,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
@@ -1004,7 +1005,7 @@ learning for programming languages.")
 (define-public mazo
   (package
     (name "mazo")
-    (version "1.1.0")
+    (version "1.2.1")
     (source
      (origin
        (method git-fetch)
@@ -1013,43 +1014,37 @@ learning for programming languages.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14nk3qsj6lg7wp2ws8lxhb4hyjnczvw1cn9f3m466dkkfimp7ygf"))))
-    (build-system python-build-system)
+        (base32 "0mwhd8y3xs57rbaarpi1ams5i0kndizdpns4ym7dmnnn7s9g1xq8"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:use-setuptools? #f
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'build)
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (let* ((out (assoc-ref outputs "out"))
-                      (home (string-append out "/tmp")))
-                 (add-installed-pythonpath inputs outputs)
-                 (setenv "HOME" home)
-                 (invoke "python3" "manage.py" "test")))))
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (script (string-append bin "/mazo"))
-                    (share (string-append out "/share"))
-                    (help (string-append share "/help/C/mazo"))
-                    (icons (string-append
-                            share
-                            "/icons/hicolor/scalable/apps"))
-                    (apps (string-append share "/applications"))
-                    (site (string-append
-                           (site-packages inputs outputs)
-                           "/mazo")))
-               (mkdir-p help)
-               (mkdir-p bin)
-               (copy-file "mazo.py" script)
-               (chmod script #o555)
-               (install-file "icons/mazo.svg" icons)
-               (install-file "lugare.ulkeva.Mazo.desktop" apps)
-               (copy-recursively "help/C/mazo" help)
-               (copy-recursively "mazo" site)))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" (getcwd))
+                (invoke "python3" "manage.py" "test"))))
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((bin (string-append #$output "/bin"))
+                     (script (string-append bin "/mazo"))
+                     (share (string-append #$output "/share"))
+                     (help (string-append share "/help/C/mazo")))
+                (mkdir-p help)
+                (mkdir-p bin)
+                (copy-file "mazo.py" script)
+                (chmod script #o555)
+                (install-file "icons/mazo.svg"
+                              (string-append share
+                                             "/icons/hicolor/scalable/apps"))
+                (install-file "lugare.ulkeva.Mazo.desktop"
+                              (string-append share "/applications"))
+                (copy-recursively "help/C/mazo" help)
+                (copy-recursively "mazo"
+                                  (string-append (site-packages inputs outputs)
+                                                 "/mazo"))))))))
     (native-inputs
      (list python-django
            python-django-cleanup
@@ -1071,8 +1066,9 @@ learning for programming languages.")
            yelp))
     (home-page "https://luis-felipe.gitlab.io/mazo/")
     (synopsis "Memorize concepts using multimedia flash cards")
-    (description "Mazo is a learning application that helps you memorize
-simple concepts using multimedia flash cards and spaced reviews.")
+    (description
+     "Mazo is a learning application that helps you memorize simple concepts
+using multimedia flash cards and spaced reviews.")
     (license license:public-domain)))
 
 (define-public hardv
