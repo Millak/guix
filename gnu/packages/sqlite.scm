@@ -139,8 +139,10 @@ is in the public domain.")
                      flag))
                ;; sqlite's configure script does not like
                ;;    --enable-fast-install
-               (cons "--disable-option-checking"
-                     #$flags)))
+               (cons* "--disable-option-checking"
+                      (string-append "--with-readline-header="
+                                     #$(this-package-input "readline") "/include")
+                      #$flags)))
        ((#:phases phases #~(list))
         #~(modify-phases #$phases
             (replace 'move-static-library
