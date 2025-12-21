@@ -47,6 +47,7 @@
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -77,6 +78,8 @@
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages groff)
+  #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
@@ -975,6 +978,127 @@ packages.")
     (description
      "This package provides a keyring plugin for Proton technologies.")
     (license license:gpl3+)))
+
+(define-public python-proton-vpn-local-agent
+  (let* ((name "python-proton-vpn-local-agent")
+         (version "1.6.0")
+         (local-agent-version "0.10.1")
+         (home-page "https://github.com/ProtonVPN/local-agent-rs")
+         (base-origin
+          (origin
+            (method git-fetch)
+            (uri (git-reference
+                   (url home-page)
+                   (commit version)))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32 "13ym2hhb5ndiffc8z551bb2hk2rdkld2r8cwhyq3nl5lma5z0kdf")))))
+    (package
+      (name name)
+      (version version)
+      (home-page home-page)
+      (source base-origin)
+      (build-system cargo-build-system)
+      (arguments
+       (list
+        #:install-source? #false
+        #:imported-modules `(,@%cargo-build-system-modules
+                             ,@%pyproject-build-system-modules)
+        #:modules '((guix build cargo-build-system)
+                    ((guix build pyproject-build-system) #:prefix py:)
+                    (guix build utils))
+        #:phases
+        (with-extensions (list (pyproject-guile-json))
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "python-proton-vpn-local-agent")))
+              ;; XXX: Inject the local_agent_rs crate as a vendored dependency
+              ;; instead of using path=. Otherwise the 'package phase is broken.
+              (add-after 'chdir 'patch-local-agent-rs-version
+                (lambda _
+                  (substitute* "Cargo.toml"
+                    (("\\{ (path = \"\\.\\./local_agent_rs\") \\}")
+                     (format #f "{ version = ~s }" #$local-agent-version)))))
+              ;; XXX: There is currently no proper way to install a wheel.
+              (add-after 'install 'prepare-python-module-with-flit
+                (lambda _
+                  (define (touch file)
+                    (call-with-output-file file (const #t)))
+                  (mkdir-p "python/proton/vpn/")
+                  (for-each touch '("python/proton/__init__.py"
+                                    "python/proton/vpn/__init__.py"))
+                  (copy-file "target/release/libpython_proton_vpn_local_agent.so"
+                             ;; XXX: Install as .py or flit fails to do so.
+                             "python/proton/vpn/local_agent.py")
+                  (call-with-output-file "python/pyproject.toml"
+                    (lambda (port)
+                      (format port "\
+[build-system]
+requires = [\"flit_core\"]
+build-backend = \"flit_core.buildapi\"
+
+[project]
+name = ~s
+version = ~s
+description = ~s
+
+[tool.flit.module]
+name = ~s~%"
+                              "proton_vpn_local_agent"
+                              #$version
+                              #$(package-description this-package)
+                              "proton.vpn.local_agent")))
+                  (chdir "python")))
+              (add-after 'prepare-python-module-with-flit 'build-python-module
+                (assoc-ref py:%standard-phases 'build))
+              (add-after 'build-python-module 'install-python-module
+                (assoc-ref py:%standard-phases 'install))
+              (add-after 'install-python-module 'fix-python-installation
+                (lambda* (#:key inputs outputs #:allow-other-keys)
+                  (with-directory-excursion (py:site-packages inputs outputs)
+                    (rename-file "proton/vpn/local_agent.py"
+                                 "proton/vpn/local_agent.so")
+                    (substitute* (find-files "." "RECORD")
+                      (("proton/vpn/local_agent\\.py")
+                       "proton/vpn/local_agent.so")))))
+              (add-after 'fix-python-installation 'add-install-to-pythonpath
+                (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
+              (add-after 'add-install-to-pythonpath 'python-check
+                (lambda args
+                  (chdir "..")
+                  (apply (assoc-ref py:%standard-phases 'check)
+                         (cons* #:test-flags (list) args))))))))
+      (native-inputs
+       (list python-flit-core
+             python-pytest
+             python-pytest-asyncio))
+      (inputs
+       (cons*
+        (origin
+          (inherit base-origin)
+          (file-name (git-file-name "local_agent_rs" local-agent-version))
+          (modules '((guix build utils)
+                     (ice-9 ftw)))
+          (snippet
+           #~(begin
+               ;; Delete everything except for local_agent_rs itself:
+               (for-each (lambda (file)
+                           (unless (member file '("." ".." "local_agent_rs"))
+                             (delete-file-recursively file)))
+                         (scandir "."))
+               (for-each
+                (lambda (file)
+                  (unless (member file '("." ".."))
+                    (rename-file (string-append "local_agent_rs/" file) file)))
+                (scandir "local_agent_rs")))))
+        python-wrapper
+        (cargo-inputs 'python-proton-vpn-local-agent)))
+      (synopsis "Communicate with a Proton LocalAgent")
+      (description
+       "This package contains a rust crate for communicating with a Proton
+LocalAgent, server, and python-bindings for that crate.")
+      (license license:gpl3+))))
 
 (define-public tinc
   (package
