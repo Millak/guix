@@ -708,8 +708,8 @@ To get @code{podman machine} working, install @code{qemu-minimal}, and
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/containers/podman-compose")
-             (commit (string-append "v" version))))
+              (url "https://github.com/containers/podman-compose")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "08pz9axvgfyr0jd8rlndmhh8147s864mz17ng6qs07831g9ylj80"))))
@@ -717,17 +717,19 @@ To get @code{podman machine} working, install @code{qemu-minimal}, and
     (arguments
      (list
       ;; Only run tests in `tests/unit`, skipping the ones in
-      ;; `tests/integration`. The integration tests need an environment with the
-      ;; ability to manage containers and volumes using the `podman` command.
-      #:test-flags #~(list "tests/unit")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda _
-              ;; This fixes "ModuleNotFoundError: No module named 'tests'"
-              (invoke "touch" "tests/__init__.py"))))))
-    (native-inputs (list python-pytest python-parameterized python-setuptools python-wheel))
-    (propagated-inputs (list python-dotenv python-pyyaml))
+      ;; `tests/integration`. The integration tests need an environment with
+      ;; the ability to manage containers and volumes using the `podman`
+      ;; command.
+      ;;
+      ;; tests: 378 tests
+      #:test-backend #~'unittest
+      #:test-flags #~(list "discover" "tests/unit")))
+    (native-inputs
+     (list python-parameterized
+           python-setuptools))
+    (propagated-inputs
+     (list python-dotenv
+           python-pyyaml))
     (home-page "https://github.com/containers/podman-compose")
     (synopsis "Script to run docker-compose.yml using podman")
     (description
