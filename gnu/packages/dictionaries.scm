@@ -419,7 +419,11 @@ It comes with a German-English dictionary with approximately 270,000 entries.")
                            "Grammalecte-fr-v" version ".zip"))
        (sha256
         (base32 "076jv3ywdgqqzg92bfbagc7ypy08xjq5zn4vgna6j9350fkfqhzn"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests provided with the project
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://grammalecte.net")
     (synopsis "French spelling and grammar checker")
     (description "Grammalecte is a grammar checker for the French language,
