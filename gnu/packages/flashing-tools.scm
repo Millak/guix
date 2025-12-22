@@ -44,6 +44,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix download)
@@ -78,6 +79,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages swig)
@@ -490,29 +492,31 @@ Management Engine (ME).  You need to @code{sudo rmmod mei_me} and
   (package
     (name "me-cleaner")
     (version "1.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/corna/me_cleaner")
-                     (commit (string-append "v" version))))
-              (sha256
-               (base32
-                "1bdj2clm13ir441vn7sv860xsc5gh71ja5lc2wn0gggnff0adxj4"))
-              (file-name (git-file-name name version))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/corna/me_cleaner")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1bdj2clm13ir441vn7sv860xsc5gh71ja5lc2wn0gggnff0adxj4"))
+       (file-name (git-file-name name version))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-documentation
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (man (string-append out "/share/man/man1")))
-               (install-file "man/me_cleaner.1" man)
-               #t))))))
+     (list
+      #:tests? #f ; No tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-documentation
+            (lambda _
+              (install-file "man/me_cleaner.1"
+                            (string-append #$output "/share/man/man1")))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/corna/me_cleaner")
     (synopsis "Intel ME cleaner")
-    (description "This package provides tools for disabling Intel
-ME as far as possible (it only edits ME firmware image files).")
+    (description
+     "This package provides tools for disabling Intel ME as far as possible
+(it only edits ME firmware image files).")
     (license license:gpl3+)
 
     ;; This is an Intel thing.
