@@ -79,6 +79,7 @@
 ;;; Copyright © 2025 Philippe Swartvagher <phil.swart@gmx.fr>
 ;;; Copyright © 2025 pinoaffe <pinoaffe@gmail.com>
 ;;; Copyright © 2025 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2025 Igorj Gorjaĉev <igor@goryachev.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9988,6 +9989,32 @@ the Fediring.")
 and read AWS CloudWatch logs.  The same functionality is available from
 @code{aws logs tail}.")
     (license license:bsd-3)))
+
+(define-public lexbor
+  (package
+    (name "lexbor")
+    (version "2.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/lexbor/lexbor")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "033hna4b9lh0675vri140nhnqbyj4vsa02j5r17fmdza6594islp"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DLEXBOR_BUILD_TESTS=ON"
+                                     "-DLEXBOR_BUILD_TESTS_CPP=ON")))
+    (home-page "https://lexbor.com/")
+    (synopsis "@code{HTML} and @code{CSS} renderer written in @code{C}")
+    (description
+     "This package provides @code{Lexbor}, a high-performance, lightweight
+@code{HTML}/@code{CSS} engine implemented entirely in @code{C99} with no external
+dependencies.  It's primarily usage is intended for projects that need to process
+web content, but don't require a full browser environment.")
+    (license license:asl2.0)))
 
 (define-public orcania
   (package
