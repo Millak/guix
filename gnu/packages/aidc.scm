@@ -9,6 +9,7 @@
 ;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -135,31 +136,43 @@ read all zbar supported codes.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/zint/zint")
-                    (commit version)))
+                     (url "https://github.com/zint/zint")
+                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
                 "1zpv9ar1kfjl3bb27jc8hd8601zcda9yv4dz1jhxfhdsg6v4cdg7"))))
-    (build-system qt-build-system)
+    (build-system cmake-build-system)
     (arguments
-     (list #:qtbase qtbase
-           #:parallel-tests? #f
-           #:configure-flags
-           #~(list "-DZINT_QT6=ON"
-                   "-DZINT_TEST=ON"
-                   "-DZINT_UNINSTALL=OFF")))
-    (native-inputs
-     (list pkg-config qttools))
-    (inputs
-     (list libpng
-           qtsvg))
+     (list #:disallowed-references (list qtbase)
+           #:parallel-tests? #f         ;test suite fails otherwise
+           #:configure-flags #~(list "-DZINT_TEST=ON"
+                                     "-DZINT_UNINSTALL=OFF")))
+    (native-inputs (list pkg-config))
+    (inputs (list libpng))
     (synopsis "Barcode encoding library")
     (description "Zint is a suite of programs to allow easy encoding of data in
 any of the wide range of public domain barcode standards and to allow
 integration of this capability into your own programs.")
     (home-page "https://www.zint.org.uk/")
     (license (list license:bsd-3 license:gpl3+))))
+
+(define-public zint-with-qt
+  (package/inherit zint
+    (name "zint-with-qt")
+    (build-system qt-build-system)
+    (arguments (substitute-keyword-arguments (package-arguments zint)
+                 ((#:disallowed-references references)
+                  (delete qtbase references))
+                 ((#:qtbase _ #f)
+                  qtbase)
+                 ((#:configure-flags flags ''())
+                  #~(cons "-DZINT_QT6=ON" #$flags))))
+    (inputs (modify-inputs (package-inputs zint)
+              ;; The UI library of qttools is linked to; hence it must be used
+              ;; as an input rather than a native input.
+              (append qtsvg qttools)))
+    (synopsis "Barcode encoding library (with graphical user interface)")))
 
 (define-public zxing-cpp
   (package
