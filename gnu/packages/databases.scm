@@ -4345,26 +4345,27 @@ framework.")
 (define-public python-sqlalchemy-utils
   (package
     (name "python-sqlalchemy-utils")
-    (version "0.38.3")
+    (version "0.42.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "SQLAlchemy-Utils" version))
-        (sha256
-         (base32 "0k8z0mjhvdv302kn0nhci8b2dgw4cn2akprsf37ma1540ykgp6lz"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kvesteri/sqlalchemy-utils")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ny1p352p0dlgrf9fnmzj7ld1rga5zj698qpla1kdaliwwh6xawn"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f)) ; FIXME: Many tests require a running database server.
-       ;; #:phases
-       ;; (modify-phases %standard-phases
-       ;;   (replace 'check
-       ;;     (lambda _
-       ;;       (zero? (system* "py.test" "sqlalchemy_utils" "tests")))))
-    (propagated-inputs
-     (list python-six python-sqlalchemy))
+     (list #:tests? #f)) ;FIXME: Many tests require a running database server.
+    (propagated-inputs (list python-six python-sqlalchemy))
     (native-inputs
-     (list python-dateutil python-flexmock python-psycopg2 python-pytest
-           python-pytz))
+     (list python-dateutil
+           python-flexmock
+           python-psycopg2
+           python-pytest
+           python-pytz
+           python-setuptools))
     (home-page "https://github.com/kvesteri/sqlalchemy-utils")
     (synopsis "Various utility functions for SQLAlchemy")
     (description
