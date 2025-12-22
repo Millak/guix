@@ -5613,7 +5613,7 @@ algorithm implementations.")
   (package
     (inherit apache-arrow)
     (name "python-pyarrow")
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       ;; XXX: Test data is distributed separately in
@@ -5623,7 +5623,6 @@ algorithm implementations.")
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'build) ; XXX the build is performed again during the install phase
           (add-after 'unpack 'enter-source-directory
             (lambda _ (chdir "python")))
           (add-after 'enter-source-directory 'set-version
@@ -5667,7 +5666,8 @@ __version_tuple__ = version_tuple = (~a)~%" version version-tuple))))))
            python-cython
            python-pytest
            python-pytest-runner
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-setuptools))
     (outputs '("out"))
     (home-page "https://arrow.apache.org/docs/python/")
     (synopsis "Python bindings for Apache Arrow")
