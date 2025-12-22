@@ -4390,7 +4390,7 @@ void Worker::waitForInput()
             after - j->second.timeStarted >= (time_t) settings.buildTimeout)
         {
             printMsg(lvlError,
-                std::format("{} timed out after %2% seconds",
+                std::format("{} timed out after {} seconds",
                 goal->getName(), settings.buildTimeout));
             goal->timedOut();
         }
