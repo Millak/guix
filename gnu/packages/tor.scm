@@ -438,32 +438,24 @@ host websites, and chat with friends using the Tor network.")))
        (method url-fetch)
        (uri (pypi-uri name version))
        (sha256
-        (base32
-         "02rrlllz2ci6i6cs3iddyfns7ang9a54jrlygd2jw1f9s6418ll8"))))
-    (build-system python-build-system)
-    (inputs
-     (list python-stem))
+        (base32 "02rrlllz2ci6i6cs3iddyfns7ang9a54jrlygd2jw1f9s6418ll8"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-man-page
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (man (string-append out "/share/man")))
-               (install-file "nyx.1" (string-append man "/man1"))
-               #t)))
-         (add-after 'install 'install-sample-configuration
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/" ,name "-" ,version)))
-               (install-file "web/nyxrc.sample" doc)
-               #t))))
-       ;; XXX The tests seem to require more of a real terminal than the build
-       ;; environment provides:
-       ;;   _curses.error: setupterm: could not find terminal
-       ;; With TERM=linux, the tests try to move the cursor and still fail:
-       ;;   _curses.error: cbreak() returned ERR
-       #:tests? #f))
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-man-page
+            (lambda _
+              (install-file "nyx.1"
+                            (string-append #$output "/share/man/man1"))))
+          (add-after 'install 'install-sample-configuration
+            (lambda _
+              (install-file "web/nyxrc.sample"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (native-inputs (list python-setuptools))
+    (inputs (list python-stem))
     (home-page "https://nyx.torproject.org/")
     (synopsis "Tor relay status monitor")
     (description
