@@ -131,7 +131,7 @@ read all zbar supported codes.")
 (define-public zint
   (package
     (name "zint")
-    (version "2.15.0")
+    (version "2.16.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -140,7 +140,7 @@ read all zbar supported codes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0arnpdqspyy3bxafm3lqc020bhwq3vazfnja2fk2s8c7mr9wimgr"))))
+                "1zpv9ar1kfjl3bb27jc8hd8601zcda9yv4dz1jhxfhdsg6v4cdg7"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
