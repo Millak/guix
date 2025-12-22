@@ -2733,18 +2733,22 @@ schemas for settings shared by various components of the GNOME desktop.")
     (license license:lgpl2.1+)))
 
 (define-public python-liblarch
+  ;; The merge request replacing nose with pytest has not been released yet.
+  ;; Temporarily use a git snapshot.
+  (let ((commit "fe06860ea6f1cd339b5b38485879ec5d9512698c")
+        (revision "0"))
   (package
     (name "python-liblarch")
-    (version "3.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/getting-things-gnome/liblarch")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "125rmrdbc84lapfh8c77zxnmwas20xdfamqmilhv1smkxn2q4sh3"))))
+    (version (git-version "3.2.0" revision commit))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/getting-things-gnome/liblarch")
+             (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hvwhqhanwkmavnqxbl276nncvnrhgz92pa8z417d8bk3cirmj0b"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2757,12 +2761,15 @@ schemas for settings shared by various components of the GNOME desktop.")
                          (list (search-input-file inputs "/bin/Xvfb")
                                xorg-display "&")
                          " "))
-                (setenv "DISPLAY" xorg-display)))))))
-    (native-inputs
-     (list xorg-server-for-tests python-pytest python-setuptools))
+                (setenv "DISPLAY" xorg-display))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (invoke "./run-tests")))))))
+    (native-inputs (list python-pytest python-setuptools xorg-server-for-tests))
     (inputs (list gtk+))
     (propagated-inputs (list python-pygobject))
-    (home-page "https://wiki.gnome.org/Projects/liblarch")
+    (home-page "https://getting-things-gnome.github.io/liblarch")
     (synopsis "Library to easily handle complex data structures")
     (description
      "Liblarch is a Python library built to easily handle data structures such
@@ -2772,7 +2779,7 @@ allow you to use your data structure in a @code{Gtk.Treeview}.
 Liblarch support multiple views of one data structure and complex filtering.
 That way, you have a clear separation between your data themselves (Model)
 and how they are displayed (View).")
-    (license license:lgpl3+)))
+      (license license:lgpl3+))))
 
 (define-public gtg
   (package
