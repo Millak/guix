@@ -92,6 +92,7 @@
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix hg-download)
   #:use-module (guix packages)
   #:use-module (guix utils))
 
@@ -5042,3 +5043,27 @@ the X11 display server protocol.  It runs in memory and does not require a
 physical display.  Only a network layer is necessary.  Xvfb is useful for
 running acceptance tests on headless servers.")
     (license license:expat)))
+
+(define-public tms
+  (package
+    (name "tms")
+    (version "0.1.2")
+    (source
+     (origin
+       (method hg-fetch)
+       (uri (hg-reference
+              (url "https://hg.sr.ht/~olly/tms")
+              (changeset (string-append "v" version))))
+       (file-name (string-append name "-" version "-checkout"))
+       (sha256
+        (base32 "1k8v8vx0klz3zfj81g9d1rancn819sv51lgs5j94x69kqzgn3fsw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "tests.py")))
+    (native-inputs (list python-setuptools))
+    (home-page "https://hg.sr.ht/~olly/tms")
+    (synopsis "Test Match Special for test assertions")
+    (description
+     "This package provides match data structures and types in test code.")
+    (license license:bsd-2)))
