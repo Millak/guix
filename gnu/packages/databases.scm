@@ -4702,21 +4702,19 @@ libraries with SQLALchemy.")
 (define-public python-psycopg2
   (package
     (name "python-psycopg2")
-    (version "2.9.6")
+    (version "2.9.11")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "psycopg2" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/psycopg/psycopg2")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "04chl9f7v7k1zssa40pmk06jvpyqiss2lpjq50dq69nqix0mhlgi"))))
+        (base32 "04l2yzbl15nrw1pcjfkqycvqn6h9phcdh1xx9ynfy3dzfscq5ly5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      #~(list "--deselect=tests/test_ipaddress.py::NetworkingTestCase::\
-test_cidr_adapt"
-              "--deselect=tests/test_ipaddress.py::NetworkingTestCase::\
-test_inet_adapt")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'start-postgresql
