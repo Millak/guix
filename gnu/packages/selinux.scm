@@ -33,6 +33,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages flex)
@@ -44,6 +45,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages swig)
@@ -306,7 +308,7 @@ based on required access.")
 (define-public python-setools
   (package
     (name "python-setools")
-    (version "4.4.0")
+    (version "4.5.0")
     (source
      (origin
        (method git-fetch)
@@ -315,11 +317,12 @@ based on required access.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qvd5j6zwq4fmlahg45swjplhif2z89x7s6pnp07gvcp2fbqdsh5"))))
+        (base32 "0wm79r0lg0rk6dycf7kjp6gzmbykmq0g0qvz5cdqbwyf3n318bp3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f ; the test target causes a rebuild
+      #:tests? #f ; Most tests require access to /usr/bin/checkpolicy
+      #:test-flags #~(list "tests")
       #:phases
       #~(modify-phases %standard-phases
           (delete 'portability)
@@ -327,25 +330,26 @@ based on required access.")
             (lambda* (#:key inputs #:allow-other-keys)
               (setenv "SEPOL"
                       (search-input-file inputs "/lib/libsepol.a"))))
-          (add-after 'unpack 'remove-Werror
-            (lambda _
-              (substitute* "setup.py"
-                (("'-Werror',") ""))))
           (add-after 'unpack 'fix-target-paths
             (lambda _
               (substitute* "setup.py"
                 (("join\\(sys.prefix")
-                 (string-append "join(\"" #$output "/\""))))))))
+                 (string-append "join(\"" #$output "/\"")))))
+          (add-before 'check 'fix-tests
+            (lambda _
+              (delete-file-recursively "setools"))))))
     (native-inputs
      (list bison
            flex
            python-cython-0
            swig
+           python-pytest
+           python-pytest-qt
            python-setuptools))
     (inputs
      (list libsepol
            libselinux
-           python-pyqt))
+           python-pyqt-6))
     (propagated-inputs
      (list python-networkx))
     (home-page "https://github.com/SELinuxProject/setools")
