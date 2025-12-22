@@ -46,6 +46,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system emacs)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (gnu packages)
@@ -460,14 +461,40 @@ and workspaces that can be used in the compiler environment of your choice.")
        (uri (pypi-uri "cmakelang" version))
        (sha256
         (base32 "0zz6g1ignqanl4ja9f5nrlk5f3mvv7cp5y9yswjd0m06n23jx603"))))
-    (build-system python-build-system)
-    (arguments (list #:tests? #f        ;no test data in pypi archive
-                     #:phases #~(modify-phases %standard-phases
-                                  (add-after 'unpack 'adjust-setup.py
-                                    (lambda _
-                                      (substitute* "setup.py"
-                                        (("cmakelang/doc/README.rst")
-                                         "README.rst")))))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f        ;no test data in pypi archive
+      #:modules '((guix build pyproject-build-system)
+                  (guix build utils)
+                  (ice-9 textual-ports))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'adjust-setup.py
+            (lambda _
+              (substitute* "setup.py"
+                (("cmakelang/doc/README.rst")
+                 "README.rst"))
+              ;; XXX: setup.py has multiple setup() calls, breaking the 'build
+              ;; phase ; in this case the package is wrong, but conveniently
+              ;; our goal is the first setup() call, so discard what comes from
+              ;; the second one.
+              (rename-file "setup.py" "setup.py.bak")
+              (call-with-input-file "setup.py.bak"
+                (lambda (in)
+                  (call-with-output-file "setup.py"
+                    (lambda (out)
+                      (let loop ((line (get-line in))
+                                 (setup-seen #f))
+                        (unless (or (eof-object? line)
+                                    (and (string-prefix? "setup(" line)
+                                         setup-seen))
+                          (display line out)
+                          (newline out)
+                          (loop (get-line in)
+                                (or setup-seen
+                                    (string-prefix? "setup(" line))))))))))))))
+    (native-inputs (list python-setuptools))
     (inputs (list python-jinja2 python-pyyaml python-six))
     (home-page "https://github.com/cheshirekow/cmake_format/")
     (synopsis "Language tools for CMake (format, lint, etc.)")
