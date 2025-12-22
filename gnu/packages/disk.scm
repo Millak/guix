@@ -970,24 +970,31 @@ reformatted.  It can recover lost files from at least:
     (license license:gpl2+)))
 
 (define-public pydf
-  (package
-    (name "pydf")
-    (version "12")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pydf" version))
-       (sha256
-        (base32
-         "0f8ly8xyp93i2hm9c0qjqd4y86nz73axw2f09z01mszwmg1sfivz"))))
-  (build-system python-build-system)
-  (home-page "http://kassiopeia.juls.savba.sk/~garabik/software/pydf/")
-  (synopsis "Colourised @command{df} clone")
-  (description "All-singing, all-dancing, fully colourised @command{df} clone
-written in Python.  It displays the amount of disk space available on the
-mounted file systems, using different colours for different types of file
-systems.  Output format is completely customizable.")
-  (license license:public-domain)))
+  (let ((commit "af38bb3b7aacbcc32271e6dafa8b8b0a77ffead8")
+        (revision "0"))
+    (package
+      (name "pydf")
+      (version (git-version "15" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/garabik/pydf")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "18ljigg8zm9pc3qg3alpyh3n4a4f1wcza4p36cchjn2vd4466jf4"))))
+      (build-system pyproject-build-system)
+      (arguments (list #:tests? #f)) ; No tests.
+      (native-inputs (list python-setuptools))
+      (home-page "http://kassiopeia.juls.savba.sk/~garabik/software/pydf/")
+      (synopsis "Colourised @command{df} clone")
+      (description
+       "All-singing, all-dancing, fully colourised @command{df} clone written
+in Python.  It displays the amount of disk space available on the mounted file
+systems, using different colours for different types of file systems.  Output
+format is completely customizable.")
+      (license license:public-domain))))
 
 (define-public f3
   (package
