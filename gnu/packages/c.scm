@@ -51,6 +51,7 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix store)
   #:use-module (gnu packages)
@@ -72,6 +73,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages gettext)
@@ -466,23 +468,26 @@ language as input.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1rihvlg11nzk70kfzz4i3gi5izcy46w05ismcx04p5j1hlim0brb"))))
-    (build-system python-build-system)
+        (base32 "1rihvlg11nzk70kfzz4i3gi5izcy46w05ismcx04p5j1hlim0brb"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'unbundle-ply
-                     (lambda _
-                       (rmdir "pcpp/ply")
-                       (substitute* "setup.py"
-                         (("'pcpp/ply/ply'") "")))))))
-    (native-inputs (list python-pytest))
+      #:test-backend #~'unittest
+      #:test-flags #~(list "discover" "-s" "tests" "-p" "*.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unbundle-ply
+            (lambda _
+              (rmdir "pcpp/ply")
+              (substitute* "setup.py"
+                (("'pcpp/ply/ply'")
+                 "")))))))
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-ply))
     (home-page "https://github.com/ned14/pcpp")
     (synopsis "C99 preprocessor written in Python")
-    (description "This package provides a C99 preprocessor written in pure
-Python.")
+    (description
+     "This package provides a C99 preprocessor written in pure Python.")
     (license license:bsd-3)))
 
 (define-public aml
