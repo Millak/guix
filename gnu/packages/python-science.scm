@@ -6823,6 +6823,50 @@ simulating inelastic neutron scattering (INS) from force constants.  It can
 read output from CASTEP and Phonopy and calculate phonon frequencies,
 eigenvectors, and structure factors.")
     (license license:gpl3+)))
+
+(define-public python-quasielasticbayes
+  (package
+    (name "python-quasielasticbayes")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mantidproject/quasielasticbayes")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05va9qygw4a9app61spw6hqmbn9cq09w0dik9g6xvzpwcmfb7yx4"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:imported-modules `((guix build python-build-system)
+                           ,@%meson-build-system-modules)
+      #:modules '((guix build meson-build-system)
+                  ((guix build python-build-system) #:prefix py:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'check
+            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+              (when tests?
+                (py:add-installed-pythonpath inputs outputs)
+                (invoke "pytest" "../source/src/quasielasticbayes/test")))))))
+    (native-inputs
+     (list gfortran
+           python
+           python-numpy
+           python-pytest))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://github.com/mantidproject/quasielasticbayes")
+    (synopsis "Bayesian analysis for quasi-elastic neutron scattering")
+    (description
+     "This package provides Python wrappers for Fortran routines used to
+perform Bayesian analysis on quasi-elastic neutron-scattering data.  The
+original Fortran code was written by Dr. Devinder Sivia in the 1980s.")
+    (license license:bsd-3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
