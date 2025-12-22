@@ -83,6 +83,30 @@ more available transition, the state goes back to the initial position.")
 Hare.")
     (license license:isc)))
 
+(define-public hare-mcron
+  (package
+    (name "hare-mcron")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~stacyharper/mcron")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18h85fpxa2hs3fr132j85qh8b73dsawcn845ifk8ffgvh2kmw9zl"))))
+    (build-system hare-build-system)
+    (native-inputs (list scdoc))
+    (inputs (list hare-ev))
+    (supported-systems %hare-supported-systems)
+    (home-page "https://mcron.builtwithhare.org/")
+    (synopsis "Sleeping cron job scheduler")
+    (description "Mcron is a cron implementation that is designed to be used
+on suspendable machines, like mobile phones.  It will wake the device from
+suspension to trigger the tasks.")
+    (license license:gpl3+)))
+
 (define-public sxmobar
   (package
     (name "sxmobar")
