@@ -6638,6 +6638,55 @@ of crystal structures.  It automatically detects Bravais lattice types and
 generates k-point labels and band paths following crystallographic
 conventions.")
     (license license:expat)))
+
+(define-public python-pystog
+  (package
+    (name "python-pystog")
+    (version "0.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/neutrons/pystog")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dwljmyp083v5a189xzdxxsdkazh5bmbm2f2k79jp7lds0y8h9lg"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-version
+            (lambda _
+              ;; versioningit needs git tags; patch pyproject.toml to use
+              ;; static version and create _version.py directly.
+              (substitute* "pyproject.toml"
+                (("dynamic = \\[\"version\"\\]")
+                 (string-append "version = \"" #$version "\""))
+                (("source = \"versioningit\"") "")
+                (("\\[tool\\.hatch\\.build\\.hooks\\.versioningit-onbuild\\]")
+                 "[tool.hatch.build.hooks.versioningit-onbuild]
+enable-by-default = false"))
+              (mkdir-p "src/pystog")
+              (call-with-output-file "src/pystog/_version.py"
+                (lambda (port)
+                  (format port "__version__ = \"~a\"~%" #$version))))))))
+    (propagated-inputs
+     (list python-h5py
+           python-numpy))
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
+    (home-page "https://github.com/neutrons/pystog")
+    (synopsis "Total scattering function manipulator")
+    (description
+     "PyStoG is a Python package for converting between different total
+scattering functions used in crystalline and amorphous materials research.
+It handles reciprocal-space structure factors and real-space pair distribution
+functions, performing Fourier transforms between them and applying filters to
+remove spurious artifacts in the data.")
+    (license license:gpl3+)))
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
