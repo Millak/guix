@@ -4357,15 +4357,41 @@ framework.")
         (base32 "0ny1p352p0dlgrf9fnmzj7ld1rga5zj698qpla1kdaliwwh6xawn"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f)) ;FIXME: Many tests require a running database server.
+     (list
+      #:test-flags
+      ;; XXX: These tests require additional inputs.
+      #~(list "--deselect=tests/test_views.py::TestMySqlTrivialView"
+              "--deselect=tests/functions/test_database.py::\
+TestDatabasePostgresPg8000::test_create_and_drop"
+              "--deselect=tests/functions/test_database.py::\
+TestDatabasePostgresPsycoPG2CFFI::test_create_and_drop")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-postgresql
+            (lambda* (#:key inputs tests? #:allow-other-keys)
+              (when tests?
+                (setenv "TZDIR" (search-input-directory inputs
+                                                        "share/zoneinfo"))
+                (let ((dbdir (string-append (getcwd) "/../pgdir")))
+                  (setenv "SQLALCHEMY_UTILS_TEST_POSTGRESQL_USER"
+                          "nixbld")
+                  (invoke "initdb" "-D" dbdir)
+                  (invoke "pg_ctl" "-D" dbdir
+                          "-o" (string-append "-k " dbdir)
+                          "-l" (string-append dbdir "/db.log")
+                          "start")
+	          (invoke "psql" "-h" dbdir "-d" "postgres"
+                          "-c" "CREATE DATABASE sqlalchemy_utils_test;"))))))))
     (propagated-inputs (list python-six python-sqlalchemy))
     (native-inputs
-     (list python-dateutil
+     (list postgresql
+           python-dateutil
            python-flexmock
            python-psycopg2
            python-pytest
            python-pytz
-           python-setuptools))
+           python-setuptools
+           tzdata-for-tests))
     (home-page "https://github.com/kvesteri/sqlalchemy-utils")
     (synopsis "Various utility functions for SQLAlchemy")
     (description
