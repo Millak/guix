@@ -15986,7 +15986,7 @@ versions number match PEP 440.")
 (define-public python-pyproject-metadata
   (package
     (name "python-pyproject-metadata")
-    (version "0.7.1")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -15995,8 +15995,7 @@ versions number match PEP 440.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0yvs59ymz5gdix34a95wxlxvk9bnvjgrzsnmnc3ws7whpfv3yasm"))))
+        (base32 "1vz2dx46ag42bqp81frd92pfnryfdry6112g6z5inrywqs8vymkw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -16005,8 +16004,8 @@ versions number match PEP 440.")
       ;; tests' regular expressions no longer match.
       '(list "--ignore=tests/test_standard_metadata.py")))
     (propagated-inputs (list python-packaging))
-    (native-inputs (list python-pypa-build python-pytest python-setuptools
-                         python-tomli python-wheel))
+    (native-inputs
+     (list python-flit-core python-pytest python-tomli))
     (home-page "https://github.com/FFY00/python-pyproject-metadata")
     (synopsis "Dataclass for PEP 621 metadata")
     (description "This project does not implement the parsing of
