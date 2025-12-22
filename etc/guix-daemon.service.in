@@ -14,6 +14,12 @@ ExecStart=@localstatedir@/guix/profiles/per-user/root/current-guix/bin/guix-daem
     --substitute-urls='@GUIX_SUBSTITUTE_URLS@'
 Environment='GUIX_STATE_DIRECTORY=@localstatedir@/guix' 'GUIX_LOCPATH=@localstatedir@/guix/profiles/per-user/root/guix-profile/lib/locale' LC_ALL=en_US.utf8
 
+# Stop the gnu-store.mount so that the daemon can capture the store as
+# read-write in its private mount namespace.
+# See <https://codeberg.org/guix/guix/issues/4744>.
+ExecStartPre=-+systemctl stop gnu-store.mount
+ExecStartPost=-+systemctl start gnu-store.mount --no-block
+
 # Run under a dedicated unprivileged user account.
 User=guix-daemon
 
