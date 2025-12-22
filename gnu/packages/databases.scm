@@ -4467,19 +4467,23 @@ SQLAlchemy Database Toolkit for Python.")
   (package
     (name "python-sqlite-fts4")
     (version "1.0.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "sqlite-fts4" version))
-              (sha256
-               (base32
-                "034kx0ac556sywy1p4qcrc36l24w3q0xwswqv2z9s3k8yvm5xc3q"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/simonw/sqlite-fts4")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05c69n4nrc9srkbih1q1wxlw6n9mb3dm7ysb47ipqjn3rp1aif11"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/simonw/sqlite-fts4")
     (synopsis "Python functions for working with SQLite FTS4 search")
-    (description "This package provides custom SQLite functions written
-in Python for ranking documents indexed using the SQLite's FTS4 full
-text search extension.")
+    (description
+     "This package provides custom SQLite functions written in Python for
+ranking documents indexed using the SQLite's FTS4 full text search
+extension.")
     (license license:asl2.0)))
 
 (define-public python-sqlite-utils
