@@ -70,6 +70,7 @@
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025 Jared Klingenberger <jkling@noreply.codeberg.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -140,6 +141,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-crypto)
@@ -5127,7 +5129,7 @@ daemon.")
 (define-public nebula
   (package
     (name "nebula")
-    (version "1.9.6")
+    (version "1.10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5136,7 +5138,7 @@ daemon.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mcyakwr0r5lw6qgzib54v73a1j6ccaxrz3jf6dsh8daqwp5nmcj"))
+                "1x4r8b3ny0vxipf404l8z00m5cs7cfy810670gmznl61jkaq1zd7"))
               ;; Remove windows-related binary blobs and files
               (snippet
                #~(begin
@@ -5146,6 +5148,7 @@ daemon.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.25
       #:install-source? #f
       #:import-path "github.com/slackhq/nebula"
       #:build-flags
@@ -5173,14 +5176,16 @@ daemon.")
            go-github-com-google-gopacket
            go-github-com-kardianos-service
            go-github-com-miekg-dns
+           go-github-com-miekg-pkcs11
            go-github-com-nbrownus-go-metrics-prometheus
            go-github-com-prometheus-client-golang
            go-github-com-rcrowley-go-metrics
            go-github-com-sirupsen-logrus
            go-github-com-skip2-go-qrcode
-           go-github-com-songgao-water
+           go-github-com-stefanberger-go-pkcs11uri
            go-github-com-stretchr-testify
            go-github-com-vishvananda-netlink
+           go-go-yaml-in-yaml-v3
            go-golang-org-x-crypto
            go-golang-org-x-exp
            go-golang-org-x-net
@@ -5189,7 +5194,7 @@ daemon.")
            go-golang-org-x-term
            go-golang-zx2c4-com-wireguard
            go-google-golang-org-protobuf
-           go-gopkg-in-yaml-v2
+           go-gopkg-in-yaml-v3
            go-gvisor-dev-gvisor))
     (home-page "https://github.com/slackhq/nebula")
     (synopsis "Scalable, peer-to-peer overlay networking tool")
