@@ -16,12 +16,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-;; This is a TOML parser adapted from the ABNF for v1.0.0 from
-;; https://github.com/toml-lang/toml/blob/1.0.0/toml.abnf
+;; This is a TOML parser adapted from the ABNF for v1.1.0 from
+;; https://github.com/toml-lang/toml/blob/1.1.0/toml.abnf
 ;; The PEG grammar tries to follow the ABNF as closely as possible with
 ;; few deviations commented.
 ;;
-;; The semantics are defined in https://toml.io/en/v1.0.0
+;; The semantics are defined in https://toml.io/en/v1.1.0
 ;; Currently unimplemented:
 ;; - Array of Tables
 
@@ -58,7 +58,7 @@
 ;; Comment
 (define-peg-pattern non-ascii body (or (range #\x80 #\xd7ff)
                                        (range #\xe000 #\x10ffff)))
-(define-peg-pattern non-eol body (or "\t" (range #\x20 #\x7f) non-ascii))
+(define-peg-pattern non-eol body (or "\t" (range #\x20 #\x7e) non-ascii))
 
 (define-peg-pattern comment none (and "#" (* non-eol)))
 
@@ -107,7 +107,9 @@
                                              non-ascii))
 (define-peg-pattern escaped all (and
                                  (ignore "\\")
-                                 (or "\"" "\\" "b" "f" "n" "r" "t"
+                                 (or "\"" "\\" "b" "e" "f" "n" "r" "t"
+                                     (and (ignore "x")
+                                          HEXDIG HEXDIG)
                                      (and (ignore "u")
                                           HEXDIG HEXDIG HEXDIG HEXDIG)
                                      (and (ignore "U")
@@ -244,9 +246,9 @@
 (define-peg-pattern partial-time body (and time-hour
                                            (ignore ":")
                                            time-minute
-                                           (ignore ":")
-                                           time-second
-                                           (? time-secfrac)))
+                                           (? (and (ignore ":")
+                                                   time-second
+                                                   (? time-secfrac)))))
 (define-peg-pattern full-date body (and date-fullyear
                                         (ignore "-")
                                         date-month
@@ -295,13 +297,19 @@
 
 ;; Inline Table
 (define-peg-pattern inline-table all (and (ignore "{")
-                                          (* ws)
                                           (? inline-table-keyvals)
-                                          (* ws)
+                                          ws-comment-newline
                                           (ignore "}")))
-(define-peg-pattern inline-table-sep none (and ws "," ws))
-(define-peg-pattern inline-table-keyvals body (and keyval
-                                                   (? (and inline-table-sep inline-table-keyvals))))
+(define-peg-pattern inline-table-sep none ",")
+(define-peg-pattern inline-table-keyvals body (or (and ws-comment-newline
+                                                       keyval
+                                                       ws-comment-newline
+                                                       inline-table-sep
+                                                       inline-table-keyvals)
+                                                  (and ws-comment-newline
+                                                       keyval
+                                                       ws-comment-newline
+                                                       (? inline-table-sep))))
 
 
 ;; Parsing
@@ -369,9 +377,12 @@ evaluating escape codes."
                  (('escaped "\"") "\"")
                  (('escaped "\\") "\\")
                  (('escaped "b") "\b")
-                 (('escaped "t") "\t")
+                 (('escaped "e") "\x1b")
+                 (('escaped "f") "\f")
                  (('escaped "n") "\n")
-                 (('escaped (? (lambda (x) (>= (string-length x) 4)) u))
+                 (('escaped "r") "\r")
+                 (('escaped "t") "\t")
+                 (('escaped (? (lambda (x) (>= (string-length x) 2)) u))
                   (list->string (list (integer->char (string->number u 16)))))
                  ((? string? s) s))
                 (keyword-flatten '(escaped) value))))

@@ -105,7 +105,7 @@ fruit.apple.smooth = true"))
 
 (test-equal "parse-toml: String"
   '(("str" . "I'm a string. \"You can quote me\". Name\tJos\u00E9\nLocation\tSF."))
-  (parse-toml "str = \"I'm a string. \\\"You can quote me\\\". Name\\tJos\\u00E9\\nLocation\\tSF.\""))
+  (parse-toml "str = \"I'm a string. \\\"You can quote me\\\". Name\\tJos\\xE9\\nLocation\\tSF.\""))
 
 (test-equal "parse-toml: Empty string"
   '(("str1" . "")
@@ -403,10 +403,24 @@ fruit.apple.taste.sweet = true"))
 (test-equal "parse-toml: Inline tables"
  '(("name" ("first" . "Tom") ("last" . "Preston-Werner"))
    ("point" ("x" . 1) ("y" . 2))
-   ("animal" ("type" ("name" . "pug"))))
+   ("animal" ("type" ("name" . "pug")))
+   ("contact" . (("personal" . (("name" . "Donald Duck")
+                                ("email" . "donald@duckburg.com")))
+                 ("work" . (("name" . "Coin cleaner")
+                            ("email" . "donald@ScroogeCorp.com"))))))
  (parse-toml "name = { first = \"Tom\", last = \"Preston-Werner\" }
 point = { x = 1, y = 2 }
-animal = { type.name = \"pug\" }"))
+animal = { type.name = \"pug\" }
+contact = {
+    personal = {
+        name = \"Donald Duck\",
+        email = \"donald@duckburg.com\",
+    },
+    work = {
+        name = \"Coin cleaner\",
+        email = \"donald@ScroogeCorp.com\",
+    },
+}"))
 
 (test-equal "parse-toml: Empty inline table"
  '(("name")
