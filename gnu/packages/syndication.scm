@@ -349,41 +349,37 @@ a simple interface that makes it easy to organize and browse feeds.")
     (name "rtv")
     (version "1.27.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "rtv" version))
-        (sha256
-         (base32 "0hvw426y09l3yzwv2zkb9hifpfbg9wd1gg0y3z3pxcli6n3ii2wl"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/michael-lazar/rtv")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hw7xy2kjxq7y3wcibcz4l7zj8icvigialqr17l362xry0y17y5j"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-environment-variables
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "HOME" (getcwd))
-             (setenv "TERM" "linux")
-             (setenv "TERMINFO"
-                     (search-input-directory inputs "share/terminfo"))))
-         ;; Loading this as a library requires a controlling terminal, etc.
-         (delete 'sanity-check))
-       #:tests? #f)) ; tests fail: _curses.error: nocbreak() returned ERR
-    (propagated-inputs
-     (list python-beautifulsoup4 python-decorator python-kitchen
-           python-requests python-six))
-    (native-inputs
-     (list ncurses
-           python-coveralls
-           python-coverage
-           python-mock
-           python-pylint
-           python-pytest
-           python-vcrpy))
+     (list
+      #:tests? #f ;tests fail: _curses.error: nocbreak() returned ERR
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-environment-variables
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "HOME"
+                      (getcwd))
+              (setenv "TERM" "linux")
+              (setenv "TERMINFO"
+                      (search-input-directory inputs "share/terminfo"))))
+          ;; Loading this as a library requires a controlling terminal, etc.
+          (delete 'sanity-check))))
+    (propagated-inputs (list python-beautifulsoup4 python-decorator
+                             python-requests python-six))
+    (native-inputs (list ncurses python-mock python-pytest python-setuptools))
     (home-page "https://github.com/michael-lazar/rtv")
     (synopsis "Terminal viewer for Reddit (Reddit Terminal Viewer)")
     (description
      "RTV provides a text-based interface to view and interact with Reddit.")
-    (license (list license:expat
-                   license:gpl3+)))) ; rtv/packages/praw
+    (license (list license:expat license:gpl3+)))) ; rtv/packages/praw
 
 (define-public tuir
   (package
