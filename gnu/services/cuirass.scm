@@ -500,7 +500,16 @@ CONFIG."
                                    (string-append "--private-key="
                                                   private-key))
                                   '()))
-                    #:log-file #$log-file))
+
+                     ;; Work around
+                     ;; <https://codeberg.org/guile/fibers/issues/83>.
+                     ;; TODO: Remove when using Guile > 3.0.9.
+                     #:environment-variables
+                     (if (string-prefix? "aarch64-" %host-type)
+                         '("GUILE_JIT_THRESHOLD=-1")
+                         '())
+
+                     #:log-file #$log-file))
            (stop #~(make-kill-destructor))))))
 
 (define cuirass-remote-worker-service-type
