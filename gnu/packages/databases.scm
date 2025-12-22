@@ -5753,16 +5753,31 @@ and @code{intake-parquet}.  It supports the following compression algorithms:
 (define-public python-crate
   (package
     (name "python-crate")
-    (version "0.23.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "crate" version))
-              (sha256
-               (base32
-                "0ngmlvi320c5gsxab0s7qgq0ck4jdlcwvb6lbjhnfprafdp56vvx"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-urllib3))
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/crate/crate-python")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kk84wf7awgspdijycvhkbqvm5llp3wmwxa9n4w3qda861xn6krb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore=tests/testing/test_layer.py" ; Requires crate binary.
+              "--ignore=tests/client/test_http.py"))) ; XXX: fails collection.
+    (native-inputs
+     (list python-orjson
+           python-pytest
+           python-pytz
+           python-setuptools
+           python-sqlalchemy
+           python-verlib2
+           tzdata-for-tests))
+    (propagated-inputs (list python-urllib3))
     (home-page "https://github.com/crate/crate-python")
     (synopsis "CrateDB Python client")
     (description
