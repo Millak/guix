@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2017, 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2017, 2019, 2021-2022, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014 Taylan Ulrich Bayirli/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
@@ -464,19 +464,22 @@ editor (console only)")
                           (string-append (getenv "LIBRARY_PATH")
                                          ":" libgccjit-libdir)))))
             (add-after 'unpack 'patch-compilation-driver
-              (lambda _
+              (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* "lisp/emacs-lisp/comp.el"
                   (("\\(defcustom native-comp-driver-options nil")
                    (format
                     #f "(defcustom native-comp-driver-options '(~@{~s~^ ~})"
                     (string-append
-                     "-B" #$(this-package-input "binutils") "/bin/")
+                     "-B" (dirname (search-input-file inputs "/bin/nm")))
                     (string-append
-                     "-B" #$(this-package-input "glibc") "/lib/")
+                     "-B" (dirname (search-input-file inputs "/lib/libc.so")))
                     (string-append
-                     "-B" #$(this-package-input "libgccjit") "/lib/")
+                     "-B" (dirname (search-input-file inputs "/lib/libgccjit.so")))
                     (string-append
-                     "-B" #$(this-package-input "libgccjit") "/lib/gcc/"))))))
+                     "-B" (string-append
+                           (dirname
+                            (search-input-file inputs "/lib/libgccjit.so"))
+                           "/gcc")))))))
             (add-after 'build 'build-trampolines
               (lambda* (#:key make-flags #:allow-other-keys)
                 (apply invoke "make" "trampolines" make-flags)))
@@ -498,11 +501,7 @@ editor (console only)")
     (inputs
      (modify-inputs (package-inputs emacs-minimal)
        (prepend gnutls
-                ;; To "unshadow" ld-wrapper in native builds
-                (make-ld-wrapper "ld-wrapper" #:binutils binutils)
                 ;; For native compilation
-                binutils
-                (libc-for-target)
                 libgccjit
 
                 ;; Avoid Emacs's limited movemail substitute that retrieves POP3
