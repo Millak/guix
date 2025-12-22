@@ -6603,6 +6603,41 @@ in C.  This package provides Python bindings for spglib, allowing Python
 programs to find symmetry operations, identify space groups, and perform
 other symmetry-related operations on crystal structures.")
     (license license:bsd-3)))
+
+(define-public python-seekpath
+  (package
+    (name "python-seekpath")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "seekpath" version))
+       (sha256
+        (base32 "1i2jhjc4ikd31v8wkxzfrvhwlv0dlzpkysf3lkafcql2c9wwbkii"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "tests")))))))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy
+           python-spglib))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/giovannipizzi/seekpath")
+    (synopsis "K-path finder for band structure calculations")
+    (description
+     "SeeK-path is a Python module to obtain band paths in the Brillouin zone
+of crystal structures.  It automatically detects Bravais lattice types and
+generates k-point labels and band paths following crystallographic
+conventions.")
+    (license license:expat)))
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
