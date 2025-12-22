@@ -42,6 +42,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages ruby)
@@ -268,18 +269,22 @@ pocl.")
 (define-public python-pytools
   (package
     (name "python-pytools")
-    (version "2021.2.7")
+    (version "2025.2.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytools" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/inducer/pytools")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1yyr4k6sqx859gjhc02633l2vxwdnj6m2f5blmf7dgq0gzzgcf05"))))
-    (build-system python-build-system)
-    (arguments `(#:tests? #f)) ; Tests depend on packages not present in Guix.
-    (propagated-inputs
-     (list python-appdirs python-numpy))
-    (home-page "https://pypi.org/project/pytools/")
+        (base32 "1sym2vbkw068ldkjqi3qj1dkbvd047bk5ir028qqbv0g7z3dwk31"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;Tests depend on packages not present in Guix.
+    (native-inputs (list python-hatchling))
+    (propagated-inputs (list python-appdirs python-numpy))
+    (home-page "https://github.com/inducer/pytools")
     (synopsis "Assorted tools for Python")
     (description
      "Pytools is a bag of things that are ``missing'' from the Python standard
