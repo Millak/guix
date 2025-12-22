@@ -855,7 +855,7 @@ and can dramatically shorten the lifespan of the drive if left unchecked.")
               (sha256
                (base32
                 "1ji5sq9jf0p44982zkb5dj2d3mrpy675k0mkyg3r17q5syz0wbia"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f ;XXX: root access is required, see: <scripts/tests/test.sh>
