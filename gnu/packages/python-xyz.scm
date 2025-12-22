@@ -8891,6 +8891,39 @@ Mako, and Tornado.")
 logic-free templating system Mustache.")
     (license license:expat)))
 
+(define-public python-pystack
+  (package
+    (name "python-pystack")
+    (version "1.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bloomberg/pystack")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b9fvk0k09d7h6jv4nix9z8b980pcpi1kxnr9hlfhhgv70n7jz88"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Integration tests need ptrace and gcore (gdb).
+      #:test-flags #~(list "tests/unit")))
+    (native-inputs
+     (list python-cython
+           python-pkgconfig
+           python-pytest
+           python-setuptools))
+    (inputs
+     (list elfutils))
+    (home-page "https://github.com/bloomberg/pystack")
+    (synopsis "Python stack trace analyzer for core dumps and live processes")
+    (description
+     "PyStack analyzes stack frames of running Python processes or Python core
+dumps.  It can inspect what a process is doing or what it was doing when it
+crashed, without modifying any memory or executing code in the target process.")
+    (license license:asl2.0)))
+
 (define-public python-pystitcher
   (package
     (name "python-pystitcher")
