@@ -258,9 +258,10 @@ data analysis, data mining and data visualization.")
        (uri (pypi-uri "serverfiles" version))
        (sha256
         (base32 "1qgbzgnaxj4wsp2rdas53qxsh0j7xpibq25w6lviwyaqwwrgq42y"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-requests))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-requests))
     (home-page "https://github.com/biolab/serverfiles")
     (synopsis "Utility to access files on a HTTP server and store them locally")
     (description
