@@ -4709,11 +4709,36 @@ libraries with SQLALchemy.")
        (uri (pypi-uri "psycopg2" version))
        (sha256
         (base32 "04chl9f7v7k1zssa40pmk06jvpyqiss2lpjq50dq69nqix0mhlgi"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     ;; Tests would require a postgresql database "psycopg2_test"
-     ;; and a running postgresql database management service.
-     '(#:tests? #f)) ; TODO re-enable after providing a test-db.
+     (list
+      #:test-flags
+      #~(list "--deselect=tests/test_ipaddress.py::NetworkingTestCase::\
+test_cidr_adapt"
+              "--deselect=tests/test_ipaddress.py::NetworkingTestCase::\
+test_inet_adapt")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-postgresql
+            (lambda* (#:key inputs tests? #:allow-other-keys)
+              (when tests?
+                (setenv "TZDIR" (search-input-directory inputs
+                                                        "share/zoneinfo"))
+                (let ((dbdir (string-append (getcwd) "/../pgdir")))
+                  (setenv "PSYCOPG2_TESTDB_USER" "nixbld")
+                  (setenv "PSYCOPG2_TESTDB_HOST" dbdir)
+                  (invoke "initdb" "-D" dbdir)
+                  (invoke "pg_ctl" "-D" dbdir
+                          "-o" (string-append "-k " dbdir)
+                          "-l" (string-append dbdir "/db.log")
+                          "start")
+	          (invoke "psql" "-h" dbdir "-d" "postgres"
+                          "-c" "CREATE DATABASE psycopg2_test;"))))))))
+    (native-inputs
+     (list postgresql
+           python-pytest
+           python-setuptools
+           tzdata-for-tests))
     (inputs
      (list postgresql)) ; libpq
     (home-page "https://www.psycopg.org/")
