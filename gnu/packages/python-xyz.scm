@@ -40079,6 +40079,30 @@ and highlight matching sections.")
 add the log levels NOTICE, SPAM, SUCCESS and VERBOSE.")
     (license license:expat)))
 
+(define-public python-verlib2
+  (package
+    (name "python-verlib2")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pyveci/verlib2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xp0qfzy4l4fs1rn1670fbf7d7xv1p2s3rplspx8xqszjd5j0n8c"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-importlib-metadata))
+    (native-inputs
+     (list python-pretend python-pytest python-pytest-cov python-setuptools))
+    (home-page "https://github.com/pyveci/verlib2")
+    (synopsis "Python versioning utilities")
+    (description
+     "This package provides a standalone variant of @code{distutils.version} and
+@code{packaging.version}, without anything else.")
+    (license license:bsd-2)))
+
 ;; XXX: No updates since 2018, consider to remove when fails to build, it's a
 ;; leaf package.
 (define-public python-version
