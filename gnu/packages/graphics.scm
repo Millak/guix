@@ -2948,7 +2948,7 @@ and enables interoperable use of content across the industry.")
 (define-public monado
   (package
     (name "monado")
-    (version "25.0.0")
+    (version "25.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2957,7 +2957,7 @@ and enables interoperable use of content across the industry.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0h4ivjqdj1qisgp1b49h3aqqjlrbd5najyd1vrhskdlz1yzz252p"))))
+                "09bmcqr01kakhzc26r2kmlqd1l3hqr33360qrrpmiy6mlgpsci45"))))
     (build-system cmake-build-system)
     (inputs
      (list ffmpeg
