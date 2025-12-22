@@ -266,6 +266,39 @@ of DEB-FILES with 'dpkg -i'."
 
           #$(guix-daemon-test-cases #~marionette)
 
+          ;; NOTE: There was a bug where the service couldn't be restarted,
+          ;; because the store would be captured as read-only when creating
+          ;; the private mount namespace.
+          ;; See <https://codeberg.org/guix/guix/issues/4744>.
+          ;; So we try restarting it here.
+          (test-equal "restart guix-daemon.service"
+            0
+            (marionette-eval '(system* "systemctl" "restart"
+                                       "guix-daemon.service")
+                             marionette))
+
+          (test-equal "guix build hello after guix-daemon.service restart"
+            0
+            (marionette-eval '(system* "guix" "build"
+                                       "hello" "--no-grafts"
+                                       "--check")
+                             marionette))
+
+          (test-equal "guix gc after guix-daemon.service"
+            0
+            (marionette-eval '(system* "guix" "gc")
+                             marionette))
+
+          ;; NOTE: Since the fix of the bug meant stopping gnu-store.mount
+          ;; during startup of guix-daemon service, check that it's started.
+          ;; Check only after some time, because the service might not be
+          ;; up yet right after the restart.
+          (test-equal "gnu-store.mount is active after guix-daemon restart"
+            0
+            (marionette-eval '(system* "systemctl" "is-active"
+                                       "gnu-store.mount")
+                             marionette))
+
           (test-assert "screenshot after"
             (marionette-control (string-append "screendump " #$output
                                                "/after-install.ppm")
