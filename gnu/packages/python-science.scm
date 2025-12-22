@@ -58,6 +58,7 @@
 (define-module (gnu packages python-science)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
+  #:use-module (gnu packages algebra)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages boost)
@@ -71,15 +72,20 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages digest)
   #:use-module (gnu packages duckdb)
+  #:use-module (gnu packages elf)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages geo)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
+  #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
+  #:use-module (gnu packages networking)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -93,11 +99,14 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rust-apps)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages simulation)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages statistics)
+  #:use-module (gnu packages tbb)
   #:use-module (gnu packages time)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
@@ -110,6 +119,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject))
 
@@ -6488,6 +6498,82 @@ Python style, together with a fast and comfortable execution environment.")
            python-setuptools
            python-wheel))))
 
+(define-public python-brille
+  (package
+    (name "python-brille")
+    (version "0.8.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/brille/brille")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vyxa7k6yrpxizbmljrv7bnsf7dzxsfbs4id36x09jjxwh7dysjj"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+              ;; Boost.System is header-only since 1.69, but FindBoost looks for
+              ;; libboost_system.so which doesn't exist.
+              "-DHIGHFIVE_USE_BOOST=OFF"
+              ;; Pretend we're doing a scikit-build build to skip Conan.
+              "-DSKBUILD=ON"
+              (string-append "-DSKBUILD_PROJECT_NAME=brille")
+              (string-append "-DSKBUILD_PROJECT_VERSION=" #$version))
+      #:imported-modules `(,@%cmake-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cmake-build-system)
+                  ((guix build python-build-system) #:select (site-packages))
+                  (guix build utils))
+      #:phases
+      (with-extensions (list (pyproject-guile-json))
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'create-pkg-info
+              (lambda _
+                ;; Create PKG-INFO so DynamicVersion.cmake finds version without git.
+                (call-with-output-file "PKG-INFO"
+                  (lambda (port)
+                    (format port "Metadata-Version: 2.1
+Name: brille
+Version: ~a
+" #$version)))))
+            (add-before 'configure 'set-version
+              (lambda _
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+            (add-after 'install 'install-python
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let ((site-packages (site-packages inputs outputs)))
+                  (mkdir-p (string-append site-packages "/brille"))
+                  ;; Install Python source files and compiled extension module.
+                  (for-each (lambda (file)
+                              (install-file file
+                                            (string-append site-packages "/brille")))
+                            (append
+                             (find-files "../source/brille" "\\.py$")
+                             (find-files "." "^_brille\\..*\\.so$"))))))))))
+    (native-inputs
+     (list catch2-3
+           cmake-minimal
+           highfive
+           pybind11
+           python-wrapper
+           python-setuptools
+           python-setuptools-scm))
+    (inputs
+     (list hdf5))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://github.com/brille/brille")
+    (synopsis "Symmetry operations and interpolation in Brillouin zones")
+    (description
+     "Brille is a C++ library for symmetry operations and linear interpolation
+within an irreducible part of the first Brillouin zone.  It provides Python
+bindings via pybind11 for use in phonon calculations and inelastic neutron
+scattering simulations.")
+    (license license:agpl3+)))
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
