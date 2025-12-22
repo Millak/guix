@@ -199,21 +199,28 @@ applications, and several support tools.")
     (version "2020.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytzdata" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sdispater/pytzdata")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0h0md0ldhb8ghlwjslkzh3wcj4fxg3n43bj5sghqs2m06nri7yiy"))))
-    (build-system python-build-system)
-    ;; XXX: The PyPI distribution contains no tests, and the upstream
-    ;; repository lacks a setup.py!  How to build from git?
-    (arguments '(#:tests? #f))
-    (propagated-inputs
-     (list python-cleo))
+        (base32 "1idzpps56wx2lqvflxhpb1isz1ijn9y91ffd6hfg6qv1zikj9xa4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-poetry-core
+            (lambda _
+              ;; Patch to use the core poetry API.
+              (substitute* "pyproject.toml"
+                (("poetry.masonry.api") "poetry.core.masonry.api")))))))
+    (native-inputs (list python-poetry-core python-pytest))
+    (propagated-inputs (list python-cleo))
     (home-page "https://github.com/sdispater/pytzdata")
     (synopsis "Timezone database for Python")
-    (description
-     "This library provides a timezone database for Python.")
+    (description "This library provides a timezone database for Python.")
     (license expat)))
 
 (define-public python-tzdata
