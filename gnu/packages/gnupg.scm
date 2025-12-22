@@ -710,18 +710,22 @@ signing, decryption, verification, and key-listing parsing.")
     (license license:perl-license)))
 
 (define-public pius
+  ;; The last release was from 2019, the latest commit is from 2025
+  (let ((commit "5f7c10bd3b058c864b128a3b0e0c0efa1f1befa2")
+        (revision "0"))
   (package
     (name "pius")
-    (version "3.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/jaymzh/pius/releases/download/v"
-                    version "/pius-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "11fhmfvr0avxl222rv43wjd2xjbpxrsmcl8xwmn0nvf1rw95v9fn"))))
-    (build-system python-build-system)
+    (version (git-version "3.0.0" revision commit))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jaymzh/pius")
+             (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qf1fxwdrnfkia0c1iz752mb9flbjl9jgh75dls51j1k8fzbl758"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -730,8 +734,13 @@ signing, decryption, verification, and key-listing parsing.")
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "libpius/constants.py"
                 (("/usr/bin/gpg2")
-                 (search-input-file inputs "bin/gpg"))))))))
-    (inputs (list perl                  ;for 'pius-party-worksheet'
+                 (search-input-file inputs "bin/gpg")))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (invoke "./run_tests")))))))
+    (native-inputs (list python-setuptools))
+    (inputs (list perl ;for 'pius-party-worksheet'
                   gnupg))
     (synopsis "Programs to simplify GnuPG key signing")
     (description
@@ -743,7 +752,7 @@ the process.  The @command{pius-keyring-mgr} and
 @command{pius-party-worksheet} commands help organizers of PGP key signing
 parties.")
     (license license:gpl2)
-    (home-page "https://www.phildev.net/pius/index.shtml")))
+    (home-page "https://github.com/jaymzh/pius"))))
 
 (define-public signing-party
   (package
