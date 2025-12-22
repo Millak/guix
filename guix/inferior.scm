@@ -40,7 +40,7 @@
   #:use-module (guix search-paths)
   #:use-module (guix profiles)
   #:use-module (guix channels)
-  #:use-module ((guix git) #:select (update-cached-checkout commit-id?))
+  #:autoload   (guix git) (update-cached-checkout commit-id?)
   #:use-module (guix monads)
   #:use-module (guix store)
   #:use-module (guix derivations)

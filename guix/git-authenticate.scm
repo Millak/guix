@@ -17,14 +17,29 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix git-authenticate)
-  #:use-module (git)
+  #:autoload   (git oid) (oid->string
+                          string->oid)
+  #:autoload   (git blob) (blob-lookup blob-content)
+  #:autoload   (git branch) (branch-lookup BRANCH-ALL)
+  #:autoload   (git commit) (commit-lookup
+                             commit-parents
+                             commit-id
+                             commit-tree
+                             commit-extract-signature)
+  #:autoload   (git errors) (GIT_ENOTFOUND)
+  #:autoload   (git reference) (reference-target)
+  #:autoload   (git repository) (repository-directory repository-head)
+  #:autoload   (git structs) (git-error-code)
+  #:autoload   (git tree) (tree-entry-bypath
+                           tree-list
+                           tree-entry-id
+                           tree-entry-name)
   #:autoload   (gcrypt hash) (sha256)
   #:use-module (guix base16)
   #:autoload   (guix base64) (base64-encode)
-  #:use-module ((guix git)
-                #:select (commit-difference
-                          commit-descendant?
-                          false-if-git-not-found))
+  #:autoload   (guix git) (commit-difference
+                           commit-descendant?
+                           false-if-git-not-found)
   #:use-module (guix i18n)
   #:use-module ((guix diagnostics) #:select (formatted-message))
   #:use-module (guix openpgp)
