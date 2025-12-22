@@ -4420,11 +4420,19 @@ G-codes to binary and vice versa.")
                  (lambda _
                    (substitute* "tests/libslic3r/test_quadric_edge_collapse.cpp"
                      (("#include <libigl/igl/qslim.h>")
-                      "#include <igl/qslim.h>")))))))
+                      "#include <igl/qslim.h>"))))
+               (add-after 'install 'wrap-program
+                 (lambda _
+                   (wrap-program (string-append #$output "/bin/prusa-slicer")
+                     ;; For GtkFileChooserDialog.
+                     `("GSETTINGS_SCHEMA_DIR" =
+                       (,(string-append #$(this-package-input "gtk+")
+                                        "/share/glib-2.0/schemas")))))))))
     (native-inputs
      (list pkg-config catch2-3.8))
     (inputs
-     (list boost-1.83
+     (list bash-minimal
+           boost-1.83
            cereal
            cgal
            curl
