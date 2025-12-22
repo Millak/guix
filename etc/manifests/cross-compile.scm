@@ -71,18 +71,21 @@ TARGET."
          "connman" "network-manager" "wpa-supplicant" "isc-dhcp" "cups"
          "linux-libre" "grub-hybrid")))
 
-(define %system-gui-packages
+(define (%system-gui-packages target)
   ;; Key packages proposed by the Guix System installer.
   (append (map specification->package
                '(;; build system `python' does not support cross builds
-                 ;"gnome" "xfce" "mate" "openbox"
+                                        ;"gnome" "xfce" "mate" "openbox"
                  "awesome"
                  "i3-wm" "i3status" "dmenu" "st"
                  "ratpoison" "xterm"
                  ;; build system `emacs' does not support cross builds
-                 ;"emacs-exwm" "emacs-desktop-environment"
+                                        ;"emacs-exwm" "emacs-desktop-environment"
                  "emacs"))
-          %default-xorg-modules))
+          ;; NOTE: %default-xorg-modules depends on system.
+          (parameterize
+              ((%current-target-system target))
+            %default-xorg-modules)))
 
 (define %packages-to-cross-build
   ;; Packages that must be cross-buildable from x86_64-linux.
@@ -151,7 +154,8 @@ TARGET."
                                  ;; With a graphical environment:
                                  (if (or (target-x86-32? target)
                                          (target-aarch64? target))
-                                     %system-gui-packages
+                                     ;; %system-gui-packages depends on the system.
+                                     (%system-gui-packages target)
                                      '()))))
                   (fold delete (map platform-system->target (systems))
                         '(;; Disable cross-compilation to self:
