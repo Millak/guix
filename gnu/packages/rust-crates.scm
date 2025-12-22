@@ -42020,6 +42020,29 @@
                                     rust-windows-x86-64-msvc-0.48.5
                                     rust-windows-x86-64-msvc-0.52.6
                                     rust-winnow-0.7.11))
+                     (pendulum =>
+                               (list rust-autocfg-1.4.0
+                                     rust-cc-1.2.19
+                                     rust-cfg-if-1.0.0
+                                     rust-heck-0.5.0
+                                     rust-indoc-2.0.6
+                                     rust-libc-0.2.172
+                                     rust-memoffset-0.9.1
+                                     rust-once-cell-1.21.3
+                                     rust-portable-atomic-1.11.0
+                                     rust-proc-macro2-1.0.95
+                                     rust-pyo3-0.24.1
+                                     rust-pyo3-build-config-0.24.1
+                                     rust-pyo3-ffi-0.24.1
+                                     rust-pyo3-macros-0.24.1
+                                     rust-pyo3-macros-backend-0.24.1
+                                     rust-python3-dll-a-0.2.13
+                                     rust-quote-1.0.40
+                                     rust-shlex-1.3.0
+                                     rust-syn-2.0.100
+                                     rust-target-lexicon-0.13.2
+                                     rust-unicode-ident-1.0.18
+                                     rust-unindent-0.2.4))
                      (pijul =>
                             (list rust-addr2line-0.24.2
                                   rust-adler2-2.0.0

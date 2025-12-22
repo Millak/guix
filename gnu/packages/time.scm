@@ -57,9 +57,12 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages rust)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system pyproject)
@@ -313,48 +316,55 @@ saving time.  Almost all of the Olson timezones are supported.")
 (define-public python-pendulum
   (package
     (name "python-pendulum")
-    (version "2.1.2")
+    (version "3.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pendulum" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sdispater/pendulum")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "01zjc245w08j0xryrgrq9vng59q1cl5ry0hcpw5rj774pyhhqsmh"))))
-    (build-system python-build-system)
-    ;; XXX: The PyPI distribution lacks tests, and the upstream repository
-    ;; lacks a setup.py!
+        (base32 "0rhh5hnrjbi1ams5ylnymari522k4v2kdk82qzafvmykkcvild36"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; Add setup.py to fix the build. Otherwise, the build will fail with
-         ;; "no setup.py found".
-         ;;
-         ;; Upstream uses Poetry to build python-pendulum, including parts
-         ;; written in C. Here, we simply add a setup.py file and do not build
-         ;; the parts written in C. This is possible because python-pendulum
-         ;; falls back on pure Python code when the C parts are not available
-         ;; (reference: build.py).
-         (add-after 'unpack 'add-setup.py
-           (lambda _
-             (call-with-output-file "setup.py"
-               (lambda (port)
-                 (format port
-                         "from setuptools import find_packages, setup
-setup(name='pendulum',
-      version='~a',
-      packages=find_packages())
-"
-                         ,version))))))
-       ;; XXX: The PyPI distribution lacks tests.
-       #:tests? #f))
-    (propagated-inputs
-     (list python-dateutil python-pytzdata))
+     (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system)
+                   #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (with-directory-excursion "rust"
+                (for-each (lambda (phase)
+                            (format #t "Running cargo phase: ~a~%" phase)
+                            (apply (assoc-ref cargo:%standard-phases phase)
+                                   #:cargo-target #$(cargo-triplet) args))
+                          '(unpack-rust-crates configure
+                                               check-for-pregenerated-files
+                                               patch-cargo-checksums))))))))
+    (native-inputs
+     (list maturin
+           python-pytest
+           python-pytest-benchmark
+           python-pytz
+           python-setuptools
+           python-time-machine
+           rust
+           `(,rust "cargo")))
+    (inputs (cargo-inputs 'pendulum))
+    (propagated-inputs (list python-dateutil python-tzdata))
     (home-page "https://github.com/sdispater/pendulum")
     (synopsis "Alternate API for Python datetimes")
-    (description "Pendulum is a drop-in replacement for the standard
-@code{datetime} class, providing an alternative API.  As it inherits from the
-standard @code{datetime} all @code{datetime} instances can be replaced by
-Pendulum instances.")
+    (description
+     "Pendulum is a drop-in replacement for the standard @code{datetime}
+class, providing an alternative API.  As it inherits from the standard
+@code{datetime} all @code{datetime} instances can be replaced by Pendulum
+instances.")
     (license expat)))
 
 (define-public python-dateutil
