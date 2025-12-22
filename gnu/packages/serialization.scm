@@ -675,7 +675,7 @@ This package also provides @samp{kdlpp}, a C++20 wrapper around @samp{ckdl}.")
 (define-public capnproto
   (package
     (name "capnproto")
-    (version "1.2.0")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -683,7 +683,7 @@ This package also provides @samp{kdlpp}, a C++20 wrapper around @samp{ckdl}.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1vs2zpk4l55hb4lq4kldbwdqcjnwm1jblhcaqxmii9dxrd7f807d"))))
+                "0211a9c394l9lfb8ixdsimpwh6kj7xxy05xfaryq66js955853q9"))))
     (build-system cmake-build-system)
     (arguments
      (list
