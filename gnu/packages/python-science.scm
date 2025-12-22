@@ -5955,21 +5955,27 @@ numerical computation.")
 (define-public python-pylems
   (package
     (name "python-pylems")
-    (version "0.6.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "PyLEMS" version))
-              (sha256
-               (base32
-                "074azbyivjbwi61fs5p8z9n6d8nk8xw6fmln1www13z1dccb3740"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-lxml))
+    (version "0.6.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/LEMS/pylems")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gimdx89cdla1b6zzkdrmj979nn2zy2475qvpwxxas0iv27ql0vj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Disable tests that require networking
+     (list #:test-flags #~(list "./lems/test" "-k" "not test_load_write_xml")))
+    (native-inputs (list python-setuptools python-pytest))
+    (propagated-inputs (list python-lxml python-matplotlib))
     (home-page "https://github.com/LEMS/pylems")
     (synopsis
      "Python support for the Low Entropy Model Specification language (LEMS)")
-    (description
-     "A LEMS simulator written in Python which can be used to run
-NeuroML2 models.")
+    (description "A @acronym{LEMS, Low Entropy Model Specification} simulator
+written in Python which can be used to run NeuroML2 models.")
     (license license:lgpl3)))
 
 (define-public python-pynrrd
