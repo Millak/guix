@@ -38,6 +38,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages flex)
@@ -145,14 +146,19 @@ browsers to backend services.")
 (define-public python-grpc-stubs
   (package
     (name "python-grpc-stubs")
-    (version "1.24.11")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "grpc-stubs" version))
-              (sha256
-               (base32
-                "19dkm365g38lvxm799d29dnzg60g8in8251c18qkvsv4n92h8axh"))))
-    (build-system python-build-system)
+    (version "1.53.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/shabbyrobe/grpc-stubs")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k2h787dk411sprdmx71kpwjpghmgfv0jyl84irl6s5szmqhy2y3"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ;No tests.
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-grpcio python-typing-extensions))
     (home-page "https://github.com/shabbyrobe/grpc-stubs")
     (synopsis "Typing stubs for Python")
