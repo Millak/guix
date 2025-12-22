@@ -46,6 +46,7 @@
 ;;; Copyright © 2025 David Thompson <davet@gnu.org>
 ;;; Copyright © 2025 Danny Milosavljevic <dannym@friendly-machines.com>
 ;;; Copyright © 2025 Patrick Norton <patrick.147.norton@gmail.com>
+;;; Copyright © 2025 Jared Klingenberger <jkling@noreply.codeberg.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4598,7 +4599,7 @@ decode/encode structures and slices.")
 (define-public go-github-com-gaissmai-bart
   (package
     (name "go-github-com-gaissmai-bart")
-    (version "0.11.1")
+    (version "0.26.0")
     (source
      (origin
        (method git-fetch)
@@ -4607,7 +4608,7 @@ decode/encode structures and slices.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rnbmykmkl0c1fzz4vkv7q72l7hl2xpmalbm41f4lifdjscx5nk7"))))
+        (base32 "0w79ns4l7av8c4mzfshc0gyp7nfav2jgg6n2my2nziy8wns1bw33"))))
     (build-system go-build-system)
     (arguments
      (list
