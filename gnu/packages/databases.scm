@@ -4758,14 +4758,16 @@ libraries with SQLALchemy.")
               (sha256
                (base32
                 "1pkx7nj1mhacwpna7ldzqfqxd1xg8826600r0bs9ad1h93f429yh"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f                  ;run for psycopg below
-           #:phases
-           #~(modify-phases %standard-phases
-               ;; This module requires 'psycopg', however psycopg needs this
-               ;; for its tests.  Disable sanity check to break the cycle.
-               (delete 'sanity-check))))
+     (list
+      #:tests? #f                  ;run for psycopg below
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This module requires 'psycopg', however psycopg needs this
+          ;; for its tests.  Disable sanity check to break the cycle.
+          (delete 'sanity-check))))
+    (native-inputs (list python-setuptools))
     (home-page "https://www.psycopg.org/")
     (synopsis "Connection pooler for psycopg")
     (description
