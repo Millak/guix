@@ -81,6 +81,7 @@
             pine64-plus-installation-os
             pinebook-installation-os
             rock64-installation-os
+            rock-4c-plus-installation-os
             rockpro64-installation-os
             rk3399-puma-installation-os
             wandboard-installation-os
