@@ -72,6 +72,7 @@
             a20-olinuxino-lime2-emmc-installation-os
             a20-olinuxino-micro-installation-os
             bananapi-m2-ultra-installation-os
+            am335x-evm-installation-os
             beaglebone-black-installation-os
             mx6cuboxi-installation-os
             nintendo-nes-classic-edition-installation-os
@@ -794,6 +795,14 @@ The bootloader BOOTLOADER is installed to BOOTLOADER-TARGET."
      (cons (string-append "console=" tty)
            (operating-system-user-kernel-arguments installation-os)))
     (initrd-modules (append extra-modules %base-initrd-modules))))
+
+(define am335x-evm-installation-os
+  (embedded-installation-os u-boot-am335x-evm-bootloader
+                            "/dev/sda"
+                            "ttyO0"
+                            #:extra-modules
+                            ;; This module is required to mount the sd card.
+                            '("omap_hsmmc")))
 
 (define beaglebone-black-installation-os
   (embedded-installation-os u-boot-beaglebone-black-bootloader
