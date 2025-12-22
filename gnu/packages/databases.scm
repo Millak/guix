@@ -4878,23 +4878,49 @@ from a SQLAlchemy model (or directly from the database).")
 (define-public yoyo-migrations
   (package
     (name "yoyo-migrations")
-    (version "8.2.0")
+    (version "9.0.0")
     (source
      (origin
-       ;; We use the upstream repository, as the tests are not included in the
-       ;; PyPI releases.
        (method hg-fetch)
        (uri (hg-reference
              (url "https://hg.sr.ht/~olly/yoyo")
              (changeset (string-append "v" version "-release"))))
        (file-name (string-append name "-" version "-checkout"))
        (sha256
-        (base32 "1al030ix0w63hr4s3mqry6s0mlqdj8p242pdqks06br7c25nx3yj"))))
-    (build-system python-build-system)
+        (base32 "0bn4n043y0n4dh7axwavfims2krap5dcmdaxswbadzmis3a4hxyb"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; XXX: Tests require a connection to some pgsql database and psycopg
-     ;; fails to connect to it.
-     '(#:tests? #f))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-postgresql
+            (lambda* (#:key inputs tests? #:allow-other-keys)
+              (when tests?
+                (delete-file "test_databases.ini")
+                (call-with-output-file "test_databases.ini"
+                  (lambda (port)
+                    (format port "[DEFAULT]
+postgresql = postgresql://nixbld@/yoyo_test~%")))
+                (setenv "TZDIR" (search-input-directory inputs
+                                                        "share/zoneinfo"))
+                (let ((dbdir (string-append (getcwd) "/../pgdir")))
+                  (setenv "PGHOST" dbdir)
+                  (setenv "PGUSER" "nixbld")
+                  (invoke "initdb" "-D" dbdir)
+                  (invoke "pg_ctl" "-D" dbdir
+                          "-o" (string-append "-k " dbdir)
+                          "-l" (string-append dbdir "/db.log")
+                          "start")
+	          (invoke "psql" "-h" dbdir "-d" "postgres"
+                          "-c" "CREATE DATABASE yoyo_test;"))))))))
+    (native-inputs
+     (list postgresql
+           python-freezegun
+           python-psycopg2
+           python-pytest
+           python-setuptools
+           tms
+           tzdata-for-tests))
     (propagated-inputs
      (list python-sqlparse python-tabulate python-importlib-metadata))
     (home-page "https://ollycope.com/software/yoyo/latest/")
