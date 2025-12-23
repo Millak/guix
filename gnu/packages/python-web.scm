@@ -8025,17 +8025,21 @@ users' sessions over extended periods of time.")
 (define-public python-oauth2client
   (package
     (name "python-oauth2client")
-    (version "4.0.0")
+    (version "4.1.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "oauth2client" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/oauth2client/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1irqqap2zibysf8dba8sklfqikia579srd0phm5n754ni0h59gl0"))))
-    (build-system python-build-system)
+        (base32 "0xm19dv5kmi82zzrx3d4mp326irr3x37q818hlspz514dzjq2ad1"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f))
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-httplib2
            python-pyasn1
