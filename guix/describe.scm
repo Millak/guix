@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018-2021, 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2021, 2024-2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -193,16 +193,28 @@ when applicable."
                (current-channel-entries))))
 
 (define (append-channels-to-load-path!)
-  "Automatically add channels to Guile's search path.  Channels are added to the
-end of the path so they don't override Guix' own modules.
+  "Add channels to Guile's search path.  Channels are added right after the
+'guix' channel so they don't override Guix' own modules, but before entries
+coming from $GUILE_LOAD_PATH.
 
 This procedure ensures that channels are only added to the search path once
 even if it is called multiple times."
   (let ((channels-scm channels-go (package-path-entries)))
+    ;; The 'guix' binary, both from 'guix pull' and from the 'guix' package,
+    ;; adds the 'guix' channel as the first element of the search path.  Thus,
+    ;; append CHANNELS-SCM and CHANNELS-GO right after that.
+    ;;
+    ;; Adding channels to the back of the search path, and thus after anything
+    ;; that happens to be in $GUILE_LOAD_PATH, could lead to loading the wrong
+    ;; package modules: <https://codeberg.org/guix/guix/issues/4819>.
     (set! %load-path
-          (append %load-path channels-scm))
+          (match %load-path
+            ((head . tail)
+             (append (list head) channels-scm tail))))
     (set! %load-compiled-path
-          (append %load-compiled-path channels-go)))
+          (match %load-compiled-path
+            ((head . tail)
+             (append (list head) channels-go tail)))))
   (set! append-channels-to-load-path! (lambda () #t)))
 
 (define (package-channels package)
