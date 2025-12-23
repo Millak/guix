@@ -10630,9 +10630,10 @@ the Python transaction package.")
        (method url-fetch)
        (uri (pypi-uri "random_user_agent" version))
        (sha256
-        (base32
-         "04nhzdh2ki7ybhjrmghxci6hcm6i03vvin2q2ynj87fbr1pa534g"))))
-    (build-system python-build-system)
+        (base32 "04nhzdh2ki7ybhjrmghxci6hcm6i03vvin2q2ynj87fbr1pa534g"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))  ; No tests.
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/Luqman-Ud-Din/random_user_agent")
     (synopsis "List of user agents")
     (description
