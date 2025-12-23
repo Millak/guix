@@ -4372,26 +4372,24 @@ websites such as Libre.fm.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1083 passed, 99 skipped, 1 deselected, 1828 warnings
+      #:test-flags
+      ;; Network access is required.
+      #~(list "-k" "not test_merge_duplicate_album")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-HOME
             (lambda _
               (setenv "HOME" (string-append (getcwd) "/tmp"))))
-          (add-after 'unpack 'skip-tests-that-need-internet
-            (lambda _
-              (substitute* "test/test_importer.py"
-                (("^([ \t]+)(def test_merge_duplicate_album\\(self\\):)" _ indentation rest)
-                  (string-append indentation "@pytest.mark.skip()\n" indentation rest)))))
           ;; Wrap the executable, so it can find python-gi (aka
           ;; pygobject) and gstreamer plugins.
           (add-after 'wrap 'wrap-typelib
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((prog (string-append #$output "/bin/beet"))
-                    (plugins (getenv "GST_PLUGIN_SYSTEM_PATH"))
-                    (types (getenv "GI_TYPELIB_PATH")))
-                (wrap-program prog
-                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,plugins))
-                  `("GI_TYPELIB_PATH" ":" prefix (,types))))))
+            (lambda _
+              (wrap-program (string-append #$output "/bin/beet")
+                `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
+                  (,(getenv "GST_PLUGIN_SYSTEM_PATH")))
+                `("GI_TYPELIB_PATH" ":" prefix
+                  (,(getenv "GI_TYPELIB_PATH"))))))
           (add-after 'wrap 'install-completion
             (lambda _
               (let ((completion-path
@@ -4408,11 +4406,9 @@ websites such as Libre.fm.")
            python-poetry-core
            python-py7zr
            python-pytest
-           python-pytest-cov
            python-pytest-flask
            python-setuptools
-           python-responses
-           python-wheel))
+           python-responses))
     (inputs
      (list bash-minimal
            gst-plugins-base
