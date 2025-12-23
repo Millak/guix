@@ -7948,17 +7948,19 @@ the original @code{python-htmlmin}.")
 (define-public python-flask-htmlmin
   (package
     (name "python-flask-htmlmin")
-    (version "1.2")
+    (version "3.0.0")
     (source
-    (origin
-      (method url-fetch)
-      (uri (pypi-uri "Flask-HTMLmin" version))
-      (sha256
-       (base32
-        "1n6zlq72kakkw0z2jpq6nh74lfsmxybm4g053pwhc14fbr809348"))))
-    (propagated-inputs
-     (list python-flask python-htmlmin))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hamidfzm/Flask-HTMLmin")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ybqssnqwa9zgv61azp5r1grgnq28ypfhr80p9rp61x2z0y0zl32"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-cssmin python-flask python-htmlmin2))
     (home-page "https://github.com/hamidfzm/Flask-HTMLmin")
     (synopsis "HTML response minifier for Flask")
     (description
