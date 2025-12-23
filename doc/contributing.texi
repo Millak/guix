@@ -190,6 +190,10 @@ If @option{-C} (short for @option{--container}) is not supported on your
 system, try @command{--pure} instead of @option{-CPW}.
 @xref{Invoking guix shell}, for more information on that command.
 
+Most of the test suite runs without an internet connection. The @option{-N}
+(short for @option{--network}) can be added to the @code{guix shell} command
+to run the tests that require internet access.
+
 If you are unable to use Guix when building Guix from a checkout, the
 following are the required packages in addition to those mentioned in the
 installation instructions (@pxref{Requirements}).
