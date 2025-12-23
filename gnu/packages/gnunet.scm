@@ -130,7 +130,7 @@
            texinfo))
     (inputs
      (list bzip2
-           exiv2
+           exiv2-0.27
            file                         ;libmagic, for the MIME plug-in
            flac
            gdk-pixbuf
