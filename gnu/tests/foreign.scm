@@ -29,7 +29,9 @@
   #:use-module ((gnu tests base)
                 #:select (%hello-dependencies-manifest
                           guix-daemon-test-cases))
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages bootstrap)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages make-bootstrap)
@@ -57,10 +59,17 @@ ExecStart=/opt/guix/bin/guile --no-auto-compile \\
 (define* (qcow-image-with-marionette image
                                      #:key
                                      (name "image-with-marionette.qcow2")
-                                     (device "/dev/vdb1"))
+                                     (device "/dev/vdb1")
+                                     (resize-image #f)
+                                     (resize-proc #~(const #f)))
   "Instrument IMAGE, returning a new image that contains a statically-linked
 Guile under /opt/guix and a marionette systemd service.  The relevant file
-system is expected to be on DEVICE."
+system is expected to be on DEVICE.  When RESIZE-IMAGE is not #f, it is
+supplied as an argument to qemu-img resize as new size of the image, eg.
+\"+1G\" to add 1 GiB to the partition and its file system.  RESIZE-PROC is a
+gexp evaluating to a two-argument procedure.  The two arguments are device and
+marionette.  This procedure will be called from within a VM and it should
+resize the partition and file system, if appropriate."
   (define vm
     (virtual-machine
      (marionette-operating-system %simple-os)))
@@ -80,6 +89,10 @@ system is expected to be on DEVICE."
                   "create" "-b" #$image
                   "-F" "qcow2" "-f" "qcow2" target-image)
 
+          (when #$resize-image
+            (invoke (string-append #+qemu "/bin/qemu-img")
+                    "resize" target-image #$resize-image))
+
           ;; Run a VM that will mount IMAGE and populate it.  This is somewhat
           ;; more convenient to set up than 'guestfish' from libguestfs.
           (let ((marionette
@@ -88,6 +101,8 @@ system is expected to be on DEVICE."
                         (string-append "file=" target-image
                                        ",format=qcow2,if=virtio,"
                                        "cache=writeback,werror=report,readonly=off")))))
+
+            (#$resize-proc #$device marionette)
 
             (unless (zero? (marionette-eval '(system* "mount" #$device "/mnt")
                                             marionette))
@@ -134,6 +149,32 @@ system is expected to be on DEVICE."
 
   (computed-file name build))
 
+(define resize-ext4-partition
+;;    Gexp evaluating to a two-argument procedure, taking DEVICE and
+;; MARIONETTE.  It will grow the given device and its file system to 100 %
+;; of the empty space on the image.
+  #~(lambda (device marionette)
+      (unless (zero? (marionette-eval
+                      `(system*
+                        #$(file-append cloud-utils "/bin/growpart")
+                        (string-take ,device (- (string-length ,device) 1))
+                        (string-take-right ,device 1))
+                      marionette))
+        (error "failed to grow the partition"))
+
+      ;; ;; resize2fs will refuse operation when e2fsck is not ran.
+      (unless (zero? (marionette-eval
+                      `(system* #$(file-append e2fsprogs "/sbin/e2fsck")
+                                "-fy" ,device)
+                      marionette))
+        (error "failed to repair the file system"))
+
+      (unless (zero? (marionette-eval
+                      `(system* #$(file-append e2fsprogs "/sbin/resize2fs")
+                                ,device)
+                      marionette))
+        (error "failed to grow the file system"))))
+
 (define (manifest-entry-without-grafts entry)
   "Return ENTRY with grafts disabled on its contents."
   (manifest-entry
@@ -159,16 +200,26 @@ system is expected to be on DEVICE."
   (file-append (package-source guix) "/etc/guix-install.sh"))
 
 (define* (run-foreign-install-test image name
-                                   #:key (device "/dev/vdb1")
-                                   (deb-files '()))
+                                   #:key
+                                   (device "/dev/vdb1")
+                                   (deb-files '())
+                                   (resize-image #f)
+                                   (resize-proc #~(const #f)))
   "Run an installation of Guix in IMAGE, the QCOW2 image of a systemd-based
 GNU/Linux distro, and check that the installation is functional.  The root
-partition of IMAGE is expected to be on DEVICE.  Prior to that, install all
-of DEB-FILES with 'dpkg -i'."
+partition of IMAGE is expected to be on DEVICE.  Prior to that, install all of
+DEB-FILES with 'dpkg -i'.  When RESIZE-IMAGE is not #f, it is supplied as an
+argument to qemu-img resize as new size of the image, eg.  \"+1G\" to add 1
+GiB to the partition and its file system.  RESIZE-PROC is a gexp evaluating to
+a two-argument procedure.  The two arguments are device and marionette.  This
+procedure will be called from within a VM and it should resize the partition
+and file system, if appropriate."
   (define instrumented-image
     (qcow-image-with-marionette image
                                 #:name (string-append name ".qcow2")
-                                #:device device))
+                                #:device device
+                                #:resize-image resize-image
+                                #:resize-proc resize-proc))
 
   (define (test tarball)
     (with-imported-modules (source-module-closure
