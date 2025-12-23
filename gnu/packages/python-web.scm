@@ -7724,14 +7724,16 @@ during future tests.  It is designed to work with python-requests.")
     (version "0.4.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "betamax-matchers" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sigmavirus24/betamax_matchers")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "07qpwjyq2i2aqhz5iwghnj4pqr2ys5n45v1vmpcfx9r5mhwrsq43"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-betamax python-requests-toolbelt))
+        (base32 "0lyg3r91hwfvavyi5k6sddcla37igigycfv1mx40c32byqwl6pq5"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-betamax python-requests-toolbelt))
     (home-page "https://github.com/sigmavirus24/betamax_matchers")
     (synopsis "VCR imitation for python-requests")
     (description "@code{betamax-matchers} provides a set of Matchers for
