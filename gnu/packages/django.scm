@@ -695,16 +695,16 @@ them do this.")
 (define-public python-django-allauth
   (package
     (name "python-django-allauth")
-    (version "65.7.0")
+    (version "65.9.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pennersr/django-allauth")
+              (url "https://codeberg.org/allauth/django-allauth")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1k5b3x7pdysb21vbqx7pxi9cm72yj057mm1clg19ymiqj4kq8yfl"))))
+        (base32 "03a7175748533rw6h3grfpv86i3qb31ixw0kb2kj90gc77sh1sw2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -740,7 +740,7 @@ them do this.")
            python-pytest-asyncio
            python-pytest-django
            python-setuptools))
-    (home-page "https://github.com/pennersr/django-allauth")
+    (home-page "https://codeberg.org/allauth/django-allauth")
     (synopsis "Set of Django applications addressing authentication")
     (description
      "Integrated set of Django applications addressing authentication,
