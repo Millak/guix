@@ -8828,22 +8828,23 @@ for httplib2 transport.")
 (define-public python-google-auth-oauthlib
   (package
     (name "python-google-auth-oauthlib")
-    (version "1.1.0")
+    (version "1.2.3")
+    (home-page
+     "https://github.com/GoogleCloudPlatform/\
+google-auth-library-python-oauthlib")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "google-auth-oauthlib" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1yvsjd1vh440nsh9vpnig23sq4k1ia749x5g1dwm7r4110xqrsl3"))))
+        (base32 "1f269aaj02403shbj0iz4w16wwxr6im5fl42dkkk4mf2jw8ns46l"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-google-auth python-requests-oauthlib))
     (native-inputs
-     (list python-flask
-           python-pytest
-           python-mock
-           python-setuptools))
-    (home-page
-     "https://github.com/GoogleCloudPlatform/google-auth-library-python-oauthlib")
+     (list python-click python-mock python-pytest python-setuptools))
     (synopsis "Google Authentication Library: oauthlib")
     (description "This package provides a Google Authentication Library plugin
 with oauthlib.")
