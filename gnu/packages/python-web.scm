@@ -9149,23 +9149,20 @@ Fastapi.")
 (define-public python-slugify
   (package
     (name "python-slugify")
-    (version "5.0.2")
+    (version "8.0.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python-slugify" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/un33k/python-slugify")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1aww2ncglyii4jkbfjxqhinivawf9zmwifcj32d69gpwp6h86czi"))))
-    (propagated-inputs
-     (list python-unidecode python-text-unidecode))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "test.py")))))))
-    (build-system python-build-system)
+        (base32 "0z83nwy7acc72mb2jv3516nfplah1wm61wkmnzl71dh8i4q985yd"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-unidecode python-text-unidecode))
     (home-page "https://github.com/un33k/python-slugify")
     (synopsis "Python Slugify application that handles Unicode")
     (description "This package provides a @command{slufigy} command and
