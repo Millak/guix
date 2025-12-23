@@ -2244,35 +2244,30 @@ software Beancount with a focus on features and usability.")
     (license license:expat)))
 
 (define-public emacs-beancount
-  (package
-    (name "emacs-beancount")
-    (version "0.9.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/beancount/beancount-mode")
-             (commit version)))
-       (sha256
-        (base32
-         "01ivxgv1g0pkr0xi43366pghc3j3mmhk5bshis6kkn04bq04cx7f"))
-       (file-name (git-file-name name version))))
-    (build-system emacs-build-system)
-    (arguments
-     (list #:test-command #~(list "make" "test")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'adjust-available-beancount-options
-                 (lambda _
-                   (substitute* "beancount.el"
-                     (("\"account_unrealized_gains\"") "")))))))
-    (native-inputs
-     (list beancount))
-    (home-page "https://github.com/beancount/beancount-mode")
-    (synopsis "Emacs mode for Beancount")
-    (description
-     "Emacs-beancount is an Emacs mode for the Beancount accounting tool.")
-    (license license:gpl3+)))
+  (let ((commit "8a564f5a26e6245860188ebf71db0262dd78e068")
+        (revision "0"))
+    (package
+      (name "emacs-beancount")
+      (version (git-version "0.9.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/beancount/beancount-mode")
+                (commit commit)))
+         (sha256
+          (base32 "0affr04pa9gi9ddv1jqf7nwnpira7wdlm8aa293xqlzlb93bgfv2"))
+         (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:test-command #~(list "make" "test")))
+      (native-inputs
+       (list beancount-3))
+      (home-page "https://github.com/beancount/beancount-mode")
+      (synopsis "Emacs mode for Beancount")
+      (description
+       "Emacs-beancount is an Emacs mode for the Beancount accounting tool.")
+      (license license:gpl3+))))
 
 (define-public hledger-web
   (package
