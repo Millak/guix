@@ -2093,20 +2093,16 @@ generate a variety of reports from them, and provides a web interface.")
 (define-public beancount-3
   (package
     (name "beancount")
-    (version "3.1.0")
+    (version "3.2.0")
     (source
      (origin
-       (method git-fetch) ; Pypi archive doesn't contain the test suite.
+       (method git-fetch)
        (uri (git-reference
              (url "https://github.com/beancount/beancount")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pzbhlsvch4n48rqkbff1v1rbk3gm05w0fbd2p97vdmrmlxaa33d"))
-       (modules '((guix build utils)))
-       (snippet #~(substitute* "pyproject.toml"
-                    (("regex >=2022.9.13")
-                     "regex >=2022.1.18")))))
+        (base32 "0830wx1brzq74kf3m4dzc015n4922qmvvw9n89fkcbc3d5swi8n4"))))
     (arguments
      (list
       #:test-flags
