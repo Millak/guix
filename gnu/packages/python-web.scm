@@ -10964,16 +10964,19 @@ store.")
 (define-public python-robot-detection
   (package
     (name "python-robot-detection")
-    (version "0.4")
+    (version "0.4.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "robot-detection" version))
-        (sha256
-         (base32
-          "1xd2jm3yn31bnk1kqzggils2rxj26ylxsfz3ap7bhr3ilhnbg3rx"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f)) ; Tests not shipped in pypi release.
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rory/robot-detection")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gxk13rn0gw5pfc4abhfnzg8qi05xa0ygs26pgkp0swygkzq6wsq"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-six))
     (home-page "https://github.com/rory/robot-detection")
     (synopsis "Detect web crawlers")
