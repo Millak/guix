@@ -2,7 +2,7 @@
 ;;; Copyright © 2014-2016, 2018, 2021, 2024, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016-2018, 2020-2023, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2017, 2018, 2019, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017-2019, 2021, 2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018, 2019, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <contact@parouby.fr>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
@@ -411,14 +411,14 @@ It comes with a German-English dictionary with approximately 270,000 entries.")
 (define-public grammalecte
   (package
     (name "grammalecte")
-    (version "2.1.1")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch/zipbomb)
-       (uri (string-append "https://grammalecte.net/grammalecte/zip/"
+       (uri (string-append "https://grammalecte.net/zip/"
                            "Grammalecte-fr-v" version ".zip"))
        (sha256
-        (base32 "076jv3ywdgqqzg92bfbagc7ypy08xjq5zn4vgna6j9350fkfqhzn"))))
+        (base32 "0kv8h0116sfcrqnpd3jv2b098ychda7v27fciq1phxw50jbj395a"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ;no tests provided with the project
