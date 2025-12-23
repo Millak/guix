@@ -142,6 +142,7 @@ Guix Consensus Document 003}.}:
 
 @example
 git clone https://git.guix.gnu.org/guix.git
+cd guix
 @end example
 
 @cindex authentication, of a Guix checkout
@@ -181,6 +182,7 @@ guix shell -D guix -CPW
 or even, from within a Git worktree for Guix:
 
 @example
+echo $(pwd) >> ~/.config/guix/shell-authorized-directories
 guix shell -CPW
 @end example
 
