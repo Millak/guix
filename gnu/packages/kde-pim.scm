@@ -64,11 +64,13 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages rsync)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages search)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages wget)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml))
 
@@ -1438,14 +1440,14 @@ easier to do so.")
 (define-public kitinerary
   (package
     (name "kitinerary")
-    (version "25.08.3")
+    (version "25.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kitinerary-" version ".tar.xz"))
               (sha256
                (base32
-                "083jyh8qjqgajj0jvx0n7vayd2085mzwp3682yy5y4x5nvyhcx5k"))))
+                "032z9lw0sgppj6xaxbj81i9j3bcgnjgqzvzs3mp5whv3a94nl2bm"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -1473,22 +1475,33 @@ easier to do so.")
                              (search-input-directory inputs "share/zoneinfo"))
                      (invoke "dbus-launch" "ctest" "-E" test-exclude)))))))
     (native-inputs (list dbus extra-cmake-modules tzdata-for-tests))
-    (inputs (list kpkpass
+    (inputs (list karchive
                   kcalendarcore
-                  karchive
-                  ki18n
-                  kcoreaddons
                   kcontacts
+                  kcoreaddons
+                  ki18n
                   kmime
                   knotifications
-                  shared-mime-info
+                  kpkpass
+                  libphonenumber
+                  libxml2
                   openssl
+                  osmctools
                   poppler
                   qtdeclarative
                   qtkeychain-qt6
-                  libxml2
+                  shared-mime-info
                   zlib
-                  zxing-cpp))
+                  zxing-cpp
+
+                  ;; Required by libphonenumber
+                  abseil-cpp
+                  boost-1.83
+                  protobuf
+
+                  ;; Required by osmctools
+                  rsync
+                  wget))
     (home-page "https://apps.kde.org/itinerary/")
     (synopsis
      "Data Model and Extraction System for Travel Reservation information")
