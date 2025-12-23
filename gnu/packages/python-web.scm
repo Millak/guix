@@ -9603,16 +9603,28 @@ is part of the Weblate translation platform.")
 (define-public python-gitlab
   (package
     (name "python-gitlab")
-    (version "3.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "python-gitlab" version))
-              (sha256
-               (base32
-                "1gi4lp2g4k99zqcx2bgqx940bpmpbc1w9qkl5gy33hpy148yhvlg"))))
-    (build-system python-build-system)
+    (version "7.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/python-gitlab/python-gitlab")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rf1hz5n724f8sfc7g3fzfz96jsv9y145pi6gc8qscsjq3z4vi37"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f))                             ;tests require network access
+     (list
+      #:test-flags
+      #~(list "--ignore=tests/unit/test_graphql.py"
+              ;; XXX: Missing helper script.
+              "-k" "not test_data_from_helper" "tests/unit")))
+    (native-inputs
+     (list python-anyio
+           python-pytest
+           python-responses
+           python-setuptools))
     (propagated-inputs (list python-requests python-requests-toolbelt))
     (home-page "https://github.com/python-gitlab/python-gitlab")
     (synopsis "Interact with GitLab API")
