@@ -11217,35 +11217,30 @@ bare-metal installations.")
        (snippet
         '(with-directory-excursion "cloudscraper"
            (for-each delete-file
-                     '("captcha/9kw.py"
-                       "captcha/anticaptcha.py"))
+                     '("captcha/9kw.py" "captcha/anticaptcha.py"))
            (substitute* "__init__.py"
              ;; Perhaps it's a joke, but don't promote proprietary software.
              (("([Th]is feature is not available) in the .*'" _ prefix)
               (string-append prefix ".'")))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; XXX: Dependencies, that have not yet been packaged
-         ;;      and cause an import error when included.
-         (add-after 'unpack 'drop-unsupported-sources
-           (lambda _
-             (with-directory-excursion "cloudscraper"
-               (for-each delete-file
-                         '("interpreters/v8.py")))))
-         (add-after 'unpack 'fix-references
-           (lambda _
-             (substitute* "cloudscraper/interpreters/nodejs.py"
-               (("'node'")
-                (string-append "'" (which "node") "'")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv"
-                       "-k" "not test_getCookieString_challenge_js_challenge1_16_05_2020")))))))
-    (inputs
-     (list node-lts))
+     (list
+      #:test-flags
+      #~(list "-k" "not \
+test_getCookieString_challenge_js_challenge1_16_05_2020")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Dependencies, that have not yet been packaged
+          ;; and cause an import error when included.
+          (add-after 'unpack 'drop-unsupported-sources
+            (lambda _
+              (delete-file "cloudscraper/interpreters/v8.py")))
+          (add-after 'unpack 'fix-references
+            (lambda _
+              (substitute* "cloudscraper/interpreters/nodejs.py"
+                (("'node'")
+                 (string-append "'" (which "node") "'"))))))))
+    (inputs (list node-lts))
     (propagated-inputs
      (list python-js2py
            python-polling2
@@ -11253,8 +11248,7 @@ bare-metal installations.")
            python-requests-toolbelt
            python-responses
            python-pyparsing))
-    (native-inputs
-     (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/venomous/cloudscraper")
     (synopsis "Cloudflare anti-bot bypass")
     (description
