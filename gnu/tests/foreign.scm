@@ -41,7 +41,8 @@
   #:use-module ((guix scripts pack) #:prefix pack:)
   #:use-module (srfi srfi-9)
   #:export (%test-debian-install
-            %test-archlinux-install))
+            %test-archlinux-install
+            %test-ubuntu-install))
 
 (define marionette-systemd-service
   ;; Definition of the marionette service for systemd.
@@ -424,3 +425,44 @@ script.")
 script.")
    (value (run-foreign-install-test archlinux-qcow2 name
                                     #:device "/dev/vdb3"))))
+
+(define ubuntu-qcow2
+  (let ((filename "noble-server-cloudimg-amd64.img"))
+    (origin
+      (uri (string-append "https://cloud-images.ubuntu.com/noble/20251213/" filename))
+      (method url-fetch)
+      (sha256
+       (base32
+        "07zbqlxg8524p7igwrpwrf5kwc6qam78f7023ihfy38qx3zr0prb")))))
+
+(define ubuntu-libsuid4-deb-file
+  ;; This package is a dependency of uidmap that's missing in the image.
+  (origin
+    (uri
+     "https://archive.ubuntu.com/ubuntu/pool/main/s/shadow/libsubid4_4.13+dfsg1-4ubuntu3_amd64.deb")
+    (method url-fetch)
+    (sha256
+     (base32
+      "1g2rypacgc0gp55wy3lxsa454m072c21cgzdzaf8zlpg4dv9k08l"))))
+
+(define ubuntu-uidmap-deb-file
+  ;; This package provides 'newgidmap' & co., used by the unprivileged daemon.
+  (origin
+    (uri
+     "https://archive.ubuntu.com/ubuntu/pool/main/s/shadow/uidmap_4.13+dfsg1-4ubuntu3_amd64.deb")
+    (method url-fetch)
+    (sha256
+     (base32
+      "1y8sw1shsxaan2icl6ajr2mwm6n69mvqzxmjl98sj4i82hdlm6nw"))))
+
+(define %test-ubuntu-install
+  (system-test
+   (name "ubuntu-install")
+   (description
+    "Test installation of Guix on Ubuntu using the @file{guix-install.sh}
+script.")
+   (value (run-foreign-install-test ubuntu-qcow2 name
+                                    #:deb-files (list ubuntu-libsuid4-deb-file
+                                                      ubuntu-uidmap-deb-file)
+                                    #:resize-image "+1G"
+                                    #:resize-proc resize-ext4-partition))))
