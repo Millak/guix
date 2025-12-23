@@ -7921,6 +7921,30 @@ specs from your Flask-Restful projects.")
 It comes with safe defaults and easily configurable options.")
     (license license:bsd-3)))
 
+;; XXX: Forked renamed and updated version.
+(define-public python-htmlmin2
+  (package/inherit python-htmlmin
+    (name "python-htmlmin2")
+    (version "0.1.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/wilhelmer/htmlmin")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y7mcx8d451hwa1wrg2lffg7ccdy3w5m7xwb5xqp8h2852pypfh2"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/wilhelmer/htmlmin")
+    (description
+     "@code{htmlmin2} is an HTML minifier that just works.  It comes with safe
+defaults and easily configurable options.  This variant is an updated fork of
+the original @code{python-htmlmin}.")
+    (license license:bsd-3)))
+
 (define-public python-flask-htmlmin
   (package
     (name "python-flask-htmlmin")
