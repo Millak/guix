@@ -14797,7 +14797,7 @@ callback signature using a prototype function.")
 (define-public python-pubmed-parser
   (package
     (name "python-pubmed-parser")
-    (version "0.3.1")
+    (version "0.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -14806,20 +14806,18 @@ callback signature using a prototype function.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "195cmjjg7xdwjj5455h78q7jnxnccia07a19xwndhlkxv7vk9v60"))))
+                "0hm520pxmbqlfckkdyccagmmsrqwdi0qdsc0l7rgp62jmsv7ppi5"))))
     (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ;; Tests require internet
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-lxml
            python-numpy
            python-requests
-           python-six
+           python-six           ;hard dependency
            python-unidecode))
-    (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-setuptools
-           python-wheel))
-    (home-page "https://github.com/titipata/pubmed_parser")
+    (home-page "https://titipata.github.io/pubmed_parser/")
     (synopsis "Parser for Pubmed Open-Access Subset and MEDLINE XML repository")
     (description
      "This package provides a Python parser for Pubmed Open-Access Subset and
