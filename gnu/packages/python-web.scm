@@ -9958,31 +9958,32 @@ Plus all the standard features of requests:
        (method url-fetch)
        (uri (pypi-uri "wsgiprox" version))
        (sha256
-        (base32
-         "11fsm199pvwbmqx2lccznvws65aam1rqqv0w79gal8hispwgd5rs"))))
-    (build-system python-build-system)
+        (base32 "11fsm199pvwbmqx2lccznvws65aam1rqqv0w79gal8hispwgd5rs"))))
+    (build-system pyproject-build-system)
     (arguments
      ;; The test suite hangs (see:
      ;; https://github.com/webrecorder/wsgiprox/issues/6).
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-pytest-argument
-           (lambda _
-             ;; See: https://github.com/webrecorder/wsgiprox/issues/7.
-             (substitute* "setup.py"
-               (("--doctest-module")
-                "--doctest-modules")))))))
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-argument
+            (lambda _
+              ;; See: https://github.com/webrecorder/wsgiprox/issues/7.
+              (substitute* "setup.py"
+                (("--doctest-module")
+                 "--doctest-modules")))))))
     (propagated-inputs
      (list python-certauth python-gevent python-websocket-client))
     (native-inputs
-     (list python-mock python-pytest-cov python-waitress))
+     (list python-mock python-pytest-cov python-waitress python-setuptools))
     (home-page "https://github.com/webrecorder/wsgiprox")
     (synopsis "HTTP/S proxy with WebSockets over WSGI")
-    (description "@code{wsgiprox} is a Python WSGI (Web Server Gateway
-Interface) middle-ware for adding HTTP and HTTPS proxy support to a WSGI
-application.  The library accepts HTTP and HTTPS proxy connections, and routes
-them to a designated prefix.")
+    (description
+     "@code{wsgiprox} is a Python WSGI (Web Server Gateway Interface)
+middle-ware for adding HTTP and HTTPS proxy support to a WSGI application.
+The library accepts HTTP and HTTPS proxy connections, and routes them to a
+designated prefix.")
     (license license:asl2.0)))
 
 (define-public python-warcio
