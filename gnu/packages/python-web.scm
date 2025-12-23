@@ -8334,7 +8334,7 @@ for Flask programs that are using @code{python-alembic}.")
 (define-public python-genshi
   (package
     (name "python-genshi")
-    (version "0.7.7")
+    (version "0.7.10")
     (source
      (origin
        (method git-fetch)
@@ -8343,11 +8343,11 @@ for Flask programs that are using @code{python-alembic}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06q14mn5n56rdnqvsbbjixygilblgg85fzw029n96qf6f1rvldiq"))))
-    (native-inputs (list python-setuptools-67))
-    (propagated-inputs
-     (list python-six))
-    (build-system python-build-system)
+        (base32 "1dmf0ggp0s3371jv483kjriw9jscawxcik6q70a0wqjdfh5383i6"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-six))
     (home-page "https://genshi.edgewall.org/")
     (synopsis "Toolkit for generation of output for the web")
     (description "Genshi is a Python library that provides an integrated set
