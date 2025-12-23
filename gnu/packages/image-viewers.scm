@@ -563,7 +563,7 @@ needs.")
            pkg-config
            shared-mime-info))
     (inputs
-     (list exiv2
+     (list exiv2-0.27
            gdk-pixbuf
            gtk+-2
            webp-pixbuf-loader))
