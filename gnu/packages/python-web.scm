@@ -8458,30 +8458,36 @@ List.")
 (define-public python-publicsuffix2
   (package
     (name "python-publicsuffix2")
-    (version "2.20191221")
+    (version "2.2019-12-21")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "publicsuffix2" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pombredanne/python-publicsuffix2")
+             (commit (string-append "release-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0yzysvfj1najr1mb4pcqrbmjir3xpb69rlffln95a3cdm8qwry00"))))
-    (build-system python-build-system)
+        (base32 "1dkvfvl0izq9hqzilnw8ipkbgjs9xyad9p21i3864hzinbh0wp9r"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'ignore-maintainer-inputs
-           (lambda _
-             ;; Comment out a demand for python-requests, which is used only by
-             ;; the unused ‘update_psl’ helper command.
-             (substitute* "setup.py"
-               (("'requests " match)
-                (format #f "# ~a" match)))
-             #t)))
-       #:tests? #f))                  ; the test suite requires network access
+     (list
+      #:tests? #f ;the test suite requires network access
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'ignore-maintainer-inputs
+            (lambda _
+              ;; Comment out a demand for python-requests, which is used only by
+              ;; the unused ‘update_psl’ helper command.
+              (substitute* "setup.py"
+                (("'requests " match)
+                 (format #f "# ~a" match))))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/pombredanne/python-publicsuffix2")
-    (synopsis "Get a public suffix for a domain name using the Public Suffix List")
-    (description "Get a public suffix for a domain name using the Public Suffix
-List.  Forked from and using the same API as the publicsuffix package.")
+    (synopsis
+     "Get a public suffix for a domain name using the Public Suffix List")
+    (description
+     "Get a public suffix for a domain name using the Public Suffix List.
+Forked from and using the same API as the publicsuffix package.")
     (license (list license:expat license:mpl2.0))))
 
 (define-public python-werkzeug
