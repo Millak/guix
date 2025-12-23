@@ -11610,21 +11610,22 @@ client for Python.")
   (package
     (name "python-siosocks")
     (version "0.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "siosocks" version))
-              (sha256
-               (base32
-                "0qqxy8wl5mrmlkblzjq9nsg0cbm5jwgj409mhnhq6gd1ypvbndms"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "pytest" "-vvv")))))))
-    (native-inputs (list python-pytest python-pytest-asyncio python-pytest-cov
-                         python-pytest-trio))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pohmelie/siosocks")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zcib4j5bfxlryfa412wmlkk8ivsiwxrfbpij5s7ag839ii2lxa5"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-cov
+           python-pytest-trio
+           python-setuptools))
     (propagated-inputs (list python-trio))
     (home-page "https://github.com/pohmelie/siosocks")
     (synopsis "SOCKSv4 & SOCKSv5 TCP proxy protocol implementation in Python")
