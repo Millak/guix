@@ -727,29 +727,31 @@ FFmpeg, etc.")
 (define-public python-pyacoustid
   (package
     (name "python-pyacoustid")
-    (version "1.2.2")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyacoustid" version))
        (sha256
         (base32
-         "0ha15m41r8ckmanc4k9nrlb9hprvhdjxndzw40a1yj3z1b1xjyf2"))))
-    (build-system python-build-system)
+         "0xyikq3lqmqlm6b8nmmi6aijs4vz56svgcbhha8bp7n1j5qlhksz"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chromaprint-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "chromaprint.py"
-               (("libchromaprint.so.1")
-                (string-append (assoc-ref inputs "chromaprint")
-                               "/lib/libchromaprint.so.1")))
-             (substitute* "acoustid.py"
-               (("'fpcalc'")
-                (string-append "'" (assoc-ref inputs "chromaprint")
-                               "/bin/fpcalc'")))
-             #t)))))
+     (list
+      #:tests? #f                      ;No tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chromaprint-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "chromaprint.py"
+                (("libchromaprint.so.1")
+                 (search-input-file inputs "/lib/libchromaprint.so.1")))
+              (substitute* "acoustid.py"
+                (("(FPCALC_COMMAND.+)fpcalc" _ prefix)
+                 (string-append
+                  prefix (search-input-file inputs "/bin/fpcalc")))))))))
+    (native-inputs
+     (list python-setuptools))
     (inputs (list chromaprint))
     (propagated-inputs
      (list python-audioread python-requests))
