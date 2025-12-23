@@ -1688,6 +1688,20 @@ and XMP metadata of images in various formats.")
         #~(modify-phases #$phases
             (delete 'delete-static-libraries)))))))
 
+(define-public exiv2-0.27
+  (package/inherit exiv2
+    (name (package-name exiv2))
+    (version "0.27.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/exiv2/exiv2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a3g7qly75zidj2xjfx1548h6az8sda79cpwvfknsjy3n8d5aay7"))))))
+
 (define-public devil
   (package
     (name "devil")
