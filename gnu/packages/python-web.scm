@@ -8108,13 +8108,17 @@ jspacker or CSS tidy.  It also supports URL rewriting in CSS files.")
     (name "python-cssmin")
     (version "0.2.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "cssmin" version))
-        (sha256
-         (base32
-          "1dk723nfm2yf8cp4pj785giqlwv42l0kj8rk40kczvq1hk6g04p0"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zacharyvoase/cssmin")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04bzpal6j26pjjjf3p7iq6g2wcr61j4g0ygqz6h847h4hsyah9qg"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ; No tests.
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/zacharyvoase/cssmin")
     (synopsis "Python port of the YUI CSS Compressor")
     (description "Python port of the YUI CSS Compressor.")
