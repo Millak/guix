@@ -8776,24 +8776,34 @@ engine.  Its module is called @code{googlesearch}.")
 (define-public python-google-api-client
   (package
     (name "python-google-api-client")
-    (version "2.102.0")
+    (version "2.187.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "google-api-python-client" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/google-api-python-client")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "07b9afz3g3lk976i974h6ikvl7wzwm0a0ws0iynxvmd4favgjvwh"))))
-    (build-system python-build-system)
+        (base32 "09vq5d32avri0gl8c7nn5dv2xds1jzjms7vqk3gn66nm2m37x8mv"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f))    ; tests require internet access
+     (list
+      #:test-flags
+      #~(list "-k"
+              ;; XXX: Requires CA certificates.
+              "not test_credentials_and_credentials_file_mutually_exclusive"
+              "tests")))
+    (native-inputs
+     (list python-parameterized
+           python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-google-api-core
            python-google-auth
            python-google-auth-httplib2
            python-httplib2
            python-pyparsing
-           python-six
            python-uritemplate-3))
     (home-page "https://github.com/google/google-api-python-client")
     (synopsis "Core Python library for accessing Google APIs")
