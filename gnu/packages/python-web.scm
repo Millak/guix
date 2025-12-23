@@ -7746,16 +7746,21 @@ Betamax.")
     (version "0.2.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "betamax-serializers" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/betamax/serializers")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0ja9isbjmzzhxdj69s0kdsvw8nkp073w6an6a4liy5vk3fdl2p1l"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-betamax python-pyyaml))
+        (base32 "1p2l5w3vwvjacs2ndahgcjq55qb53i37p8mz1zh85pjxyszdyw2l"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))  ; No tests.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-betamax python-pyyaml))
     (synopsis "Set of third-party serializers for Betamax")
-    (description "Betamax-Serializers are an experimental set of Serializers for
-Betamax that may possibly end up in the main package.")
+    (description
+     "Betamax-Serializers are an experimental set of Serializers for Betamax
+that may possibly end up in the main package.")
     (home-page "https://gitlab.com/betamax/serializers")
     (license license:asl2.0)))
 
