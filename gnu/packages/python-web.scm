@@ -7911,9 +7911,10 @@ specs from your Flask-Restful projects.")
        (sha256
         (base32
          "0y51xhabw6x8jk8k93xl8vznshpz3jb6l28075r5sjip613fzhah"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f))                    ; no tests
-    (build-system python-build-system)
+     (list #:tests? #f))                    ; no tests
+    (native-inputs (list python-setuptools))
     (home-page "https://htmlmin.readthedocs.org/en/latest/")
     (synopsis "HTML minifier")
     (description "@code{htmlmin} is an HTML minifier that just works.
