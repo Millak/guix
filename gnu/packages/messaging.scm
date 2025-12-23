@@ -2255,7 +2255,7 @@ notifications, and Python scripting support.")
 (define-public libqmatrixclient
   (package
     (name "libqmatrixclient")
-    (version "0.9.3")
+    (version "0.9.5")
     (source
      (origin
        (method git-fetch)
@@ -2264,7 +2264,7 @@ notifications, and Python scripting support.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0liidazw1ff1f73lb476pvrhzkmmk9dbgf5qsfajkxdj4xvy047k"))))
+        (base32 "100l7nbpr8yhhx9zcd9wd6bw3j7j9f8a17wipsa7b5rqnbj09ln1"))))
     (build-system qt-build-system)
     (inputs
      (list olm openssl qtkeychain-qt6 qtmultimedia))
