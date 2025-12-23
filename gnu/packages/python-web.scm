@@ -6694,19 +6694,23 @@ with python-requests.")
     (version "0.3.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "requests-ftp" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Lukasa/requests-ftp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0yh5v21v36dsjsgv4y9dx4mmz35741l5jf6pbq9w19d8rfsww13m"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-requests))
-    (home-page
-     "https://github.com/Lukasa/requests-ftp")
+        (base32 "1c7xbz2fxb12ldaw2pkfg5qd29g6slf4a2gavhqvz26cd1r82ny7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: No connection adapters found.
+     (list #:test-flags #~(list "--ignore=tests/test_ftp_proxy.py")))
+    (native-inputs
+     (list python-pyftpdlib python-pytest python-setuptools python-six))
+    (propagated-inputs (list python-requests))
+    (home-page "https://github.com/Lukasa/requests-ftp")
     (synopsis "FTP Transport Adapter for Requests")
-    (description
-     "Requests-FTP is an implementation of a simple FTP transport
+    (description "Requests-FTP is an implementation of a simple FTP transport
 adapter for use with the Requests library.")
     (license license:asl2.0)))
 
