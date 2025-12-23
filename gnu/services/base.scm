@@ -4116,7 +4116,7 @@ to handle."
     (volume (@ (sgrp "users")
                (fstype "tmpfs")
                (mountpoint "/run/user/%(USERUID)")
-               (options "noexec,nosuid,nodev,size=1g,mode=0700,uid=%(USERUID),gid=%(USERGID)")))
+               (options "nosuid,nodev,size=1g,mode=0700,uid=%(USERUID),gid=%(USERGID)")))
     (logout (@ (wait "0")
                (hup "0")
                (term "yes")
