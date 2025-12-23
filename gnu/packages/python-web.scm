@@ -8626,15 +8626,17 @@ package from WTForms.  The package has been renamed to
        (uri (pypi-uri "urlgrabber" version))
        (sha256
         (base32 "0fg16zlw49cw7pjq9dhpc5vd35d5zz1mlki55m464qxfmfpzhnh7"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "test/runtests.py")))))))
+     (list
+      #:tests? #f ; Most tests require network access.
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "test/runtests.py")))))))
+    (native-inputs (list python-setuptools))
     (propagated-inputs
      (list python-pycurl python-setuptools python-six))
     (home-page "http://urlgrabber.baseurl.org/") ; no HTTPS
