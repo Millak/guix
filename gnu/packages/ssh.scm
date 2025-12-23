@@ -22,6 +22,7 @@
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024, 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
+;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -921,7 +922,7 @@ using asyncssh, with the following features:
 (define-public clustershell
   (package
     (name "clustershell")
-    (version "1.9.2")
+    (version "1.9.3")
     (source
      (origin
        (method git-fetch)
@@ -930,7 +931,7 @@ using asyncssh, with the following features:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zk3syrdck2gi27b9njaq98fnnjf14831yvkma2n4ydsf2mxnkaw"))))
+        (base32 "0maw8y22gxva2ja0a4d4i3iibjn4yd2zvcx0r6sj8lksdqyavad1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -954,8 +955,7 @@ using asyncssh, with the following features:
                   (("/bin/true")         "true")
                   (("/usr/bin/printf")   "printf"))))))))
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (inputs
      (list openssh))
     (propagated-inputs
