@@ -9760,16 +9760,20 @@ and serve updated contents upon changes to the directory.")
 (define-public python-vf-1
   (package
     (name "python-vf-1")
-    (version "0.0.11")
+    (version "1.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "VF-1" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~solderpunk/VF-1")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0xlqsaxsiayk1sd07kpz8abbcnab582y29a1y4882fq6j4gma5xi"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/solderpunk/VF-1")
+        (base32 "1j8l4xivm6rs8jms1ixx0i9fz4yxr84hbz1pdc498jgkgzy1v8ih"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ; No tests.
+    (native-inputs (list python-setuptools))
+    (home-page "https://git.sr.ht/~solderpunk/VF-1")
     (synopsis "Command line gopher client")
     (description "@code{VF-1} is a command line gopher client with
 @acronym{TLS, Transport Layer Security} support.")
