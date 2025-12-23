@@ -8915,16 +8915,17 @@ Authentication, a simple HTTP request-signing scheme.")
     (version "0.14.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "PyBrowserID" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mozilla/PyBrowserID")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1qvi79kfb8x9kxkm5lw2mp42hm82cpps1xknmsb5ghkwx1lpc8kc"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-requests))
-    (native-inputs
-     (list python-mock))
+        (base32 "0in0sbj56wrz5mlrj6wkd3h7rrp7714c5rkxvkfwp60s2hr6ynj6"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (propagated-inputs (list python-requests))
+    (native-inputs (list python-mock python-setuptools))
     (home-page "https://github.com/mozilla/PyBrowserID")
     (synopsis "Python library for the BrowserID protocol")
     (description
