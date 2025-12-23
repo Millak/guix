@@ -1544,7 +1544,7 @@ practise.")
 (define-public doom-runner
   (package
     (name "doom-runner")
-    (version "1.8.3")
+    (version "1.9.1")
     (source
      (origin
        (method git-fetch)
@@ -1553,10 +1553,13 @@ practise.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rpywq95zy9w0wj1262x4rf84c52wg1rgf0by549qph6fybn34rn"))))
+        (base32 "19jq5cj6rc8d5ghd9321a2f3v0b7z928990d7dj6ynyhkpcj769p"))
+       (modules '((guix build utils)))
+       (snippet #~(delete-file-recursively "Screenshots")))) ;Save 1.4MiB.
     (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:tests? #f                       ;no tests
       #:modules '((guix build qt-build-system)
                   ((guix build gnu-build-system) #:prefix gnu:)
@@ -1565,37 +1568,37 @@ practise.")
       #~(modify-phases %standard-phases
           (replace 'configure
             (lambda _
-              (substitute* "DoomRunner.pro"
-                (("/usr")
-                 #$output))
               (invoke "qmake" "DoomRunner.pro" "-spec" "linux-g++"
-                      "\"CONFIG+=release\"")))
+                      "\"CONFIG+=release\""
+                      (string-append "INSTALL_DIR=" #$output))))
           (replace 'build (assoc-ref gnu:%standard-phases 'build))
           (replace 'install (assoc-ref gnu:%standard-phases 'install))
           (add-after 'install 'install-xdg
             (lambda _
+              (with-directory-excursion #$output
+                (install-file "DoomRunner" "bin/")
+                (delete-file "DoomRunner"))
               (with-directory-excursion "Install/XDG"
                 (install-file "DoomRunner.desktop"
-                              (string-append #$output
-                                             "/share/applications"))
-                (let ((install-icon
-                       (lambda (size)
-                         (install-file (simple-format
-                                        #f "DoomRunner.~sx~s.png"
-                                        size size)
-                                       (simple-format
-                                        #f "~a/share/icons/hicolor/~sx~s/apps"
-                                        #$output size size)))))
-                  (for-each install-icon
-                            '(16 24 32 48 64 128)))))))))
+                              (string-append #$output "/share/applications"))
+                (install-file "io.github.Youda008.DoomRunner.appdata.xml"
+                              (string-append #$output "/share/metainfo"))
+                (for-each
+                 (lambda (size)
+                   (let ((filename (simple-format #f "DoomRunner.~sx~s.png"
+                                                  size size)))
+                     (chmod filename #o444)
+                     (install-file
+                      filename
+                      (simple-format #f "~a/share/icons/hicolor/~sx~s/apps"
+                                     #$output size size))))
+                 '(16 24 32 48 64 128))))))))
     (home-page "https://github.com/Youda008/DoomRunner")
     (synopsis "Launcher for Doom engine games")
-    (description
-     "Doom Runner is yet another launcher of common Doom source ports (like
-GZDoom, Zandronum, PrBoom, ...) with graphical user interface.  It is
-written in C++ and Qt, and it is designed around the idea of presets
-for various multi-file modifications to allow one-click switching
-between them and minimize any repetitive work.")
+    (description "Doom Runner is yet another launcher of common Doom source
+ports (e.g.  GZDoom, Zandronum, PrBoom) with a graphical user interface.  It
+is written in C++ and Qt, and it is designed around the idea of presets for
+various multi-file modifications to allow one-click switching between them.")
     (license license:gpl3)))
 
 (define-public falltergeist
