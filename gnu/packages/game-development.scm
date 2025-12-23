@@ -677,22 +677,31 @@ possible, and it also makes the SGE easy to learn.")
     (license license:lgpl3+)))
 
 (define-public python-pyscroll
-  (package
-    (name "python-pyscroll")
-    (version "2.31")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pyscroll" version))
-              (sha256
-               (base32
-                "0w3c58mkkbsyvx9w9hwdizk20pbds800m7v9vg49ydw440dha0hr"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-pygame))
-    (home-page "https://github.com/bitcraft/pyscroll")
-    (synopsis "Fast scrolling maps library for pygame")
-    (description "@code{pyscroll} is a simple and fast module
+  ;; No tags, no releases, not clear which commit corresponds to which PyPI
+  ;; release. But PyPI has no tests, so need to use git.
+  (let ((commit "31e1c282d09542ec89c6c1ac3ee6a1ff991ff5c2")
+        (revision "1"))
+    (package
+      (name "python-pyscroll")
+      (version (git-version "2.31" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/bitcraft/pyscroll")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1mqi8ccxi7vk63hw7klxjzd8jp6lnnw5q70nvrzmgq0jxpp61h7y"))))
+      (build-system pyproject-build-system)
+      (native-inputs (list python-pytest python-setuptools))
+      (propagated-inputs (list python-pygame))
+      (home-page "https://github.com/bitcraft/pyscroll")
+      (synopsis "Fast scrolling maps library for pygame")
+      (description "@code{pyscroll} is a simple and fast module
 for animated scrolling maps for your new or existing game.")
-    (license license:lgpl3+)))
+      (license license:lgpl3+))))
 
 (define-public python-pytmx
   (package
