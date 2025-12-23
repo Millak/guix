@@ -804,7 +804,11 @@ support.")
        (uri (pypi-uri "neteria" version))
        (sha256
         (base32 "1azlix80a6vns2i3z0bdbqk32kx8s2gjh2nvshab235fd9h85yv7"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))                ;No tests, also not on github
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-rsa))
     (home-page "https://pypi.org/project/neteria/")
