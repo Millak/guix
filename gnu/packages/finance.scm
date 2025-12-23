@@ -2018,79 +2018,7 @@ This includes components like The Hub and Indexer which and various others
 that allows you to run services and through them access the Bitcoin Cash networks.")
     (license license:gpl3+)))
 
-
 (define-public beancount
-  (package
-    (name "beancount")
-    (version "2.3.6")
-    (source
-     (origin
-       (method git-fetch) ; no test data files in PyPI archive
-       (uri (git-reference
-             (url "https://github.com/beancount/beancount")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1slxsjw29cyr2kbirdpijhpqspk55k38rpmk3zc02pr1wll62qsv"))
-       (patches (search-patches "beancount-disable-googleapis-fonts.patch"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; Remove broken experiments.
-            (delete-file-recursively "experiments")
-            ;; Remove bundled packages.
-            (delete-file-recursively "third_party")))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list
-         ;; These tests require network.
-         "--ignore=beancount/web/web_test.py"
-         "-k" (string-join
-               (list "not test_parse_stdin" ; ModuleNotFoundError: 'pytest'
-                     "test_setup" ; AssertionError: 5 not greater than 20
-                     ;; Require network
-                     "test_bake_archive__known"
-                     "test_bake_directory")
-               " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "setup.py"
-                ;; Use compatible fork, and do not fail during sanity check.
-                (("\"pdfminer2\",") ""))))
-          (add-before 'check 'build-extensions
-            (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (native-inputs
-     (list gnupg
-           python-pdfminer-six
-           python-pytest
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-beautifulsoup4
-           python-bottle
-           python-chardet
-           python-dateutil
-           python-google-api-client
-           python-google-auth-oauthlib
-           python-lxml
-           python-magic
-           python-oauth2client
-           python-ply
-           python-requests))
-    (home-page "https://beancount.github.io/")
-    (synopsis "Command-line double-entry accounting tool")
-    (description
-     "Beancount is a double-entry bookkeeping computer language that lets you
-define financial transaction records in a text file, read them in memory,
-generate a variety of reports from them, and provides a web interface.")
-    (license license:gpl2)))
-
-(define-public beancount-3
   (package
     (name "beancount")
     (version "3.2.0")
@@ -2135,6 +2063,8 @@ define financial transaction records in a text file, read them in memory,
 generate a variety of reports from them, and provides a web interface.")
     (license license:gpl2)))
 
+(define-deprecated/public-alias beancount-3 beancount)
+
 (define-public beanquery
   (package
     (name "beanquery")
@@ -2156,7 +2086,7 @@ generate a variety of reports from them, and provides a web interface.")
       ;; Whitespace differences in these tests.
       #~(list "--ignore=beanquery/query_render_test.py")))
     (propagated-inputs
-     (list beancount-3
+     (list beancount
            python-click
            python-dateutil
            python-tatsu))
@@ -2184,7 +2114,7 @@ it can easily generate custom reports specific to accounting purposes.")
         (base32 "0zlanw88dq7czgsdvqwz2fgxamyrfnx15ymv4d7fnjrj04glpg47"))))
     (build-system pyproject-build-system)
     (propagated-inputs
-     (list beancount-3
+     (list beancount
            python-beautifulsoup4
            python-chardet
            python-petl
@@ -2218,7 +2148,7 @@ from account statements and other documents and for managing documents.")
                      ;; <https://github.com/beancount/fava/issues/2153>).
                      #~(list "-k" "not options-/long-example/api/options")))
     (propagated-inputs
-     (list beancount-3
+     (list beancount
            beanquery
            python-babel
            python-beangulp
@@ -2262,7 +2192,7 @@ software Beancount with a focus on features and usability.")
       (arguments
        (list #:test-command #~(list "make" "test")))
       (native-inputs
-       (list beancount-3))
+       (list beancount))
       (home-page "https://github.com/beancount/beancount-mode")
       (synopsis "Emacs mode for Beancount")
       (description
