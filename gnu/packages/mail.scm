@@ -1356,7 +1356,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
-           emacs-minimal
+           emacs                      ; TODO: use emacs-minimal next release
            gnupg                      ; for tests
            tzdata-for-tests           ; for tests
            texinfo))
