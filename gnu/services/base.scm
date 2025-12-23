@@ -4006,8 +4006,9 @@ to handle."
   (default-session-command greetd-default-session-command
     (default (greetd-agreety-session)))
   (initial-session-user greetd-initial-session-user (default #f))
+  ;; Note: This field is ignored (not written out) if greetd-initial-session-user is unset.
   (initial-session-command greetd-initial-session-command
-    (default #f)))
+    (default (greetd-user-session))))
 
 (define (default-config-file-name config)
   (string-join (list "config-" (greetd-terminal-vt config) ".toml") ""))
