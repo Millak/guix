@@ -7880,17 +7880,20 @@ S3.")
   (package
     (name "python-flask-restful-swagger")
     (version "0.20.1")
+    ;; XXX: Unbundle minified javascript.
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "flask-restful-swagger" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rantav/flask-restful-swagger")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1p66f98b5zpypnnz56pxpbirchqj6aniw6qyrp8h572l0dn9xlvq"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))          ;no tests
-    (propagated-inputs
-     (list python-flask-restful python-six))
+        (base32 "1ppdwn25ijf8b3zchxkvwj4ipc68v3p522i8mm51jm0w6mg5bvsh"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ; No tests.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-flask-restful python-six))
     (home-page "https://github.com/rantav/flask-restful-swagger")
     (synopsis "Extract Swagger specs from Flask-Restful projects")
     (description "This package lets you extract Swagger API documentation
