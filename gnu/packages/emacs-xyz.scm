@@ -34305,9 +34305,8 @@ News homepage.")
     (build-system emacs-build-system)
     (arguments
      (list
-      #:tests? #f))                     ;no tests
-    (propagated-inputs
-     (list emacs-request emacs-visual-fill-column))
+      #:tests? #f))                   ; no tests
+    (propagated-inputs (list emacs-request emacs-visual-fill-column))
     (home-page "https://github.com/tanrax/lobsters.el/")
     (synopsis "Lobsters client for Emacs")
     (description
