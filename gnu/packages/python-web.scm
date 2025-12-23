@@ -8891,19 +8891,22 @@ search engine replacement on both desktop and mobile.")
     (version "2.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "hawkauthlib" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mozilla-services/hawkauthlib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "03ai47s4h8nfnrf25shbfvkm1b9n1ccd4nmmj280sg1fayi69zgg"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-requests python-webob))
+        (base32 "0pdpk3fp87ngfsyp4lm2z7z8b203jxsmvbz59q6r6xgg9sp4cl3l"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-requests python-webob))
     (home-page "https://github.com/mozilla-services/hawkauthlib")
     (synopsis "Hawk Access Authentication protocol")
     (description
-     "This is a low-level Python library for implementing Hawk Access Authentication,
-a simple HTTP request-signing scheme.")
+     "This is a low-level Python library for implementing Hawk Access
+Authentication, a simple HTTP request-signing scheme.")
     (license license:mpl2.0)))
 
 (define-public python-pybrowserid
