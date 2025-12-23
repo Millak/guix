@@ -11203,7 +11203,7 @@ bare-metal installations.")
 (define-public python-cloudscraper
   (package
     (name "python-cloudscraper")
-    (version "1.2.60")
+    (version "3.0.0")
     (source
      (origin
        (method git-fetch)
@@ -11212,7 +11212,7 @@ bare-metal installations.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00cmxgwdm0x1j4a4ipwvpzih735hdzidljbijk1b3laj3dgvnvsm"))
+        (base32 "13w0ywz2y8x0zwpwzrnn46wyq307hfpdcz49zy33yyf46rq9n10n"))
        (modules '((guix build utils)))
        (snippet
         '(with-directory-excursion "cloudscraper"
@@ -11226,14 +11226,17 @@ bare-metal installations.")
     (arguments
      (list
       #:test-flags
-      #~(list "-k" "not \
-test_getCookieString_challenge_js_challenge1_16_05_2020")
+      #~(list "-k" "not test_403_handling")
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: Dependencies, that have not yet been packaged
-          ;; and cause an import error when included.
-          (add-after 'unpack 'drop-unsupported-sources
+          (add-after 'unpack 'relax-requirements
             (lambda _
+              ;; XXX: Relax brotli dependency.
+              (substitute* "pyproject.toml"
+                (("\"brotli>=.*\"")
+                 "\"brotli\""))
+              ;; XXX: Dependencies, that have not yet been packaged
+              ;; and cause an import error when included.
               (delete-file "cloudscraper/interpreters/v8.py")))
           (add-after 'unpack 'fix-references
             (lambda _
@@ -11242,12 +11245,15 @@ test_getCookieString_challenge_js_challenge1_16_05_2020")
                  (string-append "'" (which "node") "'"))))))))
     (inputs (list node-lts))
     (propagated-inputs
-     (list python-js2py
+     (list python-pycryptodome
+           python-brotli
+           python-js2py
            python-polling2
            python-requests
            python-requests-toolbelt
            python-responses
-           python-pyparsing))
+           python-pyparsing
+           python-websocket-client))
     (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/venomous/cloudscraper")
     (synopsis "Cloudflare anti-bot bypass")
