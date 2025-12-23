@@ -203,11 +203,11 @@ installation instructions (@pxref{Requirements}).
 @item @url{https://www.gnu.org/software/help2man/, GNU Help2man (optional)}.
 @end itemize
 
-On Guix, extra dependencies can be added by instead running @command{guix
-shell}:
+On Guix, other development tools, like @code{strace}, can be included by
+giving them as extra arguments to @command{guix shell}:
 
 @example
-guix shell -D guix help2man git strace --pure
+guix shell -D guix -CPW strace
 @end example
 
 From there you can generate the build system infrastructure
