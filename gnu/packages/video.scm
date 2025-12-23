@@ -2732,7 +2732,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
 (define-public mpv
   (package
     (name "mpv")
-    (version "0.40.0")
+    (version "0.41.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2740,11 +2740,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0w0qk61ll0mddbkiwavqfx048sacyvp6fwglms58ypw869rh7iy7"))
-              (patches
-               (search-patches
-                "mpv-0.40.0-fix-ffmpeg-8.0.patch"
-                "mpv-0.40.0-fix-wayland-cpu-usage.patch"))))
+               (base32 "1myphqbzr4xynhzmc9ic34mqwb2yc0v37xh8js517sy4ydzam5c0"))))
     (build-system meson-build-system)
     (arguments
      (list

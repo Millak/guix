@@ -1880,8 +1880,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/mpc123-initialize-ao.patch		\
   %D%/packages/patches/mpg321-CVE-2019-14247.patch		\
   %D%/packages/patches/mpg321-gcc-10.patch			\
-  %D%/packages/patches/mpv-0.40.0-fix-ffmpeg-8.0.patch		\
-  %D%/packages/patches/mpv-0.40.0-fix-wayland-cpu-usage.patch	\
   %D%/packages/patches/modglue-fix-build.patch		\
   %D%/packages/patches/modem-manager-fix-test-wrapper.patch	\
   %D%/packages/patches/module-init-tools-moduledir.patch	\
