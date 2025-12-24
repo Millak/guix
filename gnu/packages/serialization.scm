@@ -430,7 +430,7 @@ that implements both the msgpack and msgpack-rpc specifications.")
     (build-system meson-build-system)
     (synopsis "Scfg library written in C")
     (description
-     "This package provides a C library for to parse
+     "This package provides a C library for parsing
 @uref{https://git.sr.ht/~emersion/scfg, scfg}, a simple configuration file
 format with one directive per line.")
     (license license:expat)))
