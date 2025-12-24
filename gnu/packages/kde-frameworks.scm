@@ -1437,7 +1437,7 @@ pixel units.")
 (define-public ksvg
   (package
     (name "ksvg")
-    (version "6.19.0")
+    (version "6.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1446,7 +1446,7 @@ pixel units.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1vz9nljg73lmfmfgmj3v05b62r4kzynj3ncakdnshgjac32cp8lj"))))
+                "0ngy5k01d996cyhvg8lc1wd7xz8jmy6wcrkccl5lxi47fw41yxaw"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules qttools))
@@ -1461,11 +1461,16 @@ pixel units.")
       kguiaddons
       kirigami))
     (arguments
-     (list #:qtbase qtbase
-           #:phases #~(modify-phases %standard-phases
-                        (add-before 'check 'check-setup
-                          (lambda _
-                            (setenv "HOME" (getcwd)))))))
+     (list
+      #:qtbase qtbase
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'check) ;; move after the install phase
+                   (add-after 'install 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (setenv "HOME" (getcwd))
+                         (invoke "ctest" "--rerun-failed"
+                                 "--output-on-failure")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Components for handling SVGs")
     (description "A library for rendering SVG-based themes with stylesheet
