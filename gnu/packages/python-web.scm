@@ -7652,7 +7652,7 @@ provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients."
      ;; It's too much work to package CherryPy for now.
      `(#:tests? #f))
     (propagated-inputs
-     (list python-filelock python-lockfile python-msgpack python-requests))
+     (list python-filelock python-msgpack python-requests))
     (native-inputs
      (list python-flit-core))
     (home-page "https://github.com/ionrock/cachecontrol")
