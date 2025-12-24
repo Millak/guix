@@ -140,7 +140,7 @@
            tzdata-for-tests
            python-mock))
     (propagated-inputs
-     (list python-lockfile python-pygobject python-urllib3))
+     (list python-pygobject python-urllib3))
     (inputs
      (list bash-minimal ; to run the wrapped program
            dbus ; dbus-launch (Gio backend)
