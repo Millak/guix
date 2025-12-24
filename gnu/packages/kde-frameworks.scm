@@ -3686,7 +3686,7 @@ consumption.")
 (define-public kio
   (package
     (name "kio")
-    (version "6.19.1")
+    (version "6.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3695,7 +3695,7 @@ consumption.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0gzf4yhvr94zxy3n5fym06q0vm46s4ra4h831wgh69x29jpsf3ig"))))
+                "1ih567dm38hwf750gvg3akaidinm2p9kadbwksxm5jq2p0rkmxxj"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list acl
@@ -3733,6 +3733,43 @@ consumption.")
                   zlib))
     (arguments
      (list
+      #:test-exclude
+      (string-append "("
+                     (string-join '("kiogui-favicontest"
+                                    "kiocore-filefiltertest"
+                                    "kpasswdservertest"
+                                    "kiowidgets-kfileitemactionstest"
+                                    "kiofilewidgets-kfileplacesmodeltest"
+                                    ;; This test requires '/etc/passwd' owned
+                                    ;; by root.
+                                    "testtrash"
+                                    ;; This test requires 'HOME=/home/$USER'.
+                                    "kiofilewidgets-knewfilemenutest"
+                                    ;; The following tests fail or are flaky (see:
+                                    ;; https://bugs.kde.org/show_bug.cgi?id=440721).
+                                    "kiocore-jobtest"
+                                    "kiocore-kmountpointtest"
+                                    "kiowidgets-kdirlistertest"
+                                    "kiocore-kfileitemtest"
+                                    "kiocore-ktcpsockettest"
+                                    "kiocore-mimetypefinderjobtest"
+                                    "kiocore-krecentdocumenttest"
+                                    "kiocore-http_jobtest"
+                                    "kiogui-openurljobtest"
+                                    "kioslave-httpheaderdispositiontest"
+                                    "applicationlauncherjob_forkingtest"
+                                    "applicationlauncherjob_scopetest"
+                                    "applicationlauncherjob_servicetest"
+                                    "commandlauncherjob_forkingtest"
+                                    "commandlauncherjob_scopetest"
+                                    "commandlauncherjob_servicetest"
+                                    "kiowidgets-kdirmodeltest"
+                                    "kiowidgets-kurifiltertest-colon-separator"
+                                    "kiofilewidgets-kfilewidgettest"
+                                    "kiowidgets-kurifiltertest-space-separator"
+                                    "kioworker-httpheaderdispositiontest")
+                                  "|")
+                       ")")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch
@@ -3743,49 +3780,15 @@ consumption.")
 \"Error loading plugin:\")( << loader.errorString();)" _ a b)
                  (string-append a "<< name" b)))))
           (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key tests? test-exclude #:allow-other-keys)
               (when tests?
                 (setenv "HOME" (getcwd))
                 (setenv "XDG_RUNTIME_DIR" (getcwd))
                 (setenv "QT_QPA_PLATFORM" "offscreen")
                 (setenv "DBUS_FATAL_WARNINGS" "0")
                 (invoke "dbus-launch" "ctest"
-                        "--rerun-failed" "--output-on-failure"
-                        "-E"
-
-                        (string-append
-                         "(kiogui-favicontest"
-                         "|kiocore-filefiltertest"
-                         "|kpasswdservertest"
-                         "|kiowidgets-kfileitemactionstest"
-                         "|kiofilewidgets-kfileplacesmodeltest"
-                         ;; This test requires '/etc/passwd' owned by root.
-                         "|testtrash"
-                         ;; This test requires 'HOME=/home/$USER'.
-                         "|kiofilewidgets-knewfilemenutest"
-                         ;; The following tests fail or are flaky (see:
-                         ;; https://bugs.kde.org/show_bug.cgi?id=440721).
-                         "|kiocore-jobtest"
-                         "|kiocore-kmountpointtest"
-                         "|kiowidgets-kdirlistertest"
-                         "|kiocore-kfileitemtest"
-                         "|kiocore-ktcpsockettest"
-                         "|kiocore-mimetypefinderjobtest"
-                         "|kiocore-krecentdocumenttest"
-                         "|kiocore-http_jobtest"
-                         "|kiogui-openurljobtest"
-                         "|kioslave-httpheaderdispositiontest"
-                         "|applicationlauncherjob_forkingtest"
-                         "|applicationlauncherjob_scopetest"
-                         "|applicationlauncherjob_servicetest"
-                         "|commandlauncherjob_forkingtest"
-                         "|commandlauncherjob_scopetest"
-                         "|commandlauncherjob_servicetest"
-                         "|kiowidgets-kdirmodeltest"
-                         "|kiowidgets-kurifiltertest-colon-separator"
-                         "|kiofilewidgets-kfilewidgettest"
-                         "|kiowidgets-kurifiltertest-space-separator"
-                         "|kioworker-httpheaderdispositiontest)"))))))))
+                        "--rerun-failed" "--output-on-failure" "-E"
+                        test-exclude)))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Network transparent access to files and data")
     (description "This framework implements a lot of file management functions.
