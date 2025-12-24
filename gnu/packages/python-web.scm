@@ -13350,7 +13350,7 @@ tool for generating Github-style badges as SVG images.")
 (define-public python-grid5000
   (package
     (name "python-grid5000")
-    (version "1.2.3")
+    (version "1.2.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -13358,12 +13358,12 @@ tool for generating Github-style badges as SVG images.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               "097pm8b68ihk29xz9zv29b1x0bhgjb4lfj8zxk2grbsh7wr9dipg")))
-    (build-system python-build-system)
-    (native-inputs (list python-wheel))
-    (propagated-inputs (list python-requests python-ipython python-pyyaml))
+               "0px5dr6kn7i5dyy4g42vqap1zpkc4hdvg7prrxdkkl57lfhz5w61")))
+    (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ; No tests.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-requests python-ipython python-pyyaml))
     (home-page "https://pypi.org/project/python-grid5000/")
     (synopsis "Grid5000 python client")
     (description
