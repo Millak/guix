@@ -13417,7 +13417,7 @@ data, and scientific formats.")
 (define-public python-pyvips
   (package
     (name "python-pyvips")
-    (version "3.0.0")
+    (version "3.1.1")
     (source
      (origin
        (method git-fetch) ; PyPI does not include test helpers
@@ -13426,7 +13426,7 @@ data, and scientific formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "017x7i8ssghsdpncjfhk5shdq31784hb5xjalrxl918s86rjwakp"))))
+        (base32 "1ibc1m2qbr9dzw3ck69fcbgrn1kvq3j6mkw1ac52ngd4v2fhbx04"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list pkg-config
