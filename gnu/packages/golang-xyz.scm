@@ -25245,6 +25245,45 @@ managing TUF repositories and clients for securely downloading updates.")
            go-github-com-secure-systems-lab-go-securesystemslib
            go-github-com-sigstore-sigstore))))
 
+(define-public go-github-com-thlib-go-timezone-local
+  (package
+    (name "go-github-com-thlib-go-timezone-local")
+    (version "0.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/thlib/go-timezone-local")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fvjnnl9aa7xn47ql7ndndg8madgplipfwisnb7f6vi5zy067gmx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/thlib/go-timezone-local"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Network access is required
+                       (list "TestDownloadOldNames"
+                             "TestDownloadWindowsZones"
+                             "TestExtractTarGz"
+                             "TestFTPDownload"
+                             "TestUpdateWindowsTZMapping"
+                             ;; Access to /etc/localtime is required.
+                             "TestRuntimeTZ")
+                       "|"))))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/thlib/go-timezone-local")
+    (synopsis "Local time zone name detection library")
+    (description
+     "This package provides a cross-platform library to get the full name of
+the local time zone from operating system settings.  It works on Windows,
+Linux, and macOS.")
+    (license license:unlicense)))
+
 (define-public go-github-com-tidwall-cities
   (package
     (name "go-github-com-tidwall-cities")
