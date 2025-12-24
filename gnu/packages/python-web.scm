@@ -11854,13 +11854,13 @@ Client Library for Python.")
 (define-public python-google-auth
   (package
     (name "python-google-auth")
-    (version "2.40.3")
+    (version "2.41.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "google_auth" version))
        (sha256
-        (base32 "0xrvsqrqx89zkf13gjp328j2y5cfhl88sjzjkkm3dszdmllkl32h"))))
+        (base32 "1lmzkiq3gvpgf0k9kxlyjm4g5vjam7v183c7i1zcpw31kqgpnsxp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -11868,26 +11868,30 @@ Client Library for Python.")
       ;; This one test uses crypto.sign with an outdated calling convention.
       '(list "--ignore=tests/transport/test__mtls_helper.py")))
     (propagated-inputs
-     (list python-cachetools-5
+     (list python-aiohttp
+           python-cachetools
            python-pyasn1-modules
-           python-pyjwt
-           python-rsa))
+           python-requests
+           python-rsa
+           python-urllib3))
     (native-inputs
      (list nss-certs-for-test
            python-aioresponses
            python-cryptography
            python-flask
            python-freezegun
+           python-grpcio
            python-mock
+           python-oauth2client
+           python-packaging
+           python-pyjwt
            python-pyopenssl
            python-pytest
            python-pytest-asyncio
            python-pytest-localserver
            python-pyu2f
-           python-requests
            python-responses
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://github.com/googleapis/google-auth-library-python")
     (synopsis "Google Authentication Library")
     (description "This library simplifies using Google's various
