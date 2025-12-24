@@ -9134,6 +9134,39 @@ files.")
 (define-public ecl-cl-pdf
   (sbcl-package->ecl-package sbcl-cl-pdf))
 
+(define-public sbcl-cl-peppol
+  (let ((commit "d1c9571e58240022929226481526cc268a6c6ac7")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-peppol")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mmontone/cl-peppol")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "076wvjc666v76k3z62h1360qhh3hw4xkrvzhfdz6anvq9vl13klm"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-cxml sbcl-xpath))
+      (arguments
+       '(#:asd-systems '("peppol")))
+      (home-page "https://github.com/mmontone/cl-peppol")
+      (synopsis "OpenPEPPOL electronic invoicing code lists for Common Lisp")
+      (description
+       "@code{cl-peppol} provides access to code lists extracted from the OpenPEPPOL
+standard for electronic business and invoicing in Europe.")
+      (license license:expat))))
+
+;; No ECL variant: tests fail because xpath returns 11 instead of the
+;; expected 11.0d0. Possible incompatibility in numeric type handling.
+;; This problem also affects dependent packages.
+
+(define-public cl-peppol
+  (sbcl-package->cl-source-package sbcl-cl-peppol))
+
 (define-public sbcl-cl-permutation
   (let ((commit "20c10e9ca56452d2fafc3ec0984dcdf78b4f4b19")
         (revision "0"))
