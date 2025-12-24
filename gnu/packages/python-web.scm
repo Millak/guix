@@ -11952,28 +11952,24 @@ and Resumable Uploads.")
 (define-public python-googleapis-common-protos
   (package
     (name "python-googleapis-common-protos")
-    (version "1.56.4")
+    (version "1.66.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "googleapis-common-protos" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googleapis/python-api-common-protos")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "05s4dszqd5pjwjh4bdic40v1v447k0a3dynsrgypqf3rfb276n62"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-        (modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest")))))))
+        (base32 "1fb7bcmjngmwwhqrldslli6r5z3s6r2kj4ywjmdjj92d1i51c29r"))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-protobuf))
-    (native-inputs
-     (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/googleapis/python-api-common-protos")
     (synopsis "Common protobufs used in Google APIs")
-    (description "This package contains Python classes generated from the
-common protos in the @code{googleapis/api-common-protos} repository.")
+    (description
+     "This package contains Python classes generated from the common protos in
+the @code{googleapis/api-common-protos} repository.")
     (license license:asl2.0)))
 
 (define-public python-google-api-core
