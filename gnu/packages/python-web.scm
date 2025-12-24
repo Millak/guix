@@ -12014,28 +12014,28 @@ the @code{googleapis/api-common-protos} repository.")
 (define-public python-google-cloud-core
   (package
     (name "python-google-cloud-core")
-    (version "2.3.0")
+    (version "2.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "google-cloud-core" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googleapis/python-cloud-core")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0sa66kidgr32dfq9ngha9l362xnqvnqqmssn5my1gd3lc6g65apx"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
+        (base32 "1d7li74cakgl9vghxfir9nxwy36980alvxwgwjg0zyla3hgj07cq"))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-google-api-core python-google-auth))
     (native-inputs
-     (list python-grpcio python-pytest))
+     (list python-grpcio
+           python-grpcio-status
+           python-pytest
+           python-setuptools))
     (home-page "https://github.com/googleapis/python-cloud-core")
     (synopsis "Google Cloud API client core library")
-    (description "This library defines common helpers (e.g. base @code{Client}
-classes) used by all of the @code{google-cloud-*} packages.")
+    (description
+     "This library defines common helpers (e.g. base @code{Client} classes)
+used by all of the @code{google-cloud-*} packages.")
     (license license:asl2.0)))
 
 (define-public python-google-cloud-storage
