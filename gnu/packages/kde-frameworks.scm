@@ -4075,7 +4075,7 @@ notifications which can be embedded in your application.")
 (define-public kparts
   (package
     (name "kparts")
-    (version "6.19.0")
+    (version "6.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4084,7 +4084,7 @@ notifications which can be embedded in your application.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1n2hwgpkq32xprg4dgirb22rijplvp4rf6brllgz98y09xm3pp6d"))))
+                "058938v78wjzfckb6dfbs01is89vkc05mwjhz74lr70r67bwh3yh"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
