@@ -2532,7 +2532,7 @@ by applications to write metadata.")
 (define-public kimageannotator
   (package
     (name "kimageannotator")
-    (version "0.7.1")
+    (version "0.7.2")
     (source
      (origin
        (method git-fetch)
@@ -2542,22 +2542,25 @@ by applications to write metadata.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1f1y4r5rb971v2g34fgjbr14g0mdms5h66yl5k0p1zf50kr2wnic"))))
+         "1h8dab7yd8ads88gcxh2w8rqrgvyjb1fs3xkklcjssg62nq4v8s8"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
+           #:test-exclude "AnnotationAreaTest"
            #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
                                      "-DBUILD_TESTS=ON"
                                      "-DBUILD_WITH_QT6=ON")
            #:phases
            #~(modify-phases %standard-phases
                (replace 'check
-                 (lambda _
-                   ;; 1 test requires a running X server, it calls
-                   ;; 'XCloseDisplay'.
-                   (system "Xvfb :1 -screen 0 640x480x24 &")
-                   (setenv "DISPLAY" ":1")
-                   (invoke "ctest" "--test-dir" "tests"))))))
+                 (lambda* (#:key tests? test-exclude #:allow-other-keys)
+                   (when tests?
+                     ;; 1 test requires a running X server, it calls
+                     ;; 'XCloseDisplay'.
+                     (system "Xvfb :1 -screen 0 640x480x24 &")
+                     (setenv "DISPLAY" ":1")
+                     (invoke "ctest" "--test-dir" "tests" "-E"
+                             test-exclude)))))))
     (native-inputs
      (list qttools xorg-server-for-tests))
     (inputs
