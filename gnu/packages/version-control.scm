@@ -66,6 +66,7 @@
 ;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2025 Matthew Elwin <elwin@northwestern.edu>
+;;; Copyright © 2025 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2026 Ingar <ingar@onionmail.info>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1761,6 +1762,78 @@ fetch @acronym{PR, pull requests}, and more.  It is based on the
 @command{repo} tool that was developed for the Gerrit project, but also
 supports AGit-Flow and lifts the requirement to use a manifest file.")
     (license license:asl2.0)))
+
+(define-public github-cli
+  (package
+    (name "github-cli")
+    (version "2.83.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cli/cli")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04kpcy15r7px92mf13jf4w0v07sjnfqc09m1vfvr5pmw7xsg35k2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/cli/cli/v2/cmd/gh"
+      #:unpack-path "github.com/cli/cli/v2"
+      #:embed-files
+      #~(list ".*\\.xml" ".*\\.tmpl"
+              ;; sigstore-go TUF repository files (root.json, staging_root.json)
+              ".*_?root\\.json" "trusted_root\\.json"
+              ;; go-openapi/spec schema files
+              "jsonschema-draft-04\\.json" "schema\\.json")))
+    (native-inputs
+     (list go-github-com-atotto-clipboard
+           go-github-com-briandowns-spinner
+           go-github-com-cenkalti-backoff-v4
+           go-github-com-cenkalti-backoff-v5
+           go-github-com-charmbracelet-glamour
+           go-github-com-charmbracelet-huh
+           go-github-com-charmbracelet-lipgloss
+           go-github-com-cli-go-gh-v2
+           go-github-com-cli-oauth
+           go-github-com-cli-safeexec
+           go-github-com-digitorus-timestamp
+           go-github-com-distribution-reference
+           go-github-com-gabriel-vasile-mimetype
+           go-github-com-gdamore-tcell-v2
+           go-github-com-gorilla-websocket
+           go-github-com-hashicorp-go-multierror
+           go-github-com-hashicorp-go-version
+           go-github-com-itchyny-timefmt-go
+           go-github-com-joho-godotenv
+           go-github-com-makenowjust-heredoc
+           go-github-com-masterminds-sprig-v3
+           go-github-com-microsoft-dev-tunnels
+           go-github-com-muhammadmuzzammil1998-jsonc
+           go-github-com-opentracing-opentracing-go
+           go-github-com-rivo-tview
+           go-github-com-shurcool-githubv4
+           go-github-com-sigstore-sigstore-go
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-stretchr-testify
+           go-github-com-vmihailenco-msgpack-v5
+           go-github-com-zalando-go-keyring
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-text
+           go-google-golang-org-grpc
+           go-gopkg-in-yaml-v3))
+    (home-page "https://cli.github.com/")
+    (synopsis "GitHub's official command-line tool")
+    (description
+     "@command{gh} is GitHub on the command line.  It brings pull requests,
+issues, and other GitHub concepts to the terminal next to where you are
+already working with git and your code.  It works with GitHub.com, GitHub
+Enterprise Cloud, and GitHub Enterprise Server 2.20+.")
+    (license license:expat)))
 
 (define-public cgit
   (package
@@ -4837,9 +4910,8 @@ comes as a command line app and also an Emacs interface.")
            go-gopkg-in-yaml-v3))
     (home-page "https://github.com/github/git-sizer")
     (synopsis "Analyze size of a Git repo")
-    (description
-     "Compute various size metrics for a Git repository, flagging those that
-might cause problems or inconvenience.")
+    (description "Compute various size metrics for a Git repository, flagging
+those that might cause problems or inconvenience.")
     (license license:expat)))
 
 ;;;
