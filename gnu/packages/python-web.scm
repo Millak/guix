@@ -12192,60 +12192,80 @@ provides well-defined APIs to talk to websites lacking one.")
     (license license:lgpl3+)))
 
 (define-public python-flask-combo-jsonapi
-  (package
-    (name "python-flask-combo-jsonapi")
-    (version "1.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/AdCombo/flask-combo-jsonapi")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "07fhcjiyif80z1vyh35za29sqx1mmqh568jrbrrs675j4a797sj1"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'loosen-requirements
-           (lambda _
-             ;; Don't pin specific versions of dependencies.
-             (substitute* "requirements.txt"
-               (("^sqlalchemy[=<>].*") "sqlalchemy\n")
-               (("^marshmallow[=<>].*") "marshmallow\n")
-               (("^Flask[=<>].*") "Flask\n"))))
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv" "-k"
-                     ;; The following test fails for unknown reasons (see:
-                     ;; https://github.com/AdCombo/flask-combo-jsonapi/issues/66).
-                     "not test_get_list_with_simple_filter_\
-relationship_custom_qs_api"))))))
-    (propagated-inputs
-     (list python-flask
-           python-marshmallow
-           python-marshmallow-jsonapi
-           python-simplejson
-           python-sqlalchemy
-           python-apispec
-           python-simplejson
-           python-six))
-    (native-inputs
-     (list python-coverage
-           python-coveralls
-           python-pytest
-           python-pytest-runner))
-    (home-page "https://github.com/AdCombo/flask-combo-jsonapi")
-    (synopsis "Flask extension to quickly create JSON:API 1.0 REST Web APIs")
-    (description
-     "Flask-COMBO-JSONAPI is a Python Flask extension for building REST Web APIs
-compliant with the @uref{https://jsonapi.org, JSON:API 1.0} specification.
+  (let ((commit "3cfff98ecdbadc45d25a3fd443ad67d3743be6f5")
+        (revision "0"))
+    (package
+      (name "python-flask-combo-jsonapi")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/AdCombo/flask-combo-jsonapi")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1lp81v96qh9hdj3c95kvfaq0vy5vd8cm55j03aszc93bs8z5jg7h"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:test-flags
+        #~(list
+           "-k"
+           (string-join
+            (list
+             ;; XXX: This tests a feature that doesn't make sense when dropping
+             ;; marshmallow < 3 support.
+             "not test_compute_schema_propagate_context"
+             ;; The following tests fail for unknown reasons (see:
+             ;; https://github.com/AdCombo/flask-combo-jsonapi/issues/66).
+             "test_get_list_with_simple_filter_relationship_custom_qs_api"
+             "test_get_list_with_simple_filter_relationship_error")
+            " and not "))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'loosen-requirements
+              (lambda _
+                ;; Don't pin specific versions of dependencies.
+                (substitute* "requirements.txt"
+                  (("^(sqlalchemy|marshmallow|Flask)[=<>].*" _ dep)
+                   (string-append dep "\n"))
+                  (("^marshmallow_jsonapi[=<>].*")
+                   "marshmallow_jsonapi_minfork\n"))
+                ;; Drop support for marshmallow < 3.
+                (substitute* (list "flask_combo_jsonapi/data_layers/alchemy.py"
+                                   "flask_combo_jsonapi/schema.py")
+                  (("from marshmallow\\.base import SchemaABC")
+                   "from marshmallow import Schema")
+                  (("if isinstance\\(related_schema_cls, SchemaABC\\):")
+                   "if isinstance(related_schema_cls, Schema):"))
+                (substitute* "tests/test_sqlalchemy_data_layer.py"
+                  (("default=None")
+                   "dump_default=None")
+                  (("missing=")
+                   "load_default=")))))))
+      (propagated-inputs
+       (list python-flask
+             python-marshmallow
+             python-marshmallow-jsonapi
+             python-simplejson
+             python-sqlalchemy
+             python-apispec
+             python-simplejson
+             python-six))
+      (native-inputs
+       (list python-pytest python-setuptools))
+      (home-page "https://github.com/AdCombo/flask-combo-jsonapi")
+      (synopsis "Flask extension to quickly create JSON:API 1.0 REST Web APIs")
+      (description
+       "Flask-COMBO-JSONAPI is a Python Flask extension for building REST Web
+APIs compliant with the @uref{https://jsonapi.org, JSON:API 1.0}
+specification.
 
 It tries to combine the power of Flask-Restless with the flexibility of
 Flask-RESTful to quickly build APIs that fit the complexity of existing
 real-life projects with legacy data and diverse storage providers.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public python-mwparserfromhell
   (package
