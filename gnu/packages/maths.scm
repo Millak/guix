@@ -3840,13 +3840,13 @@ ASCII text files using Gmsh's own scripting language.")
 (define-public veusz
   (package
     (name "veusz")
-    (version "4.1")
+    (version "4.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "veusz" version))
        (sha256
-        (base32 "0idg249sg367rxp69nwpsib5dwb0bbznb8hak004573ygc7dmd5k"))))
+        (base32 "1vc5zmjzhjkmfy2417xs8h1bix8xyd0gvikskp3k3qgf9wz22a4g"))))
     (build-system pyproject-build-system)
     (arguments
      (list
