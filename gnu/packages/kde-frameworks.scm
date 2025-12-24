@@ -2283,7 +2283,7 @@ integrated it into your application's other widgets.")
 (define-public kcontacts
   (package
     (name "kcontacts")
-    (version "6.19.0")
+    (version "6.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2294,7 +2294,7 @@ integrated it into your application's other widgets.")
                (search-patches "kcontacts-incorrect-country-name.patch"))
               (sha256
                (base32
-                "0jarixqjmjxcxjx673qjrj0rvzrpy5hxj2dh94s0w1c8v7rk5l69"))))
+                "0r5gc9hlg6mii6zff7iz67f3879vdds32i5icrivd03n1pqpigx6"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules
                          ;; for test
@@ -2306,14 +2306,16 @@ integrated it into your application's other widgets.")
     (arguments
      (list
       #:qtbase qtbase
+      #:test-exclude "kcontacts-addresstest"
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'check-setup
             (lambda _ (setenv "HOME" (getcwd))))
           (replace 'check
-            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+            (lambda* (#:key tests? parallel-tests? test-exclude
+                      #:allow-other-keys)
               (when tests?
-                (invoke "ctest" "-E" "(kcontacts-addresstest)"
+                (invoke "ctest" "-E" test-exclude
                         "--rerun-failed" "--output-on-failure"
                         "-j" (if parallel-tests?
                                  (number->string (parallel-job-count))
