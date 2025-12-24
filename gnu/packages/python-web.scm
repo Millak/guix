@@ -11901,29 +11901,37 @@ server-to-server authentication mechanisms to access Google APIs.")
 (define-public python-google-resumable-media
   (package
     (name "python-google-resumable-media")
-    (version "2.3.2")
+    (version "2.8.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "google-resumable-media" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url
+               "https://github.com/googleapis/google-resumable-media-python")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "04qm6rd4mpbbym8ci5xrb6fymc3mmm8x2z9f43q5iwbr3s5lx4h6"))))
-    (build-system python-build-system)
+        (base32 "0ndida5yr06bal0m09yri80bvf8x7yy690b14ywnxl4ixi8rlh6s"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; The system tests fail to find test_utils.retry.
-               (delete-file-recursively "tests/system/")
-               (invoke "pytest")))))))
+     (list
+      #:test-flags
+      #~(list
+         ;; XXX: Missing test_utils.retry.
+         "--ignore-glob=tests*/system/"
+         ;; XXX: md5_hash is not mock.sentinel.md5_hash
+         "-k" (string-join
+               (list "not test_brotli"
+                     "test_constructor"
+                     "test_decompress")
+               " and not "))))
     (propagated-inputs (list python-google-crc32c))
     (native-inputs
      (list python-google-auth
            python-mock
            python-pytest
-           python-requests
+           python-pytest-asyncio
+           python-setuptools
            python-test-utils))
     (home-page "https://github.com/googleapis/google-resumable-media-python")
     (synopsis "Utilities for Google Media Downloads and Resumable Uploads")
