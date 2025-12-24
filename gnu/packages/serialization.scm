@@ -416,17 +416,17 @@ that implements both the msgpack and msgpack-rpc specifications.")
 (define-public libscfg
   (package
     (name "libscfg")
-    (version "0.1.1")
-    (home-page "https://git.sr.ht/~emersion/libscfg")
+    (version "0.2.0")
+    (home-page "https://codeberg.org/emersion/libscfg")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://git.sr.ht/~emersion/libscfg")
+             (url "https://codeberg.org/emersion/libscfg")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b1ps7wba4anm3x1yndnd730dwl6rdz3zwjgxmsyq31fnjrjydv9"))))
+        (base32 "05csd5923yc6yknyvyr95wkhway65app69a3w5c0mmk61wf42sk5"))))
     (build-system meson-build-system)
     (synopsis "Scfg library written in C")
     (description
