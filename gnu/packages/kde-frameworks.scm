@@ -1149,7 +1149,7 @@ other special events for a geographical region.")
 (define-public ki18n
   (package
     (name "ki18n")
-    (version "6.19.0")
+    (version "6.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1158,7 +1158,7 @@ other special events for a geographical region.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "19l449qpdkmwqjgzp0hyv0zv7c1xn9qhqx8w16l3d5yi9iiz53v0"))))
+                "13sdd5wv41yhbg1m0yq5zp2nmiqf3126asc6dqlcg2g9li2k1cnm"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list gettext-minimal))
@@ -1168,15 +1168,21 @@ other special events for a geographical region.")
      (list qtbase qtdeclarative iso-codes/pinned))
     (arguments
      (list
+      #:test-exclude
+      (string-append "("
+                     (string-join '("kcatalogtest"
+                                    "kcountrytest"
+                                    "kcountrysubdivisiontest")
+                                  "|")
+                     ")")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key tests? test-exclude #:allow-other-keys)
               (when tests?
                 (setenv "HOME"
                         (getcwd))
-                (invoke "ctest" "-E"
-                        "(kcatalogtest|kcountrytest|kcountrysubdivisiontest)")))))))
+                (invoke "ctest" "-E" test-exclude)))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "KDE Gettext-based UI text internationalization")
     (description "KI18n provides functionality for internationalizing user
