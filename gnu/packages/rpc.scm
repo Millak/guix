@@ -46,6 +46,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages tls)
@@ -165,6 +166,30 @@ browsers to backend services.")
     (description "This is a PEP-561-compliant stub-only package which provides
 type information of gRPC.")
     (license license:expat)))
+
+(define-public python-grpcio-status
+  (package
+    (name "python-grpcio-status")
+    ;; XXX: Should follow python-grpcio, but 1.52.0 has been yanked.
+    (version "1.51.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "grpcio-status" version))
+       (sha256
+        (base32 "18lg21jzmwkd3x107ccqb1mwj4fg30l2pg2izvdz1nawapxb65al"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ; No tests in Pypi.
+    (propagated-inputs
+     (list python-googleapis-common-protos
+           python-grpcio
+           python-protobuf-4))
+    (native-inputs (list python-setuptools))
+    (home-page "https://grpc.io")
+    (synopsis "Status proto mapping for gRPC")
+    (description
+     "This package provides status proto mapping for @code{gRPC}.")
+    (license license:asl2.0)))
 
 (define-public python-grpcio
   (package
