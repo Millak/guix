@@ -6205,19 +6205,19 @@ can be used to:
 (define-public python-capturer
   (package
     (name "python-capturer")
-    (version "2.4")
+    (version "3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "capturer" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xolox/python-capturer")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "05d6ji4j8ipiq0br7bwam38qc6hd9l1djmfxlzrxx19ziyjl4089"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f))
-    (propagated-inputs
-     (list python-humanfriendly))
+        (base32 "0fwrxa049gzin5dck7fvwhdp1856jrn0d7mcjcjsd7ndqvhgvjj1"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-humanfriendly))
     (home-page "https://capturer.readthedocs.io")
     (synopsis "Capture stdout and stderr streams of the current process")
     (description
