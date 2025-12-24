@@ -2670,7 +2670,7 @@ compression schemes used in UM files.")
 (define-public libmseed
   (package
     (name "libmseed")
-    (version "3.1.5")
+    (version "3.2.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2679,7 +2679,7 @@ compression schemes used in UM files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xswg62h8mqmgpkllyvj8zyw2sjks7pq2np820xca71ahc89aaiz"))))
+                "0k1c147rjzd8543la8436n0srvisim0zqvilm2xph55jchlz2lld"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
