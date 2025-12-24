@@ -9011,7 +9011,9 @@ logging and tracing of the execution.")
               (commit (string-append "release/" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rfchh68pxg68s02idc0qcm2s9yn587hv0b83r4isy5ccb3g60y4"))))
+        (base32 "0rfchh68pxg68s02idc0qcm2s9yn587hv0b83r4isy5ccb3g60y4"))
+       (patches
+        (search-patches "python-daemon-relax-lockfile.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -9028,7 +9030,7 @@ logging and tracing of the execution.")
                         '("setup.py"
                           "test/test_util_metadata.py"
                           "test/test_setup.py")))))))
-    (propagated-inputs (list python-lockfile))
+    (propagated-inputs (list python-filelock))
     (native-inputs (list python-testscenarios python-setuptools))
     (home-page "https://pagure.io/python-daemon/")
     (synopsis "Python library for making a Unix daemon process")

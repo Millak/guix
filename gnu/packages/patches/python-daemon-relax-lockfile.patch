@@ -1,0 +1,249 @@
+From 25e374e1986147af10c66dc8c95de3c41dab2141 Mon Sep 17 00:00:00 2001
+Message-ID: <25e374e1986147af10c66dc8c95de3c41dab2141.1766619707.git.ngraves@ngraves.fr>
+From: l98peyro <ludo.peyronnet@gmail.com>
+Date: Sat, 22 Apr 2023 07:48:50 +0000
+Subject: [PATCH] Changed deprecated lockfile by filelock
+Edited by ngraves@ngraves.fr
+
+---
+ ChangeLog                       |  6 ++++++
+ doc/examples/service-runner.txt |  4 ++--
+ pyproject.toml                  |  6 +-----
+ src/daemon/pidfile.py           | 12 ++++++++---
+ test/test_pidfile.py            | 38 ++++++++++++++++-----------------
+ 5 files changed, 37 insertions(+), 29 deletions(-)
+
+diff --git a/ChangeLog b/ChangeLog
+index 51b1abb..7a967df 100644
+--- a/ChangeLog
++++ b/ChangeLog
+@@ -150,6 +150,12 @@ Changed:
+ 
+   Closes: Pagure #87. Thanks to Attila Lendvai for the report.
+ 
++* Changed deprecated lockfile dependency with filelock.
++
++  The package lockfile used is no longer maintained. Filelock has been chosen
++  over pid due to it's more frequent updates.
++
++  Closes: Pagure #42
+ 
+ Version 3.0.1
+ =============
+diff --git a/doc/examples/service-runner.txt b/doc/examples/service-runner.txt
+index 9b2d5c7..7091077 100644
+--- a/doc/examples/service-runner.txt
++++ b/doc/examples/service-runner.txt
+@@ -33,7 +33,7 @@ example: a `ServiceRunner` class.
+ 
+     from daemon import pidfile
+     from daemon.daemon import DaemonContext
+-    import lockfile
++    from filelock import FileLock
+ 
+ 
+     class ServiceRunnerError(Exception):
+@@ -93,7 +93,7 @@ example: a `ServiceRunner` class.
+ 
+             self.pidfile = None
+             if app.pidfile_path is not None:
+-                self.pidfile = make_pidlockfile(
++                self.pidfile = Filelock(
+                         app.pidfile_path, app.pidfile_timeout)
+             self.daemon_context.pidfile = self.pidfile
+ 
+diff --git a/pyproject.toml b/pyproject.toml
+index 63693d0..467d184 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -29,11 +29,7 @@ requires-python = ">= 3.7"
+ 
+ # Core dependencies required for the package to operate.
+ dependencies = [
+-
+-    # Platform-independent file locking module.
+-    # Documentation: <URL:http://docs.openstack.org/developer/pylockfile>.
+-    "lockfile >= 0.10",
+-
++    "filelock >=3.9.0",
+     ]
+ 
+ # The license granted to recipients of this project.
+diff --git a/src/daemon/pidfile.py b/src/daemon/pidfile.py
+index 63d625f..8c36bb5 100644
+--- a/src/daemon/pidfile.py
++++ b/src/daemon/pidfile.py
+@@ -6,11 +6,15 @@
+ # information, grant of license, and disclaimer of warranty.
+ 
+ """ Lockfile behaviour implemented via Unix PID files. """
++from __future__ import annotations
++
++from threading import Lock
++
++from filelock import FileLock
+ 
+-from lockfile.pidlockfile import PIDLockFile
+ 
+ 
+-class TimeoutPIDLockFile(PIDLockFile):
++class TimeoutPIDLockFile(FileLock):
+     """ Lockfile with default timeout, implemented as a Unix PID file.
+ 
+         This uses the ``PIDLockFile`` implementation, with the
+@@ -30,7 +34,9 @@ class TimeoutPIDLockFile(PIDLockFile):
+             :return: ``None``.
+             """
+         self.acquire_timeout = acquire_timeout
+-        super().__init__(path, *args, **kwargs)
++        self._thread_lock: Lock = Lock()
++        self._lock_file_fd: int | None = None
++        super().__init__(lock_file=path, *args, **kwargs)
+ 
+     def acquire(self, timeout=None, *args, **kwargs):
+         """ Acquire the lock.
+diff --git a/test/test_pidfile.py b/test/test_pidfile.py
+index b2b8d9a..41c787a 100644
+--- a/test/test_pidfile.py
++++ b/test/test_pidfile.py
+@@ -16,7 +16,7 @@ import os
+ import tempfile
+ import unittest.mock
+ 
+-import lockfile
++import filelock
+ 
+ import daemon.pidfile
+ 
+@@ -43,7 +43,7 @@ class FakeFileDescriptorStringIO(io.StringIO):
+ 
+ 
+ def make_pidlockfile_scenarios():
+-    """ Make a collection of scenarios for testing `PIDLockFile` instances.
++    """ Make a collection of scenarios for testing `PIDFileLock` instances.
+ 
+         :return: A collection of scenarios for tests involving
+             `PIDLockfFile` instances.
+@@ -134,7 +134,7 @@ def setup_pidfile_fixtures(testcase):
+         :param testcase: A `TestCase` instance to decorate.
+ 
+         Decorate the `testcase` with attributes to be fixtures for tests
+-        involving `PIDLockFile` instances.
++        involving `PIDFileLock` instances.
+         """
+     scenarios = make_pidlockfile_scenarios()
+     testcase.pidlockfile_scenarios = scenarios
+@@ -266,7 +266,7 @@ def setup_pidfile_fixtures(testcase):
+ def make_lockfile_method_fakes(scenario):
+     """ Make common fake methods for lockfile class.
+ 
+-        :param scenario: A scenario for testing with PIDLockFile.
++        :param scenario: A scenario for testing with PIDFileLock.
+         :return: A mapping from normal function name to the corresponding
+             fake function.
+ 
+@@ -285,14 +285,14 @@ def make_lockfile_method_fakes(scenario):
+ 
+     def fake_func_acquire(timeout=None):
+         if scenario['locking_pid'] is not None:
+-            raise lockfile.AlreadyLocked()
++            raise Exception("Already locked")
+         scenario['locking_pid'] = scenario['pid']
+ 
+     def fake_func_release():
+         if scenario['locking_pid'] is None:
+-            raise lockfile.NotLocked()
++            raise Exception("Not locked")
+         if scenario['locking_pid'] != scenario['pid']:
+-            raise lockfile.NotMyLock()
++            raise Exception("Unlock error")
+         scenario['locking_pid'] = None
+ 
+     def fake_func_break_lock():
+@@ -313,7 +313,7 @@ def apply_lockfile_method_mocks(mock_lockfile, testcase, scenario):
+         :param mock_lockfile: An object providing the `LockFile` interface.
+         :param testcase: The `TestCase` instance providing the context for
+             the patch.
+-        :param scenario: The `PIDLockFile` test scenario to use.
++        :param scenario: The `PIDFileLock` test scenario to use.
+ 
+         Mock the `LockFile` methods of `mock_lockfile`, by applying fake
+         methods customised for `scenario`. The mock is does by a patch
+@@ -334,13 +334,13 @@ def apply_lockfile_method_mocks(mock_lockfile, testcase, scenario):
+ 
+ 
+ def setup_pidlockfile_fixtures(testcase, scenario_name=None):
+-    """ Set up common fixtures for PIDLockFile test cases.
++    """ Set up common fixtures for PIDFileLock test cases.
+ 
+         :param testcase: The `TestCase` instance to decorate.
+-        :param scenario_name: The name of the `PIDLockFile` scenario to use.
++        :param scenario_name: The name of the `PIDFileLock` scenario to use.
+ 
+         Decorate the `testcase` with attributes that are fixtures for test
+-        cases involving `PIDLockFile` instances.`
++        cases involving `PIDFileLock` instances.`
+         """
+ 
+     setup_pidfile_fixtures(testcase)
+@@ -350,7 +350,7 @@ def setup_pidlockfile_fixtures(testcase, scenario_name=None):
+             'remove_existing_pidfile',
+             ]:
+         func_patcher = unittest.mock.patch.object(
+-                lockfile.pidlockfile, func_name)
++                filelock.FileLock, func_name)
+         func_patcher.start()
+         testcase.addCleanup(func_patcher.stop)
+ 
+@@ -371,16 +371,16 @@ class TimeoutPIDLockFile_TestCase(scaffold.TestCase):
+                 }
+ 
+         self.test_kwargs = dict(
+-                path=self.scenario['pidfile_path'],
++                lock_file=self.scenario['pidfile_path'],
+                 acquire_timeout=self.scenario['acquire_timeout'],
+                 )
+         self.test_instance = daemon.pidfile.TimeoutPIDLockFile(
+                 **self.test_kwargs)
+ 
+     def test_inherits_from_pidlockfile(self):
+-        """ Should inherit from PIDLockFile. """
++        """ Should inherit from PIDFileLock. """
+         instance = self.test_instance
+-        self.assertIsInstance(instance, lockfile.pidlockfile.PIDLockFile)
++        self.assertIsInstance(instance, filelock.FileLock)
+ 
+     def test_init_has_expected_signature(self):
+         """ Should have expected signature for ‘__init__’. """
+@@ -397,16 +397,16 @@ class TimeoutPIDLockFile_TestCase(scaffold.TestCase):
+         self.assertEqual(expected_timeout, instance.acquire_timeout)
+ 
+     @unittest.mock.patch.object(
+-            lockfile.pidlockfile.PIDLockFile, "__init__",
++            filelock.FileLock, "__init__",
+             autospec=True)
+     def test_calls_superclass_init(self, mock_init):
+         """ Should call the superclass ‘__init__’. """
+-        expected_path = self.test_kwargs['path']
++        expected_path = self.test_kwargs['lock_file']
+         instance = daemon.pidfile.TimeoutPIDLockFile(**self.test_kwargs)
+         mock_init.assert_called_with(instance, expected_path)
+ 
+     @unittest.mock.patch.object(
+-            lockfile.pidlockfile.PIDLockFile, "acquire",
++            filelock.FileLock, "acquire",
+             autospec=True)
+     def test_acquire_uses_specified_timeout(self, mock_func_acquire):
+         """ Should call the superclass ‘acquire’ with specified timeout. """
+@@ -417,7 +417,7 @@ class TimeoutPIDLockFile_TestCase(scaffold.TestCase):
+         mock_func_acquire.assert_called_with(instance, expected_timeout)
+ 
+     @unittest.mock.patch.object(
+-            lockfile.pidlockfile.PIDLockFile, "acquire",
++            filelock.FileLock, "acquire",
+             autospec=True)
+     def test_acquire_uses_stored_timeout_by_default(self, mock_func_acquire):
+         """
+-- 
+2.52.0
+
