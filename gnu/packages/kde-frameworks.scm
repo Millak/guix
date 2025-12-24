@@ -3184,7 +3184,7 @@ KCModules can be created with the KConfigWidgets framework.")
 (define-public kconfigwidgets
   (package
     (name "kconfigwidgets")
-    (version "6.19.0")
+    (version "6.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3193,7 +3193,7 @@ KCModules can be created with the KConfigWidgets framework.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0z3zm2wk35gljldzxamqmp3jxw39nmif9r5q6dhll1bw61l5ny0x"))))
+                "08xn4l1h4hq8b0qnj1p3sh806rqjjx6gkgrjsids1s67c5cb8dln"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list kcodecs kconfig kcolorscheme kwidgetsaddons))
@@ -3209,6 +3209,12 @@ KCModules can be created with the KConfigWidgets framework.")
     (arguments
      (list
       #:qtbase qtbase
+      #:test-exclude
+      (string-append "("
+                     (string-join '("kstandardactiontest"
+                                    "klanguagenametest")
+                                  "|")
+                     ")")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch
@@ -3218,12 +3224,11 @@ KCModules can be created with the KConfigWidgets framework.")
                 (("^\\s*(QDirIterator it\\(.*, QDirIterator::Subdirectories)(\\);)" _ a b)
                  (string-append a " | QDirIterator::FollowSymlinks" b)))))
           (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key tests? test-exclude #:allow-other-keys)
               (when tests?
                 (setenv "HOME"
                         (getcwd))
-                (invoke "ctest" "-E" "(kstandardactiontest|\
-klanguagenametest)")))))))
+                (invoke "ctest" "-E" test-exclude)))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Widgets for configuration dialogs")
     (description "KConfigWidgets provides easy-to-use classes to create
