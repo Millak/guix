@@ -109,6 +109,7 @@
   #:use-module (gnu packages hunspell)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages java)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages less)
@@ -2643,7 +2644,7 @@ asynchronicity.")
 (define-public libphonenumber
   (package
    (name "libphonenumber")
-   (version "8.11.3")
+   (version "9.0.21")
    (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2654,7 +2655,7 @@ asynchronicity.")
                         "libphonenumber-reproducible-build.patch"))
               (sha256
                (base32
-                "06y3mh1d1mks6d0ynxp3980g712nkf8l5nyljpybsk326b246hg9"))))
+                "07ap8qvzlm4wb7x8qvs4n1jhb50fgwsy41ck4ivsj427wy79726r"))))
    (arguments
     (list
      #:modules '((guix build cmake-build-system)
@@ -2672,7 +2673,7 @@ asynchronicity.")
    (native-inputs
     (list googletest pkg-config))
    (inputs
-    (list boost-1.83 protobuf icu4c))
+    (list abseil-cpp boost-1.83 protobuf icedtea icu4c))
    (synopsis "Library for parsing and using phone numbers")
    (description
     "This package provides a C++ library for parsing, formatting, and
