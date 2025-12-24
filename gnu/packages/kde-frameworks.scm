@@ -4522,7 +4522,7 @@ to separate the structure of documents from the data they contain.")
 (define-public kwallet
   (package
     (name "kwallet")
-    (version "6.19.0")
+    (version "6.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4531,16 +4531,16 @@ to separate the structure of documents from the data they contain.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1bf4mn72di3yixx50kmz25kpzwzx1j7fsxh4kn6hs5qc1gva7r0x"))))
+                "0j3z10p5myivkwzfypp5r4wh2ny2fjglcn8fqb068lgcfjp9w384"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:phases
+     (list #:test-exclude "fdo_secrets_test";seems to require network
+           #:phases
            #~(modify-phases %standard-phases
                (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests? ;; Seems to require network.
-                     (invoke "ctest" "-E"
-                             "(fdo_secrets_test)")))))))
+                 (lambda* (#:key tests? test-exclude #:allow-other-keys)
+                   (when tests?
+                     (invoke "ctest" "-E" test-exclude)))))))
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config))
     (inputs
