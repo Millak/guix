@@ -9235,7 +9235,7 @@ original.")
 (define-public woof-doom
   (package
     (name "woof-doom")
-    (version "15.2.0")
+    (version "15.3.0")
     (source
      (origin
        (method git-fetch)
@@ -9244,22 +9244,29 @@ original.")
              (commit (string-append "woof_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04c7hm4jnr9aiz6w4520zww6b7j86qv9xaf87hdv48cjc9sp2ljk"))
+        (base32 "0ki7wqjhqhjxci04aksh9m8m35gi2db89475v79rjzdgk00b3mqv"))
        (modules '((guix build utils)))
        (snippet '(begin
                    (with-directory-excursion "third-party"
                      (delete-file-recursively "miniz")
                      (delete-file-recursively "yyjson")
-                     (delete-file-recursively "spng"))
+                     (delete-file-recursively "spng")
+                     (substitute* "CMakeLists.txt"
+                       (("add_library\\(miniz.+")
+                        "find_package(miniz REQUIRED)")
+                       (("target_.+\\(miniz.+$") "")
+                       (("add_library\\(spng.+")
+                        "find_package(PkgConfig)
+pkg_search_module(spng REQUIRED spng)")
+                       (("target_.+\\(spng.+$") "")))
                    (delete-file-recursively "win32")
                    (substitute* (find-files "src" ".")
-                     (("miniz.h") "miniz/miniz.h"))))
-       (patches (search-patches "woof-doom-unbundle-spng-miniz.patch"))))
+                     (("miniz.h") "miniz/miniz.h"))))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:tests? #f)) ;'demotest' requires internet access.
-    (native-inputs (list python))
+    (native-inputs (list pkg-config python))
     (inputs (list libebur128
                   libsndfile
                   libxmp
@@ -9270,8 +9277,8 @@ original.")
                   spng
                   yyjson
                   fluidsynth))
-    (home-page "https://github.com/fabiangreffrath/woof")
-    (synopsis "MBF-style Doom source port targeted at modern systems")
+    (home-page "https://fabiangreffrath.github.io/woof/")
+    (synopsis "MBF-lineage Doom source port")
     (description
      "Woof! is a continuation of the MBF lineage of Doom source ports, with
 modern features such as dynamic resolution scaling, uncapped framerates,
@@ -9284,7 +9291,6 @@ UMAPINFO, DEHEXTRA, and DSDHacked specifictions.")
      (list (license:non-copyleft
             "https://bitbucket.org/jpommier/pffft/src/master/pffft.h"
             "FFTPACK license")
-           license:bsd-2
            license:bsd-3
            license:cc-by3.0
            license:cc0
