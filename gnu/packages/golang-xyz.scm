@@ -9833,6 +9833,31 @@ quoting, commenting, and escaping.")
       (home-page "https://github.com/flynn-archive/go-shlex")
       (license license:asl2.0))))
 
+(define-public go-github-com-flynn-go-docopt
+  (package
+    (name "go-github-com-flynn-go-docopt")
+    (version "0.0.0-20140912013429-f6dd2ebbb31e")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/flynn/go-docopt")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07s8fvnab40mcfmlsgrrddgvrirgm1krb7kaqgipcikjcmj8j6ql"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/flynn/go-docopt"
+      #:test-subdirs #~(list ".")))
+    (home-page "https://github.com/flynn/go-docopt")
+    (synopsis "Docopt command-line argument parser")
+    (description
+     "Package docopt parses command-line arguments based on a help message.
+It's an alternative fork of @url{https://github.com/docopt/docopt.go}.")
+    (license license:expat)))
+
 ;; XXX: This project isn't maintained upstream, consider to find alternative
 ;; fork, see <https://github.com/fogleman/gg/issues/185> and remove the
 ;; package when it has no users.
