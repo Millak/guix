@@ -2617,7 +2617,7 @@ formats.")
 (define-public kjobwidgets
   (package
     (name "kjobwidgets")
-    (version "6.19.0")
+    (version "6.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2626,7 +2626,7 @@ formats.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0xdc5q1lwmh16ylk74hzpbpax65gx08al8k995kxf34r11nr7m6v"))))
+                "1xkr2n8inprkpgbdkgqm8mwrv03b6dqx9k4wm1r9psrkm3a3naw9"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules qttools))
