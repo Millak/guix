@@ -3519,7 +3519,7 @@ window does not need focus for them to be activated.")
 (define-public kiconthemes
   (package
     (name "kiconthemes")
-    (version "6.19.0")
+    (version "6.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3528,7 +3528,7 @@ window does not need focus for them to be activated.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1sg23cj342n2mca3jm2lkkxpzz46wy9fbvsgm1v4k1v1p9qp7dmh"))))
+                "0qnx640j53rv4rvfhgfic7ncqhz0wa04za1hcjjkpl3ggvipfd47"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules qttools shared-mime-info))
