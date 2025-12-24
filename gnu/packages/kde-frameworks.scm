@@ -4370,7 +4370,7 @@ Items.")
 (define-public ktexteditor
   (package
     (name "ktexteditor")
-    (version "6.19.0")
+    (version "6.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4379,7 +4379,7 @@ Items.")
                     "ktexteditor-" version ".tar.xz"))
               (sha256
                (base32
-                "1w87m110rarqv4il292a34jmgn2q7psyix6y0zyjps9jzq82jf7j"))))
+                "1i4xz71mr62ag077rjfq46wgdjchvvr19bfpwxp0dyvpx372xn6i"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kparts
@@ -4404,18 +4404,19 @@ Items.")
            qtspeech
            sonnet))
     (arguments
-     (list #:phases
+     (list #:test-exclude
+           (string-append "("
+                          (string-join '("exiv2extractortest"
+                                         "usermetadatawritertest")
+                                       "|")
+                          ")")
+           #:phases
            #~(modify-phases %standard-phases
                (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests? ;; Maybe locale issues with tests?
+                 (lambda* (#:key tests? test-exclude #:allow-other-keys)
+                   (when tests?
                      (setenv "QT_QPA_PLATFORM" "offscreen")
-                     (invoke "ctest" "-E"
-                             (string-append
-                              "(kateview_test"
-                              "|movingrange_test"
-                              ;; fails with: timeout (1000 ms) was too short.
-                              "|messagetest)"))))))))
+                     (invoke "ctest" "-E" test-exclude)))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Full text editor component")
     (description "KTextEditor provides a powerful text editor component that you
