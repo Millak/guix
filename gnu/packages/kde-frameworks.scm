@@ -3942,7 +3942,7 @@ and desktop experiences.")
 (define-public knewstuff
   (package
     (name "knewstuff")
-    (version "6.19.0")
+    (version "6.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3951,7 +3951,7 @@ and desktop experiences.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1zqsb74f2cfq6fb5bn5fslbw301w2a40q5ddk2x399jgy21gp43h"))))
+                "0kdgw7414d06hanyjg0g9jlc3mrk2ifjqf34wddjgdbr3l2kikv7"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list attica
