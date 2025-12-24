@@ -2543,20 +2543,17 @@ data by providing clean labels during training.")
 (define-public python-cma
   (package
     (name "python-cma")
-    (version "4.2.0")
+    (version "4.4.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "cma" version))
               (sha256
                (base32
-                "17wv4r80av3cpr3dqad7jf7bwnjahk4bgagqlkqxjp8zfmg60s0q"))))
+                "1n17shbcmy7h7k105ar9yhj2zmgykx1wv9fhwd5kbwrcypa221mz"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "python" "-m" "cma.test")))))))
+     (list #:test-backend #~'custom
+           #:test-flags #~'("cma/test.py")))
     (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-numpy))
     (home-page "https://github.com/CMA-ES/pycma")
