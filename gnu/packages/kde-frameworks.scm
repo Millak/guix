@@ -2737,7 +2737,7 @@ covers feedback and persistent events.")
 (define-public kpackage
   (package
     (name "kpackage")
-    (version "6.19.0")
+    (version "6.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2746,7 +2746,7 @@ covers feedback and persistent events.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1780nw21q23cj2fghmjcqzdvmdrqcqrbyhv2lfyfpram169l3r4s"))))
+                "0xiw0jm9ap1p68hi2zw63lcrwgi1j0bzqfps3pjr1b18gsq9cniw"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -2762,6 +2762,7 @@ covers feedback and persistent events.")
       ;; The `plasma-querytest' test is known to fail when tests are run in parallel:
       ;; <https://sources.debian.org/src/kpackage/5.115.0-2/debian/changelog/#L109>
       #:parallel-tests? #f
+      #:test-exclude "plasmoidpackagetest"
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch
@@ -2775,14 +2776,14 @@ covers feedback and persistent events.")
           (add-before 'check 'check-setup
             (lambda _ (setenv "HOME" (getcwd))))
           (replace 'check
-            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+            (lambda* (#:key tests? parallel-tests? test-exclude
+                      #:allow-other-keys)
               (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
-              ;; sometime plasmoidpackagetest will fail.
               (invoke "ctest" "--rerun-failed" "--output-on-failure"
                       "-j" (if parallel-tests?
                                (number->string (parallel-job-count))
                                "1")
-                      "-E" "plasmoidpackagetest"))))))
+                      "-E" test-exclude))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Installation and loading of additional content as packages")
     (description "The Package framework lets the user install and load packages
