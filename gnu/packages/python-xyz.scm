@@ -5758,18 +5758,22 @@ other machines, such as over the network.")
 (define-public python-humanfriendly
   (package
     (name "python-humanfriendly")
-    (version "8.2")
+    (version "10.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "humanfriendly" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xolox/python-humanfriendly")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "04ixg8b7p6xc8x8lffhi7wfl77xhszakhd0s6j0cf6a84j8yqlmz"))))
-    (build-system python-build-system)
+        (base32 "07di334y2xbyl9bd2c9q55sm0llmvz80a4p7frlkvq2w6l2d47bv"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(;; XXX: Tests depend on coloredlogs, which in turn depends on humanfriendly.
-       #:tests? #f))
+     (list
+       ;XXX: Tests depend on coloredlogs, which in turn depends on humanfriendly.
+      #:tests? #f))
+    (native-inputs (list python-setuptools))
     (home-page "https://humanfriendly.readthedocs.io")
     (synopsis "Human-friendly input and output in Python")
     (description
