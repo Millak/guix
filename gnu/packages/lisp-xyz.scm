@@ -6318,6 +6318,55 @@ Macros and symbol-macros are fully expanded and all special forms, except
        ;; See <https://github.com/alex-gutev/cl-form-types/issues/22>.
        '(#:tests? #f)))))
 
+(define-public sbcl-cl-forms
+  (let ((commit "680953089c4a4d6201e639ac8188c46656d3f693")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-forms")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mmontone/cl-forms")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "19bmcvg89ydgkz1rjds0q0ydrpj4dxcvgnqgjjkbsi1h8yw18fsj"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-fiveam sbcl-trivial-open-browser))
+      (inputs (list sbcl-alexandria
+                    sbcl-cl-ppcre
+                    sbcl-ironclad
+                    sbcl-uuid
+                    sbcl-clavier
+                    sbcl-fmt
+                    sbcl-cl-str
+                    sbcl-cl-base64
+                    sbcl-cl-css
+                    sbcl-cl-who
+                    sbcl-djula
+                    sbcl-hunchentoot
+                    sbcl-lack
+                    sbcl-ningle
+                    sbcl-cl-peppol))
+      (arguments
+       '(#:asd-systems '("cl-forms" "cl-forms.core" "cl-forms.who"
+                         "cl-forms.djula" "cl-forms.ningle" "cl-forms.peppol")))
+      (home-page "https://github.com/mmontone/cl-forms")
+      (synopsis "Web forms handling library for Common Lisp")
+      (description
+       "@code{cl-forms} provides functionality for managing web forms in
+Common Lisp.
+
+It supports various field types (string, boolean, integer, email,
+password, and more) and allows rendering through multiple backends,
+such as @code{cl-who} and @code{djula}.")
+      (license license:expat))))
+
+(define-public cl-forms
+  (sbcl-package->cl-source-package sbcl-cl-forms))
+
 (define-public sbcl-cl-freetype2
   (let ((commit "8bcb232b319a66fb700eaea88d0b308a837bce04")
         (revision "1"))
