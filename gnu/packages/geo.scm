@@ -159,6 +159,7 @@
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
+  #:use-module (gnu packages wget)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -2445,10 +2446,20 @@ dropping features at lower levels.")
         (base32
          "1m8d3r1q1v05pkr8k9czrmb4xjszw6hvgsf3kn9pf0v14gpn4r8f"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap
+                 (lambda _
+                   (wrap-program (string-append #$output "/bin/osmupdate")
+                     `("PATH" prefix
+                       (,(string-append #$(this-package-input "wget")
+                                        "/bin")))))))))
     (native-inputs
      (list autoconf automake))
     (inputs
-     (list zlib))
+     (list wget ;required by osmupdate
+           zlib))
     (home-page "https://gitlab.com/osm-c-tools/osmctools")
     (synopsis "Tools to convert, filter and update OpenStreetMap data files")
     (description "This project contains a few tools which are used in the
