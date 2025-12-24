@@ -3370,7 +3370,7 @@ that offer bindings to some of the Frameworks.")
 (define-public kded
   (package
     (name "kded")
-    (version "6.19.0")
+    (version "6.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3379,7 +3379,7 @@ that offer bindings to some of the Frameworks.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "00mwl13dwdacq6kbhhxmpnn0bj68fra95rmpg343cgzngci08nlw"))))
+                "18fx0al5ax2xdif0dx5r49019gwbbshyacsckm6d12yrivzjqlrn"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f))
     (native-inputs
