@@ -544,7 +544,7 @@ documentation.")
 (define-public karchive
   (package
     (name "karchive")
-    (version "6.19.0")
+    (version "6.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/frameworks/"
@@ -552,14 +552,16 @@ documentation.")
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "17iaa5a2visic1y07hkkg4s01l96nx8gszq8pp72iqfh0bc34hwl"))))
+                "1i66n5mvvniqn0qbpcmj16hbggbji0cmr0mw8b286l0h0kcwrxx5"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "ctest" "-E" "karchivetest")))))))
+     (list #:test-exclude "karchivetest"
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? test-exclude #:allow-other-keys)
+                   (when tests?
+                   (invoke "ctest" "-E" test-exclude)))))))
     (native-inputs
      (list extra-cmake-modules pkg-config qttools))
     (inputs (list bzip2 openssl qtbase xz zlib `(,zstd "lib")))
