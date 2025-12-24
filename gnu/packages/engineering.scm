@@ -2594,30 +2594,35 @@ Microwave engineering.")
 (define-public python-lcapy
   (package
     (name "python-lcapy")
-    (version "1.24")
+    (version "1.26")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "lcapy" version))
        (sha256
-        (base32 "0lmprghkr274l3ykiq80a31njrzj7qqgm02wifkkwh2935shbk76"))))
+        (base32 "084jbrjzii1n5v91jnqiah0n4m9g3sq4iz4f0d8j7ihsrhsrdz7d"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; This test fails by FileNotFoundError (a schematic file), possibly
       ;; because it's not included in PyPI.
-      #:test-flags #~(list "-k" "not test_circuitgraph")))
+      #:test-flags #~(list "-k" "not test_circuitgraph")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'remove-importlib
+                     (lambda _
+                       (substitute* "setup.py"
+                         ;; Archived project that exists to maintain Python2
+                         ;; compatibility.
+                         (("'importlib',") "")))))))
     (propagated-inputs (list python-ipython
                              python-matplotlib
                              python-networkx
                              python-numpy
                              python-property-cached
                              python-scipy
-                             python-sympy
-                             python-wheel))
+                             python-sympy))
     (native-inputs (list python-pytest
-                         python-setuptools
-                         python-wheel))
+                         python-setuptools))
     (home-page "https://github.com/mph-/lcapy")
     (synopsis "Symbolic linear circuit analysis")
     (description "Lcapy is a Python package for linear circuit analysis.  It
