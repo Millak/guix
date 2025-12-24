@@ -19320,6 +19320,34 @@ Data type that can be converted:
 @end itemize")
       (license license:expat))))
 
+(define-public go-github-com-muhammadmuzzammil1998-jsonc
+  (package
+    (name "go-github-com-muhammadmuzzammil1998-jsonc")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/muhammadmuzzammil1998/jsonc")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "037xi03p46hnfwwh5ylnkzm859h9bi3yn451647y4ghzjbwii1g4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/muhammadmuzzammil1998/jsonc"))
+    (home-page "https://github.com/muhammadmuzzammil1998/jsonc")
+    (synopsis "JSON with comments parser for Go")
+    (description
+     "JSONC is a superset of JSON which supports comments.  JSON formatted
+files are readable to humans but the lack of comments decreases readability.
+With JSONC, you can use block (@code{/* */}) and single line (@code{//} or
+@code{#}) comments to describe functionality.  Microsoft VS Code also uses
+this format in configuration files like @file{settings.json},
+@file{keybindings.json}, and @file{launch.json}.")
+    (license license:expat)))
+
 (define-public go-github-com-muhlemmer-gu
   (package
     (name "go-github-com-muhlemmer-gu")
