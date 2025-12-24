@@ -48,6 +48,7 @@
 ;;; Copyright © 2025 Junker <dk@junkeria.club>
 ;;; Copyright © 2025 Simen Endsjø <contact@simendsjo.me>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025 vga <v@vgz.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -17170,6 +17171,39 @@ Lisp.")
 
 (define-public ecl-flute
   (sbcl-package->ecl-package sbcl-flute))
+
+(define-public sbcl-fmt
+  (let ((commit "91a29ec31e317bd6bd67d693acebc1d50bf0ac5e")
+        (revision "0"))
+    (package
+      (name "sbcl-fmt")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mmontone/fmt")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "078y5yig5fw0jcsjjabaq7dlyxsd10w5k80ywx6gbm0j88al3fzp"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-fiveam sbcl-local-time))
+      (inputs (list sbcl-alexandria))
+      (home-page "https://github.com/mmontone/fmt")
+      (synopsis "Extensible text formatting facility for Common Lisp using
+s-expressions")
+      (description
+       "@code{fmt} provides an alternative to the Common Lisp @code{format}
+function by utilizing s-expressions for formatting directives instead
+of control strings.")
+      (license license:expat))))
+
+(define-public cl-fmt
+  (sbcl-package->cl-source-package sbcl-fmt))
+
+(define-public ecl-fmt
+  (sbcl-package->ecl-package sbcl-fmt))
 
 (define-public sbcl-fn
   (let ((commit "8d8587d03a7b5e26b306fc90018e385d9e5acc2c")
