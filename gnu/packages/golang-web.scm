@@ -11442,6 +11442,70 @@ RFC 8737} (tls-alpn-01 challenge), @url{https://tools.ietf.org/html/rfc8823, RFC
     (description "@code{bluemonday} is a HTML sanitizer implemented in Go.")
     (license license:bsd-3)))
 
+(define-public go-github-com-microsoft-dev-tunnels
+  (package
+    (name "go-github-com-microsoft-dev-tunnels")
+    (version "0.1.19")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/microsoft/dev-tunnels")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wi99gx8d697gqcrz4m1d6lji7csg4s4lkm7fm2czsb8ix1in00j"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Git contains Java, C#, Rust and TypeScript implementations,
+            ;; where we need only Go.
+            (for-each delete-file-recursively
+                      (list ".pipelines"
+                            ".vscode"
+                            "cs"
+                            "java"
+                            "rs"
+                            "samples"
+                            "ts"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/microsoft/dev-tunnels"
+      #:test-flags
+      #~(list "-vet=off"
+              ;; manager_test.go:53: error sending create tunnel request:
+              ;; error sending request: Put
+              ;; "https://global.rel.tunnels.api.visualstudio.com/tunnels/\
+              ;; puzzled-horse-43731hh?api-version=2023-09-27-preview":
+              ;; dial tcp: lookup global.rel.tunnels.api.visualstudio.com on
+              ;; [::1]:53: read udp [::1]:55610->[::1]:53: read: connection
+              ;; refused
+              "-skip" (string-join
+                       (list "TestTunnelCreateDelete"
+                             "TestListTunnels"
+                             "TestTunnelCreateUpdateDelete"
+                             "TestTunnelCreateUpdateTwiceDelete"
+                             "TestTunnelCreateGetDelete"
+                             "TestTunnelAddPort"
+                             "TestTunnelDeletePort"
+                             "TestTunnelUpdatePort"
+                             "TestTunnelListPorts"
+                             "TestTunnelEndpoints")
+                       "|"))))
+    (propagated-inputs
+     (list go-github-com-gorilla-websocket
+           go-github-com-rodaine-table
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/microsoft/dev-tunnels")
+    (synopsis "Dev tunnels SDK for Go")
+    (description
+     "This package provides a Go SDK for Microsoft Dev Tunnels, enabling
+secure port forwarding and tunneling for development workflows.  It supports
+creating and managing tunnels with SSH-based connections.")
+    (license license:expat)))
+
 (define-public go-github-com-miekg-dns
   (package
     (name "go-github-com-miekg-dns")
