@@ -1220,7 +1220,7 @@ translation scripting.")
 (define-public kidletime
   (package
     (name "kidletime")
-    (version "6.19.0")
+    (version "6.21.0")
     (source
      (origin
        (method url-fetch)
@@ -1228,7 +1228,7 @@ translation scripting.")
                            (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0rbgs5d3nlzlcb777dr19n8w2f8ml4fyzzvnb7m9ip7qzs3c70nz"))))
+        (base32 "0gn2cv3vgi0p31nkmgr57y70sfisg0qncgqh40fpf4y44xg98fpq"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f))
     (native-inputs
