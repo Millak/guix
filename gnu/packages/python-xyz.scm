@@ -7118,20 +7118,18 @@ matplotlib plots or supply colors for a web application.")
 (define-public python-parse
   (package
     (name "python-parse")
-    (version "1.18.0")
+    (version "1.20.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (pypi-uri "parse" version))
-      (sha256
-       (base32
-        "19063x4xdjpaf7rfxai6jpgm2k4yvkq7wha8aa8cagbjsqr60rli"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _ (invoke "python" "test_parse.py"))))))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/r1chardj0n3s/parse")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s3dgafh1mz8g32gwk5vp0azdq168yjhbg5liivapgkwyq9zgwcb"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-pytest-cov python-setuptools))
     (home-page "https://github.com/r1chardj0n3s/parse")
     (synopsis "Parse strings")
     (description
