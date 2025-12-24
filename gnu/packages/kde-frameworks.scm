@@ -4991,7 +4991,7 @@ support.")
 (define-public kdav
   (package
     (name "kdav")
-    (version "6.19.0")
+    (version "6.21.0")
     (source
      (origin
        (method url-fetch)
@@ -4999,7 +4999,7 @@ support.")
                            (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "14hax9kbwgvd18psxm99azgclsnnvfc9xid8q3zrjnlvgnlbjlvp"))))
+        (base32 "1qlsgy3g6d591m8yk9mbkr3vdx8fc5k1lbv8cbbbn134w4pa9bxm"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -5008,15 +5008,19 @@ support.")
      (list ki18n kio))
     (arguments
      (list
+      #:test-exclude
+      (string-append "("
+                     (string-join '("kdav-davcollectionsmultifetchjobtest"
+                                    "kdav-davitemfetchjob")
+                                  "|")
+                     ")")
       #:qtbase qtbase
       #:phases #~(modify-phases %standard-phases
                    (replace 'check
-                     (lambda* (#:key tests? #:allow-other-keys)
+                     (lambda* (#:key tests? test-exclude #:allow-other-keys)
                        (when tests?
                          ;; Seems to require network.
-                         (invoke "ctest" "-E"
-                                 "(kdav-davcollectionsmultifetchjobtest|\
-kdav-davitemfetchjob)")))))))
+                         (invoke "ctest" "-E" test-exclude)))))))
     (home-page "https://invent.kde.org/frameworks/kdav")
     (synopsis "DAV protocol implementation with KJobs")
     (description "This is a DAV protocol implementation with KJobs.  Calendars
