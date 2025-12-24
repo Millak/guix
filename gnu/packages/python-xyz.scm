@@ -6737,18 +6737,25 @@ videos in a notebook.")
     (version "1.0.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "simpleaudio" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hamiltron/py-simple-audio")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "07glihg0fpca0gvbbvqs9q815w8xhflzdvg72yvlsm23j9j8h739"))))
-    (build-system python-build-system)
+        (base32 "12nypzb1m14yip4zrbzin5jc5awyp1d5md5y40g5anj4phb4hx1i"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f))
-    (inputs
-      (list alsa-lib))
-    (home-page
-     "https://github.com/hamiltron/py-simple-audio")
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'fix-test-run
+            (lambda _
+              (delete-file-recursively "simpleaudio"))))))
+    (native-inputs (list python-setuptools))
+    (inputs (list alsa-lib))
+    (home-page "https://github.com/hamiltron/py-simple-audio")
     (synopsis "Simple, asynchronous audio playback for Python 3")
     (description
      "The @code{simplaudio} package provides cross-platform, dependency-free
