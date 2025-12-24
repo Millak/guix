@@ -4612,7 +4612,7 @@ the passwords on KDE work spaces.")
 (define-public kxmlgui
   (package
     (name "kxmlgui")
-    (version "6.19.0")
+    (version "6.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4621,7 +4621,7 @@ the passwords on KDE work spaces.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1vnrgy041lkmximsdkpmwb1drx9ray38q2ndipqsws0n3k3rvhi9"))))
+                "034pkdnmr096sw41phlb9acd6abih2ydpgmm87b5alxxcl5kkgyf"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list
