@@ -615,14 +615,14 @@ ksh, and tcsh.")
 (define-public xonsh
   (package
     (name "xonsh")
-    (version "0.19.9")
+    (version "0.22.8")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "xonsh" version))
         (sha256
           (base32
-           "0zf3fjjq0p9pngq48s8c14ywzv4b02y14vr9g93vgalqg96lrasc"))
+           "1372kg9kp7z7mw0k1f5l93jqyyyc1mmr3hx7557ynm8n5y1ggvay"))
         (modules '((guix build utils)))
         (snippet
          #~(begin
@@ -660,7 +660,9 @@ ksh, and tcsh.")
                            "test_complete_dots"
                            "test_dirty_working_directory"
                            "test_equal_sign_arg"
+                           "test_loading_correctly"
                            "test_man_completion"
+                           "test_on_command_not_found_replacement"
                            "test_parser_show"
                            "test_printfile"
                            "test_printname"
