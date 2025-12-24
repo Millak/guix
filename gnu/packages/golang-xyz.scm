@@ -12975,6 +12975,33 @@ anniversaries.")
      "This package implements directed acyclic graphs (DAGs).")
     (license license:bsd-3)))
 
+(define-public go-github-com-henvic-httpretty
+  (package
+    (name "go-github-com-henvic-httpretty")
+    (version "0.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/henvic/httpretty")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a384k5w8az9b7162h8ma16yinn4q348zncfjqh4sfkss4r0iw2h"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/henvic/httpretty"))
+    (propagated-inputs
+     (list go-golang-org-x-tools))
+    (home-page "https://github.com/henvic/httpretty")
+    (synopsis "HTTP pretty-printer for Go")
+    (description
+     "This package prints HTTP requests and responses in a pretty format on
+the terminal.  It can be used both on the client-side and server-side for
+debugging and development purposes.")
+    (license license:expat)))
+
 (define-public go-github-com-hhrutter-tiff
   (package
     (name "go-github-com-hhrutter-tiff")
