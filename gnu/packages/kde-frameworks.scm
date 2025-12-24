@@ -2954,7 +2954,7 @@ between feed formats.")
 (define-public baloo
   (package
     (name "baloo")
-    (version "6.19.0")
+    (version "6.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2963,7 +2963,7 @@ between feed formats.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1226x3a96k4cpa5k0n0dlg5ig7s8gmawav7schsrc8pdsj2msgdg"))))
+                "07kpadsvjczjzq51piy1xxcvq8hq8k6ngjmdzchd99w50j1zizjw"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kcoreaddons kfilemetadata))
@@ -2988,17 +2988,16 @@ between feed formats.")
            qtdeclarative
            solid))
     (arguments
-     (list #:phases
+     (list #:test-exclude "filewatchtest" ;requires udisks2
+           #:phases
            #~(modify-phases %standard-phases
                (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
+                 (lambda* (#:key tests? test-exclude #:allow-other-keys)
                    (when tests?
                      (setenv "DBUS_FATAL_WARNINGS" "0")
                      (setenv "HOME"
                              (getcwd))
-                     (invoke "dbus-launch" "ctest" "-E"
-                             ;; this require udisks2.
-                             "filewatchtest")))))))
+                     (invoke "dbus-launch" "ctest" "-E" test-exclude)))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "File searching and indexing")
     (description "Baloo provides file searching and indexing.  It does so by
