@@ -854,13 +854,13 @@ But the true aim of Serverspec is to help refactoring infrastructure code.")
 (define-public ruby-base64
   (package
     (name "ruby-base64")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "base64" version))
        (sha256
-        (base32 "01qml0yilb9basf7is2614skjp8384h2pycfx86cr8023arfj98g"))))
+        (base32 "0yx9yn47a8lkfcjmigk79fykxvr80r4m1i35q82sxzynpbm7lcr7"))))
     (build-system ruby-build-system)
     (arguments '(#:tests? #f))  ; No tests bundled.
     (synopsis "Base64 encoding/decoding in Ruby")
