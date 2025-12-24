@@ -1990,11 +1990,16 @@ segmentation.")
       ;; these tests.
       '(list "--ignore=pims/tests/test_common.py"
              "--ignore=pims/tests/test_imseq.py"
-             "--ignore=pims/tests/test_norpix.py")))
+             "--ignore=pims/tests/test_norpix.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                (("'slicerator>=.*',")
+                 "'slicerator',")))))))
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
+     (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-imageio python-numpy python-slicerator))
     (home-page "https://github.com/soft-matter/pims")
