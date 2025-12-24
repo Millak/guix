@@ -3604,11 +3604,11 @@ improvements.")
       (license license:gpl2+))))
 
 (define-public pcsx2-patches
-  (let ((commit "2fdc835f0725b318efcdaae84db1c73a9139b6f6")
+  (let ((commit "10239de1539668c347e8e9478a3b13913808c0b2")
         (revision "0"))
     (package
       (name "pcsx2-patches")
-      (version (git-version "2025.10.24" revision commit))
+      (version (git-version "2025.12.11" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -3617,7 +3617,7 @@ improvements.")
 	       (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0qn9jwk983hxzrf2x550wcb9l782618lm662w5fb6cw81bbrv5is"))))
+          (base32 "07f18xrn60sizgjhq99rq1q69ay9pss00y8b4c3ky9i94xjfxq5x"))))
       (build-system copy-build-system)
       (arguments
        (list
