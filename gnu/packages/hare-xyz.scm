@@ -88,6 +88,28 @@
     (description "This package provides JSON support for Hare.")
     (license license:mpl2.0)))
 
+(define-public hare-scfg
+  (package
+    (name "hare-scfg")
+    (version "0.25.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~chrisppy/hare-scfg")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nj9gqvnvmwh3j39rj1h856p5qzghv5in01rxi4x74mqirl5q2ch"))))
+    (build-system hare-build-system)
+    (supported-systems %hare-supported-systems)
+    (home-page "https://git.sr.ht/~chrisppy/hare-scfg")
+    (synopsis "Hare library for a simple configuration file format")
+    (description "This package provides a Hare library for parsing
+@uref{https://git.sr.ht/~emersion/scfg, scfg}, a simple configuration file
+format with one directive per line.")
+    (license license:mpl2.0)))
+
 (define-public hare-ssh
   (package
     (name "hare-ssh")
