@@ -6194,6 +6194,41 @@ the following features:
 ")
     (license license:lgpl3+)))
 
+(define-public normalize
+  (package
+    (name "normalize")
+    (version "0.7.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "http://download.savannah.gnu.org/releases/normalize/normalize-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "1n5khss10vjjp6w69q9qcl4kqfkd0pr555lgqghrchn6rjms4mb0"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-shell-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "test/Makefile.in"
+                (("/bin/sh")
+                 (search-input-file inputs "/bin/sh"))))))))
+    (inputs (list libmad))
+    (home-page "https://normalize.nongnu.org/")
+    (synopsis "Audio track volume normalizer")
+    (description
+     "@code{normalize} is an audio track normalizer.
+For a collection of tracks with varying volumes, it is able to
+make the loudness consistent between them.  This is helpful
+when making mixtapes, for example.
+It can work with WAV and MP3 files.")
+    (license license:gpl2)))
+
 (define-public lv2-speech-denoiser
   (let ((commit "04cfba929630404f8d4f4ca5bac8d9b09a99152f")
         (revision "1"))
