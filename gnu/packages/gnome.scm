@@ -8867,7 +8867,7 @@ the available networks and allows users to easily switch between them.")
 (define-public libxml++
   (package
     (name "libxml++")
-    (version "5.4.0")
+    (version "5.6.0")
     (source
      (origin
        (method git-fetch)
@@ -8876,7 +8876,7 @@ the available networks and allows users to easily switch between them.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gp8irc5ny9i6bw9fp21p8djgksi1s8l5flbn5blisgfpcb2w820"))))
+        (base32 "1ckgllfgnfszri57ay41jykwblcilsyldkhiq0x5h50c5av118pj"))))
     (build-system gnu-build-system)
     (propagated-inputs
      (list libxml2))  ;required by .pc file
