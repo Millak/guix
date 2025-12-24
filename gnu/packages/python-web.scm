@@ -8790,10 +8790,17 @@ engine.  Its module is called @code{googlesearch}.")
     (arguments
      (list
       #:test-flags
-      #~(list "-k"
-              ;; XXX: Requires CA certificates.
-              "not test_credentials_and_credentials_file_mutually_exclusive"
-              "tests")))
+      #~(list
+         "-k"
+         (string-join
+          (list
+           ;; XXX: Deprecated behavior.
+           "not test_client_options_universe_configured_with_mtls"
+           "test_universe_env_var_configured_with_mtls"
+           ;; XXX: Requires CA certificates.
+           "test_credentials_and_credentials_file_mutually_exclusive")
+          " and not ")
+         "tests")))
     (native-inputs
      (list python-parameterized
            python-pytest
@@ -11975,26 +11982,17 @@ the @code{googleapis/api-common-protos} repository.")
 (define-public python-google-api-core
   (package
     (name "python-google-api-core")
-    (version "2.7.3")
+    (version "2.28.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "google-api-core" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googleapis/python-api-core")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0ydwvg9gzp75cd11s62db5w3jhj643yrw095rv95psfb0h3pz58p"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; These don't work because it doesn't find AsyncMock even when
-               ;; we add it to the inputs.
-               (for-each delete-file
-                         '("tests/asyncio/test_page_iterator_async.py"
-                           "tests/asyncio/test_retry_async.py"))
-               (invoke "pytest")))))))
+        (base32 "1h12187s5jlj3x6gl13byfwkr2mnyiabyc6i74kc6bazz3r4iizx"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-google-auth
            python-googleapis-common-protos
@@ -12004,11 +12002,13 @@ the @code{googleapis/api-common-protos} repository.")
     (native-inputs
      (list python-mock
            python-pytest
-           python-pytest-asyncio))
+           python-pytest-asyncio
+           python-pytest-mock
+           python-setuptools))
     (home-page "https://github.com/googleapis/python-api-core")
     (synopsis "Google API client core library")
-    (description "This library defines common helpers used by all Google API
-clients.")
+    (description
+     "This library defines common helpers used by all Google API clients.")
     (license license:asl2.0)))
 
 (define-public python-google-cloud-core
