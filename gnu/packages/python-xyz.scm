@@ -6257,20 +6257,30 @@ for additional processing.")
 (define-public python-coloredlogs
   (package
     (name "python-coloredlogs")
-    (version "10.0")
+    (version "15.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "coloredlogs" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xolox/python-coloredlogs")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0dkw6xp0r1dwgz4s2f58npx5nxfq51wf4l6qkm5ib27slgfs4sdq"))))
-    (build-system python-build-system)
+        (base32 "1c83h3cvd2qww2m9myxrnqh0lr9fllx8zfb26f64lcvwd3cli1sf"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(;Tests require some updated modules
-       #:tests? #f))
-    (propagated-inputs
-     (list python-capturer))
+     (list
+      #:test-flags
+      #~(list "-k"
+              (string-join
+               (list "not test_auto_install" ; Unclear why this fails.
+                     ;; XXX: Require a "script" executable.
+                     "test_cli_conversion"
+                     "test_empty_conversion"
+                     "test_output_interception")
+               " and not "))))
+    (native-inputs (list python-pytest python-setuptools python-verboselogs))
+    (propagated-inputs (list python-capturer))
     (home-page "https://coloredlogs.readthedocs.io")
     (synopsis "Colored stream handler for Python's logging module")
     (description
