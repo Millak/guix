@@ -12041,29 +12041,40 @@ used by all of the @code{google-cloud-*} packages.")
 (define-public python-google-cloud-storage
   (package
     (name "python-google-cloud-storage")
-    (version "2.3.0")
+    (version "2.19.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "google-cloud-storage" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googleapis/python-storage")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0nwg9ic29s70kpvi71gmjv1y4w5a3vc9gj6d16f8w8hpbvgb1jzl"))))
-    (build-system python-build-system)
+        (base32 "19w10v2j4ciwlf8j2ylm77f8z1b0kqzg8lkh9rvh2swv1zrhydpj"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (for-each delete-file-recursively
-                         (list
-                          ;; The system tests fail to find test_utils.retry.
-                          "tests/system/"
-                          ;; Needs docker.
-                          "tests/conformance/"))
-               (invoke "pytest")))))))
+     (list
+      #:test-flags
+      #~(list
+         ;; XXX: Missing test_utils.retry.
+         "--ignore=tests/system/"
+         ;; Needs docker.
+         "--ignore=tests/conformance/"
+         ;; XXX: Deprecations.
+         "-k" (string-join
+               (list "not test_set_api_request_attr"
+                     "test_create_bucket_w_custom_endpoint"
+                     "test_ctor_w_api_endpoint_override"
+                     "test_ctor_w_custom_endpoint_use_auth"
+                     "test_list_buckets_w_custom_endpoint")
+               " and not ")
+         "tests")))
     (native-inputs
-     (list python-mock python-pytest python-test-utils))
+     (list python-googleapis-common-protos
+           python-mock
+           python-pytest
+           python-test-utils
+           python-setuptools))
     (propagated-inputs
      (list python-google-api-core
            python-google-auth
@@ -12073,10 +12084,11 @@ used by all of the @code{google-cloud-*} packages.")
            python-requests))
     (home-page "https://github.com/googleapis/python-storage")
     (synopsis "Google Cloud Storage API client library")
-    (description "Google Cloud Storage allows you to store data on Google
-infrastructure, and it can be used to distribute large data objects to users
-via direct download.  This package provides a Google Cloud Storage API client
-library for Python.")
+    (description
+     "Google Cloud Storage allows you to store data on Google infrastructure,
+and it can be used to distribute large data objects to users via direct
+download.  This package provides a Google Cloud Storage API client library for
+Python.")
     (license license:asl2.0)))
 
 (define-public python-smart-open
