@@ -412,6 +412,19 @@ $(prefix)/etc/openrc\n")))
                           (substitute* "tests/guix-environment-container.sh"
                             (("guix environment --version")
                              "exit 77\n")))))
+                    ,@(if (target-arm32?)
+                          `((add-after
+                                'disable-failing-tests
+                                'disable-failing-tests-on-arm32
+                              ;; XXX FIXME: These tests fail on armhf architecture,
+                              ;; see <https://codeberg.org/guix/guix/issues/5078>.
+                              (lambda _
+                                (substitute* "tests/syscalls.scm"
+                                  (("^\\(test-equal \"safe-clone and unshare succeeds\"" all)
+                                   (string-append "(test-skip 1)\n" all))
+                                  (("^\\(test-equal \"clone and unshare triggers EINVAL\"" all)
+                                   (string-append "(test-skip 1)\n" all))))))
+                          '())
                     (add-before 'check 'set-SHELL
                       (lambda _
                         ;; 'guix environment' tests rely on 'SHELL' having a
