@@ -1229,6 +1229,36 @@ MetroHash}, a high quality, high performance hash algorithm.")
      "This package provides a hashing function.")
     (license license:expat)))
 
+(define-public go-github-com-digitorus-pkcs7
+  (package
+    (name "go-github-com-digitorus-pkcs7")
+    (version "0.0.0-20250730155240-ffadbf3f398c")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/digitorus/pkcs7")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0snamp6fbg5vir0lsw5wzvyagrdd832lw6k7cnvcahcgp8l084zc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/digitorus/pkcs7"))
+    (native-inputs
+     (list openssl))
+    (home-page "https://github.com/digitorus/pkcs7")
+    (synopsis "PKCS#7 implementation for Go")
+    (description
+     "This package implements parsing and generation of some
+PKCS#7/Cryptographic Message
+Syntax (@url{https://www.rfc-editor.org/rfc/rfc2315},
+@url{https://www.rfc-editor.org/rfc/rfc5652, RFC 2315}, RFC 5652) structures
+for Go applications.  It's an alternative fork of deprecated
+@url{https://github.com/mozilla-services/pkcs7}.")
+    (license license:expat)))
+
 (define-public go-github-com-dvsekhvalnov-jose2go
   (package
     (name "go-github-com-dvsekhvalnov-jose2go")
