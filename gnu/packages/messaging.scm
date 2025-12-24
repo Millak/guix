@@ -2681,6 +2681,23 @@ validating international phone numbers.")
    (home-page "https://github.com/google/libphonenumber")
    (license license:asl2.0)))
 
+(define-public libphonenumber-8.11
+  (package/inherit libphonenumber
+    (name (package-name libphonenumber))
+    (version "8.11.5")
+    (source (origin
+              (inherit (package-source libphonenumber))
+              (uri (git-reference
+                    (url "https://github.com/google/libphonenumber")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1y4ivhy3kwgggrr3g521zaf97334aan0yqpzzryss80k326q5rhf"))))
+    (inputs
+     (modify-inputs (package-inputs libphonenumber)
+       (delete "abseil-cpp" "icedtea")))))
+
 (define-public chatty
   (package
     (name "chatty")
