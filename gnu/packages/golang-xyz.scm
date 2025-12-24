@@ -8222,6 +8222,43 @@ BIOS (@url{https://en.wikipedia.org/wiki/System_Management_BIOS, SMBIOS}) and
 Desktop Management Interface (DMI) data and structures.")
     (license license:asl2.0)))
 
+(define-public go-github-com-digitorus-timestamp
+  (package
+    (name "go-github-com-digitorus-timestamp")
+    (version "0.0.0-20250524132541-c45532741eea")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/digitorus/timestamp")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bmnyhmymxhpvmygkcvvm9r2c2909hfrnafd3n19d0rxgl21lvhk"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Fix example function name: ExampleCreateRequest_ParseResponse
+            ;; implies a method ParseResponse on type CreateRequest, but both
+            ;; are standalone functions.  Rename to a valid package example.
+            (substitute* "timestamp_example_test.go"
+              (("ExampleCreateRequest_ParseResponse") "Example"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/digitorus/timestamp"
+      ;; Skip example test that requires network access to freetsa.org.
+      #:test-flags #~(list "-skip" "Example")))
+    (propagated-inputs
+     (list go-github-com-digitorus-pkcs7))
+    (home-page "https://github.com/digitorus/timestamp")
+    (synopsis "RFC3161 Time-Stamp Protocol implementation for Go")
+    (description
+     "This package implements the Time-Stamp Protocol (TSP) as specified in
+@url{https://www.rfc-editor.org/rfc/rfc3161, RFC3161} (Internet X.509 Public
+Key Infrastructure Time-Stamp Protocol).")
+    (license license:bsd-2)))
+
 (define-public go-github-com-dimchansky-utfbom
   (package
     (name "go-github-com-dimchansky-utfbom")
