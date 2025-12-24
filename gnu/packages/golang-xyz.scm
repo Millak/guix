@@ -22624,6 +22624,35 @@ the current user.")
 parser and job runner.")
     (license license:expat)))
 
+(define-public go-github-com-rodaine-table
+  (package
+    (name "go-github-com-rodaine-table")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rodaine/table")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "013mkkgiq8gmzmlz03ajwkjh34dpvswfra6vp4m2bc4zsnx2r4ad"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/rodaine/table"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-mattn-go-runewidth))
+    (home-page "https://github.com/rodaine/table")
+    (synopsis "Table writer for CLI applications")
+    (description
+     "Package table provides a convenient way to generate tabular output of
+any data, primarily useful for CLI tools.  It features a fluent API, with
+customization of column alignment, width, and padding.")
+    (license license:expat)))
+
 (define-public go-github-com-rogpeppe-fastuuid
   (package
     (name "go-github-com-rogpeppe-fastuuid")
