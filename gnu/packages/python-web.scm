@@ -12566,23 +12566,29 @@ mining to monitoring and automated testing.")
     (license license:bsd-3)))
 
 (define-public python-jstyleson
-  (package
+  (let ((commit "8c47cc9e665b3b1744cccfaa7a650de5f3c575dd")
+        (revision "0"))
+    (package
     (name "python-jstyleson")
-    (version "0.0.2")
+    (version (git-version "0.0.2" revision commit))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "jstyleson" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/linjackson78/jstyleson")
+              (commit commit)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "13ihw6jqwkg3ai4xb83kw39pvh73b2wg6ld3wvj5jaasn7rh6038"))))
-    (build-system python-build-system)
-    (arguments (list #:tests? #f))      ;no tests in pypi release
+        (base32 "0r72mq7h294w5icpdbjd202w25kwr1dz7nh79f6m74xisc9cixia"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/linjackson78/jstyleson")
     (synopsis "JSON parser supporting js-style comments")
-    (description "@code{jstyleson} is a Python library to parse JSON.
-Contrary to the standard Python @code{json} library, it understands js-style
-comments.  Trailing comma is also supported.")
-    (license license:expat)))
+    (description
+     "@code{jstyleson} is a Python library to parse JSON.  Contrary to the
+standard Python @code{json} library, it understands js-style comments.
+Trailing comma is also supported.")
+    (license license:expat))))
 
 (define-public python-html-text
   (package
