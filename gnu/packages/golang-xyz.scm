@@ -17482,6 +17482,34 @@ to handle ANSI color escapes on Windows.")
 whether a file descriptor points to a terminal and the type of the terminal.")
     (license license:expat)))
 
+(define-public go-github-com-mattn-go-localereader
+  (package
+    (name "go-github-com-mattn-go-localereader")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattn/go-localereader")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wcgqnpjk0drm7swc0q27j4r5ab63mhz29dgbjdnyn4sw68rqm96"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mattn/go-localereader"
+      ;; Tests reference NewCodePageDecoder which is only defined in
+      ;; localereader_windows.go and doesn't compile on non-Windows.
+      #:tests? #f))
+    (home-page "https://github.com/mattn/go-localereader")
+    (synopsis "CodePage decoder for Windows")
+    (description
+     "This package provides a CodePage decoder for Windows, enabling Go programs
+to read locale-specific character encodings such as Shift JIS.  It handles
+locale reading differently across Unix and Windows systems.")
+    (license license:expat)))
+
 (define-public go-github-com-mattn-go-pointer
   (package
     (name "go-github-com-mattn-go-pointer")
