@@ -1212,36 +1212,39 @@ compression parameters used by Gzip.")
     (version "2.0.13")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "borgmatic" version))
+       ;; PyPI archive does not contain NEWS file needed for one test.
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/borgmatic-collective/borgmatic")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1dffzbrfbclr1pbzl8d3vvfz7l2v1p3namr3vjl71rnb3y1f7ynh"))))
+        (base32
+         "05w3j4knhsg4w0a0yrz8c7lvz3vp3nf95ddmql9i8mqknjqddm1v"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      ;; TODO: Disable failing test.
-      #~(list "-k" "not test_borgmatic_version_matches_news_version")
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'configure
-                     (lambda* (#:key inputs #:allow-other-keys)
-                       ;; Set absolute store path to borg.
-                       (substitute* "borgmatic/commands/borgmatic.py"
-                         (("\\.get\\('local_path', 'borg'\\)")
-                          (string-append ".get('local_path', '"
-                                         (search-input-file inputs "bin/borg")
-                                         "')")))
-                       (substitute* "tests/unit/commands/test_borgmatic.py"
-                         (("(module.get_local_path.+ == )'borg'" all start)
-                          (string-append start "'"
-                                         (search-input-file inputs "bin/borg")
-                                         "'")))))
-                   (add-before 'check 'set-path
-                     (lambda _
-                       ;; Tests require the installed executable.
-                       (setenv "PATH"
-                               (string-append #$output "/bin" ":"
-                                              (getenv "PATH"))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Set absolute store path to borg.
+              (substitute* "borgmatic/commands/borgmatic.py"
+                (("\\.get\\('local_path', 'borg'\\)")
+                 (string-append ".get('local_path', '"
+                                (search-input-file inputs "bin/borg")
+                                "')")))
+              (substitute* "tests/unit/commands/test_borgmatic.py"
+                (("(module.get_local_path.+ == )'borg'" all start)
+                 (string-append start "'"
+                                (search-input-file inputs "bin/borg")
+                                "'")))))
+          (add-before 'check 'set-path
+            (lambda _
+              ;; Tests require the installed executable.
+              (setenv "PATH"
+                      (string-append #$output "/bin" ":"
+                                     (getenv "PATH"))))))))
     (native-inputs
      (list python-flexmock
            python-pytest
