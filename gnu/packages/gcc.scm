@@ -1615,8 +1615,7 @@ also includes the druntime and phobos libraries."
 (define-public gdmd-15
   (make-gdmd gdc-15))
 
-(define-public gdmd
-  (make-gdmd gdc))
+(define-public gdmd gdmd-14)
 
 (define-public gm2
   (hidden-package
