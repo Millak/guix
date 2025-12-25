@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Pradana Aumars <paumars@courrier.dev>
 ;;; Copyright © 2023 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2025 Luca Di Sera <disera.luca@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -139,6 +140,9 @@ interactive and automated theorem proving.")
               (substitute* "src/lean.mk.in"
                (("SHELL = /usr/bin/env bash")
                 "SHELL = bash"))
+              (substitute* "src/stdlib.make.in"
+               (("/usr/bin/env bash")
+                "bash"))
               (setenv "SHELL" "bash -euo pipefail")))
           (replace 'check
             (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
