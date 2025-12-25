@@ -1557,20 +1557,19 @@ also includes the druntime and phobos libraries."
 (define-public gdc gdc-14)
 
 (define-public gdmd
-  (let ((commit "ff2c97a47408fb71c18a2d453294d18808a97cc5")
-        (revision "1"))
+  (let ((gdmd-version "0.25.0"))
     (package
       (name "gdmd")
-      (version (git-version "0.1.0" revision commit))
+      (version gdmd-version)
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                 (url "https://github.com/D-Programming-GDC/gdmd")
-                (commit commit)))
-         (file-name (git-file-name name version))
+                (commit (string-append "script-" gdmd-version))))
+         (file-name (git-file-name name gdmd-version))
          (sha256
-          (base32 "0pd70clk70069xcjysaas7zszzmigrcw1zl2xxv8kzdg7y7xrzvm"))))
+          (base32 "02zncqbjrrbh5w9s18frcylhn5x3qmqb3gdlr4kxd8dkajkr3vjj"))))
       (build-system copy-build-system)
       (arguments
        (list
