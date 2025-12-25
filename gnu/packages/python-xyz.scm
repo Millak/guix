@@ -8868,16 +8868,17 @@ written in pure Python.")
     (version "0.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "jinja2-time" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hackebrot/jinja2-time")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0h0dr7cfpjnjj8bgl2vk9063a53649pn37wnlkd8hxjy656slkni"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-arrow python-jinja2))
-    (home-page
-     "https://github.com/hackebrot/jinja2-time")
+        (base32 "1i7qihrs7wix7wjxlpif3iirhmbyahywpy5haj8abv4r3zbfafna"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-arrow python-jinja2))
+    (home-page "https://github.com/hackebrot/jinja2-time")
     (synopsis "Jinja2 Extension for Dates and Times")
     (description
      "This package provides an extension for the template engine Jinja2.  It
