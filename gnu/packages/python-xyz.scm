@@ -7204,20 +7204,26 @@ formats, including:
 (define-public python-polib
   (package
     (name "python-polib")
-    (version "1.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "polib" version))
-               (sha256
-                (base32
-                  "0aikb8gcarhifn3sadrbbs5czagih9hjv250gsrgy9v1d49pvn7s"))))
-    (build-system python-build-system)
-    (native-inputs (list python-setuptools-67))
-    (home-page "https://bitbucket.org/izi/polib/wiki/Home")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/izimobil/polib/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12n2skqj2qydcjp1r2ppzjcfc0fx4l23061x8bfqxx5pdvhnfpyb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "tests/tests.py")))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/izimobil/polib/")
     (synopsis "Manipulate, create and modify gettext files")
-    (description "Polib can manipulate any gettext format (po, pot and mo)
-files.  It can be used to create po files from scratch or to modify
-existing ones.")
+    (description
+     "Polib can manipulate any gettext format (po, pot and mo) files.  It can
+be used to create po files from scratch or to modify existing ones.")
     (license license:expat)))
 
 (define-public python-polling2
