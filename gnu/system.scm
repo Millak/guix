@@ -1113,6 +1113,9 @@ do
   fi
 done
 
+# Clean up after ourselves.
+unset GUIX_PROFILE
+
 # Prepend privileged programs.
 export PATH=/run/privileged/bin:$PATH
 
