@@ -4652,7 +4652,7 @@ state changes.")
 (define-public python-pymd4c
   (package
     (name "python-pymd4c")
-    (version "1.1.2")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -4661,11 +4661,12 @@ state changes.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wr2xg8iqzv3z4m2bknr0pjf3gknzj932li0yy9fmja7mvrawlhw"))))
+        (base32 "1pv8k2nfxnlwgmx13rl5vq9v64s564skpk0qnw41c2rhn13rxl4f"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ; No tests.
+    (arguments (list #:test-flags #~(list "test")))
     (inputs (list md4c))
-    (native-inputs (list pkg-config python-pkgconfig python-setuptools))
+    (native-inputs
+     (list pkg-config python-pkgconfig python-pytest python-setuptools))
     (home-page "https://github.com/dominickpastore/pymd4c")
     (synopsis "Python bindings for MD4C")
     (description
