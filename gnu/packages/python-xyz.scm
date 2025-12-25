@@ -8717,21 +8717,28 @@ provides Python-specific tags that represent an arbitrary Python object.")
 (define-public python-crossenv
   (package
     (name "python-crossenv")
-    (version "1.5.0")
+    (version "1.6.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "crossenv" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/benfogle/crossenv")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0f9x3f506pl45ip1nm3fx8gzwm1hr7w1b0bib4kg74zph7jmz72x"))))
-    (build-system python-build-system)
+        (base32 "15mj5kfb30jj0m1jj8qz19zdf53380j14hzj2rx13ilnr1d7j6rn"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f)) ; tests not distributed on pypi
+     (list
+      ;; XXX: Running test require setting environment variables for
+      ;; architectures.
+      #:tests? #f))
+    (native-inputs (list python-hatchling))
     (home-page "https://github.com/benfogle/crossenv")
     (synopsis "Cross-compiling virtualenv for Python")
-    (description "This package is a tool for cross-compiling extension
-modules.  It creates a special virtual environment such that @command{pip} or
+    (description
+     "This package is a tool for cross-compiling extension modules.  It
+creates a special virtual environment such that @command{pip} or
 @file{setup.py} will cross compile packages for you, usually with no further
 work on your part.")
     (license license:expat)))
