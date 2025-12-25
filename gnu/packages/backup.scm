@@ -1219,9 +1219,9 @@ compression parameters used by Gzip.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: all tests fail with error: AttributeError: module
-      ;; '_pytest.runner' has no attribute 'call_runtest_hook'.
-      #:tests? #f
+      #:test-flags
+      ;; TODO: Disable failing test.
+      #~(list "-k" "not test_borgmatic_version_matches_news_version")
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'configure
                      (lambda* (#:key inputs #:allow-other-keys)
@@ -1238,10 +1238,10 @@ compression parameters used by Gzip.")
                                          "'")))))
                    (add-before 'check 'set-path
                      (lambda _
-                         ;; Tests require the installed executable.
-                         (setenv "PATH"
-                                 (string-append #$output "/bin" ":"
-                                                (getenv "PATH"))))))))
+                       ;; Tests require the installed executable.
+                       (setenv "PATH"
+                               (string-append #$output "/bin" ":"
+                                              (getenv "PATH"))))))))
     (native-inputs
      (list python-flexmock
            python-pytest
