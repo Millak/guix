@@ -28,7 +28,7 @@
 ;;; Copyright © 2024 Timothee Mathieu <timothee.mathieu@inria.fr>
 ;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
 ;;; Copyright © 2024, 2025 David Elsing <david.elsing@posteo.net>
-;;; Copyright © 2024 Andy Tai <atai@atai.org>
+;;; Copyright © 2024, 2025 Andy Tai <atai@atai.org>
 ;;; Copyright © 2025 Lapearldot <lapearldot@disroot.org>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
@@ -4321,6 +4321,98 @@ frameworks, and the performance- and efficiency-focused hardware backends.
 TVM works with deep learning frameworks to provide end to end compilation to
 different backends")
       (license license:asl2.0))))
+
+(define-public koboldcpp
+  (package
+    (name "koboldcpp")
+    (version "1.105.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/LostRuins/koboldcpp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13ihvqxbf1gl3bnml4cn403z9nvwwc8vfc26a18wzanbkszfjylv"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no tests
+      #:imported-modules `(,@%default-gnu-imported-modules
+                           (guix build python-build-system))
+      #:modules '((guix build gnu-build-system)
+                  ((guix build python-build-system) #:prefix python:)
+                  (guix build utils))
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              "LLAMA_VULKAN=1"
+              "LLAMA_PORTABLE=1"
+              "LLAMA_USE_BUNDLED_GLSLC=0")    ;; TODO: add CLBLAS
+      #:phases
+      (with-extensions (list (pyproject-guile-json))
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (replace 'install
+              (lambda _
+                (for-each
+                 (lambda (f)
+                   (install-file f (string-append #$output "/bin")))
+                 (append (list "koboldcpp.py"
+                               "vulkan-shaders-gen"
+                               "vulkan-shaders-gen-noext")
+                         ;; koboldcpp.py expects .so's
+                         ;; to be in the same directory
+                         (find-files "." "\\.so$")))))
+            (add-after 'install 'python-wrap
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (wrap-program (search-input-file outputs "bin/koboldcpp.py")
+                  `("GUIX_PYTHONPATH" =
+                    (,(getenv "GUIX_PYTHONPATH")
+                     ,(python:site-packages inputs outputs))))))))))
+    (inputs
+     (list bash-minimal
+           openblas
+           python
+           python-customtkinter
+           spirv-headers
+           spirv-tools
+           vulkan-headers
+           vulkan-loader)) ;TODO: add OpenCL
+    (native-inputs
+     (list shaderc))
+    (properties '((tunable? . #t)))
+    (home-page "https://github.com/lostruins/koboldcpp")
+    (synopsis "AI text-generation software for GGML and GGUF models")
+    (description "KoboldCpp is an easy-to-use AI text-generation software for
+GGML and GGUF models, builds off llama.cpp and adds many additional features:
+
+@itemize
+@item Runs on CPU or GPU, supports full or partial offloaded
+@item LLM text generation (Supports all GGML and GGUF models, backwards
+compatibility with ALL past models)
+@item Image Generation (Stable Diffusion 1.5, SDXL, SD3, Flux)
+@item Speech-To-Text (Voice Recognition) via Whisper
+@item Text-To-Speech (Voice Generation) via OuteTTS, Kokoro, Parler and Dia
+@item Provides many compatible APIs endpoints for many popular webservices
+(KoboldCppApi OpenAiApi OllamaApi A1111ForgeApi ComfyUiApi
+WhisperTranscribeApi XttsApi OpenAiSpeechApi)
+@item Bundled KoboldAI Lite UI with editing tools, save formats, memory,
+world info, author's note, characters, scenarios
+@item Includes multiple modes (chat, adventure, instruct, storywriter)
+and UI Themes (aesthetic roleplay, classic writer, corporate assistant
+messsenger)
+@item Supports loading Tavern Character Cards, importing many different
+data formats from various sites, reading or exporting JSON savefiles
+and persistent stories
+@item Many other features including new samplers, regex support
+websearch, RAG via TextDB, image recognition/vision and more
+@end itemize
+
+All up-to-date GGUF models are supported, and KoboldCpp also includes backward
+compatibility for older versions/legacy GGML models.")
+    (license (list license:agpl3 license:expat))))
+
 
 (define-public foxi
   (let
