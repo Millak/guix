@@ -463,6 +463,15 @@ signals and slots system.")
     (home-page "https://www.boost.org")
     (synopsis "Boost C++ libraries with inclusion of Boost.MPI")))
 
+(define-public boost-mpi-numpy
+  (package
+    (inherit boost-mpi)
+    (name "boost-mpi-numpy")
+    (inputs
+     (modify-inputs (package-inputs boost-mpi)
+       (append python-numpy)))
+    (synopsis "Boost C++ libraries with inclusion of Boost.MPI and Boost.NumPy")))
+
 (define-public mdds
   (package
     (name "mdds")
