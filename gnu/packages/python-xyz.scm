@@ -29217,9 +29217,73 @@ Its algorithms are based on the kakasi library, which is written in C.")
 implementation of the D-Bus protocol.")
     (license license:expat)))
 
+(define python-dbusmock-check-phase
+  #~(lambda* (#:key tests? #:allow-other-keys)
+      (when tests?
+        (match (primitive-fork)
+          (0 ;child process
+           (execlp "pytest" "pytest" "-vv"))
+          (pytest-pid
+           (let loop ()
+             ;; Reap child processes; otherwise, python-dbusmock
+             ;; would waste time polling for the dbus processes
+             ;; it spawns to be reaped, in vain.
+             (match (waitpid WAIT_ANY)
+               ((pid . status)
+                (if (= pid pytest-pid)
+                    (unless (zero? status)
+                      (error "`pytest' exited with status"
+                             status))
+                    (loop))))))))))
+
 (define-public python-dbusmock
   (package
     (name "python-dbusmock")
+    (version "0.37.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/martinpitt/python-dbusmock")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a70gi3qgjblg9z9id9z0fy3vlhb1cqbmmny14bqhv79qqskspj3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:modules `((guix build pyproject-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "tests/test_api.py"
+                (("/usr/bin/python3")
+                 (which "python3")))
+              (substitute* "dbusmock/testcase.py"
+                (("\"dbus-daemon\"")
+                 (object->string
+                  (search-input-file inputs "/bin/dbus-daemon"))))))
+          (replace 'check #$python-dbusmock-check-phase))))
+    (native-inputs (list python-pytest python-setuptools upower which))
+    (inputs (list dbus))
+    (propagated-inputs (list python-dbus-python python-pygobject))
+    (home-page "https://github.com/martinpitt/python-dbusmock")
+    (synopsis "Python library for mock D-Bus objects")
+    (description
+     "python-dbusmock allows for the easy creation of mock objects on D-Bus.
+This is useful for writing tests for software which talks to D-Bus services
+such as upower, systemd, logind, gnome-session or others, and it is hard (or
+impossible without root privileges) to set the state of the real services to
+what you expect in your tests.")
+    (license license:lgpl3+)))
+
+(define-public python-dbusmock-minimal
+  (package
+    (inherit python-dbusmock)
+    (name "python-dbusmock-minimal")
     (version "0.30.0")
     (source
      (origin
@@ -29230,65 +29294,31 @@ implementation of the D-Bus protocol.")
          "1hanz6x76jq66ypdirga5h15zjs67kwysl6rmsf0i22dbdqrxdfv"))))
     (build-system python-build-system)
     (arguments
-     (list #:modules `((guix build python-build-system)
-                       (guix build utils)
-                       (ice-9 match))
-
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-paths
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* "tests/test_api.py"
-                     (("/usr/bin/python3")
-                      (which "python3")))
-                   (substitute* "tests/test_code.py"
-                     (("/bin/bash")
-                      (which "bash")))
-                   (substitute* "dbusmock/testcase.py"
-                     (("'dbus-daemon'")
-                      (object->string
-                       (search-input-file inputs "/bin/dbus-daemon"))))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (match (primitive-fork)
-                       (0 ;child process
-                        (execlp "pytest" "pytest" "-vv"))
-                       (pytest-pid
-                        (let loop ()
-                          ;; Reap child processes; otherwise, python-dbusmock
-                          ;; would waste time polling for the dbus processes
-                          ;; it spawns to be reaped, in vain.
-                          (match (waitpid WAIT_ANY)
-                            ((pid . status)
-                             (if (= pid pytest-pid)
-                                 (unless (zero? status)
-                                   (error "`pytest' exited with status"
-                                          status))
-                                 (loop)))))))))))))
-    (native-inputs
-     (list dbus python-pytest upower which))
+     (list
+      #:tests? #f
+      #:modules `((guix build python-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "tests/test_api.py"
+                (("/usr/bin/python3")
+                 (which "python3")))
+              (substitute* "tests/test_code.py"
+                (("/bin/bash")
+                 (which "bash")))
+              (substitute* "dbusmock/testcase.py"
+                (("'dbus-daemon'")
+                 (object->string
+                  (search-input-file inputs "/bin/dbus-daemon"))))))
+          (replace 'check #$python-dbusmock-check-phase))))
+    (native-inputs (list which))
     (inputs
      (list dbus))
     (propagated-inputs
      (list python-dbus-python python-pygobject))
-    (home-page "https://github.com/martinpitt/python-dbusmock")
-    (synopsis "Python library for mock D-Bus objects")
-    (description "python-dbusmock allows for the easy creation of mock objects on
-D-Bus.  This is useful for writing tests for software which talks to D-Bus
-services such as upower, systemd, logind, gnome-session or others, and it is
-hard (or impossible without root privileges) to set the state of the real
-services to what you expect in your tests.")
-    (license license:lgpl3+)))
-
-(define-public python-dbusmock-minimal
-  (package
-    (inherit python-dbusmock)
-    (name "python-dbusmock-minimal")
-    (arguments
-     (substitute-keyword-arguments (package-arguments python-dbusmock)
-       ((#:tests? _ #t) #f)))
-    (native-inputs (list which))
     (properties '((hidden? . #t)))))
 
 (define-public python-jsonplus
