@@ -4276,6 +4276,42 @@ alternative layouts Dvorak and Colemak, as well as for the numpad.  Tutorials
 are primarily in English, however some in other languages are provided.")
     (license license:gpl3+)))
 
+(define-public libsquish
+  (package
+    (name "libsquish")
+    (version "1.15")
+    (source
+     (origin
+       (method url-fetch/tarbomb)
+       (uri (string-append "mirror://sourceforge/libsquish/libsquish-" version
+                           ".tgz"))
+       (sha256
+        (base32 "0sbj2k98ak1jabna7h1vfakdvjb7d7a81l3178c6d230pbp9d1v2"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests defined in Makefile, extra/squishtest.cpp fails
+                  ; to build at all
+      #:make-flags
+      #~(list (string-append "INSTALL_DIR=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'bootstrap 'use-shared
+            (lambda _
+              (substitute* "config"
+                (("USE_SHARED .*")
+                 "USE_SHARED ?= 1"))))
+          (delete 'configure)))) ;no configure script
+    (home-page "https://sourceforge.net/projects/libsquish/")
+    (synopsis "DXT texture compression library")
+    (description
+     "@code{libsquish} is a lossy software DXT texture compression library.
+It implements the 3 useful DXT flavours (1,3,5) and has SIMD support for
+x86 (SSE) and powerpc (Altivec).  It can be used (as a much slower software
+fallback) instead of the hardware implementations present on most modern
+graphics chips.")
+    (license license:expat)))
+
 (define-public irrlicht
   (package
     (name "irrlicht")
