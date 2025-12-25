@@ -23688,6 +23688,31 @@ synchronizing plain text:
      "Go-Daemon is a library for writing system daemons in Go.")
     (license license:expat)))
 
+(define-public go-github-com-shibumi-go-pathspec
+  (package
+    (name "go-github-com-shibumi-go-pathspec")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/shibumi/go-pathspec")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wsnn0di87qdp171j8x27qzf9f59hdqc50jna9mj5iryzavxywk4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/shibumi/go-pathspec"))
+    (home-page "https://github.com/shibumi/go-pathspec")
+    (synopsis "Gitignore-style path pattern matching for Go")
+    (description
+     "This package provides gitignore-style path pattern matching in Go.
+ It implements the same matching rules used by @file{.gitignore} files to
+determine whether a file path matches a given pattern.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-shirou-gopsutil
   (package
     (name "go-github-com-shirou-gopsutil")
