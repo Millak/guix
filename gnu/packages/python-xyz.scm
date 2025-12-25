@@ -7232,14 +7232,18 @@ be used to create po files from scratch or to modify existing ones.")
     (version "0.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "polling2" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ddmee/polling2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0hp3238fv6k1qk43gv4jwnv1mwlkmx33akbj560b9nvsry1dmdwh"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #false)) ; no tests included
-    (native-inputs
-     (list python-mock python-pytest python-pytest-runner))
+        (base32 "17q5nw9wab9p092r2bvmnk5nrzlwg5by6wf5wkbxnsz100nww7la"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: Additional , in string comparison.
+     (list #:test-flags #~(list "-k" "not test_log_error_set_at_debug_level")))
+    (native-inputs (list python-mock python-pytest python-setuptools))
     (home-page "https://github.com/ddmee/polling2")
     (synopsis "Polling utility with many configurable options")
     (description "Polling2 is a utility used to wait for a function to return
