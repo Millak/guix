@@ -55,62 +55,12 @@
   #:use-module (gnu packages xorg)
   #:use-module (srfi srfi-1))
 
-(define-public d-tools
-  (package
-    (name "d-tools")
-    (version "2.105.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dlang/tools")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0hvz786k0pi8697x1vk9x5bx52jiy7pvi13wmfkx15ddvv0x5j33"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-tests
-                 (lambda _
-                   ;; Skip broken make ONESHELL shell test.
-                   (substitute* "rdmd_test.d"
-                     (("makeVersion = .*$") "makeVersion = \"skip\";"))))
-               (delete 'configure)
-               (replace 'build
-                 (lambda _
-                   (mkdir-p "bin")
-                   (setenv "CC" #$(cc-for-target))
-                   (setenv "LD" #$(ld-for-target))
-                   (invoke "ldc2" "rdmd.d" "--of" "bin/rdmd")
-                   (apply invoke "ldc2" "--of=bin/dustmite"
-                          (find-files "DustMite" ".*\\.d"))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "bin/rdmd" "rdmd_test.d" "bin/rdmd"
-                             "--rdmd-default-compiler" "ldmd2"))))
-               (replace 'install
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let* ((out (assoc-ref outputs "out"))
-                          (bin (string-append out "/bin"))
-                          (man (string-append out "/man")))
-                     (for-each delete-file (find-files "bin" "\\.o$"))
-                     (copy-recursively "bin" bin)
-                     (copy-recursively "man" man)))))))
-    (native-inputs
-     (list ldc
-           (module-ref (resolve-interface
-                        '(gnu packages commencement))
-                       'ld-gold-wrapper)))
-    (home-page "https://github.com/dlang/tools")
-    (synopsis "Useful D-related tools")
-    (description
-     "@code{d-tools} provides two useful tools for the D language: @code{rdmd},
-which runs D source files as scripts, and @code{dustmite}, which reduces D code
-to a minimal test case.")
-    (license license:boost1.0)))
+
+;; Compilers and tooling for the D programming language.
+;; Note: The GNU D compiler is defined in (gnu packages gcc) instead.
+
+
+;; LLVM-based D compiler
 
 ;; We use GDC, the D frontend for GCC, to bootstrap ldc.  We then use
 ;; ldc to bootstrap itself so that no reference remains to GDC.
@@ -378,8 +328,11 @@ integration tests...\n")
     (properties
      (alist-delete 'hidden? (package-properties ldc-bootstrap)))))
 
-;;; Bootstrap version of phobos that is built with GDC, using GDC's standard
-;;; library.
+
+;; Reference D compiler
+
+;; Bootstrap version of phobos that is built with GDC, using GDC's standard
+;; library.
 (define-public dmd-bootstrap
   (package
     ;; This package is purposefully named just "dmd" and not "dmd-bootstrap",
@@ -508,8 +461,8 @@ compiler for the D programming language.")
 
     (license license:boost1.0)))
 
-;;; Second bootstrap of DMD, built using dmd-bootstrap, with its shared
-;;; libraries preserved.
+;; Second bootstrap of DMD, built using dmd-bootstrap, with its shared
+;; libraries preserved.
 (define-public dmd
   (package
     (inherit dmd-bootstrap)
@@ -552,6 +505,9 @@ compiler for the D programming language.")
                      (replace "gdmd" dmd-bootstrap)))
     (properties
      (alist-delete 'hidden? (package-properties dmd-bootstrap)))))
+
+
+;; D related tools
 
 (define-public dub
   (package
@@ -602,6 +558,66 @@ The design emphasis is on maximum simplicity for simple projects,
 while providing the opportunity to customize things when
 needed.")
     (license license:expat)))
+
+(define-public d-tools
+  (package
+    (name "d-tools")
+    (version "2.105.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dlang/tools")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hvz786k0pi8697x1vk9x5bx52jiy7pvi13wmfkx15ddvv0x5j33"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-tests
+                 (lambda _
+                   ;; Skip broken make ONESHELL shell test.
+                   (substitute* "rdmd_test.d"
+                     (("makeVersion = .*$") "makeVersion = \"skip\";"))))
+               (delete 'configure)
+               (replace 'build
+                 (lambda _
+                   (mkdir-p "bin")
+                   (setenv "CC" #$(cc-for-target))
+                   (setenv "LD" #$(ld-for-target))
+                   (invoke "ldc2" "rdmd.d" "--of" "bin/rdmd")
+                   (apply invoke "ldc2" "--of=bin/dustmite"
+                          (find-files "DustMite" ".*\\.d"))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "bin/rdmd" "rdmd_test.d" "bin/rdmd"
+                             "--rdmd-default-compiler" "ldmd2"))))
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (bin (string-append out "/bin"))
+                          (man (string-append out "/man")))
+                     (for-each delete-file (find-files "bin" "\\.o$"))
+                     (copy-recursively "bin" bin)
+                     (copy-recursively "man" man)))))))
+    (native-inputs
+     (list ldc
+           (module-ref (resolve-interface
+                        '(gnu packages commencement))
+                       'ld-gold-wrapper)))
+    (home-page "https://github.com/dlang/tools")
+    (synopsis "Useful D-related tools")
+    (description
+     "@code{d-tools} provides two useful tools for the D language: @code{rdmd},
+which runs D source files as scripts, and @code{dustmite}, which reduces D code
+to a minimal test case.")
+    (license license:boost1.0)))
+
+
+;; D libraries
 
 (define-public gtkd
   (package
