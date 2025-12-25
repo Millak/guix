@@ -1266,7 +1266,7 @@ borgmatic is powered by borg.")
 (define-public vorta
   (package
     (name "vorta")
-    (version "0.10.3")
+    (version "0.11.1")
     ;; The test folder is not included in the PyPI archive.
     (source (origin
               (method git-fetch)
@@ -1276,7 +1276,7 @@ borgmatic is powered by borg.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0b4042a0lpbmwlmbh5559b2x9vr2055w6jjrs7088n45d7rkn4sn"))))
+                "16r9ch80i6nfngah634id16fqnmn62ayh60j62zxn5cfivcn3wsq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
