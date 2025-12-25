@@ -88,6 +88,27 @@
     (description "This package provides JSON support for Hare.")
     (license license:mpl2.0)))
 
+(define-public hare-irc
+  (package
+    (name "hare-irc")
+    (version "0.25.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~sircmpwn/hare-irc")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ani8prdwjsfh8iqn5kfmkiim9ihl8dvbr28g69c037f6gbdb08v"))))
+    (build-system hare-build-system)
+    (supported-systems %hare-supported-systems)
+    (home-page "https://sr.ht/~sircmpwn/hare-irc")
+    (synopsis "IRC client protocol implementation for Hare")
+    (description "This package provides an implementation of the IRC client
+protocol for Hare programs, based on the @url{ircdocs.horse} specifications.")
+    (license license:mpl2.0)))
+
 (define-public hare-scfg
   (package
     (name "hare-scfg")
