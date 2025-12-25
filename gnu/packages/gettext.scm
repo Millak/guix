@@ -234,36 +234,41 @@ color, font attributes (weight, posture), or underlining.")
 (define-public mdpo
   (package
     (name "mdpo")
-    (version "0.3.86") ;the last version without Rust
+    (version "2.1.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/mondeja/mdpo")
-              (commit (string-append "v" version))))
+             (url "https://github.com/mondeja/mdpo")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "130g8ggy0xgk5jmlx23569wmv9fz7fhm8qi46cjj7n4fxr0vnmyx"))))
+        (base32 "02i17xly3yvfk6lpjl6sc15xzq9s3zc814siag1winyqckzl74gj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 91 passed
       #:test-flags
-      ;; XXX: The Most of the tests fail because 0.3.86 was released in 2022
-      ;; and depends on python-pytest@6.2.4.
-      ;; 
-      ;; OSError: pytest: reading from stdin while output is captured!
-      ;; Consider using `-s`.
-      #~(list "--ignore=test/test_integration/"
-              "--ignore=test/test_unit/test_md2po/"
-              "--ignore=test/test_unit/test_md2po2md/"
-              "--ignore=test/test_unit/test_mdpo2html/"
-              "--ignore=test/test_unit/test_po2md/")))
+      #~(list
+         ;; XXX: Most failing test are caused by improper line wrapping.
+         "--ignore=tests/test_unit/test_md2po2md/test_md2po2md_cli.py"
+         "--ignore=tests/test_unit/test_text.py"
+         "--ignore=tests/test_unit/test_command.py"
+         "--ignore=tests/test_unit/test_md2po/test_location.py"
+         "-k" "not test_mark_not_found_as_obsolete")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((".*contextlib-chdir.*") ""))))))) ; Uneeded backport.
     (native-inputs
-     (list python-pytest
+     (list python-hatchling
+           python-pytest
            python-setuptools))
-    (inputs
-     (list python-polib
+    (propagated-inputs
+     (list python-importlib-metadata-argparse-version
+           python-md-ulb-pwrap
+           python-polib
            python-pymd4c))
     (home-page "https://github.com/mondeja/mdpo")
     (synopsis "Markdown file translation utilities using pofiles")
