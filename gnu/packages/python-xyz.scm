@@ -177,6 +177,7 @@
 ;;; Copyright © 2025 Hennadii Stepanov <hebasto@gmail.com>
 ;;; Copyright © 2025 Luca Kredel <luca.kredel@web.de>
 ;;; Copyright © 2025 Isidor Zeuner <guix@quidecco.pl>
+;;; Copyright © 2025 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -858,6 +859,51 @@ Configurations:
      "Curtsies is a Python library for interacting with the terminal.  It
 features string-like objects which carry formatting information, per-line
 fullscreen terminal rendering, and keyboard input event reporting.")
+    (license license:expat)))
+
+(define-public python-customtkinter
+  (package
+    (name "python-customtkinter")
+    (version "5.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/TomSchimansky/CustomTkinter")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vma6x8zg7d5h2ggphi6m7bnqzskxysi9rcpkr6rrgylfrsv03fn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-xorg-server
+            (lambda _
+              (setenv "HOME" "/tmp")
+              ;; The test suite requires a running X server.
+              (system "Xvfb :99 -screen 0 1024x768x24 &")
+              (setenv "DISPLAY" ":99.0")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "test"
+                  (invoke "python" "unit_tests/test_all.py"))))))))
+    (propagated-inputs
+     (list (list python "tk")
+           python-darkdetect
+           python-packaging))
+    (native-inputs
+     (list python-setuptools
+           xorg-server-for-tests))
+    (home-page "https://customtkinter.tomschimansky.com")
+    (synopsis
+     "Python @acronym{User Interface, UI} library based on Tkinter")
+    (description
+     "CustomTkinter provides fully customizable widgets, created and used
+like normal Tkinter widgets, which can also be used in combination with normal
+Tkinter elements.")
     (license license:expat)))
 
 (define-public python-darkdetect
