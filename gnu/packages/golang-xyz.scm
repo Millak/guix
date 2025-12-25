@@ -13283,6 +13283,37 @@ ABI}.")
                  (substitute* (find-files "." "\\.go$")
                    (("dario.cat/mergo") import-path)))))))))))
 
+(define-public go-github-com-in-toto-attestation
+  (package
+    (name "go-github-com-in-toto-attestation")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/in-toto/attestation")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "103kkbjdi1frn32afaqlnv4y61xcqvylrvcwf984015r1958kgi4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/in-toto/attestation"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-google-golang-org-protobuf))
+    (home-page "https://github.com/in-toto/attestation")
+    (synopsis "In-toto attestation format specification and Go bindings")
+    (description
+     "This package provides the in-toto attestation format specification and
+Go language bindings.  In-toto attestations are authenticated metadata about
+software artifacts, providing verifiable claims about how software was
+produced.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-influxdata-cron
   (package
     (name "go-github-com-influxdata-cron")
