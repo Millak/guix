@@ -18941,8 +18941,8 @@ given location at the time of the unlock attempt.
 ;; Following definition would be equivalent to running:
 ;;   cryptsetup open --key-file /crypto.key /dev/sdb1 data
 (mapped-device
- (source "/dev/sdb1)
- (target "data)
+ (source "/dev/sdb1")
+ (target "data")
  (type luks-device-mapping)
  (arguments '(#:key-file "/crypto.key")))
 @end lisp
