@@ -23981,6 +23981,111 @@ file is used.
 @end table
 @end deftp
 
+@node Authorization Services
+@subsection Authorization Services
+
+@subsubheading OpenDoas Service
+
+@url{https://github.com/Duncaen/OpenDoas,OpenDoas} is a portable fork of
+OpenBSD's @command{doas}, a minimal replacement for the venerable sudo.
+
+A simple ruleset allowing users in the wheel group to execute arbitrary
+commands, and running @code{halt} and @code{reboot} without being prompted
+for a password can be specified like this:
+
+@lisp
+(service opendoas-service-type
+         (opendoas-configuration
+           (rules (cons (opendoas-permit-rule
+                         (identity ":wheel"))
+                        (map (lambda (cmd)
+                               (opendoas-permit-rule
+                                (identity ":wheel")
+                                (nopass? #t)
+                                (command cmd)
+                                (args '())))
+                             `("halt" "reboot"))))))
+@end lisp
+
+@defvar opendoas-service-type
+The OpenDoas service.  Takes an @code{opendoas-configuration} as its value.
+By default, this service configures OpenDoas in /etc/doas.conf and adds
+it to /run/privileged with its setuid bit set.
+@end defvar
+
+@deftp {Data Type} opendoas-configuration
+The configuration for OpenDoas, with the following fields:
+
+@table @asis
+@item @code{package} (default: @code{opendoas}) (type: package)
+The OpenDoas package to use.
+
+@item @code{rules} (type: list-of-opendoas-rule)
+List of permit and/or deny rules used by OpenDoas. Defaults to @code{(list (opendoas-permit-rule (identity ":wheel")))}.
+@end table
+@end deftp
+
+@deftp {Data Type} @code{opendoas-permit-rule}
+ Permit rule for OpenDoas, with the following fields:
+
+@table @asis
+@item @code{nopass?} (default: @code{#f}) (type: boolean)
+ Whether the user should be permitted to run the command without a password.
+
+@item @code{nolog?} (default: @code{#f}) (type: boolean)
+ Wheter sucessful command execution should be logged.
+
+@item @code{persist?} (default: @code{#f}) (type: boolean)
+ When true, ther after the user sucessfully authenticates, do not ask for
+a password again for some time.
+
+@item @code{keepenv?} (default: @code{#f}) (type: boolean)
+ Wheter environment variables other than those listed in doas should be
+retained when creating the enviroment for the new process.
+
+@item @code{identity} (type: string)
+ The username to match. Groups may be specified by prepending a colon ':'.
+
+@item @code{as-user} (type: maybe-string)
+ The target user the running user is allowed to run the command as.  The
+default is all users.
+
+@item @code{command} (type: maybe-string)
+ The command the user is allowed to run.  The default is all commands.
+It's preferable to have commands specifieds by absolute paths.  If a relative
+path is specified, only a restricted PATH will be searched.
+
+@item @code{args} (type: maybe-list-of-string)
+ Arguments to command.  The command arguments provided by the user need to
+match those specified.  The keyword args alone means that command must be run
+without arguments.
+
+@item @code{setenv} (type: maybe-alist)
+ Set the specified variables.  Variables may also be removed by setting them
+to #f, or simply exported, by setting them to #t.  If the first character of the
+value is @code{$} then the value to be set is taken from the existing environment
+variable with the given name.
+@end table
+@end deftp
+
+@deftp {Data Type} @code{opendoas-deny-rule}
+Deny rule for OpenDoas, with the following fields:
+
+@table @asis
+@item @code{identity} (type: string)
+
+@item @code{as-user} (type: maybe-string)
+
+@item @code{command} (type: maybe-string)
+
+@item @code{args} (type: maybe-list-of-string)
+@end table
+
+All the above as in opendoas-permit-rule.
+
+Other services are able to extend @code{opendoas-service-type} by supplying to
+it a list of opendoas-rules.
+@end deftp
 
 @node Networking Services
 @subsection Networking Services

@@ -5,6 +5,7 @@
 ;;; Copyright © 2023 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2024 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2024 Richard Sent <richard@freakingpenguin.com>
+;;; Copyright © 2025 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43,7 +44,10 @@
   #:use-module (guix modules)
   #:use-module (guix packages)
   #:use-module (guix records)
+  #:use-module (gnu system privilege)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
+  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (ice-9 vlist)
   #:export (log-rotation-configuration
@@ -92,6 +96,13 @@
             unattended-upgrade-configuration-system-expiration
             unattended-upgrade-configuration-maximum-duration
             unattended-upgrade-configuration-log-file
+
+            opendoas-service-type
+            opendoas-configuration
+            opendoas-configuration-opendoas
+            opendoas-configuration-rules
+            opendoas-permit-rule
+            opendoas-deny-rule
 
             resize-file-system-service-type
             resize-file-system-configuration
@@ -591,6 +602,207 @@ which lets you search for packages that provide a given file.")
     "Periodically upgrade the system from the current configuration.")
    (default-value (unattended-upgrade-configuration))))
 
+
+;;;
+;;; Opendoas.
+;;;
+
+(define (setenv-pair? x)
+  (and (pair? x)
+       (string? (car x))
+       (or (string? (cdr x))
+           (boolean? (cdr x)))))
+
+(define setenv-list?
+  (list-of setenv-pair?))
+
+(define (serialize-setenv-list field-name val)
+  (map (match-lambda
+         ((var . #t) var)
+         ((var . #f) (string-append "-" var))
+         ((var . value) (string-append var "=" value)))
+       val))
+
+(define-maybe list-of-strings)
+(define-maybe setenv-list)
+(define-maybe string)
+
+(define-configuration/no-serialization opendoas-permit-rule
+  (nopass?
+   (boolean #f)
+   "Whether the user should be permitted to run the command without a password.")
+  (nolog?
+   (boolean #f)
+   "Wheter sucessful command execution should be logged.")
+  (persist?
+   (boolean #f)
+   "After the user sucessfully authenticates, do not ask for a password again
+for some time.")
+  (keepenv?
+   (boolean #f)
+   "Wheter environment variables other than those listed in doas should be
+retained when creating the enviroment for the new process.")
+  (identity
+   string
+   "The username to match. Groups may be specified by prepending a colon ':'."
+   empty-serializer)
+  (as-user
+   maybe-string
+   "The target user the running user is allowed to run the command as.  The
+default is all users."
+   empty-serializer)
+  (command
+   maybe-string
+   "The command the user is allowed to run.  The default is all commands.
+It's preferable to have commands specifieds by absolute paths. If a relative
+path is specified, only a restricted PATH will be searched."
+   empty-serializer)
+  (args
+   maybe-list-of-strings
+   "Arguments to command.  The command arguments provided by the user need to
+match those specified.  The keyword args alone means that command must be run
+without arguments."
+   empty-serializer)
+  (setenv
+   maybe-setenv-list
+   "Set the specified variables.  Variables may also be removed by setting them
+to #f, or simply exported, by setting them to #t.  If the first character of the
+value is @code{$} then the value to be set is taken from the existing environment
+variable with the given name."))
+
+(define-configuration/no-serialization opendoas-deny-rule
+  (identity
+   string
+   "The username to match. Groups may be specified by prepending a colon ':'."
+   empty-serializer)
+  (as-user
+   maybe-string
+   "The target user the running user is allowed to run the command as.  The
+default is all users."
+   empty-serializer)
+  (command
+   maybe-string
+   "The command the user is allowed to run.  The default is all commands.
+It's preferable to have commands specifieds by absolute paths. If a relative
+path is specified, only a restricted PATH will be searched."
+   empty-serializer)
+  (args
+   maybe-string
+   "Arguments to command.  The command arguments provided by the user need to
+match those specified.  The keyword args alone means that command must be run
+without arguments."
+   empty-serializer))
+
+(define (opendoas-rule? x)
+  (or (opendoas-permit-rule? x)
+      (opendoas-deny-rule? x)))
+
+(define* (if-set val #:optional (proc identity))
+  "Apply PROC to VAL if VAL is not unset, otherwise returns #f."
+  (if (maybe-value-set? val) (proc val) #f))
+
+(define serialize-opendoas-permit-rule
+  (match-record-lambda <opendoas-permit-rule>
+    (identity as-user command args setenv keepenv? nopass? nolog? persist?)
+    (format #f "permit ~:[~;keepenv ~]~
+                       ~:[~;nopass ~]~
+                       ~:[~;nolog ~]~
+                       ~:[~;persist ~]~
+                       ~@[setenv {~{ ~a~} } ~]~
+                       ~a~@[ as ~a~]~
+                         ~@[ cmd ~a~]~
+                         ~@[ args~{ ~a~}~]~%"
+            keepenv?
+            nopass?
+            nolog?
+            persist?
+            (if-set setenv (cut serialize-setenv-list #f <>))
+            identity
+            (if-set as-user)
+            (if-set command)
+            (if-set args))))
+
+(define serialize-opendoas-deny-rule
+  (match-record-lambda <opendoas-deny-rule>
+    (identity as-user command args)
+    (format #f "deny ~a~@[ as ~a~]~@[ cmd ~a~]~@[ args~{ ~a~}~]~%"
+            identity
+            (if-set as-user)
+            (if-set command)
+            (if-set args))))
+
+(define (serialize-opendoas-rule rule)
+  (cond ((opendoas-permit-rule? rule)
+          (serialize-opendoas-permit-rule rule))
+         ((opendoas-deny-rule? rule)
+          (serialize-opendoas-deny-rule rule))))
+
+(define list-of-opendoas-rules?
+  (list-of opendoas-rule?))
+
+(define-configuration/no-serialization opendoas-configuration
+  (opendoas
+    (package opendoas)
+    "The opendoas package to be used.")
+  (rules
+    (list-of-opendoas-rules
+     (list (opendoas-permit-rule
+            (identity ":wheel"))))
+    "The list of permit and/or deny rules used by opendoas."))
+
+(define (opendoas-extensions original-config extension-configs)
+  (opendoas-configuration
+    (inherit original-config)
+    (rules (append (opendoas-configuration-rules original-config)
+                   (reverse (apply append extension-configs))))))
+
+(define (opendoas-activation config)
+  ;; Opendoas requires this file to be owned by root. So we install this file
+  ;; on activation rather than by etc-service-type to ensure proper working on
+  ;; unprivileged daemon setups
+  #~(let* ((doas.conf "/etc/doas.conf")
+           (root:pwnam (getpwnam "root"))
+           (root:uid (passwd:uid root:pwnam))
+           (root:gid (passwd:gid root:pwnam)))
+      ;; Just being extra cautious
+      (mkdir-p/perms "/etc" root:pwnam #o755)
+      ;; If /etc/doas.conf is a symlink, copy-file fails to replace it, so delete
+      ;; it before copying the new file there
+      (when (file-exists? doas.conf) (delete-file doas.conf))
+      (copy-file
+       #$(plain-file "doas.conf"
+           (apply string-append
+                  (map serialize-opendoas-rule
+                       (opendoas-configuration-rules config))))
+       doas.conf)
+      (chown doas.conf root:uid root:gid)
+      (chmod doas.conf #o400)))
+
+(define (opendoas-privileged-programs config)
+  (let ((opendoas (opendoas-configuration-opendoas config)))
+    (list (privileged-program
+            (program (file-append opendoas "/bin/doas"))
+            (setuid? #t)))))
+
+(define (opendoas-packages config)
+  (list (opendoas-configuration-opendoas config)))
+
+(define opendoas-service-type
+  (service-type
+   (name 'opendoas)
+   (extensions
+    (list (service-extension activation-service-type
+                             opendoas-activation)
+          (service-extension profile-service-type
+                             opendoas-packages)
+          (service-extension privileged-program-service-type
+                             opendoas-privileged-programs)))
+   (compose identity)
+   (extend opendoas-extensions)
+   (default-value (opendoas-configuration))
+   (description "Set /etc/doas.conf")))
+
+
 ;;;
 ;;; Resize file system.
 ;;;
