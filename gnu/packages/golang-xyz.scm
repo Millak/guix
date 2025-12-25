@@ -25992,6 +25992,35 @@ recommended.")
 emulator.")
     (license license:expat)))
 
+(define-public go-github-com-transparency-dev-formats
+  (package
+    (name "go-github-com-transparency-dev-formats")
+    (version "0.0.0-20251222000000-0e991b4666d9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/transparency-dev/formats")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16w22jb64062waxhrhyyb16nv2cm2dgyklgjgw6sg3dhnzh8ji65"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/transparency-dev/formats"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-golang-org-x-mod))
+    (home-page "https://github.com/transparency-dev/formats")
+    (synopsis "Data formats for transparency logs")
+    (description
+     "This package provides common data formats and utilities for
+transparency log implementations, including checkpoint and proof formats.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-transparency-dev-merkle
   (package
     (name "go-github-com-transparency-dev-merkle")
