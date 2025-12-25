@@ -64,6 +64,7 @@
   #:use-module ((guix modules) #:select (source-module-closure))
   #:use-module (guix packages)
   #:use-module (guix derivations)
+  #:use-module (guix platform)
   #:use-module (guix records)
   #:use-module (guix deprecation)
   #:use-module (guix utils)
@@ -148,25 +149,36 @@
 ;;;
 ;;; Code:
 
-(define %default-xorg-modules
-  ;; Default list of modules loaded by the server.  When multiple drivers
-  ;; match, the first one in the list is loaded.
-  (list xf86-video-vesa
-        xf86-video-fbdev
-        xf86-video-amdgpu
-        xf86-video-ati
-        xf86-video-cirrus
-        xf86-video-intel
-        xf86-video-mach64
-        xf86-video-nouveau
-        xf86-video-nv
-        xf86-video-sis
+(define* (default-xorg-modules
+           #:optional
+           (system (or (and=>
+                        (%current-target-system)
+                        platform-target->system)
+                       (%current-system))))
+  "Default list of modules loaded by the server.  When multiple drivers match,
+the first one in the list is loaded."
+  ;; Return only supported packages, because some aren't supported
+  ;; on all architectures.
+  (filter (cut supported-package? <> system)
+          (list xf86-video-vesa
+                xf86-video-fbdev
+                xf86-video-amdgpu
+                xf86-video-ati
+                xf86-video-cirrus
+                xf86-video-intel
+                xf86-video-mach64
+                xf86-video-nouveau
+                xf86-video-nv
+                xf86-video-sis
 
-        ;; Libinput is the new thing and is recommended over evdev/synaptics:
-        ;; <http://who-t.blogspot.fr/2015/01/xf86-input-libinput-compatibility-with.html>.
-        xf86-input-libinput
-        xf86-input-evdev
-        xf86-input-mouse))
+                ;; Libinput is the new thing and is recommended over evdev/synaptics:
+                ;; <http://who-t.blogspot.fr/2015/01/xf86-input-libinput-compatibility-with.html>.
+                xf86-input-libinput
+                xf86-input-evdev
+                xf86-input-mouse)))
+
+(define-syntax %default-xorg-modules
+  (identifier-syntax (default-xorg-modules)))
 
 (define %default-xorg-fonts
   ;; Default list of fonts available to the X server.

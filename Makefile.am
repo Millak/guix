@@ -1142,12 +1142,18 @@ system_flags = $(foreach system,$(1),-s $(system))
 #   5. Build the installation and VM images.  The images will run 'guix'
 #      corresponding to 'vX.Y.Z' + 1 commit, and they will install 'vX.Y.Z'.
 #
-# This 'release' target takes care of everything and copies the resulting
-# files to $(releasedir).
+# This is split into two targets, because a commit is made that has to be
+# pushed to Guix.
+# First, 'prepare-release' should be run, doing steps 1 and 2.
+# Then, the resulting commit should be pushed so that it's available
+# to be downloaded for the system images.
+# Afterwards, the 'release' target takes care of the rest.  This 'release'
+# target takes care of everything and copies the resulting files to
+# $(releasedir).
 #
 # XXX: Depend on 'dist' rather than 'distcheck' to work around the Gettext
 # issue described at <https://savannah.gnu.org/bugs/index.php?51027>.
-release: dist-with-updated-version all
+prepare-release: dist-with-updated-version all
 	@if ! git diff-index --quiet HEAD; then			\
 	  echo "There are uncommitted changes; stopping." >&2 ;	\
 	  exit 1 ;						\
@@ -1165,48 +1171,26 @@ release: dist-with-updated-version all
 	$(top_builddir)/pre-inst-env guix build guix	\
 	      $(call system_flags,$(SUPPORTED_SYSTEMS))	\
 	      -v1 --no-grafts --fallback
-# Generate the binary release tarballs.
-	rm -f $(BINARY_TARBALLS)
-	$(MAKE) $(BINARY_TARBALLS)
-	for system in $(SUPPORTED_SYSTEMS) ; do					\
-	  mv "guix-binary.$$system.tar.xz"					\
-	      "$(releasedir)/guix-binary-$(PACKAGE_VERSION).$$system.tar.xz" ;	\
-	done
-# Build 'current-guix' to speed things up for the next step.
-	$(top_builddir)/pre-inst-env guix build				\
-	      -e '((@ (gnu packages package-management) current-guix))'	\
-	      $(call system_flags,$(GUIX_SYSTEM_INSTALLER_SYSTEMS))	\
-	      -v1 --no-grafts --fallback
-# Generate the ISO installation images.
-	for system in $(GUIX_SYSTEM_INSTALLER_SYSTEMS) ; do				\
-	  GUIX_DISPLAYED_VERSION="`git describe --match=v* | sed -'es/^v//'`" ;		\
-	  image=`$(top_builddir)/pre-inst-env						\
-	    guix system image -t iso9660						\
-	    --label="GUIX_$${system}_$(VERSION)"					\
-            --system=$$system --fallback						\
-	    gnu/system/install.scm` ;							\
-	  if [ ! -f "$$image" ] ; then							\
-	    echo "failed to produce Guix installation image for $$system" >&2 ;		\
-	    exit 1 ;									\
-	  fi ;										\
-	  cp "$$image" "$(releasedir)/$(GUIX_SYSTEM_IMAGE_BASE).$$system.iso.tmp" ;	\
-	  mv "$(releasedir)/$(GUIX_SYSTEM_IMAGE_BASE).$$system.iso.tmp"			\
-	     "$(releasedir)/$(GUIX_SYSTEM_IMAGE_BASE).$$system.iso" ;			\
-	done
-# Generate the VM images.
-	for system in $(GUIX_SYSTEM_VM_SYSTEMS) ; do					\
-	  GUIX_DISPLAYED_VERSION="`git describe --match=v* | sed -'es/^v//'`" ;		\
-	  image=`$(top_builddir)/pre-inst-env						\
-	    guix system image -t qcow2 $(GUIX_SYSTEM_VM_IMAGE_FLAGS)			\
-	    --save-provenance								\
-	    --system=$$system --fallback						\
-	    gnu/system/examples/vm-image.tmpl` ;					\
-	  if [ ! -f "$$image" ] ; then							\
-	    echo "failed to produce Guix VM image for $$system" >&2 ;			\
-	    exit 1 ;									\
-	  fi ;										\
-	  cp "$$image" "$(releasedir)/$(GUIX_SYSTEM_VM_IMAGE_BASE).$$system.qcow2";	\
-	done
+
+	@echo
+	@echo "First step done! Source tarball is ready in $(releasedir)"
+	@echo "Now push the resulting commit and run `make release`."
+	@echo
+
+# Make sure you've ran prepare-release prior to running release and pushed
+# the commit to Guix. It might be pushed to any branch, such as version-X.Y.Z.
+release: all
+# Build the artifacts for current commit.
+# Use time-machine for provenance.
+	$(MKDIR_P) "$(releasedir)"
+	@echo "Building guix inferior for current commit."
+	COMMIT="$$(git rev-parse HEAD)" &&					\
+	GUIX="$$(guix time-machine --commit=$$COMMIT)/bin/guix" &&		\
+	echo "Building artifacts for current commit: $$COMMIT." &&		\
+	ARTIFACTS="$$($$GUIX build --no-grafts					\
+		-f ./etc/teams/release/artifacts.scm)" &&			\
+	echo "Artifacts built! Copying to $(releasedir)" &&			\
+	cp -f "$$ARTIFACTS"/* "$(releasedir)"
 	@echo
 	@echo "Congratulations!  All the release files are now in $(releasedir)."
 	@echo

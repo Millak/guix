@@ -428,7 +428,11 @@ GRUB configuration and OS-DRV as the stuff in it."
                    "-not" "-wholename" "/System/*"
                    "-not" "-name" "unicode.pf2"
                    "-not" "-name" "bzImage"
-                   "-not" "-name" "*.gz"   ; initrd & all man pages
+                   "-not" "-name" "zImage"
+                   "-not" "-name" "Image"
+                   "-not" "-name" "vmlinuz"
+                   "-not" "-name" "*.gz"   ; initrd
+                   "-not" "-name" "*.zst"  ; all man pages
                    "-not" "-name" "*.png"  ; includes grub-image.png
                    "-exec" "set_filter" "--zisofs"
                    "--")

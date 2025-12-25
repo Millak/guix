@@ -197,9 +197,9 @@
   ;; Latest version of Guix, which may or may not correspond to a release.
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
-  (let ((version "1.4.0")
-        (commit "21ce6b392ace4c4d22543abc41bd7c22596cd6d2")
-        (revision 47))
+  (let ((version "1.5.0rc1")
+        (commit "2d4ed08662714ea46cfe0b41ca195d1ef845fd1b")
+        (revision 0))
     (package
       (name "guix")
 
@@ -215,7 +215,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "0q4f5aiqld1smjmq0k0y96wrrvn7pizsx8xzqk6m7f9f2qm7pdhc"))
+                  "0z1ixlkzsaj978nh57179871xkzbf8zsf10xkcfs2647iznkx7az"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -234,10 +234,9 @@
                             (string-append "--with-bash-completion-dir="
                                            (assoc-ref %outputs "out")
                                            "/etc/bash_completion.d")
-                            ;; TODO: Uncomment after guix is updated.
-                            ;; (string-append "--with-apparmor-profile-dir="
-                            ;;                (assoc-ref %outputs "out")
-                            ;;                "/etc/apparmor.d")
+                            (string-append "--with-apparmor-profile-dir="
+                                           (assoc-ref %outputs "out")
+                                           "/etc/apparmor.d")
 
                             ;; Set 'DOT_USER_PROGRAM' to the empty string so
                             ;; we don't keep a reference to Graphviz, whose

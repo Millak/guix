@@ -10,7 +10,6 @@
              (srfi srfi-1)
              (ice-9 match)
              (guix channels)
-             (gnu packages package-management)
              (gnu system image))
 (use-service-modules desktop mcron networking spice ssh xorg sddm)
 (use-package-modules bootloaders fonts
@@ -44,17 +43,24 @@ accounts.\x1b[0m
 
   (firmware '())
 
-  ;; Below we assume /dev/vda is the VM's hard disk.
-  ;; Adjust as needed.
-  (bootloader (bootloader-configuration
-               (bootloader grub-bootloader)
-               (targets '("/dev/vda"))
-               (terminal-outputs '(console))))
-  (file-systems (cons (file-system
-                        (mount-point "/")
-                        (device (file-system-label root-label))
-                        (type "ext4"))
-                      %base-file-systems))
+  ;; On AArch64, support SCSI CDROMs and HDs.
+  (initrd-modules (cons* "sd_mod" "sr_mod"
+                         %base-initrd-modules))
+
+  (bootloader
+    (bootloader-configuration
+      (bootloader grub-efi-bootloader)
+      (targets '("/boot/efi"))
+      (terminal-outputs '(console))))
+  (file-systems (cons* (file-system
+                         (mount-point "/")
+                         (device (file-system-label root-label))
+                         (type "ext4"))
+                       (file-system
+                         (mount-point "/boot/efi")
+                         (device (file-system-label "GNU-ESP"))
+                         (type "vfat"))
+                       %base-file-systems))
 
   (users (cons (user-account
                 (name "guest")
@@ -95,8 +101,8 @@ root ALL=(ALL) ALL
                             (xorg-configuration
                              ;; The QXL virtual GPU driver is added to provide
                              ;; a better SPICE experience.
-                             (modules (cons xf86-video-qxl
-                                            %default-xorg-modules))
+                              (modules (cons xf86-video-qxl
+                                             %default-xorg-modules))
                              (keyboard-layout keyboard-layout)))))
 
                  ;; Uncomment the line below to add an SSH server.

@@ -367,14 +367,13 @@ purposes."
      'unknown)
     ((channels ...)
      (map (lambda (channel)
-            (let* ((uri (string->uri (channel-url channel)))
-                   (url (if (or (not uri) (eq? 'file (uri-scheme uri)))
-                            "local checkout"
-                            (channel-url channel))))
-             `(channel ,(channel-name channel) ,url ,(channel-commit channel))))
+            ;; NOTE: URL is not logged to synchronize the derivations
+            ;; coming out of pre-inst-env, time-machine and Cuirass
+            ;; for generating release artifacts.
+            `(channel ,(channel-name channel) ,(channel-commit channel)))
           channels))))
 
-(define* (installer-program #:key dry-run?)
+(define* (installer-program #:key dry-run? (guix-for-installer (current-guix)))
   "Return a file-like object that runs the given INSTALLER."
   (define init-gettext
     ;; Initialize gettext support, so that installer messages can be
@@ -423,7 +422,7 @@ purposes."
                            guile-gnutls
                            guile-zlib           ;for (gnu build linux-modules)
                            guile-zstd           ;for (gnu build linux-modules)
-                           (current-guix))
+                           guix-for-installer)
       (with-imported-modules `(,@(source-module-closure
                                   `(,@modules
                                     (gnu services herd)
