@@ -1594,6 +1594,9 @@ also includes the druntime and phobos libraries."
       (license gpl3+)
       (home-page "https://github.com/D-Programming-GDC/gdmd"))))
 
+(define-public gdmd-9
+  (make-gdmd gdc-9))
+
 (define-public gdmd
   (make-gdmd gdc))
 
