@@ -1,4 +1,5 @@
 ;;; Copyright © 2026 Danny Milosavljevic <dannym@friendly-machines.com>
+;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,6 +45,7 @@
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages mpi)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages noweb)
@@ -62,7 +64,109 @@
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
+
+(define-public alps
+  (package
+    (name "alps")
+    (version "2.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ALPSim/ALPS")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dlmfl73dgw0ry7bcvdlr0p5fz0h62xn6c00vrpnjk60kj8cxsnr"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:parallel-tests? #f
+      #:configure-flags
+      #~(list "-DALPS_ENABLE_OPENMP=ON"
+              "-DALPS_BUILD_PYTHON=ON"
+              "-DALPS_BUILD_FORTRAN=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Below is a workaround borrowed from the hdf5 package
+          ;; for the problem with including <fenv.h> gfortran header
+          (add-after 'set-paths 'hide-gfortran
+            (lambda _
+              (let ((gfortran #$(this-package-input "gfortran")))
+                (setenv "CPLUS_INCLUDE_PATH"
+                        (string-join
+                         (delete (string-append gfortran "/include/c++")
+                                 (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
+                         ":")))))
+          (add-after 'unpack 'rewrite-find-boost-cmake
+            (lambda _
+              (let ((boost-components '("chrono" "timer" "date_time"
+                                        "filesystem" "iostreams"
+                                        "program_options" "regex"
+                                        "serialization" "thread"
+                                        "python" "mpi" "numpy")))
+                (call-with-output-file "config/FindBoostForALPS.cmake"
+                  (lambda (port)
+                    (display "find_package(Boost REQUIRED COMPONENTS" port)
+                    (for-each (lambda (x)
+                                (format port "\n~a" x)) boost-components)
+                    (display ")\n" port)
+                    (display "set(ALPS_HAVE_BOOST_NUMPY ON)\n" port))))))
+          (add-after 'rewrite-find-boost-cmake 'fix-cmake-cxx-flags
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("^set\\(CMAKE_CXX_FLAGS .* -fpermissive.*\\)")
+                 (string-append "set(CMAKE_CXX_FLAGS \""
+                                "${CMAKE_CXX_FLAGS}"
+                                " -fpermissive"
+                                " -DBOOST_NO_AUTO_PTR"
+                                " -DBOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF"
+                                " -DBOOST_AC_USE_PTHREADS"
+                                ;; For boost-1.89 the flag below leads
+                                ;; to weird errors in tests:
+                                ;; " -DBOOST_SP_USE_PTHREADS"
+                                " -DBOOST_TIMER_ENABLE_DEPRECATED"
+                                "\")")))))
+          (add-after 'fix-cmake-cxx-flags 'reconcile-with-boost-1.89
+            (lambda _
+              (substitute*
+                  '("src/alps/numeric/matrix/matrix_element_iterator.hpp"
+                    "src/alps/numeric/matrix/strided_iterator.hpp")
+                (("^#include <boost/iterator/iterator_facade.hpp>" include)
+                 (string-append "#include <boost/type_traits/is_same.hpp>\n"
+                                "#include <boost/type_traits/add_const.hpp>\n"
+                                include)))))
+          (add-after 'reconcile-with-boost-1.89 'fix-fortran-comment
+            (lambda _
+              (substitute* "src/alps/fortran/alps_fortran.h"
+                (("^\\*") "!")))))))
+    (native-inputs
+     (list python-scipy   ; only used in tests
+           python-numpy))
+    (inputs
+     (list expat
+           gfortran
+           hdf5
+           python
+           openblas))
+    (propagated-inputs
+     ;; User defined applications should use the boost and openmpi libs the
+     ;; alps package compiled with.
+     (list boost-mpi-numpy
+           openmpi))
+    (home-page "https://alps.comp-phys.org/")
+    (synopsis "Algorithms and Libraries for Physics Simulations")
+    (description
+     "The ALPS (Algorithms and Libraries for Physics Simulations) package
+provides a set of components for numerical simulations of condensed matter
+systems, including bosonic, fermionic, and spin systems with exact
+diagonalization, classical and quantum Monte Carlo, dynamical mean field
+theory, and density matrix renormalization group methods.  It contains both
+ready to use applications and C++ library for simplifying the development of
+such components.")
+    (license license:expat)))
 
 (define-public python-brille
   (package
