@@ -88,6 +88,26 @@
     (description "This package provides JSON support for Hare.")
     (license license:mpl2.0)))
 
+(define-public hare-lex
+  (package
+    (name "hare-lex")
+    (version "0.25.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~stacyharper/hare-lex")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06jlkb1q8ybr6yx56c6ikxv5ywz44k04dpwxcc796cnpzpkgqlyf"))))
+    (build-system hare-build-system)
+    (supported-systems %hare-supported-systems)
+    (home-page "https://git.sr.ht/~stacyharper/hare-lex")
+    (synopsis "General purpose lexical tokenization machinery for Hare")
+    (description "This module provides a general purpose lexer machine for Hare.")
+    (license license:mpl2.0)))
+
 (define-public hare-irc
   (package
     (name "hare-irc")
