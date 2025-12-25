@@ -15044,6 +15044,10 @@
   (crate-source "pyo3" "0.16.6"
                 "1jn6nhp9a8i5kfwds6fzy3hzb938qim8bajp8gfkkcn9892c8802"))
 
+(define rust-pyo3-0.18.3
+  (crate-source "pyo3" "0.18.3"
+                "02914yszvcg7qzh1kkrhiz8qqi0p9pbzi1cpmbyk9fii6xdsrcg3"))
+
 (define rust-pyo3-0.19.2
   (crate-source "pyo3" "0.19.2"
                 "0f1aqx947mzsrk05zdm9w2702lj5k9s97y9w9lxwkp2avk7sd0g6"))
@@ -15102,6 +15106,10 @@
   (crate-source "pyo3-build-config" "0.16.6"
                 "1hndr61lxc2kw7wnnggps3h08lnsqapwa3lxc0l5ji2rg0wrv0cw"))
 
+(define rust-pyo3-build-config-0.18.3
+  (crate-source "pyo3-build-config" "0.18.3"
+                "18vrn0hcf18bqjis9xq5nwijpgbfjc6r292906jn3fv1mksldfcw"))
+
 (define rust-pyo3-build-config-0.19.2
   (crate-source "pyo3-build-config" "0.19.2"
                 "19bb7aqyvr4kmh8b2lnrmcv9251j8yxw7l7xyr77m3s3pk876v07"))
@@ -15145,6 +15153,10 @@
 (define rust-pyo3-ffi-0.16.6
   (crate-source "pyo3-ffi" "0.16.6"
                 "0pzpcmndak7y72p4rw494cki1bxh86diiqdzsw14gxammc1jg26a"))
+
+(define rust-pyo3-ffi-0.18.3
+  (crate-source "pyo3-ffi" "0.18.3"
+                "0p7n9zs9ifrzcnna0lwyhwscyhw45q4x288x5bm1c6c26x9pqkgx"))
 
 (define rust-pyo3-ffi-0.19.2
   (crate-source "pyo3-ffi" "0.19.2"
@@ -15198,6 +15210,10 @@
   (crate-source "pyo3-macros" "0.16.6"
                 "089z1x8fm7078kyhpjcsaipd6745jf2rp86rpbkppbam5504k1sn"))
 
+(define rust-pyo3-macros-0.18.3
+  (crate-source "pyo3-macros" "0.18.3"
+                "13b454p012l1487lbfqkr952qifsl88arldv4m5mmz5kv9arrlx9"))
+
 (define rust-pyo3-macros-0.19.2
   (crate-source "pyo3-macros" "0.19.2"
                 "1lggr5pnpmdj0cznlhw7ykm1qka3wlymwzfxqql6a4vyb6clrsyz"))
@@ -15245,6 +15261,10 @@
 (define rust-pyo3-macros-backend-0.16.6
   (crate-source "pyo3-macros-backend" "0.16.6"
                 "1f0y9vxmyq1cidk544pwg3my30f6xfqfgf42grw4gx4q5pl687v1"))
+
+(define rust-pyo3-macros-backend-0.18.3
+  (crate-source "pyo3-macros-backend" "0.18.3"
+                "062rxf7cj1dn82yiaws3dmxw5qq9ssccq92jgdc210y4lh4gznlp"))
 
 (define rust-pyo3-macros-backend-0.19.2
   (crate-source "pyo3-macros-backend" "0.19.2"
@@ -59016,6 +59036,33 @@
                                      rust-windows-x86-64-msvc-0.52.6
                                      rust-winnow-0.7.10
                                      rust-wit-bindgen-rt-0.39.0))
+                     (unicode_linebreak =>
+                                        (list rust-autocfg-1.5.0
+                                              rust-bitflags-2.10.0
+                                              rust-cfg-if-1.0.4
+                                              rust-indoc-1.0.9
+                                              rust-libc-0.2.177
+                                              rust-lock-api-0.4.14
+                                              rust-memoffset-0.8.0
+                                              rust-once-cell-1.21.3
+                                              rust-parking-lot-0.12.5
+                                              rust-parking-lot-core-0.9.12
+                                              rust-proc-macro2-1.0.103
+                                              rust-pyo3-0.18.3
+                                              rust-pyo3-build-config-0.18.3
+                                              rust-pyo3-ffi-0.18.3
+                                              rust-pyo3-macros-0.18.3
+                                              rust-pyo3-macros-backend-0.18.3
+                                              rust-quote-1.0.42
+                                              rust-redox-syscall-0.5.18
+                                              rust-scopeguard-1.2.0
+                                              rust-smallvec-1.15.1
+                                              rust-syn-1.0.109
+                                              rust-target-lexicon-0.12.16
+                                              rust-unicode-ident-1.0.22
+                                              rust-unicode-linebreak-0.1.5
+                                              rust-unindent-0.1.11
+                                              rust-windows-link-0.2.1))
                      (uv =>
                          (list rust-addr2line-0.24.2
                           rust-adler2-2.0.0

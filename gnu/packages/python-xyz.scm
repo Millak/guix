@@ -39637,6 +39637,58 @@ expression.")
 standard Python module.")
     (license license:asl2.0)))
 
+(define-public python-unicode-linebreak
+  (package
+    (name "python-unicode-linebreak")
+    (version "0.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mondeja/py-unicode-linebreak")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qvh729b2q82sy057qgldcbz513wxnsckmwl3c18wkyb3c1iq2qk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums)))))))
+    (native-inputs
+     (append
+      (list maturin
+            rust
+            `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
+    (inputs (cargo-inputs 'unicode_linebreak))
+    (home-page "https://github.com/mondeja/py-unicode-linebreak")
+    (synopsis "Markdown paragraph wrapper")
+    (description
+     "This package provides a Markdown paragraph wrapper using Unicode Line
+Breaking Algorithm written in Rust with Python bindings.")
+    (license license:expat)))
+
 (define-public python-unicodeitplus
   (package
     (name "python-unicodeitplus")
