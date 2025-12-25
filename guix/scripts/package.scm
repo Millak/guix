@@ -326,6 +326,7 @@ variables by running:
 @example
 GUIX_PROFILE=\"~a\"
 . \"$GUIX_PROFILE/etc/profile\"
+unset GUIX_PROFILE
 @end example
 
 Alternately, see @command{guix package --search-paths -p ~s}.")
