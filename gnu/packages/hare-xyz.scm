@@ -172,6 +172,28 @@ format with one directive per line.")
 and agent protocols in pure Hare.")
     (license license:mpl2.0)))
 
+(define-public hare-template
+  (package
+    (name "hare-template")
+    (version "0.25.2.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~stacyharper/hare-template")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mfg3ijfmii7vag1cgvr0n76hd7cic6vdf37gd05c5ilnb31ial6"))))
+    (build-system hare-build-system)
+    (inputs (list hare-lex))
+    (supported-systems %hare-supported-systems)
+    (home-page "https://git.sr.ht/~stacyharper/hare-template")
+    (synopsis "Templating tool and library for Hare")
+    (description "This package aims to offer a good and simple templating
+system for Hare, using code generation.")
+    (license license:mpl2.0)))
+
 (define-public hare-gi
   (package
     (name "hare-gi")
