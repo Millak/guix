@@ -17202,8 +17202,9 @@ of control strings.")
 (define-public cl-fmt
   (sbcl-package->cl-source-package sbcl-fmt))
 
-(define-public ecl-fmt
-  (sbcl-package->ecl-package sbcl-fmt))
+;; TODO: Not reproducible.
+;; (define-public ecl-fmt
+;;   (sbcl-package->ecl-package sbcl-fmt))
 
 (define-public sbcl-fn
   (let ((commit "8d8587d03a7b5e26b306fc90018e385d9e5acc2c")
