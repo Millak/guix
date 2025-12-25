@@ -1215,7 +1215,7 @@ compression parameters used by Gzip.")
        ;; PyPI archive does not contain NEWS file needed for one test.
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/borgmatic-collective/borgmatic")
+              (url "https://projects.torsion.org/borgmatic-collective/borgmatic")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
