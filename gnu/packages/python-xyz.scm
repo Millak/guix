@@ -16083,14 +16083,18 @@ addition to a bunch of aliases.")
 (define-public python-sarge
   (package
     (name "python-sarge")
-    (version "0.1.7.post1") ; post release only to correct errors in metadata
+    (version "0.1.7.post1") ;post release only to correct errors in metadata
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "sarge" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vsajip/sarge")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0g9a53mfnp96877n1yq2jdk1mcv3xm0d93iisvgcn2prdsp45zv4"))))
-    (build-system python-build-system)
+        (base32 "0kn577lnaznr2hz1w1617l1agd21xs1fq2qv8kg2dy92qinl6gbd"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://docs.red-dove.com/sarge/")
     (synopsis "Subprocess wrapper with command pipeline functionality")
     (description "@code{sarge} is a wrapper for subprocess which provides
