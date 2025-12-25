@@ -14117,21 +14117,18 @@ percentage.")
 (define-public python-pebble
   (package
     (name "python-pebble")
-    (version "4.6.1")
+    (version "5.1.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "Pebble" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/noxdafox/pebble")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "16siqc3brbk7dp4d9sg48bjl6a8wyy24aib3il1hf4y2624draxh"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _ (invoke "python" "-m" "pytest" "-sv"))))))
+        (base32 "1x3rvgm5b0g33xlh8w68r50zwqrdwjafwri8y2lzxny8y4i01ffp"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/noxdafox/pebble")
     (synopsis "Threading and multiprocessing for Python")
     (description
