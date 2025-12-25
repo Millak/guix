@@ -20982,26 +20982,49 @@ doesn't know about.")
 (define-public python-jellyfish
   (package
     (name "python-jellyfish")
-    (version "0.8.8")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "jellyfish" version))
-              (sha256
-               (base32
-                "0p2s6b30sfffx8sya2i8kz0i0riw9fq1fi0k89s8kdgrmjf0h1h5"))))
-    (build-system python-build-system)
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jamesturk/jellyfish")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zsbvyq608yrfv29hlwjkr6ycrghy8s5hpwnj3aa9symihazpb4c"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f ; XXX: Tests cannot find C coded version.
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "-vv" "jellyfish/test.py")))))))
+     (list
+      #:imported-modules (append %cargo-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums)))))))
+    (inputs (cons* maturin (cargo-inputs 'jellyfish)))
     (native-inputs
-     (list python-pytest))
-    (home-page "https://github.com/jamesturk/jellyfish")
+     (append
+      (list python-pytest
+            python-setuptools
+            rust
+            `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
+    (home-page "https://www.jpt.sh/projects/jellyfish/")
     (synopsis "Approximate and phonetic matching of strings")
     (description "Jellyfish uses a variety of string comparison and phonetic
 encoding algorithms to do fuzzy string matching.")
