@@ -42,7 +42,8 @@
   #:use-module (srfi srfi-9)
   #:export (%test-debian-install
             %test-archlinux-install
-            %test-ubuntu-install))
+            %test-ubuntu-install
+            %test-fedora-install))
 
 (define marionette-systemd-service
   ;; Definition of the marionette service for systemd.
@@ -73,7 +74,7 @@ marionette.  This procedure will be called from within a VM and it should
 resize the partition and file system, if appropriate."
   (define vm
     (virtual-machine
-     (marionette-operating-system %simple-os)))
+      (marionette-operating-system %simple-os)))
 
   (define build
     (with-imported-modules (source-module-closure
@@ -108,6 +109,9 @@ resize the partition and file system, if appropriate."
             (unless (zero? (marionette-eval '(system* "mount" #$device "/mnt")
                                             marionette))
               (error "failed to mount foreign distro image" #$device))
+
+            ;; Make newly copied files relabeled for SELinux-enabled distributions
+            (marionette-eval '(system* "touch" "/mnt/.autorelabel") marionette)
 
             (marionette-eval '(system* "ls" "-la" "/mnt")
                              marionette)
@@ -176,6 +180,35 @@ resize the partition and file system, if appropriate."
                       marionette))
         (error "failed to grow the file system"))))
 
+(define resize-lvm-xfs-partition
+  ;;  Gexp evaluating to a two-argument procedure, taking DEVICE and
+  ;; MARIONETTE.  It will grow the given device and its file system to 100 %
+  ;; of the empty space on the image.
+  #~(lambda (device marionette)
+
+      (unless (zero? (marionette-eval `(begin
+                                         (system* #$(file-append lvm2 "/sbin/pvscan"))
+                                         (system* #$(file-append lvm2 "/sbin/vgscan"))
+                                         (system* #$(file-append lvm2 "/sbin/vgchange") "-a" "y")
+                                         (system* #$(file-append lvm2 "/sbin/lvscan"))
+                                         (system* #$(file-append lvm2 "/sbin/lvextend") "-l" "+100%FREE" ,device))
+                                      marionette))
+        `(error "failed to extend logical volume" ,device))
+
+      (unless (zero? (marionette-eval `(system* "mount" ,device "/mnt")
+                                      marionette))
+        `(error "failed to mount foreign distro image" ,device))
+
+      (unless (zero? (marionette-eval
+                      `(system* #$(file-append xfsprogs "/sbin/xfs_growfs")
+                                ,device)
+                      marionette))
+        (error "failed to grow the file system"))
+
+      (unless (zero? (marionette-eval '(system* "umount" "/mnt")
+                                      marionette))
+        (error "failed to unmount device"))))
+
 (define (manifest-entry-without-grafts entry)
   "Return ENTRY with grafts disabled on its contents."
   (manifest-entry
@@ -239,7 +272,7 @@ and file system, if appropriate."
                                            (list (%store-prefix))
                                            #:image-format "qcow2"
                                            #:rw-image? #t)
-                   "-m" "512"
+                   "-m" "1024"
                    "-snapshot")))
 
           (test-runner-current (system-test-runner #$output))
@@ -466,3 +499,24 @@ script.")
                                                       ubuntu-uidmap-deb-file)
                                     #:resize-image "+1G"
                                     #:resize-proc resize-ext4-partition))))
+(define fedora-qcow2
+  (origin
+    (uri "https://download.fedoraproject.org/pub/fedora/linux/releases/43/Server/x86_64/images/Fedora-Server-Guest-Generic-43-1.6.x86_64.qcow2")
+    (method url-fetch)
+    (sha256
+     (base32
+      "0j142kbrfcv9fwds4bw57dqhnjvpzd6d6m15ar3sgf1yw9dq0pac"))))
+
+;; This test starts failing when derivations in repo for GNU Hello and its dependencies
+;; differs from versions in current Guix package. The simple way to fix it is to update
+;; Guix package version.
+(define %test-fedora-install
+  (system-test
+   (name "fedora-install")
+   (description
+    "Test installation of Guix on Fedora Linux using the @file{guix-install.sh}
+script.")
+   (value (run-foreign-install-test fedora-qcow2 name
+                                    #:device "/dev/systemVG/LVRoot"
+                                    #:resize-image "+1G"
+                                    #:resize-proc resize-lvm-xfs-partition))))
