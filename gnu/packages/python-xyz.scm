@@ -14364,6 +14364,30 @@ its top-level name.  This functionality intends to replace most uses of
 need to use the older and less efficient @code{pkg_resources} package.")
     (license license:asl2.0)))
 
+(define-public python-importlib-metadata-argparse-version
+  (package
+    (name "python-importlib-metadata-argparse-version")
+    (version "2.0.1")
+    (home-page
+     "https://github.com/mondeja/importlib-metadata-argparse-version")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02jbfv7xkd4lhdcsr232b6x8xcpv93micz7848fhi5946grvm1j2"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-hatchling))
+    (synopsis "Get Python package version more efficiently")
+    (description
+     "This package provides an @code{argparse} action to define CLI version
+with a delayed call to @code{importlib.metadata}, avoiding to load this module
+when not needed.")
+    (license license:bsd-3)))
+
 (define-public python-importmagic
   (package
     (name "python-importmagic")
