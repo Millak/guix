@@ -15363,10 +15363,10 @@ implementation of D-Bus.")
        (sha256
         (base32
          "0z8rrv9rsg1r2qgh2dxj3dfj5xnki98kgi3w839kqby4a26i1yik"))))
-    (build-system python-build-system)
-    (arguments `(#:tests? #f))                    ; tests depend on system state
-    (propagated-inputs
-     (list python-dbus))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; tests depend on system state
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-dbus))
     (home-page "https://bitbucket.org/takluyver/pynotify2")
     (synopsis "Python interface to D-Bus notifications")
     (description
