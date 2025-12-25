@@ -1556,11 +1556,12 @@ also includes the druntime and phobos libraries."
 
 (define-public gdc gdc-14)
 
-(define-public gdmd
-  (let ((gdmd-version "0.25.0"))
+(define* (make-gdmd gdc)
+  (let ((gdc-version (package-version gdc))
+        (gdmd-version "0.25.0"))
     (package
       (name "gdmd")
-      (version gdmd-version)
+      (version (string-append gdc-version "-" gdmd-version))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1592,6 +1593,9 @@ also includes the druntime and phobos libraries."
 @acronym{GNU D Compiler,GDC}.")
       (license gpl3+)
       (home-page "https://github.com/D-Programming-GDC/gdmd"))))
+
+(define-public gdmd
+  (make-gdmd gdc))
 
 (define-public gm2
   (hidden-package
