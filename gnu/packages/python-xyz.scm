@@ -24433,18 +24433,16 @@ Problem} (SAT) solver.")
        (method url-fetch)
        (uri (pypi-uri "pyPEG2" version))
        (sha256
-        (base32
-         "0v8ziaam2r637v94ra4dbjw6jzxz99gs5x4i585kgag1v204yb9b"))))
-    (build-system python-build-system)
+        (base32 "0v8ziaam2r637v94ra4dbjw6jzxz99gs5x4i585kgag1v204yb9b"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-lxml))
-    (arguments
-     ;;https://bitbucket.org/fdik/pypeg/issues/36/test-failures-on-py35
-     '(#:tests? #f))
     (home-page "https://fdik.org/pyPEG/")
     (synopsis "Parsing Expression Grammars in Python")
-    (description "PyPEG is an intrinsic parser interpreter framework for
-     Python.  It is based on Parsing Expression Grammars, PEG.  With pyPEG you can
-     parse many formal languages.")
+    (description
+     "PyPEG is an intrinsic parser interpreter framework for Python.  It is
+based on Parsing Expression Grammars, PEG.  With pyPEG you can parse many
+formal languages.")
     (license license:gpl2)))
 
 (define-public python-pyformlang
