@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Franck Pérignon <franck.perignon@univ-grenoble-alpes.fr>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2025 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -460,7 +461,7 @@ signals and slots system.")
                   (newline output-port)
                   (close output-port))))))))
     (home-page "https://www.boost.org")
-    (synopsis "Message Passing Interface (MPI) library for C++")))
+    (synopsis "Boost C++ libraries with inclusion of Boost.MPI")))
 
 (define-public mdds
   (package
