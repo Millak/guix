@@ -243,3 +243,23 @@ language.")
     (description "This package is a set of gtk-layer-shell bindings for the Hare
 language.")
     (license license:mpl2.0)))
+
+(define-public hare-xml
+  (package
+    (name "hare-xml")
+    (version "0.25.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~sircmpwn/hare-xml")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h216z59piz1g7a0iiy1qic1wj8lbajw3mw5zw9nid0bz2vx81b0"))))
+    (build-system hare-build-system)
+    (supported-systems %hare-supported-systems)
+    (home-page "https://git.sr.ht/~sircmpwn/hare-xml")
+    (synopsis "XML support for Hare")
+    (description "This package provides XML support for Hare.")
+    (license license:mpl2.0)))
