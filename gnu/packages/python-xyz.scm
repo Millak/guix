@@ -3899,6 +3899,64 @@ the versioning system in PEP 517 build frontends.")
 ports.")
     (license license:asl2.0)))
 
+(define-public python-md-ulb-pwrap
+  (package
+    (name "python-md-ulb-pwrap")
+    (version "0.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mondeja/md-ulb-pwrap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08zqms8mz3m4kfsnjqapc8sjyjcaz82pq45lix6rjag67s0dhcn6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      #:test-backend #~'custom
+      #:test-flags #~(list "test.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums))))
+          (add-after 'prepare-cargo-build-system 'chdir
+            (lambda _
+              (chdir "python"))))))
+    (native-inputs
+     (append
+      (list maturin
+            python-pytest
+            python-unicode-linebreak
+            rust
+            `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
+    (inputs (cargo-inputs 'md_ulb_pwrap))
+    (home-page "https://github.com/mondeja/md-ulb-pwrap")
+    (synopsis "Markdown paragraph wrapper")
+    (description
+     "This package provides a Markdown paragraph wrapper using Unicode Line
+Breaking Algorithm written in Rust with Python bindings.")
+    (license license:expat)))
+
 (define-public python-mdx-gh-links
   (package
     (name "python-mdx-gh-links")

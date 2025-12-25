@@ -15078,6 +15078,10 @@
                 "0abjav5868avfgb8fjfvz2dbpm916zmhm8xvxzfgns5hhq033nhp"
                 #:snippet '(delete-file-recursively "branding")))
 
+(define rust-pyo3-0.24.2
+  (crate-source "pyo3" "0.24.2"
+                "06cjzkam3xsxi8q1l4pxi45gya8jb6mhr8isn411mcb6yfc3a875"))
+
 (define rust-pyo3-0.25.0
   (crate-source "pyo3" "0.25.0"
                 "19277ka0xfam1sljmm5129iars41nbqpflpqzqxfgkiv6rbdcfgj"))
@@ -15138,6 +15142,10 @@
   (crate-source "pyo3-build-config" "0.24.1"
                 "1hazmb2hm7qad5xcy9gajwj3231hqjnndfcb145014ypkf46awg2"))
 
+(define rust-pyo3-build-config-0.24.2
+  (crate-source "pyo3-build-config" "0.24.2"
+                "16cr3sxpwgz532a65b6ak1px81l061ck1pmcll7i7jm27x16sqwr"))
+
 (define rust-pyo3-build-config-0.25.0
   (crate-source "pyo3-build-config" "0.25.0"
                 "0v8viwyp3whd39wywfh0lv53kjhrykvalisj2vx48h63l5qscpkm"))
@@ -15185,6 +15193,10 @@
 (define rust-pyo3-ffi-0.24.1
   (crate-source "pyo3-ffi" "0.24.1"
                 "1g5a5w7rsq2afb5zamz1jjx5834cnwlg4gig0qhb9xnvw4k0aa05"))
+
+(define rust-pyo3-ffi-0.24.2
+  (crate-source "pyo3-ffi" "0.24.2"
+                "0cwyspd1lfnzhwx48b9r48n2vnwhkm0ba19kpiwr4h4wpa9czybq"))
 
 (define rust-pyo3-ffi-0.25.0
   (crate-source "pyo3-ffi" "0.25.0"
@@ -15242,6 +15254,10 @@
   (crate-source "pyo3-macros" "0.24.1"
                 "0i2zrpazxwgfbpmzvrcqhdgg3j97l5i0q455b4rzdlx4d9lfag2w"))
 
+(define rust-pyo3-macros-0.24.2
+  (crate-source "pyo3-macros" "0.24.2"
+                "1ngcgh20fc0g77f79v1s0kh05pzykyzg3p27n6kgj8fflsqrr68b"))
+
 (define rust-pyo3-macros-0.25.0
   (crate-source "pyo3-macros" "0.25.0"
                 "0502a6860s62sw7vlw92vg4bd4fp1ryfh59glqlhi4lk3cfn8yd1"))
@@ -15293,6 +15309,10 @@
 (define rust-pyo3-macros-backend-0.24.1
   (crate-source "pyo3-macros-backend" "0.24.1"
                 "0m9q9zlwn5s0pa2819z3a13yn94pmq1q3swvx04fvc5z1jm6zkzl"))
+
+(define rust-pyo3-macros-backend-0.24.2
+  (crate-source "pyo3-macros-backend" "0.24.2"
+                "06lixywqwddr0gg4qk5kgh7ryxkl535hpkym0xb784hhgqfcwbl2"))
 
 (define rust-pyo3-macros-backend-0.25.0
   (crate-source "pyo3-macros-backend" "0.25.0"
@@ -38816,6 +38836,52 @@
                                     rust-zerovec-derive-0.10.3
                                     rust-zip-2.6.1
                                     rust-zopfli-0.8.1))
+                     (md_ulb_pwrap =>
+                                   (list rust-aho-corasick-1.1.4
+                                         rust-autocfg-1.5.0
+                                         rust-cfg-if-1.0.4
+                                         rust-futures-0.3.31
+                                         rust-futures-channel-0.3.31
+                                         rust-futures-core-0.3.31
+                                         rust-futures-executor-0.3.31
+                                         rust-futures-io-0.3.31
+                                         rust-futures-macro-0.3.31
+                                         rust-futures-sink-0.3.31
+                                         rust-futures-task-0.3.31
+                                         rust-futures-timer-3.0.3
+                                         rust-futures-util-0.3.31
+                                         rust-glob-0.3.3
+                                         rust-heck-0.5.0
+                                         rust-indoc-2.0.7
+                                         rust-libc-0.2.177
+                                         rust-memchr-2.7.6
+                                         rust-memoffset-0.9.1
+                                         rust-once-cell-1.21.3
+                                         rust-pin-project-lite-0.2.16
+                                         rust-pin-utils-0.1.0
+                                         rust-portable-atomic-1.11.1
+                                         rust-proc-macro2-1.0.103
+                                         rust-pyo3-0.24.2
+                                         rust-pyo3-build-config-0.24.2
+                                         rust-pyo3-ffi-0.24.2
+                                         rust-pyo3-macros-0.24.2
+                                         rust-pyo3-macros-backend-0.24.2
+                                         rust-quote-1.0.42
+                                         rust-regex-1.12.2
+                                         rust-regex-automata-0.4.13
+                                         rust-regex-syntax-0.8.8
+                                         rust-relative-path-1.9.3
+                                         rust-rstest-0.19.0
+                                         rust-rstest-macros-0.19.0
+                                         rust-rustc-version-0.4.1
+                                         rust-rustversion-1.0.22
+                                         rust-semver-1.0.27
+                                         rust-slab-0.4.11
+                                         rust-syn-2.0.111
+                                         rust-target-lexicon-0.13.2
+                                         rust-unicode-ident-1.0.22
+                                         rust-unicode-linebreak-0.1.5
+                                         rust-unindent-0.2.4))
                      (mitm-cache =>
                                  (list rust-adler2-2.0.1
                                   rust-aho-corasick-1.1.4
