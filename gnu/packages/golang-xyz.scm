@@ -23026,6 +23026,33 @@ balanced trees.")
     (description "A @command{.gitignore} parser for Go.")
     (license license:expat)))
 
+(define-public go-github-com-sagikazarmark-locafero
+  (package
+    (name "go-github-com-sagikazarmark-locafero")
+    (version "0.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sagikazarmark/locafero")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sz5zs81ync13mgn87g9vxp8rhc25rr81hhclj08rcbrjr5ksy8i"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sagikazarmark/locafero"))
+    (propagated-inputs
+     (list go-github-com-spf13-afero))
+    (home-page "https://github.com/sagikazarmark/locafero")
+    (synopsis "File finder library for Go with afero integration")
+    (description
+     "This package provides a file finder library for Go that integrates
+with the afero filesystem abstraction.  It supports finding files in multiple
+directories and offers customizable search strategies.")
+    (license license:expat)))
+
 (define-public go-github-com-sahilm-fuzzy
   (package
     (name "go-github-com-sahilm-fuzzy")
