@@ -5945,7 +5945,7 @@ NeuroML2 models.")
 (define-public python-pynrrd
   (package
     (name "python-pynrrd")
-    (version "1.0.0")
+    (version "1.1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5954,10 +5954,12 @@ NeuroML2 models.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09gdyi4kbi3512ydgqxkgr4j7b9a95qh83fk2n9s41bns4id9xj7"))))
-    (build-system python-build-system)
+                "1l0hjbqzf5i1bmpxpblpyyqkhci3mb5n07x6hqf2a91hggfyrvda"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools))
     (propagated-inputs
-     (list python-nptyping python-numpy python-typing-extensions))
+     (list python-numpy))
     (home-page "https://github.com/mhe/pynrrd")
     (synopsis "Python module for reading and writing NRRD files")
     (description
