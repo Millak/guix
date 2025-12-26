@@ -32,7 +32,6 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
-  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tls)
@@ -44,6 +43,43 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python))
+
+(define-public python2-pycparser
+  (let ((base (package
+                (version "2.18")
+                (name "python-pycparser")
+                (source
+                 (origin
+                   (method url-fetch)
+                   (uri (pypi-uri "pycparser" version))
+                   (sha256
+                    (base32
+                     "09mjyw82ibqzl449g7swy8bfxnfpmas0815d2rkdjlcqw81wma4r"))))
+                (build-system pyproject-build-system)
+                (arguments
+                 (list
+                  #:tests? #f
+                  #:phases
+                  #~(modify-phases %standard-phases
+                      (replace 'build
+                        (lambda _
+                          (invoke "python" "setup.py" "build")))
+                      (replace 'install
+                        (lambda _
+                          (invoke "python" "./setup.py" "install"
+                                  (string-append "--prefix=" #$output)
+                                  "--no-compile")
+                          (invoke "python" "-m" "compileall" #$output))))))
+                (home-page "https://github.com/eliben/pycparser")
+                (synopsis "C parser in Python")
+                (description
+                 "Pycparser is a complete parser of the C language, written in
+pure Python using the PLY parsing library.  It parses C code into an AST and
+can serve as a front-end for C compilers or analysis tools.")
+                (license license:bsd-3))))
+    (package
+      (inherit (package-with-python2 base))
+      (native-inputs (list python-setuptools)))))
 
 (define-public python2-cffi
   (let ((base (package
