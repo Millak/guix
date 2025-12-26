@@ -6738,6 +6738,43 @@ specifications knows how to deal with those.")
 projects.")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-openapi-swag-typeutils
+  (package
+    (name "go-github-com-go-openapi-swag-typeutils")
+    (version "0.24.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-openapi/swag")
+              (commit (go-version->git-ref version #:subdir "typeutils"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0p1k008zh6s1v55fi83v8ihldsvknf0wmwmc6i2ks0vw5gbwmaam"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/go-openapi/swag/conv
+            (for-each delete-file-recursively
+                      (list "cmdutils" "conv" "fileutils" "jsonname"
+                            "jsonutils" "loading" "mangling" "netutils"
+                            "stringutils" "yamlutils"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-openapi/swag/typeutils"
+      #:unpack-path "github.com/go-openapi/swag"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/go-openapi/swag")
+    (synopsis "Type checking utilities for go-openapi")
+    (description
+     "This package provides type checking utilities for the go-openapi and
+go-swagger projects.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-go-openapi-validate
   (package
     (name "go-github-com-go-openapi-validate")
