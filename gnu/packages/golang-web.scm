@@ -6738,6 +6738,44 @@ specifications knows how to deal with those.")
 projects.")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-openapi-swag-conv
+  (package
+    (name "go-github-com-go-openapi-swag-conv")
+    (version "0.24.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-openapi/swag")
+              (commit (go-version->git-ref version #:subdir "conv"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0p1k008zh6s1v55fi83v8ihldsvknf0wmwmc6i2ks0vw5gbwmaam"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/go-openapi/swag/typeutils
+            (for-each delete-file-recursively
+                      (list "cmdutils" "fileutils" "jsonname" "jsonutils"
+                            "loading" "mangling" "netutils" "stringutils"
+                            "typeutils" "yamlutils"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-openapi/swag/conv"
+      #:unpack-path "github.com/go-openapi/swag"))
+    (native-inputs
+     (list go-github-com-go-openapi-swag-typeutils
+           go-github-com-stretchr-testify))
+    (home-page "https://github.com/go-openapi/swag")
+    (synopsis "Type conversion utilities for go-openapi")
+    (description
+     "This package provides type conversion and pointer helper functions for
+the go-openapi and go-swagger projects.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-go-openapi-swag-typeutils
   (package
     (name "go-github-com-go-openapi-swag-typeutils")
