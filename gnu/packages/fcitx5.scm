@@ -692,3 +692,25 @@ as well as those for Chinese dialects.  It has the ability to compose phrases
 and sentences intelligently and provide very accurate traditional Chinese
 output.")
     (license license:lgpl2.1+)))
+
+(define-public fcitx5-hangul
+  (package
+    (name "fcitx5-hangul")
+    (version "5.1.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fcitx/fcitx5-hangul")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02lkbwg25jr4hazjyxcy69midfsmxc0ksbdrfwbmqcfa3kz5d9gb"))))
+    (build-system cmake-build-system)
+    (native-inputs (list extra-cmake-modules pkg-config gettext-minimal))
+    (inputs (list fcitx5 libhangul))
+    (home-page "https://github.com/fcitx/fcitx5-hangul")
+    (synopsis "Hangul support for Fcitx5")
+    (description
+     "This package provides the Hangul (Korean) input method engine for Fcitx5.")
+    (license license:lgpl2.1+)))
