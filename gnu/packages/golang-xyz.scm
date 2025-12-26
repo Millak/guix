@@ -13314,6 +13314,46 @@ software artifacts, providing verifiable claims about how software was
 produced.")
     (license license:asl2.0)))
 
+(define-public go-github-com-in-toto-in-toto-golang
+  (package
+    (name "go-github-com-in-toto-in-toto-golang")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/in-toto/in-toto-golang")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ravkfalyzwd57x7hyc243x8dc7g2cb9xjka1hprpnfz2m33qpy0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/in-toto/in-toto-golang"
+      #:test-flags
+      ;; Skip tests that use expired test data.
+      #~(list "-skip"
+              "TestInTotoVerifyPass/verifying_with_only_DSSE_metadata")))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-spf13-cobra
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-secure-systems-lab-go-securesystemslib
+           go-github-com-shibumi-go-pathspec
+           go-github-com-spiffe-go-spiffe-v2
+           go-golang-org-x-sys
+           go-google-golang-org-grpc))
+    (home-page "https://github.com/in-toto/in-toto-golang")
+    (synopsis "Go implementation of the in-toto supply chain framework")
+    (description
+     "This package provides a Go implementation of the in-toto framework for
+securing software supply chains.  It provides tools for generating and
+verifying supply chain layout metadata, ensuring that each step in the
+software production process is performed by authorized parties.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-influxdata-cron
   (package
     (name "go-github-com-influxdata-cron")
