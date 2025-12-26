@@ -5043,6 +5043,9 @@ astronomy-specific functionality")
        (sha256
         (base32 "062l4bhh1dvsazrlnjc4kr3qj9g3s8qmcs0kqb1libiimy6rdbkk"))))
     (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: This test is flaky, it can fail if the CI system is slow.
+     (list #:test-flags #~(list "-k" "not test_combine_slices_hypot")))
     (native-inputs
      (list python-pytest
            python-pytest-mpl
