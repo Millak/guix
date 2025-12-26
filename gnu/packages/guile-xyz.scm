@@ -1030,7 +1030,7 @@ invocations."))))
 (define-public guile-dsv
   (package
     (name "guile-dsv")
-    (version "0.8.0")
+    (version "0.8.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1039,7 +1039,7 @@ invocations."))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mc4najwji8144xzhpnrljrmh7m9iiykf3bp3lzksrwqyhz8np2k"))))
+                "0hpdl2x0lp0dqpx23l29a45lvn5c2qpd4bzrl8d46vm4nraqi7aa"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf
                          automake
