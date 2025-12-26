@@ -16098,6 +16098,118 @@ support.")
 kinds of referrer URLs (search, social, ...).")
     (license license:expat)))
 
+(define-public go-github-com-sigstore-rekor
+  (package
+    (name "go-github-com-sigstore-rekor")
+    (version "1.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sigstore/rekor")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g2xma0fzy7a4nv7bj04pj9vqg4hbbz3j3jxkir0sxql5ragj36d"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/sigstore/rekor"
+      ;; XXX: Remove when all inputs are packaged.
+      #:test-subdirs
+      #~(list "pkg/events/newentry"
+              "pkg/indexstorage/mysql"
+              "pkg/pki/minisign"
+              "pkg/pki/pgp"
+              "pkg/pki/ssh"
+              "pkg/pki/tuf"
+              "pkg/pki/x509"
+              "pkg/pubsub/gcp"
+              "pkg/util")))
+    (native-inputs
+     (list go-github-com-asaskevich-govalidator
+           go-github-com-data-dog-go-sqlmock
+           go-github-com-golang-mock
+           go-github-com-google-go-cmp
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-spf13-viper
+           go-github-com-stretchr-testify
+           go-go-uber-org-goleak
+           go-sigs-k8s-io-release-utils))
+    (propagated-inputs
+     (list go-cloud-google-com-go-iam
+           go-github-com-asaskevich-govalidator
+           go-github-com-blang-semver
+           go-github-com-cyberphone-json-canonicalization
+           go-github-com-go-chi-chi-v5
+           go-github-com-go-openapi-errors
+           go-github-com-go-openapi-loads
+           go-github-com-go-openapi-runtime
+           go-github-com-go-openapi-spec
+           go-github-com-go-openapi-strfmt
+           go-github-com-go-openapi-swag
+           go-github-com-go-openapi-swag-conv
+           go-github-com-go-openapi-validate
+           go-github-com-go-sql-driver-mysql
+           go-github-com-go-viper-mapstructure-v2
+           go-github-com-google-trillian
+           go-github-com-grpc-ecosystem-go-grpc-middleware
+           go-github-com-hashicorp-go-cleanhttp
+           go-github-com-hashicorp-go-retryablehttp
+           go-github-com-in-toto-in-toto-golang
+           go-github-com-jedisct1-go-minisign
+           go-github-com-jmoiron-sqlx
+           go-github-com-prometheus-client-golang
+           go-github-com-redis-go-redis-v9
+           go-github-com-rs-cors
+           go-github-com-secure-systems-lab-go-securesystemslib
+           go-github-com-sigstore-protobuf-specs
+           go-github-com-sigstore-sigstore
+           go-github-com-sigstore-sigstore-pkg-signature-kms-aws
+           go-github-com-sigstore-sigstore-pkg-signature-kms-azure
+           go-github-com-sigstore-sigstore-pkg-signature-kms-gcp
+           go-github-com-sigstore-sigstore-pkg-signature-kms-hashivault
+           go-github-com-theupdateframework-go-tuf
+           go-github-com-tink-crypto-tink-go-awskms-v2
+           go-github-com-tink-crypto-tink-go-gcpkms-v2
+           go-github-com-tink-crypto-tink-go-v2
+           go-github-com-transparency-dev-merkle
+           go-github-com-veraison-go-cose
+           go-go-uber-org-zap
+           go-golang-org-x-crypto
+           go-golang-org-x-mod
+           go-golang-org-x-net
+           go-golang-org-x-sync
+           go-google-golang-org-api
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+           go-gopkg-in-ini-v1
+           go-gopkg-in-yaml-v2
+           go-sigs-k8s-io-yaml
+
+           ;; TODO: Complete packaging.
+           ;; go-cloud-google-com-go-profiler
+           ;; go-cloud-google-com-go-pubsub
+           ;; go-cloud-google-com-go-pubsub-v2
+           ;; go-github-com-adamkorcz-go-fuzz-headers-1
+           ;; go-github-com-cavaliercoder-go-rpm
+           ;; go-github-com-go-redis-redismock-v9
+           ;; go-github-com-google-rpmpack
+           ;; go-github-com-sassoftware-relic
+           ;; go-github-com-sassoftware-relic-v7
+           ;; go-go-step-sm-crypto
+           #;go-gocloud-dev))
+    (home-page "https://github.com/sigstore/rekor")
+    (synopsis "Sigstore transparency log")
+    (description
+     "Rekor provides an immutable tamper-resistant ledger of metadata generated
+within a software project's supply chain.  It enables software maintainers
+and consumers to transparently record signed metadata to a ledger.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-sigstore-sigstore-pkg-signature-kms-aws
   (package
     (name "go-github-com-sigstore-sigstore-pkg-signature-kms-aws")
