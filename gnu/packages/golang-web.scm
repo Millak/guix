@@ -7854,6 +7854,121 @@ send collected metrics to Google Cloud.")
 module.")
     (license license:asl2.0)))
 
+(define-public go-github-com-google-trillian
+  (package
+    (name "go-github-com-google-trillian")
+    (version "1.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/trillian")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05cphh5jv9g3j46cqxxw8h7amfmlxp85n9gljv9nr90cngmqcm0c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/google/trillian"
+      ;; XXX: Remove when all inputs are packaged.
+      #:test-subdirs
+      #~(list "client"
+              "client/backoff"
+              "cmd/updatetree"
+              "crypto/keys"
+              "crypto/keys/der"
+              "crypto/keys/pem"
+              "docs/claimantmodel/experimental/cmd/render/internal"
+              "docs/storage/commit_log/signer"
+              "docs/storage/commit_log/simkafka"
+              "integration"
+              "integration/admin"
+              "integration/format"
+              "log"
+              "merkle/coniks"
+              "merkle/smt"
+              "merkle/smt/node"
+              "monitoring"
+              "monitoring/prometheus"
+              "quota"
+              "quota/cacheqm"
+              "quota/mysqlqm"
+              "quota/postgresqlqm"
+              "server"
+              "server/admin"
+              "server/errors"
+              "server/interceptor"
+              "storage"
+              "storage/cache"
+              "storage/memory"
+              "storage/mysql"
+              "storage/postgresql"
+              "testonly/flagsaver"
+              "testonly/matchers"
+              "trees"
+              "types"
+              "util/clock"
+              "util/election"
+              "util/election2/k8s"
+              "util/election2/testonly")))
+    (native-inputs
+     (list go-github-com-golang-mock
+           go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-go-redis-redis
+           go-github-com-go-sql-driver-mysql
+           go-github-com-google-btree
+           go-github-com-grpc-ecosystem-go-grpc-middleware
+           go-github-com-jackc-pgerrcode
+           go-github-com-jackc-pgx-v5
+           go-github-com-letsencrypt-pkcs11key-v4
+           go-github-com-lib-pq
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-github-com-transparency-dev-merkle
+           go-go-opencensus-io
+           go-golang-org-x-crypto
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-tools
+           go-google-golang-org-api
+           go-google-golang-org-genproto
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-grpc-cmd-protoc-gen-go-grpc
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v2
+           go-k8s-io-api
+           go-k8s-io-apimachinery
+           go-k8s-io-client-go
+           go-k8s-io-klog-v2
+           go-k8s-io-utils
+
+           ;; TODO: Complete packaging.
+           ;; go-bitbucket-org-creachadair-shell
+           ;; go-cloud-google-com-go-spanner
+           ;; go-contrib-go-opencensus-io-exporter-stackdriver
+           ;; go-github-com-apache-beam-sdks-v2
+           ;; go-github-com-cockroachdb-cockroach-go-v2
+           ;; go-github-com-fullstorydev-grpcurl
+           ;; go-github-com-google-go-licenses-v2
+           ;; go-github-com-pseudomuto-protoc-gen-doc
+           ;; go-go-etcd-io-etcd-client-v3
+           ;; go-go-etcd-io-etcd-etcdctl-v3
+           ;; go-go-etcd-io-etcd-server-v3
+           #;go-go-etcd-io-etcd-v3))
+    (home-page "https://github.com/google/trillian")
+    (synopsis "Transparent log infrastructure for certificate transparency")
+    (description
+     "Trillian is an implementation of the concepts described in the
+Verifiable Data Structures white paper.  It provides a transparent,
+append-only log of records that can be used for applications such as
+certificate transparency and key transparency.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-gopacket-gopacket
   (package
     (name "go-github-com-gopacket-gopacket")
