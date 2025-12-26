@@ -103,7 +103,10 @@ pre-defined variants."
       => force)
 
      ;; Otherwise build the new package object graph.
-     ((eq? (package-build-system p) python-build-system)
+     ((or (eq? (package-build-system p) python-build-system)
+          (eq? (package-build-system p)
+               ;; Resolve lazily.
+               (@* (guix build-system pyproject) pyproject-build-system)))
       (package/inherit p
         (location (package-location p))
         (name (let ((name (package-name p)))
