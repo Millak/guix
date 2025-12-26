@@ -37,6 +37,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system android-ndk)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
@@ -467,29 +468,17 @@ the corresponding @command{rsync} flags.")
   (package
     (name "mkbootimg")
     (version (android-platform-version))
-    (source (origin
-              (inherit (android-platform-system-core version))))
-    (build-system python-build-system)
+    (source (android-platform-system-core version))
+    (build-system copy-build-system)
     (arguments
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enter-source
-           (lambda _ (chdir "mkbootimg") #t))
-         (delete 'configure)
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (include (string-append out "/include")))
-               (install-file "mkbootimg" bin)
-               (install-file "bootimg.h" include)
-               #t))))))
+     (list
+      #:install-plan
+      ''(("mkbootimg/mkbootimg" "bin/")
+         ("mkbootimg/bootimg.h" "include/"))))
+    (inputs (list python-wrapper))
     (home-page "https://developer.android.com/studio/command-line/adb.html")
     (synopsis "Tool to create Android boot images")
-    (description "This package provides a tool to create Android Boot
-Images.")
+    (description "This package provides a tool to create Android Boot Images.")
     (license license:asl2.0)))
 
 (define-public android-safe-iop
