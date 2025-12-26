@@ -1034,7 +1034,12 @@ it can be used for bootloading."
                               (inherit
                                (operating-system-bootloader base-os))
                               (bootloader grub-mkrescue-bootloader))
-                            (operating-system-bootloader base-os)))))
+                            (operating-system-bootloader base-os)))
+            (file-systems (cons (file-system
+                                  (mount-point "/")
+                                  (device "/dev/placeholder")
+                                  (type root-file-system-type))
+                                file-systems-to-keep))))
          (uuid (root-uuid os)))
          (operating-system
            (inherit os)
