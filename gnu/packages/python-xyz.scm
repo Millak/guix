@@ -41807,8 +41807,8 @@ you do not want to store entirely on disk or on memory.")
 
 (define-public python2-pycparser
   (let ((base (package
-                (inherit python-pycparser)
                 (version "2.18")
+                (name "python-pycparser")
                 (source
                  (origin
                    (method url-fetch)
@@ -41816,15 +41816,31 @@ you do not want to store entirely on disk or on memory.")
                    (sha256
                     (base32
                      "09mjyw82ibqzl449g7swy8bfxnfpmas0815d2rkdjlcqw81wma4r"))))
-                ;; FIXME: package-with-python2 needs to be updated to accept
-                ;; pyproject-build-system packages.
-                (build-system python-build-system)
+                (build-system pyproject-build-system)
                 (arguments
-                 (cons* #:tests? #f
-                        (strip-keyword-arguments
-                         '(#:test-backend)
-                         (package-arguments python-pycparser)))))))
-    (package-with-python2 base)))
+                 (list
+                  #:tests? #f
+                  #:phases
+                  #~(modify-phases %standard-phases
+                      (replace 'build
+                        (lambda _
+                          (invoke "python" "setup.py" "build")))
+                      (replace 'install
+                        (lambda _
+                          (invoke "python" "./setup.py" "install"
+                                  (string-append "--prefix=" #$output)
+                                  "--no-compile")
+                          (invoke "python" "-m" "compileall" #$output))))))
+                (home-page "https://github.com/eliben/pycparser")
+                (synopsis "C parser in Python")
+                (description
+                 "Pycparser is a complete parser of the C language, written in
+pure Python using the PLY parsing library.  It parses C code into an AST and
+can serve as a front-end for C compilers or analysis tools.")
+                (license license:bsd-3))))
+    (package
+      (inherit (package-with-python2 base))
+      (native-inputs (list python-setuptools)))))
 
 (define-public shrinkwrap
   (package
