@@ -16210,6 +16210,89 @@ within a software project's supply chain.  It enables software maintainers
 and consumers to transparently record signed metadata to a ledger.")
     (license license:asl2.0)))
 
+(define-public go-github-com-sigstore-rekor-tiles-v2
+  (package
+    (name "go-github-com-sigstore-rekor-tiles-v2")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sigstore/rekor-tiles")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z9is3mf31abzwappwp05z1pzci6f25z1ax27qgghmdisxmd3c6k"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/sigstore/rekor-tiles/v2"
+      ;; XXX: Remove when all inputs are packaged.
+      #:test-subdirs
+      #~(list "internal/algorithmregistry"
+              "internal/safeint"
+              "pkg/client/write"
+              "pkg/types/dsse"
+              "pkg/types/hashedrekord"
+              "pkg/types/verifier"
+              "pkg/verifier/certificate"
+              "pkg/verifier/publickey"
+              "pkg/verify")))
+    (native-inputs
+     (list go-github-com-go-test-deep
+           go-github-com-spf13-cobra
+           go-github-com-spf13-viper
+           go-github-com-stretchr-testify
+           go-sigs-k8s-io-release-utils))
+    (propagated-inputs
+     (list go-cloud-google-com-go-storage
+           go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-credentials
+           go-github-com-aws-aws-sdk-go-v2-service-s3
+           go-github-com-aws-smithy-go
+           go-github-com-cyberphone-json-canonicalization
+           go-github-com-grpc-ecosystem-go-grpc-middleware
+           go-github-com-grpc-ecosystem-go-grpc-middleware-providers-prometheus
+           go-github-com-grpc-ecosystem-go-grpc-middleware-v2
+           go-github-com-grpc-ecosystem-grpc-gateway-v2
+           go-github-com-prometheus-client-golang
+           go-github-com-secure-systems-lab-go-securesystemslib
+           go-github-com-sigstore-protobuf-specs
+           go-github-com-sigstore-sigstore
+           ;; go-github-com-sigstore-sigstore-go                 ;cycles
+           go-github-com-sigstore-sigstore-pkg-signature-kms-aws
+           go-github-com-sigstore-sigstore-pkg-signature-kms-gcp
+           go-github-com-tink-crypto-tink-go-awskms-v2
+           go-github-com-tink-crypto-tink-go-gcpkms-v2
+           go-github-com-tink-crypto-tink-go-v2
+           go-github-com-transparency-dev-formats
+           go-github-com-transparency-dev-merkle
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-exporters-prometheus
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-golang-org-x-exp
+           go-golang-org-x-mod
+           go-golang-org-x-sync
+           go-google-golang-org-api
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+           go-k8s-io-klog-v2
+
+           ;; TODO: Complete packaging.
+           ;; go-cloud-google-com-go-spanner
+           ;; go-github-com-chainguard-dev-clog
+           ;; go-github-com-transparency-dev-tessera
+           #;go-go-step-sm-crypto))
+    (home-page "https://github.com/sigstore/rekor-tiles")
+    (synopsis "Tile-based transparency log for Sigstore")
+    (description
+     "This package provides a tile-based implementation of a transparency log
+for the Sigstore ecosystem, supporting efficient verification of log entries.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-sigstore-sigstore-pkg-signature-kms-aws
   (package
     (name "go-github-com-sigstore-sigstore-pkg-signature-kms-aws")
