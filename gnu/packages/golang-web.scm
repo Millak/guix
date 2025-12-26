@@ -16293,6 +16293,58 @@ and consumers to transparently record signed metadata to a ledger.")
 for the Sigstore ecosystem, supporting efficient verification of log entries.")
     (license license:asl2.0)))
 
+(define-public go-github-com-sigstore-sigstore-go
+  (package
+    (name "go-github-com-sigstore-sigstore-go")
+    (version "1.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sigstore/sigstore-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jr8jj4wibzxawn3dzv1j4cxmbh2b5g356mh2bqq9d0p78idf7k3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/sigstore/sigstore-go"
+      #:embed-files #~(list ".*\\.json")
+      #:test-subdirs
+      #~(list "pkg/bundle"
+              "pkg/fulcio/certificate"
+              "pkg/tlog"
+              "pkg/tuf")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-cyberphone-json-canonicalization
+           go-github-com-digitorus-timestamp
+           go-github-com-go-openapi-runtime
+           go-github-com-go-openapi-strfmt
+           go-github-com-go-openapi-swag-conv
+           go-github-com-google-certificate-transparency-go
+           go-github-com-in-toto-attestation
+           go-github-com-in-toto-in-toto-golang
+           go-github-com-secure-systems-lab-go-securesystemslib
+           go-github-com-sigstore-protobuf-specs
+           go-github-com-sigstore-rekor
+           go-github-com-sigstore-rekor-tiles-v2
+           go-github-com-sigstore-sigstore
+           go-github-com-sigstore-timestamp-authority-v2
+           go-github-com-theupdateframework-go-tuf-v2
+           go-golang-org-x-crypto
+           go-golang-org-x-mod
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/sigstore/sigstore-go")
+    (synopsis "Go client library for Sigstore")
+    (description
+     "This package provides a Go client library for Sigstore, enabling
+verification of signatures and attestations produced by Sigstore tools.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-sigstore-sigstore-pkg-signature-kms-aws
   (package
     (name "go-github-com-sigstore-sigstore-pkg-signature-kms-aws")
