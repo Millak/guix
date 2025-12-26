@@ -688,12 +688,14 @@ When VERSION is unspecified, the latest version available is used."
                      '()
                      `(#:unpack-path ,root-module-path))))
         ,@(maybe-propagated-inputs
-           (map (match-lambda
-                  ((name version)
-                   (go-module->guix-package-name name (strip-v-prefix version)))
-                  (name
-                   (go-module->guix-package-name name)))
-                dependencies))
+           (sort!
+            (map (match-lambda
+                   ((name version)
+                    (go-module->guix-package-name name (strip-v-prefix version)))
+                   (name
+                    (go-module->guix-package-name name)))
+                 dependencies)
+            string<?))
         (home-page ,(format #f "https://~a" root-module-path))
         (synopsis ,synopsis)
         (description ,(and=> description beautify-description))
