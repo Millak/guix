@@ -7254,6 +7254,90 @@ replacement for memcached in many cases.  It provides a data loading mechanism
 with caching and de-duplication that works across a set of peer processes.")
     (license license:asl2.0)))
 
+(define-public go-github-com-google-certificate-transparency-go
+  (package
+    (name "go-github-com-google-certificate-transparency-go")
+    (version "1.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/certificate-transparency-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c2ngmjjmnhcnfwjy0pqnx1hvxygsdc4lscqvnyqrms0zbc51c0m"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/google/certificate-transparency-go"
+      ;; XXX: Remove when all inputs are packaged.
+      #:test-subdirs
+      #~(list "."
+              "asn1"
+              "client"
+              "ctpolicy"
+              "ctutil"
+              "fixchain"
+              "gossip/minimal/x509ext"
+              "internal/witness/cmd/witness/internal/http"
+              "internal/witness/cmd/witness/internal/witness"
+              "jsonclient"
+              "logid"
+              "loglist3"
+              "scanner"
+              "schedule"
+              "submission"
+              "tls"
+              "trillian/ctfe"
+              "trillian/ctfe/cache/lru"
+              "trillian/ctfe/storage/mysql"
+              "trillian/ctfe/storage/postgresql"
+              "trillian/integration"
+              "trillian/migrillian/core"
+              "x509"
+              "x509util")))
+    (native-inputs
+     (list go-github-com-data-dog-go-sqlmock
+           go-github-com-golang-mock
+           go-github-com-google-go-cmp
+           go-github-com-google-trillian
+           go-github-com-kylelemons-godebug
+           go-github-com-sergi-go-diff
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag))
+    (propagated-inputs
+     (list go-github-com-go-sql-driver-mysql
+           go-github-com-gorilla-mux
+           go-github-com-hashicorp-golang-lru-v2
+           go-github-com-jackc-pgx-v5
+           go-github-com-mattn-go-sqlite3
+           go-github-com-prometheus-client-golang
+           go-github-com-rs-cors
+           go-github-com-tomasen-realip
+           go-github-com-transparency-dev-merkle
+           go-golang-org-x-crypto
+           go-golang-org-x-time
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v3
+           go-k8s-io-klog-v2
+
+           ;; TODO: Complete packaging.
+           ;; go-github-com-fullstorydev-grpcurl
+           ;; go-go-etcd-io-etcd-v3
+           ;; go-go-etcd-io-etcd-client-v3
+           #;go-go-etcd-io-etcd-etcdctl-v3))
+    (home-page "https://github.com/google/certificate-transparency-go")
+    (synopsis "Go client for Certificate Transparency logs")
+    (description
+     "This package provides Go implementations of components for working
+with Certificate Transparency (CT) logs.  CT is a method for publicly
+logging TLS certificates to help detect mis-issued or malicious
+certificates.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-google-certtostore
   (package
     (name "go-github-com-google-certtostore")
