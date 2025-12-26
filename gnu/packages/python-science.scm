@@ -3942,16 +3942,45 @@ library.")
 (define-public python-tspex
   (package
     (name "python-tspex")
-    (version "0.6.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "tspex" version))
-              (sha256
-               (base32
-                "0x64ki1nzhms2nb8xpng92bzh5chs850dvapr93pkg05rk22m6mv"))))
-    (build-system python-build-system)
+    ;; 0.6.3 is not tagged; must be this one, as it is the latest, from the
+    ;; day of the release, and the commit message is "Bump to 0.6.3".
+    (properties '((commit . "d393ff497b7c14d673e792bd6c84ddd734be1239")
+                  (revision . "0")))
+    (version (git-version "0.6.3"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/apcamargo/tspex")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0khhnahhn0jp9y14q6wgq0xqadqszwn1iq3y562bhfmv09f4j1ik"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-coverage
+            (lambda _
+              (substitute* "pytest.ini"
+                (("--cov.*") ""))))
+          ;; The seaborn styles have different names.
+          (add-after 'unpack 'fix-seaborn
+            (lambda _
+              (substitute* (find-files "." ".py$")
+                (("seaborn-") "seaborn-v0_8-")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
-     (list python-matplotlib python-numpy python-pandas python-xlrd))
+     (list python-matplotlib
+           python-numpy
+           python-pandas
+           python-seaborn
+           python-xlrd))
     (home-page "https://apcamargo.github.io/tspex/")
     (synopsis "Calculate tissue-specificity metrics for gene expression")
     (description
