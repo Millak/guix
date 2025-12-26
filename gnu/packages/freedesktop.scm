@@ -1242,14 +1242,17 @@ devices when in power-saver mode.")
 (define-public python-libevdev
   (package
     (name "python-libevdev")
-    (version "0.11")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "libevdev" version))
-              (sha256
-               (base32
-                "03snix86j0angq0lydp29f8833clxq8h0x4spmh8lj7j9mm01jp9"))))
-    (build-system python-build-system)
+    (version "0.13.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/libevdev/python-libevdev")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1976gqf1rlgv68dc99xzaixa8cy4qrxgn11gh5xgw1ryzs0ps9pp"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -1258,19 +1261,15 @@ devices when in power-saver mode.")
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "libevdev/_clib.py"
                 (("libevdev.so.2")
-                 (search-input-file inputs "lib/libevdev.so.2")))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "test")))))))
-    (native-inputs (list python-pytest))
+                 (search-input-file inputs "lib/libevdev.so.2"))))))))
+    (native-inputs (list python-hatchling python-pytest))
     (inputs (list libevdev))
     (home-page "https://gitlab.freedesktop.org/libevdev/python-libevdev")
     (synopsis "Python wrapper for libevdev")
-    (description "This package provides a Python wrapper around
-@code{libevdev}, taking advantage of @code{libevdev}'s advanced event
-handling.  Documentation is available at
-@url{https://python-libevdev.readthedocs.io/en/latest/}.
+    (description
+     "This package provides a Python wrapper around @code{libevdev}, taking
+advantage of @code{libevdev}'s advanced event handling.  Documentation is
+available at @url{https://python-libevdev.readthedocs.io/en/latest/}.
 @code{libevdev} makes it easy to:
 @itemize
 @item read and parse events from an input device;
