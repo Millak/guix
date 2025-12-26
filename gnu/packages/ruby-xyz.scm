@@ -857,12 +857,16 @@ But the true aim of Serverspec is to help refactoring infrastructure code.")
     (version "0.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (rubygems-uri "base64" version))
+       (method git-fetch) ; The gem lacks the test files.
+       (uri (git-reference
+              (url "https://github.com/ruby/base64")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0yx9yn47a8lkfcjmigk79fykxvr80r4m1i35q82sxzynpbm7lcr7"))))
+        (base32
+         "08n9hnbqf8hsci22zgq7ha3jxnxmw0plydc3l9zahvfawm6jplnx"))))
     (build-system ruby-build-system)
-    (arguments '(#:tests? #f))  ; No tests bundled.
+    (native-inputs (list ruby-rake ruby-test-unit))
     (synopsis "Base64 encoding/decoding in Ruby")
     (description
      "This package provides support for encoding and decoding binary data
