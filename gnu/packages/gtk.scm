@@ -3036,27 +3036,29 @@ user interaction (e.g.  measuring distances).")
 (define-public volctl
   (package
     (name "volctl")
-    (version "0.9.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url "https://github.com/buzz/volctl")
-                                  (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0anrwz8rvbliskmcgpw2zabgjj5c72hpi7cf0jg05vvmlpnbsd4g"))))
-    (build-system python-build-system)
+    (version "0.9.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/buzz/volctl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0113mkhvjh2asmydpvm96j1d8s6bbp5gnhfzirjb6flj6zy6dgfc"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "volctl/xwrappers.py"
-               (("libXfixes.so")
-                (string-append (search-input-file inputs
-                                                  "/lib/libXfixes.so")))))))))
-    (inputs
-     (list libxfixes))
+     (list
+      #:tests? #f                       ;No tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "volctl/xwrappers.py"
+                (("libXfixes.so")
+                 (search-input-file inputs "/lib/libXfixes.so"))))))))
+    (native-inputs (list python-setuptools))
+    (inputs (list libxfixes))
     (propagated-inputs
      (list python-click
            python-pycairo
@@ -3066,8 +3068,9 @@ user interaction (e.g.  measuring distances).")
            gtk+))
     (home-page "https://buzz.github.io/volctl/")
     (synopsis "Per-application volume control and on-screen display")
-    (description "Volctl is a PulseAudio-enabled tray icon volume control and
-OSD applet for graphical desktops.  It's not meant to be an replacement for a
+    (description
+     "Volctl is a PulseAudio-enabled tray icon volume control and OSD applet
+for graphical desktops.  It's not meant to be an replacement for a
 full-featured mixer application.  If you're looking for that check out the
 excellent pavucontrol.")
 
