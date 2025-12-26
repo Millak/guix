@@ -3,7 +3,7 @@
 ;;; Copyright © 2013, 2015, 2016, 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015 Alex Kost <alezost@gmail.com>
-;;; Copyright © 2014, 2016, 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2014, 2016, 2017, 2018, 2019, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2014, 2017 John Darrington <jmd@gnu.org>
@@ -2891,12 +2891,25 @@ GIF, TIFF, WEBP, BMP, PNG, XPM formats.")
        #:modules ((guix build python-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
                   (guix build utils))
+       ;; XXX: Tests are not discovered.
+       #:tests? #false
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'python3.11-compatibility
            (lambda _
              (substitute* "setup.py"
-               (("\"rU\"") "\"r\""))))
+               (("\"rU\"") "\"r\"")
+               (("test_suite='tests'.*") ""))
+             (substitute* "setup.cfg"
+               (("install-") "install_"))
+             ;; This file makes Python confuse it for a module, so we rename
+             ;; it.
+             (rename-file "lib/xml.py" "lib/xmlo.py")
+             (substitute* (find-files "." "\\.py$")
+               (("lib.xml") "lib.xmlo"))
+             ;; This procedure has been removed.
+             (substitute* "lib/gettext_setup.py"
+               (("c = gettext.bind_textdomain_codeset.*") "c = True\n"))))
          (add-after 'install 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
          (add-after 'install 'wrap-program
@@ -2904,6 +2917,10 @@ GIF, TIFF, WEBP, BMP, PNG, XPM formats.")
              (let* ((out (assoc-ref outputs "out"))
                     (gdk-pixbuf (assoc-ref inputs "gdk-pixbuf"))
                     (gtk+ (assoc-ref inputs "gtk+")))
+               ;; This is replaced with an invalid shebang.
+               (substitute* (string-append out "/bin/mypaint")
+                 (("#!python")
+                  (string-append "#!" (which "python3"))))
                (wrap-program (string-append out "/bin/mypaint")
                  `("GI_TYPELIB_PATH" ":" prefix
                    (,(getenv "GI_TYPELIB_PATH")))))))
