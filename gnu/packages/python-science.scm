@@ -5716,7 +5716,11 @@ quite useful when you desire to update your plot in real-time.")
        (uri (pypi-uri "SimpleSpectral" version))
        (sha256
         (base32 "0qh3xwdv9cwcqdamvglrhm586p4yaq1hd291py1fvykhk2a2d4w6"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))                ;No tests, also not in git repository.
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-numpy python-scipy))
     (home-page "https://github.com/xmikos/simplespectral")
