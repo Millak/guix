@@ -3824,16 +3824,21 @@ one-dimensional sample-rate conversion library.")
     (version "0.2.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python3_midi" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/NFJones/python3-midi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1z9j1w7mpn3xhkcpxmqm5rvmj6nffb5rf14bv7n3sdh07nf6n7sf"))))
-    (build-system python-build-system)
+        (base32 "1zihn7n9dr9jjgkjlpad515hhwh22k94irb21ji793sr5crh5s15"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))         ; XXX: midi module has not been packaged yet.
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/NFJones/python3-midi")
     (synopsis "Python MIDI API")
-    (description "This package provides a python API to read and write MIDI
-files.")
+    (description
+     "This package provides a python API to read and write MIDI files.")
     (license license:expat)))
 
 (define-public python-wavefile
