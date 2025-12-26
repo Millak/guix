@@ -49,6 +49,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -82,8 +83,9 @@
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
-  #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-graphics)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
@@ -513,26 +515,12 @@ provides the @command{g4music} command.")
               (sha256
                (base32
                 "168wcsrkmvq79xmwvbq615msd4q0rg7f57xqicidnr78jx4x37rd"))))
-    (build-system python-build-system)
-    (inputs
-     (list bash-minimal                 ; for wrap-program
-           gtk+
-           pango
-           python-freetype-py
-           python-jinja2
-           python-lark
-           python-numpy
-           python-pycairo
-           python-pyglm
-           python-pygobject
-           python-pyopengl))
-    (native-inputs
-     (list python-pytest))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:imported-modules `((guix build glib-or-gtk-build-system)
-                           ,@%python-build-system-modules)
-      #:modules '((guix build python-build-system)
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build pyproject-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
                   (guix build utils)
                   (ice-9 match))
@@ -556,10 +544,6 @@ provides the @command{g4music} command.")
                               (string-append icons "/scalable/apps/"))
                 (install-file "res/com.github.alexhuntley.Plots-symbolic.svg"
                               (string-append icons "/symbolic/apps/")))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv"))))
           (add-after 'wrap 'gi-wrap
             (lambda _
               (let ((prog (string-append #$output "/bin/plots")))
@@ -567,6 +551,20 @@ provides the @command{g4music} command.")
                   `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))
           (add-after 'wrap 'glib-or-gtk-wrap
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+    (inputs
+     (list bash-minimal                 ; for wrap-program
+           gtk+
+           pango
+           python-freetype-py
+           python-jinja2
+           python-lark
+           python-numpy
+           python-pycairo
+           python-pyglm
+           python-pygobject
+           python-pyopengl))
+    (native-inputs
+     (list python-pytest python-setuptools))
     (home-page "https://apps.gnome.org/app/com.github.alexhuntley.Plots/")
     (synopsis "Simple graph plotting")
     (description "Plots makes it easy to visualise mathematical formulae.  In
