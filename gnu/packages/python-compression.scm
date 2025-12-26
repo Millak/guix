@@ -58,6 +58,58 @@
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages sphinx))
 
+(define-public python-backports-zstd
+  (package
+    (name "python-backports-zstd")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rogdham/backports.zstd")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08dlr3zfk6fsn9g99msy2ap43c740hmc1l1c4xccigkrkjn9p0sp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 1249 passed
+      #:test-backend #~'unittest
+      #:test-flags #~(list "discover" "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-system-zstd
+            (lambda _
+              (substitute* "setup.py"
+                (("_SYSTEM_ZSTD = False")
+                 "_SYSTEM_ZSTD = True"))))
+          (add-after 'unpack 'skip-copy-of-zstd-license
+            (lambda _
+              (substitute* "setup.py"
+                (("f.write.*read_text.*")
+                 ""))))
+          (add-after 'unpack 'skip-tests-requiring-root
+            (lambda _
+              (substitute* "tests/test/test_tarfile.py"
+                (("import pwd, grp")
+                 "return False"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Skip tests that may fail when using the system library.
+              (setenv "BACKPORTSZSTD_SKIP_EXTENSION_TEST" "1"))))))
+    (native-inputs
+     (list pythoncapi-compat
+           python-setuptools))
+    (inputs
+     (list (list zstd "lib")))
+    (home-page "https://peps.python.org/pep-0784/")
+    (synopsis "Backport of compression.zstd for Python")
+    (description
+     "This package provides a backport of the compression.zstd module for
+Python versions below 3.14.")
+    (license license:psfl)))
+
 (define-public python-blosc
   (package
     (name "python-blosc")
