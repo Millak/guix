@@ -31213,6 +31213,38 @@ It replaces the standard completions buffer with Ido prompt.")
     (description "Makes ido-mode display prospects vertically.")
     (license license:gpl3+)))
 
+(define-public emacs-markov-text
+  ;; No release upstream.  Extract version from main file.
+  (let ((commit "a35c26853b368885072da21f1e2768c85944d55b")
+        (revision "0"))
+    (package
+      (name "emacs-markov-text")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/skeeto/markov-text")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0clc0m3wmjym2x320d7scpz19pl3mwppwifmzcxb3mgj2p1p199x"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f                                    ;no tests
+        #:include #~(cons "^data/" %default-include))) ;default seed text
+      (home-page "https://github.com/skeeto/markov-text")
+      (synopsis "Markov-chain text generator and Lorem Ipsum inserter")
+      ;; TRANSLATORS: "Lorem Ipsum" should not be translated.
+      (description
+       "This package provides commands to produce paragraph-like output.
+@code{markov-text} generates pseudo-random text from sample input using a
+Markov chain; paragraph and sentence lengths follow the chain states and are
+not directly controlled.  It also includes a separate Lorem Ipsum generator
+with its own database and an interactive @code{lorem-ipsum-insert} command.")
+      (license license:unlicense))))
+
 (define-public emacs-wordgen
   (package
     (name "emacs-wordgen")
