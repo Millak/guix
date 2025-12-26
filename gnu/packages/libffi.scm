@@ -167,48 +167,6 @@ conversions for values passed between the two languages.")
     (description "Foreign Function Interface for Python calling C code.")
     (license expat)))
 
-;;; This Python 2 dependency is needed by the Pypy build system, which is
-;;; unlikely to change in the future.
-(define-public python2-cffi
-  (let ((base (package
-                (name "python-cffi")
-                (version "1.15.1")
-                (source
-                 (origin
-                   (method url-fetch)
-                   (uri (pypi-uri "cffi" version))
-                   (sha256
-                    (base32 "1y9lr651svbzf1m03s4lqbnbv2byx8f6f0ml7hjm24vvlfwvy06l"))))
-                (build-system pyproject-build-system)
-                (arguments
-                 (list
-                  #:tests? #f
-                  #:phases
-                  #~(modify-phases %standard-phases
-                      (replace 'build
-                        (lambda _
-                          (invoke "python" "setup.py" "build")))
-                      (replace 'install
-                        (lambda _
-                          (let ((site (string-append #$output
-                                                     "/lib/python2.7/site-packages/")))
-                            (mkdir-p site)
-                            (setenv "PYTHONPATH" site))
-                          (invoke "python" "./setup.py" "install"
-                                  (string-append "--prefix=" #$output)
-                                  "--no-compile"))))))
-                (native-inputs '())
-                (inputs (modify-inputs (package-inputs python-cffi)
-                          (append libxcrypt)))
-                (propagated-inputs (list python2-pycparser))
-                (home-page "https://cffi.readthedocs.io/")
-                (synopsis "Foreign function interface for Python")
-                (description "Foreign Function Interface for Python calling C code.")
-                (license expat))))
-    (package
-      (inherit (package-with-python2 base))
-      (native-inputs (list pkg-config python-setuptools)))))
-
 (define-public python-cffi-documentation
   (package
     (name "python-cffi-documentation")
