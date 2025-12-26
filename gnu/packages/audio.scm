@@ -3635,27 +3635,31 @@ cross-platform audio input/output stream library.")
 (define-public python-pulsectl
   (package
     (name "python-pulsectl")
-    (version "24.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pulsectl" version))
-              (sha256
-               (base32
-                "0r9igs365cqgrn1m55a8qjz0hc446nwjm3p3i9kphbj5gl7dazk9"))))
-    (build-system python-build-system)
-    (inputs (list pulseaudio))
+    (version "24.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mk-fg/python-pulse-control")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f15w2312j2yc9bs689dvdgq891sjrp5x3q1vf08743px70gxc1m"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f                      ; tests try to communicate with PulseAudio
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "pulsectl/_pulsectl.py"
-               (("libpulse.so.0")
-                (string-append (search-input-file inputs "/lib/libpulse.so.0")))))))))
+     (list
+      #:tests? #f ;tests try to communicate with PulseAudio
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "pulsectl/_pulsectl.py"
+                (("libpulse.so.0")
+                 (search-input-file inputs "/lib/libpulse.so.0"))))))))
+    (native-inputs (list python-setuptools))
+    (inputs (list pulseaudio))
     (home-page "https://github.com/mk-fg/python-pulse-control")
-    (synopsis
-     "Python bindings for mixer-like controls in PulseAudio")
+    (synopsis "Python bindings for mixer-like controls in PulseAudio")
     (description
      "This package provides a Python high-level interface and ctypes-based
 bindings for PulseAudio (libpulse), to use in simple synchronous code.
