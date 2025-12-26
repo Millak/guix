@@ -46,7 +46,7 @@
 ;;; Copyright © 2021 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022, 2023, 2024 Sughosha <sughosha@disroot.org>
-;;; Copyright © 2022, 2025 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2022, 2025, 2026 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
@@ -7872,7 +7872,7 @@ streaming audio server.")
                        `("GI_TYPELIB_PATH" ":" = (,gi-typelib-path))
                        `("GST_PLUGIN_SYSTEM_PATH" ":" suffix
                          (,gst-plugins-path))))
-                   '("exfalso" "quodlibet")))))))))
+                   '("exfalso" "operon" "quodlibet")))))))))
     (native-inputs (list xvfb-run gettext-minimal python-pytest
                          python-setuptools))
     (inputs
