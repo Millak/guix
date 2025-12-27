@@ -119,26 +119,31 @@ previously known as journalism.")
 (define-public python-agate-sql
   (package
     (name "python-agate-sql")
-    (version "0.7.2")
+    (version "0.7.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/wireservice/agate-sql")
-             (commit version)))
+              (url "https://github.com/wireservice/agate-sql")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03pvya65jm4s5sxwz0msj5dwjr6mk7dja3wdyh7hmf31dpczkjm8"))))
+        (base32 "04rcrcv57wdbkg90k1s0rwhlw223nm9fhw9x6xkl8nwxr0n6zyk0"))))
     (build-system pyproject-build-system)
     ;; XXX: Documentation requires <https://github.com/pradyunsg/furo> which
     ;; is not packaged yet and depends on some missing Node.js packages
+    (arguments
+     (list
+      #:test-flags
+      ;; TODO: sqlalchemy.exc.NoSuchModuleError: Can't load plugin:
+      ;; sqlalchemy.dialects:crate
+      #~(list "-k" "not test_to_sql_create_statement_with_dialects")))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           ;; python-sqlalchemy-cratedb  ;not packaged, long journey
+           python-setuptools))
     (propagated-inputs
      (list python-agate
-           python-crate
            python-sqlalchemy))
     (home-page "https://agate-sql.rtfd.org")
     (synopsis "SQL read/write support to agate")
