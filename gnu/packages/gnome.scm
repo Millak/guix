@@ -10928,36 +10928,6 @@ compiled.")
     (home-page "https://wiki.gnome.org/Projects/Folks")
     (license license:lgpl2.1+)))
 
-(define-public gfbgraph
-  (package
-    (name "gfbgraph")
-    (version "0.2.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://gnome/sources/gfbgraph/"
-                    (version-major+minor version) "/"
-                    "gfbgraph-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1qq3cryhby50xms8zh4s6fmw5p0i7dpg1wvsz5ni78cbyyrq3cww"))))
-    (build-system glib-or-gtk-build-system)
-    (arguments
-     `(#:configure-flags '("--disable-static")))
-    (native-inputs
-     (list gobject-introspection
-           gtk-doc/stable
-           pkg-config))
-    (inputs
-     (list gnome-online-accounts
-           json-glib
-           librest))
-    (synopsis "GLib/GObject wrapper for the Facebook API")
-    (description "This library allows you to use the Facebook API from
-GLib/GObject code.")
-    (home-page "https://wiki.gnome.org/Projects/GFBGraph")
-    (license license:lgpl2.1+)))
-
 (define-public libgnomekbd
   (package
     (name "libgnomekbd")
