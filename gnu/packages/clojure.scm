@@ -780,7 +780,7 @@ work with command-line arguments.")
 (define-public clojure-tools-deps
   (package
     (name "clojure-tools-deps")
-    (version "0.18.1354")
+    (version "0.28.1569")
     (home-page "https://github.com/clojure/tools.deps")
     (source (origin
               (method git-fetch)
@@ -790,13 +790,14 @@ work with command-line arguments.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ls5nixhsjjhf3qz8kbyhmks5lw7a25zxl46yrizbw7vba3mzrpl"))))
+                "04s8cishxm1y4vnx8mpdk1qma6j0khmb356j69fsy14s615yjgfg"))))
     (build-system clojure-build-system)
     (arguments
      `(#:source-dirs '("src/main/clojure" "src/main/resources")
        #:test-dirs '("src/test/clojure")
        #:doc-dirs '()
-       ;; FIXME: Could not initialize class org.eclipse.aether.transport.http.SslSocketFactory
+       ;; FIXME: Could not initialize class
+       ;; org.eclipse.aether.transport.http.SslSocketFactory
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
