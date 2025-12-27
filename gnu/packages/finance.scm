@@ -2461,29 +2461,23 @@ analysis of financial market data.")
 (define-public python-mt-940
   (package
     (name "python-mt-940")
-    (version "4.23.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/WoLpH/mt940.git")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0z9w1qalcphsck3j6vkrs7k47ah9zq2rv0lm9nmcsgwpyp59qkyf"))))
+    (version "4.30.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/WoLpH/mt940.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13g5338aa8vgkx8g94vz5d8ynfq3jndvyh1nz6dlhw4axwr4x8dp"))))
     (properties '(("upstream-name" #{.}# "mt-940")))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-                      (when tests?
-                        ;; Remove custom --cov flags.
-                        (delete-file "pytest.ini")
-                        (invoke "pytest" "-vv")))))))
-    (native-inputs (list python-flake8
-                         python-pytest
-                         python-pyyaml))
+     (list
+      #:test-flags
+      #~(list "-c" "/dev/null")))       ; Remove custom --cov flags.
+    (native-inputs (list python-pytest python-pyyaml python-setuptools))
     (home-page "https://mt940.readthedocs.io/")
     (synopsis "Python parser for MT940-encoded SWIFT data")
     (description
