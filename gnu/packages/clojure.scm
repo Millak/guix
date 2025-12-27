@@ -795,6 +795,7 @@ work with command-line arguments.")
     (build-system clojure-build-system)
     (arguments
      `(#:source-dirs '("src/main/clojure" "src/main/resources")
+       #:java-source-dirs '("src/main/java")
        #:test-dirs '("src/test/clojure")
        #:doc-dirs '()
        ;; FIXME: Could not initialize class
@@ -802,28 +803,6 @@ work with command-line arguments.")
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
-         ;; FIXME: Currently, the S3 transporter depends on ClojureScript,
-         ;; which is very difficult to package due to dependencies on Java
-         ;; libraries with non-standard build systems. Instead of actually
-         ;; packaging these libraries, we just remove the S3 transporter that
-         ;; depends on them.
-         (add-after 'unpack 'remove-s3-transporter
-           (lambda _
-             (for-each delete-file
-                       (list
-                        (string-append
-                         "src/main/clojure/clojure/"
-                         "tools/deps/util/s3_aws_client.clj")
-                        (string-append
-                         "src/main/clojure/clojure/"
-                         "tools/deps/util/s3_transporter.clj")
-                        (string-append
-                         "src/test/clojure/clojure/"
-                         "tools/deps/util/test_s3_transporter.clj")))
-             (substitute*
-               "src/main/clojure/clojure/tools/deps/util/maven.clj"
-               (("clojure.tools.deps.util.s3-transporter")
-                ""))))
          (add-before 'build 'reference-clojure-jar-input
            ;; Use static clojure jar from build input at runtime by default.
            (lambda* (#:key inputs #:allow-other-keys)
@@ -843,7 +822,8 @@ work with command-line arguments.")
                              maven-resolver-transport-file
                              clojure-tools-gitlibs
                              clojure-tools-cli
-                             clojure-data-xml))
+                             clojure-data-xml
+                             cognitect-aws-api))
     (synopsis "Clojure library supporting clojure-tools")
     (description "This package provides a functional API for transitive
 dependency graph expansion and the creation of classpaths.")
@@ -1040,4 +1020,60 @@ and line numbers not only to lists, but also to symbols, vectors and maps.")
 high-performance Clojure HTTP client and server library with WebSocket and
 asynchronous support.")
     (home-page "https://github.com/http-kit/http-kit")
+    (license license:asl2.0)))
+
+(define-public cognitect-aws-api
+  (package
+    (name "cognitect-aws-api")
+    (version "0.8.774")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/cognitect-labs/aws-api")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1y3impishicd8niy1vddx6c80pnbpz24zfr7vysi4r56p1vqnwmb"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (for-each delete-file
+                            (list
+                             ;; Require Cognitect http client
+                             "src/cognitect/aws/http/cognitect.clj"
+                             ;; Requires Babashka.
+                             "test/src/bb_test_runner.clj"
+                             ;; Requires  AWS Java SDK v2.
+                             "test/src/cognitect/aws/jdk_v2.clj"
+                             "test/src/cognitect/aws/signers_test.clj"
+                             ;; Remove integration tests.
+                             "test/src/cognitect/aws/client/shared_test.clj"
+                             "test/src/cognitect/aws/api_test.clj"
+                             "test/src/cognitect/client/impl_test.clj"
+                             "test/src/cognitect/client/test_double_test.clj"))
+                  ;; Remove integration tests
+                  (delete-file-recursively "test/src/cognitect/aws/integration")))))
+    (build-system clojure-build-system)
+    (propagated-inputs (list clojure-core-async
+                             clojure-tools-logging
+                             clojure-data-json
+                             clojure-data-xml))
+    (native-inputs (list clojure-test-check
+                         http-kit))
+    (arguments `(#:source-dirs '("src")
+                 #:doc-dirs '()
+                 #:test-dirs '("test/src" "test/resources")
+                 ;; Allow using java.net.http client.
+                 #:jdk ,openjdk11))
+    (synopsis
+     "Programmatic access to AWS services from Clojure programs")
+    (description
+     "This package is an idiomatic, data-oriented Clojure library for invoking AWS
+APIs.  While the library offers some helper and documentation functions you'll
+use at development time, the only functions you ever need at runtime are
+client, which creates a client for a given service and invoke, which invokes
+an operation on the service. invoke takes a map and returns a map, and works
+the same way for every operation on every service.")
+    (home-page "https://github.com/cognitect-labs/aws-api")
     (license license:asl2.0)))
