@@ -1096,30 +1096,6 @@ including drivers for chipsets produced by 3DFX, AMD (formerly ATI), Intel
 and Matrox.")
     (license license:x11)))
 
-(define-public libdrm-armada-novena
-  (package
-    (name "libdrm-armada-novena")
-    (version "2.0.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/novena-next/libdrm-armada.git")
-                     (commit (string-append "novena/" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0d770rxn1zzndzxxh9bcmn2p9yapvmyam0rvyjhv5ngq527ykm4p"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config automake autoconf libtool))
-    (inputs
-     (list libdrm))
-    (synopsis "libdrm for i.MX6 graphics")
-    (description "This package provides an accelerated X server library for
-i.MX6.")
-    (home-page "https://github.com/novena-next/libdrm-armada")
-    (license license:gpl2+)))
-
 (define-public mtdev
   (package
     (name "mtdev")
