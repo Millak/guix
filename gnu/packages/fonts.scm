@@ -576,6 +576,33 @@ intended to be optimally legible for readers who are partially visually impaired
 all characters maximally distinguishable from one another.")
       (license license:silofl1.1))))
 
+(define-public font-atkinson-hyperlegible-next
+  (let ((commit "7925f50f649b3813257faf2f4c0b381011f434f1")
+        (revision "0"))
+    (package
+      (name "font-atkinson-hyperlegible-next")
+      (version (git-version "2.001" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url
+                "https://github.com/googlefonts/atkinson-hyperlegible-next/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "01m59xl35xvjv07d0qwli1czgfjg2wfgv676xi71is2rirh1y71f"))))
+      (build-system font-build-system)
+      (home-page "https://www.brailleinstitute.org/freefont/")
+      (synopsis
+       "Typeface designed to increase legibility for low vision readers")
+      (description
+       "Atkinson Hyperlegible Next is an improvement of the typeface Atkinson
+Hyperlegible, including new characters, improved glyphs, and improved kerning.
+Additionally, the two previous weights has increased to six, all in upright
+and italic, allowing for greater flexibility in use.")
+      (license license:silofl1.1))))
+
 (define-public font-lato
   (package
     (name "font-lato")
