@@ -239,7 +239,7 @@
                                              time-hour
                                              (ignore ":")
                                              time-minute))
-(define-peg-pattern time-offset all (or "Z" time-numoffset))
+(define-peg-pattern time-offset all (or "Z" "z" time-numoffset))
 
 (define-peg-pattern partial-time body (and time-hour
                                            (ignore ":")
@@ -354,7 +354,7 @@ the list KEY. For instance a KEY (a b) would retrieve alist[a][b]."
        (assoc-ref->number args 'date-month)
        (assoc-ref->number args 'date-fullyear)
        (match (assq-ref args 'time-offset)
-         (("Z") 0)
+         ((or ("Z") ("z")) 0)
          ((sign ('time-hour hour) ('time-minute minute))
           (* (+
                (* (string->number (string-append sign hour)) 60)
