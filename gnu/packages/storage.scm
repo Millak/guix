@@ -6,6 +6,7 @@
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2025 Zheng Junjie <z572@z572.online>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -508,3 +509,23 @@ clients.  The key features are:
 tools and libraries for writing high performance,scalable, user-mode storage
 applications.")
     (license license:bsd-3)))
+
+(define-public swapspace
+  (package
+    (name "swapspace")
+    (version "1.18.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/Tookmund/swapspace")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1cpmrmwfvzkjll82b6gjnyrmpz69hfx98jf6xx463va7bncdvcra"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake))
+    (home-page "https://github.com/Tookmund/swapspace")
+    (synopsis "Dynamic swap manager for Linux")
+    (description "This package provides a dynamic swap manager for Linux.")
+    (license license:gpl2+)))
