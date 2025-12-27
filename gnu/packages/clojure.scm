@@ -822,7 +822,15 @@ work with command-line arguments.")
              (substitute*
                "src/main/clojure/clojure/tools/deps/util/maven.clj"
                (("clojure.tools.deps.util.s3-transporter")
-                "")))))))
+                ""))))
+         (add-before 'build 'reference-clojure-jar-input
+           ;; Use static clojure jar from build input at runtime by default.
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/main/resources/clojure/tools/deps/deps.edn"
+               (("org\\.clojure/clojure.*$")
+                (string-append "org.clojure/clojure {:local/root \""
+                               (assoc-ref inputs "clojure")
+                               "/share/java/clojure.jar\"}"))))))))
     (propagated-inputs (list maven-resolver-api
                              maven-resolver-spi
                              maven-resolver-impl
