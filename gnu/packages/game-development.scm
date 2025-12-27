@@ -1951,6 +1951,8 @@ visual novel engine, explaining all of its features.")
     (license license:expat)))
 
 (define-public rpatool
+  ;; XXX: No releases or version tags, see:
+  ;; <https://codeberg.org/shiz/rpatool/issues/28>.
   (let ((revision "0")
         (commit "74f26d5dfdd645483e02552aa766ca447ad6b191"))
     (package
@@ -1965,7 +1967,7 @@ visual novel engine, explaining all of its features.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "10dm8bak0dm84d1ciwzw6jd5y64invddlmcdnawnpp7jn3wrg1jb"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
        (list
         #:tests? #f ;no tests
