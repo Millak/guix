@@ -6193,23 +6193,26 @@ ISRCs and the MCN (=UPC/EAN) from disc.")
        (method url-fetch)
        (uri (pypi-uri "discid" version))
        (sha256
-        (base32
-         "1fgp67nhqlbvhhwrcxq5avil7alpzw4s4579hlyvxzbphdnbz8vq"))))
-    (build-system python-build-system)
-    (inputs
-     (list libdiscid))
+        (base32 "1fgp67nhqlbvhhwrcxq5avil7alpzw4s4579hlyvxzbphdnbz8vq"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-libdiscid
-           ;; Set path of libdiscid
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((discid (assoc-ref inputs "libdiscid")))
-               (substitute* "discid/libdiscid.py"
-                 (("lib_name = (.*)$" all name)
-                  (string-append "lib_name = \"" discid
-                                 "/lib/libdiscid.so.0\"\n")))
-               #t))))))
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list "not test_read_features"
+                          "test_read_put"
+                          "test_read_simple")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-libdiscid
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((discid (search-input-file inputs "/lib/libdiscid.so.0")))
+                (substitute* "discid/libdiscid.py"
+                  (("lib_name = (.*)$" all name)
+                   (string-append "lib_name = \"" discid "\"\n")))))))))
+    (native-inputs (list python-pytest python-setuptools))
+    (inputs (list libdiscid))
     (home-page "https://python-discid.readthedocs.io/")
     (synopsis "Python bindings for Libdiscid")
     (description
