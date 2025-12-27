@@ -760,26 +760,23 @@ written in Go with pluggable metric collectors.")
                   "0jk3ydi8s14q5kyl9j3gm2zrnwlb1jwjqpg5vqrgkbm9jrldrabc"))))
       (build-system pyproject-build-system)
       (arguments
-       '(#:tests? #f                    ; One test failure:
-                                        ; test/test_exporter.py:33:
-                                        ; AssertionError
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-setup.py
-             (lambda _
-               (substitute* "setup.py"
-                 (("git_ref = .*\n") "git_ref = ''\n"))
-               #t))
-           (add-after 'install 'install-udev-rules
-             (lambda* (#:key outputs #:allow-other-keys)
-               (install-file "debian/prometheus-temper-exporter.udev"
-                             (string-append (assoc-ref outputs "out")
-                                            "/lib/udev/rules.d"))
-               #t)))))
-      (inputs
-       (list python-prometheus-client python-pyudev))
-      (native-inputs
-       (list python-setuptools))
+       (list
+        ;; XXX: pretty-printing AssertionError
+        #:test-flags #~(list "-k" "not test_collection")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-setup.py
+              (lambda _
+                (substitute* "setup.py"
+                  (("git_ref = .*\n")
+                   "git_ref = ''\n"))))
+            (add-after 'install 'install-udev-rules
+              (lambda _
+                (install-file "debian/prometheus-temper-exporter.udev"
+                              (string-append #$output
+                                             "/lib/udev/rules.d")))))))
+      (inputs (list python-prometheus-client python-pyudev))
+      (native-inputs (list python-pytest python-pytest-mock python-setuptools))
       (home-page "https://github.com/yrro/temper-exporter")
       (synopsis "Prometheus exporter for PCSensor TEMPer sensor devices")
       (description
