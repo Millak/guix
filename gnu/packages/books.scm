@@ -159,9 +159,6 @@ core computer science concepts such as abstraction in programming,
 metalinguistic abstraction, recursion, interpreters, and modular programming.")
       (license license:cc-by-sa4.0))))
 
-;; It may be removed after 2025-12-19.
-(define-deprecated/public-alias sicp book-sicp)
-
 (define-public book-sparc
   (package
     (name "book-sparc")
