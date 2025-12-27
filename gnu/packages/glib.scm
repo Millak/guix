@@ -1003,7 +1003,7 @@ libraries.")
 (define glibmm
   (package
     (name "glibmm")
-    (version "2.82.0")
+    (version "2.86.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/glibmm/"
@@ -1011,7 +1011,7 @@ libraries.")
                                   "/glibmm-" version ".tar.xz"))
               (sha256
                (base32
-                "1dlwm6gmhnz1p84vkn86algdb6b2y439iymqcxf62wvj67zlqs1q"))))
+                "09kq13ab45764mw2zp1ncwikci2nmnwzskkpj29nfv84vbvfkh1r"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
