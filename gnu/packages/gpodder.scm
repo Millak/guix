@@ -205,26 +205,21 @@ episode status changes.")
 (define-public python-podcastparser
   (package
     (name "python-podcastparser")
-    (version "0.6.10")
+    (version "0.6.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "podcastparser" version))
        (sha256
-        (base32 "1mqkkxz928y430xx3mgw9dj78ilkgv9hjdha1hizbks6mmhcp6ib"))))
+        (base32 "12bysnajlqmsm1ns8l4j8d2dgwqyyq8jdfsm1vsksv5qj0zndhin"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _ (invoke "pytest"))))))
-    (build-system python-build-system)
+     (list python-pytest python-setuptools))
     (home-page "http://gpodder.org/podcastparser")
     (synopsis "Simplified and fast RSS parser Python library")
-    (description "@code{podcastparser} is a library for the gPodder project to
-provide an easy and reliable way of parsing RSS and Atom-based podcast feeds
-in Python.")
+    (description
+     "@code{podcastparser} is a library for the gPodder project to provide an
+easy and reliable way of parsing RSS and Atom-based podcast feeds in Python.")
     (license license:isc)))
 
 (define-public castget
