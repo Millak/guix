@@ -259,7 +259,8 @@ designs.")
     (inputs (list rlwrap
                   clojure
                   clojure-tools-deps
-                  java-commons-logging-minimal))
+                  java-commons-logging-minimal
+                  java-slf4j-nop))
     (home-page "https://clojure.org/releases/tools")
     (synopsis "CLI tools for the Clojure programming language")
     (description "The Clojure command line tools can be used to start a
