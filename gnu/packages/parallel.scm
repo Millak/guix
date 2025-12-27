@@ -552,33 +552,35 @@ supercomputer (via, e.g., MPI or JobLib).")
       (name "python-slurm-magic")
       (version (git-version "0.0" revision commit))
       (home-page "https://github.com/NERSC/slurm-magic")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference (url home-page)
-                                    (commit commit)))
-                (sha256
-                 (base32
-                  "19pp2vs0wm8mx0arz9n6lw9wgyv70w9wyi4y6b91qc5j3bz5igfs"))
-                (file-name (git-file-name name version))))
-      (build-system python-build-system)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url home-page)
+               (commit commit)))
+         (sha256
+          (base32 "19pp2vs0wm8mx0arz9n6lw9wgyv70w9wyi4y6b91qc5j3bz5igfs"))
+         (file-name (git-file-name name version))))
+      (build-system pyproject-build-system)
       (arguments
-       '(#:phases (modify-phases %standard-phases
-                    (add-before 'build 'set-slurm-path
-                      (lambda* (#:key inputs #:allow-other-keys)
-                        ;; The '_execute' method tries to exec 'salloc'
-                        ;; etc. from $PATH.  Record the absolute file name
-                        ;; instead.
-                        (let ((slurm (assoc-ref inputs "slurm")))
-                          (substitute* "slurm_magic.py"
-                            (("name = (.*)$" _ value)
-                             (string-append "name = \""
-                                            slurm "/bin/\" + "
-                                            value "\n")))
-                          #t))))))
-      (inputs
-       (list slurm))
-      (propagated-inputs
-       (list python-ipython python-pandas))
+       (list
+        #:tests? #f                     ; No tests.
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'set-slurm-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; The '_execute' method tries to exec 'salloc'
+                ;; etc. from $PATH.  Record the absolute file name
+                ;; instead.
+                (let ((slurm-bin (dirname
+                                  (search-input-file inputs "/bin/sinfo"))))
+                  (substitute* "slurm_magic.py"
+                    (("name = (.*)$" _ value)
+                     (string-append "name = \"" slurm-bin "/\" + "
+                                    value "\n")))))))))
+      (native-inputs (list python-setuptools))
+      (inputs (list slurm))
+      (propagated-inputs (list python-ipython python-pandas))
       (synopsis "Control the SLURM batch scheduler from Jupyter Notebook")
       (description
        "This package implements Jupyter/IPython
