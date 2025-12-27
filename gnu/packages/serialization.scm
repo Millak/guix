@@ -1016,15 +1016,19 @@ Python.")
     (name "python-feather-format")
     (version "0.4.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "feather-format" version))
-        (sha256
-         (base32
-          "00w9hwz7sj3fkdjc378r066vdy6lpxmn6vfac3qx956k8lvpxxj5"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "feather-format" version))
+       (sha256
+        (base32 "00w9hwz7sj3fkdjc378r066vdy6lpxmn6vfac3qx956k8lvpxxj5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests in PyPI or Git
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
-     (list python-pandas python-pyarrow))
+     (list python-pandas
+           python-pyarrow))
     (home-page "https://github.com/wesm/feather")
     (synopsis "Python wrapper to the Feather file format")
     (description "This package provides a Python wrapper library to the
