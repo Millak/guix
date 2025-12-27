@@ -3165,32 +3165,6 @@ non-technical or business participants in a software project.  Behave uses
 tests written in a natural language style, backed up by Python code.")
     (license license:x11)))
 
-(define-public python-behave-web-api
-  (package
-    (name "python-behave-web-api")
-    (version "2.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/jefersondaniel/behave-web-api")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1r8yx8gb5m599cpdqfvk6z9ax3qj26fpvczdr84z8jya0dxfch4p"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list behave
-           python-requests))
-    (home-page "https://github.com/jefersondaniel/behave-web-api")
-    (synopsis "Provides testing for JSON APIs with Behave for Python")
-    (description "This package provides testing utility modules for testing
-JSON APIs with Behave.")
-    (license license:expat)))
-
 (define-public python-freezegun
   (package
     (name "python-freezegun")
