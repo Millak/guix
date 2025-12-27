@@ -5,6 +5,7 @@
 ;;; Copyright © 2019 Jesse Gibbons <jgibbons2357+guix@gmail.com>
 ;;; Copyright © 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
+;;; Copyright © 2025 Mathieu Lirzin <mthl@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -81,7 +82,7 @@
 
     (package
       (name "clojure")
-      (version "1.12.0")
+      (version "1.12.4")
       (source (let ((name+version (string-append name "-" version)))
                 (origin
                   (method git-fetch)
@@ -90,10 +91,10 @@
                         (commit name+version)))
                   (file-name (string-append name+version "-checkout"))
                   (sha256
-                   (base32 "17f62x9qq71yhcfpg2npv19xi9wcpgqj255nmvpfy1z2md64gawz")))))
+                   (base32
+                    "072dv6s2gxcg8snlgkpjk6bp1cb17bgfshdq6ijsa4yslpqbf9wc")))))
       (build-system ant-build-system)
-      (inputs
-       `(("jre" ,icedtea)))
+      (inputs (list icedtea))
       (arguments
        `(#:imported-modules ((guix build clojure-utils)
                              (guix build clojure-build-system)
@@ -166,13 +167,20 @@
                      (display (string-append "maven.compile.classpath=" classpath "\n"))
                      (display (string-append "maven.test.classpath=" classpath "\n")))))
                #t))
+           (add-before 'check 'fix-test-classpath
+             ;; Some java test files need access to compiled classes.
+             (lambda _
+               (substitute* "build.xml"
+                 (("javac srcdir=\"\\$\\{jtestsrc\\}\"" cmd)
+                  (string-append cmd " classpath=\"${build}\"")))))
            (add-after 'build 'build-javadoc ant-build-javadoc)
            (replace 'install (install-jars "./"))
            (add-after 'install-license-files 'install-doc
              (cut install-doc #:doc-dirs '("doc/clojure/") <...>))
            (add-after 'install-doc 'install-javadoc
              (install-javadoc "target/javadoc/"))
-           (add-after 'reset-gzip-timestamps 'reset-class-timestamps clj:reset-class-timestamps))))
+           (add-after 'reset-gzip-timestamps 'reset-class-timestamps
+             clj:reset-class-timestamps))))
       (native-inputs libraries)
       (home-page "https://clojure.org/")
       (synopsis "Lisp dialect running on the JVM")
