@@ -2790,51 +2790,6 @@ X server.")
      "xf86-video-ark is an Ark Logic video driver for the Xorg X server.")
     (license license:x11)))
 
-(define-public xf86-video-armada-novena
-  (package
-    (name "xf86-video-armada-novena")
-    (version "1.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/novena-next/xf86-video-armada.git")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "01h27ck9s9rxyi9n8v9lqpd9aacln0w5pd5zlfgj740060q3wf30"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:configure-flags
-           #~(list "--disable-vivante" "--disable-etnaviv"
-                   (string-append "--with-etnaviv-source="
-                                  (assoc-ref %build-inputs "etna-viv")))
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'bootstrap
-                 (lambda _
-                   (mkdir "m4")
-                   (invoke "autoreconf" "--install"))))))
-    (inputs
-     (list xorg-server libdrm-armada-novena))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("automake" ,automake)
-       ("autoconf" ,autoconf)
-       ("libtool" ,libtool)
-       ("etna-viv" ,(origin
-                      (method git-fetch)
-                      (uri (git-reference
-                            (url "https://github.com/laanwj/etna_viv.git")
-                            (commit "d4c87f61bdcd15f98d4bdbea8c34788bb71fbad9")))
-                      (sha256
-                       (base32
-                        "0qfzwsmcq1lcwng707vlfql8nnkqqyhspfydxpfs03gn8w0l2cm2"))))))
-    (synopsis "Xorg driver for Freescale i.MX6")
-    (description "This package provides Xorg support for Freescale i.MX6.")
-    (home-page "https://github.com/novena-next/xf86-video-armada")
-    (license license:gpl2)))
-
 (define-public xf86-video-ast
   (package
     (name "xf86-video-ast")
