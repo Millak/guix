@@ -1219,20 +1219,21 @@ algorithms for evaluating Bayesian evidence.")
                             (substitute* "setup.py"
                               (("version=versioneer.get_version\\(),")
                                (format #f "version=~s," #$version)))))
-                        ;; To create the compiledir for tests.
-                        (add-before 'check 'write-permissions
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (setenv "HOME" "/tmp")))))))
-    (native-inputs (list python-pytest-cov python-versioneer))
+                        (add-after 'unpack 'relax-requirements
+                          (lambda _
+                            (substitute* "requirements.txt"
+                              (("scipy>=.*")
+                               "scipy\n")))))))
+    (native-inputs (list python-setuptools python-versioneer))
     (propagated-inputs (list python-arviz
                              python-cachetools
                              python-cloudpickle
-                             python-fastprogress
                              python-numpy
                              python-pandas
                              python-pytensor
+                             python-rich
                              python-scipy
+                             python-threadpoolctl
                              python-typing-extensions))
     (home-page "https://github.com/pymc-devs/pymc")
     (synopsis "Library for probabilistic programming in Python")
