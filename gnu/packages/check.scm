@@ -3198,24 +3198,6 @@ tests written in a natural language style, backed up by Python code.")
 JSON APIs with Behave.")
     (license license:expat)))
 
-(define-public python-nose-timer
-  (package
-    (name "python-nose-timer")
-    (version "0.7.5")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "nose-timer" version))
-        (sha256
-          (base32 "05wzkc88vbzw62pqkvhl33211b90kns0lny70b7qw62rcg4flzk4"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-nose python-termcolor))
-    (home-page "https://github.com/mahmoudimus/nose-timer")
-    (synopsis "Timer plugin for nosetests")
-    (description "Shows how much time was needed to run individual tests.")
-    (license license:expat)))
-
 (define-public python-freezegun
   (package
     (name "python-freezegun")
