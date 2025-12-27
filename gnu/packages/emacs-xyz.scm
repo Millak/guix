@@ -97,7 +97,7 @@
 ;;; Copyright © 2021, 2022 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021, 2022, 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Eugene Klimov <lipklim@mailbox.org>
-;;; Copyright © 2021, 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2021, 2024, 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
 ;;; Copyright © 2021 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
@@ -46948,6 +46948,31 @@ If you want to share space with an existing tab line, mode line, or header line,
 add (:eval (window-tool-bar-string)) to `tab-line-format', `mode-line-format',
 or `header-line-format'.  For additional documentation, see info node
 `(emacs)Window Tool Bar'.")
+    (license license:gpl3+)))
+
+(define-public emacs-winum
+  (package
+    (name "emacs-winum")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/deb0ch/winum")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0v1qmw3svydk7dlqbcymy1g1bygkfpb2h4b97zdp12xvd8mww9ny"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-dash))
+    (home-page "https://github.com/deb0ch/winum")
+    (arguments (list #:tests? #f)) ; there are no tests
+    (synopsis
+     "Navigate windows and frames using numbers")
+    (description
+     "This package provides a major mode for navigate windows and frames using
+numbers.")
     (license license:gpl3+)))
 
 (define-public emacs-tintin-mode
