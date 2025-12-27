@@ -5097,6 +5097,7 @@ objects.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1437 passed, 111 skipped, 11 deselected, 8 xfailed, 154 warnings
       #:test-flags
       ;; XXX: Full test suite takes about 20-30min to complete in single
       ;; thread, attempt to run tests in parallel with pytest-xdist fails even
@@ -5134,11 +5135,7 @@ objects.")
                           ;; Assertion fails in tests.
                           "test_choose_signature"
                           "test_fgraph_to_python_names")
-                    " and not ")
-              ;; Tests collection selects pytensor, which does not contain
-              ;; tests and fails to pass; manually provide a test directory
-              ;; instead.
-              "tests")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           ;; Replace version manually because pytensor uses
@@ -5153,23 +5150,24 @@ objects.")
             (lambda _
               ;; It is required for most tests.
               (setenv "HOME" "/tmp")
-              ;; Cython extensions have to be built before running the tests.
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+              ;; This would otherwise interfere with finding the installed
+              ;; pytensor when running tests.
+              (delete-file-recursively "pytensor"))))))
     (native-inputs (list python-cython
                          python-pytest
                          python-pytest-mock
                          python-versioneer
-                         python-setuptools
-                         python-wheel))
+                         python-setuptools))
     (propagated-inputs (list python-cons
                              python-etuples
                              python-filelock
                              python-logical-unification
                              python-minikanren
-                             python-numba
                              python-numpy
                              python-scipy
-                             python-typing-extensions))
+                             ;; [optinal]
+                             ;; python-jax
+                             python-numba))
     (home-page "https://pytensor.readthedocs.io/en/latest/")
     (synopsis
      "Library for mathematical expressions in multi-dimensional arrays")
