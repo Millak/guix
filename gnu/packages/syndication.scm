@@ -433,7 +433,7 @@ a simple interface that makes it easy to organize and browse feeds.")
               (sha256
                (base32
                 "1mvxxhzmraxjnw0vz60zkl4d8xp7lw0fs0z537zfhmj1lj9ap4cp"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      ;; Tests are not available in the PyPI release and the Git release
      ;; is lagging behind.  Additionally, tests use the network.
@@ -442,6 +442,7 @@ a simple interface that makes it easy to organize and browse feeds.")
            ;; in the python-beautifulsoup4 dependency.
            #:phases #~(modify-phases %standard-phases
                         (delete 'sanity-check))))
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-beautifulsoup4 python-chardet
                              python-dateutil python-lxml))
     (home-page "https://morss.it/")
