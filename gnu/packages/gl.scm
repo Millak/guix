@@ -212,26 +212,26 @@ Polygon meshes, and Extruded polygon meshes.")
     (version "0.1.36")
     (source
      (origin
-       ;; We fetch the sources from the repository since the PyPI archive
-       ;; doesn't contain the CMakeLists.txt file which is useful for
-       ;; integration with other software, such as the openboardview package.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/Dav1dde/glad")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0m55ya1zrmg6n2cljkajy80ilmi5sblln8742fm0k1sw9k7hzn8n"))))
-    (build-system python-build-system)
+        (base32 "0m55ya1zrmg6n2cljkajy80ilmi5sblln8742fm0k1sw9k7hzn8n"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'install 'install-cmakelists.txt
-                 (lambda _
-                   (let ((share (string-append #$output "/share/"
-                                               #$(package-name this-package))))
-                     (install-file "CMakeLists.txt" share)))))))
+     (list
+      ;; XXX: testing seems complex, see utility/compiletest.sh
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-cmakelists.txt
+            (lambda _
+              (let ((share (string-append #$output "/share/"
+                                          #$(package-name this-package))))
+                (install-file "CMakeLists.txt" share)))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/Dav1dde/glad")
     (synopsis "Multi-language GL/GLES/EGL/GLX/WGL loader generator")
     (description "Glad uses the official Khronos XML specifications to
