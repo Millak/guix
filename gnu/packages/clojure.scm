@@ -1077,3 +1077,27 @@ an operation on the service. invoke takes a map and returns a map, and works
 the same way for every operation on every service.")
     (home-page "https://github.com/cognitect-labs/aws-api")
     (license license:asl2.0)))
+
+(define-public clojure-java-classpath
+  (package
+    (name "clojure-java-classpath")
+    (version "1.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/clojure/java.classpath")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1k34yrx3gmvf46984zdgn2vb98ixf47q1vgh9p78bgmpyhrwzx2z"))))
+    (build-system clojure-build-system)
+    (arguments '(#:source-dirs '("src/main/clojure")
+                 #:test-dirs '("src/test/clojure")
+                 #:doc-dirs '()))
+    (synopsis "Examine the Java classpath from Clojure programs")
+    (description
+     "This package provides utilities for dealing with the JVM's classpath from
+Clojure.")
+    (home-page "https://github.com/clojure/java.classpath")
+    (license license:epl1.0)))
