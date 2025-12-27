@@ -4297,19 +4297,29 @@ Standard Recording Code} (ISRCs) from audio CDs and submit them to
   (package
     (name "python-pylast")
     (version "4.2.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pylast" version))
-              (sha256
-               (base32
-                "0pzzhr4mlwpvfhy9gzq86ppz29fmf5z0w3xkl5if1fm59r1afms7"))))
-    (build-system python-build-system)
-    ;; Tests require network access.  See
-    ;; https://github.com/pylast/pylast/issues/105
-    (arguments '(#:tests? #f))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pylast/pylast")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i3mgxhrr3nbfrg3ppv6qvf3py0p46wa2h36nnfjw2m5bhjd6rhx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
-     (list python-coverage python-pytest python-flaky python-pyyaml
-           python-setuptools-scm))
+     (list python-pytest
+           python-flaky
+           python-pyyaml
+           python-setuptools-scm
+           python-setuptools))
     (home-page "https://github.com/pylast/pylast")
     (synopsis "Python interface to Last.fm and Libre.fm")
     (description "A Python interface to Last.fm and other API-compatible
