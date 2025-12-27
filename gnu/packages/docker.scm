@@ -264,6 +264,9 @@ management tool.")
      (modify-inputs (package-propagated-inputs python-docker)
        (prepend python-docker-pycreds python-urllib3-1.26)))))
 
+;; Needed for old v1 of docker-compose; remove once Docker is updated to a
+;; more recent version which has the command "docker compose" built-in, see:
+;; <https://codeberg.org/guix/guix/milestone/30347>.
 (define-public python-dockerpty
   (package
     (name "python-dockerpty")
@@ -275,9 +278,11 @@ management tool.")
        (sha256
         (base32
          "1kjn64wx23jmr8dcc6g7bwlmrhfmxr77gh6iphqsl39sayfxdab9"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; XXX: Requires outdated python-expects
     (native-inputs
-     (list python-six))
+     (list python-setuptools python-six))
     (home-page "https://github.com/d11wtq/dockerpty")
     (synopsis "Python library to use the pseudo-TTY of a Docker container")
     (description "Docker PTY provides the functionality needed to operate the
