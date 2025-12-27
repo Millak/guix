@@ -603,6 +603,34 @@ Additionally, the two previous weights has increased to six, all in upright
 and italic, allowing for greater flexibility in use.")
       (license license:silofl1.1))))
 
+(define-public font-atkinson-hyperlegible-mono
+  (let ((commit "154d50362016cc3e873eb21d242cd0772384c8f9")
+        (revision "0"))
+    (package
+      (name "font-atkinson-hyperlegible-mono")
+      (version (git-version "2.001" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url
+                "https://github.com/googlefonts/atkinson-hyperlegible-next-mono/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0bdhp70zniqnj14raw9krb034zrvvxhzimzqys713p8ksrndck2p"))))
+      (build-system font-build-system)
+      (home-page "https://www.brailleinstitute.org/freefont/")
+      (synopsis
+       "Monospace typeface designed to increase legibility for low vision readers")
+      (description
+       "Atkinson Hyperlegible Mono is an entirely new typeface inspired by
+Atkinson Hyperlegible.  The characters in a monospace typeface all occupy the
+same width, allowing for them to be scanned quickly in table-based and coding
+environments.  The glyphs in Atkinson Hyperlegible Mono are newly created for
+this variation, and unique to the typeface.")
+      (license license:silofl1.1))))
+
 (define-public font-lato
   (package
     (name "font-lato")
