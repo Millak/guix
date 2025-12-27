@@ -2745,15 +2745,21 @@ schemas for settings shared by various components of the GNOME desktop.")
               (sha256
                (base32
                 "125rmrdbc84lapfh8c77zxnmwas20xdfamqmilhv1smkxn2q4sh3"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before 'check 'start-xserver
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (system (format #f "~a/bin/Xvfb :1 &"
-                                      (assoc-ref inputs "xorg-server")))
-                      (setenv "DISPLAY" ":1"))))))
-    (native-inputs (list xorg-server-for-tests))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-xserver
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((xorg-display ":1"))
+                (system (string-join
+                         (list (search-input-file inputs "/bin/Xvfb")
+                               xorg-display "&")
+                         " "))
+                (setenv "DISPLAY" xorg-display)))))))
+    (native-inputs
+     (list xorg-server-for-tests python-pytest python-setuptools))
     (inputs (list gtk+))
     (propagated-inputs (list python-pygobject))
     (home-page "https://wiki.gnome.org/Projects/liblarch")
