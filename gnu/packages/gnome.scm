@@ -1214,57 +1214,6 @@ in the GNOME desktop.")
    (home-page "https://gitlab.gnome.org/GNOME/gnome-color-manager")
    (license license:gpl2+)))
 
-(define-public gnome-online-miners
-  (package
-    (name "gnome-online-miners")
-    (version "3.34.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version) "/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1n2jz9i8a42zwxx5h8j2gdy6q1vyydh4vl00r0al7w8jzdh24p44"))
-              (patches
-               (search-patches
-                "gnome-online-miners-tracker-3.patch"))))
-    (build-system glib-or-gtk-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-configure
-           (lambda _
-             (substitute* "configure.ac"
-               (("AX_CHECK_ENABLE_DEBUG.*")
-                ""))))
-         (add-after 'fix-configure 'autoreconf
-           (lambda _
-             (invoke "autoreconf" "-vif"))))))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
-    (inputs
-     `(("gnome-online-accounts" ,gnome-online-accounts)
-       ("grilo" ,grilo)
-       ("libgdata" ,libgdata)
-       ("libgfbgraph" ,gfbgraph)
-       ("libzapojit" ,libzapojit)
-       ("rest" ,librest)
-       ("tracker" ,tracker)))
-    (synopsis "Web Crawlers for GNOME")
-    (description "GNOME Online Miners provides a set of crawlers that
-go through your online content and index them locally in Tracker.
-It has miners for Facebook, Flickr, Google, ownCloud and SkyDrive.")
-    (home-page "https://wiki.gnome.org/Projects/GnomeOnlineMiners")
-    (license license:gpl2+)))
-
 (define-public gssdp
   (package
     (name "gssdp")
