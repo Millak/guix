@@ -12782,20 +12782,34 @@ possible, supporting most common functionality.")
   (package
     (name "python-sendgrid")
     (version "6.9.7")
-    (home-page "https://github.com/sendgrid/sendgrid-python/")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url home-page)
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0kvp4gm3bpcsj2mkv05pgvlcv1jlsfhcljcv61wz5kq9d273h7rg"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sendgrid/sendgrid-python")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kvp4gm3bpcsj2mkv05pgvlcv1jlsfhcljcv61wz5kq9d273h7rg"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f))       ;241/340 tests fail due to attempted web access
-    (propagated-inputs (list python-http-client python-starkbank-ecdsa))
+     (list
+      #:test-flags
+      #~(list "--ignore=test/integ"
+              ;; Network access is required.
+              "--ignore=live_test.py")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-cryptography
+           python-http-client
+           python-flask
+           python-pyyaml
+           python-six                            ;hard dependency
+           python-starkbank-ecdsa
+           python-werkzeug))
+    (home-page "https://github.com/sendgrid/sendgrid-python/")
     (synopsis "SendGrid API library for Python")
     (description
      "The @code{sendgrid} Python library allows access to the
