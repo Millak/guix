@@ -4132,14 +4132,13 @@ event-based scripts for scrobbling, notifications, etc.")
               (sha256
                (base32
                 "1k0zwbi9i6b60l69ccmrapls19i21h1q6h547b3l3az7napb7zb3"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:use-setuptools? #f
       #:configure-flags
-      #~(list "--root=/"
-              ;; Don't phone home or show ‘Check for Update…’ in the Help menu.
-              "--disable-autoupdate")
+      #~'(("--root" . "/")
+          ;; Don't phone home or show ‘Check for Update…’ in the Help menu.
+          ("--disable-autoupdate" . ""))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-source
@@ -4147,14 +4146,13 @@ event-based scripts for scrobbling, notifications, etc.")
               (substitute* "picard/const/__init__.py"
                 (("pyfpcalc")
                  (string-append
-                  "pyfpcalc', '"
-                  (assoc-ref inputs "chromaprint") "/bin/fpcalc")))))
+                  "pyfpcalc', '" (search-input-file inputs "/bin/fpcalc"))))))
           ;; pipe tests require writable $HOME.
           (add-before 'check 'set-HOME
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list gettext-minimal python-dateutil))
+     (list gettext-minimal python-dateutil python-setuptools))
     (inputs
      (list chromaprint
            python-charset-normalizer
