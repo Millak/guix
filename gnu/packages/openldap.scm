@@ -421,19 +421,31 @@ Other features include:
 (define-public python-bonsai
   (package
     (name "python-bonsai")
-    (version "1.2.0")
+    (version "1.5.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "bonsai" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/noirello/bonsai")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "013bl6h1m3f7vg1lk89d4vi28wbf31zdcs4f9g8css7ngx63v6px"))))
-    (build-system python-build-system)
-    (inputs
-     (list mit-krb5 cyrus-sasl openldap))
-    ;; disabling tests, since they require docker and extensive setup
-    (arguments `(#:tests? #f))
+        (base32 "1p1330cxaxb2j80zw0vvi2hrnyw3qr5vh8fm2wy8ci745dmrs0nl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; XXX: Require docker and extensive setup.
+         "--ignore=tests/test_asyncio.py"
+         "--ignore=tests/test_ldapclient.py"
+         "--ignore=tests/test_ldapconnection.py"
+         "--ignore=tests/test_ldapentry.py"
+         "--ignore=tests/test_ldapreference.py"
+         "--ignore=tests/test_pool.py"
+         "-k" "not test_set_async_connect")))
+    (native-inputs (list python-pytest python-setuptools))
+    (inputs (list mit-krb5 cyrus-sasl openldap))
     (home-page "https://github.com/noirello/bonsai")
     (synopsis "Access LDAP directory servers from Python")
     (description
