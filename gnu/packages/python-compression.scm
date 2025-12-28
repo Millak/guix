@@ -792,9 +792,6 @@ for improving compression, as well as a python/C package that implements this
 algorithm within the Numpy framework.")
     (license license:expat)))
 
-(define-deprecated-package bitshuffle
-  python-bitshuffle)
-
 (define-public bitshuffle-for-snappy
   (package/inherit python-bitshuffle
     (name "bitshuffle-for-snappy")
