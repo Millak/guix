@@ -1299,26 +1299,28 @@ vector formats.")
         (base32
          ;; "0d1d2jxfl9vmy4swcdz660xd4wx91w1i3n07k522pccapwxig294"))))
          "0g15q67f992prkjndrk75hhd601iypfmkafhdx7hijs2byr26c83"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases #~(modify-phases %standard-phases
-                   (delete 'build)
-                   (delete 'configure)
-                   (delete 'check)
-                   (replace 'install
-                     (lambda* (#:key inputs #:allow-other-keys)
-                       ;; There's no 'setup.py' so install things manually.
-                       (let* ((bin (string-append #$output "/bin"))
-                              (impressive (string-append bin "/impressive"))
-                              (man1 (string-append #$output "/share/man/man1")))
-                         (mkdir-p bin)
-                         (copy-file "impressive.py" impressive)
-                         (chmod impressive #o755)
-                         (wrap-program (string-append bin "/impressive")
-                           `("PATH" ":" prefix ;for pdftoppm
-                             (,(search-input-file inputs "bin/xpdf"))))
-                         (install-file "impressive.1" man1)))))))
+      #:tests? #f                       ;No tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)
+          (delete 'configure)
+          (replace 'install
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; There's no 'setup.py' so install things manually.
+              (let* ((bin (string-append #$output "/bin"))
+                     (impressive (string-append bin "/impressive"))
+                     (man1 (string-append #$output "/share/man/man1")))
+                (mkdir-p bin)
+                (copy-file "impressive.py" impressive)
+                (chmod impressive #o755)
+                (wrap-program (string-append bin "/impressive")
+                  `("PATH" ":" prefix ;for pdftoppm
+                    (,(search-input-file inputs "bin/xpdf"))))
+                (install-file "impressive.1" man1)))))))
+    (native-inputs (list python-setuptools))
     ;; TODO: Add dependency on pdftk.
     (inputs (list bash-minimal python-pygame python-pillow sdl xpdf))
     (home-page "https://impressive.sourceforge.net")
