@@ -8305,7 +8305,7 @@ users.")
     (name "network-manager")
     ;; Note: NetworkManager still follows the odd/even major version number
     ;; for development/stable releases scheme; be sure to use a stable one.
-    (version "1.52.0")
+    (version "1.54.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8318,7 +8318,7 @@ users.")
                         "network-manager-plugin-path.patch"))
               (sha256
                (base32
-                "0fx3yvqrwc9fqphhwvchxls0lgizlz7bxww3riijlvx3pkypqbyr"))))
+                "0dph39qb6c9gjg7yzl6bbfkndcz2lvvcssfq570r1kmw4xw8mf60"))))
     (build-system meson-build-system)
     (outputs '("out"
                "doc"))                  ; 8 MiB of gtk-doc HTML
@@ -8340,6 +8340,7 @@ users.")
          "-Diwd=true"
          "-Dnm_cloud_setup=false"
          "-Dlibaudit=yes"
+         "-Dnbft=false"
          "-Dqt=false"
          "-Ddocs=true"
          "--sysconfdir=/etc"
