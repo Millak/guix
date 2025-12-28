@@ -38,6 +38,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -48,6 +49,8 @@
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
@@ -164,39 +167,34 @@ windows.")
 (define-public python-libtmux
   (package
     (name "python-libtmux")
-    (version "0.10.1")
+    (version "0.53.0")
     (source
      (origin
        (method git-fetch)
-       ;; PyPI source tarball does not include tests.
        (uri (git-reference
              (url "https://github.com/tmux-python/libtmux")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "068vy92f2668vrjvd3laqvxd48cmna66f2msdmwk2hm9qxklgf51"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list procps))             ;tests need top
-    (native-inputs
-     (list python-pytest tmux))
+        (base32 "19l3kglg2yxw4i1czr93071ymlyj0in3d6yhl9nwd5dm7a3bjs4l"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             ;; Fix <https://github.com/tmux-python/libtmux/issues/265>.
-             (setenv "LANG" "en_US.utf8")
-             ;; Skip tests that I suspect fail because of a change
-             ;; in behavior in tmux 3 from tmux 2
-             ;; https://github.com/tmux-python/libtmux/issues/281
-             (invoke "pytest" "-vv" "-k"
-                     (string-append "not test_show_option_unknown "
-                                    "and not test_show_window_option_unknown"))
-             #t)))))
+     (list
+      #:test-flags
+      #~(list "-c" "/dev/null" ; Missing development dependency.
+              "-k" "not test_capture_pane_start")  ; Permission denied.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'configure-tests
+            (lambda _
+              ;; Fix <https://github.com/tmux-python/libtmux/issues/265>.
+              (setenv "LANG" "en_US.utf8"))))))
+    (propagated-inputs (list procps)) ;tests need top
+    (native-inputs (list python-hatchling python-pytest tmux))
     (home-page "https://github.com/tmux-python/libtmux")
     (synopsis "Python API for tmux")
-    (description "Libtmux is the tool behind @command{tmuxp}, a tmux workspace
+    (description
+     "Libtmux is the tool behind @command{tmuxp}, a tmux workspace
 manager in Python.  It creates object mappings to traverse, inspect and interact
 with live tmux sessions.")
     (license license:expat)))
