@@ -1152,41 +1152,28 @@ through the Engine interface.")
 (define-public python-pykeepass
   (package
     (name "python-pykeepass")
-    (version "3.2.1")
+    (version "4.1.1.post1")
     (source
      (origin
        (method git-fetch)
-       ;; Source tarball on PyPI doesn't include tests.
        (uri (git-reference
-             (url "https://github.com/libkeepass/pykeepass")
-             (commit version)))
+              (url "https://github.com/libkeepass/pykeepass")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1symxf4ahylynihnp9z4z3lh2vy65ipvg8s4hjrnn936hcaaxghk"))))
-    (build-system python-build-system)
+        (base32 "1ayvgklq3naydx01m7hyvf44ywczk5yzy2pk48bpfayl7bgk7q8d"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-kdbx-writable
-           ;; Tests have to write to the .kdbx files in the test directory.
-           (lambda _
-             (with-directory-excursion "tests"
-               (for-each make-file-writable (find-files "."))
-               #t)))
-         (add-before 'build 'patch-requirements
-           (lambda _
-             ;; Update requirements from dependency==version
-             ;; to dependency>=version.
-             (substitute* "setup.py"
-               (("==") ">="))
-             #t)))))
+     ;; tests: 115 passed
+     (list #:test-backend #~'unittest))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-argon2-cffi
            python-construct
-           python-dateutil
-           python-future
            python-lxml
-           python-pycryptodomex))
+           python-pycryptodomex
+           python-pyotp))
     (home-page "https://github.com/libkeepass/pykeepass")
     (synopsis "Python library to interact with keepass databases")
     (description
