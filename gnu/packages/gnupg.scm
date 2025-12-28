@@ -588,9 +588,10 @@ interface (FFI) of Guile.")
               (sha256
                (base32
                 "1ji3ynhp36m1ccx7bmaq75dhij9frpn19v9mpi4aajn8csl194il"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? #f ; No test suite.
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-environment
@@ -603,12 +604,11 @@ interface (FFI) of Guile.")
                            "extra_macros = { \"_FILE_OFFSET_BITS\": 64 }")))
                      #~())
               (substitute* "setup.py"
-                (("cc") (which "gcc"))))))
-      #:tests? #f)) ; No test suite.
+                (("cc") (which "gcc"))))))))
     (inputs
      (list gpgme))
     (native-inputs
-     (list swig))
+     (list swig python-setuptools))
     (home-page (package-home-page gpgme))
     (synopsis "Python bindings for GPGME GnuPG cryptography library")
     (description "This package provides Python bindings to the GPGME GnuPG
