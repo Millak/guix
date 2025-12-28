@@ -188,9 +188,6 @@ to access its data, so it can be used as a drop-in replacement.")
 package, an implementation of the Brotli lossless compression algorithm.")
     (license license:expat)))
 
-(define-deprecated-package python-google-brotli
-  python-brotli)
-
 (define-public python-multivolumefile
   (package
     (name "python-multivolumefile")
