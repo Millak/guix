@@ -2835,12 +2835,12 @@ interface.")
         (sha256
           (base32
             "09rq3hgbb6qjws0kymnh8lbglsc5yjby3b2bc0savs2agf88j83z"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      ;; Tests need mercurial source code.
-     '(#:tests? #f))
-    (propagated-inputs
-      (list mercurial))
+     (list #:tests? #f))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list mercurial))
     (home-page "https://www.mercurial-scm.org/doc/evolution/")
     (synopsis "Flexible evolution of Mercurial history")
     (description "Evolve is a Mercurial extension for faster and safer mutable
