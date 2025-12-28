@@ -339,65 +339,6 @@ Memory requirements and CPU utilization are kept at minimum.
 See also: megacmd, the official tool set by MEGA.")
     (license license:gpl2)))
 
-(define-public owncloud-client
-  (package
-    (name "owncloud-client")
-    (version "2.9.0.5150")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://download.owncloud.com/desktop/ownCloud/stable/"
-                           version "/source/ownCloud-" version ".tar.xz"))
-       (sha256
-        (base32 "0nf68x840p30yng4fh1nlyiqg40z0rkcv0lskpz8dd4pj1iw5jjs"))
-       (patches (search-patches "owncloud-disable-updatecheck.patch"))))
-    ;; TODO: unbundle qprogessindicator, qlockedfile, qtokenizer and
-    ;; qtsingleapplication which have not yet been packaged, but all are
-    ;; explicitly used from the 3rdparty folder during build.
-    (build-system cmake-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'delete-failing-tests
-           ;; "Could not create autostart folder"
-           (lambda _
-             (substitute* "test/CMakeLists.txt"
-                          (("owncloud_add_test\\(Utility\\)" test)
-                           (string-append "#" test)))
-             #t))
-         (add-after 'unpack 'dont-embed-store-path
-           (lambda _
-             (substitute* "src/common/utility_unix.cpp"
-               (("QCoreApplication::applicationFilePath\\()") "\"owncloud\""))
-             #t))
-         (delete 'patch-dot-desktop-files))
-       #:configure-flags `("-DUNIT_TESTING=ON"
-                           ;; build without qtwebkit, which causes the
-                           ;; package to FTBFS while looking for QWebView.
-                           "-DNO_SHIBBOLETH=1"
-                           ;; Fix sync-exclude.list problem, see
-                           ;; <https://github.com/owncloud/client/issues/8373>
-                           ;; <https://issues.guix.gnu.org/47672>
-                           ,(string-append "-DSYSCONF_INSTALL_DIR="
-                                           (assoc-ref %outputs "out")
-                                           "/etc"))))
-    (native-inputs
-     `(("cmocka" ,cmocka)
-       ("extra-cmake-modules" ,extra-cmake-modules)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("qtlinguist" ,qttools-5)))
-    (inputs
-     (list qtbase-5 qtkeychain sqlite zlib))
-    (home-page "https://owncloud.org")
-    (synopsis "Folder synchronization with an ownCloud server")
-    (description "The ownCloudSync system lets you always have your latest
-files wherever you are.  Just specify one or more folders on the local machine
-to and a server to synchronize to.  You can configure more computers to
-synchronize to the same server and any change to the files on one computer will
-silently and reliably flow across to every other.")
-    (license license:gpl2+)))
-
 (define-public onedrive
   (package
     (name "onedrive")
