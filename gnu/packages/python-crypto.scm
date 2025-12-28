@@ -1024,6 +1024,28 @@ PyCryptodome variants, the other being python-pycryptodomex.")
     (license (list license:bsd-2
                    license:public-domain)))) ; code inherited from PyCrypto
 
+(define-public python-pycryptodome-test-vectors
+  (package
+    (name "python-pycryptodome-test-vectors")
+    (version "1.0.22")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pycryptodome_test_vectors" version))
+       (sha256
+        (base32 "19bn19fpnkj39nki2dp8k26is5fpqa3q7agkhk9rvfqfvzvgx3nn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests
+    (native-inputs
+     (list python-setuptools)) 
+    (home-page "https://www.pycryptodome.org")
+    (synopsis "Test vectors for PyCryptodome")
+    (description
+     "This package provides test vectors for @code{PyCryptodome}.")
+    (license (list license:bsd-2
+                   license:asl2.0))))
+
 (define-public python-pycryptodomex
   (package (inherit python-pycryptodome)
     (name "python-pycryptodomex")
