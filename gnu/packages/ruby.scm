@@ -17,6 +17,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2026 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -58,6 +59,7 @@
   #:use-module (gnu packages lsof)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages node)
@@ -68,6 +70,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages ragel)
   #:use-module (gnu packages rsync)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
@@ -85,6 +88,71 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages web)
   #:use-module (guix build-system ruby))
+
+(define-public ruby-4.0
+  (package
+    (name "ruby")
+    (version "4.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
+                           (version-major+minor version) "/ruby-" version
+                           ".tar.xz"))
+       (sha256
+        (base32 "0abghfkwa5r5c5fvp495w2zvzahs7bb294mybrmlkgjvs82n1kr2"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "test"
+      #:configure-flags (if (%current-target-system)
+                            #~(list (string-append "LDFLAGS=-Wl,-rpath="
+                                                   (assoc-ref %outputs "out")
+                                                   "/lib") "--enable-shared")
+                            #~'("--enable-shared")) ;dynamic linking
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'replace-bin-sh-and-remove-libffi
+            (lambda _
+              (substitute* '("configure.ac" "template/Makefile.in"
+                             "lib/rubygems/installer.rb"
+                             "ext/pty/pty.c"
+                             "io.c"
+                             "lib/mkmf.rb"
+                             "process.c"
+                             "test/rubygems/test_gem_ext_configure_builder.rb"
+                             "test/ruby/test_rubyoptions.rb"
+                             "test/ruby/test_process.rb"
+                             "test/ruby/test_system.rb"
+                             "tool/rbinstall.rb")
+                (("/bin/sh")
+                 (which "sh")))))
+          (add-after 'install 'delete-mkmf.log
+            (lambda _
+              ;; Rubygems installs build log files that embed volatile
+              ;; file names, especially for bigdecimal gem (see:
+              ;; https://github.com/rubygems/rubygems/issues/6259).
+              (for-each delete-file
+                        (find-files #$output "^mkmf\\.log$")))))))
+    (native-inputs (append (if (%current-target-system)
+                               (list this-package)
+                               '())
+                           (list autoconf libyaml)))
+    (inputs (list readline
+                  openssl-3.0
+                  libffi ;to build fiddle
+                  gmp ;to accelerate Bignum operations
+                  rust)) ;to build YJIT
+    (propagated-inputs (list zlib))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "GEM_PATH")
+            (files (list (string-append "lib/ruby/vendor_ruby"))))))
+    (synopsis "Programming language interpreter")
+    (description "Ruby is a dynamic object-oriented programming language with
+a focus on simplicity and productivity.")
+    (home-page "https://www.ruby-lang.org")
+    (license license:ruby)))
 
 (define-public ruby-3.4
   (package
