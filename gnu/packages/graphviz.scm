@@ -428,21 +428,17 @@ graphs in Graphviz's DOT language, written in pure Python.")
               (sha256
                (base32
                 "1kp77wiv7b5qib82i3y3sn9r49rym43aaqm5aw1bwnzfbbq2m6i9"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "tests"
-                        ;; The test_semicolon test fails for unknown reason
-                        ;; (see:
-                        ;; https://github.com/kjellmf/dot2tex/issues/94).
-                        "-k" "not test_semicolon")))))))
+      ;; tests: 57 passed, 1 deselected
+      #:test-flags
+      ;; The test_semicolon test fails for unknown reason, see:
+      ;; <https://github.com/kjellmf/dot2tex/issues/94>.
+      #~(list "--deselect=tests/test_dot2tex.py::MultipleStatements::test_semicolon")))
     (native-inputs
      (list python-pytest
+           python-setuptools
            (texlive-local-tree
             (list texlive-pgf
                   texlive-preview
