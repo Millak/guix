@@ -8100,35 +8100,6 @@ for Google, ownCloud, Facebook, Flickr, Windows Live, Pocket, Foursquare,
 Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
     (license license:lgpl2.0+)))
 
-(define-public gnome-online-accounts-3.44
-  (package
-    (inherit gnome-online-accounts)
-    (name "gnome-online-accounts")
-    (version "3.44.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version) "/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0hkkxa3zqyl0i4kw1p3ak4alwxw4wydh9al6fzwbcdgl0r0ms79q"))))
-    (build-system glib-or-gtk-build-system)
-    (arguments (substitute-keyword-arguments
-                   (strip-keyword-arguments
-                    '(#:glib-or-gtk?)
-                    (package-arguments gnome-online-accounts))
-      ;; Fix build.
-      ((#:make-flags _ '())
-       #~(list (string-append "CFLAGS="
-                              "-Wno-error=implicit-function-declaration "
-                              "-Wno-error=int-conversion")))
-      ((#:phases phases)
-       #~(modify-phases #$phases
-           (delete 'disable-gtk-update-icon-cache)))))
-    (inputs (modify-inputs (package-inputs gnome-online-accounts)
-              (replace "webkitgtk" webkitgtk-with-libsoup2)))))
-
 (define-public evolution-data-server
   (package
     (name "evolution-data-server")
