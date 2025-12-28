@@ -1813,7 +1813,7 @@ package also includes @code{usbrelayd}.")))
 (define-public guile-usbrelay
   (package
     (name "guile-usbrelay")
-    (version "0.1.0")
+    (version "0.1.1")
     (home-page "https://codeberg.org/pisemsky/guile-usbrelay")
     (source
      (origin
@@ -1823,7 +1823,7 @@ package also includes @code{usbrelayd}.")))
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ndgkazv9bnyj45pccym11245c65hlvsvzmx0acpzlywz7xxyy72"))))
+        (base32 "1nghzsash3z398p2bp2vw0a1rzaclq9a6iqxbm7ffyzbldcca81l"))))
     (build-system guile-build-system)
     (arguments
      (list
@@ -1831,9 +1831,19 @@ package also includes @code{usbrelayd}.")))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'compile-ffi
-            (lambda* (#:key inputs #:allow-other-keys)
+            (lambda _
               (setenv "GUILE_AUTO_COMPILE" "0")
-              (invoke "guile" "make.scm"))))))
+              (invoke "guild" "compile-ffi" "--no-exec"
+                      "modules/usbrelay/ffi/hidapi.ffi")))
+          (add-after 'build 'install-udev-rules
+            (lambda _
+              (let ((rules (string-append #$output "/lib/udev/rules.d")))
+                (mkdir-p rules)
+                (call-with-output-file (string-append rules "/50-usbrelay.rules")
+                  (lambda (port)
+                    (display (string-append
+                              "ATTRS{idVendor}==\"16c0\", ATTRS{idProduct}==\"05df\", "
+                              "MODE=\"0660\", GROUP=\"usbrelay\"\n") port)))))))))
     (native-inputs (list gcc guile-3.0 nyacc pkg-config))
     (inputs (list hidapi))
     (propagated-inputs (list nyacc))
