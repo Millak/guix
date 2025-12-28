@@ -3298,7 +3298,7 @@ frontend implemented in QML.")))
 (define-public qtspell
   (package
     (name "qtspell")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method git-fetch)
@@ -3307,14 +3307,15 @@ frontend implemented in QML.")))
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19ff6jzm699wrxrk57w3d4kl9qxgdipdikpwls9n4aqv4mw7g969"))))
+        (base32 "19ivs1pq9mmas731nx77lg63l0cn6c8g61s7a728s9hpxmihdq9s"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f))                    ;no test
+     `(#:configure-flags (list "-DQT_VER=6")
+       #:tests? #f))                    ;no test
     (native-inputs
-     (list pkg-config qttools-5))
+     (list pkg-config qttools))
     (inputs
-     (list enchant qtbase-5))
+     (list enchant qtbase))
     (home-page "https://github.com/manisandro/qtspell")
     (synopsis "Spell checking for Qt text widgets")
     (description
