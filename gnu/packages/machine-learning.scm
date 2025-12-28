@@ -3737,31 +3737,6 @@ in a fast and accurate way.")
      (list python-numpy python-scipy))
     (synopsis "Python interface for the XGBoost library")))
 
-(define-public python-iml
-  (package
-    (name "python-iml")
-    (version "0.6.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "iml" version))
-       (sha256
-        (base32
-         "1k8szlpm19rcwcxdny9qdm3gmaqq8akb4xlvrzyz8c2d679aak6l"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-ipython python-numpy python-pandas python-scipy))
-    (native-inputs
-     (list python-nose python-setuptools))
-    (home-page "https://github.com/interpretable-ml/iml")
-    (synopsis "Interpretable Machine Learning (iML) package")
-    (description "Interpretable ML (iML) is a set of data type objects,
-visualizations, and interfaces that can be used by any method designed to
-explain the predictions of machine learning models (or really the output of
-any function).  It currently contains the interface and IO code from the Shap
-project, and it will potentially also do the same for the Lime project.")
-    (license license:expat)))
-
 (define-public gloo
   (let ((version "0.0.0")                         ; no proper version tag
         (commit "54cbae0d3a67fa890b4c3d9ee162b7860315e341")
