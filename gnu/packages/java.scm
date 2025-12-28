@@ -53,7 +53,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system maven)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (gnu packages)
   #:use-module (gnu packages attr)
   #:use-module (gnu packages autotools)
@@ -93,6 +93,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages popt)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages security-token)
   #:use-module (gnu packages xml)
@@ -8852,7 +8853,7 @@ generated sources by ANTLR.")))
     (inherit java-antlr4-runtime)
     (name "java-antlr4-runtime-python")
     (outputs '("out"))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f                       ; tests require antlr
@@ -8861,7 +8862,7 @@ generated sources by ANTLR.")))
           (add-after 'unpack 'chdir
             (lambda _
               (chdir "runtime/Python3"))))))
-    (native-inputs (list pkg-config))
+    (native-inputs (list pkg-config python-setuptools))
     (inputs (list `(,util-linux "lib"))) ; libuuid
     (synopsis "ANTLR Python runtime library")
     (description "This package contains the Python runtime library used with
