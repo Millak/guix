@@ -540,20 +540,6 @@ focusing on efficiency and scalability.  It runs on embedded devices as well as
 desktops.")
     (license l:bsd-2)))
 
-(define-public libtorrent-rasterbar-1.2
-  (package
-    (inherit libtorrent-rasterbar)
-    (version "1.2.20")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (string-append "https://github.com/arvidn/libtorrent/"
-                       "releases/download/v" version "/"
-                       "libtorrent-rasterbar-" version ".tar.gz"))
-       (sha256
-        (base32 "1z5rdynzxcm6wb7v48ssfbwjairbjacb8rjix5fn70fw4668xgyc"))))))
-
 (define-public qbittorrent
   (package
     (name "qbittorrent")
