@@ -6355,21 +6355,21 @@ gene predictor designed to work with assembled, aligned RNA-seq transcripts.")
 (define-public crossmap
   (package
     (name "crossmap")
-    (version "0.6.1")
+    (version "0.7.3")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "CrossMap" version))
+       (uri (pypi-uri "crossmap" version))
        (sha256
-        (base32 "0hqminh5wn1p3x481jbyc7gmncp5xc196hpvki7k25vzbryhwcix"))
+        (base32 "0v8z75di5ghrv1aiain67qx9n5lslwq9ikfq44zjp5papwdksyf5"))
        (modules '((guix build utils)))
        (snippet '(begin
                    ;; Delete compiled Python files.
                    (for-each delete-file
                              (find-files "." "\\.pyc$"))
-                   (delete-file-recursively ".eggs")))))
+                   (delete-file-recursively "src/CrossMap.egg-info")))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ; No tests in PyPI.
+    (arguments (list #:tests? #f))      ; No tests in PyPI and Git.
     (inputs (list python-bx-python python-numpy python-pybigwig python-pysam
                   zlib))
     (native-inputs (list python-cython python-pyparsing python-setuptools))
