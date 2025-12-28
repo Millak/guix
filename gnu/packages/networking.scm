@@ -2196,7 +2196,7 @@ application stack itself.")
 (define-public httpstat
   (package
     (name "httpstat")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)
@@ -2205,23 +2205,29 @@ application stack itself.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cw8299a080m42slsimz31xs0gjnh833gpbj2dsr4hkcinrn4iyd"))))
-    (build-system python-build-system)
-    (inputs (list curl))
+        (base32 "1z0m00wzbd1y9knypvw425h4qjqyp4x162j7crpgmfic1wpwbqbl"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'fix-curl-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "httpstat.py"
-               (("ENV_CURL_BIN.get\\('curl'\\)")
-                (string-append "ENV_CURL_BIN.get('"
-                               (assoc-ref inputs "curl")
-                               "/bin/curl')"))
-               ;; "curl -w time_*" units seems to have
-               ;; changed from seconds to nanoseconds.
-               (("d\\[k\\] \\* 1000") "d[k] / 1000"))
-             #t)))))
+     (list
+      #:tests? #f ; Tests require network access.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'fix-curl-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "httpstat.py"
+                (("ENV_CURL_BIN.get\\('curl'\\)")
+                 (format #f "ENV_CURL_BIN.get(~s)"
+                         (search-input-file inputs "/bin/curl")))
+                ;; "curl -w time_*" units seems to have
+                ;; changed from seconds to nanoseconds.
+                (("d\\[k\\] \\* 1000")
+                 "d[k] / 1000")) #t))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "bash" "httpstat_test.sh")))))))
+    (native-inputs (list python-setuptools))
+    (inputs (list curl))
     (home-page "https://github.com/reorx/httpstat")
     (synopsis "Visualize curl statistics")
     (description
