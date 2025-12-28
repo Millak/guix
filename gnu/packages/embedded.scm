@@ -1757,24 +1757,20 @@ these identified regions.
   (package
     (name "stcgal")
     (version "1.10")
-    (source (origin
-              ;; The "doc" subdirectory referred to by stcgal's setup.py is
-              ;; missing from the source distribution on PyPI so we fetch
-              ;; directly from the project's git repository instead.
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/grigorig/stcgal")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "04hsj49sw5mb6swhd3sdsm7dzwp1frnzpmq70wgsn5vmjavb1ka8"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-pyserial python-pyusb python-tqdm))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/grigorig/stcgal")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04hsj49sw5mb6swhd3sdsm7dzwp1frnzpmq70wgsn5vmjavb1ka8"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pyserial python-pyusb python-tqdm))
     (native-inputs
      ;; For tests.
-     (list python-pyyaml))
+     (list python-pytest python-pyyaml python-setuptools))
     (home-page "https://github.com/grigorig/stcgal")
     (synopsis "Programmer for STC 8051-compatible microcontrollers")
     (description "stcgal is a command-line flash-programming tool for STC
