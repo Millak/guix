@@ -980,30 +980,6 @@ Sphinx documentation system.  It's the default theme of Sphinx.")
 argparse commands and options")
     (license license:expat)))
 
-;;; FIXME: Currently broken by Jinja >= 3.10 (see:
-;;; https://foss.heptapod.net/doc-utils/cloud_sptheme/-/issues/47).
-(define-public python-sphinx-cloud-sptheme
-  (package
-    (name "python-sphinx-cloud-sptheme")
-    (version "1.10.1")
-    (source (origin
-              (method hg-fetch)
-              (uri (hg-reference
-                    (url "https://foss.heptapod.net/doc-utils/cloud_sptheme")
-                    (changeset version)))
-              (file-name (hg-file-name name version))
-              (sha256
-               (base32
-                "0k0pgi0vcn8vdy3k6x11fpp4mqp7p3l6n6pjfi3mir3vwjhdfz7l"))))
-    (build-system python-build-system)
-    (native-inputs (list python-mock))
-    (propagated-inputs (list python-sphinx))
-    (home-page "https://foss.heptapod.net/doc-utils/cloud_sptheme")
-    (synopsis "Cloud theme for Sphinx")
-    (description "This package contains the @emph{Cloud} theme for Sphinx and
-some related extensions.")
-    (license license:bsd-3)))
-
 (define-public python-guzzle-sphinx-theme
   (package
     (name "python-guzzle-sphinx-theme")
