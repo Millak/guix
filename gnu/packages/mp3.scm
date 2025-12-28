@@ -61,6 +61,7 @@
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages linux)               ;alsa-lib
+  #:use-module (gnu packages textutils)           ;utfcpp
   #:use-module (gnu packages video)               ;ffmpeg
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -280,6 +281,24 @@ Speex, WavPack TrueAudio, WAV, AIFF, MP4 and ASF files.")
 
     ;; Dual-licensed: user may choose between LGPLv2.1 or MPLv1.1.
     (license (list license:lgpl2.1 license:mpl1.1))))
+
+(define-public taglib-next
+  (package
+    (inherit taglib)
+    (name "taglib")
+    (version "2.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/taglib/taglib")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m1xyjsg6a8p4prn1xr1g29zsxqr7606cv3cblgjgxkb1dk26fx7"))))
+    (inputs
+     (list utfcpp
+           zlib))))
 
 (define-public minimp3
   ;; The latest commit is used as there is no release.
