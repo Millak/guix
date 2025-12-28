@@ -3661,31 +3661,26 @@ filtering, digest delivery, and more.")
 (define-public python-mailmanclient
   (package
     (name "python-mailmanclient")
-    (version "3.3.3")
+    (version "3.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mailmanclient" version))
        (sha256
-        (base32
-         "0ppqnv84v7npgjykhqdy5c38vanz4l0qw871kpsl27z4fm365zlj"))))
-    (build-system python-build-system)
+        (base32 "0myq9mjsqpmhzb378rgnfvmmhjbal36al5cw90hw1sm79ih1qn33"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f)) ; Requires mailman running
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-requests))
-    ;(native-inputs
-    ; `(("mailman" ,mailman)
-    ;   ("python-falcon" ,python-falcon)
-    ;   ("python-pytest" ,python-pytest)
-    ;   ("python-pytest-services" ,python-pytest-services)))
     (home-page "https://www.list.org/")
     (synopsis "Python bindings for the Mailman 3 REST API")
     (description
      "The mailmanclient library provides official Python bindings for
 the GNU Mailman 3 REST API.")
     (license license:lgpl3+)))
-
 
 (define-public mlmmj
   (package
