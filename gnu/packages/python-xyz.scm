@@ -32662,28 +32662,24 @@ and BMI2).")
 (define-public python-cart
   (package
     (name "python-cart")
-    (version "1.2.2")
+    (version "1.2.3")
     (source
      (origin
-       ;; No source releases available on pypi, hence fetching from GitHub.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/CybercentreCanada/cart")
-             (commit (string-append "v" version))))
+              (url "https://github.com/CybercentreCanada/cart")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zycv620iljrsval5rai1wsn0hr25ddx9xhjsyy6xxrgprfxvlfi"))))
+        (base32 "1064swqylim0nx0msynkqbz6n57n5yy4mmqxl7wd9bsg5mmrxrd1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "unittest" "discover")))))))
-    (propagated-inputs (list python-pycryptodome))
-    (native-inputs (list python-setuptools python-wheel))
+      #:test-backend #~'unittest))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-pycryptodome))
     (home-page "https://github.com/CybercentreCanada/cart")
     (synopsis "Library for interacting with the CaRT file format")
     (description
