@@ -4856,20 +4856,20 @@ the command line or a script.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "00h5p8fk1zi237q8mqds8apqbis9iw0yih1hl0pr63dsnyzmmrpw"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-build-with-python3
-             (lambda _
-               (substitute* "setup.py"
-                 (("itervalues") "values")))))
-         ;; There are currently no checks in the package.
-         #:tests? #f))
-      (native-inputs (list python))
+       (list
+        #:tests? #f  ; No tests.
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-build-with-python3
+              (lambda _
+                (substitute* "setup.py"
+                  (("itervalues")
+                   "values")))))))
+      (native-inputs (list python python-setuptools))
       (home-page "http://guichaz.free.fr/iotop/")
-      (synopsis
-       "Displays the IO activity of running processes")
+      (synopsis "Displays the IO activity of running processes")
       (description
        "Iotop is a Python program with a top like user interface to show the
 processes currently causing I/O.")
