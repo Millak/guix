@@ -64,28 +64,7 @@
         (base32 "1zmp7kkldb59fx1y6k4mkff8ngmyb9pflcd3yqb28m9wb9bp4j4h"))
        (file-name (git-file-name name version))
        (patches (search-patches "gpodder-disable-updater.patch"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list intltool
-           python-coverage
-           python-minimock
-           python-pytest
-           python-pytest-cov
-           python-pytest-httpserver
-           which))
-    (inputs
-     (list bash-minimal
-           gtk+
-           python-pygobject
-           python-pycairo
-           python-requests
-           python-dbus
-           python-html5lib
-           python-mutagen
-           python-mygpoclient
-           python-podcastparser
-           yt-dlp
-           xdg-utils))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -120,6 +99,27 @@
               (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH")))
                 (wrap-program (string-append #$output "/bin/gpodder")
                   `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))))
+    (native-inputs
+     (list intltool
+           python-minimock
+           python-pytest
+           python-pytest-cov
+           python-pytest-httpserver
+           python-setuptools
+           which))
+    (inputs
+     (list bash-minimal
+           gtk+
+           python-pygobject
+           python-pycairo
+           python-requests
+           python-dbus
+           python-html5lib
+           python-mutagen
+           python-mygpoclient
+           python-podcastparser
+           yt-dlp
+           xdg-utils))
     (home-page "https://gpodder.github.io")
     (synopsis "Simple podcast client")
     (description "gPodder is a podcatcher, i.e. an application that allows
