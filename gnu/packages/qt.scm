@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2023 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2013, 2014, 2015, 2023, 2026 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2025 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2015, 2018-2021, 2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015-2019, 2024, 2025 Efraim Flashner <efraim@flashner.co.il>
@@ -36,6 +36,7 @@
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2024, 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2025 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2025 Laura Kirsch <laurakirsch240406@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -102,6 +103,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-sdk)
   #:use-module (gnu packages libevent)
@@ -5523,6 +5525,38 @@ different kinds of sliders, and much more.")
     (license:non-copyleft "http://qwt.sourceforge.net/qwtlicense.html")
     ;; textengines/mathml/qwt_mml_document.{cpp,h} is dual LGPL2.1/GPL3 (either).
     license:lgpl2.1 license:gpl3))))
+
+(define-public jkqtplotter
+  (package
+    (name "jkqtplotter")
+    (version "4.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jkriege2/JKQtPlotter")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yi80d8w4l69siia5rvdzakyzkm7vbpfk6ffcwc6vm6z0i58m9cl"))))
+    (build-system qt-build-system)
+    (inputs (list opencv qtsvg))
+    (arguments
+     (list
+      #:qtbase qtbase
+      #:tests? #f ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'delete-broken-binaries
+            (lambda _
+              (delete-file-recursively (string-append #$output "/bin")))))))
+    (home-page "https://jkriege2.github.io/JKQtPlotter/index.html")
+    (synopsis "Qt Plotting Library")
+    (description
+     "JKQTPlotter is a library of function and data plotter classes for Qt.
+It includes a plotter widget and a LaTeX equation renderer and supports
+a variety of graphs and charts.")
+    (license license:lgpl2.1+)))
 
 (define-public dotherside
   (package
