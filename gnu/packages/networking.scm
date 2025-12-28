@@ -785,29 +785,34 @@ It also includes some SCTP-related helper utilities.")
 (define-public python-pysctp
   (package
     (name "python-pysctp")
-    (version "0.6.1")
+    (version "0.7.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pysctp" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/p1sec/pysctp")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "14h2qlmfi24bizhvvqkfqfa78pzm3911ibrzy9k94i97xy1978dy"))))
-    (build-system python-build-system)
-    (inputs
-     (list lksctp-tools))
+        (base32 "03nw6szak7xdcndyg0m62l4lmkv2bl8ixl7pa0ximwlk4v26wc2w"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f  ;; tests require network
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-setup.py
-           (lambda _
-             (substitute* "setup.py"
-               (("include_dirs\\s*=.*")
-                (string-append "include_dirs = ['.'] + '"
-                               (getenv "C_INCLUDE_PATH") "'.split(':'),"))
-               (("library_dirs\\s*=.*")
-                (string-append "library_dirs = '"
-                               (getenv "LIBRARY_PATH") "'.split(':'),"))))))))
+     (list
+      #:tests? #f ;tests require network
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-setup.py
+            (lambda _
+              (substitute* "setup.py"
+                (("include_dirs\\s*=.*")
+                 (string-append "include_dirs = ['.'] + '"
+                                (getenv "C_INCLUDE_PATH") "'.split(':'),"))
+                (("library_dirs\\s*=.*")
+                 (string-append "library_dirs = '"
+                                (getenv "LIBRARY_PATH") "'.split(':'),"))))))))
+    (native-inputs (list python-setuptools))
+    (inputs (list lksctp-tools))
     (home-page "https://github.com/p1sec/pysctp")
     (synopsis "Python module for the SCTP protocol stack and library")
     (description "@code{pysctp} implements the SCTP socket API.  You need a
