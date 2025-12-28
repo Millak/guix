@@ -1602,6 +1602,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/hurd-refcounts-assert.patch		\
   %D%/packages/patches/hurd-rumpdisk-no-hd.patch		\
   %D%/packages/patches/hurd-startup.patch			\
+  %D%/packages/patches/hurd-streamio-select.patch		\
   %D%/packages/patches/hurd-proc-zombies.patch			\
   %D%/packages/patches/hwloc-1-test-btrfs.patch			\
   %D%/packages/patches/i3lock-blur-fix-build-on-gcc-10.patch	\
