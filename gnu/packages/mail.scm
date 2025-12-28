@@ -4612,14 +4612,13 @@ IMAP, Atom feeds or HTML archives.")
         (sha256
          (base32
           "1dr5zpqnb54h4f5ax8334l1dcp8j9083d7v4vdi1xqkwmnavklck"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
+     (list #:test-backend #~'custom
            ;; Run doctests as described in the README.
-           (lambda _
-             (invoke "python" "-m" "authres" "-v"))))))
+           #:test-flags #~(list "-m" "authres" "-v")))
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://launchpad.net/authentication-results-python")
     (synopsis "Authentication-Results email header creator and parser")
     (description
