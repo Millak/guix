@@ -4636,18 +4636,23 @@ module @code{batman-adv}, for Layer 2.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1v14pafdd2nzd63kpf7aijpqf5dribxij3ynx5q1232y1ci4wf14"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-man-page
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (man (string-append out "/share/man")))
-               (invoke "make" "doc/pagekite.1")
-               (install-file "doc/pagekite.1" (string-append man "/man1"))))))))
-    (inputs
-     (list python-six python-socksipychain))
+     (list
+      #:tests? #f                     ; Tests require extensive configuration.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-man-page
+            (lambda _
+              (invoke "make" "doc/pagekite.1")
+              (install-file "doc/pagekite.1"
+                            (string-append #$output "/share/man/man1"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "test")))))))
+    (native-inputs (list perl python-setuptools))
+    (inputs (list python-six python-socksipychain))
     (home-page "https://pagekite.net/")
     (synopsis "Make localhost servers publicly visible")
     (description
