@@ -279,7 +279,8 @@ Hurd-minimal package which are needed for both glibc and GCC.")
               (inherit (package-source gnumach-headers))
               (patches (append (origin-patches
                                 (package-source gnumach-headers))
-                               (search-patches "gnumach-div0.patch")))))
+                               (search-patches "gnumach-div0.patch"
+                                               "gnumach-kmsg-overflow.patch")))))
     (arguments
      (substitute-keyword-arguments (package-arguments gnumach-headers)
        ((#:configure-flags flags ''())

@@ -1,0 +1,59 @@
+Upstream Status: https://lists.gnu.org/archive/html/bug-hurd/2025-12/msg00043.html
+
+From 2c9868cd8974e75a028349aa1ec9b1417f5d6617 Mon Sep 17 00:00:00 2001
+From: Yelninei <yelninei@tutamail.com>
+Date: Thu, 2 Oct 2025 16:20:00 +0000
+Subject: [PATCH] kmsg: Don't truncate messages when overflowing.
+
+Instead of discarding a character drop the first unread one.
+---
+ device/kmsg.c | 21 +++++++++------------
+ 1 file changed, 9 insertions(+), 12 deletions(-)
+
+diff --git a/device/kmsg.c b/device/kmsg.c
+index e5b518e6..bb72930d 100644
+--- a/device/kmsg.c
++++ b/device/kmsg.c
+@@ -217,7 +217,6 @@ void
+ kmsg_putchar (int c)
+ {
+   io_req_t ior;
+-  int offset;
+   spl_t s = -1;
+ 
+   /* XXX: cninit is not called before cnputc is used. So call kmsginit
+@@ -230,22 +229,20 @@ kmsg_putchar (int c)
+ 
+   if (spl_init)
+     s = simple_lock_irq (&kmsg_lock);
+-  offset = kmsg_write_offset + 1;
+-  if (offset == KMSGBUFSIZE)
+-    offset = 0;
+-
+-  if (offset == kmsg_read_offset)
+-    {
+-      /* Discard C.  */
+-      if (spl_init)
+-	simple_unlock_irq (s, &kmsg_lock);
+-      return;
+-    }
+ 
+   kmsg_buffer[kmsg_write_offset++] = c;
+   if (kmsg_write_offset == KMSGBUFSIZE)
+     kmsg_write_offset = 0;
+ 
++  if(kmsg_write_offset == kmsg_read_offset)
++    {
++      /* Drop first unread char */
++      kmsg_read_offset++;
++      if (kmsg_read_offset == KMSGBUFSIZE)
++        kmsg_read_offset = 0;
++    }
++
++
+   while ((ior = (io_req_t) dequeue_head (&kmsg_read_queue)) != NULL)
+     iodone (ior);
+ 
+-- 
+2.52.0
+
