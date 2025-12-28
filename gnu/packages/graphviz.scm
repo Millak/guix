@@ -465,28 +465,35 @@ This approach allows:
 (define-public gprof2dot
   (package
     (name "gprof2dot")
-    (version "2021.02.21")
+    (version "2025.04.14")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/jrfonseca/gprof2dot")
-             (commit version)))
+              (url "https://github.com/jrfonseca/gprof2dot")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1jjhsjf5fdi1fkn7mvhnzkh6cynl8gcjrygd3cya5mmda3akhzic"))))
-    (build-system python-build-system)
+        (base32 "0yil32pbcarwsfmhgn2zhldjj985v9p80f2yi2shkaxzfc4w6zwi"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "tests/test.py")))))))
+     (list
+      #:test-backend #~'custom
+      #:test-flags
+      #~(list "tests/test.py"
+              "--python=bash"
+              "--max-acceptable=0"
+              (string-append "--gprof2dot=" #$output "/bin/gprof2dot"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-tests
+            ;; Prevent irrelevant errors that cause test output mismatches:
+            ;; ‘Fontconfig error: No writable cache directories’
+            (lambda _
+              (setenv "XDG_CACHE_HOME" "/tmp"))))))
     (native-inputs
-     (list graphviz))
+     (list graphviz
+           python-setuptools))
     (home-page "https://github.com/jrfonseca/gprof2dot")
     (synopsis "Generate a dot graph from the output of several profilers")
     (description "This package provides a Python script to convert the output
