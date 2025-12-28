@@ -4417,33 +4417,29 @@ self-contained C-extension for Python.")
   (package
     (name "python-cvxopt")
     (version "1.3.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/cvxopt/cvxopt")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0vdfag3rr906w0gk7vxm2yxfy8y92i4wmqxi82cbykpfp5r82i36"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cvxopt/cvxopt")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vdfag3rr906w0gk7vxm2yxfy8y92i4wmqxi82cbykpfp5r82i36"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'find-libraries
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "CVXOPT_BLAS_LIB" "openblas")
-             (setenv "CVXOPT_LAPACK_LIB" "openblas")
-             (setenv "CVXOPT_BUILD_FFTW" "1")
-             (setenv "CVXOPT_BUILD_GLPK" "1")
-             (setenv "CVXOPT_BUILD_GSL" "1")
-             #t)))))
-    (inputs
-     (list fftw
-           glpk
-           gsl
-           openblas
-           suitesparse))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'find-libraries
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "CVXOPT_BLAS_LIB" "openblas")
+              (setenv "CVXOPT_LAPACK_LIB" "openblas")
+              (setenv "CVXOPT_BUILD_FFTW" "1")
+              (setenv "CVXOPT_BUILD_GLPK" "1")
+              (setenv "CVXOPT_BUILD_GSL" "1"))))))
+    (native-inputs (list python-pytest python-setuptools))
+    (inputs (list fftw glpk gsl openblas suitesparse))
     (home-page "https://www.cvxopt.org")
     (synopsis "Python library for convex optimization")
     (description
