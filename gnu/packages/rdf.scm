@@ -521,9 +521,11 @@ Graph.")
               (sha256
                (base32
                 "1b4vg754kcxvinwdv7pjfmwbnmgm50w8mb2naf2lwp27bpyllvkb"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f)) ; The test suite simply queries external HTTP endpoints.
+     ;; The test suite simply queries external HTTP endpoints.
+     (list #:tests? #f))
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-rdflib))
     (home-page "https://rdflib.dev/sparqlwrapper/")
     (synopsis "SPARQL Endpoint interface to Python")
