@@ -1296,26 +1296,29 @@ useful for making transparent firewalls.")
 (define-public pproxy
   (package
     (name "pproxy")
-    (version "2.7.8")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pproxy" version))
-              (sha256
-               (base32
-                "1j4nv72i77i2j5nl9ymzpk4m98qih3naihfrqjghrc9b7g0krdzs"))))
-    (build-system python-build-system)
+    (version "2.7.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference (url "https://github.com/qwj/python-proxy")
+                           (commit version)))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "0crr6b9v5fvy2js1fqjngj3axr962p1yayrxsnf3fpzdc99mnv0d"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (with-directory-excursion "tests"
-                       (for-each (lambda (file)
-                                   (invoke "python" file))
-                                 ;; XXX: The api_ tests require network access
-                                 ;; so we only run the cipher tests for now.
-                                 (find-files "." "^cipher_.*\\.py$")))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "tests"
+                  (for-each (lambda (file)
+                              (invoke "python" file))
+                            ;; XXX: The api_ tests require network access
+                            ;; so we only run the cipher tests for now.
+                            (find-files "." "^cipher_.*\\.py$")))))))))
+    (native-inputs (list python-setuptools))
     (inputs
      (list python-asyncssh
            python-daemon
