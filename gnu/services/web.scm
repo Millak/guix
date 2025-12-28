@@ -1501,7 +1501,7 @@ a webserver.")
 
 (define* (cat-avatar-generator-service
           #:key
-          (cache-dir "/var/cache/cat-avatar-generator")
+          (cache-dir "/var/cache/cat-avatar-generator/")
           (package cat-avatar-generator)
           (configuration (nginx-server-configuration)))
   (simple-service

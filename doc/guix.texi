@@ -36561,13 +36561,14 @@ in @code{Nginx}.  It is used to generate cat avatar from a seed, for instance
 the hash of a user's email address.
 
 @deffn {Procedure} cat-avatar-generator-service @
-       [#:cache-dir "/var/cache/cat-avatar-generator"] @
+       [#:cache-dir "/var/cache/cat-avatar-generator/"] @
        [#:package cat-avatar-generator] @
        [#:configuration (nginx-server-configuration)]
 Returns an nginx-server-configuration that inherits @code{configuration}.  It
 extends the nginx configuration to add a server block that serves @code{package},
 a version of cat-avatar-generator.  During execution, cat-avatar-generator will
-be able to use @code{cache-dir} as its cache directory.
+be able to use @code{cache-dir} as its cache directory, which must end
+with a slash, be created manually, and be writable by php-fpm.
 @end deffn
 
 A simple setup for cat-avatar-generator can look like this:
