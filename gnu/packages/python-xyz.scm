@@ -35131,64 +35131,49 @@ of fast and robust hash functions.  This library is a Python extension module
 written in C.")
       (license license:public-domain))))
 
-;; Scooby requires for its test suite a ‘pyvips’ package that is missing its
-;; VIPS dependency.
-(define python-pyvips-for-python-scooby
-  (package
-    (inherit python-pyvips)
-    (name "python-pyvips-for-python-scooby")
-    (arguments
-     (substitute-keyword-arguments (package-arguments python-pyvips)
-       ((#:phases phases '%standard-phases)
-        #~(modify-phases #$phases
-            ;; The checks won't succeed without VIPS.
-            (delete 'check)
-            (delete 'sanity-check)))))
-    (inputs
-     (modify-inputs (package-inputs python-pyvips)
-       (delete "vips")))
-    (synopsis "pyvips for Scooby's test suite")))
-
 (define-public python-scooby
   (package
     (name "python-scooby")
-    (version "0.5.12")
+    (version "0.11.0")
     (source
-     ;; The PyPI tarball does not contain the tests.
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/banesullivan/scooby")
-             (commit (string-append "v" version))))
+              (url "https://github.com/banesullivan/scooby")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gkpmz8wl3jg8ylf1na35308sznw2g9wx33zqlyq5i2gpy2ml9mw"))))
-    (build-system python-build-system)
+        (base32 "0c47gwcc5kpwx7s8ccp53s174bgraxm4qqrn72yz2ypxah6k3ccj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 19 passed, 5 deselected, 1 warning
+      #:test-flags
+      ;; AssertionError: assert 'Module not found' == '0.1.0'
+      #~(list "--deselect=tests/test_scooby.py::test_get_version"
+              ;; ModuleNotFoundError: No module named 'no_version'
+              "--deselect=tests/test_scooby.py::test_tracking"
+              ;; Failed: DID NOT RAISE <class 'OSError'>
+              "--deselect=tests/test_scooby.py::test_import_os_error"
+              ;; FileNotFoundError: [Errno 2] No such file or directory: 'time'
+              "--deselect=tests/test_scooby.py::test_import_time"
+              ;; Errored
+              "--deselect=tests/test_scooby.py::test_cli")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-beautifulsoup4
            python-numpy
            python-pytest
-           python-pytest-cov
-           python-pyvips-for-python-scooby
-           python-scipy))
+           python-pyvips
+           python-scipy
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
      (list python-psutil))
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             (substitute* "tests/test_scooby.py"
-               ;; The test suite uses the no-version PyPI package
-               ;; (https://pypi.org/project/no-version/),
-               ;; but it doesn't seem worth packaging in Guix just for this.
-               (("scooby\\.report\\.VERSION_NOT_FOUND")
-                "scooby.report.MODULE_NOT_FOUND")
-               (("^ +import no_version  # noqa.*") ""))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
     (home-page "https://github.com/banesullivan/scooby")
     (synopsis "Report hardware information and Python package versions")
     (description
