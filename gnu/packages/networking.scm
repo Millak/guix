@@ -3275,18 +3275,22 @@ IPFIX, RSPAN, CLI, LACP, 802.1ag).")
   (package
     (name "python-ipy")
     (version "1.01")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "IPy" version))
-              (sha256
-               (base32
-                "06nclwafzsbi8ls019ry1xnfhgwc5103g8lgav54mmd2vr0sgv7d"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/autocracy/python-ipy/")
+             (commit (string-append "IPy-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "106rirmirlpb5ppznn3fd8189a8z02zf99jvk6j4hcq05ajclfc6"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/autocracy/python-ipy/")
     (synopsis "Python class and tools for handling IP addresses and networks")
-    (description "The @code{IP} class allows a comfortable parsing and
-handling for most notations in use for IPv4 and IPv6 addresses and
-networks.")
+    (description
+     "The @code{IP} class allows a comfortable parsing and handling for most
+notations in use for IPv4 and IPv6 addresses and networks.")
     (license license:bsd-3)))
 
 (define-public speedtest-cli
