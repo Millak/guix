@@ -2966,39 +2966,33 @@ at login.  Local and dynamic reconfiguration are its key features.")
     (name "python-pamela")
     (version "1.0.0")
     (source
-      (origin
-        ;; Tests not distributed in pypi release.
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/minrk/pamela")
-               (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "0cg3w6np1fbjpvzhv54xg567hpf38szwp2d4gvzb9r736nxbv0vr"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/minrk/pamela")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cg3w6np1fbjpvzhv54xg567hpf38szwp2d4gvzb9r736nxbv0vr"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f ; Test suite isn't designed to be run inside a container.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'hardcode-pam.so
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((pam (assoc-ref inputs "linux-pam")))
-               (substitute* "pamela.py"
-                 (("find_library\\(\"pam\")")
-                  (string-append "'" pam "/lib/libpam.so'")))
-               #t)))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (if tests?
-               (if (file-exists? "test_pamela.py")
-                 (invoke "py.test" "--assert=plain" "test_pamela.py")
-                 (invoke "python" "-m" "pamela" "-a" "`whoami`"))
-               #t))))))
-    (inputs
-     (list linux-pam))
-    (native-inputs
-     (list python-pytest))
+     (list
+      #:tests? #f ;Test suite isn't designed to be run inside a container.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'hardcode-pam.so
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "pamela.py"
+                (("find_library\\(\"pam\")")
+                 (format #f "~s"
+                         (search-input-file inputs "lib/libpam.so"))))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when (and tests? (file-exists? "test_pamela.py"))
+                (invoke "pytest" "--assert=plain" "test_pamela.py")
+                (invoke "python" "-m" "pamela" "-a" "`whoami`")))))))
+    (inputs (list linux-pam))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/minrk/pamela")
     (synopsis "PAM interface using ctypes")
     (description "This package provides a PAM interface using @code{ctypes}.")
