@@ -4409,33 +4409,32 @@ sequencing.")
 (define-public python-biopython
   (package
     (name "python-biopython")
-    (version "1.85")
+    (version "1.86")
     (source (origin
               (method url-fetch)
               ;; use PyPi rather than biopython.org to ease updating
               (uri (pypi-uri "biopython" version))
               (sha256
                (base32
-                "19m03s5rwcyiq5cs1kq9dzj7qvmfvm76idgn967ygr4x0msapbsx"))))
+                "1zwj1lfpinl1iv5kamdsiwfpdic3ylzd169gmdlfqb2dd9c0p9ck"))))
     (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-home
-           ;; Some tests require a home directory to be set.
-           (lambda _ (setenv "HOME" "/tmp")))
-         (add-after 'unpack 'numpy-compatibility
-           (lambda _
-             (substitute* "Bio/Cluster/__init__.py"
-               (("np.True_") "True"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (with-directory-excursion "Tests"
-                 (invoke "python3" "run_tests.py" "--offline"))))))))
+     (list
+      ;; tests: 500 passed
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            ;; Some tests require a home directory to be set.
+            (lambda _ (setenv "HOME" "/tmp")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "Tests"
+                  (invoke "python" "run_tests.py" "--offline"))))))))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-numpy))
-    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://biopython.org/")
     (synopsis "Tools for biological computation in Python")
     (description
