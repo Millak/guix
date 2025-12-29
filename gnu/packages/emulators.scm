@@ -14,7 +14,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2021 Felipe Balbi <balbi@kernel.org>
-;;; Copyright © 2021, 2024 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021, 2024, 2025 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021, 2024-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2023 c4droid <c4droid@foxmail.com>
@@ -1158,7 +1158,7 @@ The following systems are supported:
 (define-public sameboy
   (package
     (name "sameboy")
-    (version "0.16.3")
+    (version "1.0.2")
     (source
      (origin
        (method git-fetch)
@@ -1167,7 +1167,7 @@ The following systems are supported:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jdjg59vzzkbi3c3qaxpsxqx955sb86cd3kcypb0nhjxbnwac1di"))))
+        (base32 "0pwnik37c3sgvib5xbadwbq2mjjvgxilhig09rjb3xp5i1d7ykja"))))
     (build-system gnu-build-system)
     (native-inputs
      (list rgbds pkg-config))
