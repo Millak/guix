@@ -431,25 +431,23 @@ TCP sessions from existing clients.")
     (source
      (origin
        (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://codeberg.org/poezio/poezio")
-         (commit
-          (string-append "v" version))))
-       (file-name
-        (git-file-name name version))
+       (uri (git-reference
+             (url "https://codeberg.org/poezio/poezio")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32 "15vlmymqlcf94h1g6dvgzjvj15c47dqsm78qs40wl2dlwspvqkxj"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-      (list #:tests? #f ; tests fails without the OTR plugin
-            #:phases
-            #~(modify-phases %standard-phases
-                (add-after 'unpack 'patch
-                  (lambda _
-                    (substitute* "setup.py"
-                      (("'CC', 'cc'")
-                       "'CC', 'gcc'")))))))
+     (list
+      #:tests? #f ;tests fails without the OTR plugin
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "setup.py"
+                (("'CC', 'cc'")
+                 "'CC', 'gcc'")))))))
     (native-inputs
      (list pkg-config python-setuptools python-sphinx))
     (inputs
