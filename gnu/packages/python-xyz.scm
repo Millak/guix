@@ -3887,7 +3887,11 @@ library.")
        (uri (pypi-uri "slicerator" version))
        (sha256
         (base32 "0ik0bmh18zgffd9kx53254jp3yyih6zcmd8kfb080xnqbizhl0a4"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-numpy
+           python-pytest
+           python-setuptools))
     (home-page "https://github.com/soft-matter/slicerator")
     (synopsis "Lazy-loading, fancy-sliceable iterable")
     (description
