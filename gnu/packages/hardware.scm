@@ -591,51 +591,41 @@ support.")
     (license license:gpl2+)))
 
 (define-public ckb-next
-    (package
-      (name "ckb-next")
-      (version "0.6.2")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/ckb-next/ckb-next")
-                      (commit (string-append "v" version))))
-                (sha256
-                 (base32
-                  "1mdmimxifzajyv7n75zrnkn1fi0v46vbas028da2mncy8yjla3cl"))
-                (file-name (git-file-name name version))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:modules ((guix build cmake-build-system) (guix build qt-utils)
-                    (guix build utils))
-         #:imported-modules (,@%cmake-build-system-modules
-                             (guix build qt-utils))
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'build 'patch-lib-udev
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (substitute* "src/daemon/cmake_install.cmake"
-                 (("/lib/udev")
-                  (string-append (assoc-ref outputs "out")
-                                 "/lib/udev")))))
-           (add-after 'install 'wrap-qt
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (wrap-qt-program "ckb-next"
-                                  #:output out
-                                  #:inputs inputs)))))))
-      (native-inputs (list qttools-5 pkg-config))
-      (inputs (list qtbase-5
-                    qtwayland-5
-                    zlib
-                    libdbusmenu-qt
-                    quazip-5
-                    pulseaudio
-                    libxcb
-                    xcb-util-wm
-                    qtx11extras
+  (package
+    (name "ckb-next")
+    (version "0.6.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/ckb-next/ckb-next")
+                     (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1mdmimxifzajyv7n75zrnkn1fi0v46vbas028da2mncy8yjla3cl"))
+              (file-name (git-file-name name version))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:qtbase qtbase
+      #:tests? #f
+      #:configure-flags #~(list "-DPREFER_QT6=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'patch-lib-udev
+            (lambda _
+              (substitute* "src/daemon/cmake_install.cmake"
+                (("/lib/udev") (string-append #$output "/lib/udev"))))))))
+      (native-inputs (list pkg-config qttools))
+      (inputs (list bash-minimal
                     eudev
-                    bash-minimal))
+                    libdbusmenu-qt
+                    libxcb
+                    pulseaudio
+                    qt5compat
+                    qtx11extras
+                    quazip
+                    xcb-util-wm
+                    zlib))
       (home-page "https://github.com/ckb-next/ckb-next")
       (synopsis "Driver for Corsair keyboards and mice")
       (description
