@@ -10808,19 +10808,27 @@ Orcus Dome from evil.")
 (define-public endgame-singularity
   (package
     (name "endgame-singularity")
-    (version "1.00")
+    (version "1.1")
     (source
      (origin
+       ;; TODO: Build from Git, resolve the issue:
+       ;; FileNotFoundError: [Errno 2] No such file or directory: 'git'
        (method url-fetch)
        (uri (string-append
              "https://github.com/singularity/singularity/releases/download/v"
              version "/singularity-" version ".tar.gz"))
        (sha256
         (base32
-         "0wcidpcka0xbqcnfi62bfq2yrhyh83z4dwz1mjnnjvp9v5l74x2y"))))
+         "1nhg9g39d6fwrz1qxzpvi8j0k9lxhm61wys8w72rc6zr1gl0c0n2"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-polib python-setuptools))
-    (inputs (list python-minimal-wrapper python-pygame python-numpy))
+    (native-inputs
+     (list python-pytest
+           python-polib
+           python-setuptools))
+    (inputs
+     (list python-minimal-wrapper
+           python-pygame
+           python-numpy))
     (home-page "https://github.com/singularity/singularity")
     (synopsis "Strategy game about an AI")
     (description
