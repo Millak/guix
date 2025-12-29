@@ -40208,7 +40208,7 @@ federated microblogging social network.")
 (define-public emacs-org-social
   (package
     (name "emacs-org-social")
-    (version "2.7.2")
+    (version "2.9")
     (source
      (origin
        (method git-fetch)
@@ -40217,7 +40217,7 @@ federated microblogging social network.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cj5r00sdb83v356ni2ic1gdychxidgpnvl48b6wq6j11j8yqa12"))))
+        (base32 "1d8hwrpa20524qiqfwwvsk1h10yqk8fzac74n1ls7ixk28db0nvg"))))
     (build-system emacs-build-system)
     (arguments
      (list
