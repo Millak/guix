@@ -4113,60 +4113,45 @@ use-case, we encourage users to compose functions to achieve their goals.")
 (define-public python-biom-format
   (package
     (name "python-biom-format")
-    (version "2.1.16")
+    (version "2.1.17")
     (source
      (origin
        (method git-fetch)
-       ;; Use GitHub as source because PyPI distribution does not contain
-       ;; test data: https://github.com/biocore/biom-format/issues/693
        (uri (git-reference
-             (url "https://github.com/biocore/biom-format")
-             (commit version)))
+              (url "https://github.com/biocore/biom-format")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1npxjsi7r0w8diq6s37q21cqgrqifl7f483lfn72bn7qrvkvbpyz"))
-       (modules '((guix build utils)))
-       ;; Delete generated C files.
-       (snippet
-        '(for-each delete-file (find-files "." "\\.c")))))
+        (base32 "0fmlrxcn8bgh8wccs2qzz5q08ivd3r3zva9h8zzr1jsbff7904fz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 380 passed, 4 skipped, 16 warnings
       #:test-flags
-      '(list "-k"
-             (string-append ;; Unclear why this one fails.  There is no backtrace.
-                            "not test_to_dataframe_is_sparse"
-                            ;; These need skbio, but that needs biom-format.
-                            " and not test_align_tree_intersect_obs"
-                            " and not test_align_tree_intersect_tips"
-                            " and not test_align_tree_sample"))
+      ;; Doctests depend on Nose.
+      #~(list "--ignore=doc/sphinxext/numpydoc/numpydoc/tests/")
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'use-cython
-           (lambda _ (setenv "USE_CYTHON" "1")))
-         (add-before 'check 'build-extensions
-           (lambda _
-             ;; Cython extensions have to be built before running the tests.
-             (invoke "python" "setup.py" "build_ext" "--inplace")))
-         (add-after 'unpack 'pandas-compatibility
-           (lambda _
-             (substitute* "biom/tests/test_table.py"
-               (("import pandas.util.testing")
-                "import pandas.testing")))))))
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (copy-recursively "biom/tests" "tests")
+              (delete-file-recursively "biom")
+              (substitute* "tests/test_cli/test_validate_table.py"
+                ;; Help finding "examples" directory.
+                (("cur_path.rsplit\\(os.path.sep, 3\\)\\[0\\]")
+                 (format #f "~s" (getcwd)))))))))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools))
     (propagated-inputs
-     (list python-anndata
-           python-click
-           python-flake8
-           python-future
+     (list python-click
            python-h5py
            python-numpy
            python-pandas
-           ;;python-scikit-bio ;mutually recursive dependency
-           python-scipy))
-    (native-inputs
-     (list python-cython python-pytest python-pytest-cov
-           python-wheel))
+           python-scipy
+           ;; [optional]
+           python-anndata))
     (home-page "https://www.biom-format.org")
     (synopsis "Biological Observation Matrix (BIOM) format utilities")
     (description
