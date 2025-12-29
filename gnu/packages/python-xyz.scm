@@ -553,37 +553,32 @@ package.  It is not useful on its own, only as a dependency for awkward.")
 (define-public python-awkward
   (package
     (name "python-awkward")
-    (version "2.7.2")
+    (version "2.8.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "awkward" version))
        (sha256
-        (base32 "1bfg4pggahnfvq4n71ydkb1pwzc89plfdgp9wcv7ky4dss37y1ay"))))
+        (base32 "12bw8hkxnx4pkwamih933c5syrjg1pyql288b7h190mr1d24k42b"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 2798 passed, 156 skipped
       #:test-flags
       ;; CUDA is and requires proprietary software.
-      '(list "--ignore-glob=tests-cuda**"
-             "-k"
-             (string-append
-              ;; BrokenProcessPool
-              "not test_noop_pickler"
-              " and not test_non_packing_pickler"
-              ;; Regex pattern did not match.
-              " and not test_malformed_pickler"))))
-    (propagated-inputs (list python-awkward-cpp
-                             python-fsspec
-                             python-importlib-metadata
-                             python-numpy
-                             python-packaging
-                             python-typing-extensions))
+      #~(list "--ignore=tests-cuda-kernels/"
+              "--ignore=tests-cuda/")))
     (native-inputs
      (list python-hatch-fancy-pypi-readme
            python-hatchling
            python-pytest))
-    (home-page "https://github.com/scikit-hep/awkward-1.0")
+    (propagated-inputs
+     (list python-awkward-cpp
+           python-fsspec
+           python-importlib-metadata
+           python-numpy
+           python-packaging))
+    (home-page "https://awkward-array.org/")
     (synopsis "Manipulate JSON-like data with NumPy-like idioms")
     (description "Awkward Array is a library for nested, variable-sized data,
 including arbitrary-length lists, records, mixed types, and missing data,
