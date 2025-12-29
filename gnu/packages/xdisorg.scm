@@ -4577,7 +4577,7 @@ setup of your X Server without any modifications.")
 (define-public darkman
   (package
     (name "darkman")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method git-fetch)
@@ -4587,7 +4587,7 @@ setup of your X Server without any modifications.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "039xqi9pll7vl1m8lri5x626s7n0wqrjzyy979kh3wmpqbk8jz3j"))
+         "0pq7csrxs76mlp8i0yxj24s30ynhhr8rs9kcwn01pzi73k3sx6ra"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -4595,7 +4595,9 @@ setup of your X Server without any modifications.")
              ;; Avoid building the binary again when installing.
              (("install: build") "install: darkman.1")
              ;; Don't install the systemd service.
-             ((".@install.*systemd.*") "")
+             (("install.*contrib/darkman.service") "true")
+             ;; Don't install the openrc service.
+             (("install.*openrc") "true")
              ;; The binary will be installed by `go install'.
              ((".@install.*bin.*") ""))))))
     (build-system go-build-system)
@@ -4611,14 +4613,10 @@ setup of your X Server without any modifications.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
             (lambda* (#:key unpack-path #:allow-other-keys)
-              (let ((source (string-append "src/" unpack-path "/contrib/dbus/")))
-                (substitute*
-                    (list (string-append
-                           source "nl.whynothugo.darkman.service")
-                          (string-append
-                           source
-                           "org.freedesktop.impl.portal.desktop.darkman.service"))
-                  (("/usr") #$output)))))
+              (substitute*
+                  (find-files (string-append "src/" unpack-path "/contrib/dbus/")
+                              "\\.service$")
+                (("/usr") #$output))))
           (replace 'install
             (lambda* (#:key unpack-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" unpack-path)
@@ -4636,11 +4634,11 @@ setup of your X Server without any modifications.")
     (native-inputs
      (list gnu-make
            go-github-com-adrg-xdg
+           go-github-com-goccy-go-yaml
            go-github-com-godbus-dbus-v5
            go-github-com-rxwycdh-rxhash
            go-github-com-sj14-astral
            go-github-com-spf13-cobra
-           go-gopkg-in-yaml-v3
            scdoc))
     (home-page "https://gitlab.com/WhyNotHugo/darkman")
     (synopsis "Control dark-mode and light-mode transitions")
