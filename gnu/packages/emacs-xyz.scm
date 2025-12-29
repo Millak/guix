@@ -215,6 +215,7 @@
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages emacs-build)
   #:use-module (gnu packages enchant)
+  #:use-module (gnu packages file-systems)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages games)
@@ -21681,6 +21682,50 @@ structure, or any other pattern.")
 using a convenient notation.")
     (license (list license:gpl3+
                    license:fdl1.3+)))) ;GFDLv1.3+ for the manual
+
+(define-public emacs-tmsu
+  ;; There are no releases or tags upstream.
+  (let ((commit "c75ae9bed8f3bb2229e873fcc85fe62701e47974")
+        (revision "0"))
+    (package
+      (name "emacs-tmsu")
+      (version (git-version "0.9" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/vifon/tmsu.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0mxz9bmdcdxkj7f4ih405i4vpd35c72xgs1i8cbi0132dpnnblpz"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-exec-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((tmsu (search-input-file inputs "bin/tmsu")))
+                  (substitute* (list "tmsu.el" "tmsu-dired.el")
+                    (("\"tmsu\"")
+                     (string-append "\"" tmsu "\"")))))))
+        #:test-command
+        #~(list "emacs"
+                "-batch"
+                "-l"
+                "tmsu-tests.el"
+                "-f"
+                "ert-run-tests-batch-and-exit")))
+      (inputs (list tmsu))
+      (synopsis "Emacs interface to the @code{tmsu} file tagging tool")
+      (description
+       "@code{tmsu.el} focuses on enhancing the @acronym{UX, User Experience}
+of the most common @code{tmsu} operations: tag editing and querying.  It's
+primarily intended to be used from dired, though @code{tmsu-edit} can be used
+separately from it.")
+      (home-page "https://github.com/vifon/tmsu.el")
+      (license license:gpl3+))))
 
 (define-public emacs-beframe
   (let ((commit "c3f4583b0767e7f8c38c83ed29af40af8ba3bdfa")) ;version bump
