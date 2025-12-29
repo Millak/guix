@@ -26127,14 +26127,14 @@ want to use it.")
 (define-public emacs-track-changes
   (package
     (name "emacs-track-changes")
-    (version "1.4")
+    (version "1.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/track-changes-"
                            version ".tar"))
        (sha256
-        (base32 "0ygc53dm144ld4f7ig1fh1z345gnkrin7q108kj9d4dhgp8f2381"))))
+        (base32 "0ylvxd5iijihqa5l9w6k6hmwaf09hw98k4f9g2hxfbn8sifvgb53"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f)) ; no tests
     (home-page "https://elpa.gnu.org/packages/track-changes.html")
