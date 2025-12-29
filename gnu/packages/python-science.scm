@@ -387,6 +387,19 @@ object-oriented library such as @code{scikit-learn}.")
        (sha256
         (base32 "05i805k5kvmwp5k0qw9vxvpgjwys284nq529mfn7vwlryz9d247m"))))))
 
+;; A bare minimal package, mainly to use in tests and reduce closure
+;; size. Tests are left out in the main package to slim down native-inputs.
+(define-public python-anndata-minimal
+  (package/inherit python-anndata
+    (name "python-anndata-minimal")
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-anndata)
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-setuptools-scm))))
+
 ;; XXX: See: <https://codeberg.org/guix/guix/issues/3093>.
 (define-public python-aplus
   ;; PyPI release lacks the latest version, Git has no tags.
