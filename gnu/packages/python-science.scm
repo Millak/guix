@@ -4089,17 +4089,17 @@ idea of the remaining amount of computation to be done.")
 (define-public python-pandera
   (package
     (name "python-pandera")
-    (version "0.26.1")
+    (version "0.27.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pandera" version))
        (sha256
-        (base32 "10px2wy3rb8gg2jyry8962yrd0m3jq88wgjcpyrk23bp55j5m9c1"))))
+        (base32 "1x5vjp1ra252ncyfsfrc7vck5snx807mpwzd0hvv0vpi9v096934"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 3093 passed, 48 skipped, 21 xfailed, 8232 warnings
+      ;; tests: 3033 passed, 51 skipped, 11 xfailed, 8385 warnings
       #:test-flags
       ;; With higher threads count tests randomly fail during collection.
       #~(list "--numprocesses" (number->string (min 4 (parallel-job-count)))
@@ -4108,19 +4108,18 @@ idea of the remaining amount of computation to be done.")
               "--ignore=tests/ibis"
               "--ignore=tests/polars"
               "--ignore=tests/pyspark"
+              ;; E ModuleNotFoundError: No module named 'sphinx'
+              "--ignore=tests/pandas/test_docs_setting_column_widths.py"
+              ;; Nework access is required.
+              "--ignore=tests/fastapi/test_app.py"
+              ;; TypeError: __class__ assignment: 'GeoDataFrame' object layout
+              ;; differs from 'DataFrame'
               "-k" (string-join
-                    ;; Network access is required.
-                    (list "not test_items_endpoint"
-                          "test_transactions_endpoint"
-                          "test_upload_file_endpoint"
-                          ;; AssertionError: assert dtype('bool') == 'object'
-                          "test_index_dtypes[dask-Index-True-bool]"
-                          "test_index_dtypes[dask-Index-False-bool]"
-                          ;; TypeError: __class__ assignment: 'GeoDataFrame'
-                          ;; object layout differs from 'DataFrame'
-                          "test_schema_model[data0-True]"
+                    (list "not test_schema_model[data0-True]"
                           "test_schema_from_dataframe[data1-True]"
-                          "test_schema_no_geometry")
+                          "test_schema_no_geometry"
+                          ;; The most of the tests from this goup XFAIL or fail.
+                          "test_pandas_stubs_false_positives")
                     " and not "))))
     (native-inputs
      (list python-joblib
