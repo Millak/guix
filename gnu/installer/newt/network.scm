@@ -27,6 +27,7 @@
   #:use-module (guix i18n)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-11)
+  #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (ice-9 match)
@@ -112,20 +113,24 @@ network devices were found. Do you want to continue anyway?"))
              full-value
              (+ value 1)))))))
 
-(define (url-alive? url)
+(define* (url-alive? url #:key (ensure-ok-status? #f))
   (false-if-exception
-   (begin
-     (http-request url)
-     #t)))
+   (let ((response (http-request url)))
+     (or (not ensure-ok-status?)
+         (= (response-code response)
+            200)))))
 
-(define (common-urls-alive? urls)
+(define* (common-urls-alive? urls #:key (ensure-ok-status? #f))
+  "Return #t if at least some of the given URLS are alive,
+meaning that they do respond to a HTTP request. If ENSURE-OK-STATUS? is
+#t, return #t only if the code is 200."
   (dynamic-wind
     (lambda ()
       (sigaction SIGALRM
         (lambda _ #f))
       (alarm 3))
     (lambda ()
-      (any url-alive?
+      (any (cut url-alive? <> #:ensure-ok-status? ensure-ok-status?)
            urls))
     (lambda ()
       (alarm 0))))
@@ -140,7 +145,9 @@ FULL-VALUE tentatives, spaced by 1 second."
                "https://bordeaux.guix.gnu.org"
                "https://ci.guix.gnu.org"
                "https://guix.gnu.org"
-               "https://gnu.org")))
+               "https://gnu.org")
+              ;; Any HTTP response means the users is online.
+              #:ensure-ok-status? #f))
         (file-exists? "/tmp/installer-assume-online")))
 
   (let* ((full-value 5))
@@ -173,7 +180,8 @@ Do you want to continue anyway?"))
      (common-urls-alive?
       (list
        "https://bordeaux.guix.gnu.org/nix-cache-info"
-       "https://ci.guix.gnu.org/nix-cache-info"))))
+       "https://ci.guix.gnu.org/nix-cache-info")
+      #:ensure-ok-status? #t)))
 
   (let* ((full-value 5))
     (run-scale-page
