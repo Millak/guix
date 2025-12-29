@@ -295,6 +295,39 @@ using the Git pkt-line format used in various Git operations.")
          (replace "go-github-com-go-git-gcfg"
            go-github-com-go-git-gcfg-v2))))))
 
+(define-public go-github-com-cli-go-internal
+  (package
+    (name "go-github-com-cli-go-internal")
+    (version "0.0.0-20241025142207-6c48bcd5ce24")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cli/go-internal")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s2rnmsdj22hg8hz9xv2fj1vs1k9xfz8rvz9bm1cg3ddq33hl4a5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/cli/go-internal"
+      #:test-flags
+      ;; TestSimple/cover requires network access to proxy.golang.org.
+      #~(list "-skip" "TestSimple/cover")))
+    (propagated-inputs
+     (list go-golang-org-x-mod
+           go-golang-org-x-sys
+           go-golang-org-x-tools))
+    (home-page "https://github.com/cli/go-internal")
+    (synopsis "Internal utilities for GitHub CLI")
+    (description
+     "This package provides internal utilities for the GitHub CLI.  It is a
+hard fork of @code{testscript} to allow the @code{gh} maintainers to explore
+its use while providing flexibility for modifications and extensions.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-cli-shurcool-graphql
   (package
     (name "go-github-com-cli-shurcool-graphql")
