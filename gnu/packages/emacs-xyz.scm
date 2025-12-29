@@ -35571,7 +35571,7 @@ instances (play/pause, volume control, media selection, etc.) remotely.")
 (define-public emacs-navigel
   (package
     (name "emacs-navigel")
-    (version "1.0.0")
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -35580,7 +35580,7 @@ instances (play/pause, volume control, media selection, etc.) remotely.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fszhjf6bj8frvlnim86sfv6sab3qyignxqh8x6i4bqgwnb6svkf"))))
+                "15vzp5s52m5rj27bsxrz73v3vsjgk1n5rk2b68i5vfbbrxirh188"))))
     (build-system emacs-build-system)
     (native-inputs
      (list emacs-ert-runner))
