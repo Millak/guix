@@ -7021,17 +7021,18 @@ for details on how to change this.")
 (define-public svtplay-dl
   (package
     (name "svtplay-dl")
-    (version "4.17")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/spaam/svtplay-dl")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0yjxmvldskw4pji3lg69pbx05izvxahz9my7z5p31mkiz6v33dmx"))))
-    (build-system python-build-system)
+    (version "4.167")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/spaam/svtplay-dl")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0blpbg5igaahp9x0z31amcjskd2axv4f9458rs2mnby8ajmyyrw8"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-requests-mock python-setuptools))
     (inputs (list ffmpeg python-pyaml python-requests python-pysocks
                   python-cryptography))
     (home-page "https://svtplay-dl.se/")
