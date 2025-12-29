@@ -219,7 +219,7 @@ simulation, statistical modeling, machine learning and much more.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 4017 passed, 173 skipped, 2 deselected, 1 warning
+      ;; tests: 4016 passed, 173 skipped, 3 deselected, 1 warning
       #:test-flags
       #~(list
          ;; Requires git.
@@ -231,7 +231,10 @@ simulation, statistical modeling, machine learning and much more.")
                         "::test_check_source_is_newer_when_using_jupytext_to")
          ;; Failed: DID NOT RAISE <class 'jupytext.cli.SynchronousModificationError'>.
          (string-append "--deselect=tests/functional/cli/test_synchronous_changes.py"
-                        "::test_jupytext_to_raises_on_synchronous_edits"))
+                        "::test_jupytext_to_raises_on_synchronous_edits")
+         ;; Failed: DID NOT RAISE <class 'jupytext.cli.SynchronousModificationError'>.
+         (string-append "--deselect=tests/functional/cli/test_synchronous_changes.py"
+                        "::test_jupytext_sync_raises_on_synchronous_edits"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
