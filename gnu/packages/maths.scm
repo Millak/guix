@@ -4963,37 +4963,39 @@ arising after the discretization of partial differential equations.")
     (name "python-slepc4py")
     (version "3.24.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "slepc4py" version))
-        (sha256
-          (base32
-            "1wiqcwgr9mq81dd68glsnwn57gqmgahcvcchqqqq3ns7bykvdjah"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "slepc4py" version))
+       (sha256
+        (base32 "1wiqcwgr9mq81dd68glsnwn57gqmgahcvcchqqqq3ns7bykvdjah"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'build 'pre-build
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   ;; Define path to PETSc installation.
-                   (setenv "PETSC_DIR" (assoc-ref inputs "petsc-openmpi"))
-                   ;; Define path to SLEPc installation.
-                   (setenv "SLEPC_DIR" (assoc-ref inputs "slepc-openmpi"))))
-               (add-before 'check 'mpi-setup
-                 #$%openmpi-setup)
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "python" "test/runtests.py")))))))
-    (native-inputs (list python-cython))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pre-build
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Define path to PETSc installation.
+              (setenv "PETSC_DIR"
+                      (assoc-ref inputs "petsc-openmpi"))
+              ;; Define path to SLEPc installation.
+              (setenv "SLEPC_DIR"
+                      (assoc-ref inputs "slepc-openmpi"))))
+          (add-before 'check 'mpi-setup
+            #$%openmpi-setup)
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "test/runtests.py")))))))
+    (native-inputs (list python-cython python-setuptools))
     (inputs (list python-numpy python-petsc4py petsc-openmpi slepc-openmpi))
     (home-page "https://bitbucket.org/slepc/slepc4py/")
     (synopsis "Python bindings for SLEPc")
-    (description "SLEPc, the Scalable Library for Eigenvalue Problem
-Computations, is based on PETSc, the Portable, Extensible Toolkit for
-Scientific Computation.  It employs the MPI standard for all
-message-passing communication.  @code{slepc4py} provides Python
-bindings to almost all functions of SLEPc.")
+    (description
+     "SLEPc, the Scalable Library for Eigenvalue Problem Computations, is
+based on PETSc, the Portable, Extensible Toolkit for Scientific Computation.
+It employs the MPI standard for all message-passing communication.
+@code{slepc4py} provides Python bindings to almost all functions of SLEPc.")
     (license license:bsd-3)))
 
 (define-public metamath
