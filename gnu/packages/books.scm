@@ -335,7 +335,7 @@ parallel study, and original language study.")
 (define-public book-emacs-lisp-elements
   (package
     (name "book-emacs-lisp-elements")
-    (version "2.0.0")
+    (version "2.0.1")
     (source
      (origin
        (method git-fetch)
@@ -344,7 +344,7 @@ parallel study, and original language study.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0w3jxgkynq37rn7c17pnricykqf3gmq4crsvkz2j2g3hc0ydf6qp"))))
+        (base32 "0774zycgx3zspn6f8pszap1751xgrlv2h3x66kksnj589nfnwzil"))))
     (build-system emacs-build-system)
     (arguments
      (list
