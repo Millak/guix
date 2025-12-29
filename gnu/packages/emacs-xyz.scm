@@ -25396,7 +25396,7 @@ functions written in continuation-passing style.")
 (define-public emacs-attrap
   (package
     (name "emacs-attrap")
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method git-fetch)
@@ -25404,7 +25404,7 @@ functions written in continuation-passing style.")
              (url "https://github.com/jyp/attrap")
              (commit version)))
        (sha256
-        (base32 "0wqc7bqx9rvk8r7fd3x84h8p01v97s6w2jf29nnjb59xakwp22i7"))
+        (base32 "0ixxgp3fvx67a6a9xm4z25iaw9mbliyijxr30aj8pd3ski6i8c5b"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (propagated-inputs
