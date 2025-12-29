@@ -1062,6 +1062,35 @@ to anything else.")
 fort ok https://github.com/thadeusb/flask-cache.")
     (license license:bsd-3)))
 
+(define-public python-flask-paginate
+  (package
+    (name "python-flask-paginate")
+    (version "2024.4.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lixxu/flask-paginate")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1q4ajwk0pzc6934g07gdryjcwi6rd9iqcwv5g5s718dfx2bj1831"))))
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "tests/tests.py")))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-flask))
+    (home-page "https://github.com/lixxu/flask-paginate")
+    (synopsis "Simple paginate support for Flask")
+    (description
+     "Flask-paginate is a simple pagination extension for Flask which is
+inspired by Ruby's will_paginate library.  It supports several CSS frameworks.")
+    (license license:bsd-3)))
+
 (define-public python-gdown
   (package
     (name "python-gdown")
