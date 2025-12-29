@@ -3356,7 +3356,6 @@ files, including Rmarkdown files.")
   (package
     (name "python-pyreadstat")
     (version "1.2.4")
-    ;; No tests in the PyPI tarball.
     (source
      (origin
        (method git-fetch)
@@ -3367,26 +3366,28 @@ files, including Rmarkdown files.")
        (sha256
         (base32 "0zysrzixvqw2lwwykxqg5yj8a0zyv5s2bmk22x30f4rj2hgvq1pv"))
        (patches (search-patches "python-pyreadstat-link-libiconv.patch"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-before 'check 'change-home-dir
-                    (lambda _
-                      ;; test_sav_expand and test_sav_write_basic_expanduser need a
-                      ;; home directory with write permissions.
-                      (setenv "HOME" "/tmp")))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        ;; The source also contains tests/test_version.py
-                        ;; which checks the version in __init__.py against the
-                        ;; one in setup.py. Since this requires texlive
-                        ;; dependencies to run and is also not mentioned in
-                        ;; how_to_test.md, this test is skipped.
-                        (invoke "python" "tests/test_basic.py")))))))
-    (build-system python-build-system)
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'change-home-dir
+            (lambda _
+              ;; test_sav_expand and test_sav_write_basic_expanduser need a
+              ;; home directory with write permissions.
+              (setenv "HOME" "/tmp")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; The source also contains tests/test_version.py
+                ;; which checks the version in __init__.py against the
+                ;; one in setup.py. Since this requires texlive
+                ;; dependencies to run and is also not mentioned in
+                ;; how_to_test.md, this test is skipped.
+                (invoke "python" "tests/test_basic.py")))))))
     (propagated-inputs (list python-pandas))
     (inputs (list libiconv zlib))
-    (native-inputs (list python-cython))
+    (native-inputs (list python-cython python-setuptools))
     (home-page "https://github.com/Roche/pyreadstat")
     (synopsis
      "Read and write SAS, SPSS and Stata files into/from Pandas DataFrames")
