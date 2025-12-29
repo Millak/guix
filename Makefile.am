@@ -1185,7 +1185,7 @@ release: all
 	$(MKDIR_P) "$(releasedir)"
 	@echo "Building guix inferior for current commit."
 	COMMIT="$$(git rev-parse HEAD)" &&					\
-	GUIX="$$(guix time-machine --commit=$$COMMIT)/bin/guix" &&		\
+	GUIX="$$(guix time-machine -q --commit=$$COMMIT)/bin/guix" &&		\
 	echo "Building artifacts for current commit: $$COMMIT." &&		\
 	ARTIFACTS="$$($$GUIX build --no-grafts					\
 		-f ./etc/teams/release/artifacts.scm)" &&			\
