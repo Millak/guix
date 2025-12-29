@@ -3,7 +3,7 @@
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2023 dan <i@dan.games>
-;;; Copyright © 2025 Luca Cirrottola <luca.cirro@gmail.com>
+;;; Copyright © 2025, 2026 Luca Cirrottola <luca.cirrottola@inria.fr>
 ;;; Copyright © 2025, 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright @ 2026 Johannes Elsing <Johannes.Elsing@gmx.de>
@@ -38,11 +38,13 @@
   #:use-module (gnu packages bash)      ;for "which"
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages elf)
   #:use-module (gnu packages engineering)
   #:use-module (gnu packages fabric-management)
-  #:use-module (gnu packages compiler-tools)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
@@ -60,7 +62,8 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
-  #:use-module (gnu packages xdisorg))
+  #:use-module (gnu packages xdisorg)
+  #:use-module (gnu packages xml))
 
 ;; Fixme: Separate out lib and fix resulting cycle errors; separate libpfm
 ;; output(?); build libmsr and add that component.
@@ -613,3 +616,79 @@ trace analysis.  This package contains the library, the @code{traced} and
 @code{traced_probes} daemons as well as the @code{perfetto} command-line
 interface.")
     (license license:asl2.0)))
+
+(define-public extrae
+  (package
+    (name "extrae")
+    (version "5.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://ftp.tools.bsc.es/extrae/extrae-" version
+                           "-src.tar.bz2"))
+       (sha256
+        (base32 "13ac22xcf3rp6rrz1incjb8q616yndgisgnqf33vgxmyrhpd8a06"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      ;; By default, the package is compiled with -O2 -g
+      #~(list "--enable-shared"
+              "--disable-static"
+              "--disable-silent-rules"
+              (string-append "--with-mpi="
+                             #$(this-package-input "openmpi"))
+              (string-append "--with-papi="
+                             #$(this-package-input "papi"))
+              ;; Need to specify the location of both elfutils binaries and
+              ;; libraries, but "--with-elfutils-binaries=" does not work, so
+              ;; use the generic flag to find the binaries and the specific
+              ;; flags to find the header files and the libraries.
+              ;; Finding elfutils is necessary to enable libaddr2line (which
+              ;; should be available in the source directory), so that
+              ;; MPI caller functions are available in the traces.
+              (string-append "--with-elfutils="
+                             (ungexp (this-package-input "elfutils") "bin"))
+              (string-append "--with-elfutils-headers="
+                             #$(this-package-input "elfutils") "/include")
+              (string-append "--with-elfutils-libs="
+                             #$(this-package-input "elfutils") "/lib")
+              (string-append "--with-liberty="
+                             #$(this-package-input "libiberty"))
+              (string-append "--with-libz="
+                             #$(this-package-input "zlib"))
+              (string-append "--with-xml="
+                             #$(this-package-input "libxml2"))
+              (string-append "--with-unwind="
+                             #$(this-package-input "libunwind"))
+              "--enable-pthread"
+              "--enable-openmp"
+              "--enable-parallel-merge"
+              "--enable-merge-in-trace"
+              ;; "--enable-sampling"
+              "--without-dyninst")
+      ;; Skip tests (known failures on: "io.sh" "mpi_*" "check_Extrae_PAPI_*"
+      ;; "check_Extrae_xml*")
+      #:tests? #f))
+    (inputs
+     ;; Use the old style to be able to reference both the standard and the
+     ;; "bin" output of elfutils.
+     (list module-init-tools ;for lsmod
+           procps ;for ps
+           elfutils
+           `(,elfutils "bin")
+           libpfm4
+           libunwind
+           libiberty
+           libxml2
+           papi
+           zlib
+           openmpi))
+    (native-inputs (list gfortran))
+    (home-page "https://tools.bsc.es/extrae")
+    (synopsis "Generate application execution traces for use by Paraver")
+    (description
+     "Extrae is a tool that uses different interposition mechanisms
+to inject probes into the target application so as to gather information
+regarding the application performance.")
+    (license license:lgpl2.1+)))
