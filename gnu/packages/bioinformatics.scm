@@ -16242,9 +16242,11 @@ applications for tackling some common problems in a user-friendly way.")
                 (sha256
                  (base32
                   "07q0alxah6xl1hibaj1kj7pdzq3pg6csyapsihbwlbmqyfmllbgz"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
        (list
+        #:test-backend #~'custom
+        #:test-flags #~(list "test/test_all.py")
         #:phases
         #~(modify-phases %standard-phases
             ;; Scipy 1.12 no longer has binom_test or polyfit
@@ -16273,15 +16275,12 @@ applications for tackling some common problems in a user-friendly way.")
                    (string-append "(\"" #$output
                                   "/etc/bash_completion.d\""))
                   (("extras/\\.bash_completion")
-                   "extras/tadbit"))))
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  (invoke "python3" "test/test_all.py")))))))
+                   "extras/tadbit")))))))
       (native-inputs
        (list `(,glib "bin") ;for gtester
              glib
-             pkg-config))
+             pkg-config
+             python-setuptools))
       (inputs
        ;; TODO: add Chimera for visualization
        (list imp
