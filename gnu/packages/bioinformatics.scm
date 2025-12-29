@@ -4931,43 +4931,48 @@ long-read sequencing data.")
 (define-public python-circe
   (package
     (name "python-circe")
-    (version "0.3.8")
-    (home-page "https://github.com/cantinilab/circe")
+    (version "0.3.9")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url home-page)
+              (url "https://github.com/cantinilab/circe")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "050zwg6qvd6sa4xd41sn4gigwmyfn0v6r93j5kvpbxklq4144q15"))))
+        (base32 "0psqfkxjvfj3h23xmski0c2h8dx118zr4xshz2dbk2i3hk50ljvr"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 19 passed, 1 deselected, 3 warnings
+      #:test-flags
+      ;; Network access is required to reach data from <www.ensembl.org>.
+      #~(list "--deselect=tests/test_network/test_network.py::test_network_atac")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Numba needs a writable dir to cache functions.
+          (add-before 'build 'set-numba-cache-dir
+            (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (native-inputs
+     (list python-cython
+           python-pybiomart
+           python-pytest
+           python-setuptools))
+    (inputs
+     (list lapack
+           openblas
+           python-numpy-1))     ;avoid propagating @1 to user profile
     (propagated-inputs
      (list python-anndata
+           python-attrs
            python-dask
            python-distributed
            python-joblib
-           python-numpy
            python-pandas
            python-rich
            python-scanpy
            python-scikit-learn))
-    (inputs
-     (list lapack openblas))
-    (native-inputs
-     (list python-cython
-           python-pybiomart
-           python-setuptools))
-    (arguments
-     (list
-      #:tests? #f       ;XXX: tests hangs during collection
-      #:phases
-      '(modify-phases %standard-phases
-         ;; Numba needs a writable dir to cache functions.
-         (add-before 'build 'set-numba-cache-dir
-           (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (home-page "https://github.com/cantinilab/circe")
     (synopsis "Cis-regulatory interactions between chromatin regions")
     (description "Circe is a Python package for inferring co-accessibility
 networks from single-cell ATAC-seq data, using skggm for the graphical lasso
