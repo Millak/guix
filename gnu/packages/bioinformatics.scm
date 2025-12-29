@@ -20108,17 +20108,18 @@ fasta subsequences.")
 (define-public python-cooler
   (package
     (name "python-cooler")
-    (version "0.9.3")
+    (version "0.10.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cooler" version))
        (sha256
         (base32
-         "0qqb0i5449r6w871klsbjzxsjhdkpsaas3hvs9f1hc7ssrkf1vi1"))))
+         "1fh5wjffbl5j8fdkc3c3lybscwvhv4v6r5jiyqgxvkkhb5nn498w"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 141 passed, 4 skipped, 2 deselected, 268 warnings
       #:test-flags
       '(list "-k"
              (string-append
@@ -20127,29 +20128,36 @@ fasta subsequences.")
               " and not test_roundtrip"
               ;; This test depends on ipytree, which contains a lot of
               ;; minified JavaScript.
-              " and not test_print_trees"))))
+              " and not test_print_trees"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((".*--cov.*") "")))))))
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
     (propagated-inputs
      (list python-asciitree
-           python-biopython
            python-click
            python-cytoolz
-           python-dask
            python-h5py
            python-multiprocess
            python-numpy
            python-pandas
            python-pyfaidx
-           python-pypairix
-           python-pysam
            python-pyyaml
            python-scipy
-           python-simplejson))
-    (native-inputs
-     (list python-coverage
-           python-hatchling
-           python-isort
-           python-pytest
-           python-pytest-cov))
+           python-simplejson
+           ;; [optional]
+           python-biopython
+           python-dask
+           ;; python-ipytree ;no packaged in Guix
+           python-ipywidgets
+           python-matplotlib
+           python-psutil
+           python-pysam))
     ;; Almost all the projects of the Mirnylab are moved under Open2C umbrella
     (home-page "https://github.com/open2c/cooler")
     (synopsis "Sparse binary format for genomic interaction matrices")
