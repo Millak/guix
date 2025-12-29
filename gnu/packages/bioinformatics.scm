@@ -6832,44 +6832,40 @@ and record oriented data modeling and the Semantic Web.")
 (define-public python-scikit-bio
   (package
     (name "python-scikit-bio")
-    (version "0.6.0")
+    (version "0.7.1.post1")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "scikit-bio" version))
+              (uri (pypi-uri "scikit_bio" version))
               (sha256
                (base32
-                "03y1n91p6m44hhxm3rpb355j6ddalydz49s94h85kbhm7iy5l40h"))))
+                "15czagyilqxj68ivqi9slnz2brs0nn4a18swx8vjhj8inwc29nfb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      ;; Accuracy problem
-      '(list "-k" (string-append "not test_fisher_alpha"
-                                 ;; UNEXPECTED EXCEPTION: ValueError("could
-                                 ;; not convert string to float: 'gut'")
-                                 " and not skbio.diversity"))
+      ;; tests: 3336 passed, 105 skipped, 73 warnings
+      #:test-backend #~'custom
+      #:test-flags #~(list "-m" "skbio.test")
       #:phases
-      '(modify-phases %standard-phases
-         (add-before 'check 'build-extensions
-           (lambda _
-             ;; Cython extensions have to be built before running the tests.
-             (invoke "python3" "setup.py" "build_ext" "--inplace")))
-         (replace 'check
-           (lambda* (#:key tests? test-flags #:allow-other-keys)
-             (when tests?
-               (apply invoke "python3" "-m" "skbio.test" test-flags)))))))
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "skbio"))))))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools))
     (propagated-inputs
-     (list python-biom-format
+     (list python-array-api-compat
+           python-biom-format
            python-decorator
            python-h5py
-           python-hdmedians
            python-natsort
            python-numpy
            python-pandas
+           python-patsy
            python-requests
-           python-scipy))
-    (native-inputs
-     (list python-coverage python-pytest))
+           python-scipy
+           python-statsmodels))
     (home-page "https://scikit-bio.org")
     (synopsis "Data structures, algorithms and educational resources for bioinformatics")
     (description
