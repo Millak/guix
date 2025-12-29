@@ -709,6 +709,43 @@ covariance @url{https://github.com/vnmabus/dcor#sr14,[SR14]}
 @end itemize")
     (license license:expat)))
 
+(define-public python-diptest
+  (package
+    (name "python-diptest")
+    (version "0.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/RUrlus/diptest")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j35v849yx6bq9w4bvlgbw9b2g3f1zlqxf63vv257dfx5qsa5x62"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list cmake-minimal ;TODO: propagate from python-scikit-build-core
+           pybind11
+           python-pytest
+           python-scikit-build-core))
+    (propagated-inputs
+     (list python-numpy
+           python-psutil))
+    (home-page "https://github.com/RUrlus/diptest")
+    (synopsis "Hartigan's diptest")
+    (description
+     "This package provides a Python/C(++) implementation of
+@url{https://www.jstor.org/stable/2241144, Hartigan & Hartigan's dip test} for
+unimodality.
+
+The dip test measures multimodality in a sample by the maximum difference,
+over all sample points, between the empirical distribution function, and the
+unimodal distribution function that minimizes that maximum difference. Other
+than unimodality, it makes no further assumptions about the form of the null
+distribution.")
+    (license (list license:gpl2+    ;in pyproject.toml
+                   license:gpl3)))) ;in LICENSE
+
 (define-public python-dynesty
   (package
     (name "python-dynesty")
