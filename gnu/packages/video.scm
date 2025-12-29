@@ -6078,27 +6078,31 @@ multiplexer and demultiplexer, and can mux video and audio in several formats
 using standalone executable files.")
     (license license:isc)))
 
+;; XXX: This project is not being maintained. Consider removal or patch merges.
 (define-public qtfaststart
   (package
     (name "qtfaststart")
-    (version "1.8")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "qtfaststart" version))
-              (sha256
-               (base32
-                "0hcjfik8hhb1syqvyh5c6aillpvzal26nkjflcq1270z64aj6i5h"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:tests? #f)) ; no test suite
+    (version "1.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/danielgtaylor/qtfaststart")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cgc92dn2r6qmqlvi6d63i0bzsvmcb82301jr1211gsiqi96wmwg"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No test suite.
+    (native-inputs (list python-setuptools))
     (synopsis "Move QuickTime and MP4 metadata to the beginning of the file")
-    (description "qtfaststart enables streaming and pseudo-streaming of
-QuickTime and MP4 files by moving metadata and offset information to the
-beginning of the file.  It can also print some useful information about the
-structure of the file.  This program is based on qt-faststart.c from the FFmpeg
-project, which is released into the public domain, as well as ISO 14496-12:2005
-(the official spec for MP4), which can be obtained from the ISO or found
-online.")
+    (description
+     "qtfaststart enables streaming and pseudo-streaming of QuickTime and MP4
+files by moving metadata and offset information to the beginning of the file.
+It can also print some useful information about the structure of the file.
+This program is based on qt-faststart.c from the FFmpeg project, which is
+released into the public domain, as well as ISO 14496-12:2005 (the official
+spec for MP4), which can be obtained from the ISO or found online.")
     (home-page "https://github.com/danielgtaylor/qtfaststart")
     (license license:expat)))
 
