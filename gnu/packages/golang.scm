@@ -1160,6 +1160,37 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                            (string-append all "\n        t.Skip(\"golang.org/issue/75720\")\n"))))))
                    '())))))))
 
+(define-public go-1.26
+  (package
+    (inherit go-1.24)
+    (name "go")
+    (version "1.26rc1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/go")
+             (commit (string-append "go" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a837mgsfiq3rqnp67kgw83hvq8p61j1yafhlqw4yzp78bz67sdf"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments go-1.24)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            ;; There is no real discussion on the issue among humans, a lot
+            ;; of gopherbot updates and it's closed without final resolution.
+            ;; https://github.com/golang/go/issues/73977
+            (add-after 'unpack 'skip-TestSynctest-tests
+              (lambda _
+                (substitute* "src/runtime/synctest_test.go"
+                  (("TestSynctest\\(.*" all)
+                   (string-append all "\n        t.Skip(\"golang.org/issue/73977\")\n")))))))))
+    (native-inputs
+     ;; Go 1.26 and later requires Go 1.24.6+ as the bootstrap toolchain.
+     ;; TODO: Switch this to go-1.24 when go@1.24 is updated.
+     (alist-replace "go" (list go-1.25) (package-native-inputs go-1.25)))))
+
 ;;
 ;; Default Golang version used in guix/build-system/go.scm to build packages.
 ;;
@@ -1206,6 +1237,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 (define-public go-std-1.23 (make-go-std go-1.23))
 (define-public go-std-1.24 (make-go-std go-1.24))
 (define-public go-std-1.25 (make-go-std go-1.25))
+(define-public go-std-1.26 (make-go-std go-1.26))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
