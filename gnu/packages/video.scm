@@ -3278,32 +3278,33 @@ original project.")
   (package
     (name "you-get")
     (version "0.4.1555")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/soimort/you-get")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0gn86i6nfsw395r9a3i88nv2g08s5bgjps7w4qawb9gvk4h7zqap"))))
-    (build-system python-build-system)
-    (inputs
-     (list ffmpeg))             ; for multi-part and >=1080p videos
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/soimort/you-get")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gn86i6nfsw395r9a3i88nv2g08s5bgjps7w4qawb9gvk4h7zqap"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'qualify-input-references
-           ;; Explicitly invoke the input ffmpeg, instead of whichever one
-           ;; happens to be in the user's $PATH at run time.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((ffmpeg (search-input-file inputs "/bin/ffmpeg")))
-               (substitute* "src/you_get/processor/ffmpeg.py"
-                 ;; Don't blindly replace all occurrences of ‘'ffmpeg'’: the
-                 ;; same string is also used when sniffing ffmpeg's output.
-                 (("(FFMPEG == |\\()'ffmpeg'" _ prefix)
-                  (string-append prefix "'" ffmpeg "'")))))))
-       #:tests? #f))                    ; XXX some tests need Internet access
+     (list
+      #:tests? #f ;XXX some tests need Internet access
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'qualify-input-references
+            ;; Explicitly invoke the input ffmpeg, instead of whichever one
+            ;; happens to be in the user's $PATH at run time.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((ffmpeg (search-input-file inputs "/bin/ffmpeg")))
+                (substitute* "src/you_get/processor/ffmpeg.py"
+                  ;; Don't blindly replace all occurrences of ‘'ffmpeg'’: the
+                  ;; same string is also used when sniffing ffmpeg's output.
+                  (("(FFMPEG == |\\()'ffmpeg'" _ prefix)
+                   (string-append prefix "'" ffmpeg "'")))))))))
+    (native-inputs (list python-setuptools))
+    (inputs (list ffmpeg)) ;for multi-part and >=1080p videos
     (synopsis "Download videos, audio, or images from Web sites")
     (description
      "You-Get is a command-line utility to download media contents (videos,
