@@ -719,34 +719,34 @@ from a mounted file system.")
     (home-page "http://www.gphoto.org/proj/gphotofs/")
     (license license:gpl2+)))
 
-(define bcachefs-tools-rust-target
+(define (bcachefs-tools-rust-target)
   (platform-rust-target (lookup-platform-by-target-or-system
                          (or (%current-target-system)
                              (%current-system)))))
 
-(define bcachefs-tools-target/release
-  (string-append "target/" bcachefs-tools-rust-target "/release"))
+(define (bcachefs-tools-target/release)
+  (string-append "target/" (bcachefs-tools-rust-target) "/release"))
 
-(define bcachefs-tools-cargo-args
+(define (bcachefs-tools-cargo-args)
   ;; Distinct from -MAKE-FLAGS for use with ‘cargo test’ in 'check.
   #~(list "--release"
-          (string-append "--target=" #$bcachefs-tools-rust-target)))
+          (string-append "--target=" #$(bcachefs-tools-rust-target))))
 
 ;; XXX We want to share common make flags across different packages & phases,
 ;; but the cargo-build-system doesn't allow #:make-flags.
-(define bcachefs-tools-make-flags
+(define (bcachefs-tools-make-flags)
   ;; These result of these flags should be as minimal as possible.
   ;; Enable any optional features in the bcachefs-tools package instead.
   #~(list (string-append "CARGO_BUILD_ARGS="
-                         (string-join #$bcachefs-tools-cargo-args " "))
+                         (string-join #$(bcachefs-tools-cargo-args) " "))
           (string-append "CC=" #$(cc-for-target))
           (string-append "PKG_CONFIG=" #$(pkg-config-for-target))))
 
-(define bcachefs-tools-make-install-flags
+(define (bcachefs-tools-make-install-flags)
   #~(cons* (string-append "PREFIX=" #$output)
            "INITRAMFS_DIR=$(PREFIX)/share/initramfs-tools"
            "PKGCONFIG_UDEVRULESDIR=$(PREFIX)/lib/udev/rules.d"
-           #$bcachefs-tools-make-flags))
+           #$(bcachefs-tools-make-flags)))
 
 (define bcachefs-tools-minimal
   ;; This ‘minimal’ package is not *that* minimal, and not different enough to
@@ -782,7 +782,7 @@ from a mounted file system.")
                               (number->string (parallel-job-count))
                               "1")
                      (string-append "VERSION=" #$version)
-                     #$bcachefs-tools-make-flags)))
+                     #$(bcachefs-tools-make-flags))))
           (add-before 'install 'patch-install
             ;; ‘make install’ hard-codes target/release/bcachefs, which is
             ;; incorrect when passing --target, as required to cross-compile or
@@ -790,11 +790,11 @@ from a mounted file system.")
             (lambda _
               (substitute* "Makefile"
                 (("target/release")
-                 #$bcachefs-tools-target/release))))
+                 #$(bcachefs-tools-target/release)))))
           (replace 'install
             (lambda _
               (apply invoke "make" "install"
-                     #$bcachefs-tools-make-install-flags))))))
+                     #$(bcachefs-tools-make-install-flags)))))))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -851,7 +851,7 @@ performance and other characteristics.")
                 (define bcachefs
                   (or (false-if-exception (search-input-file native-inputs
                                                              "sbin/bcachefs"))
-                      (string-append #$bcachefs-tools-target/release
+                      (string-append #$(bcachefs-tools-target/release)
                                      "/bcachefs")))
 
                 (define (output-completions shell file)
@@ -905,16 +905,16 @@ performance and other characteristics.")
                                 "1")
                        (string-append "VERSION="
                                       #$(package-version this-package))
-                       #$bcachefs-tools-make-flags)))
+                       #$(bcachefs-tools-make-flags))))
             (replace 'check
               (lambda* (#:key tests? #:allow-other-keys)
                 (when tests?
-                  (apply invoke "cargo" "test" #$bcachefs-tools-cargo-args))))
+                  (apply invoke "cargo" "test" #$(bcachefs-tools-cargo-args)))))
             (replace 'install
               (lambda _
                 (apply invoke "make" "install"
                        (string-append "PREFIX=" #$output)
-                       #$bcachefs-tools-make-install-flags)))))))
+                       #$(bcachefs-tools-make-install-flags))))))))
     (inputs (modify-inputs (package-inputs bcachefs-tools-minimal)
               (prepend `(,eudev "static")
                        `(,keyutils "static")
