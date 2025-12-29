@@ -6865,7 +6865,7 @@ local LLM capabilities from Emacs.")
 (define-public emacs-org-fc
   (package
     (name "emacs-org-fc")
-    (version "0.7.0")
+    (version "0.9.2")
     (source
      (origin
        (method git-fetch)
@@ -6874,7 +6874,7 @@ local LLM capabilities from Emacs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bch6dlw3f8zxvfazsndmilizvxvxpcfgrv89nk6id966y3czrpl"))))
+        (base32 "1f05z9i5sqx4qk25k057pkazd7mqiagp8l035q4i0zpddjqrwhjr"))))
     (build-system emacs-build-system)
     (arguments
      (list
