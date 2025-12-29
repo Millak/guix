@@ -1443,13 +1443,13 @@ conformal prediction methods intervals.")
 (define-public python-statsmodels
   (package
     (name "python-statsmodels")
-    (version "0.14.4")
+    (version "0.14.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "statsmodels" version))
        (sha256
-        (base32 "0rwbi57ckg7hgrmdf0g1paqcvp5n6f06xfzrcz075p30j3ry0sax"))
+        (base32 "1pvd3k3jr9akfl7zk90s7a2wmmikf8smmd9mz3fwxlngric0w9ny"))
        (modules '((guix build utils)))
        (snippet
         '(for-each delete-file (find-files "." "\\.c$")))))
