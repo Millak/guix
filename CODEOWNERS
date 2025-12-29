@@ -170,6 +170,8 @@ gnu/packages/game-development\.scm                 @guix/games
 gnu/packages/luanti\.scm                           @guix/games
 gnu/packages/esolangs\.scm                         @guix/games
 gnu/packages/motti\.scm                            @guix/games
+gnu/services/games\.scm                            @guix/games
+gnu/tests/games\.scm                               @guix/games
 guix/build/luanti-build-system\.scm                @guix/games
 
 etc/teams/gnome                                    @guix/gnome

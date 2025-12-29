@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,19 +24,35 @@
   #:use-module (gnu services shepherd)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages games)
+  #:use-module (gnu packages luanti)
   #:use-module ((gnu services base) #:select (udev-service-type))
   #:use-module (gnu system shadow)
   #:use-module ((gnu system file-systems) #:select (file-system-mapping))
   #:use-module (gnu build linux-container)
-  #:autoload   (guix least-authority) (least-authority-wrapper)
+  #:use-module (guix build utils)
+  #:autoload   (guix least-authority) (%default-preserved-environment-variables
+                                       least-authority-wrapper)
   #:use-module (guix gexp)
   #:use-module (guix modules)
   #:use-module (guix packages)
   #:use-module (guix records)
   #:use-module (ice-9 match)
+  #:use-module (srfi srfi-1)
   #:export (joycond-configuration
             joycond-configuration?
             joycond-service-type
+
+            luanti-configuration
+            luanti-configuration?
+            luanti-configuration-game-configuration
+            luanti-configuration-game
+            luanti-configuration-mods
+            luanti-configuration-log-file
+            luanti-configuration-luanti
+            luanti-configuration-port
+            luanti-configuration-verbose?
+            luanti-configuration-world
+            luanti-service-type
 
             wesnothd-configuration
             wesnothd-configuration?
@@ -70,6 +87,202 @@ install udev rules required to use the controller as an unprivileged user.")
           (service-extension udev-service-type
                              (compose list joycond-configuration-package))))
    (default-value (joycond-configuration))))
+
+
+;;;
+;;; Luanti.
+;;;
+
+(define list-of-file-likes?
+  (list-of file-like?))
+
+(define-maybe/no-serialization list-of-file-likes)
+
+(define-maybe/no-serialization file-like)
+
+(define-maybe/no-serialization string)
+
+(define (port? x)
+  (and (number? x)
+       (and (>= 0) (<= x 65535))))
+
+(define-configuration/no-serialization luanti-configuration
+  (luanti
+   (file-like luanti-server)
+   "The Luanti package to use.")
+  (game
+   (file-like luanti-mineclonia)
+   "The Luanti game package to serve.")
+  (game-configuration
+   maybe-file-like
+   "A configuration file to use for the selected Luanti game, which
+corresponds to the @file{minetest.conf} file.")
+  (mods
+   maybe-list-of-file-likes
+   "A list of Luanti mod packages to use.  Note that using mods is complicated
+by the requirements of Luanti to 1) manually enable the mod and any of its
+dependent mods in the @file{world.rt} file of the world used and 2) to
+register the mod names and those of its dependents via a
+@samp{secure.trusted_mods} @code{game-configuration} directive.  Consult the
+example below for more precise directions.")
+  (log-file
+   (maybe-string "/var/log/luanti.log")
+   "The log file to log to.  To disable logging, set this to
+@code{%unset-value}.")
+  (verbose?
+   (boolean #f)
+   "Print more detailed information.")
+  (port
+   (port 30000)
+   "The UDP port the server should listen to.")
+  (world
+   maybe-string
+   "An existing Luanti world directory to serve.  If omitted, a new world is
+created under the @file{/var/lib/luanti/.minetest/worlds/world} directory.  If
+an absolute file name is provided, it is used directly.  Otherwise, it is
+expected to be a directory under @file{/var/lib/luanti/.minetest/worlds/}."))
+
+(define %luanti-account
+  (list (user-group
+          (name "luanti")
+          (system? #t))
+        (user-account
+          (name "luanti")
+          (group "luanti")
+          (system? #t)
+          (comment "Luanti server user")
+          (home-directory "/var/lib/luanti"))))
+
+(define (luanti-activation config)
+  "Activation script for the Luanti server."
+  (match-record config <luanti-configuration> (world)
+    #~(begin
+        (use-modules (guix build utils)
+                     (srfi srfi-34))
+
+        (define user (getpwnam "luanti"))
+        (define* (sanitize-permissions file #:optional (mode #o400))
+          (guard (c (#t #t))
+            (chown file (passwd:uid user) (passwd:gid user))
+            (chmod file mode)))
+
+        (mkdir-p/perms "/var/lib/luanti" (getpwnam "luanti") #o755)
+
+        ;; Sanitize the permissions of a provided pre-populated world
+        ;; directory.
+        (when #$(and (maybe-value-set? world)
+                     (absolute-file-name? world))
+          (for-each sanitize-permissions
+                    (find-files #$world #:directories? #t))))))
+
+(define (transitive-mods mods)
+  "Return the transitive list of mods in MODS, these included."
+  (append-map (lambda (m)
+                (if (package? m)
+                    (cons m (map second ;drop label
+                                 (package-transitive-propagated-inputs m)))
+                    (list m)))
+              (if (maybe-value-set? mods)
+                  mods
+                  '())))
+
+(define (luanti-wrapper config)
+  "Return a least-authority wrapper for 'luantiserver', based on CONFIG, a
+<luanti-configuration> object."
+  (match-record config <luanti-configuration>
+                (luanti game game-configuration log-file mods world)
+    (let ((mods (transitive-mods mods)))
+      (least-authority-wrapper
+       (file-append luanti "/bin/luantiserver")
+       #:name "luantiserver-pola-wrapper"
+       #:mappings
+       (let ((readable (filter maybe-value-set?
+                               (append (list luanti game game-configuration)
+                                       mods)))
+             (writable (filter maybe-value-set?
+                               (append (list "/var/lib/luanti" log-file)
+                                       (if (and (maybe-value-set? world)
+                                                (absolute-file-name? world))
+                                           (list world)
+                                           '())))))
+         (append (map (lambda (r)
+                        (file-system-mapping
+                          (source r)
+                          (target source)))
+                      readable)
+                 (map (lambda (w)
+                        (file-system-mapping
+                          (source w)
+                          (target source)
+                          (writable? #t)))
+                      writable)))
+       #:user "luanti"
+       #:group "luanti"
+       ;; XXX: The user namespace must be shared otherwise the UID is different
+       ;; in the container and Luanti fails to create its data directory.
+       #:namespaces (fold delq %namespaces '(user net))
+       #:preserved-environment-variables
+       (cons* "LUANTI_GAME_PATH" "LUANTI_MOD_PATH"
+              %default-preserved-environment-variables)))))
+
+(define (luanti-shepherd-service config)
+  "Return the <shepherd-service> object of Luanti."
+  (match-record config <luanti-configuration>
+                ( luanti game game-configuration log-file mods verbose?
+                  port world)
+    ;; Some mods have dependencies on other mods; we need to ensure these gets
+    ;; added to the LUANTI_MOD_PATH as well.
+    (let ((mods (transitive-mods mods)))
+      (list (shepherd-service
+              (provision '(luanti))
+              (requirement '(user-processes))
+              (start #~(make-forkexec-constructor
+                        (append (list #$(luanti-wrapper config)
+                                      "--port" (number->string #$port))
+                                (if #$(maybe-value-set? game-configuration)
+                                    '("--config" #$game-configuration)
+                                    '())
+                                (if #$verbose?
+                                    '("--verbose")
+                                    '())
+                                (if #$(maybe-value-set? world)
+                                    (if (absolute-file-name? #$world)
+                                        '("--world" #$world)
+                                        '("--worldname" #$world))
+                                    '()))
+                        #:environment-variables
+                        (append
+                         (list "HOME=/var/lib/luanti"
+                               (string-append "LUANTI_GAME_PATH="
+                                              #$game "/share/luanti/games")
+                               (string-append
+                                "LUANTI_MOD_PATH="
+                                (list->search-path-as-string
+                                 (search-path-as-list '("share/luanti/mods")
+                                                      '#$mods)
+                                 ":"))))
+                        #:log-file #$(and (maybe-value-set? log-file)
+                                          log-file)))
+              (stop  #~(make-kill-destructor)))))))
+
+(define luanti-service-type
+  (service-type
+    (name 'luanti)
+    (extensions
+     (list (service-extension shepherd-root-service-type
+                              luanti-shepherd-service)
+           (service-extension profile-service-type
+                              (match-record-lambda <luanti-configuration>
+                                  (luanti game)
+                                (list luanti game)))
+           (service-extension account-service-type
+                              (const %luanti-account))
+           (service-extension activation-service-type
+                              luanti-activation)))
+    (default-value (luanti-configuration))
+    (description
+     "Run @url{https://www.luanti.org/en/, Luanti}, the voxel game engine, as a
+server.")))
 
 
 ;;;

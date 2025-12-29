@@ -43209,6 +43209,91 @@ the @code{joycond-configuration} configuration), so that joycond
 controllers can be detected and used by an unprivileged user.
 @end defvar
 
+@subsubheading Luanti service
+@cindex luanti
+@cindex voxel-based games
+@uref{https://www.luanti.org/en/, Luanti} is a voxel game engine that
+powers many games.  This service is for hosting a Luanti server.  The
+various options can be configured via the @code{luanti-configuration}
+record, documented below:
+
+@c %start of fragment
+
+@deftp {Data Type} luanti-configuration
+Available @code{luanti-configuration} fields are:
+
+@table @asis
+@item @code{luanti} (default: @code{luanti-server}) (type: file-like)
+The Luanti package to use.
+
+@item @code{game} (default: @code{luanti-mineclonia}) (type: file-like)
+The Luanti game package to serve.
+
+@item @code{game-configuration} (type: maybe-file-like)
+A configuration file to use for the selected Luanti game, which
+corresponds to the @file{minetest.conf} file.
+
+@item @code{mods} (type: maybe-list-of-file-likes)
+A list of Luanti mod packages to use.  Note that using mods is
+complicated by the requirements of Luanti to 1) manually enable the mod
+and any of its dependent mods in the @file{world.rt} file of the world
+used and 2) to register the mod names and those of its dependents via a
+@samp{secure.trusted_mods} @code{game-configuration} directive.  Consult
+the example below for more precise directions.
+
+@item @code{log-file} (default: @code{"/var/log/luanti.log"}) (type: maybe-string)
+The log file to log to.  To disable logging, set this to
+@code{%unset-value}.
+
+@item @code{verbose?} (default: @code{#f}) (type: boolean)
+Print more detailed information.
+
+@item @code{port} (default: @code{30000}) (type: port)
+The UDP port the server should listen to.
+
+@item @code{world} (type: maybe-string)
+An existing Luanti world directory to serve.  If omitted, a new world is
+created under the @file{/var/lib/luanti/.minetest/worlds/world}
+directory.  If an absolute file name is provided, it is used directly.
+Otherwise, it is expected to be a directory under
+@file{/var/lib/luanti/.minetest/worlds/}.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+Here's the simplest example of a Luanti server, which in its default
+configuration serves the @code{luanti-mineclonia} game.
+
+@lisp
+(service luanti-service-type)
+@end lisp
+
+Here's a slightly more elaborate one, which adds the
+@code{luanti-whitelist} mod.  Embedded are comments explaining extra
+needed steps when using mods.  Failing to do these steps will cause the
+service to fail to start.
+
+@lisp
+(service luanti-service-type
+         (luanti-configuration
+          (game luanti-mineclonia)
+          (game-configuration
+           (plain-file
+            "minetest.conf"
+            ;; lib_chatcmdbuilder is a dependency of the whitelist mod
+            "secure.trusted_mods = whitelist,lib_chatcmdbuilder\n"))
+          ;; The
+          ;; '/var/lib/luanti/.minetest/worlds/world/world.mt'
+          ;; file needs to be hand-edited to add:
+          ;; load_mod_whitelist = true
+          ;; load_mod_lib_chatcmdbuilder = true
+          (mods (list luanti-whitelist))))
+@end lisp
+
 @subsubheading The Battle for Wesnoth Service
 @cindex wesnothd
 @uref{https://wesnoth.org, The Battle for Wesnoth} is a fantasy, turn

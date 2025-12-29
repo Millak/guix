@@ -666,6 +666,8 @@ ecosystem."
                       "gnu/packages/luanti.scm"
                       "gnu/packages/esolangs.scm" ; granted, rather niche
                       "gnu/packages/motti.scm"
+                      "gnu/services/games.scm"
+                      "gnu/tests/games.scm"
                       "guix/build/luanti-build-system.scm")))
 
 (define-team gnome
