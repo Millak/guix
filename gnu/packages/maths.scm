@@ -4663,28 +4663,27 @@ can return results in exact arithmetic.")
     (name "python-petsc4py")
     (version "3.24.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "petsc4py" version))
-        (sha256
-          (base32
-           "06wi2r43drlfj3hml5392pckn2n99rjfb1p1hz75n3d84z5jrj9x"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "petsc4py" version))
+       (sha256
+        (base32 "06wi2r43drlfj3hml5392pckn2n99rjfb1p1hz75n3d84z5jrj9x"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'build 'set-PETSC_DIR
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   ;; Define path to PETSc installation.
-                   (setenv "PETSC_DIR"
-                           (assoc-ref inputs "petsc-openmpi"))))
-               (add-before 'check 'mpi-setup
-                 #$%openmpi-setup)
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "python" "test/runtests.py")))))))
-    (native-inputs (list python-cython))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-PETSC_DIR
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Define path to PETSc installation.
+              (setenv "PETSC_DIR"
+                      (assoc-ref inputs "petsc-openmpi"))))
+          (add-before 'check 'mpi-setup #$%openmpi-setup)
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "test/runtests.py")))))))
+    (native-inputs (list python-cython python-setuptools))
     (inputs (list petsc-openmpi python-numpy))
     (home-page "https://bitbucket.org/petsc/petsc4py/")
     (synopsis "Python bindings for PETSc")
