@@ -206,7 +206,14 @@ a version prefix when PARTIAL-VERSION? is #t."
          (old-reference (origin-uri (package-source package)))
          (tags (get-package-tags package))
          (versions (map car tags))
-         (version (find-version versions version partial-version?))
+         (stable-rx (and=> (assq-ref (package-properties package)
+                                     'stable-version-regexp)
+                           make-regexp))
+         (version (find-version
+                   (if (and stable-rx (not version))
+                       (filter (cut regexp-exec stable-rx <>) versions)
+                       versions)
+                   version partial-version?))
          (tag (assoc-ref tags version)))
     (and version
          (upstream-source

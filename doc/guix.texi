@@ -16124,6 +16124,10 @@ the tag name for separating the numbers of the version.
 pre-releases; to make it also look for pre-releases, set the this
 property to @code{#t}.
 
+@item @code{stable-version-regexp}: a regular expression for matching the
+version string, if specified the updater will pick the latest version from
+matching ones when the @option{--target-version} option is omitted.
+
 @end itemize
 
 @lisp
