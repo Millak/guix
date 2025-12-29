@@ -3329,7 +3329,7 @@ you will die.  The game builds the list of words from the active buffer.")
 (define-public emacs-speed-type
   (package
     (name "emacs-speed-type")
-    (version "1.4")
+    (version "1.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3338,22 +3338,14 @@ you will die.  The game builds the list of words from the active buffer.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rw3lgm65jxcs7vbj0055ays4wv23mk2kj3xivnqmhnm030vk868"))))
+                "0bnn4a0fpjh94xykifqy2j82rgapvmlvs0vllq0xcskjbvibmdc8"))))
     (build-system emacs-build-system)
     (arguments
      (list
       #:test-command
       #~(list "emacs" "-Q" "--batch" "-L" "."
-              "-l" "test-speed-type.el"
-              "-f" "ert-run-tests-batch-and-exit")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'skip-failing-test
-            ;; This test requires an internet connection.
-            (lambda _
-              (substitute* "test-speed-type.el"
-                (("\\(ert-deftest speed-type--retrieve-test .*" all)
-                 (string-append all " (skip-unless nil)"))))))))
+              "-l" "test/speed-type-test.el"
+              "-f" "ert-run-tests-batch-and-exit")))
     (native-inputs (list emacs-dash))
     (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/dakra/speed-type")
