@@ -2880,7 +2880,7 @@ the last played position, etc.")
        (uri (pypi-uri "jellyfin-mpv-shim" version))
        (sha256
         (base32 "0hcvqskhgwdyi117hqmlhqknsii22qcmiwhzhf50ab5szsy0rg32"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       ;; There is no test suite, but the code is ill-behaved and tries
@@ -2923,6 +2923,7 @@ the last played position, etc.")
                                               ".appdata.xml") metainfo)
                  (install-file (string-append desktop-base package-id
                                               ".desktop") apps)))))))
+    (native-inputs (list python-setuptools))
     (inputs (list `(,python "tk")
                   python-jellyfin-apiclient
                   python-jinja2
