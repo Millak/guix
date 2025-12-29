@@ -1069,7 +1069,7 @@ archives.")
 (define-public nomacs
   (package
     (name "nomacs")
-    (version "3.21.1")
+    (version "3.22.0")
     (source
      (origin
        (method git-fetch)
@@ -1079,7 +1079,7 @@ archives.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1by62r1g1clji7g539zyhm5z7h1ssp8pcb6vrm33p2gvz3vba5j5"))))
+         "1ps68xxdqz9r7w5cpicj461x06w0p6r54x1cbk38idl0vlrq65ya"))))
     (build-system cmake-build-system)
     (arguments
      `(#:build-type "Release" ; fails to build with debug info
@@ -1087,40 +1087,25 @@ archives.")
                                "-DUSE_SYSTEM_QUAZIP=true"
                                "-DENABLE_QUAZIP=true"
                                "-DENABLE_OPENCV=true")
-       #:tests? #f ; no rule for target 'test'
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'copy-plugins
-           (lambda* (#:key inputs #:allow-other-keys)
-             (copy-recursively (assoc-ref inputs "plugins")
-                               "ImageLounge/plugins")))
-         (add-after 'copy-plugins 'cd-to-source-dir
-           (lambda _ (chdir "ImageLounge") #t)))))
+         (add-after 'unpack 'cd-to-source-dir
+           (lambda _ (chdir "ImageLounge")))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests? (invoke "make" "check")))))))
     (inputs
-     `(("plugins"
-        ,(origin
-           (method git-fetch)
-           (uri (git-reference
-                 ;; The original git repository at
-                 ;; https://github.com/novomesk/nomacs-plugins
-                 ;; is not updated any more, use a maintained fork.
-                 (url "https://github.com/novomesk/nomacs-plugins")
-                 (commit "20101da282f13d3184ece873388e1c234a79b5e7")))
-           (sha256
-            (base32
-             "0nbrsxhggy15idvm5dlhxh2z14gvki7vljxqi90hw98nmbh5ri41"))))
-       ("exiv2" ,exiv2)
-       ("libraw" ,libraw)
-       ("libtiff" ,libtiff)
-       ("opencv" ,opencv)
-       ("quazip" ,quazip)
-       ("qtimageformats" ,qtimageformats)
-       ("qtbase" ,qtbase)
-       ("qt5compat" ,qt5compat)
-       ("qtsvg" ,qtsvg)))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("qttools" ,qttools)))
+     (list
+      exiv2
+      libraw
+      libtiff
+      opencv
+      quazip
+      qt5compat
+      qtbase
+      qtimageformats
+      qtsvg))
+    (native-inputs (list googletest pkg-config qttools))
     (synopsis "Image viewer supporting all common formats")
     (description "Nomacs is a simple to use image lounge featuring
 semi-transparent widgets that display additional information such as metadata,
