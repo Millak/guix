@@ -23950,38 +23950,60 @@ e.g. from GenBank or Gff files, or Biopython SeqRecords.")
 (define-public python-coolbox
   (package
     (name "python-coolbox")
-    (version "0.3.8")
+    ;; TODO: Newer versions depend on python-polars, see
+    ;; <https://codeberg.org/guix/guix/pulls/2570>.
+    (version "0.3.9")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "coolbox" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/GangCaoLab/CoolBox")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0gqp76285w9klswr47y6kxbzwhv033b26jfa179kccfhiaq5p2xa"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #false)) ; there are none
-    (inputs
-     (list pybind11))
+        (base32 "1a9h0xrg7issgprzm6awabfw73ddm2910rqcvcfg5v0cfn599aws"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 29 passed, 7 deselected, 17 warnings
+      #:test-flags
+      ;; XXX: Maybe there is a build problem with python-pypairix?
+      ;; FileNotFoundError: [Errno 2] No such file or directory: 'pairix'
+      #~(list "--deselect=tests/test_browser.py::test_browser"
+              "--deselect=tests/test_coverage.py::test_arcs_coverage"
+              "--deselect=tests/test_frame.py::test_frame"
+              "--deselect=tests/test_track.py::test_bedpe"
+              "--deselect=tests/test_track.py::test_pairs"
+              "--deselect=tests/test_track.py::test_arcs")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; FIXME: Some issue with checking the correct versions of Jupyter
+          ;; dependencies.
+          (delete 'sanity-check))))
+    (native-inputs
+     (list pybind11
+           python-pytest
+           python-pypairix
+           python-pybbi
+           python-setuptools
+           samtools))
     (propagated-inputs
-     (list python-cooler
+     (list jupyter
+           python-cooler
            python-dna-features-viewer
            python-fire
            python-h5py
            python-intervaltree
            python-ipywidgets
-           jupyter
            python-matplotlib
            python-nbformat
            python-numpy
            python-numpydoc
            python-pandas
-           python-pybbi
-           python-pytest
            python-scipy
            python-statsmodels
            python-strawc
            python-svgutils
-           python-termcolor
            python-voila))
     (home-page "https://github.com/GangCaoLab/CoolBox")
     (synopsis "Genomic data visualization toolkit")
