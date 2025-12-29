@@ -17354,16 +17354,20 @@ single-cell RNA-seq data.")
 (define-public python-biothings-client
   (package
     (name "python-biothings-client")
-    (version "0.2.6")
+    (version "0.4.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "biothings_client" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/biothings/biothings_client.py")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0bccs37d5saxn5xsd2rfpkrnc5a120xs3ibizai66fgvp1vxbnc4"))))
-    (build-system python-build-system)
-    (arguments `(#:tests? #false)) ; require internet access
-    (propagated-inputs (list python-requests))
+        (base32 "1yhrbripg4wr4hg1c9yfv8m1zns37w90fysbbrwm2wlvhmb4i2xq"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ;require internet access
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-httpx python-requests))
     (home-page "https://github.com/biothings/biothings_client.py")
     (synopsis "Python client for BioThings API services")
     (description "This package provides a Python client for BioThings
