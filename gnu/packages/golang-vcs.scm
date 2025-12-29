@@ -295,6 +295,58 @@ using the Git pkt-line format used in various Git operations.")
          (replace "go-github-com-go-git-gcfg"
            go-github-com-go-git-gcfg-v2))))))
 
+(define-public go-github-com-cli-go-gh-v2
+  (package
+    (name "go-github-com-cli-go-gh-v2")
+    (version "2.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cli/go-gh")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a918ll60h65abs14mpnclk1w3468mi7khasixif04ihxd0rcsns"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/cli/go-gh/v2"
+      #:embed-files #~(list ".*\\.xml")
+      ;; Network access or git configuration are required.
+      #:test-flags #~(list "-skip" "TestRemotes|TestNewHTTPClient")))
+    (native-inputs
+     (list go-github-com-alecthomas-chroma-v2
+           go-github-com-leaanthony-go-ansi-parser
+           go-github-com-stretchr-testify
+           go-gopkg-in-h2non-gock-v1))
+    (propagated-inputs
+     (list go-github-com-alecaivazis-survey-v2
+           go-github-com-charmbracelet-glamour
+           go-github-com-charmbracelet-lipgloss
+           go-github-com-cli-browser
+           go-github-com-cli-safeexec
+           go-github-com-cli-shurcool-graphql
+           go-github-com-google-shlex
+           go-github-com-henvic-httpretty
+           go-github-com-itchyny-gojq
+           go-github-com-makenowjust-heredoc
+           go-github-com-masterminds-sprig-v3
+           go-github-com-mgutz-ansi
+           go-github-com-muesli-reflow
+           go-github-com-muesli-termenv
+           go-github-com-thlib-go-timezone-local
+           go-golang-org-x-term
+           go-golang-org-x-text
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/cli/go-gh")
+    (synopsis "Go library for the GitHub CLI")
+    (description
+     "Package gh is a library for CLI Go applications to help interface with
+the gh CLI tool, and the @code{GitHub} API.")
+    (license license:expat)))
+
 (define-public go-github-com-cli-go-internal
   (package
     (name "go-github-com-cli-go-internal")
