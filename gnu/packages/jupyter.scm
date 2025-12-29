@@ -483,6 +483,34 @@ for working with kernels, and the @code{jupyter kernelspec} entrypoint for
 installing @code{kernelspec}s for use with Jupyter frontends.")
     (license license:bsd-3)))
 
+(define-public python-jupyter-client-7
+  (package
+    (inherit python-jupyter-client)
+    (name "python-jupyter-client")
+    (version "7.4.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jupyter_client" version))
+       (sha256
+        (base32 "14nkh0w0q5xfjqc6rgnbx7zbjajmb9m63q90iznpmw3i87h2igjj"))))
+    ;; tests: 180 passed, 4 skipped, 1 warning
+    (native-inputs
+     (list python-hatchling
+           python-ipykernel-bootstrap
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-jupyter-minimal
+           python-pytest-timeout))
+    (propagated-inputs
+     (list python-dateutil
+           python-entrypoints
+           python-jupyter-core
+           python-nest-asyncio
+           python-pyzmq
+           python-tornado-6
+           python-traitlets))))
+
 ;; Bootstrap variant of jupyter-client, which breaks the loop between ipykernel
 ;; and jupyter-client by removing the former from its native-inputs and
 ;; disabling tests.
