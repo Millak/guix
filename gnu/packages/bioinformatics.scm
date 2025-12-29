@@ -19606,158 +19606,130 @@ implementation differs in these ways:
 (define-public python-scanpy
   (package
     (name "python-scanpy")
-    (version "1.11.2")
+    (version "1.11.5")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/theislab/scanpy")
-             (commit version)))
+              (url "https://github.com/theislab/scanpy")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "18ddb3jkyjan87f5kymyq951sa5955z41f10h6z954map8dy2136"))))
+         "07brcdwpzy2qa950jgiw38qax1xd0yi1zh7jrp1k4s8jksl7axhs"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; 736 passed, 95 skipped, 20 xfailed, 148 warnings
+      ;; tests: 537 passed, 118 skipped, 15 xfailed, 89 warnings
       #:test-flags
-      '(list "-m" "not gpu"
-             "--numprocesses" (number->string (parallel-job-count))
-             ;; These tests require Internet access.
-             "--ignore-glob=tests/notebooks/*"
-             "--ignore=tests/test_clustering.py"
-             "--ignore=tests/test_datasets.py"
-             "--ignore=tests/test_normalization.py"
-             "--ignore=tests/test_score_genes.py"
-             "--ignore=tests/test_highly_variable_genes.py"
-             "--ignore=tests/test_aggregated.py"
-             "--ignore=get/_aggregated.py"
-             ;; TODO: I can't get the plotting tests to work, even with Xvfb.
-             ;; Some of them also require Internet access because they want to
-             ;; download a dataset.
-             "--ignore=tests/test_plotting.py"
-             "--ignore=tests/test_embedding_plots.py"
-             "--ignore=tests/test_preprocessing.py"
-             "--ignore=tests/test_read_10x.py"
-             "--ignore=plotting/_tools/scatterplots.py"
-             ;; Adding additional options does not help to resolve the
-             ;; faileur: TypeError: _FlakyPlugin._make_test_flaky() got an
-             ;; unexpected keyword argument 'reruns'.
-             "--ignore=tests/test_backed.py"
-             "-k"
-             ;; Plot tests that fail.
-             (string-append "not test_clustermap"
-                            " and not test_dotplot_matrixplot_stacked_violin"
-                            " and not test_paga_compare"
-                            " and not test_paga_path"
-                            " and not test_paga_pie"
-                            " and not test_paga_plots"
-                            " and not test_violin"
-                            " and not test_scatter_no_basis_per_obs"
-                            " and not test_spatial_general"
-                            " and not test_visium_empty_img_key"
-
-                            ;; These are doctests that fail because of missing
-                            ;; datasets.
-                            " and not scanpy.get._aggregated.aggregate"
-                            " and not scanpy.plotting._tools.scatterplots.spatial"
-
-                            ;; One difference in a long array.
-                            " and not test_cell_demultiplexing"
-
-                            ;; These try to connect to the network
-                            " and not test_scrublet_plots"
-                            " and not test_plot_rank_genes_groups_gene_symbols"
-                            " and not test_pca_n_pcs"
-                            " and not test_pca_chunked"
-                            " and not test_pca_layer"
-                            " and not test_pca_sparse"
-                            " and not test_pca_reproducible"
-                            " and not test_clip"
-
-                            ;; Missing test data.
-                            " and not test_covariance_eigh_impls"
-                            " and not test_embedding_colorbar_location"
-                            " and not test_sparse_dask_input_errors"
-                            " and not test_sparse_dask_input_errors"
-                            " and not test_spatial_external_img"
-
-                            ;; Somehow broken tests.
-                            " and not test_sim_toggleswitch"
-                            " and not scanpy.datasets._datasets.krumsiek11"
-                            " and not scanpy.datasets._datasets.toggleswitch"
-                            " and not scanpy.external.pp._scanorama_integrate.scanorama_integrate"
-                            " and not scanpy.preprocessing._simple.filter_cells"))
-       #:phases
-       #~(modify-phases %standard-phases
-           ;; XXX This should not be necessary, but I noticed while building
-           ;; python-metacells that the anndata version check fails, resulting
-           ;; in the wrong module name to be loaded from anndata.  I cannot
-           ;; reproduce this in an interactive Python session.  We patch this
-           ;; here to ensure that the appropriate module name is used.
-           (add-after 'unpack 'patch-version-check
-             (lambda _
-               (substitute* "src/scanpy/_utils/__init__.py"
-                 (("Version\\(anndata_version\\) < Version\\(\"0.6.10\"\\):")
-                  "False:")
-                 (("Version\\(anndata_version\\) >= Version\\(\"0.10.0\"\\):")
-                  "True:"))))
-           (add-after 'unpack 'pretend-version
-             (lambda _
-               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
-           (add-after 'unpack 'add-anndata-source
-             (lambda _
-               (setenv "PYTHONPATH"
-                       (string-append (getcwd) ":"
-                                      #$(this-package-native-input "python-anndata:source") ":"
-                                      (getenv "GUIX_PYTHONPATH")))))
-           (add-before 'check 'pre-check
-             (lambda _
-               ;; Numba needs a writable dir to cache functions.
-               (setenv "NUMBA_CACHE_DIR" "/tmp")
-               ;; For Matplotlib.
-               (setenv "HOME" "/tmp"))))))
+      #~(list "-m" "not gpu"
+              "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; Network access is required.
+              #$@(map (lambda (file) (string-append "--ignore=tests/" file))
+                      (list "test_aggregated.py"
+                            "test_highly_variable_genes.py"
+                            "test_normalization.py"
+                            "test_pca.py"
+                            "test_plotting.py"
+                            "test_plotting_embedded/test_embeddings.py"
+                            "test_preprocessing.py"
+                            "test_scaling.py"
+                            "test_score_genes.py"))
+              "--deselect=tests/test_datasets.py::test_download_failure"
+              "--deselect=tests/test_paga.py::test_paga_compare"
+              ;; AssertionError: Image files did not match.
+              #$@(map (lambda (test) (string-append "--deselect=tests/"
+                                                    "test_plotting_embedded/"
+                                                    "test_spatial.py::"
+                                                    test))
+                      (list "test_spatial_general"
+                            "test_spatial_external_img"
+                            "test_visium_empty_img_key"))
+              (string-append "--deselect=plotting/_tools/scatterplots.py::"
+                             "scanpy.plotting._tools.scatterplots.spatial")
+              "--deselect=get/_aggregated.py::scanpy.get._aggregated.aggregate"
+              ;; XXX: When python-dask is added some tests fail with error:
+              ;; ImportError: cannot import name 'as_sparse_dask_array' from
+              ;; 'anndata.tests.helpers'.
+              ;; 
+              ;; That functionality was removed from anndata: see
+              ;; <https://github.com/scverse/anndata/pull/2201>.
+              #$@(map (lambda (test) (string-append "--deselect=tests/"
+                                                    "test_utils.py::"
+                                                    test))
+                      (list "test_axis_sum[dask_array_sparse]"
+                            "test_check_nonnegative_integers[middle-dask_array_sparse]"
+                            "test_check_nonnegative_integers[normal-dask_array_sparse]"
+                            "test_check_nonnegative_integers[poisson-float64-dask_array_sparse]"
+                            "test_check_nonnegative_integers[poisson-uint32-dask_array_sparse]"
+                            "test_divide_by_zero[dask_array_sparse]"
+                            "test_elem_mul[dask_array_sparse]"
+                            "test_scale_column[mul-dask_array_sparse]"
+                            "test_scale_column[truediv-dask_array_sparse]"
+                            "test_scale_out_with_dask_or_sparse_raises[dask_array_sparse]"
+                            "test_scale_rechunk[mul-0-dask_array_sparse]"
+                            "test_scale_rechunk[mul-1-dask_array_sparse]"
+                            "test_scale_rechunk[truediv-0-dask_array_sparse]"
+                            "test_scale_rechunk[truediv-1-dask_array_sparse]"
+                            "test_scale_row[mul-dask_array_sparse]"
+                            "test_scale_row[truediv-dask_array_sparse]"))
+              #$@(map (lambda (test) (string-append "--deselect=tests/"
+                                                    "test_qc_metrics.py::"
+                                                    test))
+                      (list "test_dask_against_in_memory[log1p]"
+                            "test_dask_against_in_memory[no_log1p]"
+                            "test_qc_metrics[dask_array_sparse]"
+                            "test_qc_metrics_idempotent[dask_array_sparse]"
+                            "test_qc_metrics_no_log1p[dask_array_sparse]")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Numba needs a writable dir to cache functions.
+              (setenv "NUMBA_CACHE_DIR" "/tmp")
+              ;; For Matplotlib.
+              (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-anndata
-           python-dask
            python-h5py
-           python-igraph
            python-joblib
            python-legacy-api-wrap
-           python-louvain
            python-matplotlib
            python-natsort
            python-networkx
            python-numba
+           python-numpy
            python-packaging
            python-pandas
            python-patsy
-           python-pytoml
+           python-pynndescent
            python-scikit-learn
            python-scipy
            python-seaborn
            python-session-info2
-           python-setuptools ; For pkg_resources.
-           python-sinfo
            python-statsmodels
-           python-tables
            python-tqdm
-           python-umap-learn))
+           python-typing-extensions
+           python-umap-learn
+           ;; [optional]
+           python-dask
+           python-igraph
+           python-louvain
+           python-setuptools))                  ;for pkg_resources
     (native-inputs
-     `(;; This package needs anndata.tests, which is not installed.
-       ("python-anndata:source" ,(package-source python-anndata))
-       ("python-flaky" ,python-flaky)
-       ("python-flit" ,python-flit)
-       ("python-hatch-vcs" ,python-hatch-vcs)
-       ("python-hatchling" ,python-hatchling)
-       ("python-leidenalg" ,python-leidenalg)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-mock" ,python-pytest-mock)
-       ("python-pytest-nunit" ,python-pytest-nunit)
-       ("python-pytest-xdist" ,python-pytest-xdist)
-       ("python-scanorama" ,python-scanorama)
-       ("python-setuptools-scm" ,python-setuptools-scm)))
+     (list python-dependency-groups
+           python-hatch-vcs
+           python-hatchling
+           python-pytest
+           python-pytest-mock
+           python-pytest-randomly
+           python-pytest-rerunfailures
+           python-pytest-xdist
+           python-setuptools-scm
+           #;python-tuna))                      ;no packaged in Guix yet
     (home-page "https://github.com/theislab/scanpy")
     (synopsis "Single-Cell Analysis in Python")
     (description "Scanpy is a scalable toolkit for analyzing single-cell gene
