@@ -94,6 +94,8 @@
   #:use-module (guix packages)
   #:use-module (guix utils))
 
+(define %xfce-stable-version "^4[.][0-9]*[02468][.]")
+
 (define-public libxfce4util
   (package
     (name "libxfce4util")
@@ -123,7 +125,8 @@
      "A general-purpose utility library with core application support for the
 Xfce Desktop Environment.")
     (license lgpl2.0+)
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public xfconf
   (package
@@ -166,7 +169,8 @@ Xfce Desktop Environment.")
      "Settings daemon for Xfce, implemented as a D-Bus-based configuration
 storage system.")
     (license lgpl2.0+)
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public libxfce4ui
   (package
@@ -200,7 +204,8 @@ storage system.")
      "Libxfce4ui is the replacement of the old libxfcegui4 library.  It is used
 to share commonly used Xfce widgets among the Xfce applications.")
     (license lgpl2.0+)
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public catfish
   (package
@@ -254,7 +259,8 @@ to share commonly used Xfce widgets among the Xfce applications.")
 intentionally lightweight and simple, using only GTK+ 3.  You can configure
 it to your needs by using several command line options.")
     (license gpl2+)
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public elementary-xfce-icon-theme
   (package
@@ -322,7 +328,8 @@ that are targeted at desktop development, libexo is targeted at application
 development.")
     ;; Libraries are under LGPLv2+, and programs under GPLv2+.
     (license (list gpl2+ lgpl2.1+))
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public garcon
   (package
@@ -355,7 +362,8 @@ GLib and GIO.  It was started as a complete rewrite of the former Xfce menu
 library called libxfce4menu, which, in contrast to garcon, was lacking menu
 merging features essential for loading menus modified with menu editors.")
     (license lgpl2.0+)
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public tumbler
   (package
@@ -391,7 +399,8 @@ merging features essential for loading menus modified with menu editors.")
 various URI schemes and MIME types.  It is an implementation of the thumbnail
 management D-Bus specification.")
     (license gpl2+)
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public libxfce4windowing
   (package
@@ -425,7 +434,8 @@ management D-Bus specification.")
 windowing concepts (screens, toplevel windows, workspaces, etc.) in a
 windowing-system-independent manner.")
     (license lgpl2.1+)
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public xfce4-panel
   (package
@@ -474,7 +484,8 @@ windowing-system-independent manner.")
 applications menu, workspace switcher and more.")
     ;; Libraries are under LGPLv2.1+, and programs under GPLv2+.
     (license (list gpl2+ lgpl2.1+))
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public xfce4-battery-plugin
   (package
@@ -699,7 +710,8 @@ per window.")
      "Application finder for Xfce, it will show the applications installed on
 your system in categories, so you can quickly find and launch them.")
     (license gpl2+)
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public xfce4-session
   (package
@@ -770,7 +782,8 @@ your system in categories, so you can quickly find and launch them.")
      "Session manager for Xfce, it will restore your session on startup and
 allows you to shut down the computer from Xfce.")
     (license gpl2+)
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public xfce4-settings
   (package
@@ -821,7 +834,8 @@ allows you to shut down the computer from Xfce.")
      "Settings manager for Xfce, it can control various aspects of the desktop
 like appearance, display, keyboard and mouse settings.")
     (license gpl2+)
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public thunar
   (package
@@ -867,7 +881,8 @@ like appearance, display, keyboard and mouse settings.")
      "A modern file manager for graphical desktop, aiming to be easy-to-use and
 fast.")
     (license gpl2+)
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public thunar-volman
   (package
@@ -896,7 +911,8 @@ thunar-volman is installed and configured properly, and you plug in your
 digital camera, it will automatically spawn your preferred photo application
 and import the new pictures from your camera.")
     (license gpl2+)
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public thunar-archive-plugin
   (package
@@ -1076,7 +1092,8 @@ menu.")
      "Window manager for Xfce, it handles the placement of windows
 on the screen.")
     (license gpl2+)
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public xfwm4-themes
   (package
@@ -1163,7 +1180,8 @@ window manager.")
 optional application menu or icons for minimized applications or launchers,
 devices and folders.")
     (license gpl2+)
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public gigolo
   (package
@@ -1241,7 +1259,8 @@ local and remote file systems and manage bookmarks of such.")
 GStreamer framework and written to fit well in the Xfce desktop.  Parole
 features playback of local media files, DVD/CD and live streams.")
     (license gpl2)                      ;version 2 only
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public xfce4-terminal
   (package
@@ -1436,7 +1455,8 @@ freedesktop-compliant DBus interfaces to inform other applications about current
 power level so that they can adjust their power consumption, and it provides the
 inhibit interface which allows applications to prevent automatic sleep.")
     (license gpl2+)
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public ristretto
   (package
@@ -1531,7 +1551,8 @@ calendar applications.  It also includes a panel clock plugin and an
 international clock application capable of simultaneously showing clocks from
 several different time zones.")
     (license gpl2+)
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public xfce4-notifyd
   (package
@@ -1704,7 +1725,8 @@ A plugin for the Xfce panel is also available.")
      "Xfce Screensaver is a screen saver and locker that aims to have simple,
  sane, secure defaults and be well integrated with the Xfce desktop.")
     (license gpl2+)
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
 
 (define-public xfce4-volumed-pulse
   (package
@@ -2425,4 +2447,5 @@ local weather in the panel, using forecast data provided by the
 developers and people that want to build Xfce from Git In addition it contains
 the Xfce developer's handbook.")
     (license gpl2+)
-    (properties `((release-tag-prefix . ,(string-append name "-"))))))
+    (properties `((release-tag-prefix . ,(string-append name "-"))
+                  (stable-version-regexp . ,%xfce-stable-version)))))
