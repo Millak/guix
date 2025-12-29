@@ -3608,7 +3608,7 @@ std::wstring, etc).")
 (define-public fast-float
   (package
     (name "fast-float")
-    (version "8.0.2")
+    (version "8.2.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3617,7 +3617,7 @@ std::wstring, etc).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19x1yklf641yrpad6lk4cq3jmird10d5ig8hicm3p9lxh92k78cl"))))
+                "1l13nsl4sgq71m7aifrmmmfyl14vp48vqdh7pb50hxqq6f8bq2b5"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3628,12 +3628,10 @@ std::wstring, etc).")
           (add-after 'unpack 'patch-cmake-tests
             (lambda* (#:key inputs native-inputs #:allow-other-keys)
               (substitute* "tests/CMakeLists.txt"
-                (("FetchContent_GetProperties\\(supplemental_test_files.*")
-                 "")
-                (("if\\(NOT supplemental_test_files_POPULATED.*")
+                (("FetchContent_MakeAvailable\\(supplemental_test_files.*")
                  (string-append
                   "set(supplemental_test_files_BINARY_DIR "
-                  #$fast-float-test-files ")\nif(0)\n"))))))))
+                  #$fast-float-test-files ")\n"))))))))
     (native-inputs (list doctest fast-float-test-files))
     (home-page "https://github.com/fastfloat/fast_float")
     (synopsis "Floating point number parser for C++")
