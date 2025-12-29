@@ -287,6 +287,7 @@ provenance."
              (image
                (inherit base-image)
                (volatile-root? #f)
+               (size (* 20 (expt 1024 3))) ; 20 GiB to have spare space
                (name (string->symbol name))))))))
 
 (define* (guix-source-tarball)
