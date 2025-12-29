@@ -526,29 +526,25 @@ compare against a vast section of other version formats.")
 (define-public python-awkward-cpp
   (package
     (name "python-awkward-cpp")
-    (version "43")
+    ;; TODO: any higher versions need pybind11 >= 3, see:
+    ;; <https://codeberg.org/guix/guix/pulls/4696>.
+    (version "47")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "awkward_cpp" version))
        (sha256
-        (base32 "1bays82mjyg0clmms0rdaf1jrdyr0pw5njq8v9kgcan8drcpbvf1"))))
+        (base32 "03wm649lzr1vgp99d303p53m1ybaf655mpvy30rapv8hd2bz8v37"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         ;; TODO: Remove this on python-team branch.
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "pyproject.toml"
-               (("scikit-build-core..0.10")
-                "scikit-build-core")
-               (("^minimum-version =.*") "")))))))
-    (propagated-inputs (list python-numpy))
+    ;; tests: 22304 passed, 524 skipped
     (native-inputs
-     (list cmake-minimal pybind11 python-pytest python-scikit-build-core))
-    (home-page "https://github.com/scikit-hep/awkward-1.0")
+     (list cmake-minimal
+           pybind11
+           python-pytest
+           python-scikit-build-core))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://awkward-array.org/")
     (synopsis "CPU kernels and compiled extensions for Awkward Array")
     (description "Awkward CPP provides precompiled routines for the awkward
 package.  It is not useful on its own, only as a dependency for awkward.")
