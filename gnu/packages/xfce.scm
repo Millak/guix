@@ -1311,17 +1311,17 @@ plugin for the Xfce panel.")
 (define-public xfdashboard
   (package
     (name "xfdashboard")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url (string-append "https://gitlab.xfce.org/apps/"
                                  name))
-             (commit version)))
+             (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1blydl57xzqndcj1dkfxbmsaad27s7mqwwj3mmidz2dx9cikabl8"))))
+        (base32 "04jg2d5hxb0hlcrkb262hrk510a29alpjcdvrdrfw21rxrxyxi0g"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
