@@ -1008,7 +1008,7 @@ has been designed to be fast, light and unintrusive.")
 (define-public kyua
   (package
     (name "kyua")
-    (version "0.13")
+    (version "0.14.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1017,7 +1017,7 @@ has been designed to be fast, light and unintrusive.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jzdal9smhmivj18683a5gy8jd2p1dbni7kcpaxq4g9jgjdidcrq"))))
+                "0w238ynhnjz7p2v8fbgxv35kl1x7a4vs86227qhb4gxncr75nsbl"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1042,16 +1042,6 @@ has been designed to be fast, light and unintrusive.")
                  (format #f "chdir(~s)" (dirname (which "ls"))))
                 (("\"/bin/ls\"")
                  (string-append "\"" (which "ls") "\"")))))
-          (add-before 'check 'prepare-for-tests
-            (lambda _
-              ;; The test suite expects HOME to be writable.
-              (setenv "HOME" "/tmp")
-              ;; Generate the autom4te-generated testsuite script, which
-              ;; contains a '/bin/sh' shebang.
-              (invoke "make" "bootstrap/testsuite")
-              (substitute* "bootstrap/testsuite"
-                (("/bin/sh")
-                 (which "sh")))))
           (add-after 'unpack 'disable-problematic-tests
             (lambda _
               ;; The stacktrace tests expect core files to be dumped to the
@@ -1060,12 +1050,8 @@ has been designed to be fast, light and unintrusive.")
               ;; https://github.com/freebsd/kyua/issues/214).
               (substitute* "utils/Kyuafile"
                 ((".*atf_test_program.*stacktrace_test.*")
-                 ""))))
-          (add-after 'install 'delete-installed-tests
-            (lambda _
-              ;; Delete 200 MiB of tests.
-              (delete-file-recursively (string-append #$output "/tests")))))))
-    (native-inputs (list autoconf automake gdb-minimal pkg-config))
+                 "")))))))
+    (native-inputs (list autoconf automake gdb-minimal libtool pkg-config))
     (inputs (list atf lutok sqlite))
     (home-page "https://github.com/freebsd/kyua")
     (synopsis "Testing framework for infrastructure software")
