@@ -1991,7 +1991,7 @@ multi-mailbox mail watcher.  Currently, the protocols supported are:
 (define-public xfce4-mpc-plugin
   (package
     (name "xfce4-mpc-plugin")
-    (version "0.5.5")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -2001,7 +2001,7 @@ multi-mailbox mail watcher.  Currently, the protocols supported are:
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hxpxvlbz0dmfy8d7kay9c08nx9bs19sqrgpzw2f64jfznv0xaay"))))
+        (base32 "1hd21n6vc0lzy00aa2wyb2hyrqydbli2cpidlfx668ajvnzbxfr4"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
