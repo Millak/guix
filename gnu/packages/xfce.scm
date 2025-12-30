@@ -1565,7 +1565,7 @@ sending standard messages over D-Bus using the
 (define-public xfburn
   (package
     (name "xfburn")
-    (version "0.7.2")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
@@ -1574,7 +1574,7 @@ sending standard messages over D-Bus using the
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18i25n81qzgb77w5vc6n4hwnw893204az8c1bg5k9229sz28r7vq"))))
+        (base32 "1x6kx4f29cv69yj6llf0hwijr656wdcmhi5paj15wlmm3i9j6hyp"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
