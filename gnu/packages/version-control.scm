@@ -1415,21 +1415,6 @@ write native speed custom Git applications in any language with bindings.")
   ;; Default version of libgit2.
   libgit2-1.5)
 
-(define-public libgit2-1.4
-  (package
-    (inherit libgit2)
-    (version "1.4.6")
-    (source (origin
-              (inherit (package-source libgit2))
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/libgit2/libgit2")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name "libgit2" version))
-              (sha256
-               (base32
-                "0iv7h2fdnlv5vj4dx09w71xbj004hidbpsbgv02gbvlpvsz3jpcf"))))))
-
 (define-public libgit2-1.3
   (package
     (inherit libgit2-1.5)
