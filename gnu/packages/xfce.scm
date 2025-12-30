@@ -1471,7 +1471,7 @@ the desktop wallpaper.")
 (define-public xfce4-taskmanager
   (package
     (name "xfce4-taskmanager")
-    (version "1.5.8")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)
@@ -1480,7 +1480,7 @@ the desktop wallpaper.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dmfbxnnyfv6n55krvjmgx8niv96xkpsf3il0bdmk928hzazhqh3"))))
+        (base32 "1zsgvwwy8i5p7g212icdalfpwp205zh7n574r9wwcpwf57nij2qx"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
