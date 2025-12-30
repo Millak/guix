@@ -10191,7 +10191,7 @@ via the in-game download manager.")
       (inputs
        (list alsa-lib
              eudev
-             ffmpeg-6
+             ffmpeg
              glib
              glew
              gtk+-2

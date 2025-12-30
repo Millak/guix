@@ -1,6 +1,11 @@
-See [6] and [7].
+See [6], [7], and [8].
 [6] https://github.com/Tatsh/tatsh-overlay/blob/master/games-arcade/stepmania/files/stepmania-ffmpeg-6.patch
 [7] https://github.com/Tatsh/tatsh-overlay/blob/master/games-arcade/stepmania/files/stepmania-ffmpeg-7.patch
+[8] https://github.com/Tatsh/tatsh-overlay/blob/master/games-arcade/stepmania/files/stepmania-ffmpeg-8.patch
+
+Hunk #2 is not present in any of these patches, but prevents a segmentation
+fault due to freeing unallocated memory.
+Hunk #4 was likewise altered to prevent nullptr dereferences.
 
 diff --git a/src/arch/MovieTexture/MovieTexture_FFMpeg.cpp b/src/arch/MovieTexture/MovieTexture_FFMpeg.cpp
 index 935ddf324b0..d4eed01d599 100644
@@ -17,6 +22,13 @@ index 935ddf324b0..d4eed01d599 100644
  static void FixLilEndian()
  {
  #if defined(ENDIAN_LITTLE)
+@@ -118,5 +118,6 @@
+ 	m_buffer = NULL;
+ 	m_fctx = nullptr;
+ 	m_pStream = nullptr;
++	m_pStreamCodec = nullptr;
+ 	m_iCurrentPacketOffset = -1;
+ 	m_Frame = avcodec::av_frame_alloc();
 @@ -405,7 +405,7 @@ void MovieTexture_FFMpeg::RegisterProtocols()
  		return;
  	Done = true;
@@ -26,15 +38,33 @@ index 935ddf324b0..d4eed01d599 100644
  	avcodec::avcodec_register_all();
  	avcodec::av_register_all();
  #endif
-@@ -508,7 +508,7 @@ RString MovieDecoder_FFMpeg::OpenCodec()
+@@ -508,6 +508,16 @@ RString MovieDecoder_FFMpeg::OpenCodec()
++#if LIBAVCODEC_VERSION_MAJOR < 58
  	if( m_pStreamCodec->codec )
  		avcodec::avcodec_close( m_pStreamCodec );
++#else
++	if ( m_pStreamCodec )
++	{
++		avcodec::avcodec_free_context ( &m_pStreamCodec );
++		m_pStreamCodec = avcodec::avcodec_alloc_context3(nullptr);
++		if (avcodec::avcodec_parameters_to_context(m_pStreamCodec, m_pStream->codecpar) < 0)
++			return ssprintf("Could not get context from parameters");
++	}
++#endif
  
 -	avcodec::AVCodec *pCodec = avcodec::avcodec_find_decoder( m_pStreamCodec->codec_id );
 +	const avcodec::AVCodec *pCodec = avcodec::avcodec_find_decoder( m_pStreamCodec->codec_id );
  	if( pCodec == nullptr )
  		return ssprintf( "Couldn't find decoder %i", m_pStreamCodec->codec_id );
- 
+@@ -535,7 +535,7 @@ void MovieDecoder_FFMpeg::Close()
+ {
+ 	if( m_pStream && m_pStreamCodec->codec )
+ 	{
+-		avcodec::avcodec_close( m_pStreamCodec );
++		avcodec::avcodec_free_context( &m_pStreamCodec );
+ 		m_pStream = nullptr;
+ 	}
+
 diff --git a/src/arch/MovieTexture/MovieTexture_FFMpeg.h b/src/arch/MovieTexture/MovieTexture_FFMpeg.h
 index c092b765fc2..99f5ffcb1be 100644
 --- a/src/arch/MovieTexture/MovieTexture_FFMpeg.h
@@ -47,3 +77,12 @@ index c092b765fc2..99f5ffcb1be 100644
  
  		#if LIBAVCODEC_VERSION_MAJOR >= 58
  		#define av_free_packet av_packet_unref
+@@ -32,7 +32,7 @@ namespace avcodec
+ };
+ 
+ #define STEPMANIA_FFMPEG_BUFFER_SIZE 4096
+-static const int sws_flags = SWS_BICUBIC; // XXX: Reasonable default?
++static const int sws_flags = avcodec::SWS_BICUBIC; // XXX: Reasonable default?
+ 
+ class MovieTexture_FFMpeg: public MovieTexture_Generic
+ {
