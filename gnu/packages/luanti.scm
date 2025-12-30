@@ -10,6 +10,7 @@
 ;;; Copyright © 2020, 2021, 2022, 2025 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2024 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
+;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; This file is part of GNU Guix.
 ;;;
 ;;; GNU Guix is free software; you can redistribute it and/or modify it
@@ -840,6 +841,30 @@ stopping before signals.
 advtrains up to version 2.2.1.")
     (license (list license:cc-by-sa3.0 license:agpl3+))
     (properties `((upstream-name . "orwell/basic_trains")))))
+
+(define-public luanti-chatcmdbuilder
+  ;; The last tag is old and has issues.
+  (let ((commit "be3906e1fbd21f5c3149309c831b1a92769d3f93")
+        (revision "0"))
+    (package
+      (name "luanti-chatcmdbuilder")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/rubenwardy/ChatCmdBuilder")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0b9jl9pb5cc0rz9vv5r1kcmzch3nkbcx6xzkwii7dc7xfz9dx895"))))
+      (build-system luanti-mod-build-system)
+      (home-page "https://content.luanti.org/packages/rubenwardy/lib_chatcmdbuilder/")
+      (synopsis "Luanti library to create complex chat commands")
+      (description "ChatCmdBuilder is a Luanti library to ease
+ creating complex chat commands with no pattern matching.")
+      (license license:expat)
+      (properties `((upstream-name . "rubenwardy/lib_chatcmdbuilder"))))))
 
 (define-public luanti-oneblock
   (package
