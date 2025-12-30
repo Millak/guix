@@ -1300,6 +1300,24 @@ write native speed custom Git applications in any language with bindings.")
     ;; GPLv2 with linking exception
     (license license:gpl2)))
 
+(define-public libgit2-1.6
+  (package
+    (inherit libgit2-1.7)
+    (version "1.6.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/libgit2/libgit2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "libgit2" version))
+              (sha256
+               (base32
+                "1v8sndvknsknf0i967qidmz73q9jx928iq7fqqgx3rbwn2g1gn6s"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (delete-file-recursively "deps")))))))
+
 (define-public libgit2-1.5
   (package
     (inherit libgit2-1.7)
@@ -1371,21 +1389,6 @@ write native speed custom Git applications in any language with bindings.")
               (sha256
                (base32
                 "1k7h0phxz1i8i8qhd4dsyii62f30f33gmrpziqgri1ndnazkf4pz"))))))
-
-(define-public libgit2-1.6
-  (package
-    (inherit libgit2)
-    (version "1.6.5")
-    (source (origin
-              (inherit (package-source libgit2))
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/libgit2/libgit2")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name "libgit2" version))
-              (sha256
-               (base32
-                "1v8sndvknsknf0i967qidmz73q9jx928iq7fqqgx3rbwn2g1gn6s"))))))
 
 (define-public libgit2-1.4
   (package
