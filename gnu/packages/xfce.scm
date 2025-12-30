@@ -506,7 +506,7 @@ applications menu, workspace switcher and more.")
 (define-public xfce4-clipman-plugin
   (package
     (name "xfce4-clipman-plugin")
-    (version "1.6.7")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
@@ -515,7 +515,7 @@ applications menu, workspace switcher and more.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0spg9mdlcx98kjisv0c9axp7knhh8am5dqfa2lspj1jbgvah1dwi"))))
+        (base32 "16cxxlwhi54zl2lzbcmaag80mrwhmw64adyv6zj0lkb7j8fb3mn3"))))
     (build-system gnu-build-system)
     (arguments
      (list
