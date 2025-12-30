@@ -1088,6 +1088,33 @@ ecosystem.")
 apps.")
     (license license:bsd-3)))
 
+(define-public hyprwire
+  (package
+    (name "hyprwire")
+    (version "0.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hyprwm/hyprwire")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0rzclhk42x9im9n6fz2bj98l9lb7jhl3vijvck4rj6yhb80kvli0"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f)) ; There are no tests
+    (native-inputs (list pkg-config gcc-15))
+    (inputs
+      (list hyprutils
+            libffi
+            pugixml))
+    (home-page "https://github.com/hyprwm/hyprwire")
+    (synopsis "Fast and consistent wire protocol for IPC")
+    (description "This package provides a fast and consistent wire protocol,
+and its implementation.  This is essentially a method for processes to talk to
+each other.")
+    (license license:bsd-3)))
+
 (define-public xsimd-benchmark
   (package
     (inherit xsimd)
