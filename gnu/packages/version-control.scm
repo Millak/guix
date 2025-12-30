@@ -1226,25 +1226,31 @@ which has been extracted into a standalone library for compatibility with
 other git-like projects such as @code{libgit2}.")
       (license license:lgpl2.1+))))
 
-(define-public libgit2-1.5
+(define-public libgit2-1.7
   (package
     (name "libgit2")
-    (version "1.5.2")
+    (version "1.7.2")
     (source (origin
-              ;; Since v1.1.1, release artifacts are no longer offered (see:
-              ;; https://github.com/libgit2/libgit2/discussions/5932#discussioncomment-1682729).
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/libgit2/libgit2")
                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
+              (file-name (git-file-name "libgit2" version))
               (sha256
                (base32
-                "0v9jdaxmqrzbs9v5vhh2xf5xv9h29q8qqn8vmns279ljx1zav5yd"))
+                "0i95jwrwx4svh5l4dpa5r4a99f813hlm7nzzkbqzmnw4pkyxhlvx"))
+              ;; We need to use the bundled xdiff until an option is given
+              ;; to use the one from git.
               (modules '((guix build utils)))
               (snippet
                '(begin
-                  (delete-file-recursively "deps")))))
+                  (for-each delete-file-recursively
+                            '("deps/chromium-zlib"
+                              "deps/http-parser"
+                              "deps/ntlmclient"
+                              "deps/pcre"
+                              "deps/winhttp"
+                              "deps/zlib"))))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -1294,16 +1300,11 @@ write native speed custom Git applications in any language with bindings.")
     ;; GPLv2 with linking exception
     (license license:gpl2)))
 
-(define-public libgit2
-  ;; Default version of libgit2.
-  libgit2-1.5)
-
-(define-public libgit2-1.7
+(define-public libgit2-1.5
   (package
-    (inherit libgit2)
-    (version "1.7.2")
+    (inherit libgit2-1.7)
+    (version "1.5.2")
     (source (origin
-              (inherit (package-source libgit2))
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/libgit2/libgit2")
@@ -1311,19 +1312,15 @@ write native speed custom Git applications in any language with bindings.")
               (file-name (git-file-name "libgit2" version))
               (sha256
                (base32
-                "0i95jwrwx4svh5l4dpa5r4a99f813hlm7nzzkbqzmnw4pkyxhlvx"))
-              ;; We need to use the bundled xdiff until an option is given
-              ;; to use the one from git.
+                "0v9jdaxmqrzbs9v5vhh2xf5xv9h29q8qqn8vmns279ljx1zav5yd"))
               (modules '((guix build utils)))
               (snippet
                '(begin
-                  (for-each delete-file-recursively
-                            '("deps/chromium-zlib"
-                              "deps/http-parser"
-                              "deps/ntlmclient"
-                              "deps/pcre"
-                              "deps/winhttp"
-                              "deps/zlib"))))))))
+                  (delete-file-recursively "deps")))))))
+
+(define-public libgit2
+  ;; Default version of libgit2.
+  libgit2-1.5)
 
 (define-public libgit2-1.8
   (package
