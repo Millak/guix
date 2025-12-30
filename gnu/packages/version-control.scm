@@ -1226,10 +1226,10 @@ which has been extracted into a standalone library for compatibility with
 other git-like projects such as @code{libgit2}.")
       (license license:lgpl2.1+))))
 
-(define-public libgit2-1.8
+(define-public libgit2-1.9
   (package
     (name "libgit2")
-    (version "1.8.4")
+    (version "1.9.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1238,9 +1238,11 @@ other git-like projects such as @code{libgit2}.")
               (file-name (git-file-name "libgit2" version))
               (sha256
                (base32
-                "0jydckwn0bbrp2kbcr1ih1bz4sc6yhx7lrl22lqcgnf2v6ml6n01"))
+                "1k7h0phxz1i8i8qhd4dsyii62f30f33gmrpziqgri1ndnazkf4pz"))
               (patches
-               (search-patches "libgit2-uninitialized-proxy-settings.patch"))
+               (search-patches "libgit2-uninitialized-proxy-settings.patch"
+                               "libgit2-proxy-reconnection.patch"
+                               "libgit2-path-max.patch"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1305,6 +1307,32 @@ provided as a re-entrant linkable library with a solid API, allowing you to
 write native speed custom Git applications in any language with bindings.")
     ;; GPLv2 with linking exception
     (license license:gpl2)))
+
+(define-public libgit2-1.8
+  (package
+    (inherit libgit2-1.9)
+    (version "1.8.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/libgit2/libgit2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "libgit2" version))
+              (sha256
+               (base32
+                "0jydckwn0bbrp2kbcr1ih1bz4sc6yhx7lrl22lqcgnf2v6ml6n01"))
+              (patches
+               (search-patches "libgit2-uninitialized-proxy-settings.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (for-each delete-file-recursively
+                            '("deps/chromium-zlib"
+                              "deps/llhttp"
+                              "deps/ntlmclient"
+                              "deps/pcre"
+                              "deps/winhttp"
+                              "deps/zlib"))))))))
 
 (define-public libgit2-1.7
   (package
@@ -1386,24 +1414,6 @@ write native speed custom Git applications in any language with bindings.")
 (define-public libgit2
   ;; Default version of libgit2.
   libgit2-1.5)
-
-(define-public libgit2-1.9
-  (package
-    (inherit libgit2-1.8)
-    (version "1.9.1")
-    (source (origin
-              (inherit (package-source libgit2-1.8))
-              (uri (git-reference
-                    (url "https://github.com/libgit2/libgit2")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name "libgit2" version))
-              (patches
-               (search-patches "libgit2-uninitialized-proxy-settings.patch"
-                               "libgit2-proxy-reconnection.patch"
-                               "libgit2-path-max.patch"))
-              (sha256
-               (base32
-                "1k7h0phxz1i8i8qhd4dsyii62f30f33gmrpziqgri1ndnazkf4pz"))))))
 
 (define-public libgit2-1.4
   (package
