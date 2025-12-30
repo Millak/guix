@@ -8816,8 +8816,7 @@ HMMs).")
 (define-public htseq
   (package
     (name "htseq")
-    (version "2.0.2")
-    ;; Sources on pypi do not include everything needed to run the tests.
+    (version "2.0.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8826,19 +8825,18 @@ HMMs).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kbr4ydjjhizz6r5m3xd4f0wj7qnn8zs0vnzghhgaa0yhbya5r19"))))
+                "1wyv5aqdx1i48i01xnav1cvv5zjv9n4nxplcgplwzxz9pxiw3kcb"))))
     (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-matplotlib
-           python-numpy
+     (list python-numpy
            python-pysam))
     (native-inputs
      (list python-cython
+           python-matplotlib
            python-pandas
            python-pytest
            python-scipy
            python-setuptools
-           python-wheel
            swig))
     (home-page "https://github.com/htseq")
     (synopsis "Framework for analyzing high-throughput sequencing data")
