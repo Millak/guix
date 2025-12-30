@@ -640,7 +640,7 @@ highlighted.
        #:phases
        (modify-phases %standard-phases
          (delete 'configure))))         ; No ./configure script
-    (home-page "https://mcpcpc.github.io/kirc/")
+    (home-page "https://kirc.dev/")
     (synopsis "IRC client written in POSIX C99")
     (description "Kirc is an Internet Relay Chat (IRC) client.  It includes
 support for Simple Authentication and Security Layer (SASL), the
