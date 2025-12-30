@@ -1019,7 +1019,7 @@ language used in Hyprland.")
 (define-public hyprutils
   (package
     (name "hyprutils")
-    (version "0.10.4")
+    (version "0.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1028,7 +1028,7 @@ language used in Hyprland.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08b65pssaci780rgb5qgqc61zvbxmb9qda4gb58j8nh9yi3ya0jx"))))
+                "1ymiqzncppdik8lw3ad7xaqig6c7bjcy7crcwbq3rjfk2hrc8rmc"))))
     (build-system cmake-build-system)
     (arguments
      (list
