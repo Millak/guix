@@ -2322,7 +2322,7 @@ for the Xfce panel.  It supports several features, such as:
 (define-public xfce4-wavelan-plugin
   (package
     (name "xfce4-wavelan-plugin")
-    (version "0.6.4")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -2332,7 +2332,7 @@ for the Xfce panel.  It supports several features, such as:
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hw1xglcq9niacmnb6masnx8b7vs0z38pbnbviy388mvj5bx54dm"))))
+        (base32 "17bg3v0drhrs7sx2w2a3aajlfsbhn2zn94479380kpj05jacmjlg"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
