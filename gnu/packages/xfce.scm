@@ -2262,7 +2262,7 @@ time.")
 (define-public xfce4-timer-plugin
   (package
     (name "xfce4-timer-plugin")
-    (version "1.7.3")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -2272,7 +2272,7 @@ time.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1110s55h4lsspdmyl58cbzfy57gfh8871b1213xjgk3i3q7nmqgc"))))
+        (base32 "058y1im94jdsc7na36s105xhiqfx188dsb3h64hjzj8kwkbx1gax"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
