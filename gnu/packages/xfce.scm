@@ -924,7 +924,7 @@ archive files using the file context menus in the Thunar file manager.")
 (define-public thunar-shares-plugin
   (package
     (name "thunar-shares-plugin")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -934,7 +934,7 @@ archive files using the file context menus in the Thunar file manager.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m4xdmfs6zcxsq96p0wgwgqv2av7bqqsbpsrbqkq78mrmn9533nl"))))
+        (base32 "1abcgbc91w0hdpbw1ydy0vw8f02v0rpjmn6309dmkjqb19mcaqmi"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf-2.71 xfce4-dev-tools))
     (inputs (list thunar gtk+ xfconf))
