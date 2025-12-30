@@ -596,27 +596,6 @@ numerical solver for convex optimization problems using a novel homogeneous
 embedding.")
     (license license:asl2.0)))
 
-(define-public python-climin
-  (package
-    (name "python-climin")
-    (version "0.1a1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "climin" version))
-              (sha256
-               (base32
-                "1wpjisd5zzi5yvjff02hnxn84822k8sdxvvd33lil2x79wdb36rv"))))
-    (build-system python-build-system)
-    (native-inputs (list python-nose))
-    (propagated-inputs (list python-numpydoc python-numpy python-scipy))
-    (home-page "https://github.com/BRML/climin")
-    (synopsis "Optimization for machine learning")
-    (description
-     "@command{climin} is a Python package for optimization,
-heavily biased to machine learning scenarios.  It works on top of
-@command{numpy} and (partially) @command{gnumpy}.")
-    (license license:bsd-3)))
-
 (define-public python-cmocean
   (package
     (name "python-cmocean")
