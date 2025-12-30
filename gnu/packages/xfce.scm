@@ -1734,7 +1734,7 @@ A plugin for the Xfce panel is also available.")
 (define-public xfce4-cpugraph-plugin
   (package
     (name "xfce4-cpugraph-plugin")
-    (version "1.2.11")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1744,7 +1744,7 @@ A plugin for the Xfce panel is also available.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z3vbpn6ylx32fnncswi0ghp01bpxqvs0idmr8fc3rl546pgmqa3"))))
+        (base32 "1xqihcnpz2548832f9lcs4aflk0s2jz88n16i80i0rnark22hw11"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
