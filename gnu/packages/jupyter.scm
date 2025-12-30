@@ -1154,13 +1154,13 @@ endpoints—to Jupyter web applications.")
   (package
     (name "python-jupyterlab-widgets")
     ;; XXX: Newer version requires python-jupyterlab, see guix/guix#2073.
-    (version "3.0.11")
+    (version "3.0.12")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jupyterlab_widgets" version))
        (sha256
-        (base32 "09zfvqsw0svm6r3i2lhklnx44s7j4i60bvcvkkr9m5iwb5wwcnnx"))))
+        (base32 "1bi4ry8pfj27n3acm21vaq4iiq60i0ci4dqhcdr8li2zx3zc0fk2"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ;no tests in PyPI
