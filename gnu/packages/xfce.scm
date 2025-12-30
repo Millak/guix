@@ -1673,7 +1673,7 @@ A plugin for the Xfce panel is also available.")
 (define-public xfce4-screensaver
   (package
     (name "xfce4-screensaver")
-    (version "4.18.4")
+    (version "4.20.1")
     (source
      (origin
        (method git-fetch)
@@ -1682,20 +1682,10 @@ A plugin for the Xfce panel is also available.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09wbr3p325w9mcmragxi3rkvlrdapmrmlpgj5wshh9dv52pn8k5y"))))
-    (build-system gnu-build-system)
+        (base32 "05c1qncnfq6vyil5li6kn5a9yd74r9m7nh9hfbkzh16ajiyvmlqm"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:configure-flags '("--enable-maintainer-mode")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'fix-dbus-1-path
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (dbus-dir (string-append out "/share/dbus-1/services")))
-               (substitute* "configure"
-                 (("DBUS_SESSION_SERVICE_DIR=.*")
-                  (string-append "DBUS_SESSION_SERVICE_DIR="
-                                 dbus-dir)))))))))
+     (list #:configure-flags #~(list "-Dsession-manager=elogind")))
     (native-inputs
      (list xfce4-dev-tools))
     (inputs
