@@ -2126,7 +2126,7 @@ opens up a menu with the following:
 (define-public xfce4-smartbookmark-plugin
   (package
     (name "xfce4-smartbookmark-plugin")
-    (version "0.5.3")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -2136,7 +2136,7 @@ opens up a menu with the following:
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rm2yii0xas9n3aqsq6lb378czcylm8xcb2ng7lnl2r5l8qyb9m4"))))
+        (base32 "1ld8xpfadh68p4ikzdicrhgv56arbalmi94wqcv14kmsmjh1df1g"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
