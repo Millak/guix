@@ -58,6 +58,7 @@
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 nomike Postmann <nomike@nomike.com>
 ;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>
+;;; Copyright © 2025 Murilo <murilo@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -109,6 +110,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-science)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages time)
@@ -3429,6 +3431,50 @@ Simplicity, portability, speed, and small footprint are all very important
 aspects of UnitTest++.  UnitTest++ is mostly standard C++ and makes minimal use
 of advanced library and language features, which means it should be easily
 portable to just about any platform.")
+    (license license:expat)))
+
+(define-public unity-test
+  (package
+    (name "unity-test")
+    (version "2.6.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/ThrowTheSwitch/Unity")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1s0jj9f2zav49mn9ib90idcmb6hq93aczbqysn5hj6binjmrnjw3"))
+              (patches (search-patches "unity-test-set-subdir-correctly.patch"))))
+    (build-system meson-build-system)
+    (arguments
+      (list #:configure-flags
+            #~(list "-Dsupport_double=true")
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'patch-source-shebangs 'patch-more-shebangs
+                  (lambda _
+                    (substitute* '("auto/unity_test_summary.rb")
+                      (("/usr/bin/ruby")
+                       (string-append #$(this-package-input "ruby")
+                                      "/bin/ruby")))
+                    (substitute* '("auto/stylize_as_junit.py"
+                                   "auto/unity_test_summary.py")
+                      (("#! python3")
+                       (string-append #$(this-package-input "python")
+                                      "/bin/python3")))))
+                (add-after 'install 'install-extra
+                  (lambda _
+                    (for-each (lambda (x)
+                                (install-file x
+                                  (string-append #$output "/share/unity-test")))
+                              (find-files "../source/auto")))))))
+    (native-inputs (list pkg-config))
+    (inputs (list python ruby))
+    (home-page "https://github.com/ThrowTheSwitch/Unity")
+    (synopsis "Simple unit testing for C")
+    (description "This package provides a unit testing framework built for C,
+with a focus on working with embedded toolchains.")
     (license license:expat)))
 
 (define-public libfaketime

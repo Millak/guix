@@ -1,0 +1,30 @@
+From 4c8dab0edd16ce6a4b7b628430de1cd42d03f31a Mon Sep 17 00:00:00 2001
+From: Ross Smyth <rsmyth@electrocraft.com>
+Date: Mon, 10 Mar 2025 16:00:38 -0400
+Subject: [PATCH] Fix meson pkg-config generation
+
+The pkg-config file does not include the subdir
+in its build flags, so files will fail to find the
+Unity headers.
+---
+ meson.build | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index 6585129c..9489aef4 100644
+--- a/meson.build
++++ b/meson.build
+@@ -64,10 +64,10 @@ unity_dep = declare_dependency(
+ if not meson.is_subproject()
+   pkg = import('pkgconfig')
+   pkg.generate(
+-    name: meson.project_name(),
++    unity_lib,
+     version: meson.project_version(),
+-    libraries: [ unity_lib ],
+-    description: 'C Unit testing framework.'
++    subdirs: 'unity',
++    extra_cflags: unity_args,
+   )
+ endif
+ 
