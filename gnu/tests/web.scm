@@ -60,6 +60,7 @@
             %test-anonip
             %test-go-webdav
             %test-patchwork
+            %test-sogogi
             %test-agate
             %test-miniflux-admin-string
             %test-miniflux-admin-file
@@ -779,6 +780,55 @@ HTTP-PORT."
    (name "patchwork")
    (description "Connect to a running Patchwork service.")
    (value (run-patchwork-test patchwork))))
+
+
+;;;
+;;; sogogi
+;;;
+
+(define %sogogi-os
+  (simple-operating-system
+    (service dhcpcd-service-type)
+    (simple-service 'make-http-root activation-service-type
+                    %make-http-root)
+    (service sogogi-service-type
+             (sogogi-configuration
+               (listen ":8080")
+               (user
+                 (list
+                   (sogogi-user
+                     (name "testuser")
+                     (password "testpass"))))
+               (location
+                 (list
+                   (sogogi-location
+                     (path "/")
+                     (dir "/srv/http/")
+                     (grant '("all ro" "user:testuser rw")))))))))
+
+(define %test-sogogi
+  (system-test
+    (name "sogogi")
+    (description "Test that the sogogi can handle HTTP requests.")
+    (value
+      (let ((http-port 8080))
+        (run-webserver-test name %sogogi-os
+          #:http-port http-port
+          #:extra-tests
+          #~(begin
+              (use-modules (srfi srfi-11) (srfi srfi-64)
+                           (gnu build marionette)
+                           (web uri)
+                           (web client)
+                           (web response))
+
+              (test-equal "unauthenticated delete"
+                401
+                (let-values
+                  (((response _)
+                    (http-delete #$(simple-format
+                                     #f "http://localhost:~A/index.html" http-port))))
+                  (response-code response)))))))))
 
 
 ;;;

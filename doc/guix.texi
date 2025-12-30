@@ -35893,6 +35893,75 @@ The port on which to connect to the database.
 @end table
 @end deftp
 
+@subsubheading sogogi
+
+@cindex sogogi, WebDAV Server
+@uref{https://codeberg.org/emersion/sogogi, sogogi} is a
+server for the
+@uref{https://www.rfc-editor.org/rfc/rfc4918, WebDAV} protocol.
+
+@defvar sogogi-service-type
+This is the service type for sogogi.  Its value must be a
+@code{sogogi-configuration} object as in this example:
+
+@lisp
+(service sogogi-service-type
+         (sogogi-configuration
+           (listen ":8080")
+           (location
+             (list
+               (sogogi-location
+                 (path "/")
+                 (dir "/srv/http/")
+                 (grant '("all ro")))))))
+@end lisp
+@end defvar
+
+@deftp {Data Type} sogogi-configuration
+Available @code{sogogi-configuration} fields are:
+
+@table @asis
+@item @code{listen} (default: @code{"localhost:8080"}) (type: string)
+Listening address.
+
+@item @code{location} (default: @code{()}) (type: list-of-sogogi-location)
+Local directories to expose via a HTTP path
+
+@item @code{user} (default: @code{()}) (type: list-of-sogogi-user)
+Users with access to the location.
+
+@end table
+@end deftp
+
+@deftp {Data Type} sogogi-location
+Available @code{sogogi-location} fields are:
+
+@table @asis
+@item @code{path} (type: string)
+HTTP path at which the directory will be exposed.
+
+@item @code{dir} (type: string)
+Path to local directory to serve.
+
+@item @code{grant} (type: maybe-list-of-strings)
+Grant remote users access to the directory.
+
+@end table
+@end deftp
+
+@deftp {Data Type} sogogi-user
+Available @code{sogogi-user} fields are:
+
+@table @asis
+@item @code{name} (type: maybe-string)
+Name of the user.
+
+@item @code{password} (type: maybe-string)
+Password of the user.
+
+@end table
+@end deftp
+
 @subsubheading Mumi
 
 @cindex Mumi, Debbugs Web interface
