@@ -1279,7 +1279,7 @@ on your desktop.")
 (define-public xfce4-dict
   (package
     (name "xfce4-dict")
-    (version "0.8.8")
+    (version "0.8.9")
     (source
      (origin
        (method git-fetch)
@@ -1289,7 +1289,7 @@ on your desktop.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1y9ggn3c0ngn621ljmb2ahavr27sksld48z2qs470zcjwiw48nlx"))))
+        (base32 "0w24pnvhl73dwb8jr88vs20xmqivjzfacr67g9w4c6b0z6f56pkj"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
