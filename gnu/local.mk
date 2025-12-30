@@ -1623,6 +1623,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/id3lib-UTF16-writing-bug.patch			\
   %D%/packages/patches/ilmbase-fix-tests.patch			\
   %D%/packages/patches/inferno-fix-crash.patch		\
+  %D%/packages/patches/iniparser-remove-fetchcontent-usage.patch		\
   %D%/packages/patches/inkscape-libxml2.patch		\
   %D%/packages/patches/instead-use-games-path.patch		\
   %D%/packages/patches/intltool-perl-compatibility.patch	\
