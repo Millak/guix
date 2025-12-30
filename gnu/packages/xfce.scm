@@ -1605,7 +1605,7 @@ of data to either CD/DVD/BD.")
 (define-public mousepad
   (package
     (name "mousepad")
-    (version "0.6.3")
+    (version "0.6.5")
     (source
      (origin
        (method git-fetch)
@@ -1614,7 +1614,7 @@ of data to either CD/DVD/BD.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pchp4jdy7xfgb0bk4pv06bphs6lmf1lr3ykyq2f351s5wqp2nrg"))))
+        (base32 "0yp0y7bkc9395r9ay70qvrzxkv466w55v05l132phlhair0jjb77"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--enable-maintainer-mode" ;for mousepad-marshal.c
