@@ -2182,7 +2182,7 @@ freedesktop.org specification.")
 (define-public xfce4-stopwatch-plugin
   (package
     (name "xfce4-stopwatch-plugin")
-    (version "0.5.2")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -2192,7 +2192,7 @@ freedesktop.org specification.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12b6r9vmqqwqdk8pwbi6xgcfbwvw26lz298b3k53aajvy80lxgql"))))
+        (base32 "05hfwikmn8a13fjyx4lcyms05mnwhvzl5xkk0miih79a3m7jkd7c"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
