@@ -463,12 +463,11 @@ DEFAULT."
                            ,@(append-map
                               generate
                               (filter-map
-                               (match-lambda
-                                 ((name config)
-                                  (and (eq? name field-name)
-                                       config)))
-                               (or (assq-ref sub-documentation field-name)
-                                   '()))))))
+                                (match-lambda
+                                  ((name config)
+                                   (and (eq? name field-name)
+                                        config)))
+                                sub-documentation)))))
                fields)))))))
   (stexi->texi `(*fragment* . ,(generate documentation-name))))
 
