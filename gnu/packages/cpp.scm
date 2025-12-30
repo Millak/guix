@@ -947,7 +947,7 @@ library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
 (define-public hyprgraphics
   (package
     (name "hyprgraphics")
-    (version "0.4.0")
+    (version "0.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -958,7 +958,7 @@ library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
               (snippet #~(substitute* "CMakeLists.txt" (("libjxl_cms") "")))
               (sha256
                (base32
-                "1jii9l9qbksp6x1vwbm84a985hy9q9xcpl703bliprd5rkpi6w96"))))
+                "1l8yfnv1vs6iqnh7r73yyfkbl8l61mqpmpyhri65sqwvplkgw41i"))))
     (build-system cmake-build-system)
     (native-inputs (list gcc-15 pkg-config))
     (inputs (list cairo
