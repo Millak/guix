@@ -1818,7 +1818,7 @@ and a calendar appears when you left-click on it.")
 (define-public xfce4-calculator-plugin
   (package
     (name "xfce4-calculator-plugin")
-    (version "0.7.3")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
@@ -1828,7 +1828,7 @@ and a calendar appears when you left-click on it.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jdsd3qswzv5kvh1ybpmfz79nqwlfh34r9bhhvw5j71339mcpzf9"))))
+        (base32 "17hyghl2swj7mn7f5vrd0cd1kxvdsbgbf6v1s4iyras83vzdh9c8"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
