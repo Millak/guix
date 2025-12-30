@@ -170,7 +170,7 @@ storage system.")
 (define-public libxfce4ui
   (package
     (name "libxfce4ui")
-    (version "4.20.0")
+    (version "4.20.2")
     (source
      (origin
        (method git-fetch)
@@ -179,7 +179,7 @@ storage system.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ps8sq8g43dx12qp0shrdb45bjrfhhgkziscj5jnrzfhy6j9mqrk"))))
+        (base32 "1nyi2h27c2gsin7l4jm42cl386z1zvki38nc60pzzmmvdlkypi1n"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
