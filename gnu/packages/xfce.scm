@@ -1440,7 +1440,7 @@ inhibit interface which allows applications to prevent automatic sleep.")
 (define-public ristretto
   (package
     (name "ristretto")
-    (version "0.13.3")
+    (version "0.13.4")
     (source
      (origin
        (method git-fetch)
@@ -1449,7 +1449,7 @@ inhibit interface which allows applications to prevent automatic sleep.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bbcq5spqirh21p0s7vy9na58inz47nsj59asdka35qnvr20g4vh"))))
+        (base32 "0q93qkpqgf39cg5fn5nc74qkx3dy5dr9ywjbldjyq42ysxjn4jaz"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -1457,7 +1457,7 @@ inhibit interface which allows applications to prevent automatic sleep.")
     (native-inputs
      (list xfce4-dev-tools))
     (inputs
-     (list gtk+ libexif libxfce4ui tumbler))
+     (list exo gtk+ libexif libxfce4ui tumbler))
     (home-page "https://docs.xfce.org/apps/ristretto/start")
     (synopsis "Fast and lightweight picture-viewer")
     (description
