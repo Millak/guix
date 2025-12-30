@@ -19,6 +19,7 @@
 
 (define-module (gnu packages sequoia)
   #:use-module (guix build-system cargo)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -144,7 +145,12 @@ This Guix package is built to use the nettle cryptographic library.")
         (base32 "01aph6n9lj7qcz1n8gr6q48an4ypn9d6xzxfprwpw80wv9ibc12w"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
+     `(#:imported-modules ((guix build copy-build-system)
+                           ,@%cargo-build-system-modules)
+       #:modules ((guix build cargo-build-system)
+                  ((guix build copy-build-system) #:prefix copy:)
+                  (guix build utils))
+       #:install-source? #f
        #:features '("crypto-nettle"
                     "sequoia-keystore/gpg-agent"
                     "sequoia-keystore/openpgp-card"
@@ -165,32 +171,20 @@ This Guix package is built to use the nettle cryptographic library.")
                       "--path" "." "--root" (assoc-ref outputs "out")
                       "--features" (string-join features))))
          (add-after 'install 'install-more
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share"))
-                    (bash-completions-dir
-                     (string-append out "/etc/bash_completion.d"))
-                    (zsh-completions-dir
-                     (string-append share "/zsh/site-functions"))
-                    (fish-completions-dir
-                     (string-append share "/fish/vendor_completions.d"))
-                    (elvish-completions-dir
-                     (string-append share "/elvish/lib"))
-                    (man1 (string-append share "/man/man1")))
-               ;; The completions are generated in build.rs.
-               (mkdir-p bash-completions-dir)
-               (mkdir-p elvish-completions-dir)
-               (for-each (lambda (file)
-                           (install-file file man1))
-                         (find-files "target/assets/man-pages" "\\.1$"))
-               (copy-file "target/assets/shell-completions/sq.bash"
-                          (string-append bash-completions-dir "/sq"))
-               (install-file "target/assets/shell-completions/_sq"
-                             zsh-completions-dir)
-               (install-file "target/assets/shell-completions/sq.fish"
-                             fish-completions-dir)
-               (copy-file "target/assets/shell-completions/sq.elv"
-                          (string-append elvish-completions-dir "/sq"))))))))
+           (lambda args
+             (apply (assoc-ref copy:%standard-phases 'install)
+                    #:install-plan
+                    '(("target/assets/man-pages" "share/man/man1"
+                       #:include-regexp ("\\.1$"))
+                      ("target/assets/shell-completions/sq.bash"
+                       "share/bash-completion/completions/sq")
+                      ("target/assets/shell-completions/sq.elv"
+                       "share/elvish/lib/sq")
+                      ("target/assets/shell-completions/sq.fish"
+                       "share/fish/vendor_completions.d/")
+                      ("target/assets/shell-completions/_sq"
+                       "share/zsh/site-functions/"))
+                    args))))))
     (inputs
      (cons* nettle openssl pcsc-lite sqlite (cargo-inputs 'sequoia-sq)))
     (native-inputs
