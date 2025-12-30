@@ -2034,7 +2034,7 @@ right-click menu
 (define-public xfce4-mount-plugin
   (package
     (name "xfce4-mount-plugin")
-    (version "1.1.7")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -2044,7 +2044,7 @@ right-click menu
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s3882dv4a9wmfcjjgn2yk6naswsgfy5cr2ql0wmdgzzg4s3pwl7"))))
+        (base32 "0ggra3r1k9jv2dz69ajmgzvcwknkxsjib3khns2csbm74snjcf7n"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
