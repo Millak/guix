@@ -735,13 +735,18 @@ format documents, with the following features:
   (package
     (name "shirah")
     (version "1.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "shirah_reader" version))
-              (sha256
-               (base32
-                "0j15v435lz68c1mj5clfx5dmfyjc6jvvz2q8hqvv799mb2faj42y"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hallicopter/shirah-reader")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0df59bq71b9i78cws5z4cdgjdxj59dvz0x4wpnjpxz0g4wvvc55d"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests.
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-beautifulsoup4 python-ebooklib
                              python-syllables python-termcolor))
     (home-page "https://github.com/hallicopter/shirah-reader")
@@ -751,4 +756,4 @@ format documents, with the following features:
 display ebooks in the usual way or with Rapid Serial Visual Presentation, a
 method to enable speedreading by showing the text word by word at configurable
 speeds.")
-  (license license:gpl2+)))
+    (license license:gpl2+)))
