@@ -1708,7 +1708,7 @@ A plugin for the Xfce panel is also available.")
 (define-public xfce4-volumed-pulse
   (package
     (name "xfce4-volumed-pulse")
-    (version "0.2.5")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1717,7 +1717,7 @@ A plugin for the Xfce panel is also available.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vr20rm81kd0av85zvfghzbczs4ahkxi1n4qn4hikqnb67iwrcq3"))))
+        (base32 "01m8cim3c3g1pq2haxacwpcg5nsdk2hq5plcxiicy3jdbazfmnsd"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list xfce4-dev-tools))
