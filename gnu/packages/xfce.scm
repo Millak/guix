@@ -1196,7 +1196,7 @@ local and remote file systems and manage bookmarks of such.")
 (define-public parole
   (package
     (name "parole")
-    (version "4.18.2")
+    (version "4.20.0")
     (source
      (origin
        (method git-fetch)
@@ -1206,7 +1206,7 @@ local and remote file systems and manage bookmarks of such.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yzqry3pbgn413nflw7a8cm3xdq96w5pj41b04p5drr7qs44d1qb"))))
+        (base32 "0cb9blcbxyb80cql1dldh5qgsqp53nf2c4x43xdwwd3zwsr1jp13"))))
     (build-system gnu-build-system)
     (arguments
      (list
