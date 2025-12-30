@@ -1645,7 +1645,7 @@ of data to either CD/DVD/BD.")
 (define-public xfce4-screenshooter
   (package
    (name "xfce4-screenshooter")
-   (version "1.11.1")
+   (version "1.11.3")
    (source
     (origin
       (method git-fetch)
@@ -1654,8 +1654,8 @@ of data to either CD/DVD/BD.")
             (commit (string-append name "-" version))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "1wxgc84f5kgs896mjpn2sq7ikh3gpfyilpqfarmlzpmpmmhgvppw"))))
-   (build-system gnu-build-system)
+       (base32 "1ynh4i25fzswwskyvw25rw03kd25rj1169ifhmqcdp50hzj67psl"))))
+   (build-system meson-build-system)
    (native-inputs
     (list xfce4-dev-tools))
    (inputs
