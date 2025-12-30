@@ -4589,7 +4589,7 @@ readable.")
 (define-public python-vaex-core
   (package
     (name "python-vaex-core")
-    (version "4.18.1")
+    (version "4.19.0")
     (source
      (origin
        (method git-fetch)
@@ -4598,7 +4598,7 @@ readable.")
               (commit (string-append "core-v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sp096msbzgjlwi8c1ink2bp4pjff9pvikqz1y1li8d3in4gpgdr"))
+        (base32 "1m6h6m0vm8vdx2nk26nvlbyfvlj0g9ph8cdh38258gn18fd2db0l"))
        (patches
         (search-patches "python-vaex-core-fix-tsl-use.patch"))
        (modules '((guix build utils)
@@ -4624,7 +4624,9 @@ readable.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f ; require vaex.server and others, which require vaex-core.
+      ;; TODO: Require vaex.server and others, which require vaex-core;
+      ;; implement bootsrapping.
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-requirements
@@ -4641,12 +4643,18 @@ readable.")
               (substitute* "src/string_utils.hpp"
                 (("#include <nonstd/string_view.hpp>")
                  "#include <cstdint>\n#include <nonstd/string_view.hpp>")))))))
+    (native-inputs
+     (list pybind11
+           python-cython
+           python-setuptools))
     (inputs
-     (list boost pcre pybind11 string-view-lite tsl-hopscotch-map))
+     (list boost
+           pcre
+           string-view-lite
+           tsl-hopscotch-map))
     (propagated-inputs
      (list python-aplus
            python-blake3
-           python-click ;XXX for dask
            python-cloudpickle
            python-dask
            python-filelock
@@ -4655,17 +4663,22 @@ readable.")
            python-nest-asyncio
            python-numpy
            python-pandas
-           python-progressbar2
            python-pyarrow
            python-pydantic
-           python-pydantic-settings
            python-pyyaml
-           python-requests
            python-rich
-           python-six
-           python-tabulate))
-    (native-inputs
-     (list python-pytest python-cython python-setuptools python-wheel))
+           python-six            ;hard dependency
+           python-tabulate
+           ;; [optional]
+           python-diskcache
+           python-fsspec
+           ;; python-gcsfs       ;not packaged yet in Guix
+           python-graphviz
+           python-h5py
+           python-httpx
+           ;; python-ipyvolume  ;not packaged yet in Guix
+           python-psutil
+           python-s3fs))
     (home-page "https://www.github.com/maartenbreddels/vaex")
     (synopsis "Core of Vaex library for exploring tabular datasets")
     (description "Vaex is a high performance Python library for lazy
