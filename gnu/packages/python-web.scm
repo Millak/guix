@@ -814,13 +814,11 @@ eSign REST API.  Send, sign, and approve documents using this client.")
       #:tests? #f
       #:phases #~(modify-phases %standard-phases (delete 'sanity-check))))
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (propagated-inputs
      (list python-cryptography
            python-dnspython
            python-future
-           python-publicsuffix
            python-publicsuffixlist))
     (home-page "https://github.com/Domain-Connect/domainconnect_python")
     (synopsis "Client library for Domain Connect protocol")
