@@ -1226,10 +1226,10 @@ which has been extracted into a standalone library for compatibility with
 other git-like projects such as @code{libgit2}.")
       (license license:lgpl2.1+))))
 
-(define-public libgit2-1.7
+(define-public libgit2-1.8
   (package
     (name "libgit2")
-    (version "1.7.2")
+    (version "1.8.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1238,15 +1238,15 @@ other git-like projects such as @code{libgit2}.")
               (file-name (git-file-name "libgit2" version))
               (sha256
                (base32
-                "0i95jwrwx4svh5l4dpa5r4a99f813hlm7nzzkbqzmnw4pkyxhlvx"))
-              ;; We need to use the bundled xdiff until an option is given
-              ;; to use the one from git.
+                "0jydckwn0bbrp2kbcr1ih1bz4sc6yhx7lrl22lqcgnf2v6ml6n01"))
+              (patches
+               (search-patches "libgit2-uninitialized-proxy-settings.patch"))
               (modules '((guix build utils)))
               (snippet
                '(begin
                   (for-each delete-file-recursively
                             '("deps/chromium-zlib"
-                              "deps/http-parser"
+                              "deps/llhttp"
                               "deps/ntlmclient"
                               "deps/pcre"
                               "deps/winhttp"
@@ -1255,18 +1255,24 @@ other git-like projects such as @code{libgit2}.")
     (outputs '("out" "debug"))
     (arguments
      `(#:configure-flags
-       (list "-DUSE_NTLMCLIENT=OFF" ;TODO: package this
-             "-DREGEX_BACKEND=pcre2"
-             "-DUSE_HTTP_PARSER=system"
-             "-DUSE_SSH=ON" ; cmake fails to find libssh if this is missing
-             ,@(if (%current-target-system)
-                   `((string-append
-                      "-DPKG_CONFIG_EXECUTABLE="
-                      (search-input-file
-                       %build-inputs
-                       (string-append "/bin/" ,(%current-target-system)
-                                      "-pkg-config"))))
-                   '()))
+       ;; TODO: Simplify this to just be a list.  It is only like this to
+       ;; avoid a large rebuild.
+       (map (lambda (arg)
+              (if (string= "-DUSE_HTTP_PARSER=system" arg)
+                  "-DUSE_HTTP_PARSER=http-parser"
+                  arg))
+            (list "-DUSE_NTLMCLIENT=OFF" ;TODO: package this
+                  "-DREGEX_BACKEND=pcre2"
+                  "-DUSE_HTTP_PARSER=system"
+                  "-DUSE_SSH=ON" ; cmake fails to find libssh if this is missing
+                  ,@(if (%current-target-system)
+                        `((string-append
+                           "-DPKG_CONFIG_EXECUTABLE="
+                           (search-input-file
+                            %build-inputs
+                            (string-append "/bin/" ,(%current-target-system)
+                                           "-pkg-config"))))
+                        '())))
        #:phases
        (modify-phases %standard-phases
          ,@(if (or (target-arm32?) (target-hurd?))
@@ -1299,6 +1305,47 @@ provided as a re-entrant linkable library with a solid API, allowing you to
 write native speed custom Git applications in any language with bindings.")
     ;; GPLv2 with linking exception
     (license license:gpl2)))
+
+(define-public libgit2-1.7
+  (package
+    (inherit libgit2-1.8)
+    (version "1.7.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/libgit2/libgit2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "libgit2" version))
+              (sha256
+               (base32
+                "0i95jwrwx4svh5l4dpa5r4a99f813hlm7nzzkbqzmnw4pkyxhlvx"))
+              ;; We need to use the bundled xdiff until an option is given
+              ;; to use the one from git.
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (for-each delete-file-recursively
+                            '("deps/chromium-zlib"
+                              "deps/http-parser"
+                              "deps/ntlmclient"
+                              "deps/pcre"
+                              "deps/winhttp"
+                              "deps/zlib"))))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments libgit2-1.8)
+       ((#:configure-flags _ #~(list))
+        `(list "-DUSE_NTLMCLIENT=OFF" ;TODO: package this
+               "-DREGEX_BACKEND=pcre2"
+               "-DUSE_HTTP_PARSER=system"
+               "-DUSE_SSH=ON" ; cmake fails to find libssh if this is missing
+               ,@(if (%current-target-system)
+                     `((string-append
+                        "-DPKG_CONFIG_EXECUTABLE="
+                        (search-input-file
+                         %build-inputs
+                         (string-append "/bin/" ,(%current-target-system)
+                                        "-pkg-config"))))
+                     '())))))))
 
 (define-public libgit2-1.6
   (package
@@ -1339,38 +1386,6 @@ write native speed custom Git applications in any language with bindings.")
 (define-public libgit2
   ;; Default version of libgit2.
   libgit2-1.5)
-
-(define-public libgit2-1.8
-  (package
-    (inherit libgit2-1.7)
-    (version "1.8.4")
-    (source (origin
-              (inherit (package-source libgit2-1.7))
-              (uri (git-reference
-                    (url "https://github.com/libgit2/libgit2")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name "libgit2" version))
-              (sha256
-               (base32
-                "0jydckwn0bbrp2kbcr1ih1bz4sc6yhx7lrl22lqcgnf2v6ml6n01"))
-              (patches
-               (search-patches "libgit2-uninitialized-proxy-settings.patch"))
-	      (snippet
-               '(begin
-                  (for-each delete-file-recursively
-                            '("deps/chromium-zlib"
-                              "deps/llhttp"
-                              "deps/ntlmclient"
-                              "deps/pcre"
-                              "deps/winhttp"
-                              "deps/zlib"))))))
-    (arguments (substitute-keyword-arguments (package-arguments libgit2-1.7)
-                 ((#:configure-flags flags #~(list))
-                  #~(map (lambda (arg)
-                           (if (string= "-DUSE_HTTP_PARSER=system" arg)
-                               "-DUSE_HTTP_PARSER=http-parser"
-                               arg))
-                         #$flags))))))
 
 (define-public libgit2-1.9
   (package
