@@ -1926,7 +1926,7 @@ be clicked to open the chosen mount point.")
 (define-public xfce4-genmon-plugin
   (package
     (name "xfce4-genmon-plugin")
-    (version "4.2.1")
+    (version "4.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1936,7 +1936,7 @@ be clicked to open the chosen mount point.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ap5qn2g1f4n3m30h9i0x2h8r84cfdh6pylnp0jc7r9gy910mxgm"))))
+        (base32 "0h4aivfdjzc2k6j6x0a4hikgpz9c7myh2kr9vax3v2mvmi81wmai"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
