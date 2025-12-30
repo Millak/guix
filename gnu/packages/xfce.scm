@@ -1167,7 +1167,7 @@ devices and folders.")
 (define-public gigolo
   (package
     (name "gigolo")
-    (version "0.5.4")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -1177,7 +1177,7 @@ devices and folders.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1688j4c7d1vzglx9a8a32gy17yfqwrha7p0r272hrhz009jza6w1"))))
+        (base32 "0sw111icmzrrv3ksc6l7vhckzjwpkm299rmrx9r6w4s3zdb668dp"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
