@@ -2207,7 +2207,7 @@ freedesktop.org specification.")
 (define-public xfce4-systemload-plugin
   (package
     (name "xfce4-systemload-plugin")
-    (version "1.3.3")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -2217,7 +2217,7 @@ freedesktop.org specification.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ds1z5zwsrk6m4sxa5fnaqk19vhiy1z7xjn91q1z03cys6j3a025"))))
+        (base32 "0fs63sbr4cp9ncjfv98z0az416llnjgdqgsfcvbfmbi1xwifdrwi"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
