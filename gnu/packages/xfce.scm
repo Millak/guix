@@ -1871,7 +1871,7 @@ governor and frequencies supported and used by your system.")
 (define-public xfce4-diskperf-plugin
   (package
     (name "xfce4-diskperf-plugin")
-    (version "2.7.1")
+    (version "2.8.0")
     (source
      (origin
        (method git-fetch)
@@ -1881,7 +1881,7 @@ governor and frequencies supported and used by your system.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fav30y6r08yyrrm0yzi9jrn6af6hw8qk7wk7pd172ajqgcyp4ai"))))
+        (base32 "0i4imw3s4gymqmns0z1k33prlxywk1sg9q66nws7d9xnv58v5f70"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
