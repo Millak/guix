@@ -1766,7 +1766,7 @@ core or CPU.")
 (define-public xfce4-eyes-plugin
   (package
     (name "xfce4-eyes-plugin")
-    (version "4.6.2")
+    (version "4.7.0")
     (source
      (origin
        (method git-fetch)
@@ -1776,7 +1776,7 @@ core or CPU.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wwfxhaxp6r8g4jvj5ax7a3djh4q896ilxdfdcx6n67qzs5ksq8h"))))
+        (base32 "0h502l590qyypsaaivhzw3shl59im8194wk5gnfswyhadz336zd0"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
