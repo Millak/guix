@@ -7535,7 +7535,7 @@ specified in @url{https://datatracker.ietf.org/doc/html/rfc6350, RFC 6350}.")
 (define-public go-github-com-emersion-go-webdav
   (package
     (name "go-github-com-emersion-go-webdav")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -7544,7 +7544,7 @@ specified in @url{https://datatracker.ietf.org/doc/html/rfc6350, RFC 6350}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lqll59rvdlj0s014fjdn8brb9j9h59fmly744yfz6wxwdcp23g4"))))
+        (base32 "0by1clnwnnpqm0arg53p9s7kzf5lg9cld0jla4l7h83bnfsgpdn3"))))
     (build-system go-build-system)
     (arguments
      (list
