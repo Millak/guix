@@ -931,7 +931,7 @@ on numbers.")
 (define-public lutok
   (package
     (name "lutok")
-    (version "0.4")
+    (version "0.6.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -940,13 +940,13 @@ on numbers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0a2vc2wy5hasw69h1mz768ywx6c4ccl9jzzd4ixddwba3z3ha03b"))))
+                "1hk8shp1vkxa09qxaafcfrgc9098cr75n5zc192bv8yjyvz0hvc3"))))
     (build-system gnu-build-system)
     ;; Disable the test suite to avoid a circular dependency on kyua.
     (arguments (list #:tests? #f))
     (native-inputs (list autoconf automake libtool pkg-config))
     (inputs (list atf))
-    (propagated-inputs (list lua-5.2))  ;included in c_gate.hpp
+    (propagated-inputs (list lua-5.4))  ;included in c_gate.hpp
     (home-page "https://github.com/freebsd/lutok")
     (synopsis "Lightweight C++ API for Lua")
     (description "Lutok is a lightweight C++ API library for Lua.
