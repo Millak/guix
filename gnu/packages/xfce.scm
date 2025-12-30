@@ -1956,7 +1956,7 @@ button and a personalized tooltip.")
 (define-public xfce4-mailwatch-plugin
   (package
     (name "xfce4-mailwatch-plugin")
-    (version "1.3.2")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -1966,7 +1966,7 @@ button and a personalized tooltip.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dad2nl8y5v2y4xcp1lp51s0n1yb7v706igs5w2xrfsp7gp19d98"))))
+        (base32 "14kwwnnzgr9qkvdncgf4fwzgazml1l1gl68qf4s9jx44flkrdijx"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
