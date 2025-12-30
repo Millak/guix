@@ -18667,21 +18667,29 @@ convert an @code{.ipynb} notebook file into various static formats including:
 (define-public python-ipywidgets
   (package
     (name "python-ipywidgets")
-    (version "8.1.2")
+    ;; XXX: Newer version requires python-jupyterlab, see guix/guix#2073.
+    (version "8.1.4")
     (source
      (origin
        (method url-fetch)
+       ;; Git: <https://github.com/jupyter-widgets/ipywidgets/tree/8.1.8/python/ipywidgets>
        (uri (pypi-uri "ipywidgets" version))
        (sha256
         (base32
-         "1ja2xibll6v40va3s7wz5dfp95q01yds64z6csl2dsds94gb9ffh"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-comm python-ipython python-jupyterlab-widgets
-           python-traitlets python-widgetsnbextension))
+         "0f9i3ycyc8c3rs3xk30hvq7mjs37phbxv4p8parrm02cxn9yzdc5"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-ipykernel python-jsonschema python-pytest python-pytest-cov
-           python-pytz python-setuptools-67))
+     (list python-ipykernel
+           python-jsonschema
+           python-pytest
+           python-pytz
+           python-setuptools))
+    (propagated-inputs
+     (list python-comm
+           python-ipython
+           python-jupyterlab-widgets
+           python-traitlets
+           python-widgetsnbextension))
     (home-page "https://ipython.org")
     (synopsis "IPython HTML widgets for Jupyter")
     (description "Ipywidgets are interactive HTML widgets for Jupyter
