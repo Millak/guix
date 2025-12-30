@@ -634,7 +634,7 @@ applications, and includes a search bar to search for applications.")
 (define-public xfce4-xkb-plugin
   (package
     (name "xfce4-xkb-plugin")
-    (version "0.8.5")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -644,7 +644,7 @@ applications, and includes a search bar to search for applications.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iai2myz1zj5vvbl3lz8r50bhv103avfjdc233gqa933wwxgwvd0"))))
+        (base32 "0l8vq3z69d3n2nh76r92bcbflrzafw1a3qnf4sjvrwfpkqm59ff8"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
