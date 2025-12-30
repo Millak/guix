@@ -1897,7 +1897,7 @@ performance (bytes transferred per second).")
 (define-public xfce4-fsguard-plugin
   (package
     (name "xfce4-fsguard-plugin")
-    (version "1.1.4")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -1907,7 +1907,7 @@ performance (bytes transferred per second).")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0df9gs9wjmnb2889a0ssfjvjviswcjkcq6f8211fyzzqaj2gn9n0"))))
+        (base32 "1bfdi1wa6zsbvzybf0sv8iczzd987mhkqzfmhkhjh1dcdvfghl1f"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
