@@ -974,7 +974,7 @@ tags-based file renaming from inside Thunar Bulk Renamer.")
 (define-public thunar-vcs-plugin
   (package
     (name "thunar-vcs-plugin")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
@@ -984,7 +984,7 @@ tags-based file renaming from inside Thunar Bulk Renamer.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n07d8v7spn2ys1nz9yb5szj9jkd1y7frzq203v5ys9gifa7mnvv"))))
+        (base32 "1hxhja1qi1k9p064g573vb5w5h0b8acfxvr1ri6p5zrsirmd7r2n"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -996,6 +996,7 @@ tags-based file renaming from inside Thunar Bulk Renamer.")
      (list exo
            gtk+
            thunar
+           libxfce4ui
            libxfce4util
            apr
            apr-util
