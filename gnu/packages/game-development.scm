@@ -515,19 +515,24 @@ PCM data.")
     (version "0.8.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "nml" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/OpenTTD/nml")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0krs3jac9jc0zqr59ivfl5vibqc15b4yhww73j3c01dla1shvlcj"))))
+        (base32 "03qrpnv2r2kjjfqkc67sqjzxq59li7vb1jhbdhgif8kf2x92805k"))))
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda _
-                   (invoke "make" "-C" "regression"))))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-pillow python-ply))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "-C" "regression")))))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-pillow python-ply))
     (home-page "https://github.com/OpenTTD/nml")
     (synopsis "NML compiler")
     (description
