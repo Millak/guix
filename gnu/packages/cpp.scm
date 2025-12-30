@@ -1115,6 +1115,38 @@ and its implementation.  This is essentially a method for processes to talk to
 each other.")
     (license license:bsd-3)))
 
+(define-public hyprland-guiutils
+  (package
+    (name "hyprland-guiutils")
+    (version "0.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hyprwm/hyprland-guiutils")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0x5757ch8rvgbph66fkf5cg39r37isvfy450429746xmajsy0qa7"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f)) ; There are no tests
+    (native-inputs (list pkg-config gcc-15))
+    (inputs
+      (list aquamarine
+            cairo
+            hyprgraphics
+            hyprlang
+            hyprtoolkit
+            hyprutils
+            mesa
+            libxkbcommon
+            pixman))
+    (home-page "https://github.com/hyprwm/hyprland-guiutils")
+    (synopsis "Hyprland GUI utilities")
+    (description "This package provides GUI utilities for hyprland.  It is the
+successor of hyprland-qtutils.")
+    (license license:bsd-3)))
+
 (define-public xsimd-benchmark
   (package
     (inherit xsimd)
