@@ -1432,10 +1432,10 @@ write native speed custom Git applications in any language with bindings.")
 
 (define-public libgit2-1.3
   (package
-    (inherit libgit2-1.4)
+    (inherit libgit2-1.5)
     (version "1.3.2")
     (source (origin
-              (inherit (package-source libgit2-1.4))
+              (inherit (package-source libgit2-1.5))
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/libgit2/libgit2")
@@ -1445,7 +1445,7 @@ write native speed custom Git applications in any language with bindings.")
                (base32
                 "1dngga8jq419z6ps65wpmh2jihcf70k6r98pb1m1yiwj7qqh9792"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments libgit2)
+     (substitute-keyword-arguments (package-arguments libgit2-1.5)
        ((#:phases _ '%standard-phases)
         `(modify-phases %standard-phases
            ;; Run checks more verbosely, unless we are cross-compiling.
