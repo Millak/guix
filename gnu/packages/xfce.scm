@@ -949,7 +949,7 @@ Samba from Thunar (the Xfce file manager) without requiring root access.")
 (define-public thunar-media-tags-plugin
   (package
     (name "thunar-media-tags-plugin")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -959,7 +959,7 @@ Samba from Thunar (the Xfce file manager) without requiring root access.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "091i975aazkhkxyh0h0msyqkkr1z2dfy068syaawcisyaw1h2mpg"))))
+        (base32 "1q0429iwy0wskvcqbqkv98bjg2cd57mq9sp8r10iljw9my0h2jm8"))))
     (build-system gnu-build-system)
     (native-inputs (list xfce4-dev-tools))
     (inputs (list exo gtk+ thunar taglib))
