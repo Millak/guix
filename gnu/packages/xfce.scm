@@ -96,7 +96,7 @@
 (define-public libxfce4util
   (package
     (name "libxfce4util")
-    (version "4.20.0")
+    (version "4.20.1")
     (source
      (origin
        (method git-fetch)
@@ -105,7 +105,7 @@
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0r24hx200jvixn8rhcg0cbvv6b3jc4hj1iw2bkvmrcf74m4ck9nj"))))
+        (base32 "1wwiwq4hiww25lrjmjcbibc8j1xg4c5n3q4nd9zk91hdzrxgjm22"))))
     (build-system gnu-build-system)
     (arguments
      (list
