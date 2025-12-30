@@ -3571,7 +3571,7 @@ Mercurial, Bazaar, Darcs, CVS, Fossil, and Veracity.")
 (define-public grokmirror
   (package
     (name "grokmirror")
-    (version "2.0.11")
+    (version "2.0.12")
     (source
      (origin
        (method git-fetch)
@@ -3579,23 +3579,23 @@ Mercurial, Bazaar, Darcs, CVS, Fossil, and Veracity.")
              (url (string-append "https://git.kernel.org/pub/scm/"
                                  "utils/grokmirror/grokmirror.git"))
              (commit (string-append "v" version))))
-       (file-name (string-append name "-" version "-checkout"))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0c6nnfzzyl247r1dcjnsyx16d34nyra9ikjjhi0xzlrbiwnb0w32"))))
-    (build-system python-build-system)
+        (base32 "0plmd753pjqficvqk4jn8rjp43j775c4rjq6ja04jqa89rq1ak71"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f                      ; no test suite
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-manpages
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((man (string-append (assoc-ref outputs "out")
-                                        "/man/man1/")))
-               (mkdir-p man)
-               (for-each (lambda (file) (install-file file man))
-                         (find-files "." "\\.1$"))))))))
-    (propagated-inputs
-     (list python-packaging python-requests))
+     (list
+      #:tests? #f ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-manpages
+            (lambda _
+              (let* ((man (string-append #$output "/man/man1/")))
+                (for-each (lambda (file)
+                            (install-file file man))
+                          (find-files "." "\\.1$"))))))))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-packaging python-requests))
     (home-page
      "https://git.kernel.org/pub/scm/utils/grokmirror/grokmirror.git")
     (synopsis "Framework to smartly mirror git repositories")
