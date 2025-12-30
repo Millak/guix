@@ -2062,7 +2062,7 @@ mounted or when unmounting fails.")
 (define-public xfce4-netload-plugin
   (package
     (name "xfce4-netload-plugin")
-    (version "1.4.2")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -2072,7 +2072,7 @@ mounted or when unmounting fails.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ck3mdwhj7pzrb1xhynyp4550x27bvlja9z50as30mi070vn92l3"))))
+        (base32 "0jm6cksjp5h8za8bsy4b6ky96zbq625pr6yblfg4z0w74cydz6c9"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
