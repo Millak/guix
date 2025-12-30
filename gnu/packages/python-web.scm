@@ -6922,28 +6922,6 @@ provides service wrappers for convenient connection initialization and
 authenticated session objects providing things like keep-alive.")
     (license license:expat)))
 
-(define-public python-unalix
-  (package
-    (name "python-unalix")
-    (version "0.9")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/AmanoTeam/Unalix")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0h8wc1axv26h753a8brc6dccqndx005c2bhr09gwg5c1hj9zsfml"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools))
-    (home-page "https://pypi.org/project/Unalix/")
-    (synopsis "Python library for removing tracking fields from URLs")
-    (description "Unalix is a library written in Python implementing the
-specification used by the @url{https://github.com/ClearURLs/Addon, ClearURLs}
-addon for removing tracking fields from URLs.")
-    (license license:lgpl3+)))
-
 (define-public python-urllib3
   (package
     (name "python-urllib3")
