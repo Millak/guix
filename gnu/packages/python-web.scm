@@ -6898,30 +6898,6 @@ used as authentication in IMAP mail servers.")
 OAuth request-signing logic.")
     (license license:bsd-3)))
 
-(define-public python-rauth
-  (package
-    (name "python-rauth")
-    (version "0.7.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "rauth" version))
-        (sha256
-         (base32
-          "02kv8w8l98ky223avyq7vw7x1f2ya9chrm59r77ylq45qb0xnk2j"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:test-target "check"))
-    (propagated-inputs
-     (list python-requests))
-    (home-page "https://github.com/litl/rauth")
-    (synopsis "Python library for OAuth 1.0/a, 2.0, and Ofly")
-    (description
-     "Rauth is a Python library for OAuth 1.0/a, 2.0, and Ofly.  It also
-provides service wrappers for convenient connection initialization and
-authenticated session objects providing things like keep-alive.")
-    (license license:expat)))
-
 (define-public python-urllib3
   (package
     (name "python-urllib3")
