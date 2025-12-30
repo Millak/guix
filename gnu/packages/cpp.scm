@@ -50,6 +50,7 @@
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2025 Philippe Swartvagher <phil.swart@gmx.fr>
+;;; Copyright © 2025 Murilo <murilo@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -102,6 +103,7 @@
   #:use-module (gnu packages disk)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -125,6 +127,7 @@
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages pulseaudio)
+  #:use-module (gnu packages samba)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages tex)
@@ -1046,6 +1049,43 @@ language used in Hyprland.")
     (description
      "This package provides a C++ library for utilities used across Hyprland
 ecosystem.")
+    (license license:bsd-3)))
+
+(define-public hyprtoolkit
+  (package
+    (name "hyprtoolkit")
+    (version "0.5.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hyprwm/hyprtoolkit")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lyc5mmk7i83q3rq11yyggwxpcx3kmav3hg3ss1xl723v27cnj80"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f)) ; No tests in Release build type
+    (native-inputs (list pkg-config hyprwayland-scanner))
+    (inputs
+      (list aquamarine
+            cairo
+            googletest
+            hyprgraphics
+            hyprlang
+            hyprutils
+            iniparser
+            mesa
+            libglvnd
+            libxkbcommon
+            pango
+            pixman
+            wayland
+            wayland-protocols))
+    (home-page "https://github.com/hyprwm/hyprtoolkit")
+    (synopsis "Modern C++ Wayland-native GUI toolkit")
+    (description "This package provides a C++ toolkit for making wayland GUI
+apps.")
     (license license:bsd-3)))
 
 (define-public xsimd-benchmark
