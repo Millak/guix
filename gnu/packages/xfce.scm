@@ -395,7 +395,7 @@ management D-Bus specification.")
 (define-public libxfce4windowing
   (package
     (name "libxfce4windowing")
-    (version "4.20.2")
+    (version "4.20.5")
     (source
      (origin
        (method git-fetch)
@@ -404,7 +404,7 @@ management D-Bus specification.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "151bs8rf0q3cln28lla5yk254dr75b508a0611crfavqrsrn23az"))))
+        (base32 "1m84xwqvwy00irqr6ndl1473naxr74sssbr0kqmd59x2y15vlnsd"))))
     (build-system gnu-build-system)
     (arguments
      (list
