@@ -204,7 +204,7 @@ to share commonly used Xfce widgets among the Xfce applications.")
 (define-public catfish
   (package
     (name "catfish")
-    (version "4.20.0")
+    (version "4.20.1")
     (source
      (origin
        (method git-fetch)
@@ -213,7 +213,7 @@ to share commonly used Xfce widgets among the Xfce applications.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vyf62n8j2pgxd30j8hf1x6d0yz8r86ng39p9smfpq7m3vll8i7c"))))
+        (base32 "0b2p3d4zbx2k8qacamlxcmx91h6sgqz5is7dpc9bj926rnfjwc4r"))))
     (build-system meson-build-system)
     (arguments
      (list
