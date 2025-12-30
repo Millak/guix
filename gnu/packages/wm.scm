@@ -372,7 +372,7 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
 (define-public hyprland
   (package
     (name "hyprland")
-    (version "0.52.2")
+    (version "0.53.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/hyprwm/Hyprland"
@@ -389,7 +389,7 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
                               "subprojects"))))
               (sha256
                (base32
-                "1pfpfj1f02r1a2sr71v3jkmdfvr0kc8mp51b92487bbci6cxpd2p"))))
+                "0q88rfgv080xpxp25bxvv17yy3ppn6nkaxz35fdmaajdlg7j578x"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f                  ;No tests.
@@ -430,13 +430,15 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
            hyprcursor
            hyprgraphics
            hyprland-protocols
-           hyprland-qtutils
+           hyprland-guiutils
            hyprlang
            hyprutils
+           hyprwire
            libinput-minimal
            libxcursor
            libxkbcommon
            mesa
+           muparser
            pango
            pciutils
            re2-next
