@@ -2417,13 +2417,14 @@ local weather in the panel, using forecast data provided by the
                          libxslt
                          meson
                          pkg-config))
-    (inputs (list glib python))
+    (inputs (list glib))
     (propagated-inputs
      (list
       ;; required by 'xdt-autogen'
       autoconf automake gtk-doc/stable intltool libtool
       ;; required by 'xdt-depends.m4'
       (list glib "bin") ;for glib-genmarshal
+      python            ;for xdt-gen-visibility
       pkg-config))
     (home-page "https://docs.xfce.org/xfce/xfce4-dev-tools/")
     (synopsis "Xfce developer tools")
