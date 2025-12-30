@@ -2289,7 +2289,7 @@ period.")
 (define-public xfce4-verve-plugin
   (package
     (name "xfce4-verve-plugin")
-    (version "2.0.4")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)
@@ -2299,7 +2299,7 @@ period.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "023d1vv0qa9ig8k15m7bl0b9hgqg7c7lf1w7d8av2y2g7xi8ljwg"))))
+        (base32 "0mrfd19fxdd20f8fnjrj650l1jknjna7am9ifpin2ww12xha654v"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
