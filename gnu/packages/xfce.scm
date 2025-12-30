@@ -478,7 +478,7 @@ applications menu, workspace switcher and more.")
 (define-public xfce4-battery-plugin
   (package
     (name "xfce4-battery-plugin")
-    (version "1.1.6")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -487,7 +487,7 @@ applications menu, workspace switcher and more.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bd912j22pf6rmqvkc80g5axjil88pbzxqa68krw65l11v73icmm"))))
+        (base32 "0r0x37m3gq4nyh6bxqk3yypzgx37jl7rsyw28xk7xs192r0pd313"))))
     (build-system gnu-build-system)
     (arguments
      (list
