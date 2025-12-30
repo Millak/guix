@@ -2088,7 +2088,7 @@ interfaces of your choice in the panel.")
 (define-public xfce4-places-plugin
   (package
     (name "xfce4-places-plugin")
-    (version "1.8.4")
+    (version "1.9.0")
     (source
      (origin
        (method git-fetch)
@@ -2098,7 +2098,7 @@ interfaces of your choice in the panel.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09yqnya7hr4vr6pn4ddzs7vx8582yyf1wrrwd1fmd81f7mdns1w7"))))
+        (base32 "13q4l6n2h2fdbk83dibvyhkhc8i2jg8cm9dlxkyr8hrwng1lnzn1"))))
     (build-system gnu-build-system)
     (native-inputs
      (list desktop-file-utils xfce4-dev-tools))
