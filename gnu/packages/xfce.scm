@@ -2348,7 +2348,7 @@ lan interface (signal state, signal quality, network name (SSID)).")
 (define-public xfce4-weather-plugin
   (package
     (name "xfce4-weather-plugin")
-    (version "0.11.3")
+    (version "0.12.0")
     (source
      (origin
        (method git-fetch)
@@ -2358,7 +2358,7 @@ lan interface (signal state, signal quality, network name (SSID)).")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cxv5p1472vgy2nks9145m8yajsxrc1a83pmqpmnmvpyyandbdml"))))
+        (base32 "1bayqxs75innmwb7b2gn32dwrmw8sn1i5jgg9l7qfhj97l9scndn"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
