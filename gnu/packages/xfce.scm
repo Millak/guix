@@ -535,7 +535,7 @@ matching them against regular expressions.")
 (define-public xfce4-pulseaudio-plugin
   (package
     (name "xfce4-pulseaudio-plugin")
-    (version "0.4.9")
+    (version "0.5.1")
     (source
      (origin
        (method git-fetch)
@@ -545,7 +545,7 @@ matching them against regular expressions.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hmajys3g56xlpja9hx0rvap54bw0g6vmirh068zn5004wg7i6kc"))))
+        (base32 "1nrhbz78kgx02a77djyxh75w9iwncjbxg39msys6vnapknb3xbyk"))))
     (build-system gnu-build-system)
     (arguments
      (list
