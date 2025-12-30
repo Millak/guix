@@ -889,6 +889,30 @@ block or item from the oneblock to expand the island!")
     (license license:gpl3+)
     (properties `((upstream-name . "NO11/oneblock")))))
 
+(define-public luanti-whitelist
+  (package
+    (name "luanti-whitelist")
+    (version "1.2.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://gitlab.com/zughy-friends-minetest/whitelist")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18nkph1iv5awri5i4rk9m14s0wrxsg1wjjf7gnznjrma5kffpzrq"))))
+    (build-system luanti-mod-build-system)
+    (propagated-inputs (list luanti-chatcmdbuilder))
+    (home-page "https://content.luanti.org/packages/Zughy/whitelist/")
+    (synopsis "Luanti mod to manage who can join a server")
+    (description "This package provides the @code{whitelist} Luanti mod,
+ which can be used to allow only specific players to join a Luanti server.")
+    ;; This should probably be agpl3+ (see:
+    ;; <https://gitlab.com/zughy-friends-minetest/whitelist/-/issues/1>).
+    (license license:agpl3)
+    (properties `((upstream-name . "Zughy/whitelist")))))
+
 (define-public luanti-wielded-light
   (package
     (name "luanti-wielded-light")
