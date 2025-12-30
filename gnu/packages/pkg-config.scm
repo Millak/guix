@@ -179,14 +179,14 @@ exec ~a \"$@\""
 (define-public pkgconf
   (package
     (name "pkgconf")
-    (version "2.4.3")
+    (version "2.5.1")
     (source (origin
               (method url-fetch)
               (uri (string-append  "https://distfiles.dereferenced.org/"
                                    name "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0hasqa1hrg9302mc8sl4w2ac0z0cy4kacz7h9csafgspxncks82i"))))
+                "0hy2a058nrgxzwn5ilnf3q0fpj9bh9lj42n18kqfr1lzkdccj1fd"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
