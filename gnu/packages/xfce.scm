@@ -1845,7 +1845,7 @@ precedence rules, and the following functions and common constants.")
 (define-public xfce4-cpufreq-plugin
   (package
     (name "xfce4-cpufreq-plugin")
-    (version "1.2.9")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1855,7 +1855,7 @@ precedence rules, and the following functions and common constants.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m90li6lq7d4fvv3pvqvyhd13pijcmz5ipfnr1z7a0jhjkskabjq"))))
+        (base32 "14c70j8gpqwzy1k2nkzdfgkryhy98y9hy9d2y1991n1c6cxj1790"))))
     (build-system gnu-build-system)
     (native-inputs
      (list xfce4-dev-tools))
