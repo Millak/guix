@@ -703,7 +703,7 @@ your system in categories, so you can quickly find and launch them.")
 (define-public xfce4-session
   (package
     (name "xfce4-session")
-    (version "4.20.0")
+    (version "4.20.3")
     (source
      (origin
        (method git-fetch)
@@ -712,7 +712,7 @@ your system in categories, so you can quickly find and launch them.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zzmszwm22nnwybagnvan62qbqcgcr7fnp288qcr9bkkag5y8zcs"))
+        (base32 "06sv5l2xwganjvsvvla0nvblyrhl8xrm8fwgl2hf33i4c2k6rx8x"))
        (modules '((guix build utils)))
        (snippet
         '(begin
