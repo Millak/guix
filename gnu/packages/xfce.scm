@@ -1245,7 +1245,7 @@ features playback of local media files, DVD/CD and live streams.")
 (define-public xfce4-terminal
   (package
     (name "xfce4-terminal")
-    (version "1.1.4")
+    (version "1.1.5")
     (source
      (origin
        (method git-fetch)
@@ -1255,7 +1255,7 @@ features playback of local media files, DVD/CD and live streams.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16rcp2f6wh8vdzppkv2xgqlqffg85azi3vdvl90xn2r4ixyrzfas"))))
+        (base32 "11xs71vhz1anyyd41fzm2rz99w6pmv1wszyyjfz8xfg6932ypmd8"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
