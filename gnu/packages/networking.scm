@@ -26,7 +26,7 @@
 ;;; Copyright © 2018, 2020-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2020, 2021, 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2019-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2019-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2019 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019 Timotej Lazar <timotej.lazar@araneo.si>
@@ -4193,31 +4193,43 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1v8miwsslqlqlpp7p210jhxwkblqyc69cgxaq680qhg7h1sf3y2i"))))
+                  "1v8miwsslqlqlpp7p210jhxwkblqyc69cgxaq680qhg7h1sf3y2i"))
+                (patches (search-patches "opendht-meson-install-headers.patch"
+                                         "opendht-meson-liburing.patch"))))
       (outputs '("out" "python" "tools" "debug"))
-      (build-system gnu-build-system)
+      (build-system meson-build-system)
       (arguments
        (list
-        #:imported-modules `((guix build python-build-system) ;for site-packages
-                             ,@%default-gnu-imported-modules)
-        #:modules '(((guix build python-build-system) #:prefix python:)
-                    (guix build gnu-build-system)
-                    (guix build utils))
+        #:modules '((guix build meson-build-system)
+                    (guix build utils)
+                    (ice-9 ftw)
+                    (srfi srfi-26))
         #:configure-flags
-        #~(list "--disable-static"        ;to reduce size
-                "--enable-tests"
-                "--enable-proxy-server"
-                "--enable-push-notifications"
-                "--enable-proxy-server-identity"
-                "--enable-proxy-client")
+        #~(list "-Dproxy_client=enabled"
+                "-Dproxy_server=enabled"
+                "-Dpush_notifications=enabled")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'disable-problematic-tests
               (lambda _
-                ;; The dhtrunnertester test suite includes 'testListen', which
-                ;; is sensitive to the performance/load of the machine it runs
-                ;; on, introducing nondeterminism (see:
-                ;; https://github.com/savoirfairelinux/opendht/issues/626).
+                (substitute* "meson.build"
+                  ;; The 'proxy' test fails with "killed by signal 6 SIGABRT"
+                  ;; inside the build environment (see:
+                  ;; <https://github.com/savoirfairelinux/opendht/issues/819#issuecomment-3701318124>)
+                  (("test\\('(DhtProxy)', test_proxy)")
+                   "")
+                  ;; The 'http' test fails due to liburing not being
+                  ;; functional inside build environment, causing
+                  ;; "io_uring_queue_init: Cannot allocate memory" errors
+                  ;; (see:
+                  ;; <https://github.com/savoirfairelinux/opendht/issues/819#issuecomment-3701318124>).
+                  (("test\\('Http', test_http)")
+                   "")
+                  ;; The 'peerdiscovery' test fails even outside of the build
+                  ;; environment (see:
+                  ;; <https://github.com/savoirfairelinux/opendht/issues/819#issuecomment-3701328516>).
+                  (("test\\('PeerDiscovery', test_peerdiscovery)")
+                   ""))
                 (substitute* "tests/Makefile.am"
                   (("\\bdhtrunnertester\\.(h|cpp)\\b")
                    ""))))
@@ -4229,51 +4241,23 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                 (substitute* "tests/httptester.cpp"
                   (("std::chrono::seconds\\(10)")
                    "std::chrono::seconds(30)"))))
-            (add-after 'unpack 'fix-python-installation-prefix
-              ;; Specify the installation prefix for the compiled Python module
-              ;; that would otherwise attempt to installs itself to Python's own
-              ;; site-packages directory.
-              (lambda _
-                (substitute* "python/Makefile.am"
-                  (("--root=\\$\\(DESTDIR)/")
-                   (string-append "--root=/ --single-version-externally-managed "
-                                  "--prefix=" #$output:python)))))
-            (add-after 'unpack 'specify-runpath-for-python-module
-              (lambda _
-                (substitute* "python/setup.py.in"
-                  (("extra_link_args=\\[(.*)\\]" _ args)
-                   (string-append "extra_link_args=[" args
-                                  ", '-Wl,-rpath=" #$output "/lib']")))))
-            ;; TODO: build with liburing, requires cmake or meson.
-            (add-after 'unpack 'pkgconfig-disable-iouring
-              (lambda _
-                ;; This one causes configure error in dhtnet.
-                (substitute* "opendht.pc.in"
-                  (("@iouring_lib@")
-                   ""))))
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  (invoke "tests/opendht_unit_tests"))))
-            (add-before 'bootstrap 'delete-autogen.sh
-              (lambda _
-                ;; The autogen.sh script lacks a shebang, cannot be executed
-                ;; directly.  Let the bootstrap phase invoke autoreconf itself.
-                (delete-file "autogen.sh")))
-            (add-after 'install 'move-and-wrap-tools
+            (add-after 'install 'move-tools
               (lambda* (#:key inputs outputs #:allow-other-keys)
-                (let* ((tools (assoc-ref outputs "tools"))
-                       (dhtcluster (string-append tools "/bin/dhtcluster"))
-                       (site-packages (python:site-packages inputs outputs)))
+                (let* ((tools #$output:tools))
                   (mkdir tools)
                   (rename-file (string-append #$output "/bin")
-                               (string-append tools "/bin"))
-                  ;; TODO: Contribute a patch to python/Makefile.am to
-                  ;; automate this.
-                  (copy-file "python/tools/dhtcluster.py" dhtcluster)
-                  (chmod dhtcluster #o555)
-                  (wrap-program dhtcluster
-                    `("GUIX_PYTHONPATH" prefix (,site-packages)))))))))
+                               (string-append tools "/bin")))))
+            (add-after 'install 'move-python-bindings
+              (lambda _
+                (let* ((python-dir (car
+                                    (scandir (string-append #$output "/lib")
+                                             (cut string-prefix? "python" <>))))
+                       (dest (string-append #$output:python "/lib/"
+                                            python-dir)))
+                  (mkdir-p (dirname dest))
+                  (rename-file (string-append #$output "/lib/" python-dir)
+                               dest)))))))
+      (native-inputs (list cppunit pkg-config python python-cython))
       (inputs
        (list bash-minimal
              fmt
@@ -4281,24 +4265,15 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
       (propagated-inputs
        (list msgpack-cxx                  ;included in several installed headers
              restinio                     ;included in opendht/http.h
-             ;; The following are listed in the 'Requires.private' field of
-             ;; opendht.pc:
+             ;; The following are listed in the Requires/Requires.private
+             ;; field of opendht.pc:
              argon2
              gnutls
              jsoncpp
-             llhttp
+             liburing
              nettle
              openssl                      ;required for the DHT proxy
-             python
              simdutf))
-      (native-inputs
-       (list autoconf
-             automake
-             pkg-config
-             python
-             python-cython
-             libtool
-             cppunit))
       (home-page "https://github.com/savoirfairelinux/opendht/")
       (synopsis "Lightweight Distributed Hash Table (DHT) library")
       (description "OpenDHT provides an easy to use distributed in-memory data
