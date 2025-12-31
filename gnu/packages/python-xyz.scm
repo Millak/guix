@@ -4343,7 +4343,7 @@ state changes.")
 (define-public python-pymd4c
   (package
     (name "python-pymd4c")
-    (version "0.4.6.0b1")
+    (version "1.1.2")
     (source
      (origin
        (method git-fetch)
@@ -4352,7 +4352,7 @@ state changes.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0skmdn2bxfc546djxapdgb0bjvlr3c7a3kkv7j3bpx9zw09m0rcs"))))
+        (base32 "0wr2xg8iqzv3z4m2bknr0pjf3gknzj932li0yy9fmja7mvrawlhw"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ; No tests.
     (inputs (list md4c))
