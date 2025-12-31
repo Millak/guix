@@ -726,6 +726,8 @@ written in Go with pluggable metric collectors.")
     (license license:asl2.0)))
 
 (define-public temper-exporter
+  ;; XXX: No release or updates since 2020, consider to remove when starts
+  ;; failing, it might be abandoned project.
   (let ((commit "a87bbab19c05609d62d9e4c7941178700c1ef84d")
         (revision "0"))
     (package
@@ -740,7 +742,7 @@ written in Go with pluggable metric collectors.")
                 (sha256
                  (base32
                   "0jk3ydi8s14q5kyl9j3gm2zrnwlb1jwjqpg5vqrgkbm9jrldrabc"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
        '(#:tests? #f                    ; One test failure:
                                         ; test/test_exporter.py:33:
@@ -761,7 +763,7 @@ written in Go with pluggable metric collectors.")
       (inputs
        (list python-prometheus-client python-pyudev))
       (native-inputs
-       (list python-pytest python-pytest-mock python-pytest-runner))
+       (list python-setuptools))
       (home-page "https://github.com/yrro/temper-exporter")
       (synopsis "Prometheus exporter for PCSensor TEMPer sensor devices")
       (description
