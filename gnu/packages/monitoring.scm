@@ -404,35 +404,6 @@ monitoring system.  It can configure and display various aspects of Zabbix
 through a text-based interface.")
     (license license:gpl3+)))
 
-(define-public python-pyzabbix
-  (package
-    (name "python-pyzabbix")
-    (version "1.3.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/lukecyca/pyzabbix")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1dbs3bz1mjlvlg46ikhg5j7agwni61ljlpiziknklv95yp29n86v"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags #~(list "tests")))
-    (native-inputs
-     (list python-pytest
-           python-requests-mock
-           python-setuptools))
-    (propagated-inputs
-     (list python-packaging
-           python-requests))
-    (home-page "https://github.com/lukecyca/pyzabbix")
-    (synopsis "Python interface to the Zabbix API")
-    (description
-     "@code{pyzabbix} is a Python module for working with the Zabbix API.")
-    (license license:lgpl2.1+)))
-
 (define-public darkstat
   (package
     (name "darkstat")
