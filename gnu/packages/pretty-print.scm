@@ -9,7 +9,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Zhu Zihao  <all_but_last@163.com>
-;;; Copyright © 2022, 2023 Maxim Cournoyer  <maxim@guixotic.coop>
+;;; Copyright © 2022-2023, 2025 Maxim Cournoyer  <maxim@guixotic.coop>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2024 chris <chris@bumblehead.com>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
@@ -229,8 +229,32 @@ It also includes the capability to perform syntax highlighting for several
 different programming languages.")
     (license gpl3+)))
 
+(define-public fmt-12
+  (package
+    (name "fmt")
+    (version "12.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fmtlib/fmt")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17b1iwmmpd9cb1g3lzn5pjky73i3268kldmdqpjv6s8rzl73aqk6"))))
+    (build-system cmake-build-system)
+    (arguments '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
+    (home-page "https://fmt.dev")
+    (synopsis "Small and fast C++ formatting library")
+    (description "@code{fmt} (formerly @code{cppformat}) is a formatting
+library for C++.  It can be used as a safe alternative to @code{printf} or as
+a fast alternative to @code{IOStreams}.")
+    ;; The library is bsd-2, but documentation and tests include other licenses.
+    (license (list bsd-2 bsd-3 psfl))))
+
 (define-public fmt-11
   (package
+    (inherit fmt-12)
     (name "fmt")
     (version "11.2.0")
     (source
@@ -241,16 +265,7 @@ different programming languages.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x8j1k1cnmvv5hbhhyfm7bqw2d2rb3jpmz6bc4a195z8pzj582dh"))))
-    (build-system cmake-build-system)
-    (arguments '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
-    (home-page "https://fmt.dev")
-    (synopsis "Small and fast C++ formatting library")
-    (description "@code{fmt} (formerly @code{cppformat}) is a formatting
-library for C++.  It can be used as a safe alternative to @code{printf} or as
-a fast alternative to @code{IOStreams}.")
-    ;; The library is bsd-2, but documentation and tests include other licenses.
-    (license (list bsd-2 bsd-3 psfl))))
+        (base32 "0x8j1k1cnmvv5hbhhyfm7bqw2d2rb3jpmz6bc4a195z8pzj582dh"))))))
 
 (define-public fmt-10
   (package
