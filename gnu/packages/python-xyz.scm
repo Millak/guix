@@ -6868,33 +6868,6 @@ standard.")
 in the current session, Python, and the OS.")
     (license license:bsd-3)))
 
-(define-public python-six
-  (package
-    (name "python-six")
-    (version "1.17.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "six" version))
-       (sha256
-        (base32 "109ajcsfhrz33lbwbb337w34crc3lb9rjnxrcpnbczlf8rfk6w7z"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest-bootstrap
-           python-setuptools
-           python-wheel))
-    (home-page "https://pypi.org/project/six/")
-    (synopsis "Python 2 and 3 compatibility utilities")
-    (description
-     "Six is a Python 2 and 3 compatibility library.  It provides utility
-functions for smoothing over the differences between the Python versions with
-the goal of writing Python code that is compatible on both Python versions.
-Six supports every Python version since 2.5.  It is contained in only one
-Python file, so it can be easily copied into your project.")
-    (license license:x11)))
-
-(define-public python-six-bootstrap python-six)
-
 (define-public python-schedule
   (package
     (name "python-schedule")
