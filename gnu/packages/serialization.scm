@@ -528,8 +528,9 @@ character limit for implicit keys.")
     (license license:expat)))
 
 (define-public yaml-cpp
-  (let ((commit "2f86d13775d119edbb69af52e5f566fd65c6953b")
-        (revision "0"))
+  ;; The last release is from 2023.
+  (let ((commit "c7aa78d294bbe499c1ebc0abfa1e103490c8525f")
+        (revision "1"))
     (package
       (name "yaml-cpp")
       (version (git-version "0.8.0" revision commit))
@@ -543,7 +544,7 @@ character limit for implicit keys.")
          (snippet #~(delete-file-recursively "test/googletest-1.13.0"))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "12ncx2hlsl5vp9yfja6myxalg85j0kgxwbargn37yiwi8rn17m8s"))))
+          (base32 "1ivjnp3hh746csc66x5ycrbv9psb09idfi5g4rsi7h0ljlag6whr"))))
       (build-system cmake-build-system)
       (arguments
        '(#:configure-flags '("-DYAML_BUILD_SHARED_LIBS=ON"
