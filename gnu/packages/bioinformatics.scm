@@ -4931,26 +4931,29 @@ used for storage and logging in bioinformatics tools.")
 (define-public bioparser
   (package
     (name "bioparser")
-    (version "3.0.13")
+    (version "3.1.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/rvaser/bioparser")
-             ;; Corresponds to tag 3.0.13
-             (commit "13341e6e0855c6b358ffcea6dad216e1009e1287")))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0c5p2dl8jb12ci9f427jzrmmm9cgvc1k4fxsn2ggkfsin6r1r82i"))))
+         "057zb3g8qyvbkbfzgkygrf0iphz3v4icm13pchxzrafiy7zkbmrq"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "./bin/bioparser_test")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'enable-testing
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("target_link_libraries\\(bioparser_test")
+                 "enable_testing()
+  add_test(NAME bioparser-test COMMAND bioparser_test)
+  target_link_libraries(bioparser_test")))))))
     (inputs
      (list biosoup))
     (propagated-inputs
