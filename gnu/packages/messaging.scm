@@ -3269,7 +3269,7 @@ a number of clients.")
 (define-public weechat-wee-slack
   (package
     (name "weechat-wee-slack")
-    (version "2.10.2")
+    (version "2.11.0")
     (source
      (origin
        (method git-fetch)
@@ -3278,35 +3278,28 @@ a number of clients.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0klvvrrvdjh3wph1cdqd4x3nj170v1wirmr2mm91q3sqs5lf3lqj"))))
-    (build-system python-build-system)
+        (base32 "0kz0cskfqmf3wz71rvxrkiz40j7d084mawspzv72j9995v5by0y5"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Augment sys.path so that dependencies are found.
-             (substitute* "wee_slack.py"
-               (("import sys\n" all)
-                (apply string-append
-                       all
-                       (map (lambda (path)
-                              (string-append "sys.path.append('" path "')\n"))
-                            (string-split (getenv "GUIX_PYTHONPATH") #\:)))))
-             ;; Install script.
-             (install-file "wee_slack.py"
-                           (string-append (assoc-ref outputs "out")
-                                          "/share/weechat/python"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
-    (inputs
-     (list python-websocket-client))
-    (native-inputs
-     (list python-mock python-pytest))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Augment sys.path so that dependencies are found.
+              (substitute* "wee_slack.py"
+                (("import sys\n" all)
+                 (apply string-append all
+                        (map (lambda (path)
+                               (string-append "sys.path.append('" path "')\n"))
+                             (string-split (getenv "GUIX_PYTHONPATH") #\:)))))
+              ;; Install script.
+              (install-file "wee_slack.py"
+                            (string-append #$output
+                                           "/share/weechat/python")))))))
+    (inputs (list python-websocket-client))
+    (native-inputs (list python-mock python-pytest python-setuptools))
     (home-page "https://github.com/wee-slack/wee-slack")
     (synopsis "Weechat Slack script")
     (description "@code{weechat-wee-slack} is a WeeChat native client for
