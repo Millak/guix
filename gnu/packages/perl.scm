@@ -7216,6 +7216,27 @@ and busy().")
 display output if a TTY is in use.")
     (license (package-license perl))))
 
+(define-public perl-io-pty
+  (package
+    (name "perl-io-pty")
+    (version "1.20")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/T/TO/TODDR/"
+                           "IO-Tty-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1brhszk5p92khn9jjpxpas8ydlcyza6vicmrkhl96f32hpy0jlxi"))))
+    (build-system perl-build-system)
+    (synopsis "Pseudo TTY object class")
+    (description
+     "@code{IO::Pty} provides an interface to allow the creation of a
+pseudo tty.  @code{IO::Pty} inherits from @code{IO::Handle} and so
+provides all the methods defined by the @code{IO::Handle} package.")
+    (home-page "https://metacpan.org/dist/IO-Tty")
+    (license (package-license perl))))
+
 (define-public perl-io-string
   (package
     (name "perl-io-string")
