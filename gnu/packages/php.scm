@@ -65,14 +65,14 @@
 (define-public php
   (package
     (name "php")
-    (version "8.3.28")
+    (version "8.3.29")
     (home-page "https://www.php.net/")
     (source
      (origin
        (method url-fetch)
        (uri (string-append home-page "distributions/" "php-" version ".tar.xz"))
        (sha256
-        (base32 "09i368m6mlq364z6rfb6nvvk2ncmwbwhn74989i3i2hr607qdqr5"))
+        (base32 "1xbs0xwcm93j2v5pbl8lf54xvldsv7s246wzvvsphnmi6jh0r5gp"))
        (modules '((guix build utils)))
        (snippet
         '(with-directory-excursion "ext"
