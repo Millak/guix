@@ -119,6 +119,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages code)
@@ -4183,7 +4184,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
 (define-public opendht
     (package
       (name "opendht")
-      (version "3.5.4")
+      (version "3.6.2.3")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -4192,7 +4193,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1qy5fvz4rr480n0sa81n3rx5zskpgk7zqip12b9ly8hk43mxsycs"))))
+                  "1v8miwsslqlqlpp7p210jhxwkblqyc69cgxaq680qhg7h1sf3y2i"))))
       (outputs '("out" "python" "tools" "debug"))
       (build-system gnu-build-system)
       (arguments
@@ -4243,15 +4244,6 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                   (("extra_link_args=\\[(.*)\\]" _ args)
                    (string-append "extra_link_args=[" args
                                   ", '-Wl,-rpath=" #$output "/lib']")))))
-            ;; This is due to an upstream issue:
-            ;; https://git.jami.net/savoirfairelinux/opendht/-/issues/69
-            (add-after 'unpack 'fix-llhttp-lib-substitution
-              (lambda _
-                (substitute* "configure.ac"
-                  (("http_lib")
-                   "llhttp_lib")
-                  (("-lllhttp")
-                   ", libllhttp"))))
             ;; TODO: build with liburing, requires cmake or meson.
             (add-after 'unpack 'pkgconfig-disable-iouring
               (lambda _
@@ -4297,7 +4289,8 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
              llhttp
              nettle
              openssl                      ;required for the DHT proxy
-             python))
+             python
+             simdutf))
       (native-inputs
        (list autoconf
              automake
