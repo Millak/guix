@@ -1588,17 +1588,48 @@ interface (API).")
 (define-public python-pygame
   (package
     (name "python-pygame")
-    (version "2.5.2")
+    (version "2.6.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pygame" version))
               (sha256
                (base32
-                "0jn2n70hmgr33yc6xzdi33cs5w7jnmgi44smyxfarrrrsnsrxf61"))))
-    (build-system python-build-system)
+                "07zbkyff0vk1pzlaiah9b5jhqy70fmzh0gjw846y1ki9spm05ysn"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f                 ; tests require pygame to be installed first
+      #:test-flags
+      #~(list
+         ;; This fails collection as it fails to find a test file.
+         "--ignore=test/run_tests__tests/run_tests__test.py"
+         ;; Some display tests fail with a Python segmentation fault.
+         "--ignore=test/display_test.py"
+         "--ignore=test/mouse_test.py"
+         ;; Those fail with ALSA: Couldn't open audio device.
+         "--ignore=test/mixer_test.py"
+         "--ignore=test/mixer_music_test.py"
+         "--deselect=test/base_test.py::BaseModuleTest::test_init"
+         "--deselect=test/base_test.py::BaseModuleTest::test_quit__and_init"
+         ;; Flaky tests.
+         "--ignore=test/surface_test.py"
+         ;; Require clipboard access.
+         "--ignore=test/scrap_test.py"
+         ;; Tests in these files are hanging.
+         "--ignore=test/font_test.py"
+         "--ignore=test/ftfont_test.py"
+         "--ignore=test/run_tests__tests/infinite_loop"
+         ;; Pytest stdout/stderr issues
+         "--deselect=test/controller_test.py::ControllerInteractiveTest::\
+test__get_count_interactive"
+         "--deselect=test/joystick_test.py::JoystickInteractiveTest::\
+test_get_count_interactive"
+         "--ignore-glob=test/run_tests__tests/print_std*/"
+         "--ignore=test/run_tests__tests/failures1/fake_4_test.py"
+         ;; Sysfont issues
+         "--deselect=test/sysfont_test.py::SysfontModuleTest"
+         "--deselect=test/freetype_test.py::FreeTypeFontTest::\
+test_freetype_SysFont_name"
+         "--deselect=test/image_test.py::test_magic")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-build-config
@@ -1622,9 +1653,12 @@ interface (API).")
               (substitute* "src_c/mixer.h"
                 (("SDL_mixer.h") "SDL2/SDL_mixer.h"))
               (substitute* "src_c/_sdl2/mixer.c"
-                (("SDL_mixer.h") "SDL2/SDL_mixer.h")))))))
+                (("SDL_mixer.h") "SDL2/SDL_mixer.h"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "XDG_RUNTIME_DIR" (getcwd)))))))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config python-numpy python-pytest python-setuptools))
     (inputs
      (list freetype
            sdl2
