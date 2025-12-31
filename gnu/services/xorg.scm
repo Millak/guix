@@ -685,7 +685,11 @@ a `service-extension', as used by `set-xorg-configuration'."
                  (configuration-record
                   (inherit config)
                   (xorg-configuration
-                    (merge-xorg-configurations xorg-configurations)))))))))
+                    (merge-xorg-configurations
+                     (cons ((record-accessor (record-type-descriptor config)
+                                             'xorg-configuration)
+                            config)
+                           xorg-configurations))))))))))
 
 (define (xorg-server-profile-service config)
   ;; XXX: profile-service-type only accepts <package> objects.

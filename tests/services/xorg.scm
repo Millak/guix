@@ -24,6 +24,8 @@
   #:use-module (gnu bootloader grub)
   #:use-module (gnu services)
   #:use-module (gnu services base)
+  #:use-module (gnu services desktop)
+  #:use-module (gnu services lightdm)
   #:use-module (gnu services xorg)
   #:use-module (gnu system)
   #:use-module (gnu system keyboard)
@@ -228,5 +230,38 @@
     (list
      (xorg-configuration (drivers %drivers-custom-1))
      (xorg-configuration (drivers %drivers-custom-2))))))
+
+;; regression tests.
+
+;; https://codeberg.org/guix/guix/issues/5267
+(test-equal "https://codeberg.org/guix/guix/issues/5267"
+  (xorg-configuration-keyboard-layout %config-xorg-keyboard-layout-1)
+  (let ((os (operating-system
+              (host-name "test")
+              (bootloader
+                (bootloader-configuration
+                  (bootloader grub-bootloader)
+                  (targets '("/dev/sdX"))))
+              (file-systems
+               (cons
+                (file-system
+                  (device (file-system-label "my-root"))
+                  (mount-point "/")
+                  (type "ext4"))
+                %base-file-systems))
+              (services
+               (cons*
+                (service lightdm-service-type
+                         (lightdm-configuration
+                           (xorg-configuration
+                             %config-xorg-keyboard-layout-1)))
+                (modify-services %desktop-services
+                  (delete gdm-service-type)))))))
+    (xorg-configuration-keyboard-layout
+     (lightdm-configuration-xorg-configuration
+      (service-value
+       (fold-services
+        (operating-system-services os)
+        #:target-type lightdm-service-type))))))
 
 (test-end "merge-xorg-configurations")
