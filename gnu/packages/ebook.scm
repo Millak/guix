@@ -143,14 +143,14 @@ with Microsoft Compiled HTML (CHM) files.")
 (define-public calibre
   (package
     (name "calibre")
-    (version "8.15.0")
+    (version "8.16.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://download.calibre-ebook.com/" version
                            "/calibre-" version ".tar.xz"))
        (sha256
-        (base32 "1d2ygxf5srzdxc3jpngmq3zbz9plxnbzm4dzygpfd38szr5zwyss"))
+        (base32 "0v0w5hi8h1fykf1v2dqcz9zafc7ffxlh5nj125sc0g7mai1x11q1"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -168,15 +168,18 @@ with Microsoft Compiled HTML (CHM) files.")
                                 "calibre-remove-test-unrar.patch"
                                 "calibre-remove-test-import-modules.patch" ; TODO: fix test
                                 ))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
      (list bash-minimal
            cmake
            pkg-config
            python-flake8
            python-pyqt-builder
-           qtbase                     ; for qmake
-           xdg-utils))
+           qtbase ; for qmake
+           xdg-utils
+           python-setuptools
+           python-tzdata
+           python-tzlocal))
     (inputs
      (list bash-minimal
            espeak-ng
@@ -237,9 +240,6 @@ with Microsoft Compiled HTML (CHM) files.")
            uchardet))
     (arguments
      (list
-      ;; Calibre is using setuptools by itself, but the setup.py is not
-      ;; compatible with the shim wrapper (taken from pip) we are using.
-      #:use-setuptools? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-source
@@ -346,6 +346,19 @@ sip-include-dirs = [\""
             (lambda _
               (copy-recursively "man-pages"
                                 (string-append #$output "/share/man"))))
+          ;; Calibre is using setuptools but the setup.py is not
+          ;; compatible with the shim wrapper (taken from pip) we are using.
+          (replace 'build
+            (lambda _
+              (invoke "python" "setup.py" "build")))
+          (replace 'install
+            (lambda _
+              (invoke "python" "setup.py" "install"
+                      (string-append "--prefix=" #$output))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "setup.py" "test"))))
           ;; The font TTF files are used in some miscellaneous tests, so we
           ;; unbundle them here to avoid patching the tests.
           (add-after 'install 'unbundle-font-liberation
