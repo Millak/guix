@@ -407,30 +407,27 @@ through a text-based interface.")
 (define-public python-pyzabbix
   (package
     (name "python-pyzabbix")
-    (version "1.2.1")
-    (home-page "https://github.com/lukecyca/pyzabbix")
-    ;; No tests on PyPI, use the git checkout.
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
-       (uri (git-reference (url home-page) (commit version)))
+       (uri (git-reference
+              (url "https://github.com/lukecyca/pyzabbix")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0ad5xac67brmwc3wd0f87pjplly3cqyrz1dp725lzz2hrjgiaqi8"))))
-    (build-system python-build-system)
+        (base32 "1dbs3bz1mjlvlg46ikhg5j7agwni61ljlpiziknklv95yp29n86v"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (invoke "pytest" "-vv" "tests")
-                          (format #t "test suite not run~%")))))))
+     (list #:test-flags #~(list "tests")))
     (native-inputs
-     ;; For tests.
-     (list python-requests-mock python-pytest))
+     (list python-pytest
+           python-requests-mock
+           python-setuptools))
     (propagated-inputs
-     (list python-packaging python-requests))
+     (list python-packaging
+           python-requests))
+    (home-page "https://github.com/lukecyca/pyzabbix")
     (synopsis "Python interface to the Zabbix API")
     (description
      "@code{pyzabbix} is a Python module for working with the Zabbix API.")
