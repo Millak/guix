@@ -10224,7 +10224,7 @@ to download and install them in @file{$HOME/.stepmania-X.Y/Songs} directory.")
 (define-public oshu
   (package
     (name "oshu")
-    (version "2.0.1")
+    (version "2.0.3")
     (source
      (origin
        (method git-fetch)
@@ -10234,7 +10234,7 @@ to download and install them in @file{$HOME/.stepmania-X.Y/Songs} directory.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1g598incc6zlls876slgwqblwiwiszkmqa4xpzw0z7mbjmmzsizz"))))
+         "0hk0yidmkrqj0mg6pjmwdzkaz8vvdsxxxvprj1qxjblslj2h8lvd"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -10245,7 +10245,7 @@ to download and install them in @file{$HOME/.stepmania-X.Y/Songs} directory.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list cairo ffmpeg-4 pango sdl2 sdl2-image))
+     (list cairo ffmpeg-6 pango sdl2 sdl2-image))
     (home-page "https://github.com/fmang/oshu/")
     (synopsis "Rhythm game in which you click on circles")
     (description "@i{oshu!} is a minimalist variant of the @i{osu!} rhythm game,
