@@ -1974,14 +1974,14 @@ audio/video codec library.")
 (define-public ffmpeg-6
   (package
     (inherit ffmpeg)
-    (version "6.1.2")
+    (version "6.1.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0f2fr8ywchhlkdff88lr4d4vscqzsi1ndjh3r5jwbkayf94lcqiv"))
+                "061s10n1z2f5wbhvjv8b7rv14390nvbqmfdzmv6v2i1cfkay6cd2"))
               (patches
                (search-patches
                 "ffmpeg-add-av_stream_get_first_dts-for-chromium.patch"))))
