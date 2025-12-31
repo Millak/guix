@@ -13906,6 +13906,10 @@
   (crate-source "phf_generator" "0.11.3"
                 "0gc4np7s91ynrgw73s2i7iakhb4lzdv1gcyx7yhlc0n214a2701w"))
 
+(define rust-phf-generator-0.12.1
+  (crate-source "phf_generator" "0.12.1"
+                "0nvcdbc2j7pznjin4qhw360c8zgfn5isx3bld1ixsqgdmwk13frc"))
+
 (define rust-phf-generator-0.13.1
   (crate-source "phf_generator" "0.13.1"
                 "0dwpp11l41dy9mag4phkyyvhpf66lwbp79q3ik44wmhyfqxcwnhk"))
@@ -13917,6 +13921,10 @@
 (define rust-phf-macros-0.11.3
   (crate-source "phf_macros" "0.11.3"
                 "05kjfbyb439344rhmlzzw0f9bwk9fp95mmw56zs7yfn1552c0jpq"))
+
+(define rust-phf-macros-0.12.1
+  (crate-source "phf_macros" "0.12.1"
+                "0s230ikydi4n2vi9s03d49k5fznkg6kpq12jmlg0jbx8jf1ja4yp"))
 
 (define rust-phf-macros-0.13.1
   (crate-source "phf_macros" "0.13.1"
@@ -30649,10 +30657,10 @@
                                 rust-partition-identity-0.3.0
                                 rust-path-clean-1.0.1
                                 rust-percent-encoding-2.3.1
-                                rust-phf-0.11.3
-                                rust-phf-generator-0.11.3
-                                rust-phf-macros-0.11.3
-                                rust-phf-shared-0.11.3
+                                rust-phf-0.12.1
+                                rust-phf-generator-0.12.1
+                                rust-phf-macros-0.12.1
+                                rust-phf-shared-0.12.1
                                 rust-pkg-config-0.3.32
                                 rust-plist-1.7.2
                                 rust-plotters-0.3.7
@@ -30770,8 +30778,7 @@
                                 rust-zerofrom-derive-0.1.6
                                 rust-zerotrie-0.2.2
                                 rust-zerovec-0.11.2
-                                rust-zerovec-derive-0.11.1
-                                rust-zoneinfo-compiled-0.5.1))
+                                rust-zerovec-derive-0.11.1))
                      (fclones =>
                               (list rust-aho-corasick-1.1.3
                                     rust-android-tzdata-0.1.1

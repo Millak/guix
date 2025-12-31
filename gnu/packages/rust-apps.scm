@@ -1018,14 +1018,14 @@ console.")
 (define-public eza
   (package
     (name "eza")
-    (version "0.21.3")
+    (version "0.23.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "eza" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "09jksgqqsvzxha335a9cv5xqm1mr9gsamk85bg1giwnhqgfg1kkw"))))
+        (base32 "099fmcc2phdfjs1jb6fb15zhijsss1cczx2nzps0p9bs3yqirisj"))))
     (build-system cargo-build-system)
     (arguments
      (list
