@@ -59,16 +59,14 @@
   (xorg-configuration
     (keyboard-layout (keyboard-layout "us" #:options '("ctrl:esc")))))
 
-;; Later keyboard layouts replace earlier defaults
-(test-equal
-    (keyboard-layout "us" #:options '("ctrl:nocaps"))
+(test-equal "later keyboard layouts replace earlier defaults"
+  (keyboard-layout "us" #:options '("ctrl:nocaps"))
   (xorg-configuration-keyboard-layout
    (merge-xorg-configurations
     (list %config-empty %config-xorg-keyboard-layout-1))))
 
-;; Later keyboard layouts replace earlier customizations.
-(test-equal
-    (keyboard-layout "us" #:options '("ctrl:esc"))
+(test-equal "later keyboard layouts replace earlier customizations"
+  (keyboard-layout "us" #:options '("ctrl:esc"))
   (xorg-configuration-keyboard-layout
    (merge-xorg-configurations (list %config-empty
                                     %config-xorg-keyboard-layout-1
@@ -110,16 +108,14 @@
     (inherit %config-custom-server-2)
     (server-arguments %custom-server-2-arguments)))
 
-;; Custom server is prioritized over earlier default.
-(test-equal
-    %custom-server-1
+(test-equal "custom server is prioritized over earlier default"
+  %custom-server-1
   (xorg-configuration-server
    (merge-xorg-configurations (list %config-empty
                                     %config-custom-server-1))))
 
-;; Custom server preserves arguments.
-(test-equal
-    (list %custom-server-1 %custom-server-1-arguments)
+(test-equal "custom server preserves arguments"
+  (list %custom-server-1 %custom-server-1-arguments)
   (let ((cfg (merge-xorg-configurations
               (list
                %config-empty
@@ -127,9 +123,8 @@
     (list (xorg-configuration-server cfg)
           (xorg-configuration-server-arguments cfg))))
 
-;; Later custom arguments replace earlier.
-(test-equal
-    (list %custom-server-2 %custom-server-2-arguments)
+(test-equal "later custom arguments replace earlier"
+  (list %custom-server-2 %custom-server-2-arguments)
   (let ((cfg (merge-xorg-configurations
               (list
                %config-empty
@@ -138,46 +133,42 @@
     (list (xorg-configuration-server cfg)
           (xorg-configuration-server-arguments cfg))))
 
-;; Custom server is prioritized over later default.
-(test-equal
-    %custom-server-1
+(test-equal "custom server is prioritized over later default"
+  %custom-server-1
   (xorg-configuration-server
    (merge-xorg-configurations (list %config-custom-server-1
                                     %config-empty))))
 
-;; Custom arguments are prioritized over earlier custom server.
-(test-equal
-    %custom-server-2-arguments
+(test-equal "custom arguments are prioritized over earlier custom server"
+  %custom-server-2-arguments
   (xorg-configuration-server-arguments
    (merge-xorg-configurations
     (list
      (xorg-configuration (server %custom-server-1))
      (xorg-configuration (server-arguments %custom-server-2-arguments))))))
 
-;; Later custom servers are prioritized over earlier.
-(test-equal
-    %custom-server-2
+(test-equal "later custom servers are prioritized over earlier 1/3"
+  %custom-server-2
   (xorg-configuration-server
    (merge-xorg-configurations (list %config-custom-server-1
                                     %config-empty
                                     %config-custom-server-2))))
 
-(test-equal
-    %custom-server-2
+(test-equal "later custom servers are prioritized over earlier 2/3"
+  %custom-server-2
   (xorg-configuration-server
    (merge-xorg-configurations (list %config-empty
                                     %config-custom-server-1
                                     %config-custom-server-2))))
 
-(test-equal
-    %custom-server-1
+(test-equal "later custom servers are prioritized over earlier 3/3"
+  %custom-server-1
   (xorg-configuration-server
    (merge-xorg-configurations (list %config-empty
                                     %config-custom-server-1))))
 
-;; Make sure it works in the context of an operating-system.
-(test-equal
-    %custom-server-2
+(test-equal "in the context of an operating-system"
+  %custom-server-2
   (let ((os (operating-system
               (host-name "test")
               (bootloader
@@ -208,11 +199,10 @@
 
 ;; extra-config tests.
 
-;; Extra configurations append.
 (let ((snippet-one "# First")
       (snippet-two "# Second"))
-  (test-equal
-      (list snippet-one snippet-two)
+  (test-equal "extra configurations append"
+    (list snippet-one snippet-two)
     (xorg-configuration-extra-config
      (merge-xorg-configurations
       (list (xorg-configuration (extra-config (list snippet-one)))
@@ -223,8 +213,8 @@
 (define %drivers-custom-1 '("done"))
 (define %drivers-custom-2 '("dtwo"))
 
-(test-equal
-    (append %drivers-custom-1 %drivers-custom-2)
+(test-equal "drivers append"
+  (append %drivers-custom-1 %drivers-custom-2)
   (xorg-configuration-drivers
    (merge-xorg-configurations
     (list
