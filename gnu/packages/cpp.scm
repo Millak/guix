@@ -123,6 +123,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pretty-print)
@@ -3346,8 +3347,11 @@ syntax with variables, conditions, functions and more.")
   (package
     (inherit jsonnet)
     (name "python-jsonnet")
-    (build-system python-build-system)
-    (arguments '())
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~(list "--ignore=case_studies/")))
+    (native-inputs (modify-inputs (package-native-inputs jsonnet)
+                     (append python-pyyaml python-pytest python-setuptools)))
     (synopsis "Python bindings for Jsonnet, the data templating language")
     (description "This package provides a Python library named @code{_jsonnet}
 which can evaluate Jsonnet files and expressions.")))
