@@ -619,30 +619,44 @@ available, greatly increasing its breadth and scope.")
 (define-public python-chaospy
   (package
     (name "python-chaospy")
-    (version "4.3.13")
-    (source (origin ;; PyPI misses Pytest fixtures.
+    (version "4.3.21")
+    (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/jonathf/chaospy")
-                    (commit (string-append "v" version))))
+                     (url "https://github.com/jonathf/chaospy")
+                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bn4jmwygs5h0dskbniivj20qblgm75pyi9hcjf47r25kawd730m"))))
+                "1x9jsy1jsshki0jn2hh8dby20b9haznzas2m03y3wswfgcjbr3md"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 388 passed, 33 warnings
       #:phases
       #~(modify-phases %standard-phases
-          ;; The deprecation warnings break the tests.
+          ;; TODO: The deprecation warnings break the tests, report upstream.
+          ;; 
+          ;; AttributeError: module 'numpy' has no attribute 'bool'. `np.bool`
+          ;; was a deprecated alias for the builtin `bool`. To avoid this
+          ;; error in existing code, use `bool` by itself. Doing this will not
+          ;; modify any behavior and is safe. If you specifically wanted the
+          ;; numpy scalar type, use `np.bool_` here. The aliases was
+          ;; originally deprecated in NumPy 1.20; for more details and
+          ;; guidance see the original release note at:
+          ;; https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
           (add-after 'unpack 'dont-treat-deprecation-warnings-as-error
             (lambda _
               (substitute* "pyproject.toml"
                 (("\"error::DeprecationWarning\",") "")))))))
-    (propagated-inputs (list python-importlib-metadata python-numpoly
-                             python-numpy python-scipy))
-    (native-inputs (list python-pytest python-scikit-learn python-setuptools
-                         python-wheel))
+    (native-inputs
+     (list python-pytest
+           python-scikit-learn
+           python-setuptools))
+    (propagated-inputs
+     (list python-numpoly
+           python-numpy
+           python-scipy))
     (home-page "https://chaospy.readthedocs.io/en/master/")
     (synopsis "Numerical tool for performing uncertainty quantification")
     (description "Chaospy is a numerical toolbox for performing uncertainty
