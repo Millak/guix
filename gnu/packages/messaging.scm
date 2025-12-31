@@ -3318,13 +3318,22 @@ for notification of events.")
               (uri (git-reference
                      (url "https://github.com/taylordotfish/librecaptcha")
                      (commit version)))
-              (file-name (string-append name "-" version "-checkout"))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "0r35ws6vdf31j01kpacvpjplddm254r0cgy0npmhgnfxd5kpjf3s"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    ;; XXX: There is a test server for tests in real conditions, but there
+    ;; doesn't seem to be a way to test that in CI.
+    (arguments (list #:tests? #f))
+    (native-inputs (list python-setuptools))
     (propagated-inputs
-     (list python-pillow python-requests python-esprima python-pygobject gobject-introspection gtk+))
+     (list gobject-introspection
+           gtk+
+           python-esprima
+           python-pygobject
+           python-requests
+           python-pillow))
     (synopsis "Show CAPTCHA without running proprietary code")
     (description "This package shows CAPTCHA without running proprietary code.")
     (home-page "https://github.com/taylordotfish/librecaptcha")
