@@ -1542,21 +1542,33 @@ community.")
 (define-public python-sphinx-autoapi
   (package
     (name "python-sphinx-autoapi")
-    (version "2.0.1") ;higher versions require Sphinx >= 5.2.0
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "sphinx-autoapi" version))
-              (sha256
-               (base32
-                "1fmss6ihjjx22nmjzy7qiapj1f2b86gd1vycn3zg8lh8q9l7kx6d"))))
+    (version "3.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/readthedocs/sphinx-autoapi")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "194qvzzlzdwb8vwv95adjzb81d2n1wi4q8d00m0vbqg5njzfp9vm"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-sphinx python-wheel))
+    (arguments
+     (list
+      ;; tests: 318 passed, 1 skipped, 1 deselected
+      ;; Deselect test that requires internet connection.
+      #:test-flags
+      #~(list"-k" "not TestPipeUnionModule")))
+    (native-inputs
+     (list nss-certs-for-test
+           python-beautifulsoup4
+           python-flit-core
+           python-pytest))
     (propagated-inputs
      (list python-astroid
            python-jinja2
            python-pyyaml
-           python-sphinx
-           python-unidecode))
+           python-sphinx))
     (home-page "https://github.com/readthedocs/sphinx-autoapi")
     (synopsis "Sphinx API documentation generator")
     (description
