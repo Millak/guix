@@ -1043,6 +1043,34 @@ version control system (like Git) to determine project versions.")
      (list python-hatchling-bootstrap
            python-setuptools-scm-bootstrap))))
 
+(define-public python-iniconfig
+  (package
+    (name "python-iniconfig")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "iniconfig" version))
+       (sha256
+        (base32 "1iz1fg3n6pv4q8jzv1q0izl5001diwqggizrg3p3ywrn1gix5frs"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in PyPI, tests introduce cycle with pytest
+    (native-inputs
+     (list python-hatch-vcs-bootstrap
+           python-hatchling-bootstrap))
+    (home-page "https://github.com/RonnyPfannschmidt/iniconfig")
+    (synopsis "Simple INI-file parser")
+    (description "The @code{iniconfig} package provides a small and simple
+     INI-file parser module having a unique set of features ; @code{iniconfig}
+     @itemize
+     @item maintains the order of sections and entries              ;
+     @item supports multi-line values with or without line-continuations ;
+     @item supports \"#\" comments everywhere                            ;
+     @item raises errors with proper line-numbers                        ;
+     @item raises an error when two sections have the same name.
+     @end itemize")
+    (license license:expat)))
+
 (define-public python-installer
   (package
     (name "python-installer")
