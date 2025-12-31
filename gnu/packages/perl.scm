@@ -14467,6 +14467,31 @@ on the YAML 1.0 specification.")
 best YAML support to date.")
     (license license:perl-license)))
 
+(define-public perl-yaml-pp
+  (package
+    (name "perl-yaml-pp")
+    (version "0.39.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/T/TI/TINITA/"
+             "YAML-PP-v" version ".tar.gz"))
+       (sha256
+        (base32 "0n4z2kmjjhn9k1n3m7kpckrfzkky46zlqyw2a2zdqxqjg1jkrx9j"))))
+    (build-system perl-build-system)
+    ;; Required for tests
+    (native-inputs
+     (list perl-test-deep
+           perl-test-warn
+           perl-tie-ixhash))
+    (synopsis "YAML 1.2 processor")
+    (description
+     "@code{YAML::PP} is a modular YAML processor.  It aims to support YAML
+1.2 and YAML 1.1.")
+    (home-page "https://metacpan.org/dist/YAML-PP")
+    (license (package-license perl))))
+
 (define-public perl-yaml-tiny
   (package
     (name "perl-yaml-tiny")
