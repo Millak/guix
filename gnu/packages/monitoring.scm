@@ -489,16 +489,30 @@ network/disk rates.")
 (define-public python-whisper
   (package
     (name "python-whisper")
-    (version "1.1.8")
+    (version "1.1.10")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "whisper" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/graphite-project/whisper")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1bk29w09zcpsv8hp0g0al7nwrxa07z0ycls3mbh83wfavk83aprl"))))
-    (build-system python-build-system)
-    (native-inputs (list python-six))
+         "182phj3z3mxpbla6m2f0pahyvqfn0jdblprvk6xwx39nc939nw0a"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-python-six-dependency
+            (lambda _
+              (substitute* (find-files "." "\\.py$")
+                (("'six'") "")          ; dependency in setup.py
+                (("six\\.moves") "io")
+                (("from six import assertRegex") "")
+                (("assertRegex") ""))))))) ; effectively disable test
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://graphiteapp.org/")
     (synopsis "Fixed size round-robin style database for Graphite")
     (description "Whisper is one of three components within the Graphite
