@@ -4303,12 +4303,12 @@ A very simple IM client working over the DHT.
 
 (define-public dhtnet
   ;; There is no tag nor release; use the latest available commit.
-  (let ((revision "5")
-        (commit "f925f5200539d4e1ee6176d828ae08a8a6c3890a"))
+  (let ((revision "6")
+        (commit "6dd5a5e3eb15cebafa212e134ce436705c6d5fc5"))
     (package
       (name "dhtnet")
       ;; The base version is taken from the CMakeLists.txt file (see:
-      ;; https://review.jami.net/plugins/gitiles/dhtnet/+/master/CMakeLists.txt#3).
+      ;; <https://github.com/savoirfairelinux/dhtnet/blob/master/CMakeLists.txt#L3>)
       (version (git-version "0.0.1" revision commit))
       (source (origin
                 (method git-fetch)
@@ -4318,7 +4318,7 @@ A very simple IM client working over the DHT.
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1dkxs4w6k8ajn8ndy5gp4qg7yvl2z6jf72wxx71panvgy8lrc6y3"))))
+                  "0nj9zpsy68lxqgip48qnsxjw9m59bghn9aj3r7chmap23a4963z7"))))
       (outputs (list "out" "debug"))
       (build-system cmake-build-system)
       (arguments
@@ -4349,6 +4349,7 @@ A very simple IM client working over the DHT.
              fmt
              msgpack-cxx
              opendht
+             libnatpmp
              libupnp
              pjproject-jami
              readline
