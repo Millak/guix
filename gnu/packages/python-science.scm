@@ -2733,21 +2733,18 @@ applications.")
        (method url-fetch)
        (uri (pypi-uri "ruffus" version))
        (sha256
-        (base32
-         "1ai673k1s94s8b6pyxai8mk17p6zvvyi87rl236fs6ls8mpdklvc"))))
-    (build-system python-build-system)
+        (base32 "1ai673k1s94s8b6pyxai8mk17p6zvvyi87rl236fs6ls8mpdklvc"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (with-directory-excursion "ruffus/test"
-                 (invoke "bash" "run_all_unit_tests3.cmd"))))))))
-    (native-inputs
-     (list python-pytest))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "ruffus/test"
+                  (invoke "bash" "run_all_unit_tests3.cmd"))))))))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "http://www.ruffus.org.uk")
     (synopsis "Light-weight computational pipeline management")
     (description
