@@ -765,6 +765,9 @@ levels.")
                    ;; under the CC0 license.
                    license:cc0))))
 
+;; XXX: Currently the pyproject build-system is unable to install multiple
+;; python modules in a single package. This package uses old-style 'build and
+;; 'install for this reason.
 (define-public python-xsge
   (package
     (name "python-xsge")
@@ -777,20 +780,30 @@ levels.")
               (sha256
                (base32
                 "0g86p5i9lflvblzy7977lmxbsma5hdlz63sk0k8c59vnhg8sij4i"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         ;; xSGE's setup.py script does not support one of the Python build
-         ;; system's default flags, "--single-version-externally-managed".
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "python" "setup.py" "install"
-                     (string-append "--prefix=" (assoc-ref outputs "out"))
-                     "--root=/"))))
-       #:tests? #f)) ; no check target
-    (propagated-inputs
-     (list python-sge))
+     (list
+      #:tests? #f  ; No tests.
+      #:configure-flags
+      ;; Transformed format for #:phases convenience.
+      #~(map (lambda (pair)
+               (string-join (list (car pair) (cdr pair)) "="))
+             ;; Normal/expected pyproject format.
+             `(("--prefix" . ,#$output)))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; xSGE's setup.py script does not support one of the Python build
+          ;; system's default flags, "--single-version-externally-managed".
+          (replace 'build
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              (apply invoke "python" "setup.py" "build"
+                     configure-flags)))
+          (replace 'install
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              (apply invoke "python" "setup.py" "install"
+                     configure-flags))))))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-sge))
     (home-page "https://python-sge.github.io/")
     (synopsis "Extensions for the SGE Game Engine")
     (description
