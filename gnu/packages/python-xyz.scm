@@ -39877,7 +39877,18 @@ parsing (browser/HTTP) user agent strings.")
         (sha256
          (base32 "0lfzgijza3p4wbrhlf8pzj89j7caj8x6aij78d4izppvq4kfjqs6"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;no tests
+    (arguments
+     (list #:tests? #f  ;no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'hardcode-libfuse
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "userspacefs/fusepy.py"
+                     (("^_libfuse_path.*")
+                      (string-append "_libfuse_path = '"
+                                     (search-input-file inputs "lib/libfuse.so")
+                                     "'\n"))))))))
+    (inputs (list fuse-2))
     (native-inputs (list python-setuptools))
     (propagated-inputs (list python-aiohttp python-typing-extensions))
     (home-page "https://thelig.ht/code/userspacefs/readme.html")
