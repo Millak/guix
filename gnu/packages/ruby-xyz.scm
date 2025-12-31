@@ -8301,7 +8301,7 @@ into a single method call.")
 (define-public ruby-rackup
   (package
     (name "ruby-rackup")
-    (version "2.1.0")
+    (version "2.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8310,7 +8310,7 @@ into a single method call.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19b7sy700zjwaw7x47qpxvhnnz5hrp5bhrxfyljgagrli824dajy"))))
+                "0w8npy6n77wfykq6wb4484rk94raks75n4fsb5xi7kgjg2ngqfg3"))))
     (build-system ruby-build-system)
     (native-inputs (list ruby-minitest-global-expectations))
     (inputs (list ruby-rack-next ruby-webrick))
