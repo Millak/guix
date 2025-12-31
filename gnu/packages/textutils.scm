@@ -1960,6 +1960,8 @@ conversion and pretty-printing.")
     (inputs
      (list perl
            perl-file-next))
+    (native-inputs
+     (list perl-io-pty))
     (home-page "https://beyondgrep.com/")
     (synopsis "Code-searching tool for programmers with large source trees")
     (description "ack is a tool for finding text inside files.  It is designed for
