@@ -4277,9 +4277,13 @@ MusicBrainz database.")
        (sha256
         (base32
          "0jh4cni8qhri6dh83cmp0i0m0384vv0vznlygv49wj9xzh1d99qv"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    ;; tests: 6 passed
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
-     (list python-discid python-musicbrainzngs))
+     (list python-discid
+           python-musicbrainzngs))
     (home-page "https://github.com/JonnyJD/musicbrainz-isrcsubmit")
     (synopsis "Submit ISRCs from CDs to MusicBrainz")
     (description "@code{isrcsubmit} is a tool to extract @dfn{International
