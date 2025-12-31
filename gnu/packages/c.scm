@@ -9,7 +9,7 @@
 ;;; Copyright © 2020, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
-;;; Copyright © 2020, 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020, 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020, 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -1717,6 +1717,7 @@ string.h, but with a utf8* prefix instead of the str* prefix.")
        (sha256
         (base32 "0kw4j4qqcfjaii667xa745pklj50m70nqq8cj5agj714acczbk7y"))))
     (build-system cmake-build-system)
+    (arguments (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")))
     (synopsis "SIMD Unicode validation and transcoding")
     (description
      "simdutf is a C++ library providing Unicode routines (UTF8, UTF16,
