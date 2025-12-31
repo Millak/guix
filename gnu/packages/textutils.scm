@@ -1920,7 +1920,7 @@ conversion and pretty-printing.")
 (define-public ack
   (package
     (name "ack")
-    (version "3.7.0")
+    (version "3.9.0")
     (source
      (origin
        (method git-fetch)
@@ -1930,7 +1930,7 @@ conversion and pretty-printing.")
           (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xrbgjj3nys4158nskd0npqf825xlrqa2x3fqcfz0nnxai2jzbck"))))
+        (base32 "1iisc7lw6qw3gg1411xnwh2rnc7vjz3nqsdk1cgc98mavn112rvv"))))
     (build-system perl-build-system)
     (arguments
      (list
@@ -1961,7 +1961,8 @@ conversion and pretty-printing.")
      (list perl
            perl-file-next))
     (native-inputs
-     (list perl-io-pty))
+     (list perl-io-pty
+           perl-yaml-pp))
     (home-page "https://beyondgrep.com/")
     (synopsis "Code-searching tool for programmers with large source trees")
     (description "ack is a tool for finding text inside files.  It is designed for
