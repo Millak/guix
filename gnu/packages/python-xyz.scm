@@ -2977,6 +2977,41 @@ from a docstring rather than the other way around.")
 libraries to make them compatible with the Array API standard")
     (license license:expat)))
 
+(define-public python-array-api-strict
+  (package
+    (name "python-array-api-strict")
+    (version "2.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "array_api_strict" version))
+       (sha256
+        (base32 "0k1v3h54y1yny8mhgwjk6p51zf87farfk1xn9842g5lcrfhxqxvc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 584 passed, 1 skipped, 2 deselected
+      #:test-flags
+      ;; ModuleNotFoundError: No module named 'numpy', not sure why?
+      #~(list "-k" (string-append "not test_disabled_extensions"
+                                  " and not test_environment_variables"))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://data-apis.org/array-api-strict/")
+    (synopsis "Strict implementation of the Python array API")
+    (description
+     "@code{array_api_strict} is a strict, minimal implementation of the
+@url{https://data-apis.org/array-api/latest/, Python array API}.
+
+The purpose of array-api-strict is to provide an implementation of the array
+API for consuming libraries to test against so they can be completely sure
+their usage of the array API is portable.")
+    (license license:bsd-3)))
+
 (define-public python-cachetools
   (package
     (name "python-cachetools")
