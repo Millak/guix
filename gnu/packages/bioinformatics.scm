@@ -21060,15 +21060,24 @@ polymorphisms) and indels with respect to a reference genome and more.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/etal/cnvkit")
-             (commit (string-append "v" version))))
+              (url "https://github.com/etal/cnvkit")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "090yh17symcahddx399kcx0mcw4gdrcc2jil3p8lb92r8c8kglb5"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 70 passed, 1 warning
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("filterwarnings =.*")
+                 "")))))))
     (propagated-inputs
      (list python-biopython
-           python-future
            python-matplotlib
            python-numpy
            python-pandas
