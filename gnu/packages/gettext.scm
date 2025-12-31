@@ -34,10 +34,11 @@
   #:use-module (gnu packages)
   #:use-module (guix packages)
   #:use-module (guix gexp)
+  #:use-module (guix git-download)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages docbook)
@@ -48,6 +49,7 @@
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages xml)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sphinx)
   #:use-module (guix utils))
@@ -232,17 +234,37 @@ color, font attributes (weight, posture), or underlining.")
 (define-public mdpo
   (package
     (name "mdpo")
-    (version "0.3.6")
+    (version "0.3.86") ;the last version without Rust
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "mdpo" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mondeja/mdpo")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0kgbm0af7jwpfspa2xxiy9nc2l1r2s1rhbhz4r229zcqv49ak6sq"))))
-    (build-system python-build-system)
-    (native-inputs (list python-bump2version python-pytest python-yamllint))
-    (propagated-inputs
-     (list python-polib python-pymd4c))
+        (base32 "130g8ggy0xgk5jmlx23569wmv9fz7fhm8qi46cjj7n4fxr0vnmyx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 91 passed
+      #:test-flags
+      ;; XXX: The Most of the tests fail because 0.3.86 was released in 2022
+      ;; and depends on python-pytest@6.2.4.
+      ;; 
+      ;; OSError: pytest: reading from stdin while output is captured!
+      ;; Consider using `-s`.
+      #~(list "--ignore=test/test_integration/"
+              "--ignore=test/test_unit/test_md2po/"
+              "--ignore=test/test_unit/test_md2po2md/"
+              "--ignore=test/test_unit/test_mdpo2html/"
+              "--ignore=test/test_unit/test_po2md/")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (inputs
+     (list python-polib
+           python-pymd4c))
     (home-page "https://github.com/mondeja/mdpo")
     (synopsis "Markdown file translation utilities using pofiles")
     (description
