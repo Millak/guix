@@ -12237,61 +12237,62 @@ advanced image management tool")
                            name "-" version ".tar.gz"))
        (sha256
         (base32 "00qfbmbnqwwyxdn6y4729y39wpym8n8n2l6qfd8mvd1xppc9q8gh"))))
-    (build-system python-build-system)
-    (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")         ; for glib-compile-resources
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("python-psutil" ,python-psutil)
-       ("python-pytest-runner" ,python-pytest-runner)
-       ("python-pytest" ,python-pytest)))
-    (inputs
-     `(("bash" ,bash-minimal) ; for wrap-program
-       ("cairo" ,cairo)
-       ("dbus-glib" ,dbus-glib)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gtk+" ,gtk+)
-       ("python" ,python-wrapper)
-       ("python-dbus" ,python-dbus)
-       ("python-notify2" ,python-notify2)
-       ("python-pycairo" ,python-pycairo)
-       ("python-pygobject" ,python-pygobject)
-       ("vte" ,vte/gtk+-3)))
-    (propagated-inputs
-     (list python-configobj))
+    (build-system pyproject-build-system)
     (arguments
-     ;; One test out of 28 fails due to dbus-python and python-notify; skip
-     ;; tests.
-     `(#:tests? #f
-       #:imported-modules ((guix build glib-or-gtk-build-system)
-                           ,@%python-build-system-modules)
-       #:modules ((guix build python-build-system)
-                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+     (list
+      #:test-flags
+      #~(list
+         "--ignore=terminatorlib/"
+         ;; Some of these tests fail due to dbus-python and python-notify.
+         "--ignore=tests/test_prefseditor_keybindings.py")
+      #:imported-modules `((guix build glib-or-gtk-build-system)
+                           ,@%pyproject-build-system-modules)
+      #:modules `((guix build pyproject-build-system)
+                  ((guix build glib-or-gtk-build-system)
+                   #:prefix glib-or-gtk:)
                   (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'handle-dbus-python
-           (lambda _
-             ;; python-dbus cannot be found but it's really there.  See
-             ;; https://github.com/SpotlightKid/jack-select/issues/2
-             (substitute* "setup.py"
-               (("'dbus-python',") ""))))
-         (add-after 'install 'wrap-program
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((prog (string-append (assoc-ref outputs "out")
-                                        "/bin/terminator"))
-                   (pylib (string-append (assoc-ref outputs "out")
-                                         "/lib/python"
-                                         ,(version-major+minor
-                                           (package-version python))
-                                         "/site-packages")))
-               (wrap-program prog
-                 `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH") ,pylib))
-                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))
-         (add-after 'wrap-program 'glib-or-gtk-wrap
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+      #:phases
+      (with-extensions (list (pyproject-guile-json))
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'handle-dbus-python
+              (lambda _
+                ;; python-dbus cannot be found but it's really there.  See
+                ;; https://github.com/SpotlightKid/jack-select/issues/2
+                (substitute* "setup.py"
+                  (("'dbus-python',")
+                   ""))))
+            (replace 'wrap
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (wrap-program (string-append #$output "/bin/terminator")
+                  `("GUIX_PYTHONPATH" =
+                    (,(getenv "GUIX_PYTHONPATH")
+                     ,(site-packages inputs outputs)))
+                  `("GI_TYPELIB_PATH" =
+                    (,(getenv "GI_TYPELIB_PATH"))))))
+            (add-after 'wrap 'glib-or-gtk-wrap
+              (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))))))
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin") ;for glib-compile-resources
+           gobject-introspection
+           intltool
+           pkg-config
+           python-psutil
+           python-pytest-runner
+           python-pytest))
+    (inputs
+     (list bash-minimal ;for wrap-program
+           cairo
+           dbus-glib
+           gsettings-desktop-schemas
+           gtk+
+           python-wrapper
+           python-dbus
+           python-notify2
+           python-pycairo
+           python-pygobject
+           vte/gtk+-3))
+    (propagated-inputs (list python-configobj))
     (home-page "https://gnome-terminator.org/")
     (synopsis "Store and run multiple GNOME terminals in one window")
     (description
