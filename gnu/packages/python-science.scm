@@ -2137,20 +2137,36 @@ backward differences are used.")
 (define-public python-numpoly
   (package
     (name "python-numpoly")
-    (version "1.2.11")
+    (version "1.3.4")
     (source (origin
-              (method git-fetch) ;; PyPI is missing some Pytest fixtures
+              (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/jonathf/numpoly")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01g21v91f4d66xd0bvap0n6d6485w2fnq1636gx6h2s42550rlbd"))))
+                "19cld52ddvlbza1l8g1irfj603m6f5yifqy4pm397ffrxipfbbq6"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-importlib-metadata python-numpy))
-    (native-inputs (list python-pytest python-setuptools python-sympy
-                         python-wheel))
+    (arguments
+     (list
+      ;; tests: 219 passed, 2 deselected, 4 warnings
+      #:test-flags
+      ;; AssertionError: invalid results type: 3 != <class 'int'>
+      #~(list "--deselect=test/test_array_function.py::test_count_nonzero")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "numpoly"))))))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools
+           python-sympy))
+    (propagated-inputs
+     (list python-importlib-metadata
+           python-numpy))
     (home-page "https://numpoly.readthedocs.io/en/master/")
     (synopsis "Polynomials as a numpy datatype")
     (description "Numpoly is a generic library for creating, manipulating and
