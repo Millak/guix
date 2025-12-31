@@ -4897,26 +4897,29 @@ relying on a complex dependency tree.")
 (define-public biosoup
   (package
     (name "biosoup")
-    (version "0.10.0")
+    (version "0.11.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/rvaser/biosoup")
-             ;; Corresponds to version 0.10.0
-             (commit "38181f09854ff42cbd9632200a2ec9fb37a4b7b6")))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "02hvyka703zagx0nvv2yx3dkc748zc8g6qbrpya7r8kfkcl7y8hw"))))
+         "0vn1hj3h152iwahnrzghqll34qaphchi07klb3j70vgc248micbz"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "./bin/biosoup_test")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'enable-testing
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("target_link_libraries\\(biosoup_test")
+                 "enable_testing()
+  add_test(NAME biosoup-test COMMAND biosoup_test)
+  target_link_libraries(biosoup_test")))))))
     (native-inputs
      (list googletest))
     (home-page "https://github.com/rvaser/biosoup")
