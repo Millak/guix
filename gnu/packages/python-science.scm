@@ -1261,15 +1261,20 @@ formulas for Python.")
 (define-public python-geosketch
   (package
     (name "python-geosketch")
-    (version "1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "geosketch" version))
-              (sha256
-               (base32
-                "0knch5h0p8xpm8bi3b5mxyaf1ywwimrsdmbnc1xr5icidcv9gzmv"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #false)) ;there are none
+    (version "1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/brianhie/geosketch")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lnynk4r87zqck5mmj33axmly34hh7lrlmfy1qidrw7xihy28g5a"))))
+    (build-system pyproject-build-system)
+    ;; XXX: Avoid circular dependency on python-scanorama.
+    (arguments (list #:tests? #f))
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-fbpca python-numpy python-scikit-learn))
     (home-page "https://github.com/brianhie/geosketch")
     (synopsis "Geometry-preserving random sampling")
