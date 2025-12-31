@@ -5162,7 +5162,7 @@ and more
 (define-public python-plotly
   (package
     (name "python-plotly")
-    (version "5.20.0")
+    (version "5.24.1")
     (source
      (origin
        (method git-fetch)
@@ -5171,27 +5171,41 @@ and more
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0i22sv8p3kl84nkldbv1253kld85rbwp2pdxivxn64wwflfpqvx6"))))
+        (base32 "0pnsj23bxj7c39hzdz49v72flwbc8knc7dy831lvc0hrbssm4j60"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 2715 passed, 18 skipped, 41 deselected, 606 warnings
       #:test-flags
-      ;; 2658 passed, 18 skipped, 38 deselected, 574 warnings
-      #~(list "-k" (string-join
-                    ;; python-polars is not packaged yet.
+      ;; XXX: Combination of missing packages and assertion errors.
+      #~(list "--ignore=plotly/tests/test_optional/test_kaleido/test_kaleido.py"
+              "-k" (string-join
                     (list "not test_build_df_from_vaex_and_polars"
                           "test_build_df_with_hover_data_from_vaex_and_polars"
-                          ;; ValueError
                           "test_bytesio"
+                          "test_colorscale_and_levels_same_length"
+                          "test_correct_order_param"
+                          "test_dependencies_not_imported"
                           "test_ensure_orca_ping_and_proc"
-                          "test_kaleido_engine_to_image_returns_bytes"
-                          "test_kaleido_fulljson"
+                          "test_external_server_url"
+                          "test_fips_values_same_length"
+                          "test_full_choropleth"
+                          "test_invalid_figure_json"
                           "test_latex_fig_to_image[eps]"
+                          "test_lazy_imports"
+                          "test_legend_dots"
+                          "test_linestyle"
                           "test_mimetype_combination"
+                          "test_orca_executable_path"
                           "test_orca_version_number"
                           "test_pdf_renderer_show_override"
                           "test_png_renderer_mimetype"
                           "test_problematic_environment_variables[eps]"
+                          "test_sanitize_json[auto]"
+                          "test_sanitize_json[json]"
+                          "test_sanitize_json[orjson]"
+                          "test_scope_is_not_list"
+                          "test_scraper"
                           "test_server_timeout_shutdown"
                           "test_simple_to_image[eps]"
                           "test_svg_renderer_show"
@@ -5199,21 +5213,10 @@ and more
                           "test_topojson_fig_to_image[eps]"
                           "test_validate_orca"
                           "test_write_image_string[eps]"
+                          "test_write_image_string_bad_extension_failure"
                           "test_write_image_string_bad_extension_override"
                           "test_write_image_string_format_inference[eps]"
-                          "test_write_image_writeable[eps]"
-                          ;; XXX: check why these tests fail
-                          "test_dependencies_not_imported"
-                          "test_external_server_url"
-                          "test_invalid_figure_json"
-                          "test_lazy_imports"
-                          "test_legend_dots"
-                          "test_linestyle"
-                          "test_orca_executable_path"
-                          "test_sanitize_json[auto]"
-                          "test_sanitize_json[json]"
-                          "test_scraper"
-                          "test_write_image_string_bad_extension_failure")
+                          "test_write_image_writeable[eps]")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
@@ -5235,23 +5238,36 @@ and more
           (add-after 'fix-version 'chdir
             (lambda _
               (chdir "packages/python/plotly"))))))
+    ;; XXX: Plotly requires a long list of test only packages, do not
+    ;; propagate them, see: <packages/python/plotly/test_requirements>.
     (native-inputs
-     (list python-ipywidgets
+     (list python-geopandas
+           python-ipykernel
+           python-ipython-minimal
+           python-ipywidgets
+           python-matplotlib
            python-nbformat
-           python-pytest
-           python-setuptools
-           python-xarray))
-    (propagated-inputs
-     (list python-ipython
+           python-numpy-1
+           python-orjson
            python-pandas
            python-pillow
-           ;; python-polars
+           python-psutil
+           python-pyshp
+           python-pytest
+           python-pytz
            python-requests
            python-retrying
            python-scikit-image
+           python-scipy
+           python-setuptools
+           python-shapely
            python-statsmodels
            python-tenacity
-           python-vaex-core))
+           python-vaex-core
+           python-xarray))
+    (propagated-inputs
+     (list python-packaging
+           python-tenacity))
     (home-page "https://plotly.com/python/")
     (synopsis "Interactive plotting library for Python")
     (description
