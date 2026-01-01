@@ -31,6 +31,7 @@
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2025 Liam Hupfer <liam@hpfr.net>
 ;;; Copyright © 2025 dan <i@dan.games>
+;;; Copyright © 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1723,7 +1724,7 @@ existing compilers together.")
   (package
     (inherit clang)
     (name "python-clang")
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (outputs '("out"))
     (arguments
      (list
@@ -1731,15 +1732,6 @@ existing compilers together.")
                    (add-before 'build 'change-directory
                      (lambda _
                        (chdir "bindings/python")))
-                   (add-before 'build 'create-setup-py
-                     (lambda _
-                       ;; Generate a basic "setup.py", enough so it can be
-                       ;; built and installed.
-                       (with-output-to-file "setup.py"
-                         (lambda ()
-                           (format #true "from setuptools import setup
-setup(name=\"clang\", version=\"~a\", packages=[\"clang\"])\n"
-                                   #$(package-version this-package))))))
                    (add-before 'build 'set-libclang-file-name
                      (lambda* (#:key inputs #:allow-other-keys)
                        ;; Record the absolute file name of libclang.so.
