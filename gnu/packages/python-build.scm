@@ -910,6 +910,13 @@ has features such as:
 @end itemize")
     (license license:expat)))
 
+(define-public python-hatchling-bootstrap
+  (package/inherit python-hatchling
+    (name "python-hatchling-bootstrap")
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-hatchling)
+       (replace "python-packaging" python-packaging-bootstrap)))))
+
 (define-public python-hatchling-for-hatch
   ;; For hatch@1.9.7, remove when no longer required.
   (hidden-package
