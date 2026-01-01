@@ -151,7 +151,7 @@ itself as well as other components maintained by the LXQt project.")
 (define-public libqtxdg
   (package
     (name "libqtxdg")
-    (version "4.2.0")
+    (version "4.3.0")
     (source
      (origin
        (method url-fetch)
@@ -159,7 +159,7 @@ itself as well as other components maintained by the LXQt project.")
              "https://github.com/lxqt/libqtxdg/releases/download/"
              version "/libqtxdg-" version ".tar.xz"))
        (sha256
-        (base32 "0ap81y7sbqwcdfsdlyxihs12chfv332fgg6y0sl6zmjhhlhk1m55"))))
+        (base32 "0mgsis81dcrq6nvsydx0jpgf4ifzbyxvcq582gas6pmmbaivhv44"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -169,6 +169,8 @@ itself as well as other components maintained by the LXQt project.")
        (modify-phases %standard-phases
          (add-before 'check 'pre-check
            (lambda _
+             ;; Tests require a writable HOME.
+             (setenv "HOME" "/tmp")
              ;; Run the tests offscreen.
              (setenv "QT_QPA_PLATFORM" "offscreen")
              #t)))))
