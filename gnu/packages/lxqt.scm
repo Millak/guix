@@ -587,14 +587,14 @@ LXQt.")
 (define-public lxqt-powermanagement
   (package
     (name "lxqt-powermanagement")
-    (version "2.2.1")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1pds86s72ckkvk886ncajnl7q11814w94dfmbblmml2dmfxyhkbx"))))
+        (base32 "0xlyb41xapgkn5x9cgq2snln60scs67ja07721djq499y8c5r92p"))))
     (build-system cmake-build-system)
     (inputs
      (list kidletime
