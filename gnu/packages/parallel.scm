@@ -102,41 +102,38 @@
                        "src/parallel_cheat_bw.pdf")))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--docdir=" (assoc-ref %outputs "doc")
-                             "/share/doc/parallel"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-bin-sh
-           (lambda _
-             (for-each
-              (lambda (file)
-                (substitute* file
-                  ;; Patch hard coded '/bin/sh' in the line ending in:
-                  ;; $Global::shell = $ENV{'PARALLEL_SHELL'} ||
-                  ;;  parent_shell($$) || $ENV{'SHELL'} || "/bin/sh";
-                  (("/bin/sh\\\";\n$") (string-append (which "sh") "\";\n"))))
-              (list "src/parallel" "src/sem"))))
-         (add-before 'install 'add-install-to-path
-           (lambda* (#:key outputs #:allow-other-keys)
-             (setenv "PATH" (string-append (getenv "PATH") ":"
-                                           (assoc-ref outputs "out") "/bin"))))
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/parallel")
-                 `("PATH" ":" prefix
-                   ,(map (lambda (input)
-                           (string-append (assoc-ref inputs input) "/bin"))
-                         '("perl"
-                           "procps")))))))
-         (add-after 'wrap-program 'post-install-test
-           (lambda* (#:key tests? outputs #:allow-other-keys)
-             (when tests?
-               (invoke (string-append
-                        (assoc-ref outputs "out") "/bin/parallel")
-                       "echo"
-                       ":::" "1" "2" "3")))))))
+     (list
+      #:configure-flags
+      #~(list (string-append "--docdir=" #$output:doc "/share/doc/parallel"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-bin-sh
+            (lambda _
+              (for-each
+               (lambda (file)
+                 (substitute* file
+                   ;; Patch hard coded '/bin/sh' in the line ending in:
+                   ;; $Global::shell = $ENV{'PARALLEL_SHELL'} ||
+                   ;;  parent_shell($$) || $ENV{'SHELL'} || "/bin/sh";
+                   (("/bin/sh\\\";\n$") (string-append (which "sh") "\";\n"))))
+               (list "src/parallel" "src/sem"))))
+          (add-before 'install 'add-install-to-path
+            (lambda _
+              (setenv "PATH"
+                      (string-append (getenv "PATH") ":" #$output "/bin"))))
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/parallel")
+                `("PATH" ":" prefix
+                  ,(map (lambda (input)
+                          (string-append (assoc-ref inputs input) "/bin"))
+                        '("perl" "procps"))))))
+          (add-after 'wrap-program 'post-install-test
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke (string-append #$output "/bin/parallel")
+                        "echo"
+                        ":::" "1" "2" "3")))))))
     (native-inputs
      (list perl pod2pdf))
     (inputs
