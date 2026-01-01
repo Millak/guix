@@ -896,14 +896,14 @@ names.")
 (define-public obconf-qt
   (package
     (name "obconf-qt")
-    (version "0.16.5")
+    (version "0.16.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "030n4jlmd79i3m1kk3jqm9s6f2fgwj78phnlvcjfmxqj15l86j03"))))
+        (base32 "0587kpi8snbzhkvnhmx6afasrnywzmx54i3n12i73633z8b8vk13"))))
     (build-system cmake-build-system)
     (inputs
      (list imlib2
