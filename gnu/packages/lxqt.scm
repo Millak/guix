@@ -309,14 +309,14 @@ LXQt and the system it's running on.")
 (define-public lxqt-admin
   (package
     (name "lxqt-admin")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "03gkb7gwq0gy9ihvawn38i36nkfmwyslf8wmbp4ssj129i94sphq"))))
+        (base32 "1hmiggpfd5rhpapcx4xiszzlxpk0znlxlfarjr8hzv4dxkkc64s1"))))
     (build-system cmake-build-system)
     (inputs
      (list liblxqt polkit-qt6))
