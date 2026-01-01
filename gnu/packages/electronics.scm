@@ -92,6 +92,7 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages java)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libftdi)
@@ -2203,6 +2204,151 @@ SystemVerilog")
      "This package provides a library of @acronym{AST, Abstract Syntax Tree} nodes
 for @acronym{VHDL, Very high speed integrated circuit Hardware Description Language},
 SystemVerilog, and SystemC, with conversion between languages and to JSON.")
+    (license license:expat)))
+
+;; Yosys source pinned to hdlConvertor v2.3 submodule commit for parsing tests.
+(define yosys-src-for-hdlconvertor-tests
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+           (url "https://github.com/YosysHQ/yosys")
+           (commit "a299e606f864942c7edf90c4ad3998f4f4a346cf")))
+    (file-name "yosys-src-for-hdlconvertor-tests")
+    (sha256
+     (base32 "106bzlljn6843740r8rbaqf5ivkyfcgp25dgzds97j48ypmv6fih"))))
+
+(define-public python-hdlconvertor
+  (package
+    (name "python-hdlconvertor")
+    (version "2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Nic30/hdlConvertor")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xa7wm324dwp4wks8l9njpd2bz4gn7dfygdc3a78lxy1prvzbyyz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Ignore tests inside yosys source tree (they're unrelated yosys tests).
+      #~(list "--ignore=tests/yosys")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'setup-antlr
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Build classpath from input jars.
+              (let* ((st4 (search-input-file inputs
+                            "share/java/java-stringtemplate-4.0.8.jar"))
+                     (antlr4 (search-input-file inputs
+                               "share/java/antlr4.jar"))
+                     (antlr4-rt (search-input-file inputs
+                                  "share/java/java-antlr4-runtime.jar"))
+                     (antlr3 (search-input-file inputs
+                               "share/java/antlr3-3.5.2.jar"))
+                     (treelayout (search-input-file inputs
+                                   "share/java/java-treelayout-1.0.3.jar"))
+                     (classpath (string-join (list st4 antlr4 antlr4-rt
+                                                   antlr3 treelayout)
+                                             ":"))
+                     (antlr4cpp-include (search-input-directory
+                                          inputs "include/antlr4-runtime"))
+                     (antlr4cpp-lib (search-input-file
+                                      inputs "lib/libantlr4-runtime.so"))
+                     (python-include (search-input-directory
+                                       inputs "include/python3.11")))
+                ;; Patch CMake to use our paths directly.
+                (substitute* "src/CMake_antlr4.txt"
+                  (("set\\(ANTLR_CLASSPATH \"\"\\)")
+                   (string-append "set(ANTLR_CLASSPATH \"" classpath "\")"))
+                  ;; Skip the jar search loop.
+                  (("FOREACH\\(antlr_jar \\$\\{ANTLR_JARS\\}\\)")
+                   "FOREACH(antlr_jar )")
+                  ;; Set C++ runtime paths before find commands.
+                  (("# search for antlr4 include dir and library")
+                   (string-append
+                    "# search for antlr4 include dir and library\n"
+                    "set(ANTLR4CPP_INCLUDE_DIRS \"" antlr4cpp-include "\")\n"
+                    "set(ANTLR4CPP_LIBRARIES \"" antlr4cpp-lib "\")\n")))
+                ;; hdlConvertor/CMakeLists.txt is a sibling subdirectory to src/
+                ;; so variables set in src/CMake_antlr4.txt aren't visible here;
+                ;; inject both ANTLR and Python include paths before
+                ;; include_directories.
+                (substitute* "hdlConvertor/CMakeLists.txt"
+                  (("include_directories\\(")
+                   (string-append
+                    "set(ANTLR4CPP_INCLUDE_DIRS \"" antlr4cpp-include "\")\n"
+                    "set(PYTHON_INCLUDE_DIRS \"" python-include "\")\n"
+                    "include_directories(")))
+                ;; ANTLR4 4.10+ changed from .as<T>() to std::any_cast<T>().
+                ;; Upstream fixed this in commit 8b07c10 using preprocessor
+                ;; conditionals to support both old and new APIs, but that
+                ;; commit also includes unrelated changes (Block statement
+                ;; support).  We apply a simplified fix for ANTLR 4.10+
+                ;; only.
+                (substitute* "src/verilogPreproc/verilogPreproc.cpp"
+                  (("visitMacro_call\\(mc, false\\)\\.as<string>\\(\\)")
+                   "std::any_cast<string>(visitMacro_call(mc, false))")
+                  (("params = visitDefine_args\\(da\\);")
+                   (string-append "params = std::any_cast<"
+                                  "vector<MacroDefVerilog::param_info_t>*"
+                                  ">(visitDefine_args(da));"))))))
+          (add-before 'check 'prepare-tests
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Symlink yosys source for yosys testsuite.
+              (delete-file-recursively "tests/yosys")
+              (symlink (assoc-ref inputs "yosys-src-for-hdlconvertor-tests")
+                       "tests/yosys")
+              ;; Remove source hdlConvertor/ which shadows the installed package.
+              (delete-file-recursively "hdlConvertor")
+              ;; Replace tests/__init__.py which imports all.py that requires
+              ;; git submodules; also delete tests requiring external tools.
+              (call-with-output-file "tests/__init__.py"
+                (lambda (port)
+                  (display "" port)))
+              (delete-file "tests/all.py")
+              (for-each delete-file
+                        (find-files "tests" "test_ghdl"))
+              (for-each delete-file
+                        (find-files "tests" "test_icarus"))
+              (for-each delete-file
+                        (find-files "tests" "test_verilator"))
+              (for-each delete-file
+                        (find-files "tests" "test_uvvm"))
+              (for-each delete-file
+                        (find-files "tests" "test_vunit"))
+              (for-each delete-file
+                        (find-files "tests" "test_notebook"))
+              (for-each delete-file
+                        (find-files "tests" "test_basic_hdl_sim")))))))
+    (native-inputs
+     (list antlr4                  ; parser generator tool (antlr4.jar)
+           antlr3                  ; antlr3-runtime.jar required by hdlConvertor build
+           java-antlr4-runtime     ; antlr4-runtime.jar required by hdlConvertor build
+           java-stringtemplate     ; stringtemplate4.jar required by hdlConvertor build
+           java-treelayout         ; treelayout.jar required by hdlConvertor build
+           (list openjdk "jdk")    ; Java runtime to execute ANTLR4
+           ;;; Python build dependencies:
+           python-cython           ; compiles .pyx extension files to C++
+           python-scikit-build     ; CMake-based Python build system
+           python-setuptools
+           python-wrapper          ; Python interpreter for build scripts
+           python                  ; Python headers for C extension building
+           python-pytest
+           ;; Yosys source for parsing tests.
+           yosys-src-for-hdlconvertor-tests))
+    (inputs
+     (list java-antlr4-runtime-cpp))
+    (propagated-inputs
+     (list python-hdlconvertorast))
+    (home-page "https://github.com/Nic30/hdlConvertor")
+    (synopsis "VHDL and System Verilog parser")
+    (description "This package provides a @acronym{VHDL, Very high speed
+integrated circuit Hardware Description Language} and SystemVerilog
+parser library for Python.")
     (license license:expat)))
 
 (define-public python-pyucis
