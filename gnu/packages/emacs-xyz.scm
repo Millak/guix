@@ -154,7 +154,7 @@
 ;;; Copyright © 2025 Arjan Adriaanse <arjan@adriaan.se>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2025 Skylar Hill <stellarskylark@posteo.net>
-;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2025, 2026 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2025 Lee Thompson <lee.p.thomp@gmail.com>
 ;;; Copyright @ 2025 Amy Pillow <amypillow@lavache.com>
 ;;; Copyright © 2025 Kurome <hunt31999@gmail.org>
@@ -32627,6 +32627,35 @@ LanguageTool} server.")
       (description "This is a basic interface to the lingva.ml API, which
 allows you to obtain translations of texts from Google Translate without any
 tracking.")
+      (license license:gpl3+))))
+
+(define-public emacs-helm-comint
+  ;; There are no releases or tags.
+  (let ((commit "9215b2aa8f42f62cbda66a1503832abb7f491549")
+        (revision "0"))
+    (package
+      (name "emacs-helm-comint")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+            (url "https://github.com/emacs-helm/helm-comint")
+            (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "029dhxy73lhpbpsw7n3sj8z18c2syy59551pfd31k8kas98ck52j"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ;no tests
+      (propagated-inputs
+       (list emacs-helm))
+      (home-page "https://github.com/emacs-helm/helm-comint")
+      (synopsis "Comint prompt navigation for Helm")
+      (description
+       "@code{Helm-comint} provides access to Emacs command interpreter
+prompts through Helm.")
       (license license:gpl3+))))
 
 (define-public emacs-helm-company
