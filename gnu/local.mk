@@ -1325,7 +1325,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/freeimage-unbundle.patch		\
   %D%/packages/patches/freeimage-CVE-2020-21428.patch		\
   %D%/packages/patches/freeimage-CVE-2020-22524.patch		\
-  %D%/packages/patches/freerdp-3.16.0-rpath.patch		\
   %D%/packages/patches/freesolid-automake.patch			\
   %D%/packages/patches/freesolid-autotools.patch		\
   %D%/packages/patches/freesolid-configure.patch		\

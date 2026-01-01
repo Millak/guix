@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2024, 2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
@@ -178,7 +178,7 @@ of parts of the Windows API.")
   (package
     (inherit freerdp)
     (name "freerdp")
-    (version "3.17.2")
+    (version "3.20.0")
     (source
      (origin
        (method git-fetch)
@@ -187,22 +187,16 @@ of parts of the Windows API.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17jdr2fjfz2m81a32ka9ijb8n2kpg20s6wjvw72if86h1nsvxmmg"))
-       (patches
-        (search-patches "freerdp-3.16.0-rpath.patch"))))
+        (base32 "1fknj2ysm3nj7kz5k8wvxpny0a7bjbi290z9cs7fwrk3yqv454w4"))))
     (inputs
      (modify-inputs (package-inputs freerdp)
        (replace "ffmpeg" ffmpeg)
        (prepend fuse icu4c mit-krb5 sdl3 sdl3-gfx sdl3-ttf)))
     (arguments
      (list #:build-type "Release"
-           #:test-exclude "TestFreeRDPCodecH264|TestClientRdpFile"
+           #:test-exclude "TestFreeRDPCodecInterleaved|TestClientRdpFile"
            #:configure-flags
            #~(list
-              ;; Relax gcc-14's strictness.
-              (string-append "-DCMAKE_C_FLAGS="
-                             " -Wno-error=incompatible-pointer-types"
-                             " -Wno-error=int-conversion")
               "-DWITH_VERBOSE_WINPR_ASSERT=OFF"
               "-DWITH_JPEG=ON"
               #$@(if (target-x86-64?)
