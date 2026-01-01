@@ -1393,26 +1393,6 @@ implements RFC 6125 fully and plans to add other relevant RFCs too.")
 of the CRC32C hashing algorithm.")
     (license license:asl2.0)))
 
-(define-public python-hkdf
-  (package
-    (name "python-hkdf")
-    (version "0.0.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "hkdf" version))
-        (sha256
-         (base32
-          "1jhxk5vhxmxxjp3zj526ry521v9inzzl8jqaaf0ma65w6k332ak2"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-nose))
-    (home-page "https://github.com/casebeer/python-hkdf")
-    (synopsis "HMAC-based Extract-and-Expand Key Derivation Function (HKDF)")
-    (description "This package provides a Python implementation of the HMAC Key
-Derivation function (HKDF) defined in RFC 5869.")
-    (license license:bsd-2)))
-
 (define-public python-spake2
   (package
     (name "python-spake2")
