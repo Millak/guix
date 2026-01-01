@@ -147,6 +147,27 @@ Language (TOML) configuration files.")
 write-only counterpart to Tomli, which is a read-only TOML parser.")
     (license license:expat)))
 
+(define-public python-pygments-bootstrap
+  (package
+    (name "python-pygments-bootstrap")
+    (version "2.19.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pygments" version))
+       (sha256
+        (base32
+         "07qm8mx3y5r8ri6zpn0hp9zx5g02bydhi7pkv54hdp3nhlm6vhb1"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))
+    (native-inputs
+     (list python-hatchling))
+    (home-page "https://pygments.org/")
+    (synopsis "Syntax highlighting")
+    (description
+     "Pygments is a syntax highlighting package written in Python.")
+    (license license:bsd-2)))
+
 (define-public python-pytoml
   (package
     (name "python-pytoml")
