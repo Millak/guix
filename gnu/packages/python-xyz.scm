@@ -13527,8 +13527,8 @@ ManimPango is internally used in Manim to render (non-LaTeX) text.")
        ;; The PyPI archive does not include the documentation, so use Git.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/Kozea/cairocffi")
-             (commit (string-append "v" version))))
+              (url "https://github.com/Kozea/cairocffi")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
@@ -13547,46 +13547,46 @@ ManimPango is internally used in Manim to render (non-LaTeX) text.")
            python-sphinx
            python-sphinx-rtd-theme))
     (propagated-inputs
-     (list python-xcffib)) ; used at run time
+     (list python-xcffib))              ; used at run time
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "cairocffi/__init__.py"
-               ;; Hack the dynamic library loading mechanism.
-               (("find_library\\(library_name\\)")
-                "\"found\"")
-               (("filenames = \\(library_filename,\\) \\+ filenames")
-                "pass")
-               (("libcairo.so.2")
-                (search-input-file inputs "/lib/libcairo.so.2")))
-             (substitute* "cairocffi/pixbuf.py"
-               (("libgdk_pixbuf-2.0.so.0")
-                (search-input-file inputs "/lib/libgdk_pixbuf-2.0.so.0"))
-               (("libgobject-2.0.so.0")
-                (search-input-file inputs "/lib/libgobject-2.0.so.0"))
-               (("libglib-2.0.so.0")
-                (search-input-file inputs "/lib/libglib-2.0.so.0"))
-               (("libgdk-3.so.0")
-                (search-input-file inputs "/lib/libgdk-3.so.0")))))
-         (add-after 'install 'install-doc
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((data (string-append (assoc-ref outputs "doc") "/share"))
-                    (doc (string-append data "/doc/" ,name "-" ,version))
-                    (html (string-append doc "/html")))
-               (setenv "LD_LIBRARY_PATH"
-                       (string-append (assoc-ref inputs "cairo") "/lib" ":"
-                                      (assoc-ref inputs "gdk-pixbuf") "/lib"))
-               (setenv "LANG" "en_US.UTF-8")
-               (mkdir-p html)
-               (for-each (lambda (file)
-                           (copy-file (string-append "." file)
-                                      (string-append doc file)))
-                         '("/README.rst" "/NEWS.rst"))
-               (system* "python" "setup.py" "build_sphinx")
-               (copy-recursively "docs/_build/html" html)
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "cairocffi/__init__.py"
+                ;; Hack the dynamic library loading mechanism.
+                (("find_library\\(library_name\\)")
+                 "\"found\"")
+                (("filenames = \\(library_filename,\\) \\+ filenames")
+                 "pass")
+                (("libcairo.so.2")
+                 (search-input-file inputs "/lib/libcairo.so.2")))
+              (substitute* "cairocffi/pixbuf.py"
+                (("libgdk_pixbuf-2.0.so.0")
+                 (search-input-file inputs "/lib/libgdk_pixbuf-2.0.so.0"))
+                (("libgobject-2.0.so.0")
+                 (search-input-file inputs "/lib/libgobject-2.0.so.0"))
+                (("libglib-2.0.so.0")
+                 (search-input-file inputs "/lib/libglib-2.0.so.0"))
+                (("libgdk-3.so.0")
+                 (search-input-file inputs "/lib/libgdk-3.so.0")))))
+          (add-after 'install 'install-doc
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((data (string-append #$output:doc "/share"))
+                     (doc (string-append data "/doc/" #$name "-" #$version))
+                     (html (string-append doc "/html")))
+                (setenv "LD_LIBRARY_PATH"
+                        (string-append (assoc-ref inputs "cairo") "/lib" ":"
+                                       (assoc-ref inputs "gdk-pixbuf") "/lib"))
+                (setenv "LANG" "en_US.UTF-8")
+                (mkdir-p html)
+                (for-each (lambda (file)
+                            (copy-file (string-append "." file)
+                                       (string-append doc file)))
+                          '("/README.rst" "/NEWS.rst"))
+                (system* "python" "setup.py" "build_sphinx")
+                (copy-recursively "docs/_build/html" html)))))))
     (home-page "https://github.com/Kozea/cairocffi")
     (synopsis "Python bindings and object-oriented API for Cairo")
     (description
