@@ -733,14 +733,14 @@ for the LXQt desktop environment.")
 (define-public lxqt-sudo
   (package
     (name "lxqt-sudo")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "14fg8mxbkdi8sp8rdxy2zqwfgmzxrmj1xnq3h25pqnc61qf12y4f"))))
+        (base32 "18fcn7r964m864gvvlw4xvq0cjhspa4q340y480gsqcvnd71xgvr"))))
     (build-system cmake-build-system)
     (inputs
      (list liblxqt sudo))
