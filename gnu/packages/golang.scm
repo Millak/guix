@@ -48,6 +48,7 @@
 ;;; Copyright © 2024 Brennan Vincent <brennan@umanwizard.com>
 ;;; Copyright © 2024 André Batista <nandre@riseup.net>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2026 Ethan Blanton <elb@lostbits.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -82,6 +83,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -1024,7 +1026,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.22)
     (name "go")
-    (version "1.23.9")
+    (version "1.23.12")
     (source
      (origin
        (method git-fetch)
@@ -1033,7 +1035,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
              (commit (string-append "go" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06c5cjjqk95p16cb6p8fgqqsddc1a1kj3w2m0na5v91gvwxbd0pq"))))
+        (base32 "0nxcp8wikn93zxipm829dyyagwys13yhf452ai357wzbdzqihm7x"))))
     (arguments
      (substitute-keyword-arguments (package-arguments go-1.22)
        ((#:phases phases)
@@ -1064,7 +1066,11 @@ in the style of communicating sequential processes (@dfn{CSP}).")
          ("aarch64" ,@%go-1.23-arm64-micro-architectures)
          ("armhf" ,@%go-1.17-arm-micro-architectures)
          ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures)
-         ("x86_64" ,@%go-1.18-x86_64-micro-architectures))))))
+         ("x86_64" ,@%go-1.18-x86_64-micro-architectures))))
+    (native-inputs
+     ;; setarch was added to the tsan test suite in 1.23.12
+     `(("go" ,util-linux)
+       ,@(package-native-inputs go-1.22)))))
 
 (define-public go-1.24
   (package
