@@ -806,6 +806,21 @@ system, then @code{flit_core} to build the package.")
 them as the version argument or in a SCM managed file.")
     (license license:expat)))
 
+(define-public python-setuptools-scm-bootstrap
+  (package/inherit python-setuptools-scm
+    (name "python-setuptools-scm-bootstrap")
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f    ;avoid extra dependencies such as pytest
+      ;; pyproject-build-system will error handle forms such as
+      ;; "module:object", so we set it.
+      #:build-backend "setuptools.build_meta"))
+    (native-inputs
+     (list python-packaging-bootstrap))
+    (propagated-inputs
+     (list python-setuptools-bootstrap))))
+
 (define-public python-setuptools-scm-next
   (package
     (inherit python-setuptools-scm)
