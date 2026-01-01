@@ -34521,17 +34521,29 @@ Psycopg 2 is both Unicode and Python 3 friendly.")
 (define-public python-pyfuse3
   (package
     (name "python-pyfuse3")
-    (version "3.3.0")
+    (version "3.4.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "pyfuse3" version))
         (sha256
-          (base32 "1gbkwmk7gpyy70cqj9226qvwrx13xlwxfz86l86n5ybr4i0zwc9b"))))
-    (build-system python-build-system)
-    (native-inputs (list pkg-config))
-    (inputs (list fuse))
-    (propagated-inputs (list python-pytest-trio))
+          (base32 "02cjnkhn6rf19bcp5g6spq59fhdg8izhwv2jgxgbvkabjigrqbv0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; FileNotFoundError: [Errno 2] No such file or directory: '/usr/bin'
+      #~(list "--deselect=test/test_api.py::test_listdir")))
+    (native-inputs
+     (list pkg-config
+           python-cython
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (inputs
+     (list fuse))
+    (propagated-inputs
+     (list python-trio))
     (home-page "https://github.com/libfuse/pyfuse3")
     (synopsis "Python bindings to FUSE 3")
     (description "This package provides Python 3 bindings for libfuse 3 with
