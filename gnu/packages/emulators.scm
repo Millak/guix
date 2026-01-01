@@ -2824,7 +2824,7 @@ GLSL (@file{.slang}) shaders for use with RetroArch.")
 (define-public retroarch-minimal
   (package
     (name "retroarch-minimal")
-    (version "1.21.0")
+    (version "1.22.2")
     (source
      (origin
        (method git-fetch)
@@ -2855,7 +2855,7 @@ GLSL (@file{.slang}) shaders for use with RetroArch.")
        (patches (search-patches "retroarch-unbundle-spirv-cross.patch"))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17l3x77vd52g7zq62g3j1jxr51ksmdnxif1qh671qi19fsd19v1r"))))
+        (base32 "1xbipxg5g53f68cbki61qj86096l87x0mrwzbgrv6mcf3sif0y7v"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -2864,6 +2864,8 @@ GLSL (@file{.slang}) shaders for use with RetroArch.")
       #~(modify-phases %standard-phases
           (replace 'configure
             (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "input/bsv/uint32s_index.c"
+                (("#include <xxHash/xxhash\\.h>") "#include <xxhash.h>"))
               ;; Hard-code some store file names.
               (substitute* "gfx/common/vulkan_common.c"
                 (("libvulkan.so")
@@ -2904,6 +2906,7 @@ GLSL (@file{.slang}) shaders for use with RetroArch.")
                ;; These are disabled to avoid requiring the bundled
                ;; dependencies.
                "--disable-7zip"
+               "--disable-chd"
                "--disable-cheevos"
                "--disable-crtswitchres"
                "--disable-discord"
@@ -2912,7 +2915,8 @@ GLSL (@file{.slang}) shaders for use with RetroArch.")
                "--disable-stb_font"
                "--disable-stb_image"
                "--disable-stb_vorbis"
-               "--disable-xdelta"))))))
+               "--disable-xdelta"
+               "--disable-zstd"))))))
     (native-inputs
      (list pkg-config
            wayland-protocols
@@ -2945,6 +2949,7 @@ GLSL (@file{.slang}) shaders for use with RetroArch.")
            v4l-utils
            vulkan-loader
            wayland
+           xxhash
            zlib))
     (native-search-paths
      (list (search-path-specification
