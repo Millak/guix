@@ -215,39 +215,32 @@ gpg-agent, openpgp-card and softkeys keystore backends.")
     (native-inputs
      (list clang pkg-config))
     (arguments
-     `(#:install-source? #f
+     `(#:imported-modules ((guix build copy-build-system)
+                           ,@%cargo-build-system-modules)
+       #:modules ((guix build cargo-build-system)
+                  ((guix build copy-build-system) #:prefix copy:)
+                  (guix build utils))
+       #:install-source? #f
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'set-asset-out-dir
            (lambda _
              (setenv "ASSET_OUT_DIR" "target/assets")))
          (add-after 'install 'install-more
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share"))
-                    (bash-completions-dir
-                     (string-append out "/etc/bash_completion.d"))
-                    (zsh-completions-dir
-                     (string-append share "/zsh/site-functions"))
-                    (fish-completions-dir
-                     (string-append share "/fish/vendor_completions.d"))
-                    (elvish-completions-dir
-                     (string-append share "/elvish/lib"))
-                    (man1 (string-append share "/man/man1")))
-               ;; The completions are generated in build.rs.
-               (mkdir-p bash-completions-dir)
-               (mkdir-p elvish-completions-dir)
-               (for-each (lambda (file)
-                           (install-file file man1))
-                         (find-files "target/assets/man-pages" "\\.1$"))
-               (copy-file "target/assets/shell-completions/sqv.bash"
-                          (string-append bash-completions-dir "/sqv"))
-               (install-file "target/assets/shell-completions/_sqv"
-                             zsh-completions-dir)
-               (install-file "target/assets/shell-completions/sqv.fish"
-                             fish-completions-dir)
-               (copy-file "target/assets/shell-completions/sqv.elv"
-                          (string-append elvish-completions-dir "/sqv"))))))))
+           (lambda args
+             (apply (assoc-ref copy:%standard-phases 'install)
+                    #:install-plan
+                    '(("target/assets/man-pages" "share/man/man1"
+                       #:include-regexp ("\\.1$"))
+                      ("target/assets/shell-completions/sqv.bash"
+                       "share/bash-completion/completions/sqv")
+                      ("target/assets/shell-completions/sqv.elv"
+                       "share/elvish/lib/sqv")
+                      ("target/assets/shell-completions/sqv.fish"
+                       "share/fish/vendor_completions.d/")
+                      ("target/assets/shell-completions/_sqv"
+                       "share/zsh/site-functions/"))
+                    args))))))
     (home-page "https://sequoia-pgp.org/")
     (synopsis "Simple OpenPGP signature verification program")
     (description "@code{sqv} verifies detached OpenPGP signatures.  It is a
