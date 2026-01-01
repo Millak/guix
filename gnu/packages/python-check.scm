@@ -4264,28 +4264,6 @@ framework.")
      "This package provides a Pytest plugin to run Xvfb for tests.")
     (license license:expat)))
 
-(define-public python-pyux
-  (package
-    (name "python-pyux")
-    (version "0.0.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyux" version))
-       (sha256
-        (base32
-         "1i17xh4dy238ibrjdgh8vn78fk5q6dj37mcznpvdfzidj57js7ca"))))
-    (build-system pyproject-build-system)
-    (arguments
-     `(#:tests? #f))                  ;the mini test suite fails
-    (native-inputs
-     (list python-pytest python-setuptools))
-    (home-page "https://github.com/farizrahman4u/pyux")
-    (synopsis "Utility to check API integrity in Python libraries")
-    (description "The pyux utility detects API changes in Python
-libraries.")
-    (license license:expat)))
-
 (define-public python-re-assert
   (package
     (name "python-re-assert")
