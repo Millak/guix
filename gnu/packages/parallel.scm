@@ -546,11 +546,11 @@ supercomputer (via, e.g., MPI or JobLib).")
     (license license:expat)))
 
 (define-public python-slurm-magic
-  (let ((commit "73dd1a2b85799f7dae4b3f1cd9027536eff0c4d7")
+  (let ((commit "4c708cc137cb9f4bd5b44cf26837b466d9bf7b65")
         (revision "0"))
     (package
       (name "python-slurm-magic")
-      (version (git-version "0.0" revision commit))
+      (version (git-version "0.0.0" revision commit))
       (home-page "https://github.com/NERSC/slurm-magic")
       (source
        (origin
@@ -559,7 +559,7 @@ supercomputer (via, e.g., MPI or JobLib).")
                (url home-page)
                (commit commit)))
          (sha256
-          (base32 "19pp2vs0wm8mx0arz9n6lw9wgyv70w9wyi4y6b91qc5j3bz5igfs"))
+          (base32 "0s69bmiskc6i9x98z6nf9jyi0jc51jpr5599f9b2f2jznz5wr64v"))
          (file-name (git-file-name name version))))
       (build-system pyproject-build-system)
       (arguments
