@@ -2179,6 +2179,32 @@ a standard file format used in @acronym{EDA, Electronic Design Automation}
 for example for timing information of digital circuits.")
     (license license:gpl3+)))
 
+(define-public python-hdlconvertorast
+  (package
+    (name "python-hdlconvertorast")
+    (version "1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Nic30/hdlConvertorAst")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zv067imbdihyqwy7f0j80x9a2857vifhky60vc91dffjl1zjg1i"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/Nic30/hdlConvertorAst")
+    (synopsis "@acronym{AST, Abstract Syntax Tree} library for VHDL and
+SystemVerilog")
+    (description
+     "This package provides a library of @acronym{AST, Abstract Syntax Tree} nodes
+for @acronym{VHDL, Very high speed integrated circuit Hardware Description Language},
+SystemVerilog, and SystemC, with conversion between languages and to JSON.")
+    (license license:expat)))
+
 (define-public python-pyucis
   (package
     (name "python-pyucis")
