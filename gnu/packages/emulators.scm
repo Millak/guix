@@ -2004,7 +2004,7 @@ libretro API, based on Mupen64Plus.  It incorporates the following projects:
 (define-public retroarch-assets
   (package
     (name "retroarch-assets")
-    (version "1.20.0")
+    (version "1.22.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2013,7 +2013,7 @@ libretro API, based on Mupen64Plus.  It incorporates the following projects:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ngbc2wmqgz5davan7rnvqapai5wc8j9afylff1yzlk3lgsjlv1x"))))
+                "04gbsn5lwc9ampyssl898v4p9myhwfqy3x7hyx9si8l1x9z60k6j"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ;no test suite
