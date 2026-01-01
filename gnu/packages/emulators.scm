@@ -2094,7 +2094,7 @@ Various scripts that are used to maintain the database files.
 (define-public retroarch-joypad-autoconfig
   (package
     (name "retroarch-joypad-autoconfig")
-    (version "1.21.1")
+    (version "1.22.0")
     (source
      (origin
        (method git-fetch)
@@ -2104,7 +2104,7 @@ Various scripts that are used to maintain the database files.
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "06mii4zpkrwxiw9qhfvjzri8q8fps1b96nkxp7px2w7cgdl4kg68"))))
+         "0fcc15j6lblngkx0n85x68x01c4qc24xc0pw05gc5pg2xgg4m3wg"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ;no meaningful test suite
