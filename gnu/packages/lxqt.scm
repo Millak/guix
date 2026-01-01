@@ -1053,14 +1053,14 @@ easily publishing them on internet image hosting services.")
 (define-public lxqt-archiver
   (package
     (name "lxqt-archiver")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1iisk5mb4xxdjimlh8inr182a1vpy8zk5qis9v3p5p73d49i5r2k"))))
+        (base32 "1vvmadfv2kxh16dw7h6ar0wkgcml6h8rpl7jax69qslfbrq5b1ll"))))
     (build-system cmake-build-system)
     (inputs
      (list glib json-glib libfm-qt qtbase))
