@@ -55,6 +55,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages django)
+  #:use-module (gnu packages freedesktop) ; libatasmart
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnome)               ;libnotify
@@ -68,6 +69,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages libevent)
+  #:use-module (gnu packages linux)     ; eudev, lm-sensors
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -822,20 +824,39 @@ devices.")
               (sha256
                (base32
                 "1mh97afgq6qgmpvpr84zngh58m0sl1b4wimqgvvk376188q09bjv"))
-              (patches (search-patches "collectd-5.11.0-noinstallvar.patch"))))
+              (patches (search-patches "collectd-5.11.0-noinstallvar.patch"
+                                       "collectd-5.11.0-python-3.11.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list "--localstatedir=/var" "--sysconfdir=/etc"
-                               "CFLAGS=-Wno-error=deprecated-declarations")
+     `(#:configure-flags
+       (list
+        "--enable-python"
+        "--enable-sensors"
+        "--enable-smart"
+        "--localstatedir=/var"
+        "--sysconfdir=/etc"
+        "CFLAGS=-Wno-error=deprecated-declarations")
        #:phases (modify-phases %standard-phases
                   (add-before 'configure 'autoreconf
                     (lambda _
                       ;; Required because of patched sources.
                       (invoke "autoreconf" "-vfi"))))))
     (inputs
-     (list rrdtool curl yajl zlib))
+     (list
+      curl
+      rrdtool
+      yajl
+      zlib))
     (native-inputs
-     (list autoconf automake libtool pkg-config))
+     (list
+      autoconf
+      automake
+      eudev
+      libatasmart
+      libtool
+      `(,lm-sensors "lib")
+      pkg-config
+      python-3))
     (home-page "https://collectd.org/")
     (synopsis "Collect system and application performance metrics periodically")
     (description

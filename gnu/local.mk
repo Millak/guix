@@ -1121,7 +1121,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/coda-use-system-libs.patch		\
   %D%/packages/patches/cogl-fix-double-free.patch		\
   %D%/packages/patches/collada-dom-boost.patch			\
-  %D%/packages/patches/collectd-5.11.0-noinstallvar.patch		\
+  %D%/packages/patches/collectd-5.11.0-noinstallvar.patch	\
+  %D%/packages/patches/collectd-5.11.0-python-3.11.patch	\
   %D%/packages/patches/combinatorial-blas-awpm.patch		\
   %D%/packages/patches/combinatorial-blas-io-fix.patch		\
   %D%/packages/patches/compsize-fix-btrfs-progs-compatibility.patch	\
