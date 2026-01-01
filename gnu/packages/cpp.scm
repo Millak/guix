@@ -186,9 +186,9 @@ easy to use API.")
     (license license:expat)))
 
 (define-public argpp
-  ;; XXX: Does not release anymore.
-  (let ((commit "9e1d54f8ed20af0aa5857e6653ab605b2ab63d5c")
-        (revision "0"))
+  ;; No tagged releases; this is the master tip.
+  (let ((commit "b52420a843327361713b6242e47afaa6b6ab2a89")
+        (revision "1"))
     (package
       (name "argpp")
       (version (git-version "0.0.0" revision commit))
@@ -196,17 +196,18 @@ easy to use API.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Grumbel/argpp")
-               (commit commit)))
+                (url "https://github.com/Grumbel/argpp")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1izn9xfplhnqi9vs4w28dixqd2vy0n1n3asaa1751grg30bw0xxs"))))
+          (base32 "07kmw7qz8l7qz572axpag7db4s97fl1mprblsrw238wdmvh9lvwc"))))
       (build-system cmake-build-system)
       (arguments
        (list
         #:configure-flags
         #~(list "-DBUILD_TESTS=ON")))
-      (native-inputs (list tinycmmc))
+      (native-inputs
+       (list tinycmmc))
       (home-page "https://github.com/Grumbel/argpp")
       (synopsis "Argument parser for C++")
       (description "This package provides a simple argument parser for C++.")
