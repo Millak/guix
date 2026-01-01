@@ -13521,7 +13521,7 @@ ManimPango is internally used in Manim to render (non-LaTeX) text.")
 (define-public python-cairocffi
   (package
     (name "python-cairocffi")
-    (version "1.6.1")
+    (version "1.7.1")
     (source
      (origin
        ;; The PyPI archive does not include the documentation, so use Git.
@@ -13532,7 +13532,7 @@ ManimPango is internally used in Manim to render (non-LaTeX) text.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "161z2bsp0ai4311mz9n0h6vmz80690jbijxx2gqkknygwm2ynjgd"))))
+         "08ilpzf1027f5w461yx2cg0ky64pd41kclfklyn8n292dmc9sk4g"))))
     (build-system pyproject-build-system)
     (outputs '("out" "doc"))
     (inputs
