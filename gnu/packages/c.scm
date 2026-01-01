@@ -1466,8 +1466,8 @@ Telemetry Transport (MQTT) publish-subscribe messaging protocol.")
 ;;; The package is named orangeduck-mpc to differentiate it from GNU mpc.
 (define-public orangeduck-mpc
   ;; The last release lacks an 'install' target.
-  (let ((commit "7c910e9303833c349f7432188ff77f2745254df2")
-        (revision "0"))
+  (let ((commit "1049534fc56b1971345c7aaa792dea55d6f9b7bc")
+        (revision "1"))
     (package
       (name "orangeduck-mpc")
       (version (git-version "0.9.0" revision commit))
@@ -1479,9 +1479,7 @@ Telemetry Transport (MQTT) publish-subscribe messaging protocol.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "01a4vcxdnz0fbn90c9zc3jzklyqqvp9sfjpjwpq0f5r0l2pp37ad"))
-                (patches
-                 (search-patches "orangeduck-mpc-fix-pkg-config.patch"))))
+                  "1wpxchbjxsyksr8il9pvg195nvqzsjdshzyzwikxda0fss0p7aap"))))
       (build-system gnu-build-system)
       (arguments
        (list #:make-flags #~(list (string-append "CC=" #$(cc-for-target))

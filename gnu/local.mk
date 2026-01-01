@@ -2010,7 +2010,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/opentaxsolver-file-browser-fix.patch     \
   %D%/packages/patches/open-zwave-hidapi.patch			\
   %D%/packages/patches/opusfile-CVE-2022-47021.patch		\
-  %D%/packages/patches/orangeduck-mpc-fix-pkg-config.patch	\
   %D%/packages/patches/orbit2-fix-array-allocation-32bit.patch \
   %D%/packages/patches/orpheus-cast-errors-and-includes.patch	\
   %D%/packages/patches/ots-no-include-missing-file.patch	\
