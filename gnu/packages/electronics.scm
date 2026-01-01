@@ -2519,7 +2519,7 @@ to enforce it.")
 (define-public python-vunit
   (package
     (name "python-vunit")
-    (version "5.0.0-dev.6") ;v4.7.0 dates back from 2 years ago.
+    (version "5.0.0-dev.7") ;v4.7.0 dates back from 2 years ago.
     (source
      (origin
        (method git-fetch)
@@ -2528,7 +2528,7 @@ to enforce it.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1si542jrrvibiigaridg2vds5smbiass7g5pdfk5z26xqgbh0fxc"))))
+        (base32 "12xkjc98913zyb271k9qfl86wdj2fsbcjl0lv1lb4492j5iqfcgj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2595,8 +2595,7 @@ to enforce it.")
      (list nvc
            python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (inputs
      (list json-for-vhdl-for-vunit osvvm-2023.04))
     (propagated-inputs
