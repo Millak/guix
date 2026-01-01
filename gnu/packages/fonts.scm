@@ -4595,7 +4595,7 @@ Mainland China.")
 (define-public font-chiron-sung-hk
   (package
     (name "font-chiron-sung-hk")
-    (version "1.017")
+    (version "1.022")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4604,7 +4604,7 @@ Mainland China.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1pg0zh4gajn699am26j4ldpsa51bafn7n0jc5s4v6sslixj3ccwg"))))
+                "1bndyr8bi9ngrba3c3n9k9k26s0irk62jhly7fj6g62k87b82z75"))))
     (build-system font-build-system)
     (arguments
      (list #:phases
@@ -4612,12 +4612,12 @@ Mainland China.")
                (replace 'install
                  (lambda _
                    (let ((install (assoc-ref %standard-phases 'install)))
-                     (with-directory-excursion "VAR"
+                     (with-directory-excursion "VAR_OTF"
                        (for-each delete-file (find-files "." "\\.ttf$"))
                        (install #:outputs `(("out" . ,#$output))))
-                     (with-directory-excursion "OTF"
+                     (with-directory-excursion "STATIC_OTF"
                        (install #:outputs `(("out" . ,#$output:otf))))
-                     (with-directory-excursion "TTF"
+                     (with-directory-excursion "STATIC_TTF"
                        (install #:outputs `(("out" . ,#$output:ttf))))))))))
     (outputs '("out" "otf" "ttf"))
     (home-page "https://chiron-fonts.github.io/")
