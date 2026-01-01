@@ -78,6 +78,7 @@
             make-file-writable
             copy-recursively
             delete-file-recursively
+            delete-all-but
             file-name-predicate
             find-files
             false-if-file-not-found
@@ -522,6 +523,14 @@ errors."
 
                       ;; Don't follow symlinks.
                       lstat)))
+
+(define (delete-all-but directory . preserve)
+  "Delete DIRECTORY recursively except for the files in PRESERVE immediately
+found under it."
+  (with-directory-excursion directory
+    (let* ((pred (negate (cut member <> (cons* "." ".." preserve))))
+           (items (scandir "." pred)))
+      (for-each (cut delete-file-recursively <>) items))))
 
 (define (file-name-predicate regexp)
   "Return a predicate that returns true when passed a file name whose base
