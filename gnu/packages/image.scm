@@ -97,6 +97,7 @@
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -121,6 +122,7 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system guile)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system scons)
@@ -1882,22 +1884,28 @@ PNG, and performs PNG integrity checks and corrections.")
 (define-public imgp
   (package
     (name "imgp")
-    (version "2.9")
+    ;; 2.9 was released in 2023
+    (properties '((commit . "00b2b520964f22ca5b6e0c7d7cb07ce7a755cea7")
+                  (revision . "0")))
+    (version (git-version "2.9"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "imgp" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jarun/imgp")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0avdgr4fx643jg9wzwm65y14s56bnrn3hmkw7v0mcyvxn88vxwiq"))))
-    (build-system python-build-system)
+        (base32 "1rgm52agxrc8sirm72ksg6c2zpibjh4kvx1b2c59vx5inb33kfdh"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f                      ;there are no tests
-       #:phases
-       (modify-phases %standard-phases
-         ;; setup.py expects the file to be named 'imgp'.
-         (add-after 'unpack 'rename-imgp
-           (lambda _
-             (rename-file "imgp.py" "imgp"))))))
+     (list #:test-backend #~'custom
+           ;; There are no actual tests, taken from project's Makefile.
+           #:test-flags #~(list "-m" "imgp" "--help")))
+    (native-inputs
+     (list python-setuptools))
     (inputs
      (list python-pillow))
     (home-page "https://github.com/jarun/imgp")
