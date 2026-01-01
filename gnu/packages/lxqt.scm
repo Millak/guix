@@ -648,14 +648,14 @@ Qt with LXQt.")
 (define-public lxqt-runner
   (package
     (name "lxqt-runner")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1478hsi662s6cw83im710slm6mfq9vn10lq98yqrakmwr6salp71"))))
+        (base32 "1nymi5cky6xgk2n83vp4lzw418fiamj7zlkcxkss75a3ba6xsbvd"))))
     (build-system cmake-build-system)
     (inputs
      (list kwindowsystem
