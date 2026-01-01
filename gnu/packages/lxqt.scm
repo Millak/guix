@@ -411,7 +411,7 @@ configuration of both LXQt and the underlying operating system.")
 (define-public lxqt-globalkeys
   (package
     (name "lxqt-globalkeys")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
@@ -419,7 +419,7 @@ configuration of both LXQt and the underlying operating system.")
                            "releases/download/" version "/"
                            "lxqt-globalkeys-" version ".tar.xz"))
        (sha256
-        (base32 "16lpz4wm6iz065drmgfgfjxkd0gc5g1wqisqcgs6iff0skpdzkv6"))))
+        (base32 "1il912gn5lqdxy41rma8py58jzayppkaiw3n3y0rhjpbwkkqcgqs"))))
     (build-system cmake-build-system)
     (inputs
      (list liblxqt))
