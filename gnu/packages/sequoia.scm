@@ -54,6 +54,11 @@
     (build-system cargo-build-system)
     (arguments
      (list
+       #:imported-modules (append %copy-build-system-modules
+                                  %cargo-build-system-modules)
+       #:modules '((guix build cargo-build-system)
+                   ((guix build copy-build-system) #:prefix copy:)
+                   (guix build utils))
        #:install-source? #f
        #:features '(list "crypto-nettle")
        #:cargo-test-flags
@@ -82,40 +87,26 @@
              (lambda _
                (setenv "ASSET_OUT_DIR" "target/assets")))
            (add-after 'install 'install-more
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (share (string-append out "/share"))
-                      (bash-completions-dir
-                        (string-append out "/etc/bash_completion.d"))
-                      (zsh-completions-dir
-                        (string-append share "/zsh/site-functions"))
-                      (fish-completions-dir
-                        (string-append share "/fish/vendor_completions.d"))
-                      (elvish-completions-dir
-                        (string-append share "/elvish/lib"))
-                      (man1 (string-append share "/man/man1")))
-                 ;; The completions are generated in build.rs.
-                 (mkdir-p bash-completions-dir)
-                 (mkdir-p elvish-completions-dir)
-                 (for-each (lambda (file)
-                             (install-file file man1))
-                           (find-files "target/assets/man-pages" "\\.1$"))
-                 (copy-file "target/assets/shell-completions/gpg-sq.bash"
-                            (string-append bash-completions-dir "/gpg-sq"))
-                 (copy-file "target/assets/shell-completions/gpgv-sq.bash"
-                            (string-append bash-completions-dir "/gpgv-sq"))
-                 (copy-file "target/assets/shell-completions/gpg-sq.elv"
-                            (string-append elvish-completions-dir "/gpg-sq"))
-                 (copy-file "target/assets/shell-completions/gpgv-sq.elv"
-                            (string-append elvish-completions-dir "/gpgv-sq"))
-                 (install-file "target/assets/shell-completions/_gpg-sq"
-                               zsh-completions-dir)
-                 (install-file "target/assets/shell-completions/_gpgv-sq"
-                               zsh-completions-dir)
-                 (install-file "target/assets/shell-completions/gpg-sq.fish"
-                               fish-completions-dir)
-                 (install-file "target/assets/shell-completions/gpgv-sq.fish"
-                               fish-completions-dir)))))))
+             (lambda args
+               (apply (assoc-ref copy:%standard-phases 'install)
+                      #:install-plan
+                      '(("target/assets/man-pages" "share/man/man1"
+                         #:include-regexp ("\\.1$"))
+                        ("target/assets/shell-completions/gpg-sq.bash"
+                         "share/bash-completion/completions/gpg-sq")
+                        ("target/assets/shell-completions/gpgv-sq.bash"
+                         "share/bash-completion/completions/gpgv-sq")
+                        ("target/assets/shell-completions/gpg-sq.elv"
+                         "share/elvish/lib/gpg-sq")
+                        ("target/assets/shell-completions/gpgv-sq.elv"
+                         "share/elvish/lib/gpgv-sq")
+                        ("target/assets/shell-completions"
+                         "share/fish/vendor_completions.d"
+                         #:include-regexp ("\\.fish$"))
+                        ("target/assets/shell-completions"
+                         "share/zsh/site-functions"
+                         #:include-regexp ("^_gpg")))
+                      args))))))
     (inputs
      (cons* nettle openssl sqlite (cargo-inputs 'sequoia-chameleon-gnupg)))
     (native-inputs
