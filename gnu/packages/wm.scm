@@ -32,7 +32,7 @@
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2019 Noodles! <nnoodle@chiru.no>
 ;;; Copyright © 2019, 2020 Alexandru-Sergiu Marton <brown121407@member.fsf.org>
-;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020, 2021, 2026 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Boris A. Dekshteyn <harlequin78@gmail.com>
 ;;; Copyright © 2020 Marcin Karpezo <sirmacik@wioo.waw.pl>
@@ -178,6 +178,7 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
@@ -189,6 +190,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xdisorg)
@@ -1010,13 +1012,13 @@ to events.")
 (define-public qtile
   (package
     (name "qtile")
-    (version "0.30.0")
+    (version "0.34.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "qtile" version))
        (sha256
-        (base32 "0zd2bh4mvgwjxkkwn3angkaqzm7ldcmzg3gdc098jzzlf90fmywm"))))
+        (base32 "061bghddw47k86qf7xp7c3rmwp7f71grk1q969nwq22rsafs4040"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1057,9 +1059,21 @@ to events.")
                 (setenv "DISPLAY" ":1")
                 (setenv "XDG_CACHE_HOME" "/tmp")))))))
     (inputs
-     (list glib pango pulseaudio))
+     (list cairo
+           gdk-pixbuf
+           glib
+           libinput
+           libnotify
+           (librsvg-for-system)
+           lm-sensors
+           pango
+           pulseaudio
+           wayland
+           wayland-protocols
+           wlroots))
     (propagated-inputs
-     (list python-cairocffi
+     (list python-aiohttp
+           python-cairocffi
            python-cffi
            python-dateutil
            python-dbus-fast
@@ -1067,20 +1081,31 @@ to events.")
            python-keyring
            python-libcst
            python-mpd2
+           python-prompt-toolkit
+           python-psutil
            python-pygobject
            python-pyxdg
+           python-pytz
+           python-setproctitle
            python-xcffib))
     (native-inputs
-      (list pkg-config
-            python-flake8
-            python-pep8-naming
-            python-pytest
-            python-pytest-cov
-            python-psutil
-            python-setuptools
-            python-setuptools-scm
-            python-wheel
-            xorg-server-for-tests))
+     (list pkg-config
+           pre-commit
+           python-anyio
+           python-check-manifest
+           python-coverage
+           python-isort
+           python-mypy
+           python-pycairo
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-cov
+           python-pytest-httpbin
+           python-setuptools
+           python-setuptools-scm
+           python-twine
+           python-wheel
+           xorg-server-for-tests))
     (home-page "http://qtile.org")
     (synopsis "Hackable tiling window manager written and configured in Python")
     (description "Qtile is simple, small, and extensible.  It's easy to write
