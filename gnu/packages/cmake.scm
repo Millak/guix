@@ -610,9 +610,9 @@ C/C++ projects.  It features:
     (license license:expat)))
 
 (define-public tinycmmc
-  ;; XXX: Does not release anymore.
-  (let ((commit "8238a6c1b90536e211fddf356dc3af26ea7c2f2c")
-        (revision "0"))
+  ;; XXX: No tagged releases; this is the master tip.
+  (let ((commit "2e007ba059a4991c011a7193c9d7df28826c9adc")
+        (revision "1"))
     (package
       (name "tinycmmc")
       (version (git-version "0.1.0" revision commit))
@@ -620,13 +620,14 @@ C/C++ projects.  It features:
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Grumbel/tinycmmc")
-               (commit commit)))
+                (url "https://github.com/Grumbel/tinycmmc")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1nv1439psdnq99vqpmp4nj2630l85cfwxzmf7rgpa436q09ql77p"))))
+          (base32 "0ix2v0zrrcanflxdm0r4xpgda8lkls3ir7xqimdk2na4dfqnc05g"))))
       (build-system cmake-build-system)
-      (arguments (list #:tests? #f))      ;no test suite
+      (arguments
+       (list #:tests? #f))              ; No tests.
       (home-page "https://github.com/Grumbel/tinycmmc")
       (synopsis "Tiny CMake Module Collections")
       (description "The tinycmmc package contains a small collection of reusable
