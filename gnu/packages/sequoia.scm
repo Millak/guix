@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2020, 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2021, 2023-2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2023-2026 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -65,7 +65,16 @@
               "--skip=gpg::quick::add_key_default_default_iso_date"
               "--skip=gpg::quick::generate_key_default_default_iso_date"
               "--skip=gpg::sign"
-              "--skip=gpg::verify")
+              "--skip=gpg::verify"
+              ;; These tests fail a certain amount of time after the release.
+              "--skip=gpg::decrypt::general_purpose_cv25519"
+              "--skip=gpg::decrypt::general_purpose_p256"
+              "--skip=gpg::decrypt::general_purpose_p384"
+              "--skip=gpg::decrypt::general_purpose_p521"
+              "--skip=gpg::decrypt::general_purpose_rsa2k"
+              "--skip=gpg::decrypt::general_purpose_rsa3k"
+              "--skip=gpg::decrypt::general_purpose_rsa4k"
+              "--skip=gpg::decrypt::restricted_agent")
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'unpack 'set-asset-out-dir
