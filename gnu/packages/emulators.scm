@@ -2056,7 +2056,7 @@ metadata about each known libretro core.  The snapshot is taken from the
 (define-public libretro-database
   (package
     (name "libretro-database")
-    (version "1.21.1")
+    (version "1.22.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2065,7 +2065,7 @@ metadata about each known libretro core.  The snapshot is taken from the
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1grkdg6k6dclwrh286dins4k50mp0wf3bvddikaspl309dldjrgw"))))
+                "03jb9gr11xiphnnwdqqk8k5g8s9s026k46dv94h67cshlbl59n52"))))
     (build-system gnu-build-system)
     (arguments (list #:tests? #f
                      #:make-flags #~(list (string-append "PREFIX=" #$output))))
