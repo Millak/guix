@@ -2496,33 +2496,46 @@ cell types.  Cell2cell is suitable for single-cell RNA sequencing
 (define-public python-cellbender
   (package
     (name "python-cellbender")
-    (version "0.2.2")
+    (version "0.3.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/broadinstitute/CellBender")
-             (commit (string-append "v" version))))
+              (url "https://github.com/broadinstitute/CellBender")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0h9d9pznffdbya631hkk7b7jwjrgx5saqssar1d42qbyvdji3hgy"))))
+         "1sdw4dv881ll8ylxcp06xa74c3wvrdyzpwfilzk8i1pwgrdrgb3f"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #false)) ;there are none
+     (list
+      #:tests? #f ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              ;; See:
+              ;; <https://github.com/broadinstitute/CellBender/issues/426>,
+              ;; <https://github.com/broadinstitute/CellBender/issues/416>.
+              (substitute* "requirements.txt"
+                (("(notebook|ipython|jupyter.*)")"")
+                (("<.*") "\n")))))))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-anndata
+           python-loompy
+           python-lxml-html-clean
            python-matplotlib
+           python-nbconvert
+           python-notebook
            python-numpy
            python-pandas
+           python-psutil
            python-pyro-ppl
-           python-scikit-learn
+           python-pytorch
            python-scipy
-           python-sphinx
-           python-sphinx-argparse
-           python-sphinx-autodoc-typehints
-           python-sphinx-rtd-theme
-           python-sphinxcontrib-programoutput
            python-tables))
     (home-page "https://cellbender.rtfd.io/")
     (synopsis "Eliminate technical artifacts from single-cell RNA-seq data")
