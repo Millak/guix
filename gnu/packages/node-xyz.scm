@@ -3278,6 +3278,50 @@ its own read and write offsets.")
 SOCKS4, SOCKS4a, and SOCKS5 protocols.")
     (license license:expat)))
 
+(define-public node-socks-proxy-agent
+  (package
+    (name "node-socks-proxy-agent")
+    (version "8.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/TooTallNate/proxy-agents")
+             (commit (string-append "socks-proxy-agent@" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c02kcbfp63r1y36hrkhzkmn3gz6ad2s577js94776vza3r7r631"))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-directory
+            (lambda _
+              (chdir "packages/socks-proxy-agent")))
+          (add-after 'patch-dependencies 'delete-dev-dependencies
+            (lambda _
+              (modify-json (delete-dev-dependencies))))
+          (replace 'build
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (let ((esbuild (search-input-file (or native-inputs inputs)
+                                                "/bin/esbuild")))
+                (mkdir-p "dist")
+                (invoke esbuild "src/index.ts"
+                        "--outfile=dist/index.js"
+                        "--format=cjs"
+                        "--platform=node"
+                        "--target=es2020")))))))
+    (native-inputs (list esbuild))
+    (inputs
+     (list node-agent-base node-debug node-socks))
+    (home-page "https://github.com/TooTallNate/proxy-agents")
+    (synopsis "SOCKS proxy HTTP.Agent implementation")
+    (description "This package provides a SOCKS proxy @code{http.Agent}
+implementation for HTTP and HTTPS.")
+    (license license:expat)))
+
 (define-public node-serialport
   (package
     (name "node-serialport")
