@@ -4462,6 +4462,40 @@ function with browser support.")
     (description "@code{wrappy} is a utility for Node.js to wrap callbacks.")
     (license license:isc)))
 
+(define-public node-ws
+  (package
+    (name "node-ws")
+    (version "8.17.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/websockets/ws")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03ynm4n25yjza1qjgaz8ci2rjc3ryl710q9gr99p77r6ymcxkf34"))))
+    (build-system node-build-system)
+    (arguments
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'patch-dependencies 'delete-dev-dependencies
+                 (lambda _
+                   (modify-json (delete-dev-dependencies))))
+               (add-before 'install 'set-cc
+                 (lambda _
+                   (setenv "CC" #$(cc-for-target)))))))
+    (inputs
+     (list node-bufferutil node-utf-8-validate))
+    (native-inputs
+     (list python))
+    (home-page "https://github.com/websockets/ws")
+    (synopsis "Simple WebSocket implementation for Node.js")
+    (description "This package provides a WebSocket client and server
+implementation.")
+    (license license:expat)))
+
 (define-public node-yazl
   (package
     (name "node-yazl")
