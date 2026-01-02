@@ -165,6 +165,52 @@ It is important to remember that @emph{other} Node.js interfaces such as
 ABI-stable across Node.js major versions.")
     (license license:expat)))
 
+(define-public node-agent-base
+  (package
+    (name "node-agent-base")
+    (version "7.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/TooTallNate/proxy-agents")
+             (commit (string-append "agent-base@" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0svw5z3j2icg7lcyv6cnk1a5n11fc8kzig11j2bhiq9wnclv96r0"))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-directory
+            (lambda _
+              (chdir "packages/agent-base")))
+          (add-after 'patch-dependencies 'delete-dev-dependencies
+            (lambda _
+              (modify-json (delete-dev-dependencies))))
+          (replace 'build
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (let ((esbuild (search-input-file (or native-inputs inputs) "/bin/esbuild")))
+                (mkdir-p "dist")
+                (for-each
+                 (lambda (ts-file)
+                   (let* ((base (basename ts-file ".ts"))
+                          (js-file (string-append "dist/" base ".js")))
+                     (invoke esbuild ts-file
+                             (string-append "--outfile=" js-file)
+                             "--format=cjs"
+                             "--platform=node"
+                             "--target=es2020")))
+                 (find-files "src" "\\.ts$"))))))))
+    (native-inputs (list esbuild))
+    (home-page "https://github.com/TooTallNate/proxy-agents")
+    (synopsis "Turn a function into an http.Agent instance")
+    (description "This package provides a base class for creating Node.js
+HTTP.Agent instances from a function.")
+    (license license:expat)))
+
 (define-public node-ansi-styles
   (package
     (name "node-ansi-styles")
