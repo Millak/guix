@@ -1391,6 +1391,34 @@ module that makes various improvements, including queueing operations,
 retrying EMFILE errors, and working around various platform quirks.")
     (license license:isc)))
 
+(define-public node-gyp-build
+  (package
+    (name "node-gyp-build")
+    (version "4.8.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/prebuild/node-gyp-build")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nb5fx5x5dpz08jjs2d9xphjslcxnvzcjig802y40bvhd8c114gb"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies)))))))
+    (home-page "https://github.com/prebuild/node-gyp-build")
+    (synopsis "Build tool for native Node.js addons")
+    (description "This package provides a build tool that works with prebuild
+and node-gyp to compile native Node.js addons.  It will try to load prebuilt
+binaries first, falling back to building from source.")
+    (license license:expat)))
+
 (define-public node-global-gradle-clean
   (package
     (name "node-global-gradle-clean")
