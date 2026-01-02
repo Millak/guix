@@ -305,7 +305,7 @@ create AD9361 specific FIR filters on the fly.")))
 (define-public liquid-dsp
   (package
     (name "liquid-dsp")
-    (version "1.6.0")
+    (version "1.7.0")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -313,7 +313,7 @@ create AD9361 specific FIR filters on the fly.")))
                    (commit (string-append "v" version))))
              (file-name (git-file-name name version))
              (sha256
-              (base32 "1zw3h2d7kiyxz5zcg5wy4d6pkb07q1pqkc6zz4v9wq8s2v180hnx"))))
+              (base32 "0c1mwydpm3nasic2fgbp32s8ajr4hgcv4ir0safl6wlr0p257nrr"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake))
