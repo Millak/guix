@@ -3259,12 +3259,11 @@ and gene expression visualization.")
             (lambda _
               ;; Without this they pass -march=native to the compiler.
               (setenv "WHEEL" "1")))
-          ;; Numba needs a writable dir to cache functions.
-          (add-before 'check 'set-numba-cache-dir
-            (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp")))
-          (add-before 'build 'build-extensions
+          (add-before 'check 'pre-check
             (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+              ;; Numba needs a writable dir to cache functions.
+              (setenv "NUMBA_CACHE_DIR" "/tmp")
+              (delete-file-recursively "metacells"))))))
     (propagated-inputs (list python-anndata
                              python-cvxpy
                              python-fastcluster
@@ -3278,7 +3277,7 @@ and gene expression visualization.")
                              python-scipy
                              python-threadpoolctl
                              python-umap-learn))
-    (native-inputs (list python-pytest python-setuptools))
+    (native-inputs (list pybind11 python-pytest python-setuptools))
     (home-page "https://github.com/tanaylab/metacells.git")
     (synopsis "Single-cell RNA Sequencing Analysis")
     (description "The metacells package implements the improved metacell
