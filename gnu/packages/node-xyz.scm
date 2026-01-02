@@ -648,6 +648,32 @@ Node.js console output.")
 interfaces in Node.js.")
     (license license:expat)))
 
+(define-public node-concat-map
+  (package
+    (name "node-concat-map")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ljharb/concat-map")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l30hn1w9incwahjbvv3kzw6p150vjiiji6dlxxawd3krfn7z3k5"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies)))))))
+    (home-page "https://github.com/ljharb/concat-map")
+    (synopsis "Concatenative map for JavaScript")
+    (description "This package provides a concatenative map for JavaScript.")
+    (license license:expat)))
+
 (define-public node-crx3
   (package
     (name "node-crx3")
