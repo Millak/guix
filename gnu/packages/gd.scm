@@ -26,6 +26,7 @@
 (define-module (gnu packages gd)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
   #:use-module (guix download)
@@ -66,8 +67,7 @@
                                 ;; XXX: This test fails on i686-linux.
                                 ;; See <https://issues.guix.gnu.org/71996>.
                                 #$@(if (and (not (%current-target-system))
-                                            (string-prefix? "i686"
-                                                            (%current-system)))
+                                            (target-x86-32?))
                                        #~("XFAIL_TESTS=gdimagegrayscale/basic")
                                        #~()))
            #:configure-flags #~(list "--disable-static")
