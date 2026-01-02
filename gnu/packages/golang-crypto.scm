@@ -664,17 +664,9 @@ needing to use secp256k1 elliptic curve cryptography.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "04apnqisk42zzi6s2hnv53cqwxv7s7wqsvffd5l00bf1raql1dq2"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
+       (modules '((guix build utils)))
        (snippet
         #~(begin
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
             (delete-all-but "." "btcec" "chainhash")
             ;; This is a workaround to provide a correct import-path.
             (rename-file "btcec" "tmp")
@@ -712,17 +704,9 @@ needing to use secp256k1 elliptic curve cryptography.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "007gkn1xwpicdj77kk42ij9sd7r21bcvgiri3yw6xnkdlnsg3bkq"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
+       (modules '((guix build utils)))
        (snippet
         #~(begin
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
             (delete-all-but "chaincfg" "chainhash")
             (delete-all-but "." "chaincfg")))))
     (build-system go-build-system)
@@ -748,17 +732,9 @@ needing to use secp256k1 elliptic curve cryptography.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "04apnqisk42zzi6s2hnv53cqwxv7s7wqsvffd5l00bf1raql1dq2"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
+       (modules '((guix build utils)))
        (snippet
         #~(begin
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
             (delete-all-but "." "chainhash")
             ;; This is a workaround to provide a correct import-path.
             (rename-file "chainhash" "tmp")

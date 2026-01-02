@@ -93,16 +93,8 @@ tree for exported @acronym{CustomResourceDefinition, CRD} types.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0d9rjyl5h0xm9isgr8b2fz8528wk3pds71rjl8g08fgsmsa5kicb"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
+       (modules '((guix build utils)))
        (snippet #~(begin
-                    (define (delete-all-but directory . preserve)
-                      (with-directory-excursion directory
-                        (let* ((pred (negate (cut member <>
-                                                  (cons* "." ".." preserve))))
-                               (items (scandir "." pred)))
-                          (for-each (cut delete-file-recursively <>) items))))
                     ;; Replace symlinks to tests with file contents
                     (for-each
                      (lambda (f)
@@ -183,16 +175,8 @@ tree for exported @acronym{CustomResourceDefinition, CRD} types.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0d9rjyl5h0xm9isgr8b2fz8528wk3pds71rjl8g08fgsmsa5kicb"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
+       (modules '((guix build utils)))
        (snippet #~(begin
-                    (define (delete-all-but directory . preserve)
-                      (with-directory-excursion directory
-                        (let* ((pred (negate (cut member <>
-                                                  (cons* "." ".." preserve))))
-                               (items (scandir "." pred)))
-                          (for-each (cut delete-file-recursively <>) items))))
                     (delete-all-but "." "server")
                     (rename-file "server" "server.tmp")
                     (mkdir-p "server/v3")
@@ -266,16 +250,8 @@ system.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0d9rjyl5h0xm9isgr8b2fz8528wk3pds71rjl8g08fgsmsa5kicb"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
+       (modules '((guix build utils)))
        (snippet #~(begin
-                    (define (delete-all-but directory . preserve)
-                      (with-directory-excursion directory
-                        (let* ((pred (negate (cut member <>
-                                                  (cons* "." ".." preserve))))
-                               (items (scandir "." pred)))
-                          (for-each (cut delete-file-recursively <>) items))))
                     (delete-all-but "." "pkg")
                     (rename-file "pkg" "pkg.tmp")
                     (mkdir-p "pkg/v3")

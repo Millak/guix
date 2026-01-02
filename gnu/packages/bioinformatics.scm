@@ -3871,20 +3871,13 @@ familiar to anyone with experience of scikit-learn or scipy.")
       (file-name (git-file-name name version))
       (sha256
        (base32 "0hznpj15kx2sla16wlmcqz21n2vi2qb1493v30vz75hnm1m4iwm1"))
-      (modules '((guix build utils)
-                 (ice-9 ftw)))
+      (modules '((guix build utils)))
       (snippet
        #~(begin
            ;; Delete everything except for examples directory:
-           (define (delete-except exceptions)
-             (lambda (file)
-               (unless (member file `("." ".." ,@exceptions))
-                 (delete-file-recursively file))))
-           (for-each (delete-except '("pysnptools" "tests")) (scandir "."))
-           (with-directory-excursion "pysnptools"
-             (for-each (delete-except '("examples")) (scandir ".")))
-           (with-directory-excursion "tests"
-             (for-each (delete-except '("datasets")) (scandir "."))))))))
+           (delete-all-but ".""pysnptools" "tests")
+           (delete-all-but "pysnptools" "examples")
+           (delete-all-but "tests" "datasets"))))))
 
 (define-public python-pysnptools
   (package

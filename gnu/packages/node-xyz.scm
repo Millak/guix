@@ -345,23 +345,15 @@ addons in a wide array of potential locations.")
        (sha256
         (base32
          "1kn5az69q0vcy3ql8sfcczv12fjkq98xrcjjdlmwl9brdp0b1w3k"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
+       (modules '((guix build utils)))
        (snippet
         #~(begin
-            (let ((sub "src/bokeh/server/static"))
-              (define (delete-all-but-recursive preserve)
-                (let ((dir (dirname preserve))
-                      (pred (negate
-                             (cut member
-                                  <> (list "." ".." (basename preserve))))))
-                  (with-directory-excursion dir
-                    (for-each delete-file-recursively
-                              (scandir "." pred)))
-                  (unless (string=? dir ".")
-                    (delete-all-but-recursive dir))))
-              (delete-all-but-recursive sub))))))
+            (define (delete-all-but-recursive preserve)
+              (let ((dir (dirname preserve)))
+                (delete-all-but dir (basename preserve))
+                (unless (string=? dir ".")
+                  (delete-all-but-recursive dir))))
+            (delete-all-but-recursive "src/bokeh/server/static")))))
     (build-system copy-build-system)
     (arguments
      (list

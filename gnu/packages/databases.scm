@@ -1098,18 +1098,9 @@ auto-completion and syntax highlighting.")
               (sha256
                (base32
                 "0v9hc8yzp0f5pwl4kr1a8k7lwyf62g95klxb6avfrc2npjx79dbl"))
-              (modules '((guix build utils)
-                         (ice-9 ftw)
-                         (srfi srfi-26)))
+              (modules '((guix build utils)))
               (snippet
                #~(begin
-                   (define (delete-all-but directory . preserve)
-                     (with-directory-excursion directory
-                       (let* ((pred (negate (cut member <>
-                                                 (cons* "." ".." preserve))))
-                              (items (scandir "." pred)))
-                         (for-each (cut delete-file-recursively <>) items))))
-
                    ;; Delete bundled source libraries.
                    (delete-all-but "extra"
                                    ;; XXX: The build system doesn't currently

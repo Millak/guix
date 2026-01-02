@@ -2029,19 +2029,8 @@ R. Seaman's protocol}
          (file-name (git-file-name name version))
          (sha256
           (base32 "1dlwiz3m43j6hw2garqhpv53mz495h5nw2kcs81zizg157h6wyr2"))
-         (modules '((guix build utils)
-                    (ice-9 ftw)
-                    (srfi srfi-26)))
-         (snippet
-          #~(begin
-              ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-              (define (delete-all-but directory . preserve)
-                (with-directory-excursion directory
-                  (let* ((pred (negate (cut member <>
-                                            (cons* "." ".." preserve))))
-                         (items (scandir "." pred)))
-                    (for-each (cut delete-file-recursively <>) items))))
-              (delete-all-but "thirdparty" "thirdparty.cmake")))))
+         (modules '((guix build utils)))
+         (snippet #~(delete-all-but "thirdparty" "thirdparty.cmake"))))
       (build-system cmake-build-system)
       (arguments
        (list

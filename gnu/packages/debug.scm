@@ -1116,17 +1116,9 @@ to aid in debugging.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256 (base32 "0ppx8r9isc772y0ahpgl8g5b3yxka7ffqzlcsa920aib5nj39lrg"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
+       (modules '((guix build utils)))
        (snippet
         #~(begin
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
             (substitute* "pyproject.toml"
               ;; Python is linked with GNU readline on all Guix targets.
               ((".*gnureadline.*") "")

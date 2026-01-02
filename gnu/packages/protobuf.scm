@@ -107,24 +107,9 @@ data in motion, or as a file format for data at rest.")
        (uri (git-reference
               (url "https://github.com/protocolbuffers/protobuf/")
               (commit (string-append "v" version))))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
-       (snippet
-        #~(begin
-            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            (define (delete-all-but directory . preserve)
-              (define (directory? x)
-                (and=> (stat x #f)
-                       (compose (cut eq? 'directory <>) stat:type)))
-              (with-directory-excursion directory
-                (let* ((pred
-                        (negate (cut member <> (append '("." "..") preserve))))
-                       (items (scandir "." pred)))
-                  (for-each delete-file-recursively items))))
-            ;; "utf8_range" development now takes place in main protobuf
-            ;; repository.
-            (delete-all-but "third_party" "utf8_range")))
+       (modules '((guix build utils)))
+       ;; "utf8_range" development now takes place in main protobuf repository.
+       (snippet #~(delete-all-but "third_party" "utf8_range"))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1rdxm75bqwjj4qd3hz4vlydra6bw5dq391kwln2q0pjfx9gbrjhk"))))

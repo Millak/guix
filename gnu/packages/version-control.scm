@@ -3735,17 +3735,9 @@ modification time.")
              (check-in version)))
        (sha256
         (base32 "16zrha8vb4dwfmyq86iaz2xz4k91dh018bk94xkxgqbyrr33nm7y"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
+       (modules '((guix build utils)))
        (snippet
         #~(begin
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
             (delete-all-but "autosetup" "proj.tcl" "wh-common.tcl")
             (delete-file-recursively "extsrc")))))
     (build-system gnu-build-system)

@@ -521,18 +521,9 @@ It aims to support Nintendo DSi and 3DS as well.")
        (sha256
         (base32 "0d92ld30zcc77lx6kvg4kxdaf7l333lyc17d8s4lbwh0g94x11hn"))
        (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (ice-9 regex)
-                  (srfi srfi-26)))
+                  (ice-9 regex)))
        (snippet
         #~(begin
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
-
             ;; Clean up the source from bundled libraries we don't need.
             (delete-all-but "Externals"
                             ;; XXX: The build system is currently hard-coded
@@ -1091,18 +1082,8 @@ The following systems are supported:
          (sha256
           (base32
            "0dfsz4dsh49dc9xx9rjhfzfkg4h91i2ksgp2inlr9yhgldw9q8h3"))
-         (modules '((guix build utils)
-                    (ice-9 ftw)
-                    (srfi srfi-26)))
-         (snippet
-          #~(begin
-              (define (delete-all-but directory . preserve)
-                (with-directory-excursion directory
-                  (let* ((pred (negate (cut member <> (cons* "." ".." preserve))))
-                         (items (scandir "." pred)))
-                    (for-each (cut delete-file-recursively <>) items))))
-
-              (delete-all-but "src/third-party" "inih")))))
+         (modules '((guix build utils)))
+         (snippet #~(delete-all-but "src/third-party" "inih"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -2338,42 +2319,9 @@ physical device and the RetroPad virtual controller.")
          (modules '((guix build utils)))
          (snippet
           '(begin
-             (use-modules (guix build utils)
-                          (ice-9 ftw)
-                          (srfi srfi-1)
-                          (srfi srfi-26))
-             (define (delete-all-but . preserve)
-               ;; Walk the file tree and delete everything except the paths
-               ;; listed in PRESERVE.  Directories listed PRESERVE will cause
-               ;; their whole contents to be preserved.
-               (let ((preserve (map (compose (cut string-trim-right <> #\/)
-                                             (cut string-append "./" <>))
-                                    preserve)))
-                 (file-system-fold
-                  (lambda (path stat result) ;enter
-                    (or (any (lambda (x)
-                               (or (string-prefix? path x)
-                                   (string-prefix? x path)))
-                             preserve)
-                        (begin
-                          (delete-file-recursively path)
-                          #f)))
-                  (lambda (path stat result) ;leaf (file)
-                    (unless (any (cut string-prefix? <> path) preserve)
-                      (delete-file path)))
-                  (const #t)                 ;down (directory)
-                  (const #t)                 ;up (directory)
-                  (lambda (path stat result) ;skip
-                    (when (file-exists? path)
-                      (error "could not enter unreadable directory" path)))
-                  (lambda (path stat errno result) ;error
-                    (error "error processing" path (strerror errno)))
-                  0
-                  ".")))
-
              ;; This is an allow-list of the shaders explicitly licensed as
              ;; free software.
-             (delete-all-but
+             (delete-all-but "."
               "anamorphic/shaders/anamorphic.slang" ;expat
               "anamorphic/anamorphic.slangp"
               "annotated_passthru.slang" ;public license
@@ -3030,16 +2978,7 @@ GLSL (@file{.slang}) shaders for use with RetroArch.")
              (commit (string-append "v" version))))
        (snippet
         #~(begin
-            (use-modules (guix build utils)
-                         (ice-9 ftw)
-                         (srfi srfi-26))
-            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
+            (use-modules (guix build utils))
             ;; Remove as much bundled sources as possible, shaving off about
             ;; 65 MiB.
             (delete-all-but "deps"
@@ -3880,24 +3819,14 @@ de-interlacing patches for use with PCSX2.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0nr53cjifqwnz3icxsj01yd3aw1vfsfxga4zz5zi8aqr175mvq27"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
+       (modules '((guix build utils)))
        (snippet
         #~(begin
             (substitute* "cmake/Pcsx2Utils.cmake"
               (("(PCSX2_GIT_REV \")Unknown" _ prefix)
                (string-append prefix #$version "-guix")))
             (delete-file "3rdparty/include/Packet32.h") ;"not open source"
-            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
-            (delete-all-but
-             "3rdparty"
+            (delete-all-but "3rdparty"
              ;; asl2.0 and cc0
              "glad"                     ;Is tailored.
              ;; bsd-3

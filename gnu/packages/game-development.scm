@@ -1323,17 +1323,9 @@ It is capable of creating games for SCUMM version 6 and partially version 7.")
        (sha256
         (base32
          "12f1d45995qf5sazjmmfdydllcd6alhqs1s4xwv3jiq1fw66hcy9"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
+       (modules '((guix build utils)))
        (snippet
         '(begin
-           ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-           (define (delete-all-but directory . preserve)
-             (with-directory-excursion directory
-               (let* ((pred (negate (cut member <> (cons* "." ".." preserve))))
-                      (items (scandir "." pred)))
-                 (for-each (cut delete-file-recursively <>) items))))
            (delete-all-but "extlibs/headers"
                            "glad")))))  ;pre-generated headers
     (build-system cmake-build-system)

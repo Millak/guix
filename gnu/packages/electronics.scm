@@ -870,18 +870,8 @@ Simulator Trace} files.")
         (base32 "1mb8mdrw8kp9mxj7ayv9gw59ghkbaj4jy1pbba8ia3s2nbzwqwp0"))
        (patches
         (search-patches "hal-disable-googletest.patch"))
-       (snippet
-        #~(begin
-            (use-modules (guix build utils)
-                         (ice-9 ftw)
-                         (srfi srfi-26))
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
-            (delete-all-but "deps" "abc" "subprocess")))))
+       (modules '((guix build utils)))
+       (snippet #~(delete-all-but "deps" "abc" "subprocess"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -1872,33 +1862,22 @@ exploration and optimization.")
               (commit version)
               (recursive? #t)))
        (file-name (git-file-name name version))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
+       (sha256 (base32 "1g3k2g2p5yy7zk971bg7qh4k38p30aydp27c5bfb02gn7djknz7w"))
+       (modules '((guix build utils)))
        (snippet
-        #~(begin
-            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
-            (delete-all-but "libs"
-                            "delaunay-triangulation"
-                            "dxflib"
-                            ;; "fontobene-qt"
-                            ;; "googletest"
-                            ;; "hoedown"
-                            "librepcb"
-                            ;; "muparser"
-                            "optional"
-                            "parseagle"
-                            ;; "polyclipping"
-                            ;; "quazip"
-                            "type_safe")))
-       (sha256
-        (base32 "1g3k2g2p5yy7zk971bg7qh4k38p30aydp27c5bfb02gn7djknz7w"))))
+        #~(delete-all-but "libs"
+            "delaunay-triangulation"
+            "dxflib"
+            ;; "fontobene-qt"
+            ;; "googletest"
+            ;; "hoedown"
+            "librepcb"
+            ;; "muparser"
+            "optional"
+            "parseagle"
+            ;; "polyclipping"
+            ;; "quazip"
+            "type_safe"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -2457,27 +2436,16 @@ layout of a circuit corresponds to the desired netlists.")
               ;; no longer have their original upstream.
               (recursive? #t)))
        (file-name (git-file-name name version))
-       (snippet
-        #~(begin
-            (use-modules (guix build utils)
-                         (ice-9 ftw)
-                         (srfi srfi-26))
-            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
-            (delete-all-but "3rdparty"
-                            ;; The following sources have all been patched, so
-                            ;; cannot easily be unbundled.
-                            "QtPropertyBrowser"
-                            "json11"
-                            "python-console"
-                            "oourafft"
-                            "imgui"
-                            "qtimgui")))
+       (modules '((guix build utils)))
+       (snippet #~(delete-all-but "3rdparty"
+                    ;; The following sources have all been patched, so
+                    ;; cannot easily be unbundled.
+                    "QtPropertyBrowser"
+                    "json11"
+                    "python-console"
+                    "oourafft"
+                    "imgui"
+                    "qtimgui"))
        (sha256
         (base32 "1mb2dywv4gd52vzmml7rlyqdv4psw0l0gfy0mgwsknxblps3aha1"))))
     (outputs '("out" "bba"))
@@ -5009,21 +4977,10 @@ code{yosys}-based formal hardware verification flows.")
               ;; Custom verion of the antlr4; see third_party/README.
               (recursive? #t)))
        (file-name (git-file-name name version))
-       (snippet
-        #~(begin
-            (use-modules (guix build utils)
-                         (ice-9 ftw)
-                         (srfi srfi-26))
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
-            (delete-all-but "third_party"
-                            "antlr4" "antlr4_bin" "tests" "UVM")))
-       (sha256
-        (base32 "0hgapp33jv4i08x8n436fhkgk1f4fwzbd3cfb03fbv2y4c717nx0"))))
+       (sha256 (base32 "0hgapp33jv4i08x8n436fhkgk1f4fwzbd3cfb03fbv2y4c717nx0"))
+       (modules '((guix build utils)))
+       (snippet #~(delete-all-but "third_party"
+                    "antlr4" "antlr4_bin" "tests" "UVM"))))
     (build-system cmake-build-system)
     (arguments
      (list

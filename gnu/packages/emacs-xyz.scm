@@ -17057,18 +17057,9 @@ placed at the margin of the minibuffer for your completion candidates.")
                (url "https://github.com/Fuco1/smartparens")
                (commit commit)))
          (file-name (git-file-name name version))
-         (modules '((guix build utils)
-                    (ice-9 ftw)
-                    (srfi srfi-26)))
+         (modules '((guix build utils)))
          (snippet
           '(begin
-             ;; Taken from nextpnr package.
-             (define (delete-all-but directory . preserve)
-               (with-directory-excursion directory
-                 (let* ((pred
-                         (negate (cut member <> (append '("." "..") preserve))))
-                        (items (scandir "." pred)))
-                   (for-each delete-file items))))
              ;; Only activate basic tests.
              (delete-all-but "test"
                              "test-helper.el"

@@ -600,24 +600,16 @@ different data arrays similar to those available in the numdiff software.")
               (file-name (git-file-name name version))
               (snippet
                #~(begin
-                   (use-modules (guix build utils)
-                                (ice-9 ftw)
-                                (srfi srfi-26))
+                   (use-modules (guix build utils))
                    ;; Delete any bundled .jar files.
                    (for-each delete-file (find-files "." "\\.jar$"))
-                   (define (delete-all-but directory . preserve)
-                     (with-directory-excursion directory
-                       (let* ((pred (negate (cut member <>
-                                                 (cons* "." ".." preserve))))
-                              (items (scandir "." pred)))
-                         (for-each (cut delete-file-recursively <>) items))))
                    (delete-all-but "3rdparty"
-                                   "fastcv"     ;TODO: Unbundle these
-                                   "libspng"
-                                   "libtim-vx"
-                                   "orbbecsdk"
-                                   "quirc"
-                                   "zlib-ng")))
+                     "fastcv"           ;TODO: Unbundle these
+                     "libspng"
+                     "libtim-vx"
+                     "orbbecsdk"
+                     "quirc"
+                     "zlib-ng")))
               (sha256
                (base32
                 "15w4fqjqv5k1yw70jbjsnlgiky39mqpy05rvmm2fbyjrif4kbgkl"))))

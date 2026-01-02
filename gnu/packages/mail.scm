@@ -864,20 +864,10 @@ operating systems.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1sg6ifabci7xyp3zds1w906vx6jsmyjlfr6bqld7m7hj07by9ndd"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
-       (snippet
-        #~(begin
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
-            (delete-all-but "autosetup"
-              "mutt-gettext.tcl"
-              "mutt-iconv.tcl")))))
+       (modules '((guix build utils)))
+       (snippet #~(delete-all-but "autosetup"
+                    "mutt-gettext.tcl"
+                    "mutt-iconv.tcl"))))
     (build-system gnu-build-system)
     (inputs
      (list cyrus-sasl

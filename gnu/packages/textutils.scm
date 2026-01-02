@@ -153,24 +153,9 @@ to DOS format and vice versa.")
               (url "https://github.com/josephburnett/jd")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
+       (modules '((guix build utils)))
        (snippet
         #~(begin
-            (define (delete-all-but directory . preserve)
-              (define (directory? x)
-                (and=> (stat x #f)
-                       (compose (cut eq?
-                                     'directory <>) stat:type)))
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (append '("." "..") preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (lambda (item)
-                              (if (directory? item)
-                                  (delete-file-recursively item)
-                                  (delete-file item))) items))))
             (delete-all-but "." "v2")
             ;; Exclude Web UI.
             (delete-file-recursively "v2/internal/web/pack")

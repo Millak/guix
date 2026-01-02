@@ -186,9 +186,7 @@ RDP, VNC, SPICE, NX, XDMCP, SSH and EXEC network protocols are supported.")
        (uri (git-reference
               (url "https://github.com/TurboVNC/turbovnc")
               (commit version)))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
+       (modules '((guix build utils)))
        (snippet
         #~(begin
             ;; There are a few bundled Java libraries, such as jsch and jzlib,
@@ -196,12 +194,6 @@ RDP, VNC, SPICE, NX, XDMCP, SSH and EXEC network protocols are supported.")
             ;; bundled under java/org.  These are used by the 'vncviewer'
             ;; program.  The jsch copy is modified and integrates changes from
             ;; https://github.com/mwiede/jsch, so cannot easily be un-bundled.
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
 
             ;; d3des, rfb (headers) and turbojpeg-jni are small and not
             ;; packaged in Guix, so preserve them.

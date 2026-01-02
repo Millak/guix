@@ -6757,26 +6757,11 @@ readable.")
         (base32 "1m6h6m0vm8vdx2nk26nvlbyfvlj0g9ph8cdh38258gn18fd2db0l"))
        (patches
         (search-patches "python-vaex-core-fix-tsl-use.patch"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)))
-       (snippet
-        #~(begin
-            ;; Delete everything except for vaex-core itself:
-            (define (delete-except exception)
-              (lambda (file)
-                (unless (member file `("." ".." ,exception))
-                  (delete-file-recursively file))))
-            (for-each (delete-except "packages") (scandir "."))
-            (with-directory-excursion "packages"
-              (for-each (delete-except "vaex-core") (scandir ".")))
-            (for-each (lambda (file)
-                        (unless (member file '("." ".."))
-                          (rename-file
-                           (string-append "packages/vaex-core/" file)
-                           file)))
-                      (scandir "packages/vaex-core"))
-            (delete-file-recursively "packages")
-            (delete-file-recursively "vendor")))))
+       (modules '((guix build utils)))
+       (snippet #~(begin
+                    (delete-all-but "." "packages")
+                    (delete-all-but "packages" "vaex-core")
+                    (delete-file-recursively "packages/vaex-core/vendor")))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6785,7 +6770,10 @@ readable.")
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "packages/vaex-core")))
+          (add-after 'chdir 'relax-requirements
             (lambda _
               (substitute* "setup.py"
                 ;; "dask!=2022.4.0,<2024.9"; there is a note "fingerprinting

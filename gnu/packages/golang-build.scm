@@ -1655,17 +1655,9 @@ Go programming language.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0sjvngpahkb5x573i855fjlb1fdmr6n269nmb5xxnbabjb27mnvg"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
+       (modules '((guix build utils)))
        (snippet
         #~(begin
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
             (delete-all-but "go" "expect")
             (delete-all-but "." "go")))))
     (build-system go-build-system)
@@ -1695,17 +1687,9 @@ Go source code (including go.mod and go.work files) as test expectations.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0sjvngpahkb5x573i855fjlb1fdmr6n269nmb5xxnbabjb27mnvg"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
+       (modules '((guix build utils)))
        (snippet
         #~(begin
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
             (delete-all-but "go" "packages")
             (delete-all-but "go/packages" "packagestest")
             (delete-all-but "." "go")))))
@@ -1738,18 +1722,9 @@ tools on.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1blk22apy424j9v58lfy4pxnrgh93yqchqhxsnf78dmx4vx5yi9r"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
+       (modules '((guix build utils)))
        (snippet
-        #~(begin
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
-            (delete-all-but "." "godoc")))))
+        #~(begin (delete-all-but "." "godoc")))))
     (build-system go-build-system)
     (arguments
      (list

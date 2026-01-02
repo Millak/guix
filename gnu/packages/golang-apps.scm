@@ -218,17 +218,9 @@ Go packages, supporting output in Graphviz and Mermaid formats.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0c1rxbj3v3m0fqb8q96xlbawxm9scyx6vvr8pddkiwp7zkx4ajym"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
+       (modules '((guix build utils)))
        (snippet
         #~(begin
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
             (delete-all-but "cmd" "godoc")
             (delete-all-but "." "cmd")))))
     (build-system go-build-system)

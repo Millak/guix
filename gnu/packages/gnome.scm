@@ -7887,20 +7887,9 @@ the GNU Shepherd.")
        (sha256
         (base32
          "0ly43lcpafl0an3k4g4mvwrwvc78f0y91ckdi6qn13ky67rvk81h"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
+       (modules '((guix build utils)))
        (snippet
-        #~(begin
-            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
-            (delete-all-but "subprojects"
-                            "gobject-introspection-tests")))))
+        #~(delete-all-but "subprojects" "gobject-introspection-tests"))))
     (build-system meson-build-system)
     (outputs '("out" "debug"))
     (arguments
