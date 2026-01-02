@@ -19,6 +19,7 @@
 ;;; Copyright © 2020-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 45mg <45mg.writes@gmail.com>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2056,6 +2057,35 @@ compatible directories.")
      "@code{dbxfs} allows you to mount your Dropbox folder as if it were a
 local file system using FUSE.")
     (license license:gpl3+)))
+
+(define-public python-linux-procfs
+  (package
+    (name "python-linux-procfs")
+    (version "0.7.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url (string-append "https://git.kernel.org/pub/scm/libs/python/"
+                                  "python-linux-procfs/python-linux-procfs"))
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09409sjncz7n9m2ia5nfzy10q7c23dvpgjdkc3j9bjs4f5hvc9aq"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm))
+    (home-page
+     (string-append "https://git.kernel.org/pub/scm/libs/python/"
+                    "python-linux-procfs/python-linux-procfs.git/"))
+    (synopsis
+     "Python abstractions to extract information from @code{/proc} files")
+    (description
+     "The proc filesystem is a pseudo-filesystem which provides an interface to
+kernel data structures.  This package provides a means to query that system from
+a Python module.  See @code{proc(5)} for more details.")
+    (license license:gpl2)))
 
 (define-public rewritefs
   (let ((revision "1")
