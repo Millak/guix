@@ -3700,9 +3700,9 @@ different floating point sizes and complex transformations.")
       (license license:bsd-3))))
 
 (define-public priocpp
-  ;; XXX: No releases.
-  (let ((commit "214a0ff789d5c58e76d870fe2e75f98857991855")
-        (revision "0"))
+  ;; Latest release is from 2022-08-14.
+  (let ((commit "ea15402adcd0d9191dc29ca6f7e4dd0bff67b9b5")
+        (revision "1"))
     (package
       (name "priocpp")
       (version (git-version "0.0.0" revision commit))
@@ -3714,15 +3714,15 @@ different floating point sizes and complex transformations.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0ksrgajcwqvim5ymxikj26akza3sbhvx3kn4n9xib6r57131kq2m"))))
+          (base32 "0x4cgivaprj5c74yyyzny5dsg288w9y8sf21h79sl9r303ins867"))))
       (build-system cmake-build-system)
       (arguments
        (list
         #:configure-flags
         #~(list "-DBUILD_TESTS=ON")))
-      (inputs (list fmt-8 logmich))
+      (inputs (list fmt-10 logmich))
       (native-inputs (list googletest pkg-config tinycmmc))
-      ;; XXX: CMake-built dependents currently require propagation.
+      ;; TODO: cmake-built dependents currently require propagation -- why?
       (propagated-inputs (list jsoncpp sexp-cpp))
       (home-page "https://github.com/Grumbel/priocpp")
       (synopsis "Property input/output for C++")
