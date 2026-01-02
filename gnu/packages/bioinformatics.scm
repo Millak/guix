@@ -9956,7 +9956,7 @@ sequencing tag position and orientation.")
 (define-public macs-3
   (package
     (name "macs")
-    (version "3.0.2")
+    (version "3.0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9966,19 +9966,8 @@ sequencing tag position and orientation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0x5iz6iq694z3m9zx7zdw0js2l2l40lf1as9k3jy0q4mvz02a3aw"))))
-    (properties
-     '((updater-extra-inputs . ("zlib"))))
+                "08hi0a2a0md9gfg7jc75wxv69rggv2yqfd1hyrg4mi5bhi712m0v"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         ;; FIXME: our version of numpy is a little too old.
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* '("pyproject.toml" "requirements.txt" "setup.py")
-               (("numpy.*=1.25") "numpy>=1.23")))))))
     (propagated-inputs
      (list python-cykhash
            python-hmmlearn
@@ -9989,7 +9978,6 @@ sequencing tag position and orientation.")
      (list python-cython
            python-pytest
            python-setuptools
-           python-wheel
            zlib))
     (home-page "https://github.com/macs3-project/MACS")
     (synopsis "Model based analysis for ChIP-Seq data")
