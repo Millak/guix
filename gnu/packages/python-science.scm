@@ -735,25 +735,63 @@ it can be used for displaying many qualitatively different samples.")
 (define-public python-cvxpy
   (package
     (name "python-cvxpy")
-    (version "1.4.3")
+    (version "1.7.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cvxpy" version))
        (sha256
-        (base32 "0lyri9j5gyg6m1bvfy1a4q2sqdy3w45lp0bxiq9as8srq347ic5i"))))
+        (base32 "0p9zp2ci1zw56hy2q0w18s3kb1h3j0j4m4gw2sg6a9qw00c24lab"))))
     (build-system pyproject-build-system)
-    ;; It's odd but cvxpy appears to need pybind11 at runtime according to its
-    ;; specification.  Moving pybind11 to native-inputs would break downstream
-    ;; packages using cvxpy.
-    (propagated-inputs (list pybind11
-                             python-clarabel
-			     python-ecos
-                             python-numpy
-                             python-osqp
-                             python-scipy
-                             python-scs))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (arguments
+     (list
+      ;; tests: 1344 passed, 391 skipped, 4 deselected, 237 warnings
+      #:test-flags
+      #~(list #$@(map (lambda (test) (string-append "--deselect="
+                                                    "cvxpy/tests/"
+                                                    "test_cone2cone.py::"
+                                                    test))
+                      ;; cvxpy.error.SolverError: Either candidate conic
+                      ;; solvers (['GLPK_MI', 'SCIPY']) do not support the
+                      ;; cones output by the problem (SOC, NonNeg, Zero), or
+                      ;; there are not enough constraints in the problem.
+                      (list "TestSlacks::test_mi_socp_2"
+                            ;; cvxpy.error.SolverError: Solver 'CVXOPT'
+                            ;; failed. Try another solver, or solve with
+                            ;; verbose=True for more information.
+                            "TestOpRelConeQuad::test_oprelcone_1_m1_k3_complex"
+                            "TestOpRelConeQuad::test_oprelcone_1_m3_k1_complex"
+                            ;; cvxpy.error.SolverError: Solver 'CVXOPT'
+                            ;; failed. Try another solver, or solve with
+                            ;; verbose=True for more information.
+                            "TestOpRelConeQuad::test_oprelcone_2")))))
+    (native-inputs
+     (list pybind11
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-clarabel
+           python-numpy
+           python-osqp
+           python-scipy
+           python-scs
+           ;; [optional]
+           ;; python-cuopt-cu12
+           python-cvxopt
+           ;; python-cylp ;FIXME: <https://codeberg.org/guix/guix/issues/2912>
+           ;; python-daqp
+           ;; python-diffcp
+           python-ecos
+           ;; python-gurobipy
+           ;; python-highspy
+           ;; python-mosek
+           ;; python-nvidia-cuda-runtime-cu12
+           ;; python-ortools
+           ;; python-piqp
+           ;; python-proxsuite
+           ;; python-pyscipopt
+           ;; python-qoco
+           #;python-xpress))
     (home-page "https://github.com/cvxpy/cvxpy")
     (synopsis "DSL for modeling convex optimization problems")
     (description
