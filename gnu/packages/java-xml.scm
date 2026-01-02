@@ -846,6 +846,30 @@ by core of Apache Axiom.")
 Apache Axiom.")
     (license license:asl2.0)))
 
+(define-public java-axiom-dom-mixins
+  (package
+    (name "java-axiom-dom-mixins")
+    (version %axiom-version)
+    (source axiom-source)
+    (build-system ant-build-system)
+    (arguments
+     `(#:source-dir "mixins/dom-mixins/src/main"
+       #:test-dir "mixins/dom-mixins/src/test"
+       #:tests? #f  ;; require too many yet unpackaged packages
+       #:jar-name "axiom-dom-mixins.jar"))
+    (native-inputs
+     (list java-axiom-api
+           java-axiom-core-mixins
+           java-axiom-om-mixins
+           java-axiom-xml-utils
+           java-axiom-weaver-annotations
+           unzip))
+    (home-page "https://ws.apache.org/axiom/")
+    (synopsis "Implementation of the Axiom API that also implements DOM")
+    (description "This package contains mixins and implementation classes for Apache Axiom that
+also implement DOM.")
+    (license license:asl2.0)))
+
 (define-public java-axiom-om-mixins
   (package
     (name "java-axiom-om-mixins")
