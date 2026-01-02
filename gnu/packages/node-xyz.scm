@@ -321,6 +321,35 @@ HTTP.Agent instances from a function.")
 addons in a wide array of potential locations.")
     (license license:expat)))
 
+(define-public node-brace-expansion-1
+  (package
+    (name "node-brace-expansion")
+    (version "1.1.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/juliangruber/brace-expansion")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "117k5p167k4sz739rr83cjhf7bsq0iidvm8ylvnybbj86varv9q1"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies)))))))
+    (inputs
+     (list node-balanced-match-1 node-concat-map))
+    (home-page "https://github.com/juliangruber/brace-expansion")
+    (synopsis "Brace expansion for JavaScript")
+    (description "This package provides brace expansion as known from
+sh/bash, for JavaScript.")
+    (license license:expat)))
+
 (define-public node-brace-expansion
   (package
     (name "node-brace-expansion")
