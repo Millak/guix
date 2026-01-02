@@ -91,7 +91,7 @@
 (define-public hss
   (package
     (name "hss")
-    (version "1.9")
+    (version "1.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -100,7 +100,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12578xhvkg70ma411yh8nbpcpnys420bnm9g0dzypb0vn3jxpz8q"))))
+                "1xriqqp89nbzzx1q2jii3ylh3izmf48n5cpyz9ml7gcnzs04vd98"))))
     (inputs
      (list readline))
     (arguments
