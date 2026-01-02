@@ -2620,17 +2620,25 @@ and sequence consensus.")
 (define-public python-cnmf
   (package
     (name "python-cnmf")
-    (version "1.6.0")
+    (version "1.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cnmf" version))
        (sha256
-        (base32 "0aic8cwj6riykcfgl6v2x3si5z04gaknkh5a8lcyv1qh4s1gx3d3"))))
+        (base32 "1v2d7gsxy57rg26wjx4sz2fqk8ggkp3ds0s1g54cm8z8aac6qhxz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f ; no tests in git checkout and PyPI archive
+      ;; tests: 36 passed, 2 deselected, 19 warnings
+      #:test-flags
+      ;; XXX: Tests data is downloaded sepratly, see download_pytest_data.py.
+      #~(list #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/"
+                                                    "test_reproducibility.py::"
+                                                    test))
+                      (list"test_cnmf_end_to_end[dataset_config0]"
+                           "test_cnmf_end_to_end[dataset_config1]")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-envs
@@ -2639,8 +2647,8 @@ and sequence consensus.")
               ;; Numba needs a writable dir to cache functions.
               (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-anndata
            python-fastcluster
