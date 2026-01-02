@@ -2084,6 +2084,36 @@ cache directory, to avoid modifying the host's environment, and further
 activated using a set of environment variables.")
     (license (list license:expat license:asl2.0))))
 
+(define-public python-pygls
+  (package
+    (name "python-pygls")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/openlawlibrary/pygls")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y1adnmr4w4c3zk1lzk21fdz9ab9c1az7acm1rz262h0q7bwl0km"))))
+    (build-system pyproject-build-system)
+    ;; tests: 265 passed, 8 skipped
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-poetry-core))
+    (propagated-inputs
+     (list python-attrs
+           python-cattrs
+           python-lsprotocol))
+    (home-page "https://github.com/openlawlibrary/pygls")
+    (synopsis "Pythonic generic language server")
+    (description
+     "This package provides a pythonic generic language server (pronounced
+like pie glass').")
+    (license license:asl2.0)))
+
 (define-public python-pypydispatcher
   (package
     (name "python-pypydispatcher")
