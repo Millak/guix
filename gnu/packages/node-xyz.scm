@@ -2862,6 +2862,33 @@ lockfile utility that works on a local or network file system.")
 environment variables.")
     (license license:expat)))
 
+(define-public node-pump
+  (package
+    (name "node-pump")
+    (version "3.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mafintosh/pump")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1iyfks1k62dplvajd4xm41b5v3dfp8b22h88z7xrwsbnwsd0vl6f"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'patch-dependencies 'delete-dev-dependencies
+                    (lambda _
+                      (modify-json (delete-dev-dependencies)))))))
+    (inputs (list node-end-of-stream node-once))
+    (home-page "https://github.com/mafintosh/pump")
+    (synopsis "Pipe streams together and close all of them if one closes")
+    (description "This package allows you to pipe streams together and
+destroy all of them if one of them closes.")
+    (license license:expat)))
+
 (define-public node-readable-stream
   (package
     (name "node-readable-stream")
