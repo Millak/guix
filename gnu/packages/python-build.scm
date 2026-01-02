@@ -1034,6 +1034,15 @@ from requirements.txt.")
 version control system (like Git) to determine project versions.")
     (license license:expat)))
 
+(define-public python-hatch-vcs-bootstrap
+  (package/inherit python-hatch-vcs
+    (name "python-hatch-vcs-bootstrap")
+    (native-inputs
+     (list python-packaging-bootstrap))
+    (propagated-inputs
+     (list python-hatchling-bootstrap
+           python-setuptools-scm-bootstrap))))
+
 (define-public python-installer
   (package
     (name "python-installer")
