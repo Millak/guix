@@ -406,6 +406,31 @@ programming languages.")
     (home-page "https://stcorp.nl/coda")
     (license license:gpl2+)))
 
+(define-public qdldl
+  (package
+    (name "qdldl")
+    (version "0.1.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/osqp/qdldl")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vm9a51ar5kz4lmz01ydkk757ppzjnxy49rjbm56rwj65smp26d5"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DQDLDL_UNITTESTS=ON")))
+    (home-page "https://github.com/osqp/qdldl")
+    (synopsis "LDL factorisation routine")
+    (description
+     "This package provides a free
+@url{https://en.wikipedia.org/wiki/Cholesky_decomposition#LDL_decomposition,
+@acronym{LDL, Lower-Diagonal-Lower}} factorisation routine for quasi-definite
+linear systems: @code{Ax=b}.")
+    (license license:asl2.0)))
+
 (define-public qhull
   (package
     (name "qhull")
