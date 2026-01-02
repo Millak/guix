@@ -7597,7 +7597,7 @@ during idle time, while Emacs is doing nothing else.")
 (define-public emacs-pdf-tools
   (package
     (name "emacs-pdf-tools")
-    (version "1.1.0")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -7606,7 +7606,7 @@ during idle time, while Emacs is doing nothing else.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v861fpzck3ky21m4g42h6a6y0cbhc4sjzpzqx0zxd7sfi7rn768"))))
+        (base32 "0lf6ksly7w27n00ymrgxn1xyzpx9bmld4dzn90ki07yph6js7h8x"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; there are no tests
@@ -7656,7 +7656,7 @@ during idle time, while Emacs is doing nothing else.")
     (inputs
      (list cairo glib libpng poppler zlib))
     (propagated-inputs
-     (list emacs-tablist))
+     (list emacs-let-alist emacs-tablist))
     (home-page "https://github.com/vedang/pdf-tools")
     (synopsis "Emacs support library for PDF files")
     (description
