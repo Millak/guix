@@ -3107,7 +3107,7 @@ various hardware.")
 (define-public inspectrum
   (package
     (name "inspectrum")
-    (version "0.3.1")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
@@ -3116,13 +3116,13 @@ various hardware.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11v5idwvfi9w60qg4fgqgvm7ahmb0ys4j094qv4c93r92kd9d3f9"))))
+        (base32 "0ix2pb28msj6s5a5bk32b68z4s937zrg20ggiwnrz4xqnr9hijyd"))))
     (build-system qt-build-system)
     (arguments (list #:tests? #f))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list fftwf liquid-dsp qtbase-5))
+     (list fftwf liquid-dsp qtbase))
     (home-page "https://github.com/miek/inspectrum")
     (synopsis "Radio signal analyser")
     (description
