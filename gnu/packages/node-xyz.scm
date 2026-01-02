@@ -2422,6 +2422,35 @@ Subsequent calls will either return the cached previous value or throw an error
 if desired.")
     (license license:isc)))
 
+(define-public node-open
+  (package
+    (name "node-open")
+    (version "8.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sindresorhus/open")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17h4sv0xr96hckw5z4wjsnszv9ic3kjn03yixg2ihcak535lhkra"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies)))))))
+    (inputs
+     (list node-define-lazy-prop node-is-docker node-is-wsl))
+    (home-page "https://github.com/sindresorhus/open")
+    (synopsis "Open URLs, files, and executables")
+    (description "This package provides a way to open stuff like URLs, files,
+executables.")
+    (license license:expat)))
+
 (define-public node-oop
   ;; No releases, last commit was February 2013.
   (let ((commit "f9d87cda0958886955c14a0a716e57021ed295dc")
