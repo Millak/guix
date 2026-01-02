@@ -3417,6 +3417,30 @@ matrices of small size.")
 with constraints.")
     (license license:asl2.0)))
 
+(define-public scs
+  (package
+    (name "scs")
+    (version "3.2.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cvxgrp/scs")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00csacax6gh3cj39044iijsy6gkz0d1ac805z13qkllfs6bsvchy"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list lapack
+           openblas))
+    (home-page "https://osqp.org/")
+    (synopsis "Splitting Conic Solver")
+    (description
+     "SCS (splitting conic solver) is a numerical optimization package for
+solving large-scale convex cone problems.")
+    (license license:expat)))
+
 (define-public ceres
   (package
     (name "ceres-solver")
