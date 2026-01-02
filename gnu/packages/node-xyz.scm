@@ -3155,6 +3155,33 @@ both @file{stderr} and to a timestamped file.")
 @uref{https://semver.org/, SemVer.org} specification.")
     (license license:isc)))
 
+(define-public node-signal-exit
+  (package
+    (name "node-signal-exit")
+    (version "3.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tapjs/signal-exit")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f2wn0p2d1w2yqd0wz0vppnr6slgk7jzf7w54cqkxdj1j8gwmh4y"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies)))))))
+    (home-page "https://github.com/tapjs/signal-exit")
+    (synopsis "Fire an event when a process exits")
+    (description "This package provides a way to fire an event when a process
+exits.")
+    (license license:isc)))
+
 (define-public node-serialport
   (package
     (name "node-serialport")
