@@ -1852,6 +1852,33 @@ Uses fs.stat.")
     (home-page (git-reference-url (origin-uri source)))
     (license license:expat)))
 
+(define-public node-is-docker
+  (package
+    (name "node-is-docker")
+    (version "2.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sindresorhus/is-docker")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04cs0zffssdagqrn6sd98vk03ps4hwkd3yvk5gq2xpgdn6n77qzq"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies)))))))
+    (home-page "https://github.com/sindresorhus/is-docker")
+    (synopsis "Check if the process is running inside a Docker container")
+    (description "This package provides a way to check if the process is
+running inside a Docker container.")
+    (license license:expat)))
+
 (define-public node-long-stack-traces
   (package
     (name "node-long-stack-traces")
