@@ -2780,6 +2780,30 @@ written in Javascript.")
 Node.js with no dependencies.")
     (license license:expat)))
 
+(define-public node-progress
+  (package
+    (name "node-progress")
+    (version "2.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/visionmedia/node-progress")
+             ;; No git tag for 2.0.3; commit found via:
+             ;; curl -s 'https://api.github.com/repos/visionmedia/node-progress/commits?path=package.json' \
+             ;;   | jq '.[] | select(.commit.message == "2.0.3")'
+             (commit "0790207ef077cbfb7ebde24a1dd9895ebf4643e1")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "125v9cdgrb0pa8ijs6klsckws23lws9p2rcm5mixg6p584yyzfv8"))))
+    (build-system node-build-system)
+    (arguments '(#:tests? #f))
+    (home-page "https://github.com/visionmedia/node-progress")
+    (synopsis "Flexible ascii progress bar for Node.js")
+    (description "This package provides a flexible ASCII progress bar for
+command-line applications.")
+    (license license:expat)))
+
 (define-public node-readable-stream
   (package
     (name "node-readable-stream")
