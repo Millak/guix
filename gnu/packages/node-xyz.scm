@@ -1908,6 +1908,27 @@ running inside a Docker container.")
 running inside Windows Subsystem for Linux.")
     (license license:expat)))
 
+(define-public node-jsbn
+  (package
+    (name "node-jsbn")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/andyperlitch/jsbn")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z875y5i0ck809gqnnw33yw02x5vmc9g42mfr5cjkgwinci1d9lk"))))
+    (build-system node-build-system)
+    (arguments '(#:tests? #f))
+    (home-page "https://github.com/andyperlitch/jsbn")
+    (synopsis "JavaScript BigNum library")
+    (description "This package is a port of Tom Wu's Big Integer library to
+JavaScript.")
+    (license license:expat)))
+
 (define-public node-long-stack-traces
   (package
     (name "node-long-stack-traces")
