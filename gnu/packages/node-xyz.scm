@@ -2835,6 +2835,33 @@ command-line applications.")
 lockfile utility that works on a local or network file system.")
     (license license:expat)))
 
+(define-public node-proxy-from-env
+  (package
+    (name "node-proxy-from-env")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Rob--W/proxy-from-env")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m7rr70lb7011310rj85nyg3vwlkr1w8302nr4s0xmcxi4yv6sln"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies)))))))
+    (home-page "https://github.com/Rob--W/proxy-from-env")
+    (synopsis "Proxy URL from environment variables")
+    (description "This package provides a way to read proxy URLs from
+environment variables.")
+    (license license:expat)))
+
 (define-public node-readable-stream
   (package
     (name "node-readable-stream")
