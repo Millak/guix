@@ -129,6 +129,19 @@ interfaces for other technical domains.")
      '((release-monitoring-url . "https://graphviz.org/download/source/")))
     (license license:epl1.0)))
 
+(define-public graphviz-14
+  (package
+    (inherit graphviz)
+    (version "14.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://gitlab.com/api/v4/projects/4207231"
+                                  "/packages/generic/graphviz-releases/"
+                                  version "/graphviz-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1c9nip42l4z9cprxbqkd39hbl74hzvzvrc06ghdnxfd5686dp1m7"))))))
+
 (define-public graphviz-minimal
   (package/inherit graphviz
     (name "graphviz-minimal")
