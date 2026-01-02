@@ -279,9 +279,16 @@ generation also needs to be wrapped within a `faketime' call in the
       (unless doc
         (format (current-error-port)
                 "warning: missing 'doc' output for package documentation~%"))
-      (let ((doc-dir (string-append (or doc out) "/share/texmf-dist/doc")))
-        (mkdir-p doc-dir)
-        (copy-recursively "doc" doc-dir)))
+      (let* ((share (string-append (or doc out) "/share"))
+             (texmf-doc (string-append share "/texmf-dist/doc")))
+        (mkdir-p texmf-doc)
+        (copy-recursively "doc" texmf-doc)
+        ;; Move Info files and man pages into their expected locations.
+        (for-each (lambda (dir)
+                    (let ((target (string-append texmf-doc "/" dir)))
+                      (when (directory-exists? target)
+                        (rename-file target (string-append share "/" dir)))))
+                  '("info" "man"))))
     ;; Install runfiles.  The package may not contain any, though.  Create
     ;; #$output anyway to handle this situation gracefully.
     (mkdir-p out)
