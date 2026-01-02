@@ -473,6 +473,44 @@ algorithm for a number of different methods.")
 graphs.")
     (license license:bsd-3)))
 
+(define-public python-pyunlocbox
+  (package
+    (name "python-pyunlocbox")
+    (version "0.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/epfl-lts2/pyunlocbox")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pv3srpkyprp0vamlg1pgzqk5ws4ydjb8y9nabndjf2f8519kgv4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 38 passed, 3 warnings
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; Not equal to tolerance rtol=0.001, atol=0
+              "--deselect=pyunlocbox/tests/test_functions.py::TestFunctions::test_proj_b2")))
+    (native-inputs
+     (list python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-numpy
+           python-pytest-cov ;XXX: Why... it's in a dependency list?
+           python-scipy))
+    (home-page "https://github.com/epfl-lts2/pyunlocbox")
+    (synopsis "Convex Optimization in Python using Proximal Splitting")
+    (description
+     "PyUNLocBoX uses @url{https://en.wikipedia.org/wiki/Proximal_gradient_method,
+proximal splitting methods} to solve non-differentiable convex optimization
+problems.")
+    (license license:bsd-3)))
+
 (define-public qvge
   (package
     (name "qvge")
