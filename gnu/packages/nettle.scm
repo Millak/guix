@@ -33,14 +33,14 @@
 (define-public nettle
   (package
     (name "nettle")
-    (version "3.10.1")
+    (version "3.10.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/nettle/nettle-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0cli5lkr7h9vxrz3j9kylnsdbw2ag6x8bpgivj06xsndq1zxvz5h"))))
+                "1d8rnlgmzi3mnv17yvpjxav5max05nli133bbbkbbazjn4fgb7zy"))))
     (build-system gnu-build-system)
     (arguments
      (list
