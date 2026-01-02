@@ -621,6 +621,33 @@ Node.js console output.")
     (home-page (git-reference-url (origin-uri source)))
     (license license:expat)))
 
+(define-public node-commander
+  (package
+    (name "node-commander")
+    (version "8.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tj/commander.js")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fwvjcmhj9vqav6s26bvxq7zbzd1v2gjc1n5j2wf4lbz1qqvy138"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies)))))))
+    (home-page "https://github.com/tj/commander.js")
+    (synopsis "Complete solution for Node.js command-line interfaces")
+    (description "This package provides a way for building command-line
+interfaces in Node.js.")
+    (license license:expat)))
+
 (define-public node-crx3
   (package
     (name "node-crx3")
