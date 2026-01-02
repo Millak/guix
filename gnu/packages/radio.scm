@@ -1392,7 +1392,7 @@ radio receiver.")
 (define-public fldigi
   (package
     (name "fldigi")
-    (version "4.2.06")
+    (version "4.2.11")
     (source
      (origin
        (method git-fetch)
@@ -1401,7 +1401,7 @@ radio receiver.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0l70skbs92pma8ypils4h1wygm7pc61zfqjbnf5kn28vvah3n8zn"))))
+        (base32 "1zf8sxf3bfbdcsj2a566bjgkdyb5q59nxc71yxv16c178livm1w8"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf-2.71 automake gettext-minimal pkg-config))
