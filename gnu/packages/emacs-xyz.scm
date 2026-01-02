@@ -46958,7 +46958,7 @@ or `header-line-format'.  For additional documentation, see info node
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/deb0ch/winum")
+              (url "https://github.com/deb0ch/emacs-winum")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
@@ -46966,7 +46966,7 @@ or `header-line-format'.  For additional documentation, see info node
          "0v1qmw3svydk7dlqbcymy1g1bygkfpb2h4b97zdp12xvd8mww9ny"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-dash))
-    (home-page "https://github.com/deb0ch/winum")
+    (home-page "https://github.com/deb0ch/emacs-winum")
     (arguments (list #:tests? #f)) ; there are no tests
     (synopsis
      "Navigate windows and frames using numbers")
