@@ -2272,7 +2272,7 @@ web, by sharing data and other research outputs.")
 (define-public python-osqp
   (package
     (name "python-osqp")
-    (version "0.6.5")
+    (version "1.0.5")
     (source
      (origin
        (method git-fetch)
@@ -2282,44 +2282,63 @@ web, by sharing data and other research outputs.")
              (recursive? #true)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s1nbzkfsi2h4ji3v0k14pfcrvinakrwy4xdbz320lbaq3yb0b65"))))
+        (base32 "0b5j0hv6dlbs3dm9xvs2ijnjr2r8xnchs4jyk3dx16qhcp85wklb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 47 passed, 3 skipped, 1027 warnings
       #:test-flags
-      ;; Some of these test failures are explained by
-      ;; https://github.com/osqp/osqp-python/issues/121.
       ;; These tests require the module "vec_emosqp", which we don't have.
-      '(list "--ignore=src/osqp/tests/codegen_vectors_test.py"
+      #~(list "--ignore=src/osqp/tests/codegen_vectors_test.py"
              ;; These tests need "mat_emosqp".
-             "--ignore=src/osqp/tests/codegen_matrices_test.py"
-             ;; These fail with accuracy differences
-             "--ignore=src/osqp/tests/update_matrices_test.py"
-             "--ignore=src/osqp/tests/feasibility_test.py"
-             "--ignore=src/osqp/tests/polishing_test.py"
-             ;; This requires the nonfree MKL.
-             "--ignore=src/osqp/tests/mkl_pardiso_test.py")
+             "--ignore=src/osqp/tests/codegen_matrices_test.py")
       #:phases
       #~(modify-phases %standard-phases
-          ;; It looks like the upgrade to scipy 1.12.0 only broke the test
-          ;; suite, not the features of this library.  See
-          ;; https://github.com/osqp/osqp-python/issues/121.
-          (add-after 'unpack 'relax-requirements
+          (add-after 'unpack 'fix-osqp-source-location
+            ;; XXX: Maybe implement it as CMake configure flags, otherwise
+            ;; each package depending on osqp needs to have this phase?
             (lambda _
-              (substitute* "requirements.txt"
-                (("scipy.*1.12.0") "scipy <= 1.12.0"))))
+              (copy-recursively #$(package-source
+                                   (this-package-native-input "osqp"))
+                                "osqp")
+              (substitute* "osqp/algebra/_common/lin_sys/qdldl/qdldl.cmake"
+                (("Fetching/configuring QDLDL solver")
+                 (format #f "Adding/configuring QDLDL solver from: ~a"
+                         #$(package-source
+                            (this-package-native-input "qdldl"))))
+                (("GIT_REPOSITORY https://github.com/osqp/qdldl\\.git")
+                 (format #f "SOURCE_DIR ~a"
+                         #$(package-source
+                            (this-package-native-input "qdldl"))))
+                (("GIT_TAG v0.1.8")
+                 ""))
+              (substitute* "CMakeLists.txt"
+                (("Fetching/configuring OSQP")
+                 (format #f "Adding/configuring OSQP: ~a"
+                         (string-append (getcwd) "/osqp")))
+                (("GIT_REPOSITORY https://github.com/osqp/osqp\\.git")
+                 (format #f "SOURCE_DIR ~a"
+                         (string-append (getcwd) "/osqp")))
+                (("GIT_TAG v1.0.0")
+                 ""))))
           (add-before 'build 'set-version
             (lambda _
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
-    (propagated-inputs (list python-numpy python-qdldl python-scipy))
-    ;; We need setuptools-scm only for the version number.  Without it the
-    ;; version number will be "0.0.0" and downstream packages will complain.
     (native-inputs
      (list cmake-minimal
+           osqp
+           pybind11
            python-pytest
+           python-pytorch
+           python-scikit-build-core
            python-setuptools-scm
-           python-setuptools
-           python-wheel))
+           qdldl))
+    (propagated-inputs
+     (list python-jinja2
+           python-joblib
+           python-numpy
+           python-scipy
+           python-setuptools))
     (home-page "https://osqp.org/")
     (synopsis "OSQP: operator splitting QP solver")
     (description "The OSQP (Operator Splitting Quadratic Program) solver is a
