@@ -204,6 +204,48 @@ frameworks.")
 representations and sentence classification.")
     (license license:expat)))
 
+(define-public python-apricot-select
+  (package
+    (name "python-apricot-select")
+    ;; 0.6.1 was released in 2021
+    (properties '((commit . "962f597a57fcb880a3b19befa7a3eebccc6b5228")
+                  (revision . "0")))
+    (version (git-version "0.6.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jmschrei/apricot")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16hj76nzdr4pbx7wy5f3237f9c1d0yizmz1skix0rwlvjpj3rc9x"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; See: <https://github.com/jmschrei/apricot/issues/19>.
+     (list #:tests? #f)) ;tests are very compue havy
+    (native-inputs
+     (list python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-scikit-learn))
+    (propagated-inputs
+     (list python-numba
+           python-numpy
+           python-scipy
+           python-tqdm))
+    (home-page "https://github.com/jmschrei/apricot")
+    (synopsis "Submodular selection of representative sets for ML models")
+    (description
+     "@code{apricot} implements submodular optimization for the purpose of
+summarizing massive data sets into minimally redundant subsets that are still
+representative of the original data.  These subsets are useful for both
+visualizing the modalities in the data and for training accurate machine
+learning models with just a fraction of the examples and compute.")
+    (license license:expat)))
+
 (define-public python-autograd-gamma
   (package
     (name "python-autograd-gamma")
