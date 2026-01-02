@@ -1709,6 +1709,41 @@ various languages.")
 be displayed on the terminal, with color if possible, for logging purposes.")
     (license license:expat)))
 
+(define-public python-lsprotocol
+  (package
+    (name "python-lsprotocol")
+    (version "2025.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/microsoft/lsprotocol")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m5c2wd7f3i1ipdf0lqhfmgi7d9jw6sa49pvx8828r83r0f9gd8f"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f       ;no tests for Python package
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'cd-packages-python
+            (lambda _
+              (chdir "packages/python"))))))
+    (native-inputs
+     (list python-flit-core))
+    (propagated-inputs
+     (list python-attrs
+           python-cattrs))
+    (home-page "https://github.com/microsoft/lsprotocol")
+    (synopsis "Python types for Language Server Protocol.")
+    (description
+     "@code{lsprotocol} is a Python implementation of object types used in
+the Language Server Protocol (LSP). This repository contains the code
+generator and the generated types for LSP.")
+    (license license:expat)))
+
 (define-public python-marisa-trie
   (package
     (name "python-marisa-trie")
