@@ -437,36 +437,33 @@ algorithm for a number of different methods.")
 (define-public python-pygsp
   (package
     (name "python-pygsp")
-    (version "0.5.1")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "PyGSP" version))
+       (uri (pypi-uri "pygsp" version))
        (sha256
-        (base32 "002q4z3p3ka81rzhgi66qqmz1ccrg9hwch4bax7jsqixg64asx28"))))
+        (base32 "0zbyka8pvcy7rmw65cpkss2k6sn420k67wcrcp8nka36l9pjadam"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 97 passed, 6 skipped, 3 deselected, 10 warnings
       #:test-flags
-      ;; These all fail due to a type error in scipy.
-      '(list "-k" (string-append "not test_bunny"
-                                 " and not test_lowstretchtree"
-                                 " and not test_nngraph"
-                                 " and not test_plot_graphs"
-                                 " and not test_randomregular"))
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-doctests
-           (lambda _
-             (substitute* "pygsp/tests/test_all.py"
-               (("def test_docstrings.*") "def _disabled_test_docstrings():\n")
-               (("return doctest.DocFileSuite.*") "return False\n")
-               (("suites.append\\(test_docstrings.*")
-                "")))))))
-    (propagated-inputs (list python-numpy python-scikit-image python-scipy))
+      ;; Not equal to tolerance rtol=1e-07, atol=1e-12
+      #~(list "--deselect=pygsp/tests/test_graphs.py::test_eigendecompositions"
+              ;; ValueError: Only p-norms with 1<=p<=infinity permitted
+              "--deselect=pygsp/tests/test_graphs.py::test_nngraph"
+              ;; This test needs pyqtgraph and PyQt6.
+              "--deselect=pygsp/tests/test_plotting.py::TestGraphs::test_all_graphs")))
     (native-inputs
-     (list python-coverage python-coveralls python-flake8
-           python-pytest))
+     (list python-matplotlib
+           python-pytest
+           python-pyunlocbox
+           python-scikit-image
+           python-setuptools))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy))
     (home-page "https://github.com/epfl-lts2/pygsp")
     (synopsis "Graph Signal Processing in Python")
     (description "The PyGSP is a Python package to ease signal processing on
