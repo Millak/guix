@@ -1336,6 +1336,33 @@ suitable for use with the @code{fs} module functions.")
     (home-page (git-reference-url (origin-uri source)))
     (license license:isc)))
 
+(define-public node-get-stream
+  (package
+    (name "node-get-stream")
+    (version "5.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/sindresorhus/get-stream")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1mc7fw8qc0b1a4i2h4mz1d4hygla5grxpfh8dk2rabnw46lxm73m"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'patch-dependencies 'delete-dev-dependencies
+                    (lambda _
+                      (modify-json (delete-dev-dependencies)))))))
+    (inputs (list node-pump))
+    (home-page "https://github.com/sindresorhus/get-stream")
+    (synopsis "Get a stream as a string, buffer, or array")
+    (description "This package provides a way to get a stream as a string,
+buffer, or array.  Useful for getting the result of a stream.")
+    (license license:expat)))
+
 (define-public node-global-gradle-clean
   (package
     (name "node-global-gradle-clean")
