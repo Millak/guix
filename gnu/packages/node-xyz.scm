@@ -1020,6 +1020,33 @@ when a readable/writable/duplex stream has completed or failed.")
     (home-page (git-reference-url (origin-uri source)))
     (license license:expat)))
 
+(define-public node-escape-string-regexp-4
+  (package
+    (name "node-escape-string-regexp")
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sindresorhus/escape-string-regexp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0axhbb68f9vn87bccy3d49bglalrb52k66hgfixcdpz8l2yi4ms2"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies)))))))
+    (home-page "https://github.com/sindresorhus/escape-string-regexp")
+    (synopsis "Escape RegExp special characters")
+    (description "This package provides a way to escape special characters
+in a string for use in a regular expression.")
+    (license license:expat)))
+
 (define-public node-far
   (package
     (name "node-far")
