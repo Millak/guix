@@ -3883,6 +3883,41 @@ with SQLite3 databases.")
 traces for Node.js.")
     (license license:expat)))
 
+(define-public node-sprintf-js
+  (package
+    (name "node-sprintf-js")
+    (version "1.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alexei/sprintf.js")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "106r47h0xhrqwqzdzhd5b93saldj89av0qapl1x50gs3pnkdqh8r"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Remove prebuilt minified JavaScript files.
+           (delete-file-recursively "dist")
+           ;; Remove files not needed for the package.
+           (delete-file-recursively "benchmark")
+           (delete-file-recursively "demo")
+           (delete-file-recursively "test")))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies)))))))
+    (home-page "https://github.com/alexei/sprintf.js")
+    (synopsis "JavaScript sprintf implementation")
+    (description "This package provides a JavaScript sprintf implementation.")
+    (license license:bsd-3)))
+
 (define-public node-statsd-parser
   (package
     (name "node-statsd-parser")
