@@ -3834,9 +3834,9 @@ fight Morgoth, the Lord of Darkness.")
     (license license:gpl2)))
 
 (define-public pingus
-  ;; XXX: Does not release anymore.
-  (let ((commit "8c68e08b0b9530b0078a6e2972786f7accf0d0e6")
-        (revision "0"))
+  ;; Latest release is from 2021-12-24.
+  (let ((commit "7d65221e1cd1026053c8a5a08ad911fbdd13d3ed")
+        (revision "1"))
     (package
       (name "pingus")
       (version (git-version "0.7.6" revision commit))
@@ -3844,38 +3844,41 @@ fight Morgoth, the Lord of Darkness.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Pingus/pingus")
-               (commit commit)))
+                (url "https://github.com/Pingus/pingus")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0cnjrma5wfsgjxzclzsk5rycllfh2ncsv2frqwhijwm2ggwcm3am"))))
+          (base32 "0dc6b192y1zwpiqfcpkyq5gk4xl8hl9hs71cmhag8hz59c5hfdfr"))))
       (build-system cmake-build-system)
       (arguments
        (list
-        ;; XXX: tests build but are flagged as failing in pingus.nix
+        ;; Upstream reported the tests don't work.
+        ;; See: <https://github.com/Pingus/pingus/blob/8c68e08b0b9530b0078a6e2972786f7accf0d0e6/pingus.nix#L47>
         #:tests? #f
-        #:configure-flags #~(list "-DBUILD_TESTS=OFF")))
+        #:configure-flags
+        #~(list "-DBUILD_TESTS=OFF")))
       (native-inputs (list googletest pkg-config tinycmmc uitest))
-      (inputs (list argpp
-                    boost
-                    fmt-8
-                    geomcpp
-                    glm
-                    glu
-                    libpng
-                    libsigc++-2
-                    logmich
-                    mesa
-                    priocpp
-                    sdl2
-                    sdl2-image
-                    sdl2-mixer
-                    strutcpp
-                    tinygettext-with-sdl2
-                    wstsound
-                    xdgcpp))
+      (inputs
+       (list argpp
+             boost
+             fmt-10
+             geomcpp
+             glm
+             glu
+             libpng
+             libsigc++-2
+             logmich
+             mesa
+             priocpp
+             sdl2
+             sdl2-image
+             sdl2-mixer
+             strutcpp
+             tinygettext-with-sdl2
+             wstsound
+             xdgcpp))
       (home-page "https://pingus.seul.org/")
-      (synopsis "Lemmings clone")
+      (synopsis "Lemmings-like puzzle game")
       (description
        "Pingus is a free Lemmings-like puzzle game in which the player takes
 command of a bunch of small animals and has to guide them through levels.
@@ -3883,8 +3886,11 @@ Since the animals walk on their own, the player can only influence them by
 giving them commands, like build a bridge, dig a hole, or redirect all animals
 in the other direction.  Multiple such commands are necessary to reach the
 level's exit.  The game is presented in a 2D side view.")
-      ;; Some source files are under bsd-3 and gpl2+ licenses.
-      (license license:gpl3+))))
+      (license
+       ;; Project itself is GPL3+, but some files are under distinct licenses.
+       (list license:bsd-3
+             license:gpl2+
+             license:gpl3+)))))
 
 (define-public talkfilters
   (package
