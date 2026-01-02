@@ -1618,6 +1618,33 @@ that connects to a specified HTTP or HTTPS proxy server, and can be used with
 the built-in https module.")
     (license license:expat)))
 
+(define-public node-jpeg-js
+  (package
+    (name "node-jpeg-js")
+    (version "0.4.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/eugeneware/jpeg-js")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11lw3b6p4g7wm7k7ha3y1fnbmbr58r7fm7hkwjbp6bb5705mgyjg"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies)))))))
+    (home-page "https://github.com/eugeneware/jpeg-js")
+    (synopsis "Pure JavaScript JPEG encoder and decoder")
+    (description "This package provides a pure JavaScript JPEG encoder and
+decoder for Node.js.")
+    (license license:bsd-3)))
+
 (define-public node-irc
   (package
     (name "node-irc")
