@@ -7609,48 +7609,48 @@ during idle time, while Emacs is doing nothing else.")
         (base32 "0lf6ksly7w27n00ymrgxn1xyzpx9bmld4dzn90ki07yph6js7h8x"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; there are no tests
-       #:modules ((guix build gnu-build-system)
+     (list
+      #:tests? #f                       ;TODO: Run the tests.
+      #:modules '((guix build gnu-build-system)
                   ((guix build emacs-build-system) #:prefix emacs:)
                   (guix build utils)
                   (guix build emacs-utils))
-       #:imported-modules (,@%default-gnu-imported-modules
+      #:imported-modules `(,@%default-gnu-imported-modules
                            (guix build emacs-build-system)
                            (guix build emacs-utils))
-       #:phases
-       (modify-phases %standard-phases
-         ;; Build server side using 'gnu-build-system'.
-         (add-after 'unpack 'enter-server-dir
-           (lambda _ (chdir "server")))
-         (add-after 'enter-server-dir 'autogen
-           (lambda _
-             (invoke "bash" "autogen.sh")))
-         ;; Build emacs side using 'emacs-build-system'.
-         (add-after 'compress-documentation 'enter-lisp-dir
-           (lambda _ (chdir "../lisp")))
-         (add-after 'enter-lisp-dir 'emacs-patch-variables
-           (lambda* (#:key outputs #:allow-other-keys)
-             (for-each make-file-writable (find-files "."))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Build server side using 'gnu-build-system'.
+          (add-after 'unpack 'enter-server-dir
+            (lambda _ (chdir "server")))
+          (add-after 'enter-server-dir 'autogen
+            (lambda _
+              (invoke "bash" "autogen.sh")))
+          ;; Build emacs side using 'emacs-build-system'.
+          (add-after 'compress-documentation 'enter-lisp-dir
+            (lambda _ (chdir "../lisp")))
+          (add-after 'enter-lisp-dir 'emacs-patch-variables
+            (lambda _
+              (for-each make-file-writable (find-files "."))
 
-             ;; Set path to epdfinfo program.
-             (emacs-substitute-variables "pdf-info.el"
-               ("pdf-info-epdfinfo-program"
-                (string-append (assoc-ref outputs "out")
-                               "/bin/epdfinfo")))
-             ;; Set 'pdf-tools-handle-upgrades' to nil to avoid "auto
-             ;; upgrading" that pdf-tools tries to perform.
-             (emacs-substitute-variables "pdf-tools.el"
-               ("pdf-tools-handle-upgrades" '()))))
-         (add-after 'enter-lisp-dir 'emacs-make-autoloads
-           (assoc-ref emacs:%standard-phases 'make-autoloads))
-         (add-after 'emacs-patch-variables 'emacs-expand-load-path
-           (assoc-ref emacs:%standard-phases 'expand-load-path))
-         (add-after 'emacs-expand-load-path 'emacs-add-install-to-native-load-path
-           (assoc-ref emacs:%standard-phases 'add-install-to-native-load-path))
-         (add-after 'emacs-add-install-to-native-load-path 'emacs-install
-           (assoc-ref emacs:%standard-phases 'install))
-         (add-after 'emacs-install 'emacs-build
-           (assoc-ref emacs:%standard-phases 'build)))))
+              ;; Set path to epdfinfo program.
+              (emacs-substitute-variables "pdf-info.el"
+                ("pdf-info-epdfinfo-program"
+                 (string-append #$output "/bin/epdfinfo")))
+              ;; Set 'pdf-tools-handle-upgrades' to nil to avoid "auto
+              ;; upgrading" that pdf-tools tries to perform.
+              (emacs-substitute-variables "pdf-tools.el"
+                ("pdf-tools-handle-upgrades" '()))))
+          (add-after 'enter-lisp-dir 'emacs-make-autoloads
+            (assoc-ref emacs:%standard-phases 'make-autoloads))
+          (add-after 'emacs-patch-variables 'emacs-expand-load-path
+            (assoc-ref emacs:%standard-phases 'expand-load-path))
+          (add-after 'emacs-expand-load-path 'emacs-add-install-to-native-load-path
+            (assoc-ref emacs:%standard-phases 'add-install-to-native-load-path))
+          (add-after 'emacs-add-install-to-native-load-path 'emacs-install
+            (assoc-ref emacs:%standard-phases 'install))
+          (add-after 'emacs-install 'emacs-build
+            (assoc-ref emacs:%standard-phases 'build)))))
     (native-inputs
      (list autoconf automake emacs-minimal pkg-config))
     (inputs
