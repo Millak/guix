@@ -3229,6 +3229,55 @@ exits.")
 its own read and write offsets.")
     (license license:expat)))
 
+(define-public node-socks
+  (package
+    (name "node-socks")
+    (version "2.8.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JoshGlazebrook/socks")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1isqyw7vlf258fmdxs7gq1kgqf4mh51ijnp6vcd445rcqbk7n43f"))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-dependencies 'delete-dev-dependencies
+            (lambda _
+              (modify-json (delete-dev-dependencies))))
+          (replace 'build
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (let ((esbuild (search-input-file (or native-inputs inputs)
+                                                "/bin/esbuild")))
+                (mkdir-p "build")
+                (for-each
+                 (lambda (ts-file)
+                   (let* ((relative (substring ts-file (+ (string-length "src/") 0)))
+                          (js-file (string-append "build/"
+                                                  (string-drop-right relative 3)
+                                                  ".js")))
+                     (mkdir-p (dirname js-file))
+                     (invoke esbuild ts-file
+                             (string-append "--outfile=" js-file)
+                             "--format=cjs"
+                             "--platform=node"
+                             "--target=es2020")))
+                 (find-files "src" "\\.ts$"))))))))
+    (native-inputs (list esbuild))
+    (inputs
+     (list node-ip-address node-smart-buffer))
+    (home-page "https://github.com/JoshGlazebrook/socks")
+    (synopsis "SOCKS proxy client for Node.js")
+    (description "This package provides a SOCKS proxy client supporting
+SOCKS4, SOCKS4a, and SOCKS5 protocols.")
+    (license license:expat)))
+
 (define-public node-serialport
   (package
     (name "node-serialport")
