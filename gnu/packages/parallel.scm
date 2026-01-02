@@ -625,12 +625,11 @@ features.")
 
 (define-public cpuinfo
   ;; There's currently no tag on this repo.
-  (let ((version "0.0")
-        (revision "5")
-        (commit "b73ae6ce38d5dd0b7fe46dbe0a4b5f4bab91c7ea"))
+  (let ((revision "6")
+        (commit "b3b25967b5b80406304d575321e572c5f9e5e3c4"))
     (package
       (name "cpuinfo")
-      (version (git-version version revision commit))
+      (version (git-version "0.0" revision commit))
       (home-page "https://github.com/pytorch/cpuinfo")
       (source (origin
                 (method git-fetch)
@@ -638,7 +637,7 @@ features.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0ibba4jssvjyd147dyj5lzijgxhmjxf0ishl1wykka1rblmxmli4"))))
+                  "02i4sf6bgw25xsaarbialw9n9plqxqblvh7pjz2sw6cvz1r5n6c6"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -647,18 +646,12 @@ features.")
         #:tests? (not (or (target-aarch64?)
                           (target-riscv64?)))
         #:configure-flags
-        '(list "-DBUILD_SHARED_LIBS=ON"
-               "-DUSE_SYSTEM_LIBS=ON")
-        #:phases
-        '(modify-phases %standard-phases
-           (add-after 'unpack 'skip-bad-test
-             (lambda _
-               (substitute* "test/init.cc"
-                 (("TEST\\(CORE, known_uarch\\) \\{" m)
-                  (string-append m "\
-GTEST_SKIP() << \"See https://github.com/pytorch/cpuinfo/issues/132\";"))))))))
+        #~(list "-DBUILD_SHARED_LIBS=ON"
+                "-DUSE_SYSTEM_LIBS=ON")))
       (inputs
        (list googletest-1.13 googlebenchmark))
+      (native-inputs
+       (list python-wrapper))
       (synopsis "C/C++ library to obtain information about the CPU")
       (description
        "The cpuinfo library provides a C/C++ and a command-line interface to
