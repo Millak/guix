@@ -553,6 +553,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/diagram.scm			\
   %D%/packages/pkg-config.scm			\
   %D%/packages/plan9.scm			\
+  %D%/packages/playwright.scm		\
   %D%/packages/plotutils.scm			\
   %D%/packages/poedit.scm				\
   %D%/packages/polkit.scm			\
