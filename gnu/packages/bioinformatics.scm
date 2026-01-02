@@ -3196,25 +3196,29 @@ fraction of valid symbols in that position.")
 (define-public python-magic-impute
   (package
     (name "python-magic-impute")
-    (version "1.2.1")
+    (version "3.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/KrishnaswamyLab/MAGIC")
-             (commit (string-append "v" version))))
+              (url "https://github.com/KrishnaswamyLab/MAGIC")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1yjs16vg87lcg9g16bnblg1v9sk73j6dm229lkcz0bfjlzxjhv8w"))))
+         "1f4ckvpki2461xd5hclhj7gqwj8xizs4d0fd942kvgafidrsdvlx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #false ;there are none
+      #:test-flags
+      #~(list "test/test.py")
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _ (chdir "python"))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _ (chdir "python"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-future
            python-graphtools
@@ -3223,6 +3227,7 @@ fraction of valid symbols in that position.")
            python-pandas
            python-scikit-learn
            python-scipy
+           python-scprep
            python-tasklogger))
     (home-page "https://github.com/KrishnaswamyLab/MAGIC")
     (synopsis "Markov affinity-based graph imputation of cells")
