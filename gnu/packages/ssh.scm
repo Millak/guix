@@ -623,7 +623,7 @@ responsive, especially over Wi-Fi, cellular, and long-distance links.")
 (define-public dropbear
   (package
     (name "dropbear")
-    (version "2025.88")
+    (version "2025.89")
     (source
      (origin
        (method url-fetch)
@@ -631,7 +631,7 @@ responsive, especially over Wi-Fi, cellular, and long-distance links.")
              "https://matt.ucc.asn.au/dropbear/releases/"
              "dropbear-" version ".tar.bz2"))
        (sha256
-        (base32 "1m2kvir3ckafi9lyb435iyxl9ypcdpdsz3spi7d1cz5i4zm50gvq"))
+        (base32 "0d1n26g8rddflyja0bgy08x25n6gp7575rl5ibf3dhyg26kpq7qd"))
        (modules '((guix build utils)))
        (snippet
         '(begin
