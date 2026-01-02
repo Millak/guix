@@ -333,38 +333,25 @@ algorithm for community detection in large networks.")
 (define-public python-graphtools
   (package
     (name "python-graphtools")
-    (version "1.5.3")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/KrishnaswamyLab/graphtools")
-             (commit (string-append "v" version))))
+              (url "https://github.com/KrishnaswamyLab/graphtools")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1aaxhij4y5z2vvc34qnb5py6nw3ciz35a3z4lfr223f9kvfpqgak"))))
+        (base32 "03zbdaqkg2ply7d0zr75rfjncg6xk45bamn1z6xpaqs9nh69hvk8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 231 passed, 2 warnings
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-tests
-           (lambda _
-             ;; The warning message has changed in numpy.
-             (substitute* "test/test_data.py"
-               (("\"A sparse matrix was passed, but.*array.\",")
-                "\"Sparse data was passed, but dense data is required. Use '.toarray()' to convert to a dense numpy array.\",")
-               ;; anndata prints a warning that causes the test to fail.
-               (("import warnings" m)
-                (string-append m "\nwarnings.filterwarnings(\"ignore\")")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; Incompatibility with sklearn.
-               ;; 'kNNLandmarkGraph' object has no attribute '_landmark_op'
-               (delete-file "test/test_landmark.py")
-               (setenv "LOKY_MAX_CPU_COUNT" "1")
-               (invoke "nose2" "-v")))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (delete-file "pytest.ini"))))))
     (propagated-inputs
      (list python-deprecated
            python-future
@@ -374,13 +361,12 @@ algorithm for community detection in large networks.")
            python-scipy
            python-tasklogger))
     (native-inputs
-     (list util-linux ;for lscpu
-           python-anndata
-           python-pynose
-           python-nose2
+     (list python-anndata
+           python-igraph
            python-pandas
            python-parameterized
-           python-igraph))
+           python-pytest
+           python-setuptools))
     (home-page "https://github.com/KrishnaswamyLab/graphtools")
     (synopsis "Tools for building and manipulating graphs in Python")
     (description "This package provides tools for building and manipulating
