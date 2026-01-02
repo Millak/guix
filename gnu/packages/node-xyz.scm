@@ -103,7 +103,7 @@ architecture supporting plugins.")
 (define-public node-addon-api
   (package
     (name "node-addon-api")
-    (version "8.3.0")
+    (version "8.5.0")
     (source
      (origin
        (method git-fetch)
@@ -112,7 +112,7 @@ architecture supporting plugins.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1swvhdss2w636l24bnssnwb1rqh7i6lhpkk4knbrvpspqf80kagc"))))
+        (base32 "18sbs3n69p2qax88dji6704a2jlq1af74k4i61s7pja7xc8gs1vd"))))
     (inputs
      (list python node-safe-buffer))
     (build-system node-build-system)
