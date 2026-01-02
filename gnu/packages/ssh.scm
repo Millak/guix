@@ -786,20 +786,21 @@ shell services and remote host selection.")
 (define-public python-asyncssh
   (package
     (name "python-asyncssh")
-    (version "2.18.0")
+    (version "2.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asyncssh" version))
        (sha256
-        (base32 "08viv0k32l6f40sbraq4bqzizrkivf09zwy8kmqvjq0zq1hj2chs"))))
+        (base32 "0dxmirf6my22gh096dqs81dgzr9788wdsi18wr07pyg43fq75kn3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "-k" (string-join
                     (list
-                     ;; TODO Test fails for unknown reason
+                     ;; TODO Test fails with:
+                     ;; "Unable to sign with requested key"
                      "not test_confirm"
                      #$@(if (target-aarch64?)
                             (list
@@ -826,8 +827,7 @@ shell services and remote host selection.")
            python-aiofiles
            python-fido2
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-cryptography
            python-pyopenssl
