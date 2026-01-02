@@ -29386,7 +29386,7 @@ running into parallelism problems when having to change directory.")
 (define-public sbcl-simple-matrix
   (package
     (name "sbcl-simple-matrix")
-    (version "3.7")
+    (version "3.9")
     (source
      (origin
        (method git-fetch)
@@ -29395,7 +29395,7 @@ running into parallelism problems when having to change directory.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-simple-matrix" version))
        (sha256
-        (base32 "05yk7813rba8kfwr8kcf1qm3dif7nf0rs3s0m5jfw7z0i1fg9jxf"))))
+        (base32 "102wxyd0ck8fbvxrlzkp33idrdclzffmx3bnb7n50z6chhjmlbdf"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs (list sbcl-fiveam))
     (synopsis "Matrix library for Common Lisp")
