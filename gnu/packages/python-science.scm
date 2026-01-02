@@ -1228,17 +1228,20 @@ that is 20-25x faster than @code{numpy.histogram2d}.")
 (define-public python-fastcluster
   (package
     (name "python-fastcluster")
-    (version "1.2.6")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fastcluster" version))
        (sha256
-        (base32 "19labbgnq85p4r4jbli2p045lgh57larhi2g2anagfxnlzpqdf5a"))))
+        (base32 "00nzjrk8cp3kwm0qax5xxg61dxq9b8s3jspsqx4skyn3lpmkl8ym"))))
     (build-system pyproject-build-system)
-    (arguments (list #:test-backend #~'unittest))
-    (propagated-inputs (list python-numpy))
-    (native-inputs (list python-scipy python-setuptools python-wheel))
+    (native-inputs
+     (list python-pytest
+           python-scipy
+           python-setuptools))
+    (propagated-inputs
+     (list python-numpy))
     (home-page "https://danifold.net/fastcluster.html")
     (synopsis "Fast hierarchical clustering routines for R and Python")
     (description "The fastcluster package implements seven common hierarchical
