@@ -10165,9 +10165,9 @@ sequences).")
                                  (invoke "bash" script))))
                             tests))))))))
     (native-inputs
-     (list python-wheel))
+     (list python-setuptools))
     (inputs
-     (list python-numpy
+     (list python-numpy-1
            python-scipy
            python-matplotlib
            python-statsmodels
