@@ -1,6 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2023 Raven Hallsby <karl@hallsby.com>
+;;; Copyright © 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
+;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,13 +26,29 @@
 ;;;; Code:
 
 (define-module (gnu packages power)
+  #:use-module (gnu packages)
+  #:use-module (gnu packages admin)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
+  #:use-module (gnu packages check)
+  #:use-module (gnu packages disk)
+  #:use-module (gnu packages file-systems)
+  #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gawk)
+  #:use-module (gnu packages glib)
+  #:use-module (gnu packages instrumentation)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages ruby-xyz)
+  #:use-module (gnu packages virtualization)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages))
@@ -136,3 +154,124 @@ Uninterruptible Power Supply} models.  @command{apcupsd} works with most of
 APC’s Smart-UPS models as well as most simple signalling models such a
 Back-UPS, and BackUPS-Office.")
     (license license:gpl2)))
+
+(define-public tuned-minimal
+  (package
+    (name "tuned-minimal")
+    (version "2.26.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/redhat-performance/tuned")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0r4a42s2hk9hcrp835164yzddmvr8n4b17bhhpwxx16iiaizramn"))))
+    (build-system pyproject-build-system)
+    (arguments
+       (list
+        ;; tests: 105 passed, 4 deselected
+        #:test-flags #~'("-k" "not udev and not get_device")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-paths
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (substitute* "Makefile"
+                  (("^PYTHON_SITELIB = .*")
+                   (simple-format #f "PYTHON_SITELIB = ~a\n"
+                     (site-packages inputs outputs)))
+                  ;; These directories do not make sense on Guix.
+                  (("mkdir -p \\$\\(DESTDIR\\)/var/lib/tuned") "")
+                  (("mkdir -p \\$\\(DESTDIR\\)/var/log/tuned") "")
+                  (("mkdir -p \\$\\(DESTDIR\\)/run/tuned") "")
+                  ;; Drop systemD services.
+                  ((".*\\$\\(DESTDIR\\)\\$\\(UNITDIR\\).*\\.service.*") "")
+                  ;; tuned-gui depends on systemctl being available.  Drop it
+                  ;; until it'll be compatible with other init systems.
+                  ((".*\\$\\(DESTDIR\\).*tuned-gui.*") ""))
+                ;; Substitute FHS paths with Guix ones.
+                (substitute* (cons*
+                              "experiments/powertop2tuned.py"
+                              "tuned-adm.bash"
+                              "tuned/consts.py"
+                              (find-files "profiles"
+                                          (lambda (name stat)
+                                            (and (string-suffix? ".sh" name)
+                                                 (eq? 'regular (stat:type stat))
+                                                 (access? name X_OK)))))
+                  (("/etc/tuned")
+                   (string-append #$output "/etc/tuned"))
+                  (("/usr/lib/tuned")
+                   (string-append #$output "/lib/tuned")))
+                (substitute* "experiments/powertop2tuned.py"
+                  (("/usr/sbin/powertop")
+                   (search-input-file inputs "sbin/powertop")))
+                ;; TuneD really wants to write to
+                ;; /etc/modprobe.d/tuned.conf . Guix manages this file
+                ;; declaratively, so the default location for TuneD is
+                ;; is changed to a file where it can actually write.
+                (substitute* "tuned/consts.py"
+                  (("/etc/modprobe\\.d/tuned\\.conf")
+                   "/etc/tuned/modprobe.d/tuned.conf"))))
+            ;; There is nothing to build except documentation.
+            ;; https://github.com/redhat-performance/tuned/blob/v2.26.0/INSTALL#L4
+            ;; https://github.com/redhat-performance/tuned/blob/v2.26.0/tuned.spec
+            (replace 'build
+              (lambda* (#:key inputs #:allow-other-keys)
+                (invoke "make" "html"
+                        (string-append
+                         "PYTHON=" (search-input-file inputs "bin/python3")))))
+            (replace 'install
+              (lambda _
+                (invoke "make" "install" "install-ppd" "install-html"
+                        (string-append "PREFIX=" #$output)
+                        (string-append "SYSCONFDIR=" #$output "/etc")
+                        (string-append "TMPFILESDIR=" #$output "/run/tuned"))))
+            (add-before 'check 'set-check-pythonpath
+              (lambda _
+                (setenv "PYTHONPATH" "tests/unit")))
+            (add-before 'wrap 'wrap-gi-and-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (for-each
+                 (lambda (binary)
+                   (wrap-program binary
+                     `("GI_TYPELIB_PATH" =
+                       (,(string-append #$(this-package-input "glib")
+                                        "/lib/girepository-1.0")))))
+                 (find-files (string-append #$output "/sbin"))))))))
+    (native-inputs (list python-pytest
+                         ruby-asciidoctor))
+    (inputs
+     (list bash-minimal
+           ethtool
+           gawk
+           glib
+           hdparm
+           kmod
+           iproute
+           powertop
+           python-dbus
+           python-pyinotify
+           python-linux-procfs
+           python-pygobject
+           python-pyudev
+           systemtap
+           util-linux
+           virt-what))
+    (synopsis "Dynamic adaptive system tuning daemon")
+    (description
+     "The TuneD package contains a daemon that tunes system settings
+dynamically.  It does so by monitoring the usage of several system components
+periodically.  Based on that information components will then be put into lower
+or higher power saving modes to adapt to the current usage.")
+    (home-page "https://tuned-project.org")
+    (license (list license:gpl2+ license:cc-by-sa3.0))))
+
+(define-public tuned
+  (package
+    (inherit tuned-minimal)
+    (name "tuned")
+    (inputs
+     (modify-inputs (package-inputs tuned-minimal)
+       (prepend dmidecode perf wireless-tools)))))
