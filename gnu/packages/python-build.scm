@@ -248,7 +248,7 @@ invoked on those path objects directly.")
     (arguments (list #:test-backend #~'unittest))
     (native-inputs
      (list python-flit-core
-           python-setuptools))
+           python-setuptools-bootstrap))
     (home-page "https://github.com/cpburnz/python-pathspec")
     (synopsis "Utility library for gitignore style pattern matching of file paths")
     (description
@@ -295,7 +295,7 @@ platform-specific directories, e.g. the ``user data dir''.")
         (base32 "1wr2vnbb7gy9wlz01yvb7rn4iqzd3mwmidk11ywk7395fq5i7k3x"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools
+     (list python-setuptools-bootstrap
            python-setuptools-scm
            python-wheel))
     (home-page "https://pypi.org/project/pluggy/")
@@ -345,7 +345,7 @@ tools for mocking system commands and recording calls to those.")
     (arguments
      `(#:tests? #f))                     ;no tests suite in release
     (native-inputs
-     (list python-setuptools))
+     (list python-setuptools-bootstrap))
     (home-page "https://github.com/uiri/toml")
     (synopsis "Library for TOML")
     (description
@@ -501,7 +501,7 @@ and many external plugins.")
     (arguments
      (list #:build-backend "setuptools.build_meta"
            #:tests? #f))      ;keep dependencies to a minimum
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools-bootstrap))
     (home-page "https://github.com/pypa/trove-classifiers")
     (synopsis "Canonical source for classifiers on PyPI")
     (description "This package is the canonical source for classifiers use on
@@ -658,7 +658,7 @@ def contents() -> str:
     (arguments
      '(#:tests? #f))          ; there are no tests in the pypi archive.
     (native-inputs
-     (list python-setuptools))
+     (list python-setuptools-bootstrap))
     (home-page "https://pip.pypa.io/")
     (synopsis "Package manager for Python software")
     (description
@@ -669,6 +669,8 @@ Python Package Index (PyPI).")
 (define-public python-setuptools
   (package
     (name "python-setuptools")
+    ;; When updating python-setuptools, also check in the bundled sources
+    ;; the versions of some native-inputs if some new tests fail.
     (version "80.9.0")
     (source
      (origin
@@ -678,16 +680,119 @@ Python Package Index (PyPI).")
         (base32 "175iixi2h2jz8y2bpwziak360hvv43jfhipwzbdniryd5r04fszk"))
        (modules '((guix build utils)))
        (snippet
-        ;; TODO: setuptools now bundles the following libraries:
-        ;; packaging, pyparsing, six and appdirs.  How to unbundle?
-        ;; Remove included binaries which are used to build self-extracting
-        ;; installers for Windows.
-        '(for-each delete-file (find-files "setuptools"
-                                           "^(cli|gui).*\\.exe$")))))
+        #~(begin
+            ;; Remove included binaries which are used to build self-extracting
+            ;; installers for Windows.
+            (for-each delete-file (find-files "setuptools"
+                                              "^(cli|gui).*\\.exe$"))))))
     (build-system pyproject-build-system)
-    ;; FIXME: Tests require pytest, which itself relies on setuptools.
-    ;; One could bootstrap with an internal untested setuptools.
-    (arguments (list #:tests? #f))
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; Avoid additional dependencies
+         "--ignore=setuptools/tests/config/test_apply_pyprojecttoml.py"
+         "--ignore=setuptools/tests/config/test_pyprojecttoml.py"
+         "--ignore=setuptools/tests/test_namespaces.py" ;nss-certs-for-test
+         "--ignore=tools"
+         ;; These tests try to access the network.
+         "-m" "not uses_network"
+         "-k" (string-join
+               (list "not test_dist_fetch_build_egg" ; network
+                     ;; Those scripts are unbundled in the snippet above.
+                     "test_wheel_includes_cli_scripts"
+                     ;; Despite PRE_BUILT_SETUPTOOLS_WHEEL below,
+                     ;; this test uses our unbundled setuptools and fails
+                     ;; to find jaraco.functools.
+                     "test_no_missing_dependencies"
+                     ;; XXX: We have pytest in the path, probably
+                     ;; because of the setenv "PYTHONPATH" below.
+                     "test_ignore_errors"
+                     ;; XXX: Unclear why this one fails.
+                     "test_basic")
+               " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Build a first wheel bundled for tests.
+          (add-before 'build 'build-bundled-wheel-for-tests
+            (assoc-ref %standard-phases 'build))
+          (add-after 'build-bundled-wheel-for-tests 'cleanup
+            (lambda _
+              (let ((wheel (string-append "setuptools-" #$version
+                                          "-py3-none-any.whl")))
+                (for-each
+                 (lambda (file)
+                   (rename-file file wheel))
+                 (find-files "dist" "\\.whl$")))
+              (for-each delete-file-recursively
+                        '("build" "dist" "setuptools/_vendor"))))  ; unbundle
+          (add-before 'check 'configure-tests
+            (lambda* (#:key outputs #:allow-other-keys)
+              (setenv "HOME" (getcwd))
+              ;; FIXME python-pytest still relies a bit on PYTHONPATH.
+              (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH"))
+              ;; Inject our pre-built bundled wheel for tests.
+              (setenv "PRE_BUILT_SETUPTOOLS_WHEEL"
+                      (string-append (getcwd) "/setuptools-"
+                                     #$version "-py3-none-any.whl"))))
+          ;; Platformdirs is a bit tedious to properly bootstrap and
+          ;; propagate, and is used in a single place that will be dropped
+          ;; soon, we might as well drop it now.
+          (add-before 'compile-bytecode 'drop-platformdirs-requirement
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (with-directory-excursion (site-packages inputs outputs)
+                (substitute* "pkg_resources/__init__.py"
+                  (("^from platformdirs import.*")
+                   "")
+                  (("_user_cache_dir\\(appname='Python-Eggs'\\)")
+                   "f\"{os.environ.get('XDG_CACHE_HOME')}/Python-Eggs\""))
+                (substitute* (string-append "setuptools-" #$version
+                                            ".dist-info/METADATA")
+                  (("Requires-Dist: platformdirs.*") "")))))
+          (add-after 'check 'cleanup-installed-tests
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((site (site-packages inputs outputs)))
+                (with-directory-excursion site
+                  (for-each
+                   delete-file-recursively
+                   (find-files "."
+                               (lambda (file stat)
+                                 (and (string= (basename file) "tests")
+                                      (eq? 'directory
+                                           (stat:type stat))))
+                               #:directories? #t)))
+                (substitute* (find-files site "RECORD")
+                  ((".*/tests/.*") ""))))))))
+    (propagated-inputs
+     ;; See either bundled inputs or METADATA extra == "core"
+     (list python-jaraco-functools
+           python-jaraco-text
+           python-more-itertools
+           python-packaging
+           python-wheel))
+    (native-inputs
+     (list python-autocommand
+           python-backports-tarfile
+           python-filelock-bootstrap
+           python-inflect
+           python-jaraco-collections
+           python-jaraco-context
+           python-jaraco-envs-bootstrap
+           python-jaraco-functools
+           python-jaraco-path
+           python-jaraco-test
+           python-jaraco-text
+           python-more-itertools
+           python-packaging
+           python-path
+           python-platformdirs-bootstrap
+           python-pip
+           python-pypa-build
+           python-pytest-bootstrap
+           python-tomli
+           python-typing-extensions
+           python-typeguard
+           python-wheel))
     (home-page "https://pypi.org/project/setuptools/")
     (synopsis "Library designed to facilitate packaging Python projects")
     (description "Setuptools is a fully-featured, stable library designed to
@@ -1186,7 +1291,7 @@ system, then @code{flit_core} to build the package.")
       #:build-backend "setuptools.build_meta"))
     (propagated-inputs
      (list python-packaging-bootstrap
-           python-setuptools))
+           python-setuptools-bootstrap))
     (home-page "https://github.com/pypa/setuptools_scm/")
     (synopsis "Manage Python package versions in SCM metadata")
     (description
@@ -1235,7 +1340,7 @@ them as the version argument or in a SCM managed file.")
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest-bootstrap
-           python-setuptools))
+           python-setuptools-bootstrap))
     (home-page "https://pypi.org/project/six/")
     (synopsis "Python 2 and 3 compatibility utilities")
     (description
