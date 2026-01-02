@@ -4545,6 +4545,34 @@ implementation.")
 YAML 1.1 and YAML 1.2.")
     (license license:isc)))
 
+(define-public node-yauzl
+  (package
+    (name "node-yauzl")
+    (version "2.10.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/thejoshwolfe/yauzl")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02f7zknlmjizi9l4d5z0vx659wl9xi7kgzn24kqj5wfkp3b83cij"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'patch-dependencies 'delete-dev-dependencies
+                    (lambda _
+                      (modify-json (delete-dev-dependencies)))))))
+    (inputs (list node-buffer-crc32 node-fd-slicer node-pend))
+    (home-page "https://github.com/thejoshwolfe/yauzl")
+    (synopsis "Yet another unzip library for node")
+    (description "This package provides an unzip library for Node.js that
+handles ZIP file reading with streaming support and proper handling of
+ZIP64 extensions.")
+    (license license:expat)))
+
 (define-public node-yazl
   (package
     (name "node-yazl")
