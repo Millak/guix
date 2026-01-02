@@ -917,6 +917,33 @@ text differences, similar to Unix diff.")
     (home-page (git-reference-url (origin-uri source)))
     (license license:expat)))
 
+(define-public node-dotenv
+  (package
+    (name "node-dotenv")
+    (version "16.4.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/motdotla/dotenv")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sbfq4d3p3zjlmf8vvr6dgzgxab0w8fcms6dk6v4n4y5ca7vjv93"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies)))))))
+    (home-page "https://github.com/motdotla/dotenv")
+    (synopsis "Loads environment variables from .env files")
+    (description "This package provides a zero-dependency module that loads
+environment variables from a @code{.env} file into @code{process.env}.")
+    (license license:bsd-2)))
+
 (define-public node-env-variable
   (package
     (name "node-env-variable")
