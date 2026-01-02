@@ -45,9 +45,7 @@
     (_ #f)))
 
 (define guix-dependencies
-  (filter-map input->package
-              (fold alist-delete (package-direct-inputs guix)
-                    '("glibc-utf8-locales" "graphviz" "po4a"))))
+  (filter-map input->package (package-direct-inputs guix)))
 
 (define (package-without-tests p)
   (package/inherit p
