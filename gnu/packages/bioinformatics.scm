@@ -29,8 +29,8 @@
 ;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
 ;;; Copyright © 2025 nomike Postmann <nomike@nomike.com>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2026 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2025-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3996,6 +3996,108 @@ DamID-based method to measure protein-DNA interactions and an adaptation of
 CEL-Seq to measure transcription.  The starting point of the workflow is raw
 sequencing data and the end result are tables of UMI-unique DamID and CEL-Seq
 counts.")
+    (license license:expat)))
+
+(define-public python-scprep
+  (package
+    (name "python-scprep")
+    (version "1.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/KrishnaswamyLab/scprep")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dbmaix4bqaf9p1zw1fvk5a64kwdbg015q3ykc6rsmdwrcd2g5cz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 344 passed
+      #:test-flags
+      ;; XXX: Mixture of remote data download and some assertion errors.
+      ;;
+      ;; Tests from "test/test_io.py" download data files from
+      ;; <https://raw.githubusercontent.com/KrishnaswamyLab/scprep/>.
+      #~(list "--ignore-files=test_io.py"
+              (string-join
+               (list "--exclude=(test.*dyngen.*" ;TODO: they need R packages
+                     "test_slingshot.*"          ;
+                     "test_splatter_.*"          ;
+                     "test_builtins"
+                     "test_combine_batches_errors"
+                     "test_conversion_sce"
+                     "test_conversion_spmatrix"
+                     "test_differential_expression"
+                     "test_differential_expression_error"
+                     "test_fcs"
+                     "test_fcs_PnN"
+                     "test_fcs_header_error"
+                     "test_fcs_reformat_meta"
+                     "test_generate_colorbar_dict"
+                     "test_install_bioc"
+                     "test_install_github_dependencies_None"
+                     "test_install_github_dependencies_True"
+                     "test_install_github_lib"
+                     "test_is_sparse_series"
+                     "test_builtins"
+                     "test_mtx"
+                     "test_scatter_rotate_mp4"
+                     "test_sparse_svd"
+                     "test_to_array_or_spmatrix_list_of_strings"
+                     "test_unzip_no_destination)")
+               "|")
+              "test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                ;;     "pandas>=0.25,<2.1",
+                ((",<2.1") ""))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-fcsparser
+           python-anndata
+           python-h5py
+           python-matplotlib
+           python-parameterized
+           python-nose2
+           python-pynose
+           python-requests
+           python-rpy2
+           python-setuptools
+           python-tables))
+    ;; Used by rpy2
+    (inputs
+     (list bash-minimal
+           r-apeglm
+           r-deseq2
+           r-drimseq
+           r-ggplot2
+           r-lazyeval
+           r-minimal
+           r-qqman
+           r-renv
+           r-rlang
+           r-slingshot
+           #;r-splatter)) ;https://github.com/Oshlack/splatter
+    (propagated-inputs
+     (list python-decorator
+           python-numpy
+           python-packaging
+           python-pandas
+           python-scikit-learn
+           python-scipy))
+    (home-page "https://github.com/KrishnaswamyLab/scprep")
+    (synopsis "Tools for loading, processing, and handling single cell data")
+    (description
+     "@code{scprep} provides an all-in-one framework for loading,
+ preprocessing, and plotting matrices in Python, with a focus on single-cell
+genomics.")
     (license license:expat)))
 
 (define-public python-snaptools
@@ -19654,7 +19756,7 @@ implementation differs in these ways:
               ;; XXX: When python-dask is added some tests fail with error:
               ;; ImportError: cannot import name 'as_sparse_dask_array' from
               ;; 'anndata.tests.helpers'.
-              ;; 
+              ;;
               ;; That functionality was removed from anndata: see
               ;; <https://github.com/scverse/anndata/pull/2201>.
               #$@(map (lambda (test) (string-append "--deselect=tests/"
