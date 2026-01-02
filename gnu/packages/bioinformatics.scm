@@ -6712,7 +6712,8 @@ gkm-SVM.")
        (sha256
         (base32 "1skk1k8phq9sj4ar0cnq8px89y3kcyh5zrbl6anz9wcdcyzkc16z"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-numpy python-pandas))
+    ;; See: <https://github.com/eyurtsev/fcsparser/issues/74>.
+    (propagated-inputs (list python-numpy-1 python-pandas))
     (native-inputs (list python-poetry-core python-pytest))
     (home-page "https://github.com/eyurtsev/fcsparser")
     (synopsis "Package for reading raw fcs files")
