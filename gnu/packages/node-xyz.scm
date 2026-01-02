@@ -2749,6 +2749,37 @@ manages pending callbacks and signals completion when all have finished.")
 written in Javascript.")
     (license license:expat)))
 
+(define-public node-pngjs
+  (package
+    (name "node-pngjs")
+    (version "6.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pngjs/pngjs")
+             ;; No git tag for 6.0.0; commit found via:
+             ;; curl -s 'https://api.github.com/repos/pngjs/pngjs/commits?path=package.json' \
+             ;;   | jq '.[] | select(.commit.message | test("v6.0.0"))'
+             (commit "b68264b1a85abf6d111a7138ad4f18b117fb5f81")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d617apsrgsqkn3lwilvajjx5j49rkdyyz3i4by3qvqsznpzsgxx"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies))))
+         (delete 'build))))
+    (home-page "https://github.com/pngjs/pngjs")
+    (synopsis "PNG encoder/decoder for Node.js in pure JavaScript")
+    (description "This package provides a simple PNG encoder/decoder for
+Node.js with no dependencies.")
+    (license license:expat)))
+
 (define-public node-readable-stream
   (package
     (name "node-readable-stream")
