@@ -3133,7 +3133,7 @@ software-defined radio receivers.")
 (define-public wfview
   (package
     (name "wfview")
-    (version "2.03")
+    (version "2.11")
     (source
      (origin
        (method git-fetch)
@@ -3142,7 +3142,7 @@ software-defined radio receivers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0b74sbi10plrd6dyqm80k0gggvh7fdnwzlddk18gnj5zzsiq562f"))))
+        (base32 "0jmwhf2wkr5gl5y69l44qmay22m4843qlvj1cw2740s9ayg11y50"))))
     (build-system qt-build-system)
     (arguments
      (list
