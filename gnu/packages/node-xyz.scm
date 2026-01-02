@@ -1196,6 +1196,33 @@ Measure the difference between two strings.")
     (home-page (git-reference-url (origin-uri source)))
     (license license:expat)))
 
+(define-public node-fd-slicer
+  (package
+    (name "node-fd-slicer")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/andrewrk/node-fd-slicer")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wpazi7a1rjdd8ikp0j4w082jbbh8nv1x9kms2sas74rn8xr0ahi"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'patch-dependencies 'delete-dev-dependencies
+                    (lambda _
+                      (modify-json (delete-dev-dependencies)))))))
+    (inputs (list node-pend))
+    (home-page "https://github.com/andrewrk/node-fd-slicer")
+    (synopsis "Create multiple readable/writable streams from a file descriptor")
+    (description "This package provides a way to create multiple readable/writable streams
+based on a single file descriptor, maintaining safety from concurrency issues.")
+    (license license:expat)))
+
 (define-public node-file-uri-to-path
   (package
     (name "node-file-uri-to-path")
