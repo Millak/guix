@@ -565,6 +565,33 @@ buffer masking and unmasking operations.")
      "This package provides a JSON list with color names and their values.")
     (license license:expat)))
 
+(define-public node-colors
+  (package
+    (name "node-colors")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Marak/colors.js")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ih98ycxjprlxn72ygqgkgcp9wkpd20apndjd11270qyyifvkr8y"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies)))))))
+    (home-page "https://github.com/Marak/colors.js")
+    (synopsis "Get colors in your Node.js console")
+    (description "This package provides a library for adding colors to
+Node.js console output.")
+    (license license:expat)))
+
 (define-public node-command-line-usage
   (package
     (name "node-command-line-usage")
