@@ -9728,9 +9728,9 @@ data.  It also provides the @command{bgzip}, @command{htsfile}, and
     ;; causes the tests to always fail.
     (arguments `(#:tests? #f))
     (propagated-inputs
-     (list python-scipy python-sympy python-numpy python-matplotlib))
+     (list python-scipy python-sympy python-numpy-1 python-matplotlib))
     (native-inputs
-     (list python-cython
+     (list python-cython-0
            python-setuptools))
     (home-page "https://github.com/nboley/idr")
     (synopsis "Tool to measure the irreproducible discovery rate (IDR)")
