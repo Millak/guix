@@ -748,6 +748,42 @@ changes of the Plexus fork. It is an implementation of the XMLPULL V1 API
        (base32
         "0wig9s1s089d0zq8kjny1f34za23vb47k515iab72bnkq62bbm8y")))))
 
+(define-public java-axiom-api
+  (package
+    (name "java-axiom-api")
+    (version %axiom-version)
+    (source axiom-source)
+    (build-system ant-build-system)
+    (arguments
+     `(#:source-dir "axiom-api/src/main"
+       #:test-dir "axiom-api/src/test"
+       #:tests? #f  ;; tests requre too many yet unpackaged packages
+       #:jar-name "axiom-api.jar"))
+    (native-inputs
+     (list java-axiom-base64-utils
+           java-axiom-xml-utils
+           java-commons-logging-minimal
+           java-jakarta-activation-api
+           java-jaxen
+           java-mime4j-core
+           java-osgi-framework
+           java-osgi-util-tracker
+           java-stax2-api
+           unzip))
+    (home-page "https://ws.apache.org/axiom/")
+    (synopsis "API for Apache Axiom – StAX-based XML Infoset compliant object model")
+    (description "Apache Axiom provides an XML Infoset compliant object model
+implementation which supports on-demand building of the object tree.  It
+supports a novel \"pull-through\" model which allows one to turn off the tree
+building and directly access the underlying pull event stream using the StAX
+API.  It also has built in support for XML Optimized Packaging (XOP) and MTOM,
+the combination of which allows XML to carry binary data efficiently and in a
+transparent manner.  The combination of these is an easy to use API with a very
+high performant architecture.
+
+This package provides the API for Apache Axiom.")
+    (license license:asl2.0)))
+
 (define-public java-axiom-base64-utils
   (package
     (name "java-axiom-base64-utils")
