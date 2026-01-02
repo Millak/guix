@@ -3854,6 +3854,35 @@ with SQLite3 databases.")
       (description "Get v8 stack traces as an array of CallSite objects.")
       (license license:expat))))
 
+(define-public node-stack-utils
+  (package
+    (name "node-stack-utils")
+    (version "2.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tapjs/stack-utils")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dgzj3x1c257vv3306xd1kg6kvwv3z41a0irzg1lmp0nl0pg744n"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies)))))))
+    (inputs
+     (list node-escape-string-regexp-4))
+    (home-page "https://github.com/tapjs/stack-utils")
+    (synopsis "Captures and cleans stack traces")
+    (description "This package provides a way to capture and clean stack
+traces for Node.js.")
+    (license license:expat)))
+
 (define-public node-statsd-parser
   (package
     (name "node-statsd-parser")
