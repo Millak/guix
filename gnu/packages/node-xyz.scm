@@ -2034,6 +2034,42 @@ this cache will keep that many of the most recently accessed items.")
 random number generator.")
     (license license:bsd-3)))
 
+(define-public node-mime
+  (package
+    (name "node-mime")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/broofa/mime")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g6k3aj71bv10cjfl6rnjks767vfsj967z8xypc0zn47v0w0k1jb"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies))))
+         (add-after 'install 'remove-prepare-script
+           (lambda* (#:key outputs #:allow-other-keys)
+             ;; The prepare script generates types/standard.js and types/other.js
+             ;; from mime-db.  These files are already generated during the Guix
+             ;; build.  Remove the script to prevent npm from trying to re-run it
+             ;; when this package is used as a file: dependency.
+             (modify-json #:file (string-append (assoc-ref outputs "out")
+                                                "/lib/node_modules/mime/package.json")
+                          (delete-fields '(("scripts" "prepare")))))))))
+    (home-page "https://github.com/broofa/mime")
+    (synopsis "Comprehensive MIME type mapping API")
+    (description "This package provides a library for MIME type mapping based
+on mime-db.")
+    (license license:expat)))
+
 (define-public node-minimatch
   (package
     (name "node-minimatch")
