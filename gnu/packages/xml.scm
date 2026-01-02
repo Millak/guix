@@ -1845,6 +1845,13 @@ modular implementation of XML-RPC for C and C++.")
       #:make-flags #~(list "TESTS_THAT_FAIL=")
       #:phases
       #~(modify-phases %standard-phases
+          #$@(if (target-hurd?)
+                 #~((add-after 'unpack 'patch-hurd
+                      (lambda _
+                        (let ((patch #$(local-file
+                                        (search-patch "opensp-maxpathlen.patch"))))
+                          (invoke "patch" "--force" "-p1" "-i" patch)))))
+                 #~())
           (add-after 'unpack 'delete-configure
             ;; The configure script in the release was made with an older
             ;; Autoconf and lacks support for the `--docdir' option.
