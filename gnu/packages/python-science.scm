@@ -5057,24 +5057,41 @@ arrays.  It is a fork of the Aesara library.")
 (define-public python-scs
   (package
     (name "python-scs")
-    (version "3.2.4")
+    (version "3.2.10")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/bodono/scs-python")
-             (commit "3.2.4")
-             (recursive? #true)))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06wd8m3ri0gaddl7qq6243g25zjlnh3da915b73jnrfh7sg1nqsj"))))
+        (base32 "1wg1g6das5hs53z3sjn2m8646023d14q9shmwfb38n23baqi468g"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 26 passed
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'ensure-no-mtimes-pre-1980 'substitute-git-submodules
+            (lambda _
+              (rmdir "scs_source")
+              (symlink #$(package-source
+                          (this-package-native-input "scs"))
+                       "scs_source")
+              (rmdir "scs/pythoncapi-compat")
+              (symlink #$(package-source
+                          (this-package-native-input "pythoncapi-compat"))
+                       "scs/pythoncapi-compat"))))))
     (native-inputs
-     (list pkg-config
+     (list meson-python
+           pkg-config
            python-pytest
-           meson-python))
+           pythoncapi-compat
+           scs))
     (inputs
-     (list openblas))
+     (list lapack
+           openblas))
     (propagated-inputs
      (list python-numpy
            python-scipy))
