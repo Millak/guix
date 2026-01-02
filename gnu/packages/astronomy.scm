@@ -4707,35 +4707,6 @@ tools for astronomers.")
      "Python read-only implementation of the @code{EventIO} file format.")
     (license license:expat)))
 
-;; 2.0.0 introduced breaching changes in API.
-(define-public python-eventio-1
-  (package
-    (inherit python-eventio)
-    (name "python-eventio")
-    (version "1.16.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/cta-observatory/pyeventio")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0jg2zgs0z5jfkdkbgxiiclxkyxrz4zhb57x1ji0c5pd2vsrn4g92"))))
-    (arguments
-     (list
-      ;; tests: 136 passed, 3 skipped, 4 xfailed
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-env-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("corsikaio >= 0.3.3,<0.6.0")
-                 "corsikaio >= 0.3.3")))))))))
-
 (define-public python-extinction
   (package
     (name "python-extinction")
