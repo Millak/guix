@@ -1002,21 +1002,22 @@ write tooling that generates distribution files from Python projects.")
   (package
     (name "python-pypa-build")
     ;; Newer version needs more inputs, consider to move to python-xyz.
-    (version "0.9.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "build" version))
        (sha256
-        (base32 "0g5w28ban6k9qywqwdqiqms3crg75rsvfphl4f4qkg8wi57741qs"))))
+        (base32 "15xk0w71x8v1c8by049rdwh74mhkl3rj3v9sym8fkgbhl87dv3k9"))))
     (build-system pyproject-build-system)
     (arguments `(#:tests? #f))         ;disabled to avoid extra dependencies
     (native-inputs
-     (list python-setuptools))
+     (list python-flit-core))
     (propagated-inputs
-     (list python-packaging-bootstrap
-           python-pep517-bootstrap
-           python-toml))
+     (list python-colorama
+           python-packaging
+           python-pyproject-hooks
+           python-tomli))
     (home-page "https://pypa-build.readthedocs.io/en/latest/")
     (synopsis "Simple Python PEP 517 package builder")
     (description "The @command{build} command invokes the PEP 517 hooks to
