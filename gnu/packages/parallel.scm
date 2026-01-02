@@ -180,7 +180,7 @@ execution is also possible.")
 (define-public xjobs
   (package
     (name "xjobs")
-    (version "20200726")
+    (version "20250529")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -188,11 +188,11 @@ execution is also possible.")
                     version ".tgz"))
               (sha256
                (base32
-                "0ay6gn43pnm7r1jamwgpycl67bjg5n87ncl27jb01w2x6x70z0i3"))))
+                "13hkaipl3cgr9cvama34b442n35ckr42p1f24kygkrad3ymy87hx"))))
     (build-system gnu-build-system)
     (arguments `(#:tests? #f)) ;; No tests
     (native-inputs
-     (list flex which))
+     (list flex))
     (home-page "https://www.maier-komor.de/xjobs.html")
     (properties `((release-monitoring-url . ,home-page)))
     (synopsis
