@@ -785,6 +785,54 @@ a more fine-grained manner by binding the @env{DEBUG} variable.")
     (home-page (git-reference-url (origin-uri source)))
     (license license:expat)))
 
+(define-public node-diff
+  (package
+    (name "node-diff")
+    (version "7.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kpdecker/jsdiff")
+             (commit version)))  ; No "v" prefix for this package
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dipv7nsvvzqpiw6i0zlgs82pbdryla01qzjh1wyvxwfjr5lra89"))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-dependencies 'delete-dev-dependencies
+            (lambda _
+              (modify-json (delete-dev-dependencies))))
+          (replace 'build
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              ;; Compile JavaScript modules with esbuild.
+              (let ((esbuild (search-input-file (or native-inputs inputs) "/bin/esbuild")))
+                (mkdir-p "lib")
+                ;; Build CommonJS version
+                (invoke esbuild "src/index.js"
+                        "--bundle"
+                        "--outfile=lib/index.js"
+                        "--format=cjs"
+                        "--platform=node"
+                        "--target=es2020")
+                ;; Build ESM version (required by package.json exports)
+                (invoke esbuild "src/index.js"
+                        "--bundle"
+                        "--outfile=lib/index.mjs"
+                        "--format=esm"
+                        "--platform=node"
+                        "--target=es2020")))))))
+    (native-inputs (list esbuild))
+    (home-page "https://github.com/kpdecker/jsdiff")
+    (synopsis "JavaScript text differencing implementation")
+    (description "This package provides a JavaScript library for computing
+text differences, similar to Unix diff.")
+    (license license:bsd-3)))
+
 (define-public node-dprint-formatter
   (package
     (name "node-dprint-formatter")
