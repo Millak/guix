@@ -33,7 +33,8 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix packages))
+  #:use-module (guix packages)
+  #:use-module (guix utils))
 
 ;;;
 ;;; Please: Try to add new module packages in alphabetic order.
@@ -449,6 +450,41 @@ and fancy character sets, signed or unsigned data and has tests, for Node.")
     (synopsis "A ponyfill for Buffer.from")
     (description "A ponyfill for Buffer.from, uses native implementation if available.")
     (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
+(define-public node-bufferutil
+  (package
+    (name "node-bufferutil")
+    (version "4.0.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/websockets/bufferutil")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00d6qsrhzv91m72xv9zx1vmlwfx22avwvmxz4yclwsj37y8imd5s"))))
+    (build-system node-build-system)
+    (arguments
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'patch-dependencies 'delete-dev-dependencies
+                 (lambda _
+                   (modify-json (delete-dev-dependencies))))
+               (add-before 'install 'set-cc
+                 (lambda _
+                   (setenv "CC" #$(cc-for-target)))))))
+    (inputs
+     (list node-gyp-build node-addon-api))
+    (native-inputs
+     (list python))
+    (home-page "https://github.com/websockets/bufferutil")
+    (synopsis "WebSocket buffer utilities for Node.js")
+    (description "This package provides an addon for Node.js for operations
+on buffers for use with WebSocket implementations.  It provides efficient
+buffer masking and unmasking operations.")
     (license license:expat)))
 
 (define-public node-chalk
