@@ -3195,7 +3195,7 @@ video streaming services of the Finnish national broadcasting company Yle.")
 (define-public yt-dlp
   (package
     (name "yt-dlp")
-    (version "2025.11.12")
+    (version "2025.12.08")
     (source
      (origin
        (method git-fetch)
@@ -3207,7 +3207,7 @@ video streaming services of the Finnish national broadcasting company Yle.")
        (snippet #~(substitute* "pyproject.toml"
                     (("^.*Programming Language :: Python :: 3\\.13.*$") "")))
        (sha256
-        (base32 "18kqf4z4r6ls9bik8jbwqbj5j4fai7xjhgn8p7pjgkd2q0nhavqj"))))
+        (base32 "1s4gbf49y6mpnfqy7n0lz2klfs9q1cbzcrg9mp353bl2zw68qknb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
