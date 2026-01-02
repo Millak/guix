@@ -20275,17 +20275,29 @@ such as Hi-C contact matrices.")
 (define-public python-cooltools
   (package
     (name "python-cooltools")
-    (version "0.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "cooltools" version))
-              (sha256
-               (base32
-                "076fgqzf6453cx5zs32vz0f5yvfg53w8ayq9s79jssy7gj2x89lb"))))
+    (version "0.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/open2c/cooltools")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04i8s414scrffi7xfwynyz7k9crgj93d1zmqgipvdh2kvpigifn3"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 65 passed, 134 warnings
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (delete-file "pytest.ini"))))))
     (native-inputs
      (list python-cython
-           python-pytest))
+           python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-bioframe
            python-click
