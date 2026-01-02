@@ -2804,6 +2804,37 @@ Node.js with no dependencies.")
 command-line applications.")
     (license license:expat)))
 
+(define-public node-proper-lockfile
+  (package
+    (name "node-proper-lockfile")
+    (version "4.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/moxystudio/node-proper-lockfile")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i6ljfzxnzsmdkrpr74vy7qdn6pgllflkdr85a29sdyx55b5gfc2"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies)))))))
+    (inputs
+     (list node-graceful-fs
+           node-retry
+           node-signal-exit))
+    (home-page "https://github.com/moxystudio/node-proper-lockfile")
+    (synopsis "Inter-process and inter-machine lockfile utility")
+    (description "This package provides an inter-process and inter-machine
+lockfile utility that works on a local or network file system.")
+    (license license:expat)))
+
 (define-public node-readable-stream
   (package
     (name "node-readable-stream")
