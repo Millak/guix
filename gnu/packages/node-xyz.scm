@@ -1645,6 +1645,55 @@ the built-in https module.")
 decoder for Node.js.")
     (license license:bsd-3)))
 
+(define-public node-ip-address
+  (package
+    (name "node-ip-address")
+    (version "9.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/beaugunderson/ip-address")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nb8cyhvpbjlm46y7axhlrgfmr4kw7506fgp7482hl7kaf9ixl14"))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-dependencies 'delete-dev-dependencies
+            (lambda _
+              (modify-json (delete-dev-dependencies))))
+          (replace 'build
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (let ((esbuild (search-input-file (or native-inputs inputs)
+                                                "/bin/esbuild")))
+                (mkdir-p "dist")
+                (for-each
+                 (lambda (ts-file)
+                   (let* ((relative (substring ts-file (string-length "src/")))
+                          (js-file (string-append "dist/"
+                                                  (string-take relative (string-index relative #\.))
+                                                  ".js")))
+                     (mkdir-p (dirname js-file))
+                     (invoke esbuild ts-file
+                             (string-append "--outfile=" js-file)
+                             "--format=cjs"
+                             "--platform=node"
+                             "--target=es2020")))
+                 (find-files "src" "\\.ts$"))))))))
+    (native-inputs (list esbuild))
+    (inputs
+     (list node-jsbn node-sprintf-js))
+    (home-page "https://github.com/beaugunderson/ip-address")
+    (synopsis "Library for parsing and manipulating IPv6 and IPv4 addresses")
+    (description "This package provides a library for parsing and
+manipulating IPv6 and IPv4 addresses in JavaScript.")
+    (license license:expat)))
+
 (define-public node-irc
   (package
     (name "node-irc")
