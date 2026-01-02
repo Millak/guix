@@ -4496,6 +4496,55 @@ function with browser support.")
 implementation.")
     (license license:expat)))
 
+(define-public node-yaml
+  (package
+    (name "node-yaml")
+    (version "2.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/eemeli/yaml")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w9qajkjshp2imrxmps96phg4iqgxr7pfzqx9518fymzwzpjkdvr"))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-dependencies 'delete-dev-dependencies
+            (lambda _
+              (modify-json (delete-dev-dependencies))))
+          (replace 'build
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (let ((esbuild (search-input-file (or native-inputs inputs)
+                                                "/bin/esbuild")))
+                ;; Compile TypeScript to JavaScript using esbuild
+                ;; Output to dist/ directory to match package.json exports
+                (mkdir-p "dist")
+                (for-each
+                 (lambda (ts-file)
+                   (let* ((relative (substring ts-file (string-length "src/")))
+                          (js-file (string-append "dist/"
+                                                  (string-drop-right relative 3)
+                                                  ".js")))
+                     (mkdir-p (dirname js-file))
+                     (invoke esbuild ts-file
+                             (string-append "--outfile=" js-file)
+                             "--format=cjs"
+                             "--platform=node"
+                             "--target=es2020")))
+                 (find-files "src" "\\.ts$"))))))))
+    (native-inputs (list esbuild))
+    (home-page "https://eemeli.org/yaml/")
+    (synopsis "JavaScript YAML parser and stringifier")
+    (description "This package provides a library for YAML.  Supports both
+YAML 1.1 and YAML 1.2.")
+    (license license:isc)))
+
 (define-public node-yazl
   (package
     (name "node-yazl")
