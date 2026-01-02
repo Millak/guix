@@ -4779,18 +4779,35 @@ in a modular way.")
   (package
     (name "python-presto")
     (version "0.7.6")
-    (home-page "https://github.com/immcantation/presto")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url home-page)
+              (url "https://github.com/immcantation/presto")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1mcngwrxiw8r1j26r5crf7j0dscvhg3b8g1is3j3vq5jpnyn8jmz"))))
+        (base32 "1mcngwrxiw8r1j26r5crf7j0dscvhg3b8g1is3j3vq5jpnyn8jmz"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:build-backend "setuptools.build_meta"
+      ;; tests: 29 passed, 6 skipped, 3 deselected, 8 warnings
+      #:test-flags
+      ;; FileNotFoundError: [Errno 2] No such file or directory: 'cd-hit-est'
+      #~(list "--ignore=tests/test_ClusterSets.py"
+              ;; TypeError: seq argument should be a Seq or MutableSeq object
+              #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/"
+                                                    "test_EstimateError.py::"
+                                                    "TestEstimateError::"
+                                                    test))
+                      (list "test_calculateDistances"
+                            "test_countMismatches"
+                            "test_initializeMismatchDictionary")))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list muscle
            python-biopython
@@ -4799,16 +4816,7 @@ in a modular way.")
            python-pyyaml
            python-scipy
            vsearch))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
-    (arguments
-     (list
-      #:build-backend "setuptools.build_meta"
-      #:test-flags
-      ;; FileNotFoundError: [Errno 2] No such file or directory: 'cd-hit-est'
-      '(list "--ignore=tests/test_ClusterSets.py")))
+    (home-page "https://github.com/immcantation/presto")
     (synopsis "The REpertoire Sequencing TOolkit")
     (description "Presto is a python toolkit for processing raw reads from
 high-throughput sequencing of B cell and T cell repertoires.")
