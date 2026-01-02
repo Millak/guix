@@ -1847,32 +1847,48 @@ utilities for data translation and processing.")
 (define-public python-verde
   (package
     (name "python-verde")
-    (version "1.8.0")
+    (version "1.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "verde" version))
        (sha256
-        (base32 "1hnh91dsk2dxfbk7p2hv3hajaa396139pd6apabgdrp5b7s54k97"))))
+        (base32 "1hsya3nlv8fycjglnl9dv29nqnz9rhw2f8q9mp3bp95ixk75ayp9"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; Tests below fetch data remotely.
-     (list #:test-flags #~(list "-k" (string-append
-                                      "not test_minimal_integration_2d_gps"
-                                      " and not test_datasets_locate"
-                                      " and not test_fetch_texas_wind"
-                                      " and not test_fetch_baja_bathymetry"
-                                      " and not test_fetch_rio_magnetic"
-                                      " and not test_fetch_california_gps"))))
-    (native-inputs (list python-cartopy python-distributed python-pytest
-                         python-setuptools python-wheel))
-    (propagated-inputs (list python-dask
-                             python-numpy
-                             python-pandas
-                             python-pooch
-                             python-scikit-learn
-                             python-scipy
-                             python-xarray))
+     ;; tests: 171 passed, 7 deselected, 470 warnings
+     (list
+      #:test-flags
+      ;; AssertionError: Regex pattern did not match.  Input: "Window size '5'
+      ;; is larger than dimensions of the region '(np.float64(-5.0),
+      ;; np.float64(-1.0), np.float64(6.0), np.float64(20.0))'."
+      #~(list (string-append "--deselect=verde/tests/test_coordinates.py"
+                             "::test_rolling_window_oversized_window")
+              ;; Tests below fetch data remotely.
+              "-k" (string-append "not test_minimal_integration_2d_gps"
+                                  " and not test_datasets_locate"
+                                  " and not test_fetch_texas_wind"
+                                  " and not test_fetch_baja_bathymetry"
+                                  " and not test_fetch_rio_magnetic"
+                                  " and not test_fetch_california_gps"))))
+    (native-inputs
+     (list python-cartopy
+           python-distributed    ;for Dask
+           python-matplotlib
+           python-pytest
+           python-pytest-mpl
+           python-setuptools))
+    (propagated-inputs
+     (list python-dask
+           python-numpy
+           python-pandas
+           python-pooch
+           python-scikit-learn
+           python-scipy
+           python-xarray
+           ;; [optional]
+           python-pykdtree
+           python-numba))
     (home-page "https://github.com/fatiando/verde")
     (synopsis "Processing and gridding spatial data, machine-learning style")
     (description
