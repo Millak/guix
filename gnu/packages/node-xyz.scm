@@ -721,7 +721,7 @@ interfaces in Node.js.")
 (define-public node-debug
   (package
     (name "node-debug")
-    (version "4.3.3")
+    (version "4.3.4")
     (source
      (origin
        (method git-fetch)
@@ -730,7 +730,7 @@ interfaces in Node.js.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ji0dmdl2xkgxqxvd6xjy7k3mmknmhvqjgc40vyly9ka1mpf20vb"))))
+        (base32 "06hm12vgqxc1bvfxp2rv95yyycr7xjj5482ykq2c4fq4pkjci827"))))
     (inputs
      (list node-ms))
     (build-system node-build-system)
