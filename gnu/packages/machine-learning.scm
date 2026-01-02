@@ -1260,6 +1260,73 @@ It currently houses implementations of
 ")
     (license license:expat))) ; MIT License
 
+(define-public python-pomegranate
+  (package
+    (name "python-pomegranate")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jmschrei/pomegranate")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0arx5wik4ywna7k7g5y3ggwz98fl1hgap0278pph3c77ap8afqd7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 830 passed, 19 deselected, 529 warnings
+      #:test-flags
+      #~(list #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/distributions/"
+                                                    test))
+                      ;; _pickle.UnpicklingError: Weights only load failed.
+                      (list "test_bernoulli.py::test_serialization"
+                            "test_categorical.py::test_serialization"
+                            "test_exponential.py::test_serialization"
+                            "test_gamma.py::test_serialization"
+                            "test_independent_component.py::test_serialization"
+                            "test_normal_diagonal.py::test_serialization"
+                            "test_normal_full.py::test_serialization"
+                            "test_poisson.py::test_serialization"
+                            "test_student_t.py::test_serialization"
+                            "test_uniform.py::test_serialization"
+                            ;; Arrays are not almost equal to 3 decimals
+                            "test_categorical.py::test_sample"
+                            "test_independent_component.py::test_sample"
+                            "test_joint_categorical.py::test_sample"
+                            "test_joint_categorical.py::test_sample"))
+              #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/"
+                                                    test))
+                      ;; _pickle.UnpicklingError: Weights only load failed.
+                      (list "test_bayes_classifier.py::test_serialization"
+                            "test_gmm.py::test_serialization"
+                            "test_kmeans.py::test_serialization"
+                            ;; Arrays are not almost equal to 3 decimals
+                            "test_bayesian_network.py::test_sample"
+                            "test_gmm.py::test_sample"
+                            "test_markov_chain.py::test_sample"
+                            "test_markov_chain.py::test_sample")))))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-apricot-select
+	   python-networkx
+	   python-numpy
+	   python-scikit-learn
+	   python-scipy
+	   python-pytorch))
+    (home-page "https://pypi.python.org/pypi/pomegranate/")
+    (synopsis "Graphical models library for Python")
+    (description
+     "Pomegranate is a graphical models library for Python, implemented in
+Cython for speed.")
+    (license license:expat)))
+
 (define-public python-pot
   (package
     (name "python-pot")
