@@ -6456,6 +6456,67 @@ Fresnel integrals, and similar related functions as well.")
     ;; public domain software.
     (license (list license:expat license:public-domain))))
 
+(define-public osqp
+  (package
+    (name "osqp")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/osqp/osqp")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15n86mc232m04w8n38fx3pqam4y0swx7hcy4klhch7bk6avk5q04"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DOSQP_BUILD_UNITTESTS=ON"
+              "-DOSQP_BUILD_SHARED_LIB=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-qdldl-source-location
+            (lambda _
+              (substitute* "algebra/_common/lin_sys/qdldl/qdldl.cmake"
+                (("Fetching/configuring QDLDL solver")
+                 (format #f "Adding/configuring QDLDL solver from: ~a"
+                         #$(package-source
+                            (this-package-native-input "qdldl"))))
+                (("GIT_REPOSITORY https://github.com/osqp/qdldl\\.git")
+                 (format #f "SOURCE_DIR ~a"
+                         #$(package-source
+                            (this-package-native-input "qdldl"))))
+                (("GIT_TAG v0.1.8")
+                 ""))))
+          (add-after 'unpack 'fix-catch2-source-location
+            (lambda _
+              (substitute* "tests/CMakeLists.txt"
+                (("GIT_REPOSITORY https://github.com/catchorg/Catch2\\.git")
+                 (format #f "SOURCE_DIR ~a"
+                         #$(package-source
+                            (this-package-native-input "catch2"))))
+                (("GIT_TAG v2.13.6")
+                 "")))))))
+    (native-inputs
+     (list catch2
+           python-wrapper ;You need python installed to generate unittests.
+           python-numpy   ;You need numpy ...
+           python-scipy   ;You need scipy ...
+           qdldl))
+    (home-page "https://osqp.org/")
+    (synopsis "Operator Splitting QP Solver")
+    (description
+     "The OSQP (Operator Splitting Quadratic Program) solver is a numerical
+optimization package for solving convex quadratic programs.
+
+It uses a custom ADMM-based first-order method requiring only a single matrix
+factorization in the setup phase. All the other operations are extremely
+cheap. It also implements custom sparse linear algebra routines exploiting
+structures in the problem data.")
+    (license license:asl2.0)))
+
 (define %suitesparse-package-versions
   '(("AMD" . "3.3.3")
     ("BTF" . "2.3.2")
