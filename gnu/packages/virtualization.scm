@@ -3657,7 +3657,7 @@ hive as XML.")
 (define-public libguestfs-minimal
   (package
     (name "libguestfs-minimal")
-    (version "1.54.1")
+    (version "1.56.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.libguestfs.org/"
@@ -3665,7 +3665,7 @@ hive as XML.")
                                   "-stable/libguestfs-" version ".tar.gz"))
               (sha256
                (base32
-                "0zhp59hczy2k5zm8hzzsimd3svd36sxn39a052ygfx9636nccgvf"))
+                "16k8064zgmrh2xclax3j3yr69pd6jla4jb7f7hhpj2syg4d8ji5v"))
               (patches
                (search-patches "libguestfs-syms.patch"))))
     (build-system gnu-build-system)
@@ -3766,7 +3766,7 @@ hive as XML.")
     (inputs
      (list file
            fuse
-           jansson
+           json-c
            hivex
            libtirpc
            pcre2
