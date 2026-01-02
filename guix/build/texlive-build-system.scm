@@ -2,7 +2,7 @@
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Thiago Jung Bauermann <bauermann@kolabnow.com>
-;;; Copyright © 2023-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2023-2026 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -105,7 +105,7 @@ generation also needs to be wrapped within a `faketime' call in the
   ;; Default TEXMFVAR value is relative to $HOME, which is not set during
   ;; build.  This location is used for generating font metrics or building
   ;; documentation.
-  (setenv "TEXMFVAR" (string-append (getcwd) "/texmf-var"))
+  (setenv "TEXMFVAR" (or (getenv "TMPDIR") "/tmp"))
   ;; By default, a "ls-R" file must exist in TEXMFDIST.  However, it isn't
   ;; generated in the TeX Live tree used to build a package.  Consequently,
   ;; relax this requirement.
