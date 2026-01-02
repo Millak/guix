@@ -20,6 +20,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages nettle)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix licenses)
   #:use-module (guix packages)
@@ -30,10 +31,6 @@
   #:use-module (gnu packages m4))
 
 (define-public nettle
-  ;; FIXME: The "cons" in #:configure-flags is a left-over from uninheriting
-  ;; to avoid changing the derivation; it should be removed and the package
-  ;; be modernized to use gexps the next time the package definition is
-  ;; modified.
   (package
     (name "nettle")
     (version "3.10.1")
@@ -46,33 +43,31 @@
                 "0cli5lkr7h9vxrz3j9kylnsdbw2ag6x8bpgivj06xsndq1zxvz5h"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (cons "--enable-fat"
-       ;; 'sexp-conv' and other programs need to have their RUNPATH point to
-       ;; $libdir, which is not the case by default.  Work around it.
-             (list (string-append "LDFLAGS=-Wl,-rpath="
-                                  (assoc-ref %outputs "out")
-                                  "/lib")))
-       #:phases (modify-phases %standard-phases
-                  (add-after 'install 'move-static-libraries
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out"))
-                            (slib (string-append (assoc-ref outputs "static")
-                                                 "/lib")))
-                        (mkdir-p slib)
-                        (with-directory-excursion (string-append out "/lib")
-                          (for-each (lambda (ar)
-                                      (rename-file ar (string-append
-                                                       slib "/"
-                                                       (basename ar))))
-                                    (find-files
-                                     "."
-                                     ,(if (target-mingw?)
-                                          '(lambda (filename _)
-                                             (and (string-suffix? ".a" filename)
-                                                  (not (string-suffix? ".dll.a" filename))))
-                                          "\\.a$"))))
-                        #t))))))
+     (list
+      #:configure-flags
+      #~(list "--enable-fat"
+              ;; 'sexp-conv' and other programs need to have their RUNPATH
+              ;; point to $libdir, which is not the case by default.  Work
+              ;; around it.
+              (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'move-static-libraries
+            (lambda _
+              (mkdir-p (string-append #$output:static "/lib"))
+              (with-directory-excursion (string-append #$output "/lib")
+                (for-each
+                 (lambda (ar)
+                   (rename-file
+                    ar
+                    (string-append #$output:static "/lib/" (basename ar))))
+                 (find-files
+                  "."
+                  #$(if (target-mingw?)
+                        '(lambda (filename _)
+                           (and (string-suffix? ".a" filename)
+                                (not (string-suffix? ".dll.a" filename))))
+                        "\\.a$")))))))))
     (outputs '("out" "debug" "static"))
     (native-inputs (list m4))
     (propagated-inputs (list gmp))
