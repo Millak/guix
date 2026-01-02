@@ -73,6 +73,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web))
@@ -133,9 +134,25 @@
               (when tests?
                 (invoke (string-append #$output "/bin/parallel")
                         "echo"
-                        ":::" "1" "2" "3")))))))
+                        ":::" "1" "2" "3"))))
+          (add-after 'post-install-test 'replace-texi-files
+            (lambda _
+              ;; Build info files.
+              (for-each
+               (lambda (file)
+                 (let ((info-file
+                        (string-append (car (string-split file #\.)) ".info")))
+                   (invoke "makeinfo" "--no-split" "-o" info-file file)
+                   (install-file info-file
+                                 (string-append #$output:doc "/share/info"))))
+               (find-files "src" "\\.texi$"))
+              ;; Remove texi files.
+              (for-each
+               delete-file
+               (find-files (string-append #$output:doc "/share/doc/parallel")
+                           "\\.texi$")))))))
     (native-inputs
-     (list perl pod2pdf))
+     (list perl pod2pdf texinfo))
     (inputs
      (list bash-minimal perl procps))
     (home-page "https://www.gnu.org/software/parallel/")
