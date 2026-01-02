@@ -5252,19 +5252,25 @@ Actions for the Lightning suite of libraries.")
 (define-public python-captum
   (package
     (name "python-captum")
-    (version "0.8.0")
+    ;; The latest commit provides compatability with NumPy 2.
+    (properties '((commit . "4fade3af8dc398c1f96b193c969565aad23aedf5")
+                  (revision . "0")))
+    (version (git-version "0.8.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/pytorch/captum")
-                    (commit (string-append "v" version))))
+                    (commit (assoc-ref properties 'commit))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "066sal7hzpk9gsb6pk61sa9x01ckjbjb2mc8c69nc7aghqqrpqjs"))))
+                "1v1di9kk2xinwwcll5q514fn9r6ivj3zzgg6l5h7dwlsn2vymsnd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 17 failed, 1368 passed, 75 skipped, 3 deselected, 542 warnings
       #:test-flags
       #~(list "-k" (string-append
                     ;; These two tests (out of more than 1000 tests) fail
@@ -5286,7 +5292,9 @@ Actions for the Lightning suite of libraries.")
      (list python-matplotlib
            python-numpy
            python-pytorch
-           python-tqdm))
+           python-tqdm
+           ;; [optional]
+           python-openai))
     (home-page "https://captum.ai")
     (synopsis "Model interpretability for PyTorch")
     (description "Captum is a model interpretability and understanding library
