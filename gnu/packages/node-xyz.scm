@@ -3182,6 +3182,53 @@ both @file{stderr} and to a timestamped file.")
 exits.")
     (license license:isc)))
 
+(define-public node-smart-buffer
+  (package
+    (name "node-smart-buffer")
+    (version "4.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JoshGlazebrook/smart-buffer")
+             ;; No git tag for 4.2.0; commit found via:
+             ;; curl -s 'https://api.github.com/repos/JoshGlazebrook/smart-buffer/commits?path=package.json' \
+             ;;   | jq '.[] | select(.commit.message == "4.2.0")'
+             (commit "2ce01c95312343325997b19e52daa166dc227930")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "064z6b0xlc8mvnlj8fmi0zq2wk8xah96aiabarq9igsc4hijmcgm"))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-dependencies 'delete-dev-dependencies
+            (lambda _
+              (modify-json (delete-dev-dependencies))))
+          (replace 'build
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (let ((esbuild (search-input-file (or native-inputs inputs)
+                                                "/bin/esbuild")))
+                (mkdir-p "build")
+                (for-each
+                 (lambda (ts-file)
+                   (let* ((base (basename ts-file ".ts"))
+                          (js-file (string-append "build/" base ".js")))
+                     (invoke esbuild ts-file
+                             (string-append "--outfile=" js-file)
+                             "--format=cjs"
+                             "--platform=node"
+                             "--target=es2020")))
+                 (find-files "src" "\\.ts$"))))))))
+    (native-inputs (list esbuild))
+    (home-page "https://github.com/JoshGlazebrook/smart-buffer")
+    (synopsis "Buffer wrapper with automatic read/write offset management")
+    (description "This package provides a smarter Buffer that keeps track of
+its own read and write offsets.")
+    (license license:expat)))
+
 (define-public node-serialport
   (package
     (name "node-serialport")
