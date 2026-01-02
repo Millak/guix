@@ -1363,6 +1363,34 @@ suitable for use with the @code{fs} module functions.")
 buffer, or array.  Useful for getting the result of a stream.")
     (license license:expat)))
 
+(define-public node-graceful-fs
+  (package
+    (name "node-graceful-fs")
+    (version "4.2.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/isaacs/node-graceful-fs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18al1wpdmpi92yvifa3q1vga3szndfd84fqlakh9abn8bfsqxkp8"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies)))))))
+    (home-page "https://github.com/isaacs/node-graceful-fs")
+    (synopsis "Drop-in replacement for fs with various improvements")
+    (description "This package provides a drop-in replacement for the fs
+module that makes various improvements, including queueing operations,
+retrying EMFILE errors, and working around various platform quirks.")
+    (license license:isc)))
+
 (define-public node-global-gradle-clean
   (package
     (name "node-global-gradle-clean")
