@@ -874,7 +874,7 @@ need OpenSSH binaries to be installed.")
 (define-public python-sshfs
   (package
     (name "python-sshfs")
-    (version "2025.10.0")
+    (version "2025.11.0")
     (source
      (origin
        (method git-fetch)
@@ -883,7 +883,7 @@ need OpenSSH binaries to be installed.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cdq4wpx68k9bcrns2p2jr3f3rg8hck8588rnw6yn5rsfdlvyvr0"))))
+        (base32 "1igcjjsaa2x4zbdwzrybv077kghjair3ighs9jdmgsa7wj66pcaf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
