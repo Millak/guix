@@ -2070,6 +2070,35 @@ random number generator.")
 on mime-db.")
     (license license:expat)))
 
+(define-public node-minimatch-3
+  (package
+    (name "node-minimatch")
+    (version "3.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/isaacs/minimatch")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g6w4nn8vx38j4ka5hlphhp505dxyr6dv7g99kfzrjrlnlh7vjbr"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies)))))))
+    (inputs
+     (list node-brace-expansion-1))
+    (home-page "https://github.com/isaacs/minimatch")
+    (synopsis "Glob matcher for JavaScript")
+    (description "This package provides a minimal matching utility for
+JavaScript.")
+    (license license:isc)))
+
 (define-public node-minimatch
   (package
     (name "node-minimatch")
