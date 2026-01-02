@@ -2997,6 +2997,33 @@ Example
 resolve all imports.")
     (license license:expat)))
 
+(define-public node-retry
+  (package
+    (name "node-retry")
+    (version "0.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tim-kos/node-retry")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qkcbmmysm1d4g8xb425c3hcvlkkgfzv4w2jgq9isimximqqm5qg"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies)))))))
+    (home-page "https://github.com/tim-kos/node-retry")
+    (synopsis "Retry strategies for failed operations in Node.js")
+    (description "This package provides retry strategies for retrying failed
+operations.")
+    (license license:expat)))
+
 (define-public node-safe-buffer
   (package
     (name "node-safe-buffer")
