@@ -1047,6 +1047,33 @@ when a readable/writable/duplex stream has completed or failed.")
 in a string for use in a regular expression.")
     (license license:expat)))
 
+(define-public node-extract-zip
+  (package
+    (name "node-extract-zip")
+    (version "2.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/maxogden/extract-zip")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1nksca10cn7cv8ykhqxy2mdimpna1kvf6pqs9pdq3p1z4s7xbm27"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'patch-dependencies 'delete-dev-dependencies
+                    (lambda _
+                      (modify-json (delete-dev-dependencies)))))))
+    (inputs (list node-debug node-get-stream node-yauzl))
+    (home-page "https://github.com/maxogden/extract-zip")
+    (synopsis "Unzip written in pure JavaScript")
+    (description "This package provides a cross-platform extraction utility
+for ZIP files, written entirely in JavaScript for Node.js.")
+    (license license:bsd-2)))
+
 (define-public node-far
   (package
     (name "node-far")
