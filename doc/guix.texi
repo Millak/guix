@@ -31878,12 +31878,12 @@ services:
 @subsubheading Jami
 
 @defvar jami-service-type
-The service type for running Jami as a service.  It takes a
-@code{jami-configuration} object as a value, documented below.  This
-section describes how to configure a Jami server that can be used to
-host video (or audio) conferences, among other uses.  The following
-example demonstrates how to specify Jami account archives (backups) to
-be provisioned automatically:
+The service type for running @uref{https://jami.net/, Jami} as a
+service.  It takes a @code{jami-configuration} object as a value,
+documented below.  This section describes how to configure a Jami server
+that can be used to host video (or audio) conferences, among other uses.
+The following example demonstrates how to specify Jami account archives
+(backups) to be provisioned automatically:
 
 @lisp
 (service jami-service-type
