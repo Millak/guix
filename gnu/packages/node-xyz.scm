@@ -2643,6 +2643,27 @@ It supports lazy decoding and detailed customization of the reading/writing
 code.")
     (license license:bsd-3)))
 
+(define-public node-pend
+  (package
+    (name "node-pend")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/andrewrk/node-pend")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0fy6x7safc0hwmfnic0yqqs2ak8ckmr1hk8pl30f03angy0qkwnx"))))
+    (build-system node-build-system)
+    (arguments '(#:tests? #f))
+    (home-page "https://github.com/andrewrk/node-pend")
+    (synopsis "Dead-simple optimistic async helper")
+    (description "This package provides an async helper for Node.js that
+manages pending callbacks and signals completion when all have finished.")
+    (license license:expat)))
+
 (define-public node-picocolors
   (package
     (name "node-picocolors")
