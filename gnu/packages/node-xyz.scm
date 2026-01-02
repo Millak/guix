@@ -944,6 +944,33 @@ text differences, similar to Unix diff.")
 environment variables from a @code{.env} file into @code{process.env}.")
     (license license:bsd-2)))
 
+(define-public node-end-of-stream
+  (package
+    (name "node-end-of-stream")
+    (version "1.4.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mafintosh/end-of-stream")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0241fxmc30hzxcidyvkd0bylsdcq20nf9yy6v5cgiwp9xq7bpc3a"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'patch-dependencies 'delete-dev-dependencies
+                    (lambda _
+                      (modify-json (delete-dev-dependencies)))))))
+    (inputs (list node-once))
+    (home-page "https://github.com/mafintosh/end-of-stream")
+    (synopsis "Call a callback when a stream has finished or errored")
+    (description "This package provides a way so that a callback is called
+when a readable/writable/duplex stream has completed or failed.")
+    (license license:expat)))
+
 (define-public node-env-variable
   (package
     (name "node-env-variable")
