@@ -1879,6 +1879,35 @@ Uses fs.stat.")
 running inside a Docker container.")
     (license license:expat)))
 
+(define-public node-is-wsl
+  (package
+    (name "node-is-wsl")
+    (version "2.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sindresorhus/is-wsl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gn5yfg4mwbphfnwqnsxwcfarb2jfgy6ib3hyp5b83wy3dqb04b5"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-dependencies 'delete-dev-dependencies
+           (lambda _
+             (modify-json (delete-dev-dependencies)))))))
+    (inputs
+     (list node-is-docker))
+    (home-page "https://github.com/sindresorhus/is-wsl")
+    (synopsis "Check if the process is running inside Windows Subsystem for Linux")
+    (description "This package provides a way to check if the process is
+running inside Windows Subsystem for Linux.")
+    (license license:expat)))
+
 (define-public node-long-stack-traces
   (package
     (name "node-long-stack-traces")
