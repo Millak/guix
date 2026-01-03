@@ -9637,6 +9637,35 @@ science instruments plus the fine guidance sensor, including both direct
 imaging, coronagraphic, and spectroscopic modes.")
     (license license:bsd-3)))
 
+(define-public python-stregion
+  (package
+    (name "python-stregion")
+    (version "1.1.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stregion" version))
+       (sha256
+        (base32 "0clcv76x8pj61dvyh9pa6gp3kskc9g11i1fi559ax2qa2pgqhh1n"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; AttributeError: module 'astropy.io.fits' has no attribute 'CardList'
+     ;; AttributeError: 'WCS' object has no attribute 'wcs_pix2sky'
+     (list #:tests? #f)) ;depends on deprecated Astropy functions
+    (native-inputs
+     (list python-cython
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-numpy
+           python-pyparsing))
+    (home-page "https://github.com/spacetelescope/stregion")
+    (synopsis "Python parser for DS9 region files")
+    (description
+     "This package implements a functionality to parse
+@url{https://github.com/SAOImageDS9/SAOImageDS9, DS9} region files.")
+    (license license:expat)))
+
 (define-public python-stsci-image
   (package
     (name "python-stsci-image")
