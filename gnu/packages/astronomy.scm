@@ -8758,45 +8758,42 @@ framework of lens modelling software lenstronomy.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 83 passed, 4 skipped, 19 deselected
       #:test-flags
-      #~(list
-         ;; 23/27 tests fail requiring network access, ignore the whole file.
-         "--ignore=sncosmo/tests/test_builtins.py"
-         "-k" (string-join
-               ;; Tests require network access.
-               (list "not test_C11"
-                     "test_G10"
-                     "test_bandflux"
-                     "test_bandflux_multi"
-                     "test_bandflux_zpsys"
-                     "test_bandfluxcov"
-                     "test_bandmag"
-                     "test_compositemagsystem_band_error"
-                     "test_csp_magsystem"
-                     "test_megacampsf_bandpass"
-                     "test_salt2source_rcov_vs_snfit"
-                     "test_salt2source_timeseries_vs_snfit"
-                     "test_sugarsource"
-                     "test_ztf_bandpass")
-               " and not "))
+      ;; Network access is required.
+      #~(list "--ignore=tests/test_download_builtins.py"
+              "--ignore=tests/test_builtins.py"
+              "-k" (string-join
+                    (list "not test_C11"
+                          "test_G10"
+                          "test_bandflux"
+                          "test_bandflux_multi"
+                          "test_bandflux_zpsys"
+                          "test_bandfluxcov"
+                          "test_bandmag"
+                          "test_compositemagsystem_band_error"
+                          "test_csp_magsystem"
+                          "test_fit_lc_vs_snfit"
+                          "test_megacampsf_bandpass"
+                          "test_salt2source_rcov_vs_snfit"
+                          "test_salt2source_timeseries_vs_snfit"
+                          "test_sugarsource"
+                          "test_ztf_bandpass")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.cfg"
-               ;; h5py>=3.11
-               (("3.11") "3.8.0"))))
-          (add-before 'check 'prepare-test-environment
+          (add-before 'check 'pre-check
             (lambda _
               (setenv "HOME" "/tmp")
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+              (copy-recursively "sncosmo/tests" "tests")
+              (delete-file-recursively "sncosmo" ))))))
     (native-inputs
-     (list ;; python-iminuit ; not packed, optional
+     (list python-iminuit
            python-cython
            python-pytest
+           python-pytest-xdist
            python-pytest-astropy
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-astropy
            python-extinction
