@@ -652,35 +652,39 @@ decrypt messages using the OpenPGP format by making use of GPGME.")
 (define-public python-gnupg
   (package
     (name "python-gnupg")
-    (version "0.5.0")
+    (version "0.5.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python-gnupg" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/vsajip/python-gnupg/")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ali2zz6k568yzhdgzm8f14v6s5ymihlyffbvfxc9q60gww8wxbh"))))
+         "0p5ijy8fqc84hcjr2np977v784y07b60l53wffwb7znyx570ip6f"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (substitute* "test_gnupg.py"
-                 ;; Unsure why this test fails.
-                 (("'test_search_keys'") "True")
-                 (("def test_search_keys") "def disabled__search_keys"))
-               (setenv "USERNAME" "guixbuilder")
-               ;; The doctests are extremely slow and sometimes time out,
-               ;; so we disable them.
-               (invoke "python" "test_gnupg.py" "--no-doctests")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (substitute* "test_gnupg.py"
+                  ;; Unsure why this test fails.
+                  (("'test_search_keys'") "True")
+                  (("def test_search_keys") "def disabled__search_keys"))
+                (setenv "USERNAME" "guixbuilder")
+                ;; The doctests are extremely slow and sometimes time out,
+                ;; so we disable them.
+                (invoke "python" "test_gnupg.py" "--no-doctests")))))))
     (native-inputs
-     (list gnupg python-setuptools python-wheel))
-    (home-page "https://pythonhosted.org/python-gnupg/index.html")
+     (list gnupg python-setuptools))
+    (home-page "https://docs.red-dove.com/python-gnupg/")
     (synopsis "Wrapper for the GNU Privacy Guard")
     (description
-      "This module allows easy access to GnuPG’s key management, encryption
+     "This module allows easy access to GnuPG’s key management, encryption
 and signature functionality from Python programs.")
     (license license:bsd-3)))
 
