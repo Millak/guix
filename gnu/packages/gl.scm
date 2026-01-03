@@ -1445,7 +1445,7 @@ original glmark benchmark by Ben Smith.")
                         (,(getenv "GUIX_PYTHONPATH")))))))))
      (inputs (list guile-3.0            ; for wrap-script
                    libxkbcommon
-                   python python-lxml python-mako python-numpy
+                   python python-lxml python-mako python-numpy-1
                    glslang vulkan-headers vulkan-loader
                    waffle))
      (native-inputs (list pkg-config))
