@@ -321,36 +321,92 @@ CTranslate2, which is a inference engine for transformer models.")
 (define-public python-funsor
   (package
     (name "python-funsor")
-    (version "0.4.5")
+    (version "0.4.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "funsor" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pyro-ppl/funsor")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0cgysij0dix0fikyz2x4f8jvaskm5s5a04s07chzaz2dw1fpxdq8"))))
+        (base32 "17ys6qbrg2alv6sz9q140gfm2jh4m5417hya7z087jplljqzbf1y"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 7636 passed, 3859 skipped, 2 deselected, 69 xfailed, 2 xpassed
+      ;; tests: 7665 passed, 3949 skipped, 71 xfailed, 2 xpassed, 8 warnings
       #:test-flags
-      '(list "-k"
-             (string-append
-              ;; Disable flaky test
-              "not test_integrate_variable[x23-i]"
-              ;; XXX This test fails because the length of arguments
-              ;; is longer than the length of inputs.
-              " and not test_function_of_numeric_array"))))
-    (propagated-inputs (list python-makefun python-multipledispatch
-                             python-numpy python-opt-einsum
-                             python-typing-extensions))
-    (native-inputs (list python-pandas
-                         python-pillow
-                         python-pyro-api
-                         python-pytest
-                         python-requests
-                         python-scipy
-                         python-setuptools
-                         python-torchvision))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; XXX: The project has no updates since 2023 and probably not
+              ;; compatible with current Python science stack (NumPy, SciPy,
+              ;; Pandas...).
+              ;; 
+              ;; See open issues:
+              ;; <https://github.com/pyro-ppl/funsor/issues/609>
+              ;; <https://github.com/pyro-ppl/funsor/pull/610>
+              ;; 
+              ;; TypeError: argument of type 'property' is not iterable
+              "--ignore=test/examples/test_sensor_fusion.py"
+              "--ignore=test/torch/test_provenance.py"
+              ;; The most of the tests fail with error: ValueError: Cannot
+              ;; convert to Funsor: tensor..
+              #$@(map (lambda (test) (string-append "--deselect=test/"
+                                                    test))
+                      (list "pyro/test_convert.py::test_dist_to_funsor_bernoulli"
+                            "pyro/test_convert.py::test_dist_to_funsor_categorical"
+                            "pyro/test_convert.py::test_dist_to_funsor_independent"
+                            "pyro/test_convert.py::test_dist_to_funsor_masked"
+                            "pyro/test_convert.py::test_dist_to_funsor_mvn"
+                            "pyro/test_convert.py::test_dist_to_funsor_normal"
+                            "pyro/test_convert.py::test_funsor_to_cat_and_mvn"
+                            "pyro/test_convert.py::test_funsor_to_mvn"
+                            "pyro/test_convert.py::test_matrix_and_mvn_to_funsor"
+                            "pyro/test_convert.py::test_matrix_and_mvn_to_funsor_diag"
+                            "pyro/test_convert.py::test_mvn_to_funsor"
+                            "pyro/test_convert.py::test_tensor_funsor_tensor"
+                            "pyro/test_distribution.py::test_categorical_log_prob"
+                            "pyro/test_distribution.py::test_categorical_sample"
+                            "pyro/test_hmm.py::test_discrete_categorical_log_prob"
+                            "pyro/test_hmm.py::test_discrete_diag_normal_log_prob"
+                            "pyro/test_hmm.py::test_discrete_mvn_log_prob"
+                            "pyro/test_hmm.py::test_discrete_normal_log_prob"
+                            "pyro/test_hmm.py::test_gaussian_hmm_log_prob"
+                            "pyro/test_hmm.py::test_gaussian_hmm_log_prob_null_dynamics"
+                            "pyro/test_hmm.py::test_gaussian_mrf_log_prob"
+                            "pyro/test_hmm.py::test_switching_linear_hmm_log_prob"
+                            "pyro/test_hmm.py::test_switching_linear_hmm_log_prob_alternating"
+                            "pyro/test_hmm.py::test_switching_linear_hmm_shape"
+                            "pyroapi/test_pyroapi.py::test_generate_data"
+                            "pyroapi/test_pyroapi.py::test_generate_data_plate"
+                            "pyroapi/test_pyroapi.py::test_local_param_ok"
+                            "pyroapi/test_pyroapi.py::test_mean_field_ok"
+                            "pyroapi/test_pyroapi.py::test_nested_plate_plate_ok"
+                            "pyroapi/test_pyroapi.py::test_nonempty_model_empty_guide_ok"
+                            "pyroapi/test_pyroapi.py::test_optimizer"
+                            "pyroapi/test_pyroapi.py::test_plate_ok"
+                            "test_tensor.py::test_function_of_numeric_array")))))
+    (native-inputs
+     (list python-pandas
+           python-pillow
+           python-pyro-api
+           python-pytest
+           python-pytest-xdist
+           python-requests
+           python-scipy
+           python-setuptools
+           python-torchvision))
+    (propagated-inputs
+     (list python-makefun
+           python-multipledispatch
+           python-numpy-1
+           python-opt-einsum
+           python-typing-extensions
+           ;; [optional]
+           ;; python-jax
+           ;; python-jaxlib
+           ;; python-numpyro
+           python-pyro-ppl
+           python-pytorch))
     (home-page "https://github.com/pyro-ppl/funsor")
     (synopsis "Tensor-like library for functions and distributions")
     (description
