@@ -21068,20 +21068,25 @@ polymorphisms) and indels with respect to a reference genome and more.")
 (define-public cnvkit
   (package
     (name "cnvkit")
-    (version "0.9.12")
+    ;; XXX: Compatability with NumPy 2 and Pomegranate 1.
+    (properties '((commit . "52f367bd0edbf55cabaaa2fbcf68c8742dc97b4c")
+                  (revision . "0")))
+    (version (git-version "0.9.12"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/etal/cnvkit")
-              (commit (string-append "v" version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "090yh17symcahddx399kcx0mcw4gdrcc2jil3p8lb92r8c8kglb5"))))
+        (base32 "0kr5r2nvvlip6mylwczck7ddn31l2xh9aal1xjzx036h71agrv27"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 70 passed, 1 warning
+      ;; tests: 70 passed, 211 warnings
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-pytest-config
@@ -21103,7 +21108,7 @@ polymorphisms) and indels with respect to a reference genome and more.")
            ;; R packages
            r-dnacopy))
     (inputs (list r-minimal)) ;for tests
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://cnvkit.readthedocs.org/")
     (synopsis "Copy number variant detection from targeted DNA sequencing")
     (description
