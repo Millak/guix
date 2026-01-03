@@ -2150,6 +2150,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/podofo-gcc-14.patch			\
   %D%/packages/patches/pounce-readable-checks.patch             \
   %D%/packages/patches/ppsspp-disable-upgrade-and-gold.patch		\
+  %D%/packages/patches/premake5-bootstrap.patch                 \
   %D%/packages/patches/procps-strtod-test.patch                 \
   %D%/packages/patches/proftpd-dont-create-localstatedir.patch	\
   %D%/packages/patches/proftpd-dont-install-user.patch	\

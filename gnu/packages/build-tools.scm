@@ -58,6 +58,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages cppi)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages gcc)
@@ -744,12 +745,25 @@ other lower-level build files.")
                      (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32
-                "1rzicjs27cq1q0d42gzdwwlwnx5agyfi2nqshg3npmx5zy8zxadh"))))
+               (base32 "1rzicjs27cq1q0d42gzdwwlwnx5agyfi2nqshg3npmx5zy8zxadh"))
+              (patches (search-patches "premake5-bootstrap.patch"))
+              (modules '((guix build utils)))
+              ;; host/debug_prompt.c includes lua.c.
+              (snippet #~(delete-all-but "contrib" "lua" "luashim"))))
     (arguments
      (substitute-keyword-arguments arguments
+       ((#:configure-flags _ #~'())
+        #~'("--lib-src=system"))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
+            (add-after 'unpack 'patch-bundled-headers
+              (lambda _
+                (substitute* '("src/host/premake.h" "src/host/curl_utils.h")
+                  (("lua5\\.3/") ""))
+                (substitute* "premake5.lua"
+                  (("lua5\\.3") "lua"))
+                (substitute* '"src/host/zip_extract.c"
+                  (("\"zip.h\"") "<zip.h>"))))
             (add-after 'unpack 'patch-builtin-uuidgen
               ;; Use built-in UUID generation
               (lambda _
@@ -778,6 +792,7 @@ other lower-level build files.")
                 (install-file "../../bin/release/premake5"
                               (string-append #$output "/bin"))))))))
     (native-inputs '())
+    (inputs (list curl lua-5.3 libzip zlib))
     (description "@code{premake5} is a command line utility that reads a
 scripted definition of a software project and outputs @file{Makefile}s or
 other lower-level build files.")))
