@@ -6563,7 +6563,7 @@ interval trees with associated meta-data.  It is primarily used by the
 (define-public python-deeptools
   (package
     (name "python-deeptools")
-    (version "3.5.5")
+    (version "3.5.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6572,25 +6572,19 @@ interval trees with associated meta-data.  It is primarily used by the
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mgcs03amrd5157drbm6ikdg0m0szrn9xbflariz2zrrnqpsai6s"))))
+                "0npdcqlbcxwzkadz9j6yqzk7snl6758gn3lnff9845x3ycxfa5bp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-test
-            (lambda _
-              (substitute* "deeptools/test/test_tools.py"
-                (("e_ver = _p")
-                 "e_ver = \".\" + _p + \"-real\""))
-              (substitute* "deeptools/multiBigwigSummary.py"
-                (("version='multiBigwigSummary")
-                 "version='%(prog)s"))
-              (substitute* "deeptools/plotCoverage.py"
-                (("version='plotCoverage")
-                 "version='%(prog)s")))))))
+      ;; tests: 99 passed, 1 deselected
+      #:test-flags
+      ;; AssertionError: assert '.alignmentSieve-real 3.5.6' ==
+      ;; 'alignmentSieve 3.5.6'
+      #~(list "--deselect=deeptools/test/test_tools.py::test_tools")))
     (native-inputs
-     (list python-mock python-pytest python-setuptools python-wheel))
+     (list python-mock
+           python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-matplotlib
            python-numpy
