@@ -4430,32 +4430,44 @@ code to be greatly simplified.")
 (define-public python-drizzlepac
   (package
     (name "python-drizzlepac")
-    (version "3.7.1") ; higher versions require NumPy 2+
+    ;; 3.10.0 requires astrocut<0.9.
+    (properties '((commit . "e01563c48206f02f4cd4c525732764b9b827b3c4")
+                  (revision . "0")))
+    (version (git-version "3.10.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "drizzlepac" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spacetelescope/drizzlepac")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0vb1sxq4hjh9p7gi320k7nwmm7f0dm4i9dn5wl56h30n0m16lp37"))))
+        (base32 "1zcny9mkm7w4mjnrglhq28i59x7a2yj38x773qcl7qsvxd0cjs5b"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; TODO: Tests fail to load with error: E ModuleNotFoundError: No module
       ;; named 'stsci.tools'
       #:tests? #f
-      ;; TODO: Sanity check phase fails a lot on mismatched versions or failed
-      ;; to load "stsci.tools" module.
-      #:phases #~(modify-phases %standard-phases
-                   (delete 'sanity-check))))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; TODO: Sanity check phase fails a lot on mismatched versions or
+          ;; failed to load "stsci.tools" module.
+          (delete 'sanity-check)
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                      #$(version-major+minor+point version)))))))
     (native-inputs
-     (list python-astropy
-           python-ci-watson
+     (list python-ci-watson
            python-crds-minimal
+           python-markupsafe
            python-pytest
            python-pytest-remotedata
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astrocut
            python-astropy
@@ -4463,13 +4475,12 @@ code to be greatly simplified.")
            python-bokeh
            python-fitsblender
            python-lxml
-           python-markupsafe
            python-matplotlib
            python-numpy
            python-pandas
            python-photutils
-           python-pypdf2
-           python-regions
+           python-pypdf
+           python-stregion
            python-requests
            python-scikit-image
            python-scikit-learn
@@ -4482,7 +4493,6 @@ code to be greatly simplified.")
            python-stsci-stimage
            python-stsci-tools
            python-stwcs
-           python-tables
            python-tweakwcs))
     (home-page "https://drizzlepac.readthedocs.io/")
     (synopsis "AstroDrizzle for HST images")
