@@ -80,6 +80,7 @@
 ;;; Copyright © 2025 pinoaffe <pinoaffe@gmail.com>
 ;;; Copyright © 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2025 Igorj Gorjaĉev <igor@goryachev.org>
+;;; Copyright © 2026 Rodion Goritskov <rodion@goritskov.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -393,7 +394,7 @@ one.")
 (define-public miniflux
   (package
     (name "miniflux")
-    (version "2.2.12")
+    (version "2.2.16")
     (source
      (origin
        (method git-fetch)
@@ -402,7 +403,7 @@ one.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nz12an801r9d2da8p6fic9qy4524y7cprfpimw13ac5c4iqvr0d"))))
+        (base32 "02bwrmn7j0dyi6hhc38s73fyqrfz6swp1c9yzp92rzg6hj10b7cq"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -414,6 +415,12 @@ one.")
                #$version))
       #:phases
       #~(modify-phases %standard-phases
+          ;; Skipping test case that is trying to resolve a domain name
+          (add-after 'unpack 'skip-real-domain-resolve-test
+            (lambda _
+              (substitute* "src/miniflux.app/v2/internal/urllib/url_test.go"
+                (("\\{\"example.org\", \"example.org\", false\\},")
+                 "// {\"example.org\", \"example.org\", false},"))))
           (add-after 'install 'install-manpage
             (lambda* (#:key import-path #:allow-other-keys)
               (let ((man1 (string-append #$output "/share/man/man1/"))
