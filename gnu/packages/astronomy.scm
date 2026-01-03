@@ -8586,11 +8586,6 @@ well as ephemerides services
       #:test-flags #~(list "test.py")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; numpy = "^1.26.4"
-                (("1.26.4") "1.26.2"))))
           (add-after 'unpack 'set-version
             (lambda _
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
@@ -8599,8 +8594,7 @@ well as ephemerides services
      (list python-cython
            python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-numpy))
     (synopsis "Python library for Source Extraction and Photometry")))
