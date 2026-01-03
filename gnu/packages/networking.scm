@@ -1626,8 +1626,8 @@ the IETF as @url{https://www.rfc-editor.org/rfc/rfc7252, RFC 7252}.")
 
 (define-public libnatpmp
   ;; Install the latest commit as it provides a pkg-config (.pc) file.
-  (let ((base-version "20230423")
-        (commit "6a850fd2bd9b08e6edc886382a1dbae2a7df55ec")
+  (let ((base-version "20250404")       ;date of last commit
+        (commit "134fc89e2781e154e40042641f4d8bcbe42579f1")
         (revision "0"))
     (package
       (name "libnatpmp")
@@ -1640,7 +1640,7 @@ the IETF as @url{https://www.rfc-editor.org/rfc/rfc7252, RFC 7252}.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "18hf9a3i3mncl3w80nzi1684iac3by86bv0hgmbm1v2w8gbfjyw0"))))
+                  "1cs975a7q1v1mml8yd9x15w0pscq3192d15fpa6mgy1kgh7lzpqd"))))
       (build-system cmake-build-system)
       (arguments
        (list
