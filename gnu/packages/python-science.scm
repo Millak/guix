@@ -1027,8 +1027,8 @@ given to programs dedicated to amplitude analyses.")
 
 (define-public python-deepdish
   ;; XXX: The project may no longer be compatible with the version of NumPy
-  ;; packed in Guix (now 1.24.4), use the latest commit containing fixes.
-  ;; See: <https://github.com/uchicago-cs/deepdish/issues/50>.
+  ;; packed in Guix (now 1.26.4, and 2.3.1), use the latest commit containing
+  ;; fixes.  See: <https://github.com/uchicago-cs/deepdish/issues/50>.
   ;; However, there is a maintained fork that appears to be a good
   ;; replacement: https://github.com/portugueslab/flammkuchen.
   (let ((commit "3f2dff7a03f1b31f6924b665ad5b8c299329c1cd")
@@ -1069,10 +1069,9 @@ import six
       (native-inputs
        (list python-pytest
              python-pandas
-             python-setuptools
-             python-wheel))
+             python-setuptools))
       (propagated-inputs
-       (list python-numpy
+       (list python-numpy-1
              python-scipy
              python-six
              python-tables))
