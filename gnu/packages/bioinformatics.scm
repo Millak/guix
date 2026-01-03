@@ -20191,35 +20191,33 @@ bgzipped text file that contains a pair of genomic coordinates per line.")
 (define-public python-pyfaidx
   (package
     (name "python-pyfaidx")
-    (version "0.7.2.1")
+    (version "0.9.0.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pyfaidx" version))
               (sha256
                (base32
-                "182ia2zg026lgphv68agxm9imw7649z9pdhfn8zkalrxkq5d5w1h"))))
+                "0yaa64n5m4wxc02lxw6j9dzjk65rxdbak21dlvwhdjwdv4l4p2v4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      ;; These tests require the download of large fasta.gz files.
-      '(list "--ignore=tests/test_Fasta_bgzip.py")
+      ;; tests: 107 failed, 54 passed, 8 skipped, 7 xfailed, 14 errors  
+      #:tests? #f ;most of them need remote data
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-version
+          (add-before 'build 'set-version
             (lambda _
-              (substitute* "pyproject.toml"
-                (("dynamic = \\[\"version\"\\]")
-                 (string-append "version = \"" #$version "\""))))))))
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
-     (list (libc-utf8-locales-for-target)         ;tests need "en_US.utf8"
+     (list python-biopython
            python-fsspec
-           python-mock
            python-numpy
+           ;; python-pyfasta
            python-pytest
-           python-pytest-cov
-           python-wheel))
-    (propagated-inputs (list python-setuptools))
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-packaging))
     (home-page "http://mattshirley.com")
     (synopsis "Random access to fasta subsequences")
     (description
