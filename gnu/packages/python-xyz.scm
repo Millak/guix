@@ -64,7 +64,7 @@
 ;;; Copyright © 2019, 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019, 2020, 2021, 2022, 2023 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019 Jacob MacDonald <jaccarmac@gmail.com>
-;;; Copyright © 2019-2021, 2023, 2024 Giacomo Leidi <therewasa@fishinthecalculator.me>
+;;; Copyright © 2019-2021, 2023, 2024, 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2019 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2019, 2020, 2021, 2022 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2019, 2021-2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
@@ -26693,14 +26693,50 @@ interpreter. bpython's main features are
        (sha256
         (base32 "0qfvs1sfvlpfb10rxlivwa96mg0ibczis554s2rx32s11nynzvbk"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;no tests
-    (native-inputs (list python-setuptools))
+    (arguments
+     (list
+      #:tests? #f          ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'drop-shebang
+            (lambda _
+              ;; Dropping this shebang prevents the build system from adding
+              ;; python-wrapper as an input, reducing package closure size from
+              ;; ~200 MiB to ~0.2 MiB.
+              (substitute* "python3/pyinotify.py"
+                (("#!/usr/bin/env python") "")))))))
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/seb-m/pyinotify")
     (synopsis "Python library for monitoring inotify events")
     (description
      "@code{pyinotify} provides a Python interface for monitoring file system
 events on Linux.")
     (license license:expat)))
+
+(define-public python-pyinotify-cli
+  (package
+    (inherit python-pyinotify)
+    (name "python-pyinotify-cli")
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-pyinotify)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (delete 'drop-shebang)
+            (add-after 'install 'install-entrypoint
+              (lambda _
+                (let ((entrypoint
+                       (string-append #$output "/lib/python"
+                                      (python-version (which "python"))
+                                      "/site-packages/pyinotify.py"))
+                      (bin (string-append #$output "/bin")))
+                  (mkdir-p bin)
+                  (invoke "chmod" "+x" entrypoint)
+                  (symlink
+                   entrypoint (string-append #$output "/bin/pyinotify")))))))))
+    (description
+     "This package provides, in addition to the @code{pyinotify} Python library,
+a command line application exposing the same functionality.")))
 
 (define-public python-more-itertools
   (package
