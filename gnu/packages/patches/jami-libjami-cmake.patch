@@ -1,0 +1,127 @@
+Upstream-status: <https://review.jami.net/c/jami-client-qt/+/32711>
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index c046b597..8ee7b16d 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -60,7 +60,6 @@ endif()
+ 
+ if(JAMICORE_AS_SUBDIR)
+   add_subdirectory(${DAEMON_DIR} EXCLUDE_FROM_ALL)
+-  set(LIBJAMI_LIB jami-core)
+ endif()
+ 
+ # init some variables for includes, libs, etc.
+@@ -236,9 +235,6 @@ endif()
+ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/extras/build/cmake/modules)
+ if (NOT JAMICORE_AS_SUBDIR)
+   find_package(LibJami REQUIRED)
+-  if(LIBJAMI_FOUND)
+-    include_directories(${LIBJAMI_INCLUDE_DIR})
+-  endif()
+ endif()
+ 
+ include(FindPython3)
+@@ -751,7 +747,7 @@ if(MSVC)
+     WIN32_EXECUTABLE TRUE)
+ 
+   list(APPEND CLIENT_LIBS
+-    ${LIBJAMI_LIB}
++    LibJami::LibJami
+     ${GNUTLS_LIB}
+     ${LIBCLIENT_NAME}
+     ${QT_LIBS}
+@@ -794,7 +790,8 @@ elseif (NOT APPLE)
+     ${LIBNOTIFY_LIBRARIES}
+     ${LIBGDKPIXBUF_LIBRARIES}
+     ${GLIB_LIBRARIES}
+-    ${GIO_LIBRARIES})
++    ${GIO_LIBRARIES}
++    LibJami::LibJami)
+ 
+   install(
+     TARGETS ${PROJECT_NAME}
+diff --git a/extras/build/cmake/modules/FindLibJami.cmake b/extras/build/cmake/modules/FindLibJami.cmake
+index ee2bf6d9..31ec9c02 100644
+--- a/extras/build/cmake/modules/FindLibJami.cmake
++++ b/extras/build/cmake/modules/FindLibJami.cmake
+@@ -14,17 +14,26 @@
+ # along with this program; if not, write to the Free Software
+ # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.
+ 
+-# Once done, this find module will set:
+-#
+-#   LIBJAMI_INCLUDE_DIR - libjami include directory
+-#   LIBJAMI_FOUND - whether it was able to find the include directories
+-#   LIBJAMI_LIB - path to libjami or libring library
++# Once done, this find module will set the LibJami::LibJami imported
++# target, which references all what is needed (headers, libraries,
++# dependencies).
+ 
+ set(LIBJAMI_FOUND true)
+ 
+ if(WITH_DAEMON_SUBMODULE)
+   set(LIBJAMI_INCLUDE_DIR ${DAEMON_DIR}/src/jami)
+ else()
++  # Preferably find libjami via pkg-config.
++  find_package(PkgConfig QUIET)
++  if(PKG_CONFIG_FOUND)
++    pkg_check_modules(LIBJAMI QUIET IMPORTED_TARGET jami)
++    if(LIBJAMI_FOUND)
++      add_library(LibJami::LibJami ALIAS PkgConfig::LIBJAMI)
++      message(STATUS "Found LibJami via pkg-config")
++      return()
++    endif()
++  endif()
++
+   find_path(LIBJAMI_INCLUDE_DIR jami.h PATH_SUFFIXES jami)
+   if(NOT LIBJAMI_INCLUDE_DIR)
+     message(STATUS "Jami daemon headers not found!
+@@ -109,5 +118,15 @@ endif()
+ # Restore the original value of CMAKE_FIND_LIBRARY_SUFFIXES.
+ set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES_orig})
+ 
++# Assemble a CMake imported target with the above information gathered
++# by other means than pkg-config.
++if(LIBJAMI_FOUND AND LIBJAMI_LIB AND LIBJAMI_INCLUDE_DIR)
++  add_library(LibJami::LibJami UNKNOWN IMPORTED)
++  set_target_properties(LibJami::LibJami PROPERTIES
++    IMPORTED_LOCATION "${LIBJAMI_LIB}"
++    INTERFACE_INCLUDE_DIRECTORIES "${LIBJAMI_INCLUDE_DIR}"
++  )
++endif()
++
+ message(STATUS "Jami daemon headers are in " ${LIBJAMI_INCLUDE_DIR})
+ message(STATUS "Jami daemon library is at " ${LIBJAMI_LIB})
+diff --git a/src/libclient/CMakeLists.txt b/src/libclient/CMakeLists.txt
+index 5c35e402..94d77523 100644
+--- a/src/libclient/CMakeLists.txt
++++ b/src/libclient/CMakeLists.txt
+@@ -47,9 +47,6 @@ endif()
+ set(CMAKE_MODULE_PATH
+   ${CMAKE_MODULE_PATH} "${EXTRAS_DIR}/build/cmake/modules")
+ find_package(LibJami REQUIRED)
+-if(LIBJAMI_FOUND)
+-  include_directories(${LIBJAMI_INCLUDE_DIR})
+-endif()
+ 
+ string(SUBSTRING ${CMAKE_GENERATOR} 0 14 CMAKE_GENERATOR_SHORT)
+ if(CMAKE_GENERATOR_SHORT MATCHES "Visual Studio ")
+diff --git a/src/libclient/qtwrapper/CMakeLists.txt b/src/libclient/qtwrapper/CMakeLists.txt
+index 761278c9..b4b5a708 100644
+--- a/src/libclient/qtwrapper/CMakeLists.txt
++++ b/src/libclient/qtwrapper/CMakeLists.txt
+@@ -39,7 +39,6 @@ else()
+ endif()
+ 
+ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+-include_directories(${LIBJAMI_INCLUDE_DIR})
+ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../)
+ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../dbus)
+ 
+@@ -49,4 +48,4 @@ add_library(${PROJECT_NAME} STATIC
+ 
+ target_link_libraries(${PROJECT_NAME}
+   Qt::Core
+-  ${LIBJAMI_LIB})
++  LibJami::LibJami)

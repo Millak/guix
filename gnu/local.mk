@@ -19,7 +19,7 @@
 # Copyright © 2018 Amirouche Boubekki <amirouche@hypermove.net>
 # Copyright © 2018, 2019, 2020, 2021, 2022, 2024, 2025 Oleg Pykhalov <go.wigust@gmail.com>
 # Copyright © 2018 Stefan Stefanović <stefanx2ovic@gmail.com>
-# Copyright © 2018, 2020-2025 Maxim Cournoyer <maxim@guixotic.coop>
+# Copyright © 2018, 2020-2026 Maxim Cournoyer <maxim@guixotic.coop>
 # Copyright © 2019, 2020, 2021, 2022, 2024 Guillaume Le Vaillant <glv@posteo.net>
 # Copyright © 2019, 2020 John Soo <jsoo1@asu.edu>
 # Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
@@ -1631,11 +1631,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/irrlicht-link-against-needed-libs.patch	\
   %D%/packages/patches/isl-0.11.1-aarch64-support.patch		\
   %D%/packages/patches/ispell-for-linphone-cmake.patch		\
-  %D%/packages/patches/jami-find-package-avutil.patch		\
-  %D%/packages/patches/jami-libjami-headers-search.patch	\
+  %D%/packages/patches/jami-allow-system-zxing-cpp.patch        \
+  %D%/packages/patches/jami-avutil-link.patch   		\
   %D%/packages/patches/jami-qwindowkit.patch			\
-  %D%/packages/patches/jami-skip-tests-requiring-internet.patch	\
-  %D%/packages/patches/jami-unbundle-dependencies.patch		\
   %D%/packages/patches/jamvm-1.5.1-aarch64-support.patch	\
   %D%/packages/patches/jamvm-1.5.1-armv7-support.patch	\
   %D%/packages/patches/jamvm-2.0.0-aarch64-support.patch	\
@@ -1681,6 +1679,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/libgeotiff-fix-tests-on-i386.patch	\
   %D%/packages/patches/libguestfs-syms.patch            	\
   %D%/packages/patches/libinfinity-renew-test-certificate.patch \
+  %D%/packages/patches/libjami-pkgconf.patch                    \
+  %D%/packages/patches/libjami-simdutf.patch                    \
   %D%/packages/patches/libretro-dolphin-emu-data.patch		\
   %D%/packages/patches/libretro-dolphin-emu-gc-font-tool.patch  \
   %D%/packages/patches/libretro-dolphin-emu-libusb-assert.patch \

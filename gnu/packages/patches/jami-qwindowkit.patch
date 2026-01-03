@@ -1,9 +1,7 @@
-Upstream-status: https://lists.gnu.org/archive/html/jami/2024-03/msg00008.html
-
-This makes it possible to use the system-provided qwindowkit library.
+Upstream-status: <https://review.jami.net/c/jami-client-qt/+/31456>
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 29bfde9a..3b4c7a92 100644
+index c046b597..366758f5 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -101,13 +101,13 @@ endif()
@@ -23,7 +21,7 @@ index 29bfde9a..3b4c7a92 100644
  
  # If ENABLE_CRASHREPORTS is enabled, we will use crashpad_cmake for now.
 diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
-index c5228ccf..816f97a7 100644
+index a1aeb22f..94f558e0 100644
 --- a/tests/CMakeLists.txt
 +++ b/tests/CMakeLists.txt
 @@ -61,7 +61,7 @@ target_include_directories(test_common_obj PRIVATE

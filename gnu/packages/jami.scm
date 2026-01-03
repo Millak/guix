@@ -2,7 +2,7 @@
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2019, 2020 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
-;;; Copyright © 2020-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +26,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages documentation)
@@ -43,6 +44,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
@@ -78,9 +80,9 @@
 
 ;;; When updating Jami, make sure that the patches used for ffmpeg-jami are up
 ;;; to date with those listed in
-;;; <https://review.jami.net/plugins/gitiles/jami-daemon/+/refs/heads/master/contrib/src/ffmpeg/rules.mak>.
-(define %jami-nightly-version "20251003.0")
-(define %jami-daemon-commit "afe2446133eb3c9279e42b0d1dcfdd9a3c76a35f")
+;;; <https://git.jami.net/savoirfairelinux/jami-daemon/-/blob/master/contrib/src/ffmpeg/rules.mak>.
+(define %jami-nightly-version "20251212.0")
+(define %jami-daemon-commit "663dc3f7b625abcd05e516d819c70fd883a3c9f2")
 
 (define-public libjami
   (package
@@ -94,7 +96,9 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05vjykg3nzf91bwzrhh95c6mndiz5n6gz204y2nrfrszx161irh9"))))
+                "1379vq5afqgrjgwhl2qwapzrs9irjsxr2gzm35jrsg31rms5xgzb"))
+              (patches (search-patches "libjami-pkgconf.patch"
+                                       "libjami-simdutf.patch"))))
     (outputs '("out" "bin" "debug"))    ;"bin' contains jamid
     (build-system gnu-build-system)
     (arguments
@@ -102,14 +106,15 @@
       ;; XXX: The test suites reportedly takes 2 h 30 to run by upstream's CI.
       ;; Many tests also fail, within and without the containerized
       ;; environment.  Some issues have recently been fixed, so try again in
-      ;; the next release.
+      ;; the next release.  More problematically, it currently fails to build
+      ;; at all (see: <https://git.jami.net/savoirfairelinux/jami-daemon/-/issues/1168>).
       #:tests? #f
       ;; The agent links the daemon binary with libguile, which enables the
       ;; execution of test plans described in Scheme.  It may be useful in
       ;; user scripts too, until more general purpose Scheme bindings are made
       ;; available (see: test/agent/README.md).
       ;; FIXME: compiling the agent currently fails (see:
-      ;; https://git.jami.net/savoirfairelinux/jami-daemon/-/issues/1139).
+      ;; <https://git.jami.net/savoirfairelinux/jami-daemon/-/issues/1139>).
       #:configure-flags #~(list "--disable-agent" "--enable-debug")
       #:make-flags #~(list"V=1")        ;build verbosely
       #:phases
@@ -138,6 +143,14 @@
                 (mkdir-p share)
                 (rename-file (search-input-directory outputs "share/dbus-1")
                              (string-append share "/dbus-1"))))))))
+    (native-inputs
+     (list autoconf
+           automake
+           cppunit
+           libtool
+           perl                         ;to generate manpages with pod2man
+           pkg-config
+           which))
     (inputs
      (list alsa-lib
            asio
@@ -159,16 +172,9 @@
            sdbus-c++
            speex
            speexdsp
+           simdutf
            webrtc-audio-processing-0.3
            yaml-cpp))
-    (native-inputs
-     (list autoconf
-           automake
-           cppunit
-           libtool
-           perl                         ;to generate manpages with pod2man
-           pkg-config
-           which))
     (synopsis "Jami core library and daemon")
     (description "This package provides a library and daemon implementing the
 Jami core functionality.  Jami is a secure and distributed voice, video and
@@ -231,13 +237,12 @@ QSortFilterProxyModel conveniently exposed for QML.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ivgs7ckc5wcjlg1p2v7nsw4skcr2hfgv7yk9kx1hd4pbiknr6hk"))
+                "13mpv62pw4f8cb9h8qaplxkn2ydsy9d2fr4v4p54r225ynzbq04h"))
               (patches (search-patches
-                        "jami-unbundle-dependencies.patch"
-                        "jami-libjami-headers-search.patch"
+                        "jami-allow-system-zxing-cpp.patch"
+                        "jami-libjami-cmake.patch"
                         "jami-qwindowkit.patch"
-                        "jami-skip-tests-requiring-internet.patch"
-                        "jami-find-package-avutil.patch"))))
+                        "jami-avutil-link.patch"))))
     (build-system qt-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -267,7 +272,7 @@ QSortFilterProxyModel conveniently exposed for QML.")
               ;; This works around the lack of configuration for the X11
               ;; push-to-talk feature, which is auto-detected via the
               ;; XDG_SESSION_TYPE environment variable (see:
-              ;; https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/1504).
+              ;; <https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/1504>).
               (setenv "XDG_SESSION_TYPE" "x11")))
           (replace 'check
             (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
@@ -288,9 +293,9 @@ QSortFilterProxyModel conveniently exposed for QML.")
 
                   ;; The QML test suite is currently disabled as it segfaults
                   ;; (see:
-                  ;; https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/1631).
-                  ;; (display "Running functional tests...\n") (apply invoke
-                  ;; "ctest" "-R" "Qml_Tests" ctest-args)
+                  ;; <https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/1631>).
+                  ;;(display "Running functional tests...\n")
+                  ;;(apply invoke "ctest" "-R" "Qml_Tests" ctest-args)
                   )))))))
     (native-inputs
      (list git-minimal
@@ -311,7 +316,6 @@ QSortFilterProxyModel conveniently exposed for QML.")
            libxkbcommon
            md4c
            network-manager
-           qrencode
            qt5compat
            qtdeclarative
            qtmultimedia
