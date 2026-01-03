@@ -46,7 +46,26 @@
             make-static-device-nodes
             configure-qemu-networking
 
-            boot-system))
+            boot-system
+
+            linux-console
+
+            linux-console?
+            linux-console-device
+            linux-console-can-read?
+            linux-console-can-write?
+            linux-console-can-unblank?
+            linux-console-enabled?
+            linux-console-preferred?
+            linux-console-primary?
+            linux-console-printk?
+            linux-console-braille?
+            linux-console-safe-when-cpu-offline?
+            linux-console-major
+            linux-console-minor
+            linux-console-virtual?
+
+            read-linux-consoles))
 
 ;;; Commentary:
 ;;;
@@ -674,5 +693,57 @@ the root file system...\n" root-delay)
               (display "entering a warm and cozy REPL\n")
               (start-repl)))))
     #:on-error on-error))
+
+(define-record-type <linux-console>
+  (make-linux-console device can-read? can-write? can-unblank?
+                      enabled? preferred? primary? printk? braille?
+                      safe-when-cpu-offline? major minor virtual?)
+  linux-console?
+  (device linux-console-device)
+  (can-read? linux-console-can-read?)
+  (can-write? linux-console-can-write?)
+  (can-unblank? linux-console-can-unblank?)
+  (enabled? linux-console-enabled?)
+  (preferred? linux-console-preferred?)
+  (primary? linux-console-primary?)
+  (printk? linux-console-printk?)
+  (braille? linux-console-braille?)
+  (safe-when-cpu-offline? linux-console-safe-when-cpu-offline?)
+  (major linux-console-major)
+  (minor linux-console-minor)
+  (virtual? linux-console-virtual?))
+
+(define* (read-linux-consoles #:optional (consoles-file "/proc/consoles"))
+  "Parses CONSOLES-FILE and returns a list of <linux-console> records."
+  (if (not (file-exists? consoles-file))
+      '()
+      (with-input-from-file consoles-file
+        (lambda ()
+          (let ((line-regex (make-regexp
+                             "^([^ ]+)[ ]+(.+)[ ]+([0-9]+):([0-9]+)$"))
+                (virt-regex (make-regexp "^tty[0-9]+$")))
+            (let loop ((line (read-line))
+                       (results '()))
+              (cond
+               ((eof-object? line)
+                (reverse results))
+               ((regexp-exec line-regex line)
+                => (lambda (m)
+                     (let* ((dev      (match:substring m 1))
+                            (flags    (match:substring m 2))
+                            (major    (string->number (match:substring m 3)))
+                            (minor    (string->number (match:substring m 4)))
+                            (virtual? (regexp-exec virt-regex dev))
+                            (has?     (lambda (c)
+                                      (string-any (lambda (f) (char=? f c)) flags))))
+                       (loop (read-line)
+                             (cons (make-linux-console
+                                    dev
+                                    (has? #\R) (has? #\W) (has? #\U) (has? #\E)
+                                    (has? #\C) (has? #\B) (has? #\p) (has? #\b)
+                                    (has? #\a)
+                                    major minor virtual?)
+                                   results)))))
+               (else (loop (read-line) results)))))))))
 
 ;;; linux-boot.scm ends here

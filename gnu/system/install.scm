@@ -483,6 +483,17 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
 
      ;; Specific system services
 
+     ;; AArch64 has a better detection of consoles, mainly because device
+     ;; trees are utilized.  On x86_64, the detection is usually done
+     ;; through BIOS and consoles do not get registered to /proc/console.
+     ;; The only way they would is if the user used console linux argument.
+     `(,@(if (target-aarch64? system)
+             (list (service agetty-service-type
+                            (agetty-configuration (tty #f)
+                                                  (auto-login "root")
+                                                  (login-pause? #t))))
+             '()))
+
      ;; Machines without Kernel Mode Setting (those with many old and
      ;; current AMD GPUs, SiS GPUs, ...) need uvesafb to show the GUI
      ;; installer.  Some may also need a kernel parameter like nomodeset
