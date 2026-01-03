@@ -19915,21 +19915,84 @@ altering the counts or PCA space.")
 (define-public python-drep
   (package
     (name "python-drep")
-    (version "3.2.0")
+    ;; PyPI has no tests, Git does not tag the latest version.
+    (properties '((commit . "7b4b8fbf9dfdfef61caf949f1aa1d4fc3be61d5a")
+                  (revision . "0")))
+    (version (git-version "3.6.2"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "drep" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/MrOlm/drep")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "08vk0x6v5c5n7afgd5pcjhsvb424absypxy22hw1cm1n9kirbi77"))))
-    (build-system python-build-system)
+        (base32 "0rys4r9mmknzayvqcsdpgqi9sigl1x0a1nh0x8h2sjz13qqmklly"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 27 passed, 12 skipped, 39 deselected, 1 warning
+      #:test-flags
+      ;; Tests depend on "near essential" and "optional" dependencies.
+      #~(list #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/tests/"
+                                                    test))
+                      (list "test_analyze.py::test_plot_5_1"
+                            "test_analyze.py::test_plot_5_2"
+                            "test_analyze.py::test_plot_6_1"
+                            "test_analyze.py::test_plotting_functional_1"
+                            "test_bonus.py::test_drep_scaffold_level"
+                            "test_bonus.py::test_drep_scaffold_level_2"
+                            "test_bonus.py::test_drep_scaffold_level_3"
+                            "test_bonus.py::test_drep_scaffold_level_4"
+                            "test_bonus.py::test_drep_scaffold_level_5"
+                            "test_bonus.py::test_parse_stb_2"
+                            "test_choose.py::test_centrality_1"
+                            "test_choose.py::test_centrality_2"
+                            "test_choose.py::test_choose_2"
+                            "test_choose.py::test_choose_3"
+                            "test_cluster.py::test_cluster_functional_1"
+                            "test_cluster.py::test_cluster_functional_3"
+                            "test_cluster.py::test_cluster_functional_4"
+                            "test_cluster.py::test_cluster_functional_5"
+                            "test_cluster.py::test_compare_genomes"
+                            "test_cluster.py::test_fastANI"
+                            "test_cluster.py::test_goANI"
+                            "test_cluster.py::test_goANI2"
+                            "test_cluster.py::test_list_genome_load"
+                            "test_cluster.py::test_low_ram_primary_clustering"
+                            "test_cluster.py::test_skani"
+                            "test_dereplicate.py::test_dereplicate_10"
+                            "test_dereplicate.py::test_dereplicate_2"
+                            "test_dereplicate.py::test_dereplicate_3"
+                            "test_dereplicate.py::test_dereplicate_6"
+                            "test_evaluate.py::test_tertiary_clustering_1"
+                            "test_evaluate.py::test_tertiary_clustering_2"
+                            "test_filter.py::test_filer_functional_3"
+                            "test_greedy.py::test_greedy_secondary_clustering_1"
+                            "test_greedy.py::test_greedy_secondary_clustering_2"
+                            "test_greedy.py::test_multiround_primary_clustering_1"
+                            "test_greedy.py::test_multiround_primary_clustering_2"
+                            "test_rerun.py::test_unit_1"
+                            "test_rerun.py::test_unit_3"
+                            "test_rerun.py::test_unit_4")))))
+    (native-inputs
+     (list mash
+           ;; nsimscan
+           ;; mummer             ;https://github.com/mummer4/mummer, asl2.0
+           ;; fastani            ;https://github.com/ParBLiSS/FastANI, asl2.0
+           ;; checkm             ;https://ecogenomics.github.io/CheckM/, gpl3
+           ;; skani
+           python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-biopython
            python-matplotlib
+           python-networkx
            python-numpy
            python-pandas
-           python-pytest
            python-scikit-learn
            python-seaborn
            python-tqdm))
