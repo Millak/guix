@@ -5999,7 +5999,7 @@ compatible with SQLite using a graphical user interface.")
 (define-public sqlitestudio
   (package
     (name "sqlitestudio")
-    (version "3.4.18")
+    (version "3.4.19")
     (source
      (origin
        (method git-fetch)
@@ -6008,7 +6008,7 @@ compatible with SQLite using a graphical user interface.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1chsm4hxy483hz569ywacysg4dh9ijis060s4rgydkgk49bbb2si"))))
+        (base32 "1fvyd2l1pbpl4jgn7vp8j2gsmw0sbfzidyv3k87xm6a2d7i680yc"))))
     (build-system gnu-build-system)
     (arguments
      (list
