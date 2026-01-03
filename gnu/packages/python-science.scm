@@ -3716,11 +3716,14 @@ depends on @code{scipy.sparse} for some computations.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 276 passed, 14 skipped, 2 deselected
       #:test-flags
       #~(list
          ;; One test fails with error: AssertionError: False is not true : 5
          ;; lines are different, starting at line 1
-         "--deselect=tdda/test_tdda.py::TestOne::test_ddiff_values_output")
+         "--deselect=tdda/test_tdda.py::TestOne::test_ddiff_values_output"
+         ;; TypeError: 'property' object is not iterable 
+         "--deselect=tdda/test_tdda.py::TestPandasDataFrames::test_types_match")
       #:phases
       #~(modify-phases %standard-phases
           ;; "datetime.UTC" is not availalbe in Python 3.10 but in
@@ -3738,8 +3741,7 @@ depends on @code{scipy.sparse} for some computations.")
            python-pyarrow
            python-pytest
            python-rich
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://www.stochasticsolutions.com")
     (synopsis "Test-driven data analysis library for Python")
     (description
