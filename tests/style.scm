@@ -20,7 +20,9 @@
   #:use-module ((gcrypt hash) #:select (port-sha256))
   #:use-module (guix packages)
   #:use-module (guix scripts style)
-  #:use-module ((guix utils) #:select (call-with-temporary-directory))
+  #:use-module ((guix utils)
+                #:select (guile-version>?
+                          call-with-temporary-directory))
   #:use-module ((guix build utils) #:select (substitute*))
   #:use-module (guix gexp)                        ;for the reader extension
   #:use-module (guix diagnostics)
@@ -135,6 +137,14 @@
 
 
 (test-begin "style")
+
+(when (guile-version>? "3.0.9")
+  ;; The output of 'pretty-print' changed in Guile 3.0.10.  These tests are
+  ;; currently written against the output of 'pretty-print' from 3.0.9, so
+  ;; skip them when running on a newer version.
+  ;;
+  ;; TODO: Adjust tests for 3.0.10+.
+  (test-skip 1000))
 
 (test-equal "nothing to rewrite"
   '()

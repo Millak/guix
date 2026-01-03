@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2021, 2023, 2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2023, 2025-2026 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -94,8 +94,8 @@
    (string-append (%store-prefix)
                   "/283gqy39v3g9dxjy26rynl0zls82fmcg-guile-2.0.7")))
 
-(test-equal "store-path-package-name #f"
-  #f
+(test-error "store-path-package-name #f"
+  #t                                              ;any exception
   (store-path-package-name
    "/foo/bar/283gqy39v3g9dxjy26rynl0zls82fmcg-guile-2.0.7"))
 

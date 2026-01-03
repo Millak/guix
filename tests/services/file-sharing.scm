@@ -18,6 +18,7 @@
 
 (define-module (tests services file-sharing)
   #:use-module (gnu services file-sharing)
+  #:use-module ((guix diagnostics) #:select (formatted-message?))
   #:use-module (srfi srfi-64))
 
 ;;; Tests for the (gnu services file-sharing) module.
@@ -47,11 +48,13 @@
   (transmission-password-hash "" "Cp.I5SWg"))
 
 (test-error "transmission-password-hash, salt value too short"
+            formatted-message?
             (transmission-password-hash
              "transmission"
              (make-string (- %transmission-salt-length 1) #\a)))
 
 (test-error "transmission-password-hash, salt value too long"
+            formatted-message?
             (transmission-password-hash
              "transmission"
              (make-string (+ %transmission-salt-length 1) #\a)))

@@ -22,6 +22,7 @@
   #:use-module (guix modules)
   #:use-module (gnu system file-systems)
   #:use-module (srfi srfi-1)
+  #:use-module ((srfi srfi-35) #:select (&message))
   #:use-module (srfi srfi-64)
   #:use-module (ice-9 match))
 
@@ -124,6 +125,7 @@
                                            %btrfs-store-subvolume))))
 
 (test-error "btrfs-store-subvolume-file-name (subvolid)"
+            &message
             (parameterize ((%store-prefix "/gnu/store"))
               (btrfs-store-subvolume-file-name (list %btrfs-root-subvolume
                                                      %btrfs-store-subvolid))))

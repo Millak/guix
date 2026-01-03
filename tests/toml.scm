@@ -23,6 +23,10 @@
   #:use-module (srfi srfi-64)
   #:use-module (ice-9 match))
 
+;; Work around <https://codeberg.org/guix/guix/issues/5339>.
+(module-set! (resolve-module '(guix build toml))
+             'raise (@ (srfi srfi-34) raise))
+
 (test-begin "toml")
 
 ;; Tests taken from https://toml.io/en/v1.0.0
@@ -60,8 +64,8 @@ bare-key = \"value\"
   (parse-toml "\"key \\\\ with \\n escapes\" = \"value\"
 key.\"with \\t escapes\".\"and \\n dots\" = \"value\""))
 
-(test-equal "parse-toml: No key"
-  #f
+(test-error "parse-toml: No key"
+  &file-not-consumed
   (parse-toml "= \"no key name\""))
 
 (test-equal "parse-toml: Empty key"
@@ -381,8 +385,8 @@ apple = \"red\"
 [fruit]
 orange = \"orange\""))
 
-(test-equal "parse-toml: Assignment to non-table"
- #f
+(test-error "parse-toml: Assignment to non-table"
+  #t
  (parse-toml "[fruit]
 apple = \"red\"
 
@@ -419,7 +423,7 @@ type.edible = false  # INVALID"))
 ;; We do not catch this semantic error yet.
 (test-expect-fail 1)
 (test-error "parse-toml: Invalid assignment to implicit table"
- #f
+ #t
  (parse-toml "[product]
 type.name = \"Nail\"
 type = { edible = false }  # INVALID"))
@@ -473,7 +477,7 @@ name = \"plantain\""))
 ;; Not implemented.
 (test-expect-fail 1)
 (test-error "parse-toml: Assignment to statically defined array"
- #f
+ #t
  (parse-toml "fruits = []
 
 [[fruits]]
