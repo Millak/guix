@@ -1336,7 +1336,7 @@ that will be listening to receive secret keys on ADDRESS."
                 (command
                  '("/run/current-system/profile/bin/guix" "gc" "-F2G"))
                 #:wait-for-termination? #t))
-      (stop #~(make-timer-constructor))
+      (stop #~(make-timer-destructor))
       (actions (list shepherd-trigger-action))))
    #t
    (description "Periodically collect garbage.")))
