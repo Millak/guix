@@ -5035,15 +5035,7 @@ Python.")
         (base32 "199wvy9jnb76dp1xvh8r3gyjrxipvh51fpvhqgc6gq0frkjxxnf9"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:tests? #f ;no tests
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            ;; XXX: remove on python-team merge
-            (lambda _
-              (substitute* "pyproject.toml"
-                ((">=1.13") ">=1.11")))))))
+     (list #:tests? #f)) ;no tests
     (native-inputs
      (list python-setuptools))
     (propagated-inputs
