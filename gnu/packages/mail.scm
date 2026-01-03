@@ -1373,7 +1373,9 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
                            (guix build guile-build-system)
                            (guix build emacs-utils))
       #:configure-flags
-      #~(list (format #f "-Dguile-extension-dir=~a/lib" #$output))
+      #~(list (format #f "-Dguile-extension-dir=~a/lib" #$output)
+              "-Dreadline=enabled"
+              "-Dtests=enabled")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'fix-ffi
