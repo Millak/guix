@@ -16296,6 +16296,67 @@ service.")
 service.")
     (license license:asl2.0)))
 
+(define-public go-github-com-sigstore-timestamp-authority-v2
+  (package
+    (name "go-github-com-sigstore-timestamp-authority-v2")
+    (version "2.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sigstore/timestamp-authority")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pgdxwkyrl10ayhw02n72r02q362gxg7110l9h9isiyqwbrmw2lp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/sigstore/timestamp-authority/v2"
+      #:embed-files #~(list ".*\\.json")
+      #:test-subdirs #~(list "pkg/client" "pkg/x509")))
+    (native-inputs
+     (list go-github-com-go-playground-validator-v10
+           go-github-com-google-go-cmp
+           go-github-com-prometheus-client-golang
+           go-github-com-sigstore-sigstore
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-spf13-viper
+           go-github-com-tink-crypto-tink-go-v2
+           go-sigs-k8s-io-release-utils))
+    (propagated-inputs
+     (list go-cloud-google-com-go-security
+           go-github-com-beevik-ntp
+           go-github-com-digitorus-pkcs7
+           go-github-com-digitorus-timestamp
+           go-github-com-go-chi-chi
+           go-github-com-go-openapi-errors
+           go-github-com-go-openapi-loads
+           go-github-com-go-openapi-runtime
+           go-github-com-go-openapi-spec
+           go-github-com-go-openapi-strfmt
+           go-github-com-go-openapi-swag
+           go-github-com-pkg-errors
+           go-github-com-rs-cors
+           go-github-com-sigstore-sigstore-pkg-signature-kms-aws
+           go-github-com-sigstore-sigstore-pkg-signature-kms-azure
+           go-github-com-sigstore-sigstore-pkg-signature-kms-gcp
+           go-github-com-sigstore-sigstore-pkg-signature-kms-hashivault
+           go-github-com-tink-crypto-tink-go-awskms-v2
+           go-github-com-tink-crypto-tink-go-gcpkms-v2
+           go-github-com-tink-crypto-tink-go-hcvault-v2
+           go-github-com-urfave-negroni
+           ;; go-go-step-sm-crypto      ;not packaged yet in Guix
+           go-sigs-k8s-io-yaml))
+    (home-page "https://github.com/sigstore/timestamp-authority")
+    (synopsis "RFC 3161 timestamp verification for Sigstore")
+    (description
+     "This package provides timestamp verification functionality for the
+Sigstore ecosystem, implementing RFC 3161 timestamp response validation.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-shurcool-githubv4
   (package
     (name "go-github-com-shurcool-githubv4")
