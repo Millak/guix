@@ -25,9 +25,11 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu system install)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu)
   #:use-module (gnu system)
   #:use-module (gnu system privilege)
+  #:use-module (guix build-system trivial)
   #:use-module (gnu bootloader)
   #:use-module (gnu bootloader u-boot)
   #:use-module (guix gexp)
@@ -413,6 +415,27 @@ or by starting the installer, using `guix-system-installer` command.
               #$(file-append shadow "/bin/login")
               (command-line)))))
 
+(define* (installer-command-package installer-program
+                                    #:key executable)
+  (package
+    (name executable)
+    (version "0")
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments
+     (list #:builder (with-imported-modules '((guix build utils))
+                       #~(begin
+                           (use-modules (guix build utils))
+
+                           (mkdir-p (string-append #$output "/bin"))
+
+                           (symlink #$installer-program
+                                    (string-append #$output "/bin/" #$executable))))))
+    (home-page #f)
+    (synopsis "Provides the Guix System installer as run-guix-installer command")
+    (description "Provides the Guix System installer as run-guix-installer command.")
+    (license license:gpl3+)))
+
 (define* (%installation-services
           #:key
           (system (or (and=>
@@ -430,6 +453,10 @@ or by starting the installer, using `guix-system-installer` command.
   (define bare-bones-os
     (load "examples/bare-bones.tmpl"))
 
+  (define installer
+    (installer-program
+     #:guix-for-installer guix-for-system))
+
   (append
    ;; Generic services
    (list (service virtual-terminal-service-type)
@@ -437,8 +464,7 @@ or by starting the installer, using `guix-system-installer` command.
          (service kmscon-service-type
                   (kmscon-configuration
                     (virtual-terminal "tty1")
-                    (login-program (installer-program
-                                    #:guix-for-installer guix-for-system))))
+                    (login-program installer)))
 
          (simple-service 'installer-login
                          pam-root-service-type
@@ -464,6 +490,13 @@ or by starting the installer, using `guix-system-installer` command.
          ;; Use the Avahi daemon to discover substitute servers on the local
          ;; network.  It can be faster than fetching from remote servers.
          (service avahi-service-type)
+
+         ;; Allow runninng the installer command on headless setups.
+         (simple-service 'installer-program-profile
+                         profile-service-type
+                         (list (installer-command-package
+                                installer
+                                #:executable "guix-system-installer")))
 
          ;; The build daemon.
          (service guix-service-type
