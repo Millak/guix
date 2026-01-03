@@ -10511,15 +10511,7 @@ between image and reference catalogs.  Currently only aligning images with
         (base32 "049caadnxny330jday9hbg643b1fxpmkccjbxn1w9n6pmsx0ypql"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:tests? #f ;no tests
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            ;; XXX: remove on python-team merge
-            (lambda _
-              (substitute* "pyproject.toml"
-                ((">=1.13") ">=1.11")))))))
+     (list #:tests? #f)) ;no tests
     (native-inputs
      (list python-setuptools))
     (propagated-inputs
