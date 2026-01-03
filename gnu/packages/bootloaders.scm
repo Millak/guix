@@ -949,8 +949,16 @@ Info manual.")))
            (modify-inputs (package-native-inputs u-boot)
                           (prepend python-filelock
                                    python-pycryptodomex))))
+    (inputs (list gnutls ncurses/tinfo))
     (arguments
-     `(#:make-flags '("HOSTCC=gcc")
+     `(#:make-flags '("HOSTCC=gcc"
+                      ,@(if (%current-target-system)
+                            (list "CROSS_BUILD_TOOLS=y"
+                                  (string-append
+                                   "CROSS_COMPILE="
+                                   (%current-target-system)
+                                   "-"))
+                            '()))
        #:test-target "tcheck"
        #:phases
        (modify-phases %standard-phases
