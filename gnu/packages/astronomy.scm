@@ -9079,12 +9079,6 @@ owners/operators, academia and other entities.")
           (add-after 'unpack 'set-version
             (lambda _
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; XXX: The most of the tests passed, Matplotlib may be
-                ;; upgraded only when we have NumPy 2 as a default.
-                (("matplotlib>=3.10") "matplotlib>=3.8"))))
           (add-before 'check 'set-home
             (lambda _
               ;; Relax matplotlib warning: ... because the default path
