@@ -30,6 +30,7 @@
 ;;; Copyright © 2026 Nemin <bergengocia@protonmail.com>
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2026 Yan Abu Arab <yanabuarab@gmail.com>
+;;; Copyright © 2026 Dariqq <dariqq@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -734,42 +735,49 @@ other lower-level build files.")
 (define-public premake5
   (package
     (inherit premake4)
-    (version "5.0.0-beta7")
+    (name "premake")
+    (version "5.0.0-beta8")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/premake/premake-core/"
-                                  "releases/download/v" version
-                                  "/premake-" version "-src.zip"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/premake/premake-core")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0q287af75d6w3c7dbfq7rmbh9isqzs9v30fjpm37lcafs2p7966k"))))
+                "1rzicjs27cq1q0d42gzdwwlwnx5agyfi2nqshg3npmx5zy8zxadh"))))
     (arguments
      (substitute-keyword-arguments arguments
-      ((#:phases phases)
-       `(modify-phases ,phases
-           (replace 'enter-source
-             ;; For some reason we end up in the .github subdir of the source,
-             ;; which is why we first go back a dir unlike in premake4.
-             (lambda _ (chdir "..") #t))
-           (add-after 'enter-source 'enter-build-dir
-             (lambda _ (chdir "build/gmake.unix") #t))
-           (add-after 'enter-source 'patch-builtin-uuidgen
-             ;; Use built-in UUID generation
-             (lambda _
-               (substitute* "src/host/os_uuid.c"
-                 (("#elif PLATFORM_LINUX")
-                  "#elif 0"))
-               (substitute* "build/gmake.unix/Premake5.make"
-                 (("-luuid")
-                  ""))
-               (substitute* "premake5.lua"
-                 (("filter \"system:linux or macosx\"")
-                  "filter \"system:macosx\""))))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (install-file "../../bin/release/premake5"
-                             (string-append (assoc-ref outputs "out") "/bin"))
-               #t))))))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'patch-builtin-uuidgen
+              ;; Use built-in UUID generation
+              (lambda _
+                (substitute* "src/host/os_uuid.c"
+                  (("#elif PLATFORM_LINUX") "#elif 0"))
+                (substitute* "Bootstrap.mak"
+                  (("-luuid") ""))
+                (substitute* "premake5.lua"
+                  (("\"uuid\"") ""))))
+            (replace 'bootstrap
+              (lambda* (#:key configure-flags #:allow-other-keys)
+                (invoke "make" "-f" "Bootstrap.mak" "linux"
+                        "CC=gcc") ;use native CC for bootstrapping
+                ;; Regenerate embedded sources.
+                (apply invoke "./build/bootstrap/premake_bootstrap" "embed"
+                       configure-flags)))
+            (add-after 'bootstrap 'configure
+              (lambda* (#:key configure-flags #:allow-other-keys)
+                (apply invoke "./build/bootstrap/premake_bootstrap"
+                       "--to=build/gmake.unix" "gmake"
+                       configure-flags)))
+            ;; Tests can be run with premake5 test but os.findheader()
+            ;; and os.findlib() fail with FHS assumptions.
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (install-file "../../bin/release/premake5"
+                              (string-append #$output "/bin"))))))))
+    (native-inputs '())
     (description "@code{premake5} is a command line utility that reads a
 scripted definition of a software project and outputs @file{Makefile}s or
 other lower-level build files.")))
