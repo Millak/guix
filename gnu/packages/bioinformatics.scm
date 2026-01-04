@@ -20523,19 +20523,19 @@ efficiently.")
   (package
     (name "python-hic2cool")
     (version "1.0.1")
-    ;; pypi sources do not contain the test_data directory and no test can be
-    ;; run
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/4dn-dcic/hic2cool")
-             (commit version)))
+              (url "https://github.com/4dn-dcic/hic2cool")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0k0i43z43rxbpna4hfci406ma906w893frfj3cha1n8drvhdql6c"))))
+        (base32 "0k0i43z43rxbpna4hfci406ma906w893frfj3cha1n8drvhdql6c"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "test.py")))
     (native-inputs
      (list python-poetry-core))
     (propagated-inputs
