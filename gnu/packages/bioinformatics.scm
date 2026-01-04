@@ -6082,7 +6082,6 @@ subgroups.")
     (version "0.1.7")
     (source
      (origin
-       ;; The tarball from PyPi doesn't include tests.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/scverse/muon")
@@ -6116,7 +6115,7 @@ subgroups.")
                              python-mofapy2
                              python-mudata
                              python-numba
-                             python-numpy
+                             python-numpy-1
                              python-pandas
                              python-protobuf
                              python-pybedtools
@@ -6127,8 +6126,7 @@ subgroups.")
                              python-tqdm
                              python-umap-learn))
     (native-inputs (list python-flit-core
-                         python-pytest
-                         python-pytest-flake8))
+                         python-pytest))
     (home-page "https://github.com/scverse/muon")
     (synopsis "Multimodal omics analysis framework")
     (description "muon is a multimodal omics Python framework.")
