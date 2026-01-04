@@ -2175,6 +2175,33 @@ testing of time-sensitive code.")
 library's testing/fstest package.")
     (license license:bsd-3)))
 
+(define-public go-github-com-josharian-txtarfs
+  (package
+    (name "go-github-com-josharian-txtarfs")
+    (version "0.0.0-20240408113805-5dc76b8fe6bf")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/josharian/txtarfs")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "129rf6hviw46rxcnnkc8jb1k579798rrhnh1k3nn7npi260ia44m"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/josharian/txtarfs"))
+    (propagated-inputs
+     (list go-github-com-josharian-mapfs
+           go-golang-org-x-tools))
+    (home-page "https://github.com/josharian/txtarfs")
+    (synopsis "Convert a txtar to an io.FS")
+    (description
+     "This package turns a @url{https://pkg.go.dev/golang.org/x/tools/txtar,
+ txtar} into an @url{https://pkg.go.dev/io/fs, fs.FS}.")
+    (license license:expat)))
+
 (define-public go-github-com-joshdk-go-junit
   (package
     (name "go-github-com-joshdk-go-junit")
