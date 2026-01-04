@@ -525,6 +525,35 @@ file along with an index.html file.")
      "Package tcell provides a gruid Driver for making terminal apps.")
     (license license:isc)))
 
+(define-public go-codeberg-org-chavacava-garif
+  (package
+    (name "go-codeberg-org-chavacava-garif")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/chavacava/garif.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cz037yb9gnk9fd61pni6m0n9cbrwmlxxija5vm91mplyxlih05h"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "codeberg.org/chavacava/garif"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://codeberg.org/chavacava/garif")
+    (synopsis "Create and manipulate SARIF logs")
+    (description
+     "This package defines all the Go structures required to model a log file.
+
+SARIF, from Static Analysis Results Interchange Format, is a standard
+JSON-based format for the output of static analysis tools defined and promoted
+by @url{https://www.oasis-open.org/, OASIS}.")
+    (license license:expat)))
+
 (define-public go-codeberg-org-emersion-go-scfg
   (package
     (name "go-codeberg-org-emersion-go-scfg")
