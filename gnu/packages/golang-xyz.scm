@@ -7580,6 +7580,29 @@ values.  It supports almost all kind of types: @code{int/8/16/32/64},
 @code{time.Duration}, @code{*SampleStruct}, and @code{*int}")
     (license license:expat)))
 
+(define-public go-github-com-cristalhq-acmd
+  (package
+    (name "go-github-com-cristalhq-acmd")
+    (version "0.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cristalhq/acmd")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0blbc49dyxhyzyqrxijbis8yp7da6hqpf82c6yy3lwf65dv364y8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cristalhq/acmd"))
+    (home-page "https://github.com/cristalhq/acmd")
+    (synopsis "Simple, useful and opinionated CLI package in Go")
+    (description
+     "This package is a simple, useful and opinionated CLI package in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-cskr-pubsub
   (package
     (name "go-github-com-cskr-pubsub")
