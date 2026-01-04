@@ -4513,6 +4513,30 @@ encoding in Go.")
 over strings.")
     (license license:expat)))
 
+(define-public go-github-com-cespare-subcmd
+  (package
+    (name "go-github-com-cespare-subcmd")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cespare/subcmd")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06drzzciv4z5qwvsgbahsgjn06pyglqhd5aq53wbldzrkvszq7qd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cespare/subcmd"))
+    (home-page "https://github.com/cespare/subcmd")
+    (synopsis "Create CLI interfaces with sub-commands")
+    (description
+     "This package works with the flags package to implement sub-commands in
+the manner of git and similar tools.")
+    (license license:expat)))
+
 (define-public go-github-com-chai2010-webp
   (package
     (name "go-github-com-chai2010-webp")
