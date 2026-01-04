@@ -2796,23 +2796,35 @@ automated with the minimum of fuss and the least effort.")
 (define-public python-salib
   (package
     (name "python-salib")
-    (version "1.4.7")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/SALib/SALib")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "18xfyzircsx2q2lmfc9lxb6xvkxicnc83qzghd7df1jsprr5ymch"))))
+    (version "1.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/SALib/SALib")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0v7l6qbxgclz644fq1vmakfasxcdhg1g019b5w47hlxqw8fx0ipl"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-matplotlib
-                             python-multiprocess
-                             python-numpy
-                             python-pandas
-                             python-scipy))
-    (native-inputs (list python-hatchling python-pytest python-pytest-cov))
+    (arguments
+     (list
+      ;; tests: 190 passed, 1 xfailed, 28 warnings
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-matplotlib
+           python-multiprocess
+           python-numpy
+           python-pandas
+           python-scipy))
     (home-page "https://salib.readthedocs.io/en/latest/")
     (synopsis "Tools for global sensitivity analysis")
     (description "SALib provides tools for global sensitivity analysis.  It
