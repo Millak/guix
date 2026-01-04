@@ -7,6 +7,7 @@
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Zheng Junjie <z572@z572.online>
+;;; Copyright © 2026 Foster Hangdaan <foster@hangdaan.email>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,6 +65,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
@@ -76,6 +78,7 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
@@ -529,3 +532,80 @@ applications.")
     (synopsis "Dynamic swap manager for Linux")
     (description "This package provides a dynamic swap manager for Linux.")
     (license license:gpl2+)))
+
+(define-public garage
+  (package
+    (name "garage")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.deuxfleurs.fr/Deuxfleurs/garage.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fsl0rmjzyn3sxb0l1sh6898kavfkqyld5gfph7v69s88pm0av0q"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "doc")))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      ;; Disable default features and explicitly set them instead.
+      #:cargo-build-flags `(list "--no-default-features")
+      ;; The tests fail to compile without the '--release' flag.
+      #:cargo-test-flags `(list "--release" "--no-default-features")
+      #:cargo-install-paths ''("src/garage")
+      #:features '(list "system-libs"
+                        "k2v"
+                        "kubernetes-discovery"
+                        "lmdb"
+                        "metrics"
+                        "sqlite"
+                        "syslog"
+                        "telemetry-otlp")
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+           ;; The 'check phase doesn't honor #:features
+           (replace 'check
+             (lambda* (#:key features cargo-test-flags #:allow-other-keys
+                       #:rest args)
+               (apply (assoc-ref %standard-phases 'check)
+                      (append
+                        args
+                        (list #:cargo-test-flags
+                              (append cargo-test-flags
+                                      (list "--features"
+                                            (string-join features))))))))
+           ;; The 'install phase can't pass '--no-default-features'
+           (replace 'install
+             (lambda* (#:key cargo-install-paths features #:allow-other-keys)
+               (mkdir-p #$output)
+               (setenv "CARGO_TARGET_DIR" "./target")
+               (for-each
+                 (lambda (path)
+                   (invoke "cargo" "install" "--offline" "--no-track"
+                           "--path" path "--root" #$output
+                           "--no-default-features"
+                           "--features" (string-join features)))
+                 (if (null? cargo-install-paths)
+                     '(".")
+                     cargo-install-paths)))))))
+    (native-inputs (list nss-certs-for-test
+                         pkg-config
+                         protobuf))
+    (inputs
+     (cons* libsodium
+            lmdb
+            openssl
+            sqlite
+            `(,zstd "lib")
+            (cargo-inputs 'garage)))
+    (home-page "https://garagehq.deuxfleurs.fr/")
+    (synopsis "S3-compatible, distributed object storage designed for self-hosting")
+    (description "Garage is a lightweight, geo-distributed data store that
+implements the @url{https://docs.aws.amazon.com/AmazonS3/latest/API/Welcome.html,
+ Amazon S3} object storage protocol, with a focus on simplicity and resiliency.")
+    (license license:agpl3)))
