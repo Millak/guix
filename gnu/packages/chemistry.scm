@@ -1717,7 +1717,7 @@ Tanimoto scoring.")
            rapidjson
            tar))
     (propagated-inputs
-     (list python-numpy python-cairocffi python-pillow))
+     (list python-numpy-1 python-cairocffi python-pillow))
     (home-page "https://rdkit.org/")
     (synopsis "Collection of cheminformatics software")
     (description "RDKit is a C++ and Python library for cheminformatics, which
