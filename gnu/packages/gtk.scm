@@ -650,7 +650,7 @@ highlighting and other features typical of a source code editor.")
 (define-public gdk-pixbuf
   (package
     (name "gdk-pixbuf")
-    (version "2.42.12")
+    (version "2.44.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -658,7 +658,7 @@ highlighting and other features typical of a source code editor.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1iz392vrlrnb92hrak697bgndsbkrcxhqxilxn6f99xr8ls5nl5r"))
+                "05xxpl3sd37lsp5qqy01m0w9c14dqfi84x9rawsffyj2y71sm8ck"))
               (patches
                (search-patches
                 "gdk-pixbuf-honor-GUIX_GDK_PIXBUF_MODULE_FILES.patch"))))
@@ -670,6 +670,8 @@ highlighting and other features typical of a source code editor.")
                            ,@(if (%current-target-system)
                                  '()
                                  '("-Dgtk_doc=true"))
+                           ;; Prevent cycle between glycin and gdk-pixbuf.
+                           "-Dglycin=disabled"
                            ;; GTK+ 3 needs the XPM loader, see
                            ;; <https://gitlab.gnome.org/GNOME/gtk/-/issues/7143>.
                            "-Dothers=enabled")

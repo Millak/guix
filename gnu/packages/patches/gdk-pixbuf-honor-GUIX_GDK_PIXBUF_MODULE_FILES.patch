@@ -14,11 +14,10 @@ diff --git a/gdk-pixbuf/gdk-pixbuf-io.c b/gdk-pixbuf/gdk-pixbuf-io.c
 index e1df590..913ce89 100644
 --- a/gdk-pixbuf/gdk-pixbuf-io.c
 +++ b/gdk-pixbuf/gdk-pixbuf-io.c
-@@ -670,6 +670,17 @@ gdk_pixbuf_io_init (void)
- 	gboolean ret;
+@@ -707,6 +707,16 @@ gdk_pixbuf_io_init (void)
  
  	gdk_pixbuf_io_init_builtin ();
-+
+ 
 +        /* Load modules from GUIX_GDK_PIXBUF_MODULE_FILES. */
 +        gchar *module_files_env = g_getenv ("GUIX_GDK_PIXBUF_MODULE_FILES");
 +        if (module_files_env) {
@@ -29,6 +28,5 @@ index e1df590..913ce89 100644
 +            g_strfreev (module_files);
 +        }
 +
- #ifdef USE_GMODULE
- 	module_file = gdk_pixbuf_get_module_file ();
- #endif
+ 	return file_formats != NULL;
+ }
