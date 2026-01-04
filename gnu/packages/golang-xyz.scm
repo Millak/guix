@@ -7220,6 +7220,34 @@ against various paths.  This is particularly useful when trying to filter
 files based on a .gitignore document.")
     (license license:expat)))
 
+(define-public go-github-com-creachadair-command
+  (package
+    (name "go-github-com-creachadair-command")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/creachadair/command")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c2y7i8c7kwsqyi6rmql9jpc2xan8jp2cpxgx615safk6xvc41kp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/creachadair/command"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-creachadair-mds))
+    (home-page "https://github.com/creachadair/command")
+    (synopsis "Lightweight subcommand-handling library")
+    (description
+     "This package defines plumbing for command dispatch.  It is based on and
+similar in design to the @code{go} command-line tool.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-creachadair-mds
   (package
     (name "go-github-com-creachadair-mds")
