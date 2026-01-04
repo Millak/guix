@@ -4886,6 +4886,7 @@ Mathematics (GLM) library to Python.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1828 passed, 3 skipped, 1 deselected, 157 warnings
       #:test-flags
       ;; AssertionError: Lebedev(047) -- observed: 41, expected: 47 (max err:
       ;; 4.910e-15).
@@ -4901,7 +4902,7 @@ Mathematics (GLM) library to Python.")
      (list python-matplotlib))
     (propagated-inputs
       (list python-importlib-metadata
-            python-numpy
+            python-numpy-1
             python-orthopy
             python-scipy
             python-sympy))
