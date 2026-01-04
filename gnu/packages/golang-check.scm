@@ -2738,6 +2738,31 @@ error messages, preserving the order of @code{have} (actual result) before
      "This package provides a library for collecting stack traces at runtime.")
     (license license:expat)))
 
+(define-public go-github-com-newmo-oss-gotestingmock
+  (package
+    (name "go-github-com-newmo-oss-gotestingmock")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/newmo-oss/gotestingmock")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1flgmarj961k4vl6d7i2740snrdfjiv4aigb87v5aznvi8bwa5d3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/newmo-oss/gotestingmock"))
+    (propagated-inputs
+     (list go-github-com-newmo-oss-go-caller))
+    (home-page "https://github.com/newmo-oss/gotestingmock")
+    (synopsis "Mocking utilities for Go")
+    (description
+     "This package provides mocking utilities for unit tests in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-onsi-ginkgo
   (package
     (name "go-github-com-onsi-ginkgo")
