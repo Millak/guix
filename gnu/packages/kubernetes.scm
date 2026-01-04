@@ -24,6 +24,7 @@
   #:use-module (guix packages)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages prometheus))
@@ -121,6 +122,89 @@
     (description
      "This package implements the official Go client for etcd.")
     (license license:asl2.0)))
+
+(define-public go-go-etcd-io-etcd-server-v3
+  (package
+    (name "go-go-etcd-io-etcd-server-v3")
+    (version "3.6.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/etcd-io/etcd")
+             (commit (go-version->git-ref version
+                                          #:subdir "server"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d9rjyl5h0xm9isgr8b2fz8528wk3pds71rjl8g08fgsmsa5kicb"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-all-but "." "server")
+                    (rename-file "server" "server.tmp")
+                    (mkdir-p "server/v3")
+                    (rename-file "server.tmp" "server/v3")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f ;Setup fails
+      #:import-path "go.etcd.io/etcd/server/v3"
+      #:unpack-path "go.etcd.io/etcd"))
+    (propagated-inputs
+     (list go-github-com-coreos-go-semver
+           go-github-com-coreos-go-systemd-v22
+           go-github-com-dustin-go-humanize
+           go-github-com-gogo-protobuf
+           go-github-com-golang-groupcache
+           go-github-com-golang-jwt-jwt-v5
+           go-github-com-golang-protobuf
+           go-github-com-google-btree
+           go-github-com-google-go-cmp
+           go-github-com-grpc-ecosystem-go-grpc-middleware
+           go-github-com-grpc-ecosystem-go-grpc-middleware-providers-prometheus
+           go-github-com-grpc-ecosystem-grpc-gateway-v2
+           go-github-com-jonboulle-clockwork
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-github-com-soheilhy-cmux
+           go-github-com-spf13-cobra
+           go-github-com-stretchr-testify
+           go-github-com-tmc-grpc-websocket-proxy
+           go-github-com-xiang90-probing
+           go-go-etcd-io-bbolt
+           go-go-etcd-io-etcd-client-v3
+           go-go-etcd-io-etcd-pkg-v3
+           go-go-etcd-io-raft-v3
+           go-go-opentelemetry-io-contrib-instrumentation-google-golang-org-grpc-otelgrpc
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
+           go-go-opentelemetry-io-otel-sdk
+           go-go-uber-org-zap
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-time
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+           go-gopkg-in-natefinch-lumberjack-v2
+           go-sigs-k8s-io-json
+           go-sigs-k8s-io-yaml))
+    (home-page "https://go.etcd.io/etcd")
+    (synopsis "Server package for ETCD")
+    (description
+     "This package provides a server for the ETCD distributed key-value storage
+system.")
+    (license license:asl2.0)))
+
 
 (define-public go-go-etcd-io-etcd-pkg-v3
   (package
