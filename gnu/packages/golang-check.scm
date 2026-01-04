@@ -3395,6 +3395,32 @@ such as readers and writers that fail after N consecutive reads/writes.")
     (description "This package provides utilities for golden file tests.")
     (license license:expat)))
 
+(define-public go-github-com-tenntenn-modver
+  (package
+    (name "go-github-com-tenntenn-modver")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tenntenn/modver")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p4402lizz5ny0l49yxa65ryhx09wm8g13lx4pw0nw0s4r06rw3g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tenntenn/modver"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-hashicorp-go-version))
+    (home-page "https://github.com/tenntenn/modver")
+    (synopsis "Utility for Go modules")
+    (description "This package provides utilities for Go modules.")
+    (license license:expat)))
+
 (define-public go-github-com-tj-assert
   (package
     (name "go-github-com-tj-assert")
