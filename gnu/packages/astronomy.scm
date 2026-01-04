@@ -5200,6 +5200,11 @@ across many files.")
       ;; tests: 618 passed, 4 skipped, 2 xfailed, 436 warnings
       #:phases
       #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               ;; ipython>=4.0,<9.0
+               ((">=4.0,<9\\.0") ">=4.0"))))
           (add-before 'build 'set-env-version
             (lambda _
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
