@@ -269,6 +269,31 @@ go-fuzz-headers.")
 that could potentially be preallocated.")
     (license license:expat)))
 
+(define-public go-github-com-alingse-asasalint
+  (package
+    (name "go-github-com-alingse-asasalint")
+    (version "0.0.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/alingse/asasalint")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1avz33cx3gcpps26rxijv7ic0njfmsdkbcp2mqg5yxhdcpq57s0q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/alingse/asasalint"))
+    (propagated-inputs
+     (list go-golang-org-x-tools))
+    (home-page "https://github.com/alingse/asasalint")
+    (synopsis "Lint pass any slice as any in variadic function")
+    (description
+     "Golang linter, lint that pass any slice as any in variadic function.")
+    (license license:expat)))
+
 (define-public go-github-com-andreyvit-diff
   (package
     (name "go-github-com-andreyvit-diff")
