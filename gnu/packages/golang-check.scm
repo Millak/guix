@@ -3368,6 +3368,33 @@ and CLI tool.")
 such as readers and writers that fail after N consecutive reads/writes.")
     (license license:expat)))
 
+(define-public go-github-com-tenntenn-golden
+  (package
+    (name "go-github-com-tenntenn-golden")
+    (version "0.5.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tenntenn/golden")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09w3h7c4z930z91dg7bfs9m680pw9zgqyyikw88gisv1z86y3qlz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tenntenn/golden"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-josharian-txtarfs
+           go-golang-org-x-tools))
+    (home-page "https://github.com/tenntenn/golden")
+    (synopsis "Utilities for golden file tests")
+    (description "This package provides utilities for golden file tests.")
+    (license license:expat)))
+
 (define-public go-github-com-tj-assert
   (package
     (name "go-github-com-tj-assert")
