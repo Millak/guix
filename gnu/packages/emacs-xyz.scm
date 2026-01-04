@@ -42761,27 +42761,24 @@ executes a different function (default: @code{indent-relative}).")
       (license license:gpl2+))))
 
 (define-public emacs-gleam-mode
-  ;; No tag, version grabbed from source .el file.
-  (let ((commit "8e981614536f0e36fb14721a9fae8bf72c287a40")
-        (revision "0"))
-    (package
-      (name "emacs-gleam-mode")
-      (version (git-version "0.1.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/gleam-lang/gleam-mode")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0xspx3hpiw21pqcqpp82ngxzsdbc209cbp7yjl5i1j5rwj6d09r7"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/gleam-lang/gleam-mode")
-      (synopsis "Gleam support for Emacs")
-      (description
-       "This package provides an Emacs major mode for the Gleam language.")
-      (license (list license:asl2.0 license:gpl3+)))))
+  (package
+    (name "emacs-gleam-mode")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gleam-lang/gleam-mode")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dd7qylvhrqlxnbvvkb3f03gz14v0sjg9fhiymfhw7p571bq8nqi"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/gleam-lang/gleam-mode")
+    (synopsis "Gleam support for Emacs")
+    (description
+     "This package provides an Emacs major mode for the Gleam language.")
+    (license (list license:asl2.0 license:gpl3+))))
 
 (define-public emacs-glsl-mode
   ;; No tag, version grabbed from source .el file.
