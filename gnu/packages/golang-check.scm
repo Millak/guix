@@ -3682,6 +3682,35 @@ package, and is a minimalistic replacement for the @code{stretchr/testify}
 package.")
     (license license:mpl2.0)))
 
+(define-public go-go-simpler-org-musttag
+  (package
+    (name "go-go-simpler-org-musttag")
+    (version "0.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-simpler/musttag")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15kvnppc2q8ay1m8lhag0bmdx08kc68lzv78699qkyi6bcw68ajf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go-simpler.org/musttag"
+      #:test-flags #~(list "-skip" "TestAnalyzer")))
+    (native-inputs
+     (list go-go-simpler-org-assert))
+    (propagated-inputs
+     (list go-golang-org-x-tools))
+    (home-page "https://go-simpler.org/musttag")
+    (synopsis "Enforce field tags in (un)marshaled structs")
+    (description
+     "This package checks that exported fields of a struct passed to a
+@code{Marshal}-like function are annotated with the relevant tag.")
+    (license license:mpl2.0)))
+
 (define-public go-go-simpler-org-sloglint
   (package
     (name "go-go-simpler-org-sloglint")
