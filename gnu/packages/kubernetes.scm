@@ -33,6 +33,95 @@
 ;;; Libraries:
 ;;;
 
+(define-public go-go-etcd-io-etcd-client-v3
+  (package
+    (name "go-go-etcd-io-etcd-client-v3")
+    (version "3.6.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/etcd-io/etcd")
+             (commit (go-version->git-ref version #:subdir "client"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d9rjyl5h0xm9isgr8b2fz8528wk3pds71rjl8g08fgsmsa5kicb"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    ;; Replace symlinks to tests with file contents
+                    (for-each
+                     (lambda (f)
+                       (delete-file (string-append "client/v3/" f))
+                       (copy-file (string-append
+                                   "tests/integration/clientv3/examples/" f)
+                                  (string-append "client/v3/" f)))
+                     (list "example_auth_test.go"
+                           "example_cluster_test.go"
+                           "example_kv_test.go"
+                           "example_lease_test.go"
+                           "example_maintenance_test.go"
+                           "example_metrics_test.go"
+                           "example_test.go"
+                           "example_watch_test.go"))
+                    (for-each
+                     (lambda (f)
+                       (delete-file
+                        (string-append "client/v3/concurrency/" f))
+                       (copy-file
+                        (string-append "tests/integration/clientv3/concurrency/" f)
+                        (string-append "client/v3/concurrency/" f)))
+                     (list "example_election_test.go"
+                           "example_mutex_test.go"
+                           "example_stm_test.go"))
+                    ;; Copy sertificates for tests.
+                    (mkdir-p "client/v3/tests/fixtures")
+                    (substitute* "client/v3/yaml/config_test.go"
+                      (("\\.\\./\\.\\./\\.\\./") "../"))
+                    (for-each
+                     (lambda (f)
+                       (copy-file
+                        (string-append "tests/fixtures/" f)
+                        (string-append "client/v3/tests/fixtures/" f)))
+                     (list "server.crt"
+                           "server.key.insecure"
+                           "ca.crt"))
+                    ;; Keep source related to expected import-path.
+                    (delete-all-but "." "client")
+                    (delete-file-recursively "client/pkg")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; TODO: Tests a shaky and fail a lot, check how run unittests.
+      #:tests? #f 
+      #:import-path "go.etcd.io/etcd/client/v3"
+      #:unpack-path "go.etcd.io/etcd"))
+    (native-inputs
+     (list go-github-com-grpc-ecosystem-go-grpc-middleware-providers-prometheus
+           go-github-com-prometheus-client-golang
+           go-github-com-stretchr-testify
+           go-go-etcd-io-etcd-client-pkg-v3
+           go-go-uber-org-zap
+           go-google-golang-org-grpc))
+    (propagated-inputs
+     (list go-github-com-coreos-go-semver
+           go-github-com-dustin-go-humanize
+           go-github-com-grpc-ecosystem-go-grpc-middleware-v2
+           go-go-etcd-io-etcd-api-v3
+           go-sigs-k8s-io-yaml))
+    (home-page "https://github.com/etcd-io/etcd")
+    (synopsis "Golang client for ETCD")
+    (description
+     "This package implements the official Go client for etcd.")
+    (license license:asl2.0)))
+
 (define-public go-k8s-io-component-base
   (package
     (name "go-k8s-io-component-base")
