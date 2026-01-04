@@ -679,6 +679,7 @@ and a lot more.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 34 passed, 9 deselected, 1 warning
       #:test-flags
       #~(list "-k" (string-join
                     ;; TODO: Report upstream, failing with NumPy deprecation
@@ -698,7 +699,7 @@ and a lot more.")
     (propagated-inputs
      (list python-joblib
            python-numba
-           python-numpy
+           python-numpy-1
            python-scipy))
     (home-page "https://dcor.readthedocs.io/")
     (synopsis "Distance correlation and related E-statistics in Python")
