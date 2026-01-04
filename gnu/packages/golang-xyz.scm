@@ -7248,6 +7248,30 @@ files based on a .gitignore document.")
 similar in design to the @code{go} command-line tool.")
     (license license:bsd-3)))
 
+(define-public go-github-com-creachadair-flax
+  (package
+    (name "go-github-com-creachadair-flax")
+    (version "0.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/creachadair/flax")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1r8s0jqayxglnmkffdpkxl72l594ja82wpa9ypxh1v437kv2gqc2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/creachadair/flax"))
+    (home-page "https://github.com/creachadair/flax")
+    (synopsis "Bind flags to struct fields")
+    (description
+     "This package implements a helper for attaching flags to the fields of
+struct values.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-creachadair-mds
   (package
     (name "go-github-com-creachadair-mds")
