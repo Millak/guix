@@ -7470,6 +7470,40 @@ goroutines and @code{trigger}, that implements channel-based condition
 variable.")
     (license license:bsd-3)))
 
+(define-public go-github-com-creachadair-taskgroup
+  (package
+    (name "go-github-com-creachadair-taskgroup")
+    (version "0.14.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/creachadair/taskgroup")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cc9w5v1iw8gwqz9w6ydr4hlw5wf3r9d1xi75hz11zz8ry4qraj5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.25
+      #:import-path "github.com/creachadair/taskgroup"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              ;; See: <https://go.dev/blog/synctest>.
+              (setenv "GOEXPERIMENT" "synctest")
+              (setenv "GODEBUG" "asynctimerchan=0"))))))
+    (home-page "https://github.com/creachadair/taskgroup")
+    (synopsis "Manage a group of collaborating goroutines")
+    (description
+     "This package manages collections of cooperating goroutines.  It defines
+a @code{Group} that handles waiting for goroutine termination and the
+propagation of error values.  The caller may provide a callback to filter and
+respond to task errors.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-creack-pty
   (package
     (name "go-github-com-creack-pty")
