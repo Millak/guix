@@ -245,6 +245,30 @@ go-fuzz-headers.")
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-alexkohler-prealloc
+  (package
+    (name "go-github-com-alexkohler-prealloc")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/alexkohler/prealloc")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "011i8yqzyjgwj17k44xvvg4bxfv8z20s0416r2d3yf4s3wqqygpq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/alexkohler/prealloc"))
+    (home-page "https://github.com/alexkohler/prealloc")
+    (synopsis "Find slice declarations that could be preallocated")
+    (description
+     "This package is a Go static analysis tool to find slice declarations
+that could potentially be preallocated.")
+    (license license:expat)))
+
 (define-public go-github-com-andreyvit-diff
   (package
     (name "go-github-com-andreyvit-diff")
