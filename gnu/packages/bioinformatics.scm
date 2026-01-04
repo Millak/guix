@@ -20441,42 +20441,46 @@ the HiCExplorer and pyGenomeTracks packages.")
 (define-public python-pygenometracks
   (package
     (name "python-pygenometracks")
-    (version "3.5")
+    (version "3.9")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyGenomeTracks" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/deeptools/pyGenomeTracks")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1l7smg2gc1vm2181lzmdnywb11gp6s6z6j444dbsigv65car8z8p"))))
+        (base32 "1xaw0yjdqnxd1d1aww1x2kkfydrmbdvpvma2ahmax68f5a68b0yk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f                       ;there are none
+      ;; tests: 1 failed, 205 passed, 4 skipped, 229 warnings
+      #:test-flags
+      ;; AttributeError: module 'bx.seq' has no attribute 'DNA_COMP'
+      #~(list "--deselect=pygenometracks/tests/test_maf.py::test_first_maf_seq_zoom_dec")
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.py"
-               (("matplotlib ==3.1.1")
-                "matplotlib >=3.1.1"))))
-         (add-after 'unpack 'remove-invalid-syntax
-           (lambda _
-             (substitute* "setup.py"
-               ((".\\*,") ",")))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("matplotlib >=3.1.1,<3.9")
+                 "matplotlib >=3.1.1")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
-     (list python-future
+     (list python-bx-python
+           python-future
            python-gffutils
            python-hicmatrix
            python-intervaltree
            python-matplotlib
            python-numpy
+           python-pybedtools
            python-pybigwig
+           python-pyfaidx
            python-pysam
            python-tqdm))
-    (native-inputs
-     (list python-pytest
-           python-wheel))
     (home-page "https://pygenometracks.readthedocs.io")
     (synopsis "Program and library to plot beautiful genome browser tracks")
     (description
