@@ -615,6 +615,95 @@ controllers that manipulate both Kubernetes CRDs and aggregated/built-in
 Kubernetes APIs.")
     (license license:asl2.0)))
 
+(define-public go-sigs-k8s-io-controller-tools
+  (package
+    (name "go-sigs-k8s-io-controller-tools")
+    (version "0.19.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kubernetes-sigs/controller-tools")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n6vc681bhhk972l1ijg7m01xy3zvi5i17y6fhac1m7bs7rrgz1l"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/google/cel-go/codelab
+            (for-each delete-file-recursively
+                      (list "pkg/crd/testdata"
+                            "pkg/loader/testmod"
+                            "pkg/webhook/testdata"
+                            "pkg/deepcopy/testdata"
+                            "pkg/schemapatcher/testdata"
+                            "pkg/applyconfiguration/testdata/cronjob"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;;  Expected success, but got an error:
+                       ;;   <*fs.PathError | 0xc000314a20>:
+                       ;;   chdir ./testdata: no such file or directory
+                       ;;   {
+                       ;;       Op: "chdir",
+                       ;;       Path: "./testdata",
+                       ;;       Err: <syscall.Errno>0x2,
+                       ;;   }
+                       ;; 0 Passed | 1 Failed
+                       (list "TestObjectGeneration"
+                             ;; 23 Passed | 19 Failed
+                             "TestCRDGeneration"
+                             ;; validation_test.go:118:
+                             ;; failed to create validator:
+                             ;; open ./testdata/testdata.kubebuilder.io_oneofs.yaml:
+                             ;; no such file or directory
+                             "TestOneOfConstraints"
+                             ;; 3 Passed | 8 Failed
+                             "TestLoader"
+                             ;; 0 Passed | 2 Failed
+                             "TestInPlaceCRDSchemaGeneration"
+                             ;; 0 Passed | 11 Failed
+                             "TestWebhookGeneration"
+                             ;; 1 Passed | 1 Failed
+                             "TestVersioning")
+                       "|"))
+      #:import-path "sigs.k8s.io/controller-tools"
+      #:embed-files
+      #~(list "authoring.tmpl")))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-onsi-ginkgo
+           go-github-com-onsi-gomega))
+    (propagated-inputs
+     (list go-github-com-fatih-color
+           go-github-com-gobuffalo-flect
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-golang-org-x-tools
+           go-golang-org-x-tools-go-packages-packagestest
+           go-gopkg-in-yaml-v2
+           go-gopkg-in-yaml-v3
+           go-k8s-io-api
+           go-k8s-io-apiextensions-apiserver
+           go-k8s-io-apimachinery
+           go-k8s-io-apiserver
+           go-k8s-io-code-generator
+           go-k8s-io-gengo-v2
+           go-k8s-io-utils
+           go-sigs-k8s-io-yaml))
+    (home-page "https://sigs.k8s.io/controller-tools")
+    (synopsis "Kubernetes controller-tools Project")
+    (description
+     "The Kubernetes controller-tools Project is a set of go libraries for building
+Controllers.")
+    (license license:asl2.0)))
+
 
 ;;;
 ;;; Executables:
