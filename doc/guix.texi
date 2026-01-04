@@ -111,7 +111,7 @@ Copyright @copyright{} 2022 (@*
 Copyright @copyright{} 2022 John Kehayias@*
 Copyright @copyright{} 2022⁠–⁠2023 Bruno Victal@*
 Copyright @copyright{} 2022 Ivan Vilata-i-Balaguer@*
-Copyright @copyright{} 2023-2025 Giacomo Leidi@*
+Copyright @copyright{} 2023-2026 Giacomo Leidi@*
 Copyright @copyright{} 2022 Antero Mejr@*
 Copyright @copyright{} 2023 Karl Hallsby@*
 Copyright @copyright{} 2023 Nathaniel Nicandro@*
@@ -44971,6 +44971,202 @@ The database location is hard-coded to @file{/var/lib/rasdaemon/ras-mc_event.db}
 
 @end table
 @end deftp
+
+@cindex tuned
+@cindex system tuning
+@cindex System tuning service for Linux
+@subsubheading TuneD Service
+
+@url{https://tuned-project.org,TuneD} is a system tuning service for Linux.  It
+monitors connected devices using the udev device manager and tunes system
+settings according to a selected profile.
+
+It can be integrated with desktop environments like GNOME and KDE: it replaces
+@code{power-profiles-daemon} by implementing the same D-Bus API that they
+already use.
+
+The following is an example configuration that could be suitable for a laptop:
+
+@lisp
+(service tuned-service-type
+         (tuned-configuration
+          (power-profiles-daemon-support? #t)
+          (ppd-settings
+           (tuned-ppd-settings
+            ;; Customize default profiles to use laptop specific ones.
+            (profiles
+             '(("power-saver" . "laptop-ac-powersave")
+               ("balanced" . "balanced")
+               ("performance" . "throughput-performance")))
+            (battery
+             ;; Customize battery profiles to use laptop specific ones.
+             '(("power-saver" . "laptop-battery-powersave")
+               ("balanced" . "balanced-battery")))))))
+@end lisp
+
+For more information, refer to @code{tuned-main.conf(5)}.
+
+@defvar tuned-service-type
+This service spawns and configure the TuneD daemon.  The service's value is a
+@code{tuned-configuration} record.
+
+@c %start of fragment
+
+@deftp {Data Type} tuned-configuration
+Available @code{tuned-configuration} fields are:
+
+@table @asis
+@item @code{tuned} (default: @code{tuned}) (type: package)
+The TuneD package.
+
+@item @code{auto-start?} (default: @code{#t}) (type: boolean)
+Whether this service should be started automatically by the Shepherd.  If
+it is @code{#f} the service has to be started manually with
+@command{herd start}.
+
+@item @code{power-profiles-daemon-support?} (default: @code{#f}) (type: boolean)
+Whether the power-profiles-daemon emulation layer should be
+enabled.
+
+@item @code{profiles} (default: @code{'()}) (type: list-of-tuned-plugins)
+User provided profiles for TuneD.  Each element of the list is supposed
+to be a list where the first element is the name of the directory where
+plugin files will be placed under @file{/etc/tuned/profiles} and the
+second a file like object containing the plugin files:
+
+@lisp
+(list (list "plugin-name" (plain-file "plugin.conf" "content"))
+      (list "other-plugin"
+            (file-union "plugin-data"
+                        (list
+                         (list "other-plugin.conf"
+                               (plain-file "other-plugin.conf" "content"))
+                         (list "other-plugin.scm"
+                               (program-file "other-plugin.scm"
+                                             #~(display "content")))))))
+@end lisp
+
+@item @code{settings} (type: tuned-settings)
+Configuration for TuneD.
+
+@item @code{ppd-settings} (type: tuned-ppd-settings)
+Configuration for the @code{power-profiles-daemon} compatibility layer
+of TuneD.
+
+@item @code{recommend.conf} (type: file-like)
+File like object containing the recommended profile configuration.
+Defaults to @code{%default-tuned-configuration-recommend.conf}.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+
+@c %start of fragment
+
+@deftp {Data Type} tuned-settings
+Available @code{tuned-settings} fields are:
+
+@table @asis
+@item @code{daemon?} (default: @code{#t}) (type: boolean)
+Whether to use daemon.  Without daemon TuneD just applies tuning.
+
+@item @code{dynamic-tuning?} (default: @code{#f}) (type: boolean)
+Dynamically tune devices, if disabled only static tuning will be used.
+
+@item @code{default-instance-priority} (default: @code{0}) (type: integer)
+Default priority assigned to instances.
+
+@item @code{recommend-command?} (default: @code{#t}) (type: boolean)
+Recommend functionality, if disabled @code{recommend} command will be
+not available in CLI, daemon will not parse @file{recommend.conf} but
+will return one hardcoded profile (by default @code{balanced}).
+
+@item @code{sleep-interval} (default: @code{1}) (type: integer)
+How long to sleep before checking for events (in seconds), higher number
+means lower overhead but longer response time.
+
+@item @code{update-interval} (default: @code{10}) (type: integer)
+Update interval for dynamic tunings (in seconds).  It must be a multiple
+of the @code{sleep-interval}.
+
+@item @code{profile-dirs} (type: list-of-profile-dirs)
+List of strings or gexps representing directories to search for
+profiles.  In case of collisions in profile names, the latter directory
+takes precedence.
+
+@item @code{extra-content} (type: text-config)
+A list of file-like objects that are appended to the configuration file.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+
+@c %start of fragment
+
+@deftp {Data Type} tuned-ppd-settings
+Available @code{tuned-ppd-settings} fields are:
+
+@table @asis
+@item @code{default} (default: @code{"balanced"}) (type: string)
+Default PPD profile.
+
+@item @code{battery-detection?} (default: @code{#t}) (type: boolean)
+Whether to enable battery detection.
+
+@item @code{sysfs-acpi-monitor?} (default: @code{#t}) (type: boolean)
+Whether to react to changes of ACPI platform profile done via function
+keys (e.g., Fn-L).  This is marked upstream as an experimental feature.
+
+@item @code{profiles} (type: mixed-list)
+Map of PPD profiles states to TuneD profiles.  It's supposed to be a
+list of pairs, pair members are supposed to be string.  It defaults to
+@code{%default-tuned-ppd-settings-profiles}:
+
+@lisp
+'(("power-saver" . "powersave")
+  ("balanced" .  "balanced")
+  ("performance" . "throughput-performance"))
+@end lisp
+
+Elements can be pairs or strings.  Pair members can be either strings, gexps or
+file like objects.  Strings are directly passed to the serializer.  This can be
+an escape hatch in case the underlying syntax of the output file changes
+slightly and the Scheme API is not adequated in time.  This way there is always
+a way to work around Scheme records.
+
+@item @code{battery} (type: mixed-list)
+Map of PPD battery states to TuneD profiles.  It's supposed to be a list
+of pairs, pair members are supposed to be string.  It defaults to
+@code{%default-tuned-ppd-settings-battery}:
+
+@lisp
+'(("balanced" . "balanced-battery"))
+@end lisp
+
+Elements can be pairs or strings.  Pair members can be either strings, gexps or
+file like objects.  Strings are directly passed to the serializer.  This can be
+an escape hatch in case the underlying syntax of the output file changes
+slightly and the Scheme API is not adequated in time.  This way there is always
+a way to work around Scheme records.
+
+@item @code{extra-content} (type: text-config)
+A list of file-like objects that are appended to the configuration file.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+@end defvar
 
 @cindex zram
 @cindex compressed swap

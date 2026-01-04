@@ -8,6 +8,7 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2025 Edouard Klein <edk@beaver-labs.com>
+;;; Copyright © 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,13 +31,18 @@
   #:use-module (guix records)
   #:use-module (guix modules)
   #:use-module (guix i18n)
+  #:use-module (guix packages)
   #:use-module (guix ui)
   #:use-module (gnu services)
   #:use-module (gnu services admin)
   #:use-module (gnu services base)
   #:use-module (gnu services configuration)
+  #:use-module (gnu services dbus)
   #:use-module (gnu services shepherd)
+  #:use-module (gnu system file-systems)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages power)
   #:use-module (gnu packages file-systems)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
@@ -45,6 +51,7 @@
   #:use-module (srfi srfi-171)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 string-fun)
   #:export (earlyoom-configuration
             earlyoom-configuration?
             earlyoom-configuration-earlyoom
@@ -96,6 +103,49 @@
             rasdaemon-configuration?
             rasdaemon-configuration-record?
             rasdaemon-service-type
+
+            %default-tuned-configuration-recommend.conf
+            %default-tuned-ppd-settings-battery
+            %default-tuned-ppd-settings-profiles
+
+            tuned-configuration
+            tuned-configuration?
+            tuned-configuration-fields
+            tuned-configuration-tuned
+            tuned-configuration-auto-start?
+            tuned-configuration-power-profiles-daemon-support?
+            tuned-configuration-profiles
+            tuned-configuration-settings
+            tuned-configuration-ppd-settings
+            tuned-configuration-recommend.conf
+
+            tuned-settings
+            tuned-settings?
+            tuned-settings-fields
+            tuned-settings-daemon?
+            tuned-settings-dynamic-tuning?
+            tuned-settings-default-instance-priority
+            tuned-settings-recommend-command?
+            tuned-settings-sleep-interval
+            tuned-settings-update-interval
+            tuned-settings-profile-dirs
+            tuned-settings-extra-content
+
+            tuned-ppd-settings
+            tuned-ppd-settings?
+            tuned-ppd-settings-fields
+            tuned-ppd-settings-default
+            tuned-ppd-settings-battery-detection?
+            tuned-ppd-settings-sysfs-acpi-monitor?
+            tuned-ppd-settings-profiles
+            tuned-ppd-settings-battery
+            tuned-ppd-settings-extra-content
+
+            tuned-file-systems
+            tuned-activation
+            tuned-shepherd-services
+
+            tuned-service-type
 
             zram-device-configuration
             zram-device-configuration?
@@ -548,6 +598,404 @@ the Linux @code{cachefiles} module.")
           (service-extension activation-service-type rasdaemon-activation)))
    (compose concatenate)
    (description "Run @command{rasdaemon}, the RAS monitor")))
+
+
+;;;
+;;; TuneD.
+;;;
+
+(define (uglify-snake-case field-name)
+  "Serializes FIELD-NAME, a field name from @code{(gnu services configuration)},
+to a snake case string representation of the field name.  Trailing @code{?} in
+the name are dropped and @code{-} get replaced by @code{_}.
+
+For example the procedure would convert @code{'A-Field?} to @code{\"a_field\"}."
+  (define str (symbol->string field-name))
+  (string-downcase
+   (string-replace-substring
+    (if (string-suffix? "?" str)
+        (string-drop-right str 1)
+        str)
+    "-" "_")))
+
+(define* (tuned-serialize-pair pair #:key (separator "="))
+  (define (valid? member)
+    (or (string? member)
+        (gexp? member)
+        (file-like? member)))
+  (match pair
+    (((? valid? key) . (? valid? value))
+     #~(string-append #$key #$separator #$value))
+    (_
+     (raise
+      (formatted-message
+       (G_ "pair members must contain only strings, gexps or file-like objects
+but ~a was found")
+       pair)))))
+
+(define* (tuned-ppd-serialize-mixed-list name value #:key (separator " = "))
+  (if (zero? (length value))
+      ""
+      #~(string-append "\n[" #$(uglify-snake-case name) "]\n"
+                       (string-join
+                        (list #$@(map tuned-serialize-pair value)) "\n")
+                       "\n")))
+
+(define (mixed-list? value)
+  ;; Expected spec format:
+  ;; '(("name" . "value") "name=value")
+  (for-each
+   (lambda (el)
+     (cond ((string? el) el)
+           ((pair? el) (tuned-serialize-pair el))
+           (else
+            (raise
+             (formatted-message
+              (G_ "members must be either strings or pairs but ~a was
+found!")
+              el)))))
+   value)
+  #t)
+
+(define (tuned-ppd-serialize-string name value)
+  (format #f "~a=~a" (uglify-snake-case name) value))
+
+(define (tuned-ppd-serialize-boolean name value)
+  (format #f "~a=~a" (uglify-snake-case name) (if value "true" "false")))
+
+(define %default-tuned-ppd-settings-profiles
+  '(("power-saver" . "powersave")
+    ("balanced" . "balanced")
+    ("performance" . "throughput-performance")))
+
+(define %default-tuned-ppd-settings-battery
+  '(("balanced" . "balanced-battery")))
+
+(define-configuration tuned-ppd-settings
+  (default
+    (string "balanced")
+    "Default PPD profile.")
+  (battery-detection?
+    (boolean #t)
+    "Whether to enable battery detection.")
+  (sysfs-acpi-monitor?
+    (boolean #t)
+    "Whether to react to changes of ACPI platform profile done via function keys
+(e.g., Fn-L).  This is marked upstream as an experimental feature.")
+  (profiles
+   (mixed-list %default-tuned-ppd-settings-profiles)
+   "Map of PPD profiles states to TuneD profiles.  It's supposed to be a list of
+pairs, pair members are supposed to be string.  It defaults to
+@code{%default-tuned-ppd-settings-profiles}:
+
+@lisp
+'((\"power-saver\" . \"powersave\")
+  (\"balanced\" . \"balanced\")
+  (\"performance\" . \"throughput-performance\"))
+@end lisp
+
+Elements can be pairs or strings. Pair members can be either strings, gexps or
+file like objects.  Strings are directly passed to the serializer.  This can be
+an escape hatch in case the underlying syntax of the output file changes
+slightly and the Scheme API is not adequated in time.  This way there is always
+a way to work around Scheme records.")
+  (battery
+   (mixed-list %default-tuned-ppd-settings-battery)
+   "Map of PPD battery states to TuneD profiles.  It's supposed to be a list of
+pairs, pair members are supposed to be string.  It defaults to
+@code{%default-tuned-ppd-settings-battery}:
+
+@lisp
+'((\"balanced\" . \"balanced-battery\"))
+@end lisp
+
+Elements can be pairs or strings. Pair members can be either strings, gexps or
+file like objects.  Strings are directly passed to the serializer.  This can be
+an escape hatch in case the underlying syntax of the output file changes
+slightly and the Scheme API is not adequated in time.  This way there is always
+a way to work around Scheme records.")
+  (extra-content
+   (text-config
+    (list (plain-file "tuned-ppd-settings-extra-content" "")))
+   "A list of file-like objects that are appended to the configuration file."
+   (serializer serialize-text-config))
+  (prefix tuned-ppd-))
+
+(define (serialize-tuned-ppd-settings config)
+  (define fields
+    (filter-configuration-fields
+     tuned-ppd-settings-fields
+     '(default battery-detection? sysfs-acpi-monitor? profiles battery
+       extra-content)))
+  (define getters
+    (map configuration-field-getter fields))
+  (define names
+    (map configuration-field-name fields))
+  (define serializers
+    (map configuration-field-serializer fields))
+  (define values
+    (map (match-lambda ((serializer name getter)
+                        (serializer name (getter config))))
+         (zip serializers names getters)))
+
+  (match values
+    ((default battery-detection? sysfs-acpi-monitor? profiles battery
+      extra-content)
+
+     (mixed-text-file "ppd.conf"
+      "[main]\n"
+      (string-append default "\n")
+      (string-append battery-detection? "\n")
+      (string-append sysfs-acpi-monitor? "\n")
+      "\n"
+      profiles
+      battery
+      extra-content
+      "\n"))))
+
+(define (serialize-list-of-profile-dirs name value)
+  (if (zero? (length value))
+      ""
+      #~(string-append
+          #$(uglify-snake-case name) " = " (string-join (list #$@value) ","))))
+
+(define (list-of-profile-dirs? value)
+  (for-each
+   (lambda (el)
+     (unless (or (string? el) (file-like? el))
+       (raise
+        (formatted-message
+         (G_ "tuned-settings profile-dirs members must be either a string
+or a file-like object but ~a was found!")
+         el))))
+   value)
+  #t)
+
+(define tuned-serialize-boolean tuned-ppd-serialize-boolean)
+(define tuned-serialize-integer tuned-ppd-serialize-string)
+
+(define-configuration tuned-settings
+  (daemon?
+   (boolean #t)
+   "Whether to use daemon.  Without daemon TuneD just applies tuning.")
+  (dynamic-tuning?
+   (boolean #f)
+   "Dynamically tune devices, if disabled only static tuning will be used.")
+  (default-instance-priority
+   (integer 0)
+   "Default priority assigned to instances.")
+  (recommend-command?
+   (boolean #t)
+   "Recommend functionality, if disabled @code{recommend} command will be not
+available in CLI, daemon will not parse @file{recommend.conf} but will return
+one hardcoded profile (by default @code{balanced}).")
+  (sleep-interval
+   (integer 1)
+   "How long to sleep before checking for events (in seconds),
+higher number means lower overhead but longer response time.")
+  (update-interval
+   (integer 10)
+   "Update interval for dynamic tunings (in seconds).  It must be a multiple of
+the @code{sleep-interval}.")
+  (profile-dirs
+   (list-of-profile-dirs
+    (list (file-append tuned "/lib/tuned/profiles") "/etc/tuned/profiles"))
+   "List of strings or gexps representing directories to search for
+profiles.  In case of collisions in profile names, the latter directory takes
+precedence."
+   (serializer serialize-list-of-profile-dirs))
+  (extra-content
+   (text-config
+    (list (plain-file "tuned-settings-extra-content" "")))
+   "A list of file-like objects that are appended to the configuration file."
+   (serializer serialize-text-config))
+  (prefix tuned-))
+
+(define (serialize-tuned-settings config)
+  (define fields
+    (filter-configuration-fields
+     tuned-settings-fields
+     '(daemon? dynamic-tuning? default-instance-priority
+       recommend-command? sleep-interval update-interval profile-dirs
+       extra-content)))
+  (define getters
+    (map configuration-field-getter fields))
+  (define names
+    (map configuration-field-name fields))
+  (define serializers
+    (map configuration-field-serializer fields))
+  (define values
+    (map (match-lambda ((serializer name getter)
+                        (serializer name (getter config))))
+         (zip serializers names getters)))
+
+  (match values
+    ((daemon? dynamic-tuning? default-instance-priority
+      recommend-command? sleep-interval update-interval profile-dirs
+      extra-content)
+     (mixed-text-file
+      "tuned-main.conf"
+      (string-append daemon? "\n\n")
+      (string-append dynamic-tuning? "\n\n")
+      (string-append default-instance-priority "\n\n")
+      (string-append recommend-command? "\n\n")
+      (string-append sleep-interval "\n\n")
+      (string-append update-interval "\n\n")
+      profile-dirs
+      extra-content
+      "\n"))))
+
+(define (tuned-plugin? value)
+  (if (and (= 2 (length value))
+           (string? (first value))
+           (file-like? (second value)))
+      #t
+      (raise
+       (formatted-message
+        (G_ "tuned-configuration profiles members must be lists with two
+elements, the first being a string and the second a file-like object, but ~a was
+found!")
+        value))))
+
+(define (list-of-tuned-plugins? value)
+  (list-of tuned-plugin?))
+
+(define %default-tuned-configuration-recommend.conf
+  (file-append tuned "/lib/tuned/recommend.d/50-tuned.conf"))
+
+(define-configuration/no-serialization tuned-configuration
+  (tuned
+   (package tuned)
+   "The TuneD package.")
+  (auto-start?
+   (boolean #t)
+   "Whether this service should be started automatically by the Shepherd.  If it
+is @code{#f} the service has to be started manually with @command{herd start}.")
+  (power-profiles-daemon-support?
+   (boolean #f)
+   "Whether the power-profiles-daemon emulation layer should be
+enabled.")
+  (profiles
+   (list-of-tuned-plugins '())
+   "User provided profiles for TuneD.  Each element of the list is supposed to be
+a list where the first element is the name of the directory where plugin files
+will be placed under @file{/etc/tuned/profiles} and the second a file like
+object containing the plugin files:
+
+@lisp
+(list
+  (list \"plugin-name\"
+        (plain-file \"plugin.conf\" \"content\"))
+  (list \"other-plugin\"
+        (file-union \"plugin-data\"
+                    (list (list \"other-plugin.conf\"
+                                (plain-file \"other-plugin.conf\" \"content\"))
+                          (list \"other-plugin.scm\"
+                                (program-file \"other-plugin.scm\"
+                                               #~(display \"content\")))))))
+@end lisp")
+  (settings
+   (tuned-settings (tuned-settings))
+   "Configuration for TuneD.")
+  (ppd-settings
+   (tuned-ppd-settings (tuned-ppd-settings))
+   "Configuration for the @code{power-profiles-daemon} compatibility layer of
+TuneD.")
+  (recommend.conf
+   (file-like %default-tuned-configuration-recommend.conf)
+   "File like object containing the recommended profile configuration.  Defaults
+to @code{%default-tuned-configuration-recommend.conf}."))
+
+(define (tuned-file-systems config)
+  (list
+   (file-system
+     (device "none")
+     (mount-point "/run/tuned")
+     (type "ramfs")
+     (check? #f))))
+
+(define (tuned-activation config)
+  (match-record config <tuned-configuration>
+                (profiles settings ppd-settings recommend.conf)
+    #~(begin
+        (use-modules (guix build utils))
+        (let ((data-directory "/var/lib/tuned")
+              (config-directory "/etc/tuned"))
+          ;; Setup TuneD directories.
+          (for-each
+           (lambda (dir)
+             (mkdir-p dir)
+             (chmod dir #o755))
+           (list data-directory config-directory
+                 ;; the directory where TuneD will look for kernel modules for
+                 ;; plugins.
+                 "/etc/tuned/modprobe.d"))
+          ;; Create plugins kernel modules configuration.
+          (invoke #$(file-append coreutils-minimal "/bin/touch")
+                  "/etc/tuned/modprobe.d/tuned.conf")
+          ;; Generate and activate TuneD configuration files.
+          ;; TuneD needs to write in /etc/tuned, special-files-service-type
+          ;; creates a file union, so /etc/tuned is read-only and TuneD crashes.
+          ;; activate-special-files creates a single symlink to the store for
+          ;; each file so TuneD doesn't notice and runs successfully.
+          (activate-special-files
+           '(("/etc/tuned/recommend.conf" #$recommend.conf)
+             ("/etc/tuned/profiles"
+              #$(file-union "tuned-profiles" profiles))
+             ("/etc/tuned/tuned-main.conf"
+              #$(serialize-tuned-settings settings))
+             ("/etc/tuned/ppd.conf"
+              #$(serialize-tuned-ppd-settings ppd-settings))))))))
+
+(define (tuned-shepherd-services config)
+  (match-record config <tuned-configuration>
+                (tuned auto-start? power-profiles-daemon-support?)
+    (append
+     (list
+      (shepherd-service
+         (documentation "TuneD daemon")
+         (provision '(tuned))
+         (requirement '(dbus-system user-processes udev))
+         (start #~(make-forkexec-constructor
+                   '(#$(file-append tuned "/sbin/tuned"))
+                   #:log-file "/var/log/tuned/tuned.log"))
+         (stop #~(make-kill-destructor))
+         (auto-start? auto-start?)))
+     (if power-profiles-daemon-support?
+         (list (shepherd-service
+                 (documentation "TuneD power-profiles-daemon emulation daemon")
+                 (provision '(tuned-ppd power-profiles-daemon))
+                 (requirement '(dbus-system user-processes udev tuned))
+                 (start
+                  #~(make-forkexec-constructor
+                     '(#$(file-append tuned "/sbin/tuned-ppd"))
+                     #:log-file "/var/log/tuned/tuned-ppd.log"))
+                 (stop #~(make-kill-destructor))
+                 (auto-start? auto-start?)))
+         '()))))
+
+(define tuned-service-type
+  (let ((config->package
+         (compose list tuned-configuration-tuned)))
+    (service-type
+     (name 'tuned)
+     (extensions (list
+                  (service-extension shepherd-root-service-type
+                                     tuned-shepherd-services)
+                  (service-extension dbus-root-service-type
+                                     config->package)
+                  (service-extension polkit-service-type
+                                     config->package)
+                  (service-extension profile-service-type
+                                     config->package)
+                  (service-extension file-system-service-type
+                                     tuned-file-systems)
+                  (service-extension activation-service-type
+                                     tuned-activation)))
+     (default-value (tuned-configuration))
+     (description "Run the TuneD daemon.  It is daemon that tunes system settings
+dynamically.  It does so by monitoring the usage of several system components
+periodically."))))
 
 
 ;;;
