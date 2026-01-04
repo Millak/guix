@@ -562,7 +562,7 @@ It aims to support Nintendo DSi and 3DS as well.")
              googletest
              pkg-config
              python-minimal
-             python-numpy))
+             python-numpy-1))
       (inputs
        (list alsa-lib
              ao
