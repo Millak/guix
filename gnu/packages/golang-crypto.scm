@@ -493,6 +493,32 @@ originated from https://github.com/zhenjl/cityhash and
 https://github.com/zentures/cityhash projects.")
     (license license:expat)))
 
+(define-public go-github-com-bramvdbogaerde-go-scp
+  (package
+    (name "go-github-com-bramvdbogaerde-go-scp")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bramvdbogaerde/go-scp")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16rf7fzrfhqadlzcxfqi3q7dv73hjmnr4fgad33psrjan1kq5w78"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;Tests fail, as they try to connect to a local server
+      #:import-path "github.com/bramvdbogaerde/go-scp"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (home-page "https://github.com/bramvdbogaerde/go-scp")
+    (synopsis "Golang scp client")
+    (description
+     "This package is a simple scp package to copy files over SSH.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-btcsuite-btcd-btcec
   (let ((commit "67e573d211ace594f1366b4ce9d39726c4b19bd0")
         (revision "0"))
