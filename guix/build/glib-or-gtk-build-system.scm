@@ -162,10 +162,12 @@ add a dependency of that output on GLib and GTK+."
       ((output . directory)
        (unless (member output glib-or-gtk-wrap-excluded-outputs)
          (let* ((bindir       (string-append directory "/bin"))
+                (sbindir      (string-append directory "/sbin"))
                 (libexecdir   (string-append directory "/libexec"))
                 (bin-list     (filter (negate wrapped-program?)
                                       (append (find-files bindir ".*")
-                                          (find-files libexecdir ".*"))))
+                                              (find-files libexecdir ".*")
+                                              (find-files sbindir ".*"))))
                 (datadirs     (data-directories
                                (alist-cons output directory inputs)))
                 (gtk-mod-dirs (gtk-module-directories
