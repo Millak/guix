@@ -48,7 +48,7 @@
 ;;; Copyright © 2021, 2025 muradm <mail@muradm.net>
 ;;; Copyright © 2021 pineapples <guixuser6392@protonmail.com>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2021-2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2021-2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
@@ -1074,7 +1074,7 @@ console.")
 (define-public btop
   (package
     (name "btop")
-    (version "1.4.5")
+    (version "1.4.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1083,7 +1083,7 @@ console.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "03dchclmbjphirzqii4m0vyqfd0vw1k8mgpchmr13g3brlfzxd34"))))
+                "1nj58dbv3c0rj8fngldkyrmdmacmjnbg8ch1c07ik97kqnnzd3l7"))))
     (build-system gnu-build-system)
     (native-inputs (list lowdown))
     (arguments
