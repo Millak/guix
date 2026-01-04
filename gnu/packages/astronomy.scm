@@ -7835,8 +7835,8 @@ memory usage, improving performance and run in parallel with MPI.")
   ;; XXX: 2.0.0 was released in 2021 there are a lot of changes since that
   ;; time and it failed to build with python-astropy 6.0.0, use the latest
   ;; upstream commit for now.
-  (let ((commit "54e9e2a624910c4d177ca70f8e9fb8110c8fae5b")
-        (revision "0"))
+  (let ((commit "a5e76c398f5b03192fa54659f81e7e1a929d9f7c")
+        (revision "1"))
     (package
       (name "python-pysynphot")
       (version (git-version "2.0.0" revision commit))
@@ -7848,10 +7848,11 @@ memory usage, improving performance and run in parallel with MPI.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "09sivpfqilk86zp8k5wmrs4g48m4kypn34jcy95y5h4ygbn5zbzy"))))
+          (base32 "1a1gr39jl0ivc9wviwlbn1hq542chd2psy23hjxpjrhq33ppa7bn"))))
       (build-system pyproject-build-system)
       (arguments
        (list
+        ;; tests: 189 passed, 213 skipped, 3 xfailed
         #:phases
         #~(modify-phases %standard-phases
             (add-before 'build 'set-version
@@ -7864,12 +7865,11 @@ memory usage, improving performance and run in parallel with MPI.")
        (list python-pytest
              python-pytest-remotedata
              python-setuptools
-             python-setuptools-scm
-             python-wheel))
+             python-setuptools-scm))
       (propagated-inputs
        (list python-astropy
              python-beautifulsoup4
-             python-numpy
+             python-numpy-1
              python-pytest-astropy-header
              python-six))
       (home-page "https://github.com/spacetelescope/pysynphot")
