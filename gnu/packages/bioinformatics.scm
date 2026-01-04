@@ -24303,39 +24303,40 @@ aligner.")
 (define-public scvelo
   (package
     (name "scvelo")
-    (version "0.2.4")
+    (version "0.3.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "scvelo" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/theislab/scvelo")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0h5ha1459ljs0qgpnlfsw592i8dxqn6p9bl08l1ikpwk36baxb7z"))))
+        (base32 "0xsi0bdsk24mf7zifizshlc3arc6fn2blmvjzbl21k66hc2xd2z9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-       #:test-flags
-       '(list "--pyargs" "scvelo/core"
-              ;; XXX: these two tests fail for unknown reasons
-              "-k"
-              "not test_perfect_fit and not test_perfect_fit_2d")
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'matplotlib-compatibility
-             (lambda _
-               (substitute* "scvelo/settings.py"
-                 (("warnings.filterwarnings\\(\"ignore\", category=cbook.mplDeprecation\\)")
-                  ""))))
-           ;; Numba needs a writable dir to cache functions.
-           (add-before 'check 'set-numba-cache-dir
-             (lambda _
-               (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+      ;; tests: 173 passed, 1707 warnings
+      #:test-flags
+      ;; Run only core tests as other fail a lot in: datasets, preprocessing
+      ;; and tools.
+      #~(list "tests/core")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          ;; Numba needs a writable dir to cache functions.
+          (add-before 'check 'set-numba-cache-dir
+            (lambda _
+              (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
-     (list pybind11     ;XXX: marked as install requirement
-           python-anndata
-           python-hnswlib
-           python-igraph
+     (list python-anndata
            python-loompy
-           python-louvain
            python-matplotlib
            python-numba
            python-numpy
@@ -24343,11 +24344,12 @@ aligner.")
            python-scanpy
            python-scikit-learn
            python-scipy
-           python-umap-learn))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm))
+           python-umap-learn
+           ;; [optional]
+           pybind11
+           python-hnswlib
+           python-igraph
+           python-louvain))
     (home-page "https://scvelo.org")
     (synopsis "RNA velocity generalized through dynamical modeling")
     (description "ScVelo is a scalable toolkit for RNA velocity analysis in
