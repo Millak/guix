@@ -22,6 +22,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-crypto)
@@ -258,6 +259,72 @@ system.")
 being specific to etcd itself.")
     (license license:asl2.0)))
 
+(define-public go-k8s-io-apiextensions-apiserver
+  (package
+    (name "go-k8s-io-apiextensions-apiserver")
+    (version "0.34.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kubernetes/apiextensions-apiserver")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qng3q3n9169vhb99sm1fk4c834kvqhlvb97ivz0m1zn30fk9xqj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;FIXME: Tests hang
+      #:skip-build? #t
+      #:import-path "k8s.io/apiextensions-apiserver"
+      #:embed-files #~(list "authoring.tmpl")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
+    (native-inputs
+     (list go-github-com-spf13-cobra
+           go-github-com-spf13-pflag))
+    (propagated-inputs
+     (list go-github-com-emicklei-go-restful-v3
+           go-github-com-fxamacker-cbor-v2
+           go-github-com-gogo-protobuf
+           go-github-com-google-cel-go
+           go-github-com-google-gnostic-models
+           go-github-com-google-uuid
+           go-go-etcd-io-etcd-client-pkg-v3
+           go-go-etcd-io-etcd-client-v3
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-trace
+           go-go-yaml-in-yaml-v2
+           go-golang-org-x-sync
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+           go-gopkg-in-evanphx-json-patch-v4
+           go-k8s-io-api
+           go-k8s-io-apimachinery
+           go-k8s-io-apiserver
+           go-k8s-io-client-go
+           go-k8s-io-code-generator
+           go-k8s-io-component-base
+           go-k8s-io-klog-v2
+           go-k8s-io-kube-openapi
+           go-k8s-io-utils
+           go-sigs-k8s-io-json
+           go-sigs-k8s-io-randfill
+           go-sigs-k8s-io-structured-merge-diff-v6
+           go-sigs-k8s-io-yaml))
+    (home-page "https://k8s.io/apiextensions-apiserver")
+    (synopsis "API server for Kubernetes API extensions")
+    (description
+     "This API server provides the implementation for
+@code{CustomResourceDefinitions} which is included as delegate server inside
+of @code{kube-apiserver}.")
+    (license license:asl2.0)))
+
 (define-public go-k8s-io-apiserver
   (package
     (name "go-k8s-io-apiserver")
@@ -478,6 +545,20 @@ Kubernetes-style API types}.")
 ;;;
 ;;; Executables:
 ;;;
+
+(define-public kubernetes-apiserver
+  (package/inherit go-k8s-io-apiextensions-apiserver
+    (name "kubernetes-apiserver")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? #f #t) #f)
+       ((#:install-source? #t #t) #f)
+       ((#:skip-build? #t #t) #f)))
+    (native-inputs
+     (append (package-native-inputs go-k8s-io-apiextensions-apiserver)
+             (package-propagated-inputs go-k8s-io-apiextensions-apiserver)))
+    (propagated-inputs '())
+    (inputs '())))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
