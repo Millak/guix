@@ -341,6 +341,52 @@ being specific to etcd itself.")
 aggregated API server.")
     (license license:asl2.0)))
 
+(define-public go-k8s-io-code-generator
+  (package
+    (name "go-k8s-io-code-generator")
+    (version "0.35.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kubernetes/code-generator")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16v8r1l8nm4m3s94ck1r7j0n7m5rkxj8bxb7a9m5zmrkp7s6wldq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "k8s.io/code-generator"
+      #:unpack-path "k8s.io/code-generator"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (delete-file-recursively "examples")))))))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-spf13-pflag))
+    (propagated-inputs
+     (list go-github-com-gogo-protobuf
+           go-github-com-google-gnostic-models
+           go-go-yaml-in-yaml-v2
+           go-golang-org-x-text
+           go-k8s-io-apimachinery
+           go-k8s-io-gengo-v2
+           go-k8s-io-klog-v2
+           go-k8s-io-kube-openapi
+           go-k8s-io-utils
+           go-sigs-k8s-io-randfill))
+    (home-page "https://k8s.io/code-generator")
+    (synopsis "Code generator for Kubernetes API types")
+    (description
+     "Golang code-generators used to implement
+@url{https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md,
+Kubernetes-style API types}.")
+    (license license:asl2.0)))
+
 (define-public go-k8s-io-component-base
   (package
     (name "go-k8s-io-component-base")
