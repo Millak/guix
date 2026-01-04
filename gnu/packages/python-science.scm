@@ -5768,7 +5768,7 @@ science including tools for accessing data sets in Python.")
     (name "python-pyfma")
     (version "0.1.6")
     (source (origin
-              (method git-fetch)   ;for tests
+              (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/nschloe/pyfma")
                     (commit version)))
@@ -5777,8 +5777,8 @@ science including tools for accessing data sets in Python.")
                (base32
                 "12i68jj9n1qj9phjnj6f0kmfhlsd3fqjlk9p6d4gs008azw5m8yn"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-numpy))
-    (native-inputs (list pybind11 python-pytest python-setuptools python-wheel))
+    (propagated-inputs (list python-numpy-1))
+    (native-inputs (list pybind11 python-pytest python-setuptools))
     (home-page "https://github.com/nschloe/pyfma")
     (synopsis "Fused multiply-add for Python")
     (description "@code{pyfma} provides an implementation of fused
