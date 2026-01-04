@@ -34087,31 +34087,30 @@ News homepage.")
     (license license:gpl3)))
 
 (define-public emacs-lobsters
-  (let ((commit "d061e1b0d4fe27c7751509da61396681d335e69f")
-        (revision "0"))
-    (package
-      (name "emacs-lobsters")
-      (version (git-version "1.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/tanrax/lobsters.el")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "042qhc3qg3lzcicq9b5z0b5650a9c3d71db5w2bnwbydph25m97h"))))
-      (build-system emacs-build-system)
-      (arguments
-       (list
-        #:tests? #f))                   ; no tests
-      (propagated-inputs (list emacs-request emacs-visual-fill-column))
-      (home-page "https://github.com/tanrax/lobsters.el/")
-      (synopsis "Lobsters client for Emacs")
-      (description
-       "This package provides a lobsters client for Emacs to browse stories
-and comments")
-      (license license:gpl3+))))
+  (package
+    (name "emacs-lobsters")
+    (version "1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tanrax/lobsters.el")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19nik1vaazf0w43fvksshx2c1fbby0fyafn2859jbdmvxwb5imw7"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f))                     ;no tests
+    (propagated-inputs
+     (list emacs-request emacs-visual-fill-column))
+    (home-page "https://github.com/tanrax/lobsters.el/")
+    (synopsis "Lobsters client for Emacs")
+    (description
+     "This package provides a lobsters client for Emacs to browse stories
+and comments.")
+    (license license:gpl3+)))
 
 (define-public emacs-tokei
   (package
