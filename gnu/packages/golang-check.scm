@@ -3657,6 +3657,31 @@ and restore them afterwards.")
 of @url{https://github.com/wadey/gocovmerge}.")
     (license license:bsd-2)))
 
+(define-public go-go-simpler-org-assert
+  (package
+    (name "go-go-simpler-org-assert")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-simpler/assert")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pg3yhicggby978n8war9n5zzigr95mvnsipnk6zgsjn6gyvjdm5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go-simpler.org/assert"))
+    (home-page "https://go-simpler.org/assert")
+    (synopsis "Assertions for the standard testing package")
+    (description
+     "This package implements assertions for the standard @code{testing}
+package, and is a minimalistic replacement for the @code{stretchr/testify}
+package.")
+    (license license:mpl2.0)))
+
 (define-public go-go-simpler-org-sloglint
   (package
     (name "go-go-simpler-org-sloglint")
