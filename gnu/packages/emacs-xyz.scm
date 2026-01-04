@@ -27674,7 +27674,7 @@ object @code{nil} corresponds 1:1 with @code{NULL} in the database.")
 (define-public emacs-closql
   (package
     (name "emacs-closql")
-    (version "2.3.2")
+    (version "2.4.0")
     (source
      (origin
        (method git-fetch)
@@ -27684,11 +27684,11 @@ object @code{nil} corresponds 1:1 with @code{NULL} in the database.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "110xlykmgd77z908l54kws7qcgj9hk7r33zmbk13dabl3wf8yzzk"))))
+         "08zxrzwpsixcc9ma7zps21krm0fn7l97aawhhacn2yf1mjja0p5s"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs
-     (list emacs-compat emacs-emacsql))
+     (list emacs-compat emacs-cond-let emacs-emacsql))
     (home-page "https://github.com/emacscollective/closql")
     (synopsis "Store EIEIO objects using EmacSQL")
     (description
@@ -27697,7 +27697,7 @@ database.  SQLite is used as backend.  This library imposes some restrictions
 on what kind of objects can be stored; it isn't intended to store arbitrary
 objects.  All objects have to share a common superclass and subclasses cannot
 add any additional instance slots.")
-    (license license:gpl3)))
+    (license license:gpl3+)))
 
 (define-public emacs-sql-indent
   (package
