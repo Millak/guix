@@ -30438,8 +30438,8 @@ The yaml package supports most of YAML 1.2, but preserves some behavior from
 ;; to build NNCP and remove vendor) dependency for Golang.  Full build depends
 ;; on Bazel <https://bazel.build/>.
 (define-public go-gvisor-dev-gvisor
-  (let ((commit "634ce95eed8d5b8e6b3e2ea30542c34cb30af148")
-        (revision "0"))
+  (let ((commit "9414b50a5633100fd7299a5a7998742575dcb669")
+        (revision "1"))
     (package
       (name "go-gvisor-dev-gvisor")
       (version (git-version "0.0.0" revision commit))
@@ -30451,7 +30451,7 @@ The yaml package supports most of YAML 1.2, but preserves some behavior from
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1l3si6qlchwgsvaq6lxyvj8iq8n8pqxlayb1hbdf3pynxi52hfkw"))))
+          (base32 "0vqaclb2ignkcs7n463bj349m0xybdsv71i6afhzh8r05hdywzax"))))
       (build-system go-build-system)
       (arguments
        (list
