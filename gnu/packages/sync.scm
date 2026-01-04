@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2020, 2022-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2020, 2022-2023, 2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2021 Ludovic Courtès <ludo@gnu.org>
@@ -342,23 +342,24 @@ See also: megacmd, the official tool set by MEGA.")
 (define-public onedrive
   (package
     (name "onedrive")
-    ;; Move ahead of 2.5.3 for OpenSSL version check error and other fixes
-    (version "2.5.3-1.71a71da")
+    (version "2.5.9")
     (source
       (origin
         (method git-fetch)
         (uri (git-reference
                (url "https://github.com/abraunegg/onedrive")
-               (commit "71a71da1e0c981969900fa690c93905e0cc4b9b5")))
+               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1rr3aw363gln4i8j3b43mih1acqj5way7ybs0mndxkhsayw67vb0"))))
+         (base32 "05ygicsfw7g5jmlymiwpv097223qglx5324ycy47yc1j3qlzpfjn"))))
     (build-system gnu-build-system)
     (arguments
      (list
        #:configure-flags
        #~(list "--enable-completions"
                "--enable-notifications"
+               (string-append "--with-bash-completion-dir="
+                              #$output "/share/bash-completion/completions")
                (string-append "--with-zsh-completion-dir="
                               #$output "/share/zsh/site-functions")
                (string-append "--with-fish-completion-dir="
@@ -367,10 +368,6 @@ See also: megacmd, the official tool set by MEGA.")
        #~(list (string-append "CC=" #$(cc-for-target)))
        #:phases
        #~(modify-phases %standard-phases
-         (add-after 'configure 'adjust-makefile
-           (lambda _
-             (substitute* "Makefile"
-               (("-O ") "-O2 "))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
@@ -380,6 +377,7 @@ See also: megacmd, the official tool set by MEGA.")
     (inputs
      (list bash-minimal
            curl
+           dbus
            ldc
            libnotify
            sqlite))
@@ -606,7 +604,7 @@ Feature:
        (snippet
         #~(begin
             ;; XXX: This test fails to compile: `undefined: testscript.Main'
-            (delete-file "fs/logger/logger_test.go"))))) 
+            (delete-file "fs/logger/logger_test.go")))))
     (build-system go-build-system)
     (arguments
      (list
