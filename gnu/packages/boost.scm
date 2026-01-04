@@ -368,7 +368,7 @@ across a broad spectrum of applications.")
     (name "boost-numpy")
     (native-inputs
      (modify-inputs (package-native-inputs boost)
-       (append python-numpy)))))
+       (append python-numpy-1)))))
 
 (define-public boost-sync
   (let ((commit "e690de2d30e2f1649ff500c9a6f3539814994b1c")
