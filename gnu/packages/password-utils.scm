@@ -795,20 +795,20 @@ command-line programs (@command{pwqcheck}, @command{pwqfilter}, and
     (license (list license:bsd-3        ;manual pages
                    license:bsd-1))))    ;code
 
-(define-public assword
+(define-public impass
   (package
-    (name "assword")
-    (version "0.11")
+    (name "impass")
+    (version "0.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (list
              (string-append
-              "http://http.debian.net/debian/pool/main/a/assword/"
-              "assword_" version ".orig.tar.gz")))
+              "http://http.debian.net/debian/pool/main/i/impass/"
+              "impass_" version ".orig.tar.gz")))
        (sha256
         (base32
-         "03gkb6kvsghznbcw5l7nmrc6mn3ixkjd5jcs96ni4zs9l47jf7yp"))))
+         "0jsssp5f2mssywxnja87aq1p2k24rjjz361b8if4kfixwi44rr5a"))))
     (arguments
      (list
       ;; irritatingly, tests do run but not there are two problems:
@@ -822,30 +822,32 @@ command-line programs (@command{pwqcheck}, @command{pwqfilter}, and
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'install 'wrap-assword
+          (add-after 'wrap 'wrap-impass
             (lambda _
               (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH")))
-                (wrap-program (string-append #$output "/bin/assword")
+                (wrap-program (string-append #$output "/bin/impass")
                   `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))))
           (add-after 'install 'manpage
             (lambda _
-              (invoke "make" "assword.1")
-              (install-file "assword.1"
+              (invoke "make" "impass.1")
+              (install-file "impass.1"
                             (string-append #$output "/share/man/man1")))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (inputs
      (list bash-minimal gtk+ python-xdo python-gpg python-pygobject))
     (propagated-inputs
      (list xclip))
     (native-inputs
-     (list txt2man))
-    (home-page "https://finestructure.net/assword/")
+     (list txt2man python-setuptools))
+    (home-page "https://finestructure.net/impass/")
     (synopsis "Password manager")
-    (description "assword is a simple password manager using GPG-wrapped
+    (description "impass is a simple password manager using GPG-wrapped
 JSON files.  It has a command line interface as well as a very simple
 graphical interface, which can even \"type\" your passwords into
 any X11 window.")
     (license license:gpl3+)))
+
+(define-deprecated-package assword impass)
 
 (define-public password-store
   (package
