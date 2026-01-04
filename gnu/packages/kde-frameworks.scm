@@ -32,7 +32,7 @@
 
 (define-module (gnu packages kde-frameworks)
   #:use-module (guix build-system cmake)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -86,6 +86,7 @@
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages qt)
@@ -511,11 +512,13 @@ It is the default icon theme for the KDE Plasma desktop.")
               (sha256
                (base32
                 "0lwcabw7f91br6irwlwy4qx4929s81f9dyz4b9r8rkwis2p8a3kx"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f ; test need network
            #:phases #~(modify-phases %standard-phases
-                        (delete 'sanity-check)))) ;its insane.
+                        ;; Some package requirements are not necessary.
+                        (delete 'sanity-check))))
+    (native-inputs (list python-setuptools))
     (propagated-inputs
      ;; kapidox is a python programm
      ;; TODO: check if doxygen has to be installed, the readme does not
