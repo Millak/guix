@@ -42,7 +42,8 @@
             %test-exim
             %test-dovecot
             %test-getmail
-            %test-rspamd))
+            %test-rspamd
+            %test-radicale))
 
 (define %qemu-static-networking-no-nameserver
   ;; Networking configuration for QEMU without nameserver.
@@ -721,3 +722,68 @@ Subject: Hello Nice to meet you!")
    (name "rspamd")
    (description "Basic rspamd service test.")
    (value (run-rspamd-test))))
+
+(define %radicale-os
+  (simple-operating-system
+   (service dhcpcd-service-type)
+   (service radicale-service-type)))
+
+(define (run-radicale-test)
+  "Return a test of an OS running Radicale service."
+
+  (define forwarded-port 5232)
+
+  (define vm
+    (virtual-machine
+      (operating-system
+        (marionette-operating-system
+         %radicale-os
+         #:imported-modules '((gnu services herd))))
+      (port-forwardings `((5232 . ,forwarded-port)))))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (srfi srfi-64)
+                       (gnu build marionette))
+
+          (define marionette
+            (make-marionette '(#$vm)))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "Radicale")
+
+          (test-assert "Radicale service is running"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (wait-for-service 'radicale))
+             marionette))
+
+          (test-assert "Radicale TCP port ready, IPv4"
+            (wait-for-tcp-port #$forwarded-port marionette))
+
+          (test-equal "Radicale internal web interface works"
+            200
+            (marionette-eval
+             '(begin
+                (use-modules (web client)
+                             (web response))
+                (response-code (http-get "http://localhost:5232/.web/index.html")))
+             marionette))
+
+          (test-assert "Radicale configuration action"
+            (marionette-eval '(with-shepherd-action 'radicale ('configuration)
+                                                    results
+                                (file-exists? (car results)))
+                             marionette))
+
+          (test-end))))
+
+  (gexp->derivation "radicale-test" test))
+
+(define %test-radicale
+  (system-test
+   (name "radicale")
+   (description "Basic radicale service test.")
+   (value (run-radicale-test))))
