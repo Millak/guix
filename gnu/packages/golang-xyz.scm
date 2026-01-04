@@ -7220,6 +7220,67 @@ against various paths.  This is particularly useful when trying to filter
 files based on a .gitignore document.")
     (license license:expat)))
 
+(define-public go-github-com-creachadair-mds
+  (package
+    (name "go-github-com-creachadair-mds")
+    (version "0.25.15")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/creachadair/mds")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zdidlcbjlx9aw5j3i73c3mxp7366yh66bn7s5a8p1zaw72k035n"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.25
+      #:skip-build? #t
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestNetwork" ;Needs network
+                             "TestNewHTTPServer"
+                             ;; Broken by read-only FS
+                             "TestDeepPathsWithGlobAndUmask")
+                       "|"))
+      #:import-path "github.com/creachadair/mds"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (home-page "https://github.com/creachadair/mds")
+    (synopsis "Generic data structures and utility types in Go")
+    (description
+     "This repository defines generic data structures and utility types in Go.
+
+Data structures:
+@itemize
+@item heapq: a heap-structured priority queue
+@item mapset: a basic map-based set implementation
+@item mlink: basic linked sequences (list, queue)
+@item omap: ordered key-value map
+@item queue: an array-based FIFO queue
+@item ring: a circular doubly-linked sequence
+@item stack: an array-based LIFO stack
+@item stree: self-balancing binary-search tree
+@end itemize
+
+Utilities:
+@itemize
+@item cache: an in-memory key/value cache
+@item compare: provides helpers for comparison of values
+@item distinct: a probabilistic distinct-elements counter (CVM)
+@item mbits: helpful functions for manipulating bits and bytes
+@item mdiff: supports creating textual diffs
+@item mnet: provides an in-memory network implementation compatible with the net package
+@item mstr: helpful functions for manipulating strings
+@item mtest: a support library for writing tests
+@item shell: POSIX shell quoting and splitting
+@item slice: helpful functions for manipulating slices
+@item value: helpful functions for basic values and pointers
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public go-github-com-creack-pty
   (package
     (name "go-github-com-creack-pty")
