@@ -4757,24 +4757,37 @@ tabular datasets.  This package provides the core modules of Vaex.")
 (define-public python-vector
   (package
     (name "python-vector")
-    (version "1.6.2")
+    (version "1.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "vector" version))
        (sha256
-        (base32 "1jhfgx54a6l1cz9as2wlwrph86f8s1882biaakx1cl31igdxjnbf"))))
+        (base32 "0hnnld7yqxb1i6miqfac7nmd0fn7xbvq1w9akp278b1jaclyl1cb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; This file requires python-papermill (not yet packaged).
-      #:test-flags #~(list "--ignore" "tests/test_notebooks.py")))
-    (propagated-inputs (list python-numpy python-packaging))
-    (native-inputs (list python-awkward
-                         python-hatch-vcs
-                         python-hatchling
-                         python-pytest
-                         python-sympy))
+      ;; tests: 813 passed, 3 skipped, 1 deselected
+      #:test-flags
+      ;; assert array([2.]) == array([-2.])
+      #~(list "--deselect=tests/test_issues.py::test_issue_443" )))
+    (native-inputs
+     (list ;; python-dask-awkward   ;not packaged yet in Guix
+           python-hatch-vcs
+           python-hatchling
+           ;; python-jax            ;not packaged yet in Guix
+           python-notebook
+           python-optree
+           python-papermill
+           python-pytest
+           #;python-spark-parse))   ;not packaged yet in Guix
+    (propagated-inputs
+     (list python-numpy
+           python-packaging
+           ;; [optional]
+           python-awkward
+           python-numba
+           python-sympy))
     (home-page "https://github.com/scikit-hep/vector")
     (synopsis "Arrays of 2D, 3D, and Lorentz vectors")
     (description "Vector is a Python library for 2D and 3D spatial vectors, as
