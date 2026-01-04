@@ -767,6 +767,25 @@ font is provided in the OpenType font (OTF) format.")
     (properties '((upstream-name . "freefont")
                   (ftp-directory . "/gnu/freefont")))))
 
+(define-public font-great-vibes
+  (package
+    (name "font-great-vibes")
+    (version "1.103")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/googlefonts/great-vibes/")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1bxjr41spgf0l1w2fhs6743gvp0id2hv0vsivqcflb8f631rkkq1"))))
+    (build-system font-build-system)
+    (home-page "https://fonts.google.com/specimen/Great+Vibes")
+    (synopsis "Flowing script font")
+    (description "Great Vibes is a flowing script font with casual uppercase
+letters and more formal lowercase letters.")
+    (license license:silofl1.1)))
+
 (define-public font-liberation
   (package
     (name "font-liberation")
