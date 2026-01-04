@@ -25661,47 +25661,50 @@ from within Elisp using a DSL similar to CSS selectors.")
     (license license:gpl3+)))
 
 (define-public emacs-envrc
-  (package
-    (name "emacs-envrc")
-    (version "0.12")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/purcell/envrc")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1kx5p85p2c682j50cah18njdraj07v9dg8imi7p97bkx7n5malxm"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:tests? #false                   ;FIXME: 8 out of 11 tests fail
-      #:test-command #~(list "emacs" "-Q" "--batch"
-                             "-l" "envrc-tests.el"
-                             "-f" "ert-run-tests-batch-and-exit")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-direnv-location
-            (lambda* (#:key inputs #:allow-other-keys)
-              (emacs-substitute-variables "envrc.el"
-                ("envrc-direnv-executable"
-                 (search-input-file inputs "/bin/direnv"))))))))
-    (inputs
-     (list direnv))
-    (propagated-inputs
-     (list emacs-inheritenv))
-    (home-page "https://github.com/purcell/envrc")
-    (synopsis "Support for Direnv which operates buffer-locally")
-    (description
-     "This is library which uses Direnv to set environment variables on
+  ;; Last tag is 2 years old.
+  (let ((commit "06d72d141ac2e2990d80cdb8bb84f6cb54c628a5")
+        (revision "0"))
+    (package
+      (name "emacs-envrc")
+      (version (git-version "0.12" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/purcell/envrc")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "00zyj46j1n250kcj0mz3j9radh5cv4jnbhy4sq4c9f0m1ypmazyk"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #false                   ;FIXME: 9 out of 11 tests fail
+        #:test-command #~(list "emacs" "-Q" "--batch"
+                               "-l" "envrc-tests.el"
+                               "-f" "ert-run-tests-batch-and-exit")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-direnv-location
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-variables "envrc.el"
+                  ("envrc-direnv-executable"
+                   (search-input-file inputs "/bin/direnv"))))))))
+      (inputs
+       (list direnv))
+      (propagated-inputs
+       (list emacs-inheritenv))
+      (home-page "https://github.com/purcell/envrc")
+      (synopsis "Support for Direnv which operates buffer-locally")
+      (description
+       "This is library which uses Direnv to set environment variables on
 a per-buffer basis.  This means that when you work across multiple projects
 which have @file{.envrc} files, all processes launched from the buffers ``in''
 those projects will be executed with the environment variables specified in
 those files.  This allows different versions of linters and other tools to be
 used in each project if desired.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-prop-menu
   (package
