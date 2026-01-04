@@ -5760,7 +5760,7 @@ to do spectral analysis in Python.")
            python-wheel))
     (propagated-inputs
      (list python-decorator
-           python-numpy
+           python-numpy-1
            python-scipy
            python-six))
     (home-page "https://github.com/sods/paramz")
