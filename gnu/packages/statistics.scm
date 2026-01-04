@@ -1454,6 +1454,56 @@ uncertainties and are backed by strong theoretical guarantees thanks to
 conformal prediction methods intervals.")
     (license license:bsd-3)))
 
+(define-public python-statannotations
+  (package
+    (name "python-statannotations")
+    (version "0.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/trevismd/statannotations")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0433w2vv2j1kwbkgbfiv5xq1s2fyxvwz520b7jwa0a8s9ndhjpwj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 173 passed, 5 deselected, 364 warnings
+      #:test-flags
+      ;; Network access is required for these tests:
+      #~(list #$@(map (lambda (test)
+                        (string-append "--deselect=tests/"
+                                       "test_native_scale.py::" test))
+                      (list "TestNativeScalePlotter::test_gap"
+                            "TestNativeScalePlotter::test_native_scale"
+                            "TestNativeScalePlotter::test_no_native_scale"))
+              #$@(map (lambda (test)
+                        (string-append "--deselect=tests/"
+                                       "test_positions.py::" test))
+                      (list "TestPositionPlotter::test_seaborn_all_plots"
+                            "TestPositionPlotter::test_seaborn_violinplot")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'pre-check
+            (lambda _ (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-matplotlib
+           python-numpy
+           python-pandas
+           python-scipy
+           python-seaborn))
+    (home-page "https://github.com/trevismd/statannotations")
+    (synopsis "Add statistical significance annotations on seaborn plots")
+    (description
+     "This package implements a functionality to optionally compute statistical
+test and add statistical annotations on plots generated with seaborn.")
+    (license license:expat)))
+
 (define-public python-statsmodels
   (package
     (name "python-statsmodels")
