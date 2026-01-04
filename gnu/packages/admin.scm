@@ -5203,7 +5203,7 @@ cache of unix and unix-like systems.")
 (define-public solaar
   (package
     (name "solaar")
-    (version "1.1.16")
+    (version "1.1.18")
     (source
      (origin
        (method git-fetch)
@@ -5212,7 +5212,7 @@ cache of unix and unix-like systems.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q05pcrl1pr6ls92m5k690qrwqb4nz1lganxvbj9b40w3c6nh5iy"))))
+        (base32 "0wf8rkm9anxr9iw51yxaav9cifpfkf1m4cw7i9rfsq8xb3aa2n9b"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
