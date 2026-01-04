@@ -4704,7 +4704,6 @@ developer workflow, and project and release management.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "git.sr.ht/~xenrox/hut"
       #:phases
       #~(modify-phases %standard-phases
@@ -4718,7 +4717,8 @@ developer workflow, and project and release management.")
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
                 (invoke "make" "install"
-                        (string-append "PREFIX=" #$output))))))))
+                        (string-append "PREFIX=" #$output))))))
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list scdoc))
     (inputs

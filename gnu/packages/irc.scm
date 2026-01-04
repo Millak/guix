@@ -1240,7 +1240,6 @@ seen, tell, and what.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:install-source? #f
       #:import-path "codeberg.org/emersion/soju"
       #:phases
@@ -1265,7 +1264,8 @@ seen, tell, and what.")
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
                 (setenv "PREFIX" #$output)
-                (invoke "make" "install")))))))
+                (invoke "make" "install")))))
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-codeberg-org-emersion-go-scfg
            go-git-sr-ht-emersion-go-sqlite3-fts5

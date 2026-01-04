@@ -386,14 +386,16 @@ penalization.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/montanaflynn/stats"
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
-                (delete-file-recursively "examples")))))))
+                (delete-file-recursively "examples")))))
+      #:test-flags
+      ;; disable go vet in go 1.24+
+      #~(list "-vet=off")))
     (home-page "https://github.com/montanaflynn/stats")
     (synopsis "Statistics library for Golang")
     (description
@@ -498,7 +500,6 @@ format as binary16.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "gonum.org/v1/gonum"
       #:test-subdirs
       #~(list "."
@@ -521,7 +522,8 @@ format as binary16.")
                      '("spatial/...")
                      '())
               "stat/..."
-              "uniti/...")))
+              "uniti/...")
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-github-com-goccmack-gocc
            go-github-com-google-go-cmp

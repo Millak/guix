@@ -3516,7 +3516,6 @@ playlists.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:install-source? #f
       #:import-path "github.com/Kethsar/ytarchive"
       #:embed-files #~(list "children" "nodes" "text")
@@ -3527,7 +3526,8 @@ playlists.")
               (wrap-program (string-append #$output "/bin/ytarchive")
                 `("PATH" ":" prefix
                   (,(string-append #$(this-package-input "ffmpeg")
-                                   "/bin/ffmpeg")))))))))
+                                   "/bin/ffmpeg")))))))
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-alessio-shellescape
            go-github-com-dannav-hhmmss

@@ -6370,7 +6370,6 @@ structs in the Go programming language.")
     (arguments
      (list
       ;; See <https://github.com/d5/tengo/issues/466>.
-      #:go go-1.23
       #:import-path "github.com/d5/tengo/v2"
       #:phases
       #~(modify-phases %standard-phases
@@ -6379,7 +6378,8 @@ structs in the Go programming language.")
               (with-directory-excursion (string-append "src/" import-path)
                 (let* ((data (string-append #$output:doc "/share"))
                        (doc (string-append data "/doc/" #$name "-" #$version)))
-                  (copy-recursively "docs/" doc))))))))
+                  (copy-recursively "docs/" doc))))))
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/d5/tengo")
     (synopsis "Script language for Go")
     (description
@@ -10010,7 +10010,6 @@ size.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/godbus/dbus"
       #:phases
       #~(modify-phases %standard-phases
@@ -10022,7 +10021,9 @@ size.")
                           "go" "test" "./..."
                           ;; Disable tests which require a system D-Bus
                           ;; instance.
-                          "-skip" "TestSystemBus|TestConnectSystemBus"))))))))
+                          "-skip" "TestSystemBus|TestConnectSystemBus"
+                          ;; Disable go vet
+                          "-vet=off"))))))))
     (native-inputs
      (list dbus)) ;dbus-launch
     (home-page "https://github.com/godbus/dbus/")
@@ -11494,7 +11495,6 @@ expressing configuration which is easy for both humans and machines to read.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/hashicorp/hcl/v2"
       #:test-flags
       #~(list "-skip"
@@ -11502,7 +11502,8 @@ expressing configuration which is easy for both humans and machines to read.")
                (list "TestExpressionParseAndValue/.*unk.*"
                      "TestFunctionCallExprValue/valid_call_with_unknown_arg.*"
                      "TestFunctionCallExprValue/valid_call_with_dynamic_arg")
-               "|"))))
+               "|")
+              "-vet=off")))
     (native-inputs
      (list go-github-com-davecgh-go-spew
            go-github-com-go-test-deep
@@ -12027,12 +12028,12 @@ better way of handling YAML when marshaling to and from structs.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/itchyny/go-flags"
       ;; Test is time dependent and not reproducible.
       ;; -.TH TestMan 1 "1 January 1970"
       ;;  +.TH TestMan 1 "26 June 2025"
-      #:test-flags #~(list "-skip" "TestMan")))
+      #:test-flags #~(list "-skip" "TestMan"
+                           "-vet=off")))
     (propagated-inputs
      (list go-golang-org-x-sys))
     (home-page "https://github.com/itchyny/go-flags")
@@ -12971,9 +12972,9 @@ Golang.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:skip-build? #t
-      #:import-path "github.com/jedib0t/go-pretty/v6"))
+      #:import-path "github.com/jedib0t/go-pretty/v6"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-pkg-profile ; for the CLI
            go-github-com-stretchr-testify))
@@ -13031,9 +13032,9 @@ hierarchies of @code{map[string]interface{}} objects provided by the
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/jessevdk/go-flags"
-      #:test-flags #~(list "-skip" "TestCompletion|TestParserCompletion")))
+      #:test-flags #~(list "-skip" "TestCompletion|TestParserCompletion"
+                           "-vet=off")))
     (propagated-inputs
      (list go-golang-org-x-sys))
     (home-page "https://github.com/jessevdk/go-flags")
@@ -16238,7 +16239,6 @@ string.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/mattn/go-shellwords"
       #:phases
       #~(modify-phases %standard-phases
@@ -16246,7 +16246,8 @@ string.")
             (lambda* (#:key import-path #:allow-other-keys)
               (substitute* (string-append
                             "src/" import-path "/util_posix.go")
-                (("/bin/sh") (which "sh"))))))))
+                (("/bin/sh") (which "sh"))))))
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/mattn/go-shellwords")
     (synopsis "Parse lines into shell words")
     (description "This package parses text into shell arguments.  Based on
@@ -17193,14 +17194,14 @@ https://github.com/syndtr/gocapability.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/moby/sys/mountinfo"
       #:unpack-path "github.com/moby/sys"
       #:test-flags
       #~(list "-skip" (string-join
                        (list "TestMountedBy/not_mounted_socket"
                              "TestMountedBy/socket_bind-mounted_to_itself")
-                       "|"))))
+                       "|")
+              "-vet=off")))
     (propagated-inputs (list go-golang-org-x-sys))
     (home-page "https://github.com/moby/sys")
     (synopsis "Retrieve information about OS mounts")
@@ -18454,9 +18455,9 @@ pretty printed rendering in Golang.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:skip-build? #t
-      #:import-path "github.com/nlpodyssey/spago"))
+      #:import-path "github.com/nlpodyssey/spago"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -20132,7 +20133,6 @@ on top of the standard library @code{flag} package.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/pingcap/errors"
       #:test-flags
       #~(list "-skip" (string-join
@@ -20147,7 +20147,8 @@ on top of the standard library @code{flag} package.")
                              "TestFrameLine"
                              "TestStackTrace"
                              "TestStackTraceFormat")
-                       "|"))))
+                       "|")
+              "-vet=off")))
     (native-inputs
      (list go-github-com-pkg-errors))
     (home-page "https://github.com/pingcap/errors")
@@ -20290,9 +20291,9 @@ https://en.wikipedia.org/wiki/Extended_file_attributes}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/pmezard/go-difflib/difflib"
-      #:unpack-path "github.com/pmezard/go-difflib/"))
+      #:unpack-path "github.com/pmezard/go-difflib/"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/pmezard/go-difflib")
     (synopsis "Go diff implementation")
     (description
@@ -21064,8 +21065,8 @@ logging.")
         (base32 "0d1rg1drrfmabilqjjayklsz5d0n3hkf979sr3wsrw92bfbkivs7"))))
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/russross/blackfriday/v2"))))
+      #:import-path "github.com/russross/blackfriday/v2"
+      #:test-flags #~(list "-vet=off")))))
 
 (define-public go-github-com-rvflash-elapsed
   (package
@@ -26835,7 +26836,6 @@ written in YAML or JSON.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "go.mongodb.org/mongo-driver"
       #:test-flags
       #~(list "-skip"
@@ -26852,7 +26852,8 @@ written in YAML or JSON.")
                      "TestTimeCodec"
                      "TestTopologyConstructionLogging"
                      "TestURIOptionsSpec")
-               "|"))
+               "|")
+              "-vet=off")
       #:test-subdirs
       #~(list "bson/..." "event/..." "internal/..." "tag/..." "x/...")
       #:phases
@@ -27320,7 +27321,6 @@ organization}.")
       (build-system go-build-system)
       (arguments
        (list
-        #:go go-1.23
         #:skip-build? #t
         #:import-path "go4.org"
         #:test-subdirs
@@ -27356,7 +27356,8 @@ organization}.")
               (lambda* (#:key import-path #:allow-other-keys)
                 (with-directory-excursion (string-append "src/" import-path)
                   (for-each delete-file
-                            (find-files "." "example.*_test\\.go$"))))))))
+                            (find-files "." "example.*_test\\.go$"))))))
+        #:test-flags #~(list "-vet=off")))
       (propagated-inputs
        (list ;; go-cloud-google-com-go
              ;; go-cloud-google-com-go-storage
@@ -28236,7 +28237,6 @@ split out here for ease of reuse and maintainability.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "k8s.io/klog/v2"
       #:test-flags
       #~(list "-skip"
@@ -28246,7 +28246,8 @@ split out here for ease of reuse and maintainability.")
                      "TestDestinationsWithDifferentFlags/with_log_dir_only"
                      "TestDestinationsWithDifferentFlags/with_log_dir_only_and_one_output"
                      "TestDestinationsWithDifferentFlags/with_log_file_and_log_dir")
-               "|"))
+               "|")
+              "-vet=off")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
@@ -29462,14 +29463,14 @@ libraries.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "sigs.k8s.io/kustomize/kyaml"
       #:unpack-path "sigs.k8s.io/kustomize"
       #:test-flags
       #~(list "-skip" (string-join
                        (list "TestCommandResultsChecker_UpdateExpectedFromActual"
                              "TestProcessorResultsChecker_UpdateExpectedFromActual")
-                       "|"))))
+                       "|")
+              "-vet=off")))
     (native-inputs
      (list go-github-com-stretchr-testify
            go-github-com-davecgh-go-spew))
@@ -29787,9 +29788,9 @@ helpful utility functions, and makes testing fairly easy.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "zgo.at/zstd"
-      #:test-flags #~(list "-skip" "TestExists/4")))
+      #:test-flags #~(list "-skip" "TestExists/4"
+                           "-vet=off")))
     (home-page "https://github.com/arp242/zstd")
     (synopsis "Extensions to Go's standard library")
     (description

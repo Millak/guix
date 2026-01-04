@@ -472,8 +472,8 @@ test (using testing.TB's @code{TempDir}) and with a few helper methods.")
       (build-system go-build-system)
       (arguments
        (list
-        #:go go-1.23
-        #:import-path "github.com/cheekybits/is"))
+        #:import-path "github.com/cheekybits/is"
+        #:test-flags #~(list "-vet=off")))
       (home-page "https://github.com/cheekybits/is")
       (synopsis "Mini testing helper for Go")
       (description "A mini testing helper for Go.
@@ -563,8 +563,8 @@ writing and reading these tests.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/coder/quartz"))
+      #:import-path "github.com/coder/quartz"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/coder/quartz")
     (synopsis "Golang time testing library for writing deterministic unit tests")
     (description
@@ -616,14 +616,14 @@ strings which may be used in mock tests.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/DATA-DOG/go-sqlmock"
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
-                (delete-file-recursively "examples")))))))
+                (delete-file-recursively "examples")))))
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-github-com-kisielk-sqlstruct))
     (home-page "https://github.com/DATA-DOG/go-sqlmock")
@@ -1282,10 +1282,10 @@ package, but can be used in other contexts too.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/google/gofuzz"
       ;; Tests fail on 32bit
-      #:tests? (target-64bit?)))
+      #:tests? (target-64bit?)
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/google/gofuzz")
     (synopsis "Fuzz testing library for Go")
     (description
@@ -2023,8 +2023,8 @@ output capturing, mocking, and much more.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/matryer/is"))
+      #:import-path "github.com/matryer/is"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/matryer/is")
     (synopsis "Lightweight testing mini-framework for Golang")
     (description
@@ -2166,9 +2166,9 @@ error messages, preserving the order of @code{have} (actual result) before
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/onsi/ginkgo"
-      #:test-flags #~(list "-skip" "TestIntegration")))
+      #:test-flags #~(list "-skip" "TestIntegration"
+                           "-vet=off")))
     (propagated-inputs
      (list go-github-com-go-task-slim-sprig
            go-github-com-nxadm-tail
@@ -2199,12 +2199,12 @@ Gomega matcher library.")
         (base32 "01rmm0lx29bwl973qixx6avwa8m6yc1vkara52cbl0jxxwf1jf3d"))))
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/onsi/ginkgo/v2"
       #:test-subdirs
       ;; XXX: Most of the tests hang, find out why, keeping bare minimal
       ;; amount.
-      #~(list "dsl/..." "extensions/globals" ".")))
+      #~(list "dsl/..." "extensions/globals" ".")
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-go-uber-org-automaxprocs)) ; for the CLI
     (propagated-inputs
@@ -2245,14 +2245,14 @@ Gomega matcher library.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/onsi/gomega"
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-failing-test-files
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
-              (delete-file "gexec/build_test.go")))))))
+              (delete-file "gexec/build_test.go")))))
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-onsi-ginkgo-v2-bootstrap))
     (propagated-inputs
@@ -2285,8 +2285,8 @@ framework.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/otiai10/mint"))
+      #:import-path "github.com/otiai10/mint"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/otiai10/mint")
     (synopsis "Minimal assertion for Golang testing framework")
     (description
@@ -2500,8 +2500,8 @@ GIT_TRACE mechanism.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/smarty/assertions"))
+      #:import-path "github.com/smarty/assertions"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/smarty/assertions")
     (synopsis "Fluent assertion-style functions")
     (description
@@ -2529,8 +2529,8 @@ functions and even in applications.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/smarty/gunit"))
+      #:import-path "github.com/smarty/gunit"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/smarty/gunit")
     (synopsis "Golang xUnit-style test fixture test adapter")
     (description
@@ -2849,8 +2849,8 @@ customization
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/warpfork/go-testmark"))
+      #:import-path "github.com/warpfork/go-testmark"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-github-com-warpfork-go-fsx))
     (home-page "https://github.com/warpfork/go-testmark")
@@ -3586,8 +3586,8 @@ thoroughly
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "sigs.k8s.io/randfill"))
+      #:import-path "sigs.k8s.io/randfill"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://sigs.k8s.io/randfill")
     (synopsis "Fuzz testing for Golang")
     (description

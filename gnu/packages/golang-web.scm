@@ -506,9 +506,9 @@ Gemini clients and servers.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:embed-files #~(list "prelude.graphql")
-      #:import-path "git.sr.ht/~emersion/gqlclient"))
+      #:import-path "git.sr.ht/~emersion/gqlclient"
+      #:test-flags #~(list "-vet=off")))
     ;; For the CLI.
     (native-inputs
      (list go-github-com-dave-jennifer
@@ -535,8 +535,8 @@ Gemini clients and servers.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "git.sr.ht/~rockorager/go-jmap"))
+      #:import-path "git.sr.ht/~rockorager/go-jmap"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list
       go-github-com-stretchr-testify))
@@ -968,8 +968,8 @@ particular test phases or milestones have been reached. It is part of the
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/apex/log"))
+      #:import-path "github.com/apex/log"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-tj-assert
            go-github-com-stretchr-testify))
@@ -999,9 +999,9 @@ require encoding and decoding before fanning-out to handlers.")
   (hidden-package
    (package/inherit go-github-com-apex-log
      (arguments
-      (list #:go go-1.23
-            #:import-path "github.com/apex/log"
-            #:test-subdirs #~(list ".")))
+      (list #:import-path "github.com/apex/log"
+            #:test-subdirs #~(list ".")
+            #:test-flags #~(list "-vet=off")))
      (propagated-inputs
       (list go-github-com-fatih-color
             go-github-com-pkg-errors)))))
@@ -2507,8 +2507,8 @@ and RFC 5389).")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/cenkalti/backoff/v4"))
+      #:import-path "github.com/cenkalti/backoff/v4"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/cenkalti/backoff")
     (synopsis "The exponential backoff algorithm in Go")
     (description
@@ -3758,7 +3758,6 @@ Data Representation (XDR) standard protocol as specified in RFC
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/digitalocean/godo"
       #:test-flags
       #~(list "-skip" (string-join
@@ -3771,7 +3770,8 @@ Data Representation (XDR) standard protocol as specified in RFC
                              "TestRegistry_DeleteTag"
                              "TestRegistry_ListManifests"
                              "TestRepository_ListTags")
-                       "|"))))
+                       "|")
+              "-vet=off")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -3880,8 +3880,8 @@ translation (NAT), proxies, sockets, and transport layer security (TLS).")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/donovanhide/eventsource"))
+      #:import-path "github.com/donovanhide/eventsource"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/donovanhide/eventsource")
     (synopsis "Server Side Events client and server for Golang")
     (description
@@ -4387,8 +4387,8 @@ for Go.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/emersion/go-smtp"))
+      #:import-path "github.com/emersion/go-smtp"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-github-com-emersion-go-sasl))
     (home-page "https://github.com/emersion/go-smtp")
@@ -4597,8 +4597,8 @@ Files.com from applications written in Go.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/flosch/pongo2/v6"))
+      #:import-path "github.com/flosch/pongo2/v6"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-gopkg-in-check-v1))
     (home-page "https://github.com/flosch/pongo2")
@@ -4964,8 +4964,8 @@ supports middleware, routing groups, and URL parameters.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/go-chi/chi/v5"))
+      #:import-path "github.com/go-chi/chi/v5"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/go-chi/chi")
     (synopsis "Composable router for HTTP services written in Go")
     (description
@@ -5060,8 +5060,8 @@ Signature headers are to be set (but not both).")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/go-jose/go-jose/v3"))
+      #:import-path "github.com/go-jose/go-jose/v3"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-google-go-cmp
            go-github-com-stretchr-testify))
@@ -5207,8 +5207,8 @@ about the content.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/go-openapi/errors"))
+      #:import-path "github.com/go-openapi/errors"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (home-page "https://github.com/go-openapi/errors")
@@ -5324,9 +5324,9 @@ Supports JSON and YAML documents.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:embed-files #~(list "jsonschema-draft-04\\.json" "schema\\.json")
-      #:import-path "github.com/go-openapi/runtime"))
+      #:import-path "github.com/go-openapi/runtime"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -5461,7 +5461,6 @@ projects.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:embed-files #~(list "jsonschema-draft-04\\.json" "schema\\.json")
       #:import-path "github.com/go-openapi/validate"
       #:phases
@@ -5473,7 +5472,8 @@ projects.")
                 (for-each delete-file
                           (list "benchmark_test.go"
                                 "example_validator_test.go"
-                                "doc_test.go"))))))))
+                                "doc_test.go"))))))
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -5721,8 +5721,8 @@ from CloudFlare's github.com/cloudflare/cfssl/revoke.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/gobwas/httphead"))
+      #:import-path "github.com/gobwas/httphead"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/gobwas/httphead")
     (synopsis "Tiny HTTP header value parsing library in Golang")
     (description
@@ -5776,8 +5776,8 @@ protocol as specified in @url{https://rfc-editor.org/rfc/rfc6455.html, RFC
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/goccy/go-json"))
+      #:import-path "github.com/goccy/go-json"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/goccy/go-json")
     (synopsis "JSON encoder/decoder in Go")
     (description
@@ -5870,7 +5870,6 @@ APIs.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:skip-build? #t
       #:import-path "github.com/gogo/protobuf"
       ;; protoc: exec: "protoc-min-version": executable file not found in $PATH
@@ -5886,7 +5885,8 @@ APIs.")
                      "TestRepeatedEmbed"
                      "TestStdTypesGoString"
                      "TestTakesTooLongToDebug")
-               "|"))))
+               "|")
+              "-vet=off")))
     (home-page "https://github.com/gogo/protobuf")
     (synopsis "Protocol Buffers for Go with Gadgets")
     (description "Gogoprotobuf is a fork of golang/protobuf with extra code
@@ -6261,8 +6261,8 @@ iptables successor).  It does not rely on libnftnl wrappers.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/google/safehtml"))
+      #:import-path "github.com/google/safehtml"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-golang-org-x-text))
     (home-page "https://github.com/google/safehtml")
@@ -7616,9 +7616,9 @@ authenticated identities and their attributes.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/jcmturner/gokrb5/v8"
-      #:unpack-path "github.com/jcmturner/gokrb5"))
+      #:unpack-path "github.com/jcmturner/gokrb5"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -7749,8 +7749,8 @@ about missing required fields, or when pattern validation does not match.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/jhillyerd/enmime"))
+      #:import-path "github.com/jhillyerd/enmime"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-go-test-deep
            go-github-com-stretchr-testify))
@@ -7801,8 +7801,8 @@ geared towards parsing MIME encoded emails.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/jlaffaye/ftp"))
+      #:import-path "github.com/jlaffaye/ftp"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -7830,8 +7830,8 @@ described in @url{https://www.rfc-editor.org/rfc/rfc959,RFC 959}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/jmespath/go-jmespath"))
+      #:import-path "github.com/jmespath/go-jmespath"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-davecgh-go-spew
            go-github-com-pmezard-go-difflib
@@ -7908,7 +7908,6 @@ controlled.  It is based on netlink messages.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/json-iterator/go"
       #:test-flags
       #~(list "-skip" (string-join
@@ -7916,7 +7915,8 @@ controlled.  It is based on netlink messages.")
                              "Test_marshal/.57._/string"
                              "Test_string_encode_with_std_without_html_escape"
                              "Test_symmetric/map.test.stringKeyType.string")
-                       "|"))))
+                       "|")
+              "-vet=off")))
     (native-inputs
      (list go-github-com-davecgh-go-spew
            go-github-com-google-gofuzz
@@ -8225,9 +8225,9 @@ protocol in Go language.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:skip-build? #t
-      #:import-path "github.com/labbsr0x/goh"))
+      #:import-path "github.com/labbsr0x/goh"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-github-com-go-cmd-cmd
            go-github-com-go-errors-errors
@@ -9239,8 +9239,8 @@ fixed.")
            go-golang-org-x-text))
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/makeworld-the-better-one/go-gemini"))
+      #:import-path "github.com/makeworld-the-better-one/go-gemini"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/makew0rld/go-gemini")
     (synopsis "Client/server library for the Gemini protocol, in Go")
     (description
@@ -11103,7 +11103,6 @@ Border Gateway Protocol}} implementation.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:skip-build? #t
       #:import-path "github.com/ovn-kubernetes/libovsdb"
       #:test-flags
@@ -11133,7 +11132,8 @@ Border Gateway Protocol}} implementation.")
                                   "TestWaitOpNotEquals"
                                   "Test_merge")
                                #~()))
-                       "|"))
+                       "|")
+              "-vet=off")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
@@ -11190,9 +11190,9 @@ also be used to manage your stamp collection.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:skip-build? #t
-      #:import-path "github.com/pascaldekloe/goe"))
+      #:import-path "github.com/pascaldekloe/goe"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/pascaldekloe/goe")
     (synopsis "Enterprise tooling for Golang")
     (description
@@ -11244,8 +11244,8 @@ API.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/perimeterx/marshmallow"))
+      #:import-path "github.com/perimeterx/marshmallow"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-go-test-deep))
     (propagated-inputs
@@ -11800,8 +11800,8 @@ Protocol,SCTP} as specified in
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/pion/stun"))
+      #:import-path "github.com/pion/stun"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -11835,8 +11835,8 @@ Protocol,SCTP} as specified in
         (base32 "0zli55ls5izpr6cw0wj0gy44872xn9rk20i8ay9cfk7j2rb60y60"))))
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/pion/stun/v2"))
+      #:import-path "github.com/pion/stun/v2"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-github-com-pion-dtls-v2
            go-github-com-pion-logging
@@ -11860,8 +11860,8 @@ Protocol,SCTP} as specified in
         (base32 "0yavl76y0fida9f1jfdmzdg7rm5jhp6kvdgn3smsf93jad1vbr2x"))))
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/pion/stun/v3"))
+      #:import-path "github.com/pion/stun/v3"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-github-com-pion-dtls-v3
            go-github-com-pion-logging
@@ -12813,7 +12813,6 @@ RFC 1014) in Go.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/rcrowley/go-metrics"
       #:test-flags
       ;; Arbitrary precision tests are known to be broken on aarch64, ppc64le
@@ -12825,7 +12824,8 @@ RFC 1014) in Go.")
                                       "TestUniformSampleSnapshot"
                                       "TestUniformSampleStatistics")
                                 "|"))
-                     '()))))
+                     '())
+              "-vet=off")))
     (propagated-inputs
      (list go-github-com-stathat-go))
     (home-page "https://github.com/rcrowley/go-metrics")
@@ -13820,7 +13820,6 @@ REST APIs.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/swaggo/swag"
       #:unpack-path "github.com/swaggo/swag"
       #:embed-files
@@ -13834,7 +13833,8 @@ REST APIs.")
          "schema\\.json")
       #:test-flags
       #~(list "-skip" (string-append "TestParseGoList/enableGOMODULE"
-                                     "|TestParseDescriptionMarkdown"))
+                                     "|TestParseDescriptionMarkdown")
+              "-vet=off")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
@@ -14436,8 +14436,8 @@ files to XML generation (for example, @code{gin.Context} or
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/urfave/negroni"))
+      #:import-path "github.com/urfave/negroni"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/urfave/negroni")
     (synopsis "Idiomatic HTTP Middleware for Golang")
     (description
@@ -14462,8 +14462,8 @@ tiny,non-intrusive, and encourages use of @code{net/http} Handlers.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/urfave/negroni/v3"))))
+      #:import-path "github.com/urfave/negroni/v3"
+      #:test-flags #~(list "-vet=off")))))
 
 (define-public go-github-com-valyala-fasthttp
   (package
@@ -15032,11 +15032,11 @@ programming language.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       ;; validation of time strings.  only RFC3339 not all of ISO 8601 are
       ;; valid.  expects: false, given true Schema: {"format":"time"} Data:
       ;; "01:01:01,1111"
-      #:test-flags #~(list "-skip" "TestFormats")
+      #:test-flags #~(list "-skip" "TestFormats"
+                           "-vet=off")
       #:import-path "github.com/xeipuuv/gojsonschema"))
     (native-inputs
      (list go-github-com-stretchr-testify))
@@ -17386,7 +17386,6 @@ the code or routes.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "maunium.net/go/mautrix"
       #:embed-files
       #~(list
@@ -17410,7 +17409,8 @@ the code or routes.")
                            "TestResolveServerName/RM_Step_4"
                            "TestResolveServerName/RM_Step_4_MSC4040"
                            "TestResolveServerName/maunium")
-                     "|"))))
+                     "|")
+            "-vet=off")))
     ;; XXX: The final application needs a "libolm" package.
     (native-inputs
      (list olm))

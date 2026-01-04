@@ -183,7 +183,6 @@ extensions over the standard utility.")
       (build-system go-build-system)
       (arguments
        (list
-        #:go go-1.23
         #:install-source? #f
         #:import-path "github.com/zyedidia/micro/v2/cmd/micro"
         #:unpack-path "github.com/zyedidia/micro/v2"
@@ -208,7 +207,8 @@ extensions over the standard utility.")
             (add-before 'build 'go-generate
               (lambda _
                 (invoke "go" "generate" "-v" "-x"
-                        "github.com/zyedidia/micro/v2/runtime"))))))
+                        "github.com/zyedidia/micro/v2/runtime"))))
+        #:test-flags #~(list "-vet=off")))
       (inputs (list go-github-com-blang-semver
                     go-github-com-dustin-go-humanize
                     go-github-com-go-errors-errors

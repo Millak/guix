@@ -473,11 +473,11 @@ database later.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:build-flags #~(list "-tags" "external_libzstd")
       #:test-flags #~(list "-tags" "external_libzstd"
                            ;; Skip tests requiring git in PATH.
-                           "-skip" "TestLint")
+                           "-skip" "TestLint"
+                           "-vet=off")
       ;; XXX: Maybe run more tests if possible.
       #:test-subdirs #~(list "internal/...")
       #:import-path "github.com/cockroachdb/pebble"))

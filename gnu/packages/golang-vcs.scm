@@ -281,8 +281,8 @@ using the Git pkt-line format used in various Git operations.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/jiangxin/goconfig"))
+      #:import-path "github.com/jiangxin/goconfig"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list git-minimal/pinned
            go-github-com-jiu2015-gotestspace

@@ -143,7 +143,6 @@ PSKC (RFC6030) to manage secret key data.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:install-source? #f
       #:import-path "github.com/google/oauth2l"
       #:test-flags
@@ -161,7 +160,9 @@ PSKC (RFC6030) to manage secret key data.")
                      "TestServiceAccountImpersonationFlow/fetch._sso.*"
                      "TestStsFlow/fetch._2lo._sts"
                      "TestStsFlow/fetch._sso._sts")
-               "|"))
+               "|")
+              ;; go 1.24 runs -vet by default, but oauth2l isn't ready
+              "-vet=off")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check

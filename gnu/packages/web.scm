@@ -1573,7 +1573,7 @@ project)
                    (delete-file-recursively "vendor")))))
     (build-system go-build-system)
     (arguments
-     (list #:go go-1.23
+     (list 
            #:import-path "github.com/adnanh/webhook"
            #:phases
            #~(modify-phases %standard-phases
@@ -1583,7 +1583,8 @@ project)
                      (("/bin/echo")
                       (search-input-file inputs "bin/echo"))
                      (("/bin/sh")
-                      (search-input-file inputs "bin/sh"))))))))
+                      (search-input-file inputs "bin/sh"))))))
+           #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-clbanning-mxj-v2
            go-github-com-coreos-go-systemd-v22

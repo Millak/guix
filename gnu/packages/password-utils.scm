@@ -157,7 +157,6 @@
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:install-source? #f
       #:import-path "github.com/99designs/aws-vault"
       #:build-flags
@@ -187,7 +186,8 @@
           ;; denied.
           (add-before 'check 'set-home
             (lambda _
-              (setenv "HOME" "/tmp"))))))
+              (setenv "HOME" "/tmp"))))
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-99designs-keyring
            go-github-com-alecthomas-kingpin-v2

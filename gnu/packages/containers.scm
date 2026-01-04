@@ -255,11 +255,11 @@ containers highly integrated with the hosts.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:install-source? #f
       #:build-flags
       #~(list (string-append "-ldflags=-X main.version=" #$version))
-      #:import-path "github.com/wagoodman/dive"))
+      #:import-path "github.com/wagoodman/dive"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-awesome-gocui-gocui
            go-github-com-awesome-gocui-keybinding

@@ -481,7 +481,6 @@ is corrupted you'll lose the affected file(s) but not the whole back-up.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/google/fscrypt"
       #:install-source? #f
       #:test-flags
@@ -492,7 +491,9 @@ is corrupted you'll lose the affected file(s) but not the whole back-up.")
                             "TestLoadReadOnlyMount"
                             "TestReadWriteMountIsPreferredOverReadOnlyMount"
                             "TestLoadAmbiguousMounts"
-                            "TestRootSubtreeIsPreferred") "|"))
+                            "TestRootSubtreeIsPreferred") "|")
+              ;; Disable go vet in go 1.24+
+              "-vet=off")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'fix-version-detection
@@ -625,7 +626,6 @@ significantly increases the risk of irreversible data loss!")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:install-source? #f
       #:import-path "github.com/rfjakob/gocryptfs"
       #:build-flags
@@ -640,7 +640,9 @@ significantly increases the risk of irreversible data loss!")
                        (list "TestPrepareAtSyscall"
                              "TestPrepareAtSyscallPlaintextnames"
                              "TestGetdents")
-                       "|"))
+                       "|")
+              ;; disable go vet for go 1.24+
+              "-vet=off")
       ;; XXX: Test suit requires a root access to mount, limit to some unit
       ;; tests, figure out how to enable most of the them.
       #:test-subdirs #~(list "internal/...")

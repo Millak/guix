@@ -718,7 +718,6 @@ machine, and more.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:install-source? #f
       #:import-path "github.com/exercism/cli/exercism"
       #:unpack-path "github.com/exercism/cli"
@@ -756,7 +755,8 @@ machine, and more.")
                 (mkdir-p (dirname zsh))
                 (with-output-to-file zsh
                   (lambda ()
-                    (invoke exercism "completion" "zsh")))))))))
+                    (invoke exercism "completion" "zsh")))))))
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-blang-semver
            go-github-com-spf13-cobra
