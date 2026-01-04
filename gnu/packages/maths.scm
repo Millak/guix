@@ -386,7 +386,7 @@ finite domain propagation and Boolean satisfiability.")
     (native-inputs
      `(("fortran" ,gfortran)
        ("python" ,python)
-       ("python-numpy" ,python-numpy)))
+       ("python-numpy" ,python-numpy-1)))
     (inputs
      `(("zlib" ,zlib)
        ("pcre" ,pcre)
