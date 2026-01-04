@@ -138,6 +138,7 @@
   #:use-module (gnu packages dns)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages file)
+  #:use-module (gnu packages file-systems)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages freedesktop)
@@ -4772,7 +4773,8 @@ system distribution, akin to many similar tools.")
                libxcb
                mesa
                wayland
-               zlib))))) ;for imagemagick and an #ifdef
+               zlib ;for imagemagick and an #ifdef
+               zfs)))))
 
 (define-public nnn
   (package
