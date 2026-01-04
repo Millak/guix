@@ -8531,9 +8531,16 @@ to produce realistic WFI images.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 591 passed, 108 skipped, 309 warnings
+      ;; tests: 590 passed, 108 skipped, 287 warnings
       #:test-flags
-      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; Unit conversions between flux density and Vega-based
+              ;; magnitudes use the `astropy.units equivalency system
+              ;; <https://docs.astropy.org/en/stable/units/equivalencies.html#unit-equivalencies>`_.
+              ;; sbpy's :func:`~sbpy.units.spectral_density_vega` provides the
+              ;; equivalencies, which astropy would use to convert the units.
+              ;; The function requires a wavelength, frequency, or bandpass:
+              "--deselect=docs/sbpy/units.rst::units.rst")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
