@@ -3207,6 +3207,7 @@ be accessible and easy to use in many contexts.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 82 passed
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-home
@@ -3218,11 +3219,10 @@ be accessible and easy to use in many contexts.")
      (list python-cython
            python-pandas
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-joblib
-           python-numpy
+           python-numpy-1
            python-scikit-learn))
     (home-page "https://surpriselib.com/")
     (synopsis "Recommender system library for Scikit-learn")
