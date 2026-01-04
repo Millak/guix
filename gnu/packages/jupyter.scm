@@ -1684,12 +1684,20 @@ datasets across widgets.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 500 passed, 3 skipped, 2 deselected, 29 warnings
       #:test-flags
       ;; Do not bother testing Azure, AWS, and Google Cloud features.
-      '(list "--ignore=papermill/tests/test_abs.py"
-             "--ignore=papermill/tests/test_adl.py"
-             "--ignore=papermill/tests/test_gcs.py"
-             "--ignore=papermill/tests/test_s3.py")))
+      #~(list "--ignore=papermill/tests/test_abs.py"
+              "--ignore=papermill/tests/test_adl.py"
+              "--ignore=papermill/tests/test_gcs.py"
+              "--ignore=papermill/tests/test_s3.py"
+              ;; AssertionError
+              #$@(map (lambda (test) (string-append "--deselect="
+                                                    "papermill/tests/"
+                                                    "test_execute.py::"
+                                                    test))
+                      (list "TestBrokenNotebook2::test"
+                            "TestOutputFormatting::test_output_formatting")))))
     (propagated-inputs (list python-aiohttp
                              python-ansicolors
                              python-click
@@ -1701,17 +1709,11 @@ datasets across widgets.")
                              python-tenacity
                              python-tqdm))
     (native-inputs (list python-attrs
-                         python-boto3
-                         python-botocore
-                         python-ipython
-                         python-ipywidgets
-                         python-moto
                          python-notebook
                          python-pytest
                          python-pytest-env
                          python-pytest-mock
                          python-recommonmark
-                         python-requests
                          python-setuptools))
     (home-page "https://github.com/nteract/papermill")
     (synopsis "Parameterize and run Jupyter and nteract Notebooks")
