@@ -122,6 +122,58 @@
      "This package implements the official Go client for etcd.")
     (license license:asl2.0)))
 
+(define-public go-go-etcd-io-etcd-pkg-v3
+  (package
+    (name "go-go-etcd-io-etcd-pkg-v3")
+    (version "3.6.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/etcd-io/etcd")
+              (commit (go-version->git-ref version
+                                           #:subdir "pkg"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d9rjyl5h0xm9isgr8b2fz8528wk3pds71rjl8g08fgsmsa5kicb"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-all-but "." "pkg")
+                    (rename-file "pkg" "pkg.tmp")
+                    (mkdir-p "pkg/v3")
+                    (rename-file "pkg.tmp" "pkg/v3")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f       ;TODO: Tests hang, select some subset
+      #:import-path "go.etcd.io/etcd/pkg/v3"
+      #:unpack-path "go.etcd.io/etcd"))
+    (native-inputs
+     (list go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-creack-pty
+           go-github-com-dustin-go-humanize
+           go-go-etcd-io-etcd-client-pkg-v3
+           go-go-uber-org-zap
+           go-google-golang-org-grpc))
+    (home-page "https://github.com/etcd-io/etcd")
+    (synopsis "Utility packages for etcd")
+    (description
+     "This package is a collection of utility packages used by etcd without
+being specific to etcd itself.")
+    (license license:asl2.0)))
+
 (define-public go-k8s-io-component-base
   (package
     (name "go-k8s-io-component-base")
