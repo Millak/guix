@@ -1600,7 +1600,7 @@ RSA, RSA-PSS, and ECDSA, though hooks are present for adding your own.")
 (define-public go-github-com-google-go-tpm
   (package
     (name "go-github-com-google-go-tpm")
-    (version "0.9.1")
+    (version "0.9.4")
     (source
      (origin
        (method git-fetch)
@@ -1609,7 +1609,7 @@ RSA, RSA-PSS, and ECDSA, though hooks are present for adding your own.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1c5j5cvwl45ka93nknmv454ivd7kp9n8yql19gr6z01z0s1ph7sg"))))
+        (base32 "1sp1mbr6vz36zy9w36iksirbsj5p2jslsl8zs1cdj8s4ig4lkd9d"))))
     (build-system go-build-system)
     (arguments
      (list
