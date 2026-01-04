@@ -1588,23 +1588,23 @@ legends for @code{matplotlib}.")
 (define-public python-libneuroml
   (package
     (name "python-libneuroml")
-    (version "0.6.5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/NeuralEnsemble/libNeuroML.git")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "04cfff9phm19x87p86xrkhd6wlpxvdwk3rf1c3qgyncfchws0sjh"))))
+    (version "0.6.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/NeuralEnsemble/libNeuroML.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x5sgm0250zdfnw16cbmgl45hz2kfmww5lghpyhlcadgnbzyq3dx"))))
     (build-system pyproject-build-system)
+    ;; tests: 116 passed, 5 xfailed, 5 warnings
     (native-inputs
      (list python-pytest
            python-numpy
            python-setuptools
-           python-tables
-           python-wheel))
+           python-tables))
     (propagated-inputs
      (list python-lxml
            python-natsort
