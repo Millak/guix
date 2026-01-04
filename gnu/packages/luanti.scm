@@ -218,6 +218,50 @@ new features.")
 (define-deprecated-package minetest-data
   minetest-game)
 
+(define-public luanti-halon
+  ;; There is no tag for this fork; find the base luanti used for the
+  ;; base-version, and otherwise use the latest commit.
+  (let ((base-version "5.14.0")
+        (commit "335545ebf64d25eea084dd46f49d8e62bcab0ada")
+        (revision "0"))
+    (package
+      (inherit luanti)
+      (name "luanti-halon")
+      (version (git-version base-version revision commit))
+      (source
+       (origin
+         (inherit (package-source luanti))
+         (uri (git-reference
+                (url "https://codeberg.org/halon/Minetest/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1qk98kzjv748f0aak8k20nxkqa7wbxwj3qjd4ks08ab9apgwzlps"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments luanti)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'disable-development-build
+                (lambda _
+                  ;; This triggers a test that requires git.
+                  (substitute* "CMakeLists.txt"
+                    (("DEVELOPMENT_BUILD TRUE")
+                     "DEVELOPMENT_BUILD FALSE"))))
+              (add-after 'unpack 'disable-problematic-tests
+                (lambda _
+                  ;; The chunks test fails, only with this fork (see:
+                  ;; <https://codeberg.org/halon/Minetest/issues/5>).
+                  (substitute* "src/unittest/test_map_settings_manager.cpp"
+                    (("TEST\\(testChunks);" all)
+                     (string-append "// " all)))))))))
+      (synopsis "Luanti fork with extended CSM (client-side scripting) API")
+      (description "The Halon fork provides an extended client-side
+scripting (CSM) API, used for example by the @code{mcl_localplayer} CSM that
+can be used to improve the physics of the Mineclonia game and do the
+computation locally, reducing lag.  It is meant to be used with the
+@code{luanti-mineclonia-csm} game variant, which has client-side scripting
+enabled."))))
+
 (define-public (luanti-topic topic-id)
   "Return an URL (as a string) pointing to the forum topic with
 numeric identifier TOPIC-ID on the official Luanti forums."
