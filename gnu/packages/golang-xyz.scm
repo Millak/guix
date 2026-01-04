@@ -7309,6 +7309,42 @@ Utilities:
 @end itemize")
     (license license:bsd-3)))
 
+(define-public go-github-com-creachadair-msync
+  (package
+    (name "go-github-com-creachadair-msync")
+    (version "0.8.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/creachadair/msync")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z797dc0s99l7xf8zsbynwh1rjqw2w9119n81kjx39zkwrbmnc2w"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.25
+      #:import-path "github.com/creachadair/msync"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              ;; See: <https://go.dev/blog/synctest>.
+              (setenv "GOEXPERIMENT" "synctest")
+              (setenv "GODEBUG" "asynctimerchan=0"))))))
+    (propagated-inputs
+     (list go-github-com-creachadair-mds))
+    (home-page "https://github.com/creachadair/msync")
+    (synopsis "Synchronization management types in Go")
+    (description
+     "This package defines two types for managing concurrency: @code{throttle},
+which allows calls to a function to be coalesced among multiple concurrent
+goroutines and @code{trigger}, that implements channel-based condition
+variable.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-creack-pty
   (package
     (name "go-github-com-creack-pty")
