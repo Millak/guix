@@ -5238,8 +5238,11 @@ concepts.")
     (license license:bsd-3)))
 
 (define-public python-hdf5storage
-  ;; Use the latest commit containing compatability with Pytest and Python
-  ;; 3.11, see <https://github.com/frejanordsiek/hdf5storage/issues/135>.
+  ;; XXX: Use the latest commit containing compatability with Pytest and Python
+  ;; 3.11, see: <https://github.com/frejanordsiek/hdf5storage/issues/135>.
+  ;; 
+  ;; This package probably is sun setting, consider to remove when stops
+  ;; building, see: <https://github.com/frejanordsiek/hdf5storage/issues/136>.
   (let ((commit "7ee2a96de134b44beaa79c3a11c559f9ac87c5a6")
         (revision "0"))
     (package
@@ -5257,11 +5260,10 @@ concepts.")
       (build-system pyproject-build-system)
       (native-inputs
        (list python-pytest
-             python-setuptools
-             python-wheel))
+             python-setuptools))
       (propagated-inputs
        (list python-h5py
-             python-numpy))
+             python-numpy-1))
       (home-page "https://github.com/frejanordsiek/hdf5storage")
       (synopsis "Read and write Python data types from and to HDF5 files")
       (description
