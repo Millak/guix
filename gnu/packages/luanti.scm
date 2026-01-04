@@ -78,7 +78,7 @@
        ;;   but still ok for internal use." Also asked MT devs on IRC for this.
        ;; - tiniergltf is intended for Luanti and diverged from upstream.
        (snippet
-          '(let ((keep '("." ".." "sha256" "tiniergltf")))
+          '(let ((keep '("." ".." "lstrpack" "sha256" "tiniergltf")))
              (with-directory-excursion "lib"
                (for-each delete-file-recursively
                          (scandir "." (negate (cut member <> keep)))))
@@ -99,7 +99,8 @@
     (arguments
      (list
       #:configure-flags
-      #~(list "-DENABLE_LTO=ON"
+      #~(list "-DBUILD_DOCUMENTATION=OFF" ;not installed anyway
+              "-DENABLE_LTO=ON"
               "-DENABLE_UPDATE_CHECKER=FALSE")
       #:phases
       #~(modify-phases %standard-phases
