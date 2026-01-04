@@ -516,6 +516,7 @@ classification.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 254 passed, 15 skipped, 1142679 warnings
       #:test-flags
       ;; TODO: Review tests.
       #~(list
@@ -532,8 +533,8 @@ classification.")
               ;; This file uses Python 2 statements
               (delete-file "GPy/testing/mpi_test__.py")
               (substitute* "setup.py"
-                (("scipy>=1.3.0,<1.12.0")
-                 "scipy>=1.3.0,<=1.13.0"))
+                (("scipy>=1.3.0,<=1.12.0")
+                 "scipy>=1.3.0"))
               ;; Use numpy.exp because scipy.ext no longer exists
               (substitute* "GPy/kern/src/sde_standard_periodic.py"
                 (("sp\\.exp") "np.exp"))
@@ -548,7 +549,7 @@ classification.")
            python-setuptools
            python-wheel))
     (propagated-inputs
-     (list python-numpy
+     (list python-numpy-1
            python-paramz
            python-scipy
            python-six))
