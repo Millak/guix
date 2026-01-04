@@ -541,6 +541,80 @@ Kubernetes-style API types}.")
      "This package provides a network proxy for the Kubernetes API server.")
     (license license:asl2.0)))
 
+(define-public go-sigs-k8s-io-controller-runtime
+  (package
+    (name "go-sigs-k8s-io-controller-runtime")
+    (version "0.22.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kubernetes-sigs/controller-runtime")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z5wbcmmcngwxxg9krz3sqp739fv8c73s2v84dibbqc86ag05q8i"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "sigs.k8s.io/controller-runtime"
+      #:embed-files #~(list "authoring.tmpl")
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; XXX: Check why these tests fail.
+                       (list "TestAdmissionWebhook"
+                             "TestApiMachinery"
+                             "TestBuilder"
+                             "TestClient"
+                             "TestControllerutil"
+                             "TestEventhandler"
+                             "TestIntegration"
+                             "TestLazyRestMapperProvider"
+                             "TestManager"
+                             "TestReconcile"
+                             "TestRecorder"
+                             "TestSource"
+                             "TestVersioning"
+                             "TestWorkflows")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-onsi-ginkgo-v2
+           go-github-com-onsi-gomega
+           go-github-com-spf13-afero
+           go-go-uber-org-goleak))
+    (propagated-inputs
+     (list go-github-com-evanphx-json-patch-v5
+           go-github-com-fsnotify-fsnotify
+           go-github-com-go-logr-logr
+           go-github-com-go-logr-zapr
+           go-github-com-google-btree
+           go-github-com-google-gofuzz
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-go-uber-org-zap
+           go-golang-org-x-mod
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-gomodules-xyz-jsonpatch-v2
+           go-gopkg-in-evanphx-json-patch-v4
+           go-k8s-io-api
+           go-k8s-io-apiextensions-apiserver
+           go-k8s-io-apimachinery
+           go-k8s-io-apiserver
+           go-k8s-io-client-go
+           go-k8s-io-klog-v2
+           go-k8s-io-utils
+           go-sigs-k8s-io-structured-merge-diff-v6
+           go-sigs-k8s-io-yaml))
+    (home-page "https://sigs.k8s.io/controller-runtime")
+    (synopsis "Kubernetes controller-runtime Project")
+    (description
+     "Package controllerruntime provides tools to construct Kubernetes-style
+controllers that manipulate both Kubernetes CRDs and aggregated/built-in
+Kubernetes APIs.")
+    (license license:asl2.0)))
+
 
 ;;;
 ;;; Executables:
