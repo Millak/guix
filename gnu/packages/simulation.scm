@@ -847,7 +847,9 @@ UFL is part of the FEniCS Project.")
        (method url-fetch)
        (uri (pypi-uri "fenics-ufl" version))
        (sha256
-        (base32 "10dz8x3lm68x2w3kkqcjask38h0zkhhak26jdbkppr8g9y8wny7p"))))))
+        (base32 "10dz8x3lm68x2w3kkqcjask38h0zkhhak26jdbkppr8g9y8wny7p"))))
+    (inputs '())
+    (propagated-inputs (list python-numpy-1))))
 
 ;; XXX: This package is quite dated and upstream no longer maintains it: "This
 ;; repository was archived by the owner on Feb 21, 2022. It is now read-only."
