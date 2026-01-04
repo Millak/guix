@@ -3421,6 +3421,31 @@ such as readers and writers that fail after N consecutive reads/writes.")
     (description "This package provides utilities for Go modules.")
     (license license:expat)))
 
+(define-public go-github-com-tenntenn-text-transform
+  (package
+    (name "go-github-com-tenntenn-text-transform")
+    (version "0.0.0-20250402111347-ba836492e880")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tenntenn/text")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19f302js8pxyqnl189992zp6pl169b4gpgn6wywpdir77vm56pih"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tenntenn/text/transform"
+      #:unpack-path "github.com/tenntenn/text"))
+    (propagated-inputs
+     (list go-golang-org-x-text))
+    (home-page "https://github.com/tenntenn/text")
+    (synopsis "Text transformation utilities")
+    (description "This package provides text transformation utilities in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-tj-assert
   (package
     (name "go-github-com-tj-assert")
