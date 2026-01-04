@@ -1861,35 +1861,26 @@ Python's native complex data types is also supported.")
 (define-public python-multiscale-spatial-image
   (package
     (name "python-multiscale-spatial-image")
-    (version "1.0.0")
+    (version "2.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "multiscale_spatial_image" version))
        (sha256
-        (base32 "01kcagjy797hbz5an9cp8wcl5krgp21yb7ibfimvpidb3jp5lfhb"))))
+        (base32 "1avcc7hrgyza793i02vjfvyn2bg0ag50h1pagapbpj65hl3v4whb"))))
     (build-system pyproject-build-system)
     ;; All interesting tests require file downloads over IPFS.
     (arguments (list #:tests? #false))
     (propagated-inputs
-     (list `(,insight-toolkit "python")
-           python-dask
-           python-dask-image
+     (list python-dask
            python-numpy
+           python-dateutil
            python-spatial-image
            python-xarray
-           python-xarray-datatree))
-    (native-inputs
-     (list python-fsspec
-           python-hatchling
-           python-ipfsspec
-           python-jsonschema
-           python-nbmake
-           python-pooch
-           python-pytest
-           python-pytest-mypy
-           python-urllib3
+           python-xarray-dataclass
            python-zarr))
+    (native-inputs
+     (list python-hatchling))
     (home-page "https://github.com/spatial-image/multiscale-spatial-image")
     (synopsis "Multi-dimensional spatial image data structure")
     (description
