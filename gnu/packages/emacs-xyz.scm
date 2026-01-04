@@ -2543,7 +2543,7 @@ Forgejo-based (e.g. Codeberg) repositories.")
 (define-public emacs-magit
   (package
     (name "emacs-magit")
-    (version "4.4.2")
+    (version "4.5.0")
     (source
      (origin
        (method git-fetch)
@@ -2552,7 +2552,7 @@ Forgejo-based (e.g. Codeberg) repositories.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lsxldyjv2h69657pgrblhkxq8fvc0xdwlwpfmd09pb8zawygh2g"))))
+        (base32 "04yxjkv5h3arcj1s0nq9kyh3l1z4c9wml35vb67jvv1h7mslwz55"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -2565,7 +2565,9 @@ Forgejo-based (e.g. Codeberg) repositories.")
               (invoke "make" "-C" ".." "info")
               ;; Copy info files to the lisp directory, which acts as
               ;; the root of the project for the emacs-build-system.
-              (rename-file "../docs/magit.info" "../lisp/magit.info")))
+              (for-each (lambda (file)
+                          (install-file file "../lisp"))
+                        (find-files "../docs" "\\.info"))))
           (add-after 'unpack 'patch-version-executables
             (lambda* (#:key inputs #:allow-other-keys)
               (emacs-substitute-variables "magit.el"
