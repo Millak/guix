@@ -3549,6 +3549,34 @@ goroutine leaks and understanding goroutine lifecycles.")
 based on Go @code{testing} library procedures.")
     (license license:cc0)))
 
+(define-public go-gitlab-com-bosi-decorder
+  (package
+    (name "go-gitlab-com-bosi-decorder")
+    (version "0.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/bosi/decorder")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g9x5f7mhvdzwki57902qgb4ih2gipkg255nf9hjv30flfnl2294"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gitlab.com/bosi/decorder"
+      #:test-flags #~(list "-vet=off")))
+    (propagated-inputs
+     (list go-golang-org-x-tools))
+    (home-page "https://gitlab.com/bosi/decorder")
+    (synopsis "Declaration order and number linter for golang")
+    (description
+     "This package provides a declaration order linter for Go.  In case of
+this tool declarations are @code{type}, @code{const}, @code{var} and
+@code{func}.")
+    (license license:expat)))
+
 (define-public go-go-abhg-dev-requiredfield
   (package
     (name "go-go-abhg-dev-requiredfield")
