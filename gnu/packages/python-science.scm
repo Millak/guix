@@ -4892,6 +4892,39 @@ large and growing library of domain-agnostic functions for advanced analytics
 and visualization with these data structures.")
     (license license:asl2.0)))
 
+(define-public python-xarray-dataclass
+  (package
+    (name "python-xarray-dataclass")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/xarray-contrib/xarray-dataclass/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1q3y9gbzrp1mh48y7gggqgggwnarxdn32h907mfax1hi9ap6ywil"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-hatchling))
+    (propagated-inputs
+     (list python-numpy
+           python-typing-extensions
+           python-xarray))
+    (home-page "https://github.com/xarray-contrib/xarray-dataclass/")
+    (synopsis "Xarray data creation by data classes")
+    (description
+     "xarray-dataclass is a Python package that makes it easy to create
+@url{https://xarray.pydata.org/en/stable/index.html, xarray}'s DataArray and
+Dataset objects that are \"typed\" (i.e. fixed dimensions, data type,
+coordinates, attributes, and name) using
+@url{https://docs.python.org/3/library/dataclasses.html, the Python's
+dataclass}.  It's a successor of not maintained
+https://github.com/astropenguin/xarray-dataclasses.")
+    (license license:expat)))
+
 (define-public python-xarray-dataclasses
   (package
     (name "python-xarray-dataclasses")
