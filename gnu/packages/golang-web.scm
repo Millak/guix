@@ -3733,6 +3733,43 @@ differentiate between installs of Mozilla software in @code{installs.ini} and
 @code{profiles.ini}.")
     (license license:expat)))
 
+(define-public go-github-com-bradfitz-go-tool-cache
+  (package
+    (name "go-github-com-bradfitz-go-tool-cache")
+    (version "0.0.0-20260315044010-9fc622d67f65")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bradfitz/go-tool-cache")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qzjh8wglknfhik4vpksx4ya5kci818q6mvny9fjqcgpaywj0v15"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/bradfitz/go-tool-cache"
+      #:build-flags #~(list "-tags=libsqlite3")
+      #:test-flags #~(list "-tags=libsqlite3")))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-bradfitz-parentdeath
+           go-github-com-go-jose-go-jose-v4
+           go-github-com-golang-jwt-jwt-v5
+           go-github-com-pierrec-lz4-v4
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-modernc-org-sqlite))
+    (home-page "https://github.com/bradfitz/go-tool-cache")
+    (synopsis "Share Go test caching across network")
+    (description
+     "This package allows a user to share their Go build cache across the
+network,using GOCACHEPROG.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-brianvoe-gofakeit-v6
   (package
     (name "go-github-com-brianvoe-gofakeit-v6")
