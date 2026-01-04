@@ -1595,6 +1595,39 @@ AWS Lambda and API Gateway or ALB without changing the existing HTTP
 handlers.")
     (license license:asl2.0)))
 
+(define-public go-github-com-akutz-memconn
+  (package
+    (name "go-github-com-akutz-memconn")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/akutz/memconn")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mhghzcx2zxr4bpyf4wx3j7ph9srw38wxg78svwbjh930r2kzssq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/akutz/memconn"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Tests fail with insecure algorithm
+                       (list "TestTLS_Memu"
+                             "TestTLS_Memb"
+                             "TestTLS_TCP"
+                             "TestTLS_UNIX"
+                             "TestTLS_HTTP_Memu"
+                             "TestTLS_HTTP_Memb")
+                       "|"))))
+    (home-page "https://github.com/akutz/memconn")
+    (synopsis "In-memory network stack for Go")
+    (description
+     "This package provides named, in-memory network connections for Go.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-alexliesenfeld-health
   (package
     (name "go-github-com-alexliesenfeld-health")
