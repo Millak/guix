@@ -2151,6 +2151,30 @@ testing and improve the efficiency of unit test writing.")
 testing of time-sensitive code.")
     (license license:expat)))
 
+(define-public go-github-com-josharian-mapfs
+  (package
+    (name "go-github-com-josharian-mapfs")
+    (version "0.0.0-20210615234106-095c008854e6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/josharian/mapfs")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09i6shqwacx8nm6jfyhc1zvry8fcb3ddd98m96skzybv9lckq7h4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/josharian/mapfs"))
+    (home-page "https://github.com/josharian/mapfs")
+    (synopsis "Fork of Go std's testing/fstest.MapFS")
+    (description
+     "This is a fork of the @code{MapFS} component of the Go standard
+library's testing/fstest package.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-joshdk-go-junit
   (package
     (name "go-github-com-joshdk-go-junit")
