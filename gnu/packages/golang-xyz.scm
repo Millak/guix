@@ -642,6 +642,33 @@ recursively any exported one.  It also won't merge structs inside
 maps (because they are not addressable using Go reflection).")
     (license license:bsd-3)))
 
+(define-public go-fyne-io-systray
+  (package
+    (name "go-fyne-io-systray")
+    (version "1.11.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fyne-io/systray")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yrd4f3n8wrqcqradmqq9w0b31hd5hali876xkynfhm3nhaz4j1i"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "fyne.io/systray"))
+    (propagated-inputs
+     (list go-github-com-godbus-dbus-v5
+           go-golang-org-x-sys))
+    (home-page "https://fyne.io/systray/")
+    (synopsis "Place an icon and menu in the notification area")
+    (description
+     "This package is a cross-platform Go library to place an icon and menu in
+the notification area.")
+    (license license:asl2.0)))
+
 (define-public go-git-sr-ht-rjarry-go-opt
   (package
     (name "go-git-sr-ht-rjarry-go-opt")
