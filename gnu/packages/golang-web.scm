@@ -7064,6 +7064,36 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
      (list
       #:import-path "github.com/go-jose/go-jose/v4"))))
 
+(define-public go-github-com-go-json-experiment-json
+  (package
+    (name "go-github-com-go-json-experiment-json")
+    (version "0.0.0-20251027170946-4849db3c2f7e")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-json-experiment/json")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02baiz4vy02zr4319mr1k8s85zz4x418kh7bddg2k82h2k6qy5gf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.25
+      #:test-flags
+      #~(list "-skip" "TestSynctestMarshal")
+      #:import-path "github.com/go-json-experiment/json"))
+    (home-page "https://github.com/go-json-experiment/json")
+    (synopsis "JSON serialization in Go")
+    (description
+     "This package implements semantic processing of JSON as specified in
+@url{https://rfc-editor.org/rfc/rfc8259.html, RFC 8259}.  JSON is a simple
+data interchange format that can represent primitive data types such as
+booleans, strings, and numbers, in addition to structured data types such as
+objects and arrays.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-go-ldap-ldap-v3
   (package
     (name "go-github-com-go-ldap-ldap-v3")
