@@ -18326,7 +18326,7 @@ methylation and segmentation.")
            python-pyyaml
            python-pandas
            python-magic
-           python-numpy
+           python-numpy-1
            python-loompy
            pandoc
            samtools
