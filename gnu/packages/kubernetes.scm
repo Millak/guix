@@ -35,6 +35,50 @@
 ;;; Libraries:
 ;;;
 
+(define-public go-github-com-elastic-crd-ref-docs
+  (package
+    (name "go-github-com-elastic-crd-ref-docs")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/elastic/crd-ref-docs")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vg3zjcgcq04cbqc8sk638q9v5r62w8r8x22yl7g9blbbr13sj7s"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/elastic/crd-ref-docs/test
+            (delete-file-recursively "test")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/elastic/crd-ref-docs"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-goccy-go-yaml
+           go-github-com-masterminds-sprig-v3
+           go-github-com-spf13-cobra
+           go-golang-org-x-tools
+           go-go-uber-org-zap
+           go-k8s-io-apimachinery
+           go-sigs-k8s-io-controller-runtime
+           ;; go-sigs-k8s-io-gateway-api
+           go-sigs-k8s-io-controller-tools))
+    (home-page "https://github.com/elastic/crd-ref-docs")
+    (synopsis "Kubernetes CRD reference documentation generator")
+    (description
+     "This package generates API reference documentation by scanning a source
+tree for exported @acronym{CustomResourceDefinition, CRD} types.")
+    (license license:asl2.0)))
+
 (define-public go-go-etcd-io-etcd-client-v3
   (package
     (name "go-go-etcd-io-etcd-client-v3")
