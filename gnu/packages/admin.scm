@@ -6988,7 +6988,7 @@ working directory, user, pid, command, and so on.")
 (define-public xfel
   (package
     (name "xfel")
-    (version "1.3.3")
+    (version "1.3.5")
     (source
      (origin
        (method git-fetch)
@@ -6996,7 +6996,7 @@ working directory, user, pid, command, and so on.")
               (url "https://github.com/xboot/xfel")
               (commit (string-append "v" version))))
        (sha256
-        (base32 "15xlqkj7lf3xszgfyci32lrwdjhqmmm9clmwlp1qn6hywal3d2p4"))
+        (base32 "1vmb3dr3vplxdxn9i8i4chdnfihb429rakvkqsfccb885ivkkn3b"))
        (file-name (git-file-name name version))))
     (native-inputs
      (list pkg-config))
