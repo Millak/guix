@@ -926,6 +926,26 @@ The unified Libertinus family consists of:
 expansion of Franklin Gothic, a classic font.  It covers 105 Latin Languages.")
       (license license:silofl1.1))))
 
+(define-public font-playwrite
+  (package
+    (name "font-playwrite")
+    (version "1.003")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/TypeTogether/Playwrite/")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1vjll0jdmy5liw68k1p0pry5hzjjxna9a2sccifvwckwxngg84zc"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/TypeTogether/Playwrite/")
+    (synopsis "Family of primary school cursive fonts")
+    (description "Playwrite is a typeface engine for the creation of primary
+school cursive fonts.  It sports several variations of lowercase and uppercase
+letters to account for regional differences.")
+    (license license:silofl1.1)))
+
 (define-public font-terminus
   (package
     (name "font-terminus")
