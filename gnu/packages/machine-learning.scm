@@ -1279,6 +1279,69 @@ depend on language-specific pre- or post-processing.")
 cardinality matching from a bipartite graph.")
       (license license:gpl3))))
 
+(define-public python-paramz
+  (package
+    (name "python-paramz")
+    (version "0.9.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sods/paramz")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ywc2jzj40m6wmq227j3snxvp4434s0m1xk1abg6v6mr87pv2sa9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k"
+              ;; Two tests fail with error: TypeError: arrays to stack must be
+              ;; passed as a "sequence" type such as list or tuple.
+              (string-append "not test_raveled_index"
+                             " and not test_regular_expression_misc")
+              "paramz/tests/array_core_tests.py"
+              "paramz/tests/cacher_tests.py"
+              "paramz/tests/examples_tests.py"
+              "paramz/tests/index_operations_tests.py"
+              "paramz/tests/init_tests.py"
+              "paramz/tests/lists_and_dicts_tests.py"
+              "paramz/tests/model_tests.py"
+              "paramz/tests/observable_tests.py"
+              "paramz/tests/parameterized_tests.py"
+              "paramz/tests/pickle_tests.py"
+              "paramz/tests/verbose_optimize_tests.py")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-decorator
+           python-numpy-1
+           python-scipy
+           python-six))
+    (home-page "https://github.com/sods/paramz")
+    (synopsis "The Parameterization Framework")
+    (description
+     "@command{paramz} is a lightweight parameterization framework
+for parameterized model creation and handling.  Its features include:
+
+@itemize
+ @item Easy model creation with parameters.
+ @item Fast optimized access of parameters for optimization routines.
+ @item Memory efficient storage of parameters (only one copy in memory).
+ @item Renaming of parameters.
+ @item Intuitive printing of models and parameters.
+ @item Gradient saving directly inside parameters.
+ @item Gradient checking of parameters.
+ @item Optimization of parameters.
+ @item Jupyter notebook integration.
+ @item Efficient storage of models, for reloading.
+ @item Efficient caching.
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public python-persim
   (package
     (name "python-persim")
