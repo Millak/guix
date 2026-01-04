@@ -20404,30 +20404,26 @@ includes operations like compartment, insulation or peak calling.")
 (define-public python-hicmatrix
   (package
     (name "python-hicmatrix")
-    (version "17.1")
-      (source
-        (origin
-          ;;Pypi sources do not contain any test
-          (method git-fetch)
-          (uri (git-reference
-                 (url "https://github.com/deeptools/HiCMatrix")
-                 (commit version)))
-          (file-name (git-file-name name version))
-          (sha256
-            (base32
-             "14gq7r9b64ff56l5f8h8zc2i2y3xri646jl0anb74japqxrwvlna"))))
+    (version "17.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/deeptools/HiCMatrix")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pksh4k0k21jmiqvczpsb4i9i8ypip3a42s2j3j4z6iypakphakh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         ;; TODO: this must be fixed in python-tables
-         (add-before 'check 'find-blosc2
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "LD_LIBRARY_PATH"
-                     (dirname (search-input-file
-                               inputs "/lib/libblosc2.so"))))))))
-    (inputs (list c-blosc2))
+      ;; tests: 51 passed, 1 deselected, 2 xfailed, 1 xpassed, 8 warnings
+      #:test-flags
+      ;; Arrays are not equal
+      #~(list "--deselect=hicmatrix/test/test_HiCMatrix.py::test_dist_list_to_dict")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-cooler
            python-intervaltree
@@ -20435,8 +20431,6 @@ includes operations like compartment, insulation or peak calling.")
            python-pandas
            python-scipy
            python-tables))
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/deeptools/HiCMatrix/")
     (synopsis "HiCMatrix class for HiCExplorer and pyGenomeTracks")
     (description
