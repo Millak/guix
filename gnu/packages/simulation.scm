@@ -933,7 +933,8 @@ FIAT is part of the FEniCS Project.")
                   (invoke "pytest" "unit/"))))))))
     (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-fenics-dijitso python-fenics-fiat
-                             python-fenics-ufl-2019))
+                             python-fenics-ufl-2019
+                             python-numpy-1))
     (home-page "https://bitbucket.org/fenics-project/ffc/")
     (synopsis "Compiler for finite element variational forms")
     (description
