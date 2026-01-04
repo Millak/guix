@@ -2713,6 +2713,31 @@ error messages, preserving the order of @code{have} (actual result) before
 @code{want} (expected result) to minimize confusion.")
     (license license:asl2.0)))
 
+(define-public go-github-com-newmo-oss-go-caller
+  (package
+    (name "go-github-com-newmo-oss-go-caller")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/newmo-oss/go-caller")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hn0wj2v6yvn83lpilbcb9xpa36fmcbv83rk6fhr2rwckp2dxy8p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/newmo-oss/go-caller"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (home-page "https://github.com/newmo-oss/go-caller")
+    (synopsis "Collect stack traces at runtime")
+    (description
+     "This package provides a library for collecting stack traces at runtime.")
+    (license license:expat)))
+
 (define-public go-github-com-onsi-ginkgo
   (package
     (name "go-github-com-onsi-ginkgo")
