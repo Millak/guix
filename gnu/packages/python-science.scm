@@ -2570,10 +2570,10 @@ search in Python.")
                     " and not test_pr_level_patient"
                     " and not test_pr_level_series"
                     " and not test_scp_cancelled"))))
-    (native-inputs (list python-poetry-core
+    (native-inputs (list python-numpydoc
+                         python-poetry-core
                          python-pytest))
-    (propagated-inputs (list python-numpydoc
-                             python-pydicom
+    (propagated-inputs (list python-pydicom
                              python-pyfakefs
                              python-sqlalchemy))
     (home-page "https://github.com/pydicom/pynetdicom")
