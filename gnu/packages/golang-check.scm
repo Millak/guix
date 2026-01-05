@@ -1746,6 +1746,31 @@ programming language}.  It integrates well with Go's built-in @code{testing}
 package, but can be used in other contexts too.")
     (license license:asl2.0)))
 
+(define-public go-github-com-golangci-misspell
+  (package
+    (name "go-github-com-golangci-misspell")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/golangci/misspell")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10xafzq5pi3w5vxsg4x3nc57nm93ax3c73md5vc34jwl23zs5klp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/golangci/misspell"))
+    (propagated-inputs (list go-github-com-gobwas-glob))
+    (home-page "https://github.com/golangci/misspell")
+    (synopsis "Correct commonly-misspelled words in Go")
+    (description
+     "Package misspell corrects commonly misspelled English words in source
+files.")
+    (license license:expat)))
+
 (define-public go-github-com-golangci-revgrep
   (package
     (name "go-github-com-golangci-revgrep")
