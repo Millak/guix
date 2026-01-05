@@ -467,7 +467,7 @@ asyncio_mode = auto")))))
            python-attrs
            python-cachetools
            python-click
-           python-dbus
+           python-dbus-1.2
            python-janus
            python-keyring
            python-logbook

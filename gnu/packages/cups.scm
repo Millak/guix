@@ -755,7 +755,7 @@ should only be used as part of the Guix cups-pk-helper service.")
            libjpeg-turbo
            libusb
            python
-           python-dbus
+           python-dbus-1.2
            python-pygobject
            python-pyqt
            python-wrapper

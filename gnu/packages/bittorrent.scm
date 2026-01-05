@@ -662,7 +662,7 @@ the following features:
            nss-certs
            python-pycairo
            python-chardet
-           python-dbus
+           python-dbus-1.2
            python-mako
            python-pygobject
            python-pillow

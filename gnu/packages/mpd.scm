@@ -514,7 +514,7 @@ other MPD frontends.")
     (inputs
      (list bash-minimal
            python
-           python-dbus
+           python-dbus-1.2
            python-mpd2
            python-mutagen
            python-pygobject))

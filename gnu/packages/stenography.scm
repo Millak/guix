@@ -122,7 +122,7 @@
      (list bash-minimal
            dbus
            python-appdirs
-           python-dbus
+           python-dbus-1.2
            python-hidapi
            python-plover-stroke
            python-pyqt

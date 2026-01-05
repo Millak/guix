@@ -1517,7 +1517,7 @@ winner of the 2015 Password Hashing Competition.")
                 (wrap-program (string-append #$output "/bin/secretsd")
                   `("GI_TYPELIB_PATH" ":" prefix
                     (,(getenv "GI_TYPELIB_PATH")))))))))
-      (inputs (list python-dbus python-platformdirs python-cryptography
+      (inputs (list python-dbus-1.2 python-platformdirs python-cryptography
                     python-pygobject))
       (native-inputs (list bash-minimal python-setuptools python-wheel))
       (home-page "https://github.com/grawity/secretsd")

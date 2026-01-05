@@ -244,7 +244,7 @@ to share commonly used Xfce widgets among the Xfce applications.")
                          pkg-config
                          python))
     (inputs (list bash-minimal which xfconf xdg-utils))
-    (propagated-inputs (list gtk+ python-dbus python-pexpect python-pycairo
+    (propagated-inputs (list gtk+ python-dbus-1.2 python-pexpect python-pycairo
                              python-pygobject))
     (home-page "https://docs.xfce.org/apps/catfish/")
     (synopsis "File searching tool for Xfce")

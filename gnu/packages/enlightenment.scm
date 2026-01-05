@@ -441,7 +441,7 @@ embedded systems.")
            python-cython-0
            python-pytest
            python-setuptools))
-    (inputs (list efl python-dbus python-packaging))
+    (inputs (list efl python-dbus-1.2 python-packaging))
     (home-page "https://www.enlightenment.org/")
     (synopsis "Python bindings for EFL")
     (description

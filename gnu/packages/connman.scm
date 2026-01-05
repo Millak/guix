@@ -144,7 +144,7 @@ sharing) to clients via USB, ethernet, WiFi, cellular and Bluetooth.")
      (list bash-minimal                 ;for wrap-program
            efl
            python-wrapper
-           python-dbus
+           python-dbus-1.2
            python-efl))
     (home-page "https://www.enlightenment.org")
     (synopsis "Connman User Interface written using the EFL")

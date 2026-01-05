@@ -4647,7 +4647,7 @@ standard MIDI file with the csvmidi program.")
            jack-2
            python
            `(,python "tk")
-           python-dbus
+           python-dbus-1.2
            python-decorator
            python-pyinotify
            python-pyliblo
@@ -7713,7 +7713,7 @@ It is provided as an LV2 plugin and as a standalone Jack application.")
            dbus
            jack-1
            python
-           python-dbus))
+           python-dbus-1.2))
     (native-inputs
      (list pkg-config))
     (synopsis "ALSA sequencer to JACK MIDI bridging")
@@ -7942,7 +7942,7 @@ streaming audio server.")
            libsoup-minimal
            python
            python-cheetah
-           python-dbus
+           python-dbus-1.2
            python-feedparser
            python-gst
            python-iniconfig

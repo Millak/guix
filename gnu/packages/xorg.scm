@@ -6568,7 +6568,7 @@ basic eye-candy effects.")
            python-pyopengl              ; Drawing acceleration.
            python-pyopengl-accelerate   ; Same.
            python-paramiko              ; Tunneling over SSH.
-           python-dbus                  ; For desktop notifications.
+           python-dbus-1.2              ; For desktop notifications.
            dbus                         ; For dbus-launch command.
            python-lz4                   ; Faster compression than zlib.
            python-netifaces

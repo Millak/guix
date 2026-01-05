@@ -14956,7 +14956,7 @@ It is based on PyGI, the Python GObject Introspection bindings, which is the
 recommended way to use GLib from Python.")
     (license license:lgpl2.1+)))
 
-(define-public python-dbus
+(define-public python-dbus-1.2
   (package
     (name "python-dbus")
     (version "1.2.18")
@@ -14994,7 +14994,7 @@ implementation of D-Bus.")
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ; tests depend on system state
     (native-inputs (list python-setuptools))
-    (propagated-inputs (list python-dbus))
+    (propagated-inputs (list python-dbus-1.2))
     (home-page "https://bitbucket.org/takluyver/pynotify2")
     (synopsis "Python interface to D-Bus notifications")
     (description
@@ -34872,7 +34872,7 @@ for serialization, which has many drawbacks.")
                 "0fjf066jixk30fr8xwfalwfnhqpr56yv0cccyypnx2qp9bi9svb2"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ; No tests upstream.
-    (propagated-inputs (list python-dbus python-pygobject))
+    (propagated-inputs (list python-dbus-1.2 python-pygobject))
     (native-inputs (list python-setuptools))
     (home-page "https://github.com/getsenic/gatt-python")
     (synopsis "Bluetooth GATT SDK for Python")
@@ -41252,12 +41252,12 @@ you do not want to store entirely on disk or on memory.")
     (license license:gpl3)))
 
 (define-public python2-dbus
-  (package/inherit python-dbus
+  (package/inherit python-dbus-1.2
     (name "python2-dbus")
     (inputs `(("python" ,python-2)
               ("libxcrypt" ,libxcrypt)  ;required by Python.h
               ,@(alist-delete "python"
-                              (package-inputs python-dbus))))
+                              (package-inputs python-dbus-1.2))))
     (arguments
      `(#:configure-flags '("PYTHON_VERSION=2")))))
 

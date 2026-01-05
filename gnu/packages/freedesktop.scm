@@ -2118,7 +2118,7 @@ which speak the Qualcomm MSM Interface (QMI) protocol.")
            libxslt                      ;for xsltproc
            pkg-config
            python-minimal
-           python-dbus                  ;for test
+           python-dbus-1.2              ;for test
            python-pygobject             ;for test
            vala))
     (propagated-inputs
@@ -2312,7 +2312,7 @@ different sorts of messages in different formats.")
           (base32 "02wb61h2k3hhis5y2xi5rhc6pmikd13x722hk620sqb9b3m5pn3s"))))
       (build-system gnu-build-system)
       (native-inputs (list autoconf automake libtool pkg-config))
-      (inputs (list libxslt python-wrapper python-dbus))
+      (inputs (list libxslt python-wrapper python-dbus-1.2))
       (propagated-inputs (list telepathy-glib))
       (home-page "https://telepathy.freedesktop.org/")
       (synopsis "Telepathy IRC connection manager")

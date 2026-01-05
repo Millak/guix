@@ -1827,7 +1827,7 @@ plugins are provided.")
                             (string-append #$output "/share/applications/")))))))
     (inputs
      (list python
-           python-dbus
+           python-dbus-1.2
            python-jack-client
            python-pyqt-6
            python-requests))
@@ -3286,7 +3286,7 @@ synchronous execution of all clients, and low latency operation.")
            expat
            libsamplerate
            opus
-           python-dbus
+           python-dbus-1.2
            readline))
     (native-inputs
      (list pkg-config))

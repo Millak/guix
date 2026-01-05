@@ -1000,7 +1000,7 @@ authentication.")
            pango
            perl
            python-wrapper
-           python-dbus
+           python-dbus-1.2
            silc-toolkit
            sqlite
            startup-notification
@@ -1296,7 +1296,7 @@ of xmpppy.")
            libxscrnsaver
            network-manager
            python-css-parser
-           python-dbus
+           python-dbus-1.2
            python-emoji
            python-gssapi
            python-idna

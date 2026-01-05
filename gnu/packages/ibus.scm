@@ -276,7 +276,7 @@ may also simplify input method development.")
               (prepend gtk
                        pango
                        python
-                       python-dbus
+                       python-dbus-1.2
                        python-pygobject-3.50)))
     (native-search-paths
      (cons (search-path-specification
