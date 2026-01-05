@@ -24694,26 +24694,26 @@ formatting, and utility methods for jsonnet files.")
     (license license:gpl3+)))
 
 (define-public emacs-restclient
-  (let ((commit "1fb570643b08ba66eb70831b6f874f52546917f1")
-        (version "0")
-        (revision "4"))               ;Guix package revision,
-                                        ;upstream doesn't have official releases
+  ;; Upstream doesn't have official releases.
+  (let ((commit "1800a4e367c250051617d0b8c16a7cbd7f47da69")
+        (revision "0"))               ;Guix package revision,
     (package
       (name "emacs-restclient")
-      (version (git-version version revision commit))
+      (version (git-version "1.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://github.com/pashky/restclient.el")
+                      (url "https://github.com/emacsorphanage/restclient.el")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0npij1p1yw4p1f1yrx6bl8q18nav5p2xvbp7qhzhn7lb2fdn5jqv"))
+                  "02yphcli11j0p6144rwh7l5whx4ahxm3y15nz0b7r3y04fm25w6g"))
                 (file-name (git-file-name name version))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ;no actual tests
       (propagated-inputs
        (list emacs-helm emacs-jq-mode))
-      (home-page "https://github.com/pashky/restclient.el")
+      (home-page "https://github.com/emacsorphanage/restclient.el")
       (synopsis "Explore and test HTTP REST webservices")
       (description
        "This tool allows for testing and exploration of HTTP REST Web services
