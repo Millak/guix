@@ -37,6 +37,7 @@
   #:use-module (gnu packages aidc)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages enchant)
   #:use-module (gnu packages fonts)
@@ -79,7 +80,7 @@
 (define-public apostrophe
   (package
     (name "apostrophe")
-    (version "2.6.3")
+    (version "3.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -88,7 +89,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wsvq2434p650cf3vq5w7a6czbk8in0ra7nji45mvwyfahdyn6j4"))))
+                "1qndv40vvlzgyybhg30130v8b8zazddqjgmmbpfsnqfc0ghmhgja"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -104,6 +105,12 @@
             (lambda _
               (substitute* "build-aux/meson_post_install.py"
                 (("gtk-update-icon-cache") "true"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "../source"
+                  (setenv "PYTHONPATH" (getcwd))
+                  (invoke "pytest" "tests/")))))
           (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (wrap-program (search-input-file outputs "bin/apostrophe")
@@ -114,27 +121,29 @@
                                    (search-input-file inputs
                                                       "/bin/pandoc"))))))))))
     (inputs
-     (list bash-minimal
-           glib
-           gobject-introspection
-           gspell
-           gtk+
-           libhandy
+     (list adwaita-icon-theme
+           bash-minimal
+           gtk
+           gtksourceview
+           libadwaita
+           libspelling
            pandoc
            python
            python-chardet
-           python-levenshtein
-           python-regex
            python-pycairo
-           python-pygobject
            python-pyenchant
+           python-pygobject
            python-pypandoc
-           webkitgtk-with-libsoup2))
+           python-regex
+           webkitgtk))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
+           gobject-introspection
            pkg-config
-           sassc))
+           python
+           python-pytest
+           python-pylint))
     (home-page "https://gitlab.gnome.org/World/apostrophe")
     (synopsis "Markdown editor written in Python with GTK+")
     (description "Apostrophe is a GTK+ based distraction-free Markdown editor.
