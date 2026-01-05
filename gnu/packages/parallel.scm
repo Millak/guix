@@ -242,8 +242,8 @@ when jobs finish.")
              `(,hwloc-2 "lib")
              json-c
              linux-pam)
-       (if (supported-package? openpmix)
-           (list openpmix)
+       (if (supported-package? openpmix-4)
+           (list openpmix-4)
            '())
        (list munge
              numactl
@@ -355,7 +355,9 @@ minimal slurm package BASE-SLURM."
                     version ".tar.bz2"))
               (sha256
                (base32
-                "130pjygqk794dchknjqdsinciv2b7c7r5agqsgca7m804xp09wnl"))))))
+                "130pjygqk794dchknjqdsinciv2b7c7r5agqsgca7m804xp09wnl"))))
+    (inputs (modify-inputs (package-inputs slurm-minimal)
+              (replace "openpmix" openpmix)))))   ;use version 6.0.0
 
 (define-public slurm-25.05 (make-slurm slurm-minimal-25.05))
 
@@ -718,7 +720,7 @@ single-instruction multiple-data (SIMD) intrinsics.")
 (define-public openpmix
   (package
     (name "openpmix")
-    (version "4.2.8")
+    (version "6.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -726,7 +728,7 @@ single-instruction multiple-data (SIMD) intrinsics.")
                     version "/pmix-" version ".tar.bz2"))
               (sha256
                (base32
-                "1j9xlhqrrmgjdkwakamn78y5gj756adi53hn25zksgr3is3l5d09"))
+                "062k2agr311j06pavmrim1savmcv4f3c5jir4w1jxs0cdnb6ksdz"))
               (snippet
                '(begin (use-modules (guix build utils))
                        ;; Remove ~5 MiB of pre-built HTML doc.
@@ -776,6 +778,29 @@ commonly needed services in distributed and parallel computing systems.")
     (supported-systems %64bit-supported-systems)
     ;; The provided license is kind of BSD-style but specific.
     (license (license:fsf-free "https://github.com/openpmix/openpmix?tab=License-1-ov-file#License-1-ov-file"))))
+
+(define-public openpmix-4
+  (package
+    (inherit openpmix)
+    (version "4.2.8")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/openpmix/openpmix/releases/download/v"
+                    version "/pmix-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1j9xlhqrrmgjdkwakamn78y5gj756adi53hn25zksgr3is3l5d09"))
+              (snippet
+               '(begin (use-modules (guix build utils))
+                       ;; Remove ~5 MiB of pre-built HTML doc.
+                       (delete-file-recursively "docs/_build/html")))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments openpmix)
+       ((#:configure-flags flags #~'())
+        #~(list (string-append "--with-hwloc="
+                               (ungexp (this-package-input "hwloc") "lib"))
+                "--enable-python-bindings"))))))
 
 (define-public prrte
   (package
