@@ -1131,3 +1131,29 @@ Clojure depends on this library and provides it.  Thus it is not recommended
 to add a direct dependency on this package.")
     (home-page "https://github.com/clojure/spec.alpha")
     (license license:epl1.0)))
+
+(define-public clojure-core-specs-alpha
+  (package
+    (name "clojure-core-specs-alpha")
+    (version "0.5.81")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/clojure/core.specs.alpha")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hy060mb2hxirynkk36plx1rvpj6i2ldn8mvnwfd02wvjvh57dad"))))
+    (build-system clojure-build-system)
+    (arguments '(#:source-dirs '("src/main/clojure")
+                 #:test-dirs '()
+                 #:doc-dirs '()))
+    (synopsis "Describe clojure.core macros and functions")
+    (description
+     "This package contains specs to describe Clojure core macros and functions.
+
+Clojure depends on this library and provides it.  Thus it is not recommended
+to add a direct dependency on this package.")
+    (home-page "https://github.com/clojure/core.specs.alpha")
+    (license license:epl1.0)))
