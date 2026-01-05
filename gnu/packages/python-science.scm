@@ -3054,13 +3054,13 @@ logic, also known as grey logic.")
                  (string-append "version = \"" #$version "\""))))))))
     (propagated-inputs (list meson-python
                              python-numpy
-                             python-numpydoc
                              python-spin))
     (native-inputs (list gfortran
                          pkg-config
                          python-cython
                          python-meson-python
                          python-numpy
+                         python-numpydoc
                          python-pytest
                          python-setuptools
                          python-wheel))
