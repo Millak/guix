@@ -846,6 +846,32 @@ for Golang projects via modular Makefiles and GitHub Actions.")
 in Golang.")
     (license license:expat)))
 
+(define-public go-github-com-breml-bidichk
+  (package
+    (name "go-github-com-breml-bidichk")
+    (version "0.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/breml/bidichk")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nh1x1xg63d4ipcr0yh8nxjncj596pgzh08sb9dw1k0q6fjars2k"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/breml/bidichk"))
+    (propagated-inputs (list go-golang-org-x-tools))
+    (home-page "https://github.com/breml/bidichk")
+    (synopsis "Go linter for dangerous unicode character sequences")
+    (description
+     "This package finds dangerous unicode character sequences in Go source
+files.")
+    (license license:expat)))
+
 (define-public go-github-com-breml-errchkjson
   (package
     (name "go-github-com-breml-errchkjson")
