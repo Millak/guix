@@ -28676,6 +28676,9 @@ Its algorithms are based on the kakasi library, which is written in C.")
 implementation of the D-Bus protocol.")
     (license license:expat)))
 
+;; Added on 2026-01-05
+(define-deprecated-package python-dbus-python python-dbus)
+
 (define python-dbusmock-patch-paths-phase
   #~(lambda* (#:key inputs #:allow-other-keys)
       (substitute* "tests/test_api.py"
