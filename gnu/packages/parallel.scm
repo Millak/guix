@@ -9,7 +9,7 @@
 ;;; Copyright © 2017, 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2019-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim@guixotic.coop>
@@ -815,10 +815,7 @@ commonly needed services in distributed and parallel computing systems.")
    (build-system gnu-build-system)
    (arguments
     (list #:configure-flags
-          #~(list (string-append "--with-hwloc="
-                                 (assoc-ref %build-inputs "hwloc"))
-                  (string-append "--with-pmix="
-                                 #$(this-package-input "openpmix")))
+          #~(list "--disable-static")
 
           #:phases
           #~(modify-phases %standard-phases
@@ -838,13 +835,28 @@ commonly needed services in distributed and parallel computing systems.")
                   (substitute* "src/runtime/prte_mca_params.c"
                     (("prte_launch_agent =.*")
                      (string-append "prte_launch_agent = \""
-                                    #$output "/bin/prted\";\n"))))))
+                                    #$output "/bin/prted\";\n")))))
+              (add-after 'install 'adjust-pcc-link
+                (lambda* (#:key inputs #:allow-other-keys)
+                  ;; Adjust the 'pcc' symlink to its points to 'pmixcc' using
+                  ;; its absolute file name instead of just 'pmixcc'.
+                  (let* ((pcc (string-append #$output "/bin/pcc"))
+                         (target (string-append "/bin/" (readlink pcc))))
+                    (delete-file pcc)
+                    (symlink (search-input-file inputs target)
+                             pcc)))))
 
           #:disallowed-references (list (canonical-package gcc))))
    (inputs (list libevent
                  `(,hwloc "lib")
-                 openpmix))
-   (native-inputs (list perl))
+                 openpmix
+                 libnl))
+   (native-inputs (list pkg-config perl))
+   (outputs '("out"
+
+              ;; Move ~5 MiB of HTML docs (including CSS, JS, and fonts!) to a
+              ;; separate output.
+              "doc"))
    (synopsis "PMIx Reference RunTime Environment (PRRTE)")
    (description
     "The PMIx Reference RunTime Environment is a runtime environment
