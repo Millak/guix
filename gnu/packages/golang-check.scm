@@ -1746,6 +1746,31 @@ programming language}.  It integrates well with Go's built-in @code{testing}
 package, but can be used in other contexts too.")
     (license license:asl2.0)))
 
+(define-public go-github-com-golangci-revgrep
+  (package
+    (name "go-github-com-golangci-revgrep")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/golangci/revgrep")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gfz8rl17nxvlawx50xq3kys2wmy5m7hginniakir7frrwfjy8xa"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no version control repository found
+      #:import-path "github.com/golangci/revgrep"))
+    (home-page "https://github.com/golangci/revgrep")
+    (synopsis "Filter static analysis tools to lines changed")
+    (description
+     "This package filters static analysis tools to only lines changed based
+on a commit reference.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-golangci-unconvert
   (package
     (name "go-github-com-golangci-unconvert")
