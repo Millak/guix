@@ -934,6 +934,31 @@ can use the mock clock.  This is a maintained fork of benbjohnson's
 @url{https://github.com/benbjohnson/clock, clock} package.")
     (license license:expat)))
 
+(define-public go-github-com-firefart-nonamedreturns
+  (package
+    (name "go-github-com-firefart-nonamedreturns")
+    (version "1.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/firefart/nonamedreturns")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y9dz8rkd55p1rkib4y3b0czs44c2bb1pmlr4k53ms1k8d9bjgwk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/firefart/nonamedreturns"))
+    (propagated-inputs
+     (list go-golang-org-x-tools))
+    (home-page "https://github.com/firefart/nonamedreturns")
+    (synopsis "Go linter to catch named returns")
+    (description
+     "This package provides a linter to find named returns in Go code.")
+    (license license:gpl3)))
+
 ;; XXX: The project looks like abandoned, see
 ;; <https://github.com/frankban/quicktest/issues/172>, remove when nothing
 ;; depends on it.
