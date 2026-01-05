@@ -235,50 +235,6 @@ incorporated.")
     (home-page "https://brltty.app/")
     (license license:lgpl2.1+)))
 
-(define-public florence
-  (package
-    (name "florence")
-    (version "0.6.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/florence/florence/" version
-                           "/florence-" version ".tar.bz2"))
-       (sha256
-        (base32
-         "07h9qm22krlwayhzvc391lr23vicw81s48g7rirvx1fj0zyr4aa2"))))
-    (build-system glib-or-gtk-build-system)
-    (arguments
-     `(#:configure-flags (list "--with-xtst"
-                               "--without-docs"
-                               "--with-notification")))
-    (inputs
-     (list libxml2
-           libglade
-           (librsvg-for-system)
-           gstreamer
-           cairo
-           gtk+
-           libxtst
-           libxcomposite
-           libnotify))
-    (native-inputs
-     (list gettext-minimal intltool pkg-config))
-    (home-page "https://florence.sourceforge.net/")
-    (synopsis "Extensible, scalable virtual keyboard for X11")
-    (description
-     "Florence is an extensible scalable virtual keyboard for X11.
-It is useful for people who can't use a real hardware keyboard (for
-example for people with disabilities), but you must be able to use
-a pointing device (as a mouse, a trackball, a touchscreen or opengazer).
-
-Florence stays out of your way when you don't need it: it appears on the
-screen only when you need it.  A timer-based auto-click input method is
-available to help to click.")
-    ;; The documentation is under FDL1.2, but we do not install the
-    ;; documentation.
-    (license license:gpl2+)))
-
 (define-public footswitch
   (let ((commit "e455d6752221b9e9c3818cc304c873b9c2792490")
         (revision "0"))
