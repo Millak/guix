@@ -8068,6 +8068,7 @@ to display dialog boxes from the commandline and shell scripts.")
       libinput
       libice
       libsm
+      `(,libjxl "pixbuf-loader")        ;for the jxl backgrounds
       libxkbfile
       libxrandr
       libwacom
