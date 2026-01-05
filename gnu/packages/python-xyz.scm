@@ -28635,9 +28635,9 @@ characters in NFC form.
 Its algorithms are based on the kakasi library, which is written in C.")
     (license license:gpl3+)))
 
-(define-public python-dbus-python
+(define-public python-dbus
   (package
-    (name "python-dbus-python")
+    (name "python-dbus")
     (version "1.3.2")
     (source
      (origin
@@ -31884,7 +31884,7 @@ CMake.")
                   libx11
                   libxtst
                   python-babel
-                  python-dbus-python
+                  python-dbus
                   python-pycairo
                   python-pygobject
                   slop))

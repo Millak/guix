@@ -229,7 +229,7 @@ with Graphtec and Sihouette plotting cutters using an SVG file as its input.")
            python-setuptools
            xorg-server-for-tests))
     (inputs
-     (list python-dbus-python
+     (list python-dbus
            python-lxml
            python-numpy
            python-pillow

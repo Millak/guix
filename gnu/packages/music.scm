@@ -3636,7 +3636,7 @@ can connect to any JACK port and record the output into a stereo WAV file.")
     (inputs
      (list alsa-lib
            gtk+
-           python-dbus-python
+           python-dbus
            python-pygobject
            python-pyudev
            python-pyxdg))

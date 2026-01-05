@@ -1421,7 +1421,7 @@ prompt.")
              libwnck
              python-xlib
              python-pygobject
-             python-dbus-python))
+             python-dbus))
       ;; The actual home page https://ssokolow.com/quicktile/
       ;; gives an SSL error.
       (home-page "https://github.com/ssokolow/quicktile")

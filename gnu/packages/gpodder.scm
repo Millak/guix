@@ -95,7 +95,7 @@
      (list bash-minimal
            eyed3
            gtk+
-           python-dbus-python
+           python-dbus
            python-ffmpeg-python
            python-filelock
            python-html5lib
