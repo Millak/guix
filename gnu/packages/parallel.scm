@@ -729,17 +729,15 @@ single-instruction multiple-data (SIMD) intrinsics.")
               (sha256
                (base32
                 "062k2agr311j06pavmrim1savmcv4f3c5jir4w1jxs0cdnb6ksdz"))
+              (modules '((guix build utils)))
               (snippet
-               '(begin (use-modules (guix build utils))
-                       ;; Remove ~5 MiB of pre-built HTML doc.
-                       (delete-file-recursively "docs/_build/html")))))
+               ;; Remove ~5 MiB of pre-built HTML doc.
+               #~(delete-file-recursively "docs/_build/html"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:configure-flags
-      #~(list (string-append "--with-hwloc="
-                             (ungexp (this-package-input "hwloc") "lib"))
-              "--enable-python-bindings") ;disabled by default
+      #~(list "--enable-python-bindings")         ;disabled by default
 
       ;; Don't keep a reference to GCC.
       #:disallowed-references (and (not (%current-target-system))
