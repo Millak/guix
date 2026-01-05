@@ -128,13 +128,13 @@ online pastebin services.")
 (define-public wget2
   (package
     (name "wget2")
-    (version "2.2.0")
+    (version "2.2.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/wget/wget2-" version ".tar.gz"))
               (sha256
                (base32
-                "0mykji96ap5acdh416x1d7c3h657mj6iy7zlllyd69pvny2rqfrb"))))
+                "1d27nhgywchsn3xy0hcmmgbc32k881gmzkjg4h0yc63zwc9lnm6p"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
