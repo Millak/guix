@@ -4680,7 +4680,7 @@ itself.")
 
 (define-public python-pyqtwebengine-6
   (package
-    (inherit python-pyqtwebengine)
+    (name "python-pyqtwebengine")
     (version "6.9.0")
     (source
      (origin
@@ -4694,6 +4694,7 @@ itself.")
         '(substitute* "sip/QtWebEngineCore/qwebengineframe.sip"
            (("#include <qwebengineframe\\.h>" all)
             (string-append "#include <qvariant.h>\n" all))))))
+    (build-system pyproject-build-system)
     (native-inputs (list python python-sip python-pyqt-builder
                          ;; qtbase is required for qmake
                          qtbase))
@@ -4713,10 +4714,13 @@ itself.")
                                                   (python-version python)
                                                   "/site-packages/PyQt6/bindings"))))
                          (setenv "SIP_INCLUDE_DIRS" sip-include-dirs)))))))
+    (home-page "https://www.riverbankcomputing.com/software/pyqtwebengine/intro")
+    (synopsis "Python bindings for QtWebEngine")
     (description
      "PyQtWebEngine is a set of Python bindings for The Qt Company's Qt
 WebEngine libraries.  The bindings sit on top of PyQt6 and are implemented as a
-set of three modules.")))
+set of three modules.")
+    (license license:gpl3)))
 
 (define-public python-pyqt-builder
   (package
