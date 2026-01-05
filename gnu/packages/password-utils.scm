@@ -1729,17 +1729,18 @@ to use a different password manager.")
       (origin
         (method git-fetch)
         (uri (git-reference
-               (url "https://github.com/ddevault/pass-rotate")
+               (url "https://git.sr.ht/~sircmpwn/pass-rotate")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32
-          "1m067vvdlc85csbpkp8aw4s3ags7q8s3jszrr32kmj9qhk5c254f"))))
-    (build-system python-build-system)
+         (base32 "1m067vvdlc85csbpkp8aw4s3ags7q8s3jszrr32kmj9qhk5c254f"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests.
+    (native-inputs (list python-setuptools))
     (inputs
      (list python-beautifulsoup4 python-docopt python-html5lib
            python-requests))
-    (home-page "https://github.com/ddevault/pass-rotate")
+    (home-page "https://git.sr.ht/~sircmpwn/pass-rotate")
     (synopsis "Rotate password on online services")
     (description "pass-rotate is a command line utility and python library for
 rotating passwords on various web services.  It makes it easier to rotate your
