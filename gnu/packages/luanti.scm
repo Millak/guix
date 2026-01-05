@@ -503,6 +503,31 @@ currently permits without resorting to hacks which are too heavyweight or
 complicated to maintain.")
     (license license:gpl3+)))
 
+(define-public luanti-mineclonia-csm
+  (package/inherit luanti-mineclonia
+    (name "luanti-mineclonia-csm")
+    (arguments
+     (substitute-keyword-arguments (package-arguments luanti-mineclonia)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'enable-csm-support
+              (lambda _
+                ;; This makes it easy to benefit from client-side
+                ;; scripting mods such as the mcl_localplayer mode that
+                ;; can be used along the luanti-halon fork.
+                (substitute* '("settingtypes.txt"
+                               "mods/PLAYER/mcl_serverplayer/init.lua")
+                  (("(mcl_enable_csm.*)false" _ mcl_enable_csm)
+                   (string-append mcl_enable_csm "true")))))))))
+    (synopsis "Unofficial Minecraft-like game for Luanti with CSM enabled")
+    (description
+     (string-append (package-description luanti-mineclonia)
+                    "  This variant has CSM (client-side scripting)
+ enabled, for use with the @code{luanti-halon} fork.  The CSM code makes it
+possible to replicate more closely the physics of the original Minecraft game.
+To use it, you need to add @code{enable_client_modding = true} to your
+client's @file{~/.minetest/minetest.conf} configuration file."))))
+
 (define-public luanti-voxelibre
   (package
     (name "luanti-voxelibre")
