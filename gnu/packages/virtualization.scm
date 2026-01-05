@@ -15,7 +15,7 @@
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2020-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
@@ -201,14 +201,14 @@
     ;; Do not forget to update the various firmware used by QEMU, and sync the
     ;; configuration options used by the seabios-qemu package with those
     ;; provided by QEMU.
-    (version "10.1.0")
+    (version "10.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.qemu.org/qemu-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0ldyh3qia7zwv0xq6f67cp567i6ma1hb11gsqaz3x9qcnm4p6lg0"))
+        (base32 "0fl8hlkngmm61h65822xxb6cyfbz56mx30hm01il8ywzicdssc4y"))
        (patches (search-patches "qemu-build-info-manual.patch"
                                 "qemu-fix-agent-paths.patch"
                                 "qemu-fix-test-virtio-version.patch"))

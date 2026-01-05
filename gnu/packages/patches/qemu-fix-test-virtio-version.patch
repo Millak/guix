@@ -5,8 +5,8 @@ There were some discussion in <https://gitlab.com/qemu-project/qemu/-/issues/162
 
 diff --git a/tests/functional/test_virtio_version.py b/tests/functional/test_virtio_version.py
 index a5ea73237f..501545f655 100755
---- a/tests/functional/test_virtio_version.py
-+++ b/tests/functional/test_virtio_version.py
+--- a/tests/functional/x86_64/test_virtio_version.py
++++ b/tests/functional/x86_64/test_virtio_version.py
 @@ -10,6 +10,8 @@
  # This work is licensed under the terms of the GNU GPL, version 2 or
  # later.  See the COPYING file in the top-level directory.

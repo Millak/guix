@@ -1,46 +1,21 @@
-Allow a QEMU host to set the time and shutdown Guix guests.  Styled
-after the patch from the Nix package:
-
-https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/virtualization/qemu/fix-qemu-ga.patch
-
 diff --git a/qga/commands-posix.c b/qga/commands-posix.c
-index 6e3c15f539..eaef900b6e 100644
+index 837be51c40..d0d4d99b5e 100644
 --- a/qga/commands-posix.c
 +++ b/qga/commands-posix.c
-@@ -216,6 +216,7 @@ out:
+@@ -216,9 +216,9 @@ out:
+     return retcode;
+ }
+ 
+-#define POWEROFF_CMD_PATH "/sbin/poweroff"
+-#define HALT_CMD_PATH "/sbin/halt"
+-#define REBOOT_CMD_PATH "/sbin/reboot"
++#define POWEROFF_CMD_PATH "/run/current-system/profile/sbin/shutdown"
++#define HALT_CMD_PATH "/run/current-system/profile/sbin/halt"
++#define REBOOT_CMD_PATH "/run/current-system/profile/sbin/reboot"
+ 
  void qmp_guest_shutdown(const char *mode, Error **errp)
  {
-     const char *shutdown_flag;
-+    const char *command;
-     Error *local_err = NULL;
- 
- #ifdef CONFIG_SOLARIS
-@@ -235,16 +236,24 @@ void qmp_guest_shutdown(const char *mode, Error **errp)
-     slog("guest-shutdown called, mode: %s", mode);
-     if (!mode || strcmp(mode, "powerdown") == 0) {
-         shutdown_flag = powerdown_flag;
-+        command = "shutdown";
-     } else if (strcmp(mode, "halt") == 0) {
-         shutdown_flag = halt_flag;
-+        command = "halt";
-     } else if (strcmp(mode, "reboot") == 0) {
-         shutdown_flag = reboot_flag;
-+        command = "reboot";
-     } else {
-         error_setg(errp,
-                    "mode is invalid (valid values are: halt|powerdown|reboot");
-         return;
-     }
- 
-+    /* Try Guix’s shutdown/halt/reboot first. */
-+    char *path = g_strdup_printf("/run/current-system/profile/sbin/%s", command);
-+    execl(path, command, (char *) NULL);
-+    g_free(path);
-+
-     const char *argv[] = {"/sbin/shutdown",
- #ifdef CONFIG_SOLARIS
-                           shutdown_flag, "-g0", "-y",
-@@ -269,7 +278,7 @@ void qmp_guest_set_time(bool has_time, int64_t time_ns, Error **errp)
+@@ -295,7 +295,7 @@ void qmp_guest_set_time(bool has_time, int64_t time_ns, Error **errp)
      int ret;
      Error *local_err = NULL;
      struct timeval tv;
@@ -49,7 +24,7 @@ index 6e3c15f539..eaef900b6e 100644
  
      /* If user has passed a time, validate and set it. */
      if (has_time) {
-@@ -302,6 +311,11 @@ void qmp_guest_set_time(bool has_time, int64_t time_ns, Error **errp)
+@@ -328,6 +328,11 @@ void qmp_guest_set_time(bool has_time, int64_t time_ns, Error **errp)
       * hardware clock (RTC). */
      ga_run_command(argv, NULL, "set hardware clock to system time",
                     &local_err);
