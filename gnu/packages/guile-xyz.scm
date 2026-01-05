@@ -1248,59 +1248,6 @@ is not available for Guile 2.0.")
      ;; <https://github.com/wingo/fibers/pull/53>.
      (filter (cut string-suffix? "-linux" <>) %supported-systems))))
 
-(define-public guile-fibers-1.0
-  (package
-    (inherit guile-fibers-1.1)
-    (version "1.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://wingolog.org/pub/fibers/fibers-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0vjkg72ghgdgphzbjz9ig8al8271rq8974viknb2r1rg4lz92ld0"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Allow builds with Guile 3.0.
-                  (substitute* "configure"
-                    (("search=\"2\\.2\"")
-                     "search=\"3.0 2.2\""))
-
-                  ;; Explicitly include system headers rather than relying on
-                  ;; <libguile.h> to do it for us.
-                  (substitute* "epoll.c"
-                    (("#include.*libguile\\.h.*$" all)
-                     (string-append "#include <unistd.h>\n"
-                                    "#include <string.h>\n"
-                                    all "\n")))
-
-                  ;; Import (ice-9 threads) for 'current-processor-count'.
-                  (substitute* "tests/channels.scm"
-                    (("#:use-module \\(fibers\\)")
-                     (string-append "#:use-module (fibers)\n"
-                                    "#:use-module (ice-9 threads)\n")))
-                  #t))
-              (patches
-               ;; fixes a resource leak that causes crashes in the tests
-               (search-patches "guile-fibers-destroy-peer-schedulers.patch"))))
-    (arguments
-     '(;; The code uses 'scm_t_uint64' et al., which are deprecated in 3.0.
-       #:configure-flags '("CFLAGS=-Wno-error=deprecated-declarations")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'install 'mode-guile-objects
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; .go files are installed to "lib/guile/X.Y/cache".
-                      ;; This phase moves them to "…/site-ccache".
-                      (let* ((out (assoc-ref outputs "out"))
-                             (lib (string-append out "/lib/guile"))
-                             (old (car (find-files lib "^ccache$"
-                                                   #:directories? #t)))
-                             (new (string-append (dirname old)
-                                                 "/site-ccache")))
-                        (rename-file old new)
-                        #t))))))))
-
 (define-public guile2.2-fibers
   (package
     (inherit guile-fibers)
