@@ -7,7 +7,7 @@
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2017, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2017, 2018, 2020, 2024, 2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2020, 2024-2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019, 2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Timothy Sample <samplet@ngyro.com>
@@ -649,7 +649,8 @@ of a package, and INPUT-NAMES, a list of package specifications such as
   ;; with their minimal variant.
   (let ((input-names '("bash"
                        "cmake"
-                       "gettext")))
+                       "gettext"
+                       "po4a")))
     (map (lambda (input)
            (make-warning
             package
