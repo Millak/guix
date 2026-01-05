@@ -717,6 +717,32 @@ application can use the realtime clock while tests can use the mock clock.")
 results, converting test names WrittenInCamelCase into ordinary sentences.")
     (license license:expat)))
 
+(define-public go-github-com-bombsimon-wsl-v4
+  (package
+    (name "go-github-com-bombsimon-wsl-v4")
+    (version "4.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bombsimon/wsl")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c2m4y03p7zqdzspzs855aybmqb922lqlk81n93qzwncpwvfd9aa"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bombsimon/wsl/v4"))
+    (propagated-inputs (list go-golang-org-x-tools))
+    (home-page "https://github.com/bombsimon/wsl")
+    (synopsis "Whitespace linter for Go")
+    (description
+     "This package provides a linter that enforces a very @strong{non
+scientific} vision of how to make code more readable by enforcing empty lines
+at the right places.")
+    (license license:expat)))
+
 (define-public go-github-com-bool64-dev
   (package
     (name "go-github-com-bool64-dev")
