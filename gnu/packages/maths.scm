@@ -2215,65 +2215,6 @@ Interface to wrap the HDF5 library, which is implemented in C.")
 (define-deprecated-package hdf-java
   hdf5-java)
 
-(define-public hdf-eos5
-  (package
-    (name "hdf-eos5")
-    (version "2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://git.earthdata.nasa.gov/projects/DAS/repos/hdfeos5/raw/"
-             "hdf-eos5-" version "-src.tar.gz?at=refs/heads/HDFEOS5_" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0by82zznms00b0d5v4iv8a7jff6xm9hzswsx4mfzw2gyy1q4ghyp"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            (for-each delete-file (find-files "." "Makefile\\.in$"))
-            (for-each delete-file (find-files "m4" "^l.*\\.m4$"))
-            (delete-file "configure")
-            (delete-file "aclocal.m4")))))
-    (native-inputs
-     (list autoconf automake gfortran libtool))
-    (build-system gnu-build-system)
-    (inputs
-     (list gctp hdf5 libaec zlib))
-    (arguments
-     (list
-      #:configure-flags ''("--enable-install-include" "--enable-shared"
-                           "CC=h5cc -Df2cFortran" "LIBS=-lgctp")
-      #:parallel-tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-single_module-flag
-            (lambda _
-              (substitute* "src/Makefile.am"
-                ((",-single_module") ""))))
-          (add-after 'unpack 'fix-parallel-tests
-            (lambda _
-              (substitute* (find-files "testdrivers" "\\.c$")
-                (("#include <HE5_HdfEosDef.h>" orig)
-                 (string-append "#include <HE5_config.h>\n" orig)))
-              ;; pthread is already linked.
-              (substitute* "testdrivers/threads/Makefile.am"
-                (("(LDADD=\\$\\(LIBHDFEOS5\\) \\$\\(LIBGCTP\\)) pthread" _ rest)
-                 rest))
-              ;; This file is missing in the testdrivers/threads directory.
-              (copy-file "testdrivers/point/simple.txt"
-                         "testdrivers/threads/simple.txt"))))))
-    (synopsis "HDF5-based data format for NASA's Earth Observing System")
-    (description
-     "HDF-EOS5 is a software library built on HDF5 to support the construction
-of data structures used in NASA's Earth Observing System (Grid, Point and
-Swath).")
-    (home-page "https://www.hdfeos.org/software/library.php#HDF-EOS5")
-
-    ;; Source files carry a permissive license header.
-    (license (license:non-copyleft home-page))))
-
 (define-public hdf5-parallel-openmpi
   (package/inherit hdf5
     (name "hdf5-parallel-openmpi")
