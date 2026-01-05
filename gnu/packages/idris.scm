@@ -181,29 +181,3 @@ Epigram and Agda.")
                                                         idris-path-subdirs)))))
             ;; FIXME: Seems to be a bug in idris that causes a dubious failure.
             (apply system* install-cmd)))))))
-
-(define-public idris-lightyear
-  (let ((commit "6d65ad111b4bed2bc131396f8385528fc6b3678a"))
-    (package
-      (name "idris-lightyear")
-      (version (git-version "0.1" "1" commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/ziman/lightyear")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1pkxnn3ryr0v0cin4nasw7kgkc9dnnpja1nfbj466mf3qv5s98af"))))
-      (build-system gnu-build-system)
-      (native-inputs
-       (list idris))
-      (arguments (idris-default-arguments name))
-      (home-page "https://github.com/ziman/lightyear")
-      (synopsis "Lightweight parser combinator library for Idris")
-      (description "Lightweight parser combinator library for Idris, inspired
-by Parsec.  This package is used (almost) the same way as Parsec, except for one
-difference: backtracking.")
-      (license license:bsd-2))))
-
