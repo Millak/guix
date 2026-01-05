@@ -1746,6 +1746,35 @@ programming language}.  It integrates well with Go's built-in @code{testing}
 package, but can be used in other contexts too.")
     (license license:asl2.0)))
 
+(define-public go-github-com-golangci-gofmt
+  (package
+    (name "go-github-com-golangci-gofmt")
+    (version "0.0.0-20250704145412-3e58ba0443c6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/golangci/gofmt")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1adhjibw3kdhrcyfcd903pd03z9akgpmm8yz7wmxpic7hpk8p5hb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:test-flags
+      #~(list "-skip" "TestGoToolLocation")
+      #:import-path "github.com/golangci/gofmt"))
+    (propagated-inputs
+     (list go-golang-org-x-sync
+           go-github-com-rogpeppe-go-internal))
+    (home-page "https://github.com/golangci/gofmt")
+    (synopsis "Hard fork of default Go linter")
+    (description
+     "This package is a hard fork of @code{gofmt}, the default Go linter.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-golangci-misspell
   (package
     (name "go-github-com-golangci-misspell")
