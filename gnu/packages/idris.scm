@@ -207,30 +207,6 @@ by Parsec.  This package is used (almost) the same way as Parsec, except for one
 difference: backtracking.")
       (license license:bsd-2))))
 
-(define-public idris-bifunctors
-  (let ((commit "53d06a6ccfe70c49c9ae8c8a4135981dd2173202"))
-    (package
-      (name "idris-bifunctors")
-      (version (git-version "0.1" "1" commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/HuwCampbell/Idris-Bifunctors")
-                      (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "02vbsd3rmgnj0l1qq787709qcxjbr9890cbad4ykn27f77jk81h4"))))
-      (build-system gnu-build-system)
-      (native-inputs
-       (list idris))
-      (arguments (idris-default-arguments name))
-      (home-page "https://github.com/HuwCampbell/Idris-Bifunctors")
-      (synopsis "Bifunctor library")
-      (description "This is a bifunctor library for Idris based off the
-excellent Haskell Bifunctors package from Edward Kmett.")
-      (license license:bsd-3))))
-
 (define-public idris-lens
   (let ((commit "26f012005f6849806cea630afe317e42cae97f29"))
     (package
