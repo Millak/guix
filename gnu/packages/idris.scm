@@ -207,28 +207,3 @@ by Parsec.  This package is used (almost) the same way as Parsec, except for one
 difference: backtracking.")
       (license license:bsd-2))))
 
-(define-public idris-lens
-  (let ((commit "26f012005f6849806cea630afe317e42cae97f29"))
-    (package
-      (name "idris-lens")
-      (version (git-version "0.1" "1" commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/HuwCampbell/idris-lens")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "06jzfj6rad08rk92w8jk5byi79svmyg0mrcqhibgx8rkjjy6vmai"))))
-      (build-system gnu-build-system)
-      (native-inputs
-       (list idris))
-      (propagated-inputs
-       (list idris-bifunctors))
-      (arguments (idris-default-arguments name))
-      (home-page "https://github.com/HuwCampbell/idris-lens")
-      (synopsis "Van Laarhoven lenses for Idris")
-      (description "Lenses are composable functional references.  They allow
-accessing and modifying data within a structure.")
-      (license license:bsd-3))))
