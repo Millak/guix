@@ -6199,69 +6199,6 @@ editing library with a multi-threaded and feature rich video editing
 API.  It includes bindings for Python, Ruby, and other languages.")
     (license license:lgpl3+)))
 
-(define-public openshot
-  (package
-    (name "openshot")
-    (version "3.3.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/OpenShot/openshot-qt")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0x7fv1c3cr28z5nccw4lv61wnj013l8594p2fyrm1cxjpppka0pr"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; TODO: Unbundle jquery and others from src/timeline/media
-           (delete-file-recursively "src/images/fonts") #t))))
-    (build-system python-build-system)
-    (inputs
-     (list bash-minimal
-           ffmpeg
-           font-dejavu
-           libopenshot
-           python
-           python-pyqt
-           python-pyqtwebengine
-           python-pyzmq
-           python-requests
-           qtsvg-5
-           qtwebengine-5))
-    (arguments
-     `(#:modules ((guix build python-build-system)
-                  (guix build qt-utils)
-                  (guix build utils))
-       #:imported-modules (,@%python-build-system-modules
-                            (guix build qt-utils))
-       #:phases (modify-phases %standard-phases
-                  (delete 'build)       ;install phase does all the work
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (setenv "QT_QPA_PLATFORM" "offscreen")
-                        (invoke "python" "src/tests/query_tests.py"))))
-                  (add-after 'unpack 'patch-font-location
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((font (assoc-ref inputs "font-dejavu")))
-                        (substitute* "src/classes/app.py"
-                          (("info.IMAGES_PATH") (string-append "\"" font "\""))
-                          (("fonts") "share/fonts/truetype")
-                          (("[A-Za-z_-]+.ttf") "DejaVuSans.ttf")))))
-                  (add-before 'install 'set-tmp-home
-                    (lambda _
-                      ;; src/classes/info.py "needs" to create several
-                      ;; directories in $HOME when loaded during build
-                      (setenv "HOME" "/tmp"))))))
-    (home-page "https://www.openshot.org/")
-    (synopsis "Video editor")
-    (description "OpenShot takes your videos, photos, and music files and
-helps you create the film you have always dreamed of.  Easily add sub-titles,
-transitions, and effects and then export your film to many common formats.")
-    (license license:gpl3+)))
-
 (define-public shotcut
   (package
     (name "shotcut")
