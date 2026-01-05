@@ -1157,3 +1157,26 @@ Clojure depends on this library and provides it.  Thus it is not recommended
 to add a direct dependency on this package.")
     (home-page "https://github.com/clojure/core.specs.alpha")
     (license license:epl1.0)))
+
+(define-public clojure-data-generators
+  (package
+    (name "clojure-data-generators")
+    (version "1.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/clojure/data.generators")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ynazp55v15zv5jwz1wh2p8cawjcmn0bwzgfs2dwrp6aq231jafm"))))
+    (build-system clojure-build-system)
+    (arguments '(#:source-dirs '("src/main/clojure")
+                 #:test-dirs '("src/test/clojure")
+                 #:doc-dirs '()))
+    (synopsis "Generators for random Clojure data")
+    (description
+     "This package contains various functions to generate random clojure data.")
+    (home-page "https://github.com/clojure/data.generators")
+    (license license:epl1.0)))
