@@ -1180,3 +1180,33 @@ to add a direct dependency on this package.")
      "This package contains various functions to generate random clojure data.")
     (home-page "https://github.com/clojure/data.generators")
     (license license:epl1.0)))
+
+(define-public clojure-tools-namespace
+  (package
+    (name "clojure-tools-namespace")
+    (version "1.5.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/clojure/tools.namespace")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0j1lz3xnpgvyi0mcg9mjz7hrchf3hwhbhxi2163d739dxdx60s22"))))
+    (build-system clojure-build-system)
+    (arguments '(#:source-dirs '("src/main/clojure")
+                 #:test-dirs '("src/test/clojure")
+                 #:doc-dirs '()))
+    (propagated-inputs (list clojure-java-classpath
+                             clojure-tools-reader))
+    (synopsis "Tools for managing namespaces in Clojure")
+    (description
+     "This package parses ns declarations from source files, extract their
+dependencies, build a graph of namespace dependencies within a project, update
+that graph as files change, and reload files in the correct order.
+
+This is only about namespace dependencies within a single project.  It has
+nothing to do with Leiningen, Maven, JAR files, or repositories.")
+    (home-page "https://github.com/clojure/tools.namespace")
+    (license license:epl1.0)))
