@@ -25741,55 +25741,6 @@ key.  Optionally, a mouse pop-up can be added by binding
 @code{prop-menu-show-menu} to a mouse event.")
     (license license:gpl3+)))
 
-(define-public emacs-idris-mode
-  (let ((commit "9bc7697406f719258d93835df3c1761efbfecaa7")
-        (revision "1"))
-    (package
-      (name "emacs-idris-mode")
-      (version (git-version "1.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/idris-hackers/idris-mode")
-               (commit commit)))
-         (file-name (git-file-name name commit))
-         (sha256
-          (base32
-           "1d1f7kx0fw632js7qd1sra5wbpwyamcqs5wpzhyynmr5ybb0vyl7"))))
-      (build-system emacs-build-system)
-      (arguments
-       (list #:phases
-             #~(modify-phases %standard-phases
-                 (add-after 'unpack 'patch-tests
-                   (lambda _
-                     (substitute* "Makefile"
-                       (("^test(|2|3): getdeps build" all n)
-                        (string-append "test" n ":" )))))
-                 (replace 'check
-                   (lambda* (#:key tests? #:allow-other-keys)
-                     (if tests?
-                         (begin
-                           (setenv "HOME" (dirname (getcwd)))
-                           (invoke "make" "test")
-                           ;; XXX: History file not writable
-                           ;; (invoke "make" "test2")
-                           ;; XXX: Error reading from stdin
-                           ;; (invoke "make" "test3")
-                           )
-                         (format #t "test suite not run.~%")))))))
-      (native-inputs
-       (list idris))
-      (propagated-inputs
-       (list emacs-prop-menu))
-      (home-page
-       "https://github.com/idris-hackers/idris-mode")
-      (synopsis "Major mode for editing Idris code")
-      (description
-       "This is an Emacs mode for editing Idris code.  It is compatible with
-the latest versions of Idris 1.")
-      (license license:gpl3+))))
-
 (define-public emacs-browse-at-remote
   (package
     (name "emacs-browse-at-remote")
