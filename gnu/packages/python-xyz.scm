@@ -29776,8 +29776,9 @@ that take parsers as their arguments and return them as result values.")
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                (invoke "make" "SKIP_DEPS=1")))))))
-    (native-inputs (list python-coverage python-pynose python-setuptools))
+                (invoke "make" "prepare" "SKIP_DEPS=1")
+                (invoke "nosetests")))))))
+    (native-inputs (list python-pynose python-setuptools))
     (home-page "https://github.com/clarete/forbiddenfruit")
     (synopsis "Patch python built-in objects")
     (description "This project allows Python code to extend built-in types.")
