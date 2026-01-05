@@ -3126,7 +3126,6 @@ servers supporting the protocol.")
                              python-nbconvert
                              python-nbsphinx
                              python-numpy
-                             python-numpydoc
                              python-omnipath
                              python-pandas
                              python-plotnine
@@ -3139,6 +3138,7 @@ servers supporting the protocol.")
                              tzdata))
     (native-inputs
      (list python-hatchling
+           python-numpydoc
            python-pytest))
     (home-page "https://github.com/saezlab/liana-py")
     (synopsis "LIANA is a ligand-receptor analysis framework")
