@@ -228,7 +228,7 @@ unavailable."
                             (native-search-paths '())
                             (system (%current-system))
                             (guile #f)
-                            (guile-json (default-guile-json))
+                            (guile-json (cargo-guile-json))
                             (imported-modules %cargo-build-system-modules)
                             (modules '((guix build cargo-build-system)
                                        (guix build utils))))
