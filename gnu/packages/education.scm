@@ -603,58 +603,6 @@ about drilling time and correctness ratio is displayed.  The results are
 stored and user can review his performance in any time.")
       (license license:gpl2+))))
 
-(define-public t4k-common
-  (package
-    (name "t4k-common")
-    (version "0.1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/tux4kids/t4kcommon")
-             (commit (string-append "upstream/" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "13q02xpmps9qg8zrzzy2gzv4a6afgi28lxk4z242j780v0gphchp"))
-       (patches (search-patches "t4k-common-libpng16.patch"))
-       (modules '((guix build utils)))
-       (snippet
-        `(begin
-           (substitute* "src/t4k_common.h"
-             (("char wrapped_lines") "extern char wrapped_lines"))
-           #t))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:tests? #f                      ;FIXME: cannot find how to run tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'set-paths 'set-sdl-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "CPATH"
-                     (string-append
-                      (search-input-directory inputs "/include/SDL")
-                      ":" (or (getenv "CPATH") "")))))
-         (add-after 'unpack 'fix-andika-font-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/t4k_sdl.c"
-               (("(/usr/share/.*?)/AndikaDesRevG\\.ttf")
-                (string-append (assoc-ref inputs "font-andika")
-                               "/share/fonts/truetype")))
-             #t)))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     `(("font-andika" ,font-sil-andika)
-       ("libpng" ,libpng)
-       ("librsvg" ,(librsvg-for-system))
-       ("libxml2" ,libxml2)
-       ("sdl" ,(sdl-union (list sdl sdl-image sdl-mixer sdl-net sdl-pango)))))
-    (home-page "https://github.com/tux4kids/t4kcommon")
-    (synopsis "Library of code shared between TuxMath and TuxType")
-    (description "Tux4Kids-Common is a library of code shared between
-TuxMath and TuxType.")
-    (license license:gpl3+)))
-
 (define-public libeb
   (package
     (name "libeb")
