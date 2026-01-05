@@ -972,6 +972,30 @@ can use the mock clock.  This is a maintained fork of benbjohnson's
 tests.")
     (license license:expat)))
 
+(define-public go-github-com-fzipp-gocyclo
+  (package
+    (name "go-github-com-fzipp-gocyclo")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fzipp/gocyclo")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w2h8qlifrskn8g8zcwb6banr9si0vck9y8irg1r51mc98cjv36l"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/fzipp/gocyclo"))
+    (home-page "https://github.com/fzipp/gocyclo")
+    (synopsis "Calculate cyclomatic complexity in Go")
+    (description
+     "This package calculates the cyclomatic complexities of functions and
+methods in Go source code.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-gdey-tbltest
   (package
     (name "go-github-com-gdey-tbltest")
