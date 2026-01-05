@@ -1615,7 +1615,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/icu4c-fix-TestHebrewCalendarInTemporalLeapYear.patch	\
   %D%/packages/patches/id3lib-CVE-2007-4460.patch			\
   %D%/packages/patches/id3lib-UTF16-writing-bug.patch			\
-  %D%/packages/patches/idris-test-ffi008.patch			\
   %D%/packages/patches/ilmbase-fix-tests.patch			\
   %D%/packages/patches/inferno-fix-crash.patch		\
   %D%/packages/patches/inkscape-libxml2.patch		\
