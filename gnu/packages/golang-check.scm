@@ -725,6 +725,34 @@ style).
 @end itemize")
     (license license:isc)))
 
+(define-public go-github-com-denis-tingaikin-go-header
+  (package
+    (name "go-github-com-denis-tingaikin-go-header")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/denis-tingaikin/go-header")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qzy2ps59dzsdn4ny8x48k9d1kscpddjilkxra1w16npsvix6mcm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/denis-tingaikin/go-header"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-tools
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/denis-tingaikin/go-header")
+    (synopsis "Go linter for copyright headers")
+    (description
+     "Simple Go source code linter providing checks for copyright headers.")
+    (license license:gpl3)))
+
 (define-public go-github-com-dgryski-go-ddmin
   (package
     (name "go-github-com-dgryski-go-ddmin")
