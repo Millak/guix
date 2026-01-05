@@ -1746,6 +1746,33 @@ programming language}.  It integrates well with Go's built-in @code{testing}
 package, but can be used in other contexts too.")
     (license license:asl2.0)))
 
+(define-public go-github-com-golangci-dupl
+  (package
+    (name "go-github-com-golangci-dupl")
+    (version "0.0.0-20250308024227-f665c8d69b32")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/golangci/dupl")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "015b6848qrkfm6wblysrqslw0hmyn4hnssm8la6h4fyl5ay4c60f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/golangci/dupl"))
+    (home-page "https://github.com/golangci/dupl")
+    (synopsis "Go tool for finding code clones")
+    (description
+     "@strong{dupl} is a tool written in Go for finding code clones.  So far
+it can find clones only in the Go source files.  The method uses suffix tree
+for serialized ASTs.  It ignores values of AST nodes.  It just operates with
+their types (e.g. @code{if a == 13 {}} and @code{if x == 100 {}} are
+considered the same provided it exceeds the minimal token sequence size).")
+    (license license:expat)))
+
 (define-public go-github-com-golangci-gofmt
   (package
     (name "go-github-com-golangci-gofmt")
