@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2020-2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2020-2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023, 2024 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
@@ -607,7 +607,7 @@ unpacking them into a directory which can eventually be chrooted into.")
                 "0hw407fm5ylsf28b0vrwz7rm2r2rsgfwzajbkbn6n2b6kqhdjyy9"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list autoconf automake gettext-minimal po4a))
+     (list autoconf automake gettext-minimal po4a-minimal))
     (home-page "https://packages.debian.org/unstable/debianutils")
     (synopsis "Miscellaneous shell utilities")
     (description
