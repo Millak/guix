@@ -11178,7 +11178,16 @@ include_dirs = ~:*~a/include~%"
                               " and not test_square_values"
                               " and not test_sum"
                               " and not test_switch_owner"
-                              " and not test_thread_locality"))))))))
+                              " and not test_thread_locality")))))
+          ;; See comment for custom python-numpy wrap phase above.
+          (replace 'wrap
+                   (lambda* (#:key inputs outputs #:allow-other-keys)
+                     (for-each
+                       (lambda (program)
+                         (wrap-program program
+                                       `("GUIX_PYTHONPATH" ":" suffix
+                                         ,(list (site-packages inputs outputs)))))
+                       (find-files (in-vicinity #$output "/bin"))))))))
     (native-inputs
      (list meson-python
            pkg-config
