@@ -1678,32 +1678,6 @@ structures for meshing and parallelism, as well as more environment-related aspe
 such as dataset configuration.")
     (license license:asl2.0)))
 
-(define-public gctp
-  (package
-    (name "gctp")
-    (version "2.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/OkoSanto/GCTP")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "11wqmd443b4nksdbzp1msdws3av948nmwq1xz80w6hka3ss2aigd"))))
-    (native-inputs
-     (list gfortran))
-    (build-system gnu-build-system)
-    (synopsis "General Cartographic Transformation Package (GCTP)")
-    (description
-     "The General Cartographic Transformation Package (GCTP) is a system of
-software routines designed to permit the transformation of coordinate pairs
-from one map projection to another.  The GCTP is the standard computer
-software used by the National Mapping Division for map projection
-computations.")
-    (home-page "https://github.com/OkoSanto/GCTP")
-    (license license:public-domain))) ;https://www2.usgs.gov/laws/info_policies.html
-
 (define-public hdf4
   (package
     (name "hdf4")
