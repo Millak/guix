@@ -4621,63 +4621,6 @@ contain over 620 classes.")
 library to be wrapped.  This SIP extension module provides support for the
 PyQt6 package.")))
 
-(define-public python-pyqtwebengine
-  (package
-    (name "python-pyqtwebengine")
-    (version "5.15.9")
-    (source
-     (origin
-       (method url-fetch)
-       ;; The newest releases are only available on PyPI.  Older ones
-       ;; are mirrored at the upstream home page.
-       (uri (list (pypi-uri "PyQtWebEngine" version)
-                  (string-append "https://www.riverbankcomputing.com/static"
-                                 "/Downloads/PyQtWebEngine/" version
-                                 "/PyQtWebEngine-" version ".tar.gz")))
-       (sha256
-        (base32
-         "0hdr0g0rzlhsnylhfk826pq1lw8p9dqcr8yma2wy9dgjrj6n0ixb"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python python-sip
-           python-pyqt-builder
-           ;; qtbase is required for qmake
-           qtbase-5))
-    (inputs
-     `(("python" ,python-wrapper)
-       ("python-sip" ,python-sip)
-       ("python-pyqt" ,python-pyqt)
-       ("qtbase" ,qtbase-5)
-       ("qtsvg-5" ,qtsvg-5)
-       ("qtdeclarative-5" ,qtdeclarative-5)
-       ("qtwebchannel-5" ,qtwebchannel-5)
-       ("qtwebengine-5" ,qtwebengine-5)))
-     (arguments
-      (list
-       #:tests? #f ; No tests.
-       #:configure-flags
-       #~`(("--verbose" . "") ; Print commands run.
-           ("--jobs" . ,(number->string (parallel-job-count))))
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'set-include-dirs
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((python (assoc-ref inputs "python"))
-                      (python-pyqt (assoc-ref inputs "python-pyqt"))
-                      (sip-include-dirs (string-append
-                                         python-pyqt "/lib/python"
-                                         (python-version python)
-                                         "/site-packages/PyQt5/bindings")))
-               (setenv "SIP_INCLUDE_DIRS" sip-include-dirs)))))))
-    (home-page "https://www.riverbankcomputing.com/software/pyqtwebengine/intro")
-    (synopsis "Python bindings for QtWebEngine")
-    (description
-     "PyQtWebEngine is a set of Python bindings for The Qt Company's Qt
-WebEngine libraries.  The bindings sit on top of PyQt5 and are implemented as a
-set of three modules.  Prior to v5.12 these bindings were part of PyQt
-itself.")
-    (license license:gpl3)))
-
 (define-public python-pyqtwebengine-6
   (package
     (name "python-pyqtwebengine")
