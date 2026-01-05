@@ -435,32 +435,6 @@ with emails through Akonadi easier.")
     (license ;; GPL for programs, LGPL for libraries
      (list license:gpl2+ license:lgpl2.0+))))
 
-(define-public akonadi-notes
-  (package
-    (name "akonadi-notes")
-    (version "24.08.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/" version
-                           "/src/akonadi-notes-" version ".tar.xz"))
-       (sha256
-        (base32 "1ppgdwjg9w4igwqf1b0b1xzbc1c4j3z67ha9381ncklpd227nxvq"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list akonadi kcodecs ki18n kmime))
-    (arguments (list #:qtbase qtbase))
-    (home-page "https://api.kde.org/kdepim/akonadi/html/index.html")
-    (synopsis "Akonadi notes access library")
-    (description "Akonadi Notes is a library that effectively bridges the
-type-agnostic API of the Akonadi client libraries and the domain-specific
-KMime library.  It provides a helper class for note attachments and for
-wrapping notes into KMime::Message objects.")
-    (license ;; GPL for programs, LGPL for libraries
-     (list license:gpl2+ license:lgpl2.0+))))
-
 (define-public akonadi-search
   (package
     (name "akonadi-search")
