@@ -5,7 +5,7 @@
 ;;; Copyright © 2019 Jesse Gibbons <jgibbons2357+guix@gmail.com>
 ;;; Copyright © 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
-;;; Copyright © 2025 Mathieu Lirzin <mthl@gnu.org>
+;;; Copyright © 2025, 2026 Mathieu Lirzin <mthl@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1100,4 +1100,34 @@ the same way for every operation on every service.")
      "This package provides utilities for dealing with the JVM's classpath from
 Clojure.")
     (home-page "https://github.com/clojure/java.classpath")
+    (license license:epl1.0)))
+
+(define-public clojure-spec-alpha
+  (package
+    (name "clojure-spec-alpha")
+    (version "0.6.249")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/clojure/spec.alpha")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1rzy7mjzchsjpwkn3b5vg5hnmsj5h9ljxdjn48j92bgh7vl3k2r5"))))
+    (build-system clojure-build-system)
+    (arguments '(#:source-dirs '("src/main/clojure")
+                 #:test-dirs '("src/test/clojure")
+                 #:doc-dirs '()))
+    (native-inputs (list clojure-test-check))
+    (synopsis
+     "Clojure library to describe the structure of data and functions")
+    (description
+     "This package can be used to validate data, conform (destructure) data, explain
+invalid data, generate examples that conform to the specs, and automatically
+use generative testing to test functions.
+
+Clojure depends on this library and provides it.  Thus it is not recommended
+to add a direct dependency on this package.")
+    (home-page "https://github.com/clojure/spec.alpha")
     (license license:epl1.0)))
