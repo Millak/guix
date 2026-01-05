@@ -228,7 +228,6 @@
   #:use-module (gnu packages haskell)
   #:use-module (gnu packages haskell-apps)
   #:use-module (gnu packages ibus)
-  #:use-module (gnu packages idris)
   #:use-module (gnu packages java)
   #:use-module (gnu packages julia-xyz)
   #:use-module (gnu packages ncurses)
