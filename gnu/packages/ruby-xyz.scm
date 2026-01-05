@@ -8485,7 +8485,7 @@ alternative to Marshal for Object serialization.")
 (define-public ruby-pg
   (package
     (name "ruby-pg")
-    (version "1.6.2")
+    (version "1.6.3")
     (home-page "https://github.com/ged/ruby-pg")
     (source
      (origin
@@ -8495,7 +8495,7 @@ alternative to Marshal for Object serialization.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14164l86xjla4sbaw8flnd2krc2n61l6gjvmmy31v07w5ys4xyjj"))))
+	 (base32 "0nvswm5dv0n3mm8isnnvd8rzw7s47dd5kgma34fhnyhidc6v4pca"))))
     (build-system ruby-build-system)
     (arguments
      (list
