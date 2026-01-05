@@ -1210,3 +1210,28 @@ This is only about namespace dependencies within a single project.  It has
 nothing to do with Leiningen, Maven, JAR files, or repositories.")
     (home-page "https://github.com/clojure/tools.namespace")
     (license license:epl1.0)))
+
+(define-public clojure-test-generative
+  (package
+    (name "clojure-test-generative")
+    (version "1.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/clojure/test.generative")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0lb72cr4s6rgpg18v3jr67ps6wx4p7j7mfzwnfgmm0v8rldlcycf"))))
+    (build-system clojure-build-system)
+    (arguments '(#:source-dirs '("src/main/clojure")
+                 #:test-dirs '("src/examples/clojure")
+                 #:doc-dirs '()))
+    (propagated-inputs (list clojure-tools-namespace
+                             clojure-data-generators))
+    (synopsis "Generative test runner")
+    (description
+     "This package defines generators functions and property based testing macros.")
+    (home-page "https://github.com/clojure/test.generative")
+    (license license:epl1.0)))
