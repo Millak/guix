@@ -20,6 +20,7 @@
 ;;; Copyright © 2025 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Laura Kirsch <laurakirsch240406@gmail.com>
+;;; Copyright © 2026 bdunahu <bdunahu@operationnull.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -830,6 +831,58 @@ library.")
     (description "The @code{soapy_power} obtains the power spectrum from SDR
 devices that are supported by the SoapySDR library.")
     (license license:expat)))
+
+(define-public python-meshtastic
+  (package
+    (name "python-meshtastic")
+    (version "2.7.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/meshtastic/python")
+              (commit version)
+              (recursive? #t))) ;TODO: package meshtastic/protobufs subproject
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fdxlwdf1ga00wa7vbfvhhd0dpwcxakdlmrjs24zhd6pq5k7jicf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 220 passed, 3 skipped, 77 deselected
+      #:test-flags
+      ;; requires pytap2 input, which is not in Guix
+      #~(list "-k not test_tunnel_tunnel_arg")))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
+    ;; unpackaged (optional) inputs: python-print-color, python-dash
+    ;; python-pytap2, python-dash-bootstrap-components
+    (propagated-inputs
+     (list python-argcomplete
+           python-bleak
+           python-dotmap
+           python-packaging
+           python-pandas
+           python-pandas-stubs
+           python-protobuf
+           python-pypubsub
+           python-pyqrcode
+           python-pyserial
+           python-pyyaml
+           python-requests
+           python-tabulate
+           python-wcwidth))
+    (home-page "https://github.com/meshtastic/python")
+    (synopsis "Python library and CLI for talking to Meshtastic devices")
+    (description
+     "@url{https://meshtastic.org/,Meshtastic} Python is a small library which
+provides an easy API for sending and receiving messages over mesh radios.  It
+provides access to any of the operations/data available in the device user
+interface or the Android applications.  Events are delivered using a
+publish-subscribe model, and you can subscribe to only the message types you
+are interested in.")
+    (license license:gpl3))) ;XXX: both python API and protobufs
 
 (define-public qspectrumanalyzer
   (package
