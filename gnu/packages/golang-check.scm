@@ -1692,6 +1692,32 @@ programming language}.  It integrates well with Go's built-in @code{testing}
 package, but can be used in other contexts too.")
     (license license:asl2.0)))
 
+(define-public go-github-com-golangci-unconvert
+  (package
+    (name "go-github-com-golangci-unconvert")
+    (version "0.0.0-20250410112200-a129a6e6413e")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/golangci/unconvert")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yzr2mdlbs8r8d31k3rj5f65igz37d71s9bdcjsl60zxrgy5wchb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;unnecessary conversion
+      #:import-path "github.com/golangci/unconvert"))
+    (propagated-inputs (list go-golang-org-x-tools go-golang-org-x-text))
+    (home-page "https://github.com/golangci/unconvert")
+    (synopsis "Remove redundant type conversions")
+    (description
+     "This package removes redundant type conversions from Go packages. This
+is an alternaitve fork of @url{https://github.com/mdempsky/unconvert}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-golangplus-fmt
   (package
     (name "go-github-com-golangplus-fmt")
