@@ -813,7 +813,20 @@ devices that are supported by the SoapySDR library.")
        (uri (pypi-uri "QSpectrumAnalyzer" version))
        (sha256
         (base32 "1bhl8zp4z7v3595ailyivx9vb7y5si6kr22aylphb5pf60jxqhn0"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ; No tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'wrap 'wrap-path
+            ;; Add the location of the default backend to PATH.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/qspectrumanalyzer")
+                `("PATH" ":" prefix
+                  (,(dirname (search-input-file inputs
+                                                "bin/soapy_power"))))))))))
+    (native-inputs (list python-setuptools))
     (inputs
      (list bash-minimal
            python-pyqt
@@ -822,18 +835,6 @@ devices that are supported by the SoapySDR library.")
            python-simplespectral
            python-simplesoapy
            soapy-power))
-    (arguments
-     (list #:tests? #f ; No tests
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'install 'wrap-path
-                 ;; Add the location of the default backend to PATH.
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (wrap-program (string-append #$output
-                                                "/bin/qspectrumanalyzer")
-                     `("PATH" ":" prefix
-                       (,(string-append (assoc-ref inputs "soapy-power")
-                                        "/bin")))))))))
     (home-page "https://github.com/xmikos/qspectrumanalyzer")
     (synopsis "Spectrum analyzer for multiple SDR platforms")
     (description
