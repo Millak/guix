@@ -207,31 +207,6 @@ by Parsec.  This package is used (almost) the same way as Parsec, except for one
 difference: backtracking.")
       (license license:bsd-2))))
 
-(define-public idris-wl-pprint
-  (let ((commit "1d365fcf4ba075859844dbc5eb96a90f57b9f338"))
-    (package
-      (name "idris-wl-pprint")
-      (version (git-version "0.1" "1" commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/shayan-najd/wl-pprint")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0g7c3y9smifdz4sivi3qmvymhdr7v9kfq45fmfmmvkqcrix0spzn"))))
-      (build-system gnu-build-system)
-      (native-inputs
-       (list idris))
-      (arguments (idris-default-arguments name))
-      (home-page "https://github.com/shayan-najd/wl-pprint")
-      (synopsis "Pretty printing library")
-      (description "A pretty printing library for Idris based on Phil Wadler's
-paper A Prettier Printer and on Daan Leijen's extensions in the Haskell
-wl-pprint library.")
-      (license license:bsd-2))))
-
 (define-public idris-bifunctors
   (let ((commit "53d06a6ccfe70c49c9ae8c8a4135981dd2173202"))
     (package
