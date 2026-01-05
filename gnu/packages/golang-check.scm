@@ -996,6 +996,45 @@ tests.")
 tests.")
     (license license:expat)))
 
+(define-public go-github-com-ghostiam-protogetter
+  (package
+    (name "go-github-com-ghostiam-protogetter")
+    (version "0.3.20")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ghostiam/protogetter")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hap2ykmlnan5vz8sczdpiv93iidbgl13mlcdx468nhfprg2hbbm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;"module lookup disabled by GOPROXY=off"
+      #:import-path "github.com/ghostiam/protogetter"))
+    (propagated-inputs
+     (list go-golang-org-x-tools
+           go-github-com-gobwas-glob))
+    (home-page "https://github.com/ghostiam/protogetter")
+    (synopsis "Protobuf Golang linter")
+    (description
+     "This package is a linter developed specifically for Go programmers
+working with nested @code{protobuf} types.  It's designed to aid developers in
+preventing invalid memory address or nil pointer dereference errors arising
+from direct access of nested protobuf fields.
+
+When working with protobuf, it's quite common to have complex structures where
+a message field is contained within another message, which itself can be part
+of another message, and so on. If these fields are accessed directly and some
+field in the call chain will not be initialized, it can result in application
+panic.
+
+Protogetter addresses this issue by suggesting use of getter methods for field
+access.")
+    (license license:expat)))
+
 (define-public go-github-com-gkampitakis-ciinfo
   (package
     (name "go-github-com-gkampitakis-ciinfo")
@@ -4161,6 +4200,21 @@ prints an ASCII fraphic representing the memory layout.")))
      (string-append (package-description go-github-com-bitfield-gotestdox)
                     "  This package provides an command line interface (CLI)
 tool."))))
+
+(define-public protogetter
+  (package/inherit go-github-com-ghostiam-protogetter
+    (name "protogetter")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #f) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "github.com/ghostiam/protogetter/cmd/protogetter")
+       ((#:unpack-path _ "") "github.com/ghostiam/protogetter")))
+    (native-inputs
+     (package-propagated-inputs go-github-com-ghostiam-protogetter))
+    (propagated-inputs '())
+    (inputs '())))
 
 (define-public unparam
   (package
