@@ -4485,6 +4485,36 @@ color palette} for Go applications.  Catppuccin is a community-driven pastel
 theme with four flavors: Latte, Frappe, Macchiato, and Mocha.")
     (license license:expat)))
 
+(define-public go-github-com-ccojocar-zxcvbn-go
+  (package
+    (name "go-github-com-ccojocar-zxcvbn-go")
+    (version "1.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ccojocar/zxcvbn-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dlrd6afpfwnpj6cbbvjhwbf33ldr0nzffl8p43jrmn62mwf7cn7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ccojocar/zxcvbn-go"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/ccojocar/zxcvbn-go")
+    (synopsis "Password-strength generator in Go")
+    (description
+     "This package provides a password strength generators written in Golang.
+It attempts to give sound password advice through pattern matching and
+conservative entropy calculations.  It finds 10k common passwords, common
+American names and surnames, common English words, and common patterns like
+dates, repeats (aaa), sequences (abcd), and QWERTY patterns. It's an active
+fork of @url{https://github.com/nbutton23/zxcvbn-go}.")
+    (license license:expat)))
+
 (define-public go-github-com-cention-sany-utf7
   (package
     (name "go-github-com-cention-sany-utf7")
