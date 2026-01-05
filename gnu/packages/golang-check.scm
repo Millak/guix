@@ -846,6 +846,31 @@ for Golang projects via modular Makefiles and GitHub Actions.")
 in Golang.")
     (license license:expat)))
 
+(define-public go-github-com-breml-errchkjson
+  (package
+    (name "go-github-com-breml-errchkjson")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/breml/errchkjson")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pmg2j2zsd4ayylph2gnrpc6251jvnydpavxwplj4k2mlwf73xf3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/breml/errchkjson"))
+    (propagated-inputs (list go-golang-org-x-tools))
+    (home-page "https://github.com/breml/errchkjson")
+    (synopsis "Go linter to find places to omit error-checking")
+    (description
+     "This package defines an analyzer that finds places where it is safe to
+omit checking the error returned from json.Marshal.")
+    (license license:expat)))
+
 (define-public go-github-com-bsm-ginkgo-v2
   (package
     (name "go-github-com-bsm-ginkgo-v2")
