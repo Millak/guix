@@ -13449,6 +13449,32 @@ subsystem in Linux.")
 used in other languages but absent in Go package strings.")
     (license license:expat)))
 
+(define-public go-github-com-huin-goutil
+  (package
+    (name "go-github-com-huin-goutil")
+    (version "0.0.0-20170803182201-1ca381bf3150")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/huin/goutil")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0alhyacsfqic2wxyqn4gvk9wzjl4pkmy8rhvqjk84xsghgx5xf12"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/huin/goutil"))
+    (home-page "https://github.com/huin/goutil")
+    (synopsis "Collection of Go utility code")
+    (description
+     "This package is a collection of miscellaneous Go utility code that is
+potentially useful across multiple projects, and has therefore been factored
+out.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-iancoleman-orderedmap
   (package
     (name "go-github-com-iancoleman-orderedmap")
