@@ -845,7 +845,7 @@ format.")
 (define-public clojure-tools-analyzer-jvm
   (package
     (name "clojure-tools-analyzer-jvm")
-    (version "1.3.0")
+    (version "1.3.4")
     (home-page "https://github.com/clojure/tools.analyzer.jvm")
     (source (origin
               (method git-fetch)
@@ -855,7 +855,7 @@ format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13nxzdp15772hzl3jmi5014jkwldkm1qccfycwkk2pn64hycmnxl"))))
+                "0pk9z8zf9bgzj0wi98yx130l7570arnxfsg9508g1jvq83djpn21"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure")
