@@ -820,7 +820,7 @@ tree.
 (define-public clojure-tools-analyzer
   (package
     (name "clojure-tools-analyzer")
-    (version "1.2.0")
+    (version "1.2.1")
     (home-page "https://github.com/clojure/tools.analyzer")
     (source (origin
               (method git-fetch)
@@ -830,7 +830,7 @@ tree.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05v4i8qs5d51lh113phib0brkysphxa2d71khm840586432knyaa"))))
+                "0apa3gc45rmdj19plbvglpj6i9dadkgvvidj5mcnkzi9y3h0nr27"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure")
