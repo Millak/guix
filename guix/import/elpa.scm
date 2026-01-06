@@ -300,7 +300,7 @@ unsupported MELPA fetcher: ~a, falling back to unstable MELPA source~%")
                                (lambda (m)
                                  (if (string= (match:substring m 0) "**")
                                      ".*"
-                                     "[^/]+"))
+                                     "[^/]*"))
                                'post)
      "$"))
 
