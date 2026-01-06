@@ -1063,7 +1063,7 @@ keeps a cache of git directories and working trees that can be reused.")
 (define-public clojure-tools-logging
   (package
     (name "clojure-tools-logging")
-    (version "1.3.0")
+    (version "1.3.1")
     (home-page "https://github.com/clojure/tools.logging")
     (source (origin
               (method git-fetch)
@@ -1073,7 +1073,7 @@ keeps a cache of git directories and working trees that can be reused.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "106n4cxsxzs0hvpsfi1h14b09xm6klrvj1g5fbd5nw8fj3mpkdac"))))
+                "1jdk7b6zm73m7nki76123ik6px9rl5g5wb06298v34h56qyck8lr"))))
     (build-system clojure-build-system)
     (arguments
      '(#:doc-dirs '()
