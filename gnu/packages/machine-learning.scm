@@ -4848,9 +4848,11 @@ PyTorch.")
     (name "python-pytorch")
     (version %python-pytorch-version)
     (source %python-pytorch-src)
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
+      ;; Even only the core tests take a very long time to run.
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-build-system
@@ -4956,7 +4958,11 @@ PyTorch.")
                   (setenv "USE_QNNPACK" "0"))
               (substitute* '("requirements.txt" "setup.py")
                 (("sympy>=1\\.13\\.3")
-                 "sympy>=1.13.1"))))
+                 "sympy>=1.13.1"))
+              ;; Avoid ModuleNotFoundError.
+              (substitute* "setup.py"
+                (("from build_bundled import create_bundled" all)
+                 (string-append "return # " all)))))
           (add-after 'use-system-libraries 'skip-nccl-call
             (lambda _
               ;; Comment-out `checkout_nccl()` invokation in build_pytorch().
@@ -5057,10 +5063,7 @@ PyTorch.")
 
                 (substitute* (find-files #$output "^entry_points\\.txt$")
                   (("^convert-.*" all)
-                   (string-append "# " all "\n")))))))
-
-      ;; Even only the core tests take a very long time to run.
-      #:tests? #f))
+                   (string-append "# " all "\n")))))))))
     (native-inputs
      (list cmake-minimal
            doxygen
