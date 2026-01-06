@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 宋文武 <iyzsong@member.fsf.org>
 ;;; Copyright © 2023 Antero Mejr <antero@mailbox.org>
-;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025, 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,37 +40,52 @@
   #:use-module (gnu packages xorg))
 
 (define-public diod
-  ;; The last release was in 2014.
-  (let ((commit "a140080d1a4cdc1036cf6cebfc8f4a5bf8f09608")
-        (revision "1"))
-    (package
-      (name "diod")
-      (version (git-version "1.0.24" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/chaos/diod")
-               (commit commit)))
-         (sha256
-          (base32 "1kf981m615w9x2l8km360ap80mlds7pgd44jgrblh87cq1aq8pms"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list #:phases #~(modify-phases %standard-phases
-                          (add-before 'bootstrap 'fix-version
-                            (lambda _
-                              (substitute* "configure.ac"
-                                (("m4_esyscmd\\(.*?\\)") "[master])\n")))))))
-      (native-inputs
-       (list autoconf automake pkg-config))
-      (inputs
-       (list libcap lua munge ncurses))
-      (home-page "https://github.com/chaos/diod")
-      (synopsis "Distributed I/O daemon, a 9P file server")
-      (description
-       "Diod is a multi-threaded, user space file server that speaks 9P2000.L
+  (package
+    (name "diod")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/chaos/diod")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19b0di3pcxxkmjl972vrkynqcys84rlh8mlrf609r2ir1jzalgqp"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'bootstrap 'fix-version
+                          (lambda _
+                            (substitute* "configure.ac"
+                              (("m4_esyscmd\\(.*?\\)") "[master])\n"))))
+                        (add-after 'unpack 'patch-tests
+                          (lambda _
+                            (substitute* "src/libnpclient/test/simple.c"
+                              (("^.*npc_attach aname=ctl uid=0 works.*$")
+                               "done_testing(); return 0;\n"))
+                            (substitute* "src/cmd/test/diodrun.c"
+                              (("/bin/sh")
+                               (which "sh")))
+                            (substitute* "t/t0000-sharness.t"
+                              (("!/bin/sh")
+                               (string-append "!" (which "sh")))
+                              (("/bin/true")
+                               (which "true")))
+                            ;; replace which with POSIX "command -v"
+                            (substitute* (find-files "t" "\\.(t|sh)$")
+                              (("[$][(]which")
+                               "$(command -v")))))))
+    (native-inputs
+     (list autoconf automake pkg-config))
+    (inputs
+     (list libcap lua munge ncurses))
+    (home-page "https://github.com/chaos/diod")
+    (synopsis "Distributed I/O daemon, a 9P file server")
+    (description
+     "Diod is a multi-threaded, user space file server that speaks 9P2000.L
 protocol.")
-      (license license:gpl2+))))
+    (license license:gpl2+)))
 
 (define-public drawterm
   (let ((revision "2")
