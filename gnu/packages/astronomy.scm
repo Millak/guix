@@ -10578,10 +10578,6 @@ cosmological simulations.")
 @url{https://aeolus.services, Aeolus}")
     (license license:expat)))
 
-;; See <https://github.com/spacetelescope/webbpsf/pull/951>
-(define-deprecated-package python-webbpsf
-  python-stpsf)
-
 (define-public python-wiimatch
   (package
     (name "python-wiimatch")
