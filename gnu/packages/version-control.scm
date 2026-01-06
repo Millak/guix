@@ -2874,34 +2874,26 @@ history.  It implements the changeset evolution concept for Mercurial.")
                   "059gm66q06m6ayl4brsc517zkw3ahmz249b6xm1m32ac5y24wb9x"))))
       (build-system copy-build-system)
       (arguments
-       `(#:imported-modules ((guix build python-build-system)
-                             ,@%copy-build-system-modules)
-         #:modules ((srfi srfi-1)
-                    (guix build python-build-system)
-                    ;; Don't use `%copy-build-system-modules' because
-                    ;; `standard-phases' from (guix build gnu-build-system)
-                    ;; shadows the one from (guix build copy-build-system),
-                    ;; which is the one we actually want.
+       (list
+        #:imported-modules (append %pyproject-build-system-modules
+                                   %copy-build-system-modules)
+        #:modules `((guix build pyproject-build-system)
                     (guix build copy-build-system)
-                    ((guix build gnu-build-system) #:prefix gnu)
-                    (guix build utils)
-                    (guix build gremlin)
-                    (ice-9 ftw)
-                    (guix elf))
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((gpg (search-input-file inputs "/bin/gpg"))
-                   (openssl (search-input-file inputs "/bin/openssl")))
-               (substitute* "commitsigs.py"
-                 (("b'gpg',") (string-append "b'" gpg "',"))
-                 (("b'openssl',") (string-append "b'" openssl "',")))))))
-         #:install-plan
-         `(("commitsigs.py" ,(string-append "lib/python"
-                                            (python-version
-                                             (assoc-ref %build-inputs "python"))
-                                            "/site-packages/hgext3rd/commitsigs.py")))))
+                    (guix build utils))
+        #:install-plan
+        #~`(("commitsigs.py"
+             ,(string-append "lib/python"
+                             (python-version
+                              #$(this-package-native-input "python"))
+                             "/site-packages/hgext3rd/commitsigs.py")))
+        #:phases
+        (with-extensions (list (pyproject-guile-json))
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'patch-paths
+                (lambda _
+                  (substitute* "commitsigs.py"
+                    (("b'(gpg|openssl)'," _ bin)
+                     (format #f "b'~a'," (which bin))))))))))
       (native-inputs
        (list python))
       (inputs
