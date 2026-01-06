@@ -557,16 +557,16 @@ cache and Naive cache backed with soft references.")
 (define-public clojure-core-match
   (package
     (name "clojure-core-match")
-    (version "1.0.0")
+    (version "1.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/clojure/core.match")
-                    (commit (string-append "core.match-" version))))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ajpxjv4yc282cm0jw8819fay2j6jqp9nfy69k7vll09q7vqsd22"))))
+                "09kijs81js7iy810qkzn7fi996gmf7bmlm2ax571zy0yr38i2hbr"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure")
