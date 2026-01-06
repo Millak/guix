@@ -717,6 +717,33 @@ application can use the realtime clock while tests can use the mock clock.")
 results, converting test names WrittenInCamelCase into ordinary sentences.")
     (license license:expat)))
 
+(define-public go-github-com-bkielbasa-cyclop
+  (package
+    (name "go-github-com-bkielbasa-cyclop")
+    (version "1.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bkielbasa/cyclop")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "003zndl40qcl58lcjdippbvc3sx9v6dr3qzp9g1503zm4zqyhj12"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Function main is undeclared in the main package
+      #:skip-build? #t
+      #:import-path "github.com/bkielbasa/cyclop"))
+    (propagated-inputs (list go-golang-org-x-tools))
+    (home-page "https://github.com/bkielbasa/cyclop")
+    (synopsis "Cyclomatic complexity calculator for Go")
+    (description
+     "Cyclop calculates cyclomatic complexities of functions in Go source
+code.")
+    (license license:expat)))
+
 (define-public go-github-com-blizzy78-varnamelen
   (package
     (name "go-github-com-blizzy78-varnamelen")
