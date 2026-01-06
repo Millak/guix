@@ -12358,7 +12358,7 @@ and provides convenience methods for performing common object operations.")
     (build-system pyproject-build-system)
     (propagated-inputs (list python-matplotlib
                              python-matplotx
-                             python-numpy
+                             python-numpy-1
                              python-rich))
     (native-inputs (list python-flit-core
                          python-pytest))
