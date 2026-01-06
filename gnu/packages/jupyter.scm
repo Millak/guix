@@ -87,15 +87,16 @@
        (sha256
         (base32
          "0pwf3pminkzyzgx5kcplvvbvwrrzd3baa7lmh96f647k30rlpp6r"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f                       ;there are none.
       #:phases
-      ;; Because python-jsonschema has an old python-webcolor.  Remove this
-      ;; when python-team branch is merged.
-      '(modify-phases %standard-phases
-         (delete 'sanity-check))))
+      ;; TODO python-team: Because python-jsonschema has an old
+      ;; python-webcolor.  Remove this when python-team branch is merged.
+      #~(modify-phases %standard-phases
+          (delete 'sanity-check))))
+    (native-inputs (list python-setuptools))
     (propagated-inputs
      (list python-ipykernel
            python-ipywidgets
