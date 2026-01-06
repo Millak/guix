@@ -4134,15 +4134,18 @@ implementation for the Telegram Bot API.")
        (sha256
         (base32 "1bnvg9yiwp2fn0lvzhp1dd2mvrymxvjnasmbdap3i0hhdwdbvrji"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-packaging
-                             python-platformdirs
-                             python-pydantic
-                             python-sphinx
-                             python-sphinx-autodoc-typehints
-                             python-sphinx-rtd-theme
-                             python-tabulate
-                             python-tomli))
-    (native-inputs (list python-pdm-backend python-pytest))
+    (arguments
+     (list
+      #:test-flags
+      ;; Requires Sphinx.
+      #~(list "--ignore=tests/test_documentation.py")))
+    (native-inputs
+     (list python-pdm-backend
+           python-pytest))
+    (propagated-inputs
+     (list python-tomli
+           python-packaging
+           python-platformdirs))
     (home-page "https://pypi.org/project/pytoolconfig/")
     (synopsis "Python tool configuration")
     (description "The goal of this project is to manage configuration for
