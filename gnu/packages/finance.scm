@@ -762,36 +762,37 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "11xhlssr7bvdv3p256k87y35vjzyfd93p72w8f2xy7j5jh6abhp1"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f                       ; no tests
-      #:modules '((guix build python-build-system)
+      #:imported-modules `(,@%pyproject-build-system-modules
+                           (guix build qt-utils))
+      #:modules '((guix build pyproject-build-system)
                   (guix build qt-utils)
                   (guix build utils))
-      #:imported-modules `(,@%python-build-system-modules
-                           (guix build qt-utils))
       #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'create-output-directories
-            (lambda _
-              ;; setup.py installs to ~/.local/share if this doesn't exist.
-              (mkdir-p (string-append #$output "/share"))))
-          (add-after 'unpack 'use-libsecp256k1-input
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "electroncash/secp256k1.py"
-                (("libsecp256k1.so.0")
-                 (search-input-file inputs "lib/libsecp256k1.so.0")))))
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "contrib/requirements/requirements.txt"
-                (("python-dateutil<2\\.9")
-                 "python-dateutil"))))
-          (add-after 'install 'wrap-qt
-            (lambda* (#:key outputs inputs #:allow-other-keys)
-              (let ((out (assoc-ref outputs "out")))
+      (with-extensions (list (pyproject-guile-json))
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'create-output-directories
+              (lambda _
+                ;; setup.py installs to ~/.local/share if this doesn't exist.
+                (mkdir-p (string-append #$output "/share"))))
+            (add-after 'unpack 'use-libsecp256k1-input
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "electroncash/secp256k1.py"
+                  (("libsecp256k1.so.0")
+                   (search-input-file inputs "lib/libsecp256k1.so.0")))))
+            (add-after 'unpack 'relax-requirements
+              (lambda _
+                (substitute* "contrib/requirements/requirements.txt"
+                  (("python-dateutil<2\\.9")
+                   "python-dateutil"))))
+            (add-after 'install 'wrap-qt
+              (lambda* (#:key inputs #:allow-other-keys)
                 (wrap-qt-program "electron-cash"
-                                 #:output out #:inputs inputs)))))))
+                                 #:output #$output #:inputs inputs)))))))
+    (native-inputs (list python-setuptools))
     (inputs
      (list bash-minimal
            libevent
