@@ -689,7 +689,7 @@ external dependencies")
 (define-public clojure-data-priority-map
   (package
     (name "clojure-data-priority-map")
-    (version "1.2.0")
+    (version "1.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -698,7 +698,7 @@ external dependencies")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0aynzrdl0w08q89nd069lcx8s6msqmwrpqnya63jv1l2pn3w6ij4"))))
+                "0yswqr6855n0rg0mfmjfdx0npzasm654m7sz4x0wl13grwgg220k"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure")
