@@ -40628,17 +40628,16 @@ but portable.")
 (define-public python-watchfiles
   (package
     (name "python-watchfiles")
-    (version "1.0.5")
+    (version "1.1.1")
     (source
      (origin
-       ;; There are no tests in the PyPI tarball.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/samuelcolvin/watchfiles")
-             (commit (string-append "v" version))))
+              (url "https://github.com/samuelcolvin/watchfiles")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b5rdj795xcbwg76bd8hs3skhgifd7a8zw2vj76nac2dhjlqg93b"))))
+        (base32 "1jj9lqbkk8q61g74lykqgyx4ck30kxs7ljkxqzwd2lwdhh4jfm2j"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -40680,8 +40679,10 @@ but portable.")
       (or (and=> (%current-target-system)
                  (compose list make-rust-sysroot))
           '())))
-    (inputs (cargo-inputs 'python-watchfiles))
-    (propagated-inputs (list python-anyio)) ;imported in main.py
+    (inputs
+     (cargo-inputs 'python-watchfiles))
+    (propagated-inputs
+     (list python-anyio))
     (home-page "https://github.com/samuelcolvin/watchfiles")
     (synopsis "Simple, modern file watching and code reload in Python")
     (description
