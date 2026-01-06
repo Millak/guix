@@ -29,6 +29,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
@@ -72,41 +73,36 @@
       #:modules
       `((guix build meson-build-system)
         (guix build utils)
-        ((guix build python-build-system) #:prefix python:))
+        ((guix build pyproject-build-system) #:prefix py:))
       #:imported-modules
-      `(,@%meson-build-system-modules
-        (guix build python-build-system))
+      (append %meson-build-system-modules
+              %pyproject-build-system-modules)
       #:configure-flags
       #~(list (string-append
                "-Dpy-overrides-dir="
-               (python:site-packages %build-inputs %outputs) "/gi/overrides"))
+               (py:site-packages %build-inputs %outputs) "/gi/overrides"))
       #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'configure 'set-gtk-module-path
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (substitute* "libxapp/meson.build"
-                (("gtk3_dep\\.get_pkgconfig_variable[(]'libdir'[)]")
-                 (string-append "'" (assoc-ref outputs "out") "/lib'")))
+      (with-extensions (list (pyproject-guile-json))
+        #~(modify-phases %standard-phases
+            (add-before 'configure 'set-gtk-module-path
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (define (string-quote str)
+                  (format #f "'~a'" str))
+                (substitute* "libxapp/meson.build"
+                  (("gtk3_dep\\.get_pkgconfig_variable[(]'libdir'[)]")
+                   (string-quote (string-append #$output "/lib"))))
 
-              (substitute* "scripts/pastebin"
-                (("'nc'")
-                 (string-append "'"
-                                (search-input-file inputs "/bin/nc")
-                                "'")))
-
-              (substitute* "scripts/upload-system-info"
-                (("'inxi'")
-                 (string-append "'"
-                                (search-input-file inputs "/bin/inxi")
-                                "'"))
-                (("'/usr/bin/pastebin'")
-                 (string-append "'"
-                                (assoc-ref outputs "out")
-                                "/bin/pastebin'"))
-                (("'xdg-open'")
-                 (string-append "'"
-                                (search-input-file inputs "/bin/xdg-open")
-                                "'"))))))))
+                (substitute* "scripts/pastebin"
+                  (("'nc'")
+                   (string-quote (search-input-file inputs "/bin/nc"))))
+                (substitute* "scripts/upload-system-info"
+                  (("'inxi'")
+                   (string-quote (search-input-file inputs "/bin/inxi")))
+                  (("'/usr/bin/pastebin'")
+                   (string-quote (string-append #$output "/bin/pastebin")))
+                  (("'xdg-open'")
+                   (string-quote (search-input-file inputs
+                                                    "/bin/xdg-open"))))))))))
     (inputs
      (list dbus
            glib                         ; for gio
