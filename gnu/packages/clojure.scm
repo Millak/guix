@@ -638,7 +638,7 @@ is on par with Java implementations, e.g., Apache commons-codec.")
 (define-public clojure-data-csv
   (package
     (name "clojure-data-csv")
-    (version "1.0.1")
+    (version "1.1.1")
     (home-page "https://github.com/clojure/data.csv")
     (source (origin
               (method git-fetch)
@@ -648,7 +648,7 @@ is on par with Java implementations, e.g., Apache commons-codec.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mh1qli6xrw4s3yj9cxxh50z4m7z08indj3ya30znkhi4xsphii2"))))
+                "1i43qzjn29a0xb3q54sfrn8f77nmxd0v0fn9361as07yclh8jzif"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure")
