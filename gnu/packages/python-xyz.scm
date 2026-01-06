@@ -40733,9 +40733,6 @@ but portable.")
 operating systems and an elegant approach to concurrency using threading.")
     (license license:expat)))
 
-(define-deprecated/alias python-watchgod python-watchfiles)
-(export python-watchgod)
-
 (define-public python-wcwidth
   (package
     (name "python-wcwidth")
