@@ -29997,6 +29997,30 @@ for locating directories
 @end itemize")
       (license (list license:asl2.0 license:bsd-3)))))
 
+(define-public go-go4-org-mem
+  (package
+    (name "go-go4-org-mem")
+    (version "0.0.0-20240501181205-ae6ca9944745")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go4org/mem")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h2bam1h6xi0lx9s0k44fvd28vkb6rh9vndz3srhwi6axvm8ir0s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go4.org/mem"))
+    (home-page "https://go4.org/mem")
+    (synopsis "Cheap read-only memory types in Go")
+    (description
+     "Package mem provides the @code{mem.RO} type that allows you to cheaply
+pass & access either a read-only @code{[]byte} or a @code{string}.")
+    (license license:asl2.0)))
+
 (define-public go-golang-org-rainycape-unidecode
   (let ((commit "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c")
         (revision "1"))
