@@ -1761,6 +1761,30 @@ strings for a safe use as command line arguments in the most common POSIX
 shells.")
     (license license:expat)))
 
+(define-public go-github-com-aleksi-pointer
+  (package
+    (name "go-github-com-aleksi-pointer")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/AlekSi/pointer")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rncmanv62wwy7ihvjhvb695mkvy4kdzhgnn90zygs9yrfzzk0wk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/AlekSi/pointer"))
+    (home-page "https://github.com/AlekSi/pointer")
+    (synopsis "Helper Go library to convert between pointers and values")
+    (description
+     "This package provides helpers to convert between pointers and values of
+built-in and, with generics, of any types.")
+    (license license:expat)))
+
 (define-public go-github-com-alexflint-go-filemutex
   (package
     (name "go-github-com-alexflint-go-filemutex")
