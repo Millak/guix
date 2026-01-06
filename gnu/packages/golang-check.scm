@@ -342,6 +342,31 @@ that could potentially be preallocated.")
 github.com/sergi/go-diff, mainly for diffing strings in tests.")
     (license license:expat)))
 
+(define-public go-github-com-antonboom-nilnil
+  (package
+    (name "go-github-com-antonboom-nilnil")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Antonboom/nilnil")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07afwnsihaixckhyc02zwwrd66f6fwb19dhskziniwfa0mamm1ny"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Antonboom/nilnil"))
+    (propagated-inputs (list go-golang-org-x-tools))
+    (home-page "https://github.com/Antonboom/nilnil")
+    (synopsis "Go linter for return values")
+    (description
+     "This package provides a linter that checks that there is no simultaneous
+return of @code{nil} error and an invalid value.")
+    (license license:expat)))
+
 (define-public go-github-com-antonboom-testifylint
   (package
     (name "go-github-com-antonboom-testifylint")
