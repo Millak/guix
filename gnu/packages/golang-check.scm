@@ -392,6 +392,33 @@ that could potentially be preallocated.")
      "Golang linter, lint that pass any slice as any in variadic function.")
     (license license:expat)))
 
+(define-public go-github-com-alfatraining-structtag
+  (package
+    (name "go-github-com-alfatraining-structtag")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/alfatraining/structtag")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fihck1bz7nr9dh7vb0b7n53cp9zcl62f8rlazsbpbgzhwa0cnwn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/alfatraining/structtag"))
+    (home-page "https://github.com/alfatraining/structtag")
+    (synopsis "Library for parsing struct tags in Go")
+    (description
+     "This package is a library for parsing struct tags in Go during static
+analysis.  It is designed to provide a simple API for parsing struct field
+tags in Go code.  This fork focuses exclusively on @strong{reading struct
+tags} and is not intended for modifying or rewriting them.  It also drops
+support for accessing the options of a struct tag individually.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-andreyvit-diff
   (package
     (name "go-github-com-andreyvit-diff")
