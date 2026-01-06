@@ -3457,7 +3457,7 @@ encountered in PDB files prior to simulation tasks.")
            python-gffutils
            python-importlib-resources
            macs
-           python-numpy
+           python-numpy-1
            python-psutil
            python-pybedtools
            python-pysam
