@@ -143,15 +143,7 @@ cross-DE solutions.")
        (sha256
         (base32 "06v84bvhhhx7lf7bsl2wdxh7vlkpb2fczjh6717b9jjr7xhvif8r"))))
     (build-system meson-build-system)
-    (arguments
-     (list
-      #:tests? #f ; no tests provided
-      #:imported-modules `((guix build python-build-system)
-                           ,@%meson-build-system-modules)
-      #:modules '((guix build utils)
-                  (guix build meson-build-system)
-                  ((guix build python-build-system)
-                   #:prefix python:))))
+    (arguments (list #:tests? #f))      ; no tests provided
     (native-inputs
      (list gobject-introspection
            intltool
