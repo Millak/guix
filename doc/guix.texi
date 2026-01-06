@@ -46226,6 +46226,26 @@ up not being used much for the reasons described there.
 @end deftp
 @end defvar
 
+@cindex fwupd
+@cindex firmware update
+@subsubheading fwupd Service
+
+@defvar fwupd-service-type
+This service allows users of supported hardware to update their firmware.  The
+service's value is a @code{fwupd-configuration} record.
+
+@deftp {Data Type} fwupd-configuration
+This is the data type representing the configuration for the fwupd
+service.
+
+@table @asis
+@item @code{fwupd} (default @code{fwupd})
+The fwupd package that will be installed in the system profile.
+@end table
+
+@end deftp
+@end defvar
+
 @node Hurd Services
 @subsection Hurd Services
 
