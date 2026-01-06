@@ -582,7 +582,7 @@ It supports Clojure 1.5.1 and later as well as ClojureScript.")
 (define-public clojure-core-memoize
   (package
     (name "clojure-core-memoize")
-    (version "1.1.266")
+    (version "1.2.273")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -591,7 +591,7 @@ It supports Clojure 1.5.1 and later as well as ClojureScript.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nys79zrvcnwgyxb91zlyl3nb4p6r6y4n5rbdvzqkvsxxazi9ji0"))))
+                "009fj19y464an66pryygmqbnx2dqk5wkp40rbkbgkir0ax0k6j3y"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure")
