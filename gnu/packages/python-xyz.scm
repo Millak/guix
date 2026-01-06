@@ -39984,6 +39984,43 @@ user-space file systems in Python.")
 which make common patterns shorter and easier.")
     (license license:bsd-2)))
 
+(define-public python-uuid6
+  (package
+    (name "python-uuid6")
+    (version "2025.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oittaa/uuid6-python")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xawnq7b0vzcvrw50jfdagn4a2javyav108hlpf31kbn7rn03jhk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Test is time based: AssertionError: 13987034766.015247 !=
+      ;; 13987034766.01471 within 3 places (0.000537872314453125 difference)
+      #~(list "--deselect=test/test_uuid6.py::UUIDTests::test_time")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (home-page "https://github.com/oittaa/uuid6-python")
+    (synopsis "Time-based UUID formats which are suited for use as a database key")
+    (description
+     "This module extends immutable UUID objects (the UUID class) with the
+functions @code{uuid6()}, @code{uuid7()}, and @code{uuid8()} from the proposed
+@url{https://datatracker.ietf.org/doc/rfc9562/, IETF RFC 9562}.")
+    (license license:expat)))
+
 (define-public python-validate-email
   (package
     (name "python-validate-email")
