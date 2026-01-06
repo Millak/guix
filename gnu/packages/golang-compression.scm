@@ -150,6 +150,31 @@ the @code{c2go} tool at
 @url{https://github.com/andybalholm/c2go,https://github.com/andybalholm/c2go}.")
     (license license:expat)))
 
+(define-public go-github-com-blakesmith-ar
+  (package
+    (name "go-github-com-blakesmith-ar")
+    (version "0.0.0-20190502131153-809d4375e1fb")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/blakesmith/ar")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00fxkc04b9cb53xxzw5gdqqpwlqv9n5kk0yn2lb5w4rgj5gm8ph1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/blakesmith/ar"
+      #:test-flags #~(list "-vet=off")))
+    (home-page "https://github.com/blakesmith/ar")
+    (synopsis "Golang archive file reader")
+    (description
+     "This package provides a Golang file reader for archive files generated
+with @code{ar}.")
+    (license license:expat)))
+
 (define-public go-github-com-bodgit-sevenzip
   (package
     (name "go-github-com-bodgit-sevenzip")
