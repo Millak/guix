@@ -468,16 +468,16 @@ that can be implemented for any data type.")
 (define-public clojure-algo-monads
   (package
     (name "clojure-algo-monads")
-    (version "0.1.6")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/clojure/algo.monads")
-             (commit (string-append "algo.monads-" version))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mv3ba72hyhgasg2k3zy83ij61gak6cs4d6qgh8123z3j02mbh8p"))))
+        (base32 "1l420fzqr1mw45w1lz6iqx0s61m8w3r3ad8zmsg17cqahnfakh00"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure/")
