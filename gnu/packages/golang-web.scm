@@ -17880,6 +17880,32 @@ StatHat} account.")
 REST APIs.")
     (license license:expat)))
 
+(define-public go-github-com-studio-b12-gowebdav
+  (package
+    (name "go-github-com-studio-b12-gowebdav")
+    (version "0.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/studio-b12/gowebdav")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wa69g86vm61xr7kxvj6v6902h39xbdakkwk8z6lv883vm7mh2x4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/studio-b12/gowebdav"))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/studio-b12/gowebdav")
+    (synopsis "WebDAV client library in Go")
+    (description
+     "This package is a @code{WebDAV} client library with a command line tool
+included.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-swaggo-echo-swagger
   (package
     (name "go-github-com-swaggo-echo-swagger")
