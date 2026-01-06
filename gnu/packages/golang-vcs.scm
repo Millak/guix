@@ -607,6 +607,30 @@ Actions} locally.")
 It's a static checker for GitHub Actions workflow files.")
     (license license:expat)))
 
+(define-public go-gitlab-com-digitalxero-go-conventional-commit
+  (package
+    (name "go-gitlab-com-digitalxero-go-conventional-commit")
+    (version "1.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/digitalxero/go-conventional-commit.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1191j3k9ma5sv8w2zsw8gb1407561zll0ca8hwy0dja6s0b3z0xy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gitlab.com/digitalxero/go-conventional-commit"))
+    (home-page "https://gitlab.com/digitalxero/go-conventional-commit")
+    (synopsis "Go parser for conventional commits")
+    (description
+     "This package provides a Go parser for conventional-commit messages
+@url{https://www.conventionalcommits.org/}.")
+    (license license:expat)))
+
 (define-public go-github-com-xanzy-go-gitlab
   (package
     (name "go-github-com-xanzy-go-gitlab")
