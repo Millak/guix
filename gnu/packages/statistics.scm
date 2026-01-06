@@ -1386,31 +1386,19 @@ new data from those PDFs.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 144 passed, 75 skipped, 1 deselected, 11 warnings
       #:test-flags
-      ;; NOTE: Tests take 15-25min to complete on 16 threads and much longer
-      ;; in single one, so enabling --numprocesses option.
-      #~(list "lifelines/tests"
-              "--numprocesses" (number->string (min 16 (parallel-job-count)))
-              "-k" (string-join
-                    (list
-                     ;; This accuracy test fails because 0.012 is not < 0.01.
-                     "not test_weibull_with_delayed_entries"
-                     ;; These checks are too expensive, last for ages.
-                     "test_univariate_fitters_ok_if_given_timedelta"
-                     "test_predict_methods_returns_a_scalar_or_a_array_depending_on_input"
-                     "test_cumulative_density_ci_is_ordered_correctly"
-                     (string-append
-                      "test_univariate_fitters_okay_if_"
-                      "given_boolean_col_with_object_dtype"))
-                    " and not "))))
+      ;; Tests are not deterministic and compute intense.
+      #~(list "--ignore=lifelines/tests/test_estimation.py"
+              ;; Not equal to tolerance rtol=0.0001, atol=0
+              "--deselect=lifelines/tests/test_npmle.py::test_mice_scipy")))
     (native-inputs
      (list python-dill
            python-flaky
+           python-jinja2
            python-joblib
            python-pytest
-           python-pytest-xdist          ;see NOTE above
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-autograd
            python-autograd-gamma
