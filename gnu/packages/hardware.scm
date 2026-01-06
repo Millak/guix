@@ -774,13 +774,15 @@ human-readable format and checks if it conforms to the standards.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "0hm86d51kj5r3yxq4c23aa57cs8igz3wrkbjn20z4frx75rpf46m"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
        (list
-        #:imported-modules `(,@%python-build-system-modules
-                             ,@%glib-or-gtk-build-system-modules)
+        #:test-backend #~'unittest
+        #:imported-modules
+        (append %pyproject-build-system-modules
+                %glib-or-gtk-build-system-modules)
         #:modules '(((guix build glib-or-gtk-build-system) #:prefix glib:)
-                    (guix build python-build-system)
+                    (guix build pyproject-build-system)
                     (guix build utils))
         #:phases
         #~(modify-phases %standard-phases
@@ -789,7 +791,7 @@ human-readable format and checks if it conforms to the standards.")
                          'generate-gdk-pixbuf-loaders-cache-file))
             (add-after 'install 'glib-or-gtk-compile-schemas
               (assoc-ref glib:%standard-phases 'glib-or-gtk-compile-schemas))
-            (add-after 'install 'glib-or-gtk-wrap
+            (add-after 'wrap 'glib-or-gtk-wrap
               (assoc-ref glib:%standard-phases 'glib-or-gtk-wrap))
             (add-after 'glib-or-gtk-wrap 'wrap-more
               (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -801,6 +803,7 @@ human-readable format and checks if it conforms to the standards.")
                                          inputs "bin/lspci"))
                               ,(dirname (search-input-file
                                          inputs "bin/lsusb"))))))))))
+      (native-inputs (list python-setuptools))
       (inputs
        (list gdk-pixbuf
              gobject-introspection      ;for GI_TYPELIB_PATH
