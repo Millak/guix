@@ -1324,11 +1324,12 @@ Docker registry.")
                       "--prefix" #$output))))))
     (native-inputs (list python-flit-core))
     (inputs
-     (list bash
-           python-filetype
-           python-pexpect
+     (list bash))                       ;must be bash with readline
+    (propagated-inputs
+     (list python-filetype
            python-ipykernel
-           python-jupyter-client))
+           python-jupyter-client
+           python-pexpect))
     (home-page "https://github.com/takluyver/bash_kernel")
     (synopsis "Jupyter kernel for Bash")
     (description "A bash shell kernel for Jupyter.")
