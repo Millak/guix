@@ -663,7 +663,7 @@ relaxed.")
 (define-public clojure-data-json
   (package
     (name "clojure-data-json")
-    (version "2.5.0")
+    (version "2.5.2")
     (home-page "https://github.com/clojure/data.json")
     (source (origin
               (method git-fetch)
@@ -673,7 +673,7 @@ relaxed.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04k3fr9y1gp337h0d2zxam3aa3hl046r2g2qiizn7aq0rq6311p9"))))
+                "0xkcd6h5g7yhr839wci6dsynmbijj9r5mrrj70gx849mkhj98411"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure")
