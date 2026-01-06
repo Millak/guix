@@ -370,6 +370,31 @@ go-fuzz-headers.")
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-alexkohler-nakedret-v2
+  (package
+    (name "go-github-com-alexkohler-nakedret-v2")
+    (version "2.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/alexkohler/nakedret")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "133is8lffzldmxlybnp7xcnixl6k9lps6r4dp4qwrlvhnmsd2cca"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/alexkohler/nakedret/v2"))
+    (propagated-inputs (list go-golang-org-x-tools))
+    (home-page "https://github.com/alexkohler/nakedret")
+    (synopsis "Go static analysis tool for naked returns")
+    (description
+     "This package is a Go static analysis tool to find naked returns in
+functions greater than a specified function length.")
+    (license license:expat)))
+
 (define-public go-github-com-alexkohler-prealloc
   (package
     (name "go-github-com-alexkohler-prealloc")
