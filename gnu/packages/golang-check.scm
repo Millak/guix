@@ -342,6 +342,33 @@ that could potentially be preallocated.")
 github.com/sergi/go-diff, mainly for diffing strings in tests.")
     (license license:expat)))
 
+(define-public go-github-com-antonboom-testifylint
+  (package
+    (name "go-github-com-antonboom-testifylint")
+    (version "1.6.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Antonboom/testifylint")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0329i4h4kk3802p7a8mr7cgi84ndr6wbk5q2af2ld8gck5jwh9mc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-skip" "TestTestifyLint_NotDefaultCases")
+      #:import-path "github.com/Antonboom/testifylint"))
+    (propagated-inputs (list go-golang-org-x-tools))
+    (home-page "https://github.com/Antonboom/testifylint")
+    (synopsis "Go linter for stretchr/testify")
+    (description
+     "This package provides a linter that checks usage of
+@url{https://github.com/stretchr/testify}.")
+    (license license:expat)))
+
 (define-public go-github-com-ashanbrown-forbidigo
   (package
     (name "go-github-com-ashanbrown-forbidigo")
