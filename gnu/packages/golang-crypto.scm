@@ -1775,6 +1775,33 @@ See http://keccak.noekeon.org.")
 MurmurHash} revision (aka MurmurHash3).")
     (license license:bsd-3)))
 
+(define-public go-github-com-hdevalence-ed25519consensus
+  (package
+    (name "go-github-com-hdevalence-ed25519consensus")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hdevalence/ed25519consensus")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dmkl3hnv0h0r4apvs34jf1cz4wcj34cksiiij4p1z4kqcldwdi9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hdevalence/ed25519consensus"))
+    (propagated-inputs
+     (list go-filippo-io-edwards25519))
+    (home-page "https://github.com/hdevalence/ed25519consensus")
+    (synopsis "Ed25519 signature library for Golang")
+    (description
+     "This package provides an @url{https://en.wikipedia.org/wiki/EdDSA,
+Ed25519} implementation with validation rules intended for consensus-critical
+contexts.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-hiddeco-sshsig
   (package
     (name "go-github-com-hiddeco-sshsig")
