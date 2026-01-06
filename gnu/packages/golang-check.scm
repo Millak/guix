@@ -73,6 +73,31 @@
 ;;; Libraries:
 ;;;
 
+(define-public go-4d63-com-gochecknoglobals
+  (package
+    (name "go-4d63-com-gochecknoglobals")
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/leighmcculloch/gochecknoglobals")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w1wjcs95rylrx3wrza3fgnbbfil7fiw5z2r62zd7k6hg3rk6c8s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "4d63.com/gochecknoglobals"))
+    (propagated-inputs (list go-golang-org-x-tools))
+    (home-page "https://4d63.com/gochecknoglobals")
+    (synopsis "Check that no global variables are present in Golang code")
+    (description
+     "This package provides a linter that checks that no globals are present
+in Golang code.")
+    (license license:expat)))
+
 (define-public go-atomicgo-dev-assert
   (package
     (name "go-atomicgo-dev-assert")
