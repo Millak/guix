@@ -114,6 +114,7 @@
   #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-maths)
+  #:use-module (gnu packages golang-vcs)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages graph)
   #:use-module (gnu packages imagemagick)
@@ -12648,6 +12649,41 @@ color (24-bit, RGB)
 @code{FORCE_COLOR} for force open color render
 @item support RGB, 256, 16 color conversion
 @end itemize")
+    (license license:expat)))
+
+(define-public go-github-com-goreleaser-chglog
+  (package
+    (name "go-github-com-goreleaser-chglog")
+    (version "0.7.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/goreleaser/chglog")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09ni4y644zhp3bf9nwy9qc9wkxrn2hla6nczg3zpn0ls8qaxjd40"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/goreleaser/chglog"))
+    (native-inputs
+     (list go-github-com-go-git-go-billy-v5
+	   go-github-com-google-go-cmp
+           go-github-com-smartystreets-goconvey
+	   go-github-com-spf13-cobra
+           go-github-com-spf13-viper))
+    (propagated-inputs
+     (list go-github-com-go-git-go-git-v5
+           go-github-com-masterminds-semver-v3
+           go-github-com-masterminds-sprig-v3
+           go-gitlab-com-digitalxero-go-conventional-commit
+           go-go-yaml-in-yaml-v3))
+    (home-page "https://github.com/goreleaser/chglog")
+    (synopsis "Changelog management Go library")
+    (description
+     "This package provides Go functions to manage changelogs.")
     (license license:expat)))
 
 (define-public go-github-com-goreleaser-fileglob
