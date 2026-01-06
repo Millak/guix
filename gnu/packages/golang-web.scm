@@ -2329,6 +2329,7 @@ functions.")
                             "service/kms"
                             "service/s3"
                             "service/sqs"
+                            "service/ssm"
                             "service/sso"
                             "service/ssooidc"
                             "service/sts"))))))
@@ -2790,6 +2791,50 @@ parameter types for AWS Secrets Manager.")
     (description
      "Package sqs provides the API client, operations, and parameter types for
 Amazon Simple Queue Service.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-aws-aws-sdk-go-v2-service-ssm
+  (package
+    (name "go-github-com-aws-aws-sdk-go-v2-service-ssm")
+    (version "1.67.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aws/aws-sdk-go-v2")
+              (commit (go-version->git-ref version
+                                           #:subdir "service/ssm"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "055i6c41zppxhf5kgxky7a8nc1wzsaxd6vbdyv0wqqbg8zbw5fjb"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "service" "ssm")
+            (delete-all-but "." "service")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/service/ssm"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-internal-configsources
+           go-github-com-aws-aws-sdk-go-v2-internal-endpoints-v2
+           go-github-com-aws-smithy-go))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS Golang SDK for Simple Systems Manager")
+    (description
+     "Package ssm provides the API client, operations, and parameter types for
+Amazon Simple Systems Manager.")
     (license license:asl2.0)))
 
 (define-public go-github-com-aws-aws-sdk-go-v2-service-sso
