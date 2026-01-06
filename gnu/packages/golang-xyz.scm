@@ -18779,6 +18779,32 @@ other directories.  It is optimized for filewalking.")
 optimized for UTF-16.")
     (license license:expat)))
 
+(define-public go-github-com-mdlayher-sdnotify
+  (package
+    (name "go-github-com-mdlayher-sdnotify")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mdlayher/sdnotify")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nxpbjba4n4vfkwfy9q2x5djv8agfnvd6pp7l7a6d6ssl2vhkcrv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mdlayher/sdnotify"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (home-page "https://github.com/mdlayher/sdnotify")
+    (synopsis "Systemd readiness notifications in Go")
+    (description
+     "Package sdnotify implements systemd readiness notifications as described in
+@url{https://www.freedesktop.org/software/systemd/man/sd_notify.html}.")
+    (license license:expat)))
+
 (define-public go-github-com-mgutz-ansi
   (package
     (name "go-github-com-mgutz-ansi")
