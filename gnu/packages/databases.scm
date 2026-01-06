@@ -3897,47 +3897,47 @@ of PyMySQL.  @code{aiomysql} tries to preserve the same API as the
 (define-public python-tortoise-orm
   (package
     (name "python-tortoise-orm")
-    (version "0.22.2")
+    (version "0.25.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/tortoise/tortoise-orm")
-             (commit version)))
+              (url "https://github.com/tortoise/tortoise-orm")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xzwywvb3898hm41vwkzn785ziqprxh6lcf0lpmrgfcsc9qnnhzk"))))
+        (base32 "1b1a20cnhaj7rcdp5l1r5nvd6x1amybgynwpd3cnskpvzqjinsyl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1280 passed, 104 skipped, 4 xfailed, 9 warnings
       #:test-flags
-      #~(list "-k" (string-join
-                    (list "not test_enum"  ; Fixed in the next release.
-                          ;; tortoise.exceptions.OperationalError
-                          "test_delete"
-                          "test_delete_limit"
-                          "test_delete_limit_order_by"
-                          "test_update_with_limit_ordering")
-                    " and not "))))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              "--ignore=tests/benchmarks/"
+              ;; FileNotFoundError: [Errno 2] No such file or directory: 'uvx'
+              "--deselect=tests/test_version.py::test_added_by_poetry_v2")))
     (native-inputs
-     (list python-asyncodbc
+     (list python-cython
            python-fastapi
-           python-poetry-core
-           python-psycopg
-           python-psycopg-pool
+           python-pdm-backend
            python-pydantic
-           python-pyodbc
-           python-pytest))
+           python-pytest
+           python-pytest-xdist))
     (propagated-inputs
-     (list python-aiomysql
-           python-aiosqlite
-           python-asyncmy
-           python-asyncpg
-           python-ciso8601
+     (list python-aiosqlite
+           python-anyio
            python-iso8601
            python-pypika-tortoise
            python-pytz
-           python-rapidjson
+           ;; [optional]
+           python-aiomysql     ;tortoise/backends/mysql/client.py
+           python-asyncodbc    ;tortoise/backends/odbc/client.py
+           python-asyncpg      ;tortoise/backends/asyncpg/client.py
+           python-ciso8601
+           python-orjson
+           python-psycopg      ;tortoise/backends/psycopg/client.py
+           python-psycopg-pool ;
+           python-pyodbc       ;tortoise/backends/oracle/client.py
            python-uvloop))
     (home-page "https://github.com/tortoise/tortoise-orm")
     (synopsis "Asynchronous Object Relational Mapper (ORM) for Python")
