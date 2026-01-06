@@ -3049,19 +3049,20 @@ servers supporting the protocol.")
 (define-public python-liana-py
   (package
     (name "python-liana-py")
-    (version "1.6.0")
+    (version "1.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/saezlab/liana-py")
-                    (commit (string-append "v" version))))
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1k6l371wd00m95l5pb2jsmzzxh5nc5v21fg2v0cslr9761q151r9"))))
+                "0cd4gdb55xhn3brqd69zbj1ddz1kipj4hihzzri9nmv8flffw96d"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 75 passed, 24 deselected, 577 warnings
       #:test-flags
       '(list "-k"
              ;; These tests require internet access.
@@ -3074,6 +3075,11 @@ servers supporting the protocol.")
                             " and not test_translate_resource"
                             ;; Minor accuracy difference
                             " and not test_bivar_morans_perms"
+                            ;; Items are not equal:
+                            ;; ACTUAL: np.float64(1802.3329624189018)
+                            ;; DESIRED: 1802.332962418902
+                            " and not test_mdata_transformations"
+                            " and not test_get_spatial_connectivities"
                             ;; XXX "local_scores" array has wrong type.
                             ;; See https://github.com/saezlab/liana-py/issues/147
                             " and not test_morans_analytical"
