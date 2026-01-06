@@ -5224,13 +5224,13 @@ is designed to have a low barrier to entry.")
 (define-public python-sqlparse
   (package
     (name "python-sqlparse")
-    (version "0.5.3")
+    (version "0.5.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sqlparse" version))
        (sha256
-        (base32 "0wljxh3lh2zndy7amziwd3572cwwbmzzq6yyvgn1c2vayn3pgxh9"))))
+        (base32 "13pj7ylwm8w35nd8hz64grx5sk69qxk01lqh7gvgv1c51fdll3g2"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
