@@ -873,16 +873,16 @@ tools.analyzer, providing additional JVM-specific passes.")
 (define-public clojure-tools-macro
   (package
     (name "clojure-tools-macro")
-    (version "0.1.5")
+    (version "0.2.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/clojure/tools.macro")
-             (commit (string-append "tools.macro-" version))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14mdxqkwja0cffmyfav5pbcli2qvw1mjdgz0n619a2z2036andx8"))))
+        (base32 "09xxp5vpf86akmn95mvjmd34a1pc48cjxbp6q4lvi3q8rhpkjfd5"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure/")
