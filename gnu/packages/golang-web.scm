@@ -18549,6 +18549,31 @@ Tailscale for access control.")
 Tailscale.")
     (license license:bsd-3)))
 
+(define-public go-github-com-tcnksm-go-httpstat
+  (package
+    (name "go-github-com-tcnksm-go-httpstat")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tcnksm/go-httpstat")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18jn40ra97waxx1mf23pkh6rq46y0nqd7vi3zcx9cwc39zqaf9bc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;Tests require network connection
+      #:import-path "github.com/tcnksm/go-httpstat"))
+    (home-page "https://github.com/tcnksm/go-httpstat")
+    (synopsis "Trace HTTP latency information in Go")
+    (description
+     "Package httpstat traces HTTP latency infomation, such as DNSLookup and
+TCP Connection, on any Golang HTTP request with no big code modification.")
+    (license license:expat)))
+
 (define-public go-github-com-tdewolff-minify-v2
   (package
     (name "go-github-com-tdewolff-minify-v2")
