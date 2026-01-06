@@ -224,7 +224,7 @@ concise, powerful tests.")
 (define-public clojure-tools-reader
   (package
     (name "clojure-tools-reader")
-    (version "1.5.0")
+    (version "1.6.0")
     (home-page "https://github.com/clojure/tools.reader")
     (source (origin
               (method git-fetch)
@@ -234,7 +234,7 @@ concise, powerful tests.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jf05q4ym8z16qaxidx47g2gjv04qcf1wvkca3wqyiaszpvym4zz"))))
+                "006zy7dpk678rzawqyqcypccw48bl4b9s4xjrwzhgq8z5s8v6lnd"))))
     (build-system clojure-build-system)
     (arguments
      '(#:doc-dirs '()
