@@ -25319,27 +25319,13 @@ sum test, etc).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0jviacx6qx5rwgi3wvl7a8a8ml19r6cpngddivlk13f6g9072din"))))
-    (build-system python-build-system)
+        (base32 "0jviacx6qx5rwgi3wvl7a8a8ml19r6cpngddivlk13f6g9072din"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #false ;there are none
       #:phases
       #~(modify-phases %standard-phases
-          ;; TODO: implement as a feature of python-build-system (PEP-621,
-          ;; PEP-631, PEP-660)
-          (replace 'build
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'install
-            (lambda _
-              (apply invoke "pip" "--no-cache-dir" "--no-input"
-                     "install" "--no-deps" "--prefix" #$output
-                     (find-files "dist" "\\.whl$"))))
           (add-after 'install 'wrap-executable
             (lambda _
               (for-each
