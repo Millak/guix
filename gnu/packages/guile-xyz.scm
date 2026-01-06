@@ -1030,7 +1030,7 @@ invocations."))))
 (define-public guile-dsv
   (package
     (name "guile-dsv")
-    (version "0.8.1")
+    (version "0.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1039,7 +1039,7 @@ invocations."))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hpdl2x0lp0dqpx23l29a45lvn5c2qpd4bzrl8d46vm4nraqi7aa"))))
+                "1dkpz0fppgqywpqq29d6gmva0gwfk61dcxbd7c8jd463dvqhryfp"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf
                          automake
@@ -1051,7 +1051,7 @@ invocations."))))
                          guile-lib
                          guile-smc))
     (inputs (list bash-minimal guile-3.0))
-    (propagated-inputs (list guile-lib guile-smc))
+    (propagated-inputs (list guile-fibers guile-lib guile-smc))
     (arguments
      (list #:modules `(((guix build guile-build-system)
                         #:select (target-guile-effective-version))
