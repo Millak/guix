@@ -28802,6 +28802,30 @@ designed to work with the MySQL protocol version 4.1 or greater.  It definitely
 works well with MySQL server version 5.0 and 5.1.")
     (license license:bsd-3)))
 
+(define-public go-github-com-ziutek-telnet
+  (package
+    (name "go-github-com-ziutek-telnet")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ziutek/telnet")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w0zn8yhpmhrph41dlf9pn5h1zzhgajxwbx85fk4d0m55xp0r680"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ziutek/telnet"))
+    (home-page "https://github.com/ziutek/telnet")
+    (synopsis "Telnet interface in Go")
+    (description
+     "This package provides a simple interface for interacting with Telnet
+connections.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-zk-org-pretty
   (package
     (name "go-github-com-zk-org-pretty")
