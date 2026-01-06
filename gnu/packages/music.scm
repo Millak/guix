@@ -7838,41 +7838,43 @@ streaming audio server.")
        (patches (search-patches "quodlibet-disable-bundled-packages.patch"))
        (modules '((guix build utils)))
        (snippet '(delete-file-recursively "quodlibet/packages"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:modules '((guix build python-build-system)
+      #:imported-modules `(,@%pyproject-build-system-modules
+                           ,@%glib-or-gtk-build-system-modules)
+      #:modules '((guix build pyproject-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
                   (guix build utils))
-      #:imported-modules `((guix build python-build-system)
-                           ,@%glib-or-gtk-build-system-modules)
       #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda _
-              (setenv "HOME" (getcwd))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (if tests?
-                  (invoke "xvfb-run" "pytest"
-                          ;; needs network
-                          "--ignore=tests/plugin/test_covers.py"
-                          "--ignore=tests/test_browsers_iradio.py")
-                  (format #t "test suite not run~%"))))
-          (add-after 'install 'glib-or-gtk-wrap ; ensure icons loaded
-            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
-          (add-after 'install 'wrap-extra-paths
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((out (assoc-ref outputs "out"))
-                    (gi-typelib-path (getenv "GI_TYPELIB_PATH"))
-                    (gst-plugins-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
-                (for-each
-                 (lambda (prog)
-                   (wrap-program (string-append out "/bin/" prog)
-                     `("GI_TYPELIB_PATH" ":" = (,gi-typelib-path))
-                     `("GST_PLUGIN_SYSTEM_PATH" ":" suffix (,gst-plugins-path))))
-                 '("exfalso" "quodlibet"))))))))
-    (native-inputs (list xvfb-run gettext-minimal python-pytest))
+      (with-extensions (list (pyproject-guile-json))
+        #~(modify-phases %standard-phases
+            (add-before 'check 'pre-check
+              (lambda _
+                (setenv "HOME" (getcwd))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (if tests?
+                    (invoke "xvfb-run" "pytest"
+                            ;; needs network
+                            "--ignore=tests/plugin/test_covers.py"
+                            "--ignore=tests/test_browsers_iradio.py")
+                    (format #t "test suite not run~%"))))
+            (add-after 'install 'glib-or-gtk-wrap ; ensure icons loaded
+              (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
+            (add-after 'install 'wrap-extra-paths
+              (lambda _
+                (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH"))
+                      (gst-plugins-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+                  (for-each
+                   (lambda (prog)
+                     (wrap-program (string-append #$output "/bin/" prog)
+                       `("GI_TYPELIB_PATH" ":" = (,gi-typelib-path))
+                       `("GST_PLUGIN_SYSTEM_PATH" ":" suffix
+                         (,gst-plugins-path))))
+                   '("exfalso" "quodlibet")))))))))
+    (native-inputs (list xvfb-run gettext-minimal python-pytest
+                         python-setuptools))
     (inputs
      (list adwaita-icon-theme
            bash-minimal
