@@ -1110,7 +1110,7 @@ is first loaded.")
 (define-public http-kit
   (package
     (name "http-kit")
-    (version "2.8.0")
+    (version "2.8.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1119,7 +1119,7 @@ is first loaded.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1361bpb4sn3dbp215s7gf1bcrb45lgx3lk6lix7bndw9lahr5ank"))))
+                "1fqfl7a7ygfw43xjmmlwrl55xbz34qxpzc8230bpqvjh9n417h74"))))
     (build-system clojure-build-system)
     (arguments
      '(#:java-source-dirs '("src/java")
