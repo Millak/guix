@@ -17866,6 +17866,43 @@ Features:
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-tailscale-goexpect
+  (package
+    (name "go-github-com-tailscale-goexpect")
+    (version "0.0.0-20210902213824-6e8c725cea41")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tailscale/goexpect")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1q3npn5n51p3cxi1p87i8iqjw3mldwdg08wp1fk0y47m57m59yhh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tailscale/goexpect"
+      #:test-flags #~(list "-vet=off" )
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (substitute* (string-append "src/" import-path "/expect_test.go")
+                (("/bin/true") (which "true"))
+                (("/bin/false") (which "false"))
+                (("/bin/cat") (which "cat"))))))))
+    (propagated-inputs
+     (list go-golang-org-x-crypto
+           go-github-com-ziutek-telnet
+           go-github-com-google-goterm))
+    (home-page "https://github.com/tailscale/goexpect")
+    (synopsis "Classic TCL Expect implementation in Golang")
+    (description
+     "This package provides the classic @acronym{Tool Command Language, TCL}
+Expect implementation in Golang.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-tdewolff-minify-v2
   (package
     (name "go-github-com-tdewolff-minify-v2")
