@@ -1603,11 +1603,10 @@ Tanimoto scoring.")
     (arguments
      (list
       #:imported-modules (append %cmake-build-system-modules
-                                 '((guix build python-build-system)))
+                                 %pyproject-build-system-modules)
       #:modules '((guix build cmake-build-system)
                   (guix build utils)
-                  ((guix build python-build-system)
-                   #:select (add-installed-pythonpath)))
+                  ((guix build pyproject-build-system) #:prefix py:))
       #:configure-flags
       #~(list "-DRDK_BUILD_AVALON_SUPPORT=ON"
               "-DRDK_BUILD_CAIRO_SUPPORT=ON"
@@ -1632,67 +1631,67 @@ Tanimoto scoring.")
                "-DCMAKE_INCLUDE_PATH="
                (search-input-directory %build-inputs "/include/avalontoolkit")))
       #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'copy-external-dependencies
-            (lambda _
-              (symlink
-               (string-append
-                (search-input-file
-                 %build-inputs "/share/fonts/truetype/ComicNeue-Regular.ttf"))
-               "Data/Fonts/ComicNeue-Regular.ttf")))
-          (add-after 'unpack 'fix-inchi-include
-            (lambda _
-              (substitute* "Code/cmake/Modules/FindInchi.cmake"
-                (("inchi_api.h.*\\)") "inchi/inchi_api.h)")
-                (("INCHI_LIBRARY NAMES.*\\)")
-                 "INCHI_LIBRARY NAMES inchi PATH_SUFFIXES inchi)")
-                (("find_library" prev)
-                 (string-append
-                  "list(APPEND CMAKE_FIND_LIBRARY_SUFFIXES .so.1)\n"
-                  prev)))
-              (substitute* "External/INCHI-API/inchi.cpp"
-                (("<inchi_api.h>") "<inchi/inchi_api.h>"))))
-          (add-before 'build 'enable-bytecode-determinism
+      (with-extensions (list (pyproject-guile-json))
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'copy-external-dependencies
               (lambda _
-                (setenv "PYTHONHASHSEED" "0")
-                (setenv "PYTHONDONTWRITEBYTECODE" "1")))
-          (add-after 'install 'pre-check
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (with-directory-excursion "../source"
-                (invoke "sqlite3" "Data/RDData.sqlt"
-                        ".read rdkit/Dbase/test_data/RDData.sqlite")
-                (invoke "sqlite3" "Data/RDTests.sqlt"
-                        ".read rdkit/Dbase/test_data/RDTests.sqlite")
-                (setenv "RDBASE" (canonicalize-path ".")))
-              (add-installed-pythonpath inputs outputs)))
-          (delete 'check)
-          (add-after 'pre-check 'check
-            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
-              (when tests?
-                (let ((job-count (number->string
-                                  (if parallel-tests? (parallel-job-count) 1))))
-                  (invoke
-                   "ctest" "-j" job-count
-                   "-E" (string-append
-                         "("
-                         (string-join
-                          '(;; need pickled data
-                            "pyDiscreteValueVect" "pySparseIntVect"
-                            "graphmoltestPickler" "pyPartialCharges"
-                            "substructLibraryTest" "pyFeatures"
-                            "pythonTestDirML" "pythonTestDirChem"
-                            "pyRealValueVect" "pyDiscreteValueVect"
-                            "pickleTestsCatch"
-                            ;; Catching Python exception fails
-                            "pyRanker"
-                            ;; Flaky test depending on floating point rounding
-                            "testConrec"
-                            ;; Expensive test which may time out
-                            "pySynthonSpaceSearch"
-                            ;; Circular import
-                            "pythonSourceTests"
-                            ) "|")
-                         ")")))))))))
+                (symlink
+                 (string-append
+                  (search-input-file
+                   %build-inputs "/share/fonts/truetype/ComicNeue-Regular.ttf"))
+                 "Data/Fonts/ComicNeue-Regular.ttf")))
+            (add-after 'unpack 'fix-inchi-include
+              (lambda _
+                (substitute* "Code/cmake/Modules/FindInchi.cmake"
+                  (("inchi_api.h.*\\)") "inchi/inchi_api.h)")
+                  (("INCHI_LIBRARY NAMES.*\\)")
+                   "INCHI_LIBRARY NAMES inchi PATH_SUFFIXES inchi)")
+                  (("find_library" prev)
+                   (string-append
+                    "list(APPEND CMAKE_FIND_LIBRARY_SUFFIXES .so.1)\n"
+                    prev)))
+                (substitute* "External/INCHI-API/inchi.cpp"
+                  (("<inchi_api.h>") "<inchi/inchi_api.h>"))))
+            (add-before 'build 'enable-bytecode-determinism
+              (assoc-ref py:%standard-phases 'enable-bytecode-determinism))
+            (add-after 'install 'pre-check
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (with-directory-excursion "../source"
+                  (invoke "sqlite3" "Data/RDData.sqlt"
+                          ".read rdkit/Dbase/test_data/RDData.sqlite")
+                  (invoke "sqlite3" "Data/RDTests.sqlt"
+                          ".read rdkit/Dbase/test_data/RDTests.sqlite")
+                  (setenv "RDBASE" (canonicalize-path ".")))))
+            (add-after 'install 'add-install-to-pythonpath
+              (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
+            (delete 'check)
+            (add-after 'pre-check 'check
+              (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+                (when tests?
+                  (let ((job-count (number->string
+                                    (if parallel-tests? (parallel-job-count) 1))))
+                    (invoke
+                     "ctest" "-j" job-count
+                     "-E" (string-append
+                           "("
+                           (string-join
+                            '(;; need pickled data
+                              "pyDiscreteValueVect" "pySparseIntVect"
+                              "graphmoltestPickler" "pyPartialCharges"
+                              "substructLibraryTest" "pyFeatures"
+                              "pythonTestDirML" "pythonTestDirChem"
+                              "pyRealValueVect" "pyDiscreteValueVect"
+                              "pickleTestsCatch"
+                              ;; Catching Python exception fails
+                              "pyRanker"
+                              ;; Flaky test depending on floating point rounding
+                              "testConrec"
+                              ;; Expensive test which may time out
+                              "pySynthonSpaceSearch"
+                              ;; Circular import
+                              "pythonSourceTests"
+                              ) "|")
+                           ")"))))))))))
     (inputs
      (list avalon-toolkit
            cairo
