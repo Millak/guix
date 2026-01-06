@@ -342,6 +342,31 @@ that could potentially be preallocated.")
 github.com/sergi/go-diff, mainly for diffing strings in tests.")
     (license license:expat)))
 
+(define-public go-github-com-ashanbrown-makezero
+  (package
+    (name "go-github-com-ashanbrown-makezero")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ashanbrown/makezero")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "050l5jdv9z6xjy6ycqnn8qsabqs9s4v1p35ii2gilfbam8vvczh5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ashanbrown/makezero"))
+    (propagated-inputs (list go-golang-org-x-tools))
+    (home-page "https://github.com/ashanbrown/makezero")
+    (synopsis "Go static analysis tool for slices")
+    (description
+     "This package is a Go static analysis tool to find slice declarations
+that are not initialized with zero length and are later used with append.")
+    (license license:asl2.0)))
+
 ;; XXX: Not maintained project: This repository has been archived by the owner
 ;; on May 18, 2023. It is now read-only.  Consider to remove when nothing
 ;; depends on it.
