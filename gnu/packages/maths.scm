@@ -3661,6 +3661,37 @@ supports the propositional fragment of PDDL2.2.")
        (snippet
         '(delete-file-recursively "contrib/metis"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DENABLE_SYSTEM_CONTRIB:BOOL=ON"
+              "-DENABLE_BUILD_SHARED:BOOL=ON"
+              "-DENABLE_BUILD_DYNAMIC:BOOL=ON")
+      #:imported-modules (append %cmake-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '(((guix build pyproject-build-system) #:select (site-packages))
+                  (guix build cmake-build-system)
+                  (guix build utils))
+      #:phases
+      (with-extensions (list (pyproject-guile-json))
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-paths
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                ;; Use the standard Guix site-package path for
+                ;; installation of the Python API.
+                (substitute* "CMakeLists.txt"
+                  (("include\\(GNUInstallDirs\\)\n")
+                   (string-append "include(GNUInstallDirs)\n"
+                                  "  set(GMSH_PY_LIB "
+                                  (site-packages inputs outputs) ")\n"))
+                  (("\\$\\{GMSH\\_PY\\} DESTINATION \\$\\{GMSH\\_LIB\\}")
+                   "${GMSH_PY} DESTINATION ${GMSH_PY_LIB}"))
+                ;; Find the shared library.
+                (let ((libgmsh (string-append #$output
+                                              "/lib/libgmsh.so")))
+                  (substitute* "api/gmsh.py"
+                    (("find_library\\(\"gmsh\"\\)")
+                     (simple-format #f "\"~a\"" libgmsh))))))))))
     (inputs
      (list fltk
            fontconfig
@@ -3676,35 +3707,6 @@ supports the propositional fragment of PDDL2.2.")
            opencascade-occt))
     (native-inputs
      (list python-wrapper))
-    (arguments
-     (list #:configure-flags
-           #~(list "-DENABLE_SYSTEM_CONTRIB:BOOL=ON"
-                   "-DENABLE_BUILD_SHARED:BOOL=ON"
-                   "-DENABLE_BUILD_DYNAMIC:BOOL=ON")
-           #:imported-modules `(,@%cmake-build-system-modules
-                                (guix build python-build-system))
-           #:modules '(((guix build python-build-system) #:select (site-packages))
-                       (guix build cmake-build-system)
-                       (guix build utils))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-paths
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                   ;; Use the standard Guix site-package path for
-                   ;; installation of the Python API.
-                   (substitute* "CMakeLists.txt"
-                     (("include\\(GNUInstallDirs\\)\n")
-                      (string-append "include(GNUInstallDirs)\n"
-                                     "  set(GMSH_PY_LIB "
-                                     (site-packages inputs outputs) ")\n"))
-                     (("\\$\\{GMSH\\_PY\\} DESTINATION \\$\\{GMSH\\_LIB\\}")
-                      "${GMSH_PY} DESTINATION ${GMSH_PY_LIB}"))
-                   ;; Find the shared library.
-                   (let ((libgmsh (string-append #$output
-                                                 "/lib/libgmsh.so")))
-                     (substitute* "api/gmsh.py"
-                       (("find_library\\(\"gmsh\"\\)")
-                        (simple-format #f "\"~a\"" libgmsh)))))))))
     (home-page "https://gmsh.info/")
     (synopsis "3D finite element grid generator")
     (description "Gmsh is a 3D finite element grid generator with a built-in
