@@ -13923,6 +13923,28 @@ the C++ ABI defined at https://codesourcery.com/cxx-abi/ and the
 ABI}.")
     (license license:bsd-3)))
 
+(define-public go-github-com-illarion-gonotify-v3
+  (package
+    (name "go-github-com-illarion-gonotify-v3")
+    (version "3.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/illarion/gonotify")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07bym2ybs4kga422y7i3vs7zskyxwsv0psv18ds8pp00yybv6vc3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/illarion/gonotify/v3"))
+    (home-page "https://github.com/illarion/gonotify")
+    (synopsis "Simple Golang inotify wrapper")
+    (description "This package provides a simple Golang inotify wrapper.")
+    (license license:expat)))
+
 (define-public go-github-com-imdario-mergo
   (hidden-package
    (package/inherit go-dario-cat-mergo
