@@ -10909,32 +10909,32 @@ when an application performs repeated divisions by the same divisor.")
                                          "fp16-system-libraries.patch"))))
       (build-system cmake-build-system)
       (arguments
-       `(#:imported-modules ((guix build python-build-system)
-                             ,@%cmake-build-system-modules)
-         #:modules (((guix build python-build-system)
-                     #:select (site-packages))
-                    (guix build cmake-build-system)
-                    (guix build utils))
-         #:phases (modify-phases %standard-phases
-                    (add-after 'install 'move-python-files
-                      (lambda* (#:key inputs outputs #:allow-other-keys)
-                        ;; Python files get installed to $includedir (!).
-                        ;; Move them to the usual Python site directory.
-                        (let* ((out     (assoc-ref outputs "out"))
-                               (include (string-append out "/include"))
-                               (site    (site-packages inputs outputs))
-                               (target  (string-append site "/fp16")))
-                          (mkdir-p target)
-                          (for-each (lambda (file)
-                                      (rename-file file
-                                                   (string-append target "/"
-                                                                  (basename
-                                                                   file))))
-                                    (find-files include "\\.py$"))))))))
-      (native-inputs
-       (list python-wrapper))
-      (inputs
-       (list psimd googletest-1.8 googlebenchmark))
+       (list
+        #:imported-modules
+        (append %cmake-build-system-modules
+                %pyproject-build-system-modules)
+        #:modules
+        `(((guix build pyproject-build-system) #:select (site-packages))
+          (guix build cmake-build-system)
+          (guix build utils))
+        #:phases
+        (with-extensions (list (pyproject-guile-json))
+          #~(modify-phases %standard-phases
+              (add-after 'install 'move-python-files
+                (lambda* (#:key inputs outputs #:allow-other-keys)
+                  ;; Python files get installed to $includedir (!).
+                  ;; Move them to the usual Python site directory.
+                  (let* ((include (string-append #$output "/include"))
+                         (site (site-packages inputs outputs))
+                         (target (string-append site "/fp16")))
+                    (mkdir-p target)
+                    (for-each (lambda (file)
+                                (rename-file file
+                                             (string-append target "/"
+                                                            (basename file))))
+                              (find-files include "\\.py$")))))))))
+      (native-inputs (list python-wrapper))
+      (inputs (list psimd googletest-1.8 googlebenchmark))
       (synopsis "C++ library for half-precision floating point formats")
       (description
        "This header-only C++ library implements conversion to and from
