@@ -609,17 +609,17 @@ Least-recently-used, Least-used and Time-to-live.")
 (define-public clojure-data-codec
   (package
     (name "clojure-data-codec")
-    (version "0.1.1")
+    (version "0.2.1")
     (home-page "https://github.com/clojure/data.codec")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit (string-append "data.codec-" version))))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "192df1dmbwvf1x837mi731n9x94bdypaz18va45plzgdsh4xx6dr"))))
+                "1wxqwkbpaxjchh03lwy3ngyx6dwv7x7l1qhac42dl6bg213izil5"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure")
