@@ -1893,18 +1893,19 @@ Xarray Datatree.")
 (define-public python-narwhals
   (package
     (name "python-narwhals")
-    (version "1.44.0")
+    (version "2.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "narwhals" version))
        (sha256
-        (base32 "07fk7b1via9a81ig38316l10avdbrjbdxz2n7ddj48bg9xnn3w4c"))))
+        (base32 "0rd9z4pmp7cm1l11iahwxwkgl48ki3fiynj4d110i5cxp5smjn59"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 2846 passed, 215 skipped, 59 xfailed
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               ;; Run a minimal portion of tests, the complete test suite
               ;; requires Polars, PySpark and SqlFrame packages.
               "--constructors=pandas"
@@ -1922,14 +1923,24 @@ Xarray Datatree.")
     (native-inputs
      (list python-pytest
            python-pytest-xdist
-           python-duckdb
            python-pytest-env
            python-hatchling))
     (propagated-inputs
-     (list python-pandas
+     ;;    [core]
+     (list python-duckdb
+           python-pandas
+           ;; python-polars ;https://codeberg.org/guix/guix/pulls/2570
+           python-pyarrow
+           ;; python-sqlframe
+           ;; [optional]
+           ;; python-cudf
            python-dask
+           ;; python-ibis-framework
            python-modin
-           python-pyarrow))
+           python-packaging
+           ;; python-pyarrow-hotfix
+           ;; python-pyspark
+           python-rich))
     (home-page "https://narwhals-dev.github.io/narwhals/")
     (synopsis "Compatibility layer between dataframe libraries")
     (description
