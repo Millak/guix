@@ -20250,6 +20250,11 @@ allowing the insertion of arbitrary types into the tree.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'respect-CFLAGS
+            (lambda _
+              (substitute* "src/Makefile"
+                (("CFLAGS=")
+                 "CFLAGS?="))))
           (add-before 'build 'relax-gcc-14-strictness
             (lambda _
               (setenv "CFLAGS"
