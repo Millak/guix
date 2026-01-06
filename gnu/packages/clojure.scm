@@ -974,7 +974,7 @@ dependency graph expansion and the creation of classpaths.")
   ;; Keeping it to give downstream packages a chance to upgrade
   (package
     (name "clojure-tools-deps-alpha")
-    (version "0.14.1212")
+    (version "0.15.1254")
     (home-page "https://github.com/clojure/tools.deps.alpha")
     (source (origin
               (method git-fetch)
@@ -984,7 +984,7 @@ dependency graph expansion and the creation of classpaths.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0r8qfihii6cf95kl86x6zfldnm7wlkgda2qmq3340j1x03v244dd"))))
+                "17zvizzw637az7facwipsrg9b1kjci03aycg6w5pnjpg6b6nd5m6"))))
     (build-system clojure-build-system)
     (arguments
      `(#:source-dirs '("src/main/clojure" "src/main/resources")
