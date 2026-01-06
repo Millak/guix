@@ -2994,74 +2994,72 @@ models in the STL and OFF file formats.")
 
 (define-public pythonscad
   (package
-      (inherit openscad)
-      (name "pythonscad")
-      (version "0.8.4")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/pythonscad/pythonscad")
-               (commit (string-append "v" version))
-               ;; Needed for libraries/MCAD, a library specific to OpenSCAD
-               ;; which is included as a submodule. All other libraries are
-               ;; deleted in the patch-source build phase.
-               (recursive? #t)))
-         (sha256
-          (base32 "0gnifi8is0dl00vir5nd1k76kkcavb62v115g34198lzqnwiy0fc"))
-         (modules '((guix build utils)))
-         (snippet #~(begin
-                      ;; Delete all unbundled libraries to replace them with
-                      ;; guix packages.
-                      (delete-file-recursively "submodules")
-                      (substitute* "CMakeLists.txt"
-                        ;; Remove bundled libraries from cmake.
-                        (("add_subdirectory\\(submodules\\)")
-                         ""))))
-         (file-name (git-file-name name version))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments openscad)
-         ((#:configure-flags flags)
-          #~(begin
-              (use-modules (srfi srfi-1))
-              (append
-               (remove (lambda (flag)
-                         (or (string-prefix? "-DOPENSCAD_VERSION=" flag)
-                             (string-prefix? "-DOPENSCAD_COMMIT=" flag)))
-                       #$flags)
-               (list "-DENABLE_LIBFIVE=ON"
-                     "-DUSE_BUILTIN_LIBFIVE=OFF"
-                     (string-append "-DOPENSCAD_VERSION="
-                                    #$version)
-                     (string-append "-DPYTHON_VERSION="
-                                    #$(version-major+minor
-                                       (package-version python)))))))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (replace 'patch-source
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (substitute* "CMakeLists.txt"
-                    ;; Fix detection of EGL (see
-                    ;; https://github.com/openscad/openscad/issues/5880).
-                    (("target_link_libraries\\(OpenSCADLibInternal PUBLIC OpenGL::EGL\\)")
-                     "find_package(ECM REQUIRED NO_MODULE)
+    (inherit openscad)
+    (name "pythonscad")
+    (version "0.8.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pythonscad/pythonscad")
+             (commit (string-append "v" version))
+             ;; Needed for libraries/MCAD, a library specific to OpenSCAD
+             ;; which is included as a submodule. All other libraries are
+             ;; deleted in the patch-source build phase.
+             (recursive? #t)))
+       (sha256
+        (base32 "0gnifi8is0dl00vir5nd1k76kkcavb62v115g34198lzqnwiy0fc"))
+       (modules '((guix build utils)))
+       (snippet #~(begin
+                    ;; Delete all unbundled libraries to replace them with
+                    ;; guix packages.
+                    (delete-file-recursively "submodules")
+                    (substitute* "CMakeLists.txt"
+                      ;; Remove bundled libraries from cmake.
+                      (("add_subdirectory\\(submodules\\)")
+                       ""))))
+       (file-name (git-file-name name version))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments openscad)
+       ((#:configure-flags flags)
+        #~(begin
+            (use-modules (srfi srfi-1))
+            (append (remove (lambda (flag)
+                              (or (string-prefix? "-DOPENSCAD_VERSION=" flag)
+                                  (string-prefix? "-DOPENSCAD_COMMIT=" flag)))
+                            #$flags)
+                    (list "-DENABLE_LIBFIVE=ON" "-DUSE_BUILTIN_LIBFIVE=OFF"
+                          (string-append "-DOPENSCAD_VERSION="
+                                         #$version)
+                          (string-append "-DPYTHON_VERSION="
+                                         #$(version-major+minor (package-version
+                                                                 python)))))))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'patch-source
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "CMakeLists.txt"
+                  ;; Fix detection of EGL (see
+                  ;; https://github.com/openscad/openscad/issues/5880).
+                  (("target_link_libraries\\(OpenSCADLibInternal PUBLIC OpenGL::EGL\\)")
+                   "find_package(ECM REQUIRED NO_MODULE)
         list(APPEND CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
         find_package(EGL REQUIRED)
         target_link_libraries(OpenSCADLibInternal PUBLIC EGL::EGL)")
-                    ;; Use the system sanitizers-cmake module.
-                    (("\\$\\{CMAKE_SOURCE_DIR\\}/submodules/sanitizers-cmake/cmake")
-                     (string-append (assoc-ref inputs "sanitizers-cmake")
-                                    "/share/sanitizers-cmake/cmake")))))))))
-      (inputs (modify-inputs (package-inputs openscad)
-                (append curl libfive)))
-      (synopsis "Script-based 3D modeling app with Python support")
-      (description
-       "PythonSCAD is a programmatic 3D modeling application.  It allows you
+                  ;; Use the system sanitizers-cmake module.
+                  (("\\$\\{CMAKE_SOURCE_DIR\\}/submodules/sanitizers-cmake/cmake")
+                   (string-append (assoc-ref inputs "sanitizers-cmake")
+                                  "/share/sanitizers-cmake/cmake")))))))))
+    (inputs (modify-inputs (package-inputs openscad)
+              (append curl libfive)))
+    (synopsis "Script-based 3D modeling app with Python support")
+    (description
+     "PythonSCAD is a programmatic 3D modeling application.  It allows you
 to turn simple code into 3D models suitable for 3D printing.  It is a fork of
 OpenSCAD which not only adds support for using Python as a native language,
 but also adds new features and improves existing ones.")
-      (home-page "https://pythonscad.org/")
-      (license license:gpl2+)))
+    (home-page "https://pythonscad.org/")
+    (license license:gpl2+)))
 
 (define-public emacs-scad-mode
   (package
