@@ -2,7 +2,7 @@
 ;;; Copyright © 2012, 2013, 2014 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2018, 2022 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2026 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -29,6 +29,7 @@
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages base))
 
@@ -60,7 +61,15 @@
               (with-directory-excursion (string-append #$output "/lib")
                 (install-file "libunistring.a"
                               (string-append #$output:static "/lib"))
-                (delete-file "libunistring.a")))))))
+                (delete-file "libunistring.a"))))
+          #$@(if (target-mingw?)
+                 #~((add-after 'unpack 'patch-tests/nanosleep.c
+                      (lambda _
+                        (substitute* "tests/nanosleep.c"
+                          (("# define WIN32_LEAN_AND_MEAN" all)
+                           (string-append "#define nanosleep nanosleep_native\n"
+                                          all))))))
+                 #~()))))
    (synopsis "C library for manipulating Unicode strings")
    (description
     "GNU libunistring is a library providing functions to manipulate
