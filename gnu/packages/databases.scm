@@ -3713,7 +3713,7 @@ can autogenerate peewee models using @code{pwiz}, a model generator.")
 (define-public python-pypika-tortoise
   (package
     (name "python-pypika-tortoise")
-    (version "0.3.2")
+    (version "0.6.3")
     (source
      (origin
        (method git-fetch)
@@ -3722,10 +3722,17 @@ can autogenerate peewee models using @code{pwiz}, a model generator.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pz7i9vgjwzzvacjjkvr5xbcmphn52xv993zbks602is844k0pp0"))))
+        (base32 "0czxc4im7iik9igqzwvxfjbyn66avmr8a1bcvcsxpzd22ywiycis"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 904 passed, 1 deselected
+      #:test-flags
+      ;; FileNotFoundError: [Errno 2] No such file or directory: 'uvx'
+      #~(list "--deselect=tests/test_poetry_add.py::test_added_by_poetry_v2")))
     (native-inputs
-     (list python-poetry-core python-pytest))
+     (list python-pdm-backend
+           python-pytest))
     (home-page "https://github.com/tortoise/pypika-tortoise")
     (synopsis "Pypika fork for tortoise-orm")
     (description "Pypika-tortoise is a fork of pypika which has been
