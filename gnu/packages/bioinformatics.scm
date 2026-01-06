@@ -20491,24 +20491,25 @@ pyGenomeTracks can make plots with or without Hi-C data.")
 (define-public python-iced
   (package
     (name "python-iced")
-    (version "0.5.13")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "iced" version))
        (sha256
         (base32
-         "1fg6fxg6qhymr5d8drlvaclxgsfay2qcfsvpxkyy0r6cchscnpj5"))))
+         "1zkbq2xq16by8pys5ndqihydb9jfc35lsnznywvg77n44wl16whm"))))
     (build-system pyproject-build-system)
+    ;; tests: 33 passed, 10 warnings
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
+     (list python-cython
+           python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-numpy
            python-pandas
-           python-scipy
-           python-scikit-learn))
+           python-scikit-learn
+           python-scipy))
     (home-page "https://github.com/hiclib/iced")
     (synopsis "ICE normalization")
     (description "This is a package for normalizing Hi-C contact counts
