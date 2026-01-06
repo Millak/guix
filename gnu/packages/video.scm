@@ -7057,30 +7057,34 @@ others.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08bgndszja4n2kql2qmzl6qrzawxvcwmywsc69lq0dzjnpdk96la"))))
-    (build-system python-build-system)
+        (base32 "08bgndszja4n2kql2qmzl6qrzawxvcwmywsc69lq0dzjnpdk96la"))
+       ;; XXX: python-qt.py has to be unbundled too, with additional efforts.
+       ;; Here, darkdetect is never reached and is thus easier to remove.
+       (modules '((guix build utils)))
+       (snippet #~(delete-file-recursively "syncplay/vendor/darkdetect"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:imported-modules `(,@%python-build-system-modules
+      #:tests? #f                       ; No tests.
+      #:imported-modules `(,@%pyproject-build-system-modules
                            (guix build qt-utils)
                            (guix build utils))
-      #:modules '((guix build python-build-system)
+      #:modules '((guix build pyproject-build-system)
                   (guix build qt-utils)
                   (guix build utils))
-      #:phases #~(modify-phases %standard-phases
-                   (delete 'check)
-                   (replace 'install
-                     (lambda _
-                       (invoke "make" "install" "DESTDIR="
-                               (string-append "PREFIX="
-                                              #$output))))
-                   (add-after 'install 'wrap-qt
-                     (lambda* (#:key inputs #:allow-other-keys)
-                       (wrap-qt-program "syncplay"
-                                        #:output #$output
-                                        #:inputs inputs
-                                        #:qt-major-version "6"))))))
-    (native-inputs (list python-pyside-6))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda _
+              (invoke "make" "install" "DESTDIR="
+                      (string-append "PREFIX=" #$output))))
+          (add-after 'install 'wrap-qt
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-qt-program "syncplay"
+                               #:output #$output
+                               #:inputs inputs
+                               #:qt-major-version "6"))))))
+    (native-inputs (list python-pyside-6 python-setuptools))
     (inputs (list bash-minimal
                   python-certifi
                   python-idna
