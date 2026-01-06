@@ -7798,7 +7798,12 @@ natively in Siril.")
               "tests")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("scipy < 1.15") "scipy")
+                (("numpy < 2") "numpy")))) ; no constain on master branch
+          (add-before 'build 'set-version
             (lambda _
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
