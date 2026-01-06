@@ -8755,11 +8755,11 @@ arrays, uninterpreted functions and their combinations.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:imported-modules `((guix build python-build-system)
-                           ,@%cmake-build-system-modules)
+      #:imported-modules (append %cmake-build-system-modules
+                                 %pyproject-build-system-modules)
       #:modules '((guix build cmake-build-system)
                   (guix build utils)
-                  ((guix build python-build-system) #:select (site-packages)))
+                  ((guix build pyproject-build-system) #:prefix py:))
       #:configure-flags
       #~(list "-DZ3_BUILD_PYTHON_BINDINGS=ON"
               "-DZ3_LINK_TIME_OPTIMIZATION=ON"
@@ -8769,31 +8769,27 @@ arrays, uninterpreted functions and their combinations.")
                #$(version-major+minor (package-version python-wrapper))
                "/site-packages"))
       #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key parallel-build? tests? #:allow-other-keys)
-              (when tests?
-                (invoke "make" "test-z3"
-                        (format #f "-j~a"
-                                (if parallel-build?
-                                    (parallel-job-count)
-                                    1)))
-                (invoke "./test-z3" "/a"))))
-          (add-after 'install 'compile-python-modules
-            (lambda _
-              (setenv "PYTHONHASHSEED" "0")
-
-              (invoke "python" "-m" "compileall"
-                      "--invalidation-mode=unchecked-hash"
-                      #$output)))
-          ;; This step is missing in the CMake build system, do it here.
-          (add-after 'compile-python-modules 'fix-z3-library-path
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let* ((dest (string-append (site-packages inputs outputs)
-                                          "/z3/lib/libz3.so"))
-                     (z3-lib (string-append #$output "/lib/libz3.so")))
-                (mkdir-p (dirname dest))
-                (symlink z3-lib dest)))))))
+      (with-extensions (list (pyproject-guile-json))
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key parallel-build? tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "make" "test-z3"
+                          (format #f "-j~a"
+                                  (if parallel-build?
+                                      (parallel-job-count)
+                                      1)))
+                  (invoke "./test-z3" "/a"))))
+            (add-after 'install 'compile-python-modules
+              (assoc-ref py:%standard-phases 'compile-bytecode))
+            ;; This step is missing in the CMake build system, do it here.
+            (add-after 'compile-python-modules 'fix-z3-library-path
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let* ((dest (string-append (py:site-packages inputs outputs)
+                                            "/z3/lib/libz3.so"))
+                       (z3-lib (string-append #$output "/lib/libz3.so")))
+                  (mkdir-p (dirname dest))
+                  (symlink z3-lib dest))))))))
     (native-inputs
      (list which python-wrapper))
     (synopsis "Theorem prover")
