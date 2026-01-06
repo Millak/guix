@@ -435,6 +435,37 @@ Implements the XFLATE format, an random-access extension to DEFLATE.
 compression format.")
     (license license:bsd-3)))
 
+(define-public go-github-com-google-rpmpack
+  (package
+    (name "go-github-com-google-rpmpack")
+    (version "0.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/rpmpack")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17h2s1g191cvbs16fnclkpb42d9mx6mdmhd04kxzv8bss7m59pr4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/google/rpmpack"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-cavaliergopher-cpio
+           go-github-com-klauspost-compress
+           go-github-com-klauspost-pgzip
+           go-github-com-ulikunitz-xz))
+    (home-page "https://github.com/google/rpmpack")
+    (synopsis "Pack files to rpm files")
+    (description
+     "Package rpmpack packs files to rpm files.  It is designed to be simple
+to use and deploy, not requiring any filesystem access to create rpm files.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-hhrutter-lzw
   (package
     (name "go-github-com-hhrutter-lzw")
