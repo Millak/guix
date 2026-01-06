@@ -246,6 +246,31 @@ blocks allowing it to only read the compressed blocks required.")
     (license (list license:bsd-3
                    license:expat))))
 
+(define-public go-github-com-cavaliergopher-cpio
+  (package
+    (name "go-github-com-cavaliergopher-cpio")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cavaliergopher/cpio")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b1ix8z9kwfpwqi0q08ivcfcimlqk781jbzbfw7qbqavh702w3m2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cavaliergopher/cpio"))
+    (home-page "https://github.com/cavaliergopher/cpio")
+    (synopsis "Readers and writers for CPIO archives")
+    (description
+     "This package provides readers and writers for CPIO archives.  Currently,
+only the SVR4 (New ASCII) format is supported, both with and without
+checksums.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-containerd-stargz-snapshotter-estargz
   (package
     (name "go-github-com-containerd-stargz-snapshotter-estargz")
