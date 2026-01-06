@@ -1941,6 +1941,19 @@ between dataframe libraries.
 @end itemize")
     (license license:expat)))
 
+;; A bare minimal package, mainly to use in tests and reduce closure
+;; size. Tests are left out in the main package to slim down native-inputs.
+(define-public python-narwhals-minimal
+  (package/inherit python-narwhals
+    (name "python-narwhals-minimal")
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-anndata)
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (list python-hatchling))
+    ;; All Narwals dependencies are optional.
+    (propagated-inputs '())))
+
 (define-public python-ndindex
   (package
     (name "python-ndindex")
