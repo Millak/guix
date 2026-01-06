@@ -2710,28 +2710,51 @@ some well developed, easy to deploy and cross platform libraries.")
 (define-public python-pandapower
   (package
     (name "python-pandapower")
-    (version "2.14.11")
+    (version "3.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pandapower" version ".zip"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/e2nIEE/pandapower")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "139ahp08kci8asmv35bcibbnkfr5s1ff5j84n490s47ibsglk4yi"))))
+        (base32 "01ybwvbzld202yhhi9l3djp1nr0k57lrqh7k5819n58brv3hcki9"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pyproj
-                         python-pytest
-                         python-setuptools
-                         python-wheel
-                         unzip))
-    (propagated-inputs (list python-deepdiff
-                             python-geojson
-                             python-networkx
-                             python-numpy
-                             python-packaging
-                             python-pandas
-                             python-scipy
-                             python-tqdm
-                             python-typing-extensions))
+    (arguments
+     (list
+      ;; tests: 1161 passed, 140 skipped, 23 xfailed, 11 xpassed, 4529 warnings
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("pandera~=0.26.1") "pandera~=0.27.1")))))))
+    (native-inputs
+     (list python-nbmake
+           python-pytest
+           python-pytest-xdist
+           python-setuptools))
+    (propagated-inputs
+     (list python-deepdiff
+           python-geojson
+           python-networkx
+           python-numpy
+           python-packaging
+           python-pandas
+           python-pandera
+           python-scipy
+           python-tqdm
+           python-typing-extensions
+           ;; [optional]
+           python-geopandas
+           python-lxml
+           python-matplotlib
+           python-openpyxl
+           python-pyproj
+           python-shapely))
     (home-page "https://www.pandapower.org/")
     (synopsis "Power system modelling and analysis")
     (description "@code{pandapower} is an easy to use network calculation
