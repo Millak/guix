@@ -1395,12 +1395,26 @@ executed during the Sphinx build process.")
           (add-after 'unpack 'ignore-warnings
             (lambda _
               (substitute* "pyproject.toml"
-                (("\"error\",") "")))))))
+                (("\"error\",") ""))))
+          (add-after 'unpack 'fix-tests
+            ;; See: <https://github.com/jupyter/jupyter-sphinx/issues/280>
+            ;; Tests are rewritten after 0.5.3, so undo when refreshing.
+            (lambda _
+              (substitute* "tests/test_execute.py"
+                (("python\\.tex") "projectnamenotset.tex"))))
+          (add-before 'check 'set-home
+            (lambda _
+              ;; UserWarning: IPython parent '/homeless-shelter' is not
+              ;; a writable location, using a temp directory.
+              (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list python-ipython python-ipywidgets python-nbconvert
+     (list python-ipython
+           python-ipywidgets
+           python-nbconvert
            python-nbformat))
     (native-inputs
-     (list python-hatchling
+     (list python-bash-kernel           ;for tests
+           python-hatchling
            python-ipykernel
            python-pytest
            python-sphinx))
