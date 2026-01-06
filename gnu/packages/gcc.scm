@@ -1558,7 +1558,7 @@ also includes the druntime and phobos libraries."
 
 (define* (make-gdmd gdc)
   (let ((gdc-version (package-version gdc))
-        (gdmd-version "0.25.0"))
+        (gdmd-version "0.26.0"))
     (package
       (name "gdmd")
       (version (string-append gdc-version "-" gdmd-version))
@@ -1570,7 +1570,7 @@ also includes the druntime and phobos libraries."
                 (file-name (git-file-name name gdmd-version))
                 (sha256
                  (base32
-                  "02zncqbjrrbh5w9s18frcylhn5x3qmqb3gdlr4kxd8dkajkr3vjj"))))
+                  "0i9warhlwyspjs3rpvs2989820909lgzjnsflpd9mp2flq7isjh0"))))
       (build-system copy-build-system)
       (arguments
        (list
