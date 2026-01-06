@@ -4072,86 +4072,73 @@ doing practical, real world data analysis in Python.")
     (name "python-pandas-stubs")
     ;; The versioning follows that of Pandas and uses the date of the
     ;; python-pandas-stubs release.
-    (version "2.2.3.241126")
+    (version "2.3.3.251219")
     (source
      (origin
-       ;; No tests in the PyPI tarball.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pandas-dev/pandas-stubs")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pandas-dev/pandas-stubs")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xbvin2l7h8vq9g24n4n2l49pdxbi15qghq7zkhh567p3pbmvsyb"))))
+        (base32 "1xh753wv5dbc59qp7fas323181mlblvhqmd9a4g7zzhaa2mxmzqs"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "--ignore=tests/test_io.py" ;requires python-calamine
-                           "-k"
-                           (string-append
-                            ;; The python-pyarrow package in Guix is built
-                            ;; with ORC integration, but these tests fail with
-                            ;; an abort in ORC because a timezone file is not
-                            ;; in the expected location:
-                            ;; https://github.com/apache/arrow/issues/40633
-                            "not test_orc"
-                            " and not test_orc_path"
-                            " and not test_orc_buffer"
-                            " and not test_orc_columns"
-                            " and not test_orc_bytes"
-                            " and not test_all_read_without_lxml_dtype_backend"
-
-                            ;; Apparently "numpy.bool_" is not the same as the
-                            ;; expected "bool".
-                            " and not test_timedelta_cmp"
-                            " and not test_timedelta_cmp_rhs"
-                            " and not test_timestamp_cmp"
-                            " and not test_timestamp_eq_ne_rhs"))
-      #:phases
-      '(modify-phases %standard-phases
-         ;; We cannot yet upgrade numpy to 1.26 because numba needs numpy
-         ;; >1.24.
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "pyproject.toml"
-               (("numpy = \\{ version = \">=1.26.0\", python = \"<3.13\" \\}")
-                "numpy = { version = \">=1.23.0\", python = \"<3.13\" }"))))
-         (add-before 'check 'prepare-x
-           (lambda _
-             (system "Xvfb &")
-             (setenv "DISPLAY" ":0")
-             ;; xsel needs to write a log file.
-             (setenv "HOME" (getcwd)))))))
-    (propagated-inputs (list python-types-pytz))
-    ;; Add python-fastparquet to native inputs once it has been packaged. Its
-    ;; tests will be skipped for now.
-    (native-inputs (list python-lxml
-                         python-matplotlib
-                         python-odfpy
-                         python-pandas
-                         python-poetry-core
-                         python-pyarrow
-                         python-pyreadstat
-                         python-pytest
-                         python-scipy
-                         python-sqlalchemy-2
-                         python-tables
-                         python-tabulate
-                         python-xarray
-                         ;; Needed to test clipboard support.
-                         which
-                         xclip
-                         xorg-server-for-tests
-                         xsel))
+      ;; tests: 1619 passed, 12 skipped, 7 deselected
+      #:test-flags
+      #~(list
+         ;; ImportError: Missing optional dependency 'python-calamine'.
+         "--deselect=tests/test_io.py::test_read_excel"
+         "--deselect=tests/test_io.py::test_excel_reader")))
+    (native-inputs
+     (list python-beautifulsoup4
+           python-fsspec
+           python-html5lib
+           python-jinja2
+           python-loguru
+           python-lxml
+           python-matplotlib
+           python-mypy
+           python-numexpr
+           python-odfpy
+           python-openpyxl
+           python-pandas
+           python-poetry-core
+           python-pyarrow
+           python-pyreadstat
+           python-pytest
+           python-scipy
+           python-sqlalchemy-2
+           python-tabulate
+           python-typing-extensions
+           python-xarray
+           python-xlrd
+           python-xlsxwriter
+           ;; Not packaged yet
+           ;; 
+           ;; python-calamine
+           ;; python-poethepoet
+           ;; python-pyarrow-stubs
+           ;; python-pyrefly
+           ;; python-python-calamine
+           ;; python-pyxlsb
+           ;; python-scipy-stubs
+           ;; python-ty
+           ;; python-types-python-dateutil
+           tzdata-for-tests))
+    (propagated-inputs
+     (list python-numpy
+           python-types-pytz))
     (home-page "https://pandas.pydata.org")
     (synopsis "Type annotations for pandas")
     (description
-     "This package contains public type stubs for @code{python-pandas},
-following the convention of providing stubs in a separate package, as
-specified in @acronym{PEP, Python Enhancement Proposal} 561.  The stubs cover
-the most typical use cases of @code{python-pandas}.  In general, these stubs
-are narrower than what is possibly allowed by @code{python-pandas}, but follow
-a convention of suggesting best recommended practices for using
+     "This package contains public type stubs for @code{python-pandas}, following
+the convention of providing stubs in a separate package, as specified in
+@acronym{PEP, Python Enhancement Proposal} 561.  The stubs cover the most
+typical use cases of @code{python-pandas}.  In general, these stubs are
+narrower than what is possibly allowed by @code{python-pandas}, but follow a
+convention of suggesting best recommended practices for using
 @code{python-pandas}.")
     (license license:bsd-3)))
 
