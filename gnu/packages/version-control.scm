@@ -2709,109 +2709,108 @@ execution of any hook written in any language before every commit.")
     (build-system gnu-build-system)
     (arguments
      (list
-      #:imported-modules `((guix build python-build-system)
-                           ,@%default-gnu-imported-modules)
+      #:imported-modules %pyproject-build-system-modules
       #:modules '((guix build gnu-build-system)
-                  ((guix build python-build-system) #:prefix py:)
+                  ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
-      #:make-flags
-      #~(list (string-append "PREFIX=" #$output))
+      #:make-flags #~(list (string-append "PREFIX=" #$output))
       #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure)
-          (add-after 'unpack 'patch-tests
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* (find-files "tests" "\\.(t|py)$")
-                (("/bin/sh")
-                 (search-input-file inputs "bin/sh"))
-                (("/usr/bin/env")
-                 (search-input-file inputs "bin/env")))))
-          (add-before 'check 'configure-check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (with-directory-excursion "tests"
-                (substitute* "run-tests.py"
-                  ;; XXX: Adapt pip call to build daemon chroot.
-                  (("b\"install\", b\"\\.\"")
-                   "b\"install\", b\"--no-build-isolation\", b\".\"")
-                  ;; XXX: Log the actual PYTHONPATH.
-                  (("\"PYTHONPATH\"")
-                   "\"GUIX_PYTHONPATH\"")))))
-          (add-before 'configure-check 'add-install-to-pythonpath
-            (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
-          (add-after 'install 'wrap
-            (assoc-ref py:%standard-phases 'wrap))
-          (delete 'check)
-          (add-after 'wrap 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (with-directory-excursion "tests"
-                ;; The following tests are known to fail.
-                (for-each delete-file
-                          '(;; XXX: This test calls 'run-tests.py --with-hg=
-                            ;; `which hg`' and fails because there is no hg on
-                            ;; PATH from before (that's why we are building it!)?
-                            "test-hghave.t"
+      (with-extensions (list (pyproject-guile-json))
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (add-after 'unpack 'patch-tests
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* (find-files "tests" "\\.(t|py)$")
+                  (("/bin/sh")
+                   (search-input-file inputs "bin/sh"))
+                  (("/usr/bin/env")
+                   (search-input-file inputs "bin/env")))))
+            (add-before 'check 'configure-check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (with-directory-excursion "tests"
+                  (substitute* "run-tests.py"
+                    ;; XXX: Adapt pip call to build daemon chroot.
+                    (("b\"install\", b\"\\.\"")
+                     "b\"install\", b\"--no-build-isolation\", b\".\"")
+                    ;; XXX: Log the actual PYTHONPATH.
+                    (("\"PYTHONPATH\"")
+                     "\"GUIX_PYTHONPATH\"")))))
+            (add-before 'configure-check 'add-install-to-pythonpath
+              (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
+            (add-after 'install 'wrap
+              (assoc-ref py:%standard-phases 'wrap))
+            (delete 'check)
+            (add-after 'wrap 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (with-directory-excursion "tests"
+                  ;; The following tests are known to fail.
+                  (for-each delete-file
+                            '(;; XXX: This test calls 'run-tests.py --with-hg=
+                              ;; `which hg`' and fails because there is no hg on
+                              ;; PATH from before (that's why we are building it!)?
+                              "test-hghave.t"
 
-                            ;; This test is missing a debug line
-                            ;; mmapping $TESTTMP/a/.hg/store/00changelog.i (no-pure !)
-                            ;; but the relevant output is correct.
-                            "test-revlog-mmapindex.t"
+                              ;; This test is missing a debug line
+                              ;; mmapping $TESTTMP/a/.hg/store/00changelog.i (no-pure !)
+                              ;; but the relevant output is correct.
+                              "test-revlog-mmapindex.t"
 
-                            ;; This test creates a shebang spanning multiple
-                            ;; lines which is difficult to substitute.  It
-                            ;; only tests the test runner itself, which gets
-                            ;; thoroughly tested during the check phase anyway.
-                            "test-run-tests.t"
+                              ;; This test creates a shebang spanning multiple
+                              ;; lines which is difficult to substitute.  It
+                              ;; only tests the test runner itself, which gets
+                              ;; thoroughly tested during the check phase anyway.
+                              "test-run-tests.t"
 
-                            ;; These tests fail because the program is not
-                            ;; connected to a TTY in the build container.
-                            "test-nointerrupt.t"
-                            "test-transaction-rollback-on-sigpipe.t"
+                              ;; These tests fail because the program is not
+                              ;; connected to a TTY in the build container.
+                              "test-nointerrupt.t"
+                              "test-transaction-rollback-on-sigpipe.t"
 
-                            ;; FIXME: This gets killed but does not receive an interrupt.
-                            "test-commandserver.t"
+                              ;; FIXME: This gets killed but does not receive an interrupt.
+                              "test-commandserver.t"
 
-                            ;; These tests get unexpected warnings about using
-                            ;; deprecated functionality in Python, but otherwise
-                            ;; succeed; try enabling for later Mercurial versions.
-                            "test-demandimport.py"
-                            "test-patchbomb-tls.t"
-                            ;; Similarly, this gets a more informative error
-                            ;; message from Python 3.10 than it expects.
-                            "test-http-bad-server.t"
+                              ;; These tests get unexpected warnings about using
+                              ;; deprecated functionality in Python, but otherwise
+                              ;; succeed; try enabling for later Mercurial versions.
+                              "test-demandimport.py"
+                              "test-patchbomb-tls.t"
+                              ;; Similarly, this gets a more informative error
+                              ;; message from Python 3.10 than it expects.
+                              "test-http-bad-server.t"
 
-                            ;; Only works when run in a hg-repo, not in an
-                            ;; extracted tarball
-                            "test-doctest.py"
+                              ;; Only works when run in a hg-repo, not in an
+                              ;; extracted tarball
+                              "test-doctest.py"
 
-                            ;; TODO: the fqaddr() call fails in the build
-                            ;; container, causing these server tests to fail.
-                            "test-hgwebdir.t"
-                            "test-http-branchmap.t"
-                            "test-pull-bundle.t"
-                            "test-push-http.t"
-                            "test-serve.t"
-                            "test-subrepo-deep-nested-change.t"
-                            "test-subrepo-recursion.t"
-                            ;; FIXME: Investigate why it failed.
-                            "test-convert-darcs.t"))
-                (when tests?
-                  (invoke "./run-tests.py"
-                          ;; ‘make check’ does not respect ‘-j’.
-                          (string-append "-j" (number->string
-                                               (parallel-job-count)))
-                          ;; The default time-outs are too low for many systems.
-                          ;; Raise them generously: Guix enforces its own.
-                          "--timeout" "86400"
-                          "--slowtimeout" "86400"
-                          ;; The test suite takes a long time and produces little
-                          ;; output by default.  Prevent timeouts due to silence.
-                          "-v")))))
-          (add-after 'check 'python-sanity-check
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              ((assoc-ref py:%standard-phases 'sanity-check)
-               #:inputs `(("sanity-check.py" . ,#$(default-sanity-check.py))
-                          ,@inputs)
-               #:outputs outputs))))))
+                              ;; TODO: the fqaddr() call fails in the build
+                              ;; container, causing these server tests to fail.
+                              "test-hgwebdir.t"
+                              "test-http-branchmap.t"
+                              "test-pull-bundle.t"
+                              "test-push-http.t"
+                              "test-serve.t"
+                              "test-subrepo-deep-nested-change.t"
+                              "test-subrepo-recursion.t"
+                              ;; FIXME: Investigate why it failed.
+                              "test-convert-darcs.t"))
+                  (when tests?
+                    (invoke "./run-tests.py"
+                            ;; ‘make check’ does not respect ‘-j’.
+                            (string-append "-j" (number->string
+                                                 (parallel-job-count)))
+                            ;; The default time-outs are too low for many systems.
+                            ;; Raise them generously: Guix enforces its own.
+                            "--timeout" "86400"
+                            "--slowtimeout" "86400"
+                            ;; The test suite takes a long time and produces little
+                            ;; output by default.  Prevent timeouts due to silence.
+                            "-v")))))
+            (add-after 'check 'python-sanity-check
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                ((assoc-ref py:%standard-phases 'sanity-check)
+                 #:inputs `(("sanity-check.py" . ,#$(default-sanity-check.py))
+                            ,@inputs)
+                 #:outputs outputs)))))))
     (native-inputs
      (list python-docutils
            ;; The following inputs are only needed to run the tests.
