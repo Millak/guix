@@ -2741,7 +2741,7 @@ parsing of Variant Call Format (VCF) files.")
 (define-public python-decoupler
   (package
     (name "python-decoupler")
-    (version "2.1.1")
+    (version "2.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2750,10 +2750,11 @@ parsing of Variant Call Format (VCF) files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0b15n5sq940sn29jsgmdkkm4fcpzfq1n221scfwhjxb4ybdpsz4v"))))
+                "05d70zrgv8l9ihkgmr7hqcgn66yx1v1lm0hcfbc370asp97k2f74"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 227 passed, 35 deselected, 37 warnings
       #:test-flags
       '(list "-k" (string-join
                    ;; Tests requiring internet access to reach out
@@ -2783,6 +2784,12 @@ parsing of Variant Call Format (VCF) files.")
                    " and not "))
       #:phases
       '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               ;; See: <https://github.com/statsmodels/statsmodels/issues/9584>.
+               ;; Resolved in statsmodels0.14.5, current in Guix.
+               (("scipy<1.16") "scipy"))))
          (add-before 'check 'set-home
            ;; Some tests require a home directory to be set.
            (lambda _ (setenv "HOME" "/tmp")))
