@@ -42,7 +42,7 @@
 ;;; Copyright © 2024 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2024 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2025 Frederick Muriuki Muriithi <fredmanglis@gmail.com>
-;;; Copyright © 2025 nomike Postmann <nomike@nomike.com>
+;;; Copyright © 2025, 2026 nomike Postmann <nomike@nomike.com>
 ;;; Copyright © 2025 Matthew Elwin <elwin@northwestern.edu>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
@@ -2993,25 +2993,22 @@ models in the STL and OFF file formats.")
       (license license:gpl2+))))
 
 (define-public pythonscad
-  (let ((commit "92071afdffa6e2f6d99fe7e695c40044ec8aa16a")
-        (version "0.0.0")
-        (revision "5"))
-    (package
+  (package
       (inherit openscad)
       (name "pythonscad")
-      (version (git-version version revision commit))
+      (version "0.8.4")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/pythonscad/pythonscad")
-               (commit commit)
+               (commit (string-append "v" version))
                ;; Needed for libraries/MCAD, a library specific to OpenSCAD
                ;; which is included as a submodule. All other libraries are
                ;; deleted in the patch-source build phase.
                (recursive? #t)))
          (sha256
-          (base32 "1ivjbcf52xzavyrld5xjii7yrqf27c244ndzvysrdaz53s06nk90"))
+          (base32 "0gnifi8is0dl00vir5nd1k76kkcavb62v115g34198lzqnwiy0fc"))
          (modules '((guix build utils)))
          (snippet #~(begin
                       ;; Delete all unbundled libraries to replace them with
@@ -3036,8 +3033,6 @@ models in the STL and OFF file formats.")
                      "-DUSE_BUILTIN_LIBFIVE=OFF"
                      (string-append "-DOPENSCAD_VERSION="
                                     #$version)
-                     (string-append "-DOPENSCAD_COMMIT="
-                                    #$commit)
                      (string-append "-DPYTHON_VERSION="
                                     #$(version-major+minor
                                        (package-version python)))))))
@@ -3048,11 +3043,11 @@ models in the STL and OFF file formats.")
                   (substitute* "CMakeLists.txt"
                     ;; Fix detection of EGL (see
                     ;; https://github.com/openscad/openscad/issues/5880).
-                    (("target_link_libraries\\(OpenSCAD PRIVATE OpenGL::EGL\\)")
+                    (("target_link_libraries\\(OpenSCADLibInternal PUBLIC OpenGL::EGL\\)")
                      "find_package(ECM REQUIRED NO_MODULE)
         list(APPEND CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
         find_package(EGL REQUIRED)
-        target_link_libraries(OpenSCAD PRIVATE EGL::EGL)")
+        target_link_libraries(OpenSCADLibInternal PUBLIC EGL::EGL)")
                     ;; Use the system sanitizers-cmake module.
                     (("\\$\\{CMAKE_SOURCE_DIR\\}/submodules/sanitizers-cmake/cmake")
                      (string-append (assoc-ref inputs "sanitizers-cmake")
@@ -3066,7 +3061,7 @@ to turn simple code into 3D models suitable for 3D printing.  It is a fork of
 OpenSCAD which not only adds support for using Python as a native language,
 but also adds new features and improves existing ones.")
       (home-page "https://pythonscad.org/")
-      (license license:gpl2+))))
+      (license license:gpl2+)))
 
 (define-public emacs-scad-mode
   (package
