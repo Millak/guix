@@ -197,7 +197,7 @@ nothing to do with Leiningen, Maven, JAR files, or repositories.")
 (define-public clojure-test-check
   (package
     (name "clojure-test-check")
-    (version "1.1.1")
+    (version "1.1.3")
     (home-page "https://github.com/clojure/test.check")
     (source (origin
               (method git-fetch)
@@ -207,7 +207,7 @@ nothing to do with Leiningen, Maven, JAR files, or repositories.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09jvlibnxhjv0l57y0sa7yy5in67gq4sssag77hv2d980mwdnls6"))))
+                "1j1x80rv0pli3g91wy01panlqbhgf7zqm7jdr2rzjqf2yyksc70n"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure")
