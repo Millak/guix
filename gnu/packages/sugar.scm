@@ -74,74 +74,75 @@
      (list
       #:imported-modules
       `(,@%glib-or-gtk-build-system-modules
-        (guix build python-build-system))
+        ,@%pyproject-build-system-modules)
       #:modules
-      `(((guix build python-build-system) #:prefix python:)
+      `(((guix build pyproject-build-system) #:prefix py:)
         ,@%glib-or-gtk-build-system-default-modules)
       #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-build-system
-            (lambda _
-              (substitute* "autogen.sh"
-                (("^\"\\$srcdir/configure" m)
-                 (string-append "#" m)))
-              ;; This .po file does not exist
-              (substitute* "po/LINGUAS"
-                (("^ig") ""))))
-          (add-after 'unpack 'fix-references
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "bin/sugar.in"
-                (("exec python3")
-                 (string-append "exec " (which "python3"))))
-              (substitute* "src/jarabe/main.py"
-                (("'metacity'")
-                 (string-append "'" (search-input-file inputs "/bin/metacity") "'"))
-                (("'metacity-message")
-                 (string-append "'" (search-input-file inputs "/bin/metacity-message"))))
-              (substitute* "src/jarabe/intro/window.py"
-                (("ssh-keygen")
-                 (search-input-file inputs "/bin/ssh-keygen"))
-                ;; ssh-keygen no longer supports dsa.
-                (("-t dsa") "-t rsa"))
-              (substitute* "src/jarabe/journal/model.py"
-                (("xdg-user-dir")
-                 (search-input-file inputs "/bin/xdg-user-dir")))
-              (substitute* "extensions/cpsection/datetime/model.py"
-                (("/usr/share/zoneinfo/zone.tab")
-                 (search-input-file inputs "/share/zoneinfo/zone.tab")))
-              (substitute* "extensions/cpsection/modemconfiguration/model.py"
-                (("/usr/share/zoneinfo/iso3166.tab")
-                 (search-input-file inputs "/share/zoneinfo/iso3166.tab"))
-                (("/usr/share/mobile-broadband-provider-info")
-                 (dirname
-                  (search-input-file inputs
-                                     "/share/mobile-broadband-provider-info/serviceproviders.xml"))))
-              (substitute* "extensions/cpsection/aboutcomputer/model.py"
-                (("ethtool")
-                 (search-input-file inputs "/sbin/ethtool")))
-              (substitute* "extensions/cpsection/language/model.py"
-                (("'locale'")
-                 (string-append "'"
-                                (search-input-file inputs "/bin/locale")
-                                "'")))
-              ;; This is a global location on Guix System.  Ideally we would
-              ;; have a search path here.
-              (substitute* "extensions/cpsection/background/model.py"
-                (("\\('/usr', 'share', 'backgrounds'\\)")
-                 "('/run', 'current-system', 'profile', 'share', 'backgrounds')"))
-              (substitute* "src/jarabe/view/viewhelp.py"
-                (("/usr/share/sugar/activities/")
-                 "/run/current-system/profile/share/sugar/activities/"))))
-          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (for-each
-               (lambda (executable)
-                 (wrap-program executable
-                   `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
-                                          ,(python:site-packages inputs outputs)))
-                   `("GI_TYPELIB_PATH" prefix
-                     (,(getenv "GI_TYPELIB_PATH")))))
-               (find-files (string-append #$output "/bin") "^sugar.*")))))))
+      (with-extensions (list (pyproject-guile-json))
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-build-system
+              (lambda _
+                (substitute* "autogen.sh"
+                  (("^\"\\$srcdir/configure" m)
+                   (string-append "#" m)))
+                ;; This .po file does not exist
+                (substitute* "po/LINGUAS"
+                  (("^ig") ""))))
+            (add-after 'unpack 'fix-references
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "bin/sugar.in"
+                  (("exec python3")
+                   (string-append "exec " (which "python3"))))
+                (substitute* "src/jarabe/main.py"
+                  (("'metacity'")
+                   (string-append "'" (search-input-file inputs "/bin/metacity") "'"))
+                  (("'metacity-message")
+                   (string-append "'" (search-input-file inputs "/bin/metacity-message"))))
+                (substitute* "src/jarabe/intro/window.py"
+                  (("ssh-keygen")
+                   (search-input-file inputs "/bin/ssh-keygen"))
+                  ;; ssh-keygen no longer supports dsa.
+                  (("-t dsa") "-t rsa"))
+                (substitute* "src/jarabe/journal/model.py"
+                  (("xdg-user-dir")
+                   (search-input-file inputs "/bin/xdg-user-dir")))
+                (substitute* "extensions/cpsection/datetime/model.py"
+                  (("/usr/share/zoneinfo/zone.tab")
+                   (search-input-file inputs "/share/zoneinfo/zone.tab")))
+                (substitute* "extensions/cpsection/modemconfiguration/model.py"
+                  (("/usr/share/zoneinfo/iso3166.tab")
+                   (search-input-file inputs "/share/zoneinfo/iso3166.tab"))
+                  (("/usr/share/mobile-broadband-provider-info")
+                   (dirname
+                    (search-input-file inputs
+                                       "/share/mobile-broadband-provider-info/serviceproviders.xml"))))
+                (substitute* "extensions/cpsection/aboutcomputer/model.py"
+                  (("ethtool")
+                   (search-input-file inputs "/sbin/ethtool")))
+                (substitute* "extensions/cpsection/language/model.py"
+                  (("'locale'")
+                   (string-append "'"
+                                  (search-input-file inputs "/bin/locale")
+                                  "'")))
+                ;; This is a global location on Guix System.  Ideally we would
+                ;; have a search path here.
+                (substitute* "extensions/cpsection/background/model.py"
+                  (("\\('/usr', 'share', 'backgrounds'\\)")
+                   "('/run', 'current-system', 'profile', 'share', 'backgrounds')"))
+                (substitute* "src/jarabe/view/viewhelp.py"
+                  (("/usr/share/sugar/activities/")
+                   "/run/current-system/profile/share/sugar/activities/"))))
+            (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (for-each
+                 (lambda (executable)
+                   (wrap-program executable
+                     `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
+                                            ,(py:site-packages inputs outputs)))
+                     `("GI_TYPELIB_PATH" prefix
+                       (,(getenv "GI_TYPELIB_PATH")))))
+                 (find-files (string-append #$output "/bin") "^sugar.*"))))))))
     (inputs
      (list bash-minimal
            ethtool
