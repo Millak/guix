@@ -78,6 +78,7 @@
 ;;; Copyright © 2025 John Kehayias <john@guixotic.coop>
 ;;; Copyright © 2025 Julian Flake <flake@uni-koblenz.de>
 ;;; Copyright © 2025 Karl Hallsby <karl@hallsby.com>
+;;; Copyright © 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1070,14 +1071,14 @@ H.264 (MPEG-4 AVC) video streams.")
 (define-public mkvtoolnix
   (package
     (name "mkvtoolnix")
-    (version "93.0")
+    (version "97.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mkvtoolnix.download/sources/"
                            "mkvtoolnix-" version ".tar.xz"))
        (sha256
-        (base32 "0y2zhf49s9ajkjl328ayphdzmmlzqk1slc0c8akpj2rf59lac44m"))
+        (base32 "1lr9d6l4jj7pzjc78fhsg4qicyvizfidp8hnjpq5mzqiw1kbyhsx"))
        (modules '((guix build utils)))
        (snippet '(begin
                    ;; Delete bundled libraries.
@@ -1092,7 +1093,7 @@ H.264 (MPEG-4 AVC) video streams.")
     (build-system gnu-build-system)
     (outputs '("out" "gui")) ; "mkvtoolnix-gui" brings the closure size from ~300 MB to 1.5+ GB.
     (inputs
-     (list boost-1.83
+     (list boost
            gmp
            bzip2
            cmark
