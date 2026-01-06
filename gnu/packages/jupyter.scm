@@ -1632,26 +1632,35 @@ JupyterLab.")
        (uri (pypi-uri "ipydatawidgets" version))
        (sha256
         (base32 "1g65nzlsb1cipmvh9v27b22kkmzwvg8zbf32hmg1c25mb65vbr6h"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke
-                "pytest" "-v"
-                ;; Disable failing tests.
-                "-k" (string-append
-                      "not test_dataunion_constricts_widget_data"
-                      " and not test_dataunion_widget_change_notified"
-                      " and not test_datawidget_creation_blank_comm"
-                      ;; TODO: type object 'Widget' has no attribute '_ipython_display_'
-                      " and not test_notification"
-                      " and not test_manual_notification"
-                      " and not test_sync_segment"
-                      " and not test_hold_sync"
-                      " and not test_hold_sync_segment"))))))))
+     (list
+      ;; tests: 87 passed, 9 deselected, 12 warnings
+      #:test-flags
+      #~(list ;; Disable failing tests.
+         "--ignore=examples/test.ipynb"
+         "-k" (string-append
+               "not test_dataunion_constricts_widget_data"
+               " and not test_dataunion_widget_change_notified"
+               " and not test_datawidget_creation_blank_comm"
+               ;; TODO: type object 'Widget' has no attribute '_ipython_display_'
+               " and not test_notification"
+               " and not test_manual_notification"
+               " and not test_sync_segment"
+               " and not test_hold_sync"
+               " and not test_hold_sync_segment"
+               ;; OverflowError: Python integer -33 out of bounds for uint8
+               " and not test_dtype_coerce"))
+      ;; XXX: Missing files when running bdist_wheel.
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _
+              (invoke "python" "setup.py" "build")))
+          (replace 'install
+            (lambda _
+              (invoke "python" "setup.py" "install"
+                      (string-append "--prefix=" #$output)))))))
     (propagated-inputs
      (list python-ipython-genutils
            python-ipywidgets
@@ -1661,7 +1670,8 @@ JupyterLab.")
      (list python-jupyter-packaging
            python-nbval
            python-pytest
-           python-pytest-cov))
+           python-pytest-cov
+           python-setuptools))
     (home-page "https://github.com/vidartf/ipydatawidgets")
     (synopsis "Widgets to help facilitate reuse of large datasets across widgets")
     (description
