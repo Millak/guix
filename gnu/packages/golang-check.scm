@@ -717,6 +717,31 @@ application can use the realtime clock while tests can use the mock clock.")
 results, converting test names WrittenInCamelCase into ordinary sentences.")
     (license license:expat)))
 
+(define-public go-github-com-blizzy78-varnamelen
+  (package
+    (name "go-github-com-blizzy78-varnamelen")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/blizzy78/varnamelen")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06nbhc7dywax5fgky3jbb3yn51vifpinz9prl15h88nkny7w1q6k"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/blizzy78/varnamelen"))
+    (propagated-inputs (list go-github-com-matryer-is go-golang-org-x-tools))
+    (home-page "https://github.com/blizzy78/varnamelen")
+    (synopsis "Go analyzer checking variable name scoping")
+    (description
+     "Package varnamelen implements an analyzer checking that the length of a
+variable's name matches its usage scope.")
+    (license license:expat)))
+
 (define-public go-github-com-bombsimon-wsl-v4
   (package
     (name "go-github-com-bombsimon-wsl-v4")
