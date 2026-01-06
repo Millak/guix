@@ -55310,27 +55310,9 @@ related typesetting systems, taken from the
 Because @TeX{} Live is so huge and because finding one's way in this
 maze is tricky, this section provides some guidance on how to deploy
 the relevant packages to compile @TeX{} and @LaTeX{} documents.
-
-@TeX{} Live currently comes in two mutually exclusive flavors in Guix:
-
-@itemize
-@item
-The ``monolithic'' @code{texlive} package: it comes with @emph{every
-single @TeX{} Live package} (roughly 4,200), but it is huge---more than
-4@tie{}GiB for a single package!
-
-@item
-A ``modular'' @TeX{} Live distribution, in which you only install the
+Guix contains the full @TeX{} Live distribution in a modular setup,
+in which you only install the
 packages you need, whose name is always prefixed with @samp{texlive-}.
-@end itemize
-
-To insist, these two flavors cannot be combined@footnote{No rule
-without exception! As the monolithic @TeX{} Live does not contain the
-@command{biber} executable, it is okay to combine it with
-@code{texlive-biber}, which does.}.  If in the modular setting your
-document does not compile, the solution is not to add the monolithic
-@code{texlive} package, but to add the set of missing packages from the
-modular distribution.
 
 Building a coherent system that provides all the essential tools and, at
 the same time, satisfies all of its internal dependencies can be

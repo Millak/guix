@@ -64,7 +64,6 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
-  #:use-module (gnu packages texlive)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xml))
