@@ -718,17 +718,17 @@ maps also support conj/peek/pop operations.")
 (define-public clojure-data-xml
   (package
     (name "clojure-data-xml")
-    (version "0.2.0-alpha6")
+    (version "0.2.0-alpha10")
     (home-page "https://github.com/clojure/data.xml")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit (string-append "data.xml-" version))))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08vglcapq7sd9zhw8dw1y7dcdks7f21w1pw9p05i475i3bw4cf94"))))
+                "0mnhgrh20p2wwmq8a4631dkpxbgbijwi6sfhw5v784hzkjkfgkh6"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure")
@@ -737,9 +737,10 @@ maps also support conj/peek/pop operations.")
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'delete-cljs-tests
-                     (lambda _
-                       (delete-file "src/test/resources/clojure/data/xml/cljs_testsuite.clj")
-                       (delete-file "src/test/clojure/clojure/data/xml/test_cljs.clj"))))))
+           (lambda _
+             (delete-file "src/test/resources/clojure/data/xml/cljs_repl_nashorn.clj")
+             (delete-file "src/test/resources/clojure/data/xml/cljs_testsuite.clj")
+             (delete-file "src/test/clojure/clojure/data/xml/test_cljs.clj"))))))
     (propagated-inputs (list clojure-data-codec))
     (synopsis "Clojure library for reading and writing XML data")
     (description "@code{data.xml} is a Clojure library for reading and writing
