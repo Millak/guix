@@ -32402,11 +32402,11 @@ defaults.")
     (license license:gpl3+)))
 
 (define-public emacs-evil-mc
-  (let ((commit "1cabb869fe70cef49f7dc06f015c3ade1a969c8c")
-        (revision "2"))
+  (let ((commit "7e363dd6b0a39751e13eb76f2e9b7b13c7054a43")
+        (revision "0"))
     (package
       (name "emacs-evil-mc")
-      (version (git-version "0.0.3" revision commit))
+      (version (git-version "0.0.4" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -32415,7 +32415,7 @@ defaults.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0p83p90faq1p02lmsfs7zrnky3cyzgy8z4m83a81r9kakjzhkrnb"))))
+          (base32 "0gzy2mqcdxhkg0hmxqzbjy5ihfal1s21wxd04mrikqri54sck4z5"))))
       (build-system emacs-build-system)
       (arguments
        (list #:test-command
