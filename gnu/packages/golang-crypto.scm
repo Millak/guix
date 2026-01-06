@@ -3286,6 +3286,37 @@ to support the streaming mode required by Go's standard Hash interface.")
 @url{https://www.rfc-editor.org/errata/rfc7512, errata} specifications.")
     (license license:asl2.0)))
 
+(define-public go-github-com-tailscale-golang-x-crypto
+  (package
+    (name "go-github-com-tailscale-golang-x-crypto")
+    (version "0.91.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tailscale/golang-x-crypto")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m9qkk48mihrkmfh1fzfhc39l8957qkpfx8qbw4xdjws7dy4vzbz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f ;Tests have broken package imports (expected as per readme)
+      #:import-path "github.com/tailscale/golang-x-crypto"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto
+           go-golang-org-x-term
+           go-golang-org-x-sys
+           go-golang-org-x-net))
+    (home-page "https://github.com/tailscale/golang-x-crypto")
+    (synopsis "Supplementary Go crypto libraries")
+    (description
+     "This package holds supplementary Go cryptography libraries, it's a fork
+of @code{golang.org/x/crypto} maintained by Tailscale.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-tink-crypto-tink-go-v2
   (package
     (name "go-github-com-tink-crypto-tink-go-v2")
