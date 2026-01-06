@@ -435,16 +435,16 @@ Clojure repl, use Clojure and Java libraries, and start Clojure programs.")
 (define-public clojure-algo-generic
   (package
     (name "clojure-algo-generic")
-    (version "0.1.3")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/clojure/algo.generic")
-             (commit (string-append "algo.generic-" version))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s6q10qp276dcpzv06bq1q3bvkvlw03qhmncqcs9cc6p9lc0w4p4"))))
+        (base32 "0i10rxk5jxsw1cm2a8rsq9zgl04173cbpaj02vvc9nb4ig219a8y"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure/")
