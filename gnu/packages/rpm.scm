@@ -24,6 +24,7 @@
   #:use-module (guix packages)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -153,25 +154,26 @@ information on multiple streams, default data and translations).")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:imported-modules `(,@%cmake-build-system-modules
-                           (guix build python-build-system))
+      #:imported-modules (append %cmake-build-system-modules
+                                 %pyproject-build-system-modules)
       #:modules '((guix build cmake-build-system)
-                  ((guix build python-build-system) #:prefix python:)
+                  ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
       #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-python-site-prefix
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (substitute* "src/python/CMakeLists.txt"
-                (("EXECUTE_PROCESS.*OUTPUT_VARIABLE PYTHON_INSTALL_DIR.*")
-                 (format #f "set (PYTHON_INSTALL_DIR ~a)~%"
-                         (python:site-packages inputs outputs))))))
-          (add-after 'unpack 'fix-bash-completion-prefix
-            (lambda _
-              (substitute* "CMakeLists.txt"
-                (("execute_process.*OUTPUT_VARIABLE BASHCOMP_DIR.*")
-                 (format #f "set (BASHCOMP_DIR ~a\
-/share/bash-completion/completions)~%" #$output))))))))
+      (with-extensions (list (pyproject-guile-json))
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-python-site-prefix
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (substitute* "src/python/CMakeLists.txt"
+                  (("EXECUTE_PROCESS.*OUTPUT_VARIABLE PYTHON_INSTALL_DIR.*")
+                   (format #f "set (PYTHON_INSTALL_DIR ~a)~%"
+                           (py:site-packages inputs outputs))))))
+            (add-after 'unpack 'fix-bash-completion-prefix
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("execute_process.*OUTPUT_VARIABLE BASHCOMP_DIR.*")
+                   (format #f "set (BASHCOMP_DIR ~a\
+/share/bash-completion/completions)~%" #$output)))))))))
     (native-inputs
      (list bash-completion pkg-config python))
     (inputs
