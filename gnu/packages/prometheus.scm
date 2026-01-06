@@ -692,6 +692,166 @@ an internal library for both Prometheus and Open Telemetry,")
 kernel, and process metrics from the @file{/proc} pseudo file system.")
     (license license:asl2.0)))
 
+(define-public go-github-com-prometheus-prometheus
+  (package
+    (name "go-github-com-prometheus-prometheus")
+    (version "0.308.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/prometheus/prometheus")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n9yl2mk9nz57g8k4jnwlqssfrky6ahkqk1fpx8bq36g0g3rj6w5"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately.
+            (delete-file-recursively "documentation/examples/remote_storage")
+            (delete-file-recursively "web/ui/mantine-ui/src/promql/tools")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/prometheus/prometheus"
+      ;; XXX: Remove when all inputs are packaged.
+      #:test-subdirs
+      #~(list "schema" "template" "discovery" "tsdb/wlog" "util/pool"
+              "util/stats" "tsdb/chunks" "tsdb/errors" "tsdb/record"
+              "util/almost" "model/labels" "util/fmtutil" "util/logging"
+              "util/strutil" "discovery/aws" "discovery/dns" "discovery/xds"
+              "model/relabel" "model/rulefmt" "promql/parser" "tsdb/chunkenc"
+              "tsdb/fileutil" "tsdb/tsdbutil" "util/httputil" "util/junitxml"
+              "util/zeropool" "discovery/file" "discovery/http"
+              "discovery/moby" "tsdb/goversion" "discovery/uyuni"
+              "model/histogram" "model/textparse" "prompb/rwcommon"
+              "tsdb/tombstones" "discovery/eureka" "discovery/triton"
+              "util/compression" "util/convertnhcb" "discovery/hetzner"
+              "discovery/refresh" "util/netconnlimit" "discovery/marathon"
+              "discovery/puppetdb" "util/notifications" "discovery/kubernetes"
+              "discovery/targetgroup" "discovery/digitalocean"
+              "storage/remote/azuread" "util/namevalidationutil"
+              "prompb/io/prometheus/client" "prompb/io/prometheus/write/v2"
+              "documentation/examples/custom-sd/adapter")))
+    (native-inputs
+     ;; Tests and application dependency keep here.
+     (list go-github-com-google-go-cmp
+           go-github-com-google-pprof
+           go-github-com-kimmachinegun-automemlimit
+           go-github-com-oklog-run
+           go-github-com-stretchr-testify
+           go-go-uber-org-automaxprocs
+           go-go-uber-org-goleak
+           go-k8s-io-klog-v2
+           ;; go-github-com-nsf-jsondiff
+           #;go-k8s-io-klog))
+    (propagated-inputs
+     (list go-github-com-alecthomas-kingpin-v2
+           go-github-com-alecthomas-units
+           go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-credentials
+           go-github-com-aws-aws-sdk-go-v2-feature-ec2-imds
+           go-github-com-aws-aws-sdk-go-v2-service-sts
+           go-github-com-aws-smithy-go
+           go-github-com-azure-azure-sdk-for-go-sdk-azcore
+           go-github-com-azure-azure-sdk-for-go-sdk-azidentity
+           go-github-com-cespare-xxhash-v2
+           go-github-com-code-hex-go-generics-cache
+           go-github-com-dennwc-varint
+           go-github-com-digitalocean-godo
+           go-github-com-docker-docker
+           go-github-com-edsrzf-mmap-go
+           go-github-com-envoyproxy-go-control-plane-envoy
+           go-github-com-envoyproxy-protoc-gen-validate
+           go-github-com-facette-natsort
+           go-github-com-fsnotify-fsnotify
+           go-github-com-go-openapi-strfmt
+           go-github-com-gogo-protobuf
+           go-github-com-golang-snappy
+           go-github-com-google-uuid
+           go-github-com-grafana-regexp
+           go-github-com-hetznercloud-hcloud-go-v2
+           go-github-com-json-iterator-go
+           go-github-com-klauspost-compress
+           go-github-com-kolo-xmlrpc
+           go-github-com-miekg-dns
+           go-github-com-munnerz-goautoneg
+           go-github-com-mwitkow-go-conntrack
+           go-github-com-oklog-ulid-v2
+           go-github-com-prometheus-alertmanager
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-github-com-prometheus-common
+           go-github-com-prometheus-common-assets
+           go-github-com-prometheus-exporter-toolkit
+           go-github-com-prometheus-otlptranslator
+           go-github-com-prometheus-sigv4
+           go-github-com-shurcool-httpfs
+           go-go-opentelemetry-io-contrib-instrumentation-net-http-httptrace-otelhttptrace
+           go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracehttp
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-trace
+           go-go-uber-org-atomic
+           go-go-uber-org-multierr
+           go-go-yaml-in-yaml-v2
+           go-golang-org-x-oauth2
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-text
+           go-google-golang-org-api
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v3
+           go-k8s-io-api
+           go-k8s-io-apimachinery
+           go-k8s-io-client-go
+
+           ;; TODO: Complete packaging.
+           ;; go-github-com-aws-aws-sdk-go-v2-service-ec2
+           ;; go-github-com-aws-aws-sdk-go-v2-service-ecs
+           ;; go-github-com-aws-aws-sdk-go-v2-service-lightsail
+           ;; go-github-com-azure-azure-sdk-for-go-sdk-resourcemanager-compute-armcompute-v5
+           ;; go-github-com-azure-azure-sdk-for-go-sdk-resourcemanager-network-armnetwork-v4
+           ;; go-github-com-bboreham-go-loser
+           ;; go-github-com-go-zookeeper-zk
+           ;; go-github-com-gophercloud-gophercloud-v2
+           ;; go-github-com-hashicorp-consul-api
+           ;; go-github-com-hashicorp-nomad-api
+           ;; go-github-com-ionos-cloud-sdk-go-v6
+           ;; go-github-com-linode-linodego
+           ;; go-github-com-open-telemetry-opentelemetry-collector-contrib-processor-deltatocumulativeprocessor
+           ;; go-github-com-ovh-go-ovh
+           ;; go-github-com-prometheus-client-golang-exp
+           ;; go-github-com-scaleway-scaleway-sdk-go
+           ;; go-github-com-stackitcloud-stackit-sdk-go-core
+           ;; go-github-com-vultr-govultr-v2
+           ;; go-go-opentelemetry-io-collector-component
+           ;; go-go-opentelemetry-io-collector-consumer
+           ;; go-go-opentelemetry-io-collector-pdata
+           ;; go-go-opentelemetry-io-collector-processor
+           ;; go-go-opentelemetry-io-collector-semconv
+           #;go-k8s-io-klog))
+    (home-page "https://github.com/prometheus/prometheus")
+    (synopsis "Monitoring system and time series database")
+    (description
+     "This package, a Cloud Native Computing Foundation project, is a systems and
+service monitoring system.  It collects metrics from configured targets at
+given intervals, evaluates rule expressions, displays the results, and can
+trigger alerts when specified conditions are observed.")
+    (license license:asl2.0)
+    ;; XXX: Don't expose since it's a partial package.
+    (properties '((hidden? . #t)))))
+
 (define-public go-github-com-prometheus-sigv4
   (package
     (name "go-github-com-prometheus-sigv4")
