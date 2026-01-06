@@ -252,37 +252,39 @@ activities and other Sugar components.")
      (list
       #:imported-modules
       `(,@%glib-or-gtk-build-system-modules
-        (guix build python-build-system))
+        ,@%pyproject-build-system-modules)
       #:modules
-      `(((guix build python-build-system) #:prefix python:)
+      `(((guix build pyproject-build-system) #:prefix py:)
         ,@%glib-or-gtk-build-system-default-modules)
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-build-system
-           (lambda _
-             (substitute* "autogen.sh"
-               (("^\"\\$srcdir/configure" m)
-                (string-append "#" m)))))
-         (add-after 'unpack 'patch-tool-references
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/carquinyol/datastore.py"
-               (("/usr/bin/du") (which "du")))
-             (substitute* "src/carquinyol/optimizer.py"
-               (("'md5sum'")
-                (string-append "'"
-                               (search-input-file inputs "/bin/md5sum")
-                               "'")))))
-         (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (for-each
-              (lambda (executable)
-                (wrap-program executable
-                  `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
-                                         ,(python:site-packages inputs outputs)))
-                  `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))
-              (list (search-input-file outputs "bin/copy-from-journal")
-                    (search-input-file outputs "bin/copy-to-journal")
-                    (search-input-file outputs "bin/datastore-service"))))))))
+      (with-extensions (list (pyproject-guile-json))
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-build-system
+              (lambda _
+                (substitute* "autogen.sh"
+                  (("^\"\\$srcdir/configure" m)
+                   (string-append "#" m)))))
+            (add-after 'unpack 'patch-tool-references
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "src/carquinyol/datastore.py"
+                  (("/usr/bin/du") (which "du")))
+                (substitute* "src/carquinyol/optimizer.py"
+                  (("'md5sum'")
+                   (string-append "'"
+                                  (search-input-file inputs "/bin/md5sum")
+                                  "'")))))
+            (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (for-each
+                 (lambda (executable)
+                   (wrap-program executable
+                     `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
+                                            ,(py:site-packages inputs outputs)))
+                     `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))
+                 (list (search-input-file outputs "bin/copy-from-journal")
+                       (search-input-file outputs "bin/copy-to-journal")
+                       (search-input-file outputs
+                                          "bin/datastore-service")))))))))
     (inputs
      (list bash-minimal
            coreutils
