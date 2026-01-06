@@ -16525,6 +16525,29 @@ structure.  It can also produce a much more verbose, one-item-per-line
 representation suitable for computing diffs.")
     (license license:asl2.0)))
 
+(define-public go-github-com-kodeworks-golang-image-ico
+  (package
+    (name "go-github-com-kodeworks-golang-image-ico")
+    (version "0.0.0-20141118225523-73f0f4cfade9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Kodeworks/golang-image-ico")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zfcvpf6pdqismq9j8nvismln1dbz2i22d7c00a2ygjxldbmnd3k"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Kodeworks/golang-image-ico"))
+    (home-page "https://github.com/Kodeworks/golang-image-ico")
+    (synopsis "Golang support for Windows .ico file format")
+    (description
+     "This package provides Golang support for Windows' @code{.ico} file format.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-labstack-gommon
   (package
     (name "go-github-com-labstack-gommon")
