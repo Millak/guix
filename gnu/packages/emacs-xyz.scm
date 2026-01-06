@@ -35308,11 +35308,11 @@ advice to be recorded and displayed.")
     (license license:gpl3+)))
 
 (define-public emacs-general
-  (let ((commit "a0b17d207badf462311b2eef7c065b884462cb7c")
-        (revision "4"))
+  (let ((commit "a48768f85a655fe77b5f45c2880b420da1b1b9c3")
+        (revision "0"))
     (package
       (name "emacs-general")
-      (version (git-version "0" revision commit))
+      (version (git-version "0.1" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -35320,11 +35320,11 @@ advice to be recorded and displayed.")
                (url "https://github.com/noctuid/general.el")
                (commit commit)))
          (sha256
-          (base32 "0wn5rk3gkimdklip392mnjrmkymgrb7q9skifi03cbpjam1anzvv"))
+          (base32 "19k82p8pwyh3krq8i6l6calwy9wddqklj1klkdyawgh5ar230vb2"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (native-inputs
-       (list emacs-buttercup emacs-evil emacs-which-key emacs-use-package))
+       (list emacs-buttercup emacs-evil))
       (arguments
        `(#:test-command '("buttercup" "-L" "test/test-general.el")))
       (home-page "https://github.com/noctuid/general.el")
