@@ -342,6 +342,35 @@ that could potentially be preallocated.")
 github.com/sergi/go-diff, mainly for diffing strings in tests.")
     (license license:expat)))
 
+(define-public go-github-com-ashanbrown-forbidigo
+  (package
+    (name "go-github-com-ashanbrown-forbidigo")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ashanbrown/forbidigo")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wkyxs5v4xwvm2163isz8rrgdj0l18rrx1sj9ai5kx50fvslq299"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ashanbrown/forbidigo"))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-stretchr-testify
+           go-golang-org-x-tools
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/ashanbrown/forbidigo")
+    (synopsis "Go static analysis tool for identifiers")
+    (description
+     "This package is a Go static analysis tool to forbid use of particular
+identifiers.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-ashanbrown-makezero
   (package
     (name "go-github-com-ashanbrown-makezero")
