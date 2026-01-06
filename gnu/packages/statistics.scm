@@ -3479,42 +3479,45 @@ files, including Rmarkdown files.")
 (define-public python-pyreadstat
   (package
     (name "python-pyreadstat")
-    (version "1.2.4")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/Roche/pyreadstat")
-             (commit (string-append "v" version))))
+              (url "https://github.com/Roche/pyreadstat")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zysrzixvqw2lwwykxqg5yj8a0zyv5s2bmk22x30f4rj2hgvq1pv"))
+        (base32 "01b7zwvfl46sra0kvdvs19ggx150p4x7pkwl73ar2jda315kjfr4"))
        (patches (search-patches "python-pyreadstat-link-libiconv.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 92 passed
+      #:test-backend #~'custom
+      ;; The source also contains tests/test_version.py which checks the
+      ;; version in __init__.py against the one in setup.py. Since this
+      ;; requires texlive dependencies to run and is also not mentioned in
+      ;; how_to_test.md, this test is skipped.
+      #:test-flags #~(list "tests/test_basic.py")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'change-home-dir
+          (add-before 'check 'pre-check
             (lambda _
-              ;; test_sav_expand and test_sav_write_basic_expanduser need a
-              ;; home directory with write permissions.
-              (setenv "HOME" "/tmp")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; The source also contains tests/test_version.py
-                ;; which checks the version in __init__.py against the
-                ;; one in setup.py. Since this requires texlive
-                ;; dependencies to run and is also not mentioned in
-                ;; how_to_test.md, this test is skipped.
-                (invoke "python" "tests/test_basic.py")))))))
-    (propagated-inputs (list python-pandas))
-    (inputs (list libiconv zlib))
-    (native-inputs (list python-cython python-setuptools))
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-cython
+           python-setuptools))
+    (inputs
+     (list libiconv
+           readstat
+           zlib))
+    (propagated-inputs
+     (list python-narwhals-minimal
+           python-pandas
+           python-numpy))
     (home-page "https://github.com/Roche/pyreadstat")
-    (synopsis
-     "Read and write SAS, SPSS and Stata files into/from Pandas DataFrames")
+    (synopsis "Read and write SAS, SPSS and Stata files into/from Pandas DataFrames")
     (description
      "This Python package can be used to read and write SAS, SPSS and Stata
 files into/from Pandas DataFrames.  It is a wrapper around the C library

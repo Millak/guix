@@ -2,11 +2,12 @@ To ensure libiconv can be found by Guix, we need to link the library.
 
 --- a/setup.py
 +++ b/setup.py
-@@ -81,8 +81,7 @@ else:
+@@ -109,9 +109,7 @@ if os.name == 'nt':
+ else:
      libraries.extend(["m", "z"])
      _platform = sys.platform
-     # Mac: iconv needs to be linked statically
--    if _platform.lower().startswith("darwin"):
+-    # Mac and ubuntu: iconv needs to be linked statically
+-    if _platform.lower().startswith("darwin") or (is_ubuntu() and is_python_lt_14()):
 -        libraries.append("iconv")
 +    libraries.append("iconv")
  
