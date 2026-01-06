@@ -17963,6 +17963,34 @@ services.  It's an alternative fork of @url{https://github.com/huin/goupnp}.")
 Commas and Comments (or \"human JSON\").")
     (license license:bsd-3)))
 
+(define-public go-github-com-tailscale-mkctr
+  (package
+    (name "go-github-com-tailscale-mkctr")
+    (version "0.0.0-20250228050937-c75ea1476830")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tailscale/mkctr")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wjmysd9azzqinf10p4i1c8228znpikkdy53zdgn57hayiqn722d"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tailscale/mkctr"))
+    (propagated-inputs
+     (list go-github-com-google-go-containerregistry))
+    (home-page "https://github.com/tailscale/mkctr")
+    (synopsis "Cross platform container builder for Go")
+    (description
+     "This package is a small Go binary which uses @code{GOOS= GOARCH= go
+build} directly to compile Go binaries and then uses
+@code{go-containerregistry} to create and publish the new containers based on
+the desired platforms.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-tdewolff-minify-v2
   (package
     (name "go-github-com-tdewolff-minify-v2")
