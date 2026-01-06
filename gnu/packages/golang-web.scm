@@ -21586,6 +21586,34 @@ maturity level}.")
 a configuration language.")
     (license license:bsd-3)))
 
+(define-public go-go4-org-netipx
+  (package
+    (name "go-go4-org-netipx")
+    (version "0.0.0-20231129151722-fdeea329fbba")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go4org/netipx")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g45hmdsgy6c73277j4i0mdi6031qbh5il1i5ab6bkywnpwhy9p4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go4.org/netipx"))
+    (propagated-inputs
+     (list go-honnef-co-go-tools
+           go-github-com-dvyukov-go-fuzz))
+    (home-page "https://go4.org/netipx")
+    (synopsis "Leftover code from inet.af/netaddr")
+    (description
+     "This package contains code and types that were left behind when the old
+inet.af/netaddr package moved to the standard library in Go 1.18 as
+net/netip.")
+    (license license:bsd-3)))
+
 (define-public go-goftp-io-server-v2
   (package
     (name "go-goftp-io-server-v2")
