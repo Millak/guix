@@ -18054,6 +18054,55 @@ It's an alternative fork of @url{https://github.com/vishvananda/netlink}.")
 side of the connection, using various OS-specific facilities.")
     (license license:bsd-3)))
 
+(define-public go-github-com-tailscale-setec
+  (package
+    (name "go-github-com-tailscale-setec")
+    (version "0.0.0-20260415230416-802071d7d5bf")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tailscale/setec")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gljd9cdxm04lwnwxihdh15xmz5zaywsp2zmpmh4yli1njprsc2y"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.25
+      #:skip-build? #t
+      #:test-subdirs
+      ;; XXX: Remove when all inputs are packaged.
+      #~(list "acl" "audit")
+      #:import-path "github.com/tailscale/setec"))
+    (native-inputs
+     (list go-github-com-davecgh-go-spew
+           go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-credentials
+           go-github-com-aws-aws-sdk-go-v2-service-s3
+           go-github-com-aws-aws-sdk-go-v2-service-sts
+           go-github-com-creachadair-command
+           go-github-com-creachadair-flax
+           go-github-com-creachadair-mds
+           go-github-com-creachadair-msync
+           go-github-com-tink-crypto-tink-go-awskms-v2
+           go-github-com-tink-crypto-tink-go-v2
+           go-golang-org-x-term
+           go-honnef-co-go-tools
+
+           ;; TODO: Complete packaging.
+           #;go-tailscale-com))
+    (home-page "https://github.com/tailscale/setec")
+    (synopsis "Tailscale secrets management service with access control")
+    (description
+     "This package is a lightweight secrets management service that uses
+Tailscale for access control.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-tdewolff-minify-v2
   (package
     (name "go-github-com-tdewolff-minify-v2")
