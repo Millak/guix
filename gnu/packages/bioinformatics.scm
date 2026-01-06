@@ -24294,34 +24294,28 @@ browser.")
        (uri (git-reference
              (url "https://github.com/nanoporetech/pyspoa")
              (commit (string-append "v" version))
-             (recursive? #true)))
+             (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1lgf2shzhxkcsircd6vy46h27pjljd5q95fyz1cm3lkk702qbnzx"))))
-    (build-system python-build-system)
+        (base32 "1lgf2shzhxkcsircd6vy46h27pjljd5q95fyz1cm3lkk702qbnzx"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'build-libspoa
-           (lambda _
-             (mkdir-p "src/build")
-             (with-directory-excursion "src/build"
-               (invoke "cmake"
-                       "-Dspoa_optimize_for_portability=ON"
-                       "-DCMAKE_BUILD_TYPE=Release"
-                       "-DCMAKE_CXX_FLAGS=\"-I ../vendor/cereal/include/\" -fPIC"
-                       "..")
-               (invoke "make"))))
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "tests/test_pyspoa.py")))))))
-    (propagated-inputs
-     (list pybind11))
-    (native-inputs
-     `(("cmake" ,cmake-minimal)))
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "tests/test_pyspoa.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'build-libspoa
+            (lambda _
+              (mkdir-p "src/build")
+              (with-directory-excursion "src/build"
+                (invoke "cmake" "-Dspoa_optimize_for_portability=ON"
+                 "-DCMAKE_BUILD_TYPE=Release"
+                 "-DCMAKE_CXX_FLAGS=\"-I ../vendor/cereal/include/\" -fPIC"
+                 "..")
+                (invoke "make")))))))
+    (propagated-inputs (list pybind11))
+    (native-inputs (list cmake-minimal python-setuptools))
     (home-page "https://github.com/nanoporetech/pyspoa")
     (synopsis "Python bindings for the SIMD partial order alignment library")
     (description
