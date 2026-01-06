@@ -22564,6 +22564,31 @@ without configuration, but if desired, everything can be customized down to the
 smallest detail.")
     (license license:expat)))
 
+(define-public go-github-com-puzpuzpuz-xsync
+  (package
+    (name "go-github-com-puzpuzpuz-xsync")
+    (version "1.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/puzpuzpuz/xsync")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qfmiyk5wypssr30nj5qp4izdav5gbaxf1324i70vjhn5g8g74mb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/puzpuzpuz/xsync"))
+    (home-page "https://github.com/puzpuzpuz/xsync")
+    (synopsis "Concurrent data structures for Go")
+    (description
+     "This package is an extension for the standard @code{sync} package and
+provides the following concurrent data structures for Go: a concurrent
+counter, concurrent hash table, multiple concurrent queues and @code{mutex}.")
+    (license license:expat)))
+
 (define-public go-github-com-quasilyte-go-ruleguard-dsl
   (package
     (name "go-github-com-quasilyte-go-ruleguard-dsl")
