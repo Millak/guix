@@ -1464,56 +1464,55 @@ and rendering molecules.")
               "-DPYTHON_EXECUTABLE=python3"
               (string-append "-DPYTHON_FLAGS=;--prefix=" #$output ";--root=/"))
       #:imported-modules (append %cmake-build-system-modules
-                                 '((guix build python-build-system)))
+                                 %pyproject-build-system-modules)
       #:modules '((guix build cmake-build-system)
                   (guix build utils)
-                  ((guix build python-build-system)
-                   #:select (add-installed-pythonpath)))
+                  ((guix build pyproject-build-system) #:prefix py:))
       #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'configure 'patch-cmake
-            (lambda _
-              (substitute* (list "src/Test/CMakeLists.txt"
-                                 "src/RingDecomposerLib/CMakeLists.txt")
-                (("build_.*STATIC") "#"))
-              (substitute* "test/CMakeLists.txt"
-                (("STATIC_TEST") "SHARED_TEST"))
-              ;; Link Python library against shared library
-              (substitute* "src/python/CMakeLists.txt"
-                (("RingDecomposerLibStatic") "RingDecomposerLib"))
-              (substitute* "src/python/setup.py.in"
-                (("static_libs =.*") "static_libs = []\n")
-                (("shared_libs\\s*=.*")
-                 (string-append
-                  "shared_libs = ['RingDecomposerLib']"))
-                (("library_dirs\\s*=\\s*\\[\\]")
-                 "library_dirs = ['${CMAKE_BINARY_DIR}/src/RingDecomposerLib']")
-                (("extra_objects=.*")
-                 (string-append
-                  "extra_link_args=['-Wl,-rpath=" #$output "/lib'],\n")))))
-          (add-after 'build 'build-doc
-            (lambda _
-              ;; Disable redundant LaTeX documentation
-              (substitute* "../source/documentation/sphinx/conf.py"
-                (("^(subprocess.*latex|shutil).*") ""))
-              (substitute* "../source/documentation/doxygen.cfg"
-                (("GENERATE_LATEX.*YES") "GENERATE_LATEX = NO"))
-              ;; Build HTML documentation
-              (invoke "sphinx-build" "-b" "html"
-                      "../source/documentation/sphinx" "html")))
-          (add-after 'install 'install-doc
-            (lambda _
-              ;; Not reproducible
-              (delete-file-recursively "html/.doctrees")
-              (copy-recursively "html"
-                                (string-append #$output "/share/doc/"
-                                               #$name "-" #$version "/html"))))
-          (delete 'check)
-          (add-after 'install 'check
-            (assoc-ref %standard-phases 'check))
-          (add-before 'check 'set-pythonpath
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (add-installed-pythonpath inputs outputs))))))
+      (with-extensions (list (pyproject-guile-json))
+        #~(modify-phases %standard-phases
+            (add-before 'configure 'patch-cmake
+              (lambda _
+                (substitute* (list "src/Test/CMakeLists.txt"
+                                   "src/RingDecomposerLib/CMakeLists.txt")
+                  (("build_.*STATIC") "#"))
+                (substitute* "test/CMakeLists.txt"
+                  (("STATIC_TEST") "SHARED_TEST"))
+                ;; Link Python library against shared library
+                (substitute* "src/python/CMakeLists.txt"
+                  (("RingDecomposerLibStatic") "RingDecomposerLib"))
+                (substitute* "src/python/setup.py.in"
+                  (("static_libs =.*") "static_libs = []\n")
+                  (("shared_libs\\s*=.*")
+                   (string-append
+                    "shared_libs = ['RingDecomposerLib']"))
+                  (("library_dirs\\s*=\\s*\\[\\]")
+                   "library_dirs = ['${CMAKE_BINARY_DIR}/src/RingDecomposerLib']")
+                  (("extra_objects=.*")
+                   (string-append
+                    "extra_link_args=['-Wl,-rpath=" #$output "/lib'],\n")))))
+            (add-after 'build 'build-doc
+              (lambda _
+                ;; Disable redundant LaTeX documentation
+                (substitute* "../source/documentation/sphinx/conf.py"
+                  (("^(subprocess.*latex|shutil).*") ""))
+                (substitute* "../source/documentation/doxygen.cfg"
+                  (("GENERATE_LATEX.*YES") "GENERATE_LATEX = NO"))
+                ;; Build HTML documentation
+                (invoke "sphinx-build" "-b" "html"
+                        "../source/documentation/sphinx" "html")))
+            (add-after 'install 'install-doc
+              (lambda _
+                ;; Not reproducible
+                (delete-file-recursively "html/.doctrees")
+                (copy-recursively "html"
+                                  (string-append #$output "/share/doc/"
+                                                 #$name "-" #$version "/html"))))
+            (delete 'check)
+            (add-after 'install 'check
+              (assoc-ref %standard-phases 'check))
+            (add-before 'check 'add-install-to-pythonpath
+              (assoc-ref py:%standard-phases 'add-install-to-pythonpath))))))
     (inputs (list python))
     (native-inputs (list doxygen python python-cython-0 python-sphinx))
     (home-page "https://github.com/rareylab/RingDecomposerLib")
