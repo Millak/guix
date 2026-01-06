@@ -2229,17 +2229,18 @@ databases that are optimized for rendering/tile/map-services.")
 (define-public python-metpy
   (package
     (name "python-metpy")
-    (version "1.7.0")
+    (version "1.7.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "metpy" version))
               (sha256
                (base32
-                "1r3adxf6knplp96s5jp65lahg9r096iaq5hdhzyqpkrmqwyy1mxa"))))
+                "0xfficr4jw6yn0l0nrm4yvymywd7lcp6y0acjyhr5h4bnpd8zzfd"))))
     (build-system pyproject-build-system)
     (arguments
      ;; Too many of the tests in the files below require online data.
      (list
+      ;; tests: 752 passed, 55 skipped, 17 deselected, 1 xfailed
       #:test-flags
       #~(list "--ignore" "tests/io/test_nexrad.py"
               "--ignore" "tests/plots/test_declarative.py"
