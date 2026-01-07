@@ -138,7 +138,12 @@ is BLOCK-SIZE * COUNT, or FILE size if COUNT is not given."
     ;; starfive_visionfive2.dtb.  We cannot guarantee that users will
     ;; update this U-Boot, so set the FDT explicitly.
     (plain-file "uEnv.txt"
-      "fdtfile=starfive/jh7110-starfive-visionfive-2-v1.3b.dtb")))
+                (string-join
+                 (list
+                  "boot_targets=mmc1 nvme0 mmc0 dhcp"
+                  "bootcmd_mmc1=bootflow scan"
+                  "fdtfile=starfive/jh7110-starfive-visionfive-2-v1.3b.dtb")
+                 "\n"))))
 
 
 ;;;
