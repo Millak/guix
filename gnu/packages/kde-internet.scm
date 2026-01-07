@@ -267,9 +267,6 @@ Qt-based XMPP library QXmpp.")
      (list boost
            breeze-icons ; default icon set
            gmp
-           ;; TODO: enable when we qgpgme support qt6.
-           ;; gpgme
-           ;; qgpgme
            kcmutils
            kcompletion
            kconfig
@@ -294,6 +291,7 @@ Qt-based XMPP library QXmpp.")
            libgcrypt
            libktorrent
            libmms
+           qgpgme-qt6
            qca-qt6
            qtwayland))
     (arguments
