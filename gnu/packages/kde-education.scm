@@ -359,9 +359,9 @@ to perform data analysis.")
     (license (list license:gpl2+     ;labplot
                    license:gpl3+)))) ;liborigin
 
-(define-public marble-qt
+(define-public marble
   (package
-    (name "marble-qt")
+    (name "marble")
     (version "25.08.3")
     (source
      (origin
@@ -422,3 +422,6 @@ becomes a world atlas, while OpenStreetMap takes the user to street level.  It
 supports searching for places of interest, viewing Wikipedia articles,
 creating routes by drag and drop and more.")
     (license license:lgpl2.1+)))
+
+;; 2026-01-07
+(define-deprecated-package marble-qt marble)

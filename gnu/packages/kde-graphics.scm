@@ -222,7 +222,7 @@ for scanner hardware.")
              libtiff
              libxml2
              libxslt
-             marble-qt
+             marble
              mesa
              opencv
              perl-image-exiftool
