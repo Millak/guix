@@ -12773,7 +12773,7 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
 (define-public vcmi
   (package
     (name "vcmi")
-    (version "1.6.8")
+    (version "1.7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -12782,11 +12782,13 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0sdcaxi9npjz7y6mxpbaz39idhkh05dlj2fz8f8xan21lhailvz4"))
+                "02i6y7idiigg3hl55fhl6pficx4849zvj5wwi29vsvwkwsx06hw7"))
               (patches (search-patches "vcmi-disable-privacy-breach.patch"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:configure-flags #~(list "-DFORCE_BUNDLED_FL=OFF" "-DENABLE_INNOEXTRACT=OFF")
+     (list #:configure-flags #~(list "-DFORCE_BUNDLED_FL=OFF"
+                                     "-DENABLE_INNOEXTRACT=OFF"
+                                     "-DENABLE_MMAI=OFF")
            ;; Test suites do not seem well supported upstream and are disabled by default.
            ;; Pass -DENABLE_TEST to configure to enable.
            #:tests? #f))
@@ -12796,11 +12798,13 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
            fuzzylite
            ;; googletest ; needed for tests, but tests are disabled
            libxkbcommon
+           libsquish
            luajit
            minizip
            pkg-config
            python
            qtbase
+           qtsvg
            qttools
            sdl2
            sdl2-mixer
