@@ -1130,9 +1130,6 @@ viewer: panning and zooming windows, star catalog access, cuts, star
 pick/FWHM, thumbnails, etc.")
 (license license:bsd-3)))
 
-(define-deprecated-package ginga-qt5
-  ginga)
-
 (define-public glnemo2
   (package
     (name "glnemo2")
