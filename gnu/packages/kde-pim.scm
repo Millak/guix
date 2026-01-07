@@ -204,7 +204,7 @@ multi-floor indoor maps.")
            ;; Do NOT add mysql or postgresql to the inputs. Otherwise the binaries
            ;; and wrapped files will refer to them, even if the user choices none
            ;; of these.  Executables are searched on $PATH then.
-           signond))
+           signond-qt6))
     (propagated-inputs (list sqlite kaccounts-integration))
     (arguments
      (list #:qtbase qtbase
