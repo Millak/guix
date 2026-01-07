@@ -2561,7 +2561,7 @@ PulseAudio.")
     (inputs (list ki18n kitemmodels kwindowsystem kio
                   oath-toolkit
                   plasma5support
-                  qgpgme-qt6))
+                  qgpgme))
     (propagated-inputs
      ;; QML modules need to be propagated so that QML files can find them in
      ;; $QML_IMPORT_PATH.

@@ -353,7 +353,7 @@ your computer.")
                   kcrash
                   solid
                   kwidgetsaddons
-                  qgpgme-qt6))
+                  qgpgme))
     (arguments (list #:qtbase qtbase
                      #:tests? #f))
     (home-page "https://invent.kde.org/utilities/isoimagewriter")

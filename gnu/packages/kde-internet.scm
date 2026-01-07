@@ -291,7 +291,7 @@ Qt-based XMPP library QXmpp.")
            libgcrypt
            libktorrent
            libmms
-           qgpgme-qt6
+           qgpgme
            qca-qt6
            qtwayland))
     (arguments

@@ -495,10 +495,10 @@ QGpgME was originally developed as part of libkleo and incorporated into
 gpgpme starting with version 1.7.")
     (license license:gpl2+))) ;; Note: this differs from gpgme
 
-(define-public qgpgme-qt6
+(define-public qgpgme
   (package
     (inherit gpgme)
-    (name "qgpgme-qt6")
+    (name "qgpgme")
     (arguments
      `(#:phases
        (modify-phases %standard-phases

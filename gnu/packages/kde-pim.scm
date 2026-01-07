@@ -598,7 +598,7 @@ PIM data into Akonadi for use in KDE PIM applications.")
            kuserfeedback
            libkdepim
            libkleo
-           qgpgme-qt6
+           qgpgme
            qtdeclarative
            qtwayland
            qtwebchannel
@@ -799,7 +799,7 @@ information.")
            libkleo
            breeze-icons ; default icon set, required for tests
            prison
-           qgpgme-qt6
+           qgpgme
            qtwayland))
     (arguments
      (list #:qtbase qtbase
@@ -1553,7 +1553,7 @@ protocol for querying and modifying directory services running over TCP/IP.")
            libkleo
            mimetreeparser
            breeze-icons ;; default icon set
-           qgpgme-qt6
+           qgpgme
            qtwayland))
     (arguments
      (list #:qtbase qtbase
@@ -1641,7 +1641,7 @@ and retrieving certificates from LDAP servers.")
            libkleo
            libksieve
            breeze-icons ; default icon set, required for tests
-           qgpgme-qt6
+           qgpgme
            qtdeclarative
            qtkeychain-qt6
            qtwayland
@@ -1796,7 +1796,7 @@ KMail.")
            libkleo
            libxslt
            phonon
-           qgpgme-qt6
+           qgpgme
            qtmultimedia
            qtwebchannel
            qtwebengine))
@@ -1983,7 +1983,7 @@ using a Qt/KMime C++ API.")
            openssl
            libgravatar
            qca-qt6
-           qgpgme-qt6
+           qgpgme
            qtdeclarative
            qtwebchannel
            qtwebengine
@@ -2544,9 +2544,9 @@ various Google services.")
            kwidgetsaddons
            kwindowsystem
            kpimtextedit
-           qgpgme-qt6))
+           qgpgme))
     (propagated-inputs
-     (list gpgme qgpgme-qt6))
+     (list gpgme qgpgme))
     (arguments
      (list
       #:qtbase qtbase
