@@ -419,7 +419,6 @@ with @url{https://github.com/ipld/cid, CIDs}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/ipfs/go-ds-badger4"))
     (native-inputs
      (list go-github-com-stretchr-testify

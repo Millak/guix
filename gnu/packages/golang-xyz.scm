@@ -7012,7 +7012,6 @@ supports concurrent serializable transactions.")
         (base32 "0v4c69whypm3k40hrx8bw9rjrcb0swz43v056s0fadqr04j0ncwj"))))
     (arguments
      (list
-      #:go go-1.23
       #:tests? #f ; TODO: tests hang, find out why.
       #:import-path "github.com/dgraph-io/badger/v4"))
     (propagated-inputs
@@ -12838,7 +12837,6 @@ object, which implements simple error-retrying functionality.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/jbenet/goprocess"
       #:test-flags
       #~(list "-short"
@@ -21729,7 +21727,6 @@ and branchless algorithms shine.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:skip-build? #t
       #:import-path "github.com/segmentio/encoding"
       #:test-flags
@@ -22779,7 +22776,6 @@ slices, JSON and other data.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/subosito/gotenv"
       #:test-flags #~(list "-skip" "TestScanner")))
     (native-inputs

@@ -1355,7 +1355,6 @@ functions.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/aws/aws-sdk-go"
       #:test-flags #~(list "-skip" "TestProcessProviderTimeout")))
     (propagated-inputs
@@ -3480,7 +3479,6 @@ to append and delete rules; create, clear and delete chains.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/coreos/go-oidc"))
     (native-inputs
      (list go-golang-org-x-net))
@@ -11492,7 +11490,6 @@ part of @url{https://github.com/pion, Pion} WebRTC implementation.")
         (base32 "0f9jy80law69zb26rkb6kl6w1c66vdghdrmifhwlmzngb644ihdb"))))
     (arguments
      (list
-      #:go go-1.23
       #:tests? #f ;Tests require network access.
       #:import-path "github.com/pion/ice/v3"))
     (propagated-inputs
