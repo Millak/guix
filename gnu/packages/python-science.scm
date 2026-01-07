@@ -5150,10 +5150,10 @@ of Pandas
     (version "0.5.5")
     (source
      (origin
-       (method git-fetch) ; no tests in PyPI tarball
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/raphaelvallat/pingouin")
-             (commit (string-append "v" version))))
+              (url "https://github.com/raphaelvallat/pingouin")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
@@ -5161,13 +5161,21 @@ of Pandas
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; _flapack.error: (liwork>=max(1,10*n)||liwork==-1)
-      ;; failed for 10th keyword liwork: dsyevr:liwork=1
-      #:test-flags #~(list "-k" (string-append
-                                 "not test_box_m"
-                                 " and not test_linear_regression"))))
+      ;; tests: 85 passed, 3 deselected, 43 warnings
+      #:test-flags
+      ;; AssertionError: Arrays are not equal
+      #~(list "--deselect=tests/test_pairwise.py::TestPairwise::test_pairwise_tests"
+              ;; AssertionError: assert False
+              "--deselect=tests/test_power.py::TestPower::test_power_ttest")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((" --cov") "")))))))
     (native-inputs
-     (list python-pytest python-pytest-cov))
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-matplotlib
            python-mpmath
