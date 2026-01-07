@@ -6217,6 +6217,8 @@ credentials and service-specific settings.")
     (native-inputs (modify-inputs (package-native-inputs libaccounts-qt)
                      (replace "qtbase" qtbase)
                      (replace "qttools" qttools)))
+    (inputs (modify-inputs (package-inputs libaccounts-qt)
+                     (replace "signond" signond-qt6)))
     (synopsis "Qt6 bindings for libaccounts-glib")))
 
 (define-public libsignon-glib
