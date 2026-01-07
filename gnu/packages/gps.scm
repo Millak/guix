@@ -271,15 +271,14 @@ such as elevation, speed, heart rate, power, temperature, and gear shifts.")
            python-pygobject
            python-pyserial
            python-wrapper
-           qtbase-5))
+           qtbase))
     (arguments
      `(#:scons-flags
        (list (string-append "prefix=" %output)
              (let ((version ,(version-major+minor (package-version python))))
                (string-append "python_libdir=" %output
                               "/lib/python" version
-                              "/site-packages"))
-             "qt_versioned=5")
+                              "/site-packages")))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-build
