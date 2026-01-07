@@ -50,7 +50,7 @@
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021, 2023 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Disseminate Dissent <disseminatedissent@protonmail.com>
-;;; Copyright © 2022, 2025 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022, 2025, 2026 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
@@ -2354,6 +2354,33 @@ functions expected of a Wayland compositor.")
     (description "Polybar aims to help users build beautiful and highly
 customizable status bars for their desktop environment.  It has built-in
 functionality to display information about the most commonly used services.")
+    (license license:expat)))
+
+(define-public polycat
+  (package
+    (name "polycat")
+    (version "2.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/2IMT/polycat")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1174i0z979j67zcpm0hp1zc1jhk17sx92zp1px5zfywr37mg3462"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ; no tests
+           #:make-flags
+           #~(list (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
+    (home-page "https://github.com/2IMT/polycat")
+    (synopsis "CPU usage module for menubars")
+    (description "Polycat is a menubar (polybar or waybar) module displaying
+a running cat (runcat) for CPU usage.")
     (license license:expat)))
 
 (define-public wlclock
