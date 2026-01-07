@@ -3215,28 +3215,29 @@ the following purposes in mind:
     (license license:bsd-3)))
 
 (define-public python-scikit-survival
-  (let ((revision "0")
-        ;; We need a later commit for support of a more recent sklearn and
-        ;; NumPy 2.
-        (commit "bc4a8914e8337c3be1b98371a3c26382696215a9"))
     (package
       (name "python-scikit-survival")
-      (version (git-version "0.25.0" revision commit))
+      (version "0.26.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                 (url "https://github.com/sebp/scikit-survival")
-                (commit commit)
-                ;; This package contains a copy of Eigen.  It would be good to
-                ;; figure out how to use our own Eigen package.
+                (commit (string-append "v" version))
+                ;; TODO: This package contains a copy of Eigen in
+                ;; sksurv/linear_model/src.  It would be good to figure out
+                ;; how to use our own Eigen package.
                 (recursive? #true)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "001w73sz55vszp18h25dha74r34bbfzl02yh4d6zbli9zvr36hy4"))))
+          (base32 "0r0xi9saz247ph6bgrc3iknq0m60d8rs4sl4mdv4s1zja80w1cp8"))))
       (build-system pyproject-build-system)
       (arguments
        (list
+        ;; tests: 1013 passed, 105 warnings
+        #:test-flags
+        #~(list "--durations=10" ;to help in spotting long running tests
+                "--numprocesses" (number->string (min 4 (parallel-job-count))))
         #:phases
         #~(modify-phases %standard-phases
             (add-before 'build 'set-version
@@ -3256,6 +3257,7 @@ the following purposes in mind:
        (list python-cython
              python-packaging
              python-pytest
+             python-pytest-xdist
              python-setuptools
              python-setuptools-scm))
       (home-page "https://github.com/sebp/scikit-survival")
@@ -3264,7 +3266,7 @@ the following purposes in mind:
 built on top of scikit-learn.  It allows doing survival analysis while
 utilizing the power of scikit-learn, e.g., for pre-processing or doing
 cross-validation.")
-      (license license:gpl3+))))
+      (license license:gpl3+)))
 
 (define-public python-scipy
   (package
