@@ -15248,7 +15248,7 @@ defined in @file{.travis.yml} on your local machine, using @code{rvm},
                                    "walker_test.rb"))
                        (delete-file-recursively "online")))))))
       (native-inputs (list git-minimal/pinned ruby-rake-compiler))
-      (inputs (list libgit2))
+      (inputs (list libgit2-1.6))
       (synopsis "Ruby bindings to the libgit2 linkable C Git library")
       (description "Rugged is a library for accessing libgit2 in Ruby.  It gives
 you the speed and portability of libgit2 with the beauty of the Ruby

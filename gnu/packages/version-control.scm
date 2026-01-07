@@ -1413,7 +1413,7 @@ write native speed custom Git applications in any language with bindings.")
 
 (define-public libgit2
   ;; Default version of libgit2.
-  libgit2-1.5)
+  libgit2-1.9)
 
 (define-public libgit2-1.3
   (package

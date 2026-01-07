@@ -11589,7 +11589,7 @@ readable format.")
        (sha256
         (base32 "1v34xdvh6i5cn5srwicvp0i2kvv8fzsv0v9p72ng081nsczmhgvr"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-cffi libgit2))
+    (propagated-inputs (list python-cffi libgit2-1.5))
     (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/libgit2/pygit2")
     (synopsis "Python bindings for libgit2")
