@@ -65,7 +65,12 @@
             ((? string?)
              (list #~(install-file (string-append bootloader #$file)
                                    install-dir)))
-            ((? file-like?) (list #~(install-file #$file install-dir)))
+            ((? file-like?)
+             (list #~(mkdir-p install-dir)
+                   #~(copy-file #$file
+                                (string-append install-dir
+                                               "/"
+                                               #$(plain-file-name file)))))
             (#f '()))))
     #~(lambda (bootloader device mount-point)
         (let ((install-dir (string-append mount-point "/boot")))
