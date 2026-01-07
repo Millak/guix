@@ -302,7 +302,7 @@ software, with support for multiple texts and languages.")
     (build-system cmake-build-system)
     (native-inputs (list appstream
                          appstream-glib
-                         atk
+                         at-spi2-core
                          biblesync
                          desktop-file-utils ;for 'desktop-file-validate'
                          (list glib "bin")
