@@ -466,10 +466,10 @@ instead.  This way bug fixes or improvements can be done at a central place
 and every application benefits from this.")
     (license license:lgpl2.1+)))
 
-(define-public qgpgme
+(define-public qgpgme-qt5
   (package
     (inherit gpgme)
-    (name "qgpgme")
+    (name "qgpgme-qt5")
     (arguments
      `(#:phases
        (modify-phases %standard-phases

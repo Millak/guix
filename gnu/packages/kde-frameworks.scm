@@ -4574,7 +4574,7 @@ the passwords on KDE work spaces.")
            kwindowsystem-5
            libgcrypt
            phonon-qt5
-           qgpgme
+           qgpgme-qt5
            qca
            qtbase-5))))
 
