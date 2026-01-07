@@ -2126,25 +2126,25 @@ supported.")
               (substitute* "pyxel/__init__.py"
                 (("from collections import MutableSequence")
                  "from collections.abc import MutableSequence"))))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
-       `(#:tests? #f ; "Tests" are actually example programs that never halt.
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-build-files
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "setup.py"
-                 (("\"pyxel\\.core\\.bin\\.(.*)\"," all arch)
-                  (if (string=? arch "linux")
-                      all
-                      "")))
-               (substitute* "pyxel/core/Makefile"
-                 (("`sdl2-config")
-                  (string-append "`sdl2-config --prefix="
-                                 (assoc-ref inputs "sdl2"))))))
-           (add-before 'build 'prebuild
-             (lambda _
-               (invoke "make" "-C" "pyxel/core"))))))
+       (list
+        #:tests? #f ; "Tests" are actually example programs that never halt.
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-build-files
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "setup.py"
+                  (("\"pyxel\\.core\\.bin\\.(.*)\"," all arch)
+                   (if (string=? arch "linux") all "")))
+                (substitute* "pyxel/core/Makefile"
+                  (("`sdl2-config")
+                   (string-append "`sdl2-config --prefix="
+                                  (assoc-ref inputs "sdl2"))))))
+            (add-before 'build 'prebuild
+              (lambda _
+                (invoke "make" "-C" "pyxel/core"))))))
+    (native-inputs (list python-setuptools))
       (inputs
        `(("gifsicle" ,gifsicle)
          ("sdl2" ,(sdl-union (list sdl2 sdl2-image)))))
