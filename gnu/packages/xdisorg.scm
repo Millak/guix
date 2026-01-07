@@ -66,7 +66,7 @@
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Igor Goryachev <igor@goryachev.org>
-;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Spencer Peters <spencerpeters@protonmail.com>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
@@ -3896,7 +3896,7 @@ desktop notifications.")
 (define-public wofi
   (package
     (name "wofi")
-    (version "1.5.1")
+    (version "1.5.3")
     (source (origin
               (method hg-fetch)
               (uri (hg-reference
@@ -3905,7 +3905,7 @@ desktop notifications.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xqgpqx7zing9b2w73f8x1shk52g63jyncnq36ss7wbh69c7rsmg"))))
+                "0arfwr9ih8h34c8za993zmj7cg7znx3vfrg1i5yhvvblkicc7jxc"))))
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t))
