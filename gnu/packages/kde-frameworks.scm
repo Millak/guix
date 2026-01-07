@@ -4531,7 +4531,7 @@ to separate the structure of documents from the data they contain.")
            libgcrypt
            libsecret
            phonon
-           qgpgme
+           qgpgme-qt6
            qca-qt6
            qtbase))
     (home-page "https://community.kde.org/Frameworks")
