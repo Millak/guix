@@ -1796,7 +1796,7 @@ KMail.")
            libkleo
            libxslt
            phonon
-           qgpgme
+           qgpgme-qt6
            qtmultimedia
            qtwebchannel
            qtwebengine))
