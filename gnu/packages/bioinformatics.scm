@@ -3509,6 +3509,7 @@ genomics data.")
     (license license:bsd-3)))
 
 (define-public python-phenograph
+  ;; XXX: No updates since 2020, probably not compatible with current NumPy stack.
   (package
     (name "python-phenograph")
     (version "1.5.7")
@@ -3525,14 +3526,19 @@ genomics data.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 3 passed, 4 deselected, 1 warning
+      #:test-flags
+      ;; ValueError: 'scipy.sparse.linalg.bicgstab' called with invalid
+      ;; `atol`=legacy; if set, `atol` must be a real, non-negative number.
+      #~(list "--deselect=tests/test_classify.py::test_classify_generated"
+              "--deselect=tests/test_classify.py::test_classify_fixed"
+              "--deselect=tests/test_classify.py::test_random_walk_probabilities_fixed"
+              ;; This test can never succeed because Q_leiden is never set to
+              ;; anything other than None.
+              ;; assert 0.6666666666666665 == None
+              "--deselect=tests/test_cluster.py::test_run_leiden")
       #:phases
       #~(modify-phases %standard-phases
-          ;; This test can never succeed because Q_leiden is never set to
-          ;; anything other than None.
-          (add-after 'unpack 'disable-leiden-test
-            (lambda _
-              (substitute* "tests/test_cluster.py"
-                (("def test_run_leiden") "def _test_run_leiden"))))
           (add-after 'unpack 'patch-louvain
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "phenograph/core.py"
@@ -3554,12 +3560,12 @@ weight.astype(\"str\") + '\\n')")))))))
      (list louvain))
     (propagated-inputs
      (list python-leidenalg
-           python-numpy
+           python-numpy-1
            python-psutil
            python-scikit-learn
            python-scipy))
     (native-inputs
-     (list python-pytest python-setuptools python-wheel))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/dpeerlab/PhenoGraph.git")
     (synopsis "Graph-based clustering for high-dimensional single-cell data")
     (description
