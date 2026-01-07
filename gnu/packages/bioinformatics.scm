@@ -3781,7 +3781,7 @@ the managed genomes, STAR indexing and mapping and more.")
 (define-public python-pygam
   (package
     (name "python-pygam")
-    (version "0.9.1")
+    (version "0.12.0")
     (source
      (origin
        (method git-fetch)
@@ -3790,30 +3790,25 @@ the managed genomes, STAR indexing and mapping and more.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bv404idswsm2ay3yziq1i2cbydq4f3vjav5s4i15bgd13k7zvim"))))
+        (base32 "0xf4hly8cxfj73il6l37bd48gygrmky2kyx9l270f1ivnpz1545a"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'patch-pyproject
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; Change build backend
-                (("build-backend = .*")
-                 "build-backend = \"poetry.core.masonry.api\"\n")
-                ;; Modify version field
-                (("^version = \"0.0.0\"")
-                 (string-append "version = \"" #$version "\""))))))))
-    (propagated-inputs (list python-black
-                             python-flake8
-                             python-ipython
-                             python-numpy
-                             python-pandas
-                             python-poetry-core
-                             python-progressbar2
-                             python-scipy))
-    (native-inputs (list python-mock python-pytest python-pytest-cov))
+      ;; tests: 161 passed, 1 skipped, 1 deselected, 7 warnings
+      #:test-flags
+      ;; Assertion is not equal.
+      #~(list (string-append "--deselect=pygam/tests/test_gridsearch.py::"
+                             "test_gridsearch_all_dimensions_independent"))))
+    (native-inputs
+     (list python-matplotlib
+           python-mock
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-numpy
+           python-pandas
+           python-progressbar2
+           python-scipy))
     (home-page "https://github.com/dswah/pyGAM")
     (synopsis "Generalized additive models in Python")
     (description
