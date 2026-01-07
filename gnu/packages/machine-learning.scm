@@ -1450,42 +1450,41 @@ Cython for speed.")
 (define-public python-pot
   (package
     (name "python-pot")
-    (version "0.9.6")
+    (version "0.9.6.post1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/PythonOT/POT")
-             (commit version)))
+              (url "https://github.com/PythonOT/POT")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zzh6jsnagsmcmf91hhb0f1asnby11h2zc92h7myld4wik986bx7"))))
+        (base32 "1i4nv72hw5ad63w4wghwfzxp1rvh2qs4agxjk72d10xgg8lizgkm"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-k"
-              ;; Semirelaxed GW init partitions by size via np.where(shapes <= N);
-              ;; dtype mix triggers str vs int TypeError under our NumPy.
-              "not test_entropic_semirelaxed_gromov"
-              "test")))
+    ;; tests: 1885 passed, 60 skipped, 6 xfailed, 9288 warnings
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools))
     (propagated-inputs
-     (list python-autograd
-           python-numpy
+     (list python-numpy
+           python-scipy
+           ;; [optional]
+           python-autograd
+           python-cvxopt
+           ;; python-jax
+           ;; python-jaxlib
+           python-matplotlib
+           python-pymanopt
            python-pytorch
            python-pytorch-geometric
-           python-pymanopt
-           python-scikit-learn
-           python-scipy))
-    (native-inputs (list python-cython
-                         python-pytest
-                         python-pytest-cov
-                         python-setuptools))
+           python-scikit-learn))
     (home-page "https://github.com/PythonOT/POT")
     (synopsis "Python Optimal Transport Library")
-    (description "This Python library provides several solvers for
-optimization problems related to Optimal Transport for signal, image
-processing and machine learning.")
+    (description
+     "This Python library provides several solvers for optimization problems
+related to Optimal Transport for signal, image processing and machine
+learning.")
     (license license:expat)))
 
 (define-public python-pymanopt
