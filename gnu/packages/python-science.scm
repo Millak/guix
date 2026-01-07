@@ -3215,58 +3215,58 @@ the following purposes in mind:
     (license license:bsd-3)))
 
 (define-public python-scikit-survival
-    (package
-      (name "python-scikit-survival")
-      (version "0.26.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/sebp/scikit-survival")
-                (commit (string-append "v" version))
-                ;; TODO: This package contains a copy of Eigen in
-                ;; sksurv/linear_model/src.  It would be good to figure out
-                ;; how to use our own Eigen package.
-                (recursive? #true)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0r0xi9saz247ph6bgrc3iknq0m60d8rs4sl4mdv4s1zja80w1cp8"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        ;; tests: 1013 passed, 105 warnings
-        #:test-flags
-        #~(list "--durations=10" ;to help in spotting long running tests
-                "--numprocesses" (number->string (min 4 (parallel-job-count))))
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'build 'set-version
-              (lambda _
-                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                        #$(version-major+minor version)))))))
-      (propagated-inputs
-       (list python-ecos
-             python-joblib
-             python-numexpr
-             python-numpy
-             python-osqp
-             python-pandas
-             python-scikit-learn
-             python-scipy))
-      (native-inputs
-       (list python-cython
-             python-packaging
-             python-pytest
-             python-pytest-xdist
-             python-setuptools
-             python-setuptools-scm))
-      (home-page "https://github.com/sebp/scikit-survival")
-      (synopsis "Survival analysis built on top of scikit-learn")
-      (description "Scikit-survival is a Python module for survival analysis
+  (package
+    (name "python-scikit-survival")
+    (version "0.26.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sebp/scikit-survival")
+              (commit (string-append "v" version))
+              ;; TODO: This package contains a copy of Eigen in
+              ;; sksurv/linear_model/src.  It would be good to figure out
+              ;; how to use our own Eigen package.
+              (recursive? #true)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r0xi9saz247ph6bgrc3iknq0m60d8rs4sl4mdv4s1zja80w1cp8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 1013 passed, 105 warnings
+      #:test-flags
+      #~(list "--durations=10" ;to help in spotting long running tests
+              "--numprocesses" (number->string (min 4 (parallel-job-count))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                      #$(version-major+minor version)))))))
+    (propagated-inputs
+     (list python-ecos
+           python-joblib
+           python-numexpr
+           python-numpy
+           python-osqp
+           python-pandas
+           python-scikit-learn
+           python-scipy))
+    (native-inputs
+     (list python-cython
+           python-packaging
+           python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm))
+    (home-page "https://github.com/sebp/scikit-survival")
+    (synopsis "Survival analysis built on top of scikit-learn")
+    (description "Scikit-survival is a Python module for survival analysis
 built on top of scikit-learn.  It allows doing survival analysis while
 utilizing the power of scikit-learn, e.g., for pre-processing or doing
 cross-validation.")
-      (license license:gpl3+)))
+    (license license:gpl3+)))
 
 (define-public python-scipy
   (package
