@@ -17221,9 +17221,6 @@ lowly expressed transcripts.")
 mapped paired-end sequencing reads.")
     (license license:gpl3+)))
 
-(define-deprecated-package fanc
-  python-fanc)
-
 (define-public python-genomic-regions
   (package
     (name "python-genomic-regions")
