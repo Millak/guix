@@ -6180,16 +6180,14 @@ included:
 (define-public java-commons-lang3
   (package
     (name "java-commons-lang3")
-    (version "3.12.0")
+    (version "3.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://apache/commons/lang/source/"
                            "commons-lang3-" version "-src.tar.gz"))
        (sha256
-        (base32 "09dcv1pkdx3hpf06py8p9511f1wkin6jpacdll0c8vxpbi3yfwzv"))
-       (patches
-        (search-patches "java-commons-lang-fix-dependency.patch"))))
+        (base32 "05b2zfmw1y6bnzf7v32zkhix0c0sab82lmr3ilxciza0l5w6nwya"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "commons-lang3.jar"
