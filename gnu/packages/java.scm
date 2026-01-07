@@ -7996,14 +7996,14 @@ This is a part of the Apache Commons Project.")
 (define-public java-commons-text
   (package
     (name "java-commons-text")
-    (version "1.9")
+    (version "1.15.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://apache/commons/text/source/"
                                   "commons-text-" version "-src.tar.gz"))
               (sha256
                (base32
-                "1k99ib2dxlqxb5y94kpzf4ix8xgxz1j3n9kq3ddssqqcccsp5ik2"))))
+                "0k0y3pkgrzm84a0z1ifi4b9ydaglzm9pgvaw9phxdcwmcqxjbkc8"))))
     (build-system ant-build-system)
     (arguments
      (list #:jar-name "java-commons-text.jar"
