@@ -8,6 +8,7 @@
 ;;; Copyright © 2023-2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 dan <i@dan.games>
+;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -132,7 +133,7 @@ is BLOCK-SIZE * COUNT, or FILE size if COUNT is not given."
     ;; starfive_visionfive2.dtb.  We cannot guarantee that users will
     ;; update this U-Boot, so set the FDT explicitly.
     (plain-file "uEnv.txt"
-      "fdtfile=starfive/jh7110-starfive-visionfive-2-v1.3b.dtb~%")))
+      "fdtfile=starfive/jh7110-starfive-visionfive-2-v1.3b.dtb")))
 
 
 ;;;
