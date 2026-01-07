@@ -845,6 +845,12 @@ asdf-build-system."
         #:description "LXQt desktop environment."
         #:scope (list "gnu/packages/lxqt.scm")))
 
+(define-team mate
+  (team 'mate
+        #:name "MATE team"
+        #:description "MATE desktop environment"
+        #:scope (list "gnu/packages/mate.scm")))
+
 (define-team mentors
   (team 'mentors
         #:name "Mentors"
@@ -1404,6 +1410,10 @@ the \"texlive\" importer."
                        "tinystar")
   hare)
 
+(define-member (person "FuncProgLinux"
+                       "softwarelibre@urutau-ltd.org"
+                       "FuncProgLinux")
+  mate)
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))

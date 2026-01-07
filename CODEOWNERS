@@ -272,6 +272,8 @@ gnu/packages/ibus\.scm                             @guix/localization
 
 gnu/packages/lxqt\.scm                             @guix/lxqt
 
+gnu/packages/mate\.scm                             @guix/mate
+
 
 gnu/build/icecat-extension\.scm                    @guix/mozilla
 gnu/packages/browser-extensions\.scm               @guix/mozilla
