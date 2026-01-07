@@ -23781,13 +23781,13 @@ as well as section details and data available.")
                (base32
                 "1zh0v47lxa33xg04jyvblzl1g4m3k2khx0b3xr6isnyinbkmlaxl"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-numpy))
     (native-inputs
      (list python-cython
            python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-numpy-1))
     (home-page "https://github.com/wmayner/pyemd")
     (synopsis
      "Wrapper for Pele and Werman's implementation of the Earth Mover's Distance")
