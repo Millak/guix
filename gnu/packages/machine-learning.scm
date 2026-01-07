@@ -23,7 +23,7 @@
 ;;; Copyright © 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
-;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 David Pflug <david@pflug.io>
 ;;; Copyright © 2024 Timothee Mathieu <timothee.mathieu@inria.fr>
 ;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
@@ -1064,7 +1064,7 @@ algorithm.")
 (define-public openmm
   (package
     (name "openmm")
-    (version "8.3.1")
+    (version "8.4.0")
     (source
      (origin
        (method git-fetch)
@@ -1074,7 +1074,7 @@ algorithm.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0pcy1f6r4h6z0b75gx4lcnkf7yr8342w2dch7jml1ycmzpqkxvfx"))))
+         "0lb1idyaas550fp6j8ykiy37lykkm7wzz5na70z27hj4m1m1sgdw"))))
     (build-system cmake-build-system)
     (arguments
      (list
