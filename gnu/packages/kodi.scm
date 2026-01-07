@@ -336,22 +336,22 @@ secondary errors.")
                 (dirname
                  (search-input-file
                   inputs
-                  "/lib/m2/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar")))
+                  "/lib/m2/org/apache/commons/commons-lang3/3.20.0/commons-lang3-3.20.0.jar")))
                (("\\$\\{apache-commons-text_SOURCE_DIR\\}")
                 (dirname
                  (search-input-file
                   inputs
-                  "/lib/m2/org/apache/commons/commons-text/1.9/commons-text-1.9.jar")))
+                  "/lib/m2/org/apache/commons/commons-text/1.15.0/commons-text-1.15.0.jar")))
                (("FetchContent_MakeAvailable\\(groovy\\)")
                 (string-append "set(groovy_SOURCE_DIR " (assoc-ref inputs "groovy") ")"))
                (("FetchContent_MakeAvailable\\(apache-commons-lang\\)")
                 (string-append "set(apache-commons-lang_SOURCE_DIR "
                                (assoc-ref inputs "java-commons-lang3")
-                               "/lib/m2/org/apache/commons/commons-lang3/3.12.0)"))
+                               "/lib/m2/org/apache/commons/commons-lang3/3.20.0)"))
                (("FetchContent_MakeAvailable\\(apache-commons-text\\)")
                 (string-append "set(apache-commons-text_SOURCE_DIR "
                                (assoc-ref inputs "java-commons-text")
-                               "/lib/m2/org/apache/commons/commons-text/1.9)"))
+                               "/lib/m2/org/apache/commons/commons-text/1.15.0)"))
                (("^set\\(GROOVY_VER.*")
                 (string-append "set(GROOVY_VER 3.0.5)\n")))
 
