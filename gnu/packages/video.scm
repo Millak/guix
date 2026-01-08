@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015, 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014-2016, 2018, 2020, 2025 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2024, 2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2015, 2018, 2019, 2020, 2021, 2023, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Alex Vong <alexvong1995@gmail.com>
@@ -5921,9 +5921,9 @@ alpha blending etc).")
      (origin
        (method url-fetch)
        (uri (string-append "https://files.dyne.org/frei0r"
-                            "?file=frei0r/old-releases/frei0r-plugins-"
-                            version
-                            ".tar.gz"))
+                           "/old-releases/frei0r-plugins-"
+                           version
+                           ".tar.gz"))
        (sha256
         (base32
          "0fjji3060r4fwr7vn91lwfzl80lg3my9lkp94kbyw8xwz7qgh7qv"))))
