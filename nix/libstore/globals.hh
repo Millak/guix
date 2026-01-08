@@ -103,7 +103,7 @@ struct Settings {
     /* The canonical system name, as returned by config.guess. */
     string thisSystem;
 
-    /* The maximum time in seconds that a builer can go without
+    /* The maximum time in seconds that a builder can go without
        producing any output on stdout/stderr before it is killed.  0
        means infinity. */
     time_t maxSilentTime;

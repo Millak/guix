@@ -170,7 +170,7 @@ void writeToStderr(const string & s);
 inline void (*_writeToStderr) (const unsigned char * buf, size_t count) = 0;
 
 
-/* Wrappers arount read()/write() that read/write exactly the
+/* Wrappers around read()/write() that read/write exactly the
    requested number of bytes. */
 void readFull(int fd, unsigned char * buf, size_t count);
 void writeFull(int fd, const unsigned char * buf, size_t count);
