@@ -24810,7 +24810,17 @@ language.")
        (snippet
         '(delete-file-recursively "lib/simde"))))
     (build-system cmake-build-system)
-    (arguments '(#:tests? #false)) ;no test target
+    (arguments
+     (list
+      #:tests? #false ;no test target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-gcc-14
+            (lambda _
+              (substitute* "src/a3m_compress.h"
+                (("#include <climits>")
+                 "#include <climits>
+#include <cstdint>")))))))
     (inputs
      (list openmpi simde))
     (native-inputs
