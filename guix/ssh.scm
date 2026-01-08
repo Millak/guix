@@ -64,7 +64,7 @@
 ;;; Code:
 
 (define %compression
-  "zlib@openssh.com,zlib")
+  "zlib@openssh.com,zlib,none")
 
 (define (host-key->type+key host-key)
   "Destructure HOST-KEY, an OpenSSH host key string, and return two values:
