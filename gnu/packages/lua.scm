@@ -531,6 +531,106 @@ such as:
 build system that uses the standard Lua command-line interpreter.")
     (license license:expat)))
 
+(define-public lua-language-server
+  (package
+    (name "lua-language-server")
+    (version "3.16.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/LuaLS/lua-language-server")
+                     (commit version)
+                     ;; There are quite a few bundled Lua libraries under the
+                     ;; '3rd' and 'meta/3rd' directories; most are currently
+                     ;; not packaged in Guix, and they all track exact
+                     ;; commits, so it would be annoying to maintain them as
+                     ;; separate origins (on top of having to patch the build
+                     ;; system to unbundle them).
+                     (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0kbbwz9cjw9b8sii2hki51s968n551r8z46h9gp9bd2m3g3l1l75"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; The test suite currently fails with luamake apparently attempting to
+      ;; find the bee.so shared object (see:
+      ;; <https://github.com/LuaLS/lua-language-server/issues/3325>).
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda* (#:key parallel-build? #:allow-other-keys)
+              (invoke "luamake"
+                      "-notest"
+                      "-j" (if parallel-build?
+                               (number->string (parallel-job-count))
+                               "1")
+                      "-v")))
+          (replace 'check
+            (lambda* (#:key parallel-tests? tests? #:allow-other-keys)
+              (when tests?
+                (invoke "luamake"
+                        "-j" (if parallel-tests?
+                                 (number->string (parallel-job-count))
+                                 "1")
+                        "test" "-v"))))
+          (replace 'install
+            ;; This is inspired by the package definition in Slackware.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((bin (string-append #$output "/bin"))
+                     (lib (string-append #$output
+                                         "/libexec/lua-language-server"))
+                     (lib/bin (string-append lib "/bin")))
+                ;; XXX: The binary expects some odd layout to find its resources,
+                ;; hence the bin subdirectory under libexec.
+                (mkdir-p lib)
+                (for-each (lambda (x)
+                            (copy-recursively x (string-append lib "/" x)))
+                          (list "bin"
+                                "debugger.lua"
+                                "locale"
+                                "main.lua"
+                                "meta"
+                                "script"))
+                ;; Create a custom wrapper, adjusted to log elsewhere than in
+                ;; its read-only location under the store.
+                (mkdir bin)
+                (call-with-output-file (string-append bin "/lua-language-server")
+                  (lambda (p)
+                    (format p "#!~a
+exec ~a --logpath=\"/tmp/runtime-$USER/lua-language-server/log\" \
+--metapath=\"/tmp/runtime-$USER/lua-language-server/meta\" \"$@\""
+                            (search-input-file inputs "bin/sh")
+                            (string-append lib/bin
+                                           "/lua-language-server"))))
+                (chmod (string-append bin "/lua-language-server") #o755)))))))
+    (native-inputs (list luamake))
+    (inputs (list bash-minimal))        ;for the wrapper
+    (home-page "https://github.com/LuaLS/lua-language-server")
+    (synopsis "Lua language server")
+    (description "The Lua language server provides various language
+ features for Lua to make development easier and faster, including:
+@itemize
+@item Support for all recent versions of Lua, including LuaJIT
+@item Jump to definition
+@item Dynamic type checking
+@item Find references
+@item Diagnostics/Warnings
+@item Syntax checking
+@item Element renaming
+@item Hover to view details on variables, functions, and more
+@item Auto-completion
+@item Support for libraries
+@item Code formatting
+@item Spell checking
+@item Custom plugins
+@item Documentation generation
+@end itemize")
+    (license license:expat)))
+
 (define (make-lua-ossl name lua)
   (package
     (name name)
