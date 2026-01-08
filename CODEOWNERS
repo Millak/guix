@@ -324,7 +324,7 @@ etc/manifests/release-desktop\.scm                 @guix/release
 
 gnu/packages/diffoscope\.scm                       @guix/reproduciblebuilds
 
-gnu/packages/ruby\.scm                             @guix/ruby
+gnu/packages/(ruby)(-.+|)\.scm$                    @guix/ruby
 guix/build/ruby-build-system\.scm                  @guix/ruby
 guix/build-system/ruby\.scm                        @guix/ruby
 guix/import/gem\.scm                               @guix/ruby

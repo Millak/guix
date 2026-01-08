@@ -954,7 +954,7 @@ release."
 (define-team ruby
   (team 'ruby
         #:name "Ruby team"
-        #:scope (list "gnu/packages/ruby.scm"
+        #:scope (list (make-regexp* "^gnu/packages/(ruby)(-.+|)\\.scm$")
                       "guix/build/ruby-build-system.scm"
                       "guix/build-system/ruby.scm"
                       "guix/import/gem.scm"
