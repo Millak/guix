@@ -46426,6 +46426,52 @@ be useful when working with the bitbake files in Yocto and OpenEmbedded
 projects.")
    (license license:gpl3+)))
 
+(define-public emacs-vulpea
+  (package
+    (name "emacs-vulpea")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/d12frosted/vulpea")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "166brn15x3l59mbvl6lb5136fdyfr4zbmb4k9v5ii35ikcw29b3f"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:emacs emacs-no-x   ; for sqlite support.
+      ;; Taken from Makefile, add --disable-dependencies.
+      #:test-command
+      #~(list "eldev" "--disable-dependencies" "-C" "-p" "-dtT" "test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "EMACSLOADPATH"
+                      (string-append
+                       (getcwd) "/test:"
+                       (getenv "EMACSLOADPATH"))))))))
+    (propagated-inputs (list emacs-emacsql emacs-s emacs-dash))
+    (native-inputs (list emacs-buttercup emacs-eldev))
+    (home-page "https://github.com/d12frosted/vulpea")
+    (synopsis "Note management library for Org mode")
+    (description
+     "Vulpea is a note management library for Org mode that maintains its own
+SQLite database for efficient querying and organization.  Key features:
+@itemize
+@item Fast note lookup via SQLite database with automatic sync
+@item Rich note structure: titles,aliases, tags, links, properties, metadata
+@item Flexible querying by tags, links,properties, dates, and more
+@item Metadata system using Org description lists
+@item Note creation with customizable templates
+@item Selection interface with filtering and alias expansion
+@end itemize
+See @url{https://github.com/d12frosted/vulpea} for documentation.")
+    (license license:gpl3+)))
+
 (define-public emacs-vunit-mode
   (let ((commit "b26ecc46464a57eb00bf62b15c0d717774ec804e")
         (revision "0"))
