@@ -12,7 +12,7 @@
 ;;; Copyright © 2015 Fabian Harfert <fhmgufs@web.de>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2018, 2020, 2021 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2016-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
@@ -8705,92 +8705,103 @@ theories} (SMT) solver.  It provides a C/C++ API, as well as Python bindings.")
 (define-public elpa
   (package
     (name "elpa")
-    (version "2018.11.001")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://elpa.mpcdf.mpg.de/software/"
-                                  "tarball-archive/Releases/"
-                                  version "/elpa-" version ".tar.gz"))
-              (sha256
-               (base32
-                "05hv3v5i6xmziaizw350ff72y1c3k662r85fm3xfdrkclj5zw9yc"))))
+    (version "2025.06.001")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.mpcdf.mpg.de/elpa/elpa")
+             (commit (string-append "new_release_" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j2mqa8g76z6xmwji99320v6q98p823glvxjsdcdpaji59wgvdql"))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("fortran" ,gfortran)
-       ("perl" ,perl)))                 ;for configure and deps
-    (inputs
-     `(("blas" ,openblas)))
     (arguments
-     `(#:configure-flags
-       `("--enable-openmp"
-         "--with-mpi=no"
-         ;; ELPA unfortunately does not support runtime dispatch, so we can
-         ;; only enable the "generic" kernels.  See the "Cross compilation"
-         ;; section of INSTALL.md.
-         "--enable-generic"
-         "--disable-sse" "--disable-sse-assembly" ;Require SSE3
-         "--disable-avx" "--disable-avx2" "--disable-avx512"
-         ,(string-append "CFLAGS=-O3 "
-                         "-funsafe-loop-optimizations -funsafe-math-optimizations "
-                         "-ftree-vect-loop-version -ftree-vectorize "
-                         ,(let ((system (or (%current-target-system)
-                                            (%current-system))))
-                            (cond
-                             ((or (string-prefix? "x86_64" system)
-                                  (string-prefix? "i686" system))
-                              "-msse2")
-                             (else "")))))
-       #:parallel-tests? #f             ;tests are multi-threaded, via BLAS
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-header-generation
-           (lambda _
-             (substitute* "configure"
-               (("^  *make.*top_srcdir=\"\\$srcdir\"" &)
-                (string-append & " CPP=\"$CPP\"")))
-             #t))
-         (add-before 'check 'setup-tests
-           (lambda _
-             ;; Decrease test time and RAM use by computing fewer eigenvalues.
-             ;; The flags are (MATRIX-SIZE, EIGENVALUES, BLOCK-SIZE), where
-             ;; the default is (500, 250, 16) for C tests and (5000, 150, 16)
-             ;; for Fortran.  This also causes several tests to pass that
-             ;; otherwise would otherwise fail with matrix size 5000; possibly
-             ;; due to floating point tolerances that are too tight.
-             (setenv "TEST_FLAGS" "1500 50 16") ;from elpa.spec
-             (setenv "OMP_NUM_THREADS" (number->string (parallel-job-count)))
-             (substitute* "Makefile"
-               ;; Test scripts are generated, patch the shebang
-               (("#!/bin/bash") (string-append "#!" (which "sh"))))
-             #t)))))
+     (list #:configure-flags
+           #~`("--enable-openmp" "--with-mpi=no"
+               ;; ELPA unfortunately does not support runtime dispatch, so we
+               ;; can only enable the "generic" kernels.  See the "Cross
+               ;; compilation" section of INSTALL.md.
+               "--enable-generic-kernels"
+               "--disable-sse"
+               "--disable-sse-assembly"           ;Require SSE3
+               "--disable-avx"
+               "--disable-avx2"
+               "--disable-avx512"
+               #$(string-append "CFLAGS=-O3 -funsafe-loop-optimizations "
+                                "-funsafe-math-optimizations "
+                                "-ftree-vect-loop-version -ftree-vectorize "
+                                (let ((system (or (%current-target-system)
+                                                  (%current-system))))
+                                  (cond
+                                   ((or (string-prefix? "x86_64" system)
+                                        (string-prefix? "i686" system))
+                                    "-msse2")
+                                   (else "")))))
+           #:parallel-tests? #f ;tests are multi-threaded, via BLAS
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'bootstrap 'patch-shebangs-early
+                 (lambda _
+                   (patch-shebang "generate_automake_test_programs.py")))
+               (add-before 'configure 'patch-header-generation
+                 (lambda _
+                   (substitute* "configure"
+                     (("^  *make.*top_srcdir=\"\\$srcdir\"" &)
+                      (string-append & " CPP=\"$CPP\""))) #t))
+               (add-before 'check 'setup-tests
+                 (lambda _
+                   ;; Decrease test time and RAM use by computing fewer
+                   ;; eigenvalues.  The flags are (MATRIX-SIZE, EIGENVALUES,
+                   ;; BLOCK-SIZE), where the default is (500, 250, 16) for C
+                   ;; tests and (5000, 150, 16) for Fortran.  This also causes
+                   ;; several tests to pass that otherwise would otherwise
+                   ;; fail with matrix size 5000; possibly due to floating
+                   ;; point tolerances that are too tight.
+                   (setenv "TEST_FLAGS" "1500 50 16") ;from elpa.spec
+                   (setenv "OMP_NUM_THREADS"
+                           (number->string (parallel-job-count)))
+                   (substitute* "Makefile"
+                     ;; Test scripts are generated, patch the shebang
+                     (("#!/bin/bash")
+                      (string-append "#!" (which "sh")))))))))
+    (native-inputs
+     (list autoconf-2.71
+           automake
+           libtool
+           gfortran
+           perl
+           python))
+    (inputs (list openblas))
     (home-page "https://elpa.mpcdf.mpg.de")
     (synopsis "Eigenvalue solvers for symmetric matrices")
     (description
      "The ELPA library provides efficient and scalable direct eigensolvers for
 symmetric matrices.")
-    (license license:lgpl3)))
+    (license license:lgpl3)
+    (properties '((tunable? . #t)))))
 
 (define-public elpa-openmpi
-  (package (inherit elpa)
+  (package/inherit elpa
     (name "elpa-openmpi")
     (inputs
-     `(("mpi" ,openmpi)
-       ("scalapack" ,scalapack)
-       ,@(package-inputs elpa)))
+     (modify-inputs (package-inputs elpa)
+       (prepend openmpi scalapack zlib)))
     (arguments
      (substitute-keyword-arguments (package-arguments elpa)
-       ((#:configure-flags cf '())
-        `(cons "--with-mpi=yes" (delete "--with-mpi=no" ,cf)))
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (add-before 'check 'mpi-setup
-             (lambda _
-               ;; Tests use 2 mpi tasks by default, use our remaining build
-               ;; cores as OpenMP threads.
-               (setenv "OMP_NUM_THREADS" (number->string
-                                          (max (quotient (parallel-job-count) 2)
-                                               1)))
-               (,%openmpi-setup)))))))
+       ((#:configure-flags cf #~())
+        #~(cons "--with-mpi=yes"
+                (delete "--with-mpi=no" #$cf)))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'check 'mpi-setup
+              (lambda _
+                ;; Tests use 2 mpi tasks by default, use our remaining build
+                ;; cores as OpenMP threads.
+                (setenv "OMP_NUM_THREADS"
+                        (number->string (max (quotient (parallel-job-count) 2)
+                                             1)))
+                (#$%openmpi-setup)))))))
     (synopsis "Eigenvalue solvers for symmetric matrices (with MPI support)")))
 
 (define-public elemental
