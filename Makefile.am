@@ -296,6 +296,7 @@ MODULES =					\
   guix/build/toml.scm			\
   guix/search-paths.scm				\
   guix/packages.scm				\
+  guix/import/apache.scm			\
   guix/import/cabal.scm				\
   guix/import/composer.scm			\
   guix/import/cpan.scm				\
