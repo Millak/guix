@@ -4976,7 +4976,7 @@ objects.")
 (define-public python-pytensor
   (package
     (name "python-pytensor")
-    (version "2.28.3") ; the minimal version supporting SciPy 1.12.0
+    (version "2.36.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4985,11 +4985,11 @@ objects.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1yz1yslms6kdmy4sgnvbnghhclcpkc80z3vaw9c2y3b3j1fs9b4v"))))
+                "0m9nmwnn0ixrk9ml0yc6qjdcw0vmw7swfcw8vahyfmp70pirhimn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1437 passed, 111 skipped, 11 deselected, 8 xfailed, 154 warnings
+      ;; tests: 1906 passed, 2581 skipped, 34 deselected, 12 xfailed, 274 warnings
       #:test-flags
       ;; XXX: Full test suite takes about 20-30min to complete in single
       ;; thread, attempt to run tests in parallel with pytest-xdist fails even
@@ -4997,37 +4997,60 @@ objects.")
       ;; improve it.
       ;;
       ;; Upstream implements a script, showing slow tests which may be used to
-      ;; exclude even more hanging/slow ones, see
+      ;; exclude even more hanging/slow ones, see:
       ;; <scripts/slowest_tests/extract-slow-tests.py>.
       ;;
-      ;; Skip computationally intensive tests.
-      #~(list "--ignore" "tests/scan/"
-              "--ignore" "tests/tensor/"
-              "--ignore" "tests/sandbox/"
-              "--ignore" "tests/sparse/sandbox/"
-              ;; Tests hang while running from these files.
-              "--ignore" "tests/compile/test_compilelock.py"
-              "--ignore" "tests/link/jax/test_tensor_basic.py"
-              ;; XXX: Tests finish with error in these files, check why.
-              "--ignore" "tests/compile/function/test_types.py"
-              "--ignore" "tests/link/numba/test_basic.py"
-              "--ignore" "tests/link/numba/test_blockwise.py"
-              "--ignore" "tests/link/numba/test_elemwise.py"
-              ;; XXX: Tests fail with AssertionError.
-              "--ignore" "tests/graph/rewriting/"
-              "--deselect" "tests/graph/test_destroyhandler.py::test_misc"
-              "-k" (string-join
-                    ;; Skip benchmark tests.
-                    (list "not test_elemwise_speed"
-                          "test_logsumexp_benchmark"
-                          "test_fused_elemwise_benchmark"
-                          "test_scan_multiple_output"
-                          "test_vector_taps_benchmark"
-                          "test_cython_performance"
-                          ;; Assertion fails in tests.
-                          "test_choose_signature"
-                          "test_fgraph_to_python_names")
-                    " and not "))
+      #~(list "--benchmark-disable"
+              "--benchmark-skip"
+              "--durations=50"
+              ;; Skip computationally intensive tests.
+              "--ignore=tests/scan/"
+              "--ignore=tests/tensor/"
+              "--ignore=tests/sandbox/"
+              "--ignore=tests/sparse/sandbox/"
+              ;; A mixture of assertions are not equal in these tests.
+              "--deselect=tests/link/numba/test_nlinalg.py::test_Eigh[x0-L-None]"
+              #$@(map (lambda (test)
+                        (string-append "--deselect=tests/graph/rewriting/"
+                                       "test_basic.py::"
+                                       test))
+                      ;; Tests fail with similar errors: AssertionError:
+                      ;; assert 'FunctionGraph(Op1(Op2(x, y), z))' ==
+                      ;; 'FunctionGraph(Op4(z, y))'
+                      (list "TestPatternNodeRewriter::test_replace_output"
+                            "TestPatternNodeRewriter::test_nested_out_pattern"
+                            "TestPatternNodeRewriter::test_unification_1"
+                            "TestPatternNodeRewriter::test_replace_subgraph"
+                            "TestPatternNodeRewriter::test_no_recurse"
+                            "TestPatternNodeRewriter::test_multiple"
+                            "TestPatternNodeRewriter::test_nested_even"
+                            "TestPatternNodeRewriter::test_nested_odd"
+                            "TestPatternNodeRewriter::test_expand"
+                            "TestPatternNodeRewriter::test_ambiguous"
+                            "TestPatternNodeRewriter::test_constant"
+                            "TestPatternNodeRewriter::test_constraints"
+                            "TestPatternNodeRewriter::test_match_same"
+                            "TestPatternNodeRewriter::test_eq"
+                            "TestEquilibrium::test_1"
+                            "TestEquilibrium::test_2"
+                            "TestEquilibrium::test_low_use_ratio"
+                            ;; A mixture of assertions are not equal:
+                            "TestPatternNodeRewriter::test_allow_multiple_clients"
+                            "TestPatternNodeRewriter::test_op_pattern"
+                            "test_patternsub_values_eq_approx[out_pattern0-True]"
+                            "test_patternsub_values_eq_approx[out_pattern0-False]"
+                            "test_patternsub_values_eq_approx[x-True]"
+                            "test_patternsub_values_eq_approx[x-False]"
+                            "test_patternsub_multi_output_nodes"))
+              #$@(map (lambda (test)
+                        (string-append "--deselect=tests/graph/" test))
+                      (list "rewriting/test_kanren.py::test_kanren_basic"
+                            "rewriting/test_kanren.py::test_KanrenRelationSub_filters"
+                            "rewriting/test_kanren.py::test_KanrenRelationSub_dot"
+                            "rewriting/test_unify.py::test_unify_Variable"
+                            "rewriting/test_unify.py::test_ConstrainedVar"
+                            "rewriting/test_unify.py::test_unify_OpPattern"
+                            "test_destroyhandler.py::test_misc")))
       #:phases
       #~(modify-phases %standard-phases
           ;; Replace version manually because pytensor uses
@@ -5047,7 +5070,9 @@ objects.")
               (delete-file-recursively "pytensor"))))))
     (native-inputs (list python-cython
                          python-pytest
+                         python-pytest-benchmark
                          python-pytest-mock
+                         python-pytest-xdist
                          python-versioneer
                          python-setuptools))
     (propagated-inputs (list python-cons
@@ -5055,11 +5080,13 @@ objects.")
                              python-filelock
                              python-logical-unification
                              python-minikanren
+                             python-numba
                              python-numpy
                              python-scipy
                              ;; [optinal]
+                             ;; python-jaxlib
                              ;; python-jax
-                             python-numba))
+                             #;python-llvmlite))
     (home-page "https://pytensor.readthedocs.io/en/latest/")
     (synopsis
      "Library for mathematical expressions in multi-dimensional arrays")
