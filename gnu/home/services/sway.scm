@@ -129,9 +129,6 @@
 (define (list-of-string-ish? lst)
   (every string-ish? lst))
 
-(define (list-of-packages? lst)
-  (every package? lst))
-
 (define (bar-position? p)
   (member p '(top bottom)))
 

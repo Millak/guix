@@ -535,7 +535,10 @@ the list result in @code{#t} when applying PRED? on them."
           #f)))
 
 (define list-of-packages?
-  (list-of package?))
+  (list-of (match-lambda
+             ((? package? pkg) #t)
+             (((? package? pkg) output) #t)
+             (_ #f))))
 
 (define list-of-strings?
   (list-of string?))
