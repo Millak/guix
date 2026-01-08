@@ -4981,7 +4981,7 @@ launch daemons into the relevant nodes.")
                                      ;; Fails to build as c++17.
                                      "CXXFLAGS=-std=c++14 -O2 -g")))
     (inputs
-     (list openmpi munge launchmon libgcrypt))
+     (list openmpi munge launchmon libgcrypt zlib))
     (synopsis "Scalable library loading in HPC environments")
     (description
      "Spindle is a tool for improving the performance of dynamic library and
