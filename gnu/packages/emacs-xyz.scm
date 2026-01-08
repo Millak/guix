@@ -164,6 +164,7 @@
 ;;; Copyright @ 2025 Nik Gaffney <nik@fo.am>
 ;;; Copyright © 2025 Untrusem <mysticmoksh@riseup.net>
 ;;; Copyright © 2025 case_lambda <case_lambda@disroot.org>
+;;; Copyright © 2026 Kenny Ballou <kb@devnulllabs.io>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3071,6 +3072,25 @@ Alternatively the menu can be bound globally, for example:
 mode line as @samp{[ status | name (primary) secondary ]}.  It can be
 displayed at the bottom or at the top.")
       (license license:gpl3+))))
+
+(define-public emacs-nftables-mode
+  (package
+    (name "emacs-nftables-mode")
+    (version "1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/nftables-mode-"
+                           version ".tar"))
+       (sha256
+        (base32 "1wjw6n60kj84j8gj62mr6s97xd0aqvr4v7npyxwmhckw9z13xcqv"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #f))
+    (home-page "https://elpa.gnu.org/packages/nftables-mode.html")
+    (synopsis "Major mode for editing netfilter rules")
+    (description "This major mode offers basic highlighting and primitive
+indentation for @acronym{NFT, netfilter rule files}.")
+    (license license:gpl3+)))
 
 (define-public emacs-moody
   (package
