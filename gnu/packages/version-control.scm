@@ -6,7 +6,7 @@
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2016, 2019, 2021 Eric Bavier <bavier@posteo.net>
-;;; Copyright © 2015-2025 Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2026 Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2018, 2020, 2021, 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
@@ -3794,6 +3794,7 @@ a built-in wiki, built-in file browsing, built-in tickets system, etc.")
     (arguments
      (list
        #:install-source? #f
+       #:features '(list "git")
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'install 'install-extras
@@ -3832,7 +3833,7 @@ a built-in wiki, built-in file browsing, built-in tickets system, etc.")
                  (list this-package)
                  '())
              (list pkg-config)))
-    (inputs (cons* libsodium openssl (cargo-inputs 'pijul)))
+    (inputs (cons* libgit2-1.3 libssh2 libsodium openssl (cargo-inputs 'pijul)))
     (home-page "https://nest.pijul.com/pijul/pijul")
     (synopsis "Distributed version control system")
     (description "This package provides pijul, a sound and fast distributed
