@@ -21143,7 +21143,8 @@ to an artifact/contaminant file.")
     (build-system gnu-build-system)
     (arguments
      (list
-      #:make-flags #~(list "OPENMP=t")
+      #:make-flags #~(list "OPENMP=t"
+                           "CFLAGS=-Wall -Wno-error=incompatible-pointer-types")
       #:test-target "test"
       #:phases
       #~(modify-phases %standard-phases
@@ -21152,6 +21153,11 @@ to an artifact/contaminant file.")
             (lambda _
               (substitute* "src/binarySequences.c"
                 (("../third-party/zlib-1.2.3/zlib.h") "zlib.h"))))
+          (add-before 'build 'set-home-env
+            (lambda _
+              ;; TeXLive requires HOME to be set.
+              ;;  Permission denied: '/homeless-shelter'
+              (setenv "HOME" "/tmp")))
           (replace 'install
             (lambda _
               (let ((bin (string-append #$output "/bin"))
@@ -21166,7 +21172,8 @@ to an artifact/contaminant file.")
      (list openmpi zlib))
     (native-inputs
      (list (texlive-local-tree
-            (list texlive-infwarerr
+            (list texlive-ec
+                  texlive-infwarerr
                   texlive-kvoptions
                   texlive-pdftexcmds))))
     (home-page "https://www.ebi.ac.uk/~zerbino/velvet/")
