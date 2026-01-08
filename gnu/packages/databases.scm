@@ -5576,52 +5576,41 @@ other traditional Python scientific computing packages.")
 (define-public python-fastparquet
   (package
     (name "python-fastparquet")
-    (version "2024.11.0")
+    (version "2025.12.0")
     (source
      (origin
-       ;; Fastparquet uses setuptools-scm to find the current version. This
-       ;; only works when we use the PyPI tarball, which does not contain
-       ;; tests. Instead, we use the git-fetch method and set the version via
-       ;; envar.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/dask/fastparquet")
-             (commit version)))
+              (url "https://github.com/dask/fastparquet")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dhmyag06d073g1q58npbcikr9hjd6jgf05721gkl6m1gsprv7hq"))))
+        (base32 "15zd2khsazrbi6p4lzbwp2x96sk2zk2adxj3905wac9xzwlkbvrc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 382 passed, 124 skipped, 2 warnings
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count)))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
+          (add-after 'unpack 'remove-dependencies-on-git
             (lambda _
               (substitute* "setup.py"
-                ;; Remove dependencies on git.
-                (("^.*\"git\", \"status\".*$") "")
-                ;; Guix is only compatible with a single version of numpy
-                ;; at a time. We can safely remove this dependency.
-                (("'oldest-supported-numpy'") ""))))
-          (add-before 'build 'pretend-version
-            ;; The version string is usually derived via setuptools-scm, but
-            ;; without the git metadata available, the version string is set
-            ;; to '0.0.0'.
+                (("^.*\"git\", \"status\".*$") ""))))
+          (add-before 'build 'set-version
             (lambda _
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
-          (add-before 'check 'build-cython-extensions
-            ;; Cython extensions need to be built for the check phase.
+          (add-before 'check 'remove-local-source
             (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+              (copy-recursively "fastparquet/test" "test")
+              (delete-file-recursively "fastparquet"))))))
     (native-inputs
      (list python-cython
            python-pytest
            python-pytest-xdist
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-cramjam
            python-fsspec
