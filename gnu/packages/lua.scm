@@ -22,7 +22,7 @@
 ;;; Copyright © 2023 Valter Nazianzeno <manipuladordedados@gmail.com>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2024 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
-;;; Copyright © 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2024, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
@@ -72,6 +72,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages rdf)
@@ -394,6 +395,141 @@ directory structure and file attributes.")
 
 (define-public lua5.2-filesystem
   (make-lua-filesystem "lua5.2-filesystem" lua-5.2))
+
+(define-public lua-bee
+  ;; There are no releases; use the commit known to work with the packaged
+  ;; luamake.
+  (let ((commit "fe3feb2b62e8f0179dad5abb438ed4df39f675d4")
+        (revision "0"))
+    (package
+      (name "lua-bee")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/actboy168/bee.lua/")
+                       (commit commit)
+                       ;; Requires a few git submodules such as the Lua
+                       ;; sources to patch and a few source libraries.
+                       (recursive? #t)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1iv4cdkgcs123zw67ngq4jfbp7p7hkmj8zg2lbblipmm0hivhbd2"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        ;; TODO: Re-enable the tests after luamake can use a newer bee commit
+        ;; (see:
+        ;; <https://github.com/actboy168/bee.lua/commit/679c566f0f26bcf0c19e37066e678993122e1f34>).
+        #:tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (replace 'build
+              (lambda* (#:key parallel-build? #:allow-other-keys)
+                (invoke "luamake"
+                        "-EXE" "lua"
+                        "-notest"
+                        "-j" (if parallel-build?
+                                 (number->string (parallel-job-count))
+                                 "1")
+                        "-v")))
+            (replace 'check
+              (lambda* (#:key parallel-tests? tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "luamake"
+                          "-EXE" "lua"
+                          "-j" (if parallel-tests?
+                                   (number->string (parallel-job-count))
+                                   "1")
+                          "test" "-v"))))
+            (replace 'install
+              (lambda _
+                (install-file "build/bin/lua"
+                              (string-append #$output "/bin"))
+                (install-file "build/bin/bee.so"
+                              (string-append #$output "/lib/")))))))
+      (native-inputs (list luamake))
+      (home-page "https://github.com/actboy168/bee.lua/")
+      (synopsis "Lua runtime with a few extra features")
+      (description "The Bee Lua runtime implements a few extra features
+such as:
+@itemize
+@item Deterministic tables traversal
+@item Enable @code{lua_assert} in debug mode
+@item Add error hook (for debugger)
+@item Add resume/yield hook (for debugger)
+@item Disable tail calls in debug mode (for debugger)
+@end itemize")
+      (license license:expat))))
+
+(define-public luamake
+  (package
+    (name "luamake")
+    (version "1.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/actboy168/luamake")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "075sp8dpcb81kwrpp843f1y00kvaqan09np6spf6b72z5dhf6aiw"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-lua-bee-sources
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (copy-recursively (dirname
+                                 (search-input-directory
+                                  (or native-inputs inputs) "bee"))
+                                "bee.lua")))
+          (add-after 'unpack 'patch-commands
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "scripts/action.lua"
+                (("\"ninja\"")
+                 (format #f "~s" (search-input-file inputs "bin/ninja"))))))
+          (delete 'configure)
+          (replace 'build
+            (lambda* (#:key parallel-build? #:allow-other-keys)
+              (invoke "compile/build.sh" "-j"
+                      (if parallel-build?
+                          (number->string (parallel-job-count))
+                          "1")
+                      "notest" "-v")))
+          (replace 'check
+            (lambda* (#:key parallel-tests? tests? #:allow-other-keys)
+              (when tests?
+                (invoke "compile/build.sh" "-j"
+                        (if parallel-tests?
+                            (number->string (parallel-job-count))
+                            "1")
+                        "test" "-v"))))
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (lib (string-append #$output "/lib/luamake")))
+                (install-file "luamake" lib)
+                (install-file "main.lua" lib)
+                (copy-recursively "scripts"
+                                  (string-append lib "/scripts"))
+                (copy-recursively "tools"
+                                  (string-append lib "/tools"))
+                (mkdir bin)
+                (symlink (string-append lib "/luamake")
+                         (string-append bin "/luamake"))))))))
+    (native-inputs (list (package-source lua-bee)
+                         ninja))
+    (inputs (list ninja))
+    (home-page "https://github.com/actboy168/luamake")
+    (synopsis "Make-inspired configuration and build system")
+    (description "Luamake is a platform independent configuration and
+build system that uses the standard Lua command-line interpreter.")
+    (license license:expat)))
 
 (define (make-lua-ossl name lua)
   (package
