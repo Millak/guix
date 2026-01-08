@@ -558,20 +558,20 @@ announcement.")
 (define-public ruby-json
   (package
     (name "ruby-json")
-    (version "2.1.0")
+    (version "2.18.1")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "json" version))
        (sha256
         (base32
-         "01v6jjpvh3gnq6sgllpfqahlgxzj50ailwhj9b3cd20hi2dx0vxp"))))
+         "11prr7nrxh1y4rfsqa51gy4ixx63r18cz9mdnmk0938va1ajf4gy"))))
     (build-system ruby-build-system)
     (arguments '(#:tests? #f)) ; dependency cycle with sdoc
     (synopsis "JSON library for Ruby")
     (description "This Ruby library provides a JSON implementation written as
 a native C extension.")
-    (home-page "http://json-jruby.rubyforge.org/")
+    (home-page "https://docs.ruby-lang.org/en/master/JSON.html")
     (license (list license:ruby license:gpl2)))) ; GPL2 only
 
 (define-public ruby-mime-types
