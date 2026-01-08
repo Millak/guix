@@ -1259,42 +1259,42 @@ algorithms for evaluating Bayesian evidence.")
 (define-public python-pymc
   (package
     (name "python-pymc")
-    (version "5.21.0")
-    (source (origin
-              (method git-fetch)        ; no tests in PyPI
-              (uri (git-reference
-                    (url "https://github.com/pymc-devs/pymc")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0azkbl0mpanza35ibdqdm21bf45n3xi26wy01lnxzxqblcjcny9l"))))
+    (version "5.27.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pymc-devs/pymc")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n2qj13qpd58qg8s5gx2qxiiy7hjpk6k8z0a4ysr3jc66d12s092"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f ; tests are too computationally intensive
-           #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'versioneer
-                          (lambda _
-                            (invoke "versioneer" "install")
-                            (substitute* "setup.py"
-                              (("version=versioneer.get_version\\(),")
-                               (format #f "version=~s," #$version)))))
-                        (add-after 'unpack 'relax-requirements
-                          (lambda _
-                            (substitute* "requirements.txt"
-                              (("scipy>=.*")
-                               "scipy\n")))))))
-    (native-inputs (list python-setuptools python-versioneer))
-    (propagated-inputs (list python-arviz
-                             python-cachetools
-                             python-cloudpickle
-                             python-numpy
-                             python-pandas
-                             python-pytensor
-                             python-rich
-                             python-scipy
-                             python-threadpoolctl
-                             python-typing-extensions))
+     (list
+      #:tests? #f ; tests are too computationally intensive
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'versioneer
+            (lambda _
+              (invoke "versioneer" "install")
+              (substitute* "setup.py"
+                (("version=versioneer.get_version\\(),")
+                 (format #f "version=~s," #$version))))))))
+    (native-inputs
+     (list python-setuptools
+           python-versioneer))
+    (propagated-inputs
+     (list python-arviz
+           python-cachetools
+           python-cloudpickle
+           python-numpy
+           python-pandas
+           python-pytensor
+           python-rich
+           python-scipy
+           python-threadpoolctl
+           python-typing-extensions))
     (home-page "https://github.com/pymc-devs/pymc")
     (synopsis "Library for probabilistic programming in Python")
     (description
