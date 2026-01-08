@@ -4985,6 +4985,21 @@ user-space processes.")
     (license (list license:lgpl2.1      ; library
                    license:gpl2+))))    ; command-line utilities
 
+(define-public fuse-3.18
+  (package
+    (inherit fuse)
+    (name "fuse")
+    (version "3.18.1")
+    (source (origin
+              (method url-fetch)
+              (uri
+               (string-append "https://github.com/libfuse/libfuse/releases/"
+                              "download/fuse-" version
+                              "/fuse-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0b1jp5gp2gv40gv6cvmv86rcr4l0mdh050qbvnxl0xcwya45qffx"))))))
+
 (define-public fuse-2
   (package
     (inherit fuse)
