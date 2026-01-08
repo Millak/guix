@@ -34698,8 +34698,8 @@ files are easily readable and they work nicely with version control systems.")
     (license license:gpl3+)))
 
 (define-public emacs-nerd-icons
-  (let ((commit "4bd9795f1f3f47cb874e10ff5c3845e037f0b3e2")
-        (revision "1"))
+  (let ((commit "d41902fe68a94fcf4394f25a89ba2d510bec4461")
+        (revision "2"))
     (package
       (name "emacs-nerd-icons")
       (version (git-version "0.1.0" revision commit))
@@ -34711,10 +34711,11 @@ files are easily readable and they work nicely with version control systems.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1imklm81jsq2jdjprsjm8pdq701c4l0rgn7l0f3l3xs602kg49l1"))))
+           "08j8sw8ik55pd0jw1nar90016nnd5bicd5mhrm202xzigqmx2bxl"))))
       (build-system emacs-build-system)
       (arguments
-       (list #:include #~(cons "^data\\/" %default-include)))
+       (list #:include #~(cons "^data\\/" %default-include)
+             #:tests? #f))              ; no tests
       (synopsis "Library for easily using nerd font icons inside Emacs")
       (description "Nerd-icons an alternative to all-the-icons.  It works on both
 GUI and terminal, and requires a nerd font installed on your system.")
