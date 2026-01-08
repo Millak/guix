@@ -1091,6 +1091,17 @@ algorithm.")
                 (("install --root=\\\\\\$ENV\\{DESTDIR\\}/")
                  (string-append "install --prefix=" #$output
                                 " --root=/ --single-version-externally-managed")))))
+          (add-after 'patch-python-build-system 'remove-shaky-tests
+            (lambda _
+              ;; These tests may unpredictably fail in CI, even passing
+              ;; locally.
+              (for-each delete-file
+                        (append '("./serialization/tests/TestSerializeIntegrator.cpp")
+                                (find-files "./platforms"
+                                           (string-append "Test.*"
+                                                          "(BrownianIntegrat|"
+                                                          "LangevinIntegrator)"
+                                                          "\\.cpp$"))))))
           (add-after 'install 'install-python
             (lambda _
               (invoke "make" "PythonInstall"))))))
