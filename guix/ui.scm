@@ -319,7 +319,7 @@ VARIABLE and return it, or #f if none was found."
 (define %hint-color (color BOLD CYAN))
 
 (define (texinfo-quote str)
-  "Quote at signs and braces in STR to obtain its Texinfo represention."
+  "Quote at signs and braces in STR to obtain its Texinfo representation."
   (list->string
    (string-fold-right (lambda (chr result)
                         (if (memq chr '(#\@ #\{ #\}))

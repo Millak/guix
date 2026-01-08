@@ -35,7 +35,7 @@
 (define (cargo-lock-string->scm str)
   (peg:tree (search-for-pattern cargo-lock str)))
 
-;; Auxiliar peg patterns
+;; Auxiliary peg patterns
 (define-peg-pattern numeric-char body
   (range #\0 #\9))
 

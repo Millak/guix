@@ -122,7 +122,7 @@ PROC callback."
 
   (define (process-args args)
     (match args
-      ;; Workaround to accpet ‘--insert=FILE’, for the consistency of
+      ;; Workaround to accept ‘--insert=FILE’, for the consistency of
       ;; command-line interface.
       ((arg . rest)
        (if (string-prefix? "--insert=" arg)

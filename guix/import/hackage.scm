@@ -222,7 +222,7 @@ object."
 (define (filter-dependencies dependencies own-names)
   "Filter the dependencies included with the GHC compiler from DEPENDENCIES, a
 list with the names of dependencies.  OWN-NAMES is the name of the Cabal
-package being processed and its internal libaries and is used to filter
+package being processed and its internal libraries and is used to filter
 references to itself."
   (let ((ignored-dependencies (map string-downcase
                                    (append own-names ghc-standard-libraries))))

@@ -78,7 +78,7 @@
 (define revkeysig-rx                    ; good signature, but revoked key
   (make-regexp "^\\[GNUPG:\\] REVKEYSIG ([[:xdigit:]]+) (.*)$"))
 (define errsig-rx
-  ;; Note: The fingeprint part (the last element of the line) appeared in
+  ;; Note: The fingerprint part (the last element of the line) appeared in
   ;; GnuPG 2.2.7 according to 'doc/DETAILS', and it may be missing.
   (make-regexp
    "^\\[GNUPG:\\] ERRSIG ([[:xdigit:]]+) ([^ ]+) ([^ ]+) ([^ ]+) ([[:digit:]]+) ([[:digit:]]+)(.*)"))

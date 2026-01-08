@@ -102,7 +102,7 @@
 (define string->license
   (match-lambda
    ;; List of valid values from https://metacpan.org/pod/CPAN::Meta::Spec.
-   ;; Some licenses are excluded based on their absense from (guix licenses).
+   ;; Some licenses are excluded based on their absence from (guix licenses).
    ("agpl_3" 'agpl3)
    ;; apache_1_1
    ("apache_2_0" 'asl2.0)
