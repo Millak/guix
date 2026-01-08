@@ -187,7 +187,7 @@ configuration.scm."
             (package-arguments guix)))))
 
 ;; NOTE: Normally, we would use (current-guix), along with url
-;; overriden to the upstream repository to not leak our local checkout.
+;; overridden to the upstream repository to not leak our local checkout.
 ;; But currently, the (current-guix) derivation has to be computed through
 ;; QEMU for systems other than your host system. This takes a lot of time,
 ;; it takes at least half an hour to get the derivations.
