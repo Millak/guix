@@ -16038,6 +16038,7 @@ programs for inferring phylogenies (evolutionary trees).")
                     "DEFAULT_VECTOR_FLAG=\"-march=athlon64-sse3\"\n"))))
              (add-after 'build 'build-manual
                (lambda _
+                 (setenv "HOME" "/tmp/")
                  (with-directory-excursion "doc"
                    (invoke "make" "phyml-manual.pdf"))))
              (add-after 'build-manual 'install-manual
@@ -16059,6 +16060,7 @@ programs for inferring phylogenies (evolutionary trees).")
            (texlive-local-tree
             (list texlive-caption
                   texlive-cite
+                  texlive-ec
                   texlive-fancyvrb
                   texlive-infwarerr
                   texlive-kvoptions
