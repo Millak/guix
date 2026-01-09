@@ -54255,13 +54255,13 @@ The service can be used with a @code{readymedia-configuration} wrapped in
          (for-home
           (readymedia-configuration
             (media-directories
-             (list (readymedia-directory
+             (list (readymedia-media-directory
                      (path "/path/to/media/audio")
                      (types '(A)))
-                   (readymedia-directory
+                   (readymedia-media-directory
                      (path "/path/to/media/video")
                      (types '(V)))
-                   (readymedia-directory
+                   (readymedia-media-directory
                      (path "/path/to/media/misc")))))))
 @end lisp
 
