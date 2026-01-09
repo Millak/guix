@@ -1432,8 +1432,9 @@ APL.")
 (define-public cl-april
   (sbcl-package->cl-source-package sbcl-april))
 
-(define-public ecl-april
-  (sbcl-package->ecl-package sbcl-april))
+;; TODO: Build fails.
+;; (define-public ecl-april
+;;   (sbcl-package->ecl-package sbcl-april))
 
 (define-public sbcl-archive
   (let ((commit "631271c091ed02994bec3980cb288a2cf32c7cdc")
