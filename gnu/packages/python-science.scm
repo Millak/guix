@@ -2658,13 +2658,13 @@ factorization routine for quasi-definite linear system.")
 (define-public python-qutip
   (package
     (name "python-qutip")
-    (version "5.2.0")
+    (version "5.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "qutip" version))
        (sha256
-        (base32 "0yjv04q68jqh769shlsm31zzg2v23r64rbzs8gawpj12pip1h9cp"))
+        (base32 "0rl4piaj13g7g5i9wgdqc60q59dhk4lr34hw8v7xgnw6wkhiflb2"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -2683,35 +2683,32 @@ factorization routine for quasi-definite linear system.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 15987 passed, 167 skipped, 95 deselected, 5 xfailed, 71 warnings
       #:test-flags
-      #~(list "-m" "not flaky and not slow" ;; Ignore flaky and slow tests.
-              ;; All tests below fail with:
-              ;; _flapack.error: (lrwork>=max(24*n,1)||lrwork==-1) failed for
-              ;; 10th keyword lrwork: zheevr:lrwork=1
-              "-k" (string-append
-                    "not " (string-join
-                            (list "test_dicke_function_trace"
-                                  "test_create"
-                                  "test_terminator"
-                                  "test_krylov"
-                                  "test_krylovsolve")
-                            " and not ")))
+      #~(list "-m" "not flaky and not slow"      ;ignore flaky and slow tests
+              "--ignore=tests/solver/")          ;depends on loky
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
-            ;; Run tests in the output to avoid 'partially imported' errors.
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion #$output
-                  (apply invoke "pytest" "-vv" test-flags))))))))
-    (propagated-inputs (list python-numpy python-packaging python-scipy))
-    (native-inputs (list python-cython
-                         python-numpy
-                         python-packaging
-                         python-pytest
-                         python-scipy
-                         python-setuptools
-                         python-wheel))
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (copy-recursively "qutip/tests" "tests")
+              (delete-file-recursively "qutip"))))))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-pytest-rerunfailures
+           python-setuptools))
+    (propagated-inputs
+     (list python-numpy
+           python-packaging
+           python-scipy
+           ;; [optional]
+           python-cvxopt
+           python-cvxpy
+           ;; python-loky       ;not packaged yet in Guix
+           python-mpi4py
+           python-mpmath
+           python-tqdm))
     (home-page "https://qutip.org")
     (synopsis "Quantum Toolbox in Python")
     (description
