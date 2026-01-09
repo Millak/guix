@@ -12182,6 +12182,7 @@ game.")  ;thanks to Debian for description
            libircclient
            protobuf-2                   ;remove package when no longer needed
            qtbase-5
+           qtwayland-5
            (sdl-union (list sdl sdl-mixer))
            sqlite
            tinyxml
