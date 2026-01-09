@@ -2,6 +2,7 @@
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2023 Andy Tai <atai@atai.org>
+;;; Copyright © 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -280,10 +281,14 @@ pocl.")
        (sha256
         (base32 "1sym2vbkw068ldkjqi3qj1dkbvd047bk5ir028qqbv0g7z3dwk31"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f)) ;Tests depend on packages not present in Guix.
-    (native-inputs (list python-hatchling))
-    (propagated-inputs (list python-appdirs python-numpy))
+    ;; tests: 79 passed, 19 skipped
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-platformdirs
+           python-siphash24
+           python-typing-extensions))
     (home-page "https://github.com/inducer/pytools")
     (synopsis "Assorted tools for Python")
     (description
