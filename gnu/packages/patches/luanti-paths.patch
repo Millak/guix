@@ -1,40 +1,51 @@
-Index: luanti/src/content/subgames.cpp
-===================================================================
---- luanti.orig/src/content/subgames.cpp
-+++ luanti/src/content/subgames.cpp
-@@ -63,19 +63,21 @@ struct GameFindPath
+Upstream-status: <https://github.com/luanti-org/luanti/pull/16816>
+
+diff --git a/src/content/subgames.cpp b/src/content/subgames.cpp
+index d2b94a31e..2f76aba0f 100644
+--- a/src/content/subgames.cpp
++++ b/src/content/subgames.cpp
+@@ -63,20 +63,27 @@ struct GameFindPath
  std::string getSubgamePathEnv()
  {
  	static bool has_warned = false;
 -	char *subgame_path = getenv("MINETEST_SUBGAME_PATH");
 -	if (subgame_path && !has_warned) {
 -		warningstream << "MINETEST_SUBGAME_PATH is deprecated, use MINETEST_GAME_PATH instead."
-+
-+	if (char *luanti_game_path = getenv ("LUANTI_GAME_PATH"))
-+		return std::string(luanti_game_path);
-+	else if (char *minetest_game_path = getenv ("MINETEST_GAME_PATH")) {
-+		warningstream << "MINETEST_GAME_PATH is deprecated, use LUANTI_GAME_PATH instead."
- 				<< std::endl;
- 		has_warned = true;
-+		return std::string(minetest_game_path);
-+	}
-+	else if (char *minetest_subgame_path = getenv ("MINETEST_SUBGAME_PATH")) {
-+		warningstream << "MINETEST_SUBGAME_PATH is deprecated, use LUANTI_GAME_PATH instead."
-+				<< std::endl;
-+		has_warned = true;
-+		return std::string(minetest_subgame_path);
- 	}
+-				<< std::endl;
+-		has_warned = true;
+-	}
 -
 -	char *game_path = getenv("MINETEST_GAME_PATH");
--
+ 
 -	if (game_path)
 -		return std::string(game_path);
 -	else if (subgame_path)
 -		return std::string(subgame_path);
- 	return "";
+-	return "";
++	if (char *luanti_game_path = getenv ("LUANTI_GAME_PATH"))
++		return std::string(luanti_game_path);
++	else if (char *minetest_game_path = getenv ("MINETEST_GAME_PATH")) {
++		if (!has_warned) {
++			warningstream << "MINETEST_GAME_PATH is deprecated, use LUANTI_GAME_PATH instead."
++				      << std::endl;
++			has_warned = true;
++		}
++		return std::string(minetest_game_path);
++	}
++	else if (char *minetest_subgame_path = getenv ("MINETEST_SUBGAME_PATH")) {
++		if (!has_warned) {
++			warningstream << "MINETEST_SUBGAME_PATH is deprecated, use LUANTI_GAME_PATH instead."
++				      << std::endl;
++			has_warned = true;
++		}
++		return std::string(minetest_subgame_path);
++	}
++	else
++		return "";
  }
  
-@@ -277,8 +279,17 @@ std::string getWorldGameId(const std::st
+ static SubgameSpec getSubgameSpec(const std::string &game_id,
+@@ -279,8 +286,20 @@ std::string getWorldGameId(const std::string &world_path, bool can_be_legacy)
  
  std::string getWorldPathEnv()
  {
@@ -45,8 +56,11 @@ Index: luanti/src/content/subgames.cpp
 +	if (world_path = getenv("LUANTI_WORLD_PATH"))
 +		return std::string(world_path);
 +	else if (world_path = getenv("MINETEST_WORLD_PATH")) {
-+		warningstream << "MINETEST_WORLD_PATH is deprecated, use LUANTI_WORLD_PATH instead."
-+				<< std::endl;
++		if (!has_warned) {
++			warningstream << "MINETEST_WORLD_PATH is deprecated, use LUANTI_WORLD_PATH instead."
++				      << std::endl;
++			has_warned = true;
++		}
 +		return std::string(world_path);
 +	}
 +	else
@@ -54,7 +68,7 @@ Index: luanti/src/content/subgames.cpp
  }
  
  std::vector<WorldSpec> getAvailableWorlds()
-@@ -411,8 +422,18 @@ void loadGameConfAndInitWorld(const std:
+@@ -413,8 +432,20 @@ void loadGameConfAndInitWorld(const std::string &path, const std::string &name,
  
  std::vector<std::string> getEnvModPaths()
  {
@@ -62,9 +76,11 @@ Index: luanti/src/content/subgames.cpp
 +	static bool has_warned = false;
  	std::vector<std::string> paths;
 +	if (const char *c_mod_path = getenv("MINETEST_MOD_PATH")) {
-+		warningstream << "MINETEST_MOD_PATH is deprecated, use LUANTI_MOD_PATH instead."
-+			      << std::endl;
-+		has_warned = true;
++		if (!has_warned) {
++			warningstream << "MINETEST_MOD_PATH is deprecated, use LUANTI_MOD_PATH instead."
++				      << std::endl;
++			has_warned = true;
++		}
 +		Strfnd search_paths(c_mod_path ? c_mod_path : "");
 +		while (!search_paths.at_end())
 +			paths.push_back(search_paths.next(PATH_DELIM));
