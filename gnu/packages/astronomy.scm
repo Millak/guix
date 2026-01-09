@@ -9409,7 +9409,7 @@ over many parameters:
            python-wheel))
     (propagated-inputs
      (list python-astropy
-           python-numpy
+           python-numpy-1
            python-photutils
            python-scikit-image
            python-scipy
