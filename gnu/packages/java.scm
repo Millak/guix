@@ -6723,7 +6723,7 @@ it records all mock invocations, including methods arguments.")
     (version "4.4.6")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://apache//httpcomponents/httpcore/"
+              (uri (string-append "mirror://apache/httpcomponents/httpcore/"
                                   "source/httpcomponents-core-"
                                   version "-src.tar.gz"))
               (sha256
@@ -13436,7 +13436,7 @@ jsch-agent-proxy with JSch.")))
     (version "2.4.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://apache//ant/ivy/" version
+              (uri (string-append "mirror://apache/ant/ivy/" version
                                   "/apache-ivy-" version "-src.tar.gz"))
               (sha256
                (base32
