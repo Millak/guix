@@ -25,6 +25,7 @@
 ;;; Copyright @ 2025 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -151,6 +152,31 @@ reference manual.")
 data structure with good performance characteristics for concatenation and
 slicing.")
      (license license:boost1.0))))
+
+(define-public c-stdaux
+  (package
+    (name "c-stdaux")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/c-util/c-stdaux")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kj03iw2sfy3ni6s4p810wkaj561bl8fqqgzyvb48llnkyi6appz"))))
+    (build-system meson-build-system)
+    (home-page "https://c-util.github.io/c-stdaux/")
+    (synopsis "Auxiliary macros and functions for the C standard library")
+    (description
+     "This package provides support macros and auxiliary functions around
+the functionality of common C standard libraries.  This includes helpers for
+the ISO C Standard Library, but also other common specifications like POSIX or
+common extended features of widespread compilers like @code{gcc} and
+@code{clang}.")
+    (license (list license:asl2.0
+                   license:lgpl2.1+))))
 
 (define-public cproc
   (let ((commit "14a8916e23bc6daebcb54f1384fa0eb2455072e3")
