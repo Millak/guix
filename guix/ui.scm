@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014 Cyril Roelandt <tipecaml@gmail.com>
@@ -565,7 +565,7 @@ See the \"Application Setup\" section in the manual, for more info.\n"))
   (leave-on-EPIPE
    (simple-format #t "~a (~a) ~a~%"
                   command %guix-package-name %guix-version)
-   (format #t "Copyright ~a 2025 ~a"
+   (format #t "Copyright ~a 2026 ~a"
            ;; TRANSLATORS: Translate "(C)" to the copyright symbol
            ;; (C-in-a-circle), if this symbol is available in the user's
            ;; locale.  Otherwise, do not translate "(C)"; leave it as-is.  */
