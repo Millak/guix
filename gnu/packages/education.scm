@@ -295,7 +295,7 @@ frequently used words in American English.")
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase    ;qtbase 6
                      #:tests? #f))      ;packages has no tests
-    (inputs (list qtbase qtmultimedia))
+    (inputs (list qtbase qtmultimedia qtwayland))
     (home-page "https://www.tipp10.com/en/")
     (synopsis "Touch typing tutor")
     (description "Tipp10 is a touch typing tutor.  The ingenious thing about
