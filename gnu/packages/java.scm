@@ -6281,6 +6281,7 @@ part (or dynamically extended) by a language that is embedded within it.  This
 is achieved by providing an API that permits calling scripting language engines
 from within Java, as well as an object registry that exposes Java objects to
 these scripting language engines.")
+    (properties '((upstream-name . "bsf")))
     (license license:asl2.0)))
 
 (define-public java-commons-jxpath
@@ -6341,6 +6342,7 @@ contexts, DOM etc, including mixtures thereof.")
 and a number of object pool implementations.  This package defines a
 handful of pooling interfaces and some base classes that may be useful when
 creating new pool implementations.")
+    (properties '((upstream-name . "commons-pool2")))
     (license license:asl2.0)))
 
 (define-public java-commons-dbcp
@@ -6372,6 +6374,7 @@ connections between users.  Creating a new connection for each user can be
 time consuming and even unfeasible when the number of simultaneous users is
 very large.  This package provides a way to share a poole of connections to
 reduce that load.")
+    (properties '((upstream-name . "commons-dbcp2")))
     (license license:asl2.0)))
 
 (define-public java-commons-jcs
@@ -6412,6 +6415,7 @@ is intended to speed up applications by providing a means to manage cached
 data of various dynamic natures.  Like any caching system, JCS is most useful
 for high read, low put applications.  Latency times drop sharply and
 bottlenecks move away from the database in an effectively cached system.")
+    (properties '((upstream-name . "commons-jcs3-dist")))
     (license license:asl2.0)))
 
 (define-public java-jsr250
@@ -6651,6 +6655,7 @@ more!")
     (description "The Logging package is a thin bridge between different
 logging implementations.  A library that uses the commons-logging API can be
 used with any logging implementation at runtime.")
+    (properties '((upstream-name . "commons-logging")))
     (license license:asl2.0)))
 
 ;; This is the last release of the 1.x series.
@@ -6844,6 +6849,7 @@ flexibility or functionality needed by many applications.  @code{HttpClient}
 seeks to fill this void by providing an efficient, up-to-date, and
 feature-rich package implementing the client side of the most recent HTTP
 standards and recommendations.")
+    (properties '((upstream-name . "httpcomponents-client")))
     (license license:asl2.0)))
 
 (define-public java-httpcomponents-httpclient-cache
@@ -11561,6 +11567,7 @@ even more interesting application is the creation of classes from scratch at
 run-time.  The @dfn{Byte Code Engineering Library} (BCEL) may be also useful
 if you want to learn about the @dfn{Java Virtual Machine} (JVM) and the format
 of Java @code{.class} files.")
+    (properties '((upstream-name . "bcel")))
     (license license:asl2.0)))
 
 (define-public java-xerial-core
