@@ -144,7 +144,7 @@ primitives suitable for the 'semver-range' constructor."
                                  '<)))
                     (and=> (string->semver/safe max-ver-str)
                            (cute list op <>)))))))
-          (let ((m-exact (string-match "^\\[([0-9][^\\]]*)\\]$" str)))
+          (let ((m-exact (string-match "^\\[([0-9][^]]*)\\]$" str)))
             (if m-exact
                 (let ((slice (string->partial-semver (match:substring m-exact 1))))
                   (if slice (list `((= ,slice))) '()))
