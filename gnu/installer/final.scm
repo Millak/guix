@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024,2026 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -168,8 +168,10 @@ or #f.  Return #t on success and #f on failure."
                             (const '())))
          (install-command (append `( "guix" "system" "init"
                                      "--fallback"
-                                     ,@(if (target-hurd?)
-                                           '("--target=i586-pc-gnu")
+                                     ,@(if (%current-target-system)
+                                           `(,(string-append
+                                               "--target="
+                                               (%current-target-system)))
                                            '()))
                                   options
                                   (list (%installer-configuration-file)
