@@ -35,7 +35,7 @@
   ;; See doc/build/build.md.
   (package
     (name "onednn")
-    (version "3.9.2")
+    (version "3.10.2")
     (source
      (origin
        (method git-fetch)
@@ -44,7 +44,7 @@
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ybq8zb4dcd2g139gdq4bpv20v9jgws5d7ln3x4s0ydrmbgm2qwj"))
+        (base32 "1imwsaj4sfsr4m6szhn272f7yikg0ixif4savbzyjdn1haz7pvpx"))
        (modules '((guix build utils)
                   (ice-9 rdelim)))
        ;; Copyright date used by code generation script
