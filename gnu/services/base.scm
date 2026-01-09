@@ -3189,21 +3189,21 @@ Write, say, @samp{\"~a/24\"} for a 24-bit network mask.")
    ((and (string? value) (mac-address? value)) value)
    (else (raise
           (make-compound-condition
-           (formatted-message (G_ "Value (~S) is not a valid mac address.~%")
+           (formatted-message (G_ "~s: invalid MAC address")
                               value)
            (condition (&error-location
                        (location (source-properties->location procedure-call-location)))))))))
 
-(define-compile-time-procedure (assert-network-link-type (value identity))
+(define-with-syntax-properties (assert-network-link-type (value properties))
   (match value
     (#f value)
-    (('quote _) (datum->syntax #'value value))
-    (else
+    ((? symbol?) value)
+    (_
      (raise
       (make-compound-condition
-       (formatted-message (G_ "Value (~S) is not a symbol.~%") value)
+       (formatted-message (G_ "~s: invalid link type") value)
        (condition (&error-location
-                   (location (source-properties->location procedure-call-location)))))))))
+                   (location (source-properties->location properties)))))))))
 
 (define-record-type* <static-networking>
   static-networking make-static-networking
