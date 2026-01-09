@@ -5401,14 +5401,14 @@ world}, @uref{http://evolonline.org, Evol Online} and
 (define openttd-engine
   (package
     (name "openttd-engine")
-    (version "14.1")
+    (version "15.0")
     (source
      (origin (method url-fetch)
              (uri (string-append "https://cdn.openttd.org/openttd-releases/"
                                  version "/openttd-" version "-source.tar.xz"))
              (sha256
               (base32
-               "151l05msgfknvfd2pa98n4p01nxw1ainkhc85i7qq5243zqch51c"))))
+               "1h9m66n34053vzbz33k9n94cszq08rll6d8d185kcvr4pdsdflim"))))
     (build-system cmake-build-system)
     (inputs
      (list allegro
@@ -5417,7 +5417,7 @@ world}, @uref{http://evolonline.org, Evol Online} and
            icu4c
            libpng
            lzo
-           sdl
+           sdl2
            xz
            zlib))
     (synopsis "Transportation economics simulator game")
@@ -5653,7 +5653,7 @@ Transport Tycoon Deluxe.")
        (sha256
         (base32 "0kd4zd48352q74jv0kgh8asgksbnq2441lk894r0jm16iigsgg88"))))
     (inputs (modify-inputs (package-inputs openttd)
-              (append sdl2 zstd harfbuzz)))
+              (append zstd harfbuzz)))
     (arguments
      (substitute-keyword-arguments (package-arguments openttd)
        ((#:phases phases '%standard-phases)
