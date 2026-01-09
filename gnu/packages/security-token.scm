@@ -1077,6 +1077,7 @@ devices.")
            qtscxml
            qtdeclarative
            qtshadertools
+           qtwayland
            qtwebsockets
            qtgraphicaleffects
            pcsc-lite
