@@ -138,6 +138,7 @@
   #:use-module (gnu packages node)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages ocaml)
+  #:use-module (gnu packages oneapi)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages parallel)
@@ -5674,7 +5675,7 @@ errors at the end of reads.")
 (define-public bowtie
   (package
     (name "bowtie")
-    (version "2.3.4.3")
+    (version "2.5.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5683,40 +5684,51 @@ errors at the end of reads.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zl3cf327y2p7p03cavymbh7b00djc7lncfaqih33n96iy9q8ibp"))
-              (modules '((guix build utils)))
+                "020dwg059zmgqcfnxgg67qmn8rf207mwrybly39ncch1riva58z5"))
               (snippet
-               '(begin
-                  (substitute* "Makefile"
-                    ;; replace BUILD_HOST and BUILD_TIME for deterministic build
-                    (("-DBUILD_HOST=.*") "-DBUILD_HOST=\"\\\"guix\\\"\"")
-                    (("-DBUILD_TIME=.*") "-DBUILD_TIME=\"\\\"0\\\"\""))))))
+               #~(begin
+                   (use-modules (guix build utils))
+                   (substitute* "Makefile"
+                     ;; replace BUILD_HOST and BUILD_TIME for deterministic build
+                     (("-DBUILD_HOST=.*") "-DBUILD_HOST=\"\\\"guix\\\"\"")
+                     (("-DBUILD_TIME=.*") "-DBUILD_TIME=\"\\\"0\\\"\""))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       ,#~(list "allall"
-                "WITH_TBB=1"
-                (string-append "prefix=" #$output))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda _
-             ;; This "extended character" is not considered valid.
-             (substitute* "processor_support.h"
-               (("“") "\"")
-               (("”") "\""))))
-         (replace 'check
-           (lambda _
-             (invoke "perl"
-                     "scripts/test/simple_tests.pl"
-                     "--bowtie2=./bowtie2"
-                     "--bowtie2-build=./bowtie2-build"))))))
+     (list
+      #:make-flags
+      #~(list "allall"
+              "WITH_TBB=1"
+              (string-append "prefix=" #$output)
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-prefix
+            (lambda _
+              (substitute* "Makefile"
+                (("/usr/local") #$output))))
+          (replace 'configure
+            (lambda _
+              ;; This "extended character" is not considered valid.
+              (substitute* "processor_support.h"
+                (("“") "\"")
+                (("”") "\""))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "perl"
+                        "scripts/test/simple_tests.pl"
+                        "--bowtie2=./bowtie2"
+                        "--bowtie2-build=./bowtie2-build")))))))
     (inputs
-     `(("tbb" ,tbb-2020)
-       ("zlib" ,zlib)
-       ("python" ,python-wrapper)))
+     (list onetbb zlib))
     (native-inputs
-     (list perl perl-clone perl-test-deep perl-test-simple))
+     (list perl
+           perl-clone
+           perl-file-which
+           perl-test-deep
+           perl-test-simple
+           python-wrapper
+           which))
     (home-page "https://bowtie-bio.sourceforge.net/bowtie2/index.shtml")
     (synopsis "Fast and sensitive nucleotide sequence read aligner")
     (description
