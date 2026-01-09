@@ -865,7 +865,7 @@ required for Fritzing app.")
     (native-inputs
      (list pkg-config qttools-5))
     (inputs
-     (list kcoreaddons-5 kwidgetsaddons-5 qtbase-5 qtsvg-5 sqlite))
+     (list kcoreaddons-5 kwidgetsaddons-5 qtbase-5 qtsvg-5 qtwayland-5 sqlite))
     (home-page "https://qelectrotech.org/")
     (synopsis "CAD/CAE editor focusing on schematics drawing features")
     (description "QElectroTech, or QET in short, is a desktop application to
