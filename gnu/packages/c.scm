@@ -153,6 +153,34 @@ data structure with good performance characteristics for concatenation and
 slicing.")
      (license license:boost1.0))))
 
+(define-public c-siphash
+  (package
+    (name "c-siphash")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/c-util/c-siphash")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1igz5nbdm8l0hir5azmjcc46qz9qhrhkr656fzll99vsnja815sb"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list pkg-config))
+    (propagated-inputs
+     (list c-stdaux))
+    (home-page "https://c-util.github.io/c-siphash/")
+    (synopsis "Streaming-capable SipHash")
+    (description
+     "The c-siphash project is a standalone implementation of SipHash in
+Standard ISO-C11.  It provides a streaming-capable API to compute data hashes
+according to the SipHash algorithm.  For API documentation, see the
+@code{c-siphash.h} header file, as well as the docbook comments for each function.")
+    (license (list license:asl2.0
+                   license:lgpl2.1+))))
+
 (define-public c-stdaux
   (package
     (name "c-stdaux")
