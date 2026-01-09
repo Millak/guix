@@ -319,6 +319,7 @@ setting @env{LUA_PATH} and @env{LUA_CPATH} in glirc's run-time environment.")
            qtmultimedia-5
            qtscript-5
            qtsvg-5
+           qtwayland-5
            sonnet
            zlib))
     (home-page "https://quassel-irc.org/")
