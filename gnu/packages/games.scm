@@ -11560,7 +11560,7 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
                       (string-append "PREFIX=" #$output))))
           (replace 'build (assoc-ref gnu:%standard-phases 'build))
           (replace 'install (assoc-ref gnu:%standard-phases 'install)))))
-    (inputs (list qtbase-5 qtsvg-5))
+    (inputs (list qtbase-5 qtsvg-5 qtwayland-5))
     (home-page "https://portnov.github.io/qcheckers/")
     (synopsis "Qt-based checkers boardgame")
     (description "QCheckers, formerly known as KCheckers, is a is a Qt version
