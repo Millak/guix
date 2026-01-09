@@ -8448,7 +8448,7 @@ FLASH is used to merge RNA-seq data.")
 (define-public flexbar
   (package
     (name "flexbar")
-    (version "3.4.0")
+    (version "3.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8457,25 +8457,24 @@ FLASH is used to merge RNA-seq data.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1pq9sxvdnldl14libk234m72dqhwgzs3acgl943wchwdqlcsi5r2"))))
+                "1w0c592wmi3xin2wlb9vmxp7f8f3s9nhl3y9ih4djrlfqyim70h9"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'do-not-tune-to-CPU
-           (lambda _
-             (substitute* "src/CMakeLists.txt"
-               ((" -march=native") ""))))
-         (replace 'check
-           (lambda* (#:key outputs #:allow-other-keys)
-             (setenv "PATH" (string-append (getcwd) ":" (getenv "PATH")))
-             (with-directory-excursion "../source/test"
-               (invoke "bash" "flexbar_test.sh"))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (string-append (assoc-ref outputs "out")))
-                    (bin (string-append out "/bin/")))
-               (install-file "flexbar" bin)))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-tune-to-CPU
+            (lambda _
+              (substitute* "src/CMakeLists.txt"
+                ((" -march=native") ""))))
+          (replace 'check
+            (lambda _
+              (setenv "PATH" (string-append (getcwd) ":" (getenv "PATH")))
+              (with-directory-excursion "../source/test"
+                (invoke "bash" "flexbar_test.sh"))))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (install-file "flexbar" (string-append #$output "/bin/")))))))
     (inputs
      (list tbb-2020 zlib))
     (native-inputs
