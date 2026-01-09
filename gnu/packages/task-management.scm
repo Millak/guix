@@ -528,7 +528,7 @@ You can also use it to fall asleep in a noisy environment.")
     (build-system qt-build-system)
     (arguments (list #:tests? #f))           ; no upstream tests
     (native-inputs (list pkg-config qttools-5))           ; for lrelease
-    (inputs (list hunspell qtsvg-5 qtx11extras qtbase-5))
+    (inputs (list hunspell qtbase-5 qtsvg-5 qtwayland-5 qtx11extras))
     (synopsis "GUI hierarchical notes-manager")
     (description
      "FeatherNotes is a GUI hierarchical notes-manager for Linux.
