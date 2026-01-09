@@ -314,7 +314,7 @@ A lexer, @code{pytools.lex}.
 (define-public python-pyopencl
   (package
     (name "python-pyopencl")
-    (version "2025.1")
+    (version "2026.1")
     (source
      (origin
        (method git-fetch)
@@ -323,27 +323,42 @@ A lexer, @code{pytools.lex}.
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02lvb286p8101sf3385lzv9ymz70vzjqnmfagmcy0fj912mx2svf"))))
+        (base32 "11r7rbqnaqf9hwzzmqilsnf45x461mikkrrq0ybc2869cdb6rvqm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; FIXME: See <https://github.com/inducer/pyopencl/issues/784>, tests
-      ;; require some special set up according to <.github/workflows/ci.yml>.
-      #:tests? #f))
+      ;; TODO: tests cannot find/load pyopencl module, adding missing test
+      ;; inputs did not help to resolve the issue, see:
+      ;; <https://github.com/inducer/pyopencl/issues/784>.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pre-build
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "CL_INC_DIR"
+                      (string-append #$(this-package-input "opencl-headers")
+                                     "/include"))
+              (setenv "CL_LIB_DIR"
+                      (string-append #$(this-package-input "ocl-icd") "/lib"))
+              (setenv "CL_LIBNAME"
+                      "libOpenCL.so"))))))
     (native-inputs
      (list cmake-minimal
+           pocl
            pybind11
+           python-mako
            python-nanobind
+           python-pytest
            python-scikit-build-core))
     (inputs
      (list opencl-headers
            ocl-icd))
     (propagated-inputs
-     (list python-mako
-           python-numpy
+     (list python-numpy
            python-platformdirs
-           python-pytools))
-    (home-page "https://mathema.tician.de/software/pyopencl")
+           python-pytools
+           python-typing-extensions))
+    (home-page "https://mathema.tician.de/software/pyopencl/")
     (synopsis "Python wrapper for OpenCL")
     (description
      "PyOpenCL lets you access parallel computing devices such as GPUs from
