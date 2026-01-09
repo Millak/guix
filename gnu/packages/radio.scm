@@ -1897,7 +1897,8 @@ focused on DXing and being shaped by community of DXers.JTDX")
            libusb
            qtbase-5
            qtmultimedia-5
-           qtserialport-5))
+           qtserialport-5
+           qtwayland-5))
     (home-page "http://js8call.com/")
     (synopsis "Weak-signal ham radio communication program")
     (description
