@@ -37,6 +37,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34) ; For catch
   #:use-module (srfi srfi-37)
+  #:use-module (srfi srfi-39) ; parameters
   #:use-module (srfi srfi-71) ; multi-value let
   #:use-module (sxml simple)
   #:use-module (sxml match)
@@ -60,7 +61,10 @@
   #:use-module (guix packages)
   #:use-module (guix upstream)
   #:use-module (guix http-client)
-  #:export (nuget->guix-package
+  #:export (%nuget-v3-registration-url
+            %nuget-v3-package-versions-url
+            %nuget-symbol-packages-url
+            nuget->guix-package
             nuget-recursive-import))
 
 ;; copy from guix/import/pypi.scm
@@ -84,9 +88,12 @@
 ;; Example: <https://api.nuget.org/v3/registration5-semver1/newtonsoft.json/index.json>.
 ;; List of all packages.  You get a lot of references to @type CatalogPage out.
 (define %nuget-v3-feed-catalog-url "https://api.nuget.org/v3/catalog0/index.json")
-(define %nuget-v3-registration-url "https://api.nuget.org/v3/registration5-semver1/")
-(define %nuget-v3-package-versions-url "https://api.nuget.org/v3-flatcontainer/")
-(define %nuget-symbol-packages-url "https://globalcdn.nuget.org/symbol-packages/")
+(define %nuget-v3-registration-url
+  (make-parameter "https://api.nuget.org/v3/registration5-semver1/"))
+(define %nuget-v3-package-versions-url
+  (make-parameter "https://api.nuget.org/v3-flatcontainer/"))
+(define %nuget-symbol-packages-url
+  (make-parameter "https://globalcdn.nuget.org/symbol-packages/"))
 
 (define %nuget-nuspec "http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd")
 ;;; Version index https://api.nuget.org/v3-flatcontainer/{id-lower}/index.json
@@ -150,6 +157,9 @@ primitives suitable for the 'semver-range' constructor."
                       (warning (G_ "Unrecognized NuGet range format: '~a'.~%") str)
                       '()))))))))
 
+;; Make this testable.
+(set! parse-nuget-range->primitives parse-nuget-range->primitives)
+
 (define (nuget->semver-range range-str)
   (semver-range (parse-nuget-range->primitives range-str)))
 
@@ -158,7 +168,7 @@ primitives suitable for the 'semver-range' constructor."
   version that satisfies the range. This version correctly handles list
   creation and filtering to avoid type errors."
   (let* ((name-lower (string-downcase name))
-         (versions-url (string-append %nuget-v3-package-versions-url name-lower "/index.json")))
+         (versions-url (string-append (%nuget-v3-package-versions-url) name-lower "/index.json")))
     (let ((versions-json (json-fetch versions-url)))
       (if versions-json
           (let* ((available-versions (vector->list (or (assoc-ref versions-json "versions")
@@ -193,6 +203,9 @@ primitives suitable for the 'semver-range' constructor."
             (warning (G_ "Failed to fetch version list for ~a~%") name)
             #f)))))
 
+;; Make this testable.
+(set! nuget-find-best-version-for-range nuget-find-best-version-for-range)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Part 2: Core Data Fetching and Package Generation
@@ -202,7 +215,7 @@ primitives suitable for the 'semver-range' constructor."
   "Fetch the full 'catalogEntry' JSON object for a specific package version,
   correctly handling the paginated structure of the registration index."
   (let* ((name-lower (string-downcase name))
-         (index-url (string-append %nuget-v3-registration-url name-lower "/index.json"))
+         (index-url (string-append (%nuget-v3-registration-url) name-lower "/index.json"))
          (index-json (json-fetch index-url)))
     (if index-json
         (let loop ((pages-to-check
@@ -242,6 +255,9 @@ primitives suitable for the 'semver-range' constructor."
           (warning (G_ "Failed to fetch registration index for ~a~%") name)
           #f))))
 
+;; Make this testable.
+(set! nuget-fetch-catalog-entry nuget-fetch-catalog-entry)
+
 (define (car-safe lst)
   (if (null? lst)
       '()
@@ -253,7 +269,7 @@ file using the system 'unzip' command, and parse it to find the repository URL
 and commit.  Returns an association list with 'url' and 'commit' keys on
 success, or #f on failure."
   (let* ((name (string-append (string-downcase package-name) "." version ".snupkg"))
-         (snupkg-url (string-append %nuget-symbol-packages-url name)))
+         (snupkg-url (string-append (%nuget-symbol-packages-url) name)))
     (format (current-error-port)
             "~%;; Source repository not found in NuGet catalog entry.~%;; ~
              Attempting to find it in symbol package: ~a~%"
@@ -310,6 +326,9 @@ success, or #f on failure."
 
 (define (nuget-name->guix-name name)
   (string-append "dotnet-" (snake-case name)))
+
+;; Make this testable.
+(set! nuget-name->guix-name nuget-name->guix-name)
 
 (define nuget->guix-package
   (memoize

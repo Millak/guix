@@ -577,6 +577,7 @@ SCM_TESTS =					\
   tests/import/hexpm.scm			\
   tests/import/luanti.scm			\
   tests/import/npm-binary.scm			\
+  tests/import/nuget.scm			\
   tests/import/opam.scm				\
   tests/import/print.scm			\
   tests/import/pypi.scm				\

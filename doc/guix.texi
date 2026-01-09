@@ -14709,6 +14709,50 @@ and generate package expressions for all those packages that are not yet
 in Guix.
 @end table
 
+@item nuget
+@cindex nuget
+@cindex .NET
+Import metadata from @uref{https://www.nuget.org/, NuGet}, the package
+manager for .NET.  Information is taken from the JSON-formatted metadata
+provided through NuGet's v3 API at @code{api.nuget.org} and includes
+most relevant information, including package dependencies.
+There are some caveats, however.  The metadata does not always include
+repository information, in which case the importer attempts to extract
+it from the symbol package (@file{.snupkg}) if available. 
+Additionally, dependencies are grouped by target framework in NuGet,
+but the importer flattens all dependency groups into a single list.
+
+The command below imports metadata for the @code{Avalonia} .NET package:
+
+@example
+guix import nuget Avalonia
+@end example
+
+You can also recursively import all dependencies:
+
+@example
+guix import nuget -r Avalonia
+@end example
+
+@table @code
+@item --archive=@var{repo}
+@itemx -a @var{repo}
+Specify the archive repository.  Currently only @code{nuget} is supported,
+which uses the official NuGet package repository at @code{nuget.org}.
+
+@item --recursive
+@itemx -r
+Traverse the dependency graph of the given upstream package recursively
+and generate package expressions for all those packages that are not yet
+in Guix.
+
+@item --license-prefix=@var{prefix}
+@itemx -p @var{prefix}
+Add a custom prefix to license identifiers in the generated package
+definitions.  This can be useful when license identifiers need to be
+qualified with a module name.
+@end table
+
 @item minetest
 @cindex minetest
 @cindex ContentDB

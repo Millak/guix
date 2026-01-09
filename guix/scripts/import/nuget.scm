@@ -51,8 +51,6 @@ Import and convert the NuGet package for PACKAGE-NAME.\n"))
   (display (G_ "
   -r, --recursive        import packages recursively"))
   (display (G_ "
-  -s, --style=STYLE      choose output style, either specification or variable"))
-  (display (G_ "
   -p, --license-prefix=PREFIX
                          add custom prefix to licenses"))
   (display (G_ "
@@ -73,10 +71,6 @@ Import and convert the NuGet package for PACKAGE-NAME.\n"))
                  (lambda (opt name arg result)
                    (alist-cons 'repo (string->symbol arg)
                                (alist-delete 'repo result))))
-         (option '(#\s "style") #t #f
-                 (lambda (opt name arg result)
-                   (alist-cons 'style (string->symbol arg)
-                               (alist-delete 'style result))))
          (option '(#\p "license-prefix") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'license-prefix arg
