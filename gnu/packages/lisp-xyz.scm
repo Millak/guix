@@ -25600,7 +25600,7 @@ JavaScript (ECMAScript 3).  It has basic support for ECMAScript 5.")
 (define-public sbcl-parse-number
   (package
     (name "sbcl-parse-number")
-    (version "1.7")
+    (version "1.8")
     (source
      (origin
        (method git-fetch)
@@ -25610,7 +25610,7 @@ JavaScript (ECMAScript 3).  It has basic support for ECMAScript 5.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0sk06ib1bhqv9y39vwnnw44vmbc4b0kvqm37xxmkxd4dwchq82d7"))))
+         "1yh54v02i9b55bmkfkz59qd14irw8llasp48drbilkbz1az1qg2p"))))
     (build-system asdf-build-system/sbcl)
     (home-page "https://www.cliki.net/PARSE-NUMBER")
     (synopsis "Parse numbers")
