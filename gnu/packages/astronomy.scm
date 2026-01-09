@@ -6591,33 +6591,34 @@ Astronomy.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
+      ;; tests: 28 passed, 2033 warnings
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             ;; XXX: I'm not sure we need to propagate Jupyter requirements.
+             (substitute* "pyproject.toml"
+               (("'ipywidgets',") "")
+               (("'jupyter',") "")
+               (("'notebook',") ""))))
+          (add-before 'build 'set-version
             (lambda _
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
-     (list python-hatch-vcs
+     (list python-cython
+           python-hatch-vcs
            python-hatchling
            python-pytest
+           python-pytest-astropy-header
            python-pytest-randomly
-           python-pytest-xdist
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
-     (list jupyter
-           python-astropy
-           python-cython
+     (list python-astropy
            python-extension-helpers
-           python-ipywidgets
            python-matplotlib
            python-notebook
            python-numpy
            python-photutils
-           python-pytest-astropy-header
            python-pyyaml
            python-regions
            python-scikit-image
