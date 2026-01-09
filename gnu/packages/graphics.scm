@@ -2799,6 +2799,7 @@ Automated palette selection is supported.")
            qtkeychain
            qtmultimedia
            qtsvg
+           qtwayland
            qtx11extras
            vulkan-headers))
     (home-page "https://drawpile.net")
