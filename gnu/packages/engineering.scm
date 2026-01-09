@@ -47,6 +47,7 @@
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2025 bdunahu <bdunahu@operationnull.com>
+;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -148,6 +149,7 @@
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages node)
+  #:use-module (gnu packages oneapi)
   #:use-module (gnu packages openkinect)
   #:use-module (gnu packages parallel)
   #:use-module (gnu packages pcre)
@@ -2582,7 +2584,7 @@ specification can be downloaded at @url{http://3mf.io/specification/}.")
 (define-public manifold
   (package
     (name "manifold")
-    (version "3.2.1")
+    (version "3.3.2")
     (source
      (origin
        (method git-fetch)
@@ -2591,9 +2593,9 @@ specification can be downloaded at @url{http://3mf.io/specification/}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fy78axwhlk3gpxhmac4gbyvsadky1kzqbh4cv5snahzmi4bixvp"))))
+        (base32 "0bq1gzvhyp0b9v0q6magwf0yi9lzqgh3fj9104wqfvpl2skgzkg7"))))
     (build-system cmake-build-system)
-    (inputs (list tbb clipper2 assimp python-nanobind googletest))
+    (inputs (list onetbb clipper2 assimp python-nanobind googletest))
     (arguments
      (list #:tests? #f
            ;; can be removed once emscripten is packaged
