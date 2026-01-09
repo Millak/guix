@@ -862,7 +862,7 @@ Poppler-Qt5 binding, PDF documents.")
     (native-inputs
      (list qttools))
     (inputs
-     (list qtbase qtimageformats qtsvg))
+     (list qtbase qtimageformats qtsvg qtwayland))
     (home-page "https://interversehq.com/qview/")
     (synopsis "Convenient and minimal image viewer")
     (description "qView is a Qt image viewer designed with visually
