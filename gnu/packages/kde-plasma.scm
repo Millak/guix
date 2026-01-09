@@ -451,6 +451,7 @@ games, and tools.")
            kitemmodels
            kservice
            libostree     ;required by flatpak
+           wayland       ;required by flatpak
            qtdeclarative
            qtsvg))
     (home-page "https://invent.kde.org/plasma/flatpak-kcm")
