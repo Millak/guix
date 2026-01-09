@@ -2856,7 +2856,7 @@ to the C library @code{uchardet} to increase performance.")
 (define-public udiskie
   (package
     (name "udiskie")
-    (version "2.5.8")
+    (version "2.6.0")
     (source
      (origin
        (method git-fetch)
@@ -2865,7 +2865,7 @@ to the C library @code{uchardet} to increase performance.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ccp55fgmcc4fsd7jsqla6k1m6v8zkn03i4axw446zh2nzxpanhl"))))
+        (base32 "0adj4ssl9zvq7vync9qznnlqhvx531nl4pg236app4d26j7iza35"))))
     (build-system pyproject-build-system)
     (arguments
      (list
