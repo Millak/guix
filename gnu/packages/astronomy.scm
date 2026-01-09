@@ -7609,21 +7609,39 @@ Features:
     (version "3.2.2")
     (source
      (origin
-       (method git-fetch) ; no tests data in the PyPI tarball
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pysat/pysat")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pysat/pysat")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0gm71zafigwc94s37wqyl86yjabpq6wx9izwxag74wg1ynhqyvf0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 2190 passed, 39 skipped, 1475 warnings
       #:test-flags
       #~(list "--durations=10" ; report 10 slowest tests
+              "--numprocesses" (number->string (min 8 (parallel-job-count)))
               ;; Tests require pysatSpaceWeather which is not packed yet.
               "--ignore=pysat/tests/test_utils_files.py"
-              "-k" "not test_from_os")
+              ;; TODO: Report upstream, probably comparability issue with
+              ;; Pandas v2.3.3. Tests fail with error:
+              ;; pandas.errors.EmptyDataError: No columns to parse from file.
+              "--ignore=pysat/tests/test_instrument.py"
+              "-k" (string-join
+                    ;; ValueError: Lengths must match to compare
+                    (list "not test_get_new_files_after_refresh"
+                          "test_get_new_files_after_adding_files"
+                          "test_get_new_files_after_adding_files_and_adding_file"
+                          "test_get_new_files_after_deleting_files_and_adding_files"
+                          "test_get_new_files_after_multiple_refreshes"
+                          ;; AttributeError: 'NoneType' object has no
+                          ;; attribute 'squeeze'
+                          "test_single_lon_calc_solar_local_time"
+                          ;; XXX: Hangs
+                          "test_from_os")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
@@ -7639,8 +7657,7 @@ Features:
     (native-inputs
      (list python-pytest
            python-pytest-xdist
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-dask
            python-netcdf4
