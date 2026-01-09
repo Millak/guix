@@ -662,6 +662,7 @@ address of one of the participants.")
            pulseaudio
            qtbase-5
            qtsvg-5
+           qtwayland-5
            speech-dispatcher
            speex ; avoid bundled
            speexdsp ; avoid bundled
