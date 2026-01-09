@@ -2624,6 +2624,7 @@ sinks and sources.")
            pulseaudio
            qtbase-5
            qtsvg-5
+           qtwayland-5
            qwt
            speexdsp
            zlib))
