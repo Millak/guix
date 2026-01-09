@@ -106,6 +106,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages node)
+  #:use-module (gnu packages oneapi)
   #:use-module (gnu packages ocr)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pdf)
@@ -41002,7 +41003,7 @@ emphasize hidden group structures in networks or focus on specific nodes.")
            pcre2
            proj
            sqlite
-           tbb
+           onetbb
            zlib))
     (propagated-inputs
      (list r-rcpp))
