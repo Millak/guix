@@ -3125,11 +3125,12 @@ various hardware.")
        (sha256
         (base32 "0ix2pb28msj6s5a5bk32b68z4s937zrg20ggiwnrz4xqnr9hijyd"))))
     (build-system qt-build-system)
-    (arguments (list #:tests? #f))
+    (arguments (list #:qtbase qtbase
+                     #:tests? #f))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list fftwf liquid-dsp qtbase))
+     (list fftwf liquid-dsp qtbase qtwayland))
     (home-page "https://github.com/miek/inspectrum")
     (synopsis "Radio signal analyser")
     (description
