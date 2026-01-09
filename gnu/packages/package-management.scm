@@ -2431,6 +2431,7 @@ the boot loader configuration.")
       #:configure-flags
       #~(list
          "-Dsystem_helper=disabled"
+         "-Dwayland_security_context=enabled"
          "-Dlocalstatedir=/var"
          (string-append "-Dsystem_bubblewrap="
                         (assoc-ref %build-inputs "bubblewrap")
@@ -2509,6 +2510,8 @@ cp -r /tmp/locale/*/en_US.*")))
            python
            python-pyparsing
            socat
+           wayland ; wayland-scanner
+           wayland-protocols
            which))
     (inputs
      (list appstream
@@ -2526,6 +2529,7 @@ cp -r /tmp/locale/*/en_US.*")))
            p11-kit
            polkit
            util-linux
+           wayland
            xdg-dbus-proxy
            zstd))
     (propagated-inputs (list glib-networking
