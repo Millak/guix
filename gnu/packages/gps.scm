@@ -233,7 +233,8 @@ coordinates as well as partial support for adjustments in global coordinate syst
                                (string-append "PREFIX=" #$output))))
                    (replace 'build (assoc-ref gnu:%standard-phases 'build))
                    (replace 'install (assoc-ref gnu:%standard-phases 'install)))))
-    (inputs (list libxkbcommon qtbase qtpositioning qtserialport qtsvg))
+    (inputs
+     (list libxkbcommon qtbase qtpositioning qtserialport qtsvg qtwayland))
     (native-inputs (list qttools))
     (home-page "https://www.gpxsee.org")
     (synopsis "GPS log file viewer and analyzer")
