@@ -11744,7 +11744,7 @@ and chess engines.")
     (native-inputs
      (list qttools-5))
     (inputs
-     (list qtbase-5 qtmultimedia-5 qtspeech-5 qtsvg-5 zlib))
+     (list qtbase-5 qtmultimedia-5 qtspeech-5 qtsvg-5 qtwayland-5 zlib))
     (arguments
      (list
       #:tests? #f
@@ -11758,7 +11758,14 @@ and chess engines.")
               (substitute* "chessx.pro"
                 (("\\$\\$\\[QT_INSTALL_BINS\\]/lrelease")
                  (search-input-file inputs "/bin/lrelease")))))
-          (add-after 'fix-paths 'make-qt-deterministic
+          (add-after 'fix-paths 'fix-library-paths
+            (lambda _
+              ;; Otherwise it won't find the wayland shell integration
+              ;; or qt plugin for wayland-egl.
+              (substitute* "src/gui/main.cpp"
+                (("QApplication::setLibraryPaths\\(l\\);")
+                 "/* QApplication::setLibraryPaths(l); */"))))
+          (add-after 'fix-library-paths 'make-qt-deterministic
             (lambda _
               (setenv "QT_RCC_SOURCE_DATE_OVERRIDE" "1")))
           (add-after 'make-qt-deterministic 'disable-versioncheck
