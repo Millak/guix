@@ -1356,6 +1356,7 @@ satellites.")
            pulseaudio
            qtbase-5
            qtsvg-5
+           qtwayland-5
            spdlog
            volk))
     (arguments
