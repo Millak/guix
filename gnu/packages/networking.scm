@@ -3148,6 +3148,11 @@ a per-application basis whenever a new outbound connection is attempted.")
     (arguments
      (list
       #:tests? #f ; TODO: Fix virustotal test (upstream)
+      #:modules '((guix build pyproject-build-system)
+                  (guix build qt-utils)
+                  (guix build utils))
+      #:imported-modules `(,@%pyproject-build-system-modules
+                           (guix build qt-utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir
@@ -3173,7 +3178,12 @@ a per-application basis whenever a new outbound connection is attempted.")
                           (substitute* name
                             (("^import ui_pb2")
                              "from . import ui_pb2")))
-                        (find-files "opensnitch/proto" "ui_pb2_grpc.py")))))))
+                        (find-files "opensnitch/proto" "ui_pb2_grpc.py"))))
+          (add-after 'install-rc 'wrap-qt
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-qt-program "opensnitch-ui"
+                               #:output #$output
+                               #:inputs inputs))))))
     (native-inputs
      (list python-setuptools
            python-wheel
@@ -3187,6 +3197,7 @@ a per-application basis whenever a new outbound connection is attempted.")
            python-protobuf
            python-requests
            python-slugify
+           qtsvg-5
            qtwayland-5))
     (synopsis "UI for @code{opensnitch}")))
 
