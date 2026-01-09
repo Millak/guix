@@ -72,6 +72,7 @@
 ;;; Copyright © 2025 Sören Tempel <soeren@soeren-tempel.net>
 ;;; Copyright © 2025 nomike Postmann <nomike@nomike.com>
 ;;; Copyright © 2025 Reza Housseini <reza@housseini.me>
+;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -173,6 +174,7 @@
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages onc-rpc)
+  #:use-module (gnu packages oneapi)
   #:use-module (gnu packages parallel)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages popt)
@@ -1599,7 +1601,7 @@ NonLinear Programming) problems.  It builds on top of Cbc and Ipopt.")
      (list #:configure-flags #~(list "-DPAGMO_BUILD_TESTS=ON"
                                      "-DPAGMO_WITH_EIGEN3=ON")))
     ;; Eigen is optional, enables some extra features.
-    (inputs (list boost eigen tbb))
+    (inputs (list boost eigen onetbb))
     (home-page "https://esa.github.io/pagmo2/")
     (synopsis
      "Platform to perform parallel computations of optimisation tasks")
