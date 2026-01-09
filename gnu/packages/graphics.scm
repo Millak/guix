@@ -599,30 +599,6 @@ applications.")
                (base32
                 "1kcvz7g6j56anv9zjyd3gidxl46vipw0gg82lns12m45cd43iwxm"))))))
 
-(define-public embree-2
-  (package/inherit embree
-    (version "2.17.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference (url "https://github.com/RenderKit/embree")
-                           (commit (string-append "v" version))))
-       (file-name (git-file-name (package-name embree) version))
-       (sha256
-        (base32 "19v60zdfix33c772x6dzmhsarhafsns8qy7c2ysqr7a9j16whgql"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments embree)
-       ((#:configure-flags configure-flags)
-        #~(append (list "-DEMBREE_MAX_ISA=NONE" "-DEMBREE_TUTORIALS=OFF")
-              #$configure-flags))))
-    (inputs (modify-inputs (package-inputs embree)
-              (replace "tbb" tbb-2020)))
-    ;; Embree requires SSE2 support, so build only for x86-based architectures.
-    (supported-systems (list "i686-linux" "x86_64-linux"))
-    (description (string-append (package-description embree) "
-
-Please note that this version requires a processor with SSE2 support."))))
-
 (define-public openvdb
   (package
     (name "openvdb")
