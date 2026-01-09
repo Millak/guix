@@ -723,6 +723,7 @@ Mumble consists of two applications for separate usage:
            qtbase-5
            qtdeclarative-5
            qtquickcontrols-5
+           qtwayland-5
            readline
            speex
            speexdsp
