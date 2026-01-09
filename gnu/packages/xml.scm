@@ -1556,14 +1556,14 @@ files.  It is designed to be fast and to handle large input files.")
 (define-public xerces-c
   (package
     (name "xerces-c")
-    (version "3.2.5")
+    (version "3.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://apache/xerces/c/3/sources/"
                                   "xerces-c-" version ".tar.xz"))
               (sha256
                (base32
-                "0c42jhnhq63yzvj8whl5dpzf7p1lnd6h00kzpz4ipcj5aq1ycfb2"))))
+                "0rqjqlrd0k8aib8xfql5jsmfw1pjnvdrz5wjql4ylkywhapi4gm8"))))
     (build-system gnu-build-system)
     (arguments
      (let ((system (or (%current-target-system)
