@@ -3197,6 +3197,7 @@ software-defined radio receivers.")
            qtbase-5
            qtmultimedia-5
            qtserialport-5
+           qtwayland-5
            qtwebsockets-5
            rtaudio))
     (home-page "https://wfview.org/")
