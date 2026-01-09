@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024, 2026 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,7 +27,7 @@
   str)
 
 (define (kernel->configuration kernel dry-run?)
-  (if (equal? kernel "Hurd")
+  (if (string-prefix? "Hurd" kernel)
       `((kernel %hurd-default-operating-system-kernel)
         ,(comment (G_ ";; \"noide\" disables the gnumach IDE driver, enabling rumpdisk.\n"))
         (kernel-arguments '("noide"))
