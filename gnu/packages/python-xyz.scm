@@ -211,6 +211,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
@@ -2444,6 +2445,52 @@ three consecutive points in a polyline or polygon
 @item Douglas-Peucker - gives a better representation of the convex hull
 @end itemize")
     (license license:expat)))
+
+(define-public python-siphash24
+  (package
+    (name "python-siphash24")
+    (version "1.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dnicolodi/python-siphash24/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i75mrm2w10njxqb3g1kp9v8r5d22a0v8vc68v0k8c7l3ncf0lp7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "test.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-pyproject
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; meson-python: error: Field `project.license` has an invalid
+                ;; type, expecting a dictionary of strings (got `Apache-2.0 OR
+                ;; LGPL-2.1-or-later`)
+                (("^license = .*")
+                 "license = {text = \"Apache-2.0 OR LGPL-2.1-or-later\"}\n")))))))
+    (native-inputs
+     (list meson-python
+           pkg-config
+           python-cython
+           python-pytest))
+    (inputs
+     (list c-siphash))
+    (home-page "https://github.com/dnicolodi/python-siphash24/")
+    (synopsis "Streaming-capable SipHash-1-3 and SipHash-2-4 Implementation")
+    (description
+     "This package provides a C-based implementation of
+@url{https://cr.yp.to/siphash/siphash-20120918.pdf, SipHash} with an interface
+compatible with the hash functions provided by the hashlib standard library
+module.  SipHash-1-3 and SipHash-2-4 variants are currently implemented.")
+    ;; They are in LICENSES directory:
+    (license (list license:asl2.0
+                   license:lgpl2.1+))))
 
 (define-public python-snakesay
   (package
