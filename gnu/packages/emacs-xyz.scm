@@ -19906,8 +19906,8 @@ using package inferred style.")
       (license license:gpl3+))))
 
 (define-public emacs-lua-mode
-  (let ((commit "d074e4134b1beae9ed4c9b512af741ca0d852ba3")
-        (revision "1"))
+  (let ((commit "2f6b8d7a6317e42c953c5119b0119ddb337e0a5f")
+        (revision "2"))
     (package
       (name "emacs-lua-mode")
       (version (git-version "20221027" revision commit))
@@ -19919,7 +19919,7 @@ using package inferred style.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "00gvrmw8pll0cl7srygh2kmbf0g44sk9asj5sm77qvhr8jz4xkkq"))))
+          (base32 "0sy33yx2a1kclg6w9j2h259j11kyz3ar2z8bp6d9ipsrn32yn0y0"))))
       (build-system emacs-build-system)
       (arguments
        (list
