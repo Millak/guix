@@ -113,6 +113,7 @@
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages onc-rpc)
+  #:use-module (gnu packages oneapi)
   #:use-module (gnu packages opencl)
   #:use-module (gnu packages parallel)
   #:use-module (gnu packages perl)
@@ -5988,7 +5989,7 @@ Jax, PyTorch and TensorFlow — with a seamless integration between them.")
 (define-public ctranslate2
   (package
     (name "ctranslate2")
-    (version "4.6.0")
+    (version "4.6.3")
     (source
      (origin
        (method git-fetch)
@@ -5996,20 +5997,20 @@ Jax, PyTorch and TensorFlow — with a seamless integration between them.")
               (url "https://github.com/OpenNMT/CTranslate2")
               (commit (string-append "v" version))))
        (file-name (git-file-name "CTranslate2" version))
-       (sha256 (base32 "0sngxjq5rmrgjabgxfazdnhfn3wpfi62n226f4k47cx1xjjkllcd"))
+       (sha256 (base32 "1msmf1imgvmhji48mjj8cq5y8d8fk8rywqh624vmilfawq75f497"))
        (patches (search-patches "ctranslate2-local-build.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
       ;; XXX: mkl and openblas seem incompatible.
-      #:configure-flags `(list "-DBUILD_TESTS=ON"
-                               "-DWITH_ACCELERATE=OFF"
-                               "-DWITH_RUY=OFF"
-                               "-DWITH_DNNL=ON"
-                               "-DWITH_CUDA=OFF"
-                               "-DWITH_CUDNN=OFF"
-                               "-DWITH_MKL=OFF"
-                               "-DWITH_OPENBLAS=ON")
+      #:configure-flags #~(list "-DBUILD_TESTS=ON"
+                                "-DWITH_ACCELERATE=OFF"
+                                "-DWITH_RUY=OFF"
+                                "-DWITH_DNNL=ON"
+                                "-DWITH_CUDA=OFF"
+                                "-DWITH_CUDNN=OFF"
+                                "-DWITH_MKL=OFF"
+                                "-DWITH_OPENBLAS=ON")
       #:modules '((guix build cmake-build-system)
                   ((guix build gnu-build-system) #:prefix gnu:)
                   (guix build utils))
@@ -6024,7 +6025,7 @@ Jax, PyTorch and TensorFlow — with a seamless integration between them.")
                          spdlog
                          googletest
                          cpu-features
-                         oneapi-dnnl
+                         onednn
                          openblas))
     (home-page "https://opennmt.net/CTranslate2/")
     (synopsis "Fast inference engine for Transformer models")
