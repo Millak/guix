@@ -1778,7 +1778,8 @@ instances over the network, and general QSO and DXpedition logging.")
            libusb
            qtbase-5
            qtmultimedia-5
-           qtserialport-5))
+           qtserialport-5
+           qtwayland-5))
     (home-page "https://wsjt.sourceforge.io/wsjtx.html")
     (synopsis "Weak-signal ham radio communication program")
     (description
