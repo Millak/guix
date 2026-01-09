@@ -1056,7 +1056,8 @@ program capable of converting PDF into other formats.")
            libspectre
            poppler-qt5
            qtbase-5
-           qtsvg-5))
+           qtsvg-5
+           qtwayland-5))
     (arguments
      (list #:tests? #f ; no tests
            #:modules '((guix build qt-build-system)
