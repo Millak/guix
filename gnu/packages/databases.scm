@@ -5985,6 +5985,7 @@ a Gtk.Grid Widget.")
            qhexedit
            qscintilla
            qtbase-5
+           qtwayland-5
            sqlite))
     (native-inputs (list qttools-5))
     (home-page "https://sqlitebrowser.org/")
