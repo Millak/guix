@@ -2257,6 +2257,7 @@ NanoVNA vector network analyzers.")
            openjpeg
            pulseaudio
            qtbase-5
+           qtwayland-5
            v4l-utils))
     (arguments
      (list
