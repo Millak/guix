@@ -3474,7 +3474,7 @@ script files.")
 (define-public opencascade-occt
   (package
     (name "opencascade-occt")
-    (version "7.6.2")
+    (version "7.9.3")
     (properties
       '((release-tag-prefix . "^V")
         (release-tag-version-delimiter . "_")))
@@ -3489,38 +3489,31 @@ script files.")
                                           version)))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "07z5d83vm9f50an7vhimzl7gbmri1dn6p2g999l5fgyaj5sg5f02"))
-        (modules '((guix build utils)))
+         (base32 "1wmrbr5yar3iz1c80h6diyqigd8hv05j7wral2kkrbvhzpwjd7k6"))
         (snippet
-         '(begin
+         #~(begin
+            (use-modules (guix build utils))
             ;; Remove files specific to non-free operating systems.
             (delete-file-recursively "samples/ios")
             (delete-file-recursively "samples/mfc")
             (delete-file-recursively "samples/qt/FuncDemo")
-            (delete-file "genconf.bat")
-            (delete-file "gendoc.bat")
-            (delete-file "genproj.bat")
-            (delete-file "upgrade.bat")
             ;; Remove references to deleted files.
             (substitute* "dox/FILES_HTML.txt"
               ((".*standard.*") "" )
-              ((".*UIKitSample.*") ""))
-            #t))))
+              ((".*UIKitSample.*") ""))))))
     (build-system cmake-build-system)
     (arguments
-     '(;; There is no test target for make.  OCCT provides an
-       ;; 'Automated Testing System', which may be accessed after
-       ;; installation via the draw.sh script.  draw.sh is located in
-       ;; the bin directory. For details see:
-       ;; https://www.opencascade.com/doc/occt-7.3.0/overview/html/\
-       ;; occt_dev_guides__tests.html
-       #:tests? #f
-       ;; Configure without freeimage: attempting to link against the
-       ;; freeimage version 3.17 library leads to 'undefined
-       ;; reference' errors.
-       #:configure-flags
-        (list "-DCMAKE_CXX_FLAGS=-fpermissive" ;from unsigned char* to char*
-              "-DUSE_FREEIMAGE:BOOL=OFF"
+     (list
+      ;; There is no test target for make.  OCCT provides an
+      ;; 'Automated Testing System', which may be accessed after
+      ;; installation via the draw.sh script.  draw.sh is located in
+      ;; the bin directory. For details see:
+      ;; https://www.opencascade.com/doc/occt-7.3.0/overview/html/\
+      ;; occt_dev_guides__tests.html
+      #:tests? #f
+      #:configure-flags
+      #~(list "-DCMAKE_CXX_FLAGS=-fpermissive" ;from unsigned char* to char*
+              "-DUSE_FREEIMAGE:BOOL=ON"
               "-DUSE_TBB:BOOL=ON"
               "-DUSE_VTK:BOOL=OFF"
               "-DBUILD_DOC_Overview:BOOL=OFF"
@@ -3530,13 +3523,13 @@ script files.")
     (native-inputs (list doxygen fontconfig))
     (inputs
      (list freetype
-           ;("freeimage" ,freeimage)
+           freeimage
            glu
            libxext
            libxi
            libxmu
            mesa
-           tbb-2020
+           onetbb
            tcl
            tk))
     ;; TODO: build Overview documentation and add 'doc' output.
