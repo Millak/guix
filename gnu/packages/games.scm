@@ -5436,69 +5436,67 @@ engine.  When you start it you will be prompted to download a graphics set.")
     (license (list license:bsd-3 license:gpl2 license:lgpl2.1+ license:zlib))))
 
 (define openttd-opengfx
-  (let ((commit "3739bbe9bdcd5bfbb2f720a99667f77d31caf02f")
-        (revision "0"))
-    (package
-      (name "openttd-opengfx")
-      (version (git-version "7.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/openttd/opengfx")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "03fhzlv4935868lxpdik7afz8cgsnzwr38a2blzmvy18c4lzc4m3"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:make-flags
-        #~(list (string-append "CC=" #$(cc-for-target))
-                (string-append "INSTALL_DIR="
-                               #$output
-                               "/share/games/openttd/baseset/opengfx")
-                "REPO_DATE=20000101"
-                (string-append "PYTHON="
-                               #$(this-package-native-input "python")
-                               "/bin/python3"))
-        #:phases
-        #~(modify-phases %standard-phases
-            (replace 'configure
-              (lambda _
-                ;; Make sure HOME is writable for GIMP.
-                (setenv "HOME" (getcwd))
+  (package
+    (name "openttd-opengfx")
+    (version "8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openttd/opengfx")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0rkyxbrfgb67q3crnlpkv0h9nmskn2yfj2i8sbbibxrya8r3whz6"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "INSTALL_DIR="
+                             #$output
+                             "/share/games/openttd/baseset/opengfx")
+              "REPO_DATE=20000101"
+              (string-append "PYTHON="
+                             #$(this-package-native-input "python")
+                             "/bin/python3"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              ;; Make sure HOME is writable for GIMP.
+              (setenv "HOME" (getcwd))
 
-                (mkdir-p ".local/share")
-                (symlink (string-append #$(this-package-native-input "shared-mime-info")
-                                        "/share/mime")
-                         ".local/share/mime")
+              (mkdir-p ".local/share")
+              (symlink (string-append #$(this-package-native-input "shared-mime-info")
+                                      "/share/mime")
+                       ".local/share/mime")
 
-                ;; Redirect stdout, not stderr, to /dev/null. This prevents
-                ;; dos2unix from receiving its version information as a flag.
-                (substitute* "Makefile"
-                  (("\\$\\(UNIX2DOS\\) -q --version 2>/dev/null")
-                   "$(UNIX2DOS) -q --version 1>/dev/null")))))
-        ;; The check phase for this package only checks the md5sums of the built
-        ;; GRF files against the md5sums of the release versions. Because we use
-        ;; different software versions than upstream does, some of the md5sums
-        ;; are different. However, the package is still reproducible, it's safe
-        ;; to disable this test.
-        #:tests? #f
-        #:parallel-build? #f))
-      (native-inputs
-       (list dos2unix
-             shared-mime-info
-             gimp
-             grfcodec
-             nml
-             which
-             python))
-      (home-page "http://dev.openttdcoop.org/projects/opengfx")
-      (synopsis "Base graphics set for OpenTTD")
-      (description
-       "The OpenGFX project is an implementation of the OpenTTD base graphics
+              ;; Redirect stdout, not stderr, to /dev/null. This prevents
+              ;; dos2unix from receiving its version information as a flag.
+              (substitute* "Makefile"
+                (("\\$\\(UNIX2DOS\\) -q --version 2>/dev/null")
+                 "$(UNIX2DOS) -q --version 1>/dev/null")))))
+      ;; The check phase for this package only checks the md5sums of the built
+      ;; GRF files against the md5sums of the release versions. Because we use
+      ;; different software versions than upstream does, some of the md5sums
+      ;; are different. However, the package is still reproducible, it's safe
+      ;; to disable this test.
+      #:tests? #f
+      #:parallel-build? #f))
+    (native-inputs
+     (list dos2unix
+           shared-mime-info
+           gimp
+           grfcodec
+           nml
+           which
+           python))
+    (home-page "http://dev.openttdcoop.org/projects/opengfx")
+    (synopsis "Base graphics set for OpenTTD")
+    (description
+     "The OpenGFX project is an implementation of the OpenTTD base graphics
 set that aims to ensure the best possible out-of-the-box experience.
 
 OpenGFX provides you with...
@@ -5509,7 +5507,7 @@ OpenGFX provides you with...
 @item Different river and sea water.
 @item Snow-aware buoys.
 @end enumerate")
-      (license license:gpl2))))
+    (license license:gpl2)))
 
 (define openttd-opensfx
   (package
