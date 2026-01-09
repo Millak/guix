@@ -24594,8 +24594,9 @@ ones.")
 (define-public cl-nodgui
   (sbcl-package->cl-source-package sbcl-nodgui))
 
-(define-public ecl-nodgui
-  (sbcl-package->ecl-package sbcl-nodgui))
+;; TODO: Build fails.
+;; (define-public ecl-nodgui
+;;   (sbcl-package->ecl-package sbcl-nodgui))
 
 (define-public sbcl-nontrivial-gray-streams
   (let ((commit "7ed842fe98f6ebafd472a5768e28d0c35f82114e")
