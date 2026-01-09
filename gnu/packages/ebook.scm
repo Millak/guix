@@ -441,6 +441,8 @@ accessing and converting various ebook file formats.")
           (replace 'install (assoc-ref gnu:%standard-phases 'install)))))
     (native-inputs
      (list qtbase-5))
+    (inputs
+     (list qtwayland-5))
     (synopsis "EBook reader")
     (description "This package provides InkBox eBook reader.")
     (license license:gpl3)))
