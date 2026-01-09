@@ -2928,6 +2928,7 @@ implementation of an MQTT version client class.")
            qtkeychain
            qtmultimedia-5
            qtsvg-5
+           qtwayland-5
            qtx11extras
            usrsctp
            libx11
