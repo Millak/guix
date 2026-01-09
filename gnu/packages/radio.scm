@@ -1819,7 +1819,8 @@ weak-signal conditions.")
       qtbase-5
       qtwebsockets-5
       qtmultimedia-5
-      qtserialport-5))
+      qtserialport-5
+      qtwayland-5))
     (arguments
      `(,@(if (this-package-native-input "ruby-asciidoctor")
              '()
