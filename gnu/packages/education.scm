@@ -655,6 +655,7 @@ formats.")
            qtmultimedia-5
            qtquickcontrols2-5
            qtdeclarative-5
+           qtwayland-5
            qtwebchannel-5
            qtwebengine-5
            zlib))
