@@ -36,11 +36,9 @@
 environments."
   (let ((items (filter desktop-system-service? (%system-services))))
     (run-checkbox-tree-page
-     #:info-text (if (target-hurd?)
-                     (G_ "Currently, none of these is available for the Hurd.")
-                     (G_ "Please select the desktop environment(s) you wish to \
+     #:info-text (G_ "Please select the desktop environment(s) you wish to \
 install.  If you select multiple desktop environments here, you will be able \
-to choose from them later when you log in."))
+to choose from them later when you log in.")
      #:title (G_ "Desktop environment")
      #:items items
      #:selection (map system-service-recommended? items)
@@ -49,6 +47,16 @@ to choose from them later when you log in."))
      #:exit-button-callback-procedure
      (lambda ()
        (abort-to-prompt 'installer-step 'abort)))))
+
+;; FIXME: all platforms should support %desktop-services and some of the
+;; offered desktop environments. Instead of globally disabling the desktop
+;; page, disable only non-working desktop environments.
+(define (run-desktop-environments-cbt-page/maybe)
+  "Run page with desktop environments, as long as the user is on
+a system that supports them."
+  (if (or (target-hurd?) (target-x86-32?))
+      '()
+      (run-desktop-environments-cbt-page)))
 
 (define (run-networking-cbt-page)
   "Run a page allowing the user to select networking services."
@@ -131,7 +139,7 @@ client may be enough for a server.")
        (abort-to-prompt 'installer-step 'abort)))))
 
 (define (run-services-page)
-  (let ((desktop (run-desktop-environments-cbt-page)))
+  (let ((desktop (run-desktop-environments-cbt-page/maybe)))
     ;; When the user did not select any desktop services, and thus didn't get
     ;; '%desktop-services', offer network management services.
     (append desktop
