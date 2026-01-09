@@ -21708,7 +21708,7 @@ extensions.")
 (define-public emacs-evil-collection
   (package
     (name "emacs-evil-collection")
-    (version "0.0.10")
+    (version "3.0.1")
     (source
      (origin
        (method git-fetch)
@@ -21717,7 +21717,7 @@ extensions.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09hnxb8nh3g0hi93fz9f1y164gv9iyh5994wfn6fsq2v1xdz8phm"))))
+        (base32 "07rqmz87159z0gq75i036v079fdws6x726na6sw37amd4lhqf87p"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -21733,7 +21733,9 @@ extensions.")
           (add-before 'check 'skip-failing-tests
             (lambda _
               (substitute* "test/evil-collection-magit-tests.el"
-                (("\\(ert-deftest evil-collection-magit-section-maps-accounted-for .*" all)
+                (((string-append
+                   "\\(ert-deftest "
+                   "evil-collection-magit-section-maps-accounted-for .*") all)
                  (string-append all " (skip-unless nil)"))))))))
     (native-inputs
      (list emacs-magit))
