@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
@@ -3205,6 +3205,15 @@ Write, say, @samp{\"~a/24\"} for a 24-bit network mask.")
        (condition (&error-location
                    (location (source-properties->location properties)))))))))
 
+(define-with-syntax-properties (assert-network-route-scope (value properties))
+  (if (memq value '(universe site link host nowhere))
+      value
+      (raise
+       (make-compound-condition
+        (formatted-message (G_ "~s: invalid network scope") value)
+        (condition (&error-location
+                    (location (source-properties->location properties))))))))
+
 (define-record-type* <static-networking>
   static-networking make-static-networking
   static-networking?
@@ -3253,7 +3262,10 @@ Write, say, @samp{\"~a/24\"} for a 24-bit network mask.")
                  (or (ipv6-address? (network-route-destination this-record))
                      (and=> (network-route-gateway this-record)
                             ipv6-address?))))
-  (gateway     network-route-gateway (default #f)))
+  (gateway     network-route-gateway (default #f))
+  (scope       network-route-scope
+               (default 'universe)
+               (sanitize assert-network-route-scope)))
 
 (eval-when (expand load eval)
   (define* (cidr->netmask str #:optional (family AF_INET))
@@ -3363,12 +3375,23 @@ to CONFIG."
     ;; Maximum waiting time in seconds for devices to be up.
     60)
 
+  (define (route-scope->constant scope)
+    (match scope
+      ('universe #~RT_SCOPE_UNIVERSE)
+      ('site     #~RT_SCOPE_SITE)
+      ('link     #~RT_SCOPE_LINK)
+      ('host     #~RT_SCOPE_HOST)
+      ('nowhere  #~RT_SCOPE_NOWHERE)))
+
   (match-record config <static-networking>
     (addresses links routes)
     (program-file "set-up-network"
                   (with-extensions (list guile-netlink)
                     #~(begin
                         (use-modules (ip addr) (ip link) (ip route)
+                                     ((netlink constant)
+                                      #:select (RT_SCOPE_UNIVERSE
+                                                RT_SCOPE_LINK))
                                      (srfi srfi-1)
                                      (ice-9 format)
                                      (ice-9 match))
@@ -3475,7 +3498,11 @@ to CONFIG."
                                                #:via
                                                #$(network-route-gateway route)
                                                #:src
-                                               #$(network-route-source route)))
+                                               #$(network-route-source route)
+                                               #:scope
+                                               #$(route-scope->constant
+                                                  (network-route-scope
+                                                   route))))
                                 routes)
                         #t)))))
 

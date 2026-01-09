@@ -22102,6 +22102,22 @@ determined based on @code{destination} or @code{gateway}.
 
 @item @code{gateway} (default: @code{#f})
 IP address (a string) through which traffic is routed.
+
+@item @code{scope} (default: @code{'universe})
+Scope of the route, as a symbol:
+
+@table @code @c see rtnetlink(7)
+@item universe
+global route;
+@item site
+route within the local autonomous system;
+@item link
+route on this link;
+@item host
+route on the local host;
+@item nowhere
+means the destination does not exist.
+@end table
 @end table
 @end deftp
 
