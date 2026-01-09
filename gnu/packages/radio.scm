@@ -2998,6 +2998,7 @@ voice formats.")
            qtserialport-5
            qtspeech-5
            qtsvg-5
+           qtwayland-5
            qtwebchannel-5
            qtwebengine-5
            qtwebsockets-5
