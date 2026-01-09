@@ -3068,41 +3068,62 @@ and quadratic objectives using the Simplex algorithm.")
 (define-public python-cylp
   (package
     (name "python-cylp")
-    (version "0.92.3")
+    (version "0.94.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "cylp" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/coin-or/cylp")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1mhvjrhvpgnpw4zwri92dj168qvyclcpsqvzbj5maxx5cilnhkww"))))
+        (base32 "0rgqmwvmpdzl6ygwy3nm33vpphl2ldzpqj0xakh9hg1ccaa3fs6l"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "-k" (string-append
-                                 "not " (string-join
-                                         (list
-                                          "test_removeVar2" ; AssertionError
-                                          ;; Tests below segfault
-                                          "test_dantzig"
-                                          "test_lifo"
-                                          "test_mf"
-                                          "test_pe")
-                                         " and not ")))
+      ;; tests: 52 passed, 55 warnings
+      #:test-flags
+      ;; XXX: All tests in this file are SEGFAULT, see:
+      ;; <https://codeberg.org/guix/guix/issues/2912>.
+      #~(list "--ignore=cylp/py/test_PySolve.py"
+              "--ignore=cylp/tests/test_CyClpSimplex.py"
+              "--ignore=cylp/tests/test_QP.py"
+              ;; All tests are failed.
+              "--ignore=cylp/tests/test_MIP.py")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'numpy-compatibility
+            ;; XXX: See: <https://github.com/coin-or/CyLP/issues/227>.
+            ;;
+            ;; AttributeError: module 'numpy' has no attribute
+            ;; 'float'. `np.float` was a deprecated alias for the builtin
+            ;; `float`. To avoid this error in existing code, use `float` by
+            ;; itself. Doing this will not modify any behavior and is safe. If
+            ;; you specifically wanted the numpy scalar type, use `np.float64`
+            ;; here. The aliases was originally deprecated in NumPy 1.20; for
+            ;; more details and guidance see the original release note at:
+            ;; https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+            (lambda _
+              (substitute* '("cylp/py/utils/sparseUtil.py"
+                             "cylp/tests/test_sparseUtil.py")
+                (("np.float") "float"))))
+          ;; XXX: Adding "--pyargs" option, changing test directory, and
+          ;; removing local source did not work; rebuilding extensions takes
+          ;; some time but it's only thing which worked to enable tests.
           (add-before 'check 'pre-check
             (lambda* (#:key tests? #:allow-other-keys)
-              (if tests? ; rebuild extensions
+              (if tests?
                   (invoke "python" "setup.py" "build_ext" "--inplace")))))))
-    (propagated-inputs (list python-numpy python-pytest python-scipy))
-    (inputs (list cbc))
-    (native-inputs (list pkg-config
-                         python-cython
-                         python-hypothesis
-                         python-numpy
-                         python-pytest
-                         python-setuptools
-                         python-wheel))
+    (native-inputs
+     (list pkg-config
+           python-cython
+           python-pytest
+           python-setuptools))
+    (inputs
+     (list cbc))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy))
     (home-page "https://github.com/coin-or/cylp")
     (synopsis "Python interface for CLP, CBC, and CGL")
     (description
