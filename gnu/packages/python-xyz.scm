@@ -4002,16 +4002,17 @@ generator MkDocs.")
 (define-public python-nanobind
   (package
     (name "python-nanobind")
-    (version "2.4.0")
+    (version "2.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "nanobind" version))
        (sha256
-        (base32 "15hw9r0znv7pz8mlgcb892m8ahppaf7gx2xcna2i122qbzp2sfd0"))))
+        (base32 "0sscrair34s1nj7vvybakirpgjsg9l6qic4wsvpas7vdrq89jl08"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 466 passed, 27 skipped
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'configure-cmake
@@ -4022,12 +4023,17 @@ generator MkDocs.")
               (invoke "cmake" "--build" "build" "-j" "2")))
           (add-before 'check 'pre-check
             (lambda _ (chdir "build"))))))
-    (inputs (list eigen))
-    (native-inputs (list cmake-minimal
-                         python-pytest
-                         python-scikit-build-core))
+    (native-inputs
+     (list cmake-minimal
+           python-numpy
+           python-pathspec
+           python-pytest
+           python-scikit-build-core
+           python-scipy))
+    (inputs
+     (list eigen))
     (home-page "https://github.com/wjakob/nanobind/")
-    (synopsis "nanobind: tiny and efficient C++/Python bindings")
+    (synopsis "Tiny and efficient C++/Python bindings")
     (description "Nanobind is a small binding library that exposes C++ types
 in Python and vice versa.  It is reminiscent of @code{Boost.Python} and
 @code{pybind11} and uses near-identical syntax.  In contrast to these existing
