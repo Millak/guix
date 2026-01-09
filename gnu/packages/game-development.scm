@@ -2837,7 +2837,7 @@ scripted in a Python-like language.")
 (define-public ericw-tools
   (package
     (name "ericw-tools")
-    (version "0.18.1")
+    (version "0.18.2-rc1")
     (source
      (origin
        (method git-fetch)
@@ -2845,7 +2845,7 @@ scripted in a Python-like language.")
                            (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11sap7qv0rlhw8q25azvhgjcwiql3zam09q0gim3i04cg6fkh0vp"))
+        (base32 "0903fn4a5mc4sdx8q36j57fp15f7z246h8jm78x9jfz7sx9xrc3m"))
        (patches
         (search-patches "ericw-tools-add-check-for-sse2-in-light.cc.patch"
                         "ericw-tools-gcc-11-pass-const-to-offsetof.patch"))))
@@ -2890,7 +2890,7 @@ scripted in a Python-like language.")
                                    #$(package-version this-package)
                                    "/README.md")))))
            #:tests? #f)) ; No tests
-    (inputs (list embree-2))
+    (inputs (list embree))
     (home-page "https://ericwa.github.io/ericw-tools/")
     (synopsis "Map compiling tools for Quake/Hexen 2")
     (description
