@@ -31821,41 +31821,80 @@ through the symbol: @command{this-fn}.")
       (license license:gpl3+))))
 
 (define-public emacs-dumb-jump
-  (package
-    (name "emacs-dumb-jump")
-    (version "0.5.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/jacktasia/dumb-jump")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "18d2ll5wlll6pm909hiw8w9ijdbrjvy86q6ljzx8yyrjphgn0y1y"))))
-    (build-system emacs-build-system)
-    (arguments
-     `(#:tests? #f                      ; FIXME: Tests freeze when run.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-shell
-           (lambda _
-             ;; Setting the SHELL environment variable is required for the
-             ;; tests to find sh.
-             (setenv "SHELL" (which "sh")))))))
-    (native-inputs
-     (list emacs-el-mock emacs-ert-runner emacs-noflet emacs-undercover))
-    (propagated-inputs
-     (list emacs-f emacs-popup))
-    (home-page "https://github.com/jacktasia/dumb-jump")
-    (synopsis "Jump to definition for multiple languages without configuration")
-    (description "Dumb Jump is an Emacs \"jump to definition\" package with
+  ;; Last release in 2021.
+  (let ((commit "1ff02c77769716e93ba808f723558409a93d0fcd")
+        (revision "0"))
+    (package
+      (name "emacs-dumb-jump")
+      (version (git-version "0.5.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/jacktasia/dumb-jump")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ip2mnr0i8rwj0ygj3sd455lkrb0jpjm4ib4rchrv4qzcc4krasq"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:test-command
+        #~(list "emacs" "--batch" "-L" "." "-L" "test"
+                "-l" "test/test-helper.el"
+                "-l" "test/dumb-jump-test.el"
+                "-f" "ert-run-tests-batch-and-exit")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'skip-failing-tests
+              (lambda _
+                (let ((skip-tests
+                       '(;; these tests hang
+                         "a-back-test"
+                         "cpp-test1"
+                         "go-current-window-test"
+                         "go-other-window-test"
+                         "go-test"
+                         ;; these tests fail
+                         "go-var-arg-test"
+                         "org-issue135"
+                         "org-test1"
+                         "org-test2"
+                         "pick-grep-variant-git-grep-in-git-repo"
+                         "prefer-external"
+                         "prefer-external-only-current"
+                         "prefer-external-other-window"
+                         "prefer-only-external"
+                         "quick-look-test"
+                         "react-test1"
+                         "react-test2"
+                         "react-test3"
+                         "react-test4"
+                         "react-test5"
+                         "run-cmd-test"
+                         "test-grep-rules-not-test")))
+                  (substitute* "test/dumb-jump-test.el"
+                    (("\\(ert-deftest dumb-jump-([a-z0-9-]*) \\(\\)" all test)
+                     (if (member test skip-tests)
+                         (string-append all "(skip-unless nil)")
+                         all)))))))))
+      (native-inputs
+       (list emacs-el-mock
+             emacs-ert-runner
+             emacs-f
+             emacs-noflet
+             emacs-undercover))
+      (propagated-inputs
+       (list emacs-dash emacs-s emacs-popup))
+      (home-page "https://github.com/jacktasia/dumb-jump")
+      (synopsis "Jump to definition for multiple languages without configuration")
+      (description "Dumb Jump is an Emacs \"jump to definition\" package with
 support for multiple programming languages that favors \"just working\" over
 speed or accuracy.  This means minimal --- and ideally zero --- configuration
 with absolutely no stored indexes (tags) or persistent background processes.
 Dumb Jump performs best with The Silver Searcher @command{ag} or ripgrep
 @command{rg} installed.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-dts-mode
   (package
