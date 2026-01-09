@@ -42,6 +42,7 @@
 ;;; Copyright © 2024, 2025 Spencer King <spencer.king@wustl.edu>
 ;;; Copyright © 2024-2025 Tor-björn Claesson <tclaesson@gmail.com>
 ;;; Copyright © 2025 Jonas Freimuth <jonas.freimuth@posteo.de>
+;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45506,7 +45507,7 @@ Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish and Turkish.")
            r-stringi
            r-xml2
            r-yaml))
-    (inputs (list tbb))
+    (inputs (list onetbb))
     (native-inputs
      (list pkg-config r-knitr r-testthat))
     (home-page "https://quanteda.io")
