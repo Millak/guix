@@ -1590,8 +1590,6 @@ listeners answer questions about music quickly and simply.")
     ;; Software is dual-licensed.
     (license (list license:bsd-3 license:lgpl3+))))
 
-(define-deprecated-package music21 python-music21)
-
 (define-public stk
   (package
     (name "stk")
