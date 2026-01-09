@@ -1111,6 +1111,7 @@ The following systems are supported:
              ncurses
              qtbase
              qtmultimedia
+             qtwayland
              sdl2
              sqlite
              zlib))
