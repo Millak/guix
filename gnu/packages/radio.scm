@@ -2403,7 +2403,7 @@ intended for people who want to learn receiving and sending morse code.")
     (native-inputs
      (list qttools-5))
     (inputs
-     (list qtbase-5 qtmultimedia-5))
+     (list qtbase-5 qtmultimedia-5 qtwayland-5))
     (arguments
      `(#:tests? #f)) ; No test suite
     (home-page "https://dm3mat.darc.de/kochmorse/")
