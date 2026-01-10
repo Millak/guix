@@ -32001,6 +32001,220 @@ Will be created if it doesn't exist.
 @end table
 @end deftp
 
+@subsubheading Soju Service
+
+@cindex IRC (Internet Relay Chat)
+@cindex bouncer, IRC
+@cindex Bounced Network Connection, BNC
+@url{https://soju.im/, soju} is a user-friendly IRC bouncer.  soju connects to
+upstream IRC servers on behalf of the user to provide extra functionality.  soju
+supports many features such as multiple users, numerous
+@url{https://ircv3.net/, IRCv3} extensions, chat history playback and detached
+channels.  It is well-suited for both small and large deployments.
+
+@defvar soju-service-type
+This is the service type for the soju IRC bouncer.  Its value is a
+@code{soju-configuration} configuration instance, which is documented
+below.
+
+@cindex IRC bouncer configuration for Libera.Chat
+@cindex Libera.Chat, IRC bouncer configuration
+The following example configures soju to act as an IRC bouncer with an encrypted
+connection.
+
+@lisp
+(define %soju-certbot-deploy-hook
+  (program-file "soju-certbot-deploy-hook.scm"
+    (with-imported-modules '((gnu services herd))
+      #~(begin
+         (use-modules (gnu services herd)
+          (with-shepherd-action 'soju ('reload) result result))))))
+
+(operating-system
+
+  @dots{}
+
+  (services
+   (list @dots{}
+         (service certbot-service-type
+                  (certbot-configuration
+                   (email "your@@email.org")
+                   (certificates
+                    (list
+                     (certificate-configuration
+                      (domains (list "your.domain.org"))
+                      (deploy-hook %soju-certbot-deploy-hook))))))
+
+         (service soju-service-type
+                  (soju-configuration
+                   (hostname "your.domain.org")
+                   ;; The UNIX socket allows administering the bouncer
+                   ;; from the command line with sojuctl.
+                   (listen '("ircs://" "unix+admin:///var/lib/soju/soju.sock"))
+                   (ssl-certificate
+                    (soju-ssl
+                     (certificate "/etc/certs/your.domain.org/fullchain.pem")
+                     (certificate-key "/etc/certs/your.domain.org/privkey.pem")))
+                   (title "Your IRC bouncer"))))))
+@end lisp
+
+@end defvar
+
+@c %start of fragment
+
+@deftp {Data Type} soju-configuration
+Available @code{soju-configuration} fields are:
+
+@table @asis
+@item @code{soju} (default: @code{soju}) (type: package)
+Soju package to use for the service.
+
+@item @code{debug?} (default: @code{#f}) (type: boolean)
+Enable debug logging (this will leak sensitive information such as
+passwords).  This can be overriden at run time with the service command
+@code{server debug}.
+
+@item @code{listen} (default: @code{'(":6697")}) (type: list-of-strings)
+Listening URI.  The following URIs are supported:
+
+@itemize
+
+@item @code{[ircs://][host][:port]} listens with TLS over TCP (default
+port if omitted: 6697)
+@item @code{irc://localhost[:port]} listens with plain-text over TCP (default
+port if omitted: 6667, host must be @code{"localhost"})
+@item @code{irc+insecure://[host][:port]} listens with plain-text over TCP
+(default port if omitted: 6667)
+@item @code{unix://<path>} listens on a Unix domain socket
+@item @code{https://[host][:port]} listens for HTTPS connections (default
+port: 443) and handles the following requests: @code{/socket} for
+WebSocket and @code{/uploads} (and subdirectories) for file uploads
+@item @code{http://localhost[:port]} listens for plain-text HTTP
+connections (default port: 80, host must be @code{"localhost"}) and
+handles requests like @code{https://} does
+@item @code{http+insecure://[host][:port]} listens for plain-text HTTP
+connections (default port: 80) and handles requests like @code{https://}
+does @item @code{http+unix://<path>} listens for plain-text HTTP
+connections on a Unix domain socket and handles requests like
+@code{https://} does
+@item @code{wss://[host][:port]} listens for WebSocket connections over TLS
+(default port: 443)
+@item  @code{ws://localhost[:port]} listens for plain-text WebSocket connections
+(default port: 80, host must be @code{"localhost"})
+@item @code{ws+insecure://[host][:port]} listens for plain-text WebSocket
+connections (default port: 80)
+@item @code{ws+unix://<path>} listens for plain-text WebSocket connections on a
+Unix domain socket
+@item @code{ident://[host][:port]} listens for plain-text ident connections
+(default port: 113)
+@item @code{http+prometheus://localhost:<port>} listens for plain-text HTTP
+connections and serves Prometheus metrics (host must be @code{"localhost"})
+@item @code{http+pprof://localhost:<port>} listens for plain-text HTTP
+connections and serves pprof runtime profiling data (host must be
+@code{"localhost"}).  For more information, see
+@uref{https://pkg.go.dev/net/http/pprof,upstream} documentation
+@item @code{unix+admin://[path]} listens on a Unix domain socket for
+administrative connections, such as sojuctl (default path:
+@code{/run/soju/admin})
+
+@end itemize
+
+If the scheme is omitted, @code{ircs} is assumed.  If multiple @code{listen}
+values are specified, soju will listen on each of them.
+
+@item @code{hostname} (type: maybe-string)
+Server hostname, it defaults to the system hostname.  This should be set
+to a fully qualified domain name.
+
+@item @code{title} (type: string)
+Server title.  This will be sent as the @code{ISUPPORT NETWORK} value
+when clients don't select a specific network.
+
+@item @code{ssl-certificate} (type: maybe-soju-ssl)
+Where to find the private key for secure connections.  If set, this field
+will have the service run under root privileges.
+
+@item @code{shepherd-requirement} (default: @code{'(user-processes loopback)}) (type: list)
+A list of Shepherd services to use.  Add extra dependencies to
+@code{%default-soju-shepherd-requirement} to extend its value.
+
+@item @code{db} (default: @code{(soju-database)}) (type: soju-database)
+The database where soju will write its state.
+
+@item @code{log-file} (default: @code{"/var/log/soju.log"}) (type: string)
+The name of the file where soju will write its logs.
+
+@item @code{extra-content} (default: @code{'()}) (type: text-config)
+Extra content to append to the configuration as-is.
+
+@end table
+
+@end deftp
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} soju-ssl
+Available @code{soju-ssl} fields are:
+
+@table @asis
+
+@item @code{certificate} (type: string)
+Where to find the certificate for secure connections.
+
+@item @code{key} (type: string)
+Where to find the private key for secure connections.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} soju-database
+Available @code{soju-database} fields are:
+
+@table @asis
+
+@item @code{datadir} (default: @code{"/var/lib/soju"}) (type: string)
+The name of the directory where soju will write its state.
+
+@item @code{driver} (default: @code{'sqlite3}) (type: symbol)
+Set the database driver for user, network and channel storage.  Supported
+drivers:
+
+@itemize
+@item @code{'sqlite3}
+@item @code{'postgres}
+@end itemize
+
+@item @code{source} (type: maybe-string)
+Set the database location for user, network and channel storage.  By
+default, a sqlite3 database is opened in the directory specified in the
+@code{datadir} field.  In general the driver expect the following:
+
+@itemize
+@item @code{'sqlite3} expects source to be a path to
+the SQLite file
+@item @code{'postgres} expects source to be a
+space-separated list of @code{key=value} parameters, e.g.
+@code{"host=/run/postgresql dbname=soju"}.  Note that @code{sslmode
+defaults} to @code{require}.  For more information on connection
+strings, see
+@uref{https://pkg.go.dev/github.com/lib/pq#hdr-Connection_String_Parameters,upstream}
+'s documentation.
+@end itemize
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
 @node Telephony Services
 @subsection Telephony Services
 

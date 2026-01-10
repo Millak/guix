@@ -4,6 +4,7 @@
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,7 +45,8 @@
             %test-ngircd
             %test-pounce
             %test-quassel
-            %test-mosquitto))
+            %test-mosquitto
+            %test-soju))
 
 (define (run-xmpp-test name xmpp-service pid-file create-account)
   "Run a test of an OS running XMPP-SERVICE, which writes its PID to PID-FILE."
@@ -669,3 +671,111 @@ OPENSSL:localhost:7000,verify=0 &")
    (name "mosquitto")
    (description "Test a running Mosquitto MQTT broker.")
    (value (run-mosquitto-test))))
+
+
+;;;
+;;; soju.
+;;;
+
+(define %soju-os
+  (operating-system
+    (inherit %simple-os)
+    (packages (cons* soju %base-packages))
+    (services
+     (cons*
+      (service dhcpcd-service-type)
+      (service soju-service-type
+               (soju-configuration
+                (debug? #t)
+                (listen '("irc://localhost" "unix+admin:///var/lib/soju/soju.sock"))
+                (title "soju IRC bouncer")
+                (extra-content
+                 (list (plain-file "soju.conf" "hostname test.example.org")))))
+      %base-services))))
+
+(define (run-soju-test)
+  (define vm
+    (virtual-machine
+     (operating-system
+       (marionette-operating-system
+        %soju-os
+        #:imported-modules (source-module-closure
+                            '((gnu services herd)))))))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (srfi srfi-64)
+                       (gnu build marionette))
+
+          (define marionette
+            (make-marionette (list #$vm)))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "soju")
+
+          (marionette-eval
+            '(begin
+               (use-modules (gnu services herd))
+               (wait-for-service 'user-processes))
+            marionette)
+
+          (test-equal "soju configuration file is well formed"
+            "listen irc://localhost
+listen unix+admin:///var/lib/soju/soju.sock
+title \"soju IRC bouncer\"
+db sqlite3 /var/lib/soju/soju.db
+hostname test.example.org
+"
+            (marionette-eval
+              '(begin
+                 (use-modules (ice-9 popen)
+                              (ice-9 rdelim)
+                              (ice-9 textual-ports))
+                 (let* ((port (open-input-pipe "herd configuration soju"))
+                        (soju.conf (string-trim-both (read-line port))))
+                   (close-pipe port)
+                   (call-with-input-file soju.conf get-string-all)))
+              marionette))
+
+          (test-assert "soju service runs"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (wait-for-service 'soju))
+             marionette))
+
+          (test-assert "soju listens on TCP port 6667"
+            (wait-for-tcp-port 6667 marionette))
+
+          (test-equal "sojuctl can create a user"
+            "fishinthecalculator (admin): 0 networks"
+            (marionette-eval
+              '(begin
+                 (use-modules (ice-9 popen)
+                              (ice-9 rdelim))
+                 (system (string-join
+                          '("sojuctl" "-config" "$(herd configuration soju)"
+                            "user" "create" "-admin"
+                            "-username" "fishinthecalculator"
+                            "-password" "1234")
+                          " "))
+                 (let* ((port (open-input-pipe (string-join
+                                                '("sojuctl" "-config"
+                                                  "$(herd configuration soju)"
+                                                  "user" "status")
+                                                " ")))
+                        (msg (read-line port)))
+                   (close-pipe port)
+                   msg))
+              marionette))
+
+          (test-end))))
+
+  (gexp->derivation "soju-test" test))
+
+(define %test-soju
+  (system-test
+   (name "soju")
+   (description "Run a soju IRC bouncer.")
+   (value (run-soju-test))))
