@@ -134,7 +134,7 @@ commit hash and its date rather than a proper release tag."
   (@* (gnu packages golang) go))
 
 (define (default-gccgo)
-  (@* (gnu packages gcc) gccgo-12))
+  (@* (gnu packages gcc) gccgo-15))
 
 (define (make-go-std)
   (@* (gnu packages golang) make-go-std))
