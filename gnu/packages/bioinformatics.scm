@@ -24406,9 +24406,13 @@ populations.")
          (add-after 'unpack 'compatibility
            (lambda _
              (substitute* "src/scregseg/_utils.pyx"
-               (("np.float") "float")))))))
+               (("np.float") "float"))))
+         ;; XXX: python-notebook and python-jupyter-client versions
+         ;; are incompatible.
+         (delete 'sanity-check))))
     (native-inputs
      (list python-cython
+           python-pytest
            python-setuptools))
     (propagated-inputs
      (list python-scikit-learn-1.6
