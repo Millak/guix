@@ -5144,9 +5144,6 @@ reasonable substitute.")
      "This package provides a Python interface to the Redis key-value store.")
     (license license:expat)))
 
-(define-deprecated-package python-aioredis
-  python-redis)
-
 (define-public python-rq
   (package
     (name "python-rq")
