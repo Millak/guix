@@ -1518,10 +1518,8 @@ you login.")
                            "kwin-testDrmLegacy"
                            "kwin-testInputCapture"
                            "kwin-testMockDrm"
-                           ,@(if (target-aarch64?)
-                                 '("kwin-testSecurityContext"
-                                   "kwin-testXwaylandSelection")
-                                 '()))
+                           "kwin-testSecurityContext"
+                           "kwin-testXwaylandSelection")
                          "|")
                      ")")
       #:phases
