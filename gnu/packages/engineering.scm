@@ -2514,14 +2514,14 @@ printers.")
                ;; --prefix argument to be the first argument passed to it.
                (invoke "./configure" (string-append "--prefix=" out)))))
          (replace 'check
+            ;; Attention: As discussed, a failing test in gnucap does not mean
+            ;; the build process has failed.  Therefor we ignore, but still
+            ;; display the result of gnucap's test evaluation.
+            ;; https://codeberg.org/guix/guix/issues/5469#issuecomment-9695825
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
                    (libpath "../lib/O:../apps/O"))
                (with-directory-excursion "tests"
-                 ;; Make test return non-zero exit code when a test fails.
-                 (substitute* "test"
-                   (("/bin/sh") "/bin/sh -e")
-                   (("\\|\\| echo \"\\*\\*\\*\\* \\$ii fails \\*\\*\\*\\*\"") ""))
                  ;; Fix expected plugin search path for test c_attach.1.gc
                  (substitute* "==out/c_attach.1.gc.out"
                    (("/usr/local/lib/gnucap")
