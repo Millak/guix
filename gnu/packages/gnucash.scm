@@ -303,7 +303,7 @@ applications and libraries.  It is used by AqBanking.")
 (define-public aqbanking
   (package
     (name "aqbanking")
-    (version "6.8.2")
+    (version "6.8.5")
     (source
      (origin
        (method git-fetch)
@@ -312,7 +312,7 @@ applications and libraries.  It is used by AqBanking.")
               (commit version)))
        (sha256
         (base32
-         "0ys5r8lbr1nvd14fr82rs6c16iqfpd1hdz5l9s8l9biy2sq8jh0z"))
+         "1xqhhxhr1azqvdn47389h469d3srl5l3n1nx82jx2djbx9sdzdq9"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
