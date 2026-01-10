@@ -530,6 +530,8 @@ aniso8601.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 106 passed, 1 deselected
+      ;; 
       ;; TODO: Guix has lower python-pytz than required in the latest
       ;; version:  pytz.exceptions.UnknownTimeZoneError:
       ;; 'America/Ciudad_Juarez'
@@ -538,7 +540,7 @@ aniso8601.")
     (native-inputs
      (list python-poetry-core python-pytest python-setuptools))
     (propagated-inputs
-     (list python-cffi python-h3-3 python-numba python-numpy python-pytz))
+     (list python-cffi python-h3-3 python-numba python-numpy-1 python-pytz))
     (home-page "https://timezonefinder.michelfe.it/gui")
     (synopsis "Finding the timezone of any coordinates on Earth offline")
     (description "This is a python package for looking up the corresponding
