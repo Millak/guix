@@ -46495,6 +46495,35 @@ SQLite database for efficient querying and organization.  Key features:
 See @url{https://github.com/d12frosted/vulpea} for documentation.")
     (license license:gpl3+)))
 
+(define-public emacs-vulpea-ui
+  (package
+    (name "emacs-vulpea-ui")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/d12frosted/vulpea-ui")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12r506748rs84ihb0cn27rjmqh6nklzkqd49xiljixfidw9vkg5d"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command
+      #~(list "emacs" "-Q" "--batch"
+              "-l" "test/vulpea-ui-test.el"
+              "-f" "ert-run-tests-batch-and-exit")))
+    (propagated-inputs (list emacs-vulpea emacs-vui))
+    (home-page "https://github.com/d12frosted/vulpea-ui")
+    (synopsis "Sidebar infrastructure and widget framework for vulpea")
+    (description
+     "This package provides a widget-based sidebar for Emacs that displays
+contextual information (stats, outline, backlins, links...) for
+@code{emacs-vulpea} notes.")
+    (license license:gpl3+)))
+
 (define-public emacs-vunit-mode
   (let ((commit "b26ecc46464a57eb00bf62b15c0d717774ec804e")
         (revision "0"))
