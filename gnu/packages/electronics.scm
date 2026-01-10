@@ -2248,8 +2248,29 @@ for @acronym{EDA, elecronic design automation} and chip design.")))
        (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f))
-    (native-inputs (list curl expat libpng python-setuptools python-tomli))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              ;; Run the tests as specified in pyproject.toml.
+              (when tests?
+                (invoke "python"
+                        #$(plain-file "python-klayout-test-runner.py"
+                                      "import tomllib, subprocess
+with open(\"pyproject.toml\", \"rb\") as f:
+    config = tomllib.load(f)
+
+commands = config['tool']['cibuildwheel']['test-command']
+
+for command in commands:
+    subprocess.run(command.format(package=\".\").split())"))))))))
+    (native-inputs (list curl
+                         expat
+                         libpng
+                         python-setuptools
+                         python-tomli
+                         python-wrapper)) ;; The test commands invoke "python".
     (home-page "https://klayout.de")
     (synopsis "Mask layout library for Python")
     (description
