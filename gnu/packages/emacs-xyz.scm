@@ -46553,6 +46553,35 @@ contextual information (stats, outline, backlins, links...) for
 @code{emacs-vulpea} notes.")
     (license license:gpl3+)))
 
+(define-public emacs-vulpea-journal
+  (package
+    (name "emacs-vulpea-journal")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/d12frosted/vulpea-journal")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0acg4gwg4hxnfc6cvh9sssi9pjvg7w16dyypffygkwwdyx85gqsf"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:emacs emacs-no-x                ; requires sqlite support.
+      #:test-command
+      #~(list "emacs" "-Q" "--batch"
+              "-l" "test/vulpea-journal-test.el"
+              "-f" "ert-run-tests-batch-and-exit")))
+    (propagated-inputs (list emacs-dash emacs-vulpea emacs-vulpea-ui))
+    (home-page "https://github.com/d12frosted/vulpea-journal")
+    (synopsis "Daily journaling interface for @code{emacs-vulpea}")
+    (description
+     "This package provides a modern daily journaling interface for Emacs with
+reactive sidebar widgets, built on @code{emacs-vulpea}.")
+    (license license:gpl3+)))
+
 (define-public emacs-vunit-mode
   (let ((commit "b26ecc46464a57eb00bf62b15c0d717774ec804e")
         (revision "0"))
