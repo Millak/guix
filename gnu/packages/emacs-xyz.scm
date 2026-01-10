@@ -46427,6 +46427,28 @@ be useful when working with the bitbake files in Yocto and OpenEmbedded
 projects.")
    (license license:gpl3+)))
 
+(define-public emacs-vui
+  (package
+    (name "emacs-vui")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/d12frosted/vui.el")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05jny12ncjr7ybwab8lmshjjhcrsax67063xbfv7ri6j5kdk5r52"))))
+    (build-system emacs-build-system)
+    (native-inputs (list emacs-buttercup))
+    (home-page "https://github.com/d12frosted/vui.el")
+    (synopsis "Declarative, component-based UI library for Emacs")
+    (description
+     "This package provides React-like components with state, hooks,
+reconciliation and layouts, rendered using native Emacs widgets.")
+    (license license:gpl3+)))
+
 (define-public emacs-vulpea
   (package
     (name "emacs-vulpea")
