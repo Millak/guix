@@ -1,0 +1,39 @@
+Patch from https://gcc.gnu.org/cgit/gcc/commit/?id=29eacf043b6e8560c5c42d67f7f9b11e4e2cb156
+
+See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=104290
+
+From 29eacf043b6e8560c5c42d67f7f9b11e4e2cb156 Mon Sep 17 00:00:00 2001
+From: Svante Signell <svante.signell@gmail.com>
+Date: Sun, 6 Feb 2022 11:43:23 +0000
+Subject: hurd: Add OPTION_GLIBC_P and OPTION_GLIBC
+
+GNU/Hurd uses glibc just like GNU/Linux.
+
+This is needed for gcc to notice that glibc supports split stack in
+finish_options.
+
+	PR go/104290
+gcc/ChangeLog:
+	* config/gnu.h (OPTION_GLIBC_P, OPTION_GLIBC): Define.
+---
+ gcc/config/gnu.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/gcc/config/gnu.h b/gcc/config/gnu.h
+index 6b8f36bd3d2a..825e7434d404 100644
+--- a/gcc/config/gnu.h
++++ b/gcc/config/gnu.h
+@@ -19,6 +19,10 @@ You should have received a copy of the GNU General Public License
+ along with GCC.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
++/* C libraries used on GNU/Hurd.  */
++#define OPTION_GLIBC_P(opts)	(DEFAULT_LIBC == LIBC_GLIBC)
++#define OPTION_GLIBC		OPTION_GLIBC_P (&global_options)
++
+ #undef GNU_USER_TARGET_OS_CPP_BUILTINS
+ #define GNU_USER_TARGET_OS_CPP_BUILTINS()		\
+     do {					\
+-- 
+cgit 
+

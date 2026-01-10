@@ -1369,6 +1369,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gcc-cross-environment-variables.patch	\
   %D%/packages/patches/gcc-cross-gxx-include-dir.patch          \
   %D%/packages/patches/gcc-fix-texi2pod.patch			\
+  %D%/packages/patches/gcc-hurd-split-stack.patch 		\
   %D%/packages/patches/gcc-libstdc++-newer-gcc.patch		\
   %D%/packages/patches/gcc-4.8-libsanitizer-fix.patch		\
   %D%/packages/patches/gcc-4.9-inline.patch		\
