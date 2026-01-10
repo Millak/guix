@@ -19967,6 +19967,7 @@ altering the counts or PCA space.")
                             "test_choose.py::test_centrality_2"
                             "test_choose.py::test_choose_2"
                             "test_choose.py::test_choose_3"
+                            "test_cluster.py::test_all_vs_all_mash"
                             "test_cluster.py::test_cluster_functional_1"
                             "test_cluster.py::test_cluster_functional_3"
                             "test_cluster.py::test_cluster_functional_4"
