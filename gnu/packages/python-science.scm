@@ -5585,7 +5585,10 @@ and aims to provide a similar API and functionality in Python.")
                           "test_timer"
                           "test_translate_direction_collinear"
                           "test_user_logo"
-                          "test_xdmf_reader")
+                          "test_xdmf_reader"
+                          ;; XXX: incompatible with Numpy@2
+                          ;; Drop when updating along with vtk.
+                          "test_check_subdtype_changes_type")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
