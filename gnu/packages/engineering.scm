@@ -2491,51 +2491,53 @@ printers.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://git.savannah.gnu.org/cgit/gnucap.git/snapshot/gnucap-"
-                           version ".tar.gz"))
+       (uri (string-append
+             "https://git.savannah.gnu.org/cgit/gnucap.git/snapshot/gnucap-"
+             version ".tar.gz"))
        (sha256
         (base32
          "16m09xa685qhj5fqq3bcgakrwnb74xhf5f7rpqkkf9fg8plzbb1g"))))
     (build-system gnu-build-system)
-    (inputs
-     (list readline))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; Set correct rpath so that gnucap finds libgnucap.so.
-               (substitute* (list "apps/configure" "lib/configure"
-                                  "main/configure" "modelgen/configure")
-                 (("LDFLAGS =")
-                  (string-append "LDFLAGS = -Wl,-rpath=" out "/lib")))
-               ;; gnucap uses a hand-written configure script that expects the
-               ;; --prefix argument to be the first argument passed to it.
-               (invoke "./configure" (string-append "--prefix=" out)))))
-         (replace 'check
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              ;; Set correct rpath so that gnucap finds libgnucap.so.
+              (substitute* (list "apps/configure" "lib/configure"
+                                 "main/configure" "modelgen/configure")
+                (("LDFLAGS =")
+                 (string-append "LDFLAGS = -Wl,-rpath=" #$output "/lib")))
+              ;; gnucap uses a hand-written configure script that expects the
+              ;; --prefix argument to be the first argument passed to it.
+              (invoke "./configure" (string-append "--prefix=" #$output))))
+          (replace 'check
             ;; Attention: As discussed, a failing test in gnucap does not mean
             ;; the build process has failed.  Therefor we ignore, but still
             ;; display the result of gnucap's test evaluation.
             ;; https://codeberg.org/guix/guix/issues/5469#issuecomment-9695825
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (libpath "../lib/O:../apps/O"))
-               (with-directory-excursion "tests"
-                 ;; Fix expected plugin search path for test c_attach.1.gc
-                 (substitute* "==out/c_attach.1.gc.out"
-                   (("/usr/local/lib/gnucap")
-                    (string-append libpath ":" out "/lib/gnucap")))
-                 ;; Set library path so that gnucap can find libgnucap.so
-                 ;; while running the tests.
-                 (setenv "LD_LIBRARY_PATH" libpath)
-                 (invoke "./test" "../main/O/gnucap" "" "test-output" "==out"))))))))
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                  (let ((libpath "../lib/O:../apps/O"))
+                    (with-directory-excursion "tests"
+                      ;; Fix expected plugin search path for test c_attach.1.gc
+                      (substitute* "==out/c_attach.1.gc.out"
+                        (("/usr/local/lib/gnucap")
+                         (string-append libpath ":" #$output "/lib/gnucap")))
+                      ;; Set library path so that gnucap can find libgnucap.so
+                      ;; while running the tests.
+                      (setenv "LD_LIBRARY_PATH" libpath)
+                      (invoke "./test"
+                              "../main/O/gnucap" "" "test-output"
+                              "==out")))))))))
+    (inputs (list readline))
     (home-page "https://www.gnu.org/software/gnucap/")
     (synopsis "Mixed analog and digital circuit simulator")
-    (description "GNUcap is a circuit analysis package.  It offers a general
-purpose circuit simulator and can perform DC and transient analyses, fourier
-analysis and AC analysis.  The engine is designed to do true mixed-mode
-simulation.")
+    (description "GNUcap is a circuit analysis package used for @acronym{EDA,
+Electronic Design Automation}.  It offers a general purpose circuit simulator
+and can perform DC and transient analyses, fourier analysis and AC analysis.
+The engine is designed to do true mixed-mode simulation.")
     (license license:gpl3+)))
 
 (define-public cutter
