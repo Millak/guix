@@ -83,7 +83,8 @@ turn doesn't take any constant overhead into account, force a 1-MiB minimum."
         (label (partition-label partition))
         (uuid (partition-uuid partition)))
     (apply invoke
-           `("fakeroot" "mkfs.btrfs" "-r" ,root
+           `("unshare" "--map-root-user" "mkfs.btrfs"
+             "-r" ,root
              "-L" ,label
              ,@(if uuid
                    `("-U" ,(uuid->string uuid))

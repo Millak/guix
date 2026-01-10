@@ -504,7 +504,7 @@ used in the image."
                                       initialize-root-partition))
                      (inputs '#+(cond
                                   ((string=? type "btrfs")
-                                   (list btrfs-progs fakeroot))
+                                   (list btrfs-progs util-linux))
                                   ((string-prefix? "ext" type)
                                    (list e2fsprogs fakeroot))
                                   ((string=? type "f2fs")
