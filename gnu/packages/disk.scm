@@ -33,6 +33,7 @@
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2025 Grigory Shepelev <shegeley@gmail.com>
+;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1554,7 +1555,19 @@ on your file system and offers to remove it.  @command{rmlint} can find:
     (arguments
      (list
       #:install-source? #f
-      #:import-path "github.com/gokcehan/lf"))
+      #:import-path "github.com/gokcehan/lf"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-man-page
+            (lambda* (#:key import-path #:allow-other-keys)
+              (install-file
+               (string-append "src/" import-path "/lf.1")
+               (string-append #$output "/share/man/man1"))))
+          (add-after 'install 'install-desktop-entry
+            (lambda* (#:key import-path #:allow-other-keys)
+              (install-file
+               (string-append "src/" import-path "/lf.desktop")
+               (string-append #$output "/share/applications")))))))
     (native-inputs
      (list go-github-com-djherbis-times
            go-github-com-fsnotify-fsnotify
