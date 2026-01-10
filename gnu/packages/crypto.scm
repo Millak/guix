@@ -30,6 +30,7 @@
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Robin Templeton <robin@guixotic.coop>
+;;; Copyright © 2026 Hennadii Stepanov <hebasto@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1809,3 +1810,31 @@ configured to start gpg-agent.")
 signatures used by the Estonian ID card infrastructure.  This library allows
 for creation and reading of DigiDoc files.")
     (license license:lgpl2.1+)))
+
+(define-public osslsigncode
+  (package
+    (name "osslsigncode")
+    (version "2.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mtrojnar/osslsigncode")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fizcrcgavw5zkzws62pgz8ly5jnmrpv33whryabqgg9q5fwsf2j"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:parallel-tests? #f))
+    (inputs (list openssl zlib))
+    (native-inputs (list python-cryptography python-minimal-wrapper))
+    (home-page "https://github.com/mtrojnar/osslsigncode")
+    (synopsis
+     "Authenticode signing for PE, CAB, CAT, MSI, APPX and script files")
+    (description
+     "osslsigncode is a small tool that implements part of the
+functionality of the Microsoft tool signtool.exe - more exactly the Authenticode
+signing and timestamping.  It is based on OpenSSL.")
+    (license license:gpl3+)))
