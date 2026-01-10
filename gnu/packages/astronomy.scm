@@ -7424,22 +7424,6 @@ astrophysical simulations supporting PKDGRAV/Gasoline, Gadget, Gadget4/Arepo,
 N-Chilada and RAMSES AMR outputs.")
     (license license:gpl3+)))
 
-(define-public python-pynbody-1
-  (package
-    (inherit python-pynbody)
-    (name "python-pynbody")
-    (version "1.6.0.post0")
-    (source
-     (origin
-       (inherit (package-source python-pynbody))
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/pynbody/pynbody")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0rl9ais4yc6kdijq1il4vi3mplp7z6bcih4x55axhan5n3n7riwi"))))))
-
 (define-public python-pypeit
   (package
     (name "python-pypeit")
