@@ -8992,13 +8992,16 @@ high-throughput sequencing (HTS) assays")
 (define-public python-genomepy
   (package
     (name "python-genomepy")
-    (version "0.15.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "genomepy" version))
-              (sha256
-               (base32
-                "0jmyvnsn6w0djjmxh4fjspy1346337jzihxb276v3s275r6zjmln"))))
+    (version "0.16.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/vanheeringen-lab/genomepy")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bsvsvid6vl54qck3iwylfcyxc8v7xy0klwv7558zl6yckw3i4p0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -9024,7 +9027,7 @@ high-throughput sequencing (HTS) assays")
                              python-pyfaidx
                              python-requests
                              python-tqdm))
-    (native-inputs (list python-hatchling python-pytest))
+    (native-inputs (list python-hatchling))
     (home-page "https://vanheeringen-lab.github.io/genomepy/")
     (synopsis "Genes and genomes at your fingertips")
     (description "genomepy is designed to provide a simple and straightforward
