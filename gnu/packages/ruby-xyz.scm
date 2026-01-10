@@ -107,6 +107,7 @@
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages web-browsers)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages unicode)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages web)
   #:use-module (gnu packages ruby)
@@ -17133,6 +17134,51 @@ export/conversion to formats such as YAML, JSON, CSL, and XML (BibTeXML).")
 floating point numbers.")
     (home-page "https://github.com/ruby/bigdecimal")
     (license (list license:ruby license:bsd-2))))
+
+(define-public ruby-unicode-emoji
+  (package
+    (name "ruby-unicode-emoji")
+    (version "4.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "unicode-emoji" version))
+       (sha256
+        (base32 "03zqn207zypycbz5m9mn7ym763wgpk7hcqbkpx02wrbm1wank7ji"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The tests normally try to download the sources if they're not
+          ;; present; however, guix also packages some of the unicode test
+          ;; files that we can leverage instead
+          (add-after 'unpack 'use-guix-bundled-unicode-emoji
+            (lambda _
+              (let ((emoji (search-input-directory %build-inputs
+                                                   "share/unicode/emoji")))
+                (substitute* "spec/emoji_test_txt_spec.rb"
+                  (("\\_\\_dir\\_\\_\\, \"data/emoji\\-test\\.txt")
+                   (string-append "\"" emoji "/emoji-test.txt"))))
+              ;; Disable failing test (likely fails due to expecting
+              ;; unicode-emoji v17.0 spec, but guix currently providing v12.0)
+              (substitute* "Rakefile"
+                (("sh \"ruby spec.*")
+                 (string-append
+                  "sh \"ruby spec/unicode_emoji_spec.rb -v --show-skips\""
+                  "\n"
+                  ;; Disable tests
+                  "sh \"ruby spec/emoji_test_txt_spec.rb -v --show-skips" " "
+                  "-e '/REGEX_INCLUDE_MQE.*" ;; Regex continues
+                  "(0153|1115|1129|1841|1855|1966|1980|2001|2015)/'\""))))))))
+    (native-inputs (list unicode-emoji))
+    (home-page "https://github.com/janlelis/unicode-emoji")
+    (synopsis "Provides Unicode Emoji data and regexes")
+    (description
+     "Provides Unicode Emoji data and regexes, incorporating the latest Unicode
+and Emoji standards.  Includes a categorized list of recommended Emoji.")
+    (license license:expat)))
 
 (define-public ruby-unicode-scripts
   (package
