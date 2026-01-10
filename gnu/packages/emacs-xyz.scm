@@ -16,7 +16,7 @@
 ;;; Copyright © 2016, 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2016, 2017, 2018 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2016-2022, 2024–2025 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016-2022, 2024–2026 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2022 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022 Clément Lassieur <clement@lassieur.org>
@@ -6362,7 +6362,7 @@ Emacs buffer.")
 (define-public emacs-varuga
   (package
     (name "emacs-varuga")
-    (version "0.1.0")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
@@ -6372,7 +6372,7 @@ Emacs buffer.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "01hlnhqhys8qzfwhza1ypc436zg5lhlkx5yy71bhmrbmyfzfh0fr"))))
+         "1x7jzvg1dxv381qlqdsa3knj3i4xcv6gy16834wzpfkfz6jb0240"))))
     (build-system emacs-build-system)
     (home-page "https://git.systemreboot.net/varuga/about/")
     (synopsis "Send iCal calendar invites by email")
