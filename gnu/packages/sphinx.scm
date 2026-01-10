@@ -1248,40 +1248,34 @@ enabled web server.")
 (define-public python-sphinx-autodoc-typehints
   (package
     (name "python-sphinx-autodoc-typehints")
-    (version "1.25.3")
+    (version "2.3.0")
     (source
      (origin
-       (method git-fetch)               ;no tests in pypi archive
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/tox-dev/sphinx-autodoc-typehints")
-             (commit version)))
+              (url "https://github.com/tox-dev/sphinx-autodoc-typehints")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1pw9dzxrq67m0x92c0v4zqmf8llkaiw2j2plqj6n7kcravg26n6v"))))
+        (base32 "0193svyx6g9lf50ydrqp5mrr078b7hncrzp0ysyjay91qghyl4gy"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 226 passed, 89 deselected, 15622 warnings
       #:test-flags
-      #~(list "-k"
-              ;; This test requires to download an objects.inv file
-              ;; from the Sphinx website.
-              (string-append "not test_format_annotation"
-                             ;; XXX: Trailing -- missing.
-                             " and not test_always_document_param_types"))
+      ;; This test requires to download an objects.inv file from the Sphinx
+      ;; website.
+      #~(list "--deselect=tests/test_sphinx_autodoc_typehints.py::test_format_annotation"
+              ;; Assertions are not equal.
+              "--deselect=tests/test_sphinx_autodoc_typehints.py::test_always_use_bars_union")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'pretend-version
-            ;; The version string is usually derived via setuptools-scm, but
-            ;; without the git metadata available, the version string is set to
-            ;; '0.0.0'.
+          (add-before 'build 'set-version
             (lambda _
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
-     (list nss-certs-for-test
-           python-hatch-vcs
+     (list python-hatch-vcs
            python-hatchling
-           python-nptyping
            python-pytest
            python-setuptools-scm
            python-sphobjinv))
