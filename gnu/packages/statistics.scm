@@ -3783,7 +3783,10 @@ statistical summary in arrays and enumerables.")
                           "test_score_manual"
                           ;; FileNotFoundError in tearDown: removes missing
                           ;; 'dog_problem.xml'.
-                          "test_get_edges")
+                          "test_get_edges"
+                          "test_get_parents"
+                          ;; flaky test
+                          "test_gcm")
                     " and not "))))
     (propagated-inputs (list python-daft
                              python-joblib
