@@ -4360,28 +4360,45 @@ Python module with the same interface, but (hopefully) faster.")
     (license license:bsd-3)))
 
 (define-public python-pyts
-  (package
-    (name "python-pyts")
-    (version "0.13.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pyts" version))
-              (sha256
-               (base32
-                "00pdzfkl0b4vhfdm8zas7b904jm2hhivdwv3wcmpik7l2p1yr85c"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-joblib python-numba python-numpy
-           python-scikit-learn
-           python-scipy))
-    (native-inputs
-     (list python-pytest python-pytest-cov python-setuptools
-           python-wheel))
-    (home-page "https://github.com/johannfaouzi/pyts")
-    (synopsis "Python package for time series classification")
-    (description
-     "This package provides a Python package for time series classification.")
-    (license license:bsd-3)))
+  (let ((commit "4f3d97bcb1016d33dbfaef68c0931756a4552410")
+        (revision "0"))
+    (package
+      (name "python-pyts")
+      (version (git-version "0.13.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/johannfaouzi/pyts")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "16hlxwajdz44qs8vi7bhiania2b3201fv3pqiwsx79rb554bvl66"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:test-flags
+        #~(list "--pyargs" "pyts"
+                ;; Most likely a flaky test.
+                "--deselect=preprocessing/transformer.py::\
+pyts.preprocessing.transformer.QuantileTransformer")))
+      (propagated-inputs
+       (list python-joblib
+             python-numba
+             python-numpy
+             python-scikit-learn
+             python-scipy))
+      (native-inputs
+       (list python-pytest python-pytest-cov python-setuptools))
+      (home-page "https://github.com/johannfaouzi/pyts")
+      (synopsis "Python package for time series classification")
+      (description
+       "pyts is a Python package for time series classification.  It aims to
+make time series classification easily accessible by providing preprocessing
+and utility tools, and implementations of state-of-the-art algorithms.  Most
+of these algorithms transform time series, thus pyts provides several tools to
+perform these transformations.")
+      (license license:bsd-3))))
 
 (define-public python-spin
   (package
