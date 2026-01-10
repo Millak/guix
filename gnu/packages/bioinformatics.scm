@@ -24198,7 +24198,6 @@ e.g. from GenBank or Gff files, or Biopython SeqRecords.")
      (list pybind11
            python-pytest
            python-pypairix
-           python-pybbi
            python-setuptools
            samtools))
     (propagated-inputs
@@ -24214,6 +24213,7 @@ e.g. from GenBank or Gff files, or Biopython SeqRecords.")
            python-numpy
            python-numpydoc
            python-pandas
+           python-pybbi
            python-scipy
            python-statsmodels
            python-strawc
