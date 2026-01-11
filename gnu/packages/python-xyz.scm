@@ -8863,6 +8863,8 @@ written in pure Python.")
     (license license:bsd-3)))
 
 (define-public python-jinja2-time
+  ;; XXX: No rleases since 2016, see:
+  ;; <https://codeberg.org/guix/guix/issues/5546>.
   (package
     (name "python-jinja2-time")
     (version "0.2.0")
@@ -8876,8 +8878,13 @@ written in pure Python.")
        (sha256
         (base32 "1i7qihrs7wix7wjxlpif3iirhmbyahywpy5haj8abv4r3zbfafna"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools))
-    (propagated-inputs (list python-arrow python-jinja2))
+    (arguments
+     (list #:tests? #f))        ;all tests are broken
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-arrow
+           python-jinja2))
     (home-page "https://github.com/hackebrot/jinja2-time")
     (synopsis "Jinja2 Extension for Dates and Times")
     (description
