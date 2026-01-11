@@ -1818,7 +1818,8 @@ visual effects work for film.")
     (native-inputs
      (list pkg-config unzip))
     (inputs
-     `(("giflib" ,giflib)
+     `(("collada-dom" ,collada-dom)
+       ("giflib" ,giflib)
        ("libjpeg" ,libjpeg-turbo)       ; required for the JPEG texture plugin.
        ("jasper" ,jasper)
        ("librsvg" ,(librsvg-for-system))
