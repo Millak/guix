@@ -695,7 +695,7 @@ them do this.")
 (define-public python-django-allauth
   (package
     (name "python-django-allauth")
-    (version "65.9.0")
+    (version "65.13.1")
     (source
      (origin
        (method git-fetch)
@@ -704,16 +704,18 @@ them do this.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03a7175748533rw6h3grfpv86i3qb31ixw0kb2kj90gc77sh1sw2"))))
+        (base32 "1w98sd0hj96qgxqa6q7a80h5w800yshqlhli2pplkwb5bqkqwq5n"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1812 passed, 9 warnings
       #:test-flags
       ;; XXX: KeyError: location
       #~(list "--ignore=allauth/socialaccount/providers/openid/tests.py")
       #:phases
       #~(modify-phases %standard-phases
           ;; FIXME: This should be fixed in python-xmlsec
+          ;; E   xmlsec.Error: (1, 'cannot load crypto library for xmlsec.')
           (add-before 'check 'pre-check
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((lib (search-input-file inputs "lib/libxmlsec1-openssl.so")))
@@ -722,13 +724,15 @@ them do this.")
     (propagated-inputs
      (list python-asgiref
            python-django
+           ;; [optional]
            python-fido2
+           python-oauthlib
            python-openid
            python-pyjwt
+           python-python3-saml ;TODO: rename to Guix name format
+           python-pyyaml
            python-qrcode
-           python-requests
-           python-requests-oauthlib
-           python-python3-saml))
+           python-requests))
     (inputs (list xmlsec-openssl))
     (native-inputs
      (list tzdata-for-tests
