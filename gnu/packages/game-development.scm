@@ -192,6 +192,7 @@
                    "-DBUILD_CPU_DEMOS=OFF"
                    "-DBUILD_OPENGL3_DEMOS=OFF"
                    "-DBUILD_BULLET2_DEMOS=OFF"
+                   "-DBULLET2_MULTITHREADING=ON"
                    ;; openmw 0.47.0 requires bullet to be built with
                    ;; double precision.
                    ;; See <https://issues.guix.gnu.org/52953> for
