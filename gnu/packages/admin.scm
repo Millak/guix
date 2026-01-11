@@ -3148,20 +3148,25 @@ track changes in important system configuration files.")
 (define-public libcap-ng
   (package
     (name "libcap-ng")
-    (version "0.8.5")
+    (version "0.9")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://people.redhat.com/sgrubb/libcap-ng/libcap-ng-"
-                    version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/stevegrubb/libcap-ng")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zy6ga6cqi6qvy2p3091i8zbillymyv01g6gmapriymx3i6jk99v"))))
+                "0izrrh2kmhi6dcy5iqcccmx90nwlaqcglhc60sl8n5ds8il14pi8"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
        (list "--disable-static"
              "--without-python")))
+    (inputs
+     (list libbpf))
+    (native-inputs
+     (list autoconf automake libtool pkg-config))
     (home-page "https://people.redhat.com/sgrubb/libcap-ng/")
     (synopsis "Library for more easily working with POSIX capabilities")
     (description
