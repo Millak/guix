@@ -1058,6 +1058,29 @@ for multiple backends.")
        "Dall-e Shell is a comint-based Dall-e shell for Emacs.")
       (license license:gpl3+))))
 
+(define-public emacs-acp
+  (let ((commit "7b67facc657a7388a53ea8bba5d6e7eba20fa3e0"))
+    (package
+      (name "emacs-acp")
+      (version "0.8.2")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/xenodium/acp.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0znm5qihx2qy3hgw0idg8j7bnhz8k3yaadff3y6696qckdh0qlnr"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/xenodium/acp.el")
+      (synopsis "@acronym{ACP, Agent Client Protocol} for Emacs")
+      (description
+       "This package implements the @uref{https://agentclientprotocol.com/,
+Agent Client Protocol} (ACP) for Emacs, a standardized protocol for
+communicating with LLM agents.")
+      (license license:gpl3+))))
+
 (define-public emacs-geiser-guile
   (package
     (name "emacs-geiser-guile")
