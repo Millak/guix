@@ -563,7 +563,7 @@ offers them both in non-modifying and modifying versions where applicable.")
 (define-public sbcl-40ants-doc
   (package
     (name "sbcl-40ants-doc")
-    (version "0.24.1")
+    (version "0.25.0")
     (source
      (origin
        (method git-fetch)
@@ -571,7 +571,7 @@ offers them both in non-modifying and modifying versions where applicable.")
               (url "https://github.com/40ants/doc")
               (commit (string-append "v" version))))
        (sha256
-        (base32 "04hhf16ylv417xz2jvf6s0ybbv0pwjscarvqnpbn8by4wmchvkjl"))
+        (base32 "1h8xrnlfplk2dk6v3miwzwwqnygbhba0nvdsbij5gfac4k898n1r"))
        (file-name (git-file-name "cl-40ants-doc" version))))
     (build-system asdf-build-system/sbcl)
     (arguments
