@@ -5227,50 +5227,6 @@ compositions like @code{XOR} and @code{NAND} are emulated on top of them.
 Expressions are constructed from parsed strings or directly in Python.")
     (license license:bsd-2)))
 
-(define-public python-pyhdf
-  (package
-    (name "python-pyhdf")
-    (version "0.11.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyhdf" version))
-       (sha256
-        (base32 "0nlcz7p3mcqa0s161iqnnfgwgx0np8rhz8p924g5hlcn1bfy6vcz"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags #~(list "--pyargs" "pyhdf")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'relax-gcc-14-strictness
-            (lambda _
-              (setenv "CFLAGS" (string-join
-                                (list "-g" "-O2"
-                                      "-Wno-error=incompatible-pointer-types")
-                                " "))))
-          (add-after 'check 'run-example-tests
-            (lambda _
-              (invoke "python" "examples/runall.py"))))))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm))
-    (inputs
-     (list hdf4
-           libjpeg-turbo
-           zlib))
-    (propagated-inputs
-     (list python-numpy))
-    (home-page "https://github.com/fhs/pyhdf")
-    (synopsis "Python interface to the NCSA HDF4 library")
-    (description
-     "PYHDF4 is a python wrapper around the NCSA HDF version 4 library,
-which implements the SD (Scientific Dataset), VS (Vdata) and V (Vgroup) API’s.
-NetCDF files can also be read and modified.  It is a successor of Python-HDF4
-which is a fork of @url{http://hdfeos.org/software/pyhdf.php,pyhdf}.")
-    (license license:expat)))
-
 (define-public python-h5netcdf
   (package
     (name "python-h5netcdf")
