@@ -5271,12 +5271,6 @@ NetCDF files can also be read and modified.  It is a successor of Python-HDF4
 which is a fork of @url{http://hdfeos.org/software/pyhdf.php,pyhdf}.")
     (license license:expat)))
 
-;; Version 0.9.x was called python-hdf4 in PyPI because at that time upstream
-;; didn't have access to the pyhdf package in PyPI. For version 0.10.0 and
-;; onward, please install pyhdf instead of python-hdf4.
-(define-deprecated-package python-hdf4
-  python-pyhdf)
-
 (define-public python-h5netcdf
   (package
     (name "python-h5netcdf")
