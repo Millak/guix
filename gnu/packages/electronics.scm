@@ -1230,7 +1230,7 @@ supported devices, as well as input/output file format support.")
 (define-public m8c
   (package
     (name "m8c")
-    (version "2.2.0")
+    (version "2.2.2")
     (source
      (origin
        (method git-fetch)
@@ -1239,7 +1239,7 @@ supported devices, as well as input/output file format support.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mx4n5di1bsm4ill55sf4dfa5rldrch0mrr4mk83x0xqd2rfy2mp"))))
+        (base32 "0737hz7yhkrgg5gc2ymnilz0gyv3p7zv127qh4hxf2b07v5pqc1x"))))
     (build-system cmake-build-system)
     (arguments
      (list
