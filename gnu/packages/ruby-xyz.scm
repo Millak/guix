@@ -8966,14 +8966,14 @@ clickjacking, directory traversal, session hijacking and IP spoofing.")
 (define-public ruby-rainbow
   (package
     (name "ruby-rainbow")
-    (version "3.0.0")
+    (version "3.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "rainbow" version))
        (sha256
         (base32
-         "0bb2fpjspydr6x0s8pn1pqkzmxszvkfapv0p4627mywl7ky4zkhk"))))
+         "0smwg4mii0fm38pyb5fddbmrdpifwv22zv3d3px2xx497am93503"))))
     (build-system ruby-build-system)
     (arguments
      '(#:phases
@@ -8990,7 +8990,7 @@ clickjacking, directory traversal, session hijacking and IP spoofing.")
     (description
      "@code{rainbow} provides a string presenter object to colorize strings by
 wrapping them in ANSI escape codes.")
-    (home-page "https://github.com/sickill/rainbow")
+    (home-page "https://github.com/ku1ik/rainbow")
     (license license:expat)))
 
 (define-public ruby-rr
