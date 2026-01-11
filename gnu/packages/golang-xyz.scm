@@ -4587,13 +4587,13 @@ Terminfo databases.")
     (version "0.10.0")
     (source
      (origin
-       (method git-fetch)
+       (method git-fetch/lfs)
        (uri (git-reference
               (url "https://github.com/charmbracelet/glamour")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b8r13n6ia92m6s297br86s82jxzhfb8snildm4mcgx3sb4mg9l6"))))
+        (base32 "14g1jinn3czq7dhdl5id0g96n05bg7v6rqv944091r70nl08gagw"))))
     (build-system go-build-system)
     (arguments
      (list
