@@ -2290,7 +2290,7 @@ of use.")
 (define-public openmw
   (package
     (name "openmw")
-    (version "0.48.0")
+    (version "0.50.0")
     (source
      (origin
        (method git-fetch)
@@ -2299,12 +2299,26 @@ of use.")
              (commit (string-append "openmw-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0amkxfylk1l67d2igihnhhql62xr89wvg1sxbq2rnhczf6vxaj6f"))))
+        (base32 "1a1jhfn6c2awjwz9xskix8ff5v9d45rcfcn2nm4jcgdalb40vz4q"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ;No test target
-       #:configure-flags (list "-DDESIRED_QT_VERSION=5"
-                               "-DOPENMW_USE_SYSTEM_RECASTNAVIGATION=ON")))
+     (list
+      #:tests? #f ;No test target
+      #:configure-flags #~(list "-DOPENMW_USE_SYSTEM_RECASTNAVIGATION=ON")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'add-qtsvg
+                     (lambda _
+                       (substitute* "components/CMakeLists.txt"
+                         (("Qt::Core")
+                          "Qt::Core Qt::Svg"))))
+                   (add-after 'install 'remove-clip-control-extension
+                     ;; OpenMW crashes if GL_ARB_clip_control extension is supported,
+                     ;; so we have to disable it.
+                     ;; Reverse-z depth buffer functionality will be disabled, but
+                     ;; at least it will not crash.
+                     (lambda _
+                       (wrap-program (string-append #$output "/bin/openmw")
+                         '("MESA_EXTENSION_OVERRIDE" = ("-GL_ARB_clip_control"))))))))
     (native-inputs (list boost doxygen pkg-config))
     (inputs (list bullet
                   ffmpeg
@@ -2313,7 +2327,9 @@ of use.")
                   mygui-gl ;OpenMW does not need Ogre.
                   openal
                   openmw-openscenegraph
-                  qtbase-5
+                  qtbase
+                  qttools
+                  qtsvg
                   recastnavigation
                   sdl2
                   unshield
