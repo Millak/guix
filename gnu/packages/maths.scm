@@ -391,11 +391,10 @@ finite domain propagation and Boolean satisfiability.")
      `(("zlib" ,zlib)
        ("pcre" ,pcre)
        ("expat" ,expat)
-       ("hdf4" ,hdf4-alt)
        ("hdf5" ,hdf5)))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--with-hdf4" "--with-hdf5" "--enable-python"
+     '(#:configure-flags '("--with-hdf5" "--enable-python"
                            "LIBS= -lz -lpcre -lexpat")))
     (synopsis "Common interface to various earth observation data formats")
     (description
