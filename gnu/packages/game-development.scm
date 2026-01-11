@@ -2276,7 +2276,8 @@ of use.")
                       ;; Demos and tools are Windows-specific:
                       ;; https://github.com/MyGUI/mygui/issues/24.
                       "-DMYGUI_BUILD_DEMOS=FALSE"
-                      "-DMYGUI_BUILD_TOOLS=FALSE")))))
+                      "-DMYGUI_BUILD_TOOLS=FALSE"
+                      "-DMYGUI_DONT_USE_OBSOLETE=TRUE")))))
     (inputs
      (modify-inputs (package-inputs mygui)
        (delete "ogre")
