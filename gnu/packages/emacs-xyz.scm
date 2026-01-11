@@ -10856,7 +10856,7 @@ the speedbar window.")
 (define-public emacs-shell-maker
   (package
     (name "emacs-shell-maker")
-    (version "0.84.1")
+    (version "0.84.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10865,7 +10865,7 @@ the speedbar window.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1g0lwv2g5b0cjqsr61jaw902j93wi61qznwl6yybs4hgjj3vjzgg"))))
+                "0x10qjhcym4nnv5zh4nwy7d46lp158q06w2iwgi265nl1bz9s7yq"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ;no tests
     (home-page "https://github.com/xenodium/shell-maker")
