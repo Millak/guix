@@ -1889,22 +1889,22 @@ in Julia).")
 (define-public openmw-openscenegraph
   ;; OpenMW prefers its own fork of openscenegraph:
   ;; https://wiki.openmw.org/index.php?title=Development_Environment_Setup#OpenSceneGraph.
-  (let ((commit "68c5c573d47766507bfb191e0c8d213b1997ad20"))
+  (let ((commit "ff19a67025d5f51cf56be7ab11b398ecd334c365"))
     (hidden-package
      (package
        (inherit openscenegraph)
-       (version (git-version "3.6" "3" commit))
+       (version (git-version "3.6" "4" commit))
        (outputs (list "out"))
        (source
         (origin
           (method git-fetch)
           (uri (git-reference
-                (url "https://github.com/OpenMW/osg/")
-                (commit commit)))
+                 (url "https://github.com/OpenMW/osg/")
+                 (commit commit)))
           (file-name (git-file-name (package-name openscenegraph) version))
           (sha256
            (base32
-            "12xgdmymjh4rb7djzniy15lvi45y0x4i0l5swf031r8g4zn72v2n"))))
+            "0l7gqxxz7rmdqrv65r6ki7avg636d7s6bfq7h1213gjr1dz8hiij"))))
        (arguments
         (substitute-keyword-arguments (package-arguments openscenegraph)
           ((#:configure-flags flags)
