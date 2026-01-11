@@ -169,7 +169,8 @@ Mix.CLI.main()"
      (list (search-path-specification
             (variable "GUIX_ELIXIR_LIBS")
             (files (list (string-append "lib/elixir/" (version-major+minor
-                                                       version)))))))
+                                                       version))
+                         "lib/erlang/lib")))))
     (home-page "https://elixir-lang.org/")
     (synopsis "Functional meta-programming aware language")
     (description "Elixir is a dynamic, functional language used to build
