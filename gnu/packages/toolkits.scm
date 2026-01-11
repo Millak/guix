@@ -37,7 +37,7 @@
 (define-public imgui
   (package
     (name "imgui")
-    (version "1.91.4")
+    (version "1.92.2b")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -46,7 +46,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lqcsyqj5m4d4g390x7n3jvjanrnsf64fgjxn51v1kc02dw28gpa"))
+                "108dvbsqyf9am0f744z3ymgfppw1ad0amqkbwwwg2kqdm85dq1wv"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove bundled fonts.
