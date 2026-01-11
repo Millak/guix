@@ -13319,20 +13319,18 @@ about the changes.")
 (define-public ruby-diffy
   (package
     (name "ruby-diffy")
-    (version "3.2.1")
+    (version "3.4.4")
     (source
       (origin
         (method url-fetch)
         (uri (rubygems-uri "diffy" version))
         (sha256
           (base32
-            "119imrkn01agwhx5raxhknsi331y5i4yda7r0ws0an6905ximzjg"))))
+            "1qs7drxvyzk3dg22xgblc12lq5kww9hhj7vpn8ay3l42rasllf3r"))))
     (build-system ruby-build-system)
-    (arguments
-     ;; No tests
-     `(#:tests? #f))
+    (arguments (list #:test-target "spec"))
     (native-inputs
-     (list ruby-rspec))
+     (list ruby-rake ruby-rspec))
     (home-page "https://github.com/samg/diffy")
     (synopsis "Convenient diffing in ruby")
     (description "Diffy provides a convenient way to generate a diff from two
