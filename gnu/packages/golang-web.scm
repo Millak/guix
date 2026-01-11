@@ -3613,6 +3613,32 @@ API.  See the full Circonus API Documentation at
 browser window.")
     (license license:bsd-2)))
 
+(define-public go-github-com-cli-oauth
+  (package
+    (name "go-github-com-cli-oauth")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cli/oauth")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hqncidg1h0q5w0x4cgnyvxwvzh2h9lb921gzrcbjdhv16vx2vrx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cli/oauth"))
+    (propagated-inputs
+     (list go-github-com-cli-browser))
+    (home-page "https://github.com/cli/oauth")
+    (synopsis "OAuth library for Go applications")
+    (description
+     "Package oauth is a library for Go client applications that need to perform
+OAuth authorization against a server, typically @code{GitHub.com}.")
+    (license license:expat)))
+
 (define-public go-github-com-cloudflare-backoff
   (package
     (name "go-github-com-cloudflare-backoff")
