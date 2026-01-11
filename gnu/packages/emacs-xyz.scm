@@ -1081,6 +1081,28 @@ Agent Client Protocol} (ACP) for Emacs, a standardized protocol for
 communicating with LLM agents.")
       (license license:gpl3+))))
 
+(define-public emacs-agent-shell
+  (package
+    (name "emacs-agent-shell")
+    (version "0.27.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xenodium/agent-shell")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13fqygfi3riyqyfw0ah5klm8xnrz9qk4g4aii69qs4h4ink2qvip"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-shell-maker emacs-acp))
+    (home-page "https://github.com/xenodium/agent-shell")
+    (synopsis "Native agentic integrations for Claude Code, Gemini CLI, etc")
+    (description
+     "This package offers a native comint shell experience to interact with any agent
+powered by @uref{https://agentclientprotocol.com/, Agent Client Protocol} (ACP).")
+    (license license:gpl3+)))
+
 (define-public emacs-geiser-guile
   (package
     (name "emacs-geiser-guile")
