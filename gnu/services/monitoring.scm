@@ -21,24 +21,39 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu services monitoring)
-  #:use-module (gnu services)
+  #:use-module (gnu packages admin)
+  #:use-module (gnu packages bash)
+  #:use-module (gnu packages monitoring)
+  #:use-module (gnu packages networking)
+  #:use-module (gnu packages python)
   #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
   #:use-module (gnu services web)
-  #:use-module (gnu packages admin)
-  #:use-module (gnu packages monitoring)
-  #:use-module (gnu packages networking)
+  #:use-module (gnu services)
   #:use-module (gnu system shadow)
   #:use-module (guix gexp)
+  #:use-module ((guix modules) #:select (source-module-closure))
   #:use-module (guix packages)
+  #:use-module ((guix profiles) #:select (packages->manifest
+                                          profile
+                                          profile-search-paths))
   #:use-module (guix records)
-  #:use-module (guix utils)
+  #:use-module ((guix search-paths) #:select (search-path-specification-variable))
+  #:use-module ((guix self) #:select (make-config.scm))
   #:use-module ((guix ui) #:select (display-hint G_))
+  #:use-module (guix utils)
   #:use-module (ice-9 match)
   #:use-module (ice-9 rdelim)
   #:use-module (srfi srfi-1)
+  #:use-module ((srfi srfi-2) #:select (and-let*))
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-35)
+  #:use-module ((srfi srfi-171) #:select (list-transduce
+                                          rcons
+                                          tconcatenate
+                                          tfilter
+                                          tmap))
+
   #:export (darkstat-configuration
             darkstat-service-type
 
@@ -94,7 +109,49 @@
             zabbix-agent-service-type
             zabbix-front-end-configuration
             zabbix-front-end-service-type
-            %zabbix-front-end-configuration-nginx))
+            %zabbix-front-end-configuration-nginx
+
+            collectd-plugin-generic
+            collectd-plugin-generic?
+            collectd-plugin-generic-load-plugin?
+            collectd-plugin-generic-name
+            collectd-plugin-generic-options
+
+            collectd-plugin-python
+            collectd-plugin-python?
+            collectd-plugin-python-load-plugin?
+            collectd-plugin-python-type-databases
+            collectd-plugin-python-type-packages
+            collectd-plugin-python-module-paths
+            collectd-plugin-python-log-traces?
+            collectd-plugin-python-log-interactive?
+            collectd-plugin-python-import
+            collectd-plugin-python-module
+
+            collectd-plugin?
+
+            %collectd-default-type-database
+            %collectd-pid-file
+
+            collectd-configuration
+            collectd-configuration?
+            collectd-configuration-collectd
+            collectd-configuration-base-directory
+            collectd-configuration-auto-load-plugins?
+            collectd-configuration-collect-internal-stats?
+            collectd-configuration-type-databases
+            collectd-configuration-interval
+            collectd-configuration-max-read-interval
+            collectd-configuration-timeout
+            collectd-configuration-read-threads
+            collectd-configuration-write-threads
+            collectd-configuration-write-queue-limit-high
+            collectd-configuration-write-queue-limit-low
+            collectd-configuration-host-name
+            collectd-configuration-fully-qualified-domain-name-lookup?
+            collectd-configuration-plugins
+
+            collectd-service-type))
 
 
 ;;;
@@ -1186,3 +1243,505 @@ with Zabbix server.")))
    `((zabbix-front-end-configuration
       ,zabbix-front-end-configuration-fields))
    'zabbix-front-end-configuration))
+
+
+;;
+;; collectd
+;;
+
+(define *indent* (make-parameter ""))
+
+(defmacro with-indent (. body)
+  `(parameterize ((*indent* (string-append (*indent*) "  ")))
+     ,@body))
+
+(define seconds? integer?)
+
+(define-maybe/no-serialization seconds)
+
+(define list-of-string? (list-of string?))
+
+(define list-of-file-likes? (list-of file-like?))
+
+(define (collectd-serialize-list-of-file-likes name value)
+  #~(string-join
+     (map
+      (lambda (v) (format #f "~a~a \"~a\"" #$name #$(*indent*) v))
+      '#$value)
+     "\n" 'suffix))
+
+(define (collectd-serialize-file-like name value)
+  (collectd-serialize-list-of-file-likes name (list value)))
+
+(define list-of-packages? (list-of package?))
+
+(define (collectd-serialize-value value)
+  (cond
+   ;; Strings get quoted and escaped.
+   ((string? value)
+    (format #f "~s" value))
+
+   ;; Keywords become unquoted strings (#:foo -> foo).
+   ((keyword? value)
+    (collectd-serialize-value
+     (keyword->symbol value)))
+
+   ;; Booleans become bare words.
+   ((eq? value #t) "true")
+   ((eq? value #f) "false")
+
+   ;; Alists serialize to lines of KEY VALUE.
+   ((alist? value)
+    (apply string-append
+         (map
+          (generic-serialize-alist-entry collectd-serialize-field)
+          value)))
+
+   ;; Lists get their elements serialized and joined with a space.
+   ((list? value) (string-join (map collectd-serialize-value value) " "))
+
+   ;; Other types (numbers etc) turn into bare strings.
+   (else (object->string value))))
+
+(define (collectd-serialize-field name value)
+  (if (and (list? value) (null-list? value))
+      ""
+      (format #nil "~a~a ~a~%" (*indent*) name
+              (collectd-serialize-value value))))
+
+(define (remap-names name-map serializer)
+  "Renaming serializer.
+
+Wraps `serializer', renaming fields according to `name-map', an alist of
+'((field-name . serialized-name))."
+  (lambda (name value)
+    (serializer (or (and=> (assoc name name-map) cdr) name) value)))
+
+(define (collectd-make-load-plugin?-serializer plugin-name)
+  (lambda (_ load-plugin?)
+    (if load-plugin?
+        (collectd-serialize-field "LoadPlugin" plugin-name)
+        "")))
+
+;; Generic plugin support.
+
+(define-configuration/no-serialization collectd-plugin-generic
+  (load-plugin?
+   (boolean #t)
+   "When @code{#t}, include a @code{LoadPlugin} directive in the
+configuration.  This interacts with @code{auto-load-plugins?} in
+@code{collectd-configuration}; if @code{auto-load-plugins?} is @code{#f}, all
+plugins should set this to @code{#t}.")
+
+  (name
+   string
+   "The name of the plugin to configure.  See @code{collect.conf(5)} for the
+list of plugins.")
+
+  (options
+   (alist '())
+   "Configuration options for the plugin, as an alist.  See
+@code{collect.conf(5)} for the available plugin options."))
+
+(define (collectd-serialize-plugin-generic _ value)
+  (match-record value <collectd-plugin-generic>
+                (name load-plugin? options)
+    #~(string-join
+       `("\n"
+         ,#$((collectd-make-load-plugin?-serializer name) #nil load-plugin?)
+         ,(string-append "<Plugin " #$name ">\n")
+         ,#$(with-indent (collectd-serialize-value options))
+         "</Plugin>\n")
+       "")))
+
+;; Python plugin support.
+
+(define (collectd-serialize-python-module name value)
+  (apply string-append
+         `(,(string-append (*indent*) "<Module "
+                           (collectd-serialize-value name)
+                           ">")
+           "\n"
+           ,@(with-indent
+              (map
+               (lambda (kvs)
+                 (collectd-serialize-field (car kvs) (cdr kvs)))
+               value))
+           ,(string-append (*indent*) "</Module>"))))
+
+(define collectd-plugin-python-remap
+  '((module-paths . "ModulePath")
+    (load-plugin? . "LoadPlugin")
+    (log-traces? . "LogTraces")
+    (interactive? . "Interactive")
+    (type-databases . "TypesDB")
+    (packages . "ModulePath")
+    (module . "Import")))
+
+(define collectd-serialize-plugin-python-field
+  (remap-names collectd-plugin-python-remap
+               collectd-serialize-field))
+
+(define-configuration collectd-plugin-python
+  (load-plugin?
+   (boolean #t)
+   "When @code{#t}, include a @code{LoadPlugin} directive in the
+configuration.  This interacts with @code{auto-load-plugins?} in
+@code{collectd-configuration}; if @code{collectd-configuration}'s
+@code{auto-load-plugins?} is @code{#f}, all plugins should set this to
+@code{#t}."
+   (serializer (collectd-make-load-plugin?-serializer "python")))
+
+  (type-databases
+   (list-of-file-likes '())
+   "One or more files that contain the data-set descriptions. See
+@code{types.db(5)} for a description of the format of these files."
+   (serializer (remap-names collectd-plugin-python-remap
+                            collectd-serialize-list-of-file-likes)))
+
+  (packages
+   (list-of-packages '())
+   "Packages to make available to the Python plugin.  These can be
+dependencies of the plugin code, or may contain the plugin."
+   (serializer empty-serializer))
+
+  (module-paths
+   (list-of-string '())
+   "Entries to prepend to @code{sys.path}."
+   (serializer collectd-serialize-plugin-python-field))
+
+  (log-traces?
+   (boolean #f)
+   "If a Python script throws an exception it will be logged by
+collectd with the name of the exception and the message.  If you set
+this option to true it will also log the full stacktrace just like the
+default output of an interactive Python interpreter.  This does not
+apply to the @code{CollectError} exception, which will never log a
+stacktrace.  This should probably be set to false most of the time but
+is very useful for development and debugging of new modules."
+   (serializer collectd-serialize-plugin-python-field))
+
+  (interactive?
+   (boolean #f)
+   "This option will cause the module to launch an interactive Python
+interpreter that reads from and writes to the terminal.  Note that collectd
+will terminate right after starting up if you try to run it as a daemon while
+this option is enabled so make sure to start collectd with the @code{-f}
+option.  See the @code{collectd-python(5)} man page for more information on
+this option."
+   (serializer collectd-serialize-plugin-python-field))
+
+  (module
+   string
+   "The name of the Python module to import into the collectd Python
+process.  The module must be available in @code{packages} or
+@code{module-paths}, and register a MPD callback."
+   (serializer collectd-serialize-plugin-python-field))
+
+  (module-options
+   (alist '())
+   "Configuration options for the module."
+   (serializer (lambda (_ value) (collectd-serialize-value value)))))
+
+(define (collectd-serialize-plugin-python _ value)
+  (define (serialize-fields fields)
+    (list-transduce
+     (base-transducer value) rcons
+     (filter-configuration-fields collectd-plugin-python-fields fields)))
+
+  (match-record
+      value <collectd-plugin-python> (module)
+    #~(string-append
+       "\n"
+       #$@(serialize-fields '(load-plugin? type-databases))
+       "<Plugin python>\n"
+       #$@(with-indent
+           (append
+            (serialize-fields '(log-traces? interactive? module-paths module))
+            (list (*indent*) "<Module " (collectd-serialize-value module) ">\n")
+            (with-indent (serialize-fields '(module-options)))
+            (list (*indent*) "</Module>\n")))
+       "</Plugin>\n")))
+
+(define (collectd-plugin? x)
+  ;; XXX: Extend this if plugin-specific configuration records are
+  ;; added.
+  (or (collectd-plugin-generic? x)
+      (collectd-plugin-python? x)))
+
+(define list-of-collectd-plugins? (list-of collectd-plugin?))
+
+(define (collectd-serialize-plugin name value)
+  ((match value
+     ;; XXX: Extend this if plugin-specific configuration records are
+     ;; added.
+     ;; Note that these *must* return gexps, not strings, otherwise things
+     ;; like type-databases won't work.
+     (($ <collectd-plugin-generic>) collectd-serialize-plugin-generic)
+     (($ <collectd-plugin-python>) collectd-serialize-plugin-python))
+   name value))
+
+(define (collectd-serialize-list-of-plugins name value)
+  #~(string-append
+     #$@(map
+         (lambda (v) (collectd-serialize-plugin name v))
+         value)))
+
+(define collectd-configuration-remap
+  '((base-directory . "BaseDir")
+    (auto-load-plugins? . "AutoLoadPlugin")
+    (collect-internal-stats? . "CollectInternalStats")
+    (type-databases . "TypesDB")
+    (interval . "Interval")
+    (max-read-interval . "MaxReadInterval")
+    (timeout . "Timeout")
+    (read-threads . "ReadThreads")
+    (write-threads . "WriteThreads")
+    (write-queue-limit-high . "WriteQueueLimitHigh")
+    (write-queue-limit-low . "WriteQueueLimitLow")
+    (host-name . "Hostname")
+    (fully-qualified-domain-name-lookup? . "FQDNLookup")))
+
+(define collectd-configuration-serialize-field
+  (remap-names collectd-configuration-remap
+               collectd-serialize-field))
+
+(define %collectd-default-type-database
+  (file-append collectd "/share/collectd/types.db"))
+
+(define-configuration collectd-configuration
+  (collectd
+   (package collectd)
+   "The collectd package to use."
+   (serializer empty-serializer))
+
+  (base-directory
+   (string "/var/lib/collectd")
+   "Sets the base directory. This is the directory beneath which all
+@acronym{RRD, round-robin database} files are created. Possibly more
+subdirectories are created. This is also the working directory for
+collectd."
+   (serializer collectd-configuration-serialize-field))
+
+  (auto-load-plugins?
+   (boolean #f)
+   "When set to @code{#f}, plugins must be loaded explicitly, by setting the
+@code{load-plugin?} field of each plugin configuration to @code{#t}.  If a
+@code{<Plugin ...>} block is encountered and no configuration handling
+callback for this plugin has been registered, a warning is logged and the
+block is ignored.
+
+When set to @code{#t}, each @code{<Plugin ...>} block acts as if it was
+immediately preceded by a @code{LoadPlugin} statement. @code{LoadPlugin}
+statements are still required for plugins that don't provide any
+configuration, e.g. the @code{Load} plugin."
+   (serializer collectd-configuration-serialize-field))
+
+  (collect-internal-stats?
+   (boolean #f)
+   "When @code{#t}, various statistics about the collectd daemon will
+be collected, with \"collectd\" as the plugin name."
+   (serializer collectd-configuration-serialize-field))
+
+  (type-databases
+   (list-of-file-likes (list %collectd-default-type-database))
+   "One or more files that contain the data-set descriptions. See
+@code{types.db(5)} for a description of the format of these files."
+   (serializer (remap-names collectd-configuration-remap
+                            collectd-serialize-list-of-file-likes)))
+
+  (interval
+   (seconds 60)
+   "Configures the interval in which to query the read plugins.
+Smaller values lead to a higher system load produced by
+collectd, while higher values lead to more coarse statistics.
+
+Warning: You should set this once and then never touch it again. If
+you do, you will have to delete all your RRD files or know some
+serious RRDtool magic! (Assuming you're using the RRDtool or
+RRDCacheD plugin.)"
+   (serializer collectd-configuration-serialize-field))
+
+  (max-read-interval
+   (seconds 86400)
+   "A read plugin doubles the interval between queries after each
+failed attempt to get data.
+
+This options limits the maximum value of the interval."
+   (serializer collectd-configuration-serialize-field))
+
+  (timeout
+   maybe-integer
+   "Consider a value list \"missing\" when no update has been read or
+received for @code{Iterations} iterations.  By default, collectd considers
+a value list missing when no update has been received for twice the
+update interval.  Since this setting uses iterations, the maximum
+allowed time without update depends on the @code{Interval} information
+contained in each value list. This is used in the @code{Threshold}
+configuration to dispatch notifications about missing values, see
+@code{collectd-threshold(5)} for details."
+   (serializer collectd-configuration-serialize-field))
+
+  (read-threads
+   (integer 5)
+   "Number of threads to start for reading plugins.  You may want to
+increase this if you have more than five plugins that take a long time
+to read. Mostly those are plugins that do network-IO. Setting this to
+a value higher than the number of registered read callbacks is not
+recommended."
+   (serializer collectd-configuration-serialize-field))
+
+  (write-threads
+   (integer 5)
+   "Number of threads to start for dispatching value lists to write
+plugins.  You may want to increase this if you have more than five
+plugins that may take relatively long to write to."
+   (serializer collectd-configuration-serialize-field))
+
+  (write-queue-limit-high
+   maybe-integer
+   "Metrics are read by the read threads and then put into a queue to
+be handled by the write threads.  If one of the write plugins is
+slow (e.g. network timeouts, I/O saturation of the disk) this queue
+will grow. In order to avoid running into memory issues in such a
+case, you can limit the size of this queue.
+
+If there are @code{write-queue-limit-high} metrics in the queue, any
+new metrics will be dropped.
+
+If the number of metrics currently in the queue is between
+@code{write-queue-limit-low} and @code{write-queue-limit-high}, the
+metric is dropped with a probability that is proportional to the
+number of metrics in the queue (i.e. it increases linearly until it
+reaches 100%)."
+   (serializer collectd-configuration-serialize-field))
+
+  (write-queue-limit-low
+   maybe-integer
+   "If there are less than @code{write-queue-limit-low} metrics in the
+queue, all new metrics will be enqueued.
+
+If @code{write-queue-limit-high} is set to non-zero and
+@code{write-queue-limit-low} is unset, the latter will default to half
+of @code{write-queue-limit-high}."
+   (serializer collectd-configuration-serialize-field))
+
+  (host-name
+   maybe-string
+   "Sets the hostname that identifies a host. If you omit this setting,
+the hostname will be determined using the @code{gethostname(2)} system
+call."
+   (serializer collectd-configuration-serialize-field))
+
+  (fully-qualified-domain-name-lookup?
+   (boolean #t)
+   "If @code{host-name} is determined automatically, this setting
+controls whether or not the daemon should try to figure out the
+@acronym{FQDN, fully qualified domain name}.  This is done using a
+lookup of the name returned by @code{gethostname(2)}."
+   (serializer collectd-configuration-serialize-field))
+
+  (plugins
+   (list-of-collectd-plugins '())
+   "Configurations for collectd plugins."
+   (serializer collectd-serialize-list-of-plugins))
+
+  (prefix collectd-))
+
+(define (collectd-configuration-python config)
+  "Return the Python package collectd was built with, or #f."
+  (and=> (assoc-ref (package-native-inputs
+                     (collectd-configuration-collectd config))
+                    "python")
+         car))
+
+(define (collectd-python-packages config)
+  "Return a list of all packages in Python plugins."
+  (append-map
+   (lambda (plugin)
+     (if (collectd-plugin-python? plugin)
+         (collectd-plugin-python-packages plugin)
+         '()))
+   (collectd-configuration-plugins config)))
+
+(define (collectd-profile-packages config)
+  "Return packages to include in the profile for collectd."
+  (let ((python (collectd-configuration-python config))
+        (python-packages (collectd-python-packages config)))
+    (cons
+     (collectd-configuration-collectd config)
+     ;; Only include Python and packages if collectd has support.
+     (if python
+         (cons python python-packages)
+         '()))))
+
+(define (make-collectd-profile-wrapper config)
+  "Return a gexp representing a wrapper for collectd, which runs it in a profile."
+  (let* ((collectd (collectd-configuration-collectd config))
+         (packages (collectd-profile-packages config))
+         (collectd-profile (profile
+                             (content
+                              (packages->manifest packages)))))
+    (computed-file
+     "collectd-profile-wrapper"
+     (with-imported-modules '((guix build utils))
+       #~(begin
+           (use-modules (guix build utils))
+           (call-with-output-file #$output
+             (lambda (output)
+               (format output
+                       (string-append
+                        "#! ~a~%~%"
+                        ". ~a~%"
+                        "exec -a \"${0##*/}\" ~a \"$@\"~%")
+                       #$(file-append bash "/bin/bash")
+                       #$(file-append collectd-profile "/etc/profile")
+                       #$(file-append collectd "/sbin/collectd"))))
+           (chmod #$output #o755))))))
+
+(define %collectd-pid-file "/var/run/collectd.pid")
+
+(define (make-collectd-shepherd-service config)
+  (let ((config-file
+         (mixed-text-file
+          "collectd.conf"
+          (serialize-configuration config collectd-configuration-fields))))
+    (match-record config <collectd-configuration> (collectd)
+      (shepherd-service
+        (provision '(collectd))
+        (documentation "Run collectd.")
+        (requirement '(user-processes networking))
+        (start
+         #~(make-forkexec-constructor
+            (list #$(make-collectd-profile-wrapper config)
+                  "-C" #$config-file
+                  "-B"                  ; Don't create base dir.
+                  "-P" #$%collectd-pid-file)
+            #:pid-file #$%collectd-pid-file))
+        (stop #~(make-kill-destructor))))))
+
+(define (collectd-activation config)
+  (match-record config <collectd-configuration> (base-directory)
+    (with-imported-modules
+        (source-module-closure '((guix build utils)))
+      #~(begin
+          (use-modules (guix build utils))
+          (mkdir-p #$base-directory)))))
+
+(define collectd-service-type
+  (service-type
+    (name 'collectd)
+    (description "Run collectd")
+    (extensions
+     (list
+      (service-extension shepherd-root-service-type
+                         (compose list make-collectd-shepherd-service))
+      (service-extension activation-service-type
+                         collectd-activation)))
+    (compose concatenate)
+    (extend
+     (lambda (config plugins)
+       (collectd-configuration
+        (inherit config)
+        (plugins (append (collectd-configuration-plugins config) plugins)))))
+    (default-value (collectd-configuration))))

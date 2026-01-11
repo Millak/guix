@@ -34106,6 +34106,300 @@ Zabbix server port.
 
 @c %end of fragment
 
+@subsubheading collectd Service
+@cindex collectd
+collectd is a daemon which collects, stores, transports, and visualizes
+system and application performance metrics in a variety of ways.
+
+@defvar collectd-service-type
+This is the service type for the @uref{https://collectd.org/, collectd}
+service.  Its value must be a @code{collectd-configuration} record:
+
+@lisp
+(service collectd-service-type
+         (collectd-configuration
+          (plugins
+           (list
+            (collectd-plugin-generic
+             (name "cpu")
+                (options '((ReportByCpu . #t)
+                           (ReportByState . #t)
+                           (ValuesPercentage . #t))))))))
+@end lisp
+
+The service may be extended to add new plugins:
+
+@lisp
+(simple-service 'collectd-memory
+                collectd-service-type
+                (list
+                 (collectd-plugin-generic
+                  (name "memory")
+                  (options '((ValuesAbsolute . #t)
+                             (ValusPercentage . #t))))))
+@end lisp
+@end defvar
+
+
+@c %start of fragment
+
+@deftp {Data Type} collectd-configuration
+Available @code{collectd-configuration} fields are:
+
+@table @asis
+@item @code{collectd} (default: @code{collectd}) (type: package)
+The collectd package to use.
+
+@item @code{base-directory} (default: @code{"/var/lib/collectd"}) (type: string)
+Sets the base directory.  This is the directory beneath which all
+@acronym{RRD,round-robin database} files are created.  Possibly more
+subdirectories are created.  This is also the working directory for
+collectd.
+
+@item @code{auto-load-plugins?} (default: @code{#f}) (type: boolean)
+When set to @code{#f}, plugins must be loaded explicitly, by setting the
+@code{load-plugin?} field of each plugin configuration to @code{#t}.  If
+a @code{<Plugin ...>} block is encountered and no configuration handling
+callback for this plugin has been registered, a warning is logged and
+the block is ignored.
+
+When set to @code{#t}, each @code{<Plugin ...>} block acts as if it was
+immediately preceded by a @code{LoadPlugin} statement. @code{LoadPlugin}
+statements are still required for plugins that don't provide any
+configuration, e.g. the @code{Load} plugin.
+
+@item @code{collect-internal-stats?} (default: @code{#f}) (type: boolean)
+When @code{#t}, various statistics about the collectd daemon will be
+collected, with "collectd" as the plugin name.
+
+@item @code{type-databases} (type: list-of-file-likes)
+One or more files that contain the data-set descriptions.  See
+@code{types.db(5)} for a description of the format of these files.
+
+@item @code{interval} (default: @code{60}) (type: maybe-seconds)
+Configures the interval in which to query the read plugins.  Smaller
+values lead to a higher system load produced by collectd, while higher
+values lead to more coarse statistics.  Warning: You should set this
+once and then never touch it again.  If you do, you will have to delete
+all your RRD files or know some serious RRDtool magic! (Assuming you're
+using the RRDtool or RRDCacheD plugin.)
+
+@item @code{max-read-interval} (default: @code{86400}) (type: seconds)
+A read plugin doubles the interval between queries after each failed
+attempt to get data.  This options limits the maximum value of the
+interval.
+
+@item @code{timeout} (type: maybe-integer)
+Consider a value list "missing" when no update has been read or received
+for @code{Iterations} iterations.  By default, collectd considers a
+value list missing when no update has been received for twice the update
+interval.  Since this setting uses iterations, the maximum allowed time
+without update depends on the @code{Interval} information contained in
+each value list.  This is used in the @code{Threshold} configuration to
+dispatch notifications about missing values, see
+@code{collectd-threshold(5)} for details.
+
+@item @code{read-threads} (default: @code{5}) (type: integer)
+Number of threads to start for reading plugins.  You may want to
+increase this if you have more than five plugins that take a long time
+to read.  Mostly those are plugins that do network-IO.  Setting this to
+a value higher than the number of registered read callbacks is not
+recommended.
+
+@item @code{write-threads} (default: @code{5}) (type: integer)
+Number of threads to start for dispatching value lists to write plugins.
+You may want to increase this if you have more than five plugins that
+may take relatively long to write to.
+
+@item @code{write-queue-limit-high} (type: maybe-integer)
+Metrics are read by the read threads and then put into a queue to be
+handled by the write threads.  If one of the write plugins is slow (e.g.
+network timeouts, I/O saturation of the disk) this queue will grow.  In
+order to avoid running into memory issues in such a case, you can limit
+the size of this queue.  If there are @code{write-queue-limit-high}
+metrics in the queue, any new metrics will be dropped.  If the number of
+metrics currently in the queue is between @code{write-queue-limit-low}
+and @code{write-queue-limit-high}, the metric is dropped with a
+probability that is proportional to the number of metrics in the queue
+(i.e.  it increases linearly until it reaches 100%).
+
+@item @code{write-queue-limit-low} (type: maybe-integer)
+If there are less than @code{write-queue-limit-low} metrics in the
+queue, all new metrics will be enqueued.  If
+@code{write-queue-limit-high} is set to non-zero and
+@code{write-queue-limit-low} is unset, the latter will default to half
+of @code{write-queue-limit-high}.
+
+@item @code{host-name} (type: maybe-string)
+Sets the hostname that identifies a host.  If you omit this setting, the
+hostname will be determined using the @code{gethostname(2)} system call.
+
+@item @code{fully-qualified-domain-name-lookup?} (default: @code{#t}) (type: boolean)
+If @code{host-name} is determined automatically, this setting controls
+whether or not the daemon should try to figure out the
+@acronym{FQDN,fully qualified domain name}.  This is done using a lookup
+of the name returned by @code{gethostname(2)}.
+
+@item @code{plugins} (default: @code{()}) (type: list-of-collectd-plugins)
+Configurations for collectd plugins.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} collectd-plugin-generic
+
+The @code{collectd-plugin-generic} record can represent most collectd
+plugins.
+
+This example configuration will enable the CPU usage reporting plugin.
+See the @code{collectd.conf(5)} man page for a list of plugins and their
+options.
+
+@lisp
+(collectd-plugin-generic
+ (name "cpu")
+ (options '((ReportByCpu . #t)
+            (ReportByState . #t)
+            (ValuesPercentage . #t))))
+@end lisp
+
+Available @code{collectd-plugin-generic} fields are:
+
+@table @asis
+@item @code{load-plugin?} (default: @code{#t}) (type: boolean)
+When @code{#t}, include a @code{LoadPlugin} directive in the
+configuration.  This interacts with @code{auto-load-plugins?} in
+@code{collectd-configuration}; if @code{auto-load-plugins?} is
+@code{#f}, all plugins should set this to @code{#t}.
+
+@item @code{name} (type: string)
+The name of the plugin to configure.
+
+@item @code{options} (default: @code{()}) (type: plugin-options)
+Configuration options for the plugin, as an alist.  See
+@code{collect.conf(5)} for the available plugin options.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+
+
+@c %start of fragment
+
+@deftp {Data Type} collectd-plugin-python
+
+The @code{collectd-plugin-python} configuration record holds
+configuration for collectd plugins written in Python.  See the
+@code{collectd-python(5)} man page for more information on Python
+support in collectd.
+
+Guix packages listed in the @code{packages} field will be added to the
+profile used to run collectd.  This example configuration will load a
+Python plugin named @code{myplugin}, whose code is in the
+@code{python-myplugin} Guix package.
+
+@lisp
+(collectd-plugin-python
+ (packages (list python-myplugin))
+ (module "myplugin")
+ (module-options '((SomeOption . "hi")
+                   (AnotherOption . 123))))
+@end lisp
+
+The @code{module-paths} field will emit verbatim @code{ModulePath}
+lines, for plugins not packaged for Guix.  This example configuration
+loads the @code{gpio} plugin from
+@code{/home/user/projects/collectd-gpio/gpio}.
+
+@lisp
+(collectd-plugin-python
+ (module-paths
+  (list
+   "/home/user/projects/collectd-gpio/gpio"))
+ (module "gpio")
+ (module-options '((MonitorGPIOs 1 2 3 4))))
+@end lisp
+
+The two mechanisms may be combined: a Guix-packaged Python library may
+be used by unpackaged plugin code.  This example loads a
+@code{mongometrics} plugin from
+@code{/opt/collectd-mongodb/mongometrics}, and also makes the
+@code{python-pymongo} Python package available for it to use.
+
+@lisp
+(collectd-plugin-python
+ (packages (list python-pymongo))
+ (module-paths
+  (list
+   "/opt/collectd-mongodb/mongometrics"))
+ (module "mongometrics")
+ (module-options '((Host . "localhost"))))
+@end lisp
+
+Available @code{collectd-plugin-python} fields are:
+
+@table @asis
+@item @code{load-plugin?} (default: @code{#t}) (type: boolean)
+When @code{#t}, include a @code{LoadPlugin} directive in the
+configuration.  This interacts with @code{auto-load-plugins?} in
+@code{collectd-configuration}; if @code{collectd-configuration}'s
+@code{auto-load-plugins?} is @code{#f}, all plugins should set this to
+@code{#t}.
+
+@item @code{type-databases} (default: @code{()}) (type: list-of-file-likes)
+One or more files that contain the data-set descriptions.  See
+@code{types.db(5)} for a description of the format of these files.
+
+@item @code{packages} (default: @code{()}) (type: list-of-packages)
+Packages to make available to the Python plugin.  These can be
+dependencies of the plugin code, or may contain the plugin.
+
+@item @code{module-paths} (default: @code{()}) (type: list-of-string)
+Entries to prepend to @code{sys.path}.
+
+@item @code{log-traces?} (default: @code{#f}) (type: boolean)
+If a Python script throws an exception it will be logged by collectd
+with the name of the exception and the message.  If you set this option
+to true it will also log the full stacktrace just like the default
+output of an interactive Python interpreter.  This does not apply to the
+@code{CollectError} exception, which will never log a stacktrace.  This
+should probably be set to false most of the time but is very useful for
+development and debugging of new modules.
+
+@item @code{interactive?} (default: @code{#f}) (type: boolean)
+This option will cause the module to launch an interactive Python
+interpreter that reads from and writes to the terminal.  Note that
+collectd will terminate right after starting up if you try to run it as
+a daemon while this option is enabled so make sure to start collectd
+with the @code{-f} option.  See the @code{collectd-python(5)} man page
+for more information on this option.
+
+@item @code{module} (type: string)
+The name of the Python module to import into the collectd Python
+process.  The module must be available in @code{packages} or
+@code{module-paths}, and register a MPD callback.
+
+@item @code{module-options} (default: @code{()}) (type: alist)
+Configuration options for the module.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+
 @node Kerberos Services
 @subsection Kerberos Services
 @cindex Kerberos
