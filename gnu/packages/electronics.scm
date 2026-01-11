@@ -1604,7 +1604,7 @@ understand and improve testbench coverage.")
 (define-public openboardview
   (package
     (name "openboardview")
-    (version "9.95.0")
+    (version "9.95.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1626,7 +1626,7 @@ understand and improve testbench coverage.")
                                "openboardview-use-system-mpc.patch"))
               (sha256
                (base32
-                "1safjd729a7591rigkiy3c678bivrj5q1qwg1f18sijhlsfkf5b3"))))
+                "1gkl91rcbwiapllxw5chwgzjq2p076h9bpp3nbh13mb2v3wc6qwa"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1665,16 +1665,14 @@ understand and improve testbench coverage.")
             (assoc-ref gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (native-inputs
      (list pkg-config
-           python
+           python-minimal-wrapper
            glad-0.1
            stb-image
            utf8-h))
     (inputs
      (list fontconfig
            gtk+
-           ;; OpenBoardView can build with Dear ImGui 1.88, but there are some
-           ;; usability problems such as the difficulty to register clicks.
-           imgui-1.87
+           imgui
            orangeduck-mpc
            sdl2
            sqlite
