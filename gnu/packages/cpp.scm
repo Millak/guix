@@ -332,6 +332,31 @@ This project is maintained by Kitware in support of ITK, the Insight
 Segmentation and Registration Toolkit.")
   (license license:asl2.0)))
 
+(define-public collada-dom
+  (package
+    (name "collada-dom")
+    (version "2.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rdiankov/collada-dom.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1npz3yynv02g7w70c39zqn5w0g4sb438bmkkw0x7gj8cknjnwv9z"))
+       (patches (search-patches "collada-dom-boost.patch"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))      ; No tests present
+    (native-inputs (list pkg-config))
+    (inputs (list boost libxml2 minizip zlib))
+    (home-page "https://github.com/rdiankov/collada-dom")
+    (synopsis "COLLADA DOM C++ library")
+    (description "COLLADA-DOM is a C++ library for loading
+and saving COLLADA documents that can contain 2D, 3D, physics
+and other types of content.")
+    (license license:expat)))
+
 (define-public cpp-utilities
   (package
     (name "cpp-utilities")

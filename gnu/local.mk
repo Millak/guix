@@ -1120,6 +1120,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/clucene-pkgconfig.patch			\
   %D%/packages/patches/coda-use-system-libs.patch		\
   %D%/packages/patches/cogl-fix-double-free.patch		\
+  %D%/packages/patches/collada-dom-boost.patch			\
   %D%/packages/patches/collectd-5.11.0-noinstallvar.patch		\
   %D%/packages/patches/combinatorial-blas-awpm.patch		\
   %D%/packages/patches/combinatorial-blas-io-fix.patch		\

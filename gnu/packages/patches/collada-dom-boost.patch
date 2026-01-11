@@ -1,0 +1,70 @@
+From 8d2b96e36e4b1a32544fb78e5d92c2e4c3c482c1 Mon Sep 17 00:00:00 2001
+From: Rodion Goritskov <rodion@goritskov.com>
+Date: Sun, 11 Jan 2026 18:52:39 +0100
+Subject: [PATCH] Fix building with the fresh Boost.
+
+Merged patches from:
+https://github.com/rdiankov/collada-dom/pull/43.patch
+https://gitlab.archlinux.org/archlinux/packaging/packages/collada-dom/-/blob/main/boost-1.89.patch
+---
+ CMakeLists.txt                          | 2 +-
+ dom/include/dae.h                       | 2 +-
+ dom/src/dae/daeUtils.cpp                | 2 +-
+ dom/src/dae/daeZAEUncompressHandler.cpp | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 2596a23..0c8caca 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -159,7 +159,7 @@ endif()
+ if( NOT $ENV{BOOST_LIBRARYDIR} STREQUAL "" )
+   set(Boost_LIBRARY_DIRS $ENV{BOOST_LIBRARYDIR})
+ endif()
+-find_package(Boost COMPONENTS filesystem system REQUIRED)
++find_package(Boost COMPONENTS filesystem REQUIRED)
+ 
+ message(STATUS "found boost version: ${Boost_VERSION}")
+ 
+diff --git a/dom/include/dae.h b/dom/include/dae.h
+index e53388b..03e72f9 100644
+--- a/dom/include/dae.h
++++ b/dom/include/dae.h
+@@ -25,7 +25,7 @@
+ #pragma warning(disable: 4180 4245)
+ #endif
+ #ifndef NO_BOOST
+-#include <boost/filesystem/convenience.hpp>
++#include <boost/filesystem.hpp>
+ #endif
+ #ifdef _MSC_VER
+ #pragma warning(pop)
+diff --git a/dom/src/dae/daeUtils.cpp b/dom/src/dae/daeUtils.cpp
+index 7e3dc9a..f4ddea3 100644
+--- a/dom/src/dae/daeUtils.cpp
++++ b/dom/src/dae/daeUtils.cpp
+@@ -18,7 +18,7 @@
+ #endif
+ 
+ #ifndef NO_BOOST
+-#include <boost/filesystem/convenience.hpp>       // THIS WAS NOT COMMENTED.
++#include <boost/filesystem.hpp>       // THIS WAS NOT COMMENTED.
+ #endif
+ 
+ #include <cstdio> // for tmpnam
+diff --git a/dom/src/dae/daeZAEUncompressHandler.cpp b/dom/src/dae/daeZAEUncompressHandler.cpp
+index da2a344..2550000 100644
+--- a/dom/src/dae/daeZAEUncompressHandler.cpp
++++ b/dom/src/dae/daeZAEUncompressHandler.cpp
+@@ -271,7 +271,7 @@ bool daeZAEUncompressHandler::checkAndExtractInternalArchive( const std::string&
+     bool error = false;
+ 
+     boost::filesystem::path archivePath(filePath);
+-    std::string dir = archivePath.branch_path().string();
++    std::string dir = archivePath.parent_path().string();
+ 
+     const std::string& randomSegment = cdom::getRandomFileName();
+     std::string tmpDir = dir + cdom::getFileSeparator() + randomSegment + cdom::getFileSeparator();
+-- 
+2.52.0
+
