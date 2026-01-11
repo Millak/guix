@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 Pierre-Henry Fröhring <contact@phfrohring.com>
-;;; Copyright © 2024 Igor Goryachev <igor@goryachev.org>
+;;; Copyright © 2024, 2026 Igorj Gorjaĉev <igor@goryachev.org>
 ;;; Copyright © 2024, 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -97,6 +97,8 @@ See: https://hexdocs.pm/mix/1.15.7/Mix.html#module-environment-variables"
   (setenv "MIX_HOME" (getcwd))
   (setenv "MIX_PATH" (or mix-path ""))
   (setenv "MIX_REBAR3" (string-append (assoc-ref inputs "rebar3") "/bin/rebar3"))
+  ;; Set deterministic compiler option.
+  (setenv "ERL_COMPILER_OPTIONS" "deterministic")
   ;; Add Erlang dependencies in Elixir's load path.
   (setenv "ERL_LIBS"
           (string-join (search-path-as-list
