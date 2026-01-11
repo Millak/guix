@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2024-2025 Zheng Junjie <z572@z572.online>
+;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,13 +48,13 @@
 
 ;;; Commentary:
 ;;;
-;;; VisionFive2 can boot from MMC1 (SPI flash) or MMC2 (SD card) selected
-;;; by DIP switches MSEL[1:0], you may want boot from MMC2 to use the
-;;; U-Boot from Guix System instead of the vendor U-Boot in MMC1.  Before
-;;; doing so, make sure you have a correct 'fdtfile' in the environment:
+;;;  With this image, VisionFive2 can boot from MMC1 (MicroSD card) with
+;;;  SDIO3.0 boot mode (RPIO_1:L, RGPIO_0:H -- see [1]), in this case the
+;;;  board will use U-Boot from Guix System instead of the vendor U-Boot.
+;;;  Booting from eMMC and NVME is still work-in-progress.
 ;;;
-;;; uboot> setenv fdtfile starfive/jh7110-starfive-visionfive-2-v1.3b.dtb
-;;; uboot> saveenv
+;;; References:
+;;;  1. <https://doc-en.rvspace.org/VisionFive2/Boot_UG/VisionFive2_SDK_QSG/boot_mode_settings.html>
 ;;;
 ;;; Code:
 
