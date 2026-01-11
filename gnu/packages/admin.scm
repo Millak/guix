@@ -2526,7 +2526,7 @@ system administrator.")
     (inputs
      (append (list coreutils zlib)
              (if (target-hurd?)
-                 '()
+                 (list libxcrypt)
                  (list linux-pam))))
     (home-page "https://www.sudo.ws/")
     (synopsis "Run commands as root")
