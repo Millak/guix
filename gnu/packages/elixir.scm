@@ -209,6 +209,8 @@ being successfully used in web development and the embedded software domain.")
           (delete 'configure)
           (replace 'build
             (lambda _
+              ;; Set deterministic compiler option.
+              (setenv "ERL_COMPILER_OPTIONS" "deterministic")
               (setenv "MIX_ENV" "prod")
               (invoke "mix" "compile")))
           (replace 'install
