@@ -36,6 +36,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cross-base)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages disk)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gawk)
@@ -594,6 +595,7 @@ exec ${system}/rc \"$@\"
     (inputs
      `(("libgcrypt" ,libgcrypt)                  ;for /hurd/random
        ("libdaemon" ,libdaemon)                  ;for /bin/console --daemonize
+       ("libxcrypt" ,libxcrypt)                  ;for password hashing
        ("unifont" ,unifont)
        ("libpciaccess" ,libpciaccess-static)
 
