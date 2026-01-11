@@ -144,6 +144,22 @@ applications, full-screen applications, and embedded platforms without
 standard operating system features.")
     (license license:expat)))
 
+(define-public imgui-1.91
+  (package
+    (inherit imgui)
+    (name "imgui")
+    (version "1.91.4")
+    (source (origin
+              (inherit (package-source imgui))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/ocornut/imgui")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lqcsyqj5m4d4g390x7n3jvjanrnsf64fgjxn51v1kc02dw28gpa"))))))
+
 (define-public imgui-1.87
   (package
     (inherit imgui)
@@ -277,7 +293,7 @@ used either in header only mode or in implementation mode.")
                         '("implot.h" "implot_internal.h")))))
       #:tests? #f))                     ; no test suite
     (inputs
-     (list imgui))
+     (list imgui-1.91))
     (home-page "https://github.com/epezent/implot")
     (synopsis "Immediate-mode C++ plotting library for ImGui")
     (description "ImPlot is an immediate-mode, GPU-accelerated plotting
