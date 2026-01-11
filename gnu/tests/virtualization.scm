@@ -295,7 +295,6 @@
               (type 'hurd64-qcow2)
               (os (operating-system
                     (inherit %hurd-vm-operating-system)
-                    (kernel %hurd64-default-operating-system-kernel)
                     (kernel-arguments '("noide")) ;use rumpdisk
                     (users (cons (user-account
                                    (name "test")

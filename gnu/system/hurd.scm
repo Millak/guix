@@ -52,8 +52,6 @@
             %desktop-services/hurd
             %hurd-default-operating-system
             %hurd-default-operating-system-kernel
-            %hurd64-default-operating-system
-            %hurd64-default-operating-system-kernel
             %setuid-programs/hurd))
 
 ;;; Commentary:
@@ -65,9 +63,6 @@
 
 (define %hurd-default-operating-system-kernel
   gnumach)
-
-(define %hurd64-default-operating-system-kernel
-  %hurd-default-operating-system-kernel)
 
 (define %base-packages/hurd
   ;; Note: the Shepherd comes before the Hurd, not just because its duty is to
@@ -144,8 +139,4 @@
     (privileged-programs '())
     (setuid-programs %setuid-programs/hurd)))
 
-(define %hurd64-default-operating-system
-  (operating-system
-    (inherit %hurd-default-operating-system)
-    (kernel %hurd64-default-operating-system-kernel)))
 

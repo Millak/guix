@@ -71,7 +71,7 @@
 
 (define hurd64-barebones-os
   (operating-system
-    (inherit %hurd64-default-operating-system)
+    (inherit %hurd-default-operating-system)
     (bootloader (bootloader-configuration
                  (bootloader grub-minimal-bootloader)
                  (targets '("/dev/sdX"))))
