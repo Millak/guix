@@ -295,6 +295,30 @@ using the Git pkt-line format used in various Git operations.")
          (replace "go-github-com-go-git-gcfg"
            go-github-com-go-git-gcfg-v2))))))
 
+(define-public go-github-com-cli-shurcool-graphql
+  (package
+    (name "go-github-com-cli-shurcool-graphql")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cli/shurcooL-graphql")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w5ixfr4ia35n8adadr2rsca3f04bq36fxkgh27fw7rd0mxf199l"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cli/shurcooL-graphql"))
+    (home-page "https://github.com/cli/shurcooL-graphql")
+    (synopsis "GraphQL client implementation for GitHub CLI")
+    (description
+     "This package provides a GraphQL client implementation forked from
+@code{shurcooL/graphql}, customized for use in the GitHub CLI.")
+    (license license:expat)))
+
 (define-public go-github-com-jiangxin-goconfig
   (package
     (name "go-github-com-jiangxin-goconfig")
