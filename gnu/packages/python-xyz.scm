@@ -23312,13 +23312,13 @@ natural language processing libraries.")
 (define-public python-pymongo
   (package
     (name "python-pymongo")
-    (version "4.14.0")
+    (version "4.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pymongo" version))
        (sha256
-        (base32 "1ld18zyh4f6zxwswsc018d48lq7imf85zrf49w9wyy6fvlzlwrqm"))))
+        (base32 "0330bj24xl0yq19p330p28x3i3x2jzbn5zkjz2k5iqpncm841a4b"))))
     (build-system pyproject-build-system)
     (arguments
      (list
