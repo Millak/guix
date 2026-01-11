@@ -160,22 +160,6 @@ standard operating system features.")
                (base32
                 "1lqcsyqj5m4d4g390x7n3jvjanrnsf64fgjxn51v1kc02dw28gpa"))))))
 
-(define-public imgui-1.87
-  (package
-    (inherit imgui)
-    (name "imgui")
-    (version "1.87")
-    (source (origin
-              (inherit (package-source imgui))
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/ocornut/imgui")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "10qil22s5qak3as41787iz273sibpq1bq66bakgn7yvhj5fym6hz"))))))
-
 (define-public imgui-1.86
   (package
     (inherit imgui)
