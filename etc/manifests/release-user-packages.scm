@@ -68,7 +68,6 @@
   "hexchat"
   "hyprland"
   "icecat"
-  "idris"
   "imagemagick"
   "imapfilter"
   "jami"
