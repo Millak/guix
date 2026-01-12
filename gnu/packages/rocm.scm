@@ -312,20 +312,13 @@ CPUs to execute unmodified HIP code.  It is generic and does not assume a
 particular CPU vendor or architecture.")
       (license license:expat))))
 
-(define %default-amdgpu-targets
+(define %default-amd-gpu-targets
   '("gfx908" "gfx90a" "gfx942" "gfx1030" "gfx1100" "gfx1101" "gfx1200" "gfx1201"))
 
-;; I guess the intent would be to have this overridable with a package
-;; transform akin to --with-property=amdgpu-target="gfx1100;gfx1101"
-(define %default-amdgpu-targets-property
-  `(amdgpu-targets
-    .
-    ,(string-join %default-amdgpu-targets ";")))
-
-(define-syntax-rule (%amdgpu-targets)
-  (string-split
-   (assoc-ref (package-properties this-package) 'amdgpu-targets)
-   #\;))
+(define-syntax-rule (current-amd-gpu-targets)
+  "Return the list of AMD GPU targets for this package, as a list of strings."
+  (or (assoc-ref (package-properties this-package) 'amd-gpu-targets)
+      %default-amd-gpu-targets))
 
 (define-public rocm-bandwidth-test
   (package
@@ -380,7 +373,7 @@ particular CPU vendor or architecture.")
               (substitute* "CMakeLists.txt"
                 (("find_package\\(Git QUIET\\)")
                  "set(GIT_FOUND ON)"))))
-          ;; This converts the amdgpu-targets property to its proper entry
+          ;; This converts the 'amd-gpu-targets' property to its proper entry
           ;; point in this package; this relies on the patch
           ;; rocm-bandwidth-test-take-default-gpus-from-environment.patch
           ;; above, as I can't seem to find a way to do multiline matches.
@@ -390,8 +383,9 @@ particular CPU vendor or architecture.")
             (lambda _
               (substitute* "plugins/tb/transferbench/CMakeLists.txt"
                 (("set\\(DEFAULT_GPUS[^)]*\\)")
-                 (string-append
-                  "set(DEFAULT_GPUS " #$(string-join (%amdgpu-targets)) ")" )))))
+                 (string-append "set(DEFAULT_GPUS "
+                                #$(string-join (current-amd-gpu-targets))
+                                ")" )))))
           ;; See configure-flags above.
           (add-after 'unpack 'fix-use-link-path
             (lambda _
@@ -442,8 +436,7 @@ particular CPU vendor or architecture.")
                   boost
                   cli11
                   catch2-3.8))
-    (properties
-     (list %default-amdgpu-targets-property))
+    (properties `((amd-gpu-targets . ,%default-amd-gpu-targets)))
     (native-inputs (list
                     rocm-hipcc
                     clang-rocm
