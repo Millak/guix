@@ -413,14 +413,14 @@ combining, and so on, with a simple interface.")
 (define-public mlterm
   (package
     (name "mlterm")
-    (version "3.9.3")
+    (version "3.9.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/mlterm/01release/mlterm-"
                            version "/mlterm-" version ".tar.gz"))
        (sha256
-        (base32 "1nah3fn055njwpr2nfl8zkr5r02n89mxxdxgcjyk9q8x74hngdxm"))))
+        (base32 "0plvbplcz9603ckcxcrssg6zz0p0l35ga7f53hhw2fs4yg2f878p"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
