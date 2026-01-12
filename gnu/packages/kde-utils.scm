@@ -225,7 +225,7 @@ well as CD-ROM images.")
                     kwidgetsaddons
                     kwindowsystem
                     kxmlgui
-                    libgit2-1.8
+                    libgit2
                     phonon
                     qt5compat
                     qtwayland))

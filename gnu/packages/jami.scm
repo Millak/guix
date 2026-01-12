@@ -161,7 +161,7 @@
            jack-1
            jsoncpp
            libarchive
-           libgit2-1.8
+           libgit2
            libnatpmp
            libsecp256k1
            libupnp
