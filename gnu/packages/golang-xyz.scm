@@ -14647,6 +14647,31 @@ library bevacqua/fuzzysearch.")
 to provide functions similar to C++ STL.")
     (license license:expat)))
 
+(define-public go-github-com-lmittmann-tint
+  (package
+    (name "go-github-com-lmittmann-tint")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lmittmann/tint")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gjsfnksk2pshlxy9slqlp67sry1b5i585j41mvwnslwhmkps2r6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/lmittmann/tint"))
+    (home-page "https://github.com/lmittmann/tint")
+    (synopsis "@code{slog.Handler} that writes colorized logs")
+    (description
+     "Package @code{tint} implements a zero-dependency @code{slog.Handler}
+that writes tinted (colorized) logs.  The output format is inspired by the
+@code{zerolog.ConsoleWriter} and @code{slog.TextHandler}.")
+    (license license:expat)))
+
 (define-public go-github-com-logrusorgru-aurora
   (package
     (name "go-github-com-logrusorgru-aurora")
