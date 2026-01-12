@@ -6103,7 +6103,7 @@ Common Lisp.")
 (define-public sbcl-cl-fast-ecs
   (package
     (name "sbcl-cl-fast-ecs")
-    (version "0.8.0")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -6112,7 +6112,7 @@ Common Lisp.")
              (commit version)))
        (file-name (git-file-name "cl-fast-ecs" version))
        (sha256
-        (base32 "09fv58pgfa1byplzzh4mzriwwnnn5i2ib8z19dbnbl7y8zy568hi"))))
+        (base32 "0s2pc1ffbddjsvc92pdd4wlv1353byaar60kmn4zcnwy5g9p81nv"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
      (list graphviz-minimal
