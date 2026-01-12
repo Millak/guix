@@ -15795,7 +15795,7 @@ detect the suitable metaclass by analyzing the @code{defclass} form.")
 (define-public sbcl-enhanced-eval-when
   (package
     (name "sbcl-enhanced-eval-when")
-    (version "1.0")
+    (version "2.0")
     (source
      (origin
        (method git-fetch)
@@ -15804,11 +15804,9 @@ detect the suitable metaclass by analyzing the @code{defclass} form.")
              (commit (string-append "v" version))))
           (file-name (git-file-name "cl-enhanced-eval-when" version))
           (sha256
-           (base32 "1ws1v297plcbqmcvckg7vqzzgnrwfyx5kd7281r1wrhc26998rx2"))))
+           (base32 "1l7n04pzcwsxvw6m4pcksmlx525ijbgh5n28h56clpvpwlwnzjs3"))))
     (build-system asdf-build-system/sbcl)
-    ;; https://github.com/Hexstream/enhanced-eval-when/issues/1
-    (arguments
-     (list #:tests? #f)) ; There are no tests in version 1.0.
+    (native-inputs (list sbcl-parachute))
     (home-page "https://www.hexstreamsoft.com/libraries/enhanced-eval-when/")
     (synopsis "Shortcuts for EVAL-WHEN")
     (description
