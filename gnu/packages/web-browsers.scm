@@ -536,7 +536,8 @@ systems intended primarily for local access.")
              openssl
              qtbase-5
              qtmultimedia-5
-             qtsvg-5))
+             qtsvg-5
+             qtwayland-5))
       (home-page "https://kristall.random-projects.net")
       (synopsis "Small-internet graphical client")
       (description "Graphical small-internet client with with many features
