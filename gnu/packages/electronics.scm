@@ -2050,8 +2050,12 @@ verification.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key tests? inputs #:allow-other-keys)
               (when tests?
+                (with-directory-excursion "3rdParty/en_cl_fix/sim"
+                  (invoke "python3" "run.py" "--simulator" "nvc"
+                          "--simulator-path"
+                          (dirname (search-input-file inputs "bin/nvc"))))
                 (with-directory-excursion "sim"
                   (substitute* "run.py"
                     ;; This is required to comply with current VUnit, see:
