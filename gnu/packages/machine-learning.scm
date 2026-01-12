@@ -6125,6 +6125,30 @@ models on CPU and GPU.")
                          python-pyyaml
                          python-numpy))))
 
+(define-public python-xx-sent-ud-sm
+  ;; For Argos Translate CLI tool
+  (hidden-package
+   (package
+     (name "python-xx-sent-ud-sm")
+     (version "3.8.0")
+     (source
+      (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/explosion/spacy-models"
+                           "/releases/download/xx_sent_ud_sm-3.8.0"
+                           "/xx_sent_ud_sm-" version ".tar.gz"))
+       (sha256
+        (base32 "1pwyl23nvmmkpvq5wgafdqq0mlnq14l2svh9m6gi6w0skv7dd5fq"))))
+     (build-system pyproject-build-system)
+     (arguments '(#:tests? #f))         ;no test
+     (native-inputs (list python-setuptools))
+     (propagated-inputs (list python-spacy))
+     (home-page "https://spacy.io/models/xx#xx_sent_ud_sm")
+     (synopsis "Small multi-language sentence boundary model for spaCy")
+     (description "@code{xx_sent_ud_sm} is a spaCy model optimized for CPU.
+It includes a sentence boundary component of a relatively small size.")
+     (license license:cc-by-sa3.0))))
+
 (define-public python-hmmlearn
   (package
     (name "python-hmmlearn")
