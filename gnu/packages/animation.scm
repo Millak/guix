@@ -352,7 +352,8 @@ waveform until they line up with the proper sounds.")
                 "0b1nwiwyg01087q318vymg4si76dw41ykxbn2zwd6dqbxzbpr1dh"))))
     (build-system gnu-build-system)
     (inputs
-     (list bash-minimal qtbase-5 qtxmlpatterns-5 qtmultimedia-5 qtsvg-5))
+     (list bash-minimal qtbase-5 qtxmlpatterns-5 qtmultimedia-5 qtsvg-5
+           qtwayland-5))
     (arguments
      (list
       #:phases
