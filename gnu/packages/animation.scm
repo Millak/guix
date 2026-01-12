@@ -316,7 +316,7 @@ language.")
             ;; Ensure that all required Qt plugins are found at runtime.
             (add-after 'install 'wrap-executable
               (lambda* (#:key inputs #:allow-other-keys)
-                (let ((qt '("qtbase" "qtmultimedia")))
+                (let ((qt '("qtbase" "qtmultimedia" "qtwayland")))
                   (wrap-program (string-append #$output "/bin/Papagayo")
                     `("QT_PLUGIN_PATH" ":" prefix
                       ,(map (lambda (label)
@@ -324,7 +324,7 @@ language.")
                                              "/lib/qt5/plugins/"))
                             qt)))))))))
       (inputs
-       (list bash-minimal qtbase-5 qtmultimedia-5 libsndfile))
+       (list bash-minimal qtbase-5 qtmultimedia-5 qtwayland-5 libsndfile))
       (native-inputs
        (list qttools-5))
       (home-page "https://www.lostmarble.com/papagayo/")
