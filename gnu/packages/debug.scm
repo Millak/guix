@@ -531,8 +531,8 @@ server and embedded PowerPC, and S390 guests.")
 
 (define-public qemu-for-aflplusplus
   (let ((base qemu-minimal)
-        (commit "790d2124fd054621d3c0d3ec31bea114b60601f9")
-        (revision "0"))
+        (commit "60ebd5624c60589e276cf287516b925a9ee35b87")
+        (revision "1"))
     (hidden-package
      (package
        (inherit base)
@@ -546,7 +546,7 @@ server and embedded PowerPC, and S390 guests.")
                               (recursive? #t)))
           (file-name (git-file-name name version))
           (sha256
-           (base32 "1l2kl8768l4mbkiaj63zn6gsdn3qpl3rg7s6h62rmd7599ar3xn3"))))
+           (base32 "1vz7k1ssfnlimkpc01fqin27r2k4a23cwpxj2bbmsp7d3175bjbz"))))
        (arguments
         (substitute-keyword-arguments (package-arguments base)
           ((#:configure-flags _ #~'())
