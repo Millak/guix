@@ -896,7 +896,7 @@ a server/client mode.")
 (define-public havoc
   (package
     (name "havoc")
-    (version "0.6.0")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -905,7 +905,7 @@ a server/client mode.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "089maf2xgh9halrccdj6p00l4q573x4f6a29655xb9h3a815s9k0"))))
+                "1c53dddq33b1vij5aa4rkzypgrxcp3hbgh15zb6lgbii12n0fz8y"))))
     (build-system gnu-build-system)
     (arguments
      (list
