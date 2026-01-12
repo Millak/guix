@@ -38,18 +38,22 @@ Historically, this used to be the package name followed by \"-autoloads.el\".
 As of Emacs 29, the term \"loaddefs\" is preferred over \"autoloads\",
 but they function much in the same manner.")
 
-(defun guix-emacs-find-autoloads (directory)
-  "Return a list of files containing autoload definitions in DIRECTORY.
-The files in the list do not have extensions (.el, .elc)."
-  ;; `directory-files' doesn't honor group in regexp.
-  (delete-dups (mapcar #'file-name-sans-extension
-                       (directory-files directory 'full-name
-                                        guix-emacs-autoloads-regexp))))
-
 (defcustom guix-emacs-verbose nil
   "Set to true to provide verbose messages, such as when loading packages."
   :type 'boolean
   :group 'guix-emacs)
+
+(defun guix-emacs-find-autoloads (directory)
+  "Return a list of files containing autoload definitions in DIRECTORY.
+The files in the list do not have extensions (.el, .elc)."
+  ;; `directory-files' doesn't honor group in regexp.
+  (if (file-directory-p directory)
+      (delete-dups (mapcar #'file-name-sans-extension
+                           (directory-files directory 'full-name
+                                            guix-emacs-autoloads-regexp)))
+    (when guix-emacs-verbose
+      (message "Ignoring nonexistent load-path directory: %s" directory)
+      nil)))
 
 (defun guix-emacs--load-file-no-error (file)
   "Load FILE, ignoring any errors"
