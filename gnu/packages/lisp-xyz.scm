@@ -24157,7 +24157,7 @@ especially in a multi-threaded context.")
 (define-public sbcl-net.didierverna.asdf-flv
   (package
     (name "sbcl-net.didierverna.asdf-flv")
-    (version "2.1")
+    (version "2.2")
     (source
      (origin
        (method git-fetch)
@@ -24166,7 +24166,7 @@ especially in a multi-threaded context.")
              (commit (string-append "version-" version))))
        (file-name (git-file-name "asdf-flv" version))
        (sha256
-        (base32 "1fi2y4baxan103jbg4idjddzihy03kwnj2mzbwrknw4d4x7xlgwj"))))
+        (base32 "10hfwi6jz10kvd6g82nj31qqihk1mxh95prlpmchhycirjq16ji8"))))
     (build-system asdf-build-system/sbcl)
     (synopsis "Common Lisp ASDF extension to provide support for file-local variables")
     (description "ASDF-FLV provides support for file-local variables through
