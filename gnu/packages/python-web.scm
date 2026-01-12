@@ -3982,7 +3982,7 @@ both of which are installed automatically if you install this library.")
 (define-public python-flask-cors
   (package
     (name "python-flask-cors")
-    (version "6.0.1")
+    (version "6.0.2")
     (source
      (origin
        (method git-fetch)               ;no tests in PyPI archive
@@ -3991,8 +3991,18 @@ both of which are installed automatically if you install this library.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01w77vfbzw994dpz6aw4vzy75nrykk6jgilc3qm2d543vjizjaf9"))))
+        (base32 "02y740h951dscgkm7ghsss1bc0m8ymsfdpsimm1j0nkl0zjl6sgm"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-version
+            (lambda _
+              ;; Otherwise sanity-check of dependents will fail.
+              (substitute* "pyproject.toml"
+                (("version = \"0\\.0\\.1\"" all)
+                 (string-append "version = \"" #$version "\""))))))))
     (native-inputs
      (list python-pytest
            python-setuptools))
