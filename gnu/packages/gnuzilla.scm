@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2014-2025 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2014-2026 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016-2019, 2021, 2024, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
@@ -604,9 +604,9 @@ in the case of Firefox, it is browser/locales/all-locales."
     "zh-CN"
     "zh-TW"))
 
-(define %icecat-base-version "140.6.0")
+(define %icecat-base-version "140.7.0")
 (define %icecat-version (string-append %icecat-base-version "-gnu1"))
-(define %icecat-build-id "20251211000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-build-id "20260113000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -626,9 +626,9 @@ in the case of Firefox, it is browser/locales/all-locales."
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "1jadc0ynq49zcqd7ix9nxlrqy5gfhm61p7yliwy068bma2mwjdbc"))))
+              "0a8mrc4pja4cjhayg4af5lsfrf7161gfq03idwik0vvjf68772k0"))))
 
-         (gnuzilla-commit "f4e50b9a4d5384ce2e860133bf0beaaccbf19b46")
+         (gnuzilla-commit "c211e9c18a24310266543cb3c90256ef2660815c")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -639,7 +639,7 @@ in the case of Firefox, it is browser/locales/all-locales."
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "0zjzw7blal3niyzyvw33w2cg906pnjbmvf7gsgas2in9xy3rlix6"))))
+              "1grs891b5hq3xssid33jm7vzmjr23gk3f4qv1ngdlhkgs82r4s8s"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
