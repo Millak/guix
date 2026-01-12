@@ -750,7 +750,13 @@ It provides smart tile loading with a fast and efficient storage base.")
        (sha256
         (base32
          "073q0prg1nzlkga2b45vhscz374206qh4x68ccg00mxxwagn64z0"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    ;; XXX: No releases/updates since 2017, it a single file project without
+    ;; tests.
+    (arguments
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-six))
     (home-page "https://python-tmx.nongnu.org")
