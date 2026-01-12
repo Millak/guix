@@ -201,7 +201,7 @@
            capnproto
            libevent
            qrencode
-           qtbase
+           qtwayland
            sqlite
            zeromq))
     (home-page "https://bitcoincore.org/")
