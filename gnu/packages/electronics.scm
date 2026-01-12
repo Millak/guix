@@ -2040,10 +2040,10 @@ verification.")
         (base32
          "1792a6i9jq2yawipmk0nr01z092kx3kkav9v5sjf34khk3biav6q"))))
     (outputs
-     '("out" "test"))
+     '("out" "olo"))
     (properties
-     `((output-synopsis "test" "Testing code")
-       (output-synopsis "out" "Source code")))
+     `((output-synopsis "out" "Instance this design library as work")
+       (output-synopsis "olo" "Instance this design library as olo")))
     (build-system copy-build-system)
     (arguments
      (list
@@ -2064,14 +2064,21 @@ verification.")
                      ""))
                   (invoke "python3" "run.py" "--nvc" "-v"))))))
       #:install-plan
-      #~'(("src" "share/open-logic/src" #:exclude-regexp ("core"))
-          ("3rdParty" "share/open-logic/3rdParty")
-          ("test" "share/open-logic/test" #:output "test"))))
+      #~'(;; Library work.
+          ("src" "share/open-logic/work/src"
+           #:include ("vhd"))
+          ("3rdParty" "share/open-logic/work/3rdParty"
+           #:include ("vhd"))
+          ;; Library olo.
+          ("src" "share/open-logic/olo/src"
+           #:include ("vhd") #:output "olo")
+          ("3rdParty" "share/open-logic/olo/3rdParty"
+           #:include ("vhd") #:output "olo"))))
     (native-inputs
      (list nvc python-matplotlib python-minimal python-vunit))
     (native-search-paths
      (list (search-path-specification
-             (variable "OPEN_LOGIC")
+             (variable "FW_OPEN_LOGIC")
              (separator #f)
              (files (list "share/open-logic")))))
     (home-page "https://github.com/open-logic/open-logic/")
