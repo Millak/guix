@@ -72,7 +72,7 @@
 ;;; Copyright © 2024 nathan <nathan_mail@nborghese.com>
 ;;; Copyright © 2024 Nikita Domnitskii <nikita@domnitskii.me>
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
-;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
 ;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2024 nik gaffney <nik@fo.am>
@@ -4719,7 +4719,7 @@ information tool.")
 (define-public fastfetch-minimal
   (package
     (name "fastfetch-minimal")
-    (version "2.56.1")
+    (version "2.57.0")
     (source
      (origin
        (method git-fetch)
@@ -4728,10 +4728,13 @@ information tool.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "065hqlw9vjs12vb4rqnwmjg8llpqw5ian0jnxldlv16gs5lw914n"))
+        (base32 "1cipr083bf8frqijvxnff7bgzvzczxksicaqj0m22avyhzxc7p3d"))
        (modules '((guix build utils)))
        (snippet '(begin
-                   (delete-file-recursively "src/3rdparty")))))
+                   (delete-file-recursively "src/3rdparty")
+                   (substitute* "src/modules/logo/logo.c"
+                     (("\"3rdparty/yyjson/yyjson.h\"")
+                      "<yyjson.h>"))))))
     (build-system cmake-build-system)
     (arguments
      (list
