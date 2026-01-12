@@ -103,6 +103,7 @@
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages jupyter)
+  #:use-module (gnu packages language)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
@@ -6148,6 +6149,46 @@ models on CPU and GPU.")
      (description "@code{xx_sent_ud_sm} is a spaCy model optimized for CPU.
 It includes a sentence boundary component of a relatively small size.")
      (license license:cc-by-sa3.0))))
+
+(define-public python-argostranslate
+  (package
+    (name "python-argostranslate")
+    (version "1.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/argosopentech/argos-translate")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18fhqabdyh66ymri9xi9xc3q619f5bd3yb9izwhvwyladx65xcfn"))))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'writable-home
+            (lambda _
+              ;; Tests want a writable home
+              (setenv "HOME" "/tmp"))))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-ctranslate2
+                             python-packaging
+                             python-sacremoses
+                             python-sentencepiece
+                             python-spacy
+                             python-stanza
+                             python-xx-sent-ud-sm))
+    (home-page "https://www.argosopentech.com")
+    (synopsis "Offline translation library and CLI tool")
+    (description
+     "Argos Translate uses OpenNMT for translations and can be used
+as either a Python library, command-line, or GUI application.
+It supports installing language model packages which are ZIP archives
+with a @code{.argosmodel} extension.  This package provides
+the Python library and the command-line program.")
+    (license license:expat)))
 
 (define-public python-hmmlearn
   (package
