@@ -11441,7 +11441,7 @@ power of CXML is available when necessary.")
 (define-public sbcl-cl-yacc
   (package
     (name "sbcl-cl-yacc")
-    (version "0.3")
+    (version "0.4")
     (source
      (origin
        (method git-fetch)
@@ -11450,7 +11450,7 @@ power of CXML is available when necessary.")
              (commit (string-append "cl-yacc-" version))))
        (sha256
         (base32
-         "16946pzf8vvadnyfayvj8rbh4zjzw90h0azz2qk1mxrvhh5wklib"))
+         "1l5nmgdmb7w0pabqc6dk09saj85a4x9ijfhhc2fjxl0gln7rncjz"))
        (file-name (string-append "cl-yacc-" version "-checkout"))))
     (build-system asdf-build-system/sbcl)
     (arguments
