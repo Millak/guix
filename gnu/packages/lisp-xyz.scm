@@ -13592,31 +13592,30 @@ numbers in Common Lisp.")
   (sbcl-package->ecl-package sbcl-computable-reals))
 
 (define-public sbcl-concrete-syntax-tree
-  (let ((commit "37291727196a3bc88a7be67c1427c52078d4b82c")
-        (revision "0"))
-    (package
-      (name "sbcl-concrete-syntax-tree")
-      (version (git-version "0.2.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/s-expressionists/Concrete-Syntax-Tree")
-               (commit commit)))
-         (file-name (git-file-name "cl-concrete-syntax-tree" commit))
-         (sha256
-          (base32 "15q9jyqsh2z921li9my8c840cj2ci7k217x5frfiyk0kymkx4rgv"))))
-      (build-system asdf-build-system/sbcl)
-      (inputs
-       (list sbcl-acclimation))
-      (arguments
-       '(#:asd-systems '("concrete-syntax-tree"
-                         "concrete-syntax-tree-destructuring"
-                         "concrete-syntax-tree-source-info")))
-      (home-page "https://github.com/s-expressionists/Concrete-Syntax-Tree")
-      (synopsis "Parse Common Lisp code into a concrete syntax tree")
-      (description
-       "This library is intended to solve the problem of source tracking for
+  (package
+    (name "sbcl-concrete-syntax-tree")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/s-expressionists/Concrete-Syntax-Tree")
+              (commit version)))
+       (file-name (git-file-name "cl-concrete-syntax-tree" version))
+       (sha256
+        (base32 "05cl83fhn4a4y492f8sq29560jgbg26c5wz5aqawz5gw3riz0n4b"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs (list sbcl-fiveam))
+    (inputs
+     (list sbcl-acclimation))
+    (arguments
+     '(#:asd-systems '("concrete-syntax-tree"
+                       "concrete-syntax-tree-destructuring"
+                       "concrete-syntax-tree-source-info")))
+    (home-page "https://github.com/s-expressionists/Concrete-Syntax-Tree")
+    (synopsis "Parse Common Lisp code into a concrete syntax tree")
+    (description
+     "This library is intended to solve the problem of source tracking for
 Common Lisp code.
 
 By \"source tracking\", it is meant that code elements that have a known
@@ -13629,7 +13628,7 @@ does not impose a particular structure of this information.  Instead, it
 provides utilities for manipulating source code in the form of what is called
 concrete syntax trees (CSTs for short) that preserve this information about
 the origin.")
-      (license license:bsd-2))))
+    (license license:bsd-2)))
 
 (define-public cl-concrete-syntax-tree
   (sbcl-package->cl-source-package sbcl-concrete-syntax-tree))
