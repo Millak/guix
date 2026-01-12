@@ -977,7 +977,7 @@ by using a Xapian cache.")
                    libarchive
                    libblake3
                    libgc
-                   libgit2-1.9
+                   libgit2
                    libseccomp
                    libsodium
                    lowdown

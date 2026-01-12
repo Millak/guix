@@ -939,7 +939,7 @@ type system, elevating types to first-class status.")
     (native-inputs
      (list pkg-config autoconf automake texinfo guile-3.0 guile-bytestructures))
     (inputs
-     (list guile-3.0 libgit2-1.9))
+     (list guile-3.0 libgit2))
     (propagated-inputs
      (list guile-bytestructures))
     (synopsis "Guile bindings for libgit2")

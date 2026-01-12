@@ -11607,7 +11607,7 @@ readable format.")
        (uri (pypi-uri "pygit2" version))
        (sha256
         (base32 "0m8g8s72c0xwwayykpj1hf8c1wldhmg1sj8kgxdp2rf9c837xa7c"))))
-    (propagated-inputs (list python-cffi libgit2-1.9))))
+    (propagated-inputs (list python-cffi libgit2))))
 
 (define-public python-patiencediff
   (package
