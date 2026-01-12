@@ -14605,7 +14605,7 @@ of a symbol.")
 (define-public sbcl-definitions-systems
   (package
     (name "sbcl-definitions-systems")
-    (version "2.0.1")
+    (version "3.0")
     (source
      (origin
        (method git-fetch)
@@ -14614,7 +14614,7 @@ of a symbol.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-definitions-systems" version))
        (sha256
-        (base32 "009392mj0qdq4jy0dw5r41schnygwj286759yvyg7xja30a0psfq"))))
+        (base32 "0wly8hr9gfxhdz4l46xsh4vj99q9aq7p3cfsglbgv19kdsvv217r"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
      (list sbcl-parachute))
