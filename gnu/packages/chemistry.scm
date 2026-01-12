@@ -194,7 +194,8 @@ bioinformatics, materials science, and related areas.")
            (sha256
              (base32
                "1vhjh0gilmm90269isrkvyzwwh1cj3bwcxls394psadw1a89mk14"))))))
-    (inputs (list avogadrolibs hdf5 molequeue openbabel qtbase-5 qtsvg-5))
+    (inputs (list avogadrolibs hdf5 molequeue openbabel qtbase-5 qtsvg-5
+                  qtwayland-5))
     ;; TODO: Enable tests with "-DENABLE_TESTING" configure flag.
     (arguments
      (list
@@ -216,7 +217,8 @@ bioinformatics, materials science, and related areas.")
                 (list
                   "QT_PLUGIN_PATH"
                   'suffix
-                  (list (string-append #$qtsvg-5 "/lib/qt5/plugins")))))))))
+                  (list (string-append #$qtsvg-5 "/lib/qt5/plugins")
+                        (string-append #$qtwayland-5 "/lib/qt5/plugins")))))))))
     (home-page "https://www.openchemistry.org/projects/avogadro2/")
     (synopsis "Advanced molecule editor")
     (description
