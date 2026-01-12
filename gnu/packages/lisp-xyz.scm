@@ -13673,7 +13673,7 @@ table.")
 (define-public sbcl-conduit-packages
   (package
    (name "sbcl-conduit-packages")
-   (version "2.0.0")
+   (version "5.0.0")
    (source
      (origin
        (method git-fetch)
@@ -13682,7 +13682,7 @@ table.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-conduit-packages" version))
        (sha256
-        (base32 "1n783in84mrk9lnc3nshwsgxhb8y0dk6ys9z6jlxkv0jpjxhpjjc"))))
+        (base32 "10dr3982924n37dnch6mxhqav6w5aglf5gqbs90ja6qc4kf8shhz"))))
    (build-system asdf-build-system/sbcl)
    (arguments '(#:asd-systems '("org.tfeb.conduit-packages")))
    (synopsis "Conduit packages for Common Lisp")
