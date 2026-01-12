@@ -884,7 +884,7 @@ implementation, but they will work.")
 (define-public sbcl-adopt
   (package
     (name "sbcl-adopt")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -893,7 +893,7 @@ implementation, but they will work.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-adopt" version))
        (sha256
-        (base32 "16kzkai96qk7vmclp8wxc9aghhnisw8gg9s7hra68300bgj86wzr"))))
+        (base32 "01frfns7xddb785vrlksm5v0wy57bybhfijziw8mk58xpb45q0mz"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs (list sbcl-1am))
     (inputs (list sbcl-bobbin sbcl-split-sequence))
