@@ -56,11 +56,11 @@ The files in the list do not have extensions (.el, .elc)."
       nil)))
 
 (defun guix-emacs--load-file-no-error (file)
-  "Load FILE, ignoring any errors"
+  "Load FILE, ignoring any errors."
   (load file 'noerror (not guix-emacs-verbose)))
 
-(defun guix-emacs--non-core-load-path ()
-  ;; Filter out core Elisp directories, which are already handled by Emacs.
+(defsubst guix-emacs--non-core-load-path ()
+  "Filter out core Elisp directories, which are already handled by Emacs."
   (seq-filter (lambda (dir)
                 (string-match-p "/share/emacs/site-lisp" dir))
               load-path))
@@ -111,7 +111,7 @@ found in `load-path' to discover newly installed packages."
 ;; If emacs built with tree-sitter, read the value of the environment variable
 ;; to make tree-sitter grammars available in emacs out-of-the-box.
 (with-eval-after-load 'treesit
-  (when-let ((grammar-path (getenv "TREE_SITTER_GRAMMAR_PATH")))
+  (when-let* ((grammar-path (getenv "TREE_SITTER_GRAMMAR_PATH")))
     (mapcar (lambda (x) (add-to-list 'treesit-extra-load-path x))
             (split-string grammar-path ":"))))
 
