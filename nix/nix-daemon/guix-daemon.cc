@@ -329,8 +329,8 @@ open_unix_domain_socket (const char *file)
   struct sockaddr_un addr;
   addr.sun_family = AF_UNIX;
   if (fileRel.size () >= sizeof (addr.sun_path))
-    throw Error (std::vformat( (_("socket file name '%1%' is too long")), 
-      std::make_format_args(fileRel)));
+    throw Error (std::vformat ((_("socket file name '{}' is too long")),
+			       std::make_format_args (fileRel)));
   strcpy (addr.sun_path, fileRel.c_str ());
 
   unlink (file);
@@ -523,14 +523,15 @@ main (int argc, char *argv[])
 	/* We were not "socket-activated" so open the sockets specified by
 	   LISTEN_OPTIONS.  */
 	sockets = listening_sockets (listen_options);
-      else {
-        auto size = sockets.size();
-	      printMsg (lvlInfo,
-		      std::vformat((ngettext ("socket-activated with %1% socket",
-				                  "socket-activated with %1% sockets",
-				                  size)),
-		        std::make_format_args(size)));
-      }
+      else
+	{
+	  auto size = sockets.size();
+	  printMsg (lvlInfo,
+		    std::vformat((ngettext ("socket-activated with {} socket",
+					    "socket-activated with {} sockets",
+					    size)),
+				 std::make_format_args(size)));
+	}
 
       /* Effect all the changes made via 'settings.set'.  */
       settings.update ();

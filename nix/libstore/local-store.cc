@@ -654,7 +654,7 @@ uint64_t LocalStore::queryValidPathId(const Path & path)
 {
     auto use(stmtQueryPathInfo.use()(path));
     if (!use.next())
-        throw Error(std::format("path `%1%' is not valid", path));
+        throw Error(std::format("path `{}' is not valid", path));
     return use.getInt(0);
 }
 

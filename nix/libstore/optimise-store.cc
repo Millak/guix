@@ -182,12 +182,12 @@ void LocalStore::optimisePath_(OptimiseStats & stats, const Path & path, InodeHa
     }
 
     if (st.st_size != stLink.st_size) {
-        printMsg(lvlError, std::format("removing corrupted link `%1%'", linkPath));
+        printMsg(lvlError, std::format("removing corrupted link `{}'", linkPath));
         unlink(linkPath.c_str());
         goto retry;
     }
 
-    printMsg(lvlTalkative, std::format("linking `%1%' to `%2%'", path, linkPath));
+    printMsg(lvlTalkative, std::format("linking `{}' to `{}'", path, linkPath));
 
     /* Make the containing directory writable, but only if it's not
        the store itself (we don't want or need to mess with its

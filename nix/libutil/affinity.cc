@@ -49,7 +49,7 @@ void restoreAffinity()
 #if HAVE_SCHED_SETAFFINITY
     if (!didSaveAffinity) return;
     if (sched_setaffinity(0, sizeof(cpu_set_t), &savedAffinity) == -1)
-        printMsg(lvlError, "failed to restore affinity %1%");
+        printMsg(lvlError, "failed to restore affinity");
 #endif
 }
 
