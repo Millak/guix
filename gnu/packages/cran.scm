@@ -34514,16 +34514,18 @@ them in distributed compute environments.")
 (define-public r-parallelly
   (package
     (name "r-parallelly")
-    (version "1.45.1")
+    (version "1.46.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "parallelly" version))
        (sha256
         (base32
-         "0pa8pzzqfi5k97z5wc3c0k4jna6w364w0xw0v42rp3zxhw23qpbb"))))
+         "0dpvf8gaynckcc88lqn56bzrv4vffn5bip7llji17n3wb2y48lq3"))))
     (properties `((upstream-name . "parallelly")))
     (build-system r-build-system)
+    ;; Tests require SSH
+    (native-inputs (list openssh))
     (home-page "https://github.com/HenrikBengtsson/parallelly")
     (synopsis "Enhancements of the parallel package")
     (description
