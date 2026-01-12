@@ -3167,7 +3167,13 @@ temperature of the screen.")
                         #$(this-package-input "mpv") "/bin/mpv")
          (string-append "--with-xscreensaver="
                         #$(this-package-input "xscreensaver")
-                        "/libexec/xscreensaver"))))
+                        "/libexec/xscreensaver"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "helpers/saver_xscreensaver.in"
+                (("xrdb") (search-input-file inputs "bin/xrdb"))))))))
     (native-inputs
      (list autoconf automake pandoc pkg-config))
     (inputs
@@ -3182,7 +3188,8 @@ temperature of the screen.")
            libxscrnsaver
            linux-pam
            mpv
-           xscreensaver))
+           xscreensaver
+           xrdb))
     (home-page "https://github.com/google/xsecurelock")
     (synopsis "X11 screen lock utility with the primary goal of security")
     (description
