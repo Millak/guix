@@ -7,7 +7,7 @@
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Juliana Sims <juli@incana.org>
-;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2025, 2026 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 Konstantinos Agiannis <agiannis.kon@gmail.com>
 ;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
@@ -1965,33 +1965,40 @@ GUI for sigrok.")
        (sha256
         (base32 "1dq56h51ydfpffd00qz9qkcg6sddlqixiixls9vvxczfkp9l21ws"))))
     (outputs
-     '("out" "common" "scripts" "uart" "axi4"))
+     '("out" "osvvm"))
     (properties
-     `((output-synopsis "out" "Verification Utility Library")
-       (output-synopsis "common" "Common library")
-       (output-synopsis "scripts" "Simulator script library")
-       (output-synopsis "uart" "UART Verification Component Library")
-       (output-synopsis "axi4" "AXI4 Verification Component Library")))
+     `((output-synopsis "out" "Instance this design library as work")
+       (output-synopsis "osvvm" "Instance this design library as osvvm")))
     (build-system copy-build-system)
     (arguments
      (list
       #:install-plan
-      #~'(("osvvm" "share/osvvm/osvvm/"
+      #~'(;; Library work.
+          ("osvvm" "share/osvvm/work/osvvm/"
+           #:include ("vhd" "pro" "md"))
+          ("Common" "share/osvvm/work/Common/"
+           #:include ("vhd" "pro" "md"))
+          ("Scripts" "share/osvvm/work/Scripts/"
+           #:include ("tcl" "md"))
+          ("UART" "share/osvvm/work/UART"
            #:include ("vhd" "pro" "md")
-           #:output "out")
-          ("Common" "share/osvvm/Common/"
-           #:include ("vhd" "pro" "md")
-           #:output "common")
-          ("Scripts" "share/osvvm/Scripts/"
-           #:include ("tcl" "md")
-           #:output "scripts")
-          ("UART" "share/osvvm/UART"
+           #:exclude-regexp ("GHDL_Debug"))
+          ("AXI4" "share/osvvm/work/AXI4"
+           #:include ("vhd" "pro" "md"))
+          ;; Library osvvm.
+          ("osvvm" "share/osvvm/osvvm/osvvm/"
+           #:include ("vhd" "pro" "md") #:output "osvvm")
+          ("Common" "share/osvvm/osvvm/Common/"
+           #:include ("vhd" "pro" "md") #:output "osvvm")
+          ("Scripts" "share/osvvm/osvvm/Scripts/"
+           #:include ("tcl" "md") #:output "osvvm")
+          ("UART" "share/osvvm/osvvm/UART"
            #:include ("vhd" "pro" "md")
            #:exclude-regexp ("GHDL_Debug")
-           #:output "uart")
-          ("AXI4" "share/osvvm/AXI4"
+           #:output "osvvm")
+          ("AXI4" "share/osvvm/osvvm/AXI4"
            #:include ("vhd" "pro" "md")
-           #:output "axi4"))
+           #:output "osvvm"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'install 'fix-scripts
@@ -2012,7 +2019,7 @@ GUI for sigrok.")
      (list nvc tcl tcllib which))
     (native-search-paths
      (list (search-path-specification
-             (variable "OSVVM")
+             (variable "FW_OSVVM")
              (separator #f)
              (files (list "share/osvvm")))))
     (home-page "https://osvvm.github.io/Overview/Osvvm1About.html/")
@@ -2900,7 +2907,7 @@ to enforce it.")
                  (search-input-directory inputs "share/json-for-vhdl")
                  (string-append site-packages "JSON-for-VHDL/src"))
                 (symlink
-                 (search-input-directory inputs "share/osvvm/osvvm")
+                 (search-input-directory inputs "share/osvvm/work/osvvm")
                  (string-append site-packages "osvvm")))))
           (add-after 'check 'run-examples
             ;; Run examples as an extra check.
