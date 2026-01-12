@@ -6001,7 +6001,7 @@ that and not limited to a certain server or text format.")
 (define-public sbcl-cl-environments
   (package
     (name "sbcl-cl-environments")
-    (version "0.4")
+    (version "0.5")
     (source
      (origin
        (method git-fetch)
@@ -6010,7 +6010,7 @@ that and not limited to a certain server or text format.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-environments" version))
        (sha256
-        (base32 "10jxj043d2dw5vc0i0lz0lsa4qszn8him5is8jdhl4nsyfcazmky"))))
+        (base32 "0597q1j2scal8sx0rcx9c0nazai3p1d72wmzssb9rx0fa7vpr6ij"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-alexandria sbcl-anaphora sbcl-collectors sbcl-optima))
