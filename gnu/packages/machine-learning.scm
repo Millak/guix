@@ -33,6 +33,7 @@
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Romain Garbage <romain.garbage@inria.fr>
+;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1866,6 +1867,72 @@ recognition, text classification and more, multi-task learning with pretrained
 transformers like BERT, as well as a production-ready training system and easy
 model packaging, deployment and workflow management.")
     (license license:expat)))
+
+(define-public python-stanza
+  (package
+    (name "python-stanza")
+    (version "1.10.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/stanfordnlp/stanza")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0zcpzmbv0aafircl12m3x5999hxpg2hzm1xxv97pz09y4v589snj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-up-check
+            (lambda _
+              ;; Cherry pick from stanza/tests/setup.py,
+              ;; which downloads many datasets
+              (mkdir-p "stanza_test/out")
+              (copy-file "stanza/tests/data/example_french.json"
+                         "stanza_test/out/example_french.json"))))
+      ;; tests: 288 passed, 361 deselected, 1 warning
+      #:test-flags
+      #~(list
+         "-k"
+         (string-join
+          '("not CoreNLP" "EnglishPipeline" "FrenchPipeline"
+            "SentimentPipeline" "TestTrainer"
+            "amt_annotator" "arabic_pos" "bert"
+            "charlm" "conllu" "convert_units"
+            "data_objects" "defaultdict_config"
+            "depparse" "dictionary" "download"
+            "ensemble" "example" "finetune" "install"
+            "langid" "lemmatizer" "long_paragraph" "long_tokens"
+            "model" "morphology" "multilingual" "mwt"
+            "pipeline_" "pretrain" "process_doc"
+            "read_snippets" "register" "reload"
+            "requirements" "resources" "retag"
+            "score" "semgrex" "serialized" "server_" "ssurgeon"
+            "tagger" "test_core" "test_one_sentence" "test_tokenizer"
+            "text_processing" "tokenize_files" "tokensregex"
+            "train_pipeline" "training" "tsurgeon")
+          " and not ")                  ;exclude tests requiring datasets
+         "stanza/tests")))
+    (native-inputs (list python-pytest
+                         python-setuptools
+                         python-transformers))
+    (propagated-inputs (list python-emoji
+                             python-networkx
+                             python-numpy
+                             python-protobuf
+                             python-pytorch
+                             python-requests
+                             python-tqdm))
+    (home-page "https://stanfordnlp.github.io/stanza/")
+    (synopsis "Stanford NLP Python library for many human languages")
+    (description
+     "Stanza is a collection of accurate and efficient tools
+for the linguistic analysis of many human languages.  Starting from raw text,
+Stanza divides it into sentences and words, and then can recognize
+parts of speech and entities, do syntactic analysis, and more.")
+    (license license:asl2.0)))
 
 (define-public onnx
   (package
