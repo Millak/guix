@@ -13,6 +13,7 @@
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024, 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -57,6 +58,8 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages ruby)
@@ -77,6 +80,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix download)
@@ -1058,6 +1062,50 @@ analysis with the morphological analyser MeCab, where the short units exported
 from the database are used as entries (heading terms).")
     ;; triple-licensed (at the user’s choice)
     (license (list license:gpl2+ license:lgpl2.1 license:bsd-3))))
+
+(define-public python-sacremoses
+  (package
+    (name "python-sacremoses")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hplt-project/sacremoses")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g70vchfniknp65n4wnx7chg6g49d4xrz1wagv7f7ir2swdzyn9b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (let ((norvig-big-txt
+            (origin
+              (method url-fetch)
+              ;; The file is a concatenation of public domain book excerpts
+              ;; from Project Gutenberg and lists of most frequent words
+              ;; from Wiktionary and the British National Corpus:
+              ;; https://norvig.com/spell-correct.html
+              (uri "https://norvig.com/big.txt")
+              (sha256
+               (base32
+                "0yz80icdly7na03cfpl0nfk5h3j3cam55rj486n03wph81ynq1ps")))))
+       (list #:phases #~(modify-phases %standard-phases
+                          (add-before 'check 'supply-big-txt
+                            (lambda _
+                              (symlink #$norvig-big-txt "big.txt"))))
+             #:test-backend #~'unittest
+             #:test-flags #~'("discover" "-s" "sacremoses/test"))))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-click
+                             python-joblib
+                             python-regex
+                             python-tqdm))
+    (home-page "https://github.com/hplt-project/sacremoses")
+    (synopsis "Natural language tokenizer, truecaser and normalizer")
+    (description
+     "SacreMoses is a Python port of Moses'
+tokenizer, detokenizer, truecaser and punctuation normalizer.")
+    (license license:expat)))
 
 (define-public dparser
   (package
