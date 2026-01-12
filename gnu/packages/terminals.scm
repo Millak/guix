@@ -41,7 +41,7 @@
 ;;; Copyright © 2024 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
-;;; Copyright © 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024, 2025-2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2025 Liam Hupfer <liam@hpfr.net>
 ;;;
@@ -1359,7 +1359,7 @@ terminal are replicated to the others.
 (define-public tio
   (package
     (name "tio")
-    (version "3.6")
+    (version "3.9")
     (source
      (origin
        (method git-fetch)
@@ -1368,7 +1368,7 @@ terminal are replicated to the others.
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "050zm7nh9niag1amjql859cj3xc9gbidk3zz546h6fhhh3vykmfl"))))
+        (base32 "12g2857gp3g2m5g0zjh0dw752lybcnn6gfs7awrsh603b7iqavzp"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
     (inputs (list glib lua))
