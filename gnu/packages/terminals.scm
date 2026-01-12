@@ -194,7 +194,7 @@ configurable through a graphical wizard.")
 (define-public termite
   (package
     (name "termite")
-    (version "16.6")
+    (version "16.9")
     (source
       (origin
         (method url-fetch)
@@ -204,7 +204,7 @@ configurable through a graphical wizard.")
               version "/termite-" version ".tar.xz"))
         (sha256
          (base32
-          "1n8x84pkp7l9xl0sd07jbj5gjb574qm3w7656qlnzw8hf9kr69il"))))
+          "1mlb8pl1wknhajz06x8qz2zc2497bg4sy9isra6sdjnz601nlj4m"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
@@ -219,7 +219,7 @@ configurable through a graphical wizard.")
                  (lambda _
                    (invoke "meson" "install" "--skip-subprojects" "vte"))))))
     (inputs
-     (list gnutls gtk+ pcre2 xdg-utils))
+     (list gnutls gtk+ lz4 pcre2 xdg-utils))
     (native-inputs
      (list (list glib "bin") pkg-config))
     (home-page "https://github.com/aperezdc/termite/")
