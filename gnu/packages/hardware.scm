@@ -626,6 +626,7 @@ support.")
                                   #:inputs inputs)))))))
       (native-inputs (list qttools-5 pkg-config))
       (inputs (list qtbase-5
+                    qtwayland-5
                     zlib
                     libdbusmenu-qt
                     quazip-5
