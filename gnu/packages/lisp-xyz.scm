@@ -35156,7 +35156,7 @@ Zombie Raptor game engine project.")
 (define-public sbcl-zs3
   (package
    (name "sbcl-zs3")
-   (version "1.3.3")
+   (version "1.3.4")
    (source
     (origin
      (method git-fetch)
@@ -35166,7 +35166,7 @@ Zombie Raptor game engine project.")
        (commit (string-append "release-" version))))
      (file-name (git-file-name "zs3" version))
      (sha256
-      (base32 "186v95wgsj2hkxdw2jl9x1w4fddjclp7arp0rrd9vf5ly8h8sbf3"))))
+      (base32 "1vr9l0hjjmcs24xfjz1s63jfj2261rlzhjvj5f4vblqi0yc96ir5"))))
    (build-system asdf-build-system/sbcl)
    (inputs
     (list sbcl-drakma
