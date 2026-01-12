@@ -1574,7 +1574,7 @@ and the ability to read and write via stdin and stdout.")
 (define-public roxterm
   (package
     (name "roxterm")
-    (version "3.15.3")
+    (version "3.17.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1583,7 +1583,7 @@ and the ability to read and write via stdin and stdout.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0jsdrs31mwpba851inwxpwnmy74k9nl4hs7bgbhba85dvqpw1xi2"))))
+                "1lr8fd40qwjghmlkfqa8b9c64mlxxfws7diia0rdk88v0cvb3ia0"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f)) ; No tests
@@ -1591,6 +1591,7 @@ and the ability to read and write via stdin and stdout.")
      (list docbook-xsl
            docbook-xml
            (list glib "bin")
+           gettext-minimal
            libxml2
            libxslt
            pkg-config))
