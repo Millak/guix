@@ -20841,6 +20841,26 @@ assignment problem} (QAP).  Currently only a simulated annealing heuristic is
 available.")
     (license license:gpl3)))
 
+(define-public r-qvcalc
+  (package
+    (name "r-qvcalc")
+    (version "1.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "qvcalc" version))
+       (sha256
+        (base32 "0ngvv9jr2q92cdd38x08nm81hwhcnbx9gwv7s2xsd0kflnnkqh4h"))))
+    (properties `((upstream-name . "qvcalc")))
+    (build-system r-build-system)
+    (native-inputs (list r-mass r-psychotools r-survival r-testthat))
+    (home-page "https://davidfirth.github.io/qvcalc/")
+    (synopsis "Quasi variances for factor effects in statistical models")
+    (description
+     "This package provides functions to compute quasi variances and
+associated measures of approximation error.")
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public r-gclus
   (package
     (name "r-gclus")
