@@ -2734,7 +2734,12 @@ ECMAScript and Qt.")))
                 "002888xfnkxmvn8413fllidl3mm2fcwc4gbzdnbvpjlysaq9f3ig"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:phases
+     (list #:modules '((guix build cmake-build-system)
+                       (guix build qt-utils)
+                       (guix build utils))
+           #:imported-modules `(,@%cmake-build-system-modules
+                                (guix build qt-utils))
+           #:phases
            #~(modify-phases %standard-phases
                (delete 'check)          ;moved after install phase
                (add-after 'install 'check
@@ -2747,8 +2752,13 @@ ECMAScript and Qt.")))
                                           (getenv "QT_PLUGIN_PATH")))
                    (setenv "QML_IMPORT_PATH"
                            (string-append #$output "/lib/qt6/qml:"
-                                          (getenv "QML_IMPORT_PATH"))))))))
-    (inputs (list qtbase qtdeclarative qtshadertools))
+                                          (getenv "QML_IMPORT_PATH")))))
+               (add-after 'check 'qt-wrap
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (wrap-all-qt-programs #:inputs inputs
+                                         #:outputs outputs
+                                         #:qtbase #$qtbase))))))
+    (inputs (list qtbase qtdeclarative qtshadertools qtwayland))
     (synopsis "Qt module and API for defining 3D content in Qt Quick")
     (description "Qt Quick 3D is a module within the Qt framework that
 provides a high-level interface for creating 3D content for user interfaces.  Its key features include:
