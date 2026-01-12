@@ -4587,7 +4587,7 @@ setup of your X Server without any modifications.")
 (define-public darkman
   (package
     (name "darkman")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method git-fetch)
@@ -4597,7 +4597,7 @@ setup of your X Server without any modifications.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0pq7csrxs76mlp8i0yxj24s30ynhhr8rs9kcwn01pzi73k3sx6ra"))
+         "0h02fa81czj5lg373d9zwp34ifxh7kc12966y9gx9xfqwjrv8hra"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -4643,10 +4643,9 @@ setup of your X Server without any modifications.")
                 (invoke "make" "install" (string-append "PREFIX=" #$output))))))))
     (native-inputs
      (list gnu-make
-           go-github-com-adrg-xdg
            go-github-com-goccy-go-yaml
            go-github-com-godbus-dbus-v5
-           go-github-com-rxwycdh-rxhash
+           go-github-com-lmittmann-tint
            go-github-com-sj14-astral
            go-github-com-spf13-cobra
            scdoc))
