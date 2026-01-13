@@ -23955,13 +23955,13 @@ evaluated by the @dfn{Akaike Information Criterion} (AIC).")
 (define-public r-catdata
   (package
     (name "r-catdata")
-    (version "1.2.4")
+    (version "1.2.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "catdata" version))
               (sha256
                (base32
-                "1gvibnjfrjdsxx4jks29hhk3dfsm23nxnbwd5p8w67nxr4n6qn0w"))))
+                "1fs7pm01lpzlml54whqskppfrfdgsxn1vk5z5rl0yydf0azbygq3"))))
     (properties `((upstream-name . "catdata")))
     (build-system r-build-system)
     (propagated-inputs (list r-mass))
