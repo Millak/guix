@@ -35631,40 +35631,6 @@ Nix expressions.  It supports syntax highlighting, indenting and refilling of
 comments.")
     (license license:lgpl2.1+)))
 
-(define-public emacs-nyxt
-  ;; This forge doesn't support fetching from refs, use commits.
-  (let ((commit "5f732e3d039c9d9c316dd5fbbbc91bd015dd2659")
-        (revision "0"))
-    (package
-      (name "emacs-nyxt")
-      (version (git-version "0.1.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.migalmoreno.com/nyxt.el")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "147yin822mi49gg2gxqljnx3i261z6b8d61m83l4nns4cf67vqns"))))
-      (build-system emacs-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'patch-file-name
-              (lambda* (#:key inputs #:allow-other-keys)
-                (emacs-substitute-variables "nyxt.el"
-                  ("nyxt-path"
-                   (search-input-file inputs "/bin/nyxt"))))))))
-      (inputs (list nyxt))
-      (propagated-inputs (list emacs-sly))
-      (home-page "https://git.migalmoreno.com/nyxt.el")
-      (synopsis "Interact with Nyxt from Emacs")
-      (description "This package consists of custom logic to interact with Nyxt
-from Emacs.")
-      (license license:gpl3+))))
-
 (define-public emacs-libmpdel
   (package
     (name "emacs-libmpdel")
