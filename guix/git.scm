@@ -402,11 +402,17 @@ values) if DIRECTORY does not hold a readable Git repository."
                 ;; Recurse in SUBMODULE.
                 (let ((directory (string-append
                                   (repository-working-directory repository)
-                                  "/" (submodule-path submodule))))
-                  (with-repository directory repository
-                    (update-submodules repository
-                                       #:fetch-options fetch-options
-                                       #:log-port log-port)))))
+                                  (submodule-path submodule))))
+                  ;; libgit2, unlike git, does not discard invalid submodules
+                  ;; that lack a path, and instead uses the module name as the
+                  ;; path in this case, which would break `with-repository`
+                  ;; below (see:
+                  ;; <https://github.com/libgit2/libgit2/issues/7194>).
+                  (when (file-exists? directory)
+                    (with-repository directory repository
+                      (update-submodules repository
+                                         #:fetch-options fetch-options
+                                         #:log-port log-port))))))
             (repository-submodules repository)))
 
 (define-syntax-rule (false-if-git-not-found exp)
