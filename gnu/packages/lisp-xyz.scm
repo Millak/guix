@@ -5086,32 +5086,30 @@ is a library for creating graphical user interfaces.")
   (sbcl-package->ecl-package sbcl-cl-cffi-gtk))
 
 (define-public sbcl-cl-change-case
-  (let ((commit "45c70b601125889689e0c1c37d7e727a3a0af022")
-        (revision "1"))
-    (package
-      (name "sbcl-cl-change-case")
-      (version (git-version "0.2.0" revision commit))
-      (home-page "https://github.com/rudolfochrist/cl-change-case")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url home-page)
-               (commit commit)))
-         (file-name (git-file-name "cl-change-case" version))
-         (sha256
-          (base32 "0qmk341zzcsbf8sq0w9ix3r080zg4ri6vzxym63lhdjfzwz3y8if"))))
-      (build-system asdf-build-system/sbcl)
-      (inputs
-       (list sbcl-cl-ppcre sbcl-cl-ppcre-unicode))
-      (native-inputs
-       (list sbcl-fiveam))
-      (synopsis
-       "Convert Common Lisp strings between camelCase, PascalCase and more")
-      (description
-       "@code{cl-change-case} is a library to convert strings between
+  (package
+    (name "sbcl-cl-change-case")
+    (version "1.0")
+    (home-page "https://github.com/rudolfochrist/cl-change-case")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit version)))
+       (file-name (git-file-name "cl-change-case" version))
+       (sha256
+        (base32 "1zm34q3n3qaz06y6x3j73mnh67bw2k5xdpbflj5hhxqwakyfv50m"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-cl-ppcre sbcl-cl-ppcre-unicode))
+    (native-inputs
+     (list sbcl-fiveam))
+    (synopsis
+     "Convert Common Lisp strings between camelCase, PascalCase and more")
+    (description
+     "@code{cl-change-case} is a library to convert strings between
 camelCase, PascalCase, snake_case, param-case, CONSTANT_CASE and more.")
-      (license license:llgpl))))
+    (license license:llgpl)))
 
 (define-public cl-change-case
   (sbcl-package->cl-source-package sbcl-cl-change-case))
