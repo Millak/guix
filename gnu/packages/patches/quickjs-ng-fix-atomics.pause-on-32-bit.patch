@@ -1,0 +1,26 @@
+From c211485e6f6c9fcd0ea9f5aa1943f8c95fdd186b Mon Sep 17 00:00:00 2001
+From: Ben Noordhuis <info@bnoordhuis.nl>
+Date: Sun, 9 Nov 2025 21:28:14 +0100
+Subject: [PATCH] Fix Atomics.pause on 32 bits platforms
+
+Use JS_VALUE_GET_NORM_TAG to get the type tag, not JS_VALUE_GET_TAG.
+The latter doesn't work correctly with NaN boxing.
+
+Refs: https://github.com/quickjs-ng/quickjs/issues/986#issuecomment-3508547332
+---
+ quickjs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/quickjs.c b/quickjs.c
+index 4fb9f95b7..3970bb247 100644
+--- a/quickjs.c
++++ b/quickjs.c
+@@ -57112,7 +57112,7 @@ static JSValue js_atomics_pause(JSContext *ctx, JSValueConst this_obj,
+     double d;
+ 
+     if (argc > 0) {
+-        switch (JS_VALUE_GET_TAG(argv[0])) {
++        switch (JS_VALUE_GET_NORM_TAG(argv[0])) {
+         case JS_TAG_FLOAT64: // accepted if and only if fraction == 0.0
+             d = JS_VALUE_GET_FLOAT64(argv[0]);
+             if (isfinite(d))

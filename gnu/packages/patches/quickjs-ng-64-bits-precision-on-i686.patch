@@ -1,0 +1,211 @@
+From bd4ee689a854252665fd607758f078d930fbc4c8 Mon Sep 17 00:00:00 2001
+From: Ben Noordhuis <info@bnoordhuis.nl>
+Date: Fri, 21 Nov 2025 11:56:28 +0100
+Subject: [PATCH] Fix JS number rounding on x87 (#1244)
+
+Disable 80-bits extended precision, use standard 64-bits precision.
+The extra precision affects rounding and is user-observable, meaning
+it causes test262 tests to fail.
+
+The rounding mode is a per-CPU (or, more accurately, per-FPU) property,
+and since quickjs is often used as a library, take care to tweak the FPU
+control word before sensitive operations, and restore it afterwards.
+
+Only affects x87. SSE is IEEE-754 conforming.
+
+Fixes: https://github.com/quickjs-ng/quickjs/issues/1236
+---
+ .github/workflows/ci.yml |  4 ++--
+ cutils.h                 | 19 +++++++++++++++++++
+ quickjs.c                | 34 +++++++++++++++++++++++++++++-----
+ 3 files changed, 50 insertions(+), 7 deletions(-)
+
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index d1efee1b9..c722b517d 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -58,7 +58,7 @@ jobs:
+           - { os: ubuntu-latest, configType: asan+ubsan, runTest262: true }
+           - { os: ubuntu-latest, configType: msan }
+           - { os: ubuntu-latest, configType: tcc }
+-          - { os: ubuntu-latest, arch: x86 }
++          - { os: ubuntu-latest, arch: x86, runTest262: true }
+           - { os: ubuntu-latest, arch: riscv64 }
+           - { os: ubuntu-latest, arch: s390x }
+ 
+@@ -97,7 +97,7 @@ jobs:
+         uses: jirutka/setup-alpine@v1
+         with:
+           arch: ${{ matrix.config.arch }}
+-          packages: "build-base make cmake"
++          packages: "build-base make cmake git"
+ 
+       - name: uname
+         run: uname -a
+diff --git a/cutils.h b/cutils.h
+index 5129c3cb2..f5d2a8bce 100644
+--- a/cutils.h
++++ b/cutils.h
+@@ -634,6 +634,25 @@ int js_thread_join(js_thread_t thrd);
+ 
+ #endif /* !defined(EMSCRIPTEN) && !defined(__wasi__) */
+ 
++// JS requires strict rounding behavior. Turn on 64-bits double precision
++// and disable x87 80-bits extended precision for intermediate floating-point
++// results. 0x300 is extended  precision, 0x200 is double precision.
++// Note that `*&cw` in the asm constraints looks redundant but isn't.
++#if defined(__i386__) && !defined(_MSC_VER)
++#define JS_X87_FPCW_SAVE_AND_ADJUST(cw)                                     \
++    unsigned short cw;                                                      \
++    __asm__ __volatile__("fnstcw %0" : "=m"(*&cw));                         \
++    do {                                                                    \
++        unsigned short t = 0x200 | (cw & ~0x300);                           \
++        __asm__ __volatile__("fldcw %0" : /*empty*/ : "m"(*&t));            \
++    } while (0)
++#define JS_X87_FPCW_RESTORE(cw)                                             \
++    __asm__ __volatile__("fldcw %0" : /*empty*/ : "m"(*&cw))
++#else
++#define JS_X87_FPCW_SAVE_AND_ADJUST(cw)
++#define JS_X87_FPCW_RESTORE(cw)
++#endif
++
+ #ifdef __cplusplus
+ } /* extern "C" { */
+ #endif
+diff --git a/quickjs.c b/quickjs.c
+index 3970bb247..7900c5e3d 100644
+--- a/quickjs.c
++++ b/quickjs.c
+@@ -13395,12 +13395,17 @@ static int js_is_array(JSContext *ctx, JSValueConst val)
+ 
+ static double js_math_pow(double a, double b)
+ {
++    double d;
++
+     if (unlikely(!isfinite(b)) && fabs(a) == 1) {
+         /* not compatible with IEEE 754 */
+-        return NAN;
++        d = NAN;
+     } else {
+-        return pow(a, b);
++        JS_X87_FPCW_SAVE_AND_ADJUST(fpcw);
++        d = pow(a, b);
++        JS_X87_FPCW_RESTORE(fpcw);
+     }
++    return d;
+ }
+ 
+ JSValue JS_NewBigInt64(JSContext *ctx, int64_t v)
+@@ -13820,11 +13825,15 @@ static no_inline __exception int js_binary_arith_slow(JSContext *ctx, JSValue *s
+             }
+             break;
+         case OP_div:
++            JS_X87_FPCW_SAVE_AND_ADJUST(fpcw);
+             sp[-2] = js_number((double)v1 / (double)v2);
++            JS_X87_FPCW_RESTORE(fpcw);
+             return 0;
+         case OP_mod:
+             if (v1 < 0 || v2 <= 0) {
++                JS_X87_FPCW_SAVE_AND_ADJUST(fpcw);
+                 sp[-2] = js_number(fmod(v1, v2));
++                JS_X87_FPCW_RESTORE(fpcw);
+                 return 0;
+             } else {
+                 v = (int64_t)v1 % (int64_t)v2;
+@@ -13888,6 +13897,7 @@ static no_inline __exception int js_binary_arith_slow(JSContext *ctx, JSValue *s
+         if (JS_ToFloat64Free(ctx, &d2, op2))
+             goto exception;
+     handle_float64:
++        JS_X87_FPCW_SAVE_AND_ADJUST(fpcw);
+         switch(op) {
+         case OP_sub:
+             dr = d1 - d2;
+@@ -13907,6 +13917,7 @@ static no_inline __exception int js_binary_arith_slow(JSContext *ctx, JSValue *s
+         default:
+             abort();
+         }
++        JS_X87_FPCW_RESTORE(fpcw);
+         sp[-2] = js_float64(dr);
+     }
+     return 0;
+@@ -14023,7 +14034,9 @@ static no_inline __exception int js_add_slow(JSContext *ctx, JSValue *sp)
+         }
+         if (JS_ToFloat64Free(ctx, &d2, op2))
+             goto exception;
++        JS_X87_FPCW_SAVE_AND_ADJUST(fpcw);
+         sp[-2] = js_float64(d1 + d2);
++        JS_X87_FPCW_RESTORE(fpcw);
+     }
+     return 0;
+  exception:
+@@ -17998,8 +18011,10 @@ static JSValue JS_CallInternal(JSContext *caller_ctx, JSValueConst func_obj,
+                     sp[-2] = js_int32(r);
+                     sp--;
+                 } else if (JS_VALUE_IS_BOTH_FLOAT(op1, op2)) {
++                    JS_X87_FPCW_SAVE_AND_ADJUST(fpcw);
+                     sp[-2] = js_float64(JS_VALUE_GET_FLOAT64(op1) +
+                                         JS_VALUE_GET_FLOAT64(op2));
++                    JS_X87_FPCW_RESTORE(fpcw);
+                     sp--;
+                 } else {
+                 add_slow:
+@@ -18066,8 +18081,10 @@ static JSValue JS_CallInternal(JSContext *caller_ctx, JSValueConst func_obj,
+                     sp[-2] = js_int32(r);
+                     sp--;
+                 } else if (JS_VALUE_IS_BOTH_FLOAT(op1, op2)) {
++                    JS_X87_FPCW_SAVE_AND_ADJUST(fpcw);
+                     sp[-2] = js_float64(JS_VALUE_GET_FLOAT64(op1) -
+                                         JS_VALUE_GET_FLOAT64(op2));
++                    JS_X87_FPCW_RESTORE(fpcw);
+                     sp--;
+                 } else {
+                     goto binary_arith_slow;
+@@ -18098,7 +18115,9 @@ static JSValue JS_CallInternal(JSContext *caller_ctx, JSValueConst func_obj,
+                     sp[-2] = js_int32(r);
+                     sp--;
+                 } else if (JS_VALUE_IS_BOTH_FLOAT(op1, op2)) {
++                    JS_X87_FPCW_SAVE_AND_ADJUST(fpcw);
+                     d = JS_VALUE_GET_FLOAT64(op1) * JS_VALUE_GET_FLOAT64(op2);
++                    JS_X87_FPCW_RESTORE(fpcw);
+                 mul_fp_res:
+                     sp[-2] = js_float64(d);
+                     sp--;
+@@ -52277,7 +52296,9 @@ static double set_date_fields(double fields[minimum_length(7)], int is_local) {
+     int yi, mi, i;
+     int64_t days;
+     volatile double temp;  /* enforce evaluation order */
++    double d = NAN;
+ 
++    JS_X87_FPCW_SAVE_AND_ADJUST(fpcw);
+     /* emulate 21.4.1.15 MakeDay ( year, month, date ) */
+     y = fields[0];
+     m = fields[1];
+@@ -52287,7 +52308,7 @@ static double set_date_fields(double fields[minimum_length(7)], int is_local) {
+     if (mn < 0)
+         mn += 12;
+     if (ym < -271821 || ym > 275760)
+-        return NAN;
++        goto out;
+ 
+     yi = ym;
+     mi = mn;
+@@ -52319,14 +52340,17 @@ static double set_date_fields(double fields[minimum_length(7)], int is_local) {
+     /* emulate 21.4.1.16 MakeDate ( day, time ) */
+     tv = (temp = day * 86400000) + time;   /* prevent generation of FMA */
+     if (!isfinite(tv))
+-        return NAN;
++        goto out;
+ 
+     /* adjust for local time and clip */
+     if (is_local) {
+         int64_t ti = tv < INT64_MIN ? INT64_MIN : tv >= 0x1p63 ? INT64_MAX : (int64_t)tv;
+         tv += getTimezoneOffset(ti) * 60000;
+     }
+-    return time_clip(tv);
++    d = time_clip(tv);
++out:
++    JS_X87_FPCW_RESTORE(fpcw);
++    return d;
+ }
+ 
+ static JSValue get_date_field(JSContext *ctx, JSValueConst this_val,

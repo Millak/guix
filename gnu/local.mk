@@ -2224,6 +2224,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/qtbase-5-use-TZDIR.patch			\
   %D%/packages/patches/qtscript-disable-tests.patch		\
   %D%/packages/patches/quagga-reproducible-build.patch          \
+  %D%/packages/patches/quickjs-ng-64-bits-precision-on-i686.patch	\
+  %D%/packages/patches/quickjs-ng-fix-atomics.pause-on-32-bit.patch	\
   %D%/packages/patches/quilt-grep-compat.patch 			\
   %D%/packages/patches/qmk-firmware-fix-hacker-dvorak.patch 	\
   %D%/packages/patches/qtwayland-dont-recreate-callbacks.patch	\

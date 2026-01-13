@@ -958,13 +958,13 @@ wrappers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mfk32zvvh6c9a9plp6ad07888g795lhdmal3jyaclyn2k5iig9i"))))
+        (base32 "0mfk32zvvh6c9a9plp6ad07888g795lhdmal3jyaclyn2k5iig9i"))
+       ;; Remove these patches on next release as they will be included.
+       (patches (search-patches
+                 "quickjs-ng-64-bits-precision-on-i686.patch"
+                 "quickjs-ng-fix-atomics.pause-on-32-bit.patch"))))
     (arguments
      (list
-      ;; Data model is ILP32 in 32bit, LP64 in 64bit
-      ;; https://docs.oracle.com/cd/E19620-01/805-3024/lp64-1/index.html
-      #:tests? (and (not (%current-target-system))
-                    (target-64bit?))
       #:configure-flags
       #~(list "-DBUILD_SHARED_LIBS:BOOL=TRUE"
               "-DQJS_BUILD_EXAMPLES:BOOL=FALSE"
