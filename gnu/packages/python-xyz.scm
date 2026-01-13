@@ -30692,6 +30692,12 @@ CLI commands via setuptools entry-points.")
     (home-page "https://github.com/click-contrib/click-plugins")
     (license license:bsd-3)))
 
+;; XXX: Upstream note: Final PyPI release to mark the project as inactive.
+;; This PyPI package is no longer actively maintained, but the underlying
+;; library can be vendored.
+;;
+;; Version 2.0 lacks packaging instructions (setup.py, setup.pkg or
+;; pyproject.toml) and can't be used as a common input.
 (define-public python-click-plugins-1
   (package
     (inherit python-click-plugins)
