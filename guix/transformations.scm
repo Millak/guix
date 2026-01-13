@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2024, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Sarthak Shah <shahsarthakw@gmail.com>
 ;;; Copyright © 2023-2025 Efraim Flashner <efraim@flashner.co.il>
@@ -422,15 +422,15 @@ TOOLCHAIN must be an input list."
                             (not (memq p set))))
                       #:deep? #t))))
 
+(define split-on-commas
+  (cute string-tokenize <> (char-set-complement (char-set #\,))))
+
 (define (transform-package-toolchain replacement-specs)
   "Return a procedure that, when passed a package, changes its toolchain or
 that of its dependencies according to REPLACEMENT-SPECS.  REPLACEMENT-SPECS is
 a list of strings like \"fftw=gcc-toolchain@10\" meaning that the package to
 the left of the equal sign must be built with the toolchain to the right of
 the equal sign."
-  (define split-on-commas
-    (cute string-tokenize <> (char-set-complement (char-set #\,))))
-
   (define (specification->input spec)
     (let ((package (specification->package spec)))
       (list (package-name package) package)))
@@ -699,6 +699,97 @@ for MICRO-ARCHITECTURE, a string suitable for GCC's '-march'."
   (match micro-architectures
     ((micro-architecture _ ...)
      (let ((rewrite (package-tuning micro-architecture)))
+       (lambda (obj)
+         (if (package? obj)
+             (rewrite obj)
+             obj))))))
+
+(define (package-for-amd-gpu-targets p targets)
+  "Return a variant of P compiled for TARGETS, a list of strings denoting AMD
+GPU targets."
+  (package/inherit p
+    (properties
+     `((amd-gpu-targets . ,targets)
+       ,@(alist-delete 'amd-gpu-targets (package-properties p))))))
+
+(define (assert-valid-amd-gpu-targets package targets)
+  "Raise an error if the AMD GPU identifiers listed in TARGETS are not known
+to the compiler of PACKAGE."
+  (define (compiler-amd-gpu-targets package)
+    (assoc-ref (package-properties package) 'compiler-amd-gpu-targets))
+
+  (match (any (match-lambda
+                ((label (? package? package))
+                 (and (compiler-amd-gpu-targets package)
+                      package))
+                (_ #f))
+              (package-direct-inputs package))
+    (#f
+     (raise (make-compound-condition
+             (formatted-message
+              (G_ "~a: no ROCm compiler was found among the inputs")
+              (package-full-name package))
+             (condition (&error-location
+                         (location (package-location package)))))))
+    (compiler
+     (let ((supported (compiler-amd-gpu-targets compiler)))
+       ;; This is quadratic but on small lists.
+       (and=> (find (negate (cut member <> supported)) targets)
+              (lambda (unsupported)
+                (raise
+                 (make-compound-condition
+                  (formatted-message
+                   (G_ "compiler ~a does not support AMD GPU target ~a")
+                   (package-full-name compiler) unsupported)
+                  (condition (&error-location
+                              (location (package-location compiler))))
+                  (condition
+                   (&fix-hint
+                    (hint (format #f (G_ "Compiler ~a supports the following
+AMD GPU targets:
+
+@quotation
+~a
+@end quotation")
+                                  (package-full-name compiler "@@")
+                                  (string-join supported ", ")))))))))))))
+
+(define package-amd-gpu-specialization
+  (mlambda (targets)
+    "Return a procedure that maps the given package to its counterpart built
+for the given ROCm TARGETS, a list of GPU architectures."
+    (define rewriting-property
+      (gensym " package-amd-gpu-specialization"))
+
+    (define (mark p)
+      ;; Mark P as already processed.
+      (package/inherit p
+        (properties `((,rewriting-property . #t)
+                      ,@(package-properties p)))))
+
+    (package-mapping (lambda (p)
+                       (cond ((assq rewriting-property (package-properties p))
+                              p)
+                             ((assq 'amd-gpu-targets (package-properties p))
+                              (assert-valid-amd-gpu-targets p targets)
+                              (info (N_ "compiling ~a for AMD GPU~{ ~a~}~%"
+                                        "compiling ~a for these AMD GPUs:~{ ~a~}~%"
+                                        (length targets))
+                                    (package-full-name p) targets)
+                              (mark (package-for-amd-gpu-targets p targets)))
+                             (else
+                              p)))
+                     (lambda (p)
+                       (assq rewriting-property (package-properties p)))
+                     #:deep? #t)))
+
+(define (transform-package-amd-gpu-targets targets)
+  "Return a procedure that, when applied to a package, returns that package
+such that the package itself and all its dependencies are specialized for
+TARGET-LIST, a list of strings denoting AMD GPUs."
+  (match targets
+    ((targets _ ...)
+     (let* ((rewrite (package-amd-gpu-specialization targets)))
        (lambda (obj)
          (if (package? obj)
              (rewrite obj)
@@ -999,6 +1090,7 @@ are replaced by the specified upstream version."
     (with-git-url . ,transform-package-source-git-url)
     (with-c-toolchain . ,transform-package-toolchain)
     (tune . ,transform-package-tuning)
+    (amd-gpu . ,transform-package-amd-gpu-targets)
     (with-debug-info . ,transform-package-with-debug-info)
     (without-tests . ,transform-package-tests)
     (with-configure-flag . ,transform-package-configure-flag)
@@ -1084,6 +1176,11 @@ building for ~a instead of ~a, so tuning cannot be guessed~%")
                                (alist-cons 'tune micro-architecture
                                            result)
                                (alist-delete 'tune result))
+                           rest)))
+          (option '("amd-gpu") #t #f
+                  (lambda (opt name arg result . rest)
+                    (apply values
+                           (alist-cons 'amd-gpu (split-on-commas arg) result)
                            rest)))
           (option '("with-debug-info") #t #f
                   (parser 'with-debug-info))

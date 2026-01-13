@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2017, 2019-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2017, 2019-2024, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -636,6 +636,45 @@
                (member "nonexistent-superfast"
                        (formatted-message-arguments c))))
       (package->bag (t p))
+      #f)))
+
+(test-equal "options->transformations, amd-gpu"
+  '("gfx90a" "gfx942")
+  (let ((p (dummy-package "amd-gpu-code"
+             (native-inputs
+              (list (@ (gnu packages llvm) clang-rocm)))
+             (properties '((amd-gpu-targets . ("whatever"))))))
+        (t (options->transformation '((amd-gpu . ("gfx90a" "gfx942"))))))
+    (assoc-ref (package-properties (t p)) 'amd-gpu-targets)))
+
+(test-equal "options->transformations, amd-gpu, not applicable"
+  #f
+  (let ((p (dummy-package "not-amd-gpu-code"))
+        (t (options->transformation '((amd-gpu . ("gfx90a" "gfx942"))))))
+    (assoc-ref (package-properties (t p)) 'amd-gpu-targets)))
+
+(test-assert "options->transformations, amd-gpu, missing clang-rocm input"
+  (let ((p (dummy-package "amd-gpu-code"
+             (properties '((amd-gpu-targets . ("whatever"))))))
+        (t (options->transformation '((amd-gpu . ("generic"))))))
+    ;; Since 'clang-rocm' is not among the inputs, an error should be raised.
+    (guard (c ((formatted-message? c)
+               (string-contains (formatted-message-string c)
+                                "no ROCm compiler")))
+      (t p)
+      #f)))
+
+(test-assert "options->transformations, amd-gpu, wrong GPU"
+  (let ((p (dummy-package "amd-gpu-code"
+             (native-inputs
+              (list (@ (gnu packages llvm) clang-rocm)))
+             (properties '((amd-gpu-targets . ("whatever"))))))
+        (t (options->transformation '((amd-gpu . ("does-not-exist"))))))
+    ;; Since this AMD GPU target is not known to 'clang-rocm', an error should
+    ;; be raised.
+    (guard (c ((formatted-message? c)
+               (member "does-not-exist" (formatted-message-arguments c))))
+      (t p)
       #f)))
 
 (test-equal "options->transformation + package->manifest-entry"

@@ -22,7 +22,7 @@
 @set SUBSTITUTE-URLS https://@value{SUBSTITUTE-SERVER-1} https://@value{SUBSTITUTE-SERVER-2}
 
 @copying
-Copyright @copyright{} 2012--2025 Ludovic Courtès@*
+Copyright @copyright{} 2012--2026 Ludovic Courtès@*
 Copyright @copyright{} 2013, 2014, 2016, 2024 Andreas Enge@*
 Copyright @copyright{} 2013 Nikita Karetnikov@*
 Copyright @copyright{} 2014, 2015, 2016 Alex Kost@*
@@ -13656,6 +13656,37 @@ of tunable packages may be built, one for each CPU variant.  It is the
 coarse-grain counterpart of @dfn{function multi-versioning} as
 implemented by the GNU tool chain (@pxref{Function Multiversioning,,,
 gcc, Using the GNU Compiler Collection (GCC)}).
+
+@cindex GPUs, AMD compilation targets
+@cindex AMD GPUs
+@cindex ROCm/HIP GPU targets
+@vindex amd-gpu-targets
+@anchor{amd-gpu-transformation-option}
+@item --amd-gpu=@var{targets}
+Build relevant packages for the AMD GPUs specified by @var{targets}.
+Only packages with an @code{amd-gpu-targets} property are affected.
+@var{targets} must be a comma-separated list of
+@uref{https://llvm.org/docs/AMDGPUUsage.html#amdgpu-processor-table, AMD
+GPU target identifiers}.  For example, the command below builds the GPU
+code of @code{rocm-bandwidth-test} for AMD Instinct MI250
+(@code{gfx90a}) and for AMD Instinct MI300 (@code{gfx942}):
+
+@example
+guix build --amd-gpu=gfx90a,gfx942 rocm-bandwidth-test
+@end example
+
+To know the identifier(s) of the GPU(s) available on your machine, run:
+
+@example
+guix shell rocminfo -- rocm_agent_enumerator
+@end example
+
+Under the hood, these GPU identifiers are
+passed to Clang's @option{--offload-arch} option.
+
+When @option{--amd-gpu} is omitted, packages are built for a default set
+of GPUs, that we hope covers common needs.  Building for more GPUs
+increases build time significantly and leads to bigger package binaries.
 
 @item --with-source=@var{source}
 @itemx --with-source=@var{package}=@var{source}
