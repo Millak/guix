@@ -4321,27 +4321,6 @@ patterns, designed for efficient and high-performing database access, adapted
 into a simple and Pythonic domain language.")
     (license license:expat)))
 
-(define-public python-sqlalchemy-stubs
-  (package
-    (name "python-sqlalchemy-stubs")
-    (version "0.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sqlalchemy-stubs" version))
-       (sha256
-        (base32
-         "1bppjmv7v7m0q8gwg791pgxbx4ay7mna0zq204pn9vw28kfxcrf6"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-mypy python-typing-extensions))
-    (home-page "https://github.com/dropbox/sqlalchemy-stubs")
-    (synopsis "SQLAlchemy stubs and mypy plugin")
-    (description "This package contains type stubs and a mypy plugin to
-provide more precise static types and type inference for SQLAlchemy
-framework.")
-    (license license:asl2.0)))
-
 (define-public python-sqlalchemy-utils
   (package
     (name "python-sqlalchemy-utils")
