@@ -20994,17 +20994,17 @@ iVAT).")
 (define-public r-xfun
   (package
     (name "r-xfun")
-    (version "0.54")
+    (version "0.55")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "xfun" version))
        (sha256
-        (base32 "0biq71zxxyw2mchzg8a9qxij4xllw4m6c6gz67aazkn68kvaw550"))))
+        (base32 "0vnknp7d3wpmm425f5z1y1vyq7a2227px66mkg8ai31vdl9wb3rr"))))
     (build-system r-build-system)
     (properties
      ;; knitr itself depends on xfun
-     '((updater-ignored-native-inputs . ("r-knitr" "r-litedown"))
+     '((updater-ignored-native-inputs . ("r-data-table" "r-knitr" "r-litedown"))
        (updater-extra-native-inputs . ("r-codetools"))))
     (arguments
      (list
