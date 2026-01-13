@@ -23698,14 +23698,14 @@ specific S3-method.")
 (define-public r-vim
   (package
     (name "r-vim")
-    (version "6.2.6")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "VIM" version))
        (sha256
         (base32
-         "1xphbw1i37y9g7dsbv29nqz5gf00bbjj0cl9lp1lhrw1bcl5ba2n"))))
+         "007yh5shkywkmfbwh4cywp4jxc9cwp4zkgdvq14gvncw5i92a7gi"))))
     (properties `((upstream-name . "VIM")))
     (build-system r-build-system)
     (propagated-inputs
@@ -23713,9 +23713,16 @@ specific S3-method.")
            r-colorspace
            r-data-table
            r-e1071
+           r-future
            r-laeken
            r-mass
+           r-mlr3
+           r-mlr3learners
+           r-mlr3pipelines
+           r-mlr3tuning
            r-nnet
+           r-paradox
+           r-r6
            r-ranger
            r-rcpp
            r-robustbase
