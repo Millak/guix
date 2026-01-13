@@ -1059,18 +1059,17 @@ for \"genetic modifications\" as described by e.g.
 (define-public ginga
   (package
     (name "ginga")
-    (version "5.4.0")
+    (version "5.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ginga" version))
        (sha256
-        (base32 "0wv8fb8p8icsvkh2rn8jcxxx33kgac36gm9xqbgpm2z7z6m4haa7"))))
+        (base32 "1fw3h0x74hmwkfypjpy1q80kkds26fnv8ig65jb5hj1l4g3p8wj6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; AssertionError: Not equal to tolerance rtol=1e-07, atol=0.0001
-      #:test-flags #~(list "-k" "not test_fwhm")
+      ;; tests: 256 passed, 13 skipped
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-home
