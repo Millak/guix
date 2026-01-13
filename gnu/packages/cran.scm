@@ -47232,13 +47232,13 @@ appropriate dog and cat images for many status codes.")
 (define-public r-latex2exp
   (package
     (name "r-latex2exp")
-    (version "0.9.6")
+    (version "0.9.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "latex2exp" version))
               (sha256
                (base32
-                "1jp0l0hi5kv4yh28qg2yj2z5fj33gnfvdz2g2v4ibn516fj2d636"))))
+                "198hcnj2hsqb52gvp8hc4f1cakcmwhs0jm97qg81b5cqcgr43mld"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -47250,10 +47250,8 @@ appropriate dog and cat images for many status codes.")
              (substitute* "tests/testthat/test_simple.R"
                ((".*Escaped symbols renders correctly.*" m)
                 (string-append m "skip('skip')\n"))))))))
-    (propagated-inputs
-     (list r-magrittr r-stringr))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-rlang r-testthat r-waldo))
     (home-page "https://github.com/stefano-meschiari/latex2exp/")
     (synopsis "Use LaTeX expressions in plots")
     (description "@code{latex2exp} parses and converts LaTeX math formulas to
