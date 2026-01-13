@@ -84,7 +84,7 @@
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
-;;; Copyright © 2025 Artur Wroblewski <wrobell@riseup.net>
+;;; Copyright © 2025-2026 Artur Wroblewski <wrobell@riseup.net>
 ;;; Copyright © 2025 Allan Adair <allan@adair.no>
 ;;; Copyright © 2025 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;;
@@ -339,7 +339,7 @@ JSON APIs with Behave.")
 (define-public python-blacksheep
   (package
     (name "python-blacksheep")
-    (version "2.4.5")
+    (version "2.4.6")
     (source
      (origin
        (method git-fetch)
@@ -348,11 +348,11 @@ JSON APIs with Behave.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02lfa75p8phdw3pi9c4n4fr3pmkyi3rdp6mqgz9xhq58g9blpddx"))))
+        (base32 "120q6hrhfjxdsqav8h5z8yqfi0iiacwxbkryjk7kb20ic2879vqh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1799 passed
+      ;; tests: 1821 passed
       ;;
       ;; Run all unit tests, but do not run integration tests from `itests`
       ;; directory.
