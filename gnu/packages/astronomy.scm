@@ -363,16 +363,16 @@ moment, supported SPICE files are:
 (define-public calcmysky
   (package
     (name "calcmysky")
-    (version "0.3.5")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/10110111/CalcMySky")
-             (commit (string-append "v" version))))
+              (url "https://github.com/10110111/CalcMySky")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03h93jxpxfa7gy4z3pvh8xy60z2f5n5id9k2wkzmf81zrvakbvgv"))))
+        (base32 "0yavkxb15j8ylgsk6jbw3ni0vcky2wpmcl12qnv2py4j0cpcgq02"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
@@ -403,7 +403,8 @@ atmosphere model.
 @item @code{ShowMySky} preview GUI that makes it possible to preview the
 rendering of the atmosphere model and examine its properties.
 @end itemize")
-    (license license:gpl3+)))
+    (license (list license:gpl2
+                   license:gpl3))))
 
 (define-public calcmysky-qt5
   (package/inherit calcmysky
