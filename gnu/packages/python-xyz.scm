@@ -20755,17 +20755,17 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
 (define-public python-celery
   (package
     (name "python-celery")
-    (version "5.5.3")
+    (version "5.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "celery" version))
        (sha256
-        (base32 "198hdgy2mk2h6nzhg78jqlhps0w4z6iw60bz4a0m4awcjvkjm5vc"))))
+        (base32 "16q0hlsw9p2mri1c1i2l4knq2d8hf83h4a9vglqpdbgjzk1j32aa"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 3165 passed, 26 skipped, 6 deselected, 3 xfailed, 53 warnings,
+      ;; tests: 3248 passed, 26 skipped, 8 deselected, 3 xfailed, 54 warnings,
       ;;        28958 subtests passed
       #:test-flags
       ;; The MongoDB backend test appears to expect an older version of
@@ -20781,15 +20781,10 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
                           ;; OSError: [Errno 24] Too many open files
                           "test_register_with_event_loop__no_on_tick_dupes"
                           "test_with_autoscaler_file_descriptor_safety"
-                          "test_with_file_descriptor_safety")
-                    " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "requirements/default.txt"
-                (("^tzdata.*")
-                 "tzdata\n")))))))
+                          "test_with_file_descriptor_safety"
+                          ;; XXX: Fails to compare local timezones.
+                          "test_use_local_timezone")
+                    " and not "))))
     (native-inputs
      (list python-azure-core
            python-dnspython
@@ -20803,6 +20798,7 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
            python-pytest
            python-pytest-celery
            python-pytest-click
+           python-pytest-order
            python-pytest-subtests
            python-pytest-timeout
            python-redis
@@ -20815,7 +20811,7 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
            python-click-repl
            python-dateutil
            python-kombu
-           python-tzdata
+           python-tzlocal
            python-vine))
     (home-page "https://celeryproject.org")
     (synopsis "Distributed Task Queue")
