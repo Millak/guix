@@ -20669,7 +20669,7 @@ or compiler for Python.")
 (define-public python-kombu
   (package
     (name "python-kombu")
-    (version "5.5.4")
+    (version "5.6.0")
     (source
      (origin
        (method git-fetch)
@@ -20678,10 +20678,11 @@ or compiler for Python.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fzpnwr3rhyf4fis1xmbdwlz40j9c09zpzzrchwxcvwsc6r45mcj"))))
+        (base32 "10h73mxfqy8g02bmibc9m2xklcm4pxc9r674c8l6j0v2igf3ycmb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 854 passed, 196 skipped
       #:test-flags
       #~(list
          ;; TODO: Package azure-identity (required for this file)
@@ -20693,17 +20694,20 @@ or compiler for Python.")
           (add-after 'unpack 'relax-requirements
             (lambda _
               (substitute* "requirements/default.txt"
-                (("^tzdata.*")
-                 "tzdata\n")))))))
+                (("tzdata>=2025.2")
+                 "tzdata>=2025.1")))))))
     (native-inputs
      (list python-botocore
            python-pyro4
            python-pytest
+           python-pytest-freezer
            python-pytest-sugar
-           python-setuptools
-           python-tzdata))
+           python-setuptools))
     (propagated-inputs
-     (list python-amqp python-typing-extensions python-vine))
+     (list python-amqp
+           python-packaging
+           python-tzdata
+           python-vine))
     (home-page "https://kombu.readthedocs.io")
     (synopsis "Message passing library for Python")
     (description
