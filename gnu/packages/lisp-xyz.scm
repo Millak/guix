@@ -34859,42 +34859,41 @@ JSON interchange format.")
   (sbcl-package->clasp-package sbcl-yason))
 
 (define-public sbcl-yxorp
-  (let ((commit "c306898a467995e123a22316c9b79fcac442415b")
-        (revision "4"))
-    (package
-      (name "sbcl-yxorp")
-      (version (git-version "0.4" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/charJe/cl-yxorp")
-               (commit commit)))
-         (file-name (git-file-name "cl-yxorp" version))
-         (sha256
-          (base32 "0ll1s9w29yhhgqssgiw58fcapw4n040gkvpz4sxwv3q2v60rbidj"))))
-      (build-system asdf-build-system/sbcl)
-      (inputs
-       (list sbcl-chipz
-             sbcl-chunga
-             sbcl-cl+ssl
-             sbcl-binding-arrows
-             sbcl-cl-str
-             sbcl-usocket
-             sbcl-flexi-streams
-             sbcl-rutils
-             sbcl-salza2
-             sbcl-trivial-garbage))
-      (home-page "https://github.com/charje/cl-yxorp")
-      (synopsis
-       "Reverse proxy server written in and configurable in Common Lisp")
-      (description
-       "This is a reverse proxy server written in and configurable in
+  (package
+    (name "sbcl-yxorp")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~charje/cl-yxorp")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-yxorp" version))
+       (sha256
+        (base32 "0kgam9l7gmnknhphk8xc4n09bgfkhmpns5nw41vgbm5is9ixsxw7"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-chipz
+           sbcl-chunga
+           sbcl-cl+ssl
+           sbcl-binding-arrows
+           sbcl-cl-str
+           sbcl-usocket
+           sbcl-flexi-streams
+           sbcl-rutils
+           sbcl-salza2
+           sbcl-smart-buffer
+           sbcl-trivial-garbage))
+    (home-page "https://github.com/charje/cl-yxorp")
+    (synopsis
+     "Reverse proxy server written in and configurable in Common Lisp")
+    (description
+     "This is a reverse proxy server written in and configurable in
 Common Lisp.  It supports WebSocket, HTTP, HTTPS, HTTP to HTTPS
 redirecting, port and host forwarding configuration using a real programming
 language, HTTP header and body manipulation (also using a real programming
 language).")
-      (license license:agpl3))))
+    (license license:agpl3)))
 
 (define-public cl-yxorp
   (sbcl-package->cl-source-package sbcl-yxorp))
