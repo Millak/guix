@@ -2154,6 +2154,11 @@ generate a variety of reports from them, and provides a web interface.")
                     (("tatsu-lts")
                      "tatsu")))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Whitespace differences in these tests.
+      #~(list "--ignore=beanquery/query_render_test.py")))
     (propagated-inputs
      (list beancount-3
            python-click
