@@ -1610,15 +1610,24 @@ dist_patch_DATA =						\
   %D%/packages/patches/icedove-observer-fix.patch               \
   %D%/packages/patches/icedtea-7-hotspot-aarch64-use-c++98.patch	\
   %D%/packages/patches/icedtea-7-hotspot-pointer-comparison.patch	\
-  %D%/packages/patches/icu4c-icu-22132-fix-vtimezone.patch	\
-  %D%/packages/patches/icu4c-20548-dateinterval-timezone.patch  \
-  %D%/packages/patches/icu4c-22132-standardize-vtzone-output.patch      \
-  %D%/packages/patches/icu4c-23069-rosh-hashanah-postponement.patch     \
-  %D%/packages/patches/icu4c-dayperiod-fractional-seconds.patch \
-  %D%/packages/patches/icu4c-double-conversion.patch            \
-  %D%/packages/patches/icu4c-dtitvfmt-adopt-calendar.patch      \
+  %D%/packages/patches/icu4c-20548-dateinterval-timezone.patch	\
+  %D%/packages/patches/icu4c-22132-standardize-vtzone-output.patch	\
+  %D%/packages/patches/icu4c-23069-rosh-hashanah-postponement.patch	\
+  %D%/packages/patches/icu4c-78-double-conversion.patch		\
+  %D%/packages/patches/icu4c-bug-1706949-wasi-workaround.patch	\
+  %D%/packages/patches/icu4c-bug-1790071-ICU-22132-standardize-vtzone-output.patch	\
+  %D%/packages/patches/icu4c-bug-1856290-ICU-20548-dateinterval-timezone.patch	\
+  %D%/packages/patches/icu4c-bug-1954138-dtitvfmt-adopt-calendar.patch	\
+  %D%/packages/patches/icu4c-bug-1972781-chinese-based-calendar.patch	\
+  %D%/packages/patches/icu4c-bug-2000225-ICU-23264-increase-measure-unit-capacity.patch	\
+  %D%/packages/patches/icu4c-bug-2002735-ICU-23277-coptic-single-era.patch	\
+  %D%/packages/patches/icu4c-dayperiod-fractional-seconds.patch	\
+  %D%/packages/patches/icu4c-double-conversion.patch		\
+  %D%/packages/patches/icu4c-dtitvfmt-adopt-calendar.patch	\
   %D%/packages/patches/icu4c-fix-TestHebrewCalendarInTemporalLeapYear.patch	\
-  %D%/packages/patches/icu4c-wasi-workaround.patch              \
+  %D%/packages/patches/icu4c-icu-22132-fix-vtimezone.patch	\
+  %D%/packages/patches/icu4c-suppress-warnings.patch		\
+  %D%/packages/patches/icu4c-wasi-workaround.patch		\
   %D%/packages/patches/id3lib-CVE-2007-4460.patch			\
   %D%/packages/patches/id3lib-UTF16-writing-bug.patch			\
   %D%/packages/patches/ilmbase-fix-tests.patch			\

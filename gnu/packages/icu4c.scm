@@ -52,6 +52,12 @@
    (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
    "-src.tgz"))
 
+;; The URI format has changed starting with 78.1.
+(define (icu4c-uri->=78 version)
+  (string-append
+   "https://github.com/unicode-org/icu/releases/download/release-"
+   version "/icu4c-" version "-sources.tgz"))
+
 (define-public icu4c-73
   (package
     (name "icu4c")
@@ -200,6 +206,27 @@ C/C++ part.")
          "icu4c-double-conversion.patch"
          "icu4c-dtitvfmt-adopt-calendar.patch"
          "icu4c-wasi-workaround.patch"))))))
+
+(define-public icu4c-78
+  (package
+    (inherit icu4c-77)
+    (name "icu4c")
+    (version "78.2")
+    (source
+     (origin
+       (inherit (package-source icu4c-77))
+       (uri (icu4c-uri->=78 version))
+       (sha256 (base32 "0dfzi4yf0wmng1866y2yd22cj1lrnzmx5qihjqh4npa3bixni69y"))
+       (patches
+        (search-patches
+         "icu4c-bug-1706949-wasi-workaround.patch"
+         "icu4c-bug-1790071-ICU-22132-standardize-vtzone-output.patch"
+         "icu4c-bug-1856290-ICU-20548-dateinterval-timezone.patch"
+         "icu4c-bug-1954138-dtitvfmt-adopt-calendar.patch"
+         "icu4c-bug-1972781-chinese-based-calendar.patch"
+         "icu4c-bug-2000225-ICU-23264-increase-measure-unit-capacity.patch"
+         "icu4c-78-double-conversion.patch"
+         "icu4c-suppress-warnings.patch"))))))
 
 (define-public icu4c-build-root
   (package
