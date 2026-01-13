@@ -36220,36 +36220,6 @@ functions
 markdown-compliant strings.")
     (license license:expat)))
 
-(define-public python-islenska
-  (package
-    (name "python-islenska")
-    (version "1.0.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "islenska" version))
-       (sha256
-        (base32 "1jw3knms8h32jjq64mj4lb7b866dzc3z16w1dkyzd39xbmy4nyqg"))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; XXX: Test data is not included, see:
-     ;; <.github/workflows/python-package.yml>.
-     (list #:tests? #f))
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-cffi
-           python-typing-extensions))
-    (home-page "https://github.com/mideind/BinPackage")
-    (synopsis
-     "Vocabulary of the modern Icelandic language, in a Python package")
-    (description
-     "Islenska is a Python package that embeds the vocabulary of the Database
-of Icelandic Morphology and offers various lookups and queries of the data.
-The database contains over 6.5 million entries, over 3.1 million unique word
-forms, and about 300,000 distinct lemmas.")
-    (license license:expat)))
-
 (define-public python-icecream
   (package
     (name "python-icecream")
