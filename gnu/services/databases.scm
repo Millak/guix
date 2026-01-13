@@ -9,7 +9,7 @@
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 David Larsson <david.larsson@selfhosted.xyz>
 ;;; Copyright © 2021 Aljosha Papsch <ep@stern-data.com>
-;;; Copyright © 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
+;;; Copyright © 2025, 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,13 +28,14 @@
 
 (define-module (gnu services databases)
   #:use-module (gnu services)
+  #:use-module (gnu services base)
   #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
+  #:use-module (gnu system file-systems)
   #:use-module (gnu system shadow)
   #:autoload   (gnu system accounts) (default-shell)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
-  #:use-module (gnu packages bash)
   #:use-module (gnu packages databases)
   #:use-module (guix build-system trivial)
   #:use-module (guix build union)
@@ -415,6 +416,9 @@ and stores the database cluster in @var{data-directory}."
 (define %default-postgresql-role-shepherd-requirement
   '(user-processes postgres))
 
+(define %postgresql-role-runtime-dir
+  "/run/postgresql-role")
+
 (define-record-type* <postgresql-role-configuration>
   postgresql-role-configuration make-postgresql-role-configuration
   postgresql-role-configuration?
@@ -440,16 +444,11 @@ and stores the database cluster in @var{data-directory}."
                                permissions)
                    " ")))
 
-  (define (password-value role)
-    (string-append "password_" (postgresql-role-name role)))
-
-  (define (role->password-variable role)
-    (let ((file-name (postgresql-role-password-file role)))
-      (if (string? file-name)
-          ;; This way passwords do not leak to the command line.
-          #~(string-append "-v \"" #$(password-value role)
-                           "=$(" #$coreutils "/bin/cat " #$file-name ")\"")
-          "")))
+  (define (role-has-password-file? role)
+    (define password-file
+      (postgresql-role-password-file role))
+    (and (string? password-file)
+         (not (string-null? password-file))))
 
   (define (roles->queries roles)
     (apply mixed-text-file "queries"
@@ -457,18 +456,13 @@ and stores the database cluster in @var{data-directory}."
             (lambda (role)
               (match-record role <postgresql-role>
                 (name permissions create-database? encoding collation ctype
-                      template password-file)
+                 template)
                 `("SELECT NOT(EXISTS(SELECT 1 FROM pg_catalog.pg_roles WHERE \
 rolname = '" ,name "')) as not_exists;\n"
 "\\gset\n"
 "\\if :not_exists\n"
 "CREATE ROLE \"" ,name "\""
 " WITH " ,(format-permissions permissions)
-,(if (and (string? password-file)
-          (not (string-null? password-file)))
-     (string-append
-      "\nPASSWORD :'" (password-value role) "'")
-     "")
 ";\n"
 ,@(if create-database?
       `("CREATE DATABASE \"" ,name "\""
@@ -484,17 +478,65 @@ rolname = '" ,name "')) as not_exists;\n"
   (let ((host (postgresql-role-configuration-host config))
         (roles (postgresql-role-configuration-roles config)))
     (program-file "run-queries"
-      #~(let ((bash #$(file-append bash-minimal "/bin/bash"))
-              (psql #$(file-append postgresql "/bin/psql")))
-          (define command
-            (string-append
-             "set -e; exec " psql " -a -h " #$host " -f "
-             #$(roles->queries roles) " "
-             (string-join
-              (list
-               #$@(map role->password-variable roles))
-              " ")))
-          (execlp bash bash "-c" command)))))
+      (with-imported-modules (source-module-closure
+                              '((guix build utils)))
+        #~(begin
+            (use-modules (guix build utils)
+                         (ice-9 format)
+                         (ice-9 match)
+                         (ice-9 textual-ports)
+                         (srfi srfi-1))
+            (define role->password-statement
+              (match-lambda
+                (#f "")
+                ((name file)
+                 (if (file-exists? file)
+                     (format
+                      #f "ALTER ROLE ~a WITH ENCRYPTED PASSWORD '~a';"
+                      name
+                      (call-with-input-file file get-string-all))
+                     (begin
+                       (format (current-error-port)
+                               (string-append
+                                "~a does not exist! ~a's "
+                                "password will not be set.")
+                               file name)
+                       "")))))
+
+            (define (create-password-query roles)
+              (define password-query
+                (string-append
+                 #$%postgresql-role-runtime-dir "/set-passwords.sql"))
+              (with-output-to-file password-query
+                (lambda _
+                  (display
+                   (string-join
+                    `("BEGIN;"
+                      ;; Avoid leaking unencrypted password in the logs.
+                      "SET LOCAL log_statement = 'none';"
+                      ,@(map role->password-statement roles)
+                      "COMMIT;\n")
+                    "\n"))))
+              password-query)
+
+            (let* ((psql #$(file-append postgresql "/bin/psql"))
+                   (roles
+                    (list
+                     #$@(map
+                         (lambda (role)
+                           (and (role-has-password-file? role)
+                                #~'(#$(postgresql-role-name role)
+                                    #$(postgresql-role-password-file role))))
+                         roles)))
+                   (any-password? (any identity roles)))
+
+              (invoke psql "-a" "-h" #$host "-f" #$(roles->queries roles))
+
+              (when any-password?
+                ;; This way passwords do not leak to the command line.
+                (let ((password-query (create-password-query roles)))
+                  (invoke psql "-h" #$host "-f" password-query)
+                  (delete-file password-query)))))))))
 
 (define (postgresql-role-shepherd-service config)
   (match-record config <postgresql-role-configuration>
@@ -515,11 +557,19 @@ rolname = '" ,name "')) as not_exists;\n"
                         ))))
            (documentation "Create PostgreSQL roles.")))))
 
+(define %postgresql-role-file-systems
+  (list (file-system
+          (device "none")
+          (mount-point %postgresql-role-runtime-dir)
+          (type "tmpfs"))))
+
 (define postgresql-role-service-type
   (service-type (name 'postgresql-role)
                 (extensions
                  (list (service-extension shepherd-root-service-type
-                                          postgresql-role-shepherd-service)))
+                                          postgresql-role-shepherd-service)
+                       (service-extension file-system-service-type
+                                          (const %postgresql-role-file-systems))))
                 (compose concatenate)
                 (extend (lambda (config extended-roles)
                           (match-record config <postgresql-role-configuration>
