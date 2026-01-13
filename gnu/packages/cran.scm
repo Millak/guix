@@ -23222,17 +23222,16 @@ experimental designs and random samples for common sampling designs.")
 (define-public r-roi
   (package
     (name "r-roi")
-    (version "1.0-1")
+    (version "1.0-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ROI" version))
        (sha256
-        (base32 "05hnj9fskfm2klz7zv97lb0r60akjq4a1cay8p62whpi0hri9zyl"))))
+        (base32 "0z8r40pxj5gd20scrkzrnqx0gfvynnalg4kg85nrnld039qlp21y"))))
     (properties `((upstream-name . "ROI")))
     (build-system r-build-system)
     (propagated-inputs (list r-checkmate r-registry r-slam))
-    (native-inputs (list r-r-rsp r-testthat))
     (home-page "https://roi.r-forge.r-project.org/")
     (synopsis "R optimization infrastructure")
     (description
