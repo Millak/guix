@@ -10753,6 +10753,10 @@
   (crate-source "jaq-std" "2.1.1"
                 "0ilsnghw2db5k01qdri2nyggynwwn8hqx9cdmljgwdvq5cp1hq4k"))
 
+(define rust-java-locator-0.1.9
+  (crate-source "java-locator" "0.1.9"
+                "0kz6q5291c33bzavh9q9s0yqkhsn29gfhrg6fha9pib5whgnri09"))
+
 (define rust-javascriptcore-rs-sys-0.2.0
   (crate-source "javascriptcore-rs-sys" "0.2.0"
                 "1619vl48yw3wrjw4c3dfm3s5s9sizgxp5s7s1ahpbkcdl2lasiiz"))
@@ -18589,6 +18593,10 @@
 (define rust-rusty-fork-0.3.0
   (crate-source "rusty-fork" "0.3.0"
                 "0kxwq5c480gg6q0j3bg4zzyfh2kwmc3v2ba94jw8ncjc8mpcqgfb"))
+
+(define rust-rusty-fork-0.3.1
+  (crate-source "rusty-fork" "0.3.1"
+                "1qkf9rvz2irb1wlbkrhrns8n9hnax48z1lgql5nqyr2fyagzfsyc"))
 
 (define rust-rusty-hook-0.11.2
   (crate-source "rusty-hook" "0.11.2"
@@ -40707,6 +40715,59 @@
                                   rust-x11-clipboard-0.3.3
                                   rust-xcb-0.8.2
                                   rust-yaml-rust-0.4.5))
+                     (jni =>
+                          (list rust-assert-matches-1.5.0
+                                rust-bitflags-2.10.0
+                                rust-bytemuck-1.24.0
+                                rust-bytes-1.11.0
+                                rust-cesu8-1.1.0
+                                rust-cfg-if-1.0.4
+                                rust-combine-4.6.7
+                                rust-errno-0.3.14
+                                rust-fastrand-2.3.0
+                                rust-fnv-1.0.7
+                                rust-getrandom-0.3.4
+                                rust-glob-0.3.3
+                                rust-java-locator-0.1.9
+                                rust-jni-sys-0.3.0
+                                rust-lazy-static-1.5.0
+                                rust-libc-0.2.180
+                                rust-libloading-0.7.4
+                                rust-linux-raw-sys-0.11.0
+                                rust-log-0.4.29
+                                rust-memchr-2.7.6
+                                rust-once-cell-1.21.3
+                                rust-proc-macro2-1.0.106
+                                rust-quick-error-1.2.3
+                                rust-quote-1.0.44
+                                rust-r-efi-5.3.0
+                                rust-rustix-1.1.3
+                                rust-rusty-fork-0.3.1
+                                rust-same-file-1.0.6
+                                rust-syn-2.0.114
+                                rust-tempfile-3.24.0
+                                rust-thiserror-1.0.69
+                                rust-thiserror-impl-1.0.69
+                                rust-unicode-ident-1.0.22
+                                rust-wait-timeout-0.2.1
+                                rust-walkdir-2.5.0
+                                rust-wasip2-1.0.2+wasi-0.2.9
+                                rust-winapi-0.3.9
+                                rust-winapi-i686-pc-windows-gnu-0.4.0
+                                rust-winapi-util-0.1.11
+                                rust-winapi-x86-64-pc-windows-gnu-0.4.0
+                                rust-windows-link-0.2.1
+                                rust-windows-sys-0.45.0
+                                rust-windows-sys-0.61.2
+                                rust-windows-targets-0.42.2
+                                rust-windows-aarch64-gnullvm-0.42.2
+                                rust-windows-aarch64-msvc-0.42.2
+                                rust-windows-i686-gnu-0.42.2
+                                rust-windows-i686-msvc-0.42.2
+                                rust-windows-x86-64-gnu-0.42.2
+                                rust-windows-x86-64-gnullvm-0.42.2
+                                rust-windows-x86-64-msvc-0.42.2
+                                rust-wit-bindgen-0.51.0))
                      (jujutsu =>
                               (list rust-addr2line-0.24.2
                                     rust-adler2-2.0.1

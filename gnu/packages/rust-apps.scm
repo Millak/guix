@@ -21,7 +21,7 @@
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
 ;;; Copyright © 2022 ( <paren@disroot.org>
-;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022, 2025, 2026 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2023 Arnav Andrew Jose <arnav.jose@gmail.com>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
@@ -1614,6 +1614,25 @@ bar.  It is also compatible with sway.")
     (synopsis "Command-line JSON viewer")
     (description "This package provides a command-line JSON viewer.")
     (license license:expat)))
+
+(define-public jni
+  (package
+    (name "jni")
+    (version "0.21.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jni" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15wczfkr2r45slsljby12ymf2hij8wi5b104ghck9byjnwmsm1qs"))))
+    (build-system cargo-build-system)
+    (inputs (cargo-inputs 'jni))
+    (home-page "https://github.com/jni-rs/jni-rs")
+    (synopsis "Rust bindings to the Java Native Interface")
+    (description "This package provides Rust bindings to the @acronym{JNI, Java Native
+Interface}.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public jujutsu
   (package
