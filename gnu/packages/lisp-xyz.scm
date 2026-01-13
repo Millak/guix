@@ -4033,7 +4033,7 @@ by Ruby's @code{Chronic}.")
 (define-public sbcl-chunga
   (package
     (name "sbcl-chunga")
-    (version "1.1.7")
+    (version "1.1.9")
     (source
      (origin
        (method git-fetch)
@@ -4042,7 +4042,7 @@ by Ruby's @code{Chronic}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jzn3nyb3f22gm983rfk99smqs3mhb9ivjmasvhq9qla5cl9pyhd"))))
+        (base32 "17jswsp31dh1jpg2n60nn34wxf4z6vvxjq1avy50z9fnzywvikyi"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-trivial-gray-streams))
