@@ -12079,34 +12079,32 @@ terminals.")
   (sbcl-package->ecl-package sbcl-clinenoise))
 
 (define-public sbcl-clingon
-  (let ((commit "f2a730f1073e41d78557019085fbb0c662fd3189")
-        (revision "1"))
-    (package
-      (name "sbcl-clingon")
-      (version (git-version "0.5.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/dnaeon/clingon")
-               (commit commit)))
-         (file-name (git-file-name "cl-clingon" version))
-         (sha256
-          (base32 "0p8i9bkzzy4v0pg15dldrl73xri4kxyxa7si82bawh1dnnm53jgc"))))
-      (build-system asdf-build-system/sbcl)
-      (native-inputs
-       (list sbcl-rove))
-      (inputs
-       (list sbcl-bobbin
-             sbcl-cl-reexport
-             sbcl-split-sequence
-             sbcl-with-user-abort))
-      (arguments
-       (list #:tests? #f)) ; FIXME: Tests run forever
-      (home-page "https://github.com/dnaeon/clingon")
-      (synopsis "Command-line option parsing library for Common Lisp")
-      (description
-       "@code{clingon} is a command-line option parsing library for Common
+  (package
+    (name "sbcl-clingon")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dnaeon/clingon")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-clingon" version))
+       (sha256
+        (base32 "1a31xjvdgikarafhy8f11pprqgw55yv57ahd4j71k124lxrz8wfz"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-rove))
+    (inputs
+     (list sbcl-bobbin
+           sbcl-cl-reexport
+           sbcl-split-sequence
+           sbcl-with-user-abort))
+    (arguments
+     (list #:tests? #f)) ; FIXME: Tests run forever
+    (home-page "https://github.com/dnaeon/clingon")
+    (synopsis "Command-line option parsing library for Common Lisp")
+    (description
+     "@code{clingon} is a command-line option parsing library for Common
 Lisp.  Its features include:
 @itemize
 @item Support for subcommands
@@ -12135,7 +12133,7 @@ command is executed
 by developing a new option kind, or even a new mechanism for initializing
 options, e.g., by looking up an external key/value store
 @end itemize")
-      (license license:bsd-2))))
+    (license license:bsd-2)))
 
 (define-public cl-clingon
   (sbcl-package->cl-source-package sbcl-clingon))
