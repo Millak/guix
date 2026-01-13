@@ -2323,34 +2323,6 @@ for example from a shell script.")
 which uses SQL to describe changes.")
     (license license:x11)))
 
-(define-public sqlcrush
-  ;; Unfortunately, there is no proper upstream release and may never be.
-  (let ((commit "502a583e97a84efdeb48e59f1bfe403daa9681ee")
-        (revision "2"))
-    (package
-      (name "sqlcrush")
-      (version (git-version "0.1.5" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/coffeeandscripts/sqlcrush")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0x2q4m9ryw68kifalnm3x4bv9v2xrc2ffsiap8m9wnw6lf1h05la"))))
-      (build-system python-build-system)
-      (inputs
-       (list python-psycopg2 python-pymysql python-sqlalchemy))
-      (home-page "https://github.com/coffeeandscripts/sqlcrush")
-      (synopsis "Text console-based database viewer and editor")
-      (description
-       "SQLcrush lets you view and edit a database directly from the text
-console through an ncurses interface.  You can explore each table's structure,
-browse and edit the contents, add and delete entries, all while tracking your
-changes.")
-      (license license:gpl3+)))) ; no headers, see README.md
-
 (define-public tdb
   (package
     (name "tdb")
