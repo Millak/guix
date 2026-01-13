@@ -5162,19 +5162,30 @@ SCS (Splitting conic solver) library.")
 (define-public python-pandas-flavor
   (package
     (name "python-pandas-flavor")
-    (version "0.7.0")
+    (version "0.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pandas_flavor" version))
        (sha256
         (base32
-         "0zmgxnrxlvjgsr5f6yiwdn093kibb48zd16jkgy7l082d7wzjyv1"))))
+         "0rn3pnracv8013j3f737qal3isf1brbc3mpxqhr03vik322sapr5"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("addopts = .*") "")))))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-lazy-loader python-packaging python-pandas python-xarray))
+     (list python-pandas
+           python-xarray))
     (home-page "https://github.com/pyjanitor-devs/pandas_flavor")
     (synopsis "Write your own flavor of Pandas")
     (description "Pandas 0.23 added a simple API for registering accessors
