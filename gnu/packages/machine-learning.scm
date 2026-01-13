@@ -6741,7 +6741,7 @@ easily extensible.")
               (sha256
                (base32
                 "0fn028mfy3qlzjkadd0wr5d7rcplijd5jphln414xifvvsb9jcc2"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     ;; Both pypi tarball and git repo lack test files.
     (arguments (list #:tests? #f))
     (propagated-inputs (list python-brian2
@@ -6749,10 +6749,8 @@ easily extensible.")
                              python-markdown-strings
                              python-matplotlib
                              python-pylems
-                             python-setuptools
-                             python-setuptools-scm
                              python-tables))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-setuptools python-setuptools-scm))
     (home-page "https://github.com/brian-team/brian2tools")
     (synopsis "Tools for the Brian 2 simulator")
     (description "Visualization and NeuroML import/export tools for the
