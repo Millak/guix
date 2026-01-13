@@ -3707,7 +3707,7 @@ parallel computing platforms.  It also supports serial execution.")
 (define-public yosys
   (package
     (name "yosys")
-    (version "0.60")
+    (version "0.61")
     (source
      (origin
        (method git-fetch)
@@ -3715,7 +3715,7 @@ parallel computing platforms.  It also supports serial execution.")
               (url "https://github.com/YosysHQ/yosys")
               (commit (string-append "v" version))))
        (sha256
-        (base32 "13ygzsx81a32nmqqs5rn8w419dcx7s822bh9l2zc82jphy54nc3s"))
+        (base32 "1z96wvgm12vcsp88xkdljvhrrx9b8wc9y2gwjsff83jsp2q0q2wp"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
