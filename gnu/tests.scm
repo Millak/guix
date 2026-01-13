@@ -328,15 +328,18 @@ the system under test."
                   "gnu/tests"
                   #:warn warn-about-load-error))
 
-(define (fold-system-tests proc seed)
-  "Invoke PROC on each system test, passing it the test and the previous
-result."
+(define* (fold-system-tests proc init
+                            #:optional
+                            (modules (test-modules))
+                            #:key (select? (const #t)))
+  "Invoke (PROC SYSTEST RESULT) on each system test, passing it the test and
+the previous result."
   (fold-module-public-variables (lambda (obj result)
-                                  (if (system-test? obj)
-                                      (cons obj result)
+                                  (if (and (system-test? obj) (select? obj))
+                                      (proc obj result)
                                       result))
-                                '()
-                                (test-modules)))
+                                init
+                                modules))
 
 (define (all-system-tests)
   "Return the list of system tests."
