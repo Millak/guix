@@ -4537,53 +4537,6 @@ other than GNOME and KDE.  It does the following tasks:
 @end itemize")
       (license license:gpl3))))
 
-(define-public xxkb
-  (package
-    (name "xxkb")
-    (version "1.11.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/xxkb/"
-                           name "-" version "-src.tar.gz"))
-       (sha256
-        (base32
-         "0hl1i38z9xnbgfjkaz04vv1n8xbgfg88g5z8fyzyb2hxv2z37anf"))))
-    (build-system gnu-build-system)
-    (inputs (list libx11
-                  libxext
-                  libxt
-                  libxpm))
-    (native-inputs
-     (list imake))
-    (arguments
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((imake (assoc-ref inputs "imake"))
-                   (out   (assoc-ref outputs "out")))
-               (invoke "xmkmf")
-               (substitute* "Makefile"
-                 ((imake) out)
-                 (("(MANPATH = )[[:graph:]]*" _ front)
-                  (string-append front out "/share/man"))
-                 (("XAPPLOADDIR = /etc/X11/app-defaults")
-                  (string-append "XAPPLOADDIR = " out "/lib/X11/app-defaults"))
-                 (("ETCX11DIR = /etc/X11")
-                  (string-append "ETCX11DIR = " out "/etc/X11")))
-               #t))))))
-    (home-page "https://xxkb.sourceforge.net/")
-    (synopsis "Keyboard layout indicator and switcher")
-    (description
-     "The xxkb program is a keyboard layout switcher and indicator.  Unlike
-the programs that reload keyboard maps and use their own hot-keys, xxkb is
-a simple GUI for XKB (X KeyBoard extension) and just sends commands to and
-accepts events from XKB.  That means that it will work with the existing
-setup of your X Server without any modifications.")
-    (license license:artistic2.0)))
-
 (define-public darkman
   (package
     (name "darkman")
