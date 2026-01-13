@@ -47086,16 +47086,18 @@ Encyclopedia of Integer Sequences} (OEIS) in the function help page.")
 (define-public r-isoband
   (package
     (name "r-isoband")
-    (version "0.2.7")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "isoband" version))
        (sha256
         (base32
-         "0qfzkkvh4a97qlifhdqjgdnzmnph93qqyqsv5gg8cnxl8crj54vn"))))
+         "1b14qjmyf7ak95wqdj89dzvz66480p02l5c9ycrfxfvmr9c3v3gy"))))
     (properties `((upstream-name . "isoband")))
     (build-system r-build-system)
+    (propagated-inputs
+     (list r-cli r-cpp11 r-rlang))
     (native-inputs
      (list r-knitr r-testthat))
     (home-page "https://github.com/wilkelab/isoband")
