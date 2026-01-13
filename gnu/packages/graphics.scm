@@ -1815,17 +1815,16 @@ visual effects work for film.")
                            (format port "Libs: -L${libdir} -l~a~%"
                                    (match:substring m 1))))))
                    (find-files "." "\\.so")))))))))
-    (native-inputs
-     (list pkg-config unzip))
+    (native-inputs (list pkg-config unzip))
     (inputs
-     `(("collada-dom" ,collada-dom)
-       ("giflib" ,giflib)
-       ("libjpeg" ,libjpeg-turbo)       ; required for the JPEG texture plugin.
-       ("jasper" ,jasper)
-       ("librsvg" ,(librsvg-for-system))
-       ("libxrandr" ,libxrandr)
-       ("ffmpeg" ,ffmpeg-4)
-       ("mesa" ,mesa)))
+     (list collada-dom
+           giflib
+           libjpeg-turbo               ; required for the JPEG texture plugin.
+           jasper
+           (librsvg-for-system)
+           libxrandr
+           ffmpeg-4
+           mesa))
     (synopsis "High-performance real-time graphics toolkit")
     (description
      "The OpenSceneGraph is a high-performance 3D graphics toolkit
