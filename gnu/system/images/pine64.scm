@@ -67,6 +67,7 @@
    (constructor (lambda (os)
                   (image
                    (inherit (raw-with-offset-disk-image))
+                   (name 'pine64-disk-image)
                    (operating-system os)
                    (platform aarch64-linux))))))
 

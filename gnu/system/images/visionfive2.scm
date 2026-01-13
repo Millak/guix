@@ -99,6 +99,7 @@
 
 (define visionfive2-disk-image
   (image-without-os
+   (name 'visionfive2-disk-image)
    (format 'disk-image)
    (partition-table-type 'gpt)
    (partitions (list

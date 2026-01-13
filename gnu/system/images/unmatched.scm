@@ -60,6 +60,7 @@
 
 (define unmatched-disk-image
   (image-without-os
+   (name 'unmatched-disk-image)
    (format 'disk-image)
    (partition-table-type 'gpt)
    ;; https://source.denx.de/u-boot/u-boot/-/blob/master/doc/board/sifive/unmatched.rst

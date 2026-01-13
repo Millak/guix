@@ -55,6 +55,7 @@
    (constructor (lambda (os)
                   (image
                    (inherit (raw-with-offset-disk-image (* 8192 512)))
+                   (name 'a20-olinuxino-lime2-disk-image)
                    (operating-system os)
                    (platform armv7-linux))))))
 

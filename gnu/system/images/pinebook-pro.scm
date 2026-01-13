@@ -62,6 +62,7 @@
                   (image
                    (inherit
                     (raw-with-offset-disk-image (* 16 (expt 2 20)))) ;16MiB
+                   (name 'pinebook-pro-disk-image)
                    (operating-system os)
                    (platform aarch64-linux))))))
 
