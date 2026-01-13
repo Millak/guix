@@ -1909,12 +1909,12 @@ environments.")
     (license (list license:gpl3+ license:agpl3+ license:silofl1.1))))
 
 (define-public gwl/next
-  (let ((commit "706a0895f639ed3ed77d0fe88382f51a6638b514")
-        (revision "1"))
+  (let ((commit "343a454a427ae049cc0ac5fc5d6de94ebe5d65d2")
+        (revision "0"))
     (package
       (inherit gwl)
       (name "gwl-next")
-      (version (git-version "0.5.0" revision commit))
+      (version (git-version "0.5.1" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1923,7 +1923,7 @@ environments.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
+                  "153bgcjqw6jp0yl0vj0k67k9c8lw82vac6b0cnacrjrcb24lcpdq")))))))
 
 (define-public guix-build-coordinator
   (let ((commit "88b0416678771f3e47901f184e11249ff9cce845")
