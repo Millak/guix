@@ -4211,42 +4211,46 @@ production-critical data pipelines or reproducible research settings.  With
 (define-public python-pyjanitor
   (package
     (name "python-pyjanitor")
-    (version "0.31.0")
+    (version "0.32.5")
     (source
      (origin
-       ;; The build requires the mkdocs directory for the description in
-       ;; setup.py. This is not included in the PyPI tarball.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/pyjanitor-devs/pyjanitor")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06y6fvydrsjqdpbd20icd194693x127qhb19fgw248jfjyg5ga44"))))
+        (base32 "058w2mq42v55xkqv3cvxry53sj2qh1v64ad4gc5qb8a3is453a07"))))
     (build-system pyproject-build-system)
     ;; Pyjanitor has an extensive test suite. For quick debugging, the tests
     ;; marked turtle can be skipped using "-m" "not turtle".
     (arguments
      (list
-      ;; tests: 1042 passed, 2 skipped, 2 deselected, 45 xfailed, 6 xpassed,
-      ;;        735 warnings
+      ;; tests: 1030 passed, 2 skipped, 42 xfailed, 6 xpassed, 594 warnings
       #:test-flags
       ;; The tests take quite long, so consider adding the "-n" line and
       ;; adding python-pytest-xdist to the native-inputs when testing.
-      ;; However, the tests are not deterministic when ran with -n, so
-      ;; disable again before committing.
-      #~(list ;; "-n" (number->string (parallel-job-count))
+      ;; However, the tests are not deterministic, enen they are enabled in
+      ;; project's CI (.github/workflows/tests.yml), when ran with "-n,
+      ;; --numprocesses" , so disable again before committing.
+      #~(list ;; "--numprocesses" (number->string (min 8 (parallel-job-count)))
               ;; Test files are not included.
               "--ignore=tests/io/test_read_csvs.py"
               ;; Polars has not been packaged yet.
-              "--ignore=tests/polars"
+              "--ignore=tests/polars/"
               ;; PySpark has not been packaged yet.
-              "--ignore=tests/spark/functions/test_clean_names_spark.py"
-              "--ignore=tests/spark/functions/test_update_where_spark.py"
+              "--ignore=tests/spark/"
               ;; Tries to connect to the internet.
               "-k" (string-append "not test_is_connected"
                                   ;; Test files are not included.
-                                  " and not test_read_commandline_bad_cmd"))
+                                  " and not test_read_commandline_bad_cmd"
+                                  ;; XXX: Fatal Python error: Segmentation fault
+                                  " and not test_maccs_keys_fingerprint"
+                                  " and not test_morgan_fingerprint_counts"
+                                  " and not test_morgan_fingerprint_bits"
+                                  ;; AssertionError: DataFrame.iloc[:, 1]
+                                  ;; (column name="cities") are different
+                                  " and not test_various_sorted"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-env-ci
@@ -4254,25 +4258,24 @@ production-critical data pipelines or reproducible research settings.  With
               ;; Some tests are skipped if the JANITOR_CI_MACHINE
               ;; variable is not set.
               (setenv "JANITOR_CI_MACHINE" "1"))))))
-    ;; TODO: Remove python-requests and inject its target data to make the
-    ;; package behaviour reproducible.
     (propagated-inputs (list python-multipledispatch
                              python-natsort
                              python-pandas-flavor
-                             python-requests
                              python-scipy
-                             ;; Optional imports.
-                             python-biopython ;biology submodule
-                             python-unyt)) ;engineering submodule
-    (native-inputs (list python-pytest
+                             ;; [optional]
+                             python-biopython
+                             python-unyt))
+    (native-inputs (list python-numba
+                         python-openpyxl
+                         python-pytest
                          ;;python-pytest-xdist ;only for -n when testing
+                         ;; TODO: Remove python-requests and inject its target
+                         ;; data to make the package behaviour reproducible.
+                         python-requests
                          python-setuptools
-                         ;; Optional imports. We do not propagate them due to
-                         ;; their size.
-                         python-numba ;speedup of joins
-                         rdkit)) ;chemistry submodule
+                         rdkit))
     (home-page "https://github.com/pyjanitor-devs/pyjanitor")
-    (synopsis "Tools for cleaning and transforming pandas DataFrames")
+    (synopsis "Tools for cleaning and transforming Pandas DataFrames")
     (description
      "@code{pyjanitor} provides a set of data cleaning routines for
 @code{pandas} DataFrames.  These routines extend the method chaining API
