@@ -379,6 +379,28 @@ paging.")
 the terminal.")
     (license license:expat)))
 
+(define-public bwt
+  (package
+    (name "bwt")
+    (version "0.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       ;; Use git as the crate-uri is missing the readme file.
+       (uri (git-reference
+              (url "https://github.com/bwt-dev/bwt")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rrxwibl8n1br2xq3g7c7nvi5zv8pkz3wdp9dxyvxwkf43bnldsd"))))
+    (build-system cargo-build-system)
+    (inputs (cargo-inputs 'bwt))
+    (home-page "https://github.com/bwt-dev/bwt")
+    (synopsis "Lightweight wallet tracker and query engine for Bitcoin")
+    (description
+     "This package provides a lightweight wallet tracker and query engine for Bitcoin.")
+    (license license:expat)))
+
 ;; Note: It has expat license.
 ;; Note: That is supposedly the (unreleased) version 0.6.3.
 (define %tinycbor-source
