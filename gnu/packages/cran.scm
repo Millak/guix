@@ -22545,14 +22545,14 @@ Cryer and Kung-Sik Chan.")
 (define-public r-extradistr
   (package
     (name "r-extradistr")
-    (version "1.10.0")
+    (version "1.10.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "extraDistr" version))
        (sha256
         (base32
-         "1ad3xp4axbbid9i9vd4q8iccs3g3917yic2mas37mfwm5in4l9pl"))))
+         "0x10hc83i7602rhi8r1mq1pk10dq7sh72wlp89w7vm7mnpfylpxm"))))
     (properties `((upstream-name . "extraDistr")))
     (build-system r-build-system)
     (propagated-inputs
