@@ -9958,13 +9958,13 @@ with default R plot functions.")
 (define-public r-plotmo
   (package
     (name "r-plotmo")
-    (version "3.6.4")
+    (version "3.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "plotmo" version))
        (sha256
-        (base32 "0wl2xlidib4r54nm1q5zndr9iilagpyc3xlxs0cpd487hdh3zcn8"))))
+        (base32 "0ci0h4ajmlxjw8vq812fsqspkdv63iklfgvn99984xcn04gn5rl0"))))
     (properties `((upstream-name . "plotmo")))
     (build-system r-build-system)
     (propagated-inputs (list r-formula r-plotrix))
