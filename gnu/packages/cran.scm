@@ -30589,14 +30589,14 @@ using C++ code and of the OpenMP API.")
 (define-public r-afex
   (package
     (name "r-afex")
-    (version "1.5-0")
+    (version "1.5-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "afex" version))
        (sha256
         (base32
-         "1ikpnz87yc9gja94wdhh582bldbny0wrg6mnrzwlfzwfpanak2mp"))))
+         "1frxq23bsbmlqbmi1vpsjm4w9liplr5ah0qnw728iqkr0lvvpib8"))))
     (build-system r-build-system)
     ;; This is needed for the vignette builder
     (arguments
