@@ -25210,14 +25210,14 @@ without rendering it again in shiny apps.")
 (define-public r-ggseqlogo
   (package
     (name "r-ggseqlogo")
-    (version "0.2")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggseqlogo" version))
        (sha256
         (base32
-         "1drncw73950dzjx3lyyfqrxm3rdbrp44n27sl4b17m9d0crdbgqw"))))
+         "021dxg4n0qvbwky03n4qimv7pjxjwhkd83i0d445q5d252vxk998"))))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2))
     (native-inputs (list r-knitr))
