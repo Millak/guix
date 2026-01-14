@@ -4292,29 +4292,18 @@ be used.")
 (define-public r-futile-logger
   (package
     (name "r-futile-logger")
-    (version "1.4.3")
+    (version "1.4.9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "futile.logger" version))
               (sha256
                (base32
-                "1r3nayk0z9n1svbf8640vw90dal5q07nkn0gv4bnva3pbzb352sy"))))
+                "1mmkq855vl02xicx9slm3wfhzbfrgn79nrad5ar6vl2j5szfsss9"))))
     (properties `((upstream-name . "futile.logger")))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         ;; These deprecated procedures have been removed in testthat.
-         (add-after 'unpack 'testthat-compatibility
-           (lambda _
-             (substitute* '("tests/testthat/test_layout.R"
-                            "tests/testthat/test_logger.R")
-               (("is_true\\(\\)") "expect_true")
-               (("is_false\\(\\)") "expect_false")))))))
     (propagated-inputs
      (list r-futile-options r-lambda-r))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-jsonlite r-testit))
     (home-page "https://cran.r-project.org/web/packages/futile.logger")
     (synopsis "Logging utility for R")
     (description
