@@ -46547,14 +46547,14 @@ and reproducible way.")
 (define-public r-rsconnect
   (package
     (name "r-rsconnect")
-    (version "1.6.2")
+    (version "1.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rsconnect" version))
        (sha256
         (base32
-         "10qxg8m68m2lj4jxglxjrhmqbzb8z8y33k4zm4d4adbmy4kmb8la"))))
+         "09q3wmnrwylvrazm9q6366cbl7kh3fgqbpzhqn9zr589bnhmywx6"))))
     (properties
      '((upstream-name . "rsconnect")
        (updater-extra-native-inputs . ("tzdata-for-tests"))
