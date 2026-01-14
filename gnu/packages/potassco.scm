@@ -756,7 +756,7 @@ as logic programs.")
 (define-public python-clinguin
   (package
    (name "python-clinguin")
-   (version "2.7.1")
+   (version "2.7.4")
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -765,7 +765,7 @@ as logic programs.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "1px0bzbydqqaa7w9b9s90c6sxla8dfa6sp00qqpd9q00zry1fnix"))
+              "0242nz07ddjkr1c6b8vxaiy3fnpxw1d060ha0a8vdyxg0k50xi10"))
             (modules '((guix build utils)))
             (snippet
              #~(begin
