@@ -13249,13 +13249,13 @@ data structures in C++.")
 (define-public r-fastglm
   (package
     (name "r-fastglm")
-    (version "0.0.3")
+    (version "0.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fastglm" version))
        (sha256
-        (base32 "0283kgk81cxbii7ljmp1rzqg5mzkvf7cj7lflhhhkgj5ljqina2i"))))
+        (base32 "0r00qm72qz22np0d2h3jkk9hz0c31mrvkqlkwmir4xhhrhg3apdw"))))
     (properties `((upstream-name . "fastglm")))
     (build-system r-build-system)
     (propagated-inputs (list r-bh r-bigmemory r-rcpp r-rcppeigen))
