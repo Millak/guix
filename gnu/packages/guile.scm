@@ -335,18 +335,21 @@ without requiring the source code to be rewritten.")
             (files '("lib/guile/2.2/site-ccache")))))))
 
 (define-public guile-2.2.4
-  ;; This has no dependencies, but is used in (guix quirks).
+  ;; guile-2.2.4 has no dependents, but is used in (guix quirks).
   ;; Do not remove!
   (package
     (inherit guile-2.2)
-   (version "2.2.4")
-   (source (origin
-             (inherit (package-source guile-2.2))
-             (uri (string-append "mirror://gnu/guile/guile-" version
-                                 ".tar.xz"))
-             (sha256
-              (base32
-               "07p3g0v2ba2vlfbfidqzlgbhnzdx46wh2rgc5gszq1mjyx5bks6r"))))))
+    (version "2.2.4")
+    (source
+     (origin
+       (inherit (package-source guile-2.2))
+       (uri (string-append "mirror://gnu/guile/guile-" version ".tar.xz"))
+       (sha256
+        (base32 "07p3g0v2ba2vlfbfidqzlgbhnzdx46wh2rgc5gszq1mjyx5bks6r"))))
+    ;; libxcrypt-without-failure-tokens uses --disable-failure-tokens, which is
+    ;; necessary for the "crypt: glibc EINVAL"  test of guile-2.2.4.
+    (inputs (modify-inputs (package-inputs guile-2.2)
+              (replace "libxcrypt" libxcrypt-without-failure-tokens)))))
 
 (define-public guile-3.0
   ;; This is the latest Guile stable version.
