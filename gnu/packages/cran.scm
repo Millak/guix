@@ -39503,14 +39503,14 @@ from SuiteSparse.")
 (define-public r-sctransform
   (package
     (name "r-sctransform")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sctransform" version))
        (sha256
         (base32
-         "1l50df46kfn77m98i8yib4x6glw12ra7dpqh6bk4a4zrqzmhl62n"))))
+         "0l3s6x9q00c7ysmc3vqxdf1xmxrbajyw9vbv5ndbiagfflcdyzzh"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr
@@ -39522,6 +39522,7 @@ from SuiteSparse.")
            r-mass
            r-matrix
            r-matrixstats
+           r-parallelly
            r-rcpp
            r-rcpparmadillo
            r-reshape2
