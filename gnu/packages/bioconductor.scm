@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2026 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
@@ -18515,23 +18515,37 @@ standardization of the analyses and the development of best practices.")
 (define-public r-microbiomestat
   (package
     (name "r-microbiomestat")
-    (version "1.2")
+    (version "1.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "MicrobiomeStat" version))
               (sha256
                (base32
-                "1kpc68sl63k104xy7r6f3gxan0yx0rs7ksn8ldbq8xla00ddflgq"))))
-    (properties `((upstream-name . "MicrobiomeStat")))
+                "02xg8l4d0z5wrdrm5dj5a0q51vsbhf3f6z2lk8294c4d85s09dhl"))))
+    (properties
+     '((upstream-name . "MicrobiomeStat")
+       (updater-extra-inputs . ("nlopt"))
+       (updater-extra-native-inputs . ("pkg-config"))))
     (build-system r-build-system)
-    (propagated-inputs (list r-foreach
+    (inputs (list nlopt))
+    (native-inputs (list pkg-config))
+    (propagated-inputs (list r-bbmisc
+                             r-dplyr
+                             r-foreach
                              r-ggplot2
                              r-ggrepel
+                             r-lhs
                              r-lmertest
                              r-mass
                              r-matrix
                              r-matrixstats
+                             r-mlr
+                             r-mlrmbo
                              r-modeest
+                             r-paramhelpers
+                             r-rcpp
+                             r-rcpparmadillo
+                             r-smoof
                              r-statmod))
     (home-page "https://cran.r-project.org/package=MicrobiomeStat")
     (synopsis "Statistical methods for microbiome compositional data")
