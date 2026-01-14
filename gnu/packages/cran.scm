@@ -30536,18 +30536,23 @@ the interfaces between R and C++.")
 (define-public r-mvabund
   (package
     (name "r-mvabund")
-    (version "4.2.1")
+    (version "4.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mvabund" version))
        (sha256
         (base32
-         "01kss9dx4an1ir5zs46jypvhj8sdc8wcs00i1223ai09av4lcsgd"))))
+         "0zjk6ylvgkzs7cpw21pkdclrvfhy46llmwznqjhva19hg75j3an9"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-mass r-rcpp r-rcppgsl r-statmod r-tweedie))
-    (native-inputs (list r-testthat))
+     (list r-mass
+           r-mgcv
+           r-rcpp
+           r-rcppgsl
+           r-statmod
+           r-tweedie))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/mvabund/")
     (synopsis "Statistical methods for analysing multivariate abundance data")
     (description
