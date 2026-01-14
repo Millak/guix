@@ -37813,17 +37813,20 @@ package.")
 (define-public r-yaml
   (package
     (name "r-yaml")
-    (version "2.3.11")
+    (version "2.3.12")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "yaml" version))
               (sha256
                (base32
-                "0b62p9h42xbbl96jlvbdyriys1h1v2jlnzcvsmbj5fp2p5qgmi5r"))))
+                "0v2mrn4m56b6sjf71i6gvb6cd5n22yl1if1kwgrkw4six3fz7k40"))))
     (properties
-     '((updater-extra-native-inputs . ("r-runit"))))
+     '((updater-ignored-native-inputs . ("r-knitr" "r-testthat"))))
     (build-system r-build-system)
-    (native-inputs (list r-runit))
+    ;; Tests require r-testthat, which causes a dependency cycle.  Everything
+    ;; uses r-knitr and r-testthat, and both of these packages have quite a
+    ;; few dependencies, making cycles very likely.
+    (arguments (list #:tests? #false))
     (home-page "https://cran.r-project.org/web/packages/yaml/")
     (synopsis "Methods to convert R data to YAML and back")
     (description
