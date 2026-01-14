@@ -34872,21 +34872,21 @@ a custom text loading screen.")
 (define-public r-shinybs
   (package
     (name "r-shinybs")
-    (version "0.61.1")
+    (version "0.63.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "shinyBS" version))
        (sha256
         (base32
-         "0h51685a9qll4agayldjyryi60ih969219ibg071slv0613p5v8a"))))
+         "003v0iv93xqx5v8cvg0mfg7d3byi716pyrf41in4w1fmmk6j803i"))))
     (properties `((upstream-name . "shinyBS")))
     (build-system r-build-system)
     ;; The tests spawn Shiny browser apps.  They cannot be run
     ;; non-interactively.
     (arguments '(#:tests? #f))
     (propagated-inputs
-     (list r-htmltools r-shiny))
+     (list r-htmltools r-jsonlite r-shiny))
     (home-page "https://ebailey78.github.io/shinyBS/")
     (synopsis "Twitter Bootstrap components for Shiny")
     (description
