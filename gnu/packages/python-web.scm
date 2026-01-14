@@ -12939,6 +12939,54 @@ SendGrid Web API v3.  Version 3+ of the library provides full support for all
 SendGrid Web API v3 endpoints, including the new v3 /mail/send.")
     (license license:expat)))
 
+(define-public python-sse-starlette
+  (package
+    (name "python-sse-starlette")
+    (version "3.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sysid/sse-starlette")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cs4218jc8fa9x362vdigdpz2nn1l4qav9yizj3psklvwiq2z1as"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; XXX: Server fails to start.
+         "--ignore=tests/experimentation/test_multiple_consumers_asyncio.py"
+         "--ignore=tests/experimentation/test_multiple_consumers_threads.py"
+         ;; XXX: Missing test dependency.
+         "--ignore=tests/integration/test_multiple_consumers.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"anyio>=.*\"")
+                 "\"anyio\"")))))))
+    (propagated-inputs (list python-anyio python-starlette))
+    (native-inputs
+     (list python-asgi-lifespan
+           python-async-timeout
+           python-httpx
+           python-portend
+           python-pytest
+           python-pytest-asyncio
+           python-psutil
+           python-setuptools
+           python-tenacity
+           python-uvicorn))
+    (home-page "https://github.com/sysid/sse-starlette")
+    (synopsis "SSE plugin for Starlette")
+    (description
+     "This package provides SSE plugin for Starlette.")
+    (license license:bsd-3)))
+
 (define-public python-starlette
   (package
     (name "python-starlette")
