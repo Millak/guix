@@ -16182,13 +16182,13 @@ is provided.")
 (define-public r-audio
   (package
     (name "r-audio")
-    (version "0.1-11")
+    (version "0.1-12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "audio" version))
        (sha256
-        (base32 "0z719jxmfzmh6c885m1yixjzdsl1wy17s1sw2hp4ppz4bcrzclhh"))))
+        (base32 "13jhmqyf0sbcqz7xpqhc8k9cjj1qfxzqknm05hh491bmz0jqfddv"))))
     (properties `((upstream-name . "audio")))
     (build-system r-build-system)
     (native-inputs (list pkg-config))
