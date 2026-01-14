@@ -337,14 +337,16 @@ wrong.")
 (define-public r-aster
   (package
     (name "r-aster")
-    (version "1.3-6")
+    (version "1.3-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "aster" version))
        (sha256
-        (base32 "036anmajy2hqyb2h29j3h5hmh6105dk5v58mzs1843qhgx2s0p85"))))
-    (properties `((upstream-name . "aster")))
+        (base32 "01zjsw8nnj8spavd039768pwlcxfhilfhhq3jfsnp951a2cc3kzc"))))
+    (properties
+     '((upstream-name . "aster")
+       (updater-extra-native-inputs . ("r-knitr"))))
     (build-system r-build-system)
     (propagated-inputs (list r-trust))
     (native-inputs (list r-knitr r-numderiv))
