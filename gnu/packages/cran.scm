@@ -40725,13 +40725,13 @@ on graphs of millions of nodes (as long as they can fit in memory).")
 (define-public r-leidenbase
   (package
     (name "r-leidenbase")
-    (version "0.1.35")
+    (version "0.1.36")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "leidenbase" version))
        (sha256
-        (base32 "0zc0kzycv4446jq38w1aii2rfmhc37cframh4b1fqvbvjvxf2f83"))))
+        (base32 "18mqaylfvk9w5v86s7v1cnj5plqn4mkjnc5wwjkzzim54sd98gg5"))))
     (properties `((upstream-name . "leidenbase")))
     (build-system r-build-system)
     (inputs (list libxml2 zlib))
