@@ -981,14 +981,14 @@ like tidy evaluation.")
 (define-public r-tibble
   (package
     (name "r-tibble")
-    (version "3.3.0")
+    (version "3.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tibble" version))
        (sha256
         (base32
-         "14p1zqi7yflcqg87mfphmh0lxazvj1pxgn13b6ja9b5i26gl6k3z"))))
+         "13xjjas9882518i0s8x6az6mmzz8srxgz1byghiin0ir3659yc7v"))))
     ;; r-diagrammer contains massive amounts of minified JavaScript.
     (properties
      '((updater-ignored-native-inputs . ("r-diagrammer"))))
