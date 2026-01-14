@@ -27536,14 +27536,14 @@ repeated measures data, respectively.")
 (define-public r-gam
   (package
     (name "r-gam")
-    (version "1.22-6")
+    (version "1.22-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gam" version))
        (sha256
         (base32
-         "1maiff9n6xc6cjscshnvfbzyqsy58q71xxnpyngjg8bv96izm6i4"))))
+         "1g7f4m8vhd9cc50ywvgasj396mavwxsygjk6ckki2gmn1i5rc4ym"))))
     (properties `((upstream-name . "gam")))
     (build-system r-build-system)
     (propagated-inputs
