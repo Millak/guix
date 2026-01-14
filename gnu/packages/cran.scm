@@ -46743,21 +46743,24 @@ recommendations for developers.")
 (define-public r-loo
   (package
     (name "r-loo")
-    (version "2.8.0")
+    (version "2.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "loo" version))
        (sha256
-        (base32 "0k14cf4mmviwslq931n5l1glalmsdsm7v3hq0m80w71fbaljgdxa"))))
-    (properties `((upstream-name . "loo")))
+        (base32 "11n192hijx76znbpa4pc9fdb2946ni9pl689c5kw46nrl6442m77"))))
+    (properties
+     '((upstream-name . "loo")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-rstan"))))
     (build-system r-build-system)
     (inputs
      (list pandoc))
     (propagated-inputs
      (list r-checkmate r-matrixstats r-posterior))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-mcmcpack r-mvtnorm r-testthat))
     (home-page "https://mc-stan.org/loo/")
     (synopsis "Leave-One-Out cross-validation and WAIC for Bayesian models")
     (description
