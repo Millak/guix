@@ -10756,16 +10756,16 @@ simulations.  In addition, this package includes various distributions.")
 (define-public r-mclogit
   (package
     (name "r-mclogit")
-    (version "0.9.6")
+    (version "0.9.15")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mclogit" version))
               (sha256
                (base32
-                "0sbglgak6jhhpx65jnj59hbpvzs8qjsdjc4w02z0m5j9hrnmzp4s"))))
+                "1bvzdhlzx39sf1kr1w2w6zh5xccy3lbks6mm5d6r97c68saig9n6"))))
     (properties `((upstream-name . "mclogit")))
     (build-system r-build-system)
-    (propagated-inputs (list r-matrix r-memisc))
+    (propagated-inputs (list r-mass r-matrix r-memisc r-nlme))
     (home-page "https://www.elff.eu/software/mclogit/")
     (synopsis
      "Multinomial logit models, with or without random effects or overdispersion")
