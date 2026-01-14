@@ -38636,17 +38636,17 @@ wrap.")
 (define-public r-gggenes
   (package
     (name "r-gggenes")
-    (version "0.5.1")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gggenes" version))
        (sha256
-        (base32 "08s0fhk2kz3ks64nfmdbd8p3swkn62cbw7dpbqgk9ydpmh5gpjbj"))))
+        (base32 "0400qhppx8kg70f6bbya3k6lhdgjj3dllgfgg6s509kbp5qsjbcd"))))
     (properties `((upstream-name . "gggenes")))
     (build-system r-build-system)
-    (propagated-inputs (list r-ggfittext r-ggplot2 r-rlang))
-    (native-inputs (list r-knitr r-testthat))
+    (propagated-inputs (list r-cli r-ggfittext r-ggplot2 r-lifecycle r-rlang))
+    (native-inputs (list r-knitr r-spelling r-testthat))
     (home-page "https://wilkox.org/gggenes/")
     (synopsis "Draw gene arrow maps in ggplot2")
     (description
