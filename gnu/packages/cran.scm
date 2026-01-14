@@ -14923,18 +14923,18 @@ IRT models, and zero-inflated response models are supported.")
 (define-public r-feather
   (package
     (name "r-feather")
-    (version "0.3.5")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "feather" version))
        (sha256
         (base32
-         "1gxd0h2m56sjjlzn4dry6s13nddxc4l5i11gsvavaf2dwbahdzsh"))))
+         "0zzf7ghnzq6x5adg53cbwgdb1b51c5flp73d16mb5jssicvq0za2"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-hms r-rcpp r-tibble))
-    (native-inputs (list r-testthat))
+     (list r-arrow))
+    (native-inputs (list r-hms r-testthat r-tibble))
     (home-page "https://github.com/wesm/feather")
     (synopsis "R Bindings to the Feather API")
     (description "Read and write feather files, a lightweight binary columnar
