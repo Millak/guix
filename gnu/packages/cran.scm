@@ -13023,27 +13023,20 @@ a list of p-values.")
 (define-public r-htmltools
   (package
     (name "r-htmltools")
-    (version "0.5.8.1")
+    (version "0.5.9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "htmltools" version))
               (sha256
                (base32
-                "0xpi2g87vwanp0kbs22j90pa2bban3nwrdjdb3257hq6xj9j5xpr"))))
+                "1zca289qxn9zgggijid76skl67f8vp9avvngkpv1hn28v8c8cc0r"))))
+    (properties
+     ;; Avoid dependency cycle
+     '((updater-ignored-native-inputs . ("r-bslib" "r-shiny"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; XXX: $ operator is invalid for atomic vectors
-             (substitute* "tests/testthat/test-tag-query.R"
-               ((".*tagQuery\\(\\)\\$find\\(\\).*" m)
-                (string-append m "skip('skip');\n"))))))))
     (propagated-inputs
      (list r-base64enc r-digest r-fastmap r-rlang))
-    (native-inputs (list r-markdown r-testthat))
+    (native-inputs (list r-testthat r-withr))
     (home-page "https://cran.r-project.org/web/packages/htmltools")
     (synopsis "R tools for HTML")
     (description
