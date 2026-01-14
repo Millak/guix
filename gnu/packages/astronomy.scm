@@ -5667,6 +5667,43 @@ information, kinematics constraints and standardizable magnifications with
 parameters described on the ensemble level.")
     (license license:bsd-3)))
 
+(define-public python-hissw
+  (package
+    (name "python-hissw")
+    (version "2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wtbarnes/hissw")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fcd4m7m34g7b6higdxy58aw7dbjqh7wfzn82zv72vzy4rayi1qc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;they need local installation of IDL
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-jinja2
+           python-scipy))
+    (home-page "https://github.com/wtbarnes/hissw")
+    (synopsis "Seamlessly integrate SSWIDL code into Python workflow")
+    (description
+     "@code{hissw} (hiss (like a snake) + @url{http://www.lmsal.com/solarsoft/,
+@acronym{SSW, SolarSoftware }}) is a (VERY) lightweight (~1 file) Python
+package that helps one to write IDL scripts (either inline or in a separate
+file) which use your installed SSW packages and return the results to local
+Python namespace.  @code{hissw} uses @code{Jinja2} templates to generate SSW
+startup scripts and then runs IDL code using @code{subprocess}, i.e. the
+shell.  Jinja2 syntax may be used to inject arguments from Python into IDL.
+The results are then saved to a file and then loaded back in using the amazing
+@code{readsav()} function in
+@url{https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.io.readsav.html,
+scipy.io}.")
+    (license license:expat)))
+
 (define-public python-holodeck
   (package
     (name "python-holodeck")
