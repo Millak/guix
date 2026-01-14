@@ -20120,13 +20120,13 @@ procedure, following functionality is available:
 (define-public r-venndiagram
   (package
     (name "r-venndiagram")
-    (version "1.7.3")
+    (version "1.8.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "VennDiagram" version))
               (sha256
                (base32
-                "0ilcxcp8qskmb5cp7fyb7i0qizg42lrx0ny8ws3if90kfrglghp7"))))
+                "14zxi629z0vscgzikdiha8pqr8qcby2ds51z4yv7wzskg8dpbf94"))))
     (properties `((upstream-name . "VennDiagram")))
     (build-system r-build-system)
     (propagated-inputs
