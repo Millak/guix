@@ -24450,13 +24450,13 @@ frameworks.")
 (define-public r-fsa
   (package
     (name "r-fsa")
-    (version "0.10.0")
+    (version "0.10.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "FSA" version))
               (sha256
                (base32
-                "0hdmg4wjrrmng2bnr7h1x39iand34navl34vvngbcfcyjy5li407"))))
+                "0ws58hp5wcw5m359ykymqprg7x148v6y6l08h8kwv4xivd27nhhc"))))
     (properties
      '((upstream-name . "FSA")))
     (build-system r-build-system)
@@ -24471,6 +24471,7 @@ frameworks.")
                          r-fishmethods
                          r-fsadata
                          r-nlme
+                         r-nlstools
                          r-psych
                          r-testthat
                          r-tibble))
