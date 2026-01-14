@@ -3600,14 +3600,16 @@ fitting dynamic linear models and time series regression relationships.")
 (define-public r-e1071
   (package
     (name "r-e1071")
-    (version "1.7-16")
+    (version "1.7-17")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "e1071" version))
        (sha256
         (base32
-         "0krsgkcvs16jixmjwjl05aggpz02hahg2j8ydk4r9nrz0ginbm8j"))))
+         "11xcqaihjmdkcdgqajwpwiypj3p8aki10r8zvsk2m327mmqw7svd"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-mlbench"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-class r-proxy))
