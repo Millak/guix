@@ -18177,19 +18177,19 @@ generation in R using Literate Programming techniques.")
 (define-public r-knitrbootstrap
   (package
     (name "r-knitrbootstrap")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "knitrBootstrap" version))
        (sha256
         (base32
-         "157mn2gm7djfiw1b55vdr2ylrmgxlpfg95bmm82ghv5g6vr26smd"))))
+         "12l3445aap2kh5wj4qhqf1bd6l1s1y4pp8an26fi65wv5zgyihgv"))))
     (properties `((upstream-name . "knitrBootstrap")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-knitr r-markdown r-rmarkdown))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr))
     (home-page "https://github.com/jimhester/knitrBootstrap")
     (synopsis "Knitr bootstrap framework")
     (description
