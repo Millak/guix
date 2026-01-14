@@ -19913,13 +19913,13 @@ regions.  Guaranteed to converge to local minimum of objective function.")
 (define-public r-trycatchlog
   (package
     (name "r-trycatchlog")
-    (version "1.3.1")
+    (version "1.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tryCatchLog" version))
        (sha256
-        (base32 "0k40a48qzwmardjnkf0h5s5zryivzvdanz61kxdqdfqlil19ma0d"))))
+        (base32 "1dynasn4na54bikjbrvzwj468p0sx3dm3g4vm2gxdq3xwx8y71gd"))))
     (properties `((upstream-name . "tryCatchLog")))
     (build-system r-build-system)
     (arguments
@@ -19942,7 +19942,7 @@ regions.  Guaranteed to converge to local minimum of objective function.")
              (substitute* "tests/testthat/test_platform_functions.R"
                ((".*OS-specific newlines work.*" m)
                 (string-append m "skip('skip');\n"))))))))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-covr r-knitr r-testthat))
     (home-page "https://github.com/aryoda/tryCatchLog")
     (synopsis "Advanced tryCatch and try functions")
     (description
