@@ -17128,6 +17128,8 @@ a variety of different samplers.")
 (define-public r-rmapshaper
   (package
     (name "r-rmapshaper")
+    ;; XXX: Version 0.6.0 no longer includes the source file
+    ;; mapshaper-browserify.js.
     (version "0.5.0")
     (source
      (origin
