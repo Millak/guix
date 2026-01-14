@@ -7975,13 +7975,13 @@ proposals for count data.")
 (define-public r-zoo
   (package
     (name "r-zoo")
-    (version "1.8-14")
+    (version "1.8-15")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "zoo" version))
               (sha256
                (base32
-                "15i784lcbd5m02l00bjr0c081b5zzqjgjy684nqlias2bi9vcax8"))))
+                "1sk131fi9sxia6h3jgn461jz56hhfvyq53dw0a1g5r6ysfvkklf0"))))
     (properties
      '((updater-ignored-native-inputs . ("r-strucchange" "r-tseries"))))
     (build-system r-build-system)
