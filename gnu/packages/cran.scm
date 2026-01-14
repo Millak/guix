@@ -46179,13 +46179,13 @@ league, the Bundesliga.  It contains data from 1964 to 2016.")
 (define-public r-butcher
   (package
     (name "r-butcher")
-    (version "0.3.6")
+    (version "0.4.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "butcher" version))
               (sha256
                (base32
-                "0vnig91wny01c2k1fag2mlg194kibiz5qa6ny3v5fbsnyk0jbq56"))))
+                "0z03vzs0dvvnxzk2gwzx2fjjzf1jzkqap6w7cvxk2f4ra2l4pjm5"))))
     (properties `((upstream-name . "butcher")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli
