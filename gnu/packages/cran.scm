@@ -15429,17 +15429,19 @@ some utility functions.")
 (define-public r-paletteer
   (package
     (name "r-paletteer")
-    (version "1.6.0")
+    (version "1.7.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "paletteer" version))
               (sha256
                (base32
-                "1n4jim2fgyff6c5mjridq92jgvr5m2qgwfsgvhyj1pwk1hq21pmm"))))
-    (properties `((upstream-name . "paletteer")))
+                "12rvwki5wnraibc54hh80ym9q7r7s1njhi086k8h4vhffnq7yiib"))))
+    (properties
+     '((upstream-name . "paletteer")
+       (updater-extra-native-inputs . ("r-scico"))))
     (build-system r-build-system)
-    (propagated-inputs (list r-prismatic r-rematch2 r-rlang r-rstudioapi))
-    (native-inputs (list r-testthat))
+    (propagated-inputs (list r-cli r-prismatic r-rematch2 r-rlang r-rstudioapi))
+    (native-inputs (list r-ggplot2 r-scico r-testthat r-vdiffr))
     (home-page "https://github.com/EmilHvitfeldt/paletteer")
     (synopsis "Comprehensive collection of color palettes")
     (description
