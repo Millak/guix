@@ -13202,7 +13202,7 @@ pattern.")
 (define-public python-fastapi-pagination-minimal
   (package
     (name "python-fastapi-pagination-minimal")
-    (version "0.12.34")
+    (version "0.15.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -13211,7 +13211,7 @@ pattern.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "004w9h4ana0p766n7f0z0n06v1472yjci1hvbys9gncpclcc49gj"))))
+                "1ndazaqi1na0lj6fi42d7mi9lmpxdak0wq0pd97fb3b23ml8rlg6"))))
     (build-system pyproject-build-system)
     ;; We run the tests in python-fastapi-pagination only.
     (arguments (list #:tests? #false))
@@ -13219,7 +13219,7 @@ pattern.")
     ;; please add all optional dependencies to the
     ;; full python-fastapi-pagination below.
     (propagated-inputs (list python-fastapi python-pydantic))
-    (native-inputs (list python-poetry-core))
+    (native-inputs (list python-hatchling))
     (home-page "https://github.com/uriyyo/fastapi-pagination")
     (synopsis "FastAPI pagination library")
     (description "@code{fastapi-pagination} is a Python library designed to
@@ -13236,7 +13236,6 @@ return paginated responses to your clients.")
      (list
       #:test-flags
       #~(list "--asyncio-mode=auto"
-              "--unit-tests"
               "--ignore=tests/ext"
               ;; Netwok access is required.
               "-k" (string-join
@@ -13252,7 +13251,7 @@ return paginated responses to your clients.")
              ;; We don't have a package for python-cassandra or motor, but we
              ;; also don't need them as we only run the unit tests anyway.
              (substitute* "tests/conftest.py"
-               (("from cassandra.cluster.*") "")
+               (("from cassandra.*") "")
                (("from motor.*") "")))))))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs
@@ -13278,9 +13277,10 @@ return paginated responses to your clients.")
      (list python-aiosqlite
            python-asgi-lifespan
            python-asyncpg
+           python-dirty-equals
            python-faker
+           python-hatchling
            python-httpx
-           python-poetry-core
            python-pytest
            python-pytest-asyncio
            python-sqlalchemy
