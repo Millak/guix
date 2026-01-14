@@ -1405,7 +1405,7 @@ the \"texlive\" importer."
 (define-member (person "Nguyễn Gia Phong"
                        "cnx@loang.net"
                        "cnx")
-  python)
+  python sysadmin)
 
 (define-member (person "Lilah Tascheter"
                        "lilah@lunabee.space"
