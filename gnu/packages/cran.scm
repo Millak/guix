@@ -17004,14 +17004,14 @@ plot networks.")
 (define-public r-proxy
   (package
     (name "r-proxy")
-    (version "0.4-27")
+    (version "0.4-29")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "proxy" version))
        (sha256
         (base32
-         "0gsng2aggnljl4z82la9hpnd26hngzhj8fizx4wx22npqjj93694"))))
+         "0ny3jam5npbvd8w9hrn8cl4ai49cip58h0agaswb3v1fxwv0xsy6"))))
     (build-system r-build-system)
     ;; Some tests need the r-cba package, which depends on r-proxy.
     (arguments (list #:tests? #false))
