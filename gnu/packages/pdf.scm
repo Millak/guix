@@ -520,17 +520,16 @@ When present, Poppler is able to correctly render CJK and Cyrillic text.")
     (version "21.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python-poppler-qt5" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/frescobaldi/python-poppler-qt5")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1q3gvmsmsq3llf9mcbhlkryrgprqrw2z7wmnvagy180f3y2fhxxl"))))
+        (base32 "0rxjljxsiwvgbn576f0fc9jbj750yc474rzh9kyp371p7rvijxhv"))))
     (build-system pyproject-build-system)
     (arguments
-     `(;; The sipbuild.api backend builder expects a Python dictionary as per
-       ;; https://peps.python.org/pep-0517/#config-settings, but we
-       ;; give it lists and it fails.  The next line is a workaround.
-       #:configure-flags '#nil
-       #:tests? #f))
+     (list #:tests? #f)) ;No tests upstream.
     (native-inputs (list pkg-config))
     (inputs (list python-sip python-pyqt-builder python-pyqt poppler-qt5
                   qtbase-5))
