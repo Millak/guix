@@ -184,6 +184,10 @@
                  (("^ff_source_tarball:=.*")
                   (string-append "ff_source_tarball:=" #+ff-src)))
 
+               ;; Neuter GPG signing of the tarball.
+               (substitute* '("Makefile")
+                 (("if [ -f pk.asc ].*") ""))
+
                ;; Stage locales.
                (begin
                  (substitute* "scripts/librewolf-patches.py"
@@ -216,6 +220,16 @@
                      "media/libwebp"
                      "modules/zlib"))))))
 
+(define librewolf-bsys6
+  (let ((commit "e0397b2b95aa14e1a83be460681ffbeb0b41ca3f"))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+             (url "https://codeberg.org/librewolf/bsys6.git")
+             (commit commit)))
+      (file-name (git-file-name "librewolf-bsys6" commit))
+      (sha256 (base32 "16b2z1b89y0lm9b9xrvvfa5j0av4ibmcgkksnnqxmn2qrz04awzw")))))
+
 ;;; Define the versions of rust needed to build firefox, trying to match
 ;;; upstream.  See table at [0], `Uses' column for the specific version.
 ;;; Using `rust' will likely lead to a newer version then listed in the table,
@@ -228,17 +242,17 @@
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
 ;; or: (format-time-string "%Y%m%d%H%M%S")
-(define %librewolf-build-id "20251219212454")
+(define %librewolf-build-id "20260118150544")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "146.0.1-1")
+    (version "147.0.1-3")
     (source
      (make-librewolf-source
       #:version version
-      #:firefox-hash "1swih4jljq162vgdl2m2d8xn4s4hj4vjqcfww59kk4kkhh78lrz9"
-      #:librewolf-hash "13gxagaibv0bmn34rz3hfkfy7rgdksl635znmrq24l8v80y792ii"
+      #:firefox-hash "1jvx0q134nfa19jbdjr3cj2xi8fc6ggmr6glqj9d8bvpqd52gs09"
+      #:librewolf-hash "1290vvbbinlaff60n1gabdggam7ayslrr3rnlpkwprab77gq45yh"
       #:l10n firefox-l10n))
     (build-system gnu-build-system)
     (arguments
@@ -421,18 +435,6 @@
             (lambda _
               (setenv "MOZ_BUILD_DATE"
                       #$%librewolf-build-id)))
-          ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1927380
-          (add-before 'configure 'patch-icu-lookup
-            (lambda _
-              (let* ((file "js/moz.configure")
-                     (old-content (call-with-input-file file get-string-all)))
-                (substitute* file
-                  (("icu-i18n >= 76.1" all)
-                   (string-append all ", icu-uc >= 76.1")))
-                (if (string=? old-content
-                              (pk (call-with-input-file file get-string-all)))
-                    (error
-                     "substitute did nothing, phase requires an update")))))
           (replace 'configure
             (lambda* (#:key inputs outputs configure-flags
                       #:allow-other-keys)
@@ -575,26 +577,21 @@
                   `("MOZ_ALLOW_DOWNGRADE" =
                     ("1"))))))
           (add-after 'wrap-program 'install-desktop-entry
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((desktop-file
-                      "toolkit/mozapps/installer/linux/rpm/mozilla.desktop")
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((desktop-file-name "librewolf.desktop")
+                     (desktop-file-template
+                      (search-input-file inputs "assets/linux.librewolf.desktop.in"))
                      (applications (string-append #$output
                                                   "/share/applications")))
-                (substitute* desktop-file
-                  (("^Exec=@MOZ_APP_NAME@")
-                   (string-append "Exec="
-                                  #$output "/bin/librewolf %u"))
-                  (("@MOZ_APP_DISPLAYNAME@")
-                   "LibreWolf")
-                  (("@MOZ_APP_REMOTINGNAME@")
-                   "LibreWolf")
-                  (("^Icon=@MOZ_APP_NAME@")
+                (copy-file desktop-file-template desktop-file-name)
+                (substitute* desktop-file-name
+                  (("MYDIR/librewolf")
+                   (string-append #$output "/bin/librewolf"))
+                  (("^Icon=librewolf")
                    (string-append "Icon="
                                   #$output
                                   "/share/icons/hicolor/128x128/apps/librewolf.png")))
-
-                (copy-file desktop-file "librewolf.desktop")
-                (install-file "librewolf.desktop" applications))))
+                (install-file desktop-file-name applications))))
           (add-after 'install-desktop-entry 'install-icons
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((icon-source-dir (string-append #$output
@@ -640,7 +637,7 @@
                   gtk+
                   gtk+-2
                   hunspell
-                  icu4c-76
+                  icu4c-78
                   jemalloc
                   libcanberra
                   libevent
@@ -674,21 +671,24 @@
                   unzip
                   zip
                   zlib))
-    (native-inputs (list alsa-lib
-                         autoconf-2.13
-                         `(,rust-librewolf "cargo")
-                         clang-18
-                         llvm-18
-                         m4
-                         nasm
-                         node-lts
-                         perl
-                         pkg-config
-                         python
-                         rust-librewolf
-                         rust-cbindgen-0.29
-                         which
-                         yasm))
+    (native-inputs
+     (list
+      alsa-lib
+      autoconf-2.13
+      `(,rust-librewolf "cargo")
+      clang-18
+      librewolf-bsys6
+      llvm-18
+      m4
+      nasm
+      node-lts
+      perl
+      pkg-config
+      python
+      rust-librewolf
+      rust-cbindgen-0.29
+      which
+      yasm))
     (native-search-paths
      (list (search-path-specification
             (variable "ICECAT_SYSTEM_DIR")
