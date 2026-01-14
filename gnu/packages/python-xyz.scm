@@ -95,7 +95,7 @@
 ;;; Copyright © 2020, 2021, 2024, 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2020 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2021, 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
-;;; Copyright © 2021-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Ellis Kenyő <me@elken.dev>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
@@ -2137,6 +2137,35 @@ like pie glass').")
 signal dispatching mechanism.  It's a fork of
 http://pydispatcher.sourceforge.net/ with PyPy support.")
     (license license:bsd-3)))
+
+(define-public python-pyread-eagle
+  (package
+    (name "python-pyread-eagle")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kyleaoman/pyread_eagle")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x8j5wkp46hbfccm88c7dmf8ak488llv1748i2g94npic2rx8yd4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; TODO: Tests need additional test data, see tests/test_regions.py.
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-h5py
+           python-numpy))
+    (home-page "https://github.com/kyleaoman/pyread_eagle")
+    (synopsis "Read routines for Eagle HDF5 snapshots for Python")
+    (description
+     "This package provides a pure-python port of
+@url{https://github.com/jchelly/read_eagle, J. Helly's read_eagle}.")
+    (license license:gpl3)))
 
 (define-public python-pyte
   (package
