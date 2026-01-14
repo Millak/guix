@@ -46672,15 +46672,18 @@ series/point highlighting.")
 (define-public r-shinystan
   (package
     (name "r-shinystan")
-    (version "2.6.0")
+    (version "2.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "shinystan" version))
        (sha256
         (base32
-         "0afm703zriyqprz1zvypir80lq2ylfff3qvj5i7p9n365mm8b150"))))
-    (properties `((upstream-name . "shinystan")))
+         "1fcy9yfn3wb401373cwd4lw6p43k0a9dma7n0gcnr4pww17znmya"))))
+    (properties
+     '((upstream-name . "shinystan")
+       ;; Avoid dependency cycle
+       (updater-ignored-native-inputs . ("r-rstanarm"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -46708,7 +46711,7 @@ series/point highlighting.")
            r-threejs
            r-xtable
            r-xts))
-    (native-inputs (list r-coda r-testthat))
+    (native-inputs (list r-cmdstanr r-coda r-knitr r-testthat))
     (home-page "https://mc-stan.org/")
     (synopsis "Interactive visual and numerical analysis for Bayesian models")
     (description
