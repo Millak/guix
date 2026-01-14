@@ -6409,13 +6409,13 @@ using just two functions: melt and dcast (or acast).")
 (define-public r-robslopes
   (package
     (name "r-robslopes")
-    (version "1.1.3")
+    (version "1.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "robslopes" version))
        (sha256
-        (base32 "0hhdpp03ybf71x6wz766glqlq4ywc4v65mj0ca3idv69p488mvb5"))))
+        (base32 "05wncj1fc5f8wc478pzjj2j2zq5fbywmb9qb4bmzjahkgf648v79"))))
     (properties `((upstream-name . "robslopes")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp r-rcpparmadillo))
