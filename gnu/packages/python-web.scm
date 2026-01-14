@@ -9953,6 +9953,36 @@ Plus all the standard features of requests:
       (modify-inputs (package-propagated-inputs python-httpx)
         (replace "python-httpcore"  python-httpcore-bootstrap))))))
 
+(define-public python-httpx-sse
+  (package
+    (name "python-httpx-sse")
+    (version "0.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/florimondmanca/httpx-sse")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zliqd1rkvc0mjppscvqmg8j17hsiwvxn439yhn6qbjvk5ydncz8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Avoids python-pytest-cov dependency.
+      #:test-flags #~(list "-c" "/dev/null")))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-setuptools
+           python-setuptools-scm
+           python-sse-starlette))
+    (propagated-inputs (list python-httpx))
+    (home-page "https://github.com/florimondmanca/httpx-sse")
+    (synopsis "Consume Server-Sent Event (SSE) messages with HTTPX.")
+    (description "Consume Server-Sent Event (SSE) messages with HTTPX.")
+    (license license:expat)))
+
 (define-public python-wsgiprox
   (package
     (name "python-wsgiprox")
