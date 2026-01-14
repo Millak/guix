@@ -21675,6 +21675,26 @@ available online as well as original implementations of various other
 algorithms.")
     (license license:lgpl3)))
 
+(define-public r-nlstools
+  (package
+    (name "r-nlstools")
+    (version "2.1-0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "nlstools" version))
+       (sha256
+        (base32 "1b6v30cn6a92slca3vrq116snir144ymdz9vxby33x51p6jniiiv"))))
+    (properties `((upstream-name . "nlstools")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/lbbe-software/nlstools")
+    (synopsis "Tools for nonlinear regression analysis")
+    (description
+     "Several tools for assessing the quality of fit of a gaussian nonlinear
+model are provided.")
+    (license license:gpl3)))
+
 (define-public r-norm
   (package
     (name "r-norm")
