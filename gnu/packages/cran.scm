@@ -48422,14 +48422,14 @@ designed to be distributed and efficient with the following goals:
 (define-public r-shapforxgboost
   (package
     (name "r-shapforxgboost")
-    (version "0.1.3")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "SHAPforxgboost" version))
        (sha256
         (base32
-         "0b3h6py80a0dmb8f8j4h7a7d0k6ld8l0qr24r8pxxy7dbqbyxh5x"))))
+         "1syqzgx37gi3k4s17f62bd67593l2q823y35fv0ni4kphn1fw95g"))))
     (properties
      `((upstream-name . "SHAPforxgboost")))
     (build-system r-build-system)
