@@ -54165,14 +54165,14 @@ BTM-WWW13.pdf}.")
 (define-public r-delaporte
   (package
     (name "r-delaporte")
-    (version "8.4.2")
+    (version "8.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Delaporte" version))
        (sha256
         (base32
-         "19ncmmjrzxw87blmj11xigk9qza7q68r5yqj187895r3415ani4g"))))
+         "035ghxrpg4385f8lrkjzbgizfn0kmbbp0z0ax3xwy0r0b8730jdg"))))
     (properties `((upstream-name . "Delaporte")))
     (build-system r-build-system)
     (native-inputs (list gfortran r-tinytest))
