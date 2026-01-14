@@ -30056,14 +30056,14 @@ user credentials.")
 (define-public r-gert
   (package
     (name "r-gert")
-    (version "2.2.0")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gert" version))
        (sha256
         (base32
-         "0d3vk8qkpzfxgcpficd5d3lghnwia7a1pvp70gwniyk1drp6ls4l"))))
+         "0ifqjh6bx95zfgwdwnfrv5b3ccfskfwf9wxs57n9hqc208x0aalb"))))
     (properties `((upstream-name . "gert")))
     (build-system r-build-system)
     (inputs
