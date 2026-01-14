@@ -116,14 +116,22 @@
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
 (define firefox-l10n
-  (let ((commit "fa4b12c075b42be6652237119d74346d377d2ae4"))
+  ;; Match this commit to the upstream tarball.  The hash is in
+  ;; firefox-NNN.0/browser/locales/l10n-changesets.json
+  ;; The hash repeasts for every language, but should be the same for
+  ;; everything.
+  ;;
+  ;; ex:
+  ;; tar xf /gnu/store/...-firefox-123.4.source.tar.xz -O \
+  ;;     firefox-123.4/browser/locales/l10n-changesets.json | grep revision
+  (let ((commit "da03d1507bcec6952b788a21f3cfa95673b1da4c"))
     (origin
       (method git-fetch)
       (uri (git-reference
             (url "https://github.com/mozilla-l10n/firefox-l10n.git")
             (commit commit)))
       (file-name (git-file-name "firefox-l10n" commit))
-      (sha256 (base32 "1v09j9685cpwqk532yp00lsic0xakjsfafn82kilzl5s0v2a3g8w")))))
+      (sha256 (base32 "1a37lzsl9pjhj436y0d630z5yxml395jqimfyag61z3gf9si2fyv")))))
 
 (define* (make-librewolf-source #:key version firefox-hash librewolf-hash l10n)
   (let* ((ff-src (firefox-source-origin
