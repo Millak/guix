@@ -9931,13 +9931,13 @@ R (<doi:10.1002/9781119504641>).")
 (define-public r-plotfunctions
   (package
     (name "r-plotfunctions")
-    (version "1.4")
+    (version "1.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "plotfunctions" version))
        (sha256
-        (base32 "0asmxw8283fpvl83h478j5nyg59xqifqaa8f2f6l199gvvswhhg2"))))
+        (base32 "1mnj2s8ipl0ry0hfvhilx7wj9w68amvzs7c3x28w7x4icg7p4369"))))
     (properties `((upstream-name . "plotfunctions")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
