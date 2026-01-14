@@ -41284,14 +41284,14 @@ atmospheric physics.")
 (define-public r-lifecycle
   (package
     (name "r-lifecycle")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lifecycle" version))
        (sha256
         (base32
-         "1k4ibf2x90xgmzaq47vf9wrsh6a2fp2lg1l8bq89632bx33x795d"))))
+         "1vpq2sslm9651spz419wrgcxbf4ad7bg38smhfl5d86vdqz1x131"))))
     (properties
      ;; We can't add this here because via r-stringr this package ends up
      ;; being an input to r-knitr.
@@ -41301,7 +41301,7 @@ atmospheric physics.")
     ;; Tests require r-testthat, which uses this package.
     (arguments (list #:tests? #false))
     (propagated-inputs
-     (list r-cli r-glue r-rlang))
+     (list r-cli r-rlang))
     (home-page "https://github.com/r-lib/lifecycle")
     (synopsis "Manage the life cycle of your package functions")
     (description
