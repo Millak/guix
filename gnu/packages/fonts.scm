@@ -51,7 +51,7 @@
 ;;; Copyright © 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
-;;; Copyright © 2022 Nguyễn Gia Phong <cnx@loang.net>
+;;; Copyright © 2022, 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2023 Arnaud Lechevallier <arnaud.lechevallier@free.fr>
@@ -3096,6 +3096,36 @@ weights and five widths in both Roman and Italic, plus variable fonts.")
 most CJK characters are the same height, and double the width as ASCII
 characters.")
     (properties '((upstream-name . "Sarasa")))))
+
+(define-public font-sligoil
+  ;; No tagged release, see <https://gitlab.com/velvetyne/sligoil/-/issues/1>.
+  (let ((commit "70ae7cdd6bc0862094f2d9859cf98f71eb6209e5")
+        (revision "0"))
+    (package
+      (name "font-sligoil")
+      (version (git-version "2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/velvetyne/sligoil")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "18mfxk59h115fd13mpwcpnmsm4w9pshdwm8n47aszk2jsrnvxg99"))))
+      (build-system font-build-system)
+      (home-page "https://velvetyne.fr/fonts/sligoil")
+      (synopsis "Monospace typeface influenced by British isles' culture")
+      (description
+       "Sligoil is a monospace typeface.  It has been influenced
+by the culture of the British isles (the work of Matthew Carter
+and signs on Irish whiskey distilleries) and also by the letters
+on vintage Space Cadet keyboards produced by MIT.
+
+The Sligoil typeface presents wide language support for Latin-based
+European languages and Vietnamese, and a collection of symbols
+and alternate forms (including upright italic letters).")
+      (license license:silofl1.1))))
 
 (define-public font-space-grotesk
   (package
