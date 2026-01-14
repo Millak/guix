@@ -12495,13 +12495,13 @@ models.")
 (define-public r-hmisc
   (package
     (name "r-hmisc")
-    (version "5.2-4")
+    (version "5.2-5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Hmisc" version))
        (sha256
-        (base32 "04z260cj7lkmg3zahis42cbdz4z5fkwfskb8msam28xa8s8z6pag"))))
+        (base32 "1ab6gkkmw4k8bl4n91f7c9wv4rz9p21yv507ci24fzb58lpc8n6m"))))
     (properties `((upstream-name . "Hmisc")))
     (build-system r-build-system)
     ;; Tests need r-rms, which needs this package.
