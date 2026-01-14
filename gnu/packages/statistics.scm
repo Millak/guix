@@ -957,13 +957,13 @@ defined in different packages.")
 (define-public r-rlang
   (package
     (name "r-rlang")
-    (version "1.1.6")
+    (version "1.1.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rlang" version))
               (sha256
                (base32
-                "0c7kaw5lvk4vym67ki0511zbqbx5ca1k1k6y9rayq62fdy3lqm0q"))))
+                "0wz3kd0d3iy0mkywmxipxx6qfsnk2w3c6cca6r553lxcxbkr2g0j"))))
     (properties
      ;; We can't have r-testthat among the inputs here to avoid a dependency
      ;; cycle.
