@@ -13115,26 +13115,25 @@ Amazon S3 or any other external service.")
 (define-public python-fastapi
   (package
     (name "python-fastapi")
-    (version "0.124.0")
+    (version "0.128.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fastapi" version))
        (sha256
-        (base32 "1rplb37099ivd9bxyy80hljb4979zsqdjbqzk5cx5rkmmmwd2316"))))
+        (base32 "0nk4ybvzv3bcgv5plbg3infykp19p1wryhpy1zk6n2pirvhpkh8w"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; tests: 1126 passed, 12 skipped, 2 deselected
       #:test-flags
-      #~(list "--ignore=tests/test_tutorial/"
-              "--ignore=docs_src/"
-              ;; Coverage is required.
-              "--deselect=tests/test_fastapi_cli.py::test_fastapi_cli"
-              ;;  pytest.PytestUnraisableExceptionWarning: Exception ignored
-              ;;  in: <function MemoryObjectReceiveStream.__del__ at
-              ;;  0x7ffff654af20>
-              "-Wignore::pytest.PytestUnraisableExceptionWarning")))
+      #~(list
+         ;; cannot import name 'StaticPool' from 'sqlalchemy'
+         "--ignore=tests/test_tutorial/"
+         ;; Some snapshots have incorrect values.
+         "--deselect=tests/test_schema_compat_pydantic_v2.py::test_openapi_schema"
+         ;; Argument() missing 1 required positional argument: 'default'
+         "--ignore=tests/test_fastapi_cli.py")))
     (native-inputs
      (list python-anyio
            python-dirty-equals
