@@ -4680,17 +4680,17 @@ samples) are easily visualized.")
 (define-public r-ggfittext
   (package
     (name "r-ggfittext")
-    (version "0.10.2")
+    (version "0.10.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggfittext" version))
               (sha256
                (base32
-                "0glc4wh8flryv4mydzgk8a3lj7dzg2ip45gsxr472jgbg56a95mp"))))
+                "1pym5jfrqzr75g79vg2fl7kxcwywidyn2wnnnrk673ggzajjxks5"))))
     (properties `((upstream-name . "ggfittext")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli r-ggplot2 r-gridtext r-shades r-stringi))
-    (native-inputs (list r-knitr r-testthat r-vdiffr))
+    (native-inputs (list r-knitr r-spelling r-testthat r-vdiffr))
     (home-page "https://wilkox.org/ggfittext/")
     (synopsis "Ggfittext is a ggplot2 extension for fitting text into boxes")
     (description
