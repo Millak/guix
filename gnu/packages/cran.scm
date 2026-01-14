@@ -43580,14 +43580,14 @@ R.")
 (define-public r-hdrcde
   (package
     (name "r-hdrcde")
-    (version "3.4")
+    (version "3.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "hdrcde" version))
        (sha256
         (base32
-         "16qlk44cjvn2s0vzaf915df65ksdx20dbxhy7fpdqins46hccha3"))))
+         "0amkqpfqqi236mric55a29jfqq6y4fj51val7fbx0zwqzv5fkzrs"))))
     (properties `((upstream-name . "hdrcde")))
     (build-system r-build-system)
     (propagated-inputs
@@ -43597,7 +43597,7 @@ R.")
            r-ks
            r-locfit
            r-rcolorbrewer))
-    (native-inputs (list gfortran))
+    (native-inputs (list gfortran r-testthat))
     (home-page "https://pkg.robjhyndman.com/hdrcde")
     (synopsis "Highest density regions and conditional density estimation")
     (description
