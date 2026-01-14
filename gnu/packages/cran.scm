@@ -3684,13 +3684,13 @@ series.  These are used for identifying nearby critical transitions.")
 (define-public r-earth
   (package
     (name "r-earth")
-    (version "5.3.4")
+    (version "5.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "earth" version))
        (sha256
-        (base32 "1g6ywsmdp7qlp0rql6f07j9hih45w9jm7b90sgkjpylqan94zy9s"))))
+        (base32 "0xsbd713qrwpibdb9710pvrwib0v7w3h1kk8sm8aqqi7jlz08l88"))))
     (properties `((upstream-name . "earth")))
     (build-system r-build-system)
     (propagated-inputs (list r-formula r-plotmo))
