@@ -11831,18 +11831,18 @@ package is a port of the Python package @code{cssselect}.")
 (define-public r-redland
   (package
     (name "r-redland")
-    (version "1.0.17-18")
+    (version "1.0.17-19")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "redland" version))
        (sha256
-        (base32 "183m1bvgj52w74383b5v6rfm7gn4izijixans1zdycqp68ibm6g9"))))
+        (base32 "0pdgjhy65bbwxivlz9qqb497dwrdmiw2igq8da16jy7gmnkzf1zx"))))
     (properties `((upstream-name . "redland")))
     (build-system r-build-system)
     (inputs (list redland pcre2 zlib))
     (propagated-inputs (list r-roxygen2))
-    (native-inputs (list r-knitr pkg-config r-spelling r-stringi r-testthat))
+    (native-inputs (list pkg-config r-knitr r-spelling r-stringi r-testthat))
     (home-page "https://cran.r-project.org/package=redland")
     (synopsis "RDF library bindings in R")
     (description
