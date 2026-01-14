@@ -14514,13 +14514,13 @@ annotation data to keep updated.")
 (define-public r-ggtangle
   (package
     (name "r-ggtangle")
-    (version "0.0.9")
+    (version "0.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggtangle" version))
        (sha256
-        (base32 "0f593p8323i1cd8ma81gkawpn17ah8h4d7wgpha4dgbkhj2y8c82"))))
+        (base32 "1qd68h8vdw5ybicjiv5hcrq2jr7pg76lybjx0d0h9gbyv8gymbqx"))))
     (properties `((upstream-name . "ggtangle")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggfun
@@ -14529,7 +14529,7 @@ annotation data to keep updated.")
                              r-igraph
                              r-rlang
                              r-yulab-utils))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-quarto))
     (home-page "https://cran.r-project.org/package=ggtangle")
     (synopsis "Draw network with data")
     (description
