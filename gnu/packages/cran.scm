@@ -51591,13 +51591,13 @@ other R users.")
 (define-public r-seurat
   (package
     (name "r-seurat")
-    (version "5.3.1")
+    (version "5.4.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "Seurat" version))
               (sha256
                (base32
-                "08xj5nwadbxj6jl2jwly6yq3q2gl48qlxlc00ygxiwnf7jlwnjim"))))
+                "05v4dynn5n3ak4fbj77hjk2mkg1xf2xs2jpaszma8bwsn5ydl06j"))))
     (properties
      '((upstream-name . "Seurat")
        (updater-ignored-native-inputs . ("r-singlecellexperiment"))))
@@ -51619,7 +51619,6 @@ other R users.")
            r-irlba
            r-jsonlite
            r-kernsmooth
-           r-leidenbase
            r-lifecycle
            r-lmtest
            r-mass
