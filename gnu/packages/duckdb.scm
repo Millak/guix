@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023, 2024 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2023, 2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2023, 2025, 2026 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024, 2025 Ekaitz Zarraga <ekaitz@elenq.tech>
@@ -148,13 +148,13 @@ system.")
 (define-public r-duckdb
   (package
     (name "r-duckdb")
-    (version "1.4.2")
+    (version "1.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "duckdb" version))
        (sha256
-        (base32 "1k2ks40mw7qviwwa53jv76bb48jxk9cfp6lrc06ripfifabd2pix"))
+        (base32 "0br7d7gadi0gbpd45syvig6zs1b0sl3vpn8wa272hs8jv4d73ar3"))
        ;; This package bundles the duckdb sources and builds a custom variant
        ;; of duckdb.  I'd be happy to link it with our duckdb library instead,
        ;; but it does not seem possible to do that.
