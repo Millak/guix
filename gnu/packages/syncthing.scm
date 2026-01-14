@@ -2,7 +2,7 @@
 ;;; Copyright © 2016 Petter <petter@mykolab.ch>
 ;;; Copyright © 2016-2021, 2024 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020-2022, 2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
@@ -85,11 +85,11 @@
              (lambda _
                (with-directory-excursion "src/github.com/syncthing/syncthing"
                  ; Build the primary Syncthing executable
-                 (invoke "go" "run" "build.go" "-no-upgrade")
+                 (invoke "go" "run" "build.go" "-no-upgrade" "build" "syncthing")
                  ; Build utilities used to run an independent Syncthing network
                  (for-each (cut invoke "go" "run" "build.go" "build" <>)
                            '("stcrashreceiver" "strelaypoolsrv" "stupgrades"
-                             "ursrv")))))
+                             "strelaysrv" "stdiscosrv" "ursrv")))))
 
            (replace 'check
              (lambda* (#:key tests? #:allow-other-keys)
@@ -99,13 +99,11 @@
 
            (replace 'install
              (lambda _
-               (with-directory-excursion "src/github.com/syncthing/syncthing/bin"
+               (with-directory-excursion "src/github.com/syncthing/syncthing"
                  (install-file "syncthing" (string-append #$output "/bin"))
                  (for-each (cut install-file <> (string-append #$output:utils "/bin/"))
-                           '("stdiscosrv" "strelaysrv")))
-               (with-directory-excursion "src/github.com/syncthing/syncthing"
-                 (for-each (cut install-file <> (string-append #$output:utils "/bin/"))
-                           '("ursrv" "stupgrades" "strelaypoolsrv" "stcrashreceiver")))))
+                           '("stdiscosrv" "strelaysrv" "ursrv" "stupgrades"
+                             "strelaypoolsrv" "stcrashreceiver")))))
 
            (add-after 'install 'install-docs
              (lambda _
