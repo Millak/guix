@@ -21474,13 +21474,13 @@ to wait upon events signalled by concurrent threads.")
 (define-public r-nanoparquet
   (package
     (name "r-nanoparquet")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nanoparquet" version))
        (sha256
-        (base32 "01jk8h7xkki53lyb8ja5vn5ipbaf4r0h35n14i7gm28al5hipvkq"))))
+        (base32 "031j6qgs57n8aa02ys749hv25vww85b63x8agvcy2bcsr5njn7z9"))))
     (properties `((upstream-name . "nanoparquet")))
     (build-system r-build-system)
     (native-inputs (list r-arrow
