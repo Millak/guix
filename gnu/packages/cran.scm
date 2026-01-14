@@ -11799,13 +11799,13 @@ and SHAKE256 extendable-output functions (XOF).")
 (define-public r-selectr
   (package
     (name "r-selectr")
-    (version "0.5-0")
+    (version "0.5-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "selectr" version))
        (sha256
-        (base32 "1c0f488bbvbgxyyad5rvipm5zwn3mry0mk95v9lk0qksw92ks3kn"))))
+        (base32 "0rgicw997gk3vf3pjg4p45f9n50jn5257pb9ibgyz4cbrksg39p8"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-r6 r-stringr))
