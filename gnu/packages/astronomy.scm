@@ -5504,6 +5504,33 @@ sensitivity or energy density
 @end itemize")
     (license license:expat)))
 
+(define-public python-hdecompose
+  (package
+    (name "python-hdecompose")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hdecompose" version))
+       (sha256
+        (base32 "0bjvzighrywcys31aypjbyyc9xmzwws7fl0lp6aywcm9akgb9578"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy))
+    (home-page "https://github.com/kyleaoman/Hdecompose")
+    (synopsis "Decomposition of hydrogen into neutral/ionized and atomic/molecular")
+    (description
+     "This package implements functionality for decomposition of Hydrogen
+content of simulation particles into neutral/ionized and atomic/molecular.
+Implementations of @url{https://iopscience.iop.org/article/10.1086/505417,
+Blitz & Rosolowsky (2006) and Rahmati et al (2013)}.")
+    (license license:gpl3)))
+
 (define-public python-healpy
   (package
     (name "python-healpy")
