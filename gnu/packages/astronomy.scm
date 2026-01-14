@@ -1228,35 +1228,40 @@ programs for the manipulation and analysis of astronomical data.")
     (license license:gpl3+)))
 
 (define-public gpredict
-  ;; The latest tag, 2.3, has no major difference with 2.2.1 and is dated for
-  ;; 2018. Additionally, there is some activity on the master branch, see
-  ;; <https://github.com/csete/gpredict/issues/368>.
   (package
     (name "gpredict")
-    (version "2.2.1")
+    (version "2.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/csete/gpredict/releases"
-                           "/download/v" version
-                           "/gpredict-" version ".tar.bz2"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/csete/gpredict")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0hwf97kng1zy8rxyglw04x89p0bg07zq30hgghm20yxiw2xc8ng7"))))
+        (base32 "0dfwb6h7bkhx782pj78xw4c1h1r6kd3md7xjz1jvxapsx0iypclw"))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "CFLAGS=-O2 -g -fcommon")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-tests
+          (replace 'bootstrap
             (lambda _
-              ;; Remove reference to non-existent file.
-              (substitute* "po/POTFILES.in"
-                (("src/gtk-sat-tree\\.c") "")))))))
+              (invoke "autoreconf" "-vif")
+              (invoke "intltoolize" "--force" "--automake"))))))
     (native-inputs
-     (list gettext-minimal intltool pkg-config))
+     (list autoconf
+           automake
+           gettext-minimal
+           (list glib "bin") ; glib-gettextize
+           intltool
+           libtool
+           pkg-config))
     (inputs
-     (list curl glib goocanvas gtk+))
+     (list curl
+           glib
+           goocanvas
+           gtk+))
     (home-page "https://oz9aec.dk/gpredict/")
     (synopsis "Satellite tracking and orbit prediction application")
     (description
