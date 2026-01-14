@@ -10226,13 +10226,13 @@ are not used.")
 (define-public r-ga
   (package
     (name "r-ga")
-    (version "3.2.4")
+    (version "3.2.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "GA" version))
        (sha256
-        (base32 "1gc1n2xdzrkc9cvrm6a50c9xpwvf0isdgvs1qpm8x1afacw6d7z5"))))
+        (base32 "0dnnm6cpq0az8c71m14k3k1xyh3i8krsjbyrvmjdxy5rf5jd617y"))))
     (properties `((upstream-name . "GA")))
     (build-system r-build-system)
     (propagated-inputs
