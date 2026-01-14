@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2026 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016, 2017 Ben Woodcroft <donttrustben@gmail.com>
@@ -634,13 +634,13 @@ beta regression, see <doi:10.18637/jss.v048.i11>.")
 (define-public r-bh
   (package
     (name "r-bh")
-    (version "1.87.0-1")
+    (version "1.90.0-1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "BH" version))
               (sha256
                (base32
-                "14q3wq9aix8fsbd09dj3nbhh89wpbxzn2l8wk8l26apl6pk9m0jr"))))
+                "06r8y1wspqvmzal0wpipgs01bvs3qlnqkr0sarri1s1qb6qay7rf"))))
     (build-system r-build-system)
     (home-page "https://github.com/eddelbuettel/bh")
     (synopsis "R package providing subset of Boost headers")
