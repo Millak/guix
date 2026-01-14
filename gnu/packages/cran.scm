@@ -56313,17 +56313,19 @@ of a small set of carefully designed functions, most of which
 (define-public r-maxlik
   (package
     (name "r-maxlik")
-    (version "1.5-2.1")
+    (version "1.5-2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "maxLik" version))
        (sha256
-        (base32 "0pcjhf8r7xz93qp4phs6l4i56y30ksivgv5ysnjh6khbdmicfm6h"))))
-    (properties `((upstream-name . "maxLik")))
+        (base32 "06kcddhwih4yjyczfpssg5hliqxfafcwsf5ilzkdf67qhncxqk2m"))))
+    (properties
+     '((upstream-name . "maxLik")
+       (updater-extra-native-inputs . ("r-mass"))))
     (build-system r-build-system)
     (propagated-inputs (list r-generics r-misctools r-sandwich))
-    (native-inputs (list r-mass))
+    (native-inputs (list r-mass r-tinytest))
     (home-page "https://cran.r-project.org/package=maxLik")
     (synopsis "Maximum Likelihood Estimation and related tools")
     (description
