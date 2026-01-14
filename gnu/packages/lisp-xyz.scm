@@ -32711,8 +32711,8 @@ implementation, for example drawing calls of GUI applications.")
   (sbcl-package->ecl-package sbcl-trivial-main-thread))
 
 (define-public sbcl-trivial-mimes
-  (let ((commit "a741fc2f567a4f86b853fd4677d75e62c03e51d9")
-        (revision "2"))
+  (let ((commit "8b1ea1291ef53d55730d2288332656a98068d7e5")
+        (revision "3"))
     (package
       (name "sbcl-trivial-mimes")
       (version (git-version "1.1.0" revision commit))
@@ -32724,7 +32724,7 @@ implementation, for example drawing calls of GUI applications.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "00kcm17q5plpzdj1qwg83ldhxksilgpcdkf3m9azxcdr968xs9di"))))
+          (base32 "0dhvrrjh11kcqxv6yi8y6ihcrwirviadlmb3a7m6jvbkj9zfs30v"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-hu.dwim.stefil))
