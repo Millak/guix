@@ -31917,13 +31917,13 @@ maps.")
 (define-public r-tidytree
   (package
     (name "r-tidytree")
-    (version "0.4.6")
+    (version "0.4.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidytree" version))
        (sha256
-        (base32 "14i2v6ryqw4cd74n8kz4qwwx730wzx4f0rssg5vgm0vjfsx0kafv"))))
+        (base32 "105cn3mc94g8swqpklfb6p6j6b0q0nljmrkcq30w6g4hca7sjds4"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ape
@@ -31938,7 +31938,7 @@ maps.")
            r-tidyselect
            r-yulab-utils))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-testthat))
     (home-page "https://github.com/GuangchuangYu/tidytree")
     (synopsis "Tidy tool for phylogenetic tree data manipulation")
     (description
