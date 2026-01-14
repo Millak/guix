@@ -8330,14 +8330,14 @@ scale-sensitive information.")
 (define-public r-ggvenndiagram
   (package
     (name "r-ggvenndiagram")
-    (version "1.5.4")
+    (version "1.5.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggVennDiagram" version))
        (sha256
         (base32
-         "0xwyz4n2xdg682vzrwij4g4idiiqv6fqbs31j7wys238n4g8jvz9"))))
+         "1nyvvidzw42wj92c8yym12wd1nilka6m9q6l65r1v83zl5m6pmnp"))))
     (properties `((upstream-name . "ggVennDiagram")))
     (build-system r-build-system)
     (propagated-inputs
