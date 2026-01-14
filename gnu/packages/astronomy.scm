@@ -5,7 +5,7 @@
 ;;; Copyright © 2019 by Amar Singh <nly@disroot.org>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2021-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -2868,7 +2868,7 @@ simulated Astronomical data in Python.")
 (define-public python-astromartini
   (package
     (name "python-astromartini")
-    (version "2.1.13")
+    (version "2.1.15")
     (source
      (origin
        (method git-fetch)
@@ -2877,16 +2877,14 @@ simulated Astronomical data in Python.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1y36jblj2ibr91v967nfzczbm7mlvhjpgbd519s5ybsxay27qj4g"))))
+        (base32 "18fbygh6vimjdwb7k9kdqzi1v8yfailrh4m5c5pgj20043n8xh8s"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 2529 passed, 11 skipped, 4 xfailed
-      #:test-flags
-      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))))
+    ;; Tests are not thread save, see
+    ;; <https://github.com/kyleaoman/martini/issues/98>.
+    ;; 
+    ;; tests: 2529 passed, 11 skipped, 4 xfailed, 8 warnings
     (native-inputs
      (list python-pytest
-           python-pytest-xdist
            python-setuptools))
     (propagated-inputs
      (list python-astropy
@@ -2894,17 +2892,17 @@ simulated Astronomical data in Python.")
            python-scipy
            python-tqdm
            ;; [optional]
-           ;; python-eaglesqltools
+           python-eaglesqltools
            python-gizmo-analysis
            python-h5py
-           ;; python-halo-analysis
-           ;; python-hdecompose
-           ;; python-pyread-eagle
+           python-halo-analysis
+           python-hdecompose
+           python-pyread-eagle
            python-requests
            python-swiftgalaxy
            python-swiftsimio
            python-utilities-awetzel
-           #;python-velociraptor))
+           #;python-velociraptor))      ;not packaged yet in Guix
     (home-page "https://github.com/kyleaoman/martini")
     (synopsis "Synthetic datacube creation from simulations")
     (description
