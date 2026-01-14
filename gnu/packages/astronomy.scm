@@ -4554,6 +4554,39 @@ used with local NetDRMS sites.")
 implemented using the astropy.modeling framework.")
     (license license:bsd-3)))
 
+(define-public python-eaglesqltools
+  (package
+    (name "python-eaglesqltools")
+    ;; 2.0.0 was published in 2018 on PyPI, where Git repository has no tags,
+    ;; use the latest commit to have latest changes.
+    (properties '((commit . "31732c696681adc27ee8ea3cd23ae06652f2401b")
+                  (revision . "0")))
+    (version (git-version "2.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kyleaoman/eagleSqlTools")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "007inh0i3jk47agmvk10g4ifqi1grqp2s6ywx769pl95yn4y8435"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://github.com/kyleaoman/eagleSqlTools")
+    (synopsis "Python API for the EAGLE cosmological simulation database")
+    (description
+     "This package provides utilities for accessing
+@url{https://arxiv.org/abs/1510.01320, EAGLE public database}.")
+    (license license:gpl3)))
+
 (define-public python-edps
   (package
     (name "python-edps")
