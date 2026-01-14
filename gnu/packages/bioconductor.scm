@@ -15012,29 +15012,29 @@ of gene-level counts.")
 (define-public r-valr
   (package
     (name "r-valr")
-    (version "0.8.4")
+    (version "0.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "valr" version))
        (sha256
         (base32
-         "138s6ydqhhik0ymfby9sdnpyjj56m98yqav4vmgv619fhialyx0y"))))
+         "1f0q7c8mz7w2ih5m3bfb0g5y9lx5lmn1ifj234k75ksffwwi4lz9"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-broom
            r-cli
+           r-cpp11
            r-cpp11bigwig
            r-dplyr
            r-ggplot2
            r-lifecycle
-           r-rcpp
            r-readr
            r-rlang
            r-stringr
            r-tibble))
     (native-inputs
-     (list r-knitr r-testthat r-vdiffr))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/rnabioco/valr")
     (synopsis "Genome interval arithmetic in R")
     (description
