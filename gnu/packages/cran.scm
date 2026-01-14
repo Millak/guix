@@ -36491,19 +36491,23 @@ tessellation.")
 (define-public r-wk
   (package
     (name "r-wk")
-    (version "0.9.4")
+    (version "0.9.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "wk" version))
        (sha256
         (base32
-         "12rlkspg0zavda6jfwcah7gm9fh4x13720m4gvy4xndfm5gxswxr"))))
+         "1vba43hkr9mdqaikb9m27qs4jmcgmdxqbg8phbzj5lzqj0l2h85p"))))
     (properties
      '((upstream-name . "wk")
-       (updater-extra-native-inputs . ("r-tibble" "r-vctrs"))))
+       (updater-ignored-native-inputs . ("r-geos" "r-sf"))))
     (build-system r-build-system)
-    (native-inputs (list r-testthat r-tibble r-vctrs))
+    (native-inputs (list r-png
+                         r-readr
+                         r-testthat
+                         r-tibble
+                         r-vctrs))
     (home-page "https://paleolimbot.github.io/wk/")
     (synopsis "Lightweight well-known geometry parsing")
     (description
