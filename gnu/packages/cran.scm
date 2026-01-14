@@ -16368,18 +16368,19 @@ Jammalamadaka and A. @code{SenGupta}, World Scientific.")
 (define-public r-ctrdata
   (package
     (name "r-ctrdata")
-    (version "1.25.0")
+    (version "1.25.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ctrdata" version))
               (sha256
                (base32
-                "0giingzzvx72pa0xcczx6dmk2ssqq4sd20m5m4v8dyxfyrkgq1lv"))
-              ;; TODO: we should also replace these other files:
-              ;; inst/htmlwidgets/lib/jstree/dist/jstree.min.js
+                "1z7vjzxam80lgrss78csfbqhprk9m14cdjpmx80g3p0db5kymycl"))
+              ;; TODO: we should also replace this other file:
               ;; inst/js/bundle.js (generated from inst/js/euctr2ndjson.js)
               (snippet
-               '(delete-file "inst/htmlwidgets/lib/jquery/dist/jquery.min.js"))))
+               '(begin
+                  (delete-file "inst/htmlwidgets/lib/jquery/dist/jquery.min.js")
+                  (delete-file "inst/htmlwidgets/lib/jstree/dist/jstree.min.js")))))
     (properties `((upstream-name . "ctrdata")))
     (build-system r-build-system)
     (arguments
@@ -16396,13 +16397,15 @@ Jammalamadaka and A. @code{SenGupta}, World Scientific.")
       #~(modify-phases (@ (guix build r-build-system) %standard-phases)
           (add-after 'unpack 'process-javascript
             (lambda* (#:key inputs #:allow-other-keys)
-              (with-directory-excursion "inst/htmlwidgets/lib/jquery/dist"
+              (with-directory-excursion "inst/htmlwidgets/lib/"
                 (for-each
                  (match-lambda
                    ((source . target)
                     (minify source #:target target)))
                  `((,(assoc-ref inputs "jquery-3.7.1.js")
-                    . "jquery.min.js"))))))
+                    . "jquery/dist/jquery.min.js")
+                   (,(search-input-file inputs "/dist/jstree.js")
+                    . "jstree/dist/jstree.min.js"))))))
           ;; Needed for vignettes
           (add-after 'unpack 'set-HOME
             (lambda _ (setenv "HOME" "/tmp"))))))
@@ -16421,19 +16424,25 @@ Jammalamadaka and A. @code{SenGupta}, World Scientific.")
            r-stringi
            r-tidyr
            r-v8
-           r-xml2
            r-zip))
     (native-inputs
-     (list esbuild
-           r-knitr
-           r-r-rsp
-           r-tinytest
+     (list esbuild r-knitr r-tinytest
            (origin
              (method url-fetch)
              (uri "https://code.jquery.com/jquery-3.7.1.js")
              (sha256
               (base32
-               "1zicjv44sx6n83vrkd2lwnlbf7qakzh3gcfjw0lhq48b5z55ma3q")))))
+               "1zicjv44sx6n83vrkd2lwnlbf7qakzh3gcfjw0lhq48b5z55ma3q")))
+           (let ((version "3.3.17"))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                      (url "https://github.com/vakata/jstree")
+                      (commit version)))
+               (file-name (git-file-name "jstree" version))
+               (sha256
+                (base32
+                 "0njvqy16cwjvw8z4wvlgn3ibsg2d79g3fpj0sv3jxwz7mc3nhf2l"))))))
     (home-page "https://cran.r-project.org/package=ctrdata")
     (synopsis "Retrieve and analyze clinical trials in public registers")
     (description
