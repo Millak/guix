@@ -20901,8 +20901,8 @@ for solving the Assignment Problem.")
       (list python-pygments
             python-pytest
             python-pytest-dependency
-            python-tomli
             python-setuptools
+            python-setuptools-scm
             python-wheel))
     (propagated-inputs
       (list python-chardet))
