@@ -37173,13 +37173,13 @@ SELECT or UPDATE queries to an end-point.")
 (define-public r-bookdown
   (package
     (name "r-bookdown")
-    (version "0.45")
+    (version "0.46")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "bookdown" version))
               (sha256
                (base32
-                "0sk8jrvqwn17pl68q2klqfl12y0zczc0wms4h3mlnlvpq37wf35q"))
+                "0qykzam8frva1wpgbbc4a0vws86jkclcbggji07x4qrdqzzyk52x"))
               ;; TODO: there is one more file to replace:
               ;; inst/resources/gitbook/js/app.min.js
               (snippet
