@@ -25601,13 +25601,13 @@ patterned after functions in the snow package.")
 (define-public r-itsadug
   (package
     (name "r-itsadug")
-    (version "2.4.1")
+    (version "2.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "itsadug" version))
        (sha256
-        (base32 "1sdqs279qxr3993hw08xg7b54yq03jw1597cqn6cf24sh9vpw9m1"))))
+        (base32 "0523ymvqr6p6cywc1bn8n8d4p7l1by6fmqxgs98zmyi0dkwh6b8g"))))
     (properties `((upstream-name . "itsadug")))
     (build-system r-build-system)
     (propagated-inputs (list r-mgcv r-plotfunctions))
