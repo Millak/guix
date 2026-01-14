@@ -12755,17 +12755,17 @@ functions make it easy to control additional request components.")
 (define-public r-httr2
   (package
     (name "r-httr2")
-    (version "1.2.1")
+    (version "1.2.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "httr2" version))
               (sha256
                (base32
-                "07l3zlj45bykia7abc92s4d91z379zvh6iz9pm0hyx07amzw6a17"))))
+                "1qa5bk674d0cdhah2mhb2jkarbvz5i0njaawv0wkh23fwa7i5rx5"))))
     (properties
      `((upstream-name . "httr2")
-       ;; r-common doesn't exist, and r-nanonext isn't needed.
-       (updater-ignored-native-inputs . ("r-common" "r-nanonext"))
+       ;; r-nanonext isn't needed; adding paws-common leads to a dependency cycle.
+       (updater-ignored-native-inputs . ("r-paws-common" "r-nanonext"))
        (updater-extra-native-inputs . ("r-docopt" "r-httpuv" "r-xml2"))))
     (build-system r-build-system)
     (arguments
@@ -12802,6 +12802,7 @@ functions make it easy to control additional request components.")
                          r-jsonlite
                          r-knitr
                          r-later
+                         r-otel
                          r-promises
                          r-testthat
                          r-webfakes
