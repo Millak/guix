@@ -27411,13 +27411,13 @@ second male (P2) based on the best fit distribution.")
 (define-public r-abcrf
   (package
     (name "r-abcrf")
-    (version "1.9")
+    (version "2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "abcrf" version))
        (sha256
-        (base32 "08mh1a6gxp0mfx6qnp1qzcrfx7xp64qj9kad4ziyswfx22ykdsxi"))))
+        (base32 "1vrpyh18ayqa65n1dmrj2j4yk24fxr7hh42yjfm4rbqwlhfsqd4j"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-doparallel
