@@ -15817,13 +15817,13 @@ and Francois (2011, JSS), and the book by Eddelbuettel (2013, Springer); see
 (define-public r-rcppcctz
   (package
     (name "r-rcppcctz")
-    (version "0.2.13")
+    (version "0.2.14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppCCTZ" version))
        (sha256
-        (base32 "1wmbyaj08fbl4g47aq0mfkkvqwpah3d2j94fzc813dijxlsi847l"))))
+        (base32 "0zk39b8ziq0py7na2d0dazjighhrnpzdicm4f2201wlf46s46dic"))))
     (properties
      `((upstream-name . "RcppCCTZ")
        (updater-extra-native-inputs . ("tzdata-for-tests"))))
