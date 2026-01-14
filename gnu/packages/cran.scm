@@ -50724,14 +50724,14 @@ models without involving a test set.")
 (define-public r-tidypredict
   (package
     (name "r-tidypredict")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidypredict" version))
        (sha256
         (base32
-         "055dvb5h79hfh9ya71xlxg0cbcnnd19js33rd2bh09ykicz58xkb"))))
+         "0y7q2hi52mw0rsj6m86jydvxdrqpdg716hy3vi2i5v30s201pgai"))))
     (properties
      '((upstream-name . "tidypredict")
        (updater-extra-native-inputs . ("r-mlbench"))))
@@ -50740,6 +50740,7 @@ models without involving a test set.")
      (list r-cli
            r-dplyr
            r-generics
+           r-jsonlite
            r-knitr
            r-purrr
            r-rlang
