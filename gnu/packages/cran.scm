@@ -45704,14 +45704,14 @@ regressions.")
 (define-public r-polycor
   (package
     (name "r-polycor")
-    (version "0.8-1")
+    (version "0.8-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "polycor" version))
        (sha256
         (base32
-         "0285rvx8238qp8dix0jq0cqq7ks8h6cjwsscbc7dx4n9nph56pzh"))))
+         "0nhzjpv07kwdc234k84kqr2yiixqpawxaqmaln3q8fx6ym49b3k1"))))
     (properties `((upstream-name . "polycor")))
     (build-system r-build-system)
     (propagated-inputs
