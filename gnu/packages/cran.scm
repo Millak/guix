@@ -11329,13 +11329,13 @@ read a protected key.")
 (define-public r-astsa
   (package
     (name "r-astsa")
-    (version "2.3")
+    (version "2.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "astsa" version))
        (sha256
-        (base32 "1s2cfz884yd750rd0fkvffmqwqg175v2s2lj7vl3bv6nmfj0cxq3"))))
+        (base32 "17l8sza3bam7gff1jwnsgzlffx5pdjny2j7kk5yn667445268ca3"))))
     (properties `((upstream-name . "astsa")))
     (build-system r-build-system)
     (home-page "https://github.com/nickpoison/astsa/")
