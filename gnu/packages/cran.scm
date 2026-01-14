@@ -7531,14 +7531,16 @@ WebAssembly engine.")
 (define-public r-vcr
   (package
     (name "r-vcr")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "vcr" version))
        (sha256
-        (base32 "03c2pjf9za7brvbjyxl8bkmi3l6ky7z155apgqk4liwvvc8flirq"))))
-    (properties '((upstream-name . "vcr")))
+        (base32 "1r4g6fwrqf0p0sdl7nd62rxsxcd3pwxwhdspbyw21gfs7qf931sg"))))
+    (properties
+     '((upstream-name . "vcr")
+       (updater-extra-native-inputs . ("r-qs2"))))
     (build-system r-build-system)
     (arguments
      (list
