@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2026 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Vicente Vera Parra <vicentemvp@gmail.com>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2017, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
@@ -890,13 +890,13 @@ posteriors and evidences.")
 (define-public r-testthat
   (package
     (name "r-testthat")
-    (version "3.3.1")
+    (version "3.3.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "testthat" version))
               (sha256
                (base32
-                "1dld7h3k0z15ybcddcmr8l3ibfgv3rqfbn65b9a9ddvr7kr4d202"))))
+                "024q8257dvvg8ff19287gqf4rhj4jnz05349nspj7dfwqfi2ybjx"))))
     (properties
      '((updater-ignored-native-inputs . ("r-testthat" "r-s7" "r-xml2"))
        (updater-extra-native-inputs . ("r-digest"))))
