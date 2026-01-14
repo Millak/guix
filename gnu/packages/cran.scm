@@ -49369,14 +49369,14 @@ model.")
 (define-public r-clusterr
   (package
     (name "r-clusterr")
-    (version "1.3.5")
+    (version "1.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ClusterR" version))
        (sha256
         (base32
-         "05kzfwgg10k7qxj6j7l3rlmh13v9di35dr9h1pb16gfpdiraigy8"))))
+         "1pzph6m2k3ixmi6qfhdish2asvnmj6ck4w2r3g12ccx3szwa0j29"))))
     (properties `((upstream-name . "ClusterR")))
     (build-system r-build-system)
     (propagated-inputs
