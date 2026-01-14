@@ -52707,13 +52707,13 @@ implemented as @code{R6} classes.")
 (define-public r-mlr3
   (package
     (name "r-mlr3")
-    (version "1.2.0")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3" version))
               (sha256
                (base32
-                "122zjfr7w9mdghxnqh0w0gqh84ybk1pq6kkqw4p84c6ip8aq9bah"))))
+                "1hlkxn70a43fmpbq7j0dk4la69ln7c58rk2lhs29pmg6nf7qzxri"))))
     (properties
      '((updater-ignored-native-inputs . ("r-distr6"))))
     (build-system r-build-system)
@@ -52742,10 +52742,7 @@ implemented as @code{R6} classes.")
            r-parallelly
            r-r6
            r-uuid))
-    (native-inputs (list r-callr
-                         r-codetools
-                         r-progressr
-                         r-rpart
+    (native-inputs (list r-codetools r-future-callr r-progressr r-rpart
                          r-testthat))
     (home-page "https://mlr3.mlr-org.com/")
     (synopsis "Machine Learning in R - Next Generation")
