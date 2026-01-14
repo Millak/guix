@@ -6347,20 +6347,22 @@ Wicherts, 2020).")
 (define-public r-purrr
   (package
     (name "r-purrr")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "purrr" version))
        (sha256
         (base32
-         "1crvfxqwiaiin1y5kzr2qcsd2wiaqx3hwj3mvaprygdqv7z5jgxv"))))
+         "0qzkxf7v1kjz9d9600zqhmjwfv32639n1sgah10c673sqvdr3fxk"))))
+    (properties
+     ;; The package "carrier" (>= 0.3.0) is required for parallel map.
+     '((updater-extra-propagated-inputs . ("r-carrier"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-cli r-lifecycle r-magrittr r-rlang r-vctrs))
+     (list r-carrier r-cli r-lifecycle r-magrittr r-rlang r-vctrs))
     (native-inputs
-     (list r-carrier
-           r-knitr
+     (list r-knitr
            r-lubridate
            r-mirai
            r-testthat
