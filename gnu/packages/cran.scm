@@ -31370,13 +31370,13 @@ for evolution along a phylogenetic tree.")
 (define-public r-fmesher
   (package
     (name "r-fmesher")
-    (version "0.5.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fmesher" version))
        (sha256
-        (base32 "1rzbcykby1q6hj54asjwxk5353jl4ln1lpd1vygpm06dj48wn6vw"))))
+        (base32 "1qx3k1i132nkchi2h9j0plfy7z35xw6r98x6gbwjc26kvpq7y8wn"))))
     (properties
      '((upstream-name . "fmesher")
        ;; Don't have it, don't need it.
