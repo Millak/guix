@@ -31764,14 +31764,14 @@ Processing.")
 (define-public r-tm
   (package
     (name "r-tm")
-    (version "0.7-16")
+    (version "0.7-17")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tm" version))
        (sha256
         (base32
-         "124nhgpainbws7y3nv9lqmkx20f63d7vfzxnkzrkcyj4ia2hr1h8"))))
+         "1is4q3xbbb9cvgnlw4gc5iind92al4jcc0phrpxazlkafbyr3wzz"))))
     (properties
      '((upstream-name . "tm")
        ;; Needed for vignettes.
