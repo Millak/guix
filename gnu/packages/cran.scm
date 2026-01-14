@@ -29708,17 +29708,17 @@ effects models and Bayesian models.")
 (define-public r-ggeffects
   (package
     (name "r-ggeffects")
-    (version "2.3.1")
+    (version "2.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggeffects" version))
        (sha256
         (base32
-         "01bx5vkcljc64mm1r8kkyk9npgbkq8g7nhhhxrlag7rr9hpsj951"))))
+         "1j5avgbq8glsdal7xgskiwjhf8swakckv4rrvcz82kz4lfdgz1x3"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-datawizard r-insight))
+     (list r-datawizard r-insight r-reformulas))
     (native-inputs
      ;; The importer/updater generates a massive list of inputs for running
      ;; tests, but we actually don't need them.
