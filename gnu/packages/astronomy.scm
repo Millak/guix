@@ -5381,6 +5381,45 @@ default) to world coordinates.")
 ;; for now.
 (define-public python-gwcs python-gwcs-0)
 
+(define-public python-halo-analysis
+  (package
+    (name "python-halo-analysis")
+    (version "1.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "halo_analysis" version))
+       (sha256
+        (base32 "072s29b73591n26r3i67wflh5sh67bjrnch6wi691v871xcpr4rl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f          ;no tests in PyPI or Git
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              ;; There is a silent error during sanity-check: mkdir -p failed
+              ;; for path /homeless-shelter/.config/matplotlib: [Errno 13]
+              ;; Permission denied: '/homeless-shelter'
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-h5py
+           python-matplotlib
+           python-numpy
+           python-scipy
+           python-utilities-awetzel))
+    (home-page "https://bitbucket.org/awetzel/halo_analysis/src/master/" )
+    (synopsis "Read and analyze halo/galaxy catalogs")
+    (description
+     "This package implements a functionality to read and analyze halo/galaxy
+ catalogs (generated from Rockstar or AHF) and merger trees (generated from
+ConsistentTrees).")
+    (license license:expat)))
+
 (define-public python-halotools
   (package
     (name "python-halotools")
