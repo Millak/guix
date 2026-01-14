@@ -39620,17 +39620,17 @@ parallel versions of vectorized R functions of the @code{mc*apply} family.")
 (define-public r-blme
   (package
     (name "r-blme")
-    (version "1.0-6")
+    (version "1.0-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "blme" version))
        (sha256
         (base32
-         "0ghpbhs3bqxv9s759i3klfzrvigaxp34sscsy2m0n3d08j09f206"))))
+         "1yhyyaiiyqd413nfrcang6bkccms9cr64375x7yb5ah6w4fbjisn"))))
     (build-system r-build-system)
     (propagated-inputs (list r-lme4))
-    (native-inputs (list r-testthat))
+    (native-inputs (list))
     (home-page "https://github.com/vdorie/blme")
     (synopsis "Bayesian linear mixed-effects models")
     (description
