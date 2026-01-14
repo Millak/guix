@@ -2041,22 +2041,25 @@ model-fitting photometry or morphological analyses.")
 (define-public python-aiapy
   (package
     (name "python-aiapy")
-    (version "0.10.2")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aiapy" version))
        (sha256
-        (base32 "0lr8v2bakqxqn516fr45905lcql72kac3q6rdzn24rn95f812n27"))))
+        (base32 "11hjqk8840y7dwny0r8apqf0a0kb0lyn7kr1syzqhp87zjslna5q"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 47 passed, 76 skipped
       #:test-flags
-      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
+      ;; Remove data is required: ValueError: Did not find any files
+      ;; at https:/github.com/sunpy/data/blob/main/aiapy/aia_lev1_\
+      ;; 193a_2013_03_15t12_01_06_84z_image_lev1.fits?raw=true
+      #~(list (string-append "--deselect=aiapy/calibrate/tests/test_meta.py"
+                             "::test_fix_pointing_missing_value"))
       #:phases
       #~(modify-phases %standard-phases
-          ;; It fails to check SunPy's optional inputs versions.
-          (delete 'sanity-check)
           (add-before 'check 'set-home
             (lambda _
               ;; E PermissionError: [Errno 13] Permission denied:
@@ -2064,11 +2067,10 @@ model-fitting photometry or morphological analyses.")
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list nss-certs-for-test
+           python-hissw
            python-pytest
            python-pytest-astropy
-           python-pytest-cov
            python-pytest-doctestplus
-           python-pytest-xdist
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
