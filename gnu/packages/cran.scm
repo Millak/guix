@@ -15070,19 +15070,21 @@ Rcpp and @code{RcppArmadillo} packages.")
 (define-public r-geos
   (package
     (name "r-geos")
-    (version "0.2.4")
+    (version "0.2.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "geos" version))
        (sha256
-        (base32 "03cxm9rby7qmk9apqk3sh373rnzqcrj23cn6q153gq93lx372b8n"))))
+        (base32 "0afzqifmk0byw8sc7b0d5acpfzs38r03d0a8g9il7gd29gzszqjd"))))
     (properties
      '((upstream-name . "geos")
-       (updater-extra-native-inputs . ("r-vctrs"))))
+       (updater-extra-native-inputs . ("r-vctrs"))
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-sf"))))
     (build-system r-build-system)
     (propagated-inputs (list r-libgeos r-wk))
-    (native-inputs (list r-testthat r-vctrs))
+    (native-inputs (list r-terra r-testthat r-vctrs))
     (home-page "https://paleolimbot.github.io/geos/")
     (synopsis "Open Source Geometry Engine (GEOS) R API")
     (description
