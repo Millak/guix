@@ -44852,14 +44852,14 @@ aesthetics.")
 (define-public r-knn-covertree
   (package
     (name "r-knn-covertree")
-    (version "1.0")
+    (version "1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "knn.covertree" version))
        (sha256
         (base32
-         "0msfcmwydws7q7m5jdb0dxab0nkbl7mq5llg6v3r4qrnlvrdggvz"))))
+         "1k8r7dr7yqjdi94299wsig544j3gdwan5s3sn0nf6g3rz0s9xna6"))))
     (properties `((upstream-name . "knn.covertree")))
     (build-system r-build-system)
     (propagated-inputs
