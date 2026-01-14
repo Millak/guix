@@ -19838,6 +19838,45 @@ and @code{kqueue(2)}), a pathname library and file-system utilities.")
 (define-public ecl-iolib
   (sbcl-package->ecl-package sbcl-iolib))
 
+(define-public sbcl-cl-iparse
+  (let ((commit "d1cc4caf25ab4c05bc96e7a7306ee3803289f13f")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-iparse")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/atgreen/cl-iparse")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0y5x2bg7plx5famv7w0lkhvwl0ya8majzq4swilhl5w3a1mz3360"))))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-cl-ppcre
+             sbcl-closer-mop
+             sbcl-fset))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-systems '("iparse")))
+      (home-page "https://github.com/atgreen/cl-iparse")
+      (synopsis "Common Lisp port of Clojure's instaparse")
+      (description
+       "Common Lisp port of Clojure's instaparse parser library - GLL parsing
+with EBNF/ABNF support.")
+      (license license:epl1.0))))
+
+(define-public cl-iparse
+  (sbcl-package->cl-source-package sbcl-cl-iparse))
+
+(define-public ecl-cl-iparse
+  (sbcl-package->ecl-package sbcl-cl-iparse))
+
+(define-public clasp-cl-iparse
+  (sbcl-package->clasp-package sbcl-cl-iparse))
+
 (define-public sbcl-ironclad
   (package
     (name "sbcl-ironclad")
