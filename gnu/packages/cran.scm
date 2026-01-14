@@ -9981,13 +9981,13 @@ residuals and other information on the model.")
 (define-public r-plumber
   (package
     (name "r-plumber")
-    (version "1.3.0")
+    (version "1.3.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "plumber" version))
               (sha256
                (base32
-                "0z9dzlmvsbqn1cykia07kpa88w5lcgrp39bqqm2d3bhnzkr5kj1s"))))
+                "1maiya8iva4yiw0vznf9n8130l844a0mbv2xpdyjswdbfkappssa"))))
     (properties
      '((upstream-name . "plumber")
        (updater-extra-native-inputs
@@ -10009,12 +10009,10 @@ residuals and other information on the model.")
     (native-inputs
      (list r-arrow
            r-base64enc
-           r-covr
            r-geojsonsf
            r-htmlwidgets
            r-knitr
            r-later
-           r-mockery
            r-readr
            r-readxl
            r-rmarkdown
@@ -10022,6 +10020,7 @@ residuals and other information on the model.")
            r-spelling
            r-testthat
            r-visnetwork
+           r-withr
            r-writexl
            r-yaml))
     (home-page "https://www.rplumber.io")
