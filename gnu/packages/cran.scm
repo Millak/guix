@@ -33296,13 +33296,13 @@ preparing, executing, and processing HTTP requests.")
 (define-public r-gmisc
   (package
     (name "r-gmisc")
-    (version "3.0.4")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Gmisc" version))
        (sha256
-        (base32 "0z3hzh03vqcxrvqlg7xwcrbq7kiy1wk9pyclb1gv9waj12klq11f"))))
+        (base32 "10nyyasy2ry7yqx4kf5xamdv5x8a4xpn882gcf7vqgdzyj53ibaf"))))
     (properties
      '((upstream-name . "Gmisc")
        ;; Avoid dependency cycle.
