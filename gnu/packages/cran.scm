@@ -35446,14 +35446,14 @@ them (Anscombe-Glynn, D'Agostino, Bonett-Seier).")
 (define-public r-msir
   (package
     (name "r-msir")
-    (version "1.3.3")
+    (version "1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "msir" version))
        (sha256
         (base32
-         "1wm83m3cqd6llxb9p2jwim0wb81v84pgdmgcznygzaaq6kbn3n84"))))
+         "0zyb8xa0dsjr8v3k77rrc8z7mp1kij8n7kmmx89nbbhf3g6hwhw8"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-mclust))
