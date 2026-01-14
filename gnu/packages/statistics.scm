@@ -2376,14 +2376,14 @@ selection.")
 (define-public r-tidyr
   (package
     (name "r-tidyr")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidyr" version))
        (sha256
         (base32
-         "0pc3ad9k36lk3c5qbgx4blhs8aihqyysfxljyirgahsmrdhw4878"))))
+         "0nk67ls23r50fxxgzyfvvcf7cwbigl12r9336zvjls5gy3dfdh04"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -2399,7 +2399,7 @@ selection.")
            r-tidyselect
            r-vctrs))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-data-table r-knitr r-testthat))
     (home-page "https://github.com/hadley/tidyr")
     (synopsis "Tidy data with `spread()` and `gather()` functions")
     (description
