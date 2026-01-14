@@ -56945,13 +56945,13 @@ matching or aggregation, retrieving coordinates, print, summary, etc.")
 (define-public r-tesseract
   (package
     (name "r-tesseract")
-    (version "5.2.3")
+    (version "5.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tesseract" version))
        (sha256
-        (base32 "181fbv1qhqxljr67phkrxahbfgsxa73gzq30zq0wvi38gzbfbnv8"))))
+        (base32 "1sv8gs5zvqgxhr0y2y584szdj581xw0vla7hqg6wq2143qakbdla"))))
     (properties `((upstream-name . "tesseract")))
     (build-system r-build-system)
     (inputs (list tesseract-ocr
