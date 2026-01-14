@@ -22582,13 +22582,13 @@ multivariate distributions.")
 (define-public r-fbasics
   (package
     (name "r-fbasics")
-    (version "4041.97")
+    (version "4052.98")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "fBasics" version))
               (sha256
                (base32
-                "1aqm973km7z8b6r90j3dcqi7dgf8fxcjb5ps2q3f14p80rg0ahlr"))))
+                "1p8f45jc54593i80rn1klwa1rxhn8h50l3wd1j7q6r69rwchpbyj"))))
     (properties `((upstream-name . "fBasics")))
     (build-system r-build-system)
     (propagated-inputs
@@ -22598,7 +22598,7 @@ multivariate distributions.")
            r-stabledist
            r-timedate
            r-timeseries))
-    (native-inputs (list r-runit))
+    (native-inputs (list r-interp))
     (home-page
      "https://r-forge.r-project.org/scm/viewvc.php/pkg/fBasics/?root=rmetrics")
     (synopsis "Metrics for markets and basic statistics")
