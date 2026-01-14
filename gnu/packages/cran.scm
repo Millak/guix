@@ -47859,14 +47859,14 @@ here.")
 (define-public r-projpred
   (package
     (name "r-projpred")
-    (version "2.9.1")
+    (version "2.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "projpred" version))
        (sha256
         (base32
-         "107bll5186p7qhi9i1y8vfm08klg410wypp8zak2qcvh1cmf2qxy"))))
+         "0iwvqmajcc92g8idjrsd713i1h46jlvnsf2l2j1bajk3vz0b217l"))))
     (properties `((upstream-name . "projpred")))
     (build-system r-build-system)
     (propagated-inputs
@@ -47884,16 +47884,17 @@ here.")
            r-ordinal
            r-rcpp
            r-rcpparmadillo
+           r-reformulas
            r-rstantools
            r-scales))
     (native-inputs (list r-brms
-                         r-callr
                          r-cmdstanr
                          r-devtools
                          r-dofuture
                          r-doparallel
                          r-foreach
                          r-future
+                         r-future-callr
                          r-glmnet
                          r-knitr
                          r-posterior
