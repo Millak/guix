@@ -32720,7 +32720,7 @@ implementation, for example drawing calls of GUI applications.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/trivial-mimes")
+               (url "https://shinmera.com/project/trivial-mimes")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
@@ -32730,7 +32730,7 @@ implementation, for example drawing calls of GUI applications.")
        (list sbcl-hu.dwim.stefil))
       (inputs
        (list sbcl-cl-fad))
-      (home-page "https://shinmera.github.io/trivial-mimes/")
+      (home-page "https://shinmera.com/docs/trivial-mimes/")
       (synopsis "Tiny Common Lisp library to detect mime types in files")
       (description
        "This is a teensy library that provides some functions to determine the
