@@ -1714,6 +1714,27 @@ SunMD5, sha1crypt, NT, bsdicrypt, bigcrypt, and descrypt.")
     (home-page "https://github.com/besser82/libxcrypt")
     (license license:lgpl2.1)))
 
+(define-public libxcrypt-without-failure-tokens
+  ;; This version of libxcrypt is used for guile-2.2.4, which is used in Guix
+  ;; v1.0.0 and thus needs to be supported for guix time-machine.
+  ;;
+  ;; Guile uses the 'crypt' hashing function that used to be provided by glibc,
+  ;; but was moved to libxcrypt around glibc 2.39.  However, the crypt function
+  ;; in libxcrypt works differently for invalid salt values: libxcrypt returnns
+  ;; the failure token "*0" for (crypt "pass" "$X$abc"), where glibc raised
+  ;; "Invalid argument" (EINVAL).  The --disable-failure-tokens flag lets
+  ;; libxcrypt behave in the same way as glibc.
+  ;;
+  ;; Guile 2.2.4 explicitly checks for the glibc behavior of crypt, and thus
+  ;; needs libxcrypt to be compiled with --disable-failure-tokens.
+  (hidden-package
+   (package/inherit libxcrypt
+     (name "libxcrypt-without-failure-tokens")
+     (arguments
+      (substitute-keyword-arguments (package-arguments libxcrypt)
+        ((#:configure-flags flags #~'())
+         #~(cons* "--disable-failure-tokens" #$flags)))))))
+
 (define-public keychain
   (package
     (name "keychain")
