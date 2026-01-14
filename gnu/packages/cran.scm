@@ -19681,18 +19681,18 @@ response matrices.")
 (define-public r-ordinal
   (package
     (name "r-ordinal")
-    (version "2023.12-4.1")
+    (version "2025.12-29")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ordinal" version))
        (sha256
         (base32
-         "1c9qiv0zz77i80gbhljj9hm4lh2zs9chfg834lcgyr6972jcz79c"))))
+         "0by4mrrbc37v32drvd1pbxjbyzgfvk0g3xfyxl2x38n0vyapggxk"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-mass r-matrix r-nlme r-numderiv r-ucminf))
-    (native-inputs (list r-lme4 r-testthat r-xtable))
+    (native-inputs (list r-lme4 r-xtable))
     (home-page "https://github.com/runehaubo/ordinal")
     (synopsis "Regression models for ordinal data")
     (description
