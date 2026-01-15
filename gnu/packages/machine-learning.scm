@@ -2317,13 +2317,13 @@ for scientific computing and data science (e.g. BLAS and OpenMP).")
 (define-public python-hdbscan
   (package
     (name "python-hdbscan")
-    (version "0.8.40")
+    (version "0.8.41")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "hdbscan" version))
        (sha256
-        (base32 "05wask431fm78n1227dhvwsmlnys9d95vxjz0y8hbvmy2zzq7qy9"))))
+        (base32 "0ggzkm153cmgdq88jpdsvcmsipdicri24b957wbz47xjbcz847p4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
