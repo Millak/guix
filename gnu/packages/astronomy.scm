@@ -7328,7 +7328,7 @@ and Sensitivities.")
 (define-public python-pynbody
   (package
     (name "python-pynbody")
-    (version "2.4.0")
+    (version "2.4.1")
     (source
      (origin
        (method git-fetch)
@@ -7337,7 +7337,7 @@ and Sensitivities.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a0m42mvdnmlkm8q6704xamnim1q5wkw29p89ikj1axpl2mmq0d3"))
+        (base32 "1jh83xp2grln58p4pr2d0627f7ldsqwib1ipjkg1snpb4vw9hfag"))
        (modules '((guix build utils)))
        (snippet
         ;; Symlink goes to not existing directory.
