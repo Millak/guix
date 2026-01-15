@@ -3519,6 +3519,68 @@ evidence calculation, it is a Python version of the the fitter classes in
 software system for the operations and analysis of the ESA satelite Herschel.")
     (license license:gpl3+)))
 
+(define-public python-bdsf
+  (package
+    (name "python-bdsf")
+    (version "1.13.0.post2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lofar-astron/PyBDSF")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01lvvm81icb5p73ckh10gvvn8rwhf92kcs7l3qhvf7pr0v15gknr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               ;; This looks like not required, as the project was last time
+               ;; updated in 2015,
+               ;; <https://github.com/chrippa/backports.shutil_get_terminal_size>:
+               ;; "A backport of the get_terminal_size function from Python
+               ;; 3.3's shutil."
+               ((".*backports.shutil_get_terminal_size.*") ""))))
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                      #$(version-major+minor+point version))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "test"
+                  (invoke "python" "tbdsf_process_image.py"))))))))
+    (native-inputs
+     (list boost-with-numpy
+           cmake-minimal
+           gfortran
+           python-meson-python
+           python-pytest
+           python-scikit-build
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy
+           python-scipy))
+    (home-page "https://github.com/lofar-astron/PyBDSF")
+    (synopsis "Blob Detector and Source Finder")
+    (description
+     "PyBDSF (the Python Blob Detection and Source Finder) is a tool designed
+to decompose radio interferometry images into sources and make available their
+properties for further use.  PyBDSF can decompose an image into a set of
+Gaussians, shapelets, or wavelets as well as calculate spectral indices and
+polarization properties of sources and measure the psf variation across an
+image.  PyBDSF uses an interactive environment based on CASA that will be
+familiar to most radio astronomers.  Additionally, PyBDSF may also be used in
+Python scripts.")
+    (license license:gpl3 )))
+
 (define-public python-calcos
   (package
     (name "python-calcos")
