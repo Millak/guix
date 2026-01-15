@@ -8182,51 +8182,54 @@ invocations of itself.")
     (name "ntfs-3g")
     (version "2022.10.3")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://tuxera.com/opensource/"
-                                  "ntfs-3g_ntfsprogs-" version ".tgz"))
+              (method git-fetch)
+              (uri
+               (git-reference
+                 (url "https://github.com/tuxera/ntfs-3g")
+                 (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "030pakw3h1z6p8phdbyb0hw0bb868znvrri96rg88jq7d3p3c3pj"))
-              (modules '((guix build utils)))
-              (snippet '(begin
-                          ;; Install under $prefix.
-                          (substitute* '("src/Makefile.in" "ntfsprogs/Makefile.in")
-                            (("/sbin")
-                             "@sbindir@"))))))
+                "02cmw0b2r6j5rk733ljlyrjibv997ck8f9lwrs93kpr6d6q57qcy"))
+              (patches
+               (search-patches "ntfs-3g-autoconf-sbin-helpers.patch"
+                               "ntfs-3g-consistent-sbindir-usage.patch"))))
     (build-system gnu-build-system)
-    (inputs (list util-linux ; libuuid
+    (inputs (list util-linux            ; libuuid
+                  kmod
                   fuse-2))
-    (native-inputs (list pkg-config))
+    (native-inputs (list pkg-config autoconf automake libtool
+                         libgcrypt))    ; for m4 macros
     (arguments
-     '(#:configure-flags (list "--disable-static"
-                               "--disable-ldconfig" ;not necessary
-                               "--exec-prefix=${prefix}"
-                               "--with-fuse=external" ;use our own FUSE
-                               "--enable-mount-helper"
-                               "--enable-posix-acls"
-                               "--enable-xattr-mappings")
-       #:phases
-       (modify-phases %standard-phases
-         ;; If users install ntfs-3g, they probably want to make it the
-         ;; default driver as well, so we opt for sensible defaults and link
-         ;; mount.ntfs to mount.ntfs-3g.  (libmount tries to run mount.ntfs to
-         ;; mount NTFS file systems.)
-         (add-after 'install 'install-link
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (sbin (string-append out "/sbin")))
-               (symlink "mount.ntfs-3g"
-                        (string-append sbin "/mount.ntfs"))))))))
+     (list
+      #:configure-flags
+      #~(list "--disable-static"
+              "--disable-ldconfig"      ;not necessary
+              "--exec-prefix=${prefix}"
+              "--with-fuse=external"    ;use our own FUSE
+              "--enable-mount-helper"
+              (string-append "--with-modprobe-helper="
+                             #$(this-package-input "kmod") "/bin/modprobe")
+              "--enable-posix-acls"
+              "--enable-xattr-mappings")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; If users install ntfs-3g, they probably want to make it the
+          ;; default driver as well, so we opt for sensible defaults and link
+          ;; mount.ntfs to mount.ntfs-3g.  (libmount tries to run mount.ntfs to
+          ;; mount NTFS file systems.)
+          (add-after 'install 'install-link
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (sbin (string-append out "/sbin")))
+                (symlink "mount.ntfs-3g"
+                         (string-append sbin "/mount.ntfs"))))))))
     (home-page "https://www.tuxera.com/community/open-source-ntfs-3g/")
     (synopsis "Read-write access to NTFS file systems")
     (description
      "NTFS-3G provides read-write access to NTFS file systems, which are
 commonly found on Microsoft Windows.  It is implemented as a FUSE file system.
 The package provides additional NTFS tools.")
-    (properties
-     '((release-monitoring-url . "https://github.com/tuxera/ntfs-3g/releases")
-       (upstream-name . "ntfs-3g_ntfsprogs")))
     (license license:gpl2+)))
 
 (define-public ntfs-3g/static
@@ -8237,17 +8240,17 @@ The package provides additional NTFS tools.")
      (arguments
       (substitute-keyword-arguments arguments
         ((#:configure-flags flags)
-         `(append ,flags
-                  (list "--enable-really-static"
-                        ;; The FUSE driver isn't currently used by our initrd.
-                        "--disable-ntfs-3g")))
+         #~(cons* "--enable-really-static"
+                  ;; The FUSE driver isn't currently used by our initrd.
+                  "--disable-ntfs-3g"
+                  #$flags))
         ((#:phases phases)
-         `(modify-phases ,phases
-            (add-after 'unpack 'make-really-static-really-static
-              (lambda _
-                (substitute* "ntfsprogs/Makefile.in"
-                  ((" -static") " -all-static"))))
-            (delete 'install-link))))))))
+         #~(modify-phases #$phases
+             (add-after 'unpack 'make-really-static-really-static
+               (lambda _
+                 (substitute* "ntfsprogs/Makefile.am"
+                   ((" -static") " -all-static"))))
+             (delete 'install-link))))))))
 
 (define-public ntfsfix/static
   (package

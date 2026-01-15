@@ -1,0 +1,45 @@
+From https://github.com/tuxera/ntfs-3g/pull/39
+
+diff --git a/configure.ac b/configure.ac
+index 9aa25bd5..c7c0437b 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -188,3 +203,12 @@
++
++AC_ARG_WITH(
++	[modprobe-helper],
++	[AS_HELP_STRING([--with-modprobe-helper=BIN],[use the specified binary as modprobe helper @<:@default=/sbin/modprobe@:>@])],
++	[modprobe_helper="$withval"],
++	[modprobe_helper="/sbin/modprobe"]
++)
++AC_DEFINE_UNQUOTED([MODPROBE_HELPER], ["$modprobe_helper"], [Binary used as modprobe helper.])
++
+ # pthread_rwlock_t requires _GNU_SOURCE
+ AC_GNU_SOURCE
+ 
+diff --git a/src/lowntfs-3g.c b/src/lowntfs-3g.c
+index 9330500c..dd18a93f 100644
+--- a/src/lowntfs-3g.c
++++ b/src/lowntfs-3g.c
+@@ -4463,7 +4463,7 @@ static fuse_fstype load_fuse_module(void)
+ 	int i;
+ 	struct stat st;
+ 	pid_t pid;
+-	const char *cmd = "/sbin/modprobe";
++	const char *cmd = MODPROBE_HELPER;
+ 	char *env = (char*)NULL;
+ 	struct timespec req = { 0, 100000000 };   /* 100 msec */
+ 	fuse_fstype fstype;
+diff --git a/src/ntfs-3g.c b/src/ntfs-3g.c
+index d8227e71..f5d77252 100644
+--- a/src/ntfs-3g.c
++++ b/src/ntfs-3g.c
+@@ -4171,7 +4171,7 @@ static fuse_fstype load_fuse_module(void)
+ 	int i;
+ 	struct stat st;
+ 	pid_t pid;
+-	const char *cmd = "/sbin/modprobe";
++	const char *cmd = MODPROBE_HELPER;
+ 	char *env = (char*)NULL;
+ 	struct timespec req = { 0, 100000000 };   /* 100 msec */
+ 	fuse_fstype fstype;

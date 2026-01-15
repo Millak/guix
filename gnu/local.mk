@@ -2004,6 +2004,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/nss-3.115-disable-broken-tests.patch     \
   %D%/packages/patches/nss-3.115-disable-pkix-ocsp-tests.patch  \
   %D%/packages/patches/ntp-fix-dereferencing-the-wrong-variable.patch   \
+  %D%/packages/patches/ntfs-3g-autoconf-sbin-helpers.patch   \
+  %D%/packages/patches/ntfs-3g-consistent-sbindir-usage.patch   \
   %D%/packages/patches/nvi-add-function-prototypes.patch	\
   %D%/packages/patches/nvi-assume-preserve-path.patch		\
   %D%/packages/patches/nvi-dbpagesize-binpower.patch		\
