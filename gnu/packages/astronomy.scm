@@ -8932,13 +8932,13 @@ will be provided to supplement published projections and simulations.")
 (define-public python-soxs
   (package
     (name "python-soxs")
-    (version "5.0.1")
+    (version "5.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "soxs" version))
        (sha256
-        (base32 "1q485ygalnnmx2imzm5qlfvblki63bhgmwzxv8gqfqraxk0midv5"))))
+        (base32 "019pswp5mzfg546f9crf6q3xadvw5kzpajckpblj01clk39sqfmx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
