@@ -10579,6 +10579,36 @@ from a @code{GRangesList} representation and provides a semblance of a
 rectangular dataset.")
     (license license:artistic2.0)))
 
+(define-public r-rarr
+  (package
+    (name "r-rarr")
+    (version "1.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "Rarr" version))
+       (sha256
+        (base32 "1j7zpz0fb996yywvrqbnw67p8a2m4y77kx6ijq7wgald6qg0y1v1"))))
+    (properties `((upstream-name . "Rarr")))
+    (build-system r-build-system)
+    (inputs (list zlib))
+    (propagated-inputs (list r-biocgenerics
+                             r-curl
+                             r-delayedarray
+                             r-jsonlite
+                             r-paws-storage
+                             r-r-utils))
+    (native-inputs (list r-knitr r-testthat r-withr))
+    (home-page "https://huber-group-embl.github.io/Rarr/")
+    (synopsis "Read Zarr files in R")
+    (description
+     "The Zarr specification defines a format for chunked, compressed,
+N-dimensional arrays.  Its design allows efficient access to subsets of the
+stored array, and supports both local and cloud storage systems.  Rarr aims to
+implement this specification in R with minimal reliance on external tools or
+libraries.")
+    (license license:expat)))
+
 (define-public r-rdisop
   (package
     (name "r-rdisop")
