@@ -3346,53 +3346,48 @@ celestial-to-terrestrial coordinate transformations.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; Tests are not thread save, see:
+      ;; <https://github.com/astropy/astroquery/issues/2968>.
+      ;; 
+      ;; tests: 1823 passed, 21 skipped, 2047 deselected, 2 xfailed
       #:test-flags
       #~(list "--pyargs" "astroquery"
               "-m" "not remote_data"
-              ;; Some tests failed with parallel run, see
-              ;; <https://github.com/astropy/astroquery/issues/2968>.
-              ;; "-n" "auto"
               "-k" (string-join
-                    (list
-                     ;; Failed: DID NOT RAISE <class
-                     ;; 'astropy.utils.exceptions.AstropyDeprecationWarning'>
-                     "not test_raises_deprecation_warning"
-                     ;; E       fixture 'tmp_cwd' not found
-                     "test_download_cache"
-                     "test_download_local"
-                     "test_download_table"
-                     "test_read_uncompressed")
+                    ;; E fixture 'tmp_cwd' not found
+                    (list "not test_download_cache"
+                          "test_download_local"
+                          "test_download_table"
+                          "test_read_uncompressed")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                ;; Some tests require write access to $HOME.
-                (setenv "HOME" "/tmp")
-                ;; Step out of the source directory to avoid interference;
-                ;; we want to run the installed code with extensions etc.
-                (with-directory-excursion "/tmp"
-                  (apply invoke "pytest" "-v" test-flags))))))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (delete-file-recursively "astroquery"))))))
     (native-inputs
      (list nss-certs-for-test
            python-matplotlib
            python-pytest-astropy
            python-pytest-dependency
            python-pytest-doctestplus
+           python-pytest-rerunfailures
+           python-pytest-timeout
            python-setuptools))
     (propagated-inputs
      (list python-astropy
-           python-astropy-healpix
            python-beautifulsoup4
-           python-boto3
            python-html5lib
            python-keyring
-           ;; python-mocpy : Not packed yet, optional and Rust is required
            python-numpy
            python-pyvo
-           python-regions
-           python-requests))
+           python-requests
+           ;; [optional]
+           python-astropy-healpix
+           python-boto3
+           ;; python-mocpy      ;not packaged yet in Guix
+           python-regions))
     (home-page "https://astroquery.readthedocs.io/en/latest/index.html")
     (synopsis "Access online astronomical data resources")
     (description
