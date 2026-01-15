@@ -13229,13 +13229,13 @@ pre-processed data.")
 (define-public r-rtracklayer
   (package
     (name "r-rtracklayer")
-    (version "1.70.0")
+    (version "1.70.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "rtracklayer" version))
               (sha256
                (base32
-                "1i9yx0ngx97lmw7pcdj89da6bb0w6gpc98mrwy9prlmml78d81dn"))))
+                "0g43xcps4jajrvwbn5ky8rb4yax8kywjqx5xl8syjiyv1jjqbd08"))))
     (properties
      '((updater-ignored-native-inputs
         . ("r-bsgenome-hsapiens-ucsc-hg19"
