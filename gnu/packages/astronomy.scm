@@ -8058,17 +8058,17 @@ wiggles are caused by resampling noise or aliasing artifacts.")
 (define-public python-rad
   (package
     (name "python-rad")
-    (version "0.28.0")
+    (version "0.29.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "rad" version))
        (sha256
-        (base32 "0va7yfy3pcd6fp49ni7388lic3fv77n3qhvaxk6jw535v41by381"))))
+        (base32 "1v28wm4lggk8lj8vlzf059v01mny7vk5njhmyyg4f8bl5syrj5qy"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1798 passed, 1 skipped, 17 xfailed
+      ;; tests: 1886 passed, 1 skipped, 17 xfailed
       #:test-flags
       ;; Ignore tests requiring python-crds to break cycle:
       ;; python-rad -> python-roman-datamodels -> python-crds -> python-rad
