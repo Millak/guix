@@ -4119,14 +4119,14 @@ Spectrograph}.")
 (define-public python-crds
   (package
     (name "python-crds")
-    (version "13.0.6")
+    (version "13.1.1")
     ;; Git: <https://github.com/spacetelescope/crds>
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "crds" version))
        (sha256
-        (base32 "1i0si0z400grdwrkni8fcp58m8f8n2k18n319cwfdlasbw6r2pr5"))))
+        (base32 "1wzyh404ghjv8k9rdbbm7yghsffmamq357n5bjldypnqlfbzq0hi"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4135,7 +4135,7 @@ Spectrograph}.")
       ;; XXX: Tests require a complex set up and test data, try to run some
       ;; minimal portion of unit tests to persist package comparability during
       ;; updates, see:
-      ;; <https://github.com/spacetelescope/crds/blob/13.0.6/TESTING>.
+      ;; <https://github.com/spacetelescope/crds/blob/13.1.1/TESTING>.
       #~(list #$@(map (lambda (file) (string-append "--ignore=" file))
                       ;; Network acces to <https://hst-crds.stsci.edu> or
                       ;; additional test data is required.
