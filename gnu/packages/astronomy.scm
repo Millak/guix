@@ -6449,30 +6449,24 @@ Carlo.")
 (define-public python-ndcube
   (package
     (name "python-ndcube")
-    (version "2.3.4")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ndcube" version))
        (sha256
-        (base32 "0nwy0h1xvs6gw13nygfqx34nqkiixj40pf913n6h7bjfvqkyg2f1"))))
+        (base32 "1344zzjp90s9cfvckf70gsby4ypav1xi2wx9s8cpcv05yzypmiqw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 397 passed, 7 skipped, 10 xfailed
+      ;; tests: 533 passed, 9 skipped, 10 xfailed, 18 warnings
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              #$@(map (lambda (test) (string-append "--deselect="
-                                                    "ndcube/wcs/wrappers/tests/"
-                                                    "test_resampled_wcs.py::"
-                                                    test))
-                      ;; ResampledLowLevelWCS Transformation
-                      ;; This transformation has 2 pixel and 2 world dimensions
-                      ;;
-                      ;; - Array shape (Numpy order): (2.3333333333333335, 15.0)
-                      ;; + Array shape (Numpy order): (2, 15)
-                      (list "test_2d[celestial_2d_ape14_wcs]"
-                            "test_2d[celestial_2d_fitswcs]")))
+              ;; See: <https://github.com/sunpy/ndcube/issues/913>.
+              ;;
+              ;; TypeError: Invalid types were passed, got (Quantity,
+              ;; Quantity, Quantity) expected (Time, Quantity, Quantity).
+              "-k" "not test_crop_by_extra_coords_values_all_axes_with_coord")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-home-env
@@ -6486,7 +6480,7 @@ Carlo.")
            python-pytest
            python-pytest-astropy
            python-pytest-mpl
-           ;; python-pytest-memray ; not packaged yet
+           ;; python-pytest-memray                  ;not packaged yet in Guix
            python-pytest-xdist
            python-setuptools
            python-setuptools-scm
