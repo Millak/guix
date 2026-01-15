@@ -7,6 +7,7 @@
 ;;; Copyright © 2022, 2024 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Junker <dk@junkeria.club>
+;;; Copyright © 2026 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -129,6 +130,22 @@ clients.")
       #:test-backend #~'unittest
       #:phases
       #~(modify-phases %standard-phases
+          (replace 'create-entrypoints
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((sitedir (site-packages inputs outputs))
+                    (interpreter (which "python"))
+                    (file-path (string-append #$output "/bin/xandikos")))
+                (mkdir-p (string-append #$output "/bin"))
+                (call-with-output-file file-path
+                  (lambda (port)
+                    (format port "#!~a -sP
+# Auto-generated entry point script.
+import sys
+import asyncio
+from xandikos.__main__ import main
+if __name__ == '__main__':
+    sys.exit(asyncio.run(main(sys.argv[1:])))~%" interpreter)))
+                (chmod file-path #o755))))
           (add-before 'check 'check-setup
             (lambda _
               (setenv "XANDIKOSPATH" (mkdtemp "/tmp/xandikospath-XXXXXX")))))))
