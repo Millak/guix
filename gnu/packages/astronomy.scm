@@ -10552,13 +10552,13 @@ cosmological simulations.")
 (define-public python-viresclient
   (package
     (name "python-viresclient")
-    (version "0.14.0")
+    (version "0.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "viresclient" version))
        (sha256
-        (base32 "1li42f7rfhj07kbihlk0d5qwhf1wzsypyjskq0rxrwwvsxd8d8lp"))))
+        (base32 "0chxchmr78wkh9zm7w1nj4kbnplhs159mwbdgkn2qssm8rjacrzs"))))
     (build-system pyproject-build-system)
     ;; tests: 9 passed
     (native-inputs
