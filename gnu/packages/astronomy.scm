@@ -7433,7 +7433,7 @@ N-Chilada and RAMSES AMR outputs.")
 (define-public python-pypeit
   (package
     (name "python-pypeit")
-    (version "1.17.4") ;XXX: Newer versions need to be built with NumPy 2+
+    (version "1.18.1")
     (source
      (origin
        (method git-fetch)
@@ -7442,11 +7442,11 @@ N-Chilada and RAMSES AMR outputs.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16y4vkjmd29zrjhhv2fyv9rksjblri3zf6m81mhmhys5sy09xmfz"))))
+        (base32 "171sbw8r83ll994nn2faz3b7c381hrss84fgih3lqqij1d4395hm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 242 passed, 10 skipped, 5 deselected, 120 warnings
+      ;; tests: 245 passed, 5 deselected, 112 warnings
       #:test-flags
       ;; Tests still try to download test data even it's available in
       ;; "pypeit/data".
@@ -7463,7 +7463,7 @@ N-Chilada and RAMSES AMR outputs.")
           ;; XXX: See: <https://github.com/pypeit/PypeIt/issues/1786>.
           (add-after 'unpack 'remove-missing-scripts-entry-points
             (lambda _
-              (substitute* "setup.cfg"
+              (substitute* "pyproject.toml"
                 ((".*pypeit_install_ql_calibs.*") "")
                 ((".*pypeit_ql_multislit.*") ""))))
           (add-after 'unpack 'set-version
@@ -7481,11 +7481,7 @@ N-Chilada and RAMSES AMR outputs.")
               (system "Xvfb &")
               (setenv "DISPLAY" ":0")
               (setenv "HOME" "/tmp")
-              (setenv "MPLBACKEND" "agg")))
-          (add-before 'check 'post-check
-            (lambda _
-              (for-each delete-file-recursively
-                        (find-files #$output "__pycache__" #:directories? #t)))))))
+              (setenv "MPLBACKEND" "agg"))))))
     (native-inputs
      (list nss-certs-for-test
            python-cython
@@ -7498,10 +7494,9 @@ N-Chilada and RAMSES AMR outputs.")
            python-specutils
            xorg-server-for-tests))
     (propagated-inputs
-     (list python-astropy-6
+     (list python-astropy
            python-bottleneck
            python-configobj
-           python-extension-helpers
            python-fast-histogram
            python-ginga
            python-ipython
@@ -7538,10 +7533,7 @@ as cross-dispersed echelle spectra.")
     (arguments
      (substitute-keyword-arguments
          (package-arguments python-pypeit)
-       ((#:tests? _ #t) #f)
-       ((#:phases phases '%standard-phases)
-        #~(modify-phases #$phases
-            (delete 'pre-check)))))
+       ((#:tests? _ #t) #f)))
     (native-inputs
      (list python-setuptools
            python-setuptools-scm))))
