@@ -14281,13 +14281,13 @@ methylation data.")
 (define-public r-transcriptr
   (package
     (name "r-transcriptr")
-    (version "1.37.0")
+    (version "1.38.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "transcriptR" version))
        (sha256
-        (base32 "18gxiwl1i5v10rxdprnpjylx57p2zfgpm5akb2vn7mzj24n4fhh3"))))
+        (base32 "08m2wdxwv0d9np40hg7p1bnx9lw6944hyjf2a72k5jd6d26d7qgj"))))
     (properties
      '((upstream-name . "transcriptR")
        (updater-ignored-native-inputs
@@ -14311,7 +14311,6 @@ methylation data.")
      (list r-biocgenerics
            r-caret
            r-chipseq
-           r-e1071
            r-genomeinfodb
            r-genomicalignments
            r-genomicfeatures
