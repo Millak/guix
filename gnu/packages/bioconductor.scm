@@ -716,14 +716,14 @@ sapiens @code{dbSNP} build 131.")
 (define-public r-reactome-db
   (package
     (name "r-reactome-db")
-    (version "1.94.0")
+    (version "1.95.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "reactome.db" version 'annotation))
        (sha256
         (base32
-         "0a6gx6iss43innhkhydqmv4jpnwkkjfdl32zxr4kjvm57xb2k4p0"))))
+         "1b87byr45cmqa7jyd5fw3askmrzfhdljjp2d7jcmm88baf45mfg6"))))
     (properties `((upstream-name . "reactome.db")))
     (build-system r-build-system)
     (propagated-inputs
