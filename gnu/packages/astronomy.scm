@@ -9606,13 +9606,13 @@ implementing calibration pipeline software.")
 (define-public python-stpsf
   (package
     (name "python-stpsf")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stpsf" version))
        (sha256
-        (base32 "191bwwv0ji7m74cglk5jvfgx6c4yfxhx6fd0w5n9k363cxqqp0x6"))))
+        (base32 "0vrrx7zjj4zpachj2zn92rgn7lfnzps32hyhkbxlmg043aq3a1pj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -9625,8 +9625,7 @@ implementing calibration pipeline software.")
       #:tests? #f))
     (native-inputs
      (list python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-astroquery
