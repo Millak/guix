@@ -8321,17 +8321,17 @@ changing the pixel resolution, orientation, coordinate system.")
 (define-public python-roman-datamodels
   (package
     (name "python-roman-datamodels")
-    (version "0.28.1")
+    (version "0.29.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "roman_datamodels" version))
        (sha256
-        (base32 "0j5y6d4zz1zyfwp05iwlvn0708hsh7phvp2j3zpi9pczljp78aw0"))))
+        (base32 "0vcs635gkccbya649dscqp8wwksmqckxsz5v51nyx1bs6h55ldma"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 4618 passed, 1 skipped, 11 xfailed
+      ;; tests: 4659 passed, 1 skipped
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
       #:phases
@@ -8355,7 +8355,8 @@ changing the pixel resolution, orientation, coordinate system.")
            python-lz4
            python-numpy
            python-pyarrow
-           python-rad))
+           python-rad
+           python-semantic-version))
     (home-page "https://github.com/spacetelescope/roman_datamodels")
     (synopsis "Roman Datamodels Support")
     (description
