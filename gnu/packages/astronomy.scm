@@ -10972,7 +10972,7 @@ It can be used to calculate the trajectory of satellites.")
 (define-public siril
   (package
     (name "siril")
-    (version "1.4.0-beta4")
+    (version "1.4.1")
     (source
      (origin
        (method git-fetch)
@@ -10980,7 +10980,7 @@ It can be used to calculate the trajectory of satellites.")
              (url "https://gitlab.com/free-astro/siril")
              (commit version)))
        (sha256
-        (base32 "104wb5m2bb51mi3yqndp0s69281i6px5dxcwlldhjp85cwp3qv51"))
+        (base32 "0yjyqxk5wcfh28x1qmamjbap4b8bbsph5pp1w3s3jyph609nx46h"))
        (file-name (git-file-name name version))
        (modules '((guix build utils)))
        (snippet
