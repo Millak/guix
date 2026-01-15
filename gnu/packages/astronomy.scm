@@ -10367,7 +10367,7 @@ object.")
 (define-public python-swiftgalaxy
   (package
     (name "python-swiftgalaxy")
-    (version "1.2.1") ;the latest compatible with python-swiftsimio@9.0.1
+    (version "2.3.1")
     (source
      (origin
        (method git-fetch)
@@ -10376,7 +10376,7 @@ object.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ywgjhv6h9cm052gjfhsiavy9s2czv1m9y8fnrfcidh72fks81d4"))))
+        (base32 "06sb3s7n5617ygm3jg40ki2py0223nf4v86f7r6rdm0q9v9xgyg4"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ;tests need to download remote datasets
