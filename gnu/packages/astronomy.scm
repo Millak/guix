@@ -224,8 +224,8 @@ reused in several astronomical applications, such as @code{wsclean},
 (define-public aoflagger
   ;; 3.4.0 was released in 2023, there are a lot of changes and compatibility
   ;; for EveryBeam.
-  (let ((commit "b3a459df54b35ec18821ae0a392eeef1ca92cdba")
-        (revision "0"))
+  (let ((commit "b97943fd4c809f73ce1de2129a529d702cb133aa")
+        (revision "1"))
     (package
       (name "aoflagger")
       (version (git-version "3.4.0" revision commit))
@@ -236,7 +236,7 @@ reused in several astronomical applications, such as @code{wsclean},
                 (url "https://gitlab.com/aroffringa/aoflagger")
                 (commit commit)))
          (sha256
-          (base32 "0fgm2svdw52m348hi28pnknxsdy54dkfd7y388b14hwf9z5ransa"))
+          (base32 "1m391a5dg0vlnblqc2l5r3pyys2zjl9v6c66hxibaq1rmlj7b41m"))
          (file-name (git-file-name name version))))
       (build-system cmake-build-system)
       (arguments
@@ -258,7 +258,7 @@ reused in several astronomical applications, such as @code{wsclean},
                          (string-append (getcwd) "/external/aocommon")))))))
       (native-inputs
        (list aocommon
-             boost-1.83
+             boost
              pkg-config
              python
              pybind11))
@@ -267,7 +267,7 @@ reused in several astronomical applications, such as @code{wsclean},
              cfitsio
              fftw
              gsl
-             gtkmm-3
+             gtkmm
              hdf5
              libpng
              libsigc++
