@@ -194,8 +194,8 @@ randomly altered.
     (license license:gpl3)))
 
 (define-public aocommon
-  (let ((commit "1444d66a59e757e7a0c74447e9f8d7a69c5e102d")
-        (revision "3"))
+  (let ((commit "5f3f28099f354cfd4d077ed461c365ba46eb9ffb")
+        (revision "4"))
     (package
       (name "aocommon")
       (version (git-version "0.0.0" revision commit))
@@ -206,7 +206,7 @@ randomly altered.
                 (url "https://gitlab.com/aroffringa/aocommon")
                 (commit commit)))
          (sha256
-          (base32 "06kdkkarx4bmp9808bwlx35vnp6g0vfzaxx1ijvzwgsjgg8yi5cp"))
+          (base32 "0a5bmjpx6g0hpr9v9njsmlza0inckcmhfhnkk3lipg32rl6b5398"))
          (file-name (git-file-name name version))))
       (build-system copy-build-system)
       (arguments
