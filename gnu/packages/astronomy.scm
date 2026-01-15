@@ -549,8 +549,8 @@ Library with namespaces, exception handling, and member template functions.")
 (define-public celestia
   ;; 1.6.4 was placed in 2023 while master migrated to Qt6, use the lates
   ;; commit for now.
-  (let ((commit "d3f4040401f5f71bcca79e55d53be75c05b867ef")
-        (revision "0"))
+  (let ((commit "6de0339a85be38e85e2ad34f58850700be4342c5")
+        (revision "1"))
     (package
       (name "celestia")
       (version (git-version "1.6.4" revision commit))
@@ -562,7 +562,7 @@ Library with namespaces, exception handling, and member template functions.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0rqkzxyf8gfjprhj1c19d7chhc3b94wlq2119wz0c344rx7hnh9l"))))
+          (base32 "0jjcirjnvj670m2xmcsmvqxpk303mb7bf3y41zrr53rgykqd7ypf"))))
       (build-system cmake-build-system)
       (arguments
        (list
