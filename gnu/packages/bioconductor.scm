@@ -11950,7 +11950,12 @@ of mass spectrometry based proteomics data.")
       '(modify-phases %standard-phases
          ;; Needed for r-r-cache
          (add-after 'unpack 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp"))))))
+           (lambda _ (setenv "HOME" "/tmp")))
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; This checks for a file hash.
+             (substitute* "inst/unitTests/test_data_load.R"
+               (("test_data_load_mzR") "skip_test_data_load_mzR")))))))
     (propagated-inputs
      (list r-annotationdbi
            r-annotationhub
