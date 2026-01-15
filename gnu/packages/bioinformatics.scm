@@ -23954,11 +23954,11 @@ translates between different variant encodings.")
       (license license:asl2.0))))
 
 (define-public r-signac
-  (let ((commit "8ecdde291676102bb3b503f48926c993354b5471")
+  (let ((commit "f5a84118508d2f0d6b04bd7fd28ad7f3576de461")
         (revision "1"))
     (package
       (name "r-signac")
-      (version (git-version "1.12.0" revision commit))
+      (version (git-version "1.16.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -23967,8 +23967,10 @@ translates between different variant encodings.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0idkcqb1i13m164nxbdwgs3vflw0cxzm2ir84aw0i811vx9lqz8c"))))
-      (properties `((upstream-name . "Signac")))
+                  "1q80ynngskmkndsbfliikrmj8q9q73vx30cfzk6v14w0y6f8rak7"))))
+      (properties
+       '((upstream-name . "Signac")
+         (updater-extra-native-inputs . ("r-testthat"))))
       (build-system r-build-system)
       (inputs (list zlib))
       (propagated-inputs
@@ -23983,11 +23985,13 @@ translates between different variant encodings.")
              r-ggplot2
              r-iranges
              r-irlba
+             r-lifecycle
              r-matrix
              r-patchwork
              r-pbapply
              r-rcpp
              r-rcpproll
+             r-rlang
              r-rsamtools
              r-s4vectors
              r-scales
