@@ -11583,6 +11583,29 @@ models, in the same style as parsnip.  It creates a unified interface across
 different functions and computational engines.")
     (license license:expat)))
 
+(define-public r-tidydr
+  (package
+    (name "r-tidydr")
+    (version "0.0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "tidydr" version))
+       (sha256
+        (base32 "00f6cskln8739xjfgnn1166n49798xmigw6kf65yl85kw37l9bqz"))))
+    (properties `((upstream-name . "tidydr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cluster r-ggfun r-ggplot2 r-rlang))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/YuLab-SMU/tidydr/")
+    (synopsis "Unify dimensionality reduction results")
+    (description
+     "Dimensionality reduction (DR) is widely used in many domains for
+analyzing and visualizing high-dimensional data.  The tidydr package provides
+uniform output and is compatible with multiple methods, including @code{prcomp},
+@code{mds}, @code{Rtsne}, etc.")
+    (license license:artistic2.0)))
+
 (define-public r-tidyft
   (package
     (name "r-tidyft")
