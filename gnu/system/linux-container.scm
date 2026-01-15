@@ -45,7 +45,11 @@
   #:export (system-container
             containerized-operating-system
             container-script
-            eval/container))
+            eval/container)
+  ;; Re-export some variables from (guix build linux-container), for
+  ;; convenience.
+  #:re-export (%namespaces
+               %writable-/tmp))
 
 (define* (container-essential-services os #:key shared-network?)
   "Return a list of essential services corresponding to OS, a
