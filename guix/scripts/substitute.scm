@@ -223,7 +223,7 @@ Internal tool to substitute a pre-built binary to a local build.\n"))
 ;;;
 
 ;; Whether to initially prefer fast decompression or not
-(define %default-fast-decompression? #f)
+(define %default-fast-decompression? #t)
 
 (define (call-with-cpu-usage-monitoring thunk)
   (let ((before (times)))

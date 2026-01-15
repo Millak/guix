@@ -618,16 +618,30 @@ System: mips64el-linux\n")))
   (with-narinfo* (string-append %narinfo "Signature: " (signature-field %narinfo))
       %main-substitute-directory
 
+    (define (compress input output compression)
+      (call-with-output-file output
+        (lambda (port)
+          (call-with-compressed-output-port compression port
+            (lambda (port)
+              (call-with-input-file input
+                (lambda (input)
+                  (dump-port input port))))))))
+
+    ;; This test is dependent on which nar the substitute script picks to
+    ;; request first
     (with-http-server `((200 ,(string-append %narinfo "Signature: "
                                              (signature-field %narinfo)
                                              "\n"
                                              "URL: example.nar.lz\n"
                                              "Compression: lzip\n"))
                         (404 "Sorry, nar.lz is missing!")
-                        (200 ,(call-with-input-file
-                                  (string-append %main-substitute-directory
-                                                 "/example.nar")
-                                get-bytevector-all)))
+                        (200 ,(let ((nar (string-append
+                                          %main-substitute-directory
+                                          "/example.nar")))
+                                (compress nar (string-append nar ".lz") 'lzip)
+                                (call-with-input-file
+                                    (string-append nar ".lz")
+                                  get-bytevector-all))))
       (dynamic-wind
         (const #t)
         (lambda ()
