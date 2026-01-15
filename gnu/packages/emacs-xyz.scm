@@ -7935,8 +7935,9 @@ type, for example: packages, buffers, files, etc.")
     (license license:gpl3+)))
 
 (define-public emacs-guix
-  (let ((commit "324987fb4a3e67c6f0f565b6605b8fce559f60ee")
-        (revision "9"))
+  ;; No releases, nor tags.
+  (let ((commit "bccba0c1e6446f10075d8eaebae9eef6e67159a3")
+        (revision "10"))
     (package
       (name "emacs-guix")
       (version (git-version "0.5.2" revision commit))
@@ -7948,7 +7949,7 @@ type, for example: packages, buffers, files, etc.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1bg8sy20rdpdv1vzim494jwrmd63rd1mn8v94rkdijs9a2cakdkq"))))
+                  "02p342vqcadbc6kqrpxsispy2dx46ypsp43s4p7llyajxvgk8zks"))))
       (build-system gnu-build-system)
       (arguments
        (list
