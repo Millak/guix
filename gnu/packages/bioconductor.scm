@@ -14110,13 +14110,13 @@ level.")
 (define-public r-tcgautils
   (package
     (name "r-tcgautils")
-    (version "1.30.1")
+    (version "1.30.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "TCGAutils" version))
               (sha256
                (base32
-                "1dc5d3ag89jl3dnajqwy92ih1fzzzmmx8r9a14g59fpc9wx5z7fm"))))
+                "1zwzx7mfp4s0v1rdjsyxj4l9w360g4qm3am8yf5lsd0biciqqh93"))))
     (properties `((upstream-name . "TCGAutils")))
     (build-system r-build-system)
     (arguments
