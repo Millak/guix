@@ -19516,14 +19516,14 @@ attempts to assess their statistical significance.")
 (define-public r-clusterprofiler
   (package
     (name "r-clusterprofiler")
-    (version "4.18.2")
+    (version "4.18.4")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "clusterProfiler" version))
        (sha256
         (base32
-         "0m26gbiaff72jivvk6ncgrd4mhq5y0asc7mnjn1qqrba4k63x9nr"))))
+         "00kd5zmzd9pm0mxd2r95l7j4mvqgnbbkaqs2rb5fh06r3rk2c14p"))))
     (properties
      '((upstream-name . "clusterProfiler")
        (updater-extra-native-inputs . ("r-org-hs-eg-db"))))
