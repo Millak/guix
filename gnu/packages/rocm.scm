@@ -44,7 +44,9 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages libffi)
-  #:use-module (ice-9 match))
+  #:use-module (ice-9 match)
+  #:export (%default-amd-gpu-targets
+            current-amd-gpu-targets))
 
 ;; The components are tightly integrated and can only be upgraded as a unit. If
 ;; you want to upgrade ROCm, bump this version number and update hashes below.
