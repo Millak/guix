@@ -5313,18 +5313,18 @@ and a 3D volume rendering viewer.")
 specifically pulsar timing array signals.")
     (license license:expat)))
 
-(define-public python-gwcs
+(define-public python-gwcs-1
   (package
     (name "python-gwcs")
-    (version "0.26.1")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "gwcs" version))
        (sha256
-        (base32 "0gkxgwzlazg0xihhgg9vlss6jj7lg6i6r2z6igpxcnyc5s147d0p"))))
+        (base32 "08s7blad5idafx565745my72hjsxz4dqrg2kzppqw2isgr7bs8gr"))))
     (build-system pyproject-build-system)
-    ;; tests: 1023 passed, 10 skipped, 10 warnings
+    ;; tests: 1038 passed, 6 skipped, 10 warnings
     (native-inputs
      (list python-pytest
            python-pytest-astropy
@@ -5352,7 +5352,7 @@ default) to world coordinates.")
 
 (define-public python-gwcs-0.21
   (package
-    (inherit python-gwcs)
+    (inherit python-gwcs-1)
     (name "python-gwcs")
     (version "0.21.0")
     (source
@@ -5365,6 +5365,22 @@ default) to world coordinates.")
      (modify-inputs (package-propagated-inputs python-gwcs)
        (replace "python-astropy" python-astropy-6)
        (replace "python-asdf" python-asdf-3)))))
+
+;; The last 0.X.X version, providing breaking changes with 1.X.X.
+(define-public python-gwcs-0
+  (package
+    (inherit python-gwcs-1)
+    (version "0.26.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "gwcs" version))
+       (sha256
+        (base32 "0gkxgwzlazg0xihhgg9vlss6jj7lg6i6r2z6igpxcnyc5s147d0p"))))))
+
+;; Not all of the dependeds are ready to use 1.X.X, pin on the highest 0.X.X
+;; for now.
+(define-public python-gwcs python-gwcs-0)
 
 (define-public python-halotools
   (package
