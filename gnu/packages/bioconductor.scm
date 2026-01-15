@@ -19448,14 +19448,14 @@ correspondence between different data sources.")
 (define-public r-enrichplot
   (package
     (name "r-enrichplot")
-    (version "1.30.3")
+    (version "1.30.4")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "enrichplot" version))
        (sha256
         (base32
-         "04dyxwlry1nqihi1s6h3j1dxn2wh8sip16s82lk0jrsfjr07c2mz"))))
+         "080q91ll8rvqf93hcmxc7kjbmmihyh0vrpxck2pqrwglbqxm4xll"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-aplot
@@ -19468,13 +19468,13 @@ correspondence between different data sources.")
            r-ggtree
            r-gosemsim
            r-igraph
-           r-magrittr
            r-plyr
            r-purrr
            r-rcolorbrewer
            r-reshape2
            r-rlang
            r-scatterpie
+           r-tidydr
            r-yulab-utils))
     (native-inputs
      (list r-knitr))
