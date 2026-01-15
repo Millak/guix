@@ -196,6 +196,74 @@ to with the goal of improving your focus and enhancing your productivity.
 You can also use it to fall asleep in a noisy environment.")
     (license license:gpl3+)))
 
+(define-public cartridges
+  (package
+    (name "cartridges")
+    (version "2.13.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://codeberg.org/kramo/cartridges.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1vykylz4wm8zvccqsfvfy02hrnm2lygv8yrwmkhdj0l44fqqlqsm"))
+              (patches
+               ;; See <https://codeberg.org/kramo/cartridges/pulls/433>.
+               (search-patches "cartridges-fix-non-parallel-build.patch"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-Dtiff_compression=jpeg") ;webp compression leads to error
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gnome-post-install
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")
+                (("update_desktop_database: true")
+                 "update_desktop_database: false"))))
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/cartridges")
+                `("GUIX_PYTHONPATH" =
+                  (,(string-append #$output "/lib/python3.11/site-packages:"
+                                   (getenv "GUIX_PYTHONPATH"))))
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
+                `("GDK_PIXBUF_MODULE_FILE" =
+                  (,(getenv "GDK_PIXBUF_MODULE_FILE")))
+                `("PATH" ":" prefix
+                  (,(dirname (search-input-file inputs "/bin/gtk4-launch"))
+                   ,(dirname (search-input-file inputs "/bin/xdg-open"))))))))))
+    (native-inputs
+     (list blueprint-compiler
+           gettext-minimal
+           gobject-introspection
+           `(,glib "bin")
+           pkg-config))
+    (inputs
+     (list adwaita-icon-theme
+           bash-minimal
+           gtk
+           `(,gtk "bin")                ;for gtk-launch
+           libadwaita
+           python
+           python-pillow
+           python-pygobject
+           python-pyyaml
+           python-requests
+           xdg-utils))                  ;for xdg-open
+    (home-page "https://apps.gnome.org/Cartridges/")
+    (synopsis "Game launcher for GNOME")
+    (description "Cartridges is a game launcher for multiple game libraries.
+It can import and launch games from Steam, Lutris, Heroic, Bottles, itch,
+Legendary, RetroArch, Flatpak and desktop files.")
+    (license license:gpl3+)))
+
 (define-public deja-dup
   (package
     (name "deja-dup")

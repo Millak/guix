@@ -1,0 +1,57 @@
+From e3924e08382e180764b8118a3f002fc39fc02e96 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?No=C3=A9=20Lopez?= <noelopez@free.fr>
+Date: Thu, 29 Jan 2026 22:40:37 +0100
+Subject: [PATCH] data/meson.build: Correct dependencies for
+ cartridges.gresource.xml.in.
+
+---
+ data/meson.build | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/data/meson.build b/data/meson.build
+index ea17413..5c5b782 100644
+--- a/data/meson.build
++++ b/data/meson.build
+@@ -17,19 +17,6 @@ blueprints = custom_target(
+   ],
+ )
+ 
+-gnome.compile_resources(
+-  'cartridges',
+-  configure_file(
+-    input: 'cartridges.gresource.xml.in',
+-    output: 'cartridges.gresource.xml',
+-    configuration: conf,
+-  ),
+-  gresource_bundle: true,
+-  install: true,
+-  install_dir: pkgdatadir,
+-  dependencies: blueprints,
+-)
+-
+ if host_machine.system() == 'windows'
+   desktop_file = configure_file(
+     input: 'page.kramo.Cartridges.desktop.in',
+@@ -82,6 +69,19 @@ else
+   )
+ endif
+ 
++gnome.compile_resources(
++  'cartridges',
++  configure_file(
++    input: 'cartridges.gresource.xml.in',
++    output: 'cartridges.gresource.xml',
++    configuration: conf,
++  ),
++  gresource_bundle: true,
++  install: true,
++  install_dir: pkgdatadir,
++  dependencies: [blueprints, appstream_file],
++)
++
+ if host_machine.system() != 'windows'
+   appstreamcli = find_program('appstreamcli', required: false)
+   if appstreamcli.found()
+-- 
+2.52.0
+
