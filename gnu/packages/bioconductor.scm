@@ -12968,13 +12968,13 @@ browser.")
 (define-public r-rhdf5
   (package
     (name "r-rhdf5")
-    (version "2.54.0")
+    (version "2.54.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "rhdf5" version))
               (sha256
                (base32
-                "1psfaqha2sflpp0sm0j3wcxscxb9490pbck69izrsfrrg75jbf7n"))))
+                "1brp806vagja149w6faldir5vfcrlvhqdakb3q5crr5wxfqp7qk5"))))
     (build-system r-build-system)
     (arguments
      (list
