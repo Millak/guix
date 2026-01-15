@@ -361,18 +361,18 @@ Transmission BitTorrent daemon.")
     (name "aria2")
     (version "1.37.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/aria2/aria2/releases/"
-                                  "download/release-" version
-                                  "/aria2-" version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/aria2/aria2")
+                     (commit (string-append "release-" version))))
               (sha256
                (base32
-                "0sxng4pynhj2qinranpv6wyzys3d42kz1gg2nrn63sw5f2nj1930"))
+                "1yr9yxr7z3bdg51afpzj0i63xl2rdk1prl20qws21y6r1x58vf65"))
+              (file-name (git-file-name name version))
               (patches (search-patches "aria2-unbundle-wslay.patch"))
               (snippet
                #~(begin (use-modules (guix build utils))
-                        (delete-file-recursively "deps")
-                        (delete-file "configure")))))
+                        (delete-file-recursively "deps")))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -382,10 +382,13 @@ Transmission BitTorrent daemon.")
                               #$output "/etc/bash_completion.d/"))
        #:phases
        #~(modify-phases %standard-phases
-           (add-after 'unpack 'patch-configure
+           (add-after 'unpack 'update-gettext-version
              (lambda _
                (substitute* "configure.ac"
-                 (("0[.]18") "0.19.6"))))
+                 (("AM_GNU_GETTEXT_VERSION\\(.*\\)")
+                  (format #f "AM_GNU_GETTEXT_VERSION([~a])"
+                          #$(package-version (this-package-native-input
+                                              "gettext-minimal")))))))
            (add-after 'unpack 'delete-socket-tests
              (lambda _
                (substitute* "test/LpdMessageDispatcherTest.cc"
@@ -417,8 +420,6 @@ Transmission BitTorrent daemon.")
       "Aria2 is a lightweight, multi-protocol & multi-source command-line
 download utility.  It supports HTTP/HTTPS, FTP, SFTP, BitTorrent and Metalink.
 Aria2 can be manipulated via built-in JSON-RPC and XML-RPC interfaces.")
-    (properties
-     '((release-monitoring-url . "https://github.com/aria2/aria2/releases")))
     (license license:gpl2+)))
 
 (define-public uget
