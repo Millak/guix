@@ -29542,6 +29542,7 @@ forms in parallel.")
   (sbcl-package->ecl-package sbcl-simple-parallel-tasks))
 
 (define-public sbcl-simple-rgb
+  ;; Last versioned release is from 2008.
   (let ((commit "ba9b0689362c28aa6a91c0636796c6c372657293")
         (revision "1"))
     (package
