@@ -10610,7 +10610,8 @@ with Emacs.")
      (list
       #:tests? #f         ;the testing framework, test-hdl, requires network
       #:test-command #~(list "make")))
-    (propagated-inputs (list tree-sitter-vhdl))
+    ;; TODO: Switch to tree-sitter-vhdl once supported.
+    (propagated-inputs (list tree-sitter-vhdl-0))
     (home-page "https://github.com/gmlarumbe/vhdl-ts-mode/")
     (synopsis "VHDL Tree-sitter mode")
     (description

@@ -12,6 +12,7 @@
 ;;; Copyright © 2025 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2025 Evgenii Klimov <eugene.dev@lipklim.org>
 ;;; Copyright © 2025 Felipe Silva <git@felipeqq2.rocks>
+;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2016,6 +2017,17 @@ files.")))
    "1.0.3"))
 
 (define-public tree-sitter-vhdl
+  (tree-sitter-grammar
+   "vhdl" "VHDL"
+   "1q3phfp8wa7c0ava5488s6vpkvk5n5y8ilglg23h9lpygarx7fji"
+   "1.3.1"
+   #:repository-url "https://github.com/jpt13653903/tree-sitter-vhdl"))
+
+;;; TODO: Remove this package when emacs-vhdl-ts-mode switches to jpt13653903.
+;;; We keep old one as alemuller is still required by emacs-vhdl-ts-mode.
+;;; See:
+;;; https://github.com/gmlarumbe/vhdl-ts-mode/issues/17
+(define-public tree-sitter-vhdl-0
   (let ((version "0.1.1") ; In package.json, but untagged
         (commit "a3b2d84990527c7f8f4ae219c332c00c33d2d8e5")
         (revision "0"))
