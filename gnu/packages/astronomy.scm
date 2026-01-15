@@ -6000,7 +6000,7 @@ astronomical tables
 (define-public python-lenstronomy
   (package
     (name "python-lenstronomy")
-    (version "1.13.3")
+    (version "1.13.5")
     (source
      (origin
        (method git-fetch)
@@ -6009,29 +6009,21 @@ astronomical tables
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "046695i2qapjz1r8z87kqsp2x0klsd157zhsncplrkpb3kapk7zj"))))
+        (base32 "17kb3la02rdbkx8n1vdgr9b7yizahcx2hli56flsv4pnvnp6q6kx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1483 passed, 2189 warnings
+      ;; tests: 1510 passed, 45211 warnings
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               ;; TypeError: SparseSolverBase.__init__() got an unexpected
               ;; keyword argument 'num_iter_lens'
               "--ignore=test/test_ImSim/test_image_model_pixelbased.py"
-              "-k" (string-join
-                    ;; _flapack.error: (liwork>=max(1,10*n)||liwork==-1)
-                    ;; failed for 10th keyword liwork: dsyevr:liwork=1
-                    (list "not test_sampler"
-                          ;; TypeError: SLIT_Starlets.function_2d() got an
-                          ;; unexpected keyword argument 'n_pix_x'
-                          "test_pixelbased_modelling"
-                          ;; This might be NumPy issue:
-                          ;; Arrays are not almost equal to 3 decimals
-                          ;;  ACTUAL: -8669.992995432973
-                          ;;  DESIRED: -9108.078115857057
-                          "test_multiplane")
-                    " and not "))
+              ;; TypeError: SLIT_Starlets.function_2d() got an unexpected
+              ;; keyword argument 'n_pix_x'
+              (string-append "--deselect=test/test_Sampling/test_likelihood.py"
+                             "::TestLikelihoodModule"
+                             "::test_pixelbased_modelling"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
@@ -6060,7 +6052,7 @@ astronomical tables
            python-slitronomy
            python-zeus-mcmc))
     (propagated-inputs
-     (list python-astropy-6
+     (list python-astropy
            python-configparser
            python-corner
            python-h5py
