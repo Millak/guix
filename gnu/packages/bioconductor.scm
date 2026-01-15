@@ -15333,13 +15333,13 @@ libraries for systems that do not have these available via other means.")
 (define-public r-zellkonverter
   (package
     (name "r-zellkonverter")
-    (version "1.20.0")
+    (version "1.20.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "zellkonverter" version))
        (sha256
-        (base32 "1w9kkx5qxskkxmq5y0x58pim5n9i4hms5mhm6y2n58qd1ja2qap2"))))
+        (base32 "1si2g69l4scgkfrgas7fj6klj1rn1bcnch9panv564nyvkfrlmmv"))))
     (properties `((upstream-name . "zellkonverter")))
     (build-system r-build-system)
     ;; This uses r-basilisk, which attempts to set up a Conda environment.
