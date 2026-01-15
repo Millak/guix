@@ -1156,12 +1156,13 @@ path."
              (read-store-path port)))))
     (lambda* (server basename recursive? hash-algo file-name
                      #:key (select? true))
-      "Add the contents of FILE-NAME under BASENAME to the store.  When
-RECURSIVE? is false, FILE-NAME must designate a regular file--not a directory
-nor a symlink.  When RECURSIVE? is true and FILE-NAME designates a directory,
-the contents of FILE-NAME are added recursively; if FILE-NAME designates a
-flat file and RECURSIVE? is true, its contents are added, and its permission
-bits are kept.  HASH-ALGO must be a string such as \"sha256\".
+      "Add the contents of FILE-NAME under BASENAME to the store
+and return its store file name.  When RECURSIVE? is false, FILE-NAME
+must designate a regular file--not a directory nor a symlink.  When RECURSIVE?
+is true and FILE-NAME designates a directory, the contents of FILE-NAME are
+added recursively; if FILE-NAME designates a flat file and RECURSIVE? is true,
+its contents are added, and its permission bits are kept.  HASH-ALGO must be a
+string such as \"sha256\".
 
 When RECURSIVE? is true, call (SELECT?  FILE STAT) for each directory entry,
 where FILE is the entry's absolute file name and STAT is the result of
