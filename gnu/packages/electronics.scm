@@ -1059,6 +1059,61 @@ an embedded event driven algorithm.")
                    license:bsd-3 ;ciderlib
                    license:public-domain)))) ;xspice
 
+(define-public librelane
+  (package
+    (name "librelane")
+    (version "3.0.0rc0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/librelane/librelane")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hi4ppdwl1zh7yw1ncy1jrqc6za4mz243mqvfjr7mcdm349pyvb0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'fix-build
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "librelane/steps/verilator.py"
+                (("\"verilator\"")
+                 (format #f "~s"
+                         (search-input-file inputs "/bin/verilator")))))))))
+    (native-inputs
+     (list python-customtkinter
+           python-poetry-core
+           python-pyfakefs
+           python-pytest
+           python-setuptools))
+    (inputs
+     (list ciel
+           python-click
+           python-cloup
+           python-deprecated
+           python-httpx
+           python-klayout
+           python-lln-libparse
+           python-lxml
+           python-pcpp
+           python-psutil
+           python-pyyaml
+           python-rapidfuzz
+           python-rich
+           python-semver
+           python-yamlcore-0.0.2
+           verilator))
+    (home-page "https://librelane.readthedocs.io/")
+    (synopsis "ASIC implementation flow infrastructure")
+    (description "LibreLane is an @acronym{EDA, Electronic Design Automation}
+ASIC infrastructure library based on several components including OpenROAD,
+Yosys, Magic, Netgen, CVC, KLayout and a number of custom scripts for design
+exploration and optimization.")
+    (license license:asl2.0)))
+
 (define-public librepcb
   (package
     (name "librepcb")
