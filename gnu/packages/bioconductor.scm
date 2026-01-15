@@ -10260,13 +10260,13 @@ Enrichment Analysis} (GSEA).")
 (define-public r-gsva
   (package
     (name "r-gsva")
-    (version "2.4.1")
+    (version "2.4.4")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GSVA" version))
               (sha256
                (base32
-                "0axpdds05vmrbpixdbp50a84rj93cm9cx56y10giknwljsa7zqfm"))))
+                "1rvzy8rx3pxy4slmmbrzydgwv3w6pjfvgz8xnwkm7zl18ik1y3h6"))))
     (properties `((upstream-name . "GSVA")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase
@@ -10275,12 +10275,12 @@ Enrichment Analysis} (GSEA).")
                              r-biocsingular
                              r-cli
                              r-delayedarray
-                             r-delayedmatrixstats
                              r-gseabase
                              r-hdf5array
                              r-iranges
                              r-matrix
                              r-matrixgenerics
+                             r-memuse
                              r-s4arrays
                              r-s4vectors
                              r-singlecellexperiment
