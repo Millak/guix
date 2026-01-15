@@ -26463,14 +26463,14 @@ memory usage and processing time is minimized.")
 (define-public r-mscoreutils
   (package
     (name "r-mscoreutils")
-    (version "1.21.0")
+    (version "1.22.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MsCoreUtils" version))
        (sha256
         (base32
-         "1lckbd96589vsmyy6prqijxafwiwx3mnm9c1jlw6dbxivfzmk3n7"))))
+         "1vrczrj854i0510y91zad51nnai1spl3wwgn2bafgk25fx8f48gl"))))
     (properties
      '((upstream-name . "MsCoreUtils")
        ;; Avoid dependency cycle.
