@@ -1253,6 +1253,31 @@ management with library, schematic and board editors.")
       (license (list license:expat      ;libfst and fastlz-derived sources
                      license:bsd-2))))) ;for lz4-derived sources
 
+(define-public python-lln-libparse
+  (package
+    (name "python-lln-libparse")
+    (version "0.56.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "lln_libparse" version))
+              (sha256
+               (base32
+                "0b6srlpgrfs7hfapnzfhxyy9zzgxlk943s3y78jzq3cf656448kn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f)); There are no tests.
+    (native-inputs
+     (list python-setuptools))
+    (inputs
+     (list pybind11))
+    (home-page "https://www.yosyshq.com/")
+    (synopsis "Wrapper around Yosys' libparse module")
+    (description "lln-libparse is a SWIG-based Python wrapper around Yosys'
+libparse, enabling dotlib file parsing.")
+    (license license:asl2.0)))
+
+
 (define-public libpsf
   ;; There are no release nor tags.
   (let ((commit "001dc734e01725e739847c8cde6480a0cf35a082")
