@@ -618,15 +618,14 @@ retrieve a YubiKey's serial number, and so forth.")
     (name "python-pyscard")
     (version "2.3.1")
     (source (origin
-              (method url-fetch)
-              ;; The maintainer publishes releases on various sites, but
-              ;; SourceForge is apparently the only one with a signed release.
-              (uri (string-append
-                    "mirror://sourceforge/pyscard/pyscard/pyscard%20"
-                    version "/pyscard-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/LudovicRousseau/pyscard")
+                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "04vckr77416sn0jncal9x1p2kmgd37w52kz5nr00g58agbsmchx2"))))
+                "1qxfps4rfj9s3a0a9rnwdbmjslki3v0rma4kzrcbgz6snj1w4vri"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:phases
@@ -661,8 +660,6 @@ retrieve a YubiKey's serial number, and so forth.")
      "The pyscard smart card library is a framework for building smart card
 aware applications in Python.  The smart card module is built on top of the
 PCSC API Python wrapper module.")
-    (properties
-     '((release-monitoring-url . "https://github.com/LudovicRousseau/pyscard")))
     (license license:lgpl2.1+)))
 
 (define-public yubikey-oath-dmenu
