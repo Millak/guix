@@ -14835,14 +14835,14 @@ unmodeled, or latent sources of noise.")
 (define-public r-systempiper
   (package
     (name "r-systempiper")
-    (version "2.16.0")
+    (version "2.16.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "systemPipeR" version))
        (sha256
         (base32
-         "1mpwjz0r5cy2r5745b4splygg6jycfnfrqrca9vqic3bnpsrc6gf"))))
+         "0maixi0hwqzkpiq60hf60x4q3gv3hkvmrqh3ygv0fk63g1k9f6cj"))))
     (properties `((upstream-name . "systemPipeR")))
     (build-system r-build-system)
     ;; Tests fail because genWorkenvir fails to set up the environment.
