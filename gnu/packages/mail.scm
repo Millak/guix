@@ -1347,7 +1347,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.12.14")
+    (version "1.12.15")
     (source
      (origin
        (method git-fetch)
@@ -1356,11 +1356,11 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "188l9h2smmq6x16l9kjbjk4rbyxgz552kiwr3j1y981cl0nndli2"))))
+        (base32 "191q23nj690bn4cbb26yf7pw5ihb1xmbna6ccdrkkf4m19yrxr12"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
-           emacs                      ; TODO: use emacs-minimal next release
+           emacs-minimal
            gnupg                      ; for tests
            tzdata-for-tests           ; for tests
            texinfo))
