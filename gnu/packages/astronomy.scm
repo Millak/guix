@@ -3702,7 +3702,7 @@ bad pixel tracking throughout the reduction process.")
 (define-public python-cdflib
   (package
     (name "python-cdflib")
-    (version "1.3.7")
+    (version "1.3.8")
     (source
      (origin
        (method git-fetch)
@@ -3711,11 +3711,13 @@ bad pixel tracking throughout the reduction process.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ky54sg21g9mcgg8cimkb5bpmz4kl3yfgd1gk99s687lj1qm9v31"))))
+        (base32 "13hh8mc6qcxyiz3wli9v91irllh7bmjsh05d5p4cy9wsbzv62728"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 71 passed, 26 skipped, 7 warnings
+      ;; tests: 71 passed, 1 skipped, 25 deselected, 17 warnings
+      #:test-flags
+      #~(list "-m" "not remote_data")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-pytest-config
@@ -3731,7 +3733,6 @@ bad pixel tracking throughout the reduction process.")
     (native-inputs
      (list python-astropy-minimal
            python-pytest
-           python-pytest-remotedata
            python-setuptools
            python-setuptools-scm
            python-xarray))
