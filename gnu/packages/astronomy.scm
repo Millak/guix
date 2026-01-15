@@ -4376,19 +4376,20 @@ help you search, obtain and use DKIST data as part of your Python software.")
 (define-public python-drizzle
   (package
     (name "python-drizzle")
-    (version "2.1.1")
+    (version "2.2.0")
     (source
      (origin
-       (method git-fetch)       ;no test data in PyPI archive
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/spacetelescope/drizzle")
-             (commit version)))
+              (url "https://github.com/spacetelescope/drizzle")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s2vydy3fp6hvlzxdhx6my4js3vc7vpvy3hpgj4kjkl0r47s9vpx"))))
+        (base32 "1chy80svnbj2z215slxvnih097gh4c08wwchv2nk2ydmgra1bvli"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 257 passed, 9 xfailed
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-env-version
@@ -4396,15 +4397,17 @@ help you search, obtain and use DKIST data as part of your Python software.")
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
           (add-before 'check 'build-extensions
             (lambda _
+              ;; XXX: "drizzle/tests/data" is not part of the final package
+              ;; which blocks using "--pyargs".
               ;; Cython extensions have to be built before running the tests.
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
      (list python-astropy-minimal
            python-gwcs
            python-pytest
+           python-pytest-doctestplus
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/spacetelescope/drizzle")
