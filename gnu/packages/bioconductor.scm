@@ -23339,14 +23339,14 @@ populations, splice site strength, conservation, etc.")
 (define-public r-variancepartition
   (package
     (name "r-variancepartition")
-    (version "1.40.0")
+    (version "1.40.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "variancePartition" version))
        (sha256
         (base32
-         "0inwnrk6jppjfmsin7zjlfg250y7q7049x5nis2xqn559pfls37s"))))
+         "1xqy4jl8im7i4kd4iwn8hvhy172fzsadyn90kprihmvccmpd5cr3"))))
     (properties
      '((upstream-name . "variancePartition")
        (updater-extra-native-inputs . ("r-rfast"))))
@@ -23369,6 +23369,7 @@ populations, splice site strength, conservation, etc.")
            r-matrixstats
            r-pbkrtest
            r-rdpack
+           r-reformulas
            r-remacor
            r-reshape2
            r-rhpcblasctl
