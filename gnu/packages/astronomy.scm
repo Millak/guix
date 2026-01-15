@@ -5662,26 +5662,9 @@ observationally-derived galaxy merger catalogs.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 65 passed, 1 skipped, 9 deselected
-      #:test-flags
-      ;; See: <https://github.com/LM-SAL/irispy-lmsal/issues/83>.
-      ;; Expected:
-      ;;     np.float64(0.33)
-      ;; Got:
-      ;;     0.33
-      #~(list "--deselect=irispy/obsid.py::irispy.obsid.ObsID"
-              ;; TODO: NumPy 2+ is required to fully resolve this.
-              ;; Arrays are not almost equal to 4 decimals
-              ;; Mismatched elements: 42 / 3601 (1.17%)
-              ;; Max absolute difference: 0.34272391
-              ;; Max relative difference: 0.00491848
-              ;;  x: array([0., 0., 0., ..., 0., 0., 0.])
-              ;;  y: array([0., 0., 0., ..., 0., 0., 0.], dtype='>f4')
-              "-k" "not test_get_latest_response_to_idl")
+      ;; tests: 65 passed, 2 skipped, 9 deselected
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: It fails to check SunPy's optional inputs versions.
-          (delete 'sanity-check)
           (add-before 'check 'set-home
             (lambda _
               ;; E PermissionError: [Errno 13] Permission denied:
