@@ -111,6 +111,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -322,6 +323,48 @@ generating bitstreams with Gowin FPGAs.")
 supporting gerber, excellon and g-code.  It is part of the RiNgDove EDA
 suite.")
     (license license:gpl2+)))
+
+(define-public ciel
+  (package
+    (name "ciel")
+    (version "2.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fossi-foundation/ciel")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cj4cpmpqi7aqj9jkpp87qs9bjcg3j97adv1s91pnfrkplff8rh1"))))
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'wrap 'wrap-ciel
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/ciel")
+                `("PATH" ":" prefix
+                  (,(string-append
+                     (assoc-ref inputs "git-minimal") "/bin")))))))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-poetry-core))
+    (inputs
+     (list bash-minimal
+           git-minimal
+           python-click
+           python-httpx
+           python-pcpp
+           python-rich
+           python-zstandard))
+    (home-page "https://github.com/fossi-foundation/ciel")
+    (synopsis
+     "Version manager for open-source @acronym{PDKs, Process Design Kits}")
+    (description
+     "@code{ciel} downloads and installs open-source PDKs which are used for
+chip design and @acronym{EDA, Electronic Design Automation}.")
+    (license license:asl2.0)))
 
 (define-public comedilib
   (package
