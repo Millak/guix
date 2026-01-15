@@ -202,12 +202,13 @@ thrown."
       ;; Fallback.
       (string-suffix? ".git" url)))
 
-(define (download-git-repository url ref)
+(define* (download-git-repository url ref #:key recursive?)
   "Fetch the given REF from the Git repository at URL.  Return three values :
 the commit hash, the downloaded directory and its content hash."
   (with-store store
     (let (((values checkout commit-hash)
-           (latest-repository-commit store url #:ref ref)))
+           (latest-repository-commit store url #:ref ref
+                                     #:recursive? recursive?)))
       (values commit-hash
               checkout
               (bytevector->nix-base32-string
