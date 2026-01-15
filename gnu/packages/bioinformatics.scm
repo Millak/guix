@@ -1432,8 +1432,8 @@ within this package are the 3000 bone marrow cells used for vignettes.")
       (license license:gpl3))))
 
 (define-public r-pizzarr
-  (let ((commit "7b3fd727a4ce7cb0fe8e443b971c5f63e18df991")
-        (revision "1"))
+  (let ((commit "5f4705789ba29344dcb97023f290a26a7f7abd0c")
+        (revision "2"))
     (package
       (name "r-pizzarr")
       (version (git-version "0.1.0" revision commit))
@@ -1445,7 +1445,7 @@ within this package are the 3000 bone marrow cells used for vignettes.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0xwb7cl52nzwgh0xiz8cda27qy5q45cqna5k40fngwj4mrbfm383"))))
+          (base32 "17pd6bk8kvnrvvyfqvm8q47kzghlfyfjdd9b7cwiazc5xr4vz6f0"))))
       (properties `((upstream-name . "pizzarr")))
       (build-system r-build-system)
       ;; Some tests require Internet access.
