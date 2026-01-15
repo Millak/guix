@@ -8183,16 +8183,16 @@ well-tested and interoperable CLIs for handling GeoJSON.")
 (define-public python-cloup
   (package
     (name "python-cloup")
-    (version "2.1.1")
+    (version "3.0.8")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "cloup" version))
               (sha256
                (base32
-                "05c6cjpnf9s72gyn5dckxbmd8rf2kgdzfsl7pqzrnc1lcdl13zmv"))))
+                "1jryxdmvrxicfqdf5pqnzjbnwikg4r865gga9zvxv5jif850h77r"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-click))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools python-setuptools-scm))
     (home-page "https://github.com/janLuke/cloup")
     (synopsis "Extension library for python-click")
     (description
