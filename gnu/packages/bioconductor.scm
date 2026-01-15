@@ -13563,13 +13563,13 @@ different experiment.")
 (define-public r-screpertoire
   (package
     (name "r-screpertoire")
-    (version "2.5.8")
+    (version "2.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scRepertoire" version))
        (sha256
-        (base32 "0ijycpmaivcqqmdc90h5jx8rcwg9112pl2mdpms1hgvww70x3s6w"))))
+        (base32 "1n8vdia8bsxikl3vfsnafz1i04qn4kqcrchjrbkzrskbl28mkzq5"))))
     (properties
      '((upstream-name . "scRepertoire")))
     (build-system r-build-system)
@@ -13585,14 +13585,14 @@ different experiment.")
                 (string-append m "skip('guix')\n"))
                ((".*getContigDoublets works for inputs with doublets.*" m)
                 (string-append m "skip('guix')\n")))
-             (substitute* "tests/testthat/test-combineContigs.R"
-               ((".*combineBCR works.*" m)
-                (string-append m "skip('guix')\n")))
              (substitute* "tests/testthat/test-loadContigs.R"
                ((".*loadContigs correctly auto-detects and processes various formats.*" m)
                 (string-append m "skip('guix')\n"))
                ((".*loadContigs correctly processes various formats from URL.*" m)
                 (string-append m "skip('guix')\n")))
+             ;; There is code running outside of testthat that tries to
+             ;; download files off the Internet.
+             (delete-file "tests/testthat/test-combineContigs.R")
              ;; These fail with: Unknown property set: 'kideraFactors'.
              (substitute* "tests/testthat/test-positionalProperty.R"
                ((".*positionalProperty: Output structure is correct.*" m)
