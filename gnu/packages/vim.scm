@@ -1310,12 +1310,13 @@ change and add such surroundings in pairs.")
     (version "2.7.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/jamessan/vim-gnupg/releases/"
-                           "download/v" version
-                           "/vim-gnupg-v" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jamessan/vim-gnupg")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "02w8lgyyh7wgxysvmmcf9ja5c06vrbyh3alzvv97x8cfhrp0skn7"))))
+        (base32 "0fdri8vnd3k7vi4y6a2vrx4d9wkf56dm1qs4q3hc1wwqd2141qi3"))))
     (build-system vim-build-system)
     (arguments
      (list #:plugin-name "vim-gnupg"))
@@ -1327,8 +1328,6 @@ filename must have a @code{.gpg}, @code{.pgp} or @code{.asc} suffix.  When
 opening such a file the content is decrypted, and the content will be encrypted
 to all recipients before it is written.  This script turns off viminfo,
 swapfile, and undofile when editing encrypted files to increase security.")
-    (properties
-     '((release-monitoring-url . "https://github.com/jamessan/vim-gnupg/releases")))
     (license license:gpl2+)))
 
 (define-public vim-ctrlp
