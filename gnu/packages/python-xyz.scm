@@ -41261,6 +41261,26 @@ you do not want to store entirely on disk or on memory.")
     (arguments
      `(#:configure-flags '("PYTHON_VERSION=2")))))
 
+(define-public python-yamlcore-0.0.2
+  ;; This is a pinned version dependency for librelane
+  (package
+    (name "python-yamlcore")
+    (version "0.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "yamlcore" version))
+              (sha256
+               (base32
+                "0vwjiryrx58ycmlbv668izswda4jmdpw7g9cn6bsy5my3iabjblb"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools))
+    (inputs (list python-pyyaml))
+    (home-page "https://github.com/perlpunk/pyyaml-core")
+    (synopsis "YAML 1.2 support for PyYAML")
+    (description "This module can be used on top of PyYAML to load YAML 1.2
+files.")
+    (license license:expat)))
+
 (define-public shrinkwrap
   (package
     (name "shrinkwrap")
