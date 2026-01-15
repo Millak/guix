@@ -251,7 +251,7 @@ the package named PACKAGE-NAME."
               (string-append "https://github.com/" (assq-ref recipe ':repo))))
     ('gitlab (recipe->origin
               (string-append "https://gitlab.com/" (assq-ref recipe ':repo))))
-    ('git    (recipe->origin (assq-ref recipe ':repo)))
+    ('git    (recipe->origin (assq-ref recipe ':url)))
     ;; XXX: if we're not using melpa then this stops us printing a warning
     (#f      #f)
     (_       (warning (G_ "\
