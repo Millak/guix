@@ -24,6 +24,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix build cargo-build-system)
+  #:autoload (json parser) (json->scm)
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
   #:use-module ((guix build utils) #:hide (delete))
   #:use-module (ice-9 binary-ports)
@@ -38,7 +39,6 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-43)
-  #:use-module (json)
   #:export (%standard-phases
             cargo-build))
 
