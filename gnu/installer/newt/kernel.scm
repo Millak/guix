@@ -54,6 +54,7 @@ windowing system (X, Wayland).")
            #:listbox-items kernels
            #:listbox-item->text identity
            #:listbox-default-item default
+           #:sort-listbox-items? #f               ;keep Linux first
            #:button-text (G_ "Back")
            #:button-callback-procedure
            (lambda _
