@@ -17,7 +17,7 @@
 ;;; Copyright © 2022 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2023 Mehmet Tekman <mtekman89@gmail.com>
-;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 ;;; Copyright © 2025 Skylar Hill <stellarskylark@posteo.net>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
@@ -984,6 +984,44 @@ gnu build version."))))
     (description
      (string-append (package-description fftw)
                     "  With OpenMPI parallelism support."))))
+
+(define-public python-pyflct
+  (package
+    (name "python-pyflct")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyflct" version))
+       (sha256
+        (base32 "1xv4h1a4f8y3ww97g2vc7fg2scfi142vwjz556nx0r1nnpgggj41"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 6 passed
+      #:test-flags
+      #~(list "--pyargs" "pyflct")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "pyflct"))))))
+    (native-inputs
+     (list python-cython
+           python-extension-helpers
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (inputs
+     (list fftw))
+    (propagated-inputs
+     (list python-numpy
+           python-packaging))
+    (home-page "https://docs.sunpy.org/projects/pyflct/")
+    (synopsis "Python wrapper for Fourier Local Correlation Tracking")
+    (description
+     "This package provides a Python wrapper for Fourier Local Correlation Tracking.")
+    (license license:lgpl2.1)))
 
 (define-public java-la4j
   (package
