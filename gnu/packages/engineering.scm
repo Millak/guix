@@ -2981,7 +2981,7 @@ ontinuous-time and discret-time expressions.")
                     qtsvg-5
                     qtwayland-5
                     sanitizers-cmake
-                    tbb))
+                    onetbb))
       (native-inputs (list bison
                            extra-cmake-modules
                            flex
