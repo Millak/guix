@@ -648,6 +648,35 @@ numerical solver for convex optimization problems using a novel homogeneous
 embedding.")
     (license license:asl2.0)))
 
+(define-public python-cmasher
+  (package
+    (name "python-cmasher")
+    (version "1.9.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cmasher" version))
+       (sha256
+        (base32 "1xbzyla0l5i5vv86q4vwv33qmqzfzhhj6zry1lhy6ikir37c543c"))))
+    (build-system pyproject-build-system)
+    ;; tests: 65 passed, 2 skipped
+    (native-inputs
+     (list python-pytest
+           python-hatchling))
+    (propagated-inputs
+     (list python-colorspacious
+           python-matplotlib
+           python-numpy))
+    (home-page "https://cmasher.readthedocs.io")
+    (synopsis "Scientific colormaps utilities")
+    (description
+     "The CMasher package provides a collection of scientific colormaps and utility
+functions to be used by different Python packages and projects, mainly in
+combination with Matplotlib.  It offers several alternatives to commonly used
+colormaps, like chroma and rainforest for jet; sunburst for hot; neutral for
+binary; and fusion and redshift for coolwarm.")
+    (license license:bsd-3)))
+
 (define-public python-cmocean
   (package
     (name "python-cmocean")
