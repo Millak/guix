@@ -990,7 +990,7 @@ hypertext navigation, and table-of-contents bookmarks.")
     (native-search-paths
      (list (search-path-specification
              (variable "CAJA_EXTENSION_DIRS")
-             (files (list "lib/caja/extensions-2.0/**")))))
+             (files (list "lib/caja/extensions-2.0")))))
     (home-page "https://mate-desktop.org/")
     (synopsis "File manager for the MATE desktop")
     (description
