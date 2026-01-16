@@ -2741,9 +2741,6 @@ based on the Haskell library, Quickcheck, and is designed to integrate
 seamlessly into your existing Python unit testing work flow.")
     (license license:mpl2.0)))
 
-(define-deprecated/public-alias python-hypothesis-next
-  python-hypothesis)                   ;may be removed after 2025-12-01
-
 ;; WARNING: This package is a dependency of mesa.
 (define-public python-lit
   (package
