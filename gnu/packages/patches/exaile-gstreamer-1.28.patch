@@ -1,0 +1,39 @@
+From 34165c500abce930daa4efd51d4933016ce80dc4 Mon Sep 17 00:00:00 2001
+From: Johannes Sasongko <johannes@sasongko.org>
+Date: Mon, 2 Mar 2026 02:17:37 +1100
+Subject: [PATCH] player/gst/sink: Work around GStreamer >= 1.28 API change
+
+Fixes: https://github.com/exaile/exaile/issues/999
+---
+ xl/player/gst/sink.py | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/xl/player/gst/sink.py b/xl/player/gst/sink.py
+index c8d298be6..27f896c2c 100644
+--- a/xl/player/gst/sink.py
++++ b/xl/player/gst/sink.py
+@@ -81,10 +81,22 @@
+ 
+ 
+ def __filter_presets():
++    """Remove items in SINK_PRESETS that cannot be created."""
+     for name, preset in list(SINK_PRESETS.items()):
+         pipe = preset.get('pipe')
+-        if pipe and not Gst.ElementFactory.make(pipe):
+-            del SINK_PRESETS[name]
++        if not pipe:
++            continue  # No 'pipe' means this is auto or custom
++        # In GStreamer < 1.28, Gst.ElementFactory.make always returns None when
++        # the element can't be created.
++        # In GStreamer >= 1.28, it can either return None or raise a custom
++        # exception depending on whether the Gst Python override is installed.
++        # See <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/4914>.
++        try:
++            if Gst.ElementFactory.make(pipe):
++                continue
++        except Exception:
++            pass
++        del SINK_PRESETS[name]
+ 
+ 
+ __filter_presets()

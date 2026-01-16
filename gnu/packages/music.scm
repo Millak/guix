@@ -7967,6 +7967,87 @@ a tag editor, which can also be invoked as a standalone program, and further
 supports streaming audio and feeds (such as podcasts).")
     (license license:gpl2+)))
 
+(define-public exaile
+  (package
+    (name "exaile")
+    (version "4.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/exaile/exaile")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12vcddsvx81yvz1xs4b9qig09n7a6wgjy6ggr6d3irlxh63cjzkq"))
+       (patches (search-patches "exaile-gstreamer-1.28.patch"))))
+    (build-system glib-or-gtk-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "PREFIX="
+                             #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'check 'set-environment-variables
+            (lambda _
+              (setenv "PYTEST" "pytest")
+              (setenv "XDG_CACHE_HOME" "/tmp/.cache")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "test"))))
+          (add-after 'install 'wrap-environment-variables
+            (lambda _
+              (wrap-program (string-append #$output "/bin/exaile")
+                `("PATH" ":" prefix
+                  (,(string-append #$(this-package-input "python") "/bin")))
+                `("GDK_PIXBUF_MODULE_FILE" =
+                  (,(getenv "GDK_PIXBUF_MODULE_FILE")))
+                `("GI_TYPELIB_PATH" ":" =
+                  (,(getenv "GI_TYPELIB_PATH")))
+                `("GST_PLUGIN_SYSTEM_PATH" ":" suffix
+                  (,(getenv "GST_PLUGIN_SYSTEM_PATH")))
+                `("GUIX_PYTHONPATH" ":" prefix
+                  (,(getenv "GUIX_PYTHONPATH")))))))))
+    (inputs (list adwaita-icon-theme
+                  bash-minimal
+                  gstreamer
+                  gst-plugins-base
+                  gst-plugins-good
+                  gtk+
+                  python
+                  python-dbus
+                  python-gst
+                  python-mutagen
+                  python-pycairo
+                  python-pygobject
+                  ;; Optional dependencies
+                  libnotify ;native notifications
+                  librsvg ;scalable icons
+                  udisks)) ;device detection
+    (native-inputs (list gettext-minimal
+                         gobject-introspection
+                         python-berkeleydb
+                         python-pytest
+                         ;; Optional documentation support
+                         help2man
+                         python-sphinx
+                         python-sphinx-rtd-theme))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "GST_PLUGIN_SYSTEM_PATH")
+            (files '("lib/gstreamer-1.0")))))
+    (synopsis "Cross-platform music player")
+    (description
+     "Exaile is a music player with a simple interface and powerful music
+management capabilities.  Features include automatic fetching of album art,
+lyrics fetching, streaming internet radio, tabbed playlists, smart playlists
+with extensive filtering/search capabilities, and much more.")
+    (home-page "https://exaile.org/")
+    (license license:gpl2)))
+
 (define-public orca-music
   (let ((commit "e55b8fdc3606341345938d5b24b2d9d9326afdb5") (revision "1"))
     (package
