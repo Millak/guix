@@ -32,6 +32,7 @@
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -1000,6 +1001,67 @@ icons on the MATE desktop.  It works on local and remote file systems.")
     ;; There is a note about a TRADEMARKS_NOTICE file in COPYING which
     ;; does not exist. It is safe to assume that this is of no concern
     ;; for us.
+    (license license:gpl2+)))
+
+
+(define-public caja-actions
+  (package
+    (name "caja-actions")
+    (version "1.28.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mate-desktop/caja-actions")
+             (commit (string-append "v" version))
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a21kz5796prdq88a3yjc8jnd6qv8jg5zji43m057ra46qjbjazf"))))
+    (build-system glib-or-gtk-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-caja-extdir="
+                             #$output "/lib/caja/extensions-2.0/"
+                             "--disable-static"
+                             "--enable-html-manuals"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'preconfigure
+            (lambda _
+              ;; Danish translations cause a segmentation
+              ;; fault at compile time. We are removing them
+              ;; for now.
+              (delete-file-recursively "docs/help/da"))))))
+    (native-inputs (list autoconf
+                         autoconf-archive
+                         automake
+                         gettext-minimal
+                         intltool
+                         libice
+                         libxml2
+                         libtool
+                         gobject-introspection
+                         gtk-doc/stable
+                         mate-common
+                         pkg-config
+                         yelp-tools
+                         which))
+    (inputs (list caja
+                  dbus
+                  dbus-glib
+                  gtk+
+                  (list glib "bin")
+                  libgtop
+                  libsm
+                  mate-desktop))
+    (home-page "https://mate-desktop.org/")
+    (synopsis "Execute commands from the caja popup menu")
+    (description
+     "This package is an extension for the MATE caja file manager
+it allows users to add arbitrary programs and launch them through the popup
+menu of selected files.")
     (license license:gpl2+)))
 
 (define-public caja-extensions
