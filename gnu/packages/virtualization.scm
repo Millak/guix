@@ -402,6 +402,14 @@
                       ;; failed to allocate memory for stack: Cannot allocate memory
                       (substitute* "tests/qtest/meson.build"
                         ((".*qtests_aspeed :.*") ""))))))
+              ((target-aarch64?)
+               #~((add-after 'unpack 'disable-some-tests
+                    (lambda _
+                      ;; fails on some devices with GICv3 emulation not supported.
+                      (let ((patch #$(local-file
+                                      (search-patch
+                                       "qemu-disable-aarch64-migration-test.patch"))))
+                        (invoke "patch" "--force" "-p1" "-i" patch))))))
               (else '()))
           (add-after 'patch-source-shebangs 'patch-embedded-shebangs
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
