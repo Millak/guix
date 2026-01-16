@@ -81,6 +81,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages code)
   #:use-module (gnu packages compression)
@@ -566,6 +567,38 @@ itself an implementation of Shaun Lebron’s Parinfer.  This builds a shared
 library intended to be loaded by the @command{emacs-parinfer-rust-mode} Emacs
 plugin, though a standalone binary is built also.")
     (license license:isc)))
+
+(define-public rassumfrassum
+  (package
+    (name "rassumfrassum")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/joaotavora/rassumfrassum")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jjfx0a4qp2mdvr8ripf44r056fa4spmmhdpvpli89bl5711lm0l"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./test/run-all.sh")))))))
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/joaotavora/rassumfrassum")
+    (synopsis "LSP/JSON-RPC multiplexer")
+    (description
+     "Rassumfrassum is a LSP/JSONRPC multiplexer that allows one LSP client
+(Emacs' @code{eglot}, Neovim, etc.) to connect to multiple language servers
+seamlessly.")
+    (license license:gpl3+)))
 
 (define-public featherpad
   (package
