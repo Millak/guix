@@ -1,0 +1,24 @@
+This patch disables the 'migration-test' on AArch64, as it fails on some
+devices like this:
+
+stderr:
+qemu-system-aarch64: KVM does not support GICv3 emulation
+Broken pipe
+../../tests/qtest/libqtest.c:200: kill_qemu() tried to terminate QEMU process but encountered exit status 1 (expected 0)
+
+(test program exited with status code -6)
+
+TAP parsing error: Too few tests run (expected 61, got 0)
+
+--- a/tests/qtest/meson.build     2026-01-16 21:53:16.945167915 +0100
++++ b/tests/qtest/meson.build 2026-01-16 21:52:55.313191080 +0100
+@@ -266,8 +266,7 @@
+   qtests_cxl +                                                                                  \
+   ['arm-cpu-features',
+    'numa-test',
+-   'boot-serial-test',
+-   'migration-test']
++   'boot-serial-test']
+ 
+ qtests_s390x = \
+   qtests_filter + \
