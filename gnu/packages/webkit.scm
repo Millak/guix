@@ -156,6 +156,9 @@ engine that uses Wayland for graphics output.")
       #~(list "-DPORT=GTK"
               "-DENABLE_INTROSPECTION=ON"
               "-DUSE_GTK4=ON"
+              ;; Enable WebRTC.
+              "-DENABLE_MEDIA_STREAM=ON"
+              "-DENABLE_WEB_RTC=ON"
               ;; The minibrowser, not built by default, is a good
               ;; tool to validate the good operation of
               ;; webkitgtk.
@@ -274,6 +277,7 @@ engine that uses Wayland for graphics output.")
            libxt
            mesa
            openjpeg
+           openssl
            sqlite
            sysprof
            woff2
