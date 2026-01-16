@@ -316,6 +316,84 @@ either on a local, or remote machine via a number of methods.")
 like automatic language detection, text-to-speech and clipboard buttons.")
     (license license:gpl3+)))
 
+(define-public fragments
+  ;; Last release on May 30th, 2024.
+  (let ((commit "8e35eb799bda65e691691a5c7732aa8e93650b8f")
+        (revision "0"))
+    (package
+      (name "fragments")
+      (version (git-version "3.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://gitlab.gnome.org/World/Fragments")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "02m6r12znvjb31yfb477747ydwz267mzb2m0zny27z18b22a3z0v"))))
+      (build-system meson-build-system)
+      (arguments
+       (list
+        #:imported-modules `(,@%meson-build-system-modules
+                             ,@%cargo-build-system-modules)
+        #:modules `(((guix build cargo-build-system) #:prefix cargo:)
+                    (guix build meson-build-system)
+                    (guix build utils))
+        #:phases
+        (with-extensions (list (cargo-guile-json))
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'prepare-for-build
+                (lambda _
+                  (substitute* "meson.build"
+                    (("(vcs_tag *)=[^\n]*" all prefix)
+                     (string-append prefix "= '" #$commit "'")))
+                  (substitute* "Cargo.toml"
+                    (("ashpd = \\{ git = \"[^\"]*\"")
+                     "ashpd = { version = \"0.12\""))
+                  (substitute* "data/meson.build"
+                    (("gtk_update_icon_cache: true")
+                     "gtk_update_icon_cache: false")
+                    (("update_desktop_database: true")
+                     "update_desktop_database: false"))
+                  (delete-file "Cargo.lock")))
+              ;; The meson 'configure phase changes to a different directory and
+              ;; we need it created before unpacking the crates.
+              (add-after 'configure 'prepare-cargo-build-system
+                (lambda args
+                  (for-each
+                   (lambda (phase)
+                     (format #t "Running cargo phase: ~a~%" phase)
+                     (apply (assoc-ref cargo:%standard-phases phase)
+                            #:vendor-dir "vendor"
+                            #:cargo-target #$(cargo-triplet)
+                            args))
+                   '(unpack-rust-crates
+                     configure
+                     check-for-pregenerated-files
+                     patch-cargo-checksums))))))))
+      (native-inputs
+       (append
+        (list gettext-minimal
+              `(,glib "bin") ; for glib-compile-schemas
+              pkg-config
+              rust
+              `(,rust "cargo"))
+        (or (and=> (%current-target-system)
+                   (compose list make-rust-sysroot))
+            '())))
+      (inputs (cons* dbus
+                     glib
+                     gtk
+                     libadwaita
+                     openssl
+                     (cargo-inputs 'fragments)))
+      (home-page "https://apps.gnome.org/de/Fragments/")
+      (synopsis "Manage torrents")
+      (description "Fragments is a graphical bittorrent client built on top of
+Transmission, and can be used to control remote Transmission instances.")
+      (license license:gpl3+))))
+
 (define-public gnome-authenticator
   (package
     (name "gnome-authenticator")
