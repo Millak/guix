@@ -46,6 +46,7 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages oneapi)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
@@ -55,7 +56,6 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages swig)
-  #:use-module (gnu packages tbb)
   #:use-module (gnu packages xml)
   #:use-module (guix platform)
   #:use-module (guix build-system cmake)
@@ -232,7 +232,7 @@ standard library headers.")
              (substitute* "cmake/DyninstPlatform.cmake"
                (("\"i386\"") "\"i686\"")))))))
     (propagated-inputs
-     (list elfutils libiberty boost tbb))
+     (list elfutils libiberty boost onetbb))
 
     ;; Supported systems according to 'cmake/DyninstPlatform.cmake'.
     (supported-systems '("x86_64-linux" "i686-linux"
