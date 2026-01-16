@@ -1627,9 +1627,6 @@ and functions, detailed info on failing assert statements, modular fixtures,
 and many external plugins.")
     (license license:expat)))
 
-(define-deprecated python-pytest-6 python-pytest)
-(export python-pytest-6)
-
 (define-deprecated python-pytest-7 python-pytest)
 (export python-pytest-7)
 
