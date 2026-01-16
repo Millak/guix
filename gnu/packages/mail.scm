@@ -65,6 +65,7 @@
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Zacchaeus <eikcaz@zacchae.us>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1139,7 +1140,7 @@ MIME-encoded email package.")
       (license license:bsd-3))))
 
 (define-public mailcap
-  (let* ((version "2.1.53")
+  (let* ((version "2.1.54")
          (tag ;; mailcap tags their releases like this: rMajor-minor-patch
           (string-append "r" (string-join (string-split version #\.) "-"))))
     (package
@@ -1153,12 +1154,17 @@ MIME-encoded email package.")
                (commit tag)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "14939pq7h25rh9100z72vzzx810yqg98im9gz2fbhh47iaj1wrbb"))))
+          (base32 "163kf88spdvywhym08487ia7y88dq7mn93hz8q4qa1wjha4rhb5n"))))
       (build-system gnu-build-system)
       (arguments
        '(#:phases
          (modify-phases %standard-phases
            (delete 'configure)
+           (add-before 'install 'patch-xdg-open-references
+             (lambda _
+               (substitute* "mailcap"
+                 ;; If /usr/bin/xdg-open does not exists.
+                 (("/usr/bin/xdg-open") "/usr/bin/env xdg-open"))))
            (add-before 'install 'set-dest-dir
              (lambda* (#:key outputs #:allow-other-keys)
                (let ((out (assoc-ref outputs "out")))
