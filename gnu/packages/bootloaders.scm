@@ -853,7 +853,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
 (define u-boot
   (package
     (name "u-boot")
-    (version "2025.01")
+    (version "2026.01")
     (source
      (origin
        (method git-fetch)
@@ -862,9 +862,8 @@ tree binary files.  These are board description files used by Linux and BSD.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i1v86bnixh8hyqbwwr5iwdnnadmg2fqxw9g526fvclsbvl8lz0v"))
-       (patches (search-patches "u-boot-allow-disabling-openssl.patch"
-                                "u-boot-rockchip-inno-usb.patch"))
+        (base32 "1ics2b560gjqh7f1b194axy5rdplrgxhpifay61zpa6p5gl4fxsz"))
+       (patches (search-patches "u-boot-allow-disabling-openssl.patch"))
        (snippet
         ;; Remove non-free binary licenses, blobs and microcode.
         #~(begin
@@ -928,6 +927,8 @@ also initializes the boards (RAM etc).")
        (append fontconfig
                python-sphinx
                python-sphinx-prompt
+               ; python-sphinx-rtd-theme ; optional
+               python-sphinx-reredirects
                texinfo
                which)))
     (synopsis "U-Boot documentation")
@@ -1008,8 +1009,9 @@ def test_ctrl_c"))
                            ;; to GPL/Openssl license incompatibilities.
                            ;; See https://bugs.gnu.org/34717 for
                            ;; details.
-                           (("CONFIG_FIT_SIGNATURE=y")
-                            "CONFIG_FIT_SIGNATURE=n
+                           (("CONFIG_FIT=y")
+                            "CONFIG_FIT=y
+CONFIG_FIT_SIGNATURE=n
 CONFIG_UT_LIB_ASN1=n
 CONFIG_TOOLS_LIBCRYPTO=n
 CONFIG_TOOLS_KWBIMAGE=n")
@@ -1462,7 +1464,7 @@ partition."))
       ;; These disabled features require OpenSSL, which is
       ;; incompatible with the GPLv2-only parts of U-boot.
       #:configs (map (cut string-append "# CONFIG_" <> " is not set")
-                     '("FIT_CIPHER" "MBEDTLS_LIB"))
+                     '("FIT_CIPHER" "MBEDTLS_LIB" "HKDF_MBEDTLS"))
       #:append-description
       "The sandbox configuration of U-Boot provides a @command{u-boot}
 command that runs as a normal user space application.  It can be used to
