@@ -2674,25 +2674,54 @@ instantly.")
 (define-public python-hypothesis
   (package
     (name "python-hypothesis")
-    (version "6.135.26")
+    (version "6.150.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "hypothesis" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/HypothesisWorks/hypothesis")
+              (commit (string-append "hypothesis-python-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0073lb8xp789fxs5g8dmi3pr2p8q7imfsksidy0ccfahrm30xbvk"))))
+        (base32 "0c8mrgvyhvgrkfzxi953hmz9h6jgbdr752rcm9x87mqfxg3vzvp6"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; XXX: Tests are not distributed with the PyPI archive.
-     (list #:tests? #f))
+     (list
+      ;; tests: 3528 passed, 13 skipped, 15 deselected, 3 xfailed, 1 xpassed
+      #:test-flags
+      ;; Run slim portion of tests, see more test scenarios in
+      ;; <hypothesis-python/tests/README.rst>.
+      #~(list "tests/cover"
+              "-k"
+              (string-join
+               ;; ModuleNotFoundError: No module named 'pexpect'
+               (list "not test_interactive_example_does_not_emit_warning"
+                     ;; Network access is required or setting up local
+                     ;; timezone.
+                     "test_can_generate_from_all_registered_types[ZoneInfo]"
+                     "test_disallowed_inputs_to_target"
+                     "test_generic_collections_only_use_hashable_elements[Dict]"
+                     "test_generic_collections_only_use_hashable_elements[FrozenSet]"
+                     "test_generic_collections_only_use_hashable_elements[Set]"
+                     "test_generic_collections_only_use_hashable_elements[dict]"
+                     "test_generic_collections_only_use_hashable_elements[set]"
+                     "test_hashable_type_unhashable_value"
+                     "test_inference_on_generic_collections_abc_aliases[Hashable]"
+                     "test_is_not_identity"
+                     "test_resolves_builtin_types[object]"
+                     "test_resolves_forwardrefs_to_builtin_types[object]"
+                     "test_timezone_lookup[tzinfo]")
+               " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir-to-source
+            (lambda _
+              (chdir "hypothesis-python"))))))
     (native-inputs
-     (list python-pytest-bootstrap      ;to pass sanity check
-           python-setuptools
-           python-wheel))
+     (list python-pytest-bootstrap
+           python-setuptools))
     (propagated-inputs
-     (list python-attrs-bootstrap
-           python-exceptiongroup
-           python-sortedcontainers))
+     (list python-sortedcontainers))
     (home-page "https://hypothesis.works/")
     (synopsis "Library for property based testing")
     (description "Hypothesis is a library for testing your Python code against a
