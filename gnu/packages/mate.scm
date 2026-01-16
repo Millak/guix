@@ -268,25 +268,30 @@ desktop and the mate-about program.")
 (define-public libmateweather
   (package
     (name "libmateweather")
-    (version "1.28.0")
+    (version "1.28.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "mirror://mate/"
-                           (version-major+minor version)
-                           "/"
-                           name
-                           "-"
-                           version
-                           ".tar.xz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mate-desktop/libmateweather")
+             (commit (string-append "v" version))
+             (recursive? #t)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1dfj68q3x9camd7h94pcwv8a5969cv5d4p979gcbk4xknpg76hsm"))))
+        (base32 "150wzqd619rggfwhzn4s456rbz9dv5l0qx7x80jcinibwgw7hjjv"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:configure-flags #~(list "--with-zoneinfo-dir=/var/empty")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'preconfigure
+            (lambda _
+              (setenv "ACLOCAL_FLAGS"
+                      (string-join (map (lambda (s)
+                                          (string-append "-I " s))
+                                        (string-split (getenv "ACLOCAL_PATH")
+                                                      #\:)) " "))))
           (add-before 'check 'fix-tzdata-location
             (lambda* (#:key inputs #:allow-other-keys)
               (setenv "TZDIR"
@@ -298,9 +303,16 @@ desktop and the mate-about program.")
                 (("exit 1")
                  "exit 0")))))))
     (native-inputs
-     (list dconf
+     (list autoconf
+           autoconf-archive
+           automake
+           dconf
            (list glib "bin")
            intltool
+           gtk-doc/stable
+           libtool
+           mate-common
+           which
            pkg-config))
     (inputs
      (list gtk+
