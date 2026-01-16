@@ -3662,6 +3662,65 @@ background evolution.  The code is in Python, with numerical code implemented
 in fast modern Fortran.")
     (license license:gpl3+)))
 
+(define-public python-casa-cube
+  (package
+    (name "python-casa-cube")
+    ;; PyPI lacks documentations, Git has no tags, use the latest commit from
+    ;; master HEAD.
+    (properties '((commit . "57c9dbc7130da236aff65a355047fcaa1a282292")
+                  (revision . "0")))
+    (version (git-version "0.1.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cpinte/casa_cube")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g6d7ilvgl4fwj8gi4j7fwwasccycjd1m45fycf7aqzdwpnfi664"))))
+    (outputs '("out" "doc"))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp")))
+          (add-after 'install 'build-and-install-doc
+            (lambda _
+              (let* ((data (string-append #$output:doc "/share"))
+                     (doc (string-append data "/doc/" #$name "-" #$version))
+                     (man (string-append doc "/man/man1"))
+                     (html (string-append doc "/html")))
+                (invoke "make" "-C" "docs" "html" "man")
+                (copy-recursively "docs/_build/html" html)
+                (copy-recursively "docs/_build/man" man)))))))
+    (native-inputs
+     (list python-setuptools
+           python-sphinx
+           python-sphinx-rtd-theme))
+    (propagated-inputs
+     (list python-astropy
+           python-astroquery
+           python-cmasher
+           python-matplotlib
+           python-numpy))
+    (home-page "https://github.com/cpinte/casa_cube")
+    (synopsis "Plot data cube from CASA in Python")
+    (description
+     "casa_cube is a python package that provides an interface to data cubes
+generates by CASA or Gildas.  It allows the user to perform simple tasks such
+plotting given channel maps, moment maps, line profile in various units,
+correcting for cloud extinction, reconvolving with a beam taper, triming a
+cube.  The syntax is similar to pymcfost to perform quick and easy comparison
+with models.")
+    (license license:expat)))
+
 (define-public python-casa-formats-io
   (package
     (name "python-casa-formats-io")
