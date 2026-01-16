@@ -195,8 +195,21 @@
 (define (system-services->configuration services)
   "Return the configuration field for SERVICES."
   (let* ((snippets (append-map system-service-snippet services))
-         (packages (append-map system-service-packages services))
          (desktop? (find desktop-system-service? services))
+         (packages
+          (append (append-map system-service-packages services)
+                  (if desktop?
+                      (cons (comment (G_ ";; Fonts to cover all languages.\n"))
+                            (map (lambda (package)
+                                   `(specification->package ,package))
+                                 '("font-google-noto"
+                                   "font-google-noto-emoji"
+                                   ;; FIXME: Selection of fonts depends on the
+                                   ;; locale.  Use a monospaced CJK font with
+                                   ;; latin letters before there's proper fix.
+                                   ;; See <https://codeberg.org/guix/guix/pulls/5654#issuecomment-9928509>
+                                   "font-sarasa-gothic")))
+                      '())))
          (base     (if desktop?
                        (if (target-hurd?)
                            '%desktop-services/hurd
