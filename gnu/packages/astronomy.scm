@@ -2543,6 +2543,33 @@ format for chunked, compressed, N-dimensional arrays based on an open-source
 specification.")
     (license license:bsd-3)))
 
+(define-public python-astlib
+  (package
+    (name "python-astlib")
+    (version "0.13.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "astlib" version))
+       (sha256
+        (base32 "0iffjk05gm0kdksjw4kx3g231rq0dmp1vgvidj42bznfjq1z3iag"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-scipy))
+    (home-page "https://astlib.readthedocs.io")
+    (synopsis "Plots with World Coordinate System information")
+    (description
+     "This package provides a set of Python modules for producing simple plots,
+statistics, common calculations, coordinate conversions, and manipulating FITS
+images with World Coordinate System (WCS) information.")
+    (license license:lgpl2.1)))
+
 (define-public python-astral
   (package
     (name "python-astral")
