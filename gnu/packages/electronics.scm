@@ -1230,7 +1230,7 @@ supported devices, as well as input/output file format support.")
 (define-public m8c
   (package
     (name "m8c")
-    (version "2.2.2")
+    (version "2.2.3")
     (source
      (origin
        (method git-fetch)
@@ -1239,19 +1239,19 @@ supported devices, as well as input/output file format support.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0737hz7yhkrgg5gc2ymnilz0gyv3p7zv127qh4hxf2b07v5pqc1x"))))
+        (base32 "1ib751mfrz6ni6imx0gwbm7zjpw1c5x8l15hrdxm4f69vrm6vgkj"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:tests? #f                       ;no tests
       #:configure-flags
-      #~(list "-DUSE_LIBSERIALPORT=ON")))
+      #~(list "-DUSE_LIBUSB=ON")))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list libdecor libserialport sdl3))
+     (list libdecor libusb sdl3))
     (home-page "https://github.com/laamaa/m8c")
-    (synopsis "Cross-platform M8 tracker headless client")
+    (synopsis "Cross-platform M8 tracker headless client - usb backend")
     (description
      "The @url{https://dirtywave.com/products/m8-tracker,Dirtywave M8 Tracker}
 is a portable sequencer and synthesizer, featuring 8 tracks of assignable
