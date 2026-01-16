@@ -255,7 +255,8 @@
                                      '%base-packages)))))
 
       ,@service-heading
-      ,(if (null? snippets)
+      ,(if (and (null? snippets)
+                (not desktop?))
            `(services ,services)
            `(services
              (append (list ,@snippets
