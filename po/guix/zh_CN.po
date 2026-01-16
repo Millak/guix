@@ -24,8 +24,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix 0.14.0\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-12-08 03:18+0000\n"
-"PO-Revision-Date: 2025-12-10 10:26+0000\n"
+"POT-Creation-Date: 2026-01-14 03:18+0000\n"
+"PO-Revision-Date: 2026-01-16 02:59+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://translate.codeberg.org/projects/guix/guix/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -33,7 +33,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 5.15.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -338,21 +338,21 @@ msgstr "映射设备 '~a' 可能会被引导程序忽略 ~%"
 msgid "List elements of the field 'swap-devices' should now use the <swap-space> record, as the old method is deprecated. See \"(guix) operating-system Reference\" for more details.~%"
 msgstr "字段“swap-devices”的列表元素现在应使用 <swap-space> 记录，因为旧方法已被淘汰。详情请参阅“(guix.zh_CN) 操作系统参考”。~%"
 
-#: gnu/system.scm:1214
+#: gnu/system.scm:1217
 #, scheme-format
 msgid "using a string for file '~a' is deprecated; use 'plain-file' instead~%"
 msgstr "使用字符串表示文件‘~a' 已被弃用；请改用 'plain-file' ~%"
 
-#: gnu/system.scm:1230
+#: gnu/system.scm:1233
 #, scheme-format
 msgid "using a monadic value for '~a' is deprecated; use 'plain-file' instead~%"
 msgstr "对 '~a' 使用一元值已被弃用；请改用 'plain-file' ~%"
 
-#: gnu/system.scm:1363
+#: gnu/system.scm:1366
 msgid "missing root file system"
 msgstr "缺失 root 文件系统"
 
-#: gnu/system.scm:1439
+#: gnu/system.scm:1442
 #, scheme-format
 msgid "~a: invalid locale name"
 msgstr "~a:无效的区域名称"
@@ -416,7 +416,7 @@ msgstr ""
 "注意同步根文件系统，\n"
 "并在系统关闭时以只读方式重新加载。"
 
-#: gnu/services/base.scm:598
+#: gnu/services/base.scm:603
 msgid ""
 "Provide Shepherd services to mount and unmount the given\n"
 "file systems, as well as corresponding @file{/etc/fstab} entries."
@@ -424,7 +424,7 @@ msgstr ""
 "提供挂载和卸载给定文件系统的 Shepherd 服务，\n"
 "以及相应的 @file{/etc/fstab} 条目。"
 
-#: gnu/services/base.scm:697
+#: gnu/services/base.scm:702
 msgid ""
 "Seed the @file{/dev/urandom} pseudo-random number\n"
 "generator (RNG) with the value recorded when the system was last shut\n"
@@ -433,7 +433,7 @@ msgstr ""
 "为 @file{/dev/urandom} 伪随机数生成器 (RNG)\n"
 "添加上次关闭系统时记录的数值用作种子。"
 
-#: gnu/services/base.scm:732
+#: gnu/services/base.scm:737
 msgid ""
 "Run the @command{rngd} random number generation daemon to\n"
 "supply entropy to the kernel's pool."
@@ -441,24 +441,24 @@ msgstr ""
 "运行 @command{rngd} 随机数生成守护进程，\n"
 "为内核池提供熵。"
 
-#: gnu/services/base.scm:761
+#: gnu/services/base.scm:766
 #, scheme-format
 msgid "host name '~a' contains invalid characters"
 msgstr "主机名 '~a' 包含无效字符"
 
-#: gnu/services/base.scm:811
+#: gnu/services/base.scm:816
 msgid "Populate the @file{/etc/hosts} file."
 msgstr "填充 @file{/etc/hosts} 目录。"
 
-#: gnu/services/base.scm:829
+#: gnu/services/base.scm:834
 msgid "Initialize the machine's host name."
 msgstr "初始化机器的主机名。"
 
-#: gnu/services/base.scm:860
+#: gnu/services/base.scm:865
 msgid "Ensure the Linux virtual terminals run in UTF-8 mode."
 msgstr "确保 Linux 虚拟终端以 UTF-8 模式运行。"
 
-#: gnu/services/base.scm:919
+#: gnu/services/base.scm:924
 msgid ""
 "Install the given fonts on the specified ttys (fonts are per\n"
 "virtual console on GNU/Linux).  The value of this service is a list of\n"
@@ -490,7 +490,7 @@ msgstr ""
 "                 \"/share/consolefonts/ter-132n\"))) ; for HDPI\n"
 "@end example\n"
 
-#: gnu/services/base.scm:963
+#: gnu/services/base.scm:968
 msgid ""
 "Provide a console log-in service as specified by its\n"
 "configuration value, a @code{login-configuration} object."
@@ -498,7 +498,7 @@ msgstr ""
 "提供由 @code{login-configuration} 对象配置值\n"
 "指定的控制台登录服务。"
 
-#: gnu/services/base.scm:1246
+#: gnu/services/base.scm:1251
 msgid ""
 "Provide console login using the @command{agetty}\n"
 "program."
@@ -506,7 +506,7 @@ msgstr ""
 "使用 @command{agetty} 程序\n"
 "提供控制台登录功能。"
 
-#: gnu/services/base.scm:1356
+#: gnu/services/base.scm:1361
 msgid ""
 "Provide console login using the @command{mingetty}\n"
 "program."
@@ -514,7 +514,7 @@ msgstr ""
 "使用 @command{mingetty} 程序\n"
 "提供控制台登录功能。"
 
-#: gnu/services/base.scm:1602
+#: gnu/services/base.scm:1621
 msgid ""
 "Runs libc's @dfn{name service cache daemon} (nscd) with the\n"
 "given configuration---an @code{<nscd-configuration>} object.  @xref{Name\n"
@@ -524,41 +524,41 @@ msgstr ""
 "来运行 libc 的 @dfn{name service cache daemon} (nscd)。\n"
 "请参阅例子 @ref{Name Service Switch}。"
 
-#: gnu/services/base.scm:1682
+#: gnu/services/base.scm:1701
 msgid "Service syslog has been asked to reload its settings file."
 msgstr "syslog 服务被要求重新加载其配置文件。"
 
-#: gnu/services/base.scm:1684
+#: gnu/services/base.scm:1703
 msgid "Service syslog is not running."
 msgstr "syslog 服务未运行。"
 
-#: gnu/services/base.scm:1711
+#: gnu/services/base.scm:1730
 msgid ""
 "Run the syslog daemon, @command{syslogd}, which is\n"
 "responsible for logging system messages."
 msgstr "运行负责记录系统信息的系统日志守护进程 @command{syslogd}。"
 
-#: gnu/services/base.scm:1749
+#: gnu/services/base.scm:1768
 #, scheme-format
 msgid "Using file-like value for 'pam-limits-service-type' is deprecated~%"
 msgstr "为 'pam-limits-service-type' 使用类似文件的值已被弃用~%"
 
-#: gnu/services/base.scm:1758
+#: gnu/services/base.scm:1777
 #, scheme-format
 msgid "invalid input for 'pam-limits-service-type'~%"
 msgstr "'pam-limits-service-type' 的输入无效~%"
 
-#: gnu/services/base.scm:1769
+#: gnu/services/base.scm:1788
 msgid ""
 "Use the @code{pam_limits} authentication module to set the specified\n"
 "resource usage limits."
 msgstr "使用 @code{pam_limits} 身份验证模块设置指定资源的使用限制。"
 
-#: gnu/services/base.scm:2463
+#: gnu/services/base.scm:2482
 msgid "Run the build daemon of GNU@tie{}Guix, aka. @command{guix-daemon}."
 msgstr "运行 GNU@tie{}Guix 的构建进程，即 @command{guix-daemon}."
 
-#: gnu/services/base.scm:2612
+#: gnu/services/base.scm:2631
 msgid ""
 "Add a Shepherd service running @command{guix publish}, a\n"
 "command that allows you to share pre-built binaries with others over HTTP."
@@ -566,26 +566,26 @@ msgstr ""
 "添加一个运行 @command{guix publish} 的 Shepherd 服务，\n"
 "该命令可让您通过 HTTP 与他人共享预编译的二进制文件。"
 
-#: gnu/services/base.scm:2852
+#: gnu/services/base.scm:2871
 msgid ""
 "Run @command{udev}, which populates the @file{/dev}\n"
 "directory dynamically.  Get extra rules from the packages listed in the\n"
 "@code{rules} field of its value, @code{udev-configuration} object."
 msgstr "运行 @command{udev}，动态填充 @file{/dev} 目录。通过其值的 @code{udev-configuration} 对象中的 @code{rules} 字段列出的包获取额外规则。"
 
-#: gnu/services/base.scm:2881
+#: gnu/services/base.scm:2900
 msgid "This service adds udev rules."
 msgstr "此服务添加了 udev 规则。"
 
-#: gnu/services/base.scm:2894
+#: gnu/services/base.scm:2913
 msgid "This service adds udev hardware files."
 msgstr "此服务添加了 udev 硬件文件。"
 
-#: gnu/services/base.scm:2989
+#: gnu/services/base.scm:3008
 msgid "Turn on the virtual memory swap area."
 msgstr "打开虚拟内存交换区。"
 
-#: gnu/services/base.scm:3031
+#: gnu/services/base.scm:3050
 msgid ""
 "Run GPM, the general-purpose mouse daemon, with the given\n"
 "command-line options.  GPM allows users to use the mouse in the console,\n"
@@ -593,43 +593,43 @@ msgid ""
 "@code{ps2} protocol, which works for both USB and PS/2 mice."
 msgstr "使用给定的命令行选项运行 GPM 通用鼠标守护进程。GPM 允许用户在控制台中使用鼠标，特别是选择、复制和粘贴文本。默认选项使用 @code{ps2} 协议，适用于 USB 和 PS/2 鼠标。"
 
-#: gnu/services/base.scm:3112
+#: gnu/services/base.scm:3131
 msgid ""
 "Start the @command{kmscon} virtual terminal emulator for the\n"
 "Linux @dfn{kernel mode setting} (KMS)."
 msgstr "启动用于 Linux @dfn{kernel mode setting} (KMS) 的 @command{kmscon} 虚拟终端模拟器。"
 
-#: gnu/services/base.scm:3129
+#: gnu/services/base.scm:3148
 #, scheme-format
 msgid "address '~a' lacks a network mask"
 msgstr "地址 '~a' 缺少网络掩码"
 
-#: gnu/services/base.scm:3135
+#: gnu/services/base.scm:3154
 #, scheme-format
 msgid "Write, say, @samp{\"~a/24\"} for a 24-bit network mask."
 msgstr "例如，写成 @samp{\"~a/24\"} 表示 24 位网络掩码。"
 
-#: gnu/services/base.scm:3151
+#: gnu/services/base.scm:3170
 #, scheme-format
 msgid "Value (~S) is not a valid mac address.~%"
 msgstr "值 (~S) 不是有效的 MAC 地址。~%"
 
-#: gnu/services/base.scm:3163
+#: gnu/services/base.scm:3182
 #, scheme-format
 msgid "Value (~S) is not a symbol.~%"
 msgstr "值 (~S) 不是一个符号。~%"
 
-#: gnu/services/base.scm:3249
+#: gnu/services/base.scm:3268
 #, scheme-format
 msgid "network links are currently ignored on GNU/Hurd~%"
 msgstr "当前在 GNU/Hurd 上网络链接被忽略~%"
 
-#: gnu/services/base.scm:3274
+#: gnu/services/base.scm:3293
 #, scheme-format
 msgid "ignoring network route for '~a'~%"
 msgstr "忽略'~a' 的网络路由~%"
 
-#: gnu/services/base.scm:3555
+#: gnu/services/base.scm:3574
 msgid ""
 "Turn up the specified network interfaces upon startup,\n"
 "with the given IP address, gateway, netmask, and so on.  The value for\n"
@@ -637,7 +637,7 @@ msgid ""
 "network interface."
 msgstr "启动时激活指定的网络接口，使用给定的 IP 地址、网关、子网掩码等。此类服务的值是一个 @code{static-networking} 对象列表，每个网络接口一个。"
 
-#: gnu/services/base.scm:4147
+#: gnu/services/base.scm:4175
 msgid ""
 "Provides necessary infrastructure for logging into the\n"
 "system including @code{greetd} PAM service, @code{pam-mount} module to\n"
@@ -663,7 +663,7 @@ msgstr "字段 '~1@*~a' 的值 ~0@*~s 无效"
 msgid "specifying serializers after documentation is deprecated, use (serializer ~a) instead~%"
 msgstr "'vm-image' 已被弃用：用 'image' 代替 ~%"
 
-#: gnu/services/configuration.scm:503
+#: gnu/services/configuration.scm:502
 #, scheme-format
 msgid "The GRAMMAR value must be 'infix or 'suffix, but ~a provided."
 msgstr "GRAMMAR 的值必须是 'infix 或者 'suffix, 但是提供了 ~a."
@@ -784,26 +784,26 @@ msgstr "运行 GNOME 桌面环境。"
 msgid "Run the MATE desktop environment."
 msgstr "运行 MATE 桌面环境。"
 
-#: gnu/services/desktop.scm:2101
+#: gnu/services/desktop.scm:2104
 msgid "Run the Xfce desktop environment."
 msgstr "运行 Xfce 桌面环境。"
 
-#: gnu/services/desktop.scm:2131
+#: gnu/services/desktop.scm:2134
 msgid "Run LXQt desktop environment."
 msgstr "运行 LXQt 桌面环境。"
 
-#: gnu/services/desktop.scm:2163
+#: gnu/services/desktop.scm:2166
 msgid "Run the Sugar desktop environment."
 msgstr "运行 Sugar 桌面环境。"
 
-#: gnu/services/desktop.scm:2191
+#: gnu/services/desktop.scm:2194
 msgid ""
 "Create @file{/tmp/.X11-unix} for XWayland.  When using X11, libxcb\n"
 "takes care of creating that directory however, when using XWayland, we\n"
 "need to create it beforehand."
 msgstr "为 XWayland 创建 @file{/tmp/.X11-unix}。使用 X11 时，libxcb 会负责创建该目录，但使用 XWayland 时，需要提前创建。"
 
-#: gnu/services/desktop.scm:2247
+#: gnu/services/desktop.scm:2250
 msgid ""
 "Return a service that adds the @code{enlightenment} package to the system\n"
 "profile, and extends dbus with the ability for @code{efl} to generate\n"
@@ -811,29 +811,29 @@ msgid ""
 "as expected."
 msgstr "返回一个服务，将 @code{enlightenment} 包添加到系统配置文件，并扩展 dbus，使 @code{efl} 能生成缩略图，并赋予 enlightenment 运行所需的权限。"
 
-#: gnu/services/desktop.scm:2305
+#: gnu/services/desktop.scm:2308
 msgid ""
 "Return a service that extends PAM with entries using\n"
 "@code{pam_kwallet5.so}, unlocking the user's login keyring when they log in or\n"
 "setting its password with @command{passwd}."
 msgstr "返回一个使用 @code{pam_kwallet5.so} 条目扩展 PAM 的服务，在用户登录时解锁其登录密钥环或使用 @command{passwd} 设置其密码。"
 
-#: gnu/services/desktop.scm:2367
+#: gnu/services/desktop.scm:2370
 msgid "Run the KDE Plasma desktop environment."
 msgstr "运行 KDE Plasma 桌面环境。"
 
-#: gnu/services/desktop.scm:2424
+#: gnu/services/desktop.scm:2427
 msgid ""
 "Return a service that runs inputattach on a device and\n"
 "dispatches events from it."
 msgstr "返回一个在设备上运行 inputattach 并分发其事件的服务。"
 
-#: gnu/services/desktop.scm:2455
+#: gnu/services/desktop.scm:2458
 #, scheme-format
 msgid "seatd: '~a' is not a valid group~%"
 msgstr "seatd: '~a' 为无效的用户组~%"
 
-#: gnu/services/desktop.scm:2497
+#: gnu/services/desktop.scm:2500
 msgid ""
 "Seat management takes care of mediating access\n"
 "to shared devices (graphics, input), without requiring the\n"
@@ -982,23 +982,23 @@ msgid ""
 "with Zabbix server."
 msgstr "运行 zabbix-front-end 网络界面，允许用户与 Zabbix 服务器进行交互。"
 
-#: gnu/services/networking.scm:364
+#: gnu/services/networking.scm:365
 msgid "Add a list of known Facebook hosts to @file{/etc/hosts}"
 msgstr "将已知的 Facebook 主机列表添加到 @file{/etc/hosts}"
 
-#: gnu/services/networking.scm:451
+#: gnu/services/networking.scm:452
 #, scheme-format
 msgid "'dhcp-client' service now expects a 'dhcp-client-configuration' record~%"
 msgstr "'dhcp-client' 服务现在期望一个 'dhcp-client-configuration' 记录~%"
 
-#: gnu/services/networking.scm:453
+#: gnu/services/networking.scm:454
 msgid ""
 "The value associated with instances of\n"
 "@code{dhcp-client-service-type} must now be a @code{dhcp-client-configuration}\n"
 "record instead of a package.  Please adjust your configuration accordingly."
 msgstr "与 @code{dhcp-client-service-type} 实例关联的值现在必须是 @code{dhcp-client-configuration} 记录，而不是一个软件包。请相应地调整您的配置。"
 
-#: gnu/services/networking.scm:467
+#: gnu/services/networking.scm:468
 msgid ""
 "Run @command{dhcp}, a Dynamic Host Configuration\n"
 "Protocol (DHCP) client, on all the non-loopback network interfaces.\n"
@@ -1009,38 +1009,38 @@ msgstr ""
 "\n"
 "该服务已弃用，因ISC的DHCP客户端已达到其生命周期终止。"
 
-#: gnu/services/networking.scm:538
+#: gnu/services/networking.scm:539
 msgid ""
 "Run a DHCP (Dynamic Host Configuration Protocol) daemon.  The\n"
 "daemon is responsible for allocating IP addresses to its client."
 msgstr "运行 DHCP（动态主机配置协议）守护进程。该守护进程负责为其客户端分配 IP 地址。"
 
-#: gnu/services/networking.scm:686
+#: gnu/services/networking.scm:687
 msgid "Run the dhcpcd daemon."
 msgstr "运行 dhcpcd 守护进程。"
 
-#: gnu/services/networking.scm:835
+#: gnu/services/networking.scm:836
 msgid ""
 "Run the @command{ntpd}, the Network Time Protocol (NTP)\n"
 "daemon of the @uref{http://www.ntp.org, Network Time Foundation}.  The daemon\n"
 "will keep the system clock synchronized with that of the given servers."
 msgstr "运行 @command{ntpd}，网络时间协议 (NTP) 守护进程，来自 @uref{http://www.ntp.org, 网络时间基金会}。该守护进程将保持系统时钟与给定服务器的时钟同步。"
 
-#: gnu/services/networking.scm:945
+#: gnu/services/networking.scm:946
 msgid ""
 "Run the @command{ntpd}, the Network Time Protocol (NTP)\n"
 "daemon, as implemented by @uref{http://www.openntpd.org, OpenNTPD}.  The\n"
 "daemon will keep the system clock synchronized with that of the given servers."
 msgstr "运行 @command{ntpd}，网络时间协议 (NTP) 守护进程，由 @uref{http://www.openntpd.org, OpenNTPD} 实现。该守护进程将保持系统时钟与给定服务器的时钟同步。"
 
-#: gnu/services/networking.scm:1033
+#: gnu/services/networking.scm:1034
 msgid ""
 "Start @command{inetd}, the @dfn{Internet superserver}.  It is responsible\n"
 "for listening on Internet sockets and spawning the corresponding services on\n"
 "demand."
 msgstr "启动 @command{inetd}，@dfn{Internet superserver}。它负责监听互联网套接字并按需生成相应的服务。"
 
-#: gnu/services/networking.scm:1155
+#: gnu/services/networking.scm:1156
 msgid ""
 "Run the OpenDHT @command{dhtnode} command that allows\n"
 "participating in the distributed hash table based OpenDHT network.  The\n"
@@ -1050,38 +1050,38 @@ msgid ""
 "applications in communication.  It is used by Jami, for example."
 msgstr "运行 OpenDHT @command{dhtnode} 命令，允许参与基于分布式哈希表的 OpenDHT 网络。该服务可以配置为充当分布式网络的代理，这对于需要最小化能耗的便携设备非常有用。OpenDHT 最初基于 Kademlia，并适用于通信应用。例如，Jami 就使用了它。"
 
-#: gnu/services/networking.scm:1401
+#: gnu/services/networking.scm:1402
 msgid ""
 "Run the @uref{https://torproject.org, Tor} anonymous\n"
 "networking daemon."
 msgstr "运行 @uref{https://torproject.org, Tor} 匿名网络守护进程。"
 
-#: gnu/services/networking.scm:1450
+#: gnu/services/networking.scm:1451
 #, scheme-format
 msgid "the 'iwd?' field is deprecated, please use 'shepherd-requirement' field instead~%"
 msgstr "'iwd?' 字段已被弃用，请改用 'shepherd-requirement' 字段~%"
 
-#: gnu/services/networking.scm:1621
+#: gnu/services/networking.scm:1622
 msgid ""
 "Run @uref{https://wiki.gnome.org/Projects/NetworkManager,\n"
 "NetworkManager}, a network management daemon that aims to simplify wired and\n"
 "wireless networking."
 msgstr "运行 @uref{https://wiki.gnome.org/Projects/NetworkManager, NetworkManager}，一个旨在简化有线和无线网络管理的网络管理守护进程。"
 
-#: gnu/services/networking.scm:1944
+#: gnu/services/networking.scm:1945
 msgid ""
 "Run @url{https://01.org/connman,Connman},\n"
 "a network connection manager."
 msgstr "运行 @url{https://01.org/connman,Connman}，一个网络连接管理器。"
 
-#: gnu/services/networking.scm:1966
+#: gnu/services/networking.scm:1967
 msgid ""
 "Run @uref{https://wiki.gnome.org/Projects/ModemManager,\n"
 "ModemManager}, a modem management daemon that aims to simplify dialup\n"
 "networking."
 msgstr "运行 @uref{https://wiki.gnome.org/Projects/ModemManager, ModemManager}，一个旨在简化拨号网络的调制解调器管理守护进程。"
 
-#: gnu/services/networking.scm:2057
+#: gnu/services/networking.scm:2058
 msgid ""
 "Run @uref{http://www.draisberghof.de/usb_modeswitch/,\n"
 "USB_ModeSwitch}, a mode switching tool for controlling USB devices with\n"
@@ -1092,18 +1092,18 @@ msgid ""
 "whatever the thing is supposed to do)."
 msgstr "运行 @uref{http://www.draisberghof.de/usb_modeswitch/, USB_ModeSwitch}，一个用于控制具有多种 @dfn{modes} 的 USB 设备的模式切换工具。许多 USB 设备（主要是高速 WAN 调制解调器）首次插入时表现得像包含 Windows 驱动程序安装程序的闪存存储。USB_ModeSwitch 会重放 Windows 驱动程序发送的序列，将其模式从存储切换到调制解调器（或设备应执行的其他模式）。"
 
-#: gnu/services/networking.scm:2074
+#: gnu/services/networking.scm:2075
 #, scheme-format
 msgid "the 'requirement' field is deprecated, please use 'shepherd-requirement' field instead~%"
 msgstr "'requirement' 字段已被弃用，请改用 'shepherd-requirement' 字段~%"
 
-#: gnu/services/networking.scm:2141
+#: gnu/services/networking.scm:2142
 msgid ""
 "Run the WPA Supplicant daemon, a service that\n"
 "implements authentication, key negotiation and more for wireless networks."
 msgstr "运行 WPA Supplicant 守护进程，一个实现无线网络认证、密钥协商等功能的服务。"
 
-#: gnu/services/networking.scm:2373
+#: gnu/services/networking.scm:2374
 msgid ""
 "Run the iNet Wireless Daemon,\n"
 "@url{https://iwd.wiki.kernel.org/,iwd}, a network connection manager."
@@ -1111,50 +1111,50 @@ msgstr ""
 "运行 iNet 无线网络守护进程，\n"
 "@url{https://iwd.wiki.kernel.org/,iwd}，一款网络连接管理器。"
 
-#: gnu/services/networking.scm:2434
+#: gnu/services/networking.scm:2435
 msgid ""
 "Run the @uref{https://w1.fi/hostapd/, hostapd} daemon for Wi-Fi access\n"
 "points and authentication servers."
 msgstr "运行 @uref{https://w1.fi/hostapd/, hostapd} 守护进程，用于 Wi-Fi 接入点和认证服务器。"
 
-#: gnu/services/networking.scm:2468
+#: gnu/services/networking.scm:2469
 msgid "Run hostapd to simulate WiFi connectivity."
 msgstr "运行 hostapd 以模拟 WiFi 连接。"
 
-#: gnu/services/networking.scm:2526
+#: gnu/services/networking.scm:2527
 msgid ""
 "Run @uref{http://www.openvswitch.org, Open vSwitch}, a multilayer virtual\n"
 "switch designed to enable massive network automation through programmatic\n"
 "extension."
 msgstr "运行 @uref{http://www.openvswitch.org, Open vSwitch}，一个多层虚拟交换机，旨在通过程序扩展实现大规模网络自动化。"
 
-#: gnu/services/networking.scm:2573
+#: gnu/services/networking.scm:2574
 msgid "Run @command{iptables-restore}, setting up the specified rules."
 msgstr "运行 @command{iptables-restore}，设置指定的规则。"
 
-#: gnu/services/networking.scm:2665
+#: gnu/services/networking.scm:2666
 msgid "Run @command{nft}, setting up the specified ruleset."
 msgstr "运行 @command{nft}，设置指定的规则集。"
 
-#: gnu/services/networking.scm:2772
+#: gnu/services/networking.scm:2773
 msgid ""
 "Run @url{https://pagekite.net/,PageKite}, a tunneling solution to make\n"
 "local servers publicly accessible on the web, even behind NATs and firewalls."
 msgstr "运行 @url{https://pagekite.net/,PageKite}，一种隧道解决方案，使本地服务器即使在 NAT 和防火墙后也能公开访问网络。"
 
-#: gnu/services/networking.scm:2868
+#: gnu/services/networking.scm:2869
 msgid ""
 "Connect to the Yggdrasil mesh network.\n"
 "See @command{yggdrasil -genconf} for config options."
 msgstr "连接到 Yggdrasil 网状网络。有关配置选项，请参见 @command{yggdrasil -genconf}。"
 
-#: gnu/services/networking.scm:3004
+#: gnu/services/networking.scm:3005
 msgid ""
 "Run @command{ipfs daemon}, the reference implementation\n"
 "of the IPFS peer-to-peer storage network."
 msgstr "运行 @command{ipfs daemon}，IPFS 点对点存储网络的参考实现。"
 
-#: gnu/services/networking.scm:3044
+#: gnu/services/networking.scm:3045
 msgid ""
 "Run @uref{https://www.keepalived.org/, Keepalived}\n"
 "routing software."
@@ -1815,30 +1815,30 @@ msgstr "存储位于 Btrfs 子卷上，但子卷名称未知。"
 msgid "Use the @code{subvol} Btrfs file system option."
 msgstr "使用 @code{subvol} Btrfs 文件系统选项。"
 
-#: gnu/system/image.scm:363
+#: gnu/system/image.scm:382
 msgid "image lacks a partition with the 'boot' flag"
 msgstr "映像缺少带有“boot”标志的分区"
 
-#: gnu/system/image.scm:417
+#: gnu/system/image.scm:439
 #, scheme-format
 msgid "unsupported image type: ~a"
 msgstr "不支持的映像类型：~a"
 
-#: gnu/system/image.scm:438 gnu/system/image.scm:463
+#: gnu/system/image.scm:460 gnu/system/image.scm:485
 #, scheme-format
 msgid "unsupported partition type: ~a"
 msgstr "不支持的分区类型：~a"
 
-#: gnu/system/image.scm:574
+#: gnu/system/image.scm:596
 msgid "EFI bootloader required with GPT partitioning"
 msgstr "GPT 分区需要 EFI 引导加载程序"
 
-#: gnu/system/image.scm:1078
+#: gnu/system/image.scm:1130
 #, fuzzy, scheme-format
 msgid "~a: unsupported image format"
 msgstr "~A: 未知格式~%"
 
-#: gnu/system/image.scm:1108
+#: gnu/system/image.scm:1160
 #, scheme-format
 msgid "~a: no such image type"
 msgstr "~a：无此映像类型"
@@ -1891,7 +1891,7 @@ msgstr ""
 "  -m, --manifest=FILE    使用来自 FILE 的清单创建新的配置文件生成"
 
 #: gnu/system/linux-container.scm:255 guix/scripts/build.scm:479
-#: guix/scripts/download.scm:204 guix/scripts/package.scm:496
+#: guix/scripts/download.scm:204 guix/scripts/package.scm:497
 #: guix/scripts/install.scm:44 guix/scripts/remove.scm:41
 #: guix/scripts/upgrade.scm:48 guix/scripts/search.scm:36
 #: guix/scripts/show.scm:35 guix/scripts/gc.scm:96 guix/scripts/git.scm:34
@@ -2124,7 +2124,7 @@ msgstr "替代服务器发现"
 msgid "User creation"
 msgstr "创建用户"
 
-#: gnu/installer.scm:321 gnu/installer/newt/kernel.scm:30
+#: gnu/installer.scm:321 gnu/installer/newt/kernel.scm:46
 msgid "Kernel"
 msgstr "内核"
 
@@ -2314,7 +2314,7 @@ msgstr "请选择以下参数之一，或按“返回”返回安装过程。"
 msgid "Installation parameters"
 msgstr "安装参数"
 
-#: gnu/installer/newt/parameters.scm:54 gnu/installer/newt/kernel.scm:39
+#: gnu/installer/newt/parameters.scm:54 gnu/installer/newt/kernel.scm:57
 #: gnu/installer/newt/keymap.scm:72 gnu/installer/newt/locale.scm:59
 #: gnu/installer/newt/locale.scm:78 gnu/installer/newt/locale.scm:92
 #: gnu/installer/newt/partition.scm:613 gnu/installer/newt/timezone.scm:64
@@ -2325,12 +2325,23 @@ msgstr "返回"
 msgid "Please enter the system hostname."
 msgstr "请输入系统主机名。"
 
-#: gnu/installer/newt/kernel.scm:32
+#. TRANSLATORS: "Hurd" is a proper noun and must not be translated.
+#: gnu/installer/newt/kernel.scm:27
+msgid "Hurd 32-bit (experimental)"
+msgstr ""
+
+#: gnu/installer/newt/kernel.scm:28
+msgid "Hurd 64-bit (highly experimental!)"
+msgstr ""
+
+#. TRANSLATORS: "Hurd" is a proper noun and must not be translated.
+#. TRANSLATORS: "Linux Libre" is a literal and must not be translated.
+#: gnu/installer/newt/kernel.scm:50
 msgid ""
-"Please select a kernel.  When in doubt, choose \"Linux Libre\".\n"
+"Please select a kernel.  When in doubt, choose \"Linux Libre\".\n\n"
 "The Hurd is offered as a technology preview and development aid; many packages are not yet available in Guix, such as a desktop environment or even a windowing system (X, Wayland)."
 msgstr ""
-"请选择一个内核。如有疑问，请选择“Linux Libre”。\n"
+"请选择一个内核。如有疑问，请选择“Linux Libre”。\n\n"
 "Hurd 作为技术预览和开发辅助提供；Guix 中许多软件包尚不可用，如桌面环境甚至窗口系统（X，Wayland）。"
 
 #: gnu/installer/newt/keymap.scm:38
@@ -3839,7 +3850,7 @@ msgstr ""
 "\n"
 "  -r, --root=FILE        将 FILE 设为结果的符号链接，并将其注册为垃圾收集器根"
 
-#: guix/scripts/build.scm:464 guix/scripts/package.scm:478
+#: guix/scripts/build.scm:464 guix/scripts/package.scm:479
 #: guix/scripts/install.scm:37 guix/scripts/remove.scm:36
 #: guix/scripts/upgrade.scm:39 guix/scripts/pull.scm:122
 #: guix/scripts/system.scm:1066 guix/scripts/copy.scm:121
@@ -3870,7 +3881,7 @@ msgstr ""
 "      --log-file         返回给定派生物的日志文件名"
 
 #: guix/scripts/build.scm:481 guix/scripts/download.scm:206
-#: guix/scripts/package.scm:498 guix/scripts/install.scm:46
+#: guix/scripts/package.scm:499 guix/scripts/install.scm:46
 #: guix/scripts/remove.scm:43 guix/scripts/upgrade.scm:50
 #: guix/scripts/search.scm:38 guix/scripts/show.scm:37 guix/scripts/gc.scm:98
 #: guix/scripts/git.scm:36 guix/scripts/git/authenticate.scm:284
@@ -4245,175 +4256,175 @@ msgstr "'~a' 可能应该是本地输入"
 msgid "'~a' should probably not be an input at all"
 msgstr "'~a' 可能根本不应该是输入"
 
-#: guix/lint.scm:656
+#: guix/lint.scm:657
 #, scheme-format
 msgid "'~a' should probably be switched for its minimal variant"
 msgstr "'~a' 可能应该改为其 -minimal 变体"
 
-#: guix/lint.scm:667
+#: guix/lint.scm:668
 #, scheme-format
 msgid "label '~a' does not match package name '~a'"
 msgstr "标签 '~a' 与包名 '~a' 不匹配"
 
-#: guix/lint.scm:697
+#: guix/lint.scm:698
 #, scheme-format
 msgid "\"bash-minimal\" should be in 'inputs' when '~a' is used"
 msgstr "使用 '~a' 时应在 'inputs' 中包含 \"bash-minimal\""
 
-#: guix/lint.scm:748
+#: guix/lint.scm:749
 msgid "no period allowed at the end of the synopsis"
 msgstr "摘要末尾不允许有句号"
 
-#: guix/lint.scm:762
+#: guix/lint.scm:763
 msgid "no article allowed at the beginning of the synopsis"
 msgstr "摘要开头不允许有冠词"
 
-#: guix/lint.scm:771
+#: guix/lint.scm:772
 msgid "synopsis should be less than 80 characters long"
 msgstr "简介应少于 80 个字符"
 
-#: guix/lint.scm:781
+#: guix/lint.scm:782
 msgid "synopsis should start with an upper-case letter or digit"
 msgstr "简介应以大写字母或数字开头"
 
-#: guix/lint.scm:789
+#: guix/lint.scm:790
 msgid "synopsis should not start with the package name"
 msgstr "简介不应以包名开头"
 
-#: guix/lint.scm:803
+#: guix/lint.scm:804
 msgid "Texinfo markup in synopsis is invalid"
 msgstr "简介中的 Texinfo 标记无效"
 
-#: guix/lint.scm:811
+#: guix/lint.scm:812
 msgid "synopsis contains trailing whitespace"
 msgstr "简介包含尾随空白"
 
-#: guix/lint.scm:828
+#: guix/lint.scm:829
 msgid "synopsis should not be empty"
 msgstr "简介不能为空"
 
-#: guix/lint.scm:838
+#: guix/lint.scm:839
 #, fuzzy, scheme-format
 msgid "invalid synopsis: ~s"
 msgstr "无效的概要语法：~a~%"
 
-#: guix/lint.scm:944
+#: guix/lint.scm:945
 #, scheme-format
 msgid "~a: HTTP GET error for ~a: ~a (~s)~%"
 msgstr "~a：~a 的 HTTP GET 错误：~a (~s)~%"
 
-#: guix/lint.scm:954
+#: guix/lint.scm:955
 #, scheme-format
 msgid "~a: host lookup failure: ~a~%"
 msgstr "~a：主机查找失败：~a~%"
 
-#: guix/lint.scm:959
+#: guix/lint.scm:960
 #, scheme-format
 msgid "~a: TLS certificate error: ~a"
 msgstr "~a：TLS 证书错误：~a"
 
-#: guix/lint.scm:964
+#: guix/lint.scm:965
 #, fuzzy, scheme-format
 #| msgid "~a: TLS certificate error: ~a"
 msgid "~a: TLS error in '~a': ~a~%"
 msgstr "~a：TLS 证书错误：~a"
 
-#: guix/lint.scm:975 guix/ui.scm:918 guix/scripts/offload.scm:194
+#: guix/lint.scm:976 guix/ui.scm:918 guix/scripts/offload.scm:194
 #, scheme-format
 msgid "~a: ~a~%"
 msgstr "~a：~a~%"
 
-#: guix/lint.scm:1006
+#: guix/lint.scm:1007
 #, scheme-format
 msgid "URI ~a returned suspiciously small file (~a bytes)"
 msgstr "URI ~a 返回了异常小的文件 (~a 字节)"
 
-#: guix/lint.scm:1015
+#: guix/lint.scm:1016
 #, scheme-format
 msgid "permanent redirect from ~a to ~a"
 msgstr "从 ~a 到 ~a 的永久重定向"
 
-#: guix/lint.scm:1021
+#: guix/lint.scm:1022
 #, fuzzy, scheme-format
 msgid "invalid permanent redirect from ~a"
 msgstr "永久重定向无效 `~a'~%"
 
-#: guix/lint.scm:1027 guix/lint.scm:1037
+#: guix/lint.scm:1028 guix/lint.scm:1038
 #, scheme-format
 msgid "URI ~a not reachable: ~a (~s)"
 msgstr "URI ~a 无法访问：~a (~s)"
 
-#: guix/lint.scm:1043
+#: guix/lint.scm:1044
 #, scheme-format
 msgid "URI ~a domain not found: ~a"
 msgstr "URI ~a 域名未找到：~a"
 
-#: guix/lint.scm:1049
+#: guix/lint.scm:1050
 #, scheme-format
 msgid "URI ~a unreachable: ~a"
 msgstr "URI ~a 无法访问：~a"
 
-#: guix/lint.scm:1057
+#: guix/lint.scm:1058
 #, scheme-format
 msgid "TLS certificate error: ~a"
 msgstr "TLS 证书错误：~a"
 
-#: guix/lint.scm:1084
+#: guix/lint.scm:1085
 msgid "invalid value for home page"
 msgstr "无效主页"
 
-#: guix/lint.scm:1089
+#: guix/lint.scm:1090
 #, scheme-format
 msgid "invalid home page URL: ~s"
 msgstr "无效的主页 URL：~s"
 
-#: guix/lint.scm:1126
+#: guix/lint.scm:1127
 msgid "file names of patches should start with the package name"
 msgstr "补丁文件名应以包名开头"
 
-#: guix/lint.scm:1146
+#: guix/lint.scm:1147
 #, scheme-format
 msgid "~a: file name is too long, which may break 'make dist'"
 msgstr "~a：文件名过长，可能导致 'make dist' 失败"
 
-#: guix/lint.scm:1167
+#: guix/lint.scm:1168
 #, scheme-format
 msgid "~a: empty patch"
 msgstr "~a：空补丁"
 
-#: guix/lint.scm:1176
+#: guix/lint.scm:1177
 #, scheme-format
 msgid "~a: patch lacks comment and upstream status"
 msgstr "~a：补丁缺少注释和上游状态"
 
-#: guix/lint.scm:1237
+#: guix/lint.scm:1238
 #, scheme-format
 msgid "proposed synopsis: ~s~%"
 msgstr "拟议的概要：~s~%"
 
-#: guix/lint.scm:1251
+#: guix/lint.scm:1252
 #, scheme-format
 msgid "proposed description:~%     \"~a\"~%"
 msgstr "建议的描述：~%     \"~a\"~%"
 
-#: guix/lint.scm:1336
+#: guix/lint.scm:1337
 msgid "all the source URIs are unreachable:"
 msgstr "所有源 URI 均无法访问："
 
-#: guix/lint.scm:1371
+#: guix/lint.scm:1372
 msgid "the source file name should contain the package name"
 msgstr "源文件名应包含包名"
 
-#: guix/lint.scm:1383
+#: guix/lint.scm:1384
 msgid "the source URI should not be an autogenerated tarball"
 msgstr "源 URI 不应为自动生成的 tar 包"
 
-#: guix/lint.scm:1401 guix/lint.scm:1446
+#: guix/lint.scm:1402 guix/lint.scm:1447
 #, scheme-format
 msgid "URL should be '~a'"
 msgstr "URL 应为 '~a'"
 
-#: guix/lint.scm:1439
+#: guix/lint.scm:1440
 #, scheme-format
 msgid "while accessing '~a'"
 msgstr "访问到 '~a'"
@@ -4421,79 +4432,79 @@ msgstr "访问到 '~a'"
 #. TRANSLATORS: check and #:tests? are a
 #. Scheme symbol and keyword respectively
 #. and should not be translated.
-#: guix/lint.scm:1474
+#: guix/lint.scm:1475
 msgid "the 'check' phase should respect #:tests?"
 msgstr "“check”阶段应遵守 #:tests?"
 
-#: guix/lint.scm:1496 guix/lint.scm:1507 guix/lint.scm:1515 guix/lint.scm:1519
+#: guix/lint.scm:1497 guix/lint.scm:1508 guix/lint.scm:1516 guix/lint.scm:1520
 #, scheme-format
 msgid "failed to create ~a derivation: ~a"
 msgstr "创建 ~a 派生关系失败：~a"
 
-#: guix/lint.scm:1501
+#: guix/lint.scm:1502
 #, scheme-format
 msgid "failed to create ~a derivation: ~s"
 msgstr "创建 ~a 派生失败：~s"
 
-#: guix/lint.scm:1557
+#: guix/lint.scm:1558
 #, scheme-format
 msgid "propagated inputs ~a and ~a collide"
 msgstr "传播的输入 ~a 和 ~a 冲突"
 
-#: guix/lint.scm:1581
+#: guix/lint.scm:1582
 msgid "invalid license field"
 msgstr "无效的许可证字段"
 
-#: guix/lint.scm:1588
+#: guix/lint.scm:1589
 msgid "while retrieving CVE vulnerabilities"
 msgstr "检索 CVE 漏洞时"
 
-#: guix/lint.scm:1591
+#: guix/lint.scm:1592
 #, scheme-format
 msgid "failed to get list of CVE vulnerabilities from '~a': ~a (~a)~%"
 msgstr "向 ~a 获取 CVE 漏洞列表时失败：~a(~a)~%"
 
-#: guix/lint.scm:1648
+#: guix/lint.scm:1649
 #, scheme-format
 msgid "probably vulnerable to ~a"
 msgstr "可能易受 ~a 攻击"
 
-#: guix/lint.scm:1667
+#: guix/lint.scm:1668
 #, fuzzy, scheme-format
 #| msgid "AppImages should be built with the --relocatable flag~%"
 msgid "'~a' should be set with the '~a' flag"
 msgstr "AppImages 应使用 --relocatable 标志构建~%"
 
-#: guix/lint.scm:1713
+#: guix/lint.scm:1714
 #, scheme-format
 msgid "no updater for ~a"
 msgstr "没有适用于 ~a 的更新器"
 
-#: guix/lint.scm:1718 guix/lint.scm:1940
+#: guix/lint.scm:1719 guix/lint.scm:1941
 #, scheme-format
 msgid "while retrieving upstream info for '~a'"
 msgstr "检索 '~a' 的上游信息时"
 
-#: guix/lint.scm:1727
+#: guix/lint.scm:1728
 #, scheme-format
 msgid "can be upgraded to ~a"
 msgstr "可升级至 ~a"
 
-#: guix/lint.scm:1733
+#: guix/lint.scm:1734
 #, scheme-format
 msgid "updater '~a' failed to find upstream releases"
 msgstr "更新器 '~a' 未能找到上游版本"
 
-#: guix/lint.scm:1760
+#: guix/lint.scm:1761
 #, fuzzy, scheme-format
 msgid "failed to access Disarchive database at ~a"
 msgstr "连接到 `~a' 失败：~a~%"
 
-#: guix/lint.scm:1781
+#: guix/lint.scm:1782
 msgid "Software Heritage rate limit reached; try again later"
 msgstr "Software Heritage 速率限制已达；请稍后再试"
 
-#: guix/lint.scm:1785
+#: guix/lint.scm:1786
 #, scheme-format
 msgid "'~a' returned ~a"
 msgstr "'~a' 返回了 ~a"
@@ -4501,179 +4512,179 @@ msgstr "'~a' 返回了 ~a"
 #. TRANSLATORS: "Software Heritage" is a proper noun that
 #. must remain untranslated.  See
 #. <https://www.softwareheritage.org>.
-#: guix/lint.scm:1820
+#: guix/lint.scm:1821
 msgid "scheduled Software Heritage archival"
 msgstr "已安排 Software Heritage 归档"
 
-#: guix/lint.scm:1826
+#: guix/lint.scm:1827
 msgid "archival rate limit exceeded; try again later"
 msgstr "归档速率限制超出；请稍后再试"
 
-#: guix/lint.scm:1836
+#: guix/lint.scm:1837
 msgid "source code cannot be archived"
 msgstr "源代码无法归档"
 
-#: guix/lint.scm:1899
+#: guix/lint.scm:1900
 msgid "source not archived on Software Heritage and missing from the Disarchive database"
 msgstr "源未在 Software Heritage 归档且在 Disarchive 数据库中缺失"
 
-#: guix/lint.scm:1909
+#: guix/lint.scm:1910
 #, scheme-format
 msgid "Disarchive entry refers to non-existent SWH directory '~a'"
 msgstr "Disarchive 条目引用了不存在的 SWH 目录 '~a'"
 
-#: guix/lint.scm:1922
+#: guix/lint.scm:1923
 msgid "source is not an origin, it cannot be archived"
 msgstr "源不是起点，无法归档"
 
-#: guix/lint.scm:1932
+#: guix/lint.scm:1933
 msgid "while connecting to Software Heritage"
 msgstr "连接 Software Heritage 时"
 
-#: guix/lint.scm:1949
+#: guix/lint.scm:1950
 #, scheme-format
 msgid "ahead of Stackage LTS version ~a"
 msgstr "领先 Stackage LTS 版本 ~a"
 
-#: guix/lint.scm:1966
+#: guix/lint.scm:1967
 #, scheme-format
 msgid "tabulation on line ~a, column ~a"
 msgstr "第 ~a 行，第 ~a 列的制表符"
 
-#: guix/lint.scm:1978
+#: guix/lint.scm:1979
 #, scheme-format
 msgid "trailing white space on line ~a"
 msgstr "第 ~a 行的尾随空白"
 
-#: guix/lint.scm:1992
+#: guix/lint.scm:1993
 #, scheme-format
 msgid "line ~a is way too long (~a characters)"
 msgstr "第 ~a 行过长 (~a 字符)"
 
-#: guix/lint.scm:2006
+#: guix/lint.scm:2007
 msgid "parentheses feel lonely, move to the previous or next line"
 msgstr "括号显得孤立，请移至上一行或下一行"
 
-#: guix/lint.scm:2084
+#: guix/lint.scm:2085
 #, fuzzy
 msgid "source file not found"
 msgstr "未找到模块 ~a"
 
-#: guix/lint.scm:2096
+#: guix/lint.scm:2097
 msgid "Validate package names"
 msgstr "验证包名"
 
-#: guix/lint.scm:2100
+#: guix/lint.scm:2101
 msgid "Check if tests are explicitly enabled"
 msgstr "检查测试是否明确启用"
 
-#: guix/lint.scm:2104
+#: guix/lint.scm:2105
 msgid "Check that cross-compilers are used when cross-compiling"
 msgstr "检查交叉编译时是否使用交叉编译器"
 
-#: guix/lint.scm:2108
+#: guix/lint.scm:2109
 msgid "Validate package descriptions"
 msgstr "验证包描述"
 
-#: guix/lint.scm:2112
+#: guix/lint.scm:2113
 msgid "Identify inputs that should be native inputs"
 msgstr "识别应为本地输入的输入项"
 
-#: guix/lint.scm:2116
+#: guix/lint.scm:2117
 msgid "Identify inputs that shouldn't be inputs at all"
 msgstr "识别不应作为输入的输入项"
 
-#: guix/lint.scm:2120
+#: guix/lint.scm:2121
 msgid "Identify inputs that should use their minimal variant"
 msgstr "识别应使用其最小变体的输入项"
 
-#: guix/lint.scm:2124
+#: guix/lint.scm:2125
 msgid "Identify input labels that do not match package names"
 msgstr "识别与包名不匹配的输入标签"
 
-#: guix/lint.scm:2128
+#: guix/lint.scm:2129
 msgid "Make sure 'wrap-program' can find its interpreter."
 msgstr "确保 'wrap-program' 能找到它的解释器。"
 
 #. TRANSLATORS: <license> is the name of a data type and must not be
 #. translated.
-#: guix/lint.scm:2134
+#: guix/lint.scm:2135
 msgid "Make sure the 'license' field is a <license> or a list thereof"
 msgstr "确保 'license' 字段是一个 <license> 或者它们的列表"
 
-#: guix/lint.scm:2139
+#: guix/lint.scm:2140
 msgid "Make sure tests are only run when requested"
 msgstr "确保测试仅在请求时运行"
 
-#: guix/lint.scm:2143
+#: guix/lint.scm:2144
 msgid "Suggest 'mirror://' URLs"
 msgstr "建议使用 'mirror://' URL"
 
-#: guix/lint.scm:2147
+#: guix/lint.scm:2148
 msgid "Validate file names of sources"
 msgstr "验证源文件名"
 
-#: guix/lint.scm:2151
+#: guix/lint.scm:2152
 msgid "Check for autogenerated tarballs"
 msgstr "检查自动生成的 tar 包"
 
-#: guix/lint.scm:2155
+#: guix/lint.scm:2156
 msgid "Check for misplaced flags"
 msgstr "检查错误放置的标志"
 
-#: guix/lint.scm:2159
+#: guix/lint.scm:2160
 msgid "Report failure to compile a package to a derivation"
 msgstr "报告将包编译为派生项失败"
 
-#: guix/lint.scm:2164
+#: guix/lint.scm:2165
 msgid "Report collisions that would occur due to propagated inputs"
 msgstr "报告因传播输入而可能发生的冲突"
 
-#: guix/lint.scm:2169
+#: guix/lint.scm:2170
 msgid "Validate file names and availability of patches"
 msgstr "验证补丁的文件名和可用性"
 
-#: guix/lint.scm:2173
+#: guix/lint.scm:2174
 msgid "Validate patch headers"
 msgstr "验证补丁头信息"
 
-#: guix/lint.scm:2177
+#: guix/lint.scm:2178
 msgid "Look for formatting issues in the source"
 msgstr "检查源代码中的格式问题"
 
-#: guix/lint.scm:2184
+#: guix/lint.scm:2185
 msgid "Validate package synopses"
 msgstr "验证包的简介"
 
-#: guix/lint.scm:2188
+#: guix/lint.scm:2189
 msgid "Validate synopsis & description of GNU packages"
 msgstr "验证 GNU 包的简介和描述"
 
-#: guix/lint.scm:2192
+#: guix/lint.scm:2193
 msgid "Validate home-page URLs"
 msgstr "验证主页 URL"
 
-#: guix/lint.scm:2196
+#: guix/lint.scm:2197
 msgid "Validate source URLs"
 msgstr "验证源代码 URL"
 
-#: guix/lint.scm:2200
+#: guix/lint.scm:2201
 msgid "Suggest GitHub URLs"
 msgstr "建议使用 GitHub URL"
 
-#: guix/lint.scm:2204
+#: guix/lint.scm:2205
 msgid "Check the Common Vulnerabilities and Exposures (CVE) database"
 msgstr "检查常见漏洞和暴露（CVE）数据库"
 
-#: guix/lint.scm:2209
+#: guix/lint.scm:2210
 msgid "Check the package for new upstream releases"
 msgstr "检查包是否有新的上游版本"
 
-#: guix/lint.scm:2213
+#: guix/lint.scm:2214
 msgid "Ensure source code archival on Software Heritage"
 msgstr "确保源代码存档在 Software Heritage 上"
 
-#: guix/lint.scm:2217
+#: guix/lint.scm:2218
 msgid "Ensure Haskell packages use Stackage LTS versions"
 msgstr "确保 Haskell 包使用 Stackage LTS 版本"
 
@@ -4782,7 +4793,7 @@ msgstr "~a：未知操作~%"
 msgid "download a file to the store and print its hash"
 msgstr "下载文件到存储并打印其哈希值"
 
-#: guix/scripts/download.scm:315 guix/scripts/package.scm:1073
+#: guix/scripts/download.scm:315 guix/scripts/package.scm:1074
 #: guix/scripts/pull.scm:809 guix/scripts/publish.scm:1249
 #: guix/scripts/discover.scm:136 guix/scripts/time-machine.scm:142
 #, scheme-format
@@ -4833,6 +4844,7 @@ msgid ""
 "@example\n"
 "GUIX_PROFILE=\"~a\"\n"
 ". \"$GUIX_PROFILE/etc/profile\"\n"
+"unset GUIX_PROFILE\n"
 "@end example\n"
 "\n"
 "Alternately, see @command{guix package --search-paths -p ~s}."
@@ -4842,11 +4854,12 @@ msgstr ""
 "@example\n"
 "GUIX_PROFILE=\"~a\"\n"
 ". \"$GUIX_PROFILE/etc/profile\"\n"
+"unset GUIX_PROFILE\n"
 "@end example\n"
 "\n"
 "或者，参见 @command{guix package --search-paths -p ~s}。"
 
-#: guix/scripts/package.scm:353
+#: guix/scripts/package.scm:354
 msgid ""
 ";; This \"manifest\" file can be passed to 'guix package -m' to reproduce\n"
 ";; the content of your profile.  This is \"symbolic\": it only specifies\n"
@@ -4860,12 +4873,12 @@ msgstr ""
 ";; 捕获所使用的频道，如“guix describe”返回的那样。\n"
 ";; 参见手册中的“复制 Guix”部分。\n"
 
-#: guix/scripts/package.scm:385
+#: guix/scripts/package.scm:386
 #, scheme-format
 msgid "no provenance information for this profile~%"
 msgstr "此配置文件无来源信息~%"
 
-#: guix/scripts/package.scm:387
+#: guix/scripts/package.scm:388
 msgid ""
 ";; This channel file can be passed to 'guix pull -C' or to\n"
 ";; 'guix time-machine -C' to obtain the Guix revision that was\n"
@@ -4874,12 +4887,12 @@ msgstr ""
 ";; 此频道文件可传递给 'guix pull -C' 或\n"
 ";; 'guix time-machine -C' 以获取用于填充此配置文件的 Guix 修订版本。\n"
 
-#: guix/scripts/package.scm:399
+#: guix/scripts/package.scm:400
 #, scheme-format
 msgid ";; Note: these other commits were also used to install some of the packages in this profile:~%"
 msgstr ";; 注意：这些其他提交也用于安装此配置文件中的某些软件包：~%"
 
-#: guix/scripts/package.scm:429
+#: guix/scripts/package.scm:430
 msgid ""
 "Usage: guix package [OPTION]...\n"
 "Install, remove, or upgrade packages in a single transaction.\n"
@@ -4887,7 +4900,7 @@ msgstr ""
 "用法：guix package [OPTION]...\n"
 "在单个事务中安装、移除或升级软件包。\n"
 
-#: guix/scripts/package.scm:431
+#: guix/scripts/package.scm:432
 msgid ""
 "\n"
 "  -i, --install PACKAGE ...\n"
@@ -4897,7 +4910,7 @@ msgstr ""
 "  -i, --install PACKAGE ...\n"
 "                         安装 PACKAGEs"
 
-#: guix/scripts/package.scm:434
+#: guix/scripts/package.scm:435
 msgid ""
 "\n"
 "  -e, --install-from-expression=EXP\n"
@@ -4907,7 +4920,7 @@ msgstr ""
 "  -e, --install-from-expression=EXP\n"
 "                         安装 EXP 计算得到的软件包"
 
-#: guix/scripts/package.scm:437
+#: guix/scripts/package.scm:438
 msgid ""
 "\n"
 "  -f, --install-from-file=FILE\n"
@@ -4918,7 +4931,7 @@ msgstr ""
 "  -f, --install-from-file=FILE\n"
 "                         安装 FILE 中代码计算得到的软件包"
 
-#: guix/scripts/package.scm:441
+#: guix/scripts/package.scm:442
 msgid ""
 "\n"
 "  -r, --remove PACKAGE ...\n"
@@ -4928,7 +4941,7 @@ msgstr ""
 "  -r, --remove PACKAGE ...\n"
 "                         移除 PACKAGEs"
 
-#: guix/scripts/package.scm:444
+#: guix/scripts/package.scm:445
 msgid ""
 "\n"
 "  -u, --upgrade[=REGEXP] upgrade all the installed packages matching REGEXP"
@@ -4936,7 +4949,7 @@ msgstr ""
 "\n"
 "  -u, --upgrade[=REGEXP] 升级所有匹配 REGEXP 的已安装软件包"
 
-#: guix/scripts/package.scm:446
+#: guix/scripts/package.scm:447
 msgid ""
 "\n"
 "  -m, --manifest=FILE    create a new profile generation with the manifest\n"
@@ -4945,7 +4958,7 @@ msgstr ""
 "\n"
 "  -m, --manifest=FILE    使用来自 FILE 的清单创建新的配置文件生成"
 
-#: guix/scripts/package.scm:449 guix/scripts/upgrade.scm:41
+#: guix/scripts/package.scm:450 guix/scripts/upgrade.scm:41
 msgid ""
 "\n"
 "      --do-not-upgrade[=REGEXP] do not upgrade any packages matching REGEXP"
@@ -4953,7 +4966,7 @@ msgstr ""
 "\n"
 "      --do-not-upgrade[=REGEXP] 不升级任何匹配 REGEXP 的软件包"
 
-#: guix/scripts/package.scm:451 guix/scripts/pull.scm:112
+#: guix/scripts/package.scm:452 guix/scripts/pull.scm:112
 msgid ""
 "\n"
 "      --roll-back        roll back to the previous generation"
@@ -4961,7 +4974,7 @@ msgstr ""
 "\n"
 "      --roll-back        回滚到上一个生成"
 
-#: guix/scripts/package.scm:453
+#: guix/scripts/package.scm:454
 msgid ""
 "\n"
 "      --search-paths[=KIND]\n"
@@ -4971,7 +4984,7 @@ msgstr ""
 "      --search-paths[=KIND]\n"
 "                         显示所需的环境变量定义"
 
-#: guix/scripts/package.scm:456 guix/scripts/pull.scm:107
+#: guix/scripts/package.scm:457 guix/scripts/pull.scm:107
 msgid ""
 "\n"
 "  -l, --list-generations[=PATTERN]\n"
@@ -4981,7 +4994,7 @@ msgstr ""
 "  -l, --list-generations[=PATTERN]\n"
 "                         列出匹配 PATTERN 的生成"
 
-#: guix/scripts/package.scm:459 guix/scripts/pull.scm:114
+#: guix/scripts/package.scm:460 guix/scripts/pull.scm:114
 msgid ""
 "\n"
 "  -d, --delete-generations[=PATTERN]\n"
@@ -4991,7 +5004,7 @@ msgstr ""
 "  -d, --delete-generations[=PATTERN]\n"
 "                         删除匹配 PATTERN 的生成"
 
-#: guix/scripts/package.scm:462 guix/scripts/pull.scm:117
+#: guix/scripts/package.scm:463 guix/scripts/pull.scm:117
 msgid ""
 "\n"
 "  -S, --switch-generation=PATTERN\n"
@@ -5001,7 +5014,7 @@ msgstr ""
 "  -S, --switch-generation=PATTERN\n"
 "                         切换到匹配 PATTERN 的生成"
 
-#: guix/scripts/package.scm:465
+#: guix/scripts/package.scm:466
 msgid ""
 "\n"
 "      --export-manifest  print a manifest for the chosen profile"
@@ -5009,7 +5022,7 @@ msgstr ""
 "\n"
 "      --export-manifest  打印所选配置文件的清单"
 
-#: guix/scripts/package.scm:467
+#: guix/scripts/package.scm:468
 msgid ""
 "\n"
 "      --export-channels  print channels for the chosen profile"
@@ -5017,7 +5030,7 @@ msgstr ""
 "\n"
 "      --export-channels  打印所选配置文件的频道"
 
-#: guix/scripts/package.scm:469 guix/scripts/install.scm:34
+#: guix/scripts/package.scm:470 guix/scripts/install.scm:34
 #: guix/scripts/remove.scm:33 guix/scripts/upgrade.scm:37
 msgid ""
 "\n"
@@ -5026,7 +5039,7 @@ msgstr ""
 "\n"
 "  -p, --profile=PROFILE  使用 PROFILE 替代用户的默认配置文件"
 
-#: guix/scripts/package.scm:471
+#: guix/scripts/package.scm:472
 msgid ""
 "\n"
 "      --list-profiles    list the user's profiles"
@@ -5034,7 +5047,7 @@ msgstr ""
 "\n"
 "      --list-profiles    列出用户的配置文件"
 
-#: guix/scripts/package.scm:474
+#: guix/scripts/package.scm:475
 msgid ""
 "\n"
 "      --allow-collisions do not treat collisions in the profile as an error"
@@ -5042,7 +5055,7 @@ msgstr ""
 "\n"
 "      --allow-collisions 不将配置文件中的冲突视为错误"
 
-#: guix/scripts/package.scm:476
+#: guix/scripts/package.scm:477
 msgid ""
 "\n"
 "      --bootstrap        use the bootstrap Guile to build the profile"
@@ -5050,7 +5063,7 @@ msgstr ""
 "\n"
 "      --bootstrap        使用引导 Guile 构建配置文件"
 
-#: guix/scripts/package.scm:481
+#: guix/scripts/package.scm:482
 msgid ""
 "\n"
 "  -s, --search=REGEXP    search in synopsis and description using REGEXP"
@@ -5058,7 +5071,7 @@ msgstr ""
 "\n"
 "  -s, --search=REGEXP    使用 REGEXP 在概要和描述中搜索"
 
-#: guix/scripts/package.scm:483
+#: guix/scripts/package.scm:484
 msgid ""
 "\n"
 "  -I, --list-installed[=REGEXP]\n"
@@ -5068,7 +5081,7 @@ msgstr ""
 "  -I, --list-installed[=REGEXP]\n"
 "                         列出匹配 REGEXP 的已安装软件包"
 
-#: guix/scripts/package.scm:486
+#: guix/scripts/package.scm:487
 msgid ""
 "\n"
 "  -A, --list-available[=REGEXP]\n"
@@ -5078,7 +5091,7 @@ msgstr ""
 "  -A, --list-available[=REGEXP]\n"
 "                         列出匹配 REGEXP 的可用软件包"
 
-#: guix/scripts/package.scm:489
+#: guix/scripts/package.scm:490
 msgid ""
 "\n"
 "      --show=PACKAGE     show details about PACKAGE"
@@ -5086,42 +5099,42 @@ msgstr ""
 "\n"
 "      --show=PACKAGE     显示 PACKAGE 的详细信息"
 
-#: guix/scripts/package.scm:544
+#: guix/scripts/package.scm:545
 #, scheme-format
 msgid "upgrade regexp '~a' looks like a command-line option~%"
 msgstr "升级正则表达式 '~a' 看起来像一个命令行选项~%"
 
-#: guix/scripts/package.scm:547
+#: guix/scripts/package.scm:548
 #, scheme-format
 msgid "is this intended?~%"
 msgstr "这是有意的吗？~%"
 
-#: guix/scripts/package.scm:597
+#: guix/scripts/package.scm:598
 #, scheme-format
 msgid "~a: unsupported kind of search path~%"
 msgstr "~a: 不支持的搜索路径类型~%"
 
-#: guix/scripts/package.scm:732
+#: guix/scripts/package.scm:733
 #, scheme-format
 msgid "cannot install non-package object: ~s~%"
 msgstr "无法安装非软件包对象：~s~%"
 
-#: guix/scripts/package.scm:917
+#: guix/scripts/package.scm:918
 #, fuzzy, scheme-format
 msgid "~a~@[@~a~]: package not found~%"
 msgstr "~a: 未找到补丁"
 
-#: guix/scripts/package.scm:964 guix/scripts/pull.scm:703
+#: guix/scripts/package.scm:965 guix/scripts/pull.scm:703
 #, scheme-format
 msgid "cannot switch to generation '~a'~%"
 msgstr "无法切换到代 '~a'~%"
 
-#: guix/scripts/package.scm:1045
+#: guix/scripts/package.scm:1046
 #, scheme-format
 msgid "nothing to do~%"
 msgstr "没有要做的事情~%"
 
-#: guix/scripts/package.scm:1067
+#: guix/scripts/package.scm:1068
 msgid "manage packages and profiles"
 msgstr "管理软件包和配置文件"
 
@@ -6007,7 +6020,7 @@ msgstr "签名数据损坏"
 msgid "sign or verify signatures on normalized archives (nars)"
 msgstr "对规范化归档（nars）进行签名或验证签名"
 
-#: guix/scripts/authenticate.scm:184
+#: guix/scripts/authenticate.scm:188
 msgid ""
 "Usage: guix authenticate OPTION...\n"
 "Sign data or verify signatures.  This tool is meant to be used internally by\n"
@@ -6016,12 +6029,12 @@ msgstr ""
 "用法：guix authenticate OPTION...\n"
 "签名数据或验证签名。此工具旨在由 'guix-daemon' 内部使用。\n"
 
-#: guix/scripts/authenticate.scm:218
+#: guix/scripts/authenticate.scm:225
 #, fuzzy, scheme-format
 msgid "~s: invalid command; ignoring~%"
 msgstr "~a: 无效的数字~%"
 
-#: guix/scripts/authenticate.scm:223
+#: guix/scripts/authenticate.scm:230
 #, fuzzy, scheme-format
 msgid "wrong arguments~%"
 msgstr "参数有误"
@@ -6670,12 +6683,12 @@ msgstr ""
 "使用 @option{--allow-downgrades} 强制\n"
 "此降级。"
 
-#: guix/scripts/system/reconfigure.scm:435
+#: guix/scripts/system/reconfigure.scm:439
 #, scheme-format
 msgid "cannot determine provenance for current system~%"
 msgstr "无法确定当前系统的来源~%"
 
-#: guix/scripts/system/reconfigure.scm:437
+#: guix/scripts/system/reconfigure.scm:441
 #, scheme-format
 msgid "cannot determine provenance of ~a~%"
 msgstr "无法确定 ~a 的来源~%"
@@ -9915,7 +9928,7 @@ msgstr "索引对象"
 msgid "ignoring invalid certificate for '~a'~%"
 msgstr "忽略 '~a' 的非法证书~%"
 
-#: guix/git.scm:366 guix/git.scm:721
+#: guix/git.scm:366 guix/git.scm:727
 #, scheme-format
 msgid "Git error: ~a~%"
 msgstr "Git 错误：~a~%"
@@ -9925,27 +9938,27 @@ msgstr "Git 错误：~a~%"
 msgid "updating submodule '~a'...~%"
 msgstr "正在更新子模块 '~a'...~%"
 
-#: guix/git.scm:469
+#: guix/git.scm:475
 #, scheme-format
 msgid "revision ~a of ~a could not be fetched from Software Heritage~%"
 msgstr "无法从 Software Heritage 获取 ~a 的修订版本 ~a~%"
 
-#: guix/git.scm:519
+#: guix/git.scm:525
 #, scheme-format
 msgid "compressing cached Git repository at '~a'...~%"
 msgstr "正在压缩缓存的 Git 仓库 '~a'...~%"
 
-#: guix/git.scm:872
+#: guix/git.scm:878
 #, scheme-format
 msgid "cannot fetch commit ~a from ~a: ~a"
 msgstr "无法从 ~a 获取提交 ~a：~a"
 
-#: guix/git.scm:875
+#: guix/git.scm:881
 #, scheme-format
 msgid "cannot fetch branch '~a' from ~a: ~a"
 msgstr "无法从 ~a 获取分支 '~a'：~a"
 
-#: guix/git.scm:878
+#: guix/git.scm:884
 #, fuzzy, scheme-format
 msgid "Git failure while fetching ~a: ~a"
 msgstr "连接到 `~a' 失败：~a~%"
@@ -10117,32 +10130,32 @@ msgstr ""
 msgid "key generation failed: ~a: ~a~%"
 msgstr "密钥生成失败：~a：~a~%"
 
-#: guix/scripts/archive.scm:305
+#: guix/scripts/archive.scm:322
 #, fuzzy, scheme-format
 msgid "failed to read public key: ~a: ~a~%"
 msgstr "连接到 `~a' 失败：~a~%"
 
-#: guix/scripts/archive.scm:312
+#: guix/scripts/archive.scm:329
 #, scheme-format
 msgid "replacing symbolic link ~a with a regular file~%"
 msgstr "用常规文件替换符号链接 ~a~%"
 
-#: guix/scripts/archive.scm:315
+#: guix/scripts/archive.scm:332
 msgid ""
 "On Guix System, add all @code{authorized-keys} to the\n"
 "@code{guix-service-type} service of your @code{operating-system} instead."
 msgstr "在 Guix 系统上，请将所有 @code{authorized-keys} 添加到您的 @code{operating-system} 的 @code{guix-service-type} 服务中。"
 
-#: guix/scripts/archive.scm:321
+#: guix/scripts/archive.scm:338
 #, scheme-format
 msgid "s-expression does not denote a public key~%"
 msgstr "S 表达式不表示公钥~%"
 
-#: guix/scripts/archive.scm:368
+#: guix/scripts/archive.scm:385
 msgid "manipulate, export, and import normalized archives (nars)"
 msgstr "操作、导出和导入规范化归档（nars）"
 
-#: guix/scripts/archive.scm:415
+#: guix/scripts/archive.scm:432
 #, scheme-format
 msgid "either '--export' or '--import' must be specified~%"
 msgstr "必须指定 '--export' 或 '--import'~%"
@@ -10261,7 +10274,7 @@ msgstr ""
 msgid "ignoring invalid file name: '~a'~%"
 msgstr "忽略非法文件名：'~a'~%"
 
-#: guix/scripts/shell.scm:300 guix/scripts/environment.scm:1204
+#: guix/scripts/shell.scm:300 guix/scripts/environment.scm:1210
 #, scheme-format
 msgid "no packages specified; creating an empty environment~%"
 msgstr "未指定软件包；正在创建一个空环境~%"
@@ -10622,80 +10635,80 @@ msgstr "一切正常！shell 获取了正确的环境变量。~%"
 msgid "Did you mean '~a'?~%"
 msgstr "您是想说 '~a'?~%"
 
-#: guix/scripts/environment.scm:1045
+#: guix/scripts/environment.scm:1051
 #, scheme-format
 msgid "cannot link profile: '~a' already exists within container~%"
 msgstr "无法链接配置文件：'~a' 已在容器中存在~%"
 
-#: guix/scripts/environment.scm:1083
+#: guix/scripts/environment.scm:1089
 msgid "cannot create container: user namespaces unavailable\n"
 msgstr "无法创建容器：用户命名空间不可用\n"
 
-#: guix/scripts/environment.scm:1084
+#: guix/scripts/environment.scm:1090
 msgid "is your kernel version < 3.10?\n"
 msgstr "您的内核版本是否 < 3.10?\n"
 
-#: guix/scripts/environment.scm:1087
+#: guix/scripts/environment.scm:1093
 msgid "cannot create container: unprivileged user cannot create user namespaces\n"
 msgstr "无法创建容器：无特权用户无法创建用户命名空间\n"
 
-#: guix/scripts/environment.scm:1088
+#: guix/scripts/environment.scm:1094
 msgid "please set /proc/sys/kernel/unprivileged_userns_clone to \"1\"\n"
 msgstr "请将 /proc/sys/kernel/unprivileged_userns_clone 设置为 \"1\"\n"
 
-#: guix/scripts/environment.scm:1091
+#: guix/scripts/environment.scm:1097
 msgid "cannot create container: /proc/self/setgroups does not exist\n"
 msgstr "无法创建容器：/proc/self/setgroups 不存在\n"
 
-#: guix/scripts/environment.scm:1092
+#: guix/scripts/environment.scm:1098
 msgid "is your kernel version < 3.19?\n"
 msgstr "您的内核版本是否 < 3.19?\n"
 
-#: guix/scripts/environment.scm:1118
+#: guix/scripts/environment.scm:1124
 msgid "spawn one-off software environments (deprecated)"
 msgstr "生成一次性软件环境（已弃用）"
 
-#: guix/scripts/environment.scm:1175
+#: guix/scripts/environment.scm:1181
 #, scheme-format
 msgid "'--link-profile' cannot be used without '--container'~%"
 msgstr "'--link-profile' 不能在没有 '--container' 的情况下使用~%"
 
-#: guix/scripts/environment.scm:1177
+#: guix/scripts/environment.scm:1183
 #, scheme-format
 msgid "'--user' cannot be used without '--container'~%"
 msgstr "'--user' 不能在没有 '--container' 的情况下使用~%"
 
-#: guix/scripts/environment.scm:1179
+#: guix/scripts/environment.scm:1185
 #, scheme-format
 msgid "--no-cwd cannot be used without '--container'~%"
 msgstr "--no-cwd 不能在没有 '--container' 的情况下使用~%"
 
-#: guix/scripts/environment.scm:1181
+#: guix/scripts/environment.scm:1187
 #, scheme-format
 msgid "'--writable-root' cannot be used without '--container'~%"
 msgstr "'--writable-root' 不能在没有 '--container' 的情况下使用~%"
 
-#: guix/scripts/environment.scm:1183
+#: guix/scripts/environment.scm:1189
 #, scheme-format
 msgid "'--emulate-fhs' cannot be used without '--container'~%"
 msgstr "'--emulate-fhs' 不能在没有 '--container' 的情况下使用~%"
 
-#: guix/scripts/environment.scm:1185
+#: guix/scripts/environment.scm:1191
 #, scheme-format
 msgid "'--nesting' cannot be used without '--container'~%"
 msgstr "'--nesting' 不能在没有 '--container' 的情况下使用~%"
 
-#: guix/scripts/environment.scm:1187
+#: guix/scripts/environment.scm:1193
 #, scheme-format
 msgid "'--symlink' cannot be used without '--container'~%"
 msgstr "'--symlink' 不能在没有 '--container' 的情况下使用~%"
 
-#: guix/scripts/environment.scm:1201
+#: guix/scripts/environment.scm:1207
 #, scheme-format
 msgid "'--profile' cannot be used with package options~%"
 msgstr "'--profile' 不能与包选项一起使用~%"
 
-#: guix/scripts/environment.scm:1245
+#: guix/scripts/environment.scm:1251
 #, scheme-format
 msgid "'--check' is unnecessary when using '--container'; doing nothing~%"
 msgstr "'--check' 在使用 '--container' 时不必要；不执行任何操作~%"
@@ -11622,12 +11635,12 @@ msgstr "~a: 注意：使用 ~a 但 ~a 在上游可用~%"
 msgid "Pick one of the following available versions:~{ ~a~}."
 msgstr "请选择以下可用版本之一：~{ ~a~}。"
 
-#: guix/import/go.scm:717
+#: guix/import/go.scm:719
 #, fuzzy, scheme-format
 msgid "Importing package ~s...~%"
 msgstr "连接到 `~a' 失败：~a~%"
 
-#: guix/import/go.scm:719
+#: guix/import/go.scm:721
 #, scheme-format
 msgid ""
 "Failed to import package ~s.\n"
@@ -11638,7 +11651,7 @@ msgstr ""
 "原因：无法获取 ~s：HTTP 错误 ~a (~s)。\n"
 "此包及其依赖项将不会被导入。~%"
 
-#: guix/import/go.scm:729 guix/import/go.scm:738
+#: guix/import/go.scm:731 guix/import/go.scm:740
 #, fuzzy, scheme-format
 msgid ""
 "Failed to import package ~s.\n"
@@ -12605,10 +12618,10 @@ msgstr "生成调试输出"
 msgid "do not allow fixed-output chroot builds to access the host loopback"
 msgstr "禁止固定输出的 chroot 构建访问主机回环接口"
 
-#: nix/nix-daemon/guix-daemon.cc:529
-msgid "socket-activated with %1% socket"
-msgid_plural "socket-activated with %1% sockets"
-msgstr[0] "通过 %1% 套接字激活"
+#: nix/nix-daemon/guix-daemon.cc:530
+msgid "socket-activated with {} socket"
+msgid_plural "socket-activated with {} sockets"
+msgstr[0] "通过 {} 套接字激活"
 
 #~ msgid ""
 #~ "Run the GNU@tie{}lsh secure shell (SSH) daemon,\n"

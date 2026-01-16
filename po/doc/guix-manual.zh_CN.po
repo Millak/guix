@@ -30,8 +30,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.0.1-pre1\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-10-24 03:18+0000\n"
-"PO-Revision-Date: 2025-10-30 11:10+0000\n"
+"POT-Creation-Date: 2026-01-06 03:18+0000\n"
+"PO-Revision-Date: 2026-01-01 14:27+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://translate.codeberg.org/projects/guix/documentation-manual/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -39,7 +39,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.13.3\n"
+"X-Generator: Weblate 5.15.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -276,12 +276,6 @@ msgstr "@url{https://gcc.gnu.org, GCC's g++}，带有支持对于"
 msgid "C++11 standard."
 msgstr "C++11 标准。"
 
-msgid "If you want to hack Guix itself, it is recommended to use the latest version from the Git repository:"
-msgstr "如果你想折腾 Guix 本身，建议使用 Git 仓库里最新的版本："
-
-msgid "git clone https://git.guix.gnu.org/guix.git\n"
-msgstr "git clone https://git.guix.gnu.org/guix.git\n"
-
 msgid "authentication, of a Guix checkout"
 msgstr "Guix 签出的身份认证"
 
@@ -312,9 +306,6 @@ msgstr "guix shell -D guix -CPW\n"
 msgid "or even, from within a Git worktree for Guix:"
 msgstr "或者，从一个 Git worktree 内部使用 Guix："
 
-msgid "guix shell -CPW\n"
-msgstr "guix shell -CPW\n"
-
 msgid "If @option{-C} (short for @option{--container}) is not supported on your system, try @command{--pure} instead of @option{-CPW}.  @xref{Invoking guix shell}, for more information on that command."
 msgstr "如果 @option{-C}（@option{--container} 的缩写）在你的系统上不被支持，请尝试使用 @command{--pure} 来代替 @option{-CPW}。有关该命令的更多信息见 @xref{Invoking guix shell}."
 
@@ -338,12 +329,6 @@ msgstr "@url{https://www.graphviz.org/, Graphviz};"
 
 msgid "@url{https://www.gnu.org/software/help2man/, GNU Help2man (optional)}."
 msgstr "@url{https://www.gnu.org/software/help2man/, GNU Help2man（可选）}。"
-
-msgid "On Guix, extra dependencies can be added by instead running @command{guix shell}:"
-msgstr "在 Guix 上，额外的依赖也可以通过 @command{guix shell} 添加："
-
-msgid "guix shell -D guix help2man git strace --pure\n"
-msgstr "guix shell -D guix help2man git strace --pure\n"
 
 msgid "From there you can generate the build system infrastructure using Autoconf and Automake:"
 msgstr "在这里你可以使用 Autoconf 和 Automake 生成构建系统的基础设施："
@@ -3201,17 +3186,8 @@ msgstr "用二进制文件安装 Guix"
 msgid "installer script"
 msgstr "安装脚本"
 
-msgid "Some GNU/Linux distributions, such as Debian, Ubuntu, and openSUSE provide Guix through their own package managers.  The version of Guix may be older than @value{VERSION} but you can update it afterwards by running @samp{guix pull}."
-msgstr "一些 GNU/Linux 发行版，如 Debian、Ubuntu 和 openSUSE 通过自己的包管理器提供 Guix。Guix 的版本可能早于@value{VERSION}，但您可以在之后通过运行@samp{guix pull}来更新它。"
-
 msgid "We advise system administrators who install Guix, both from the installation script or @i{via} the native package manager of their foreign distribution, to also regularly read and follow security notices, as shown by @command{guix pull}."
 msgstr "我们建议安装 Guix 的系统管理员，无论是通过安装脚本还是通过其外部发行版的本地包管理器，定期阅读和遵循安全通知，如@command{guix pull}所示。"
-
-msgid "sudo apt install guix\n"
-msgstr "sudo apt install guix\n"
-
-msgid "sudo zypper install guix\n"
-msgstr "sudo zypper install guix\n"
 
 msgid "sudo pacman -S guix\n"
 msgstr "sudo pacman -S guix\n"

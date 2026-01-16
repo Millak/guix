@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-10-24 03:18+0000\n"
-"PO-Revision-Date: 2025-09-27 14:50+0000\n"
+"POT-Creation-Date: 2026-01-06 03:18+0000\n"
+"PO-Revision-Date: 2026-01-01 14:27+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Italian <https://translate.codeberg.org/projects/guix/documentation-manual/it/>\n"
 "Language: it\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13.2\n"
+"X-Generator: Weblate 5.15.1\n"
 
 msgid "Contributing"
 msgstr "Contribuire"
@@ -258,12 +258,6 @@ msgstr "@url{https://gcc.gnu.org, il g++ di GCC}, con supporto per lo"
 msgid "C++11 standard."
 msgstr "standard C++11."
 
-msgid "If you want to hack Guix itself, it is recommended to use the latest version from the Git repository:"
-msgstr "Se vuoi modificare Guix stesso, è preferibile usare l'ultima versione presa dal repository Git:"
-
-msgid "git clone https://git.guix.gnu.org/guix.git\n"
-msgstr "git clone https://git.guix.gnu.org/guix.git\n"
-
 msgid "authentication, of a Guix checkout"
 msgstr "autenticazione, di un checkout Guix"
 
@@ -294,9 +288,6 @@ msgstr "guix shell -D guix -CPW\n"
 msgid "or even, from within a Git worktree for Guix:"
 msgstr "o anche, da un albero di lavoro Git per Guix:"
 
-msgid "guix shell -CPW\n"
-msgstr "guix shell -CPW\n"
-
 msgid "If @option{-C} (short for @option{--container}) is not supported on your system, try @command{--pure} instead of @option{-CPW}.  @xref{Invoking guix shell}, for more information on that command."
 msgstr "Se @option{-C} (abbreviazione di @option{--container}) non è supportato sul tuo sistema, prova @command{--pure} invece di @option{-CPW}. @xref{Invoking guix shell}, per maggiori informazioni su questo comando."
 
@@ -320,12 +311,6 @@ msgstr "@url{https://www.graphviz.org/, Graphviz};"
 
 msgid "@url{https://www.gnu.org/software/help2man/, GNU Help2man (optional)}."
 msgstr "@url{https://www.gnu.org/software/help2man/, GNU Help2man (opzionale)}."
-
-msgid "On Guix, extra dependencies can be added by instead running @command{guix shell}:"
-msgstr "Su Guix, dipendenze extra possono essere aggiunte eseguendo invece @command{guix shell}:"
-
-msgid "guix shell -D guix help2man git strace --pure\n"
-msgstr "guix shell -D guix help2man git strace --pure\n"
 
 msgid "From there you can generate the build system infrastructure using Autoconf and Automake:"
 msgstr "Da lì puoi generare l'infrastruttura del sistema di compilazione usando Autoconf e Automake:"
@@ -4924,23 +4909,11 @@ msgstr "script di installazione"
 msgid "This section describes how to install Guix from a self-contained tarball providing binaries for Guix and for all its dependencies.  This is often quicker than installing from source, described later (@pxref{Building from Git})."
 msgstr "Questa sezione descrive come installare Guix da un tarball auto-contenuto che fornisce i binari per Guix e per tutte le sue dipendenze. Questo è spesso più veloce dell'installazione dai sorgenti, descritta più avanti (@pxref{Building from Git})."
 
-msgid "Some GNU/Linux distributions, such as Debian, Ubuntu, and openSUSE provide Guix through their own package managers.  The version of Guix may be older than @value{VERSION} but you can update it afterwards by running @samp{guix pull}."
-msgstr "Alcune distribuzioni GNU/Linux, come Debian, Ubuntu e openSUSE, forniscono Guix tramite i loro gestori di pacchetti. La versione di Guix potrebbe essere più vecchia di @value{VERSION} ma puoi aggiornarla in seguito eseguendo @samp{guix pull}."
+msgid "Some GNU/Linux distributions, such as openSUSE, Alpine and NixOS provide Guix through their own package managers.  The version of Guix may be older than @value{VERSION} but you can update it afterwards by running @samp{guix pull}."
+msgstr "Alcune distribuzioni GNU/Linux, come openSUSE, Alpine e NixOS, forniscono Guix tramite i loro gestori di pacchetti. La versione di Guix potrebbe essere più vecchia di @value{VERSION} ma puoi aggiornarla in seguito eseguendo @samp{guix pull}."
 
 msgid "We advise system administrators who install Guix, both from the installation script or @i{via} the native package manager of their foreign distribution, to also regularly read and follow security notices, as shown by @command{guix pull}."
 msgstr "Consigliamo agli amministratori di sistema che installano Guix, sia dallo script di installazione che @i{via} il gestore di pacchetti nativo della loro distribuzione esterna, di leggere e seguire regolarmente gli avvisi di sicurezza, come mostrato da @command{guix pull}."
-
-msgid "For Debian or derivatives such as Ubuntu or Trisquel, call:"
-msgstr "Per Debian o derivate come Ubuntu o Trisquel, chiama:"
-
-msgid "sudo apt install guix\n"
-msgstr "sudo apt install guix\n"
-
-msgid "Likewise, on openSUSE:"
-msgstr "Allo stesso modo, su openSUSE:"
-
-msgid "sudo zypper install guix\n"
-msgstr "sudo zypper install guix\n"
 
 msgid "If you are running Parabola, after enabling the pcr (Parabola Community Repo) repository, you can install Guix with:"
 msgstr "Se stai usando Parabola, dopo aver abilitato il repository pcr (Parabola Community Repo), puoi installare Guix con:"
