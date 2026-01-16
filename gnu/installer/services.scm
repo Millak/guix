@@ -243,44 +243,32 @@
 ;; under their own account: use 'guix search KEYWORD' to search
 ;; for packages and 'guix install PACKAGE' to install a package.\n")))))
 
-    (if (null? snippets)
-        `(,@(if (null? packages)
-                (if (target-hurd?)
-                    `(,@package-heading
-                      (packages %base-packages/hurd))
-                    '())
+    `(,@(if (null? packages)
+            (if (target-hurd?)
                 `(,@package-heading
-                  (packages (append (list ,@packages)
-                                    ,(if (target-hurd?)
-                                         '%base-packages/hurd
-                                         '%base-packages)))))
+                  (packages %base-packages/hurd))
+                '())
+            `(,@package-heading
+              (packages (append (list ,@packages)
+                                ,(if (target-hurd?)
+                                     '%base-packages/hurd
+                                     '%base-packages)))))
 
-          ,@service-heading
-          (services ,services))
-        `(,@(if (null? packages)
-                (if (target-hurd?)
-                    `(,@package-heading
-                      (packages %base-packages/hurd))
-                    '())
-                `(,@package-heading
-                  (packages (append (list ,@packages)
-                                    ,(if (target-hurd?)
-                                         '%base-packages/hurd
-                                         '%base-packages)))))
+      ,@service-heading
+      ,(if (null? snippets)
+           `(services ,services)
+           `(services
+             (append (list ,@snippets
 
-          ,@service-heading
-          (services (append (list ,@snippets
+                           ,@(if desktop?
+                                 ;; XXX: Assume 'keyboard-layout' is in scope.
+                                 `((set-xorg-configuration
+                                    (xorg-configuration
+                                      (keyboard-layout keyboard-layout))))
+                                 '()))
 
-                                  ,@(if desktop?
-                                        ;; XXX: Assume 'keyboard-layout' is in
-                                        ;; scope.
-                                        `((set-xorg-configuration
-                                           (xorg-configuration
-                                            (keyboard-layout keyboard-layout))))
-                                        '()))
-
-                            ,(vertical-space 1)
-                            ,(comment (G_ "\
+                     ,(vertical-space 1)
+                     ,(comment (G_ "\
 ;; This is the default list of services we
 ;; are appending to.\n"))
-                            ,services))))))
+                     ,services))))))
