@@ -1332,11 +1332,14 @@ argument.")))
                           ((lambda (ls) (string-join ls ":"))
                            (map (lambda (path)
                                   (string-append path "/share"))
+                                ;; NOTE: Add system profile here so that we can
+                                ;; use fonts installed in it.
                                 ;; XXX: Remove gnome-shell below when GDM
                                 ;; can depend on GNOME Shell directly.
-                                (cons #$gnome-shell
-                                      '#$(gdm-configuration-gnome-shell-assets
-                                          config)))))
+                                (cons* "/run/current-system/profile"
+                                       #$gnome-shell
+                                       '#$(gdm-configuration-gnome-shell-assets
+                                           config)))))
                          ;; Add XCURSOR_PATH so that mutter can find its
                          ;; cursors.  gdm doesn't login so doesn't source
                          ;; the corresponding line in /etc/profile.
