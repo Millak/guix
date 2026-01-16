@@ -7980,61 +7980,58 @@ type, for example: packages, buffers, files, etc.")
     (license license:gpl3+)))
 
 (define-public emacs-guix
-  ;; No releases, nor tags.
-  (let ((commit "bccba0c1e6446f10075d8eaebae9eef6e67159a3")
-        (revision "10"))
-    (package
-      (name "emacs-guix")
-      (version (git-version "0.5.2" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://codeberg.org/guix/emacs-guix/")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "02p342vqcadbc6kqrpxsispy2dx46ypsp43s4p7llyajxvgk8zks"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:modules '((guix build gnu-build-system)
-                    ((guix build emacs-build-system) #:prefix emacs:)
-                    (guix build utils))
-        #:imported-modules `(,@%default-gnu-imported-modules
-                             (guix build emacs-build-system)
-                             (guix build emacs-utils))
-        #:tests? #f    ; no tests
-        #:configure-flags
-        #~(list (string-append "--with-lispdir="
-                               (emacs:elpa-directory #$output)))
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'expand-load-path
-              (lambda _
-                ((assoc-ref emacs:%standard-phases 'expand-load-path)
-                 #:prepend-source? #f))))))
-      (native-inputs
-       (list autoconf automake emacs-minimal pkg-config texinfo))
-      (inputs
-       (list (lookup-package-input guix "guile")
-             guix))
-      (propagated-inputs
-       (list emacs-bui
-             emacs-dash
-             emacs-edit-indirect
-             emacs-geiser
-             emacs-geiser-guile
-             emacs-magit-popup
-             guile-gcrypt))
-      (home-page "https://guix.gnu.org")
-      (synopsis "Emacs interface for GNU Guix")
-      (description
-       "Emacs-Guix provides a visual interface, tools and features for the GNU
+  (package
+    (name "emacs-guix")
+    (version "0.6.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://codeberg.org/guix/emacs-guix/")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14639wg2717yawj4qhmmzvirrvjy0s1jw2j9wgyzc21h7hl016pz"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules '((guix build gnu-build-system)
+                  ((guix build emacs-build-system) #:prefix emacs:)
+                  (guix build utils))
+      #:imported-modules `(,@%default-gnu-imported-modules
+                           (guix build emacs-build-system)
+                           (guix build emacs-utils))
+      #:tests? #f    ; no tests
+      #:configure-flags
+      #~(list (string-append "--with-lispdir="
+                             (emacs:elpa-directory #$output)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'expand-load-path
+            (lambda _
+              ((assoc-ref emacs:%standard-phases 'expand-load-path)
+               #:prepend-source? #f))))))
+    (native-inputs
+     (list autoconf automake emacs-minimal pkg-config texinfo))
+    (inputs
+     (list (lookup-package-input guix "guile")
+           guix))
+    (propagated-inputs
+     (list emacs-bui
+           emacs-dash
+           emacs-edit-indirect
+           emacs-geiser
+           emacs-geiser-guile
+           emacs-magit-popup
+           guile-gcrypt))
+    (home-page "https://guix.gnu.org")
+    (synopsis "Emacs interface for GNU Guix")
+    (description
+     "Emacs-Guix provides a visual interface, tools and features for the GNU
 Guix package manager.  Particularly, it allows you to do various package
 management tasks from Emacs.  To begin with, run @code{M-x guix-about} or
 @code{M-x guix-help} command.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-build-farm
   (package
