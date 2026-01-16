@@ -1150,30 +1150,28 @@ MIME-encoded email package.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://pagure.io/mailcap.git")
-               (commit tag)))
+                (url "https://pagure.io/mailcap.git")
+                (commit tag)))
          (file-name (git-file-name name version))
          (sha256
           (base32 "163kf88spdvywhym08487ia7y88dq7mn93hz8q4qa1wjha4rhb5n"))))
       (build-system gnu-build-system)
       (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (add-before 'install 'patch-xdg-open-references
-             (lambda _
-               (substitute* "mailcap"
-                 ;; If /usr/bin/xdg-open does not exists.
-                 (("/usr/bin/xdg-open") "/usr/bin/env xdg-open"))))
-           (add-before 'install 'set-dest-dir
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (setenv "DESTDIR" out)
-                 (substitute* "Makefile"
-                   (("/usr") ""))       ; This allows the man page to install.
-                 #t))))))
-      (native-inputs
-       (list python))           ; for tests
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (add-before 'install 'patch-xdg-open-references
+              (lambda _
+                (substitute* "mailcap"
+                  ;; If /usr/bin/xdg-open does not exists.
+                  (("/usr/bin/xdg-open") "/usr/bin/env xdg-open"))))
+            (add-before 'install 'set-dest-dir
+              (lambda _
+                (setenv "DESTDIR" #$output)
+                (substitute* "Makefile"
+                  (("/usr") "")))))))   ; This allows the man page to install.
+      (native-inputs (list python))     ; for tests
       (synopsis "MIME type associations for file types")
       (description
        "This package provides MIME type associations for file types.")
