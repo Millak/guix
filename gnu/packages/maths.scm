@@ -3777,7 +3777,6 @@ supports the propositional fragment of PDDL2.2.")
                   (guix build cmake-build-system)
                   (guix build utils))
       #:phases
-      (with-extensions (list (pyproject-guile-json))
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-paths
               (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -3795,7 +3794,7 @@ supports the propositional fragment of PDDL2.2.")
                                               "/lib/libgmsh.so")))
                   (substitute* "api/gmsh.py"
                     (("find_library\\(\"gmsh\"\\)")
-                     (simple-format #f "\"~a\"" libgmsh))))))))))
+                   (simple-format #f "\"~a\"" libgmsh)))))))))
     (inputs
      (list fltk
            fontconfig
@@ -8670,7 +8669,6 @@ arrays, uninterpreted functions and their combinations.")
                #$(version-major+minor (package-version python-wrapper))
                "/site-packages"))
       #:phases
-      (with-extensions (list (pyproject-guile-json))
         #~(modify-phases %standard-phases
             (replace 'check
               (lambda* (#:key parallel-build? tests? #:allow-other-keys)
@@ -8690,7 +8688,7 @@ arrays, uninterpreted functions and their combinations.")
                                             "/z3/lib/libz3.so"))
                        (z3-lib (string-append #$output "/lib/libz3.so")))
                   (mkdir-p (dirname dest))
-                  (symlink z3-lib dest))))))))
+                (symlink z3-lib dest)))))))
     (native-inputs
      (list which python-wrapper))
     (synopsis "Theorem prover")
@@ -10815,7 +10813,6 @@ when an application performs repeated divisions by the same divisor.")
           (guix build cmake-build-system)
           (guix build utils))
         #:phases
-        (with-extensions (list (pyproject-guile-json))
           #~(modify-phases %standard-phases
               (add-after 'install 'move-python-files
                 (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -10829,7 +10826,7 @@ when an application performs repeated divisions by the same divisor.")
                                 (rename-file file
                                              (string-append target "/"
                                                             (basename file))))
-                              (find-files include "\\.py$")))))))))
+                            (find-files include "\\.py$"))))))))
       (native-inputs (list python-wrapper))
       (inputs (list psimd googletest-1.8 googlebenchmark))
       (synopsis "C++ library for half-precision floating point formats")

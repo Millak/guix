@@ -647,7 +647,6 @@ should only be used as part of the Guix cups-pk-helper service.")
               "--enable-qt5"
               "--disable-qt4")
       #:phases
-      (with-extensions (list (pyproject-guile-json))
         #~(modify-phases %standard-phases
             (add-after 'unpack 'set-gcc-14-cflags
               ;; We set CFLAGS here because adding setting it in
@@ -743,7 +742,7 @@ should only be used as part of the Guix cups-pk-helper service.")
                                      bin target)))
                          (chmod file #o755)))
                               (find-files "." (lambda (file stat)
-                                                (eq? 'symlink (stat:type stat)))))))))))))
+                                     (eq? 'symlink (stat:type stat))))))))))))
     ;; Note that the error messages printed by the tools in the case of
     ;; missing dependencies are often downright misleading.
     ;; TODO: hp-toolbox still fails to start with:

@@ -1388,7 +1388,6 @@ libraries designed for computer vision research and implementation.")
                 "-DBUILD_TESTING=OFF")
 
         #:phases
-        (with-extensions (list (pyproject-guile-json))
         #~(modify-phases %standard-phases
             (add-after 'unpack 'do-not-tune
               (lambda _
@@ -1448,7 +1447,7 @@ libraries designed for computer vision research and implementation.")
               (lambda* (#:key inputs outputs tests? #:allow-other-keys)
                 (when tests?
                   (py:add-installed-pythonpath inputs outputs)
-                  (invoke "python3" "-c" "import itk"))))))))
+                  (invoke "python3" "-c" "import itk")))))))
       (inputs (list eigen
                     expat
                     fftw

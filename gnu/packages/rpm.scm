@@ -160,7 +160,6 @@ information on multiple streams, default data and translations).")
                   ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
       #:phases
-      (with-extensions (list (pyproject-guile-json))
         #~(modify-phases %standard-phases
             (add-after 'unpack 'fix-python-site-prefix
               (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -173,7 +172,7 @@ information on multiple streams, default data and translations).")
                 (substitute* "CMakeLists.txt"
                   (("execute_process.*OUTPUT_VARIABLE BASHCOMP_DIR.*")
                    (format #f "set (BASHCOMP_DIR ~a\
-/share/bash-completion/completions)~%" #$output)))))))))
+/share/bash-completion/completions)~%" #$output))))))))
     (native-inputs
      (list bash-completion pkg-config python))
     (inputs

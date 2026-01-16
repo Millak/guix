@@ -82,7 +82,6 @@
                "-Dpy-overrides-dir="
                (py:site-packages %build-inputs %outputs) "/gi/overrides"))
       #:phases
-      (with-extensions (list (pyproject-guile-json))
         #~(modify-phases %standard-phases
             (add-before 'configure 'set-gtk-module-path
               (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -102,7 +101,7 @@
                    (string-quote (string-append #$output "/bin/pastebin")))
                   (("'xdg-open'")
                    (string-quote (search-input-file inputs
-                                                    "/bin/xdg-open"))))))))))
+                                                  "/bin/xdg-open")))))))))
     (inputs
      (list dbus
            glib                         ; for gio

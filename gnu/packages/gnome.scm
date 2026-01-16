@@ -12250,7 +12250,6 @@ advanced image management tool")
                    #:prefix glib-or-gtk:)
                   (guix build utils))
       #:phases
-      (with-extensions (list (pyproject-guile-json))
         #~(modify-phases %standard-phases
             (add-after 'unpack 'handle-dbus-python
               (lambda _
@@ -12268,7 +12267,7 @@ advanced image management tool")
                   `("GI_TYPELIB_PATH" =
                     (,(getenv "GI_TYPELIB_PATH"))))))
             (add-after 'wrap 'glib-or-gtk-wrap
-              (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))))))
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin") ;for glib-compile-resources

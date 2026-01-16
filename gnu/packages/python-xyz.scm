@@ -6367,12 +6367,11 @@ help formatter.")
                   ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
       #:phases
-      (with-extensions (list (pyproject-guile-json))
       #~(modify-phases %standard-phases
           (add-after 'build 'build-python-module
             (assoc-ref py:%standard-phases 'build))
           (add-after 'build-python-module 'install-python-module
-            (assoc-ref py:%standard-phases 'install))))
+            (assoc-ref py:%standard-phases 'install)))
       #:install-source? #false))
     (inputs
      (cons maturin (cargo-inputs 'python-orjson)))
@@ -22516,7 +22515,6 @@ members = [
                   ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
       #:phases
-      (with-extensions (list (pyproject-guile-json))
       #~(modify-phases %standard-phases
           (add-after 'unpack 'prepare-source
             (lambda _
@@ -22541,7 +22539,7 @@ members = [
           ;;           #:test-flags '()
           ;;           args)))
           (replace 'install
-            (assoc-ref py:%standard-phases 'install))))))
+            (assoc-ref py:%standard-phases 'install)))))
     (native-inputs
      (list python-minimal-wrapper
            python-hypothesmith
@@ -36162,12 +36160,11 @@ line by line or column by column or a combination of both.")
                   ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
       #:phases
-      (with-extensions (list (pyproject-guile-json))
       #~(modify-phases %standard-phases
           (add-after 'build 'build-python-module
             (assoc-ref py:%standard-phases 'build))
           (add-after 'build-python-module 'install-python-module
-            (assoc-ref py:%standard-phases 'install))))
+            (assoc-ref py:%standard-phases 'install)))
       #:install-source? #false))
     (inputs
      (cons maturin (cargo-inputs 'python-rpds-py)))
@@ -37023,7 +37020,6 @@ functionality and customization to your projects with their own plugins.")
                   ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
       #:phases
-      (with-extensions (list (pyproject-guile-json))
       #~(modify-phases %standard-phases
           (add-after 'build 'build-python-module
             (assoc-ref py:%standard-phases 'build))
@@ -37032,10 +37028,9 @@ functionality and customization to your projects with their own plugins.")
           (add-after 'install-python-module 'add-install-to-pythonpath
             (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
           (add-after 'check 'check-python-module
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
+            (lambda args
                 (with-directory-excursion #$output
-                  (invoke "pytest" "-vv")))))))
+                (apply (assoc-ref py:%standard-phases 'check) args)))))
       #:install-source? #false))
     (native-inputs
      (list maturin
@@ -38148,7 +38143,6 @@ to TIFF, BigTIFF, and ImageJ hyperstack compatible files.")
         ((guix build pyproject-build-system) #:prefix py:)
         (guix build utils))
       #:phases
-      (with-extensions (list (pyproject-guile-json))
       #~(modify-phases %standard-phases
           (replace 'build
             (assoc-ref py:%standard-phases 'build))
@@ -38162,7 +38156,7 @@ to TIFF, BigTIFF, and ImageJ hyperstack compatible files.")
               (assoc-ref py:%standard-phases 'create-entrypoints)
               (assoc-ref py:%standard-phases 'compile-bytecode)))
           (replace 'install
-            (assoc-ref py:%standard-phases 'install))))))
+            (assoc-ref py:%standard-phases 'install)))))
     (propagated-inputs (list python-regex python-requests))
     (inputs (cargo-inputs 'python-tiktoken))
     (native-inputs

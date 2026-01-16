@@ -79,7 +79,6 @@
       `(((guix build pyproject-build-system) #:prefix py:)
         ,@%glib-or-gtk-build-system-default-modules)
       #:phases
-      (with-extensions (list (pyproject-guile-json))
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-build-system
               (lambda _
@@ -142,7 +141,7 @@
                                             ,(py:site-packages inputs outputs)))
                      `("GI_TYPELIB_PATH" prefix
                        (,(getenv "GI_TYPELIB_PATH")))))
-                 (find-files (string-append #$output "/bin") "^sugar.*"))))))))
+               (find-files (string-append #$output "/bin") "^sugar.*")))))))
     (inputs
      (list bash-minimal
            ethtool
@@ -257,7 +256,6 @@ activities and other Sugar components.")
       `(((guix build pyproject-build-system) #:prefix py:)
         ,@%glib-or-gtk-build-system-default-modules)
       #:phases
-      (with-extensions (list (pyproject-guile-json))
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-build-system
               (lambda _
@@ -284,7 +282,7 @@ activities and other Sugar components.")
                  (list (search-input-file outputs "bin/copy-from-journal")
                        (search-input-file outputs "bin/copy-to-journal")
                        (search-input-file outputs
-                                          "bin/datastore-service")))))))))
+                                        "bin/datastore-service"))))))))
     (inputs
      (list bash-minimal
            coreutils

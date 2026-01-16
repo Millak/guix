@@ -767,7 +767,6 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
                   (guix build qt-utils)
                   (guix build utils))
       #:phases
-      (with-extensions (list (pyproject-guile-json))
         #~(modify-phases %standard-phases
             (add-after 'unpack 'create-output-directories
               (lambda _
@@ -786,7 +785,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
             (add-after 'install 'wrap-qt
               (lambda* (#:key inputs #:allow-other-keys)
                 (wrap-qt-program "electron-cash"
-                                 #:output #$output #:inputs inputs)))))))
+                               #:output #$output #:inputs inputs))))))
     (native-inputs (list python-setuptools))
     (inputs
      (list bash-minimal

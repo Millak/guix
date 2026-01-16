@@ -386,7 +386,6 @@ and background layers of images, which can then be encoded into a DjVu file.")
                              ,@%pyproject-build-system-modules)
         #:test-target "test"
         #:phases
-        (with-extensions (list (pyproject-guile-json))
           #~(modify-phases %standard-phases
               (delete 'configure)
               (add-after 'unpack 'fix-for-python-3.11
@@ -431,7 +430,7 @@ and background layers of images, which can then be encoded into a DjVu file.")
                                      "/bin")))))
                             '("bin/djvu2hocr"
                               "bin/hocr2djvused"
-                              "bin/ocrodjvu"))))))))
+                            "bin/ocrodjvu")))))))
       (native-inputs
        (list (libc-utf8-locales-for-target) libxml2 python-pynose python-pillow))
       (inputs

@@ -1028,7 +1028,6 @@ packages.")
                     ((guix build pyproject-build-system) #:prefix py:)
                     (guix build utils))
         #:phases
-        (with-extensions (list (pyproject-guile-json))
           #~(modify-phases %standard-phases
               (add-after 'unpack 'chdir
                 (lambda _
@@ -1088,7 +1087,7 @@ name = ~s~%"
                 (lambda args
                   (chdir "..")
                   (apply (assoc-ref py:%standard-phases 'check)
-                         (cons* #:test-flags (list) args))))))))
+                       (cons* #:test-flags (list) args)))))))
       (native-inputs
        (list python-flit-core
              python-pytest
