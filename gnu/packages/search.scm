@@ -298,61 +298,6 @@ accounting for new lines and paragraph changes.  It also has robust support
 for parsing HTML files.")
     (license license:gpl3+)))
 
-(define-public dataparksearch
-  (let ((commit "8efa28f31ce1273c0556fd5c7e06abe955197a69")
-        (revision "0"))
-    (package
-      (name "dataparksearch")
-      (version (git-version "4.54" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/Maxime2/dataparksearch")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "01z7s3ws5px2p9brzrq9j41jbdh1cvj8n8y3ghx45gfv1n319ipg"))
-                (modules '((guix build utils)))
-                (snippet
-                 #~(for-each delete-file '("config.sub"
-                                           "config.guess"
-                                           "configure"
-                                           "Makefile.in"
-                                           "missing"
-                                           "depcomp"
-                                           "ltmain.sh"
-                                           "compile")))
-                (file-name (git-file-name name version))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:configure-flags
-        #~(list "--with-extra-charsets=all"
-                (string-append "--with-aspell=" #$(this-package-input "aspell"))
-                (string-append "--with-pgsql="
-                               #$(this-package-input "postgresql")))
-        #:make-flags
-        #~(list "DPS_TEST_DBADDR=postgresql://localhost/tmp/postgresql/")))
-      (native-inputs
-       (list autoconf automake libtool openjade pkg-config))
-      (inputs
-       (list aspell
-             c-ares
-             libextractor
-             mbedtls-lts
-             postgresql
-             zlib))
-      (synopsis "Feature rich search engine")
-      (description
-       "Dataparksearch is a full featured web search engine.
-It has support for HTTP, HTTPS, ftp (passive mode), NNTP and news URL schemes,
-and other URL schemes with external parsers.  It can tweak URLs with session
-IDs and other weird formats, including some JavaScript link decoding.  Options
-to query with all words, all words near to each others, any words, or boolean
-queries.  A subset of VQL (Verity Query Language) is supported.")
-      (home-page "https://www.dataparksearch.org/")
-      (license license:gpl2+))))
-
 (define-public fsearch
   (package
     (name "fsearch")
