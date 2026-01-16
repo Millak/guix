@@ -1008,7 +1008,6 @@ verifiedserverdialogtest" ;SEGFAULT
              (guix build qt-build-system)
              (guix build utils))
            #:phases
-           (with-extensions (list (cargo-guile-json))
            #~(modify-phases %standard-phases
                (add-before 'configure 'change-directory-to-adblock
                  (lambda _
@@ -1031,7 +1030,7 @@ verifiedserverdialogtest" ;SEGFAULT
                  (lambda* (#:key tests? (test-exclude "") #:allow-other-keys)
                    (setenv "HOME" "/tmp")
                    (when tests?
-                     (invoke "dbus-launch" "ctest" "-E" test-exclude))))))))
+                     (invoke "dbus-launch" "ctest" "-E" test-exclude)))))))
     (native-inputs
      (list corrosion
            dbus

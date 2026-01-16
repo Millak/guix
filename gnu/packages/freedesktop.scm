@@ -3570,25 +3570,24 @@ notifies the user using any notification daemon implementing
          (guix build meson-build-system)
          (guix build utils))
        #:phases
-       (with-extensions (list (cargo-guile-json))
-        #~(modify-phases %standard-phases
+       #~(modify-phases %standard-phases
            (add-after 'unpack 'prepare-cargo-build-system
              (lambda args
                (for-each
-                 (lambda (phase)
-                   (apply (assoc-ref cargo:%standard-phases phase)
-                          #:cargo-target #$(cargo-triplet) args))
-                   '(unpack-rust-crates
-                     configure
-                     check-for-pregenerated-files
-                     patch-cargo-checksums))))
+                (lambda (phase)
+                  (apply (assoc-ref cargo:%standard-phases phase)
+                         #:cargo-target #$(cargo-triplet) args))
+                '(unpack-rust-crates
+                  configure
+                  check-for-pregenerated-files
+                  patch-cargo-checksums))))
            (add-after 'unpack 'patch-vulkan
              (lambda* (#:key inputs #:allow-other-keys)
                (substitute* "src/dmabuf.rs"
                  (("Entry::load\\(\\)")
                   (string-append "Entry::load_from(\""
                                  (search-input-file inputs "lib/libvulkan.so")
-                                 "\")")))))))
+                                 "\")"))))))
        #:configure-flags
        #~(list "-Dwith_lz4=enabled"
                "-Dwith_vaapi=enabled"
