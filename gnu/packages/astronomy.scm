@@ -4427,8 +4427,8 @@ code to be greatly simplified.")
   (package
     (name "python-drizzlepac")
     ;; 3.10.0 requires astrocut<0.9.
-    (properties '((commit . "e01563c48206f02f4cd4c525732764b9b827b3c4")
-                  (revision . "0")))
+    (properties '((commit . "6ac0ef1a27b0e2a568b1aa1f24b118ed322db409")
+                  (revision . "1")))
     (version (git-version "3.10.0"
                           (assoc-ref properties 'revision)
                           (assoc-ref properties 'commit)))
@@ -4440,7 +4440,7 @@ code to be greatly simplified.")
               (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zcny9mkm7w4mjnrglhq28i59x7a2yj38x773qcl7qsvxd0cjs5b"))))
+        (base32 "1hbr5scj90b8anhj4vrsaj04c5ygn6b09waha9m4pdcvkqplp462"))))
     (build-system pyproject-build-system)
     (arguments
      (list
