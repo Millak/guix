@@ -26813,6 +26813,32 @@ passed from LaTeX to Python.")
     (description "Lexer and codec to work with LaTeX code in Python.")
     (license license:expat)))
 
+(define-public python-latexminted
+  (package
+    (name "python-latexminted")
+    ;; Version 0.6.0 is not compatible with our packaged python-pygments.
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "latexminted" version))
+       (sha256
+        (base32 "12pj51nw7k3h6pv8r7k7382jwvs5wsd80cpkv222nkv07gnfg390"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-latex2pydata
+                             python-latexrestricted
+                             python-pygments))
+    (native-inputs (list texlive-kpathsea python-setuptools python-wheel))
+    (home-page "https://github.com/gpoore/minted")
+    (synopsis "Python library for the LaTeX minted package")
+    (description "This Python package provides the Python side of the
+@code{texlive-minted} LaTeX package.  It performs syntax highlighting using the
+@code{python-pygments} library.  It also provides several code formatting and
+manipulation features implemented in Python that would be difficult to perform
+in LaTeX, such as dedenting code and extracting code snippets from source files
+using regular expressions.")
+    (license license:lppl1.3c+)))
+
 (define-public python-latexrestricted
   (package
     (name "python-latexrestricted")
