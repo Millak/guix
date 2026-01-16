@@ -1266,6 +1266,20 @@ which allows one to install the M8 firmware on any Teensy.")
                    license:public-domain
                    license:zlib))))
 
+(define-public m8c-serial
+  (package
+    (inherit m8c)
+    (name "m8c-serial")
+    (arguments
+     (substitute-keyword-arguments (package-arguments m8c)
+       ((#:configure-flags flags)
+        #~(cons* "-DUSE_LIBSERIAL=ON"
+                 (delete "-DUSE_LIBUSB=ON" #$flags)))))
+    (inputs
+     (modify-inputs (package-inputs m8c)
+       (replace "libusb" libserialport)))
+    (synopsis "Cross-platform M8 tracker headless client - serial backend")))
+
 (define-public magic
   (package
     (name "magic")
