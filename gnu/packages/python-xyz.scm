@@ -26773,6 +26773,26 @@ and SML.  @code{more-itertools} includes additional building blocks for
 working with iterables.")
     (license license:expat)))
 
+(define-public python-latex2pydata
+  (package
+    (name "python-latex2pydata")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "latex2pydata" version))
+       (sha256
+        (base32 "12a2ayhgp5plxkdikhy3myin14ydkj0msgb5j82dfvis7h4d5jmw"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel python-pytest))
+    (home-page "https://github.com/gpoore/latex2pydata")
+    (synopsis "Load data from LaTeX in Python literal format")
+    (description
+      "This package is designed to load data in Python literal format that was
+saved to file by the @code{latex2pydata} LaTeX package.  This allows data to be
+passed from LaTeX to Python.")
+    (license license:bsd-3)))
+
 (define-public python-latexcodec
   (package
     (name "python-latexcodec")
