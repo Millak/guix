@@ -4221,13 +4221,13 @@ files and provide related services.")
 (define-public python-ctapipe
   (package
     (name "python-ctapipe")
-    (version "0.28.0")
+    (version "0.29.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ctapipe" version))
        (sha256
-        (base32 "1gkkqbar3r816s8qks9r8ps710xny8v50iyp596j02f40nw6zknf"))))
+        (base32 "063j4xdqj93i00pbsc406iz1rj0qjmqwd46jrd8s7nqnks4f0y2m"))))
     (build-system pyproject-build-system)
     (arguments
      (list
