@@ -28,7 +28,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages c)
   #:use-module (gnu packages digest)
-  #:use-module (gnu packages tbb)
+  #:use-module (gnu packages oneapi)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages compression)
   #:use-module ((guix licenses) #:prefix license:))
@@ -75,10 +75,6 @@
                 (("CC=\"\\$\\{TEST_CC:-cc\\}\"") "CC=gcc")
                 (("CXX=\"\\$\\{TEST_CXX:-c\\+\\+\\}\"")
                  "CXX=g++"))))
-          (add-before 'configure 'skip-tbb-lto-test
-            (lambda _
-              ;; This test needs tbb 2021.9.0 or newer
-              (delete-file "test/lto-version-script.sh")))
           (add-before 'configure 'disable-rpath-test
             (lambda _
               ;; This test fails because mold expect the RUNPATH as-is,
@@ -90,7 +86,7 @@
        (if (target-64bit?)
            (list mimalloc)
            '())
-       (list tbb xxhash zlib `(,zstd "lib"))))
+       (list onetbb xxhash zlib `(,zstd "lib"))))
     (home-page "https://github.com/rui314/mold")
     (synopsis "Fast linker")
     (description
