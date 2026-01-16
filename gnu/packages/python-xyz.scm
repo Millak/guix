@@ -26793,6 +26793,48 @@ working with iterables.")
     (description "Lexer and codec to work with LaTeX code in Python.")
     (license license:expat)))
 
+(define-public python-latexrestricted
+  (package
+    (name "python-latexrestricted")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "latexrestricted" version))
+       (sha256
+        (base32 "0q5alxifggf0k9wjkyfyj1l0xyhn3xaiiy6057zq39cp26j227fm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((pystr (lambda (s) (string-append "'" s "'")))
+                    (kpse (search-input-file inputs "/bin/kpsewhich")))
+                (substitute* "latexrestricted/_latex_config.py"
+                  ;; `latexminted' relies on SELFAUTOLOC to locate `kpsewhich', but
+                  ;; this variable is bogus in Guix because binaries are scattered
+                  ;; across multiple directories.  This phase sets SELFAUTOLOC to
+                  ;; the specific directory containing `kpsewhich'.
+                  (("os\\.getenv\\('SELFAUTOLOC'\\)")
+                   (pystr (dirname kpse)))
+                  ;; Refer to kpse by store path instead of looking it upein $PATH.
+                  (("shutil.which\\('kpse'.*$")
+                   (string-append (pystr kpse) "\n")))))))))
+    (native-inputs (list python-setuptools python-wheel))
+    (inputs (list texlive-kpathsea))
+    (home-page "https://github.com/gpoore/latexrestricted")
+    (synopsis
+     "Library for creating executables compatible with LaTeX's shell escape")
+    (description
+      "This Python package is designed to simplify the process of creating Python
+executables compatible with LaTeX restricted shell escape.  Restricted shell
+escape allows LaTeX to run trusted executables as part of compiling documents.
+These executables have restricted access to the file system and restricted
+ability to launch subprocesses.")
+    (license license:lppl1.3+)))
+
 (define-public python-pybloom-live
   (package
     (name "python-pybloom-live")
