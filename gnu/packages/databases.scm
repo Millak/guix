@@ -1326,8 +1326,9 @@ Language.")
                            "--testcase-timeout=40"
                            "--suite-timeout=600"
                            "--parallel" (number->string (if parallel-tests?
-                                                          (parallel-job-count)
-                                                          1))
+                                                            ;; See guix/guix#5680.
+                                                            (min 64 (parallel-job-count))
+                                                            1))
                            ;; Skip the replication tests: they are very I/O
                            ;; intensive and frequently causes indeterministic
                            ;; failures even on powerful hardware.
