@@ -3566,7 +3566,7 @@ unique design feature of Trilinos is its focus on packages.")
 (define-public verilator
   (package
     (name "verilator")
-    (version "5.042")
+    (version "5.044")
     (source
      (origin
        (method git-fetch)
@@ -3575,7 +3575,7 @@ unique design feature of Trilinos is its focus on packages.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0md5ngfl59xrccbfrz9dn1803n641cz37i4mmpwapx1nvqxfl5zs"))))
+        (base32 "1x6c94phxjsl5d54rg6bf8ylswsq8729l6rhf2lf6rv770vxhy6g"))))
     (native-inputs
      (list autoconf
            automake
@@ -3614,11 +3614,12 @@ unique design feature of Trilinos is its focus on packages.")
                   (display "set auto-load safe-path /"))))))
       #:test-target "test"))
     (home-page "https://www.veripool.org/verilator/")
-    (synopsis "Verilog/SystemVerilog simulator")
+    (synopsis "Verilog/SystemVerilog HDL simulator and lint system")
     (description
-     "Verilator transforms the specified Verilog or SystemVerilog code by
+     "Verilator is an @acronym{EDA, Electronic Design Automation} tool
+intended to transform the specified Verilog or SystemVerilog HDL code by
 reading it, performing lint checks, and optionally inserting assertion checks
-and coverage-analysis points.  It outputs single- or multi-threaded
+and coverage-analysis points.  It outputs single or multi-threaded
 @file{.cpp} and @file{.h} files.")
     (license license:lgpl3)))
 
