@@ -2520,11 +2520,10 @@ applications needing access to be root.")
                                                   (%current-system))))
   ;; List of services typically useful for a "desktop" use case.
 
-  ;; Since GDM depends on Rust and Rust is not available on all platforms,
-  ;; use SDDM as the fall-back display manager.
-  ;; TODO: Switch the condition to use (supported-package? "rust") and make
-  ;; a news entry about the change.
-  (cons* (if (string-prefix? "x86_64" system)
+  ;; FIXME: Since GDM depends on more dependencies that do not build on i686,
+  ;; keep SDDM on it for the time being.
+  ;; XXX: When changing login manager, also change set-xorg-configuration
+  (cons* (if (target-64bit? system)
              (service gdm-service-type)
              (service sddm-service-type))
 

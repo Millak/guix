@@ -1379,14 +1379,14 @@ polkit.addRule(function(action, subject) {
                    "Run the GNOME Desktop Manager (GDM), a program that allows
 you to log in in a graphical session, whether or not you use GNOME."))))
 
-;; Since GDM depends on Rust and Rust is not available on all platforms,
-;; use SDDM as the fall-back display manager.
-;; TODO: Switch the condition to take into account if Rust is supported and
-;; match the configuration in desktop-services-for-system.
+
+;; FIXME: Since GDM depends on more dependencies that do not build on i686,
+;; keep SDDM on it for the time being.
+;; XXX: When changing this, also change desktop-services-for-system
 (define* (set-xorg-configuration config
                                  #:optional
                                  (login-manager-service-type
-                                  (if (target-x86-64?)
+                                  (if (target-64bit?)
                                       gdm-service-type
                                       sddm-service-type)))
   "Tell the log-in manager (of type @var{login-manager-service-type}) to use
