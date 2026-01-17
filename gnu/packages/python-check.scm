@@ -4074,22 +4074,23 @@ test execution time.")
      "This package provides a plugin to fake subprocess for Pytest.")
     (license license:expat)))
 
+;; XXX: This project was archived by the owner on Nov 11, 2025. It is now
+;; read-only.
 (define-public python-pytest-subtests
   (package
     (name "python-pytest-subtests")
-    (version "0.14.2")
+    (version "0.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest_subtests" version))
        (sha256
-        (base32 "1ph0z3a0lywzfw7illl3khydqffi8im2203dlxqfwa6mbxkahm3i"))))
+        (base32 "0z487yinp3gxh2dk6z52d4a17d7d4ymdz2hbix5ph6sm0pg5njfb"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest-bootstrap
+     (list python-pytest-8
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-attrs))
     (home-page "https://github.com/pytest-dev/pytest-subtests")
