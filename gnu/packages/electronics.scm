@@ -618,17 +618,17 @@ Simulator Trace} files.")
 (define-public iverilog
   (package
     (name "iverilog")
-    (version "12.0")
+    (version "20251012")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/steveicarus/iverilog")
               (commit
-               (string-append "v" (string-replace-substring version "." "_")))))
+               (string-append "s" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cm3ksxyyp8ihs0as5c2nk3a0y2db8dmrrw0f9an3sl255smxn17"))))
+        (base32 "05k4x4lcgx554w2a8qcmmgjmg0k6swvcwl1pn5kcv4xafcz6rmxj"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -636,18 +636,30 @@ Simulator Trace} files.")
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
               (string-append "CXX=" #$(cxx-for-target))
-              (string-append "PREFIX=" #$output))))
-    (native-inputs (list autoconf bison flex gperf))
+              (string-append "PREFIX=" #$output))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'ensure-native-baked-CC/CXX
+                     (lambda _
+                       ;; The compilers used to build are retained in
+                       ;; bin/iverilog-vpi, which is a Makefile
+                       ;; script. Normalize these to just 'gcc' and 'g++' to
+                       ;; avoid having these set to cross compilers.
+                       (substitute* "Makefile.in"
+                         (("s;@IVCC@;\\$\\(CC);")
+                          "s;@IVCC@;gcc;")
+                         (("s;@IVCXX@;\\$\\(CXX);")
+                          "s;@IVCXX@;g++;")))))))
+    (native-inputs (list autoconf bison flex gperf perl tcsh))
     (inputs (list zlib))
     (home-page "https://steveicarus.github.io/iverilog/")
-    (synopsis "FPGA Verilog simulation and synthesis tool")
+    (synopsis "Verilog/SystemVerilog HDL compiler")
     (description
-     "Icarus Verilog is a Verilog simulation and synthesis tool.
-It operates as a compiler, compiling source code written in Verilog
-(IEEE-1364) into some target format.
+     "Icarus Verilog is a Verilog/SystemVerilog @acronym{EDA, Electronic
+Design Automation} compiler that generates code employed by back-end
+tools.  It operates compiling source code written in Verilog
+(IEEE-1364) and SystemVerilog (IEEE-1800) into some target format.
 For batch simulation, the compiler can generate an intermediate form
-called vvp assembly.
-This intermediate form is executed by @command{vvp}.
+called vvp assembly.  This intermediate form is executed by @command{vvp}.
 For synthesis, the compiler generates netlists in the desired format.")
     ;; GPL2 only because of:
     ;; - ./driver/iverilog.man.in
