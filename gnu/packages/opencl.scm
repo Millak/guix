@@ -182,7 +182,7 @@ the system.")
 (define-public ocl-icd
   (package
     (name "ocl-icd")
-    (version "2.3.2")
+    (version "2.3.4")
     (source
      (origin
        (method git-fetch)
@@ -191,7 +191,7 @@ the system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y0lnxb6zlhfb5vxxib5n1vvxa4b23qc0j3lsih6yjz9j37mj7wz"))))
+        (base32 "119xr73anh1kqj3mndlplx65bq1cpq06pypc837hyc0ngbgpxbpf"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool ruby))
