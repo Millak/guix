@@ -641,8 +641,8 @@ features.")
 
 (define-public cpuinfo
   ;; There's currently no tag on this repo.
-  (let ((revision "6")
-        (commit "b3b25967b5b80406304d575321e572c5f9e5e3c4"))
+  (let ((revision "7")
+        (commit "c4b4f4bf08c0cf486fc3111d0244ebf2a48ad01b"))
     (package
       (name "cpuinfo")
       (version (git-version "0.0" revision commit))
@@ -653,7 +653,7 @@ features.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "02i4sf6bgw25xsaarbialw9n9plqxqblvh7pjz2sw6cvz1r5n6c6"))))
+                  "1gjigxszhjj3422nq50kgffq1iirgl7ik9wf50m2lz64qwb5dkz5"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -665,7 +665,7 @@ features.")
         #~(list "-DBUILD_SHARED_LIBS=ON"
                 "-DUSE_SYSTEM_LIBS=ON")))
       (inputs
-       (list googletest-1.13 googlebenchmark))
+       (list googletest googlebenchmark))
       (native-inputs
        (list python-wrapper))
       (synopsis "C/C++ library to obtain information about the CPU")
