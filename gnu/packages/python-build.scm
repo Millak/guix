@@ -611,9 +611,6 @@ versions, process requirements files and generate AUTHORS and ChangeLog file
 from git information.")
     (license license:asl2.0)))
 
-;; It may be removed after 2025-12-22.
-(define-deprecated/public-alias python-pbr-next python-pbr)
-
 (define-public python-pip
   (package
     (name "python-pip")
