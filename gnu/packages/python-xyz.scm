@@ -7635,16 +7635,7 @@ and is not compatible with JSON.")
        (sha256
         (base32 "1mviiwv5vgglswxrcdd1z978masjgwkd2pcidcsrmaannyvj4n3c"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; addopts = ["--cov", "--cov-report=html",
-                ;; "--cov-fail-under=100"]
-                (("addopts = .*") "")))))))
+    (arguments (list #:test-flags #~(list "-o" "addopts=''")))
     (native-inputs
      (list python-hatchling python-pytest))
     (home-page "https://pypi.org/project/expandvars/")
