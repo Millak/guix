@@ -1231,9 +1231,6 @@ specified by PEP 517, @code{flit_core.buildapi}.")
        (delete "python-toml")
        (prepend python-tomli)))))
 
-(define-deprecated/public-alias python-flit-core-next
-  python-flit-core)                    ;may be removed after 2025-12-01
-
 (define-public python-flit-scm
   (package
     (name "python-flit-scm")
