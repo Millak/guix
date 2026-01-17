@@ -24,6 +24,7 @@
 ;;; Copyright © 2024 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2025 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Julian Flake <julian@flake.de>
+;;; Copyright © 2026 Mathieu Lirzin <mthl@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3510,6 +3511,33 @@ documentation tools.")
 libraries and embed them into your own distribution.  Jar Jar Links includes
 an Ant task that extends the built-in @code{jar} task.")
     (license license:asl2.0)))
+
+(define-public java-hamcrest
+  (package
+    (name "java-hamcrest")
+    (version "3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/hamcrest/JavaHamcrest/")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07cagv2ncs4y02fmwbll3r4rqpjf3zxs163ync24q3x9fplrxmly"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:tests? #f                      ; Tests require junit
+       #:source-dir "hamcrest/src/main"
+       #:jar-name "hamcrest.jar"))
+    (home-page "https://hamcrest.org/")
+    (synopsis "Library of matchers for building test expressions")
+    (description
+     "This package provides a library of matcher objects (also known as
+constraints or predicates) allowing @code{match} rules to be defined
+declaratively, to be used in other frameworks.  Typical scenarios include
+testing frameworks, mocking libraries and UI validation rules.")
+    (license license:bsd-3)))
 
 (define-public java-hamcrest-core
   (package
