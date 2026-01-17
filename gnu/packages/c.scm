@@ -24,6 +24,7 @@
 ;;; Copyright @ 2022, Kitzman <kitzman@disroot.org>
 ;;; Copyright @ 2025 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -71,6 +72,7 @@
   #:use-module (gnu packages m4)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages oneapi)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -1795,7 +1797,7 @@ SIMD (Single Instruction, Multiple Data) instructions.")
 (define-public ispc
   (package
     (name "ispc")
-    (version "1.19.0")
+    (version "1.29.1")
     (source
      (origin
        (method git-fetch)
@@ -1804,9 +1806,9 @@ SIMD (Single Instruction, Multiple Data) instructions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yhcgyzjlrgs920lm0l6kygj2skanfb6qkxbdgm69r8c2xkzkaa3"))))
-    (inputs (list ncurses))
-    (native-inputs (list bison clang flex m4 python))
+        (base32 "02n14684nqbp1sxpnjkg6r9vwpdzqiwwaqxlp9bjykd125834ip2"))))
+    (inputs (list ncurses onetbb))
+    (native-inputs (list bison clang-19 flex m4 python-minimal-wrapper))
     (build-system cmake-build-system)
     (supported-systems
      '("x86_64-linux" "i686-linux" "aarch64-linux" "armhf-linux"))
