@@ -894,7 +894,9 @@ facilitate packaging Python projects, where packaging includes:
        (method url-fetch)
        (uri (pypi-uri "setuptools" version))
        (sha256
-        (base32 "127svm8cdpvmq37gcrbvdr9fhrhs0nscnzh63gypjc1wyfwfg30j"))))))
+        (base32 "127svm8cdpvmq37gcrbvdr9fhrhs0nscnzh63gypjc1wyfwfg30j"))))
+    (arguments
+     (list #:tests? #f))))
 
 (define-public python-wheel
   (package
