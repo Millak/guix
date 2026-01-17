@@ -7093,33 +7093,38 @@ included for convenience.")
   (package
     (name "showmethekey")
     (version "1.19.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/AlynxZhou/showmethekey.git")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1hz941fb57f0j7j5x9q6gpj34ay18nm2dlidhqndnywb9a8mq14d"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/AlynxZhou/showmethekey")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hz941fb57f0j7j5x9q6gpj34ay18nm2dlidhqndnywb9a8mq14d"))))
     (build-system meson-build-system)
     (arguments
-     (list #:glib-or-gtk? #t
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'setenv
-                 (lambda _
-                   (substitute* "meson.build"
-                    ;; We do that ourselves later--so replace by a dummy
-                    ;; command.
-                    (("gtk4-update-icon-cache")
-                     "true")))))))
-    (native-inputs
-     (list (list glib "bin") gettext-minimal pkg-config))
-    (inputs
-     (list libevdev eudev libinput glib libadwaita json-glib))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'setenv
+            (lambda _
+              (substitute* "meson.build"
+                ;; We do that ourselves later--so replace by a dummy
+                ;; command.
+                (("gtk4-update-icon-cache")
+                 "true")))))))
+    (native-inputs (list (list glib "bin") gettext-minimal pkg-config))
+    (inputs (list libevdev
+                  eudev
+                  libinput
+                  glib
+                  libadwaita
+                  json-glib))
     (synopsis "Show keypresses on screen")
-    (description "This package shows the keys that the user presses on the
+    (description
+     "This package shows the keys that the user presses on the
 screen.
 
 Presumably, that's because you are presenting the screen to someone else
@@ -7128,7 +7133,7 @@ that should see the keys.
 This package works in Xorg and Wayland since it directly reads the keys from
 the evdev device via libinput.
 
-Users in group ``wheel'' can skip password authentication.")
+Users in group @code{wheel} can skip password authentication.")
     (home-page "https://github.com/AlynxZhou/showmethekey")
     (license license:asl2.0)))
 
