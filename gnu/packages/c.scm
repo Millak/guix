@@ -1807,45 +1807,48 @@ SIMD (Single Instruction, Multiple Data) instructions.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "02n14684nqbp1sxpnjkg6r9vwpdzqiwwaqxlp9bjykd125834ip2"))))
-    (inputs (list ncurses onetbb))
-    (native-inputs (list bison clang-19 flex m4 python-minimal-wrapper))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_C_COMPILER=" #$(cc-for-target))
+              (string-append "-DCMAKE_CXX_COMPILER=" #$(cxx-for-target))
+              (string-append "-DCLANG_EXECUTABLE="
+                             (assoc-ref %build-inputs "clang")
+                             "/bin/clang")
+              (string-append "-DCLANGPP_EXECUTABLE="
+                             (assoc-ref %build-inputs "clang")
+                             "/bin/clang++"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-curses-requirement
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("\\bCURSES_CURSES_LIBRARY\\b")
+                 "CURSES_LIBRARY"))))
+          ;; Note: This works around the following issue:
+          ;; <https://github.com/ispc/ispc/issues/1865>
+          ;; Because GCC in Guix does not have multilib support.
+          (add-before 'configure 'patch-target-archs
+            (lambda _
+              (substitute* "cmake/GenerateBuiltins.cmake"
+                (("\\bforeach \\(bit 32 64\\)")
+                 #$@(if (target-64bit?)
+                        '("foreach (bit 64)")
+                         '("foreach (bit 32)")))
+                (("\\bforeach \\(arch .*?\\)")
+                 #$@(if (target-x86?)
+                        '("foreach (arch \"x86\")")
+                         '("foreach (arch \"arm\")")))
+                (("\\bforeach \\(os_name \"windows\" .*?\\)")
+                 "foreach (os_name \"linux\")")))))))
+    (inputs
+     (list ncurses onetbb))
+    (native-inputs
+     (list bison clang-19 flex m4 python-minimal-wrapper))
     (supported-systems
      '("x86_64-linux" "i686-linux" "aarch64-linux" "armhf-linux"))
-    (arguments
-     `(#:tests? #f
-       #:configure-flags
-       `(,,(string-append "-DCMAKE_C_COMPILER=" (cc-for-target))
-         ,,(string-append "-DCMAKE_CXX_COMPILER=" (cxx-for-target))
-         ,(string-append "-DCLANG_EXECUTABLE="
-                         (assoc-ref %build-inputs "clang")
-                         "/bin/clang")
-         ,(string-append "-DCLANGPP_EXECUTABLE="
-                         (assoc-ref %build-inputs "clang")
-                         "/bin/clang++"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-curses-requirement
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("\\bCURSES_CURSES_LIBRARY\\b")
-                "CURSES_LIBRARY"))))
-         ;; Note: This works around the following issue:
-         ;; <https://github.com/ispc/ispc/issues/1865>
-         ;; Because GCC in Guix does not have multilib support.
-         (add-before 'configure 'patch-target-archs
-           (lambda _
-             (substitute* "cmake/GenerateBuiltins.cmake"
-               (("\\bforeach \\(bit 32 64\\)")
-                ,(if (target-64bit?)
-                     "foreach (bit 64)"
-                     "foreach (bit 32)"))
-               (("\\bforeach \\(arch .*?\\)")
-                ,(if (target-x86?)
-                     "foreach (arch \"x86\")"
-                     "foreach (arch \"arm\")"))
-               (("\\bforeach \\(os_name \"windows\" .*?\\)")
-                "foreach (os_name \"linux\")")))))))
     (synopsis "Implicit SPMD Program Compiler")
     (description
      "ISPC is a compiler for a variant of the C programming language, with
