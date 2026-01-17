@@ -902,9 +902,6 @@ facilitate packaging Python projects, where packaging includes:
        (sha256
         (base32 "127svm8cdpvmq37gcrbvdr9fhrhs0nscnzh63gypjc1wyfwfg30j"))))))
 
-(define-deprecated/public-alias python-setuptools-next
-  python-setuptools)                   ;may be removed after 2025-12-01
-
 (define-public python-wheel
   (package
     (name "python-wheel")
