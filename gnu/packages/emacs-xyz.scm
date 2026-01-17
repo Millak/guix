@@ -12665,7 +12665,7 @@ comparing characters, removing cursors, and more.")
 (define-public emacs-substitute
   (package
     (name "emacs-substitute")
-    (version "0.4.0")
+    (version "0.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -12674,8 +12674,9 @@ comparing characters, removing cursors, and more.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0z3qq30258ynlra4532m43dxpsdbh6ywacf9xxp63zj3q5pm6q59"))))
+                "0g28gjxz19zxh2i3x4xfbs0c2sr2pkxhg7biflxi40jwvyqxz542"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))    ;no tests
     (home-page "https://github.com/protesilaos/substitute")
     (synopsis "Efficiently replace targets in the buffer or context")
     (description
