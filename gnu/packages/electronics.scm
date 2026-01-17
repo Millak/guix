@@ -2238,7 +2238,7 @@ editing of mask layouts, and verification such as
 (define-public python-liberty-parser
   (package
     (name "python-liberty-parser")
-    (version "0.0.27")
+    (version "0.0.29")
     (source
      (origin
        (method git-fetch)
@@ -2246,7 +2246,7 @@ editing of mask layouts, and verification such as
              (url "https://codeberg.org/tok/liberty-parser")
              (commit version)))
        (sha256
-        (base32 "0x8spiy4sxjma3dxvynax8hbzyxl90bgws00cqxazy95wyfbngar"))
+        (base32 "0x3y1rp0hwcbncgjnkpdjn6gf56qxxp39y2h9p1xm63g3hhikwdc"))
        (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-lark python-numpy python-sympy))
