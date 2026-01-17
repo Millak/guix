@@ -447,9 +447,14 @@ and return write it to PATH/NAME."
           (format port "#!~a -sP
 # Auto-generated entry point script.
 import sys
-from ~a import ~a
+import importlib
+
+obj = importlib.import_module('~a')
+for attr in '~a'.split('.'):
+    obj = getattr(obj, attr)
+
 if __name__ == '__main__':
-    sys.exit(~a())~%" interpreter module function function)))
+    sys.exit(obj())~%" interpreter module function)))
       (chmod file-path #o755)))
 
   (let* ((site-dir (site-packages inputs outputs))
