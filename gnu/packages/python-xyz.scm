@@ -24117,15 +24117,7 @@ manipulation and interaction with formal grammars.")
               (let ((bash #$(this-package-input "bash-minimal")))
                 (substitute* "invoke/config.py"
                   (("shell = \"/bin/bash\"")
-                   (string-append "shell = \"" bash "/bin/bash\""))))))
-          (add-after 'wrap 'fix-entry-points
-            ;; TODO: Remove after https://codeberg.org/guix/guix/issues/4509
-            ;; is fixed.
-            (lambda _
-              (substitute* (list (string-append #$output "/bin/.invoke-real")
-                                 (string-append #$output "/bin/.inv-real"))
-                (("from invoke.main import program.run")
-                 "from invoke.main import program")))))))
+                   (string-append "shell = \"" bash "/bin/bash\"")))))))))
     (native-inputs
      (list python-setuptools
            python-wheel))
