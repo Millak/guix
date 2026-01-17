@@ -6745,14 +6745,6 @@ can also directly record to WebM or MP4 if you prefer.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-entry-points
-            (lambda _
-              (substitute* "setup.py"
-                ;; main.py is in a "mps_youtube" and not in
-                ;; "mps_youtube/main", see:
-                ;; <https://github.com/mps-youtube/yewtube/pull/1334>.
-                (("yt = mps_youtube:main.main")
-                 "yt = mps_youtube.main:main"))))
           (add-after 'unpack 'relax-requirements
             (lambda _
               (substitute* "mps_youtube/__init__.py"
