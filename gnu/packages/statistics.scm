@@ -26,6 +26,7 @@
 ;;; Copyright © 2025 Jonas Freimuth <jonas.freimuth@posteo.de>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Rikard Nordgren <hrn@posteo.net>
+;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -90,6 +91,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages ocaml)
+  #:use-module (gnu packages oneapi)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -104,7 +106,6 @@
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages swig)
-  #:use-module (gnu packages tbb)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages tex)
@@ -1624,7 +1625,7 @@ inference for statistical models.")
            primesieve
            python-wrapper
            spectra
-           tbb))
+           onetbb))
     (propagated-inputs
      (list python-chaospy
            python-dill
