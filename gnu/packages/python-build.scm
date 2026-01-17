@@ -1150,9 +1150,6 @@ a light weight, fully compliant, self-contained package allowing PEP 517
 compatible build front-ends to build Poetry managed projects.")
     (license license:expat)))
 
-(define-deprecated/public-alias python-poetry-core-next
-  python-poetry-core)                  ;may be removed after 2025-12-01
-
 (define-public python-filelock-bootstrap
   ;; Try to update simultaneously with the standard version in
   ;; (gnu packages python-build).
