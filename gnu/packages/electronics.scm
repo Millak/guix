@@ -633,18 +633,10 @@ Simulator Trace} files.")
     (arguments
      (list
       #:bootstrap-scripts #~(list "autoconf.sh")
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'ensure-native-baked-CC/CXX
-                     (lambda _
-                       ;; The compilers used to build are retained in
-                       ;; bin/iverilog-vpi, which is a Makefile
-                       ;; script. Normalize these to just 'gcc' and 'g++' to
-                       ;; avoid having these set to cross compilers.
-                       (substitute* "Makefile.in"
-                         (("s;@IVCC@;\\$\\(CC);")
-                          "s;@IVCC@;gcc;")
-                         (("s;@IVCXX@;\\$\\(CXX);")
-                          "s;@IVCXX@;g++;")))))))
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "CXX=" #$(cxx-for-target))
+              (string-append "PREFIX=" #$output))))
     (native-inputs (list autoconf bison flex gperf))
     (inputs (list zlib))
     (home-page "https://steveicarus.github.io/iverilog/")
