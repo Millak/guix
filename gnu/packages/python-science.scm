@@ -4030,8 +4030,6 @@ and intuitive.  It aims to be the fundamental high-level building block for
 doing practical, real world data analysis in Python.")
     (license license:bsd-3)))
 
-(define-deprecated/public-alias python-pandas-2 python-pandas)
-
 (define-public python-pandas-stubs
   (package
     (name "python-pandas-stubs")
