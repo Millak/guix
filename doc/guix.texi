@@ -15125,8 +15125,8 @@ When @option{--lockfile} is specified, the importer will ignore other options
 and won't output package expressions, instead importing source expressions
 from @var{file}, a @file{Cargo.lock} file.
 
-@xref{Packaging Rust Crates,,, guix-cookbook, GNU Guix Cookbook}, for packaging
-workflow utilizing it.
+@xref{Packaging Rust Crates,,, guix-cookbook, GNU Guix Cookbook}, for
+a packaging workflow utilizing it.
 @end table
 
 @item elm
