@@ -2420,7 +2420,10 @@ and manipulation.")
        (sha256
         (base32 "1m507a7l78k378a9r8xq61bcllyvxsrl02ivbk78i9dxd097xvcv"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools-67 python-wheel-0.40))
+    (arguments
+     (list
+      #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (home-page "http://mt940.b2ck.com/")
     (synopsis "A simple module to parse MT940 files")
     (description "This package provides a simple module to parse MT940
