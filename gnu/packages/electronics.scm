@@ -3286,7 +3286,7 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
 (define-public sby
   (package
     (name "sby")
-    (version "0.60")
+    (version "0.61")
     (source
      (origin
        (method git-fetch)
@@ -3295,7 +3295,7 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lgw3agacnrm4mj3nwlx1jfxk9c276cc4p6sjzazd7s0308mzjm0"))))
+        (base32 "02b3jl3wk93lz0snz2v6kgxhlr7gg9l1gksfmafj2vvy45zhj1fx"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3339,8 +3339,8 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
     (home-page "https://yosyshq.readthedocs.io/projects/sby/en/latest/")
     (synopsis "Formal hardware verification with Yosys")
     (description
-     "@command{sby} is a front-end program for Yosys-based formal hardware
-verification flows.")
+     "@command{sby} is an @acronym{EDA, Electronic Design Automation}
+front-end program for Yosys-based formal hardware verification flows.")
     (license license:isc)))
 
 (define-public sby-gui
