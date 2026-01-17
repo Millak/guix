@@ -149,6 +149,8 @@ performance library of basic building blocks for deep learning applications.")
     (supported-systems %64bit-supported-systems)
     (license license:asl2.0)))
 
+(define-public oneapi-dnnl (deprecated-package "oneapi-dnnl" onednn))
+
 ;;; Updates and replaces tbb in (gnu packages tbb)
 (define-public onetbb
   (package
