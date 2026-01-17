@@ -2484,10 +2484,13 @@ executed.")
     (version "1.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest_asyncio" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pytest-dev/pytest-asyncio")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1rg97r6s655hqq9m028hzila36in37xny8fd4khhxf1is8v2zxfp"))))
+        (base32 "02ibw934ppy66vkjc9ihwc5zp66pbzcsqg0irf7gnxpi9ck8qqii"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2501,7 +2504,12 @@ executed.")
                                          "trigger_warning_about_no_current_"
                                          "event_loop_being_set")
                           "test_warns_when_scope_argument_is_present")
-                    " and not "))))
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-setuptools
            python-setuptools-scm))
