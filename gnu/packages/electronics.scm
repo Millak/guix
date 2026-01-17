@@ -347,7 +347,7 @@ individual low-level driver modules.")
 (define-public eqy
   (package
     (name "eqy")
-    (version "0.60")
+    (version "0.61")
     (source
      (origin
        (method git-fetch)
@@ -396,11 +396,11 @@ individual low-level driver modules.")
     (home-page "https://yosyshq.readthedocs.io/projects/eqy/en/latest/")
     (synopsis "Equivalence checking using formal verification with Yosys")
     (description
-     "@command{Eqy} is a front-end driver program for Yosys-based formal
-hardware equivalence checking.  It performs formal verification on two
-designs, such as ensuring that a synthesis tool has not introduced functional
-changes into a design, or ensuring that a design refactor preserves
-correctness in all conditions.")
+     "@command{Eqy} is an @acronym{EDA, Electronic Design Automation}
+front-end driver program for Yosys-based formal hardware equivalence
+checking.  It performs formal verification on two designs, such as ensuring
+that a synthesis tool has not introduced functional changes into a design, or
+ensuring that a design refactor preserves correctness in all conditions.")
     (license license:isc)))
 
 (define-public ieee-p1076
