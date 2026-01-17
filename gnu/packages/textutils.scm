@@ -1220,9 +1220,6 @@ effort to simplify the man pages with practical examples described in
 @url{https://tldr.sh/}.")
     (license license:expat)))
 
-(define-public python-tldr
-  (deprecated-package "python-tldr" tldr))
-
 (define-public txt2tags
   (package
     (name "txt2tags")
