@@ -8449,9 +8449,6 @@ services or command-line parsing, converted from JSON/YAML (or
 something else) to Python data-types.")
     (license license:psfl)))
 
-;; It may be removed after 2025-11-29.
-(define-deprecated/public-alias python-schema-0.5 python-schema)
-
 (define-public python-kitchen
   (package
     (name "python-kitchen")
