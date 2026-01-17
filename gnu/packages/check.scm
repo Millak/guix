@@ -2020,22 +2020,35 @@ same arguments.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 193 passed, 6 skipped, 3 deselected, 10 xfailed
       #:test-flags
-      ;; Failes with execnet.gateway_base.RemoteError: Traceback (most recent
-      ;; call last).
-      #~(list "-k" "not test_ignore_sys_path_hook_entry")))
+      ;; See: <https://github.com/pytest-dev/pytest-xdist/issues/1295>.
+      #~(list #$@(map (lambda (ls)
+                        (string-append "--deselect=testing/"
+                                       (string-join ls "::")))
+                      ;; execnet.gateway_base.RemoteError: Traceback (most
+                      ;; recent call last):
+                      '(("test_looponfail.py"
+                         "TestRemoteControl"
+                         "test_ignore_sys_path_hook_entry")
+                        ;; Failed: matched:  '*HOOK: pytest_handlecrashitem'
+                        ("test_newhooks.py"
+                         "TestCrashItem"
+                         "test_handlecrashitem_one")
+                        ;; Failed: nomatch: '*usage: *
+                        ("test_remote.py"
+                         "test_remote_usage_prog"))))))
     (native-inputs
      (list python-filelock
            python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-execnet))
     (home-page "https://github.com/pytest-dev/pytest-xdist")
-    (synopsis "Plugin for py.test with distributed testing and loop-on-failing modes")
+    (synopsis "Pytest plugin for distributed testing and loop-on-failures testing modes")
     (description
-     "The pytest-xdist plugin extends py.test with some unique test execution
+     "The pytest-xdist plugin extends pytest with some unique test execution
 modes: parallelization, running tests in boxed subprocesses, the ability to
 run tests repeatedly when failed, and the ability to run tests on multiple
 Python interpreters or platforms.  It uses rsync to copy the existing program
