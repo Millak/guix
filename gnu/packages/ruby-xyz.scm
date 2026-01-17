@@ -7885,7 +7885,7 @@ the pain of Ruby's Struct (or its setters).")
 (define-public ruby-faker
   (package
     (name "ruby-faker")
-    (version "3.2.0")
+    (version "3.6.1")
     (source
      (origin
        (method git-fetch)
@@ -7894,8 +7894,7 @@ the pain of Ruby's Struct (or its setters).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1wwdwh5qwaxnd9dl6732mj6b953l5r32r4936pj5680963iagq59"))))
+        (base32 "1jv39j3rv1bx4155rsq7cvl13kb173gl8ypvjd7v4ba5cnl5zrrl"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -7904,12 +7903,15 @@ the pain of Ruby's Struct (or its setters).")
           (add-after 'unpack 'remove-rubocop-from-rakefile
             (lambda _
               (substitute* "Rakefile"
-                (("require 'rubocop/rake_task'") "")
-                (("RuboCop::RakeTask\\.new") "")))))))
+                (("require 'rubocop/rake_task'")
+                 "")
+                (("RuboCop::RakeTask\\.new")
+                 "")))))))
     (native-inputs (list ruby-yard ruby-simplecov ruby-timecop))
     (propagated-inputs (list ruby-i18n))
     (synopsis "Library for generating fake data")
-    (description "Faker is a port of Data::Faker from Perl. It is used to
+    (description
+     "Faker is a port of Data::Faker from Perl.  It is used to
 easily generate fake data: names, addresses, phone numbers, etc.")
     (home-page "https://github.com/faker-ruby/faker")
     (license license:expat)))
