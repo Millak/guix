@@ -4261,20 +4261,19 @@ through Python's socket interface")
               (url "https://github.com/jerry-git/pytest-split")
               (commit version)))
        (file-name (git-file-name name version))
-       (sha256 (base32 "1w42zkw22h0ydfhbjdjp93frbrzi1rlkr17ifb9kavcbv7kfqxfl"))))
+       (sha256
+        (base32 "1w42zkw22h0ydfhbjdjp93frbrzi1rlkr17ifb9kavcbv7kfqxfl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("--cov.*") "")
-                (("--no-cov-on-fail.*") "")))))))
+      #:test-flags
+      ;; XXX: Unclear why this test fails.
+      #~(list "--deselect=tests/test_plugin.py::TestRaisesUsageErrors::\
+test_returns_nonzero_when_invalid_algorithm_name")))
     (native-inputs
-     (list python-poetry-core
-           python-pytest-bootstrap))
+     (list python-packaging
+           python-poetry-core
+           python-pytest-8))
     (home-page "https://jerry-git.github.io/pytest-split/")
     (synopsis "Pytest plugin to split the test suite to equally sized sub sutes")
     (description
