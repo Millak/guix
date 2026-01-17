@@ -132,6 +132,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages onc-rpc)
+  #:use-module (gnu packages oneapi)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)  ;libsndfile, libsamplerate
@@ -151,7 +152,6 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
-  #:use-module (gnu packages tbb)
   #:use-module (gnu packages telephony)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages tls)
@@ -8083,7 +8083,7 @@ verifies checksums.")
            pipewire
            rnnoise
            speexdsp
-           tbb
+           onetbb
            zita-convolver
            soundtouch))
     ;; Propagating these allows EasyEffects to find the plugins via their
