@@ -1641,6 +1641,18 @@ and many external plugins.")
      (list python-setuptools
            python-setuptools-scm))))
 
+;; It's the last 8.X.X version, released on 2025-09-04.
+(define-public python-pytest-8
+  (package
+    (inherit python-pytest)
+    (version "8.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest" version))
+       (sha256
+        (base32 "008fqfrxvg8s6pgnkffl2day4zzjg54dp932ipan3f866fwx1h46"))))))
+
 (define-public python-pytest-cov
   (package
     (name "python-pytest-cov")
