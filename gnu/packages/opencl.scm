@@ -48,6 +48,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages vulkan)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg))
 
@@ -206,7 +207,7 @@ incorporate inside an OpenCL implementation to give it ICD functionalities.")
 (define-public pocl
   (package
     (name "pocl")
-    (version "3.1")
+    (version "6.0")
     (source
      (origin
        (method git-fetch)
@@ -215,7 +216,7 @@ incorporate inside an OpenCL implementation to give it ICD functionalities.")
               (commit (string-append "v" version))))
        (sha256
         (base32
-         "1pw4q0hi5ynx34fvzryravz3jbh89f9cg60fkjj77sxh9xw8phdd"))
+         "0darr71kj21scavikbm7if1d4nz5vca77y0q5hw6nf9f1c4axlkp"))
        (file-name (git-file-name name version))
        (modules '((guix build utils)))
        (snippet
@@ -251,12 +252,14 @@ incorporate inside an OpenCL implementation to give it ICD functionalities.")
               ;; fake topology.
               (setenv "HWLOC_SYNTHETIC" "4"))))))
     (inputs
-     (list clang-15
-           llvm-15
-           `(,hwloc-2 "lib")
+     (list clang-toolchain-18       ;otherwise, clang executable not found
+           `(,hwloc "lib")
            opencl-icd-loader))
     (native-inputs
-     (list libltdl pkg-config python-3))
+     (list pkg-config
+           spirv-llvm-translator
+           spirv-tools
+           python-minimal-wrapper))
     (home-page "http://portablecl.org/")
     (synopsis "Portable Computing Language (pocl), an OpenCL implementation")
     (description
