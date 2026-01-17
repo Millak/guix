@@ -4,11 +4,11 @@ This workaround for Gentoo interferes with our use of --no-compile during
 the 'install stage.
 
 diff --git a/setup.py b/setup.py
-index be7a3758e8..28dc1be191 100755
+index bd65109379..a97a310ea3 100755
 --- a/setup.py
 +++ b/setup.py
-@@ -953,8 +953,6 @@ if modules_ENABLED:
- # Utility methods for building with Cython
+@@ -1081,8 +1081,6 @@ if verbose_ENABLED and not os.environ.get("DISTUTILS_DEBUG"):
+
 
  def do_add_cython_ext(*args, **kwargs) -> None:
 -    if "--no-compile" in sys.argv and not ("build" in sys.argv and "install" in sys.argv):
@@ -16,17 +16,19 @@ index be7a3758e8..28dc1be191 100755
      if not cython_ENABLED:
          raise ValueError(f"cannot build {args}: cython compilation is disabled")
      if cython_tracing_ENABLED:
-@@ -2175,9 +2173,6 @@ else:
-             if root_prefix.endswith("/usr"):
-                 # ie: "/" or "/usr/src/rpmbuild/BUILDROOT/xpra-0.18.0-0.20160513r12573.fc23.x86_64/"
-                 root_prefix = root_prefix[:-4]
+@@ -2301,11 +2299,6 @@ else:
+
+         def _get_root_prefix(self) -> str:
+             root_prefix = ""
 -            for x in sys.argv:
 -                if x.startswith("--root="):
--                    root_prefix = x[len("--root="):]
-             print(f"  root_prefix={root_prefix!r}")
-             build_xpra_conf(root_prefix)
-
-@@ -2320,13 +2315,6 @@ else:
+-                    return x[len("--root="):]
+-                if x.startswith("--prefix="):
+-                    root_prefix = x[len("--prefix="):]
+             if not root_prefix:
+                 install_dir = self._get_install_dir()
+                 root_prefix = install_dir.rstrip("/")
+@@ -2466,13 +2459,6 @@ else:
              if uinput_ENABLED:
                  add_data_files("lib/udev/rules.d/", ["fs/lib/udev/rules.d/71-xpra-virtual-pointer.rules"])
 

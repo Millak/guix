@@ -6520,7 +6520,7 @@ basic eye-candy effects.")
 (define-public xpra
   (package
     (name "xpra")
-    (version "6.3.6")
+    (version "6.4.1")
     (source
      (origin
        (method git-fetch)
@@ -6529,9 +6529,9 @@ basic eye-candy effects.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lrhj1xipgx839bvjwp2mbxf72c1c5g3y66vcaqs0zzk50zvyxwi"))
-       (patches (search-patches "xpra-6.0-systemd-run.patch"
-                                "xpra-6.1-install_libs.patch"))))
+        (base32 "0y6b70g16bh1pbjzmwsrrdjgnm0vgw8ff934n1y69vfb93sdfbc0"))
+       (patches (search-patches "xpra-6.4-systemd-run.patch"
+                                "xpra-6.4-install_libs.patch"))))
     (build-system pyproject-build-system)
     (inputs
      (list bash-minimal                 ; for wrap-program
@@ -6617,7 +6617,7 @@ basic eye-candy effects.")
                 "EndSection\n\n"))
               (substitute* '("xpra/scripts/config.py"
                              "fs/etc/xpra/conf.d/60_server.conf.in"
-                             "tests/unittests/unit/server/mixins/notification_test.py")
+                             "tests/unittests/unit/server/subsystem/notification_test.py")
                 ;; The trailing -- is intentional, so we only replace it inside
                 ;; a command line.
                 (("dbus-launch --")

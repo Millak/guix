@@ -2534,8 +2534,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/xplanet-1.3.1-xpUtil-Add2017LeapSecond.cpp.patch	\
   %D%/packages/patches/xpra-5.0-install_libs.patch              \
   %D%/packages/patches/xpra-5.0-systemd-run.patch              \
-  %D%/packages/patches/xpra-6.0-systemd-run.patch		\
-  %D%/packages/patches/xpra-6.1-install_libs.patch		\
+  %D%/packages/patches/xpra-6.4-systemd-run.patch		\
+  %D%/packages/patches/xpra-6.4-install_libs.patch		\
   %D%/packages/patches/xterm-370-explicit-xcursor.patch		\
   %D%/packages/patches/xygrib-fix-finding-data.patch		\
   %D%/packages/patches/xygrib-newer-proj.patch			\

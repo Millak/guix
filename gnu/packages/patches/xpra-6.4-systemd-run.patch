@@ -3,10 +3,10 @@ Distriction specific patch, not going upstream
 Disable systemd-run if the command is not found.
 
 diff --git a/xpra/scripts/main.py b/xpra/scripts/main.py
-index 1c5e8ddaad..084aabe792 100755
+index 734e488eb9..36410d2d85 100755
 --- a/xpra/scripts/main.py
 +++ b/xpra/scripts/main.py
-@@ -396,23 +396,26 @@ def use_systemd_run(s) -> bool:
+@@ -437,20 +437,26 @@ def use_systemd_run(s) -> bool:
      cmd = ["systemd-run", "--quiet"]
      if getuid() != 0:
          cmd += ["--user"]
@@ -18,10 +18,7 @@ index 1c5e8ddaad..084aabe792 100755
 -    except TimeoutExpired:  # pragma: no cover
 -        r = None
 -    if r is None:
--        try:
--            proc.terminate()
--        except Exception:
--            pass
+-        noerr(proc.terminate)
 +        cmd = ["systemd-run", "--quiet", "--user", "--scope", "--", "true"]
 +        proc = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=False)
          try:
@@ -45,4 +42,4 @@ index 1c5e8ddaad..084aabe792 100755
 +        return False
 
 
- def verify_gir():
+ def verify_gir() -> None:
