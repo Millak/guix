@@ -758,7 +758,7 @@ from a mounted file system.")
   ;; completions by running a native bcachefs binary at build time.
   (package
     (name "bcachefs-tools-minimal")
-    (version "1.11.0")
+    (version "1.35.1")
     (source
      (origin
        (method git-fetch)
@@ -767,7 +767,7 @@ from a mounted file system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m6z8z1cv78ay9yspypgr0kv70ck4wpln5n44f6n57i7sihqhrrg"))))
+        (base32 "1jn7fqlvhr0iazfx31wamvmf3qmgrzlf9ghvz8qazk8b6ipv77fn"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -778,6 +778,11 @@ from a mounted file system.")
       #:vendor-dir "../guix-vendor"
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'add-version
+            (lambda _
+              (with-output-to-file ".version"
+                (lambda ()
+                  (display #$version)))))
           (replace 'build
             (lambda* (#:key parallel-build? #:allow-other-keys)
               (apply invoke "make"
@@ -790,8 +795,12 @@ from a mounted file system.")
             ;; ‘make install’ hard-codes target/release/bcachefs, which is
             ;; incorrect when passing --target, as required to cross-compile or
             ;; even just link statically.  We always pass it, so always patch.
+            ;; 'make install' also always installs sources for kernel module
+            ;; build, which is packaged separately in Guix, so disable here.
             (lambda _
               (substitute* "Makefile"
+                (("install: all install_dkms")
+                 "install: all")
                 (("target/release")
                  #$(bcachefs-tools-target/release)))))
           (replace 'install
@@ -837,15 +846,15 @@ performance and other characteristics.")
     (name "bcachefs-tools")
     (arguments
      (substitute-keyword-arguments
-	 (package-arguments bcachefs-tools-minimal)
+         (package-arguments bcachefs-tools-minimal)
        ((#:modules modules '())
-	`(,@modules
-	  (guix build cargo-build-system)
+        `(,@modules
+          (guix build cargo-build-system)
           (guix build utils)
           (srfi srfi-26)))
        ((#:phases phases #~%standard-phases)
-	#~(modify-phases #$phases
-	    (add-after 'install 'install-completions
+        #~(modify-phases #$phases
+            (add-after 'install 'install-completions
               (lambda* (#:key native-inputs #:allow-other-keys)
                 (define bcachefs
                   (or (false-if-exception (search-input-file native-inputs
@@ -869,9 +878,9 @@ performance and other characteristics.")
                              "share/zsh/site-functions/_bcachefs")))))))))
     (native-inputs
      (append (package-native-inputs bcachefs-tools-minimal)
-	     (if (%current-target-system)
-		 (list bcachefs-tools-minimal)
-		 (list))))))
+             (if (%current-target-system)
+                 (list bcachefs-tools-minimal)
+                 (list))))))
 
 (define-public bcachefs-tools-minimal/static
   ;; The static variant is public for consistency with the other file system
@@ -885,6 +894,14 @@ performance and other characteristics.")
      (substitute-keyword-arguments (package-arguments bcachefs-tools-minimal)
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
+            (add-after 'unpack 'patch-makefile
+              (lambda _
+                ;; Change in v1.13.0 (commit 3666da87) adds
+                ;; default-linker-libraries to RUSTFLAGS which breaks
+                ;; static builds by trying to link against libc
+                (substitute* "Makefile"
+                  (("export RUSTFLAGS:=\\$\\(RUSTFLAGS\\) -C default-linker-libraries")
+                    "export RUSTFLAGS:=$(RUSTFLAGS)"))))
             (add-after 'configure 'set-rust-flags
               (lambda _
                 (setenv "RUSTFLAGS" (string-join
