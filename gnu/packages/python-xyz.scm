@@ -29367,29 +29367,22 @@ also be usable with other GSSAPI mechanisms.")
 (define-public python-check-manifest
   (package
     (name "python-check-manifest")
-    (version "0.49")
+    (version "0.51")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "check-manifest" version))
-        (sha256
-         (base32
-          "05plc1835zz1w1k7wpf2n6jir71ds1w7nz3535lj5ks2am2419k4"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "check_manifest" version))
+       (sha256
+        (base32 "0rvdkddnrh8hr42pqabpfrxb6ncswn7c9qrk7xb5lxbmfriwf0cq"))))
     (build-system pyproject-build-system)
     (arguments
-     '(;; This test requires setting up a venv which does not work
-       ;; properly in the build environment.
-       #:test-flags '("-k" "not test_build_sdist_pep517_isolated")
-       #:phases
-       (modify-phases %standard-phases
-         ;; Tests use git submodule commands over the file transport, which
-         ;; has been disabled in git, see CVE-2022-39253. Enable these
-         ;; commands to allow checks to succeed.
-         (add-before 'check 'allow-git-submodule-add
-           (lambda _
-             (setenv "HOME" "/tmp")
-             (invoke "git" "config" "--global"
-                     "protocol.file.allow" "always"))))))
+     (list
+      ;; tests: 127 passed, 20 skipped, 2 deselected
+      #:test-flags
+      ;; This tests requires setting up a venv which does not work
+      ;; properly in the build environment.
+      #~(list "--deselect=tests.py::Tests::test_build_sdist_pep517_no_isolation"
+              "--deselect=tests.py::Tests::test_build_sdist_pep517_isolated")))
     (native-inputs
      (list git-minimal/pinned python-pytest))
     (propagated-inputs
