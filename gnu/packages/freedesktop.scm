@@ -2873,21 +2873,6 @@ to the C library @code{uchardet} to increase performance.")
       #:test-flags #~(list "test/test_match.py")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'check 'fix-entry-points
-            ;; FIXME: See: <https://codeberg.org/guix/guix/issues/4509>.
-            (lambda _
-              (substitute* (string-append #$output "/bin/.udiskie-real")
-                (("from udiskie.cli import Daemon.main")
-                 "from udiskie.cli import Daemon"))
-              (substitute* (string-append #$output "/bin/.udiskie-info-real")
-                (("from udiskie.cli import Info.main")
-                 "from udiskie.cli import Info"))
-              (substitute* (string-append #$output "/bin/.udiskie-mount-real")
-                (("from udiskie.cli import Mount.main")
-                 "from udiskie.cli import Mount"))
-              (substitute* (string-append #$output "/bin/.udiskie-umount-real")
-                (("from udiskie.cli import Umount.main")
-                 "from udiskie.cli import Umount"))))
           (add-after 'wrap 'wrap-gi-typelib
             (lambda _
               (wrap-program (string-append #$output "/bin/udiskie")
