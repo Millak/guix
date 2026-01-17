@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2026 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -4606,6 +4606,11 @@ PyTorch.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-build-system
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("setuptools\\.build_meta:__legacy__")
+                 "setuptools.build_meta"))))
           (add-after 'unpack 'cmake-patches
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (substitute* "cmake/Dependencies.cmake"
