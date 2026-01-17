@@ -218,6 +218,7 @@ tests/home-services\.scm                           @guix/home
 
 gnu/packages/mpi\.scm                              @guix/hpc
 gnu/packages/oneapi\.scm                           @guix/hpc
+gnu/packages/opencl\.scm                           @guix/hpc
 gnu/packages/parallel\.scm                         @guix/hpc
 gnu/packages/rocm\.scm                             @guix/hpc
 gnu/packages/sycl\.scm                             @guix/hpc
