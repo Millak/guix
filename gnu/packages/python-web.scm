@@ -6594,9 +6594,6 @@ APIs.")
 than Python’s urllib2 library.")
     (license license:asl2.0)))
 
-(define-deprecated/public-alias python-requests-next
-  python-requests)                     ;may be removed after 2025-12-01
-
 (define-public python-requests-kerberos
   (package
     (name "python-requests-kerberos")
