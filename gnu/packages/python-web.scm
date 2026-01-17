@@ -5305,9 +5305,6 @@ WebSockets (over HTTP/1 and HTTP/2), ASGI/2, and ASGI/3 specifications.  It
 can utilise asyncio, uvloop, or trio worker types.")
     (license license:expat)))
 
-(define-deprecated-package python-hypercorn
-  hypercorn)
-
 (define-public python-querystring-parser
   (package
     (name "python-querystring-parser")
