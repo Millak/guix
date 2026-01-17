@@ -2218,18 +2218,25 @@ asynchronous version of botocore.")
 (define-public python-aiohappyeyeballs
   (package
     (name "python-aiohappyeyeballs")
-    (version "2.6.1")
+    (properties '((commit . "cc53cf8a1d31f7b460a0114214aac66956f0e2ed")
+                  (revision . "0")))
+    (version (git-version "2.6.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "aiohappyeyeballs" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aio-libs/aiohappyeyeballs")
+             (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0n1mjip846fprc34ik6if9m8xisva2m0ygyzvz53r013648x1yf3"))))
+        (base32 "0nc723f4sxryg5h9z8paysmy9dnqw2jy4srxp9axrxkv9qrawa7n"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-poetry-core
            python-pytest
-           python-pytest-asyncio-0.26))
+           python-pytest-asyncio))
     (home-page "https://github.com/aio-libs/aiohappyeyeballs")
     (synopsis "Happy Eyeballs for asyncio")
     (description "This library exists to allow connecting with Happy
