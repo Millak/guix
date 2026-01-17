@@ -5912,13 +5912,26 @@ a Gtk.Grid Widget.")
        (modules '((guix build utils)))
        (snippet
         '(begin
-           (delete-file-recursively "libs/qcustomplot-source/")
-           (delete-file-recursively "libs/qhexedit/")
-           (delete-file-recursively "libs/qscintilla")))))
+           ;; Delete bundled dependencies, available as Guix packages.
+           (for-each delete-file-recursively
+                     (list "libs/json"
+                           "libs/qcustomplot-source"
+                           "libs/qhexedit"
+                           "libs/qscintilla"))
+           ;; Patch #includes to be able to use Guix's nlohmann-json
+           (with-directory-excursion "src"
+             (substitute* (list "RemoteCommitsModel.h"
+                                "RemoteLocalFilesModel.h"
+                                "RemoteModel.h"
+                                "RemotePushDialog.cpp"
+                                "RemoteNetwork.cpp"
+                                "RemoteDock.cpp"
+                                "ExportDataDialog.cpp"
+                                "EditDialog.cpp")
+               (("json\\.hpp") "nlohmann/json.hpp")))))))
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags
-           ;; TODO: Unbundle json (nlohmann-json).
            #~(list (string-append "-DQSCINTILLA_INCLUDE_DIR="
                                   #$(this-package-input "qscintilla")
                                   "/include/Qsci")
@@ -5932,7 +5945,7 @@ a Gtk.Grid Widget.")
            qtbase-5
            qtwayland-5
            sqlite))
-    (native-inputs (list qttools-5))
+    (native-inputs (list nlohmann-json qttools-5))
     (home-page "https://sqlitebrowser.org/")
     (synopsis "Visual database browser and editor for SQLite")
     (description "Sqlitebrowser lets you create, design, and edit database files
