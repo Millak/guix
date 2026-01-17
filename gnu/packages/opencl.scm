@@ -149,7 +149,7 @@ This package contains the Khronos official OpenCL ICD Loader.")
 (define-public clinfo
   (package
     (name "clinfo")
-    (version "3.0.21.02.21")
+    (version "3.0.25.02.14")
     (source
      (origin
        (method git-fetch)
@@ -158,18 +158,21 @@ This package contains the Khronos official OpenCL ICD Loader.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sfxp6ai83i0vwdg7b05h0k07q6873q1z1avnyksj5zmzdnxya6j"))))
+        (base32 "136fx14hcxfk3dab6jhk78j9l0f43zb3qap19mnzdrlqk532njaj"))))
     (build-system gnu-build-system)
     (native-inputs
      (list opencl-headers))
     (inputs
      (list opencl-icd-loader))
     (arguments
-     `(#:make-flags
-       (list ,(string-append "CC=" (cc-for-target))
-              (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases (modify-phases %standard-phases (delete 'configure))
-       #:tests? #f))
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "CXX=" #$(cxx-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases (delete 'configure))
+      #:tests? #f))
     (home-page "https://github.com/Oblomov/clinfo")
     (synopsis "Print information about OpenCL platforms and devices")
     ;; Only the implementation installed via Guix will be detected.
