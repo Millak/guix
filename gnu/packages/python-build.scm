@@ -574,9 +574,6 @@ Included are implementations of:
 @end enumerate\n")
     (license license:psfl)))
 
-(define-deprecated/public-alias python-typing-extensions-next
-  python-typing-extensions)            ;may be removed after 2025-12-01
-
 
 ;;;
 ;;; Python builder packages.
