@@ -11070,11 +11070,21 @@ capabilities.")
        (patches (search-patches "python-numpy-gcc-14.patch"))))
     (arguments
      (list
+      ;; tests: 35652 passed, 2403 skipped, 32 xfailed, 2 xpassed
       #:modules '((guix build utils)
                   (guix build pyproject-build-system)
                   (ice-9 format))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-test-files
+            (lambda _
+              ;; These tests depend on older setuptools, see:
+              ;; <https://github.com/numpy/numpy/issues/27531>.
+              ;;
+              ;; E ModuleNotFoundError: No module named
+              ;; 'distutils.msvccompiler'
+              (delete-file "numpy/distutils/tests/test_mingw32ccompiler.py")
+              (delete-file "numpy/distutils/tests/test_system_info.py")))
           ;; XXX: It fails with an issue "'fenv_t' has not been declared..."
           ;; when the gfortran header is used.  Remove gfortran from
           ;; CPLUS_INCLUDE_PATH as a workaround.  Taken from
@@ -11192,7 +11202,12 @@ include_dirs = ~:*~a/include~%"
                               " and not test_square_values"
                               " and not test_sum"
                               " and not test_switch_owner"
-                              " and not test_thread_locality")))))
+                              " and not test_thread_locality"
+
+                              ;; These tests depend on older setuptools, see:
+                              ;; <https://github.com/numpy/numpy/issues/27531>.
+                              " and not test_api_importable"
+                              " and not test_all_modules_are_expected_2")))))
           ;; See comment for custom python-numpy wrap phase above.
           (replace 'wrap
                    (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -11210,9 +11225,8 @@ include_dirs = ~:*~a/include~%"
            python-mypy
            python-pytest
            python-pytest-xdist
-           python-setuptools-67 ;see: <https://github.com/numpy/numpy/issues/27531>
+           python-setuptools
            python-typing-extensions
-           python-wheel-0.40
            ;; XXX: Avoid to: 'fenv_t' has not been declared in '::' 58 | using ::fenv_t;
            ;; See <https://github.com/numpy/numpy/issues/21075#issuecomment-1047976197>,
            ;; <https://github.com/numpy/numpy/issues/24318>.
