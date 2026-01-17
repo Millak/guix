@@ -7092,7 +7092,7 @@ included for convenience.")
 (define-public showmethekey
   (package
     (name "showmethekey")
-    (version "1.18.1")
+    (version "1.19.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7101,10 +7101,11 @@ included for convenience.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lmjqr5j8nr990dq5gvkwm33vpvzh8zhcmgxn03m4n4xgq1dg5zy"))))
+                "1hz941fb57f0j7j5x9q6gpj34ay18nm2dlidhqndnywb9a8mq14d"))))
     (build-system meson-build-system)
     (arguments
-     (list #:phases
+     (list #:glib-or-gtk? #t
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'setenv
                  (lambda _
@@ -7116,8 +7117,7 @@ included for convenience.")
     (native-inputs
      (list (list glib "bin") gettext-minimal pkg-config))
     (inputs
-     (list libevdev eudev libinput glib gtk libadwaita json-glib cairo pango
-           libxkbcommon polkit))
+     (list libevdev eudev libinput glib libadwaita json-glib))
     (synopsis "Show keypresses on screen")
     (description "This package shows the keys that the user presses on the
 screen.
