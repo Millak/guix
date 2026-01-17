@@ -669,6 +669,7 @@ ISO 8601 dates, time and duration.")
 @code{2007-01-14T20:34:22+00:00}) into @code{datetime} objects.")
     (license expat)))
 
+;; The only one user is samba/pinned.
 (define-public python-iso8601/pinned
   (hidden-package
    (package/inherit python-iso8601
@@ -679,15 +680,7 @@ ISO 8601 dates, time and duration.")
         (uri (pypi-uri "iso8601" version))
         (sha256
          (base32
-          "1ccl6plks706hxm35cn1wsvxhqh3bfwi5cjgjpdxjib81qi07x97"))))
-     (build-system python-build-system)
-     (arguments
-      '(#:phases (modify-phases %standard-phases
-                   (replace 'check
-                     (lambda _
-                       (invoke "pytest" "-vv" "iso8601"))))))
-     (native-inputs
-      (list python-pytest python-pytz)))))
+          "1ccl6plks706hxm35cn1wsvxhqh3bfwi5cjgjpdxjib81qi07x97")))))))
 
 (define-public python-pyrfc3339
   (package
