@@ -955,7 +955,7 @@ minimal bcachefs-tools package.  It is meant to be used in initrds.")
 (define-public bcachefs-linux-module
   (package
     (name "bcachefs-linux-module")
-    (version "1.33.0")
+    (version "1.35.1")
     (source
      (origin
        (method git-fetch)
@@ -964,7 +964,7 @@ minimal bcachefs-tools package.  It is meant to be used in initrds.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05lqw3mxi73nm1q4qv43p9hyiwi2hdx4nc9fzm7rxwip6ys1kqkd"))))
+        (base32 "1jn7fqlvhr0iazfx31wamvmf3qmgrzlf9ghvz8qazk8b6ipv77fn"))))
     (build-system linux-module-build-system)
     (arguments
      (list
@@ -972,13 +972,14 @@ minimal bcachefs-tools package.  It is meant to be used in initrds.")
       #:source-directory "build/src/fs/bcachefs"
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'add-version
+            (lambda _
+              (with-output-to-file ".version"
+                (lambda ()
+                  (display #$version)))))
           (add-after 'unpack 'patch-source
-            (lambda* (#:key version #:allow-other-keys)
+            (lambda _
               (substitute* "Makefile"
-                ;; Remove unnecessary dependency on cargo
-                (("^VERSION=\\$.*$")
-                 (string-append "VERSION=\""
-                                #$version "\""))
                 ;; Remove unnecessary dependencies
                 (("^.*PKG_CONFIG.*$")
                  ""))))
