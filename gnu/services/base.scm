@@ -104,6 +104,7 @@
   #:use-module (srfi srfi-35)
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
+  #:use-module (ice-9 pretty-print)
   #:re-export (user-processes-service-type        ;backwards compatibility
                %default-substitute-urls)
   #:export (fstab-service-type
@@ -1903,8 +1904,12 @@ archive' public keys, with GUIX."
   "Return a gexp with code to install CHANNELS, a list of channels, in
 /etc/guix/channels.scm."
   (define channels-file
-    (scheme-file "channels.scm"
-                 `(list ,@(map channel->code channels))))
+    (plain-file "channels.scm"
+      (call-with-output-string
+        (lambda (port)
+          (pretty-print
+           `(list ,@(map channel->code channels))
+           port)))))
 
   (with-imported-modules '((guix build utils))
     #~(begin
