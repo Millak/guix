@@ -376,6 +376,7 @@ MODULES =					\
   guix/scripts/import/luanti.scm  		\
   guix/scripts/import/minetest.scm  		\
   guix/scripts/import/npm-binary.scm		\
+  guix/scripts/import/nuget.scm  		\
   guix/scripts/import/opam.scm			\
   guix/scripts/import/pypi.scm			\
   guix/scripts/import/stackage.scm		\
@@ -505,7 +506,8 @@ EXAMPLES =					\
   gnu/system/examples/plasma.tmpl		\
   gnu/system/examples/raspberry-pi-64.tmpl	\
   gnu/system/examples/raspberry-pi-64-nfs-root.tmpl	\
-  gnu/system/examples/vm-image.tmpl
+  gnu/system/examples/vm-image.tmpl		\
+  gnu/system/examples/vm-image-efi.tmpl
 
 GOBJECTS = $(MODULES:%.scm=%.go) guix/config.go $(dist_noinst_DATA:%.scm=%.go)
 
@@ -747,7 +749,7 @@ dist_fishcompletion_DATA = etc/completion/fish/guix.fish
 nodist_selinux_policy_DATA = etc/guix-daemon.cil
 
 # AppArmor profiles.
-nodist_apparmor_profile_DATA =	\
+dist_apparmor_profile_DATA =	\
   etc/apparmor.d/guix		\
   etc/apparmor.d/guix-daemon
 

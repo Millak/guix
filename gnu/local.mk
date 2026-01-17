@@ -1175,6 +1175,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/dhclient-script-resolvconf-support.patch \
   %D%/packages/patches/dicedb-remove-init-from-config-subpkg.patch	\
   %D%/packages/patches/directfb-davinci-glibc-228-compat.patch	\
+  %D%/packages/patches/django-compressor-build-with-beautifulsoup-4.14+.patch	\
   %D%/packages/patches/dkimproxy-add-ipv6-support.patch		\
   %D%/packages/patches/doc++-gcc-14.patch			\
   %D%/packages/patches/docbook-utils-documentation-edits.patch	\
@@ -1208,6 +1209,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/eigen-fix-strict-aliasing-bug.patch	\
   %D%/packages/patches/einstein-build.patch			\
   %D%/packages/patches/elfutils-tests-ptrace.patch		\
+  %D%/packages/patches/elixir-httpoison-tag-network-dependent-test-cases.patch			\
   %D%/packages/patches/elixir-path-length.patch			\
   %D%/packages/patches/elm-ghc9.2.patch	\
   %D%/packages/patches/python-treelib-remove-python2-compat.patch	\
@@ -1247,7 +1249,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/ergodox-firmware-fix-numpad.patch	\
   %D%/packages/patches/ericw-tools-add-check-for-sse2-in-light.cc.patch	\
   %D%/packages/patches/ericw-tools-gcc-11-pass-const-to-offsetof.patch	\
+  %D%/packages/patches/erlang-binpp-disable-failing-tests.patch	\
   %D%/packages/patches/erlang-man-path.patch			\
+  %D%/packages/patches/erlang-mochiweb-disable-known-to-fail-tests.patch	\
   %D%/packages/patches/esmini-use-pkgconfig.patch		\
   %D%/packages/patches/esmtp-add-lesmtp.patch		\
   %D%/packages/patches/esound-c99.patch         		\
@@ -1681,6 +1685,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libretro-dolphin-emu-libusb-assert.patch \
   %D%/packages/patches/libretro-dolphin-emu-vulkan-headers.patch        \
   %D%/packages/patches/librewolf-add-store-to-rdd-allowlist.patch       \
+  %D%/packages/patches/librewolf-compare-paths.patch		\
   %D%/packages/patches/librewolf-neuter-locale-download.patch	\
   %D%/packages/patches/librewolf-use-system-wide-dir.patch	\
   %D%/packages/patches/libvirt-add-install-prefix.patch	\
@@ -1691,6 +1696,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/lightdm-vnc-ipv6.patch			\
   %D%/packages/patches/lightdm-vnc-color-depth.patch		\
   %D%/packages/patches/lightdm-vncserver-check.patch		\
+  %D%/packages/patches/linphone-desktop-cmake-belcard.patch	\
+  %D%/packages/patches/linphone-desktop-cmake-find-modules.patch	\
   %D%/packages/patches/localed-xorg-keyboard.patch		\
   %D%/packages/patches/kaldi-ignore-failing-test.patch		\
   %D%/packages/patches/kaldi-openblas-0.3.29-compatibility.patch	\
@@ -2294,6 +2301,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/sbcl-burgled-batteries3-fix-signals.patch	\
   %D%/packages/patches/sbcl-ciel-repl.patch			\
   %D%/packages/patches/sbcl-clml-fix-types.patch		\
+  %D%/packages/patches/sbcl-cl-redis-replace-sbcl-specific-calls.patch	\
   %D%/packages/patches/sbcl-eazy-gnuplot-skip-path-check.patch	\
   %D%/packages/patches/sbcl-lack-fix-tests.patch		\
   %D%/packages/patches/sbcl-png-fix-sbcl-compatibility.patch	\
