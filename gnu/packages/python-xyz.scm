@@ -7610,14 +7610,24 @@ and is not compatible with JSON.")
 (define-public python-expandvars
   (package
     (name "python-expandvars")
-    (version "0.12.0")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "expandvars" version))
        (sha256
-        (base32 "0i6q4i8dzsax85w1l2hc7saymyh3fw43vkifh5flpkr8ayjxy6kx"))))
+        (base32 "1mviiwv5vgglswxrcdd1z978masjgwkd2pcidcsrmaannyvj4n3c"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; addopts = ["--cov", "--cov-report=html",
+                ;; "--cov-fail-under=100"]
+                (("addopts = .*") "")))))))
     (native-inputs
      (list python-hatchling python-pytest))
     (home-page "https://pypi.org/project/expandvars/")
