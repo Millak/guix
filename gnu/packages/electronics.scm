@@ -1322,7 +1322,7 @@ versus schematic} tests and can assist with automatic routing.")
 (define-public mcy
   (package
     (name "mcy")
-    (version "0.60")
+    (version "0.61")
     (source
      (origin
        (method git-fetch)
@@ -1377,8 +1377,9 @@ versus schematic} tests and can assist with automatic routing.")
     (home-page "https://yosyshq.readthedocs.io/projects/mcy/en/latest/")
     (synopsis "Mutation Cover with Yosys")
     (description
-     "@command{Mcy} is a tool to help digital designers and project managers
-understand and improve testbench coverage.")
+     "@command{Mcy} is an @acronym{EDA, Electronic Design Automation} tool to
+help digital designers and project managers understand and improve testbench
+coverage.")
     (license license:isc)))
 
 (define-public nextpnr
