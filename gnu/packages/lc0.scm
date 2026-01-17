@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
+;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,7 +32,7 @@
   #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
-  #:use-module (gnu packages machine-learning)
+  #:use-module (gnu packages oneapi)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python))
 
@@ -60,7 +61,7 @@
       #:configure-flags
       #~(list "-Ddnnl=true"
               (string-append "-Ddnnl_dir="
-                             #$(this-package-input "oneapi-dnnl")))
+                             #$(this-package-input "onednn")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-march-native
@@ -71,8 +72,8 @@
      (list (search-path-specification
             (variable "XDG_DATA_DIRS")
             (files '("share")))))
-    (inputs (list eigen oneapi-dnnl zlib))
-    (native-inputs (list googletest ispc pkg-config python))
+    (inputs (list eigen onednn zlib))
+    (native-inputs (list googletest ispc pkg-config python-minimal-wrapper))
     (synopsis "Chess engine based on neural networks")
     (description
      "Leela Chess Zero is a UCI-compliant chess engine designed to play chess
