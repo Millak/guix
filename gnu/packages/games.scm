@@ -95,6 +95,7 @@
 ;;; Copyright © 2025 Ada Stevenson <adanskana@gmail.com>
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;; Copyright © 2025 Aiden Isik <aidenisik+git@member.fsf.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -207,6 +208,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages ocaml)
+  #:use-module (gnu packages oneapi)
   #:use-module (gnu packages opencl)
   #:use-module (gnu packages pcre)
   #:autoload (gnu packages pascal) (fpc)
@@ -233,7 +235,6 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages squirrel)
   #:use-module (gnu packages swig)
-  #:use-module (gnu packages tbb)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages texinfo)
@@ -12816,7 +12817,7 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
            sdl2-mixer
            sdl2-image
            sdl2-ttf
-           tbb
+           onetbb
            vulkan-headers
            zlib))
     (home-page "https://vcmi.eu/")
