@@ -42,6 +42,26 @@
 (channel-news
  (version 0)
 
+ (entry (commit "6d4cb99a15da7f4fd55f956c55f4f4aacfcc7742")
+        (title
+         (en "@code{%desktop-services} now includes GDM on AArch64"))
+        (body
+         (en "On Guix System in an operating system configuration, your value for the
+@code{services} field is based on @code{%desktop-services} for desktop
+machines.
+
+The @code{%desktop-services} contains a login manager that is
+architecture-dependent.  Previously, GDM has been used on x86_64 and SDDM on
+other architectures.
+
+Now, GDM is used on all 64-bit architectures.  This affects only AArch64 in
+the end, as other 64-bit architectures aren't mature enough to use
+%desktop-services, yet.
+
+In case you're on AArch64 and you've changed the login manager, you will have
+to adapt your config to remove @code{gdm-service-type} instead of
+@code{sddm-service-type}.")))
+
  (entry (commit "d3b79beaa806452dceaffb8b211b69dc4c346aba")
         (title
          (en "Linux-libre 5.4 no longer supported")
