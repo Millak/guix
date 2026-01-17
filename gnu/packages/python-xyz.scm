@@ -17131,7 +17131,9 @@ lines in the contained files easily.")
                (sha256
                 (base32
                  "08pgq9nrj3r81gzb6gbf5mcak0xyqrj26cw0rc5za4v1n14hfb77"))))
-     (build-system python-build-system)
+     (build-system pyproject-build-system)
+     (native-inputs
+      (list python-setuptools))
      (arguments '(#:tests? #f))
      (home-page "https://github.com/fonttools/fonttools")
      (synopsis "Tools to manipulate font files")
