@@ -76,6 +76,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages web)
@@ -639,6 +640,12 @@ be used when cross-compiling."
                  ;; as discussed here: https://issues.guix.gnu.org/50201#60.
                  "-Dbuild_introspection_data=false"))
              '())
+       #:modules
+       ((guix build meson-build-system)
+        (guix build utils)
+        (ice-9 match)
+        (srfi srfi-1)
+        (srfi srfi-26))
        #:phases
        ,#~
        (modify-phases %standard-phases
@@ -655,6 +662,33 @@ be used when cross-compiling."
              (substitute* "tools/g-ir-tool-template.in"
                (("#!@PYTHON_CMD@")
                 (string-append "#!" (which "python3"))))))
+         ;; Copy the site-packages procedure rather than importing them to
+         ;; maintain pyproject/glib-or-gtk build-systems'independence.
+         (add-after 'install 'wrap
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (define (search-input-directories pred dir)
+               (filter pred
+                       (map (match-lambda
+                              ((name . directory)
+                               (string-append directory "/" dir)))
+                            inputs)))
+             (let* ((version #$(version-major+minor
+                                (package-version
+                                 (this-package-input "python"))))
+                    (site-path (string-append "lib/python" version
+                                              "/site-packages"))
+                    ;; Remove meson, but keep the rest.
+                    (pred (lambda (dir)
+                            (and (directory-exists? dir)
+                                 (string-contains dir "python-"))))
+                    (paths (search-input-directories pred site-path)))
+               (for-each
+                (cute wrap-program <>
+                      `("GUIX_PYTHONPATH" ":" prefix
+                        (,(string-join paths ":"))))
+                ;; These require access to python-setuptools site-packages.
+                (list (search-input-file outputs "/bin/g-ir-annotation-tool")
+                      (search-input-file outputs "/bin/g-ir-scanner"))))))
          #$@(if (%current-target-system)
                ;; Meson gives python extensions an incorrect name, see
                ;; <https://github.com/mesonbuild/meson/issues/7049>.
@@ -666,20 +700,22 @@ be used when cross-compiling."
                                           "/_giscanner"))))
                 #~()))))
     (native-inputs
-     `(,@(if (%current-target-system)
-           `(("python" ,python))
-           '())
-       ("glib" ,glib-minimal "bin")
-       ("pkg-config" ,pkg-config)
-       ("bison" ,bison)
-       ("flex" ,flex)))
+     (cons*
+      bison
+      flex
+      (list glib-minimal "bin")
+      pkg-config
+      (if (%current-target-system)
+          (list python)
+          (list))))
     (inputs
      (list python zlib))
     (propagated-inputs
      (list glib-minimal
            ;; In practice, GIR users will need libffi when using
            ;; gobject-introspection.
-           libffi))
+           libffi
+           python-setuptools-bootstrap))
     (native-search-paths
      (list
       (search-path-specification
@@ -708,7 +744,9 @@ provide bindings to call into the C library.")
          (replace "glib" glib)))
       (propagated-inputs
        (modify-inputs (package-propagated-inputs base)
-         (replace "glib" glib))))))
+         (replace "glib" glib)
+         ;; Note: The label stays the same despite the name change.
+         (replace "python-setuptools-bootstrap" python-setuptools))))))
 
 (define intltool
   (package
