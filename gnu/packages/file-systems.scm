@@ -75,6 +75,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages elf)
+  #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
@@ -118,6 +119,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages rsync)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sssd)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages textutils)
@@ -127,6 +129,7 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages vim)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml))
 
 (define-public autofs
@@ -2404,7 +2407,7 @@ spend on disk between being written and being deduplicated.")
 (define-public dwarfs
   (package
     (name "dwarfs")
-    (version "0.6.2")
+    (version "0.14.1")
     (source (origin
               (method url-fetch)
               ;; The release archive is needed so that version.h is included.
@@ -2412,30 +2415,44 @@ spend on disk between being written and being deduplicated.")
                                   version "/dwarfs-" version ".tar.xz"))
               (sha256
                (base32
-                "1kncxf85gsj3anck8ccjmxn2azp5ifqbgkiky2kharmvphkbmfcv"))
+                "1i990m6radrzdc1ccy9j7kr4vgy30h3sfljmq27myahl5rzz4332"))
               (snippet
                #~(begin
                    (use-modules (guix build utils))
                    ;; Prefer system libraries instead of submodules.
-                   ;; TODO: Package fbthrift.
-                   ;; TODO: Can we use Guix own folly?  There is no CMake option for it.
-                   ;; TODO: Package parallel-hashmap.
+                   ;; TODO: Package fbthrift. (only source is needed)
+                   ;; TODO: Package fsst.
+                   ;; TODO: Package ricepp.
+                   ;; NOTE: Packaging folly seperately and unbundling isn't
+                   ;; necessary since a fork is used.
                    (for-each delete-file-recursively
                              '(;; "fbthrift"
-                               ;; "folly"
-                               ;; "parallel-hashmap"
-                               "xxHash"
-                               "zstd"))))))
+                               ;; "ricepp"
+                               ;; "fsst"
+                               "fast_float"))))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f ; TODO: 1 test fails because 'modprobe fuse' needs privileged access.
-       #:configure-flags
-       (list "-DPREFER_SYSTEM_ZSTD=ON"
-             "-DPREFER_SYSTEM_XXHASH=ON"
-             "-DPREFER_SYSTEM_GTEST=ON"
-             "-DWITH_TESTS=ON"
-             ;; Disable man pages since ronn fails to run without hpricot.
-             "-DWITH_MAN_PAGES=OFF")))
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~(list "-DPREFER_SYSTEM_FAST_FLOAT=ON"
+              "-DPREFER_SYSTEM_GTEST=ON"
+              "-DWITH_TESTS=OFF"
+              ;; Disable man pages since ronn fails to run without hpricot.
+              "-DWITH_MAN_PAGES=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; these tests require a FUSE device to work, so disable
+          ;; FIXME: this doesn't work so all tests are disabled above.
+          (add-before 'check 'set-test-filter
+            (lambda _
+              (let* ((privileged-tests
+                      '("dwarfs/tools_test.end_to_end/*"
+                        "dwarfs/tools_test.mutating_and_error_ops/*"
+                        "dwarfs/tools_test.categorize/*"))
+                     (filter (string-append "-" ;"-" disables all following tests
+                                            (string-join privileged-tests ":"))))
+                (setenv "GTEST_FILTER" filter)))))))
     (native-inputs
      (list
       ;; FIXME: Building with ronn fails because hpricot is missing from Guix.
@@ -2444,14 +2461,21 @@ spend on disk between being written and being deduplicated.")
      (list
       boost
       double-conversion
-      fmt
+      fast-float
+      file                              ;for libmagic
+      flac
+      fmt-10
       fuse
       gflags
       jemalloc
       libarchive
       libunwind
       lz4
+      nlohmann-json
       openssl
+      parallel-hashmap
+      range-v3
+      utfcpp
       xxhash
       xz
       `(,zstd "lib")))
