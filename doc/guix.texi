@@ -787,6 +787,10 @@ chmod +x guix-install.sh
 ./guix-install.sh
 @end example
 
+When you're done installing Guix, @pxref{Application Setup} for extra
+configuration you might need, and @ref{Getting Started} for your first
+steps!
+
 The script goes through the following steps:
 
 @enumerate
@@ -825,10 +829,6 @@ guix archive --authorize < \
    ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-2}.pub
 @end example
 @end quotation
-
-When you're done installing Guix, @pxref{Application Setup} for extra
-configuration you might need, and @ref{Getting Started} for your first
-steps!
 
 @quotation Note
 The binary installation tarball can be (re)produced and verified simply
