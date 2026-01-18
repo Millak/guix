@@ -789,12 +789,20 @@ chmod +x guix-install.sh
 
 The script goes through the following steps:
 
-@itemize
-@item Downloading and extracting the binary tarball
-@item Setting up the build daemon
-@item Making @command{guix} command available to non-root users
-@item Configuring substitute servers
-@end itemize
+@enumerate
+@item
+Downloading the binary tarball from
+@indicateurl{@value{BASE-URL}/guix-binary-@value{VERSION}.x86_64-linux.tar.xz}
+(where @code{x86_64-linux} can be replaced with @code{i686-linux} for an
+@code{i686} (32-bits) machine already running the kernel Linux, and so
+on---@pxref{GNU Distribution}) and extracting it.
+@item
+Setting up the build daemon (@pxref{Setting Up the Daemon}).
+@item
+Making the @command{guix} command available to non-root users.
+@item
+Configuring substitute servers (@pxref{Official Substitute Servers}).
+@end enumerate
 
 @quotation Note
 By default, @file{guix-install.sh} will configure Guix to download
