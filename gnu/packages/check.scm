@@ -2058,19 +2058,19 @@ code to a remote location, executes there, and then syncs the result back.")
 (define-public python-pytest-timeout
   (package
     (name "python-pytest-timeout")
-    (version "2.3.1")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pytest-timeout" version))
+       (uri (pypi-uri "pytest_timeout" version))
        (sha256
         (base32
-         "1nb5a6xf2p9zbcasy8136nbxpm1raag5n0q1rbdcnvjw28lpff8j"))))
+         "02jls37lng0qfqc70dm8wg25yjbmbkw02l5j689zgvzr045yjs3y"))))
     (build-system pyproject-build-system)
+    ;; tests: 41 passed, 2 skipped, 4 xfailed
     (native-inputs
      (list python-pexpect
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-pytest))
     (home-page "https://github.com/pytest-dev/pytest-timeout")
