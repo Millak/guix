@@ -1042,9 +1042,9 @@ packaging tasks.")
     (arguments
      (list #:test-backend #~'unittest))
     (native-inputs
-     (list python-poetry-core))
+     (list python-packaging python-poetry-core))
     (propagated-inputs
-     (list python-click))
+     (list python-click python-jinja2 python-terminaltables))
     (home-page "https://github.com/capless/envs")
     (synopsis "Easy access of environment variables from Python")
     (description
