@@ -1605,6 +1605,15 @@ money transfer.")
        (sha256
         (base32 "1ysh9b5lzg053hv4iw3zbn7hid05qssiwmrl8sir8qlk958r8x60"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("mnemonic =.*")
+                 "mnemonic = '*'")))))))
     (native-inputs
      (list python-poetry-core
            python-pytest))
