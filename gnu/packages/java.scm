@@ -3662,6 +3662,7 @@ testing frameworks, mocking libraries and UI validation rules.")
   (package
     (inherit java-hamcrest-core)
     (name "java-hamcrest-library")
+    (properties `((superseded . ,java-hamcrest)))
     (arguments
      (substitute-keyword-arguments (package-arguments java-hamcrest-core)
       ((#:build-target _) "library")
