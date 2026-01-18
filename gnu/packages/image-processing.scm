@@ -321,7 +321,7 @@ licences similar to the Modified BSD licence."))))
     (native-inputs
      ;; XXX: OCIO has unit tests for OpenShadingLanguage, but they fail.
      ;; They also require OIIO, but OCIO is an optional dependency to it.
-     (list pybind11-2.10 python-wrapper))
+     (list pybind11 python-wrapper))
     (inputs
      (list expat
            freeglut
