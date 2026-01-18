@@ -17190,7 +17190,9 @@ printing of sub-tables by specifying a row range.")
     (description "This package is a simple RTF tokenizer.")
     (license license:gpl2+)))
 
-(define-public python-curio
+;; XXX: The package is not maintained anymore, and fails to build
+;; with the current python and pytest versions.
+(define-deprecated/public python-curio #f
   (package
     (name "python-curio")
     (version "1.6")
