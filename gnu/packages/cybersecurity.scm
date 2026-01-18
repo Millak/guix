@@ -132,7 +132,7 @@ Refresh}in-DRAM mitigations effectively and as such can trigger bit flips.")
       #:test-flags #~(list "tests/pytest")))
     (native-inputs
      (list python-poetry-core
-           python-pygit2
+           python-pygit2-1.11
            python-pytest
            python-pytest-asyncio))
     (inputs
@@ -148,7 +148,7 @@ Refresh}in-DRAM mitigations effectively and as such can trigger bit flips.")
            python-platformdirs
            python-psutil
            python-pydantic
-           python-pygit2
+           python-pygit2-1.11
            python-tabulate
            python-zstandard))
     (home-page "https://github.com/Fraunhofer-AISEC/gallia")

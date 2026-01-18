@@ -11578,7 +11578,7 @@ parser that can be used to decode raw NTLM/SPNEGO/Kerberos tokens into a human
 readable format.")
     (license license:expat)))
 
-(define-public python-pygit2
+(define-public python-pygit2-1.11
   (package
     (name "python-pygit2")
     (version "1.11.1")
@@ -11598,7 +11598,7 @@ readable format.")
     (license license:gpl2)))
 
 (define-public python-pygit2-1.18
-  (package/inherit python-pygit2
+  (package/inherit python-pygit2-1.11
     (name "python-pygit2")
     (version "1.18.2")
     (source
@@ -29937,7 +29937,7 @@ These files are used to translate strings in android apps.")
            python-polib
            python-pycountry
            python-pyenchant
-           python-pygit2
+           python-pygit2-1.11
            python-pygithub
            python-pyqt
            python-requests

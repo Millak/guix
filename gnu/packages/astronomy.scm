@@ -7483,7 +7483,7 @@ N-Chilada and RAMSES AMR outputs.")
     (native-inputs
      (list nss-certs-for-test
            python-cython
-           python-pygit2
+           python-pygit2-1.11
            python-pytest
            python-scikit-image
            python-setuptools

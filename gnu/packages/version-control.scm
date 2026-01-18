@@ -948,7 +948,7 @@ logs to GNU ChangeLog format.")
        (list bash-minimal
              git-minimal
              python-argcomplete
-             python-pygit2
+             python-pygit2-1.11
              python-sh))
       (home-page "https://gitless.com")
       (synopsis "Simple version control system built on top of Git")

@@ -1136,7 +1136,7 @@ commands part of the U-Boot project, such as Patman.")))
      (list git
            `(,git "send-email")
            guile-3.0/pinned             ;for wrap-script
-           python-pygit2
+           python-pygit2-1.11
            python-requests
            python-u-boot-pylib))
     (synopsis "Patch automation tool")
