@@ -11597,7 +11597,7 @@ readable format.")
     ;; GPL2.0 only, with linking exception.
     (license license:gpl2)))
 
-(define-public python-pygit2-1.18
+(define-public python-pygit2
   (package/inherit python-pygit2-1.11
     (name "python-pygit2")
     (version "1.18.2")
