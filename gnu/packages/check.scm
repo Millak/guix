@@ -1976,24 +1976,24 @@ pytest-lazy-fixture}.")
 (define-public python-pytest-mock
   (package
     (name "python-pytest-mock")
-    (version "3.14.0")
+    (version "3.15.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pytest-mock" version))
+       (uri (pypi-uri "pytest_mock" version))
        (sha256
-        (base32 "1l0b864arbzrq13z635l1x9ial0w7pgz6svd0nyavkpy3rd2a697"))))
+        (base32 "03vsv2q11b6yhs33m9vg852an50qrdrdws92fqcxm5pkyqwa4j8q"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 85 passed, 5 skipped, 3 warnings
       ;; Skip the assertion rewriting tests, which don't work in the presence
       ;; of read-only Python modules (a limitation of Pytest).
       #:test-flags #~(list "--assert=plain")))
     (native-inputs
      (list python-pytest-asyncio
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-pytest))
     (home-page "https://github.com/pytest-dev/pytest-mock/")
