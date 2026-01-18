@@ -20819,22 +20819,8 @@ into 22 character URL-safe base64 slug representation.")
 syntax highlighting, markdown and more to the terminal.")
     (license license:expat)))
 
-(define-public python-rich-next
-  (package
-    (inherit python-rich)
-    (name "python-rich")
-    (version "14.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/willmcgugan/rich")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0zwjry4ylqncqvxrywp0km96jng4f288dgz8kz5vymk7nr2z21m1"))))
-    (native-inputs (modify-inputs (package-native-inputs python-rich)
-                     (append which)))))
+;; XXX: Deprecated on <2026-01-18>.
+(define-deprecated/public-alias python-rich-next python-rich)
 
 (define-public python-rich-click
   (package
