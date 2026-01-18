@@ -36600,28 +36600,6 @@ data in Python.")
 managers.")
     (license license:expat)))
 
-(define-public python-taskgroup
-  (package
-    (name "python-taskgroup")
-    (version "0.0.0a4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "taskgroup" version))
-       (sha256
-        (base32 "170m7b59nxrhzs0nz6brj9brz4rzvw6k587ja0cnc9qy48nr027b"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f)) ; no tests in PyPI and Git checkout
-    (native-inputs
-     (list python-flit-core))
-    (home-page "https://github.com/graingert/taskgroup")
-    (synopsis "Backport of asyncio.TaskGroup, asyncio.Runner and asyncio.timeout")
-    (description
-     "This package provides a backport of @code{asyncio.TaskGroup},
-@code{asyncio.Runner} and @code{asyncio.timeout}.")
-    (license license:expat)))
-
 (define-public python-tasklogger
   (package
     (name "python-tasklogger")
