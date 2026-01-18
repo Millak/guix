@@ -1879,19 +1879,27 @@ API rules.")
 (define-public python-frozenlist
   (package
     (name "python-frozenlist")
-    ;; XXX: Any newer versions fail to build, check why.
-    (version "1.3.3")
+    (version "1.8.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "frozenlist" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aio-libs/frozenlist")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0sispcpras096fxrd0i35qs25fqy4r0x8v1d6f40pag845bwbg2q"))))
+        (base32 "0r1kxf5b562zrn04nl912i6a8y1fyc891l1284v0zj9llb97limy"))))
+    ;; XXX: Without "wheel", the 'install phase can't find the wheel.
+    (outputs (list "out" "wheel"))
     (build-system pyproject-build-system)
+    ;; The configuration contains explicit calls to pytest_cov.
+    (arguments (list #:test-flags #~(list "-c" "/dev/null")))
     (native-inputs
-     (list python-pytest
+     (list python-cython
+           python-expandvars
+           python-pytest
            python-setuptools
-           python-wheel))
+           python-tomli))
     (home-page "https://github.com/aio-libs/frozenlist")
     (synopsis "List-like data structure for Python")
     (description "@code{frozenlist.FrozenList} is a list-like structure which
