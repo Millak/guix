@@ -2432,27 +2432,95 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
     (version "1.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://download.librepcb.org/releases/"
-                           version "/librepcb-" version "-source.zip"))
-       (modules `((guix build utils)))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/LibrePCB/LibrePCB")
+              (commit version)
+              (recursive? #t)))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
        (snippet
-        ;; Delete libraries that we already have or don't need.
-        ;; TODO: try to unbundle more (see lib/).
-        `(begin
-           (let ((third-parties '("fontobene-qt"
-                                  "googletest"
-                                  "hoedown"
-                                  "muparser"
-                                  "polyclipping"
-                                  "quazip")))
-             (with-directory-excursion "libs"
-               (map (lambda (third-party)
-                      (delete-file-recursively third-party))
-                    third-parties)))))
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "libs"
+                            "delaunay-triangulation"
+                            "dxflib"
+                            ;; "fontobene-qt"
+                            ;; "googletest"
+                            ;; "hoedown"
+                            "librepcb"
+                            ;; "muparser"
+                            "optional"
+                            "parseagle"
+                            ;; "polyclipping"
+                            ;; "quazip"
+                            "type_safe")))
        (sha256
-        (base32 "0ag8k2ni9x175s77gmg29adap82rjfgf87j8hqjdm3wzmdss7sgn"))))
+        (base32 "1g3k2g2p5yy7zk971bg7qh4k38p30aydp27c5bfb02gn7djknz7w"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DUNBUNDLE_FONTOBENE_QT=ON"
+              "-DUNBUNDLE_GTEST=ON"
+              "-DUNBUNDLE_HOEDOWN=ON"
+              "-DUNBUNDLE_MUPARSER=ON"
+              "-DUNBUNDLE_POLYCLIPPING=ON"
+              "-DUNBUNDLE_QUAZIP=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (let ((test-include (list "*"))
+                      (test-exclude
+                       (list
+                        "ApplicationTest.testGetCacheDir"
+                        ;; These tests all fail when run by the build
+                        ;; process even though they pass when manually
+                        ;; run as a normal user.
+
+                        ;; TODO: verify that the failing tests don't
+                        ;; point to any actual underlying issues
+                        "SystemInfoTest.testGetUsername"
+                        "OrderPcbDialogTest.testAutoOpenBrowser"
+                        "DxfImportDialogTest.testLayerName"
+                        "DxfImportDialogTest.testCirclesAsDrills"
+                        "DxfImportDialogTest.testJoinTangentPolylines"
+                        "DxfImportDialogTest.testLineWidth"
+                        "DxfImportDialogTest.testScaleFactor"
+                        "DxfImportDialogTest.testPlacementPosition"
+                        "GraphicsExportDialogTest.testPageSize"
+                        "GraphicsExportDialogTest.testOrientation"
+                        "GraphicsExportDialogTest.testMargins"
+                        "GraphicsExportDialogTest.testShowPinNumbers"
+                        "GraphicsExportDialogTest.testRotate"
+                        "GraphicsExportDialogTest.testMirror"
+                        "GraphicsExportDialogTest.testScale"
+                        "GraphicsExportDialogTest.testPixmapDpi"
+                        "GraphicsExportDialogTest.testBlackWhite"
+                        "GraphicsExportDialogTest.testBackgroundColor"
+                        "GraphicsExportDialogTest.testMinLineWidth"
+                        "GraphicsExportDialogTest.testLayerColors"
+                        "GraphicsExportDialogTest.testOpenExportedFiles"
+                        "AddComponentDialogTest.testAddMore")))
+                  (setenv "QT_QPA_PLATFORM" "offscreen")
+                  (setenv "QT_QUICK_BACKEND" "software")
+                  (display "Running unittests...\n")
+                  (invoke "./tests/unittests/librepcb-unittests"
+                          (string-append
+                           "--gtest_filter="
+                           (string-join test-include ":")
+                           "-"
+                           (string-join test-exclude ":"))))))))))
     (inputs
      (list clipper
            fontconfig
@@ -2470,67 +2538,15 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
     (native-inputs
      (list googletest
            pkg-config
+           python-minimal-wrapper
            qttools-5
            unzip))
-    (arguments
-     `(#:configure-flags (list
-                          "-DUNBUNDLE_FONTOBENE_QT=ON"
-                          "-DUNBUNDLE_GTEST=ON"
-                          "-DUNBUNDLE_HOEDOWN=ON"
-                          "-DUNBUNDLE_MUPARSER=ON"
-                          "-DUNBUNDLE_POLYCLIPPING=ON"
-                          "-DUNBUNDLE_QUAZIP=ON")
-       #:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (let ((test-include (list "*"))
-                              (test-exclude
-                               (list
-                                "ApplicationTest.testGetCacheDir"
-                                ;; These tests all fail when run by the build
-                                ;; process even though they pass when manually
-                                ;; run as a normal user.
-
-                                ;; TODO: verify that the failing tests don't
-                                ;; point to any actual underlying issues
-                                "SystemInfoTest.testGetUsername"
-                                "OrderPcbDialogTest.testAutoOpenBrowser"
-                                "DxfImportDialogTest.testLayerName"
-                                "DxfImportDialogTest.testCirclesAsDrills"
-                                "DxfImportDialogTest.testJoinTangentPolylines"
-                                "DxfImportDialogTest.testLineWidth"
-                                "DxfImportDialogTest.testScaleFactor"
-                                "DxfImportDialogTest.testPlacementPosition"
-                                "GraphicsExportDialogTest.testPageSize"
-                                "GraphicsExportDialogTest.testOrientation"
-                                "GraphicsExportDialogTest.testMargins"
-                                "GraphicsExportDialogTest.testShowPinNumbers"
-                                "GraphicsExportDialogTest.testRotate"
-                                "GraphicsExportDialogTest.testMirror"
-                                "GraphicsExportDialogTest.testScale"
-                                "GraphicsExportDialogTest.testPixmapDpi"
-                                "GraphicsExportDialogTest.testBlackWhite"
-                                "GraphicsExportDialogTest.testBackgroundColor"
-                                "GraphicsExportDialogTest.testMinLineWidth"
-                                "GraphicsExportDialogTest.testLayerColors"
-                                "GraphicsExportDialogTest.testOpenExportedFiles"
-                                "AddComponentDialogTest.testAddMore")))
-                          (setenv "QT_QPA_PLATFORM" "offscreen")
-                          (setenv "QT_QUICK_BACKEND" "software")
-                          (display "Running unittests...\n")
-                          (invoke "./tests/unittests/librepcb-unittests"
-                                  (string-append
-                                   "--gtest_filter="
-                                   (string-join test-include ":")
-                                   "-"
-                                   (string-join test-exclude ":"))))))))))
     (home-page "https://librepcb.org/")
-    (synopsis "Electronic Design Automation tool")
-    (description "LibrePCB is @dfn{Electronic Design Automation} (EDA)
-software to develop printed circuit boards.  It features human readable file
-formats and complete project management with library, schematic and board
-editors.")
+    (synopsis
+     "@acronym{EDA, Electronic Design Automation} suite for PCB development")
+    (description "LibrePCB is software to develop @acronym{PCB, Printed
+Circuit Boards}.  It features human readable file formats and complete project
+management with library, schematic and board editors.")
     (license (list license:gpl3+
                    license:boost1.0 ; libs/optional/tests/catch.hpp,
                    license:expat ; libs/delaunay-triangulation,
