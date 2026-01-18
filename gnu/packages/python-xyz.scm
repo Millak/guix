@@ -14935,7 +14935,7 @@ functions, useful in the context of writing unit tests among other uses.")
            python-setuptools
            python-testpath
            ;; [extra]
-           python-curio
+           ;; python-curio      ;deprecated
            ;; python-ipykernel  ;cycles
            ;; python-jupyter-ai ;not packaged
            python-matplotlib
