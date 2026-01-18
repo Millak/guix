@@ -2533,27 +2533,27 @@ modules for building a Wayland compositor.")
   (package
     (name "wl-mirror")
     (version "0.18.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Ferdi265/wl-mirror")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1acx42p74p1bz569l3whk1mw0s3ki229jz6072n0hc6yy5j84gy6"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Ferdi265/wl-mirror")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1acx42p74p1bz569l3whk1mw0s3ki229jz6072n0hc6yy5j84gy6"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:tests? #f                  ;No tests.
-           #:configure-flags
-           #~(list "-DINSTALL_DOCUMENTATION=ON"
-                   "-DINSTALL_EXAMPLE_SCRIPTS=ON"
-                   (string-append "-DWL_PROTOCOL_DIR="
-                                  #$(this-package-input "wayland-protocols")
-                                  "/share/wayland-protocols")
-                   (string-append "-DWLR_PROTOCOL_DIR="
-                                  #$(this-package-input "wlr-protocols")
-                                  "/share/wlr-protocols"))))
+     (list
+      #:tests? #f ;No tests.
+      #:configure-flags
+      #~(list "-DINSTALL_DOCUMENTATION=ON" "-DINSTALL_EXAMPLE_SCRIPTS=ON"
+              (string-append "-DWL_PROTOCOL_DIR="
+                             #$(this-package-input "wayland-protocols")
+                             "/share/wayland-protocols")
+              (string-append "-DWLR_PROTOCOL_DIR="
+                             #$(this-package-input "wlr-protocols")
+                             "/share/wlr-protocols"))))
     (inputs (list egl-wayland mesa wayland wayland-protocols wlr-protocols))
     (native-inputs (list pkg-config scdoc))
     (home-page "https://github.com/Ferdi265/wl-mirror")
