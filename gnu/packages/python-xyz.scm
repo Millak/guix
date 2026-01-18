@@ -38044,58 +38044,61 @@ ISO 8859, etc.).")
     (arguments
      (list
       #:test-flags
-      `(list "-k"
-             (string-append
-              ;; This tests times out.
-              "not test_ki_protection_works"
-              " and not test_KI_interrupts"
-              ;; This fails with: signal only works in main thread of the main interpreter
-              " and not test_catch_signals_race_condition_on_exit"
-              ;; Assertion errors.
-              " and not test_named_thread_os"
-              " and not test_has_pthread_setname_np"
-              " and not test_guest_mode_ki"
-              " and not test_run_in_trio_thread_ki"
-              " and not test_simple_cancel_scope_usage_doesnt_create\
+      #~(list
+         #$@(if (package? (this-package-native-input "python-trustme"))
+                #~()
+                #~("--ignore=src/trio/_tests/test_dtls.py"
+                   "--ignore=src/trio/_tests/test_highlevel_ssl_helpers.py"
+                   "--ignore=src/trio/_tests/test_ssl.py"))
+         ;; It requires black and ruff to generate a final report.
+         "--ignore=src/trio/_tests/tools/test_gen_exports.py"
+         "-k" (string-join
+               (list
+                ;; This tests times out.
+                "not test_ki_protection_works"
+                "test_KI_interrupts"
+                ;; This fails with: signal only works in main thread of the main interpreter
+                "test_catch_signals_race_condition_on_exit"
+                ;; Assertion errors.
+                "test_named_thread_os"
+                "test_has_pthread_setname_np"
+                "test_guest_mode_ki"
+                "test_run_in_trio_thread_ki"
+                "test_simple_cancel_scope_usage_doesnt_create\
 _cyclic_garbage"
-              " and not test_nursery_cancel_doesnt_create_cyclic_garbage"
-              " and not test_cancel_scope_exit_doesnt_create_cyclic_garbage"
-              " and not test_locals_destroyed_promptly_on_cancel"
-              " and not test_ipython_exc_handler"
-              " and not test_for_leaking_fds"
-              ;; Signals don’t work in the build sandbox.
-              " and not test_open_signal_receiver"
-              ;; These try to raise KeyboardInterrupt which does not work
-              ;; in the build environment.
-              " and not test_ki_self"
-              " and not test_ki_wakes_us_up"
-              ;; Failure in name resolution.
-              " and not test_getnameinfo"
-              " and not test_SocketType_resolve"
-              ;; OSError: protocol not found.
-              " and not test_getprotobyname"
-              ;; EOFError: Ran out of input.
-              " and not test_static_tool_sees_all_symbols")
-             ,@(if (package? (this-package-native-input "python-trustme"))
-                  '()
-                  `("--ignore=src/trio/_tests/test_dtls.py"
-                    "--ignore=src/trio/_tests/test_highlevel_ssl_helpers.py"
-                    "--ignore=src/trio/_tests/test_ssl.py"))
-             ;; It rerquires black and ruff to generate a final report.
-             "--ignore=src/trio/_tests/tools/test_gen_exports.py"
-             "src/trio/_tests")
+                "test_nursery_cancel_doesnt_create_cyclic_garbage"
+                "test_cancel_scope_exit_doesnt_create_cyclic_garbage"
+                "test_locals_destroyed_promptly_on_cancel"
+                "test_ipython_exc_handler"
+                "test_for_leaking_fds"
+                ;; Signals don’t work in the build sandbox.
+                "test_open_signal_receiver"
+                ;; These try to raise KeyboardInterrupt which does not work
+                ;; in the build environment.
+                "test_ki_self"
+                "test_ki_wakes_us_up"
+                ;; Failure in name resolution.
+                "test_getnameinfo"
+                "test_SocketType_resolve"
+                ;; OSError: protocol not found.
+                "test_getprotobyname"
+                ;; EOFError: Ran out of input.
+                "test_static_tool_sees_all_symbols")
+               " and not ")
+         "src/trio/_tests")
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'ignore-deprecations
-           (lambda _
-             (substitute* "pyproject.toml"
-               (("  \"error\",") "  \"ignore\","))))
-         (add-before 'check 'set-env
-           (lambda _
-             ;; Tests require a writable home.
-             (setenv "HOME" "/tmp")
-             ;; #$output is first in path which causes "import file mismatch"
-             (setenv "PYTHONPATH" (string-append (getcwd) "/src:$PYTHONPATH")))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'ignore-deprecations
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("  \"error\",") "  \"ignore\","))))
+          (add-before 'check 'set-env
+            (lambda _
+              ;; Tests require a writable home.
+              (setenv "HOME" "/tmp")
+              ;; #$output is first in path which causes "import file mismatch"
+              (setenv "PYTHONPATH" (string-append (getcwd)
+                                                  "/src:$PYTHONPATH")))))))
     (native-inputs
      (append
        (if (supported-package? python-pyopenssl)
