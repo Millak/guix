@@ -359,6 +359,7 @@ also known as DXTn or DXTC) for Mesa.")
             libclc
             pkg-config
             python-mako
+            python-packaging
             python-ply
             python-pyyaml
             python-wrapper
