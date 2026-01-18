@@ -2149,8 +2149,9 @@ systemctl restart guix-daemon.service
 
 While this works for @file{guix-install.sh}, it will most likely not
 work if you installed Guix through the package manager of another
-distribution (for instance with sudo apt install guix, pacman -S guix,
-etc) because on many distributions @file{guix-daemon.service} will only
+distribution (for instance with @command{sudo apt install guix},
+@command{pacman -S guix}, or similar commands)
+because on many distributions @file{guix-daemon.service} will only
 run the Guix daemon provided by the distribution.
 
 Waiting for your distribution to provide security fixes sometimes work,
