@@ -6985,23 +6985,23 @@ adapter for use with the Requests library.")
 (define-public python-aioftp
   (package
     (name "python-aioftp")
-    (version "0.22.3")
+    (version "0.27.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "aioftp" version))
               (sha256
                (base32
-                "0w621mg956m9rn7v39jpwi4gpnpl90pprwl29cp640dahqqv38ms"))))
+                "06i6xfxxrwncmgihp98jxhy7xngsv2gzv9ijk32rc5q840r8q13w"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-async-timeout
            python-pytest
            python-pytest-asyncio
            python-pytest-cov
+           python-pytest-mock
            python-setuptools
-           python-trustme
-           python-wheel))
-    (propagated-inputs (list python-siosocks))
+           python-siosocks
+           python-trustme))
     (home-page "https://aioftp.readthedocs.io/")
     (synopsis "FTP client/server for asyncio in Python")
     (description
