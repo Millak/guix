@@ -30880,28 +30880,16 @@ It adds a simple and readable way to print stuff during development.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 23811 passed, 18 skipped, 1 deselected, 1 warning
       #:test-flags
-      #~(cons* "-k" "not test_relative_base_setting_2_en"
-               (map
-                (lambda (name)
-                  (string-append "--ignore=tests/" name ".py"))
-                '("test_dateparser_data_integrity"
-                  "test_hijri"
-                  "test_jalali"
-                  "test_language_detect")))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'set-check-environment
-            (lambda* (#:key inputs #:allow-other-keys)
-              (setenv "TZ" "UTC")
-              (setenv "TZDIR"
-                      (search-input-directory inputs
-                                              "share/zoneinfo")))))))
+      #~(list (string-join '("--deselect=tests/test_search.py"
+                             "TestTranslateSearch"
+                             "test_search_dates_with_prepositions")
+                           "::"))))
     (propagated-inputs
      (list python-dateutil
            python-pytz
            python-regex
-           python-ruamel.yaml
            python-tzlocal))
     (native-inputs
      (list python-parameterized
