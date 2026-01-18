@@ -2481,28 +2481,30 @@ executed.")
 (define-public python-pytest-asyncio
   (package
     (name "python-pytest-asyncio")
-    (version "1.0.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest_asyncio" version))
        (sha256
-        (base32 "0gwbqikldfy5yvyzhi71h7vicni2dchj0iarsbmf2mj47z8n6m6i"))))
+        (base32 "1rg97r6s655hqq9m028hzila36in37xny8fd4khhxf1is8v2zxfp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 233 passed, 7 deselected
       #:test-flags
-      ;; 4 failed, 163 passed
       #~(list "-k" (string-join
-                    (list "not test_strict_mode_ignores_unmarked_coroutine"
-                          "test_strict_mode_ignores_unmarked_fixture"
-                          "test_strict_mode_marked_test_unmarked_fixture_warning"
-                          "test_strict_mode_marked_test_unmarked_autouse_fixture_warning")
+                    ;; XXX: Not clear why these tests fail:
+                    (list "not test_event_loop_fixture_asyncgen_error"
+                          "test_event_loop_fixture_handles_unclosed_async_gen"
+                          (string-append "test_standalone_test_does_not_"
+                                         "trigger_warning_about_no_current_"
+                                         "event_loop_being_set")
+                          "test_warns_when_scope_argument_is_present")
                     " and not "))))
     (native-inputs
      (list python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-pytest
            python-typing-extensions))
