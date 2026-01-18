@@ -19031,7 +19031,7 @@ library provides codecs are supported.")
     (version "0.6.2")
     (source
      (origin
-       (method git-fetch)       ;no tests in PyPI archive
+       (method git-fetch)
        (uri (git-reference
               (url "https://github.com/docopt/docopt")
               (commit version)))
@@ -19040,8 +19040,9 @@ library provides codecs are supported.")
         (base32 "0aad9gbswnnhssin2q0m5lmpm0ahyf80ahs2zjigbn5y7fvljnd0"))
        (patches (search-patches "python-docopt-pytest6-compat.patch"))))
     (build-system pyproject-build-system)
+    ;; tests: 203 passed, 6 warnings
     (native-inputs
-     (list python-pytest python-setuptools))
+     (list python-pytest-8 python-setuptools))
     (home-page "http://docopt.org")
     (synopsis "Command-line interface description language for Python")
     (description
