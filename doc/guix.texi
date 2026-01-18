@@ -770,10 +770,10 @@ This section only applies to systems without Guix.  Following it for
 existing Guix installations will overwrite important system files.
 @end quotation
 
-The Guix project also provides a shell script, @file{guix-install.sh},
+The Guix project also provides a shell script,
+@uref{https://guix.gnu.org/guix-install.sh, @file{guix-install.sh}},
 which automates the binary installation process without use of a foreign
-distro package
-manager@footnote{@uref{https://guix.gnu.org/guix-install.sh}}.
+distro package manager.
 Use of @file{guix-install.sh} requires Bash, GnuPG, GNU@tie{}tar, wget,
 and Xz.  On systems where systemd is detected, the tool
 @command{newgidmap} from the @code{uidmap} package is also required.
