@@ -5025,54 +5025,45 @@ reasonable substitute.")
 (define-public python-redis
   (package
     (name "python-redis")
-    (version "5.2.0")
-    (source (origin
-              ;; The PyPI archive lacks some test resources such as the TLS
-              ;; certificates under docker/stunnel/keys.
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/redis/redis-py")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0f38s704gpm8ra6vdrqhicfq7m77in60kbgcmhvmviq9qj6v3505"))))
+    (version "7.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/redis/redis-py")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c2794r5xcqdqaqr1vr3ibi6lb5rvxg002ichjb42xhlbpd4860j"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "-m"
-              ;; These tests are disabled in the official CI run (see:
-              ;; https://raw.githubusercontent.com/redis/redis-py/master/
-              ;; .github/workflows/install_and_test.sh).
-              (string-append "not onlycluster "
-                             "and not redismod "
-                             "and not ssl "
-                             "and not graph")
-              "-k" (string-join
-                    (list
-                     ;; The autoclaim test fails with "AssertionError: assert
-                     ;; [b'0-0', [], []] == [b'0-0', []]".
-                     "not test_xautoclaim "
-                     ;; These tests cause the following error: "Error 111
-                     ;; connecting to localhost:6380. Connection refused."
-                     ;; (see: https://github.com/redis/redis-py/issues/2109).
-                     "test_sync"
-                     "test_psync"
-                     ;; Same with: "Error 111 connecting to
-                     ;; localhost:6479. Connection refused."
-                     "test_tfcall"
-                     "test_tfunction_load_delete"
-                     "test_tfunction_list"
-                     ;; AssertionError: assert 3 == 2
-                     "test_acl_list"
-                     ;; XXX: This test occasionally fails on i686-linux
-                     #$@(if (target-x86-32?)
-                            '("test_geopos")
-                            '()))
-                    " and not "))
+      #~(list
+         ;; These tests are disabled in the official CI run (see:
+         ;; https://raw.githubusercontent.com/redis/redis-py/master/
+         ;; .github/workflows/install_and_test.sh).
+         "-m" "not onlycluster and not redismod and not ssl"
+         "--ignore=tests/test_scenario"
+         "--ignore=tests/test_asyncio/test_scenario"
+         ;; XXX: Those tests require the unpackaged "pybreaker".
+         "--ignore=tests/test_multidb"
+         "--ignore=tests/test_asyncio/test_multidb"
+         ;; XXX: Those tests require the unpackaged "redis_entraid".
+         "--ignore=tests/test_credentials.py"
+         "--ignore=tests/test_asyncio/test_credentials.py"
+         ;; XXX: Those test fail with ConnectionError.
+         "--ignore=tests/test_sentinel.py"
+         "--ignore=tests/test_asyncio/test_sentinel.py"
+         "--deselect=tests/test_commands.py::TestRedisCommands::test_psync"
+         "--deselect=tests/test_commands.py::TestRedisCommands::\
+test_xgroup_create_entriesread")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-coverage-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((".*coverage.*") ""))))
           ;; Tests require a running Redis server.
           (add-before 'check 'start-redis
             (lambda* (#:key tests? #:allow-other-keys)
@@ -5081,13 +5072,12 @@ reasonable substitute.")
                         "--enable-debug-command" "yes"
                         "--enable-module-command" "local")))))))
     (native-inputs
-     (list python-numpy
+     (list python-hatchling
+           python-mock
+           python-numpy
            python-pytest
-           python-pytest-asyncio-0.23
-           python-pytest-cov
+           python-pytest-asyncio
            python-pytest-timeout
-           python-setuptools
-           python-wheel
            redis))
     (propagated-inputs
      (list python-async-timeout))
