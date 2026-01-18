@@ -4722,11 +4722,12 @@ provided for the main Python test runners.")
         (base32 "1ysm42an2pf4ppd1i5yzh11bq1rfydhg6rmmh5v91gcixpvi872d"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-backend #~'custom
-           #:test-flags #~(list "-m" "invoke" "test")))
+     (list
+      #:test-flags
+      ;; XXX: This test is incompatible with running with xdist.
+      #~(list "-k" "not test_update_failure_shows_snapshot_diff[xdist_two]")))
     (native-inputs
-     (list python-invoke
-           python-poetry-core
+     (list python-poetry-core
            python-pytest-bootstrap
            python-pytest-xdist
            python-setuptools-scm))
