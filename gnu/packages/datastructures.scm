@@ -27,6 +27,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -168,6 +169,78 @@ probing.  This method is space-efficient -- there is no pointer overhead --
 and time-efficient for good hash functions.")
     (home-page "https://github.com/sparsehash/sparsehash")
     (license license:bsd-3)))
+
+(define-public parallel-hashmap
+  (package
+    (name "parallel-hashmap")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/greg7mdp/parallel-hashmap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "167pvbd3bwyn69i1s4vp3badcr97xy10sga63bbj7jqhj09f2816"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DPHMAP_BUILD_EXAMPLES=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'respect-tests?
+            (lambda* (#:key tests? #:allow-other-keys)
+              ;; fix parallel-hashmap's build script not respecting #:tests?
+              (unless tests?
+                (substitute* "CMakeLists.txt"
+                  (("option\\(PHMAP_BUILD_TESTS.+$")
+                   "set(PHMAP_BUILD_TESTS OFF)\n")))))
+          (add-after 'unpack 'disable-gtest-download
+            (lambda _
+              ;; don't download googletest
+              (substitute* "CMakeLists.txt"
+                (("include\\(cmake/DownloadGTest.cmake\\)")
+                 (format #f
+                  "add_subdirectory(~a ./googletest-build EXCLUDE_FROM_ALL)"
+                  #+(package-source (this-package-native-input "googletest"))))))))))
+    ;; FIXME: specify that we depend on the gtest source, not the package itself
+    (native-inputs (list googletest))
+    (home-page "https://greg7mdp.github.io/parallel-hashmap/")
+    (synopsis "C++ implementation of efficient and concurrent hash maps")
+    (description
+     "parallel-hashmap provides a family of header-only, very fast and
+memory-friendly hashmap and btree containers for C++11 and above.
+
+It has the following characteristics:
+
+@itemize
+
+@item Drop-in replacement for std::unordered_map, std::unordered_set, std::map,
+and std::set with better performance.
+
+@item Requires C++11 compiler support and provides C++14 and C++17 APIs,
+including features like try_emplace.
+
+@item Highly efficent and faster than standard unordered containers,
+Boost implementations, or sparsepp alternatives.
+
+@item Memory-friendly: maintains low memory usage with a slight increase compared
+to sparsepp.
+
+@item Heterogeneous lookup support.
+
+@item Dump/load feature: for flat hash maps storing std::trivially_copyable data,
+the entire table can be dumped to disk and restored as a single array efficiently
+without hash computations. This is about 10 times faster than element-wise
+serialization but uses 10% to 60% extra disk space.
+
+@item Automatic support for boost::hash_value() and default hash functions for
+std::pair and std::tuple.
+
+@end itemize")
+    (license license:asl2.0)))
 
 (define-public ssdeep
   (package
