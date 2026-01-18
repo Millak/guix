@@ -2644,24 +2644,29 @@ across test runs.")
 (define-public python-pytest-sugar
   (package
     (name "python-pytest-sugar")
-    (version "1.0.0")
+    (properties '((commit . "4b1cd8d03060072db3737983ace80f416534a2c4")
+                  (revision . "0")))
+    (version (git-version "1.1.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-sugar" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Teemu/pytest-sugar")
+             (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "02kc4y0ry4y9lp63kjq9p7yvbjijfxn1fcn6wx6c1c7mb0rfh8k4"))))
+        (base32 "1smaxs7qabdfsvr9rvyyfp1d93j8vm0ghqwk4cskc9bnfhbhdn7d"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-packaging python-pytest python-termcolor))
-    (native-inputs
-     (list python-setuptools python-wheel))
-    (home-page "https://pivotfinland.com/pytest-sugar/")
+    (propagated-inputs (list python-pytest python-termcolor))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/Teemu/pytest-sugar")
     (synopsis "Plugin for pytest that changes the default look and feel")
     (description
      "@code{pytest-sugar} is a plugin for py.test that changes the default
-look and feel of py.test, using a progress bar and showing failures and errors
-instantly.")
+look and feel of @code{python-pytest}, using a progress bar and showing
+failures and errors instantly.")
     (license license:bsd-3)))
 
 (define-public python-hypothesis
