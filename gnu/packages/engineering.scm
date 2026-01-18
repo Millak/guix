@@ -5098,7 +5098,7 @@ more.")
 (define-public python-asyncua
   (package
     (name "python-asyncua")
-    (version "1.1.5")
+    (version "1.1.8")
     (source
      (origin
        (method git-fetch)
@@ -5110,24 +5110,25 @@ more.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0aisj8cpfhq50h4pv2p0c9iw5cqy3hxhn5adp8wd01c46dhg6y2x"))))
+        (base32 "1ngh3m45mnqxlvyhhz66bkgk5ppxzmclw7sxl0v457snv7yb5rni"))))
     (build-system pyproject-build-system)
+    ;; tests: 709 passed, 5 skipped, 3 warnings
     (native-inputs
-     (list python-pytest
-           python-pytest-asyncio-0.21
-           python-pytest-mock
-           python-setuptools
-           python-wheel))
+     (list python-hatchling
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-mock))
     (propagated-inputs
      (list python-aiofiles
            python-aiosqlite
            python-cryptography
            python-dateutil
+           python-importlib-metadata
            python-pyopenssl
            python-pytz
-           python-importlib-metadata
            python-sortedcontainers
-           python-typing-extensions))
+           python-typing-extensions
+           python-wait-for2))   ;for Python version < 3.12
     (home-page "https://freeopcua.github.io/")
     (synopsis "OPC UA / IEC 62541 client and server library")
     (description "This package provides an OPC UA / IEC 62541 client and
