@@ -18615,9 +18615,6 @@ taking a new approach.  All IANA character set names for which the Python core
 library provides codecs are supported.")
     (license license:expat)))
 
-(define-deprecated/public-alias python-charset-normalizer-3
-  python-charset-normalizer)           ;may be removed after 2025-12-01
-
 (define-public python-docopt
   (package
     (name "python-docopt")
