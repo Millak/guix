@@ -21,6 +21,8 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages logging)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages swig)
   #:use-module (guix build-system cmake)
@@ -29,6 +31,47 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils))
+
+(define-public level-zero
+  (package
+    (name "level-zero")
+    (version "1.27.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/oneapi-src/level-zero/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (with-directory-excursion "third_party"
+              (delete-file-recursively "spdlog_headers"))))
+       (sha256
+        (base32
+         "1f08046g4anbqn3sk8fdpi6xdb8pkq1y28a5rxrai9rmah1v07kw"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~(list "-DSYSTEM_SPDLOG=ON"
+              (string-append "-DVERSION_SHA=" #$version))))
+    (inputs (list spdlog-1.13))
+    (native-inputs (list pkg-config python-minimal-wrapper))
+    (home-page
+     "https://oneapi-src.github.io/level-zero-spec/level-zero/latest/index.html")
+    (synopsis "OneAPI Level Zero specification headers and loader")
+    (description
+     "Level Zero contains the following components of oneAPI:
+@itemize
+@item copies of the Level Zero Specification API C/C++ header files
+@item loader
+@item validation layer
+@item tracing layer
+@end itemize")
+    (license license:expat)))
 
 ;;; Updates and replaces oneapi-dnnl in (gnu packages machine-learning)
 (define-public onednn
