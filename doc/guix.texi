@@ -780,15 +780,6 @@ installation script or @i{via} the native package manager of their
 foreign distribution, to also regularly read and follow security
 notices, as shown by @command{guix pull}.
 
-If you are running Parabola, after enabling the pcr (Parabola
-Community Repo) repository, you can install Guix with:
-@example
-sudo pacman -S guix
-@end example
-
-For other package managers with a @var{guix} package, you should be able
-to install it like any other package.
-
 The Guix project also provides a shell script, @file{guix-install.sh},
 which automates the binary installation process without use of a foreign
 distro package
@@ -813,13 +804,6 @@ As root, run:
 # wget https://guix.gnu.org/guix-install.sh
 # chmod +x guix-install.sh
 # ./guix-install.sh
-@end example
-
-The script to install Guix is also packaged in Parabola (in the pcr
-repository). You can install and run it with:
-@example
-sudo pacman -S guix-installer
-sudo guix-install.sh
 @end example
 
 @quotation Note
