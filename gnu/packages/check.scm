@@ -2527,6 +2527,8 @@ to make testing async code easier.")
        (sha256
         (base32 "1lz4h8y6m6hxnsl7kqh0rjxqp5q2wc2m5gd88371rikd7ari16vm"))))))
 
+;; It's the last 0.26.X version which is still required and has breaking
+;; changes with 1.X.X.
 (define-public python-pytest-asyncio-0.26
   (package
     (inherit python-pytest-asyncio)
@@ -2536,7 +2538,25 @@ to make testing async code easier.")
        (method url-fetch)
        (uri (pypi-uri "pytest_asyncio" version))
        (sha256
-        (base32 "0bri1scs8whdrxb3jrv0ywiz20qb0mrll3kzkvriy928frljmpy4"))))))
+        (base32 "0bri1scs8whdrxb3jrv0ywiz20qb0mrll3kzkvriy928frljmpy4"))))
+    (arguments
+     (list
+      ;; tests: 202 passed, 4 deselected
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list "not test_strict_mode_ignores_unmarked_coroutine"
+                          "test_strict_mode_ignores_unmarked_fixture"
+                          "test_strict_mode_marked_test_unmarked_fixture_warning"
+                          "test_strict_mode_marked_test_unmarked_autouse_fixture_warning")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; Pytest is in propagated inputs, remove higher boundary to
+                ;; avoid propagation of python-pytest-8.
+                ((">=8.2,<9") ">=8.2")))))))))
 
 (define-public python-pytest-asyncio-0.21
   (package
