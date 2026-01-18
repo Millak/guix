@@ -20,8 +20,10 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages logging)
+  #:use-module (gnu packages mpi)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages swig)
@@ -254,3 +256,54 @@ eliminate tedious threading implementation work.  It provides parallel loop
 constructs, asynchronous tasks, synchronization primitives, atomic operations,
 and more.  @code{python-onetbb} enables threading composability between two or
 more thread-enabled Python libraries.")))
+
+(define-public umf
+  (package
+    (name "umf")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/oneapi-src/unified-memory-framework/")
+              (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "16svxs1damgv29fcksw7538lyvrfa33b5ziwn7sjf85d2z091flg"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f                    ;errors with "function not implemented"
+      #:configure-flags
+      #~(list "-DUMF_BUILD_CUDA_PROVIDER=OFF"
+              "-DUMF_BUILD_EXAMPLES=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-ld-library-path
+            (lambda _
+              (for-each
+               (lambda (f)
+                 (delete-file (format #f "test/~a" f)))
+               '("test_memspace_highest_capacity"
+                 "test_memtarget"))
+              (setenv "LD_LIBRARY_PATH"
+                      (string-append #$(this-package-input "onetbb")
+                                     "/lib"))))
+          (add-after 'unpack 'fix-googletest
+            (lambda _
+              (substitute* "test/CMakeLists.txt"
+                (("FetchContent_MakeAvailable\\(googletest\\)")
+                 "find_package(GTest REQUIRED)")))))))
+    (inputs
+     (list `(,hwloc "lib") level-zero numactl onetbb))
+    (native-inputs
+     (list pkg-config python-minimal-wrapper googletest))
+    (home-page "https://oneapi-src.github.io/unified-memory-framework/")
+    (synopsis "OneAPI @acronym{UMG, Unified Memory Framework}")
+    (description
+     "The UMF is a library for constructing allocators and memory pools. It
+also contains broadly useful abstractions and utilities for memory
+management.  UMF allows users to manage multiple memory pools characterized by
+different attributes, allowing certain allocation types to be isolated from
+others and allocated using different hardware resources as required..")
+    (license license:asl2.0)))
