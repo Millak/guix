@@ -37845,25 +37845,18 @@ design and layout.")
 (define-public python-traitlets
   (package
     (name "python-traitlets")
-    (version "5.14.1")
+    (version "5.14.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "traitlets" version))
        (sha256
-        (base32 "0zjj8ha4z5lbhhmvcl3q8wp5qmwqq0lwxma3d8qvh10s6xdi11c5"))))
+        (base32 "1dxnjs5vjfsbvr3jhlhl6696zafdfl1i5b1j6x5lpj826nfmgl4y"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      '(list "-k" "not mypy_list_typing and not mypy_dict_typing")))
+    ;; tests: 566 passed, 3 skipped, 1 warning
     (native-inputs
-     (list python-argcomplete
-           python-hatchling
-           python-mypy
-           python-pytest
-           python-pytest-mock
-           python-pytest-mypy-testing))
+     (list python-hatchling
+           python-pytest))
     (home-page "https://ipython.org")
     (synopsis "Configuration system for Python applications")
     (description
