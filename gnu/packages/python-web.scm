@@ -525,7 +525,7 @@ extracting, creating, and converting between formats.")
         (base32 "1zgymnk6k984h2wfdpp0vws2ihwqrr9lmxhrij9zs5q5140q61vq"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-packaging python-tomli))
-    (native-inputs (list python-flit-core))
+    (native-inputs (list python-flit-core python-pytest))
     (home-page "https://dependency-groups.readthedocs.io/")
     (synopsis "Tools and library for resolving PEP 735 Dependency Group data")
     (description
