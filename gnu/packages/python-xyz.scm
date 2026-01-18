@@ -26913,36 +26913,34 @@ binding is created using the standard @code{ctypes} library.")
                 "1dbnki0pnky39kr04afd9ks597bzjc530zbk33jjss53nfvdvlj8"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
-    (native-inputs
-     `(("python" ,python-wrapper)
-
-       ;; The following dependencies are used for tests.
-       ("python-pytest" ,python-pytest)
-       ("catch" ,catch2-1)
-       ("eigen" ,eigen)))
     (arguments
      (list
       #:configure-flags
       #~(list (string-append "-DCATCH_INCLUDE_DIR="
-                           (assoc-ref %build-inputs "catch")
-                           "/include/catch"))
+                             (assoc-ref %build-inputs "catch2")
+                             "/include/catch"))
       #:modules '((guix build cmake-build-system)
                   ((guix build gnu-build-system) #:prefix gnu:)
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
-            (lambda* (#:rest args)
+            (lambda args
               (apply (assoc-ref gnu:%standard-phases 'check) args)))
           (add-after 'install 'install-python
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((out (assoc-ref outputs "out")))
-                (with-directory-excursion "../source"
-                  (setenv "PYBIND11_USE_CMAKE" "yes")
-                  (invoke "python" "setup.py" "install"
-                          "--single-version-externally-managed"
-                          "--root=/"
-                          (string-append "--prefix=" out)))))))))
+            (lambda _
+              (with-directory-excursion "../source"
+                (setenv "PYBIND11_USE_CMAKE" "yes")
+                (invoke "python" "setup.py" "install"
+                        "--single-version-externally-managed"
+                        "--root=/"
+                        (string-append "--prefix=" #$output))))))))
+    (native-inputs
+     (list catch2-1
+           eigen
+           python-pytest
+           python-setuptools
+           python-wrapper))
     (home-page "https://github.com/pybind/pybind11/")
     (synopsis "Seamless operability between C++11 and Python")
     (description
