@@ -9950,22 +9950,25 @@ cython_always = true"))))))))
 (define-public python-uvicorn
   (package
     (name "python-uvicorn")
-    (version "0.34.0")
+    (version "0.40.0")
     (source
      (origin
-       ;; PyPI tarball has no tests.
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/encode/uvicorn")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05lkxnpzmr0kik81kdcvavjvvc4d1lgmw88mr4vbwsqk147wgqbc"))))
+        (base32 "0laplrb2sf9jxv4prhrsqf8kpynipqml2idqq4fr7ikij8qsz6b2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "-o" "asyncio_mode=auto"
+              ;; After tests have been passed successfully some sockets leave
+              ;; unclosed, causing Pytest to raise warning on teardown.
+              "-W" "ignore::ResourceWarning"
+              "-W" "ignore::pytest.PytestUnraisableExceptionWarning"
               ;; For some reason tests stacked in infinity re-invocation loop:
               ;; AssertionError where is_alive =
               ;; <uvicorn.supervisors.multiprocess.Process object at
@@ -9984,8 +9987,9 @@ cython_always = true"))))))))
            python-hatchling
            python-httpx-bootstrap
            python-pytest
-           python-pytest-asyncio-0.26
+           python-pytest-asyncio
            python-pytest-mock
+           python-pytest-xdist
            python-requests
            python-trustme
            python-wsproto))
