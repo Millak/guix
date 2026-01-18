@@ -29937,7 +29937,7 @@ These files are used to translate strings in android apps.")
            python-polib
            python-pycountry
            python-pyenchant
-           python-pygit2-1.11
+           python-pygit2
            python-pygithub
            python-pyqt
            python-requests
