@@ -444,7 +444,7 @@ blake3, a cryptographic hash function.")
     (propagated-inputs
      (list python-pyopenssl python-tldextract))
     (native-inputs
-     (list nss-certs-for-test python-pytest-cov python-setuptools python-wheel))
+     (list nss-certs-for-test python-pytest python-setuptools))
     (home-page "https://github.com/ikreymer/certauth")
     (synopsis "Certificate authority creation tool")
     (description "This package provides a small library, built on top of
