@@ -777,6 +777,16 @@ Use of @file{guix-install.sh} requires Bash, GnuPG, GNU@tie{}tar, wget,
 and Xz.  On systems where systemd is detected, the tool
 @command{newgidmap} from the @code{uidmap} package is also required.
 
+To install Guix on top of your GNU/Linux system, run the following
+commands as root:
+
+@example
+cd /tmp
+wget https://guix.gnu.org/guix-install.sh
+chmod +x guix-install.sh
+./guix-install.sh
+@end example
+
 The script goes through the following steps:
 
 @itemize
@@ -785,15 +795,6 @@ The script goes through the following steps:
 @item Making @command{guix} command available to non-root users
 @item Configuring substitute servers
 @end itemize
-
-As root, run:
-
-@example
-cd /tmp
-wget https://guix.gnu.org/guix-install.sh
-chmod +x guix-install.sh
-./guix-install.sh
-@end example
 
 @quotation Note
 By default, @file{guix-install.sh} will configure Guix to download
