@@ -2547,23 +2547,6 @@ to make testing async code easier.")
                 ;; avoid propagation of python-pytest-8.
                 ((">=8.2,<9") ">=8.2")))))))))
 
-(define-public python-pytest-asyncio-0.21
-  (package
-    (inherit python-pytest-asyncio)
-    (version "0.21.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest_asyncio" version))
-       (sha256
-        (base32 "0iag2lmglfajiasxi3dr2110gq0nxc5paq6hp4kb751b4gy3hxyn"))))
-    (native-inputs
-     (list python-flaky
-           python-pytest-trio
-           python-setuptools-scm
-           python-setuptools
-           python-wheel))))
-
 (define-public python-codecov
   (package
     (name "python-codecov")
