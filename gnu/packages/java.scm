@@ -3543,6 +3543,7 @@ testing frameworks, mocking libraries and UI validation rules.")
   (package
     (name "java-hamcrest-core")
     (version "1.3")
+    (properties `((superseded . ,java-hamcrest)))
     (source (origin
               (method git-fetch)
               (uri (git-reference
