@@ -11045,13 +11045,10 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas"))))))
            ninja
            pkg-config
            python-hypothesis
-           python-mypy
            python-pytest
            python-pytest-xdist
            python-setuptools
-           python-setuptools
-           python-typing-extensions
-           python-wheel))
+           python-typing-extensions))
     (home-page "https://numpy.org")
     (synopsis "Fundamental package for scientific computing with Python")
     (description "NumPy is the fundamental package for scientific computing
