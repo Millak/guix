@@ -20793,39 +20793,25 @@ into 22 character URL-safe base64 slug representation.")
 (define-public python-rich
   (package
     (name "python-rich")
-    (version "13.7.1")
+    (version "14.2.0")
     (source
-      (origin
-        ;; There are no tests in the PyPI tarball.
-        (method git-fetch)
-        (uri (git-reference
+     (origin
+       (method git-fetch)
+       (uri (git-reference
               (url "https://github.com/willmcgugan/rich")
               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "0jvkcp473c0icbb8md3grc3285j2cy0z0swxgk2g67d9n0zfdfzc"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zwjry4ylqncqvxrywp0km96jng4f288dgz8kz5vymk7nr2z21m1"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; These fail for unknown reasons, but the results look identical.
-      ;; Perhaps only the terminal escape sequences are superficially
-      ;; different?
-      '(list "-k" (string-append "not test_card_render"
-                                 " and not test_markdown_render"
-                                 " and not test_python_render"
-                                 " and not test_python_render_simple"
-                                 " and not test_python_render_simple_passing_lexer_instance"
-                                 " and not test_python_render_indent_guides"
-                                 " and not test_option_no_wrap"
-                                 " and not test_syntax_highlight_ranges"
-                                 " and not test_inline_code"
-                                 " and not test_blank_lines"))))
-    (propagated-inputs
-     (list python-markdown-it-py python-pygments))
+    ;; tests: 856 passed, 24 skipped
     (native-inputs
-     (list python-poetry-core python-pytest))
+     (list python-poetry-core
+           python-pytest
+           which))
+    (propagated-inputs
+     (list python-markdown-it-py
+           python-pygments))
     (home-page "https://github.com/willmcgugan/rich")
     (synopsis "Render rich text and more to the terminal")
     (description
