@@ -775,15 +775,15 @@ which automates the binary installation process without use of a foreign
 distro package
 manager@footnote{@uref{https://guix.gnu.org/guix-install.sh}}.
 Use of @file{guix-install.sh} requires Bash, GnuPG, GNU@tie{}tar, wget,
-and Xz.  On systems where @code{systemd} is detected, the tool
-@code{newgidmap} from the @code{uidmap} package is also required.
+and Xz.  On systems where systemd is detected, the tool
+@command{newgidmap} from the @code{uidmap} package is also required.
 
 The script guides you through the following:
 
 @itemize
 @item Downloading and extracting the binary tarball
 @item Setting up the build daemon
-@item Making the ‘guix’ command available to non-root users
+@item Making @command{guix} command available to non-root users
 @item Configuring substitute servers
 @end itemize
 
@@ -856,7 +856,7 @@ files, configuration, and services.
 Some GNU/Linux distributions, such as openSUSE, Alpine and NixOS provide
 Guix through their own package managers.  The version of Guix may be
 older than @value{VERSION} but you can update it afterwards by running
-@samp{guix pull}.
+@command{guix pull}.
 
 We advise system administrators who install Guix, both from the
 installation script or @i{via} the native package manager of their
