@@ -2404,28 +2404,28 @@ identical visual appearance.")
 
 (define-public grim
   (package
-   (name "grim")
-   (version "1.5.0")
-   (source
-    (origin
-     (method git-fetch)
-     (uri (git-reference
-           (url "https://gitlab.freedesktop.org/emersion/grim/")
-           (commit (string-append "v" version))))
-     (file-name (git-file-name name version))
-     (sha256
-      (base32 "1rabva3x203hbsnmad6zrvlpxadmxw1zmd42i3pjk05pnk73mym0"))))
-   (build-system meson-build-system)
-   (native-inputs (append (if (%current-target-system)
-                              ;; For wayland-scanner.
-                              (list pkg-config-for-build wayland)
-                              '())
-                          (list pkg-config scdoc)))
-   (inputs (list pixman libpng libjpeg-turbo wayland wayland-protocols))
-   (home-page "https://wayland.emersion.fr/grim/")
-   (synopsis "Create screenshots from a Wayland compositor")
-   (description "grim can create screenshots from a Wayland compositor.")
-   (license license:expat)))
+    (name "grim")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/emersion/grim/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rabva3x203hbsnmad6zrvlpxadmxw1zmd42i3pjk05pnk73mym0"))))
+    (build-system meson-build-system)
+    (native-inputs (append (if (%current-target-system)
+                               ;; For wayland-scanner.
+                               (list pkg-config-for-build wayland)
+                               '())
+                           (list pkg-config scdoc)))
+    (inputs (list pixman libpng libjpeg-turbo wayland wayland-protocols))
+    (home-page "https://wayland.emersion.fr/grim/")
+    (synopsis "Create screenshots from a Wayland compositor")
+    (description "grim can create screenshots from a Wayland compositor.")
+    (license license:expat)))
 
 (define-public slurp
   (package
