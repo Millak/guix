@@ -481,6 +481,42 @@ all the files it generates a report.")
 written in pure Python.")
     (license license:expat)))
 
+(define-public python-blockbuster
+  (package
+    (name "python-blockbuster")
+    (version "1.5.26")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cbornet/blockbuster")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16ycwblivp6d7s78sxq97f9xb4vxcjfr5srxhpkpssv770lp37fs"))))
+    (build-system pyproject-build-system)
+    ;; test_ssl_socket wants to connects to the Internet.
+    (arguments (list #:test-flags #~'("-k" "not test_ssl_socket")))
+    (native-inputs (list python-hatchling
+                         python-pytest
+                         python-pytest-asyncio
+                         python-requests))
+    (propagated-inputs (list python-forbiddenfruit))
+    (home-page "https://github.com/cbornet/blockbuster")
+    (synopsis "Utility to detect blocking calls in Python async event loop")
+    (description
+     "Blockbuster is a Python package designed to detect and prevent
+blocking calls within an asynchronous event loop.  It is particularly useful
+when executing tests to ensure that your asynchronous code
+does not inadvertently call blocking operations,
+which can lead to performance bottlenecks and unpredictable behavior.
+
+It does this by wrapping common blocking functions
+and raising an exception when they are called within an asynchronous context.
+Note that Blockbuster currently only detects @code{asyncio} event loops
+and is tested only with CPython.")
+    (license license:asl2.0)))
+
 (define-public python-codacy-coverage
   (package
     (name "python-codacy-coverage")
