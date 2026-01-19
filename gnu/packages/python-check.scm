@@ -2757,6 +2757,41 @@ to mark some tests as dependent from other tests.  These tests will then be
 skipped if any of the dependencies did fail or has been skipped.")
     (license license:asl2.0)))
 
+(define-public python-pytest-describe
+  (package
+    (name "python-pytest-describe")
+    (version "3.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pytest-dev/pytest-describe")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1miz5wi43fp4zi0a2h1lsj5zhg6681zalws7gamxcfswvp0xj2na"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Requires the unpackaged python-uv.
+      #:build-backend "setuptools.build_meta"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pyproject.toml
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"License :: OSI Approved :: MIT License\",")
+                 "")))))))
+    (propagated-inputs (list python-pytest))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/pytest-dev/pytest-describe")
+    (synopsis "Describe-style plugin for pytest")
+    (description
+     "@code{pytest-describe} is a plugin for @code{python-pytest} that allows
+tests to be written in arbitrary nested describe-blocks, similar to
+@code{ruby-rspec}.")
+    (license license:expat)))
+
 (define-public python-pytest-docker-tools
   (package
     (name "python-pytest-docker-tools")
