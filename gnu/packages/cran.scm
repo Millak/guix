@@ -22581,18 +22581,18 @@ Cryer and Kung-Sik Chan.")
 (define-public r-extradistr
   (package
     (name "r-extradistr")
-    (version "1.10.0.1")
+    (version "1.10.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "extraDistr" version))
        (sha256
         (base32
-         "0x10hc83i7602rhi8r1mq1pk10dq7sh72wlp89w7vm7mnpfylpxm"))))
+         "06m70s2zbyrl8gkxpfrlcqzkdasl8kn4m022hwkj6hdg330hlad0"))))
     (properties `((upstream-name . "extraDistr")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-rcpp))
+     (list r-rcpp r-rcpparmadillo))
     (native-inputs (list r-testthat))
     (home-page "https://github.com/twolodzko/extraDistr")
     (synopsis "Additional univariate and multivariate distributions")
