@@ -21134,14 +21134,14 @@ estimated from a given sample.")
 (define-public r-vctrs
   (package
     (name "r-vctrs")
-    (version "0.6.5")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "vctrs" version))
        (sha256
         (base32
-         "00p4r1z4xc05m25y0qa7svr67lbypcfqyp2b0ja9asgx90i7s5j3"))))
+         "0828yb5w1680f0a41cy98s4la65hvzhin1sigmpkfyb3fsfg645w"))))
     (properties
      ;; We can't have r-knitr among the inputs here, because r-vctrs ends up
      ;; being an eventual input to r-knitr.
