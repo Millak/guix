@@ -71,6 +71,7 @@
 ;;; Copyright © 2025 Lee Thompson <lee.p.thomp@gmail.com>
 ;;; Copyright © 2025 Alexandre Hannud Abdo <abdo@member.fsf.org>
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
+;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3595,6 +3596,46 @@ reproduction and display environments.  This package provides only TrueType
 files (TTF).")
     (home-page "https://software.sil.org/charis/")
     (license license:silofl1.1)))
+
+(define-public font-miracode
+  (package
+    (name "font-miracode")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/IdreesInc/Miracode")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mr2lh26iyyzpzkna4xm5f99dada6agldxn0zh4cxk2pfm7bchmn"))))
+    (build-system gnu-build-system)
+    (native-inputs (list fontforge python))
+    (arguments
+     (list
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda _
+              (with-directory-excursion "src"
+                (invoke #$(file-append python "/bin/python3") "miracode.py"))))
+          (replace 'install
+            (lambda _
+              (install-file (string-append "dist/Miracode.ttf")
+                            (string-append #$output "/share/fonts/truetype")))))))
+    (home-page "https://github.com/IdreesInc/Monocraft")
+    (synopsis "Sharp, readable, vector-y version of Monocraft")
+    (description
+     "Miracode is a readable monospaced font inspired by Monocraft, designed for
+clarity in coding.  It features over 1500 glyphs, enhanced with tasteful tails
+and serifs for thin characters.  Each character has a unique angular design,
+and it includes programming ligatures for improved visual clarity, such as
+arrows and custom ligatures for @code{TODO:} and @code{NOTE:}.")
+    (license (list license:gpl3+         ;Code
+                   license:silofl1.1)))) ;Font
 
 (define-public font-monaspace
   (package
