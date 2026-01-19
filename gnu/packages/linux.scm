@@ -76,7 +76,7 @@
 ;;; Copyright © 2023, 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2023 dan <i@dan.games>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
-;;; Copyright © 2023, 2024 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2023, 2024, 2026 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2024 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -1727,6 +1727,15 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                                            ("CONFIG_NFT_FIB_IPV6" . m)
                                            ("CONFIG_NFT_BRIDGE_META" . m)
                                            ("CONFIG_NFT_BRIDGE_REJECT" . m)
+                                           ;; Provide support for USB tethering
+                                           ("CONFIG_USB_NET_CDC_EEM" . m)
+                                           ("CONFIG_USB_NET_RNDIS_HOST" . m)
+                                           ("CONFIG_USB_WDM" . m)
+                                           ("CONFIG_USB_GADGET" . m)
+                                           ("CONFIG_USB_ETH" . m)
+                                           ("CONFIG_USB_ETH_RNDIS" . m)
+                                           ("CONFIG_USB_ETH_EEM" . m)
+                                           ("CONFIG_USB_G_NCM" . m)
                                            ;; Provide support for ath9k wireless
                                            ("CONFIG_ATH9K" . m)
                                            ("CONFIG_ATH9K_HTC" . m))
