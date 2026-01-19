@@ -40282,6 +40282,33 @@ built-in pprint.pprint, it produces compact, well-formatted representations
 even for complex custom types.")
     (license license:asl2.0)))
 
+(define-public python-wait-for2
+  (package
+    (name "python-wait-for2")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Traktormaster/wait-for2")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08911yby18sw2y6njn1fqlwvf9j2aay0p5d3wykdlcj36nyxfv1w"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-setuptools))
+    (home-page "https://github.com/Traktormaster/wait-for2")
+    (synopsis "Asyncio wait_for handling simultaneous cancellation and future completion")
+    (description
+     "This package provide an alternate implementation of @code{asyncio.wait_for()}
+introduced in Python 3.12.  It handles several edge cases like simultaneous
+cancellation of wait and completion of future differently and consistently
+across Python versions 3.7+.")
+    (license license:asl2.0)))
+
 (define-public python-wand
   (package
     (name "python-wand")
