@@ -1976,7 +1976,8 @@ specified image or color, easing the process of theme creation.")
                      (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0hbjzf3jb8gpisq3qi5z7wc20hawcgvjwnw2xp80bwq1cj12d3vr"))))
+               (base32 "0hbjzf3jb8gpisq3qi5z7wc20hawcgvjwnw2xp80bwq1cj12d3vr"))
+              (patches (search-patches "mitm-cache-head-requests.patch"))))
     (build-system cargo-build-system)
     (arguments
      '(#:install-source? #f))
