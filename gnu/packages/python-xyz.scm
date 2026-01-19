@@ -28823,24 +28823,15 @@ Its algorithms are based on the kakasi library, which is written in C.")
 implementation of the D-Bus protocol.")
     (license license:expat)))
 
-(define python-dbusmock-check-phase
-  #~(lambda* (#:key tests? #:allow-other-keys)
-      (when tests?
-        (match (primitive-fork)
-          (0 ;child process
-           (execlp "pytest" "pytest" "-vv"))
-          (pytest-pid
-           (let loop ()
-             ;; Reap child processes; otherwise, python-dbusmock
-             ;; would waste time polling for the dbus processes
-             ;; it spawns to be reaped, in vain.
-             (match (waitpid WAIT_ANY)
-               ((pid . status)
-                (if (= pid pytest-pid)
-                    (unless (zero? status)
-                      (error "`pytest' exited with status"
-                             status))
-                    (loop))))))))))
+(define python-dbusmock-patch-paths-phase
+  #~(lambda* (#:key inputs #:allow-other-keys)
+      (substitute* "tests/test_api.py"
+        (("/usr/bin/python3")
+         (which "python3")))
+      (substitute* "dbusmock/testcase.py"
+        (("\"dbus-daemon\"")
+         (object->string
+          (search-input-file inputs "/bin/dbus-daemon"))))))
 
 (define-public python-dbusmock
   (package
@@ -28864,15 +28855,25 @@ implementation of the D-Bus protocol.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "tests/test_api.py"
-                (("/usr/bin/python3")
-                 (which "python3")))
-              (substitute* "dbusmock/testcase.py"
-                (("\"dbus-daemon\"")
-                 (object->string
-                  (search-input-file inputs "/bin/dbus-daemon"))))))
-          (replace 'check #$python-dbusmock-check-phase))))
+            #$python-dbusmock-patch-paths-phase)
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (match (primitive-fork)
+                  (0 ;child process
+                   (execlp "pytest" "pytest" "-vv"))
+                  (pytest-pid
+                   (let loop ()
+                     ;; Reap child processes; otherwise, python-dbusmock
+                     ;; would waste time polling for the dbus processes
+                     ;; it spawns to be reaped, in vain.
+                     (match (waitpid WAIT_ANY)
+                       ((pid . status)
+                        (if (= pid pytest-pid)
+                            (unless (zero? status)
+                              (error "`pytest' exited with status"
+                                     status))
+                            (loop)))))))))))))
     (native-inputs (list python-pytest python-setuptools upower which))
     (inputs (list dbus))
     (propagated-inputs (list python-dbus-python python-pygobject))
@@ -28890,41 +28891,24 @@ what you expect in your tests.")
   (package
     (inherit python-dbusmock)
     (name "python-dbusmock-minimal")
-    (version "0.30.0")
+    (version "0.37.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python-dbusmock" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/martinpitt/python-dbusmock")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1hanz6x76jq66ypdirga5h15zjs67kwysl6rmsf0i22dbdqrxdfv"))))
-    (build-system python-build-system)
+        (base32 "1a70gi3qgjblg9z9id9z0fy3vlhb1cqbmmny14bqhv79qqskspj3"))))
     (arguments
      (list
       #:tests? #f
-      #:modules `((guix build python-build-system)
-                  (guix build utils)
-                  (ice-9 match))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "tests/test_api.py"
-                (("/usr/bin/python3")
-                 (which "python3")))
-              (substitute* "tests/test_code.py"
-                (("/bin/bash")
-                 (which "bash")))
-              (substitute* "dbusmock/testcase.py"
-                (("'dbus-daemon'")
-                 (object->string
-                  (search-input-file inputs "/bin/dbus-daemon"))))))
-          (replace 'check #$python-dbusmock-check-phase))))
-    (native-inputs (list which))
-    (inputs
-     (list dbus))
-    (propagated-inputs
-     (list python-dbus-python python-pygobject))
+            #$python-dbusmock-patch-paths-phase))))
+    (native-inputs (list python-setuptools which))
     (properties '((hidden? . #t)))))
 
 (define-public python-jsonplus
