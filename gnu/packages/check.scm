@@ -3410,11 +3410,13 @@ portable to just about any platform.")
               (file-name (git-file-name name version))
               (sha256
                (base32 "1s0jj9f2zav49mn9ib90idcmb6hq93aczbqysn5hj6binjmrnjw3"))
-              (patches (search-patches "unity-test-set-subdir-correctly.patch"))))
+              (patches (search-patches "unity-test-set-subdir-correctly.patch"
+                                       "unity-test-support-int64.patch"))))
     (build-system meson-build-system)
     (arguments
       (list #:configure-flags
-            #~(list "-Dsupport_double=true")
+            #~(list "-Dsupport_double=true"
+                    "-Dsupport_int64=true")
             #:phases
             #~(modify-phases %standard-phases
                 (add-after 'patch-source-shebangs 'patch-more-shebangs

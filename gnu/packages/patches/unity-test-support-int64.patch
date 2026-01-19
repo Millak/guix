@@ -1,0 +1,47 @@
+Upstream status: https://github.com/ThrowTheSwitch/Unity/pull/823
+
+From 4d35efd1bc5ecfa67d73bf81e64ba54c08ed5318 Mon Sep 17 00:00:00 2001
+From: Dariqq <77271900+Dariqq@users.noreply.github.com>
+Date: Tue, 20 Jan 2026 18:10:14 +0000
+Subject: [PATCH] meson: Add option for UNITY_SUPPORT_64
+
+---
+ meson.build       | 5 +++++
+ meson_options.txt | 1 +
+ 2 files changed, 6 insertions(+)
+
+diff --git a/meson.build b/meson.build
+index 6585129..633beb3 100644
+--- a/meson.build
++++ b/meson.build
+@@ -26,6 +26,7 @@ project('unity', 'c',
+ build_fixture = get_option('extension_fixture')
+ build_memory = get_option('extension_memory')
+ support_double = get_option('support_double')
++support_int64 = get_option('support_int64')
+ 
+ unity_args = []
+ unity_src = []
+@@ -48,6 +49,10 @@ if support_double
+   unity_args += '-DUNITY_INCLUDE_DOUBLE'
+ endif
+ 
++if support_int64
++  unity_args += '-DUNITY_SUPPORT_64'
++endif
++
+ unity_lib = static_library(meson.project_name(),
+   sources: unity_src,
+   c_args: unity_args,
+diff --git a/meson_options.txt b/meson_options.txt
+index 8e66784..d8ab7a7 100644
+--- a/meson_options.txt
++++ b/meson_options.txt
+@@ -1,3 +1,4 @@
+ option('extension_fixture', type: 'boolean', value: 'false', description: 'Whether to enable the fixture extension.')
+ option('extension_memory', type: 'boolean', value: 'false', description: 'Whether to enable the memory extension.')
+ option('support_double', type: 'boolean', value: 'false', description: 'Whether to enable double precision floating point assertions.')
++option('support_int64', type: 'boolean', value: false, description: 'Whether to enable support for 64bit integers. false means autodetect.')
+-- 
+2.52.0
+
