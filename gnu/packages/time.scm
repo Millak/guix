@@ -689,26 +689,6 @@ ISO 8601 dates, time and duration.")
      (native-inputs
       (list python-pytest python-pytz)))))
 
-(define-public python-monotonic
-  (package
-    (name "python-monotonic")
-    (version "1.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "monotonic" version))
-       (sha256
-        (base32
-         "1c6z46yb600klbfhqadyl7vq0jdjdxkm72k43ra3iw3d0xakv593"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))          ; no tests
-    (home-page "https://github.com/atdt/monotonic")
-    (synopsis "Implementation of time.monotonic() for Python 2 & < 3.3")
-    (description
-     "This module provides a @code{monotonic()} function which returns the
-value (in fractional seconds) of a clock which never goes backwards.")
-    (license asl2.0)))
-
 (define-public python-pyrfc3339
   (package
     (name "python-pyrfc3339")
