@@ -3968,41 +3968,6 @@ socket or command line.")
 as a tool for live performances or general audio and event filtering.")
     (license (list license:artistic2.0 license:gpl3+))))
 
-(define-public curseradio
-  (let ((commit "1bd4bd0faeec675e0647bac9a100b526cba19f8d")
-        (revision "1"))
-    (package
-      (name "curseradio")
-      (version (git-version "0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/chronitis/curseradio")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "11bf0jnj8h2fxhpdp498189r4s6b47vy4wripv0z4nx7lxajl88i"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:tests? #f                     ; No tests.
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'link-to-mpv
-              (lambda* (#:key inputs #:allow-other-keys)
-                (substitute* "curseradio/curseradio.py"
-                  (("/usr/bin/mpv")
-                   (search-input-file inputs "/bin/mpv"))))))))
-      (native-inputs (list python-setuptools))
-      (propagated-inputs (list python-lxml python-requests python-pyxdg))
-      (inputs (list mpv))
-      (home-page "https://github.com/chronitis/curseradio")
-      (synopsis "Command-line Internet radio player")
-      (description "Curseradio is a Curses-based radio player that uses a
-tune-in sender list from @url{http://opml.radiotime.com}.")
-      (license license:expat))))
-
 (define-public pianobar
   (package
     (name "pianobar")
