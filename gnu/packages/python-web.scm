@@ -8085,7 +8085,8 @@ S3.")
      (list
       #:test-flags
       #~(list "-k" (string-append "not test_explicit_table[db2]"
-                                  " and not test_explicit_table[db4]"))))
+                                  " and not test_explicit_table[db4]")
+              "-W" "ignore::DeprecationWarning")))
     (native-inputs
      (list python-flit-core
            python-pytest))
