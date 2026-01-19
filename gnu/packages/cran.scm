@@ -30845,18 +30845,19 @@ mathematics.")
 (define-public r-rcppannoy
   (package
     (name "r-rcppannoy")
-    (version "0.0.22")
+    (version "0.0.23")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppAnnoy" version))
        (sha256
         (base32
-         "0rcgvmlp3by57k562pbxsncirww1vv8zarfxrjzfgly4hzbj28cz"))))
+         "1p6iwbkz762p2k3hzjryc19scdxp58jcfbn8gvfbk8whhpcyh0p5"))))
     (properties `((upstream-name . "RcppAnnoy")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp))
+    (native-inputs (list r-rcpp r-tinytest))
     (home-page "https://cran.r-project.org/web/packages/RcppAnnoy/")
     (synopsis "Rcpp bindings for Annoy, a library for Approximate Nearest Neighbors")
     (description
