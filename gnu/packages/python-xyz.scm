@@ -35754,27 +35754,21 @@ markdown-compliant strings.")
 (define-public python-icecream
   (package
     (name "python-icecream")
-    (version "2.1.3")
+    (version "2.1.9")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "icecream" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gruns/icecream")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1pj9kf7lwm799wppvngg3sndi0qf13iq33yhl59n3hsf6z1sg90a"))))
+        (base32 "1scxnjnnapqwzvhii07ax72yp6cj9ksn76bpnw04hg2i92snc3g2"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      '(list "-k"
-             ;; These tests are failing due to a bug:
-             ;; https://github.com/gruns/icecream/issues/144
-             (string-append "not testEnableDisable"
-                            " and not testSingledispatchArgumentToString"))))
     (native-inputs
      (list python-hypothesis
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-asttokens
            python-colorama
