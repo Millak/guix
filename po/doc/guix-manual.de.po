@@ -54058,3 +54058,18 @@ msgstr "Lizenz, GNU-Lizenz für freie Dokumentation"
 
 msgid "fdl-1.3.texi"
 msgstr "fdl-1.3.texi"
+
+#. type: Plain text
+#: doc/guix.texi:2156
+msgid "While this works for @file{guix-install.sh}, it will most likely not work if you installed Guix through the package manager of another distribution (for instance with @command{sudo apt install guix}, @command{pacman -S guix}, or similar commands) because on many distributions @file{guix-daemon.service} will only run the Guix daemon provided by the distribution."
+msgstr "So funktioniert es, wenn @file{guix-install.sh} benutzt wurde. Andernfalls genügt es jedoch @emph{nicht}, wenn Sie Guix mit der Paketverwaltung einer anderen Distribution installiert haben (etwa mit @command{sudo apt install guix}, @command{pacman -S guix} oder ähnliche Befehle), weil auf vielen Distributionen @file{guix-daemon.service} nur den von der Distribution mitgelieferten Guix-Daemon ausführen wird."
+
+#. type: Plain text
+#: doc/guix.texi:2156
+msgid "While this works for @file{guix-install.sh}, it will most likely not work if you installed Guix through the package manager of another distribution (for instance with @command{sudo apt install guix}, @command{pacman -S guix}, or similar commands)  because on many distributions @file{guix-daemon.service} will only run the Guix daemon provided by the distribution."
+msgstr "So funktioniert es, wenn @file{guix-install.sh} benutzt wurde. Andernfalls genügt es jedoch @emph{nicht}, wenn Sie Guix mit der Paketverwaltung einer anderen Distribution installiert haben (etwa mit @command{sudo apt install guix}, @command{pacman -S guix} oder ähnliche Befehle), weil auf vielen Distributionen @file{guix-daemon.service} nur den von der Distribution mitgelieferten Guix-Daemon ausführen wird."
+
+#. type: Plain text
+#: doc/guix.texi:779
+msgid "The @uref{https://guix.gnu.org/guix-install.sh, @file{guix-install.sh}} shell script automates the binary installation process.  Use of @file{guix-install.sh} requires Bash, GnuPG, GNU@tie{}tar, wget, and Xz.  On systems where systemd is detected, the tool @command{newgidmap} from the @code{uidmap} package is also required."
+msgstr "Das Shell-Skript @uref{https://guix.gnu.org/guix-install.sh, @file{guix-install.sh}} automatisiert den Installationsvorgang aus Binärdateien. Um @file{guix-install.sh} benutzen zu können, werden Bash, GnuPG, GNU@tie{}tar, wget und Xz vorausgesetzt. Auf Systemen, wo systemd gefunden wird, brauchen Sie außerdem das Programm @code{newgidmap} aus dem Paket @code{uidmap} als Voraussetzung."
