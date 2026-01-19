@@ -4482,38 +4482,30 @@ this library provides functions to facilitate such comparisons.")
 (define-public python-alembic
   (package
     (name "python-alembic")
-    (version "1.14.0")
+    (version "1.18.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "alembic" version))
        (sha256
-        (base32 "0jrh9q4h2jv2bafpd6isx2dvc90rpx6j7fpdvfwd0hin7fsr425h"))))
+        (base32 "0rmq5z30vmv5x5c355mj2whjz1m086c0k4xqndpq35lm6n0npb43"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "--ignore=tests/integration"
-              "-k" (string-join
-                    ;; XXX: Tests require fresh python-pytz timezones, remove
-                    ;; when updated.
-                    (list "not test_custom_tz"
-                          "test_custom_tz_lowercase"
-                          "test_custom_tz_utc"
-                          "test_custom_tzdata_tz")
-                    " and not "))))
+      #~(list "--ignore=tests/integration")))
     (native-inputs
-     (list python-mock
+     (list python-black  ; runs a hook in tests.
+           python-mock
            python-pytest
            python-setuptools
-           python-wheel))
+           python-tzdata))
     (propagated-inputs
-     (list python-dateutil
-           python-editor
-           python-mako
+     (list python-mako
            python-sqlalchemy-2
+           python-tomli
            python-typing-extensions))
-    (home-page "https://bitbucket.org/zzzeek/alembic")
+    (home-page "https://github.com/sqlalchemy/alembic")
     (synopsis "Database migration tool for SQLAlchemy")
     (description
      "Alembic is a lightweight database migration tool for usage with the
