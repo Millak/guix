@@ -999,7 +999,7 @@ format is completely customizable.")
 (define-public f3
   (package
     (name "f3")
-    (version "8.0")
+    (version "9.0")
     (source
      (origin
       (method git-fetch)
@@ -1008,7 +1008,7 @@ format is completely customizable.")
             (commit (string-append "v" version))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "17l5vspfcgfbkqg7bakp3gql29yb05gzawm8n3im30ilzdr53678"))))
+       (base32 "0k9299phdxp0yag0mm58sfrbqmb19zvia57wgcaqawf9clafba35"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                      ; no check target
