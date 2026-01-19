@@ -2853,8 +2853,7 @@ genetic variation data.")
     ;; Tests are aborted with the admonition: "setup.py install is
     ;; deprecated. Use build and pip and other standards-based tools."
     (arguments (list #:tests? #false))
-    (propagated-inputs (list python-exceptiongroup
-                             python-importlib-metadata
+    (propagated-inputs (list python-importlib-metadata
                              python-importlib-resources
                              python-packaging
                              python-pathspec
