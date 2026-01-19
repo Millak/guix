@@ -1308,7 +1308,7 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
         (string=? (%current-system) (gnu-triplet->nix-system triplet))))
   (package
     (name (downstream-package-name "arm-trusted-firmware-" platform))
-    (version "2.12.2")
+    (version "2.12.9")
     (source
      (origin
        (method git-fetch)
@@ -1318,7 +1318,7 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
               (commit (string-append "lts-v" version))))
        (file-name (git-file-name "arm-trusted-firmware" version))
        (sha256
-        (base32 "01i40asy9dsbx4l5kbvsvi55bdf308nnraf8kfli5d4cx8pxqmrj"))
+        (base32 "0zlb3g9qn7i8xr731nrsdqf00s03wv1ybhc28ka5nwniaccpg9dx"))
        (patches (search-patches "8mq-enable-imx_hab_handler.patch"
                                 "8mq-move-stack-to-ocram_s.patch"))
        (modules '((guix build utils)))
