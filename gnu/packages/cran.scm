@@ -32708,18 +32708,19 @@ and compatibility with @code{ape} objects.")
 (define-public r-rnifti
   (package
     (name "r-rnifti")
-    (version "1.8.0")
+    (version "1.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RNifti" version))
        (sha256
         (base32
-         "14hpg27jfsk35c2ds33z0bfv3kn17y9bsnzwddrav4wc5zzm2arj"))))
+         "1r0wvngsb5sywfwqb95fxnr70n8sxjf7hkym03nw67dbwkp64v02"))))
     (properties `((upstream-name . "RNifti")))
     (build-system r-build-system)
     (inputs (list zlib))
     (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/jonclayden/RNifti")
     (synopsis "Fast R and C++ access to NIfTI images")
     (description
