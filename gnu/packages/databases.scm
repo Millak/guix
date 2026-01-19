@@ -4339,13 +4339,13 @@ simple and Pythonic domain language.")
 (define-public python-sqlalchemy-2
   (package
     (name "python-sqlalchemy")
-    (version "2.0.36")
+    (version "2.0.45")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sqlalchemy" version))
        (sha256
-        (base32 "1i99kgm8hc38iffgp3wdbixpdc5jfjklabh8lyp9h8vd1dl6f9vz"))))
+        (base32 "126fxwlk5kd0vwymw3pfmayl29c8il2n6qxdzl1mglnjm2ys8chn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4359,8 +4359,7 @@ simple and Pythonic domain language.")
     (native-inputs
      (list python-cython
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-greenlet
            python-typing-extensions))
