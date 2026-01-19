@@ -42,6 +42,7 @@
 ;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
+;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2404,16 +2405,16 @@ identical visual appearance.")
 (define-public grim
   (package
    (name "grim")
-   (version "1.4.1")
+   (version "1.5.0")
    (source
     (origin
      (method git-fetch)
      (uri (git-reference
-           (url "https://git.sr.ht/~emersion/grim")
+           (url "https://gitlab.freedesktop.org/emersion/grim/")
            (commit (string-append "v" version))))
      (file-name (git-file-name name version))
      (sha256
-      (base32 "1snp4qlj05d0nx4f0qr8kywv0i1xcw5i278ybng1rand2alhkjz5"))))
+      (base32 "1rabva3x203hbsnmad6zrvlpxadmxw1zmd42i3pjk05pnk73mym0"))))
    (build-system meson-build-system)
    (native-inputs (append (if (%current-target-system)
                               ;; For wayland-scanner.
