@@ -19557,13 +19557,13 @@ matrices.")
 (define-public r-stringdist
   (package
     (name "r-stringdist")
-    (version "0.9.15")
+    (version "0.9.17")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "stringdist" version))
        (sha256
-        (base32 "06151jksz8iaigvi20qbcrqjh684w5gii4wmxvnm5v1iwm5bxks4"))))
+        (base32 "0v8vyqkfmac5fl2rlgadf0jh9ixymhddl6g37xa8vjn9gm1v8kaw"))))
     (build-system r-build-system)
     (home-page "https://github.com/markvanderloo/stringdist")
     (synopsis "Approximate string matching and string distance functions")
