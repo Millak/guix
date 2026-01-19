@@ -4306,13 +4306,13 @@ on localhost.")
 (define-public python-sqlalchemy
   (package
     (name "python-sqlalchemy")
-    (version "1.4.42")
+    (version "1.4.54")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "SQLAlchemy" version))
       (sha256
-       (base32 "0qzkxy47y06fqh1m7a0p7q2r9h48x9k5kl3znzhx2vj79j8l2zhp"))))
+       (base32 "06n36zs280iahxj34fvq1iwq3zjlmvsalfcanwhdqdcc13nznw24"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-cython ; for C extensions
