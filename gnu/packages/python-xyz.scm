@@ -23153,20 +23153,26 @@ numbers, real numbers, mixed types and more, and comes with a shell command
 (define-public python-graphql-relay
   (package
     (name "python-graphql-relay")
-    (version "3.1.0")
+    (properties '((commit . "611c0333eeca53663d9b47f7994098edda81b087")
+                  (revision . "0")))
+    (version (git-version "3.1.5"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/graphql-python/graphql-relay-py")
-             (commit (string-append "v" version))))
+             (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06ybi4bwqdffa5kn8xnns06wh3l0zj3qlzrxk1wpxqq320hyzx9x"))))
+        (base32 "1bghnmyn6rsqji7j70yhvd6z0s4p71pdrm5144rn95dha3pdxih9"))))
     (build-system pyproject-build-system)
-    (arguments (list #:test-flags #~(list "tests")))
     (native-inputs
-     (list python-pytest python-pytest-asyncio python-poetry-core))
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-describe
+           python-poetry-core))
     (propagated-inputs (list python-graphql-core))
     (home-page "https://github.com/graphql-python/graphql-relay-py")
     (synopsis "Relay implementation for Python")
