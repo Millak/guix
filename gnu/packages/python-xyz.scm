@@ -23098,40 +23098,17 @@ numbers, real numbers, mixed types and more, and comes with a shell command
 (define-public python-graphql-core
   (package
     (name "python-graphql-core")
-    (version "3.1.2")
+    (version "3.2.7")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "graphql-core" version))
-        (sha256
-         (base32
-          "0fjv5w2wvgdr8gb27v241bavliipyir9fdz48rsgc3xapm644mn0"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/graphql-python/graphql-core")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jq23vm7lvy6h7rrhfa9iss50vh5anmk0n8kvdbqgrxnzqak43va"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'use-poetry-core
-           (lambda _
-             ;; Patch to use the core poetry API.
-             (substitute* "pyproject.toml"
-               (("poetry.masonry.api")
-                "poetry.core.masonry.api")
-               ;; Poetry does not like line breaks.
-               (("description = \"\"\"")
-                "description = \"GraphQL-core is a Python port of GraphQL.js.\"\n")
-               (("^GraphQL-core is a Python.*") "")
-               (("^ the JavaScript reference.*") ""))))
-         (add-after 'unpack 'patch-setup.py
-           (lambda _
-             (substitute* "setup.py"
-               ;; Relax hardcoded version
-               (("'gevent==1.1rc1'") "'gevent'")
-               ;; Poetry complains about this line break.
-               (("a port of GraphQL.js,\"")
-                (string-append "a port of GraphQL.js, "
-                               "the JavaScript reference implementation for GraphQL."))
-               (("    \" the JavaScript reference.*") "")))))))
     (native-inputs
      (list python-gevent
            python-mock
