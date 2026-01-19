@@ -2755,31 +2755,6 @@ data-centric AI package facilitates machine learning with messy, real-world
 data by providing clean labels during training.")
     (license license:agpl3+)))
 
-(define-public python-cleanlab-1
-  (package
-    (inherit python-cleanlab)
-    (name "python-cleanlab")
-    (version "1.0.1")
-    ;; The version on pypi does not come with tests.
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/cleanlab/cleanlab")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "03kw2agnhadmrq9zvrlvvlc2c37dpflga5nhmsaag8scw223gqyp"))))
-    (build-system pyproject-build-system)
-    (arguments (list))
-    (propagated-inputs
-     (list python-numpy
-           python-scikit-learn
-           python-scipy
-           python-tqdm))
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))))
-
 (define-public python-cma
   (package
     (name "python-cma")
