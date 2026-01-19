@@ -27079,13 +27079,13 @@ visualization of similarity data.")
 (define-public r-manipulatewidget
   (package
     (name "r-manipulatewidget")
-    (version "0.11.1")
+    (version "0.11.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "manipulateWidget" version))
        (sha256
-        (base32 "1dpgzmiv08afm57yxr017b014lfn9h3pa4w65prk5k3dgn6p4wsv"))))
+        (base32 "1pl4aqhijbr5rz3dnrc3686k7wdi56zyln1srlrfgghigm8l8q2b"))))
     (properties
      `((upstream-name . "manipulateWidget")))
     (build-system r-build-system)
@@ -27127,6 +27127,7 @@ visualization of similarity data.")
     (native-inputs
      `(("esbuild" ,esbuild)
        ("r-knitr" ,r-knitr)
+       ("r-leaflet" ,r-leaflet)
        ("r-testthat" ,r-testthat)
        ;; inst/lib/export/html2canvas/html2canvas.js, version 1.0.0-rc.3
        ("js-html2canvas"
