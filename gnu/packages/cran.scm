@@ -54928,17 +54928,18 @@ the @code{raster} package that is suitable for extracting raster values using
 (define-public r-stringfish
   (package
     (name "r-stringfish")
-    (version "0.17.0")
+    (version "0.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "stringfish" version))
        (sha256
         (base32
-         "0x6nad21q7shsl7wjzldb6si7j09dyxksrpq29cxphh79d0ga2ly"))))
+         "1vrs2vqr6fzy5fmww1q0nbv7nkxq5dhzmmv2fxgf20svnqnn9pz2"))))
     (properties
      '((upstream-name . "stringfish")
-       (updater-extra-inputs . ("pcre2"))))
+       (updater-extra-inputs . ("pcre2"))
+       (updater-ignored-native-inputs . ("r-qs2"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -54961,11 +54962,15 @@ the @code{raster} package that is suitable for extracting raster values using
                     (display (string-append
                               "CXXFLAGS=-g -O2"
                               " -Wno-error=changes-meaning\n"))))))))))
-    (inputs (list pcre2 tbb-2020))
+    (inputs (list pcre2))
     (propagated-inputs
      (list r-rcpp r-rcppparallel))
     (native-inputs
-     (list pkg-config r-knitr))
+     (list pkg-config
+           r-dplyr
+           r-knitr
+           r-rlang
+           r-stringr))
     (home-page "https://github.com/traversc/stringfish")
     (synopsis "Alternative string implementation")
     (description
