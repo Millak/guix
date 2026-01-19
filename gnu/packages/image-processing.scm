@@ -116,7 +116,6 @@
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages swig)
-  #:use-module (gnu packages tbb)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
@@ -473,7 +472,7 @@ many popular formats.")
      ;; 'find_package(THEORA)', which in turns looks for libogg.  Likewise for
      ;; TBB.
      (list libogg
-           tbb))
+           onetbb))
     (home-page "https://vtk.org/")
     (synopsis "Libraries for 3D computer graphics")
     (description
