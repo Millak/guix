@@ -94,6 +94,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages nss)
+  #:use-module (gnu packages oneapi)
   #:use-module (gnu packages opencl)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
@@ -1460,7 +1461,7 @@ libraries designed for computer vision research and implementation.")
                     opencl-icd-loader
                     perl
                     python
-                    tbb
+                    onetbb
                     vxl-1
                     zlib))
       (native-inputs
