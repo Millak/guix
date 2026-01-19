@@ -28,6 +28,7 @@
 ;;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2025 dan <i@dan.games>
+;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1222,7 +1223,7 @@ recalculates.")
            qtwebengine
            sdl2
            sqlite
-           tbb
+           onetbb
            utfcpp
            zlib))
     (home-page "https://www.paraview.org/")
