@@ -204,7 +204,7 @@ able to request elevated privileges.")
            perl
            pkg-config
            python
-           python-dbusmock-minimal))
+           python-dbusmock-for-tests))
     (home-page "https://www.freedesktop.org/wiki/Software/polkit/")
     (synopsis "Authorization API for privilege management")
     (description "Polkit is an application-level toolkit for defining and

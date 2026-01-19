@@ -28887,10 +28887,10 @@ impossible without root privileges) to set the state of the real services to
 what you expect in your tests.")
     (license license:lgpl3+)))
 
-(define-public python-dbusmock-minimal
+(define-public python-dbusmock-for-tests
   (package
     (inherit python-dbusmock)
-    (name "python-dbusmock-minimal")
+    (name "python-dbusmock-for-tests")
     (version "0.37.2")
     (source
      (origin
@@ -28910,6 +28910,10 @@ what you expect in your tests.")
             #$python-dbusmock-patch-paths-phase))))
     (native-inputs (list python-setuptools which))
     (properties '((hidden? . #t)))))
+
+;; XXX: Deprecated on <2026-01-21>.
+(define-deprecated/public-alias python-dbusmock-minimal
+  python-dbusmock-for-tests)
 
 (define-public python-jsonplus
   (package

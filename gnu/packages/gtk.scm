@@ -861,7 +861,7 @@ images.")
             gobject-introspection
             gsettings-desktop-schemas
             pkg-config
-            python-dbusmock-minimal
+            python-dbusmock-for-tests
             python-pytest
             python-wrapper))
      (synopsis "Assistive Technology Service Provider Interface, core components")
