@@ -37144,7 +37144,7 @@ language.  It aims to be fast.")
 (define-public python-texttable
   (package
     (name "python-texttable")
-    (version "1.6.4")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
@@ -37153,7 +37153,7 @@ language.  It aims to be fast.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lcn76wx6fsj8d79gs985irkqz5qbwq1v9ji9jxsra6dbb643v5j"))))
+        (base32 "1p3g8v4wic6bpwa2r1h95a3mrx4vl6r6ci7ijwp0lmq55j9v9rx7"))))
     (build-system pyproject-build-system)
     (arguments (list #:test-flags #~(list "tests.py")))
     (native-inputs (list python-pytest python-setuptools))
