@@ -87,6 +87,7 @@
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Aleksandr Lebedev <alex.lebedev2003@icloud.com>
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
+;;; Copyright © 2026 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -193,6 +194,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages regex)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
@@ -344,6 +346,51 @@ the @code{.../share/quickshell} path in the package.")
                matugen
                qtmultimedia
                wl-clipboard)))))
+
+(define-public fvwm3
+  (package
+    (name "fvwm3")
+    (version "1.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fvwmorg/fvwm3")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dfirf8dnybkgjnw48vy9k128a97ipyzqdhqyak9v9q0gqwyyxl4"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config ruby-asciidoctor))
+    (inputs (list fontconfig
+                  fribidi
+                  freetype
+                  libevent
+                  libice
+                  libpng
+                  libxcb
+                  libxcursor
+                  libxext
+                  libxft
+                  libxkbcommon
+                  libxrandr
+                  libxrender
+                  libx11
+                  libxpm
+                  libxt
+                  perl
+                  python-minimal
+                  readline
+                  xcb-util
+                  xtrans))
+    (home-page "https://www.fvwm.org/")
+    (synopsis "Virtual window manager for the X windows system")
+    (description
+     "Fvwm is an ICCCM/EWMH-compliant and highly configurable
+floating window manager built primarily using Xlib and can be configured to
+be from a small sleek window manager to a full-featured desktop
+environment.")
+    (license license:gpl2+)))
 
 (define-public herbstluftwm
   (package
