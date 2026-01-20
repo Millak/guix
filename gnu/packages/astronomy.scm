@@ -11704,7 +11704,7 @@ See related paper
 (define-public tenmon
   (package
     (name "tenmon")
-    (version "20251101")
+    (version "20260119")
     (source
      (origin
        (method git-fetch)
@@ -11713,13 +11713,11 @@ See related paper
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m6hhyd64lichxr06b93bl6vfacfya3xwq47m5m4d6y5awkqc4ij"))))
+        (base32 "115ik1ldas20jkfcka7cydr1l5i4zw7zfxkcqq1v8vs2qsjyrgnn"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:tests? #f ;no test target
-      #:configure-flags
-      #~(list "-DCMAKE_C_FLAGS=-Wno-error=implicit-function-declaration")
       #:phases
       #~(modify-phases %standard-phases
           ;; libxisf is expected to be found as git submodule, link it before
