@@ -43559,18 +43559,18 @@ poverty measures.  It provides both empirical and theoretical Lorenz curves.")
 (define-public r-actfrag
   (package
     (name "r-actfrag")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ActFrag" version))
        (sha256
         (base32
-         "08r3gwjz4fkyy85dxqix0ffm5xyq45032qv3snnzxnlqxslxbqn1"))))
+         "09j530c0a6rscajbnmxs2dmky9xh2gw8f6s4j9hz2qpqgcimr1iq"))))
     (properties `((upstream-name . "ActFrag")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-accelerometry r-dplyr r-ineq r-survival r-tidyr))
+     (list r-accelerometry r-dplyr r-ineq r-survival))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/junruidi/ActFrag")
     (synopsis "Activity fragmentation metrics extraction")
