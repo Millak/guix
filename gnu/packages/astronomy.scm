@@ -3248,32 +3248,32 @@ astronomy and astrophysics.")
 (define-public python-astropy-healpix
   (package
     (name "python-astropy-healpix")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy_healpix" version))
        (sha256
-        (base32 "1r362081aj5jqxshcxw0bpzn4qvqnra52k94ghskpv1n5bqisrq3"))))
+        (base32 "1dxkh5fxfqxq5md0s4azynk3dvki27cjnyx3w7ld65c2pqxdh87m"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 81 passed, 1 skipped
+      #:test-flags
+      #~(list "--pyargs" "astropy_healpix")
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion #$output
-                  (apply invoke "pytest" "-vv" test-flags))))))))
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "astropy_healpix"))))))
     (native-inputs
      (list python-extension-helpers
-           python-hypothesis
-           python-pytest-astropy
+           python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-astropy python-numpy))
+     (list python-astropy
+           python-numpy))
     (home-page "https://github.com/astropy/astropy-healpix")
     (synopsis "HEALPix for Astropy")
     (description "This package provides HEALPix to the Astropy project.")
