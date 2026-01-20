@@ -10313,13 +10313,13 @@ Olink/INF panel (inf1), Manhattan plots with
 (define-public r-grandr
   (package
     (name "r-grandr")
-    (version "0.2.6")
+    (version "0.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "grandR" version))
        (sha256
-        (base32 "058cvcjrqhgm14vyhlm1mdhs3z0kfpjlfc3msadsvlhlb7p676sn"))))
+        (base32 "104d78wpj166fcy4vdd2hri8rcagax5d7cd0dabjyywbvmzhxxjk"))))
     (properties `((upstream-name . "grandR")))
     (build-system r-build-system)
     (propagated-inputs (list r-cowplot
