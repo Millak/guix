@@ -84,6 +84,7 @@
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2695,7 +2696,7 @@ corners, shadows, inactive window dimming, etc.")
 (define-public swayidle
   (package
     (name "swayidle")
-    (version "1.8.0")
+    (version "1.9.0")
     (source
      (origin
        (method git-fetch)
@@ -2704,7 +2705,7 @@ corners, shadows, inactive window dimming, etc.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y0qdqzx90kvk6l80darldvizr7p5g65bnblhxlq5a2rgvs9hkpx"))))
+        (base32 "1yv3y6437xzp8dlr9g78bpqn0bx7sxlwkrcjgbxd0vqpy12z043z"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dlogind-provider=elogind")))
