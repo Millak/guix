@@ -2708,12 +2708,15 @@ corners, shadows, inactive window dimming, etc.")
         (base32 "1yv3y6437xzp8dlr9g78bpqn0bx7sxlwkrcjgbxd0vqpy12z043z"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags '("-Dlogind-provider=elogind")))
+     (list
+      #:configure-flags
+      #~(list "-Dlogind-provider=elogind")))
     (inputs (list elogind wayland))
     (native-inputs (list pkg-config scdoc wayland-protocols))
     (home-page "https://github.com/swaywm/swayidle")
     (synopsis "Idle management daemon for Wayland compositors")
-    (description "Swayidle is a idle management daemon for Wayland compositors.")
+    (description
+     "Swayidle is a idle management daemon for Wayland compositors.")
     (license license:expat))) ; MIT license
 
 (define-public swaylock
