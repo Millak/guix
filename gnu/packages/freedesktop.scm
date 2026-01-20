@@ -3523,7 +3523,7 @@ notifies the user using any notification daemon implementing
 (define-public waypipe
   (package
     (name "waypipe")
-    (version "0.10.5")
+    (version "0.11.0")
     (source
      (origin
        (method git-fetch)
@@ -3532,7 +3532,7 @@ notifies the user using any notification daemon implementing
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rg9qzsi07b65cdf421895dfy4gkb1kwmkwn3sfx6n7sfr8b1z6a"))
+        (base32 "1vszh1mk71jvyicsnac944jdmldrsaym9n70zjzbvjbliz4pzdsd"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  ;; Fix the cargo flags:

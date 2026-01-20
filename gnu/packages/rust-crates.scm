@@ -60674,7 +60674,7 @@
                                     rust-libloading-0.8.9
                                     rust-log-0.4.28
                                     rust-memoffset-0.9.1
-                                    rust-nix-0.29.0
+                                    rust-nix-0.30.1
                                     rust-once-cell-polyfill-1.70.2
                                     rust-pkg-config-0.3.32
                                     rust-strsim-0.11.1
