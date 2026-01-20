@@ -16035,14 +16035,14 @@ functions and compiled functions callable by other packages.")
 (define-public r-rcppthread
   (package
     (name "r-rcppthread")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppThread" version))
        (sha256
         (base32
-         "0dwd0nlfy3c525y4yk5j6xaqj74hd146fmkqw8j9ky1z12p5p0s4"))))
+         "0l3km4b3647gddlrkzl45vcqcj08px3jwv3fvdp8fmyb53qlpypm"))))
     (properties `((upstream-name . "RcppThread")))
     (build-system r-build-system)
     ;; For unknown reasons r-r-rsp is not found when building vignettes.
