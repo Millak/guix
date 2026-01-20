@@ -3573,10 +3573,10 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
 ;; See https://github.com/prusa3d/PrusaSlicer/commit/c6a02106fd1d3caa9a48a6b7c2bdd04546b24485.
 (define-public opencascade-occt-7.6.1
   (hidden-package
-    (package/inherit opencascade-occt
-    (name "opencascade-occt")
-    (version "7.6.1")
-    (source
+   (package
+     (name "opencascade-occt")
+     (version "7.6.1")
+     (source
       (origin
         (method git-fetch)
         (uri (git-reference
@@ -3587,7 +3587,83 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
                                           version)))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1cc7n4rs26lm1awwn2bijvjq9b3kz204ffnks02lrpgs7pf8yk8b")))))))
+         (base32 "1cc7n4rs26lm1awwn2bijvjq9b3kz204ffnks02lrpgs7pf8yk8b"))
+        (modules '((guix build utils)))
+        (snippet
+         '(begin
+            ;; Remove files specific to non-free operating systems.
+            (delete-file-recursively "samples/ios")
+            (delete-file-recursively "samples/mfc")
+            (delete-file-recursively "samples/qt/FuncDemo")
+            (delete-file "genconf.bat")
+            (delete-file "gendoc.bat")
+            (delete-file "genproj.bat")
+            (delete-file "upgrade.bat")
+            ;; Remove references to deleted files.
+            (substitute* "dox/FILES_HTML.txt"
+              ((".*standard.*") "" )
+              ((".*UIKitSample.*") ""))
+            #t))))
+     (build-system cmake-build-system)
+     (arguments
+      '(;; There is no test target for make.  OCCT provides an
+        ;; 'Automated Testing System', which may be accessed after
+        ;; installation via the draw.sh script.  draw.sh is located in
+        ;; the bin directory. For details see:
+        ;; https://www.opencascade.com/doc/occt-7.3.0/overview/html/\
+        ;; occt_dev_guides__tests.html
+        #:tests? #f
+                 ;; Configure without freeimage: attempting to link against the
+                 ;; freeimage version 3.17 library leads to 'undefined
+                 ;; reference' errors.
+                 #:configure-flags
+                 (list "-DCMAKE_CXX_FLAGS=-fpermissive" ;from unsigned char* to char*
+                       "-DUSE_FREEIMAGE:BOOL=OFF"
+                       "-DUSE_TBB:BOOL=ON"
+                       "-DUSE_VTK:BOOL=OFF"
+                       "-DBUILD_DOC_Overview:BOOL=OFF"
+                       "-DCMAKE_EXPORT_NO_PACKAGE_REGISTRY=ON"
+                       "-DCMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY=ON"
+                       "-UCMAKE_INSTALL_LIBDIR")))
+     (native-inputs (list doxygen fontconfig))
+     (inputs
+      (list freetype
+            ;; ("freeimage" ,freeimage)
+            glu
+            libxext
+            libxi
+            libxmu
+            mesa
+            tbb-2020
+            tcl
+            tk))
+     ;; TODO: build Overview documentation and add 'doc' output.
+     (home-page "https://www.opencascade.com")
+     (synopsis "Libraries for 3D modeling and numerical simulation")
+     (description
+      "Open CASCADE is a set of libraries for the development of applications
+dealing with 3D CAD data or requiring industrial 3D capabilities.  It includes
+C++ class libraries providing services for 3D surface and solid modeling, CAD
+data exchange, and visualization.  It is used for development of specialized
+software dealing with 3D models in design (CAD), manufacturing (CAM),
+numerical simulation (CAE), measurement equipment (CMM), and quality
+control (CAQ) domains.
+
+This is the certified version of the Open Cascade Technology (OCCT) library.")
+     (license (list ;; OCCT library:
+               license:lgpl2.1; with an exception for the use of header
+                                        ; files, see OCCT_LGPL_EXCEPTION.txt.
+               ;; Files src/OpenGl/glext.h, adm/cmake/cotire.cmake and
+               ;; src/OpenGl/OpenGl_HaltonSampler.hxx:
+               license:expat
+               ;; Files src/ExprIntrp/ExprIntrp.tab.* and
+               ;; src/StepFile/step.tab.*:
+               license:gpl3+  ; with Bison 2.2 exception.
+               ;; File src/NCollection/NCollection_UtfIterator.lxx:
+               (license:non-copyleft
+                "https://www.unicode.org/license.html")
+               ;; File src/NCollection/NCollection_StdAllocator.hxx:
+               license:public-domain)))))
 
 (define-public fast-downward
   (package
