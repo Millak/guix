@@ -8692,19 +8692,20 @@ and the options
 (define-public python-skyfield
   (package
     (name "python-skyfield")
-    (version "1.53")
+    (version "1.54")
     (source
      (origin
-       (method git-fetch) ; PyPI tarball lacks test data
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/skyfielders/python-skyfield")
-             (commit version)))
+              (url "https://github.com/skyfielders/python-skyfield")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jj0bjvzlfxr4qaq6mnybhwabhz9n70afi8sd6a26wl79s5bw1q9"))))
+        (base32 "1aayhbdnai6szld0vq7g69cva2y1gwj8zaxa97gcvajmq1rjd4d1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 594 passed
       #:test-flags
       #~(list "-m" "assay" "--batch" "skyfield.tests")
       #:phases
@@ -8718,8 +8719,7 @@ and the options
      (list nss-certs-for-test
            python-assay
            python-pandas
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-certifi
            python-jplephem
