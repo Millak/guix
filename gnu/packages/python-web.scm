@@ -7870,7 +7870,6 @@ provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients."
     (source
      (origin
        (method git-fetch)
-       ;; Pypi does not have tests.
        (uri (git-reference
              (url "https://github.com/ionrock/cachecontrol")
              (commit (string-append "v" version))))
@@ -7879,14 +7878,10 @@ provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients."
         (base32
          "07ifs4dhahhsgj4vxgfl5ymnmb4my5l2wb8jiinn6fncszcfmr59"))))
     (build-system pyproject-build-system)
-    (arguments
-     ;; Versions > 0.11.6 depend on CherryPy for testing.
-     ;; It's too much work to package CherryPy for now.
-     `(#:tests? #f))
     (propagated-inputs
      (list python-filelock python-msgpack python-requests))
     (native-inputs
-     (list python-flit-core))
+     (list python-cherrypy python-flit-core python-pytest))
     (home-page "https://github.com/ionrock/cachecontrol")
     (synopsis "The httplib2 caching algorithms for use with requests")
     (description "CacheControl is a port of the caching algorithms in
