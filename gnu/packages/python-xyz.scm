@@ -34432,6 +34432,16 @@ and to reference instance methods using weak-references.")
        (sha256
         (base32 "10xfkf5yvkfyf9ccm0k88gjhqv00hcsal33p937a1lijmxqbx398"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; Pytest 9 expects an argument TOML list here,
+                ;; while we already pass -vv and do not want --capture=no.
+                (("addopts = \"--verbose -s\".*") "")))))))
     (propagated-inputs (list python-typing-extensions))
     (native-inputs
      (list python-mock
