@@ -9597,19 +9597,23 @@ of axis order, spatial projections, and spectral units that exist in the wild.
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; 572 passed, 131 skipped, 3 xfailed
+      ;; tests: 559 passed, 130 skipped, 1 deselected, 3 xfailed
       #:test-flags
-      ;; Disabling test requiring access to download
-      ;; <https://datacenter.iers.org/data/9/finals2000A.all>.
-      ;; XXX: Check if test data may be packed as standalone package.
-      #~(list "-k" "not test_create_spectral_axis")
+      #~(list "--pyargs" "specutils"
+              ;; Disabling test requiring access to download
+              ;; <https://datacenter.iers.org/data/9/finals2000A.all>.
+              ;; XXX: Check if test data may be packed as standalone package.
+              "--deselect=tests/test_spectral_axis.py::test_create_spectral_axis")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'set-home-env
+          (add-before 'build 'set-home-env
             (lambda _
               ;; Tests require HOME to be set.
               ;;  Permission denied: '/homeless-shelter'
-              (setenv "HOME" "/tmp"))))))
+              (setenv "HOME" "/tmp")))
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "specutils"))))))
     (native-inputs
      (list python-matplotlib
            python-pytest-asdf-plugin
