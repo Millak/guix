@@ -930,13 +930,13 @@ vectors.")
 (define-public r-blob
   (package
     (name "r-blob")
-    (version "1.2.4")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "blob" version))
               (sha256
                (base32
-                "13vjy9f3zki8w1damz6kqq47689mk4l1navnwh7r6z8lqkmj52fh"))))
+                "0cbkihkap93jpak232lqaakn75mghbi42xba4pybp0vns6waxlnl"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rlang r-vctrs))
