@@ -16383,13 +16383,13 @@ Jammalamadaka and A. @code{SenGupta}, World Scientific.")
 (define-public r-ctrdata
   (package
     (name "r-ctrdata")
-    (version "1.25.1")
+    (version "1.26.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ctrdata" version))
               (sha256
                (base32
-                "1z7vjzxam80lgrss78csfbqhprk9m14cdjpmx80g3p0db5kymycl"))
+                "18xlgmzs1xyaxsr8vjmvq8hp5pf44wh2gnx9mlw48vwr8cq75h6f"))
               ;; TODO: we should also replace this other file:
               ;; inst/js/bundle.js (generated from inst/js/euctr2ndjson.js)
               (snippet
