@@ -24886,16 +24886,16 @@ dynamically as a list of R functions.")
 (define-public r-rappdirs
   (package
     (name "r-rappdirs")
-    (version "0.3.3")
+    (version "0.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rappdirs" version))
        (sha256
         (base32
-         "1161i3jgjvzjv4p8qbz9r976fnggkcrw3mlj4yd1h2svnijrz5a9"))))
+         "0rmw39l4z046wwqna6i2h9kxcd0w5k7ad51zwshk46ivxz4yn813"))))
     (build-system r-build-system)
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-testthat r-withr))
     (home-page "https://cran.r-project.org/web/packages/rappdirs/")
     (synopsis "Determine where to save data, caches, and logs")
     (description
