@@ -11346,7 +11346,7 @@ the Wolfram language.")
 (define-public python-mathics-core
   (package
     (name "python-mathics-core")
-    (version "8.0.1")
+    (version "9.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11355,18 +11355,15 @@ the Wolfram language.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ikgw3w3silxisih92g1wgcwb37k7qkwfmdv5r6yy4ki74qvyk5q"))))
+                "19232vs3sxg1nq32cas8hwsiwvp6nzpnz4jzjjahpvrv1bl62prs"))))
     (arguments
      `(;; <https://github.com/pytest-dev/pytest/pull/10173> is missing .closed
-       #:tests? #f ;TODO: update package
        #:test-flags '("-s")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-bugs
            (lambda _
              (substitute* "pyproject.toml"
-              (("\"data/*.json\",")
-              "\"data/*.json\", \"data/operator-tables.json\",")
               (("\"autoload/\\*.m\",")
                ;; They forgot to install autoload/rules/*.m
                "\"autoload/*.m\", \"autoload/rules/*.m\","))
@@ -11374,9 +11371,33 @@ the Wolfram language.")
              (substitute* "mathics/builtin/files_io/files.py"
               (("https://raw.githubusercontent.com/Mathics3/mathics-core/master/README.rst")
                (string-append (getcwd) "/README.rst")))
-             ;; setup.py has some weird acrobatics that cannot work right.
-             (invoke "mathics3-generate-operator-json-table" "-o"
-                     "mathics/data/operator-tables.json")))
+             ;; llvmlite 0.45+ auto-initializes LLVM; calling initialize()
+             ;; now raises RuntimeError.
+             ;; <https://llvmlite.readthedocs.io/en/v0.45.0/user-guide/binding/initialization-finalization.html>
+             (substitute* "mathics/compile/compile.py"
+              (("llvm\\.initialize\\(\\)") "pass"))
+             ;; The JSON operator tables (op-tables.json, operator-tables.json)
+             ;; are pre-generated in the PyPI tarball but not in git.
+             ;; The Makefile runs admin-tools/make-JSON-tables.sh before
+             ;; 'make dist', but that script also writes to the scanner's
+             ;; default location which is read-only in the store.  Run the
+             ;; needed commands directly.  setup.py has fallback generation
+             ;; code but it's buggy: it writes operator-tables.json to the
+             ;; wrong path and op-tables.json is missing
+             ;; --field=operator-to-amslatex.  Creating the files first
+             ;; makes setup.py's 'if not os.path.exists' checks pass and
+             ;; the buggy code is skipped.
+             (with-directory-excursion "mathics/data"
+               (invoke "mathics3-generate-json-table"
+                       "--field=ascii-operator-to-symbol"
+                       "--field=ascii-operator-to-unicode"
+                       "--field=ascii-operator-to-wl-unicode"
+                       "--field=operator-to-ascii"
+                       "--field=operator-to-amslatex"
+                       "--field=operator-to-unicode"
+                       "-o" "op-tables.json")
+               (invoke "mathics3-generate-operator-json-table"
+                       "-o" "operator-tables.json"))))
          (add-before 'check 'prepare-check
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;(copy-file "operator-tables.json" "mathics/data/operator-tables.json")
@@ -11386,7 +11407,12 @@ the Wolfram language.")
            (lambda _
              ;; Otherwise 210 tests fail because the real output would use
              ;; unicode arrow characters.  With this, only 18 (symbolic) tests fail.
-             (setenv "MATHICS_CHARACTER_ENCODING" "ASCII"))))))
+             (setenv "MATHICS_CHARACTER_ENCODING" "ASCII")))
+         (add-before 'check 'set-home
+           (lambda _
+             ;; The sanity check imports mathics which tries to create a
+             ;; config directory in HOME.  Set HOME to a writable location.
+             (setenv "HOME" "/tmp"))))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-setuptools python-wheel))
     (inputs (list llvm))
