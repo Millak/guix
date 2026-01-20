@@ -27790,13 +27790,13 @@ haven package.")
 (define-public r-ggformula
   (package
     (name "r-ggformula")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggformula" version))
        (sha256
-        (base32 "0q971c9zsv21dr9zwll6l0g737689xil9y9cyq4gpzadi4c850yb"))))
+        (base32 "04p8jjk75hsjc7xr49yi5fyadm3hn9c9x18ynr8fbkwick2a7dnd"))))
     (properties
      ;; Avoid dependency cycle.
      '((updater-ignored-native-inputs . ("r-mosaic" "r-mosaicdata"))))
