@@ -26,6 +26,7 @@
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.comg>
 ;;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;; Copyright © 2025 Laura Kirsch <laurakirsch240406@gmail.com>
+;;; Copyright © 2026 Nikita Alkhovik <forgoty13@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4381,6 +4382,44 @@ Though originally a fork, Nestopia JG has become the de facto upstream branch
 of the Nestopia emulator.")
     (license (list license:gpl2+        ;this project
                    license:lgpl2.1+)))) ;nes_ntsc source files
+
+(define-public libretro-nestopia
+  (let ((commit "473d3072be67fa2542ca833c274ef6682cf0f0bc")
+        (revision "0"))
+    (package
+      (inherit jg-nestopia)
+      (name "libretro-nestopia")
+      (version (git-version "2.0" ;from libretro/libretro_core_options.h
+                            revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/libretro/nestopia")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "01gfwm6ig9ih4yw34fw4hdg6qsyzyjx3v4rvzb0bwk31453v9vhx"))))
+      (arguments
+       (list
+        #:tests? #f ;no test suite
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'change-to-build-dir
+              (lambda _
+                (chdir "libretro")))
+            (delete 'configure)
+            (replace 'install
+              (lambda _
+                (let ((out (string-append #$output "/lib/libretro")))
+                  (mkdir-p out)
+                  (install-file "nestopia_libretro.so" out)))))))
+      (synopsis "Libretro port of Nestopia NES/Famicom emulator")
+      (description
+       "This is the libretro port of the Nestopia emulator, based on the de
+facto upstream Nestopia JG fork, which lives at:
+https://gitlab.com/jgemu/nestopia.  The libretro port contains an additional
+overclocking feature."))))
 
 (define-public jg-cega
   (package
