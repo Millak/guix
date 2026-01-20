@@ -38019,13 +38019,13 @@ ISO 8859, etc.).")
 (define-public python-trio
   (package
     (name "python-trio")
-    (version "0.28.0")
+    (version "0.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trio" version))
        (sha256
-        (base32 "019wqwlbj185skknbjd7paxqqx6vl5gpqk2fwmc5d2lyzsb7hm2f"))))
+        (base32 "0sw04md83splkb0x37bmd1yj8rbf033p2k0x3qim3k9vjbn2j3qm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -38036,75 +38036,62 @@ ISO 8859, etc.).")
                 #~("--ignore=src/trio/_tests/test_dtls.py"
                    "--ignore=src/trio/_tests/test_highlevel_ssl_helpers.py"
                    "--ignore=src/trio/_tests/test_ssl.py"))
-         ;; It requires black and ruff to generate a final report.
-         "--ignore=src/trio/_tests/tools/test_gen_exports.py"
+         ;; Skip tests for the upstream repository's tooling.
+         "--ignore=src/trio/_tests/tools"
          "-k" (string-join
                (list
-                ;; This tests times out.
-                "not test_ki_protection_works"
+                ;; Keyboard interrupts misbehave in the build sandbox.
+                "not test_ki_in_repl"
                 "test_KI_interrupts"
-                ;; This fails with: signal only works in main thread of the main interpreter
-                "test_catch_signals_race_condition_on_exit"
-                ;; Assertion errors.
-                "test_named_thread_os"
-                "test_has_pthread_setname_np"
-                "test_guest_mode_ki"
                 "test_run_in_trio_thread_ki"
-                "test_simple_cancel_scope_usage_doesnt_create\
-_cyclic_garbage"
-                "test_nursery_cancel_doesnt_create_cyclic_garbage"
-                "test_cancel_scope_exit_doesnt_create_cyclic_garbage"
-                "test_locals_destroyed_promptly_on_cancel"
-                "test_ipython_exc_handler"
-                "test_for_leaking_fds"
-                ;; Signals don’t work in the build sandbox.
-                "test_open_signal_receiver"
-                ;; These try to raise KeyboardInterrupt which does not work
-                ;; in the build environment.
-                "test_ki_self"
-                "test_ki_wakes_us_up"
+                ;; Somehow f'{check_errno_is_5!r}' evaluates
+                ;; to "'check_errno_is_5'" instead of "<function ...>",
+                ;; and f'{bool!r}' to "'bool'" instead of "<class 'bool'>".
+                ;; Matcher and RaisesGroup are deprecated in Trio 0.33
+                ;; will probably be removed in version 0.35.
+                "test_Matcher_check"
+                "test_matcher_tostring"
+                "test_raisesgroup_tostring"
                 ;; Failure in name resolution.
-                "test_getnameinfo"
                 "test_SocketType_resolve"
                 ;; OSError: protocol not found.
-                "test_getprotobyname"
-                ;; EOFError: Ran out of input.
-                "test_static_tool_sees_all_symbols")
+                "test_getprotobyname")
                " and not ")
          "src/trio/_tests")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'ignore-deprecations
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("  \"error\",") "  \"ignore\","))))
+          (add-after 'unpack 'patch-pthread-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("src/trio/_core/_thread_cache.py"
+                             "src/trio/_tests/test_threads.py")
+                (("ctypes.util.find_library\\(\"pthread\"\\)")
+                 (simple-format #f "~s"
+                   (search-input-file inputs "lib/libpthread.so.0"))))))
           (add-before 'check 'set-env
             (lambda _
               ;; Tests require a writable home.
-              (setenv "HOME" "/tmp")
-              ;; #$output is first in path which causes "import file mismatch"
-              (setenv "PYTHONPATH" (string-append (getcwd)
-                                                  "/src:$PYTHONPATH")))))))
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (append
        (if (supported-package? python-pyopenssl)
            (list python-pyopenssl)
            '())
-       (list python-pytest
-             python-setuptools)
        (if (supported-package? python-trustme)
            (list python-trustme)
            '())
-       (list python-wheel)))
+       (list python-async-generator
+             python-cryptography
+             python-jedi
+             python-pylint
+             python-pytest
+             python-setuptools)))
     (propagated-inputs
      (list python-attrs
-           python-cffi
-           python-exceptiongroup
            python-idna
            python-outcome
            python-sniffio
            python-sortedcontainers))
-    (home-page "https://github.com/python-trio/trio")
+    (home-page "https://trio.readthedocs.io")
     (synopsis "Friendly Python library for async concurrency and I/O")
     (description
      "Trio strives to be a production-quality, async/await-native I/O library
