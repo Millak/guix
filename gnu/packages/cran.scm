@@ -11430,18 +11430,17 @@ integrated with the tidymodels framework.")
 (define-public r-tglkmeans
   (package
     (name "r-tglkmeans")
-    (version "0.5.5")
+    (version "0.5.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tglkmeans" version))
        (sha256
-        (base32 "0hdnxgkxpgb8jm9aygv3wlhd42blm5nz906vlpl72blgcyc77hhh"))))
+        (base32 "195abc44qig0ii6spifwab0znk21lam86qr0d341xhkn5v1jz79z"))))
     (properties `((upstream-name . "tglkmeans")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli
                              r-dofuture
-                             r-dorng
                              r-dplyr
                              r-future
                              r-ggplot2
@@ -11453,7 +11452,7 @@ integrated with the tidymodels framework.")
                              r-rcppparallel
                              r-tgstat
                              r-tibble))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-testthat r-withr))
     (home-page "https://tanaylab.github.io/tglkmeans/")
     (synopsis "Efficient implementation of K-Means++ algorithm")
     (description
