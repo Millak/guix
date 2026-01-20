@@ -8447,6 +8447,19 @@ format, which are used by ASDF to serialize and deserialize data for the Nancy
 Grace Roman Space Telescope.")
     (license license:bsd-3)))
 
+;; For python-stpreview@0.6.0, remove when a fresh version is released.
+(define-public python-rad-0.28
+  (hidden-package
+  (package
+    (inherit python-rad)
+    (version "0.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "rad" version))
+       (sha256
+        (base32 "0va7yfy3pcd6fp49ni7388lic3fv77n3qhvaxk6jw535v41by381")))))))
+
 (define-public python-radio-beam
   (package
     (name "python-radio-beam")
@@ -8718,6 +8731,22 @@ representation of the same items within the Python code.  That is not a concern
 for Roman since FITS format data files will not be used by the Roman calibration
 pipelines.")
     (license license:bsd-3)))
+
+;; For python-stpreview@0.6.0, remove when a fresh version is released.
+(define-public python-roman-datamodels-0.28
+  (hidden-package
+   (package
+     (inherit python-roman-datamodels)
+     (version "0.28.1")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "roman_datamodels" version))
+        (sha256
+         (base32 "0j5y6d4zz1zyfwp05iwlvn0708hsh7phvp2j3zpi9pczljp78aw0"))))
+     (propagated-inputs
+      (modify-inputs (package-propagated-inputs python-roman-datamodels)
+        (replace "python-rad" python-rad-0.28))))))
 
 (define-public python-romancal
   (package
@@ -9946,10 +9975,9 @@ implementing calibration pipeline software.")
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-roman-datamodels
+           python-roman-datamodels-0.28
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-asdf
            python-astropy
