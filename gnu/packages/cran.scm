@@ -47940,14 +47940,14 @@ vignette for more information and examples.")
 (define-public r-distributional
   (package
     (name "r-distributional")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "distributional" version))
        (sha256
         (base32
-         "1b3i5vgljpjcr8v2xrz20cd900q36rmijizfgcx7id3raj5dwp1l"))))
+         "16j1in7z712gf32ljl5dy6wdv06sm25b81dmfpq2517cw813i36g"))))
     (properties
      '((upstream-name . "distributional")
        (updater-extra-native-inputs . ("r-evd" "r-mvtnorm"))))
@@ -47959,7 +47959,11 @@ vignette for more information and examples.")
            r-pillar
            r-rlang
            r-vctrs))
-    (native-inputs (list r-evd r-mvtnorm r-testthat))
+    (native-inputs (list r-actuar
+                         r-evd
+                         r-extradistr
+                         r-mvtnorm
+                         r-testthat))
     (home-page "https://pkg.mitchelloharawild.com/distributional/")
     (synopsis "Vectorized probability distributions")
     (description
