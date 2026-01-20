@@ -7800,13 +7800,13 @@ the system clipboards.")
 (define-public r-clock
   (package
     (name "r-clock")
-    (version "0.7.3")
+    (version "0.7.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "clock" version))
               (sha256
                (base32
-                "0vjni8ci8y5aih104rbca5dqrsdsnpxwrqahmr3ncv3qp0krx82s"))))
+                "1jlp4f5a48l2318dgawafc8v8xncms1nvw9adl0xpwhhlrfkqxhk"))))
     (properties
      '((upstream-name . "clock")
        (updater-extra-native-inputs . ("tzdata-for-tests"))))
