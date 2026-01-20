@@ -8205,14 +8205,14 @@ variables.")
 (define-public r-ggpp
   (package
     (name "r-ggpp")
-    (version "0.5.9")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggpp" version))
        (sha256
         (base32
-         "1im9xyb5knakb8lgnnfzqlzw8ca9hynj1yh44fhlqxifp06p0g0d"))))
+         "0z0n2d5f3bkm2zr3lgxz0jlk7vwkmbdcdsic99k10jyr5g7ilmrx"))))
     (properties
      '((upstream-name . "ggpp")))
     (build-system r-build-system)
@@ -8222,7 +8222,6 @@ variables.")
            r-glue
            r-gridextra
            r-lubridate
-           r-magrittr
            r-mass
            r-polynom
            r-rlang
