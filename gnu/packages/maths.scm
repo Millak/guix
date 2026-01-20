@@ -6109,6 +6109,13 @@ parts of it.")
               ;; obviously wrong.
               "NUM_THREADS=128"
 
+              ;; OpenMP support prevents deadlocks when multithreaded Openblas
+              ;; is called from an OpenMP parallel region and takes care of
+              ;; deactivating threads when necessary. See
+              ;; http://www.openmathlib.org/OpenBLAS/docs/faq/#using-openblas-with-openmp
+              ;; for more details.
+              "USE_OPENMP=1"
+
               ;; DYNAMIC_ARCH is only supported on some architectures.
               ;; DYNAMIC_ARCH combined with TARGET=GENERIC provides a library
               ;; which uses the optimizations for the detected CPU.  This can
