@@ -9929,10 +9929,13 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
     (version "0.11.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "stpipe" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spacetelescope/stpipe")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1and1hjlwbmqb2nkw04gmp7q0nrnc0s22vgkq6bfs78c77z7cswf"))
+        (base32 "13vg3fjk9sqyyi4gwa3m5a2kzqh87vh36px07lbb0kx4fby5cnam"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -9943,6 +9946,31 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
              (("from astropy.extern.configobj.configobj import ") "from configobj import ")
              (("from astropy.extern.configobj.validate import ") "from validate import "))))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 261 passed, 1 skipped, 6 deselected, 1 warning
+      #:test-flags
+      ;; XXX: These tests faileur might be something to investigate deeper,
+      ;; the project was released on <2025-09-26>.
+      #~(list #$@(map (lambda (test)
+                        (string-append "--deselect=tests/" test))
+                      ;; ModuleNotFoundError: No module named
+                      ;; 'roman_datamodels.maker_utils'
+                      (list "test_abstract_datamodel.py::test_roman_datamodel"
+                            ;; FileNotFoundError: Unable to fetch schema from
+                            ;; non-file URL:
+                            ;; http://stsci.edu/schemas/stpipe/step_config-1.0.0
+                            "test_step.py::test_build_config_pipe_config_file"
+                            "test_step.py::test_build_config_pipe_kwarg"
+                            "test_step.py::test_build_config_step_config_file"
+                            "test_step.py::test_build_config_step_kwarg"
+                            "test_step.py::test_step_list_args")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                      #$(version-major+minor+point version)))))))
     (native-inputs
      (list python-pytest
            python-pytest-doctestplus
