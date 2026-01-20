@@ -2042,14 +2042,14 @@ ldap, and also supports cookies, redirects, authentication, etc.")
 (define-public r-segmented
   (package
     (name "r-segmented")
-    (version "2.1-4")
+    (version "2.2-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "segmented" version))
        (sha256
         (base32
-         "1sziji3cs46admkawvxjl4idc7krnijf9amfk2fzbk8c3b4fglmb"))))
+         "1vfn2irpra264biisjd0ild7xcga8swy0jwh2i5pb7yw8wc9mlmx"))))
     (build-system r-build-system)
     (propagated-inputs (list r-mass r-nlme))
     (home-page "https://cran.r-project.org/web/packages/segmented")
