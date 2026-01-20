@@ -9304,13 +9304,13 @@ level p-values.")
 (define-public r-snowflakeauth
   (package
     (name "r-snowflakeauth")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "snowflakeauth" version))
        (sha256
-        (base32 "023bw3a91hj5irfv8b4209890j1pp4j6ccd500w8yqy2vyk903c8"))))
+        (base32 "1hcbhdvlpc81xyb4vfka9il33schhpr9lzg16wmvmbn2v527sjzk"))))
     (properties `((upstream-name . "snowflakeauth")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli
