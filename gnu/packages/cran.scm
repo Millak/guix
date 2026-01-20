@@ -47689,14 +47689,14 @@ Mean Test, Durbin-Watson statistic etc.")
 (define-public r-rcdd
   (package
     (name "r-rcdd")
-    (version "1.6")
+    (version "1.6-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rcdd" version))
        (sha256
         (base32
-         "0xfvfcjd9gpp6qaalkfkx2f11lyj4sm6n6b763lnk0rrmn6cv2lz"))))
+         "03fjv2ljnz55zlz9svbjzp1qs4r71jywx78balwm205l5n541jyv"))))
     (properties
      `((upstream-name . "rcdd")))
     (build-system r-build-system)
