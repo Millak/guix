@@ -40189,14 +40189,14 @@ the current document.")
 (define-public r-xgboost
   (package
     (name "r-xgboost")
-    (version "3.1.2.1")
+    (version "3.1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "xgboost" version))
        (sha256
         (base32
-         "12ys8a51n8a4rlzvqfygjy7bzn9l95yaqglaxpphk5g88xx2mn3l"))))
+         "1pmhrnfrj89b6d52phw58f4njknh10c612icdrny9pyqp26jdvjr"))))
     (properties
      '((updater-ignored-native-inputs . ("r-titanic"))))
     (build-system r-build-system)
