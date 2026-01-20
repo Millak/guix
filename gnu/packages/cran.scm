@@ -9451,14 +9451,14 @@ the input of another.")
 (define-public r-survival
   (package
     (name "r-survival")
-    (version "3.8-3")
+    (version "3.8-6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "survival" version))
        (sha256
         (base32
-         "05crwnjvdx2z6asjipc04534zp2jk3a16qkg8b3n399pgnjhbayw"))))
+         "1mwr4r1567lzl202hg9i3p7bbzyw4ampkwbcdrdfqr3cv0shlk4s"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-matrix))
