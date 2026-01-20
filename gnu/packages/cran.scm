@@ -10057,13 +10057,13 @@ colleagues (2019) @url{https://doi:10.18637/jss.v090.c01}.")
 (define-public r-polylabelr
   (package
     (name "r-polylabelr")
-    (version "0.3.0")
+    (version "1.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "polylabelr" version))
               (sha256
                (base32
-                "1wxr2mhbsq7sm3byb4jn6dskmlxxjywhj453qhs0z40aaiphd49c"))))
+                "1miw3mlhvs96dnhgips6n3lxffz7429z4m8cinhpivrh59l5ag4a"))))
     (properties `((upstream-name . "polylabelr")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
