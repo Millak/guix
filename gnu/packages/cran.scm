@@ -29539,14 +29539,14 @@ data, fixed and random effects with bootstrapping.")
 (define-public r-glmmtmb
   (package
     (name "r-glmmtmb")
-    (version "1.1.13")
+    (version "1.1.14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "glmmTMB" version))
        (sha256
         (base32
-         "02yy3krqz96hbfprxi1c7hz55f1qjdfg53mpg0ckfnr3yig0k51a"))))
+         "1ggvxyz557s502gzw8xl2p7mg8zprhg7hi2xn5fq5imkwk7q2g32"))))
     (properties `((upstream-name . "glmmTMB")))
     (build-system r-build-system)
     (arguments
