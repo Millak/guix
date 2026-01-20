@@ -30647,18 +30647,18 @@ experiments using ANOVA or mixed models.")
 (define-public r-lmertest
   (package
     (name "r-lmertest")
-    (version "3.1-3")
+    (version "3.2-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lmerTest" version))
        (sha256
         (base32
-         "1zd8gqjkazhxgpnnr484xwsq30p62fq8592nzyc171zjyplpbaim"))))
+         "10rcjxwiccmrnra41q790j6vbqfglmcmr1whbz5adgfyv35w2s60"))))
     (properties `((upstream-name . "lmerTest")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ggplot2 r-lme4 r-mass r-numderiv))
+     (list r-ggplot2 r-lme4 r-mass r-numderiv r-reformulas))
     (home-page "https://github.com/runehaubo/lmerTestR")
     (synopsis "Tests in linear mixed effects models")
     (description
