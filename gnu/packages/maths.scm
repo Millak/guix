@@ -11277,7 +11277,7 @@ architecture.")
 (define-public python-mathics-scanner
   (package
     (name "python-mathics-scanner")
-    (version "1.4.1")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -11287,7 +11287,7 @@ architecture.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0y34kzqha5wp6n8cyvhhz47mq33x9kwi8ibj67q6pf08qslg154n"))))
+         "1illmj40rynrhqwr5sfh2mkj2wnpvaqrmvlh56h7za3d823pf5jz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -11299,15 +11299,18 @@ architecture.")
               (substitute* "mathics_scanner/version.py"
                (("__version__=\"[^\"]*\"")
                 (string-append "__version__=\"" #$version "\"")))
+              ;; Generate JSON character/operator tables (character-tables.json,
+              ;; operators.json) which are pre-generated in the PyPI tarball
+              ;; but not in git.  The Makefile runs this script before
+              ;; 'make dist'.  Unlike in mathics-core, running the script here
+              ;; works because it writes to its own source tree being built;
+              ;; in mathics-core, the script tries to write to the installed
+              ;; python-mathics-scanner package which is not allowed.
               (invoke "bash" "./admin-tools/make-JSON-tables.sh")
               ;; Missing installation of "operators.yml".
               (substitute* "pyproject.toml"
                (("\"data/named-characters.yml\",")
-                "\"data/named-characters.yml\", \"data/operators.yml\","))
-              ;; Would cause a crash at runtime every time you select
-              ;; anything when running build_tables.py .
-              (substitute* "mathics_scanner/generate/build_tables.py"
-               (("\"operator-to-amslatex\",") "")))))))
+                "\"data/named-characters.yml\", \"data/operators.yml\",")))))))
     (propagated-inputs (list python-chardet python-click python-pyyaml))
     (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://mathics.org/")
