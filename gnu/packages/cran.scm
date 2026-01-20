@@ -16011,13 +16011,13 @@ factorization and divisive clustering for large sparse and dense matrices.")
 (define-public r-rcppspdlog
   (package
     (name "r-rcppspdlog")
-    (version "0.0.24")
+    (version "0.0.26")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppSpdlog" version))
        (sha256
-        (base32 "1xjijdg6mmb29nvx0y4j1735qnv9xzj79q8dd8jmipz8gm0p7aqb"))))
+        (base32 "1avn2pi3w7vhna29af4bpd59cnk3d65w2k48mysyl4vb4p6di0i6"))))
     (properties `((upstream-name . "RcppSpdlog")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
