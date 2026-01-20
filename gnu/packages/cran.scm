@@ -50395,14 +50395,14 @@ and regression metrics (e.g., RMSE).")
 (define-public r-warp
   (package
     (name "r-warp")
-    (version "0.2.2")
+    (version "0.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "warp" version))
        (sha256
         (base32
-         "0h3q359dkxzx8kpl090rz0bwkkswhgaz0pws2ix4b8p3fm658yzm"))))
+         "0ahiv9mjcm33jl503l07aa1abja4klmm31rd4ia1fpgaj15l1wxx"))))
     (properties
      '((upstream-name . "warp")
        (updater-extra-native-inputs . ("tzdata-for-tests"))))
