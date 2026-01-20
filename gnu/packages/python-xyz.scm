@@ -28991,18 +28991,21 @@ register custom encoders and decoders.")
 (define-public python-anyio
   (package
     (name "python-anyio")
-    (version "4.10.0")
+    (version "4.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "anyio" version))
        (sha256
         (base32
-         "19ivjwk60cyxc5cm7699f3007rp8wxqq6nxahx2p8fb0r4sswgrz"))))
+         "00ypzqzllinhj2x3ai5x5bvkdb0109nw59rdjdfg1lw59hxcrks1"))
+       (patches
+        ;; Patch uses Python 3.11 except* syntax so can yet be upstreamed.
+        (search-patches "python-anyio-unuse-exceptiongroup-in-test.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1462 passed, 47 skipped, 665 deselected, 6 xfailed
+      ;; tests: 1580 passed, 67 skipped, 700 deselected, 4 xfailed
       #:test-flags
       #~(list "-p" "no:asyncio"
               "-m" "not network"
@@ -29010,8 +29013,6 @@ register custom encoders and decoders.")
               (string-join
                (list
                 "not test_is_block_device"
-                ;; AssertionError
-                "test_anyio_fixture_adoption_does_not_persist"
                 #$@(cond
                     ((or (target-aarch64?)
                          (target-riscv64?))
@@ -29053,7 +29054,8 @@ register custom encoders and decoders.")
            python-sniffio
            python-typing-extensions))
     (native-inputs
-     (list python-psutil
+     (list python-blockbuster
+           python-psutil
            python-pytest
            python-pytest-mock
            python-setuptools
@@ -29062,7 +29064,7 @@ register custom encoders and decoders.")
            python-trustme
            python-truststore
            python-uvloop))
-    (home-page "https://github.com/agronholm/anyio")
+    (home-page "https://anyio.readthedocs.io")
     (synopsis "Compatibility layer for multiple asynchronous event loops")
     (description
      "AnyIO is an asynchronous networking and concurrency library that works

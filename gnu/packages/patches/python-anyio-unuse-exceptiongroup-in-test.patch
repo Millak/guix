@@ -1,0 +1,48 @@
+commit 0df0045987436d9eef2c477ecc13ebea65205e1f
+Author: Nguyễn Gia Phong <cnx@loang.net>
+Date:   2026-01-21 13:23:43 +0900
+
+    Unuse exceptiongroup in test
+
+diff --git a/pyproject.toml b/pyproject.toml
+index dd1c0a3460a9..963da45d4ee8 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -48,7 +48,7 @@ pytest11 = {anyio = "anyio.pytest_plugin"}
+ test = [
+     "blockbuster >= 1.5.23",
+     "coverage[toml] >= 7",
+-    "exceptiongroup >= 1.2.0",
++    "exceptiongroup >= 1.2.0; python_version < '3.11'",
+     "hypothesis >= 4.18.2",
+     "psutil >= 5.9",
+     "pytest >= 7.0",
+diff --git a/tests/test_taskgroups.py b/tests/test_taskgroups.py
+index b747f7291a4c..036ab9fcbeca 100644
+--- a/tests/test_taskgroups.py
++++ b/tests/test_taskgroups.py
+@@ -11,7 +11,6 @@ from typing import Any, NoReturn, cast
+ from unittest import mock
+ 
+ import pytest
+-from exceptiongroup import catch
+ from pytest import FixtureRequest, MonkeyPatch
+ 
+ import anyio
+@@ -1550,13 +1549,12 @@ async def test_cancel_before_entering_task_group() -> None:
+ 
+ 
+ async def test_reraise_cancelled_in_excgroup() -> None:
+-    def handler(excgrp: BaseExceptionGroup) -> None:
+-        raise
+-
+     with CancelScope() as scope:
+         scope.cancel()
+-        with catch({get_cancelled_exc_class(): handler}):
++        try:
+             await anyio.sleep_forever()
++        except* get_cancelled_exc_class():
++            raise
+ 
+ 
+ async def test_cancel_child_task_when_host_is_shielded() -> None:
