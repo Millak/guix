@@ -28,6 +28,7 @@
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
@@ -151,6 +152,40 @@ by Cython."
         (when (file-exists? generated-file)
           (format #t "Possible Cythonized file found: ~a~%" generated-file))))
     (find-files "." "\\.pyx$")))
+
+(define* (set-version #:key name inputs #:allow-other-keys)
+  "Set the expect package version environment variable in Semantic Versioning
+format when python-setuptools-scm or python-pbr is present."
+
+  (define (extract-version name)
+    "Extract version from a name-version string."
+    ;; Note: This fails if the package-name contains a dot.
+    (and-let* ((first-dot (or (string-index name #\.)
+                              (string-length name)))
+               (prev-hyphen (string-rindex name #\- 0 first-dot)))
+      (substring name (+ prev-hyphen 1))))
+
+  (let ((package (and=> (any (cute assoc <> inputs)
+                             (list "python-setuptools-scm"
+                                   "python-setuptools-scm-bootstrap"
+                                   "python-pbr"))
+                        car)))
+    ;; Both git and hg use -checkout suffixes.
+    (if (and package (string-suffix? "-checkout" (assoc-ref inputs "source")))
+        (and-let* ((version (extract-version name))
+                   ;; version here can be semver-revision-commit.
+                   (version (first (string-split version #\-))))
+          (match package
+            ((or "python-setuptools-scm" "python-setuptools-scm-bootstrap")
+             (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" version))
+            ("python-pbr"
+             (setenv "PBR_VERSION" version))
+            (_                          ;should never happen.
+             #f)))
+        ;; Otherwise, it is probably from a wheel and doesn't require
+        ;; the phase in the first place.
+        (format #t "The source doesn't seem to use version control, \
+python-setuptools-scm is likely unnecessary as a native-input.~%"))))
 
 (define* (build #:key outputs build-backend backend-path configure-flags #:allow-other-keys)
   "Build a given Python package."
@@ -501,6 +536,7 @@ installed with setuptools."
       enable-bytecode-determinism)
     (add-after 'enable-bytecode-determinism 'ensure-no-cythonized-files
       ensure-no-cythonized-files)
+    (add-after 'ensure-no-cythonized-files 'set-version set-version)
     (delete 'bootstrap)
     (replace 'set-SOURCE-DATE-EPOCH set-SOURCE-DATE-EPOCH*)
     (delete 'configure)                 ;not needed
