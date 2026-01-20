@@ -14771,8 +14771,8 @@ applications with foreign library dependencies that run some kind of GUI.")
   (sbcl-package->ecl-package sbcl-deploy))
 
 (define-public sbcl-depot
-  (let ((commit "73822d9f480cbad00971b45ee80117297a67fb53")
-        (revision "1"))
+  (let ((commit "6b46c7d85475bb3869589a73fa7dce8614e6f2f7")
+        (revision "2"))
     (package
       (name "sbcl-depot")
       (version (git-version "1.0.0" revision commit))
@@ -14780,10 +14780,10 @@ applications with foreign library dependencies that run some kind of GUI.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/depot/")
+               (url "https://codeberg.org/shinmera/depot")
                (commit commit)))
          (sha256
-          (base32 "1v42pirdwbxy8l8i9a2jmbpri8a62vh0r4vm25xwaak0y4gr71va"))
+          (base32 "0ka6lan77phinhw66jbzl4xpngyfwk67rhzaxf4vv13f5ajdi2gb"))
          (file-name (git-file-name "depot" version))))
       (build-system asdf-build-system/sbcl)
       (inputs
@@ -14793,7 +14793,7 @@ applications with foreign library dependencies that run some kind of GUI.")
              sbcl-trivial-features
              sbcl-trivial-gray-streams
              sbcl-zippy))
-      ;; TODO: Some 6 tests fail, why?  See https://github.com/Shinmera/depot/issues/2.
+      ;; TODO: Some 6 tests fail, why?  See https://codeberg.org/shinmera/depot/issues/2.
       (arguments
        '(#:asd-systems '("depot"
                          "depot-in-memory"
@@ -14806,7 +14806,7 @@ that have several attributes, and a central data payload.  Most notably this
 includes the OS filesystem, but can also be used to address other
 filesystem-like things like archives, object stores, etc. in the same
 manner.")
-      (home-page "https://shinmera.github.io/depot/")
+      (home-page "https://codeberg.org/Shinmera/depot")
       (license license:zlib))))
 
 (define-public cl-depot
