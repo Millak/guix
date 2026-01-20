@@ -33018,13 +33018,13 @@ linear order on both variables.")
 (define-public r-isorix
   (package
     (name "r-isorix")
-    (version "0.9.3")
+    (version "0.9.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "IsoriX" version))
        (sha256
-        (base32 "1z86qgl68l9mpyf0ym1szvwv416mx7gqkr15gs5i0jlw4zafc1jc"))))
+        (base32 "1169b8f7y7n5l31al7k2jy2hx7w2clbysx9ar8fpdjmci5v25d1m"))))
     (properties `((upstream-name . "IsoriX")))
     (build-system r-build-system)
     (propagated-inputs (list r-lattice
