@@ -8015,13 +8015,13 @@ objects can be used within Nebulosa.")
 (define-public r-netgsa
   (package
     (name "r-netgsa")
-    (version "4.0.6")
+    (version "4.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "netgsa" version))
        (sha256
-        (base32 "0zdj464mlhm71cwgn6jhzb6nrpnwy6php7gifgzag7pin9zh0l5y"))))
+        (base32 "0a38gg33h5qmihg61jh8lpckzhp7yrbgsdn8lqk7j0gcp5fc3ylv"))))
     (properties `((upstream-name . "netgsa")))
     (build-system r-build-system)
     (propagated-inputs (list r-annotationdbi
@@ -8038,7 +8038,6 @@ objects can be used within Nebulosa.")
                              r-magrittr
                              r-matrix
                              r-msigdbr
-                             r-org-hs-eg-db
                              r-quadprog
                              r-rcpp
                              r-rcppeigen
