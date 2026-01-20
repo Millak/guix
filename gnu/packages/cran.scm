@@ -7271,16 +7271,16 @@ times for R expressions.")
 (define-public r-benchmarkmedata
   (package
     (name "r-benchmarkmedata")
-    (version "1.0.4")
+    (version "2.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "benchmarkmeData" version))
               (sha256
                (base32
-                "1n4vjkagqlm6kw2hilf4gjfcdjad0bcg652j9nl2ygbq3kdnh1vf"))))
+                "05qlmmdni9ywcgkq4r0binkbwzva6zn7ijlx548x0j65l62wznm8"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-dplyr r-tibble))
+     (list r-dplyr r-rlang r-tibble))
     (native-inputs (list r-testthat))
     (home-page "https://github.com/csgillespie/benchmarkme-data")
     (synopsis "Data set for the @code{benchmarkme} package")
