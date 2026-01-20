@@ -6841,7 +6841,7 @@ accessing bigWig files.")
 (define-public python-schema-salad
   (package
     (name "python-schema-salad")
-    (version "8.9.20250723145140")
+    (version "8.9.20251102115403")
     (source
       (origin
         (method git-fetch)
@@ -6850,16 +6850,17 @@ accessing bigWig files.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32
-          "1bqsbxx1275129j08aqz7qpzk1nlk4h9psvkm7hzb4liag8nyiql"))))
+         (base32 "0jcq6yam58q9xic9mzv09075s2mbng5bs0pxsh335i6jfwrp1b6x"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list
-         ;; Skip failing test, probably innocent.
-         ;; TODO: Remove when upgrading because updated upstream.
-         "--deselect=schema_salad/tests/test_makedoc.py::test_detect_changes_in_html")
+         ;; These tests require network access.
+         "--deselect=schema_salad/tests/test_examples.py::test_bad_schemas"
+         "--deselect=schema_salad/tests/test_cg.py::test_load_by_yaml_metaschema"
+         ;; This test requires the cwl-runner binary.
+         "--ignore=schema_salad/tests/test_cwl11.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-requirements
@@ -6869,23 +6870,7 @@ accessing bigWig files.")
               (substitute* "requirements.txt"
                 (("mistune.*") "mistune"))
               (substitute* "setup.py"
-                (("mistune[^\"]*") "mistune"))))
-          (add-before 'check 'skip-failing-tests
-            (lambda _
-              (let ((skip-test
-                     (lambda (test-pattern)
-                       (string-append "@pytest.mark.skip(reason="
-                                      "\"test requires network access\")\n"
-                                      test-pattern))))
-                (substitute* "schema_salad/tests/test_cg.py"
-                  (("^def test_load_by_yaml_metaschema\\(" all)
-                   (skip-test all)))
-                (substitute* "schema_salad/tests/test_cwl11.py"
-                  (("^def test_(secondaryFiles|outputBinding|yaml_tab_error)\\(" all)
-                   (skip-test all)))
-                (substitute* "schema_salad/tests/test_examples.py"
-                  (("^def test_bad_schemas\\(" all)
-                   (skip-test all)))))))))
+                (("mistune[^\"]*") "mistune")))))))
     (propagated-inputs
      (list python-cachecontrol
            python-mistune
