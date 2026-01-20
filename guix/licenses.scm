@@ -40,7 +40,7 @@
 (define-module (guix licenses)
   #:use-module (srfi srfi-9)
   #:export (license? license-name license-uri license-comment
-            afl2.1
+            afl2.1 afl3.0
             agpl1 agpl3 agpl3+
             apsl2
             arphic-1999
@@ -180,6 +180,11 @@ cases, reduces to #t at macro-expansion time."
 (define afl2.1
   (license "AFL 2.1"
            "https://spdx.org/licenses/AFL-2.1.html"
+           "https://www.gnu.org/licenses/license-list#AcademicFreeLicense"))
+
+(define afl3.0
+  (license "AFL 3.0"
+           "https://spdx.org/licenses/AFL-3.0.html"
            "https://www.gnu.org/licenses/license-list#AcademicFreeLicense"))
 
 (define agpl1
