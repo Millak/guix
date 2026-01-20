@@ -21796,13 +21796,13 @@ and to both short and long sequence reads.")
 (define-public r-flames
   (package
     (name "r-flames")
-    (version "2.4.1")
+    (version "2.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "FLAMES" version))
        (sha256
-        (base32 "1ls28dc01bm0bmf304ybgy8w89q2wwccf9krk44cn0bhynm7bsq4"))
+        (base32 "1w9z79w3jm6piijyhqfgx7m7zldq9f6q161h92idxn5aw3my1c18"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "src/submodule/minimap2"))))
