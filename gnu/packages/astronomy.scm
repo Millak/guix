@@ -6525,7 +6525,12 @@ translations.")
      (list #:tests? #f))
     (native-inputs
      (list python-setuptools
-           python-setuptools-scm))))
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy
+           python-gwcs
+           python-numpy
+           python-scipy))))
 
 (define-public python-ogadf-schema
   (package
