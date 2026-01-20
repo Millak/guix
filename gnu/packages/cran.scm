@@ -4226,14 +4226,14 @@ side.")
 (define-public r-fpc
   (package
     (name "r-fpc")
-    (version "2.2-13")
+    (version "2.2-14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fpc" version))
        (sha256
         (base32
-         "0irzsl1g71z7kl0qrklkv0rv9byv017lh5klp5hfw3xw8zw3sm2g"))))
+         "02ijainxq8v4k7hadva0iyf30m1aspf2b0vs8fymd3m93grqfkk5"))))
     (build-system r-build-system)
     ;; FIXME Test fails with this message:
     ;; attempt to select less than one element in get1index <real>
