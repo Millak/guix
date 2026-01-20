@@ -6119,18 +6119,18 @@ Analytics products.")
 (define-public r-prabclus
   (package
     (name "r-prabclus")
-    (version "2.3-4")
+    (version "2.3-5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "prabclus" version))
        (sha256
         (base32
-         "0wmcw0iz0a4q0x83v36ldv8b67czcpw3g18v68i3v9284rbj6xnd"))))
+         "12sfssxkqvnn1vhv1wzfp8h662nixbmy068c91y1lmg7mcmi7nga"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-mass r-mclust))
-    (native-inputs (list r-spatialreg r-spdep))
+    (native-inputs (list r-spatialreg))
     (home-page "https://cran.r-project.org/web/packages/prabclus")
     (synopsis "Parametric bootstrap tests for spatial neighborhood clustering")
     (description
