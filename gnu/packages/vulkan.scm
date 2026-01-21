@@ -774,7 +774,7 @@ storage.")
 (define-public vulkan-utility-libraries
   (package
     (name "vulkan-utility-libraries")
-    (version "1.4.321.0")
+    (version "1.4.335.0")
     (source
      (origin
        (method git-fetch)
@@ -782,7 +782,7 @@ storage.")
              (url "https://github.com/KhronosGroup/Vulkan-Utility-Libraries")
              (commit (string-append "vulkan-sdk-" version))))
        (sha256
-        (base32 "1xj860z596p2wgdfc5yr15q0hasz8p4ci6x0j1wim7jklp92g89i"))
+        (base32 "116agfaayycizafq2infy12n07039rp6azzvfff3wq84ph3v8cwl"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
