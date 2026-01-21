@@ -8833,15 +8833,18 @@ possible.")
 (define-public python-markupsafe
   (package
     (name "python-markupsafe")
-    (version "3.0.2")
+    (version "3.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "markupsafe" version))
        (sha256
-        (base32 "1w1b1a5pskpqhx1mb53rgpv9srplhrrkr4hsl67f8rq1z3nx6mgf"))))
+        (base32 "160npsg7jh6mbiwy23xm9aqcxgcn0wl33hgx42rmfr2biy09a9kj"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    ;; tests: 79 passed, 1 skipped
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (home-page "https://markupsafe.palletsprojects.com")
     (synopsis "XML/HTML/XHTML markup safe string implementation for Python")
     (description
