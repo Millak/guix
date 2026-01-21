@@ -255,8 +255,6 @@ driver.")
 extracting firmware images.")
     (license license:expat)))
 
-(define-deprecated-package python-binwalk binwalk)
-
 (define-public fwupd-efi
   (package
     (name "fwupd-efi")
