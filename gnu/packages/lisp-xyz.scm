@@ -9316,14 +9316,14 @@ using bindings to the portaudio library.")
                (("librt.so" all)
                 (string-append (assoc-ref inputs "glibc") "/lib/" all))))))))
     (native-inputs
-     `(("cl-ppcre" ,sbcl-cl-ppcre)
-       ("rove" ,sbcl-rove)))
+     (list sbcl-cl-ppcre
+           sbcl-rove))
     (inputs
-     `(("alexandria" ,sbcl-alexandria)
-       ("babel" ,sbcl-babel)
-       ("cffi" ,sbcl-cffi)
-       ("glibc" ,glibc)
-       ("local-time" ,sbcl-local-time)))
+     (list sbcl-alexandria
+           sbcl-babel
+           sbcl-cffi
+           glibc
+           sbcl-local-time))
     (home-page "https://github.com/xFA25E/cl-posix-mqueue")
     (synopsis "Common Lisp binding to POSIX mqueue")
     (description
