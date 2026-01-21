@@ -214,13 +214,16 @@ the commit hash, the downloaded directory and its content hash."
               (bytevector->nix-base32-string
                (query-path-hash store checkout))))))
 
-(define (git-origin url commit hash)
+(define* (git-origin url commit hash #:key recursive?)
   "Simple helper to generate a Git origin s-expression."
   `(origin
      (method git-fetch)
      (uri (git-reference
             (url ,(and (not (eq? url 'null)) url))
-            (commit ,commit)))
+            (commit ,commit)
+            ,@(if recursive?
+                  '(recursive? #t)
+                  '())))
      (file-name (git-file-name name version))
      (sha256
       (base32 ,hash))))
