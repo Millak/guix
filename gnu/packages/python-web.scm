@@ -6653,9 +6653,6 @@ python-requests.")
 HTTP via a UNIX domain socket.")
     (license license:asl2.0)))
 
-(define-deprecated-package python-requests-unixsocket
-  python-requests-unixsocket2)
-
 (define-public python-requests-ntlm
   (package
     (name "python-requests-ntlm")
