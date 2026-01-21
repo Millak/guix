@@ -14957,24 +14957,25 @@ diffs, \"context\" format diffs, and \"vdelta\" format binary diffs.")
   (sbcl-package->clasp-package sbcl-diff))
 
 (define-public sbcl-dissect
-  (let ((commit "a70cabcd748cf7c041196efd711e2dcca2bbbb2c"))
+  (let ((commit "985fe01e7a14cef19c6b606c96858ad4096e2781")
+        (revision "3"))
     (package
       (name "sbcl-dissect")
-      (version (git-version "1.0.0" "2" commit))
+      (version (git-version "1.0.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/dissect")
+               (url "https://codeberg.org/shinmera/dissect")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1ym1zggwrj15l7y2mcz5l2gfk68prqxhdswffd9s5014pa6zyysr"))))
+           "0vrqlinlpjsvwcch6wrbygbyrksi45mrncdwk8vdhzdplhi22h49"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-cl-ppcre))
-      (home-page "https://shinmera.github.io/dissect/")
+      (home-page "https://shinmera.com/docs/dissect")
       (synopsis
        "Introspection library for the call stack and restarts")
       (description
