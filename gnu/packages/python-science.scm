@@ -3043,9 +3043,6 @@ logic, also known as grey logic.")
      "Scikit-image is a collection of algorithms for image processing.")
     (license license:bsd-3)))
 
-;; XXX: Deprecated on <2025-12-12>.
-(define-deprecated/public-alias python-scikit-image-next python-scikit-image)
-
 (define-public python-scikit-misc
   (package
     (name "python-scikit-misc")
