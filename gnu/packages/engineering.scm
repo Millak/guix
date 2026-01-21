@@ -5134,6 +5134,9 @@ more.")
 server for Python and pypy3.")
     (license license:lgpl3+)))
 
+;; NOTE: modglue is frozen, receiving zero development since 2017-01-19.
+;; However it is a dependency of cadabra 1.x, and cadabra 1.x is a
+;; soft dependency of TeXmacs.
 (define-public modglue
   (package
     (name "modglue")
@@ -5169,6 +5172,8 @@ multiple co-processes in cadabra.")
     (home-page "https://cadabra.science/")
     (license license:gpl2+)))
 
+;; NOTE: cadabra is frozen, receiving zero development since 2016-12-20.
+;; However it is a soft dependency of TeXmacs (as a plugin).
 (define-public cadabra
   (package
     (name "cadabra")
