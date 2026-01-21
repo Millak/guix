@@ -189,24 +189,22 @@ it.")
 (define-public trealla
   (package
     (name "trealla")
-    (version "2.88.4")
+    (version "2.89.1")
     (source
      (origin
        (method git-fetch)
        (uri
         (git-reference
-         (url "https://github.com/trealla-prolog/trealla")
-         (commit (string-append "v" version))))
+          (url "https://github.com/trealla-prolog/trealla")
+          (commit (string-append "v" version))))
        (sha256
-        (base32 "0sy8f2q3hz0i9rg6vhvjj1plsyi6dl08pf7fnw8lmh6nw0pn9ni0"))
+        (base32 "0dxblcq6p899rsj8p3k5s3p8i2mfhz95flk7x8r27vymc2fwhx0b"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
-     (append
-       (if (supported-package? valgrind/pinned)
-           (list valgrind/pinned)
-           '())
-       (list xxd)))
+     (if (supported-package? valgrind/pinned)
+         (list valgrind/pinned)
+         '()))
     (inputs
      (list curl
            gsl
@@ -217,7 +215,10 @@ it.")
            sqlite))
     (arguments
      (list
-      #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "HOST_CC=" #$(cc-for-target)))
       #:test-target (if (this-package-native-input "valgrind")
                         "check"
                         "test")
@@ -245,11 +246,7 @@ it.")
                  (search-input-file inputs "lib/libraylib.so")))
               (substitute* "library/sqlite3.pl"
                 (("libsqlite3\\.so")
-                 (search-input-file inputs "lib/libsqlite3.so")))))
-          (replace 'install
-            ;; Upstream does not provide an install target.
-            (lambda _
-              (install-file "tpl" (string-append #$output "/bin")))))))
+                 (search-input-file inputs "lib/libsqlite3.so"))))))))
     (home-page "https://trealla-prolog.org/")
     (synopsis "Compact and efficient Prolog interpreter")
     (description "This package provides a compact and efficient Prolog
