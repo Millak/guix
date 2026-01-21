@@ -6123,6 +6123,31 @@ relational databases are in general.")
      "This package implements the @acronym{LSP, Language Server Protocol} for SQL.")
     (license license:expat)))
 
+(define-public python-dbutils
+  (package
+    (name "python-dbutils")
+    (version "3.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/WebwareForPython/DBUtils")
+              (commit
+               (string-append "Release-"
+                              (string-join (string-split version #\.) "_")))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x2bqqlp6ahm8k8d0f1g3l0fcsjala3z6jdmcwhwkbh0agg8agff"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/WebwareForPython/DBUtils")
+    (synopsis "Database connections for multi-threaded environments")
+    (description
+     "This package provides tooling for solid, persistent and pooled
+connections to a database that can be used in all kinds of multi-threaded
+environments.")
+    (license license:expat)))
+
 (define-public python-dogpile-cache
   (package
     (name "python-dogpile-cache")
