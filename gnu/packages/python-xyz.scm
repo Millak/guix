@@ -12333,6 +12333,37 @@ snippets with input parameters (e.g., the size of an array) and plotting
 the results.")
     (license license:gpl3+)))
 
+(define-public python-persist-queue
+  (package
+    (name "python-persist-queue")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/peter-wangxu/persist-queue")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02agwksg0idyhbd4q2sn36igi0zv4kfbkn8vixnbv4q0ki75gfzh"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-setuptools))
+    (propagated-inputs
+     (list python-aiofiles
+           python-aiosqlite
+           python-cbor2
+           python-dbutils
+           python-msgpack))
+    (home-page "https://github.com/peter-wangxu/persist-queue")
+    (synopsis "Thread-safe disk based persistent queue in Python")
+    (description
+     "This package provides a thread-safe disk (file and sqlite) based
+persistent queue in Python.")
+    (license license:bsd-3)))
+
 (define-public python-socksipy-branch
   (package
     (name "python-socksipy-branch")
