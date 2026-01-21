@@ -19185,7 +19185,7 @@ friendly JSON encoder, decorators for retries and logging.")
 (define-public python-execnet
   (package
     (name "python-execnet")
-    (version "2.1.1")
+    (version "2.1.2")
     (source
      (origin
        (method git-fetch)
@@ -19194,35 +19194,21 @@ friendly JSON encoder, decorators for retries and logging.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xlfd0h9sjl0jpc2fc689a497chwbagali7qr364k75hdyax3jfq"))))
+        (base32 "1msiqa1qz6dkdh4c3z351cld12qh8amhq4j1mdkq8sz015j47vnx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; ;; This test hasn't been updated for the latest Pytest yet:
-      ;; #:test-flags #~(list "--ignore" "testing/test_rsync.py")
+      ;; tests: 466 passed, 614 skipped, 4 xfailed, 11 xpassed, 1 warning
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'adjust-for-pytest-7.2+
+          (add-before 'build 'set-verion
             (lambda _
-              ;; This test fails with an error because @py.test has been
-              ;; deprecated for @pytest in recent Pytest.
-              (substitute* "testing/test_rsync.py"
-                (("@py.test")
-                 "@pytest"))))
-          (add-before 'build 'pretend-version
-            ;; The version string is usually derived via setuptools-scm, but
-            ;; without the git metadata available this fails.
-            (lambda _
-              ;; hatch-vcs uses setuptools under the hood.
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                      ;; Massage the version string to a PEP-0440 compatible
-                      ;; one.
-                      #$(car (string-split version #\-)))))
-          (add-before 'check 'prepare-for-tests
+                      #$(version-major+minor+point version))))
+          (add-before 'check 'pre-check
             (lambda _
-              ;; Unset PYTHONDONTWRITEBYTECODE to match the
-              ;; expectations of a test in
-              ;; 'testing/test_gateway.py'.
+              ;; Unset PYTHONDONTWRITEBYTECODE to match the expectations of a
+              ;; test in 'testing/test_gateway.py'.
               (unsetenv "PYTHONDONTWRITEBYTECODE"))))))
     (native-inputs
      (list python-hatchling
