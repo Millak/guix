@@ -15077,8 +15077,8 @@ Django with a syntax similar to Python Jinja2.")
   (sbcl-package->ecl-package sbcl-djula))
 
 (define-public sbcl-dns-client
-  (let ((commit "9f252e9c2bb61c57a6cd367e21ad366b0d3e87e0")
-        (revision "0"))
+  (let ((commit "5e861b2c98e6454895bc6ad4bd2f3e336ff711f5")
+        (revision "1"))
     (package
       (name "sbcl-dns-client")
       (version (git-version "1.0.0" revision commit))
@@ -15086,18 +15086,18 @@ Django with a syntax similar to Python Jinja2.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/dns-client")
+               (url "https://codeberg.org/shinmera/dns-client")
                (commit commit)))
          (file-name (git-file-name "cl-dns-client" version))
          (sha256
-          (base32 "1b6g2wvydwmv1k68favjyq4gfalfxfyl5i0hyh640wdaz2rfvi4n"))))
+          (base32 "1k3w52k9j9sbj4vh76lxk5944lpljs4ir1765inrd3fdspvxl0fl"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        ;; No tests provided.
        `(#:tests? #f))
       (inputs
-       (list sbcl-documentation-utils sbcl-usocket))
-      (home-page "https://shinmera.github.io/dns-client/")
+       (list sbcl-punycode sbcl-documentation-utils sbcl-usocket))
+      (home-page "https://shinmera.codeberg.page/dns-client")
       (synopsis "DNS protocol client for Common Lisp")
       (description
        "This package provides a pure-lisp implementation of a DNS client.  It can be
