@@ -18778,8 +18778,7 @@ easy to use, pythonic and comprehensive Python interface to dialog.  This
 allows one to make simple text-mode user interfaces on Unix-like systems")
     (license license:lgpl2.1)))
 
-(define-public python-pythondialog
-  (deprecated-package "python-pythondialog" python-dialog))
+(define-deprecated-package python-pythondialog python-dialog)
 
 (define-public python-confection
   (package
