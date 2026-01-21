@@ -27,7 +27,8 @@
   str)
 
 (define (kernel->configuration kernel dry-run?)
-  (if (string-prefix? "Hurd" kernel)
+  (if (and (string? kernel)
+           (string-prefix? "Hurd" kernel))
       `((kernel %hurd-default-operating-system-kernel)
         ,(comment (G_ ";; \"noide\" disables the gnumach IDE driver, enabling rumpdisk.\n"))
         (kernel-arguments '("noide"))
