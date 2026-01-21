@@ -19183,63 +19183,65 @@ friendly JSON encoder, decorators for retries and logging.")
     (license license:expat)))
 
 (define-public python-execnet
-    (package
-      (name "python-execnet")
-      (version "2.1.1")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/pytest-dev/execnet")
-                      (commit (string-append "v" version))))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0xlfd0h9sjl0jpc2fc689a497chwbagali7qr364k75hdyax3jfq"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        ;; ;; This test hasn't been updated for the latest Pytest yet:
-        ;; #:test-flags #~(list "--ignore" "testing/test_rsync.py")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'adjust-for-pytest-7.2+
-              (lambda _
-                ;; This test fails with an error because @py.test has been
-                ;; deprecated for @pytest in recent Pytest.
-                (substitute* "testing/test_rsync.py"
-                  (("@py.test")
-                   "@pytest"))))
-            (add-before 'build 'pretend-version
-              ;; The version string is usually derived via setuptools-scm, but
-              ;; without the git metadata available this fails.
-              (lambda _
-                ;; hatch-vcs uses setuptools under the hood.
-                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                        ;; Massage the version string to a PEP-0440 compatible
-                        ;; one.
-                        #$(car (string-split version #\-)))))
-            (add-before 'check 'prepare-for-tests
-              (lambda _
-                ;; Unset PYTHONDONTWRITEBYTECODE to match the
-                ;; expectations of a test in
-                ;; 'testing/test_gateway.py'.
-                (unsetenv "PYTHONDONTWRITEBYTECODE"))))))
-      (native-inputs
-       (list python-hatchling
-             python-hatch-vcs
-             python-pytest-bootstrap))
-      (synopsis "Rapid multi-Python deployment")
-      (description "Execnet provides a share-nothing model with
-channel-send/receive communication for distributing execution across many
-Python interpreters across version, platform and network barriers.  It has a
-minimal and fast API targeting the following uses:
+  (package
+    (name "python-execnet")
+    (version "2.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pytest-dev/execnet")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xlfd0h9sjl0jpc2fc689a497chwbagali7qr364k75hdyax3jfq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; ;; This test hasn't been updated for the latest Pytest yet:
+      ;; #:test-flags #~(list "--ignore" "testing/test_rsync.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'adjust-for-pytest-7.2+
+            (lambda _
+              ;; This test fails with an error because @py.test has been
+              ;; deprecated for @pytest in recent Pytest.
+              (substitute* "testing/test_rsync.py"
+                (("@py.test")
+                 "@pytest"))))
+          (add-before 'build 'pretend-version
+            ;; The version string is usually derived via setuptools-scm, but
+            ;; without the git metadata available this fails.
+            (lambda _
+              ;; hatch-vcs uses setuptools under the hood.
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                      ;; Massage the version string to a PEP-0440 compatible
+                      ;; one.
+                      #$(car (string-split version #\-)))))
+          (add-before 'check 'prepare-for-tests
+            (lambda _
+              ;; Unset PYTHONDONTWRITEBYTECODE to match the
+              ;; expectations of a test in
+              ;; 'testing/test_gateway.py'.
+              (unsetenv "PYTHONDONTWRITEBYTECODE"))))))
+    (native-inputs
+     (list python-hatchling
+           python-hatch-vcs
+           python-pytest-bootstrap))
+    (home-page "https://codespeak.net/execnet/")
+    (synopsis "Rapid multi-Python deployment")
+    (description
+     "Execnet provides a share-nothing model with channel-send/receive communication
+for distributing execution across many Python interpreters across version,
+platform and network barriers.  It has a minimal and fast API targeting the
+following uses:
+
 @enumerate
 @item distribute tasks to (many) local or remote CPUs
 @item write and deploy hybrid multi-process applications
 @item write scripts to administer multiple environments
 @end enumerate")
-      (home-page "https://codespeak.net/execnet/")
-      (license license:expat)))
+    (license license:expat)))
 
 (define-public python-icalendar
   (package
