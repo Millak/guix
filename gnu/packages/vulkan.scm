@@ -456,58 +456,54 @@ and the ICD.")
                    license:bsd-3))))
 
 (define-public vulkan-tools
-  ;; Required to fix an issue. See:
-  ;; https://github.com/KhronosGroup/Vulkan-Tools/issues/1130
-  (let ((commit "105d6c1fede00c3a9055e5a531ebf3d99bac406e")
-        (revision "1"))
-    (package
-      (name "vulkan-tools")
-      (version (git-version "1.4.321.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/KhronosGroup/Vulkan-Tools")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (modules '((guix build utils)))
-         (snippet
-          #~(substitute* "tests/icd/mock_icd_tests.cpp"
-              ;; Disable driver info test since it relies on git branch info
-              (("ASSERT_EQ\\(std::string\\(driver_properties\\.driverInfo\\)")
-               "// ASSERT_EQ(std::string(driver_properties.driverInfo)")))
-         (sha256
-          (base32
-           "1dphpf4v0kip2b0vhhwb136gjjmgxc64gg26sg3wpg6nnwakpznc"))))
-      (build-system cmake-build-system)
-      (inputs
-       (list glslang libxrandr vulkan-loader wayland wayland-protocols))
-      (native-inputs
-       (list googletest pkg-config python vulkan-headers))
-      (arguments
-       (list
-        #:configure-flags #~(list "-DBUILD_TESTS=ON")
-        #:phases #~(modify-phases %standard-phases
-                     (add-after 'unpack 'patch-libvulkan-file-name
-                       (lambda* (#:key inputs #:allow-other-keys)
-                         (substitute* '("vulkaninfo/vulkaninfo_functions.h"
-                                        "cube/cube_functions.h")
-                           (("dlopen\\(\"libvulkan.so.1")
-                            (string-append "dlopen(\""
-                                           (search-input-file
-                                            inputs "/lib/libvulkan.so.1"))))))
-                     (replace 'check
-                       (lambda* (#:key tests? #:allow-other-keys)
-                         (when tests?
-                           (invoke "./tests/vulkan_tools_tests")))))))
-      (home-page
-       "https://github.com/KhronosGroup/Vulkan-Tools")
-      (synopsis "Tools and utilities for Vulkan")
-      (description
-       "Vulkan-Tools provides tools and utilities that can assist development by
+  (package
+    (name "vulkan-tools")
+    (version "1.4.335.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/KhronosGroup/Vulkan-Tools")
+              (commit (string-append "vulkan-sdk-" version))))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)))
+       (snippet
+        #~(substitute* "tests/icd/mock_icd_tests.cpp"
+            ;; Disable driver info test since it relies on git branch info
+            (("ASSERT_EQ\\(std::string\\(driver_properties\\.driverInfo\\)")
+             "// ASSERT_EQ(std::string(driver_properties.driverInfo)")))
+       (sha256
+        (base32
+         "07b5jlvp70apmkj0b8l2w086h0vbcfl49n7xr35kmv46p0n37z0b"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list glslang libxrandr vulkan-loader wayland wayland-protocols))
+    (native-inputs
+     (list googletest pkg-config python vulkan-headers))
+    (arguments
+     (list
+      #:configure-flags #~(list "-DBUILD_TESTS=ON")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-libvulkan-file-name
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (substitute* '("vulkaninfo/vulkaninfo_functions.h"
+                                      "cube/cube_functions.h")
+                         (("dlopen\\(\"libvulkan.so.1")
+                          (string-append "dlopen(\""
+                                         (search-input-file
+                                          inputs "/lib/libvulkan.so.1"))))))
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (invoke "./tests/vulkan_tools_tests")))))))
+    (home-page
+     "https://github.com/KhronosGroup/Vulkan-Tools")
+    (synopsis "Tools and utilities for Vulkan")
+    (description
+     "Vulkan-Tools provides tools and utilities that can assist development by
 enabling developers to verify their applications correct use of the Vulkan
 API.")
-      (license (list license:asl2.0))))) ;LICENSE.txt
+    (license (list license:asl2.0)))) ;LICENSE.txt
 
 (define-public shaderc
   (package
