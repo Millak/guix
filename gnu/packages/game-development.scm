@@ -737,40 +737,6 @@ for animated scrolling maps for your new or existing game.")
 It provides smart tile loading with a fast and efficient storage base.")
     (license license:lgpl3+)))
 
-(define-public python-tmx
-  (package
-    (name "python-tmx")
-    (version "1.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://savannah/python-tmx/"
-                           (version-major+minor version) "/tmx-"
-                           version ".tar.gz"))
-       (sha256
-        (base32
-         "073q0prg1nzlkga2b45vhscz374206qh4x68ccg00mxxwagn64z0"))))
-    (build-system pyproject-build-system)
-    ;; XXX: No releases/updates since 2017, it a single file project without
-    ;; tests.
-    (arguments
-     (list #:tests? #f))
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-six))
-    (home-page "https://python-tmx.nongnu.org")
-    (synopsis "Python library for the @code{Tiled} TMX format")
-    (description
-     "Python TMX reads and writes the @code{Tiled} TMX format in a simple way.
-This is useful for map editors or generic level editors, and it's also useful
-for using a map editor or generic level editor like Tiled to edit your game's
-levels.")
-    (license (list license:asl2.0
-                   ;; Documentation (only available in the source tarball) is
-                   ;; under the CC0 license.
-                   license:cc0))))
-
 ;; XXX: Currently the pyproject build-system is unable to install multiple
 ;; python modules in a single package. This package uses old-style 'build and
 ;; 'install for this reason.
