@@ -1395,8 +1395,8 @@ coverage.")
     (license license:isc)))
 
 (define-public nextpnr
-  (let ((commit "ad76625d4d828cb093b55aa9f5aae59b7ba9724f")
-        (revision "0"))
+  (let ((commit "d8117e3cadaa4f4db606b64a465b7638b05dac68")
+        (revision "1"))
     (package
       (name "nextpnr")
       (version (git-version "0.9" revision commit))
@@ -1411,29 +1411,28 @@ coverage.")
                 ;; no longer have their original upstream.
                 (recursive? #t)))
          (file-name (git-file-name name version))
-         (modules '((guix build utils)
-                    (ice-9 ftw)
-                    (srfi srfi-26)))
          (snippet
-          '(begin
-             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-             (define (delete-all-but directory . preserve)
-               (with-directory-excursion directory
-                 (let* ((pred (negate (cut member <>
-                                           (cons* "." ".." preserve))))
-                        (items (scandir "." pred)))
-                   (for-each (cut delete-file-recursively <>) items))))
-             (delete-all-but "3rdparty"
-                             ;; The following sources have all been patched, so
-                             ;; cannot easily be unbundled.
-                             "QtPropertyBrowser"
-                             "json11"
-                             "python-console"
-                             "oourafft")))
-         (patches (search-patches "nextpnr-gtest.patch"
-                                  "nextpnr-imgui.patch"))
+          #~(begin
+              (use-modules (guix build utils)
+                           (ice-9 ftw)
+                           (srfi srfi-26))
+              ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+              (define (delete-all-but directory . preserve)
+                (with-directory-excursion directory
+                  (let* ((pred (negate (cut member <>
+                                            (cons* "." ".." preserve))))
+                         (items (scandir "." pred)))
+                    (for-each (cut delete-file-recursively <>) items))))
+              (delete-all-but "3rdparty"
+                              ;; The following sources have all been patched, so
+                              ;; cannot easily be unbundled.
+                              "QtPropertyBrowser"
+                              "json11"
+                              "python-console"
+                              "oourafft")))
+         (patches (search-patches "nextpnr-imgui.patch"))
          (sha256
-          (base32 "1zjxvkycg5xx605d4ark8gd10w4xni1wd10chmhv983dvyv875br"))))
+          (base32 "0668adviwh8n9c5xy7k3qiyfn77rrzd79b403i3m19hhy8vq907p"))))
       (outputs '("out" "bba"))
       (build-system qt-build-system)
       (arguments
@@ -1461,6 +1460,16 @@ coverage.")
                                #$(this-package-native-input "prjtrellis")))
         #:phases
         #~(modify-phases %standard-phases
+            (add-after 'unpack 'unbundle-googletest
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("add_subdirectory\\(3rdparty\\/googletest.*")
+                   (string-append "find_package(GTest)\n"
+                                  "add_library(gtest_main ALIAS "
+                                  "GTest::gtest_main)\n"))
+                  (("\\$\\{CMAKE_SOURCE_DIR}/3rdparty/googletest.*")
+                   (string-append
+                    #$(this-package-native-input "googletest") "/include)")))))
             (add-after 'unpack 'unbundle-sanitizers-cmake
               (lambda _
                 (substitute* "CMakeLists.txt"
@@ -1498,27 +1507,28 @@ coverage.")
                             (string-append
                              "NPNR=" #$output "/bin/nextpnr-ecp5")))))))))
       (native-inputs
-       (list icestorm
-             iverilog
+       (list apycula
              googletest
+             icestorm
+             iverilog
              gzip
              prjbeyond-db
              `(,prjpeppercorn "db")
              prjtrellis
+             python-minimal-wrapper
              sanitizers-cmake
              yosys))
       (inputs
-       (list apycula
-             boost-1.83
-             corrosion
+       (list boost-1.88
              eigen
              pybind11
-             python
              qtbase-5
              qtwayland-5
              qtimgui))
-      (synopsis "Place-and-Route tool for FPGAs")
-      (description "Nextpnr is a portable FPGA place and route tool.")
+      (synopsis
+       "Place-and-Route tool for @acronym{FPGA, Field Programmable Gate Array}")
+      (description "@code{nextpnr} is an @acronym{EDA, Electronic Design
+Automation}, portable and vendor neutral FPGA place and route tool.")
       (home-page "https://github.com/YosysHQ/nextpnr/")
       (license license:isc))))
 
