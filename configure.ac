@@ -198,6 +198,18 @@ if test "x$have_guile_lzlib" != "xyes"; then
   AC_MSG_ERROR([Guile-lzlib is missing; please install it.])
 fi
 
+dnl Check for Guile-zstd.
+GUILE_MODULE_AVAILABLE([have_guile_zstd], [(zstd)])
+if test "x$have_guile_zstd" != "xyes"; then
+  AC_MSG_ERROR([Guile-zstd is missing; please install it.])
+fi
+
+dnl Check for Guile-semver.
+GUILE_MODULE_AVAILABLE([have_guile_semver], [(semver)])
+if test "x$have_guile_semver" != "xyes"; then
+  AC_MSG_ERROR([Guile-semver is missing; please install it.])
+fi
+
 dnl Check for Guile-Avahi.
 GUILE_MODULE_AVAILABLE([have_guile_avahi], [(avahi)])
 AM_CONDITIONAL([HAVE_GUILE_AVAHI],
