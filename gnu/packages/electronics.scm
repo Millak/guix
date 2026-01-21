@@ -1819,8 +1819,8 @@ architecture from Cologne Chip.  It also provides data needed to produce a
 
 (define-public prjtrellis
   ;; The last release is 2 years old; use the latest commit for now.
-  (let ((commit "92345b77edf775fe5668700dd9931e19db2d36b0")
-        (revision "1"))
+  (let ((commit "73bd411731808d80ead650bbc9840d9e02911e9e")
+        (revision "2"))
     (package
       (name "prjtrellis")
       (version (git-version "1.4" revision commit))
@@ -1841,7 +1841,7 @@ architecture from Cologne Chip.  It also provides data needed to produce a
              (for-each delete-file-recursively
                        '("pybind11"))))
          (sha256
-          (base32 "1yl5qw846jbnwzs8jv8bllz0zrzsg8amphvl9nskq5p5fz188q22"))))
+          (base32 "1a425n1kqz1f3ai0n7igfrfmq7xskg70775v88292v3baaiidvx0"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -1855,8 +1855,8 @@ architecture from Cologne Chip.  It also provides data needed to produce a
             (add-after 'unpack 'chdir
               (lambda _
                 (chdir "libtrellis"))))))
-      (native-inputs (list python))
-      (inputs (list openocd boost-1.83 pybind11))
+      (native-inputs (list python-minimal-wrapper))
+      (inputs (list openocd boost-1.88 pybind11))
       (synopsis "Placement and routing for ECP5 FPGAs")
       (description
        "Project Trellis is a Nextpnr backend compatible with ECP5 FPGAs.
