@@ -27095,6 +27095,36 @@ prompters.")
 (define-public ecl-prompter
   (sbcl-package->ecl-package sbcl-prompter))
 
+(define-public sbcl-punycode
+  (let ((commit "ac958bbd2fdf41a3e8ba506d04b87e4a0c250701")
+        (revision "0"))
+    (package
+      (name "sbcl-punycode")
+      (version (git-version "0.1.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://codeberg.org/shinmera/punycode")
+                (commit commit)))
+         (file-name (git-file-name "cl-punycode" version))
+         (sha256
+          (base32 "1hb3rv64dhp1mdw10llci1fl2xfg9am7469qay0w2yvyd9h5kbng"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-parachute))
+      (synopsis
+       "Common Lisp implementation of encoding and decoding of Punycode strings")
+      (description "This implements encoding and decoding of Punycode strings,
+specified in RFC 3492 and used for unicode characters in domain names.")
+      (home-page "https://codeberg.org/shinmera/punycode")
+      (license license:zlib))))
+
+(define-public cl-punycode
+  (sbcl-package->cl-source-package sbcl-punycode))
+
+(define-public ecl-punycode
+  (sbcl-package->ecl-package sbcl-punycode))
+
 (define-public sbcl-purgatory
   (let ((commit "3afd8f6bb4093ffb2f39ffdedf11278b3617fff9")
         (revision "1"))
