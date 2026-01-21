@@ -2689,7 +2689,7 @@ standard feature selection algorithms.")
 (define-public python-cleanlab
   (package
     (name "python-cleanlab")
-    (version "2.7.1")
+    (version "2.9.0")
     ;; The version on pypi does not come with tests.
     (source (origin
               (method git-fetch)
@@ -2699,7 +2699,7 @@ standard feature selection algorithms.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "073w45azq496x4bhrh8mdywcrg3gk33n13w1pqh1kiykw826ld9b"))))
+                "1fks57i3a297fcm1k4bs48x9cc7rs0jp4ij92r42pd1n0x60jznh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2707,32 +2707,26 @@ standard feature selection algorithms.")
       #:test-flags
       ;; This test fails because the newer version of scikit learn returns one
       ;; more classification result than expected.  This should be harmless.
-      '(list "-k" "not test_aux_inputs"
-             ;; Requires Tensorflow
-             "--ignore=tests/test_frameworks.py"
-             ;; These need datasets, which needs jax, so it could only live in
-             ;; the guix-science channel.
-             "--ignore-glob=tests/datalab/**"
-             ;; Tries to download datasets from the internet at runtime.
-             "--ignore=tests/test_dataset.py"
-             ;; Test requiring not packaged dataset.
-             "--ignore=tests/spurious_correlation/test_correlation_visualizer.py"
-             "--ignore=tests/spurious_correlation/test_spurious_correlation.py"
-             ;; AssertionError: assert 'Annotators [1] did not label any
-             ;; examples.' in 'labels_multiannotator cannot have columns with
-             ;; all NaN, each annotator must annotator at least one example.
-             "--deselect=tests/test_multiannotator.py::test_label_quality_scores_multiannotator")
+      #~(list "-k" "not test_aux_inputs"
+              ;; Requires Tensorflow
+              "--ignore=tests/test_frameworks.py"
+              ;; These need datasets, which needs jax, so it could only live in
+              ;; the guix-science channel.
+              "--ignore-glob=tests/datalab/**"
+              ;; Tries to download datasets from the internet at runtime.
+              "--ignore=tests/test_dataset.py"
+              ;; Test requiring not packaged dataset.
+              "--ignore=tests/spurious_correlation/test_correlation_visualizer.py"
+              "--ignore=tests/spurious_correlation/test_spurious_correlation.py"
+              ;; AssertionError: assert 'Annotators [1] did not label any
+              ;; examples.' in 'labels_multiannotator cannot have columns with
+              ;; all NaN, each annotator must annotator at least one example.
+              "--deselect=tests/test_multiannotator.py::test_label_quality_scores_multiannotator")
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "pyproject.toml"
-               ;; See: <https://github.com/cleanlab/cleanlab/issues/1258> and
-               ;; <https://github.com/cleanlab/cleanlab/issues/1151>.
-               (("numpy~=1.22") "numpy>=1.22"))))
-         (add-after 'unpack 'remove-datasets
-           (lambda _
-             (delete-file "tests/datalab/conftest.py"))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-datasets
+            (lambda _
+              (delete-file "tests/datalab/conftest.py"))))))
     (propagated-inputs
      (list python-numpy
            python-pandas
