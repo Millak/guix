@@ -21448,6 +21448,9 @@ instead of symbols.")
 (define-public ecl-list-named-class
   (sbcl-package->ecl-package sbcl-list-named-class))
 
+(define-public clasp-list-named-class
+  (sbcl-package->clasp-package sbcl-list-named-class))
+
 (define-public sbcl-listopia
   (package
     (name "sbcl-listopia")
