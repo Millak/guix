@@ -130,7 +130,8 @@ running checks after installing the package."
     (ftw "." (lambda (file stat flag)
                (unless (or (<= early-1980 (stat:mtime stat))
                            (eq? (stat:type stat) 'symlink))
-                 (utime file early-1980 early-1980))))))
+                 (utime file early-1980 early-1980))
+               #t))))
 
 (define* (enable-bytecode-determinism #:rest _)
   "Improve determinism of pyc files."
