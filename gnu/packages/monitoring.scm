@@ -41,6 +41,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system gnu)
@@ -83,6 +84,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rrdtool)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
@@ -216,6 +218,51 @@
     (synopsis "Trayicon for ActivityWatch")
     (description
      "This package provides a tray icon for @code{ActivityWatch}.")))
+
+(define-public aw-server-rust
+  (let ((commit "d40d712cff2c1d5621b86e401e32076d2beef737")
+        (revision "1"))
+    (package
+      (name "aw-server-rust")
+      (version "0.13.1")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/ActivityWatch/aw-server-rust")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1v4693xv99nq0kvclihgxiydnfxpyx748n1siyayw2ifkw9sw64m"))))
+      (build-system cargo-build-system)
+      (arguments
+       (list
+        #:install-source? #f
+        #:cargo-test-flags
+        '(list "--release" "--"
+               ;; Permission errors
+               "--skip=test::test_full"
+               "--skip=datastore_tests::test_datastore_reload"
+               "--skip=dirs::test_get_dirs")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'disable-vendored-features
+              (lambda _
+                (substitute* (find-files "." "Cargo\\.toml")
+                  ((", features = \\[\"vendored\"\\]") ""))))
+            (replace 'install
+              (lambda _
+                (let ((bin (string-append #$output "/bin")))
+                  (install-file "target/release/aw-server" bin)
+                  (install-file "target/release/aw-sync" bin)))))))
+      (native-inputs (list pkg-config))
+      (inputs (cons* openssl sqlite (cargo-inputs 'aw-server-rust)))
+      (home-page "https://activitywatch.net/")
+      (synopsis "Store and retrieve quantified self data")
+      (description
+       "This package provides the ActivityWatch server, for secure storage and
+retrieval of all your quantified self data.")
+      (license license:mpl2.0))))
 
 (define-public aw-watcher-afk
   (package/inherit aw-core
