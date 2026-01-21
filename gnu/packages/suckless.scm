@@ -231,15 +231,16 @@ a custom raw video format with a simple container.")
 (define-public dwm
   (package
     (name "dwm")
-    (version "6.6")
+    (version "6.7")
     (synopsis "Dynamic Window Manager")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://dl.suckless.org/dwm/dwm-"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://git.suckless.org/dwm")
+                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
-               (base32
-                "18q0zjvzsvpm76p2x1xlw163d8wbq44z41n9w94prh46jdnjrz3w"))))
+               (base32 "176djmvsy0cpghlf36k69w5fbhyp42hjcm32j46x7daz8wwlafym"))))
     (build-system gnu-build-system)
     (arguments
      (list
