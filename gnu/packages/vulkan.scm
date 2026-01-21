@@ -228,7 +228,7 @@ translation between LLVM IR and SPIR-V.")
 (define-public glslang
   (package
     (name "glslang")
-    (version "1.4.321.0")
+    (version "1.4.335.0")
     (source
      (origin
        (method git-fetch)
@@ -237,7 +237,7 @@ translation between LLVM IR and SPIR-V.")
              (commit (string-append "vulkan-sdk-" version))))
        (sha256
         (base32
-         "1b0zsrv12b34q0wp9g85x11kpd5kjvx4lbn7xv8b4szfpwdkxxxh"))
+         "0z5zabmjiqgxr935wbk9pr649bxk404nkjkvkavdwj904sg48i3h"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
