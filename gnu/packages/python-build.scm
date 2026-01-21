@@ -867,21 +867,6 @@ facilitate packaging Python projects, where packaging includes:
                               'python-wrapper)))
     (propagated-inputs (list))))
 
-(define-public python-setuptools-79
-  (package
-    (inherit python-setuptools)
-    (name "python-setuptools")
-    (version "79.0.1")
-    (source
-     (origin
-       (inherit (package-source python-setuptools))
-       (method url-fetch)
-       (uri (pypi-uri "setuptools" version))
-       (sha256
-        (base32 "127svm8cdpvmq37gcrbvdr9fhrhs0nscnzh63gypjc1wyfwfg30j"))))
-    (arguments
-     (list #:tests? #f))))
-
 (define-public python-wheel
   (package
     (name "python-wheel")
