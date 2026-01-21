@@ -15981,10 +15981,6 @@ validate this input and generate a PEP 643-compliant metadata
 file (e.g. @file{PKG-INFO}).")
     (license license:expat)))
 
-;; pep621 was renamed to pyproject-metadata.
-(define-deprecated-package python-pep621
-  python-pyproject-metadata)
-
 (define-public python-meson-python
   (package
     (name "python-meson-python")
