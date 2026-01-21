@@ -10211,9 +10211,6 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
      "This package provides a JSON RPC 2.0 server library for Python.")
     (license license:expat)))
 
-(define-deprecated-package python-jsonrpc-server
-  python-lsp-jsonrpc)
-
 (define-public python-pydantic
   (package
     (name "python-pydantic")
