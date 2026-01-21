@@ -26828,6 +26828,47 @@ environments.")
      "PyNamecheap is a Namecheap API client in Python.")
     (license license:expat)))
 
+(define-public python-pynput
+  (package
+    (name "python-pynput")
+    (version "1.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/moses-palmer/pynput")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00lnram5rm0amp5c1cjsw476bzi59g9m3l76ra29mp4jnz519sdc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                (("RUNTIME_PACKAGES \\+ SETUP_PACKAGES")
+                 "RUNTIME_PACKAGES"))))
+          (add-before 'check 'start-xserver
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((Xvfb (search-input-file inputs "/bin/Xvfb")))
+                (system (format #f "~a :1 -screen 0 640x480x24 &"
+                                Xvfb))
+                (setenv "DISPLAY" ":1")))))))
+    (propagated-inputs
+     (list python-evdev python-xlib))
+    (native-inputs
+     (list python-setuptools xorg-server-for-tests))
+    (home-page "https://github.com/moses-palmer/pynput")
+    (synopsis "Send virtual input commands")
+    (description
+     "This package provides tools to monitor and control user input devices in
+Python.")
+    (license license:lgpl3)))
+
 (define-public python-pynixutil
   (package
     (name "python-pynixutil")
