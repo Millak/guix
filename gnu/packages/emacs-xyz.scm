@@ -6853,7 +6853,7 @@ that the binary uses instead of the actual binary contents.")
 (define-public emacs-ellama
   (package
     (name "emacs-ellama")
-    (version "1.9.0")
+    (version "1.10.11")
     (source
      (origin
        (method git-fetch)
@@ -6863,7 +6863,7 @@ that the binary uses instead of the actual binary contents.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "09xzn4daf80w7x6kbj2b8az89viv66sh367kxlxymr7rsznq1a7q"))))
+         "1sn6b8qfjgf8vx7sffzv8irhsk5ciy24q58ynfr354k5jpxxxkqm"))))
     (build-system emacs-build-system)
     (arguments
      (list
