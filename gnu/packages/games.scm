@@ -13114,9 +13114,6 @@ Jongg tiles from the playing field by taking one matching pair at a time.")
                        ;; Installing udev rules errors out.  Install them manually later
                        (substitute* "setup.py"
                          ((".*lib/udev.*") ""))))
-                   (add-before 'build 'set-version
-                     (lambda _
-                       (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
                    (add-after 'unpack 'remove-bundled-libraries
                      (lambda _
                        (delete-file "scc/lib/jsonencoder.py")

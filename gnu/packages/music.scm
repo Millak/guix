@@ -4186,13 +4186,6 @@ Standard Recording Code} (ISRCs) from audio CDs and submit them to
        (sha256
         (base32 "1i3mgxhrr3nbfrg3ppv6qvf3py0p46wa2h36nnfjw2m5bhjd6rhx"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-pytest
            python-flaky

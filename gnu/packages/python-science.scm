@@ -326,9 +326,6 @@ possibility to differentiate functions that contain matrix functions as
             (lambda _
               (substitute* "pyproject.toml"
                 (("--doctest-modules") ""))))
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
           ;; Numba needs a writable dir to cache functions.
           (add-before 'check 'set-numba-cache-dir
             (lambda _
@@ -735,16 +732,7 @@ but have now been adjusted using the viscm tool to be perceptually uniform.")
                              " and not test_extended_overplotting[png]"
                              " and not test_reverse_overplotting[png]"
                              " and not test_arviz[png]"
-                             " and not test_range_fig_arg[png]"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'pretend-version
-            ;; XXX: Make sure you're either building from a fully intact git
-            ;; repository or PyPI tarballs. Most other sources (such as GitHub's
-            ;; tarballs, a git checkout without the .git folder) don't contain
-            ;; the necessary metadata and will not work.
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+                             " and not test_range_fig_arg[png]"))))
     (propagated-inputs
      (list python-matplotlib))
     (native-inputs
@@ -864,9 +852,6 @@ optimization problems in Python.")
             (lambda _
               (substitute* "pyproject.toml"
                 ((".*--cov-config=pyproject.toml.*") ""))))
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
           (add-before 'check 'remove-local-source
             (lambda _
               (delete-file-recursively "dask"))))))
@@ -924,10 +909,7 @@ run on top of the dynamic task schedulers.")
           (add-after 'unpack 'fix-pytest-config
             (lambda _
               (substitute* "pyproject.toml"
-                (("--flake8") ""))))
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+                (("--flake8") "")))))))
     (native-inputs
      (list python-pytest
            python-pytest-timeout
@@ -1074,10 +1056,7 @@ interoperability offered by HDF5.")
           (add-after 'unpack 'fix-pytest-config
             (lambda _
               (substitute* "pyproject.toml"
-                (("--cov-config.*") ""))))
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+                (("--cov-config.*") "")))))))
     (native-inputs
      (list python-setuptools
            python-setuptools-scm-next))
@@ -2344,10 +2323,7 @@ web, by sharing data and other research outputs.")
                  (format #f "SOURCE_DIR ~a"
                          (string-append (getcwd) "/osqp")))
                 (("GIT_TAG v1.0.0")
-                 ""))))
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+                 "")))))))
     (native-inputs
      (list cmake-minimal
            osqp
@@ -2794,14 +2770,7 @@ automated with the minimum of fuss and the least effort.")
        (sha256
         (base32 "0v7l6qbxgclz644fq1vmakfasxcdhg1g019b5w47hlxqw8fx0ipl"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 190 passed, 1 xfailed, 28 warnings
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    ;; tests: 190 passed, 1 xfailed, 28 warnings
     (native-inputs
      (list python-hatch-vcs
            python-hatchling
@@ -3260,13 +3229,7 @@ the following purposes in mind:
       ;; tests: 1013 passed, 105 warnings
       #:test-flags
       #~(list "--durations=10" ;to help in spotting long running tests
-              "--numprocesses" (number->string (min 4 (parallel-job-count))))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                      #$(version-major+minor version)))))))
+              "--numprocesses" (number->string (min 4 (parallel-job-count))))))
     (propagated-inputs
      (list python-ecos
            python-joblib
@@ -5477,12 +5440,6 @@ multiple-axes, polar charts, and bubble charts.")
                              'infix)))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'pretend-version
-            ;; The version string is usually derived via setuptools-scm, but
-            ;; without the git metadata available, the version string is set to
-            ;; '999'.
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
           (add-before 'check 'pre-check
             (lambda* (#:key inputs outputs #:allow-other-keys)
               ;; The data files are referenced by the tests but they are not

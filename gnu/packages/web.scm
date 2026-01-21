@@ -7680,12 +7680,7 @@ Instagram and YouTube.")
         ;; exit status 2.
          "--deselect=tests/test_linkchecker.py::TestLinkchecker::test_linkchecker"
          ;; FileNotFoundError: [Errno 2] No such file or directory: 'msgfmt'
-         "--deselect=tests/test_po.py::TestPo::test_pos")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+         "--deselect=tests/test_po.py::TestPo::test_pos")))
     (native-inputs
      (list python-hatch-vcs
            python-hatchling

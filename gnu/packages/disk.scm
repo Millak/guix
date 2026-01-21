@@ -861,9 +861,6 @@ and can dramatically shorten the lifespan of the drive if left unchecked.")
       #:tests? #f ;XXX: root access is required, see: <scripts/tests/test.sh>
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'setuptools-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
           (add-after 'install 'install-udev-rules
             (lambda _
               (install-file "scripts/49-greaseweazle.rules"

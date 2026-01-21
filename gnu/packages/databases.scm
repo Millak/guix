@@ -5539,9 +5539,6 @@ other traditional Python scientific computing packages.")
             (lambda _
               (substitute* "setup.py"
                 (("^.*\"git\", \"status\".*$") ""))))
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
           (add-before 'check 'remove-local-source
             (lambda _
               (copy-recursively "fastparquet/test" "test")

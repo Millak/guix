@@ -801,10 +801,6 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
       #~(modify-phases %standard-phases
           (add-after 'unpack 'preparations
             (lambda _
-              ;; The version string is usually derived via setuptools-scm, but
-              ;; without the git metadata available this fails.
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
-
               ;; Needed by setup.py.
               (setenv "DESTDIR" "/")
 

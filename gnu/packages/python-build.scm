@@ -1352,12 +1352,7 @@ reflected in the package visible to Python, without needing a reinstall.")
     (arguments
      (list
       #:tests? #f       ;to keep dependencies to a minimum
-      #:build-backend "setuptools.build_meta"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+      #:build-backend "setuptools.build_meta"))
     (native-inputs
      (list python-flit-scm))
     (propagated-inputs
@@ -1777,13 +1772,6 @@ module with a few extra procedures.")
        (sha256
         (base32 "12bj9za1yp0yn0ppya6a4kwgmh7hvmw64x7ivp4y0sbv20r0vfdq"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-pytest-bootstrap
            python-setuptools-bootstrap

@@ -1590,9 +1590,6 @@ manage (install/update) them for you.")
               (substitute* "conda/base/constants.py"
                 (("DEFAULT_SOLVER: Final = \"libmamba\"")
                  "DEFAULT_SOLVER: Final = \"classic\""))))
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
           (add-before 'check 'pre-check
             (lambda _
               ;; TODO: Package libsolv, libmamba, and conda-libmamba-solver:

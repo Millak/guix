@@ -9227,16 +9227,7 @@ library to create slugs from unicode strings while keeping it DRY.")
      ;; This file requires Selenium.
      (list #:test-flags #~(list "--ignore" "tests/test_iframe.py"
                                 ;; This test passes but is very slow.
-                                "-k" "not test_color_brewer_extendability")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'build 'pretend-version
-                 ;; The version string is usually derived via setuptools-scm,
-                 ;; but without the git metadata available, the version string
-                 ;; is set to '0.0.0'.
-                 (lambda _
-                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                           #$(package-version this-package)))))))
+                                "-k" "not test_color_brewer_extendability")))
     (propagated-inputs (list python-jinja2))
     (native-inputs
      (list python-numpy
@@ -12137,12 +12128,7 @@ Python.")
               "--deselect=tests/test_smart_open.py::ParseUriTest::test_gs_uri_contains_question_mark"
               "--deselect=tests/test_smart_open.py::ParseUriTest::test_gs_uri_contains_slash"
               "--deselect=tests/test_smart_open.py::ParseUriTest::test_scheme"
-              "--ignore=tests/test_gcs.py")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'build 'set-version
-              (lambda _
-                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+              "--ignore=tests/test_gcs.py")))
     (propagated-inputs
      (list python-azure-common
            python-azure-core

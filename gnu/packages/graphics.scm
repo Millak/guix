@@ -1241,12 +1241,7 @@ basic geometries.")
                                      "test_Q_difference"
                                      "test_Q_intersection"
                                      "test_Q_union"
-                                     "test_Q_xor")))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+                                     "test_Q_xor")))))
     (propagated-inputs (list python-fonttools-minimal python-pyclipper))
     (native-inputs
      (list python-defcon-bootstrap

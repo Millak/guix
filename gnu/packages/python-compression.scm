@@ -1068,10 +1068,7 @@ generator")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'use-system-zopfli
             (lambda _
-              (setenv "USE_SYSTEM_ZOPFLI" "1")))
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+              (setenv "USE_SYSTEM_ZOPFLI" "1"))))))
     (native-inputs
      (list python-pytest
            python-setuptools

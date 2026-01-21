@@ -6591,16 +6591,7 @@ linear algebra routines needed for structured matrices (or operators).")
                                  " and not test_emsemble_map_saas"
                                  " and not test_negative_fixed_features")
                                 ;; Requires optional 'pfns' dependency.
-                                "--ignore=test_community/")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'build 'pretend-version
-                 ;; The version string is usually derived via setuptools-scm,
-                 ;; but without the git metadata available, the version string
-                 ;; is set to '0.0.0'.
-                 (lambda _
-                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                           #$(package-version this-package)))))))
+                                "--ignore=test_community/")))
     (propagated-inputs (list python-gpytorch
                              python-linear-operator
                              python-multipledispatch

@@ -887,13 +887,6 @@ need OpenSSH binaries to be installed.")
        (sha256
         (base32 "1igcjjsaa2x4zbdwzrybv077kghjair3ighs9jdmgsa7wj66pcaf"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-importlib-metadata
            python-mock-ssh-server

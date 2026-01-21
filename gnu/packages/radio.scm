@@ -2223,12 +2223,7 @@ modes:
     (inputs
      (list python-numpy python-pyqt-6 python-pyserial python-scipy))
     (arguments
-     (list #:tests? #f
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'set-version
-                 (lambda _
-                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+     (list #:tests? #f))
     (home-page "https://github.com/NanoVNA-Saver/nanovna-saver")
     (synopsis "GUI for NanoVNA devices")
     (description

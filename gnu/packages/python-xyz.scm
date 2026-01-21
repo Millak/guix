@@ -692,10 +692,7 @@ templates language.")
           (add-after 'unpack 'fix-pytest-config
             (lambda _
               (substitute* "setup.cfg"
-                (("--cov.*") ""))))
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+                (("--cov.*") "")))))))
     (native-inputs
      (list python-hatch-vcs
            python-hatchling
@@ -1765,12 +1762,7 @@ for Python.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f ;tests need conda
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'pretend-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+      #:tests? #f)) ;tests need conda
     (native-inputs
      (list python-setuptools
            python-setuptools-scm))
@@ -5046,15 +5038,6 @@ module and then similar looking characters are removed.")
        (sha256
         (base32 "07m4c87pavpdak1lx4bvdz43y2wwzm6fc54x947cssgwqz8mw3zp"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'pretend-version
-            ;; Indicate version to setuptools-scm
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                      #$(package-version this-package)))))))
     (native-inputs (list python-pytest
                          python-setuptools
                          python-setuptools-scm
@@ -6185,12 +6168,7 @@ your Python package version as a calendar version.")
          ;; package for in Guix.
          "--ignore=test/test_interface_canalystii.py"
          ;; These tests fail with "OSError: [Errno 19] No such device".
-         "-k" "not BasicTestUdpMulticastBusIPv")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+         "-k" "not BasicTestUdpMulticastBusIPv")))
     (propagated-inputs (list python-packaging python-wrapt))
     (native-inputs
      (list ;; python-canalystii ; Not packed yet
@@ -6458,17 +6436,6 @@ of primitive data types like @code{char}, @code{int}, etc.")
        (sha256
         (base32 "0ldqdsvkvy7vmplyiqcfqqwbh8v88ha98hgdrnlm09g4qbylh5d4"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      ;; TODO: Build documentation, it's failing with error:
-      ;; importlib.metadata.PackageNotFoundError: No package metadata was
-      ;; found for cantools.
-      ;; See: https://github.com/eerimoq/cantools/issues/190.
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-freezegun
            python-parameterized
@@ -7687,14 +7654,7 @@ defined.")
                     (list "not test_only_pyproject"
                           "test_no_setup_py"
                           "test_limited_api")
-                    " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; LookupError: setuptools-scm was unable to detect version for
-          ;; /tmp/guix-build-python-extension-helpers-1.2.0.drv-0/source.
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+                    " and not "))))
     (native-inputs
      (list python-pytest
            python-setuptools-scm))
@@ -7864,16 +7824,6 @@ processing tasks.")
                (base32
                 "0ij0fk4w0jyyj44ij3i2j1nfa0d7dk783w9r25cpwjkpn690xqfx"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'pretend-version
-            ;; The version string is usually derived via setuptools-scm, but
-            ;; without the git metadata available, the version string is set to
-            ;; '999'.
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (propagated-inputs
      (list python-matplotlib python-numpy python-pandas python-scipy))
     (native-inputs
@@ -8984,14 +8934,6 @@ logic-free templating system Mustache.")
        (sha256
         (base32 "02q03smvfz6x8v45s6qcgh1r2plpcam7ra24ikgqlmq005w7nhv3"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                      #$(assoc-ref properties 'upstream-version)))))))
     (native-inputs (list python-hatchling python-hatch-vcs python-pytest))
     (inputs (list python-html5lib
                   python-markdown
@@ -9595,13 +9537,6 @@ to deprecate classes, functions or methods.")
        (sha256
         (base32 "0c5qp69qfkfcp8lfmfh0a2rcb1azsrlrc525qd8blnkrmz2mmayz"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (propagated-inputs
      (list python-pyjwt
            python-pynacl
@@ -10086,16 +10021,6 @@ for visual regression testing purposes.")
       (sha256
        (base32 "1z9d660jnv72jn8qzpa9hddpv5f953js8i75hfhkcw68vmdfndnr"))))
    (build-system pyproject-build-system)
-   (arguments
-    (list
-     #:phases
-     #~(modify-phases %standard-phases
-         (add-before 'build 'pretend-version
-           ;; The version string is usually derived via setuptools-scm, but
-           ;; without the git metadata available, the version string is set to
-           ;; '0.0.0'.
-           (lambda _
-             (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
    (native-inputs (list python-pytest
                         python-setuptools
                         python-setuptools-scm
@@ -10146,13 +10071,6 @@ via the SCP1 protocol, as implemented by the OpenSSH @command{scp} program.")
        (sha256
         (base32 "1pcnhib881p0vgm0s8jj6inzzs98raz70sc2z6m6wlgrj9ivv5jj"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (propagated-inputs (list python-jaraco-context))
     (native-inputs
      (list python-path
@@ -12103,12 +12021,6 @@ comparison.
                " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'pretend-version
-            ;; The version string is usually derived via setuptools-scm, but
-            ;; without the git metadata available, the version string is set to
-            ;; '0.0.0'.
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
           (add-after 'unpack 'patch-commands
             (lambda _
               (substitute* "lib/matplotlib/tests/test_animation.py"
@@ -12848,13 +12760,6 @@ Python list with elements of type @code{PIL.Image} (from the
        (sha256
         (base32 "0hpnb63xp8yaflah3i1z5azh6mg36rz0liy27km47417w2q72v0c"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list pybind11
            python-attrs
@@ -14401,12 +14306,7 @@ releases.")
      (list
       #:test-flags
       ;; Ignore doctests.
-      #~(list "--ignore-glob=jaraco/vcs/*.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+      #~(list "--ignore-glob=jaraco/vcs/*.py")))
     (propagated-inputs (list python-jaraco-classes
                              python-jaraco-path
                              python-jaraco-versioning
@@ -14440,13 +14340,6 @@ Python.")
        (sha256
         (base32 "12svnpa5sl3r5lci9bybzy5gb8pd4clfkl65x5hsap00ada2w91r"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (propagated-inputs (list python-packaging))
     (native-inputs
      (list python-pytest python-setuptools python-setuptools-scm))
@@ -17043,14 +16936,6 @@ reading and writing MessagePack data.")
        (sha256
         (base32 "1rxjgzh0p069ncsr2986rn32vhdqyq35irbqg2559jh18456mkca"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'pretend-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                      #$(package-version this-package)))))))
     (native-inputs (list python-cython-0 python-pytest python-setuptools-scm
                          python-setuptools))
     (home-page "https://github.com/fonttools/openstep-plist")
@@ -17707,12 +17592,7 @@ is binding LibSass.")
                     ;; the network and fail.
                     "and not test_pkg_imported "
                     "and not test_pkg_loaded_from_alternate_index "
-                    "and not test_pkg_loaded_from_url "))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'pretend-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+                    "and not test_pkg_loaded_from_url "))))
     (native-inputs
      (list python-nbformat
            python-pygments
@@ -19195,10 +19075,6 @@ friendly JSON encoder, decorators for retries and logging.")
       ;; tests: 466 passed, 614 skipped, 4 xfailed, 11 xpassed, 1 warning
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'set-verion
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                      #$(version-major+minor+point version))))
           (add-before 'check 'pre-check
             (lambda _
               ;; Unset PYTHONDONTWRITEBYTECODE to match the expectations of a
@@ -19737,12 +19613,7 @@ for the module to work under Python 3.3.")
                                  "test_iter_lines_error"
                                  "test_quoting"
                                  "test_copy_move_delete")
-                           " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+                           " and not "))))
     (native-inputs
      (list procps
            python-psutil
@@ -24375,16 +24246,11 @@ package attempts to address the shortcomings of @code{isodate}.")
                           "test_requirements_finder"
                           "test_sort_configurable_sort_issue_1732"
                           "test_sort_imports_error_handling")
-                    " and not "))
+                    " and not "))))
       ;; TODO: Package example plugins separately, available in PyPI:
       ;; - example_isort_formatting_plugin
       ;; - example_isort_sorting_plugin
       ;; - example_shared_isort_profile
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'pretend-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-colorama
            python-hatch-vcs
@@ -24978,16 +24844,7 @@ and integration into other projects.")
           "12qfqha70vhc8pclq0kzv7xk0i44ramnlkphybv7419vdl4aay40"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'build 'pretend-version
-                 (lambda _
-                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                           #$(package-version this-package))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "pytest" "-vv" "test.py")))))))
+     (list #:test-flags #~(list "test.py")))
     (native-inputs
      (list python-pytest python-setuptools python-setuptools-scm python-wheel))
     (home-page "https://libraryofcongress.github.io/bagit-python/")
@@ -25679,13 +25536,6 @@ Rust Python extensions implemented with @code{PyO3} or @code{rust-cpython}.")
          (sha256
           (base32 "1sza6n2fg8zml0v1s5zwzrlsb79s2abn1n4pr1l8r15al4g9z0c6"))))
       (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'set-version
-              (lambda _
-                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "0.2.2"))))))
       (native-inputs
        (list python-pytest
              python-setuptools
@@ -25718,9 +25568,6 @@ definitions to simplify the use of C bindings.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
           (add-before 'build 'cythonize-sources
             (lambda _
               (with-directory-excursion "src/pyclipper"
@@ -27727,12 +27574,7 @@ values.  Partd excels at shuffling operations.")
                           "test_gist_public_one_file"
                           ;; Test hangs
                           "test_processes")
-                    " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+                    " and not "))))
     (propagated-inputs
      (list python-aiohttp python-libarchive-c python-requests python-tqdm))
     (native-inputs
@@ -28421,16 +28263,7 @@ Python 2 or 3.")
                          ;; Requires geodatasets package.
                          " and not test_timedynamic_geo_json"
                          ;; AssertionError.
-                         " and not test_minimap"))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'build 'pretend-version
-                 ;; The version string is usually derived via setuptools-scm,
-                 ;; but without the git metadata available, the version string
-                 ;; is set to '0.0.0'.
-                 (lambda _
-                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                           #$(package-version this-package)))))))
+                         " and not test_minimap"))))
     (propagated-inputs
      (list python-branca
            python-jinja2
@@ -29639,13 +29472,6 @@ we can stop writing custom parsers for syslog-type records.")
        (sha256
         (base32 "0vfakncq87s6g67mqihjf32xarphd75c03ammvgavladz0pqhlg4"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (propagated-inputs (list python-json-logger))
     (native-inputs (list python-mock python-pytest python-setuptools
                          python-setuptools-scm))
@@ -29882,13 +29708,6 @@ information for your operating system.")
        (sha256
         (base32 "1wkgbwr0hdvafbhbqjibca06rxqbp95gg6rfd3ba6rkgl4g85i5z"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (propagated-inputs
      (list python-canonicaljson
            python-pynacl
@@ -30104,13 +29923,6 @@ happened, and what caused it.")
        (sha256
         (base32 "01x14j1pliyxvcx8hlwlwfchn893ddkxxpxbyqhyh6hjyag2ammd"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list nss-certs-for-test
            python-certifi
@@ -30277,9 +30089,6 @@ cryptographically signed ones).")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
           (add-after 'unpack 'relax-requirements
             (lambda _
               (delete-file "pytest.ini")
@@ -33080,13 +32889,6 @@ worry whether all dependencies that use LooseVersion have migrated.")
        (sha256
         (base32 "07a1gkvc5p3qi55vczhicz3k5bs1c6jdkw6vrrnxrygg357fabh5"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-pytest
            python-setuptools
@@ -33289,14 +33091,7 @@ a Python program in an customizable and pythonic way.")
        (sha256
         (base32 "030lncdmrcvzgp8v1jw04snnplqxlwf3vikzd0a3jbk5sgrp2cih"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 15102 passed, 36 skipped, 5489 warnings
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    ;; tests: 15102 passed, 36 skipped, 5489 warnings
     (native-inputs
      (list python-lxml
            python-pytest
@@ -33326,6 +33121,7 @@ spreadsheet), CSV, TSV, XLS, XLSX (Microsoft Excel spreadsheet), and YAML.")
     (inherit python-csb43)
     (name "python-csb43")
     (version "0.10.1")
+    ;; tests: 15493 passed, 37 skipped, 7447 warnings
     (source
      (origin
        (method git-fetch)
@@ -33334,15 +33130,7 @@ spreadsheet), CSV, TSV, XLS, XLSX (Microsoft Excel spreadsheet), and YAML.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0frxcclz7scpndrr7ygqy6k41bcwgwam26yk7n1cnwyim2wkaykd"))))
-    (arguments
-     (list
-      ;; tests: 15493 passed, 37 skipped, 7447 warnings
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))))
+        (base32 "0frxcclz7scpndrr7ygqy6k41bcwgwam26yk7n1cnwyim2wkaykd"))))))
 
 (define-public python-febelfin-coda
   (package
@@ -33702,13 +33490,7 @@ Python @code{set} interface.")
          "--deselect=src/orgparse/tests/test_data.py::test_data[01_attributes]"
          "--deselect=src/orgparse/tests/test_data.py::test_data[03_repeated_tasks]"
          "--deselect=src/orgparse/tests/test_data.py::test_data[04_logbook]"
-         "--deselect=src/orgparse/tests/test_misc.py::test_level_0_timestamps")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                      #$version))))))
+         "--deselect=src/orgparse/tests/test_misc.py::test_level_0_timestamps")))
     (native-inputs (list python-hatchling python-hatch-vcs python-pytest))
     (home-page "https://github.com/karlicoss/orgparse")
     (synopsis "Emacs Org mode parser in Python")
@@ -34816,13 +34598,6 @@ other.")
        (sha256
         (base32 "06hagzg8ccmjzqvszdxb52jgx5il8a1jdz41n4dpkyyjsfg7fi2b"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-setuptools-scm
            python-pytest
@@ -34922,12 +34697,7 @@ written in C.")
               ;; FileNotFoundError: [Errno 2] No such file or directory: 'time'
               "--deselect=tests/test_scooby.py::test_import_time"
               ;; Errored
-              "--deselect=tests/test_scooby.py::test_cli")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+              "--deselect=tests/test_scooby.py::test_cli")))
     (native-inputs
      (list python-beautifulsoup4
            python-numpy
@@ -39089,13 +38859,6 @@ parsing UK postcodes.")
        (sha256
         (base32 "0m1sixmqynlalsw50af5mv5q4gpz2052d1p2ig9hr7yqmdvqcz6p"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-freezegun
            python-hatch-fancy-pypi-readme
@@ -39339,12 +39102,7 @@ multiple Unicode code points, e.g. \"G\" + acute-accent)
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f  ;requires network
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+      #:tests? #f))  ;requires network
     (native-inputs
      (list python-setuptools
            python-setuptools-scm))
@@ -39717,12 +39475,7 @@ which make common patterns shorter and easier.")
       #:test-flags
       ;; Test is time based: AssertionError: 13987034766.015247 !=
       ;; 13987034766.01471 within 3 places (0.000537872314453125 difference)
-      #~(list "--deselect=test/test_uuid6.py::UUIDTests::test_time")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+      #~(list "--deselect=test/test_uuid6.py::UUIDTests::test_time")))
     (native-inputs
      (list python-pytest
            python-setuptools

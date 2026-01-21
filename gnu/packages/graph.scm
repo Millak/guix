@@ -394,7 +394,6 @@ graphs in Python.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'find-igraph
             (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
               (substitute* "setup.py"
                 (("/usr/include/igraph")
                  (string-append #$(this-package-input "igraph")
@@ -694,13 +693,6 @@ of millions of nodes (as long as they can fit in memory).")
        (sha256
         (base32 "0p46g8drpnsciphy3iagrkagzh8hi3l5xmdab00q9z812bwdb951"))))
     (build-system pyproject-build-system)
-   (arguments
-    (list
-     #:phases
-     #~(modify-phases %standard-phases
-         (add-before 'build 'pretend-version
-           (lambda _
-             (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list pkg-config
            python-ddt

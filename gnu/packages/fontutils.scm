@@ -541,12 +541,7 @@ Kit for OpenType (AFDKO) @command{tx} tool.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "--pyargs" "compreffor")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+      #:test-flags #~(list "--pyargs" "compreffor")))
     (native-inputs
      (list python-cython
            python-pytest
@@ -650,13 +645,6 @@ to generate OpenType font binaries from Unified Font Objects (UFOs).")
        (sha256
         (base32 "0g8vpwn4flg0rj7ar8wl9xlpjhcgiz01p56fzkjdlf2jqb36akyy"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (propagated-inputs (list python-fonttools-minimal))
     (native-inputs
      (list python-pytest
@@ -781,10 +769,7 @@ process.  FontParts is the successor of RoboFab.")
               (substitute* "freetype/raw.py"
                 (("ctypes.util.find_library\\('freetype'\\)")
                  (format #f "'~a/~a'" #$(this-package-input "freetype")
-                         "lib/libfreetype.so")))))
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+                         "lib/libfreetype.so"))))))))
     (native-inputs
      (list python-pytest
            python-setuptools
@@ -812,15 +797,6 @@ high-level API is bound.")
                (base32
                 "193h5ixq9p9m2kwz8srfw61rzgqg6gishlndqm759cymwax0cibi"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'pretend-version
-            ;; The version string is usually derived via setuptools-scm, but
-            ;; without the git metadata available this fails.
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-setuptools-scm
            python-setuptools
@@ -894,9 +870,6 @@ different scripts and languages.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
           (add-after 'unpack 'unbundle-opentype-sanitizer
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "setup.py"
@@ -1141,12 +1114,7 @@ tools can generate partial instances.
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-backend #~'unittest
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+      #:test-backend #~'unittest))
     (native-inputs (list python-setuptools python-setuptools-scm unzip))
     (home-page "https://github.com/unified-font-object/ufoNormalizer")
     (synopsis "Script to normalize @acronym{UFO, Unified Font Object} data")
@@ -1998,13 +1966,6 @@ API-compatible with defcon.")
         (sha256
          (base32 "1zx4xas6qcpp54d1vcfy5wjv17aazkpfmb7hkjy99g47xsi6crrh"))))
      (build-system pyproject-build-system)
-     (arguments
-      (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'set-version
-             (lambda _
-               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
      (propagated-inputs (list python-fontpens-bootstrap python-fonttools))
      (native-inputs
       (list python-pytest
@@ -2050,9 +2011,6 @@ UFO3 as described by the UFO font format.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'pretend-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (with-directory-excursion "tests"

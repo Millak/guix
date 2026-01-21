@@ -2097,15 +2097,7 @@ timeout has been exceeded.")
     (build-system pyproject-build-system)
     (arguments
      ;; See <https://github.com/pytest-dev/pytest-forked/issues/88>.
-     (list #:tests? #f
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'build 'pretend-version
-                 ;; The version string is usually derived via setuptools-scm,
-                 ;; but without the git metadata available, the version string
-                 ;; is set to '0.0.0'.
-                 (lambda _
-                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+     (list #:tests? #f))
     (native-inputs
      ;; XXX: The bootstrap variant of Pytest is used to ensure the
      ;; 'hypothesis' plugin is not in the environment (due to
@@ -2504,12 +2496,7 @@ executed.")
                                          "trigger_warning_about_no_current_"
                                          "event_loop_being_set")
                           "test_warns_when_scope_argument_is_present")
-                    " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+                    " and not "))))
     (native-inputs
      (list python-setuptools
            python-setuptools-scm))

@@ -215,16 +215,7 @@ projects.")
     (arguments
      (list
       ;; Integration tests need a running Docker daemon.
-      #:test-flags #~(list "--ignore" "tests/integration")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'pretend-version
-            ;; The version string is usually derived via setuptools-scm,
-            ;; but without the git metadata available, the version string
-            ;; is set to '0.0.0'.
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                      #$(package-version this-package)))))))
+      #:test-flags #~(list "--ignore" "tests/integration")))
     (native-inputs (list python-hatch-vcs python-hatchling python-pytest))
     (inputs
      (list python-requests python-urllib3))

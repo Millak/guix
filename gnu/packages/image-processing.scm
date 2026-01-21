@@ -1960,14 +1960,6 @@ purposes.")
        (sha256
         (base32 "0z7nwnvqh3hbbccf7v56398aiiwqs68kyrgc5vsmmh1cp4pwrgnb"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               ;; LookupError: Error getting the version from source `vcs`:
-               ;; setuptools-scm was unable to detect version for <...>
-               (add-after 'unpack 'pretend-version
-                 (lambda _
-                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-pytest
            python-hatchling

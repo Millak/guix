@@ -2786,9 +2786,6 @@ from multiple records.")
                 ;; dask[array]>=2025.1.0  # github.com/SciTools/iris/issues/6264
                 ;; TODO: Update python-dask to >=2025.1.0 to fix referenced bug.
                 ((">=2025.1.0") ""))))
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
           (add-after 'unpack 'delete-failing-test-files
             (lambda _
               (with-directory-excursion "lib/iris/tests"

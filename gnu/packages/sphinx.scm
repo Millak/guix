@@ -1386,12 +1386,7 @@ enabled web server.")
       ;; website.
       #~(list "--deselect=tests/test_sphinx_autodoc_typehints.py::test_format_annotation"
               ;; Assertions are not equal.
-              "--deselect=tests/test_sphinx_autodoc_typehints.py::test_always_use_bars_union")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+              "--deselect=tests/test_sphinx_autodoc_typehints.py::test_always_use_bars_union")))
     (native-inputs
      (list python-hatch-vcs
            python-hatchling

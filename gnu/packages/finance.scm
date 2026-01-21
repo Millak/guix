@@ -1225,13 +1225,7 @@ of Bitcoin BIP-0039.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'pretend-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                      #$version))))))
+      #:tests? #f))
     (native-inputs (list python-setuptools python-setuptools-scm python-wheel))
     (propagated-inputs (list python-bleak
                              python-pyelftools
