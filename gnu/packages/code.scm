@@ -1148,6 +1148,3 @@ will fail (i.e., it will exit with a non-zero exit code) when any of these
 requirements is not met.")
     (properties '((lint-hidden-cpe-vendors . ("vmware"))))
     (license license:expat)))
-
-(define-deprecated-package python-xenon
-  xenon)
