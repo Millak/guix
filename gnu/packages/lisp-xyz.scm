@@ -15142,8 +15142,8 @@ decoding functions for URLs.")
   (sbcl-package->ecl-package sbcl-do-urlencode))
 
 (define-public sbcl-documentation-utils
-  (let ((commit "98630dd5f7e36ae057fa09da3523f42ccb5d1f55")
-        (revision "0"))
+  (let ((commit "cd5b506c7aa555dea0cc0785f36256348c9e839d")
+        (revision "1"))
     (package
       (name "sbcl-documentation-utils")
       (version (git-version "1.2.0" revision commit))
@@ -15152,12 +15152,12 @@ decoding functions for URLs.")
          (method git-fetch)
          (uri
           (git-reference
-           (url "https://github.com/Shinmera/documentation-utils")
-           (commit commit)))
+            (url "https://codeberg.org/shinmera/documentation-utils")
+            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "098qhkqskmmrh4wix34mawf7p5c87yql28r51r75yjxj577k5idq"))))
+           "0x0ckmihz19mcd0lfbd9237ky881ifgrd9hv528qli7xnv0r1kz9"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-trivial-indent))
@@ -15165,7 +15165,7 @@ decoding functions for URLs.")
       (description
        "This is a small library to help you with managing the Common Lisp
 docstrings for your library.")
-      (home-page "https://shinmera.github.io/documentation-utils/")
+      (home-page "https://shinmera.com/docs/documentation-utils")
       (license license:zlib))))
 
 (define-public cl-documentation-utils
