@@ -513,6 +513,35 @@ aniso8601.")
     ;; setup.py and PyPI: "License :: OSI Approved :: BSD License"
     (license bsd-3)))
 
+(define-public python-timeslot
+  (let ((commit "af35445e96cbb2f3fb671a75aac6aa93e4e7e7a6")
+        (revision "0"))
+    (package
+      (name "python-timeslot")
+      (version (git-version "0.1.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/ErikBjare/timeslot")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1m0zrr60p4brkdwkkhdzhvmd98flklqgbjryjpdcfq1c4gd60j0q"))))
+      (build-system pyproject-build-system)
+      (native-inputs
+       (list python-poetry-core
+             python-pytest
+             python-pytest-cov
+             python-setuptools))
+      (home-page "https://github.com/ErikBjare/timeslot")
+      (synopsis "Data type for representing time slots")
+      (description
+       "This package provides a data type for representing time slots with a
+start and end.  It completes the datetime Python module, which can represent a
+time, a duration, a timezone, but not a range or interval.")
+      (license expat))))
+
 (define-public python-timezonefinder
   (package
     (name "python-timezonefinder")
