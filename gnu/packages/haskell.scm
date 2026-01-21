@@ -25,6 +25,7 @@
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2026 Yarl Baudig <yarl-baudig@mailoo.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -58,6 +59,7 @@
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lisp)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
@@ -1400,6 +1402,104 @@ interactive environment for the functional language Haskell.")
 
 (define-public ghc-8 ghc-8.10)
 
+(define ghc-bootstrap-aarch64-8.10.7
+  (origin
+    (method url-fetch)
+    (uri
+     "https://downloads.haskell.org/ghc/8.10.7/ghc-8.10.7-aarch64-deb10-linux.tar.xz")
+    (sha256
+     (base32 "0m8fklyqcd8xrmhwnimyhyg3b5h82kkc0yfyiazk6li9kdzl3lps"))))
+
+(define-public binary-ghc-8.10.7
+  (package
+    ;; Named like this to be able to install it in profile without
+    ;; ghc-package-cache-file (guix profiles) trying to install ghc...
+    (name "binary-ghc")
+    (version "8.10.7")
+    (source ghc-bootstrap-aarch64-8.10.7)
+    (build-system gnu-build-system)
+    (supported-systems '("aarch64-linux"))
+    ;; We need llvm until 9.2 which introduce aarch64 native code generation.
+    ;; Make sure you have installed LLVM between [9 and 13)
+    (inputs (list gcc-13 gmp llvm-12 ncurses/tinfo numactl))
+    (native-inputs
+     (list patchelf perl))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         (string-append "--with-gmp-libraries="
+                        (assoc-ref %build-inputs "gmp") "/lib")
+         (string-append "--with-gmp-includes="
+                        (assoc-ref %build-inputs "gmp") "/include"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)
+          ;; We don't run the check phase on binary inputs.
+          (delete 'check)
+          (add-before 'configure 'fix-lnuma
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (substitute* "rts/package.conf.in"
+                (("FFI_LIB_DIR")
+                 (string-append
+                  "FFI_LIB_DIR "
+                  (assoc-ref inputs "numactl") "/lib")))))
+          (add-after 'fix-lnuma 'add-rpaths
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((libraries
+                      (cons* "rts/dist/build/libffi.so"
+                             (find-files "." "-ghc8\\.10\\.7\\.so$")))
+                     (binaries
+                      (list "ghc/stage2/build/tmp/ghc-stage2"
+                            "utils/ghc-cabal/dist-install/build/tmp/ghc-cabal"
+                            "utils/ghc-pkg/dist-install/build/tmp/ghc-pkg"
+                            "utils/haddock/dist/build/tmp/haddock"
+                            "utils/hp2ps/dist-install/build/tmp/hp2ps"
+                            "utils/hpc/dist-install/build/tmp/hpc"
+                            "utils/hsc2hs/dist-install/build/tmp/hsc2hs"
+                            "utils/iserv/stage2/build/tmp/ghc-iserv"
+                            "utils/iserv/stage2_dyn/build/tmp/ghc-iserv-dyn"
+                            "utils/iserv/stage2_p/build/tmp/ghc-iserv-prof"
+                            "utils/runghc/dist-install/build/tmp/runghc"
+                            "utils/unlit/dist-install/build/tmp/unlit"))
+                     (ld-so (search-input-file inputs #$(glibc-dynamic-linker))))
+                (for-each
+                 (lambda (b)
+                   (invoke "patchelf" "--add-rpath"
+                           (string-append #$gmp "/lib")  b)
+                   (invoke "patchelf" "--add-rpath"
+                           (string-append (assoc-ref inputs "ncurses-with-tinfo") "/lib") b)
+                   (invoke "patchelf" "--add-rpath"
+                           (string-append #$gcc-13:lib "/lib")  b)
+                   (invoke "patchelf" "--add-rpath"
+                           (string-append #$numactl "/lib")  b))
+                 (append libraries binaries))
+                ;; The binaries have "/lib64/ld-linux-aarch64.so.1" hardcoded.
+                (for-each
+                 (lambda (b)
+                   (invoke "patchelf" "--set-interpreter" ld-so b))
+                 binaries))))
+          (add-before 'add-rpaths 'set-target-programs
+              (lambda* (#:key inputs #:allow-other-keys)
+                (setenv "CC" (search-input-file inputs "/bin/gcc"))
+                (setenv "fp_prog_ar" (search-input-file inputs "/bin/ar"))
+                (setenv "LD" (search-input-file inputs "/bin/ld"))
+                (setenv "LLC" (search-input-file inputs "/bin/llc"))
+                (setenv "OPT" (search-input-file inputs "/bin/opt")))))))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "GHC_PACKAGE_PATH")
+            (files (list (string-append "lib/ghc-" version)))
+            (file-pattern "\\.conf\\.d$")
+            (file-type 'directory))))
+    (home-page "https://www.haskell.org/ghc/")
+    (synopsis "The Glasgow Haskell Compiler")
+    (description
+     "The Glasgow Haskell Compiler (GHC) is a state-of-the-art compiler and
+interactive environment for the functional language Haskell.")
+    (properties '((hidden? . #t)))
+    (license license:bsd-3)))
+
 (define-public ghc-9.0
   (package
     (inherit ghc-8.10)
@@ -1452,6 +1552,7 @@ interactive environment for the functional language Haskell.")
       (inherit base)
       (name "ghc")
       (version "9.2.8")
+      (supported-systems '("i686-linux" "x86_64-linux" "aarch64-linux"))
       (source (origin
                 (method url-fetch)
                 (uri (string-append "https://www.haskell.org/ghc/dist/" version
@@ -1474,14 +1575,34 @@ interactive environment for the functional language Haskell.")
                 (lambda _
                   (substitute* '("testsuite/tests/simplCore/should_compile/all.T")
                     (("^test\\('T21694', \\[ " all)
-                     (string-append all "when(arch('i386'), skip), ")))))))
+                     (string-append all "when(arch('i386'), skip), ")))))
+              #$@(if (target-aarch64?)
+                     ;; Eats up all memory then fail
+                     #~((add-after 'skip-more-tests 'skip-T16992-aarch64
+                          (lambda _
+                            (substitute* "libraries/ghc-compact/tests/all.T"
+                              (("^test\\('T16992', \\[" all)
+                               (string-append all "when(arch('aarch64'), skip), ")))))
+                        ;; The RTS linker does not find __aarch64_*_sync symbols,
+                        ;; Fixed in 9.12 :
+                        ;; https://gitlab.haskell.org/ghc/ghc/-/commit/7db8c9927fae3369fc4ecff68f80c4cb32eea757
+                        (add-before 'configure 'no-outline-atomics
+                          (lambda _
+                            (with-output-to-file "mk/build.mk"
+                              (lambda ()
+                                (display "
+SRC_HC_OPTS += -optc-mno-outline-atomics
+              "))))))
+                     '())))
          ;; Increase verbosity, so running the test suite does not time out on CI.
          ((#:make-flags make-flags ''())
           #~(cons "VERBOSE=4" #$make-flags))))
       (properties '((max-silent-time . 36000))) ; 10 hours, for i686.
       (native-inputs
        `(;; GHC 9.2 must be built with GHC >= 8.6.
-         ("ghc-bootstrap" ,base)
+         ("ghc-bootstrap" ,(if (target-aarch64?)
+                               binary-ghc-8.10.7
+                               base))
          ("ghc-testsuite"
           ,(origin
              (method url-fetch)
