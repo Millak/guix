@@ -307,7 +307,7 @@ at URI, which may be a file:// URI pointing the package's tree."
            "https://www.gnu.org/licenses/license-list#CDDL"))
 
 ;; CDDL1.1 is the same as 1.0, except that "Sun Microsystems, Inc" becomes "Oracle",
-;; "LOST PROFITS" becoms "LOSS OF GOODWILL" and a section is added between 6.2
+;; "LOST PROFITS" becomes "LOSS OF GOODWILL" and a section is added between 6.2
 ;; and 6.3.
 (define cddl1.1
   (license "CDDL 1.1"

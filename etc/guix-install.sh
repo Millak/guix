@@ -110,6 +110,7 @@ GNU_URL="https://ftpmirror.gnu.org/gnu/guix/"
 declare -A GPG_SIGNING_KEYS
 GPG_SIGNING_KEYS["civodul"]=3CE464558A84FDC69DB40CFB090B11993D9AEBB5  # ludo
 GPG_SIGNING_KEYS["apteryx"]=27D586A4F8900854329FF09F1260E46482E63562 # maxim
+GPG_SIGNING_KEYS["efraim"]=A28BF40C3E551372662D14F741AAE7DCCA3D8351 # efraim
 PUBLIC_KEYSERVERS="keys.openpgp.org pgpkeys.eu keyserver.ubuntu.com"
 
 # ------------------------------------------------------------------------------

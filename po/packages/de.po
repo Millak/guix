@@ -2,7 +2,7 @@
 # Copyright (C) 2012-2020 the authors of Guix (msgids) and the following authors (msgstr)
 # This file is distributed under the same license as the guix package.
 # Mario Blättermann <mario.blaettermann@gmail.com>, 2014.
-# Florian Pelz <pelzflorian@pelzflorian.de>, 2018, 2020, 2021, 2022, 2025.
+# Florian Pelz <pelzflorian@pelzflorian.de>, 2018, 2020, 2021, 2022, 2025, 2026.
 # Cancer Name <notcancername@protonmail.com>, 2025.
 #: gnu/packages/firmware.scm:1665 gnu/packages/firmware.scm:1932
 #: gnu/packages/linux.scm:1260
@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: guix-packages 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-10-20 03:18+0000\n"
-"PO-Revision-Date: 2025-10-10 20:58+0000\n"
+"PO-Revision-Date: 2026-01-01 14:27+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/packages/de/>\n"
 "Language: de\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Weblate 5.13.2\n"
+"X-Generator: Weblate 5.15.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Word processing program"
@@ -59,6 +59,19 @@ msgstr ""
 
 msgid "Extensible, scalable virtual keyboard for X11"
 msgstr "Erweiterbare, skalierbare virtuelle Tastatur für X11"
+
+msgid ""
+"Florence is an extensible scalable virtual keyboard for X11.\n"
+"It is useful for people who can't use a real hardware keyboard (for\n"
+"example for people with disabilities), but you must be able to use\n"
+"a pointing device (as a mouse, a trackball, a touchscreen or opengazer).\n"
+"\n"
+"Florence stays out of your way when you don't need it: it appears on the\n"
+"screen only when you need it.  A timer-based auto-click input method is\n"
+"available to help to click."
+msgstr ""
+"Florence ist eine erweiterbare, skalierbare virtuelle Tastatur für X11. Sie ist besonders nützlich für Menschen, die eine echte Hardware-Tastatur nicht benutzen können (wie zum Beispiel Menschen mit Behinderungen) und stattdessen Zeigegeräte (wie eine Maus, einen Trackball, einen Touchscreen oder Opengazer) verwenden.\n"
+"Florence ist nicht im Weg, wenn man es nicht braucht: es erscheint nur auf dem Bildschirm, wenn es gebraucht wird. Eine zeitgesteuerte Auto-Klick-Funktion ist verfügbar, um beim Klicken zu helfen."
 
 msgid "Command line utilities for PCsensor and Scythe foot switches"
 msgstr "Kommandozeilenwerkzeuge für PCsensor- und Scythe-Fußschalter"

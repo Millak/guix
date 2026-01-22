@@ -57,7 +57,7 @@ enable caching, supply 'http-fetch/cached'."
       result)))
 
 (define (json->code file-name)
-  "Read FILE-NAME containing one ore more JSON package definitions and return
+  "Read FILE-NAME containing one or more JSON package definitions and return
 a list of S-expressions, or return #F when the JSON is invalid."
   (catch 'json-invalid
     (lambda ()

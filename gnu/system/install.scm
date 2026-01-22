@@ -25,9 +25,11 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu system install)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu)
   #:use-module (gnu system)
   #:use-module (gnu system privilege)
+  #:use-module (guix build-system trivial)
   #:use-module (gnu bootloader)
   #:use-module (gnu bootloader u-boot)
   #:use-module (guix gexp)
@@ -336,6 +338,104 @@ templates under @file{/etc/configuration}.")))
     "Load the @code{uvesafb} kernel module with the right options.")
    (default-value #t)))
 
+(define %installation-login-pam-service
+;;    Custom 'login' pam.d rule. It is based on the original one,
+;; but includes possibility to print different motd. This motd
+;; is useful for headless consoles.
+  (let* ((unix (pam-entry
+                 (control "required")
+                 (module "pam_unix.so")))
+         (env  (pam-entry ; to honor /etc/environment.
+                 (control "required")
+                 (module "pam_env.so")))
+         (motd (plain-file "motd" "
+\x1b[1;37mWelcome to the installation of GNU Guix!\x1b[0m
+
+\x1b[2m\
+Using this shell, you can carry out the installation process \"manually.\"
+Access documentation at any time by pressing Alt-F2.\x1b[0m
+"))
+         (console-motd (plain-file "console-motd" "
+\x1b[1;37mWelcome to the installation of GNU Guix!\x1b[0m
+
+You are in a headless console. If you can use a display, you should see the
+graphical installer on TTY1, it's opened by default. In case you cannot use a
+display, you can carry out the installation process in this shell \"manually\"
+or by starting the installer, using `guix-system-installer` command.
+
+\x1b[2mYou can access the Guix documentation using `info \"(guix)\"`.\x1b[0m
+"))
+         (show-motd (program-file "show-motd"
+                                  #~(begin
+                                      (use-modules (ice-9 textual-ports))
+
+                                      (call-with-input-file
+                                          (if (file-exists?
+                                               (string-append
+                                                "/tmp/console_"
+                                                (basename (getenv "PAM_TTY"))))
+                                              #$console-motd
+                                              #$motd)
+                                        (lambda (port)
+                                          (display (get-string-all port))))))))
+    (pam-service
+      (name "login")
+      (account (list unix))
+      (auth (list (pam-entry
+                    (control "required")
+                    (module "pam_unix.so")
+                    (arguments '("nullok")))))
+      (password (list (pam-entry
+                        (control "required")
+                        (module "pam_unix.so")
+                        (arguments '("sha512" "shadow")))))
+      (session `(,(pam-entry
+                    (control "optional")
+                    (module "pam_exec.so")
+                    (arguments
+                     (list "type=open_session" "stdout" show-motd)))
+                 ,(pam-entry       ;to fill in /proc/self/loginuid
+                    (control "required")
+                    (module "pam_loginuid.so"))
+                 ,env ,unix)))))
+
+(define %installation-console-login
+;;    Make a custom 'login' wrapper for execution in console
+;; terminal. It instructs pam.d login rule to print different
+;; motd.
+  (program-file
+   "login-with-motd"
+   #~(begin
+       (call-with-output-file
+           (string-append "/tmp/console_"
+                          (basename (ttyname (current-output-port))))
+         (const #t))
+
+       (apply execlp
+              #$(file-append shadow "/bin/login")
+              (command-line)))))
+
+(define* (installer-command-package installer-program
+                                    #:key executable)
+  (package
+    (name executable)
+    (version "0")
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments
+     (list #:builder (with-imported-modules '((guix build utils))
+                       #~(begin
+                           (use-modules (guix build utils))
+
+                           (mkdir-p (string-append #$output "/bin"))
+
+                           (symlink #$installer-program
+                                    (string-append #$output "/bin/" #$executable))))))
+    (home-page #f)
+    (synopsis "Provides the Guix System installer as run-guix-installer command")
+    (description "Provides the Guix System installer as run-guix-installer command.")
+    (license license:gpl3+)))
+
 (define* (%installation-services
           #:key
           (system (or (and=>
@@ -344,152 +444,168 @@ templates under @file{/etc/configuration}.")))
                       (%current-system)))
           (guix-for-system (current-guix)))
   ;; List of services of the installation system.
-  (let ((motd (plain-file "motd" "
-\x1b[1;37mWelcome to the installation of GNU Guix!\x1b[0m
+  (define (normal-tty tty)
+    (service mingetty-service-type
+             (mingetty-configuration (tty tty)
+                                     (auto-login "root")
+                                     (login-pause? #t))))
 
-\x1b[2m\
-Using this shell, you can carry out the installation process \"manually.\"
-Access documentation at any time by pressing Alt-F2.\x1b[0m
-")))
-    (define (normal-tty tty)
-      (service mingetty-service-type
-               (mingetty-configuration (tty tty)
-                                       (auto-login "root")
-                                       (login-pause? #t))))
+  (define bare-bones-os
+    (load "examples/bare-bones.tmpl"))
 
-    (define bare-bones-os
-      (load "examples/bare-bones.tmpl"))
+  (define installer
+    (installer-program
+     #:guix-for-installer guix-for-system))
 
-    (append
-     ;; Generic services
-     (list (service virtual-terminal-service-type)
+  (append
+   ;; Generic services
+   (list (service virtual-terminal-service-type)
 
-           (service kmscon-service-type
-                    (kmscon-configuration
-                     (virtual-terminal "tty1")
-                     (login-program (installer-program
-                                     #:guix-for-installer guix-for-system))))
+         (service kmscon-service-type
+                  (kmscon-configuration
+                    (virtual-terminal "tty1")
+                    (login-program installer)))
 
-           (service login-service-type
-                    (login-configuration
-                     (motd motd)))
+         (simple-service 'installer-login
+                         pam-root-service-type
+                         (list %installation-login-pam-service))
 
-           ;; Documentation.  The manual is in UTF-8, but
-           ;; 'console-font-service' sets up Unicode support and loads a font
-           ;; with all the useful glyphs like em dash and quotation marks.
-           (service documentation-service-type "tty2")
+         ;; Documentation.  The manual is in UTF-8, but
+         ;; 'console-font-service' sets up Unicode support and loads a font
+         ;; with all the useful glyphs like em dash and quotation marks.
+         (service documentation-service-type "tty2")
 
-           ;; Documentation add-on.
-           %configuration-template-service
+         ;; Documentation add-on.
+         %configuration-template-service
 
-           ;; A bunch of 'root' ttys.
-           (normal-tty "tty3")
-           (normal-tty "tty4")
-           (normal-tty "tty5")
-           (normal-tty "tty6")
+         ;; A bunch of 'root' ttys.
+         (normal-tty "tty3")
+         (normal-tty "tty4")
+         (normal-tty "tty5")
+         (normal-tty "tty6")
 
-           ;; The usual services.
-           (service shepherd-system-log-service-type)
+         ;; The usual services.
+         (service shepherd-system-log-service-type)
 
-           ;; Use the Avahi daemon to discover substitute servers on the local
-           ;; network.  It can be faster than fetching from remote servers.
-           (service avahi-service-type)
+         ;; Use the Avahi daemon to discover substitute servers on the local
+         ;; network.  It can be faster than fetching from remote servers.
+         (service avahi-service-type)
 
-           ;; The build daemon.
-           (service guix-service-type
-                    (guix-configuration
-                     ;; Register the default substitute server key(s) as
-                     ;; trusted to allow the installation process to use
-                     ;; substitutes by default.
-                     (authorize-key? #t)
+         ;; Allow runninng the installer command on headless setups.
+         (simple-service 'installer-program-profile
+                         profile-service-type
+                         (list (installer-command-package
+                                installer
+                                #:executable "guix-system-installer")))
 
-                     ;; Install and run the current Guix rather than an older
-                     ;; snapshot.
-                     (guix guix-for-system)))
+         ;; The build daemon.
+         (service guix-service-type
+                  (guix-configuration
+                    ;; Register the default substitute server key(s) as
+                    ;; trusted to allow the installation process to use
+                    ;; substitutes by default.
+                    (authorize-key? #t)
 
-           ;; Start udev so that useful device nodes are available.
-           ;; Use device-mapper rules for cryptsetup & co; enable the CRDA for
-           ;; regulations-compliant WiFi access.
-           (service udev-service-type
-                    (udev-configuration
-                     (rules (list lvm2 crda))))
+                    ;; Install and run the current Guix rather than an older
+                    ;; snapshot.
+                    (guix guix-for-system)))
 
-           ;; Add the 'cow-store' service, which users have to start manually
-           ;; since it takes the installation directory as an argument.
-           (cow-store-service)
+         ;; Start udev so that useful device nodes are available.
+         ;; Use device-mapper rules for cryptsetup & co; enable the CRDA for
+         ;; regulations-compliant WiFi access.
+         (service udev-service-type
+                  (udev-configuration
+                    (rules (list lvm2 crda))))
 
-           ;; Install Unicode support and a suitable font.
-           (service console-font-service-type
-                    (map (match-lambda
-                           ("tty2"
-                            ;; Use a font that contains characters such as
-                            ;; curly quotes as found in the manual.
-                            '("tty2" . "LatGrkCyr-8x16"))
-                           (tty
-                            ;; Use a font that doesn't have more than 256
-                            ;; glyphs so that we can use colors with varying
-                            ;; brightness levels (see note in setfont(8)).
-                            `(,tty . "lat9u-16")))
-                         '("tty1" "tty2" "tty3" "tty4" "tty5" "tty6")))
+         ;; Add the 'cow-store' service, which users have to start manually
+         ;; since it takes the installation directory as an argument.
+         (cow-store-service)
 
-           ;; To facilitate copy/paste.
-           (service gpm-service-type)
+         ;; Install Unicode support and a suitable font.
+         (service console-font-service-type
+                  (map (match-lambda
+                         ("tty2"
+                          ;; Use a font that contains characters such as
+                          ;; curly quotes as found in the manual.
+                          '("tty2" . "LatGrkCyr-8x16"))
+                         (tty
+                          ;; Use a font that doesn't have more than 256
+                          ;; glyphs so that we can use colors with varying
+                          ;; brightness levels (see note in setfont(8)).
+                          `(,tty . "lat9u-16")))
+                       '("tty1" "tty2" "tty3" "tty4" "tty5" "tty6")))
 
-           ;; Add an SSH server to facilitate remote installs.
-           (service openssh-service-type
-                    (openssh-configuration
-                     (port-number 22)
-                     (permit-root-login #t)
-                     ;; The root account is passwordless, so make sure
-                     ;; a password is set before allowing logins.
-                     (allow-empty-passwords? #f)
-                     (password-authentication? #t)
+         ;; To facilitate copy/paste.
+         (service gpm-service-type)
 
-                     ;; Don't start it upfront.
-                     (%auto-start? #f)))
+         ;; Add an SSH server to facilitate remote installs.
+         (service openssh-service-type
+                  (openssh-configuration
+                    (port-number 22)
+                    (permit-root-login #t)
+                    ;; The root account is passwordless, so make sure
+                    ;; a password is set before allowing logins.
+                    (allow-empty-passwords? #f)
+                    (password-authentication? #t)
 
-           ;; Since this is running on a USB stick with a overlayfs as the root
-           ;; file system, use an appropriate cache configuration.
-           (service nscd-service-type
-                    (nscd-configuration
-                     (caches %nscd-minimal-caches)))
+                    ;; Don't start it upfront.
+                    (%auto-start? #f)))
 
-           ;; Having /bin/sh is a good idea.  In particular it allows Tramp
-           ;; connections to this system to work.
-           (service special-files-service-type
-                    `(("/bin/sh" ,(file-append bash "/bin/sh"))))
+         ;; Since this is running on a USB stick with a overlayfs as the root
+         ;; file system, use an appropriate cache configuration.
+         (service nscd-service-type
+                  (nscd-configuration
+                    (caches %nscd-minimal-caches)))
 
-           ;; Loopback device, needed by OpenSSH notably.
-           (service static-networking-service-type
-                    (list %loopback-static-networking))
+         ;; Having /bin/sh is a good idea.  In particular it allows Tramp
+         ;; connections to this system to work.
+         (service special-files-service-type
+                  `(("/bin/sh" ,(file-append bash "/bin/sh"))))
 
-           (service wpa-supplicant-service-type)
-           (service dbus-root-service-type)
-           (service connman-service-type
-                    (connman-configuration
-                     (disable-vpn? #t)))
+         ;; Loopback device, needed by OpenSSH notably.
+         (service static-networking-service-type
+                  (list %loopback-static-networking))
 
-           ;; Keep a reference to BARE-BONES-OS to make sure it can be
-           ;; installed without downloading/building anything.  Also keep the
-           ;; things needed by 'profile-derivation' to minimize the amount of
-           ;; download.
-           (service gc-root-service-type
-                    (append
-                     (list bare-bones-os
-                           (libc-utf8-locales-for-target system)
-                           texinfo
-                           guile-3.0)
-                     %default-locale-libcs)))
+         (service wpa-supplicant-service-type)
+         (service dbus-root-service-type)
+         (service connman-service-type
+                  (connman-configuration
+                    (disable-vpn? #t)))
 
-     ;; Specific system services
+         ;; Keep a reference to BARE-BONES-OS to make sure it can be
+         ;; installed without downloading/building anything.  Also keep the
+         ;; things needed by 'profile-derivation' to minimize the amount of
+         ;; download.
+         (service gc-root-service-type
+                  (append
+                   (list bare-bones-os
+                         (libc-utf8-locales-for-target system)
+                         texinfo
+                         guile-3.0)
+                   %default-locale-libcs)))
 
-     ;; Machines without Kernel Mode Setting (those with many old and
-     ;; current AMD GPUs, SiS GPUs, ...) need uvesafb to show the GUI
-     ;; installer.  Some may also need a kernel parameter like nomodeset
-     ;; or vga=793, but we leave that for the user to specify in GRUB.
-     `(,@(if (supported-package? v86d system)
-             (list (service uvesafb-service-type))
-             '())))))
+   ;; Specific system services
+
+   ;; AArch64 has a better detection of consoles, mainly because device
+   ;; trees are utilized.  On x86_64, the detection is usually done
+   ;; through BIOS and consoles do not get registered to /proc/console.
+   ;; The only way they would is if the user used console linux argument.
+   `(,@(if (target-aarch64? system)
+           (list (service agetty-service-type
+                          (agetty-configuration (tty #f)
+                                                (auto-login "root")
+                                                (login-pause? #t)
+                                                (login-program
+                                                 %installation-console-login))))
+           '()))
+
+   ;; Machines without Kernel Mode Setting (those with many old and
+   ;; current AMD GPUs, SiS GPUs, ...) need uvesafb to show the GUI
+   ;; installer.  Some may also need a kernel parameter like nomodeset
+   ;; or vga=793, but we leave that for the user to specify in GRUB.
+   `(,@(if (supported-package? v86d system)
+           (list (service uvesafb-service-type))
+           '()))))
 
 (define %issue
   ;; Greeting.
@@ -530,10 +646,44 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
             "usb_common" "usbcore"
             ;; USB 3.0
             "xhci_pci" "xhci_hcd"
-            ;; embedded USB 3.0
             "xhci_plat_hcd"
+            ;; More USB controllers
+            "dwc3" "dwc3_pci"
+            ;; Allwinner
+            "phy_sun4i_usb" "phy_sun50i_usb3"
+            ;; Qualcomm
+            "dwc3_qcom"
+            "phy_qcom_qmp_usb" "phy_qcom_qusb2"
+            "phy_qcom_snps_femto_v2" "phy_qcom_usb_hs"
+            "phy_qcom_usb_ss"
+            ;; Texas Instruments
+            "phy_tusb1210"
+            ;; Rockchip
+            "phy_rockchip_usb"
+            "phy_rockchip_inno_usb2" "phy_rockchip_typec"
+            ;; NXP i.MX
+            "phy_fsl_imx8mq_usb"
+            ;; Generic
+            "phy_generic"
+            ;; "thunderbolt" "typec_thunderbolt"
             ;; USB 2.0
-            "ehci_pci" "ehci_hcd")
+            "dwc2"
+            "ehci_pci" "ehci_hcd"
+            "ehci_platform"
+            ;; USB 1.1
+            "ohci_pci" "ohci_hcd"
+            ;; SD cards
+            "mmc_hsq" "mmc_spi"
+            "mmc_core" "mmc_block"
+            "sdhci" "sdhci_pci"
+            "mmc_spi"
+            "sdhci_acpi"
+            ;; Platform specific SD card
+            "dw_mmc" "dw_mmc-pltfm" "dw_mmc-rockchip"
+            "sunxi_mmc" "sdhci_pltfm" "sdhci_msm"
+            "sdhci_of_arasan" "sdhci_of_esdhc" "sdhci_brcmstb"
+            "sdhci_tegra" "phy_rockchip_emmc"
+            "sdhci_esdhc_imx")
           '())
     ,@%base-initrd-modules))
 

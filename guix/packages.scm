@@ -243,7 +243,7 @@ representation."
 (define-compile-time-decoder base32 nix-base32-string->bytevector)
 (define-compile-time-decoder base64 base64-decode)
 
-;; Crytographic content hash.
+;; Cryptographic content hash.
 (define-immutable-record-type <content-hash>
   (%content-hash algorithm value)
   content-hash?

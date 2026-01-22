@@ -6,6 +6,7 @@ Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 Copyright © 2016, 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
 Copyright © 2021, 2022, 2024 Maxim Cournoyer <maxim@guixotic.coop>
 Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
+Copyright © 2026 Noé Lopez <noelopez@free.fr>
 
   Copying and distribution of this file, with or without modification,
   are permitted in any medium without royalty provided the copyright
@@ -16,8 +17,77 @@ Please send Guix bug reports to bug-guix@gnu.org.
 * Changes in 1.5.0 (since 1.4.0)
 ** Package management
 *** New ‘rpm’ format for the ‘guix pack’ command
+*** New ‘appimage’ format for the ‘guix pack’ command
+*** New ‘--max-layers’ and ‘--file’ options for the ‘guix pack’ command
+*** New ‘--roll-back’ and ‘--expression’ options for the ‘guix deploy’ command
+*** New ‘--with-version’ package transformation option
+*** New ‘--with-configure-flag’ package transformation option
+*** New ‘--nesting’ option to use Guix within ‘guix shell’ containers
+*** New ‘--emulate-fhs’ option for ‘guix shell’ containers
+*** New ‘--dependents’ and ‘--development’ options for ‘guix build’
+*** New ‘--interactive’ and ‘--list-types’ flags for ‘guix repl’
+*** The root file-system of ‘guix shell’ containers is now read-only
+*** New ‘--writable-root’ option for the ‘guix shell’ command
+*** Improved style rules for ‘guix style’
+*** New ‘guix locate’ command
+*** ‘guix refresh’ now honours the ‘--key-server’ option
+*** ‘guix git authenticate‘ now remembers introduction commit and signer
+*** ‘guix git authenticate’ now installs pre-push and post-merge git hooks
+*** System reconfiguration now supports kexec for fast reboot
+*** Hetzner Cloud is now supported by the ‘guix deploy’ command
+*** The Guix Daemon can now be run without root privileges
+*** ‘guix refresh’ can now target partial version
+*** New ‘guix import composer’ command
+*** New ‘guix import binary-npm’ command
+*** New ‘guix import nuget’ command
+*** New ‘graphml’ backend for guix graph
+*** New ‘cyclonedx-json’ backend for guix graph
+*** AppArmor profiles are now available for guix and guix-daemon
 ** Distribution
 *** ‘nss-certs’ is now included in ‘%base-packages’
+*** ‘udev-service-type’ now supports hardware configuration files
+*** ‘gdm-service-type’ now uses Wayland by default
+*** KDE Plasma 6.5 is now available with the new ‘plasma-desktop-service-type’
+*** GNOME was updated to version 44 with a more modular desktop service
+*** Declarative offloading with new ‘build-machines’ field of operating-system
+*** ‘containerd-service-type’ is no longer included with the Docker service
+*** ‘privileged-programs’ replaces ‘setuid-programs’ in ‘operating-system’
+*** The ‘postgresql’ field of ‘postgresql-configuration‘ is now mandatory
+*** The Rottlog service was replaced by new ‘log-rotation-service-type’
+*** The default system log has been changed to Shepherd’s ‘system-log’ service
+*** New recommended ‘%base-home-services’ variable for Guix Home
+*** UDisks now mounts removable devices in /run/media/$USER instead of /media
+*** Syncthing service received incompatible changes
+*** ‘node-build-system’ received incompatible changes
+*** New services for /etc/profile.d and /etc/bashrc.d
+*** New build system for clasp-cl
+*** New Rust packaging model
+*** C.utf8 locale is now supported by glibc
+*** Fully bootstrapped mono and zig are now available
+*** 64bit Hurd (x86_64-gnu) now has experimental support
+*** 12525 new packages
+*** 8911 package updates
+
+Noteworthy updates:
+bash 5.2.37, binutils 2.44, clojure 1.12.0, cups 2.4.14, emacs 30.2,
+gcc-toolchain 15.2.0, gdb 16.3, ghc 9.2.8, gimp 3.0.4, glibc 2.41,
+gnome 46.10, gnupg 2.4.7, go 1.25.3, guile 3.0.9, icecat 140.6.0-gnu1,
+icedtea 3.19.0, inkscape 1.3.2, julia 1.8.5, libreoffice 25.2.5.2,
+linux-libre 6.17.12, lxde 0.99.3, mate 1.28.2, ocaml 5.3.0, octave 10.3.0,
+openjdk 25, perl 5.36.0, python 3.11.14, racket 8.18, rust 1.85.1, r 4.5.2,
+sbcl 2.5.8, shepherd 1.0.9, xfce 4.20.0, xorg-server 21.1.21
+
+** Programming interfaces
+*** ‘(gnu system setuid)’ has been renamed to ‘(gnu system privilege)’
+*** Moved to a new Rust packaging model and repackaged all Rust applications
+*** Rust library packages have been moved to the guix-rust-past-crates channel
+*** Most Python packages now use the ‘pyproject-build-system’
+** Noteworthy bug fixes
+*** Daemon vulnerability allowing store corruption has been fixed
+*** Daemon vulnerability allowing takeover of build users has been fixed
+*** Daemon privilege escalation vulnerabilities fixed
+*** Daemon CVEs have been fixed
+CVE-2024-27297, CVE-2024-52867, CVE-2025-46415, CVE-2025-46416, CVE-2025-59378
 * Changes in 1.4.0 (since 1.3.0)
 ** Package management
 *** New ‘guix home’ command, for home environment management
@@ -1926,7 +1996,7 @@ zynaddsubfx@3.0.3, zziplib@0.13.69
 *** ‘guix pack’ now honors package transformation options
 *** ‘guix package --search’ no longer shows superseded packages
     (<https://bugs.gnu.org/30566>)
-*** ‘guix offload test’ reports errors more nicely 
+*** ‘guix offload test’ reports errors more nicely
     (<https://bugs.gnu.org/28057>)
 *** postgresql service is started through ‘pg_ctl’
     (<https://bugs.gnu.org/29992>)
@@ -5664,7 +5734,7 @@ Monad” in the manual.
 
 *** X session is executed from a login shell (<http://bugs.gnu.org/19119>)
 *** grub.cfg is now a garbage-collector root (<http://bugs.gnu.org/19160>)
-*** Substituter progress report properly formatted 
+*** Substituter progress report properly formatted
     (<http://bugs.gnu.org/19313>)
 *** Document permissions for /gnu/store (<http://bugs.gnu.org/19316>)
 *** Make sure config.go is newer than config.scm
@@ -5920,18 +5990,18 @@ This could cause problems with ancient Linux kernel.
 *** download: Use the 'SERVER NAME' TLS extension when possible
     (<http://bugs.gnu.org/18526>)
 *** libdaemon: Add alternate source URLs (<http://bugs.gnu.org/18639>)
-*** icu4c: Reinstate RUNPATH on shared libraries 
+*** icu4c: Reinstate RUNPATH on shared libraries
     (<http://bugs.gnu.org/18695>)
 *** nss-mdns: Add alternate source URLs (<http://bugs.gnu.org/18704>)
 *** download: Add "Accept: */*" to the HTTP headers
     (<http://bugs.gnu.org/18768>)
-*** guix-register: Do not attempt to create NIX_STORE_DIR 
+*** guix-register: Do not attempt to create NIX_STORE_DIR
     (<http://bugs.gnu.org/18689>)
 *** Allow Linux-libre to find our 'modprobe' command
     (<http://bugs.gnu.org/18525>)
 *** man-pages: Build sequentially (<http://bugs.gnu.org/18701>)
 *** Fix intermittent test failures involving GC (<http://bugs.gnu.org/18935>)
-*** guix import: pypi: Gracefully handle non-existent packages 
+*** guix import: pypi: Gracefully handle non-existent packages
     (<http://bugs.gnu.org/18831>)
 *** Make sure the shared library has the '.so' extension
     (<http://bugs.gnu.org/18521>)

@@ -2,7 +2,7 @@
 # Copyright (C) 2012-2020 the authors of Guix (msgids) and the following authors (msgstr)
 # This file is distributed under the same license as the guix manual package.
 # Mario Blättermann <mario.blaettermann@gmail.com>, 2018.
-# Florian Pelz <pelzflorian@pelzflorian.de>, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025.
+# Florian Pelz <pelzflorian@pelzflorian.de>, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026.
 # Jonathan Brielmaier <jonathan.brielmaier@web.de>, 2019, 2024.
 # Adina Wagner <adina.wagner@t-online.de>, 2021.
 # Ettore Atalan <atalanttore@googlemail.com>, 2021.
@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-10-24 03:18+0000\n"
-"PO-Revision-Date: 2025-12-10 14:56+0000\n"
+"POT-Creation-Date: 2026-01-06 03:18+0000\n"
+"PO-Revision-Date: 2026-01-15 02:39+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/documentation-manual/de/>\n"
 "Language: de\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 5.15.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -260,11 +260,15 @@ msgstr "@url{https://gcc.gnu.org, GCC's g++} mit Unterstützung für den"
 msgid "C++11 standard."
 msgstr "C++11-Standard."
 
-msgid "If you want to hack Guix itself, it is recommended to use the latest version from the Git repository:"
-msgstr "Wenn Sie an Guix selbst hacken wollen, ist es empfehlenswert, dass Sie die neueste Version aus dem Git-Softwarebestand verwenden:"
+msgid "If you want to hack Guix itself, it is recommended to use the latest version from the Git repository@footnote{ Guix uses @code{master} as the default branch name. A proposal in 2025 to change the default branch name to @code{main} did not reach consensus.  See @uref{https://codeberg.org/guix/guix-consensus-documents/src/branch/main/003-rename-default-branch.md, Guix Consensus Document 003}.}:"
+msgstr "Wenn Sie an Guix selbst hacken wollen, ist es empfehlenswert, dass Sie die neueste Version aus dem Git-Repository verwenden@footnote{Guix benutzt @code{master} als Name des Standard-Branchs. Zu einem Vorschlag in 2025, den standardmäßigen Branch-Namen in @code{main} zu ändern, gab es keine einstimmige Zustimmung. Siehe @uref{https://codeberg.org/guix/guix-consensus-documents/src/branch/main/003-rename-default-branch.md, Guix Consensus Document 003}.}:"
 
-msgid "git clone https://git.guix.gnu.org/guix.git\n"
-msgstr "git clone https://git.guix.gnu.org/guix.git\n"
+msgid ""
+"git clone https://git.guix.gnu.org/guix.git\n"
+"cd guix\n"
+msgstr ""
+"git clone https://git.guix.gnu.org/guix.git\n"
+"cd guix\n"
 
 msgid "authentication, of a Guix checkout"
 msgstr "Authentifizieren, eines Guix-Checkouts"
@@ -296,11 +300,18 @@ msgstr "guix shell -D guix -CPW\n"
 msgid "or even, from within a Git worktree for Guix:"
 msgstr "Oder kürzer, aus einem Git-Arbeitsverzeichnis von Guix heraus:"
 
-msgid "guix shell -CPW\n"
-msgstr "guix shell -CPW\n"
+msgid ""
+"echo $(pwd) >> ~/.config/guix/shell-authorized-directories\n"
+"guix shell -CPW\n"
+msgstr ""
+"echo $(pwd) >> ~/.config/guix/shell-authorized-directories\n"
+"guix shell -CPW\n"
 
 msgid "If @option{-C} (short for @option{--container}) is not supported on your system, try @command{--pure} instead of @option{-CPW}.  @xref{Invoking guix shell}, for more information on that command."
 msgstr "Wenn @option{-C} (die Kurzform von @option{--container}) auf Ihrem System nicht unterstützt wird, können Sie @command{--pure} statt @option{-CPW} schreiben. Siehe @ref{Invoking guix shell} für mehr Informationen, was Sie mit diesem Befehl tun."
+
+msgid "Most of the test suite runs without an internet connection. The @option{-N} (short for @option{--network}) can be added to the @code{guix shell} command to run the tests that require internet access."
+msgstr "Der Großteil des Testkatalogs läuft ohne Internetverbindung. Wenn Sie die Befehlszeilenoption @option{-N} (Kurzform von @option{--network}) an den Befehl @code{guix shell} übergeben, laufen auch diejenigen Tests, die einen Internetzugang brauchen."
 
 msgid "If you are unable to use Guix when building Guix from a checkout, the following are the required packages in addition to those mentioned in the installation instructions (@pxref{Requirements})."
 msgstr "Wenn Sie Guix nicht benutzen können, wenn Sie es aus einem Checkout erstellen, werden die folgenden Pakete zusätzlich zu denen benötigt, die in den Installationsanweisungen angegeben sind (siehe @ref{Requirements})."
@@ -323,11 +334,8 @@ msgstr "@url{https://www.graphviz.org/, Graphviz},"
 msgid "@url{https://www.gnu.org/software/help2man/, GNU Help2man (optional)}."
 msgstr "@url{https://www.gnu.org/software/help2man/, GNU Help2man (optional)}."
 
-msgid "On Guix, extra dependencies can be added by instead running @command{guix shell}:"
-msgstr "Auf Guix können zusätzliche Abhängigkeiten hinzugefügt werden, indem Sie stattdessen @command{guix shell} ausführen:"
-
-msgid "guix shell -D guix help2man git strace --pure\n"
-msgstr "guix shell -D guix help2man git strace --pure\n"
+msgid "guix shell -D guix -CPW strace\n"
+msgstr "guix shell -D guix -CPW strace\n"
 
 msgid "From there you can generate the build system infrastructure using Autoconf and Automake:"
 msgstr "Damit können Sie die Infrastruktur des Erstellungssystems mit Autoconf und Automake erzeugen."
@@ -4616,29 +4624,20 @@ msgstr "Installations-Skript"
 msgid "This section describes how to install Guix from a self-contained tarball providing binaries for Guix and for all its dependencies.  This is often quicker than installing from source, described later (@pxref{Building from Git})."
 msgstr "Dieser Abschnitt beschreibt, wie Sie Guix aus einem alle Komponenten umfassenden Tarball installieren, der Binärdateien für Guix und all seine Abhängigkeiten liefert. Dies geht in der Regel schneller, als Guix aus seinen Quelldateien zu installieren, was später beschrieben wird."
 
-msgid "Some GNU/Linux distributions, such as Debian, Ubuntu, and openSUSE provide Guix through their own package managers.  The version of Guix may be older than @value{VERSION} but you can update it afterwards by running @samp{guix pull}."
-msgstr "Auf einigen GNU/Linux-Distributionen, wie Debian, Ubuntu und openSUSE, wird Guix über deren Paketverwaltung angeboten. Vielleicht bringen sie eine ältere Version als @value{VERSION} mit, aber Sie können Guix anschließend über den Befehl @samp{guix pull} aktualisieren."
+msgid "Some GNU/Linux distributions, such as openSUSE, Alpine and NixOS provide Guix through their own package managers.  The version of Guix may be older than @value{VERSION} but you can update it afterwards by running @samp{guix pull}."
+msgstr "Auf einigen GNU/Linux-Distributionen, wie openSUSE, Alpine und NixOS, wird Guix über deren Paketverwaltung angeboten. Vielleicht bringen sie eine ältere Version als @value{VERSION} mit, aber Sie können Guix anschließend über den Befehl @samp{guix pull} aktualisieren."
 
 msgid "We advise system administrators who install Guix, both from the installation script or @i{via} the native package manager of their foreign distribution, to also regularly read and follow security notices, as shown by @command{guix pull}."
 msgstr "Wir empfehlen Systemadministratoren, die Guix installieren, egal ob über das Installations-Skript oder über die Paketverwaltung ihrer Fremddistribution, regelmäßig die Sicherheitshinweise zu lesen und zu befolgen, die @command{guix pull} anzeigt."
-
-msgid "For Debian or derivatives such as Ubuntu or Trisquel, call:"
-msgstr "Wenn Sie Debian oder ein Debian-Derivat wie Ubuntu oder Trisquel verwenden, rufen Sie auf:"
-
-msgid "sudo apt install guix\n"
-msgstr "sudo apt install guix\n"
-
-msgid "Likewise, on openSUSE:"
-msgstr "Das Gleiche gilt auf openSUSE:"
-
-msgid "sudo zypper install guix\n"
-msgstr "sudo zypper install guix\n"
 
 msgid "If you are running Parabola, after enabling the pcr (Parabola Community Repo) repository, you can install Guix with:"
 msgstr "Wenn bei Ihnen Parabola läuft, können Sie, nachdem Sie das Repository pcr (Parabola Community Repo) aktiviert haben, mit diesem Befehl Guix installieren:"
 
 msgid "sudo pacman -S guix\n"
 msgstr "sudo pacman -S guix\n"
+
+msgid "For other package managers with a @var{guix} package, you should be able to install it like any other package."
+msgstr "Bei anderen Paketverwaltungen mit einem @var{guix}-Paket können Sie es vermutlich wie jedes andere Paket installieren."
 
 msgid "The Guix project also provides a shell script, @file{guix-install.sh}, which automates the binary installation process without use of a foreign distro package manager@footnote{@uref{https://guix.gnu.org/guix-install.sh}}.  Use of @file{guix-install.sh} requires Bash, GnuPG, GNU@tie{}tar, wget, and Xz.  On systems where @code{systemd} is detected, the tool @code{newgidmap} from the @code{uidmap} package is also required."
 msgstr "Das Guix-Projekt stellt außerdem ein Shell-Skript bereit, @file{guix-install.sh}, mit dem der Installationsvorgang aus Binärdateien ohne ein Paketverwaltungsprogramm der Fremddistribution automatisiert wird@footnote{@uref{https://guix.gnu.org/guix-install.sh}}. Um @file{guix-install.sh} benutzen zu können, werden Bash, GnuPG, GNU@tie{}tar, wget und Xz vorausgesetzt. Auf Systemen, wo @code{systemd} gefunden wird, brauchen Sie außerdem das Programm @code{newgidmap} aus dem Paket @code{uidmap} als Voraussetzung."
@@ -4760,6 +4759,12 @@ msgstr "Operationen wie das Erstellen eines Pakets oder Laufenlassen des Müllsa
 msgid "The following sections explain how to prepare the build daemon's environment.  @xref{Substitutes} for how to allow the daemon to download pre-built binaries."
 msgstr "Folgende Abschnitte beschreiben, wie Sie die Umgebung des Erstellungs-Daemons ausstatten sollten. @xref{Substitutes} für Informationen darüber, wie Sie es dem Daemon ermöglichen, vorerstellte Binärdateien herunterzuladen."
 
+msgid "AppArmor Support"
+msgstr "AppArmor-Unterstützung"
+
+msgid "Using an AppArmor profile for the daemon."
+msgstr "Wie man ein AppArmor-Profil für den Daemon einrichtet."
+
 msgid "build environment"
 msgstr "Erstellungsumgebung"
 
@@ -4852,6 +4857,9 @@ msgstr ""
 "          -c \"Guix-Daemon-Benutzer zur Privilegientrennung\" \\\n"
 "          --system guix-daemon\n"
 
+msgid "If the @command{nologin} binary is not found by @command{which nologin}, you may need to specify its path manually.  This will usually be @file{/sbin/nologin} or @file{/usr/sbin/nologin}."
+msgstr "Wenn das Programm @command{nologin} mit @command{which nologin} nicht gefunden werden kann, müssen Sie vielleicht seinen Pfad manuell angeben. Normalerweise lautet er @file{/sbin/nologin} oder @file{/usr/sbin/nologin}."
+
 msgid "In this configuration, @file{/gnu/store} is owned by the @code{guix-daemon} user."
 msgstr "In dieser Konfiguration ist das Benutzerkonto @code{guix-daemon} der Besitzer von @file{/gnu/store}."
 
@@ -4936,6 +4944,9 @@ msgstr ""
 "   /etc/systemd/system\n"
 "systemctl daemon-reload\n"
 "systemctl start guix-daemon\n"
+
+msgid "If your system has AppArmor enabled, @pxref{AppArmor Support}."
+msgstr "Wenn auf Ihrem System AppArmor eingeschaltet ist, siehe @ref{AppArmor Support}."
 
 msgid "The commands above assume that @command{guix pull} was run for the root user.  You can check whether this is the case by running this command:"
 msgstr "Bei obigen Befehlen gehen wir davon aus, dass @command{guix pull} bereits durch den root-Benutzer ausgeführt worden ist. Das können Sie mit diesem Befehl überprüfen:"
@@ -5312,6 +5323,42 @@ msgstr "Nach jeder Aktualisierung des @file{guix-daemon}, z.B.@: nachdem Sie @co
 
 msgid "We could generate a much more restrictive policy at installation time, so that only the @emph{exact} file name of the currently installed @code{guix-daemon} executable would be labelled with @code{guix_daemon_exec_t}, instead of using a broad regular expression.  The downside is that root would have to install or upgrade the policy at installation time whenever the Guix package that provides the effectively running @code{guix-daemon} executable is upgraded."
 msgstr "Wir könnten zum Zeitpunkt der Installation eine wesentlich restriktivere Richtlinie generieren, für die nur @emph{genau derselbe} Dateiname des gerade installierten @code{guix-daemon}-Programms als @code{guix_daemon_exec_t} gekennzeichnet würde, statt einen vieles umfassenden regulären Ausdruck zu benutzen. Aber dann müsste der Administratornutzer zum Zeitpunkt der Installation jedes Mal die Richtlinie installieren oder aktualisieren müssen, sobald das Guix-Paket aktualisiert wird, dass das tatsächlich in Benutzung befindliche @code{guix-daemon}-Programm enthält."
+
+msgid "AppArmor"
+msgstr "AppArmor"
+
+msgid "Guix includes an AppArmor profile for the build daemon in @file{etc/apparmor.d/guix-daemon} that can be installed on systems with strict AppArmor policies to allow it to run unprivileged (@pxref{Build Environment Setup}).  Indeed, the unprivileged daemon makes use of Linux user namespaces but these are disallowed without an AppArmor policy on some systems like Ubuntu."
+msgstr "Zu Guix gibt es ein AppArmor-Profil für den Erstellungsdaemon in @file{etc/apparmor.d/guix-daemon}. Es kann auf Systemen mit restriktiven AppArmor-Richtlinien installiert werden, damit er unprivilegiert laufen kann (siehe @ref{Build Environment Setup}). Der unprivilegierte Daemon benutzt nämlich Linux’ Benutzernamensräume (User Namespaces), aber die Rechte dazu hat er nur mit einer AppArmor-Richtlinie auf bestimmten Systemen wie etwa Ubuntu."
+
+msgid "To know if this applies to you, check if the @code{kernel.apparmor_restrict_unprivileged_userns} kernel parameter is enabled."
+msgstr "Sie können feststellen, ob Ihr System dazugehört, indem Sie nachsehen, ob der Kernelparameter @code{kernel.apparmor_restrict_unprivileged_userns} aktiv ist."
+
+msgid "Installing the AppArmor profile"
+msgstr "Installieren des AppArmor-Profils"
+
+msgid "AppArmor, profile installation"
+msgstr "AppArmor, Profilinstallation"
+
+msgid "Run these commands as root to install the profile:"
+msgstr "Führen Sie diese Befehle als der Administratornutzer root aus, um das Profil zu installieren:"
+
+msgid ""
+"export apparmor_sources=/var/guix/profiles/per-user/root/current-guix/etc/apparmor.d\n"
+"cp -f -t /etc/apparmor.d/tunables \"$apparmor_sources/tunables/guix\"\n"
+"cp -f -t /etc/apparmor.d \"$apparmor_sources/guix-daemon\"\n"
+"cp -f -t /etc/apparmor.d \"$apparmor_sources/guix\"\n"
+"apparmor_parser -r /etc/apparmor.d/guix-daemon\n"
+"apparmor_parser -r /etc/apparmor.d/guix\n"
+msgstr ""
+"export apparmor_sources=/var/guix/profiles/per-user/root/current-guix/etc/apparmor.d\n"
+"cp -f -t /etc/apparmor.d/tunables \"$apparmor_sources/tunables/guix\"\n"
+"cp -f -t /etc/apparmor.d \"$apparmor_sources/guix-daemon\"\n"
+"cp -f -t /etc/apparmor.d \"$apparmor_sources/guix\"\n"
+"apparmor_parser -r /etc/apparmor.d/guix-daemon\n"
+"apparmor_parser -r /etc/apparmor.d/guix\n"
+
+msgid "After this, the build daemon will be able to function correctly."
+msgstr "Dadurch funktioniert der Daemon jetzt."
 
 msgid "Invoking @command{guix-daemon}"
 msgstr "Aufruf von @command{guix-daemon}"
@@ -15798,6 +15845,12 @@ msgstr "{REPL-Befehl} build @var{Objekt}"
 msgid "Lower @var{object} and build it if it's not already built, returning its output file name(s)."
 msgstr "Das @var{Objekt} herunterbrechen und erstellen, wenn es noch nicht erstellt ist. Als Ergebnis zurückgeliefert wird der Dateiname jeder Ausgabe."
 
+msgid "{REPL command} graft? @var{graft?}"
+msgstr "{REPL-Befehl} graft? @var{Veredeln?}"
+
+msgid "Set whether grafts should be performed as part of the build.  Equivalent to @code{--no-grafts} argument to @code{guix build}."
+msgstr "Bestimmt, ob während der Erstellung Veredelungen durchgeführt werden sollen. Entspricht dem Argument @code{--no-grafts} für @code{guix build}."
+
 msgid "{REPL command} lower @var{object}"
 msgstr "{REPL-Befehl} lower @var{Objekt}"
 
@@ -20986,6 +21039,23 @@ msgstr "Hiermit wird ein blockorientiertes Gerät mit LUKS verschlüsselt, mit H
 msgid "If @code{file} is provided, unlocking is first attempted using that key file.  This has an advantage of not requiring a password entry, so it can be used (for example) to unlock RAID arrays automatically on boot.  If key file unlock fails, password unlock is attempted as well.  Key file is not stored in the store and needs to be available at the given location at the time of the unlock attempt."
 msgstr "Wenn Sie eine Schlüsseldatei angeben, wird zum Entsperren wenn möglich zunächst die Schlüsseldatei hergenommen. Der Vorteil davon ist, dass Sie kein Passwort eintippen müssen. Damit können Sie beispielsweise RAID-Arrays beim Booten automatisch entsperren. Wenn das Entsperren mit der Schlüsseldatei fehlschlägt, wird noch das Entsperren per Passwort versucht werden. Die Schlüsseldatei liegt @emph{nicht} im Store; sie muss zum Zeitpunkt des Entsperrungsversuchs an der angegebenen Stelle zu finden sein."
 
+msgid ""
+";; Following definition would be equivalent to running:\n"
+";;   cryptsetup open --key-file /crypto.key /dev/sdb1 data\n"
+"(mapped-device\n"
+" (source \"/dev/sdb1\")\n"
+" (target \"data\")\n"
+" (type luks-device-mapping)\n"
+" (arguments '(#:key-file \"/crypto.key\")))\n"
+msgstr ""
+";; Die folgende Definition ist gleichbedeutend mit dem Befehl:\n"
+";;   cryptsetup open --key-file /crypto.key /dev/sdb1 data\n"
+"(mapped-device\n"
+" (source \"/dev/sdb1\")\n"
+" (target \"data\")\n"
+" (type luks-device-mapping)\n"
+" (arguments '(#:key-file \"/crypto.key\")))\n"
+
 msgid "@code{allow-discards?} allows the use of discard (TRIM) requests for the underlying device.  This is useful for solid state drives.  However, this option can have a negative security impact because it can make file system level operations visible on the physical device.  For more information, refer to the description of the @code{--allow-discards} option in the @code{cryptsetup-open(8)} man page."
 msgstr "Mit @code{allow-discards?} wird die Nutzung von TRIM-Steuerbefehlen auf dem zugrunde liegenden Gerät ermöglicht. Das ist nützlich auf @abbr{SSD-Laufwerken, Solid-State-Drives}. Der Nachteil ist aber, dass die Informationssicherheit beeinträchtigt werden kann, weil Operationen auf dem Dateisystem so das physische Gerät beeinflussen. Sie können weitergehende Informationen in der Beschreibung der Befehlszeilenoption @code{--allow-discards} auf der Handbuchseite @code{cryptsetup-open(8)} erfahren."
 
@@ -21927,6 +21997,9 @@ msgid ""
 msgstr ""
 "(extra-special-file \"/usr/bin/env\"\n"
 "                    (file-append coreutils \"/bin/env\"))\n"
+
+msgid "The special files persist on your system even after the @code{extra-special-file} call has been removed from your system config and the system has been reconfigured.  The special files need to be removed manually."
+msgstr "Die besonderen Dateien bleiben auf Ihrem System bestehen, auch nachdem Sie den @code{extra-special-file}-Aufruf schon aus Ihrer Systemkonfiguration entfernt und das System rekonfiguriert haben. Sie müssen die besonderen Dateien manuell entfernen."
 
 msgid "host-name-service-type"
 msgstr "host-name-service-type"
@@ -26814,9 +26887,6 @@ msgstr "Fensterverwaltung"
 msgid "To use X11, you must install at least one @dfn{window manager}---for example the @code{windowmaker} or @code{openbox} packages---preferably by adding it to the @code{packages} field of your operating system definition (@pxref{operating-system Reference, system-wide packages})."
 msgstr "Um X11 zu benutzen, müssen Sie ein Programme zur @dfn{Fensterverwaltung} („Window-Manager“) oder mehrere davon installieren@tie{}– zum Beispiel die Pakete @code{windowmaker} oder @code{openbox}@tie{}–, vorzugsweise indem Sie sie in das @code{packages}-Feld Ihrer Betriebssystemdefinition eintragen (siehe @ref{operating-system Reference, global sichtbare Pakete})."
 
-msgid "wayland-gdm"
-msgstr "wayland-gdm"
-
 msgid "GDM also supports Wayland: it can itself use Wayland instead of X11 for its user interface, and it can also start Wayland sessions.  Wayland support is enabled by default.  To disable it, set @code{wayland?} to @code{#f} in @code{gdm-configuration}."
 msgstr "GDM hat auch Unterstützung für Wayland: Es kann selbst als Wayland-Client statt mit X11 gestartet werden und Wayland-Sitzungen starten. Die Vorgabe ist, dass Wayland unterstützt wird. Um die Wayland-Unterstützung zu deaktivieren, setzen Sie @code{wayland?} auf @code{#f} in der @code{gdm-configuration}."
 
@@ -30498,35 +30568,17 @@ msgstr "Redis"
 msgid "redis-service-type"
 msgstr "redis-service-type"
 
-msgid "This is the service type for the @uref{https://redis.io/, Redis} key/value store, whose value is a @code{redis-configuration} object."
-msgstr "Dies ist der Diensttyp für den Schlüssel-/Wert-Speicher @uref{https://redis.io/, Redis}, dessen Wert ein @code{redis-configuration}-Objekt ist."
-
 msgid "{Data Type} redis-configuration"
 msgstr "{Datentyp} redis-configuration"
-
-msgid "Data type representing the configuration of redis."
-msgstr "Der Datentyp, der die Konfiguration von redis repräsentiert."
-
-msgid "@code{redis} (default: @code{redis})"
-msgstr "@code{redis} (Vorgabe: @code{redis})"
 
 msgid "The Redis package to use."
 msgstr "Das zu benutzende Redis-Paket."
 
-msgid "@code{bind} (default: @code{\"127.0.0.1\"})"
-msgstr "@code{bind} (Vorgabe: @code{\"127.0.0.1\"})"
-
 msgid "Network interface on which to listen."
 msgstr "Die Netzwerkschnittstelle, auf der gelauscht wird."
 
-msgid "@code{port} (default: @code{6379})"
-msgstr "@code{port} (Vorgabe: @code{6379})"
-
 msgid "Port on which to accept connections on, a value of 0 will disable listening on a TCP socket."
 msgstr "Der Port, auf dem Verbindungen akzeptiert werden. Ist der Wert 0, wird das Lauschen auf einem TCP-Socket deaktiviert."
-
-msgid "@code{working-directory} (default: @code{\"/var/lib/redis\"})"
-msgstr "@code{working-directory} (Vorgabe: @code{\"/var/lib/redis\"})"
 
 msgid "Directory in which to store the database and related files."
 msgstr "Das Verzeichnis, in dem die Datenbank und damit zu tun habende Dateien gespeichert werden."
@@ -47477,8 +47529,8 @@ msgstr "Durch die Befehlszeilenoption @code{--list-image-types} werden alle verf
 msgid "creating virtual machine images"
 msgstr "Abbilder für virtuelle Maschinen erzeugen"
 
-msgid "When using the @code{qcow2} image type, the returned image is in qcow2 format, which the QEMU emulator can efficiently use. @xref{Running Guix in a VM}, for more information on how to run the image in a virtual machine.  The @code{grub-bootloader} bootloader is always used independently of what is declared in the @code{operating-system} file passed as argument.  This is to make it easier to work with QEMU, which uses the SeaBIOS BIOS by default, expecting a bootloader to be installed in the Master Boot Record (MBR)."
-msgstr "Wenn Sie den Abbildtypen @code{qcow2} benutzen, wird ein Abbild im qcow2-Format geliefert, das vom QEMU-Emulator effizient benutzt werden kann. Siehe @ref{Running Guix in a VM} für weitere Informationen, wie Sie das Abbild in einer virtuellen Maschine ausführen. Als Bootloader wird immer @code{grub-bootloader} benutzt, egal was in der als Argument übergebenen @code{operating-system}-Datei deklariert wurde. Der Grund dafür ist, dass dieser besser mit QEMU funktioniert, das als BIOS nach Voreinstellung SeaBIOS benutzt, wo erwartet wird, dass ein Bootloader in den Master Boot Record (MBR) installiert wurde."
+msgid "When using the @code{qcow2} image type, the returned image is in qcow2 format, which the QEMU emulator can efficiently use. @xref{Running Guix in a VM}, for more information on how to run the image in a virtual machine.  The @code{grub-bootloader} bootloader is always used independently of what is declared in the @code{operating-system} file passed as argument.  This is to make it easier to work with QEMU, which uses the SeaBIOS BIOS by default, expecting a bootloader to be installed in the Master Boot Record (MBR).  In case the virtual machine is going to be AArch64, you might want to take a look at @code{qcow2-gpt} image type that installs bootloader only in EFI."
+msgstr "Wenn Sie den Abbildtypen @code{qcow2} benutzen, wird ein Abbild im qcow2-Format geliefert, das vom QEMU-Emulator effizient benutzt werden kann. Siehe @ref{Running Guix in a VM} für weitere Informationen, wie Sie das Abbild in einer virtuellen Maschine ausführen. Als Bootloader wird immer @code{grub-bootloader} benutzt, egal was in der als Argument übergebenen @code{operating-system}-Datei deklariert wurde. Der Grund dafür ist, dass dieser besser mit QEMU funktioniert, das als BIOS nach Voreinstellung SeaBIOS benutzt, wo erwartet wird, dass ein Bootloader in den Master Boot Record (MBR) installiert wurde. Für den Fall, dass die virtuelle Maschine auf AArch64 läuft, ziehen Sie den Abbildtypen @code{qcow2-gpt} in Betracht, der den Bootloader nur im EFI installiert."
 
 msgid "docker-image, creating docker images"
 msgstr "docker-image, Abbilder für Docker erzeugen"
@@ -48655,6 +48707,12 @@ msgstr "@code{requirement} (Vorgabe: @code{'()})"
 
 msgid "List of symbols denoting the Shepherd services this one depends on."
 msgstr "Eine Liste von Symbolen, die angeben, von welchen anderen Shepherd-Diensten dieser hier abhängt."
+
+msgid "With very few exceptions, services that start a daemon must depend at least on the @code{user-processes} service; this ensures that these daemons are started after all the file systems have been mounted and that, during shutdown, they are stopped before attempting to terminate remaining user processes."
+msgstr "Mit sehr wenigen Ausnahmen müssen Dienste, die einen Daemon starten, mindestens vom @code{user-processes}-Dienst abhängen; so wird sichergestellt, dass Daemons nach Einbindung aller Dateisysteme gestartet werden und dass sie beim Herunterfahren gestoppt wurden, bevor versucht wird, verbleibende Nutzerprozesse zu beenden."
+
+msgid "Similarly, services that do make mounts during their startup or operation, should have @code{user-file-systems} as a requirement. @code{user-processes} does depend on @code{user-file-systems} as well.  So direct requirement only on @code{user-processes} is sufficient."
+msgstr "Ebenso müssen Dienste, die beim Start oder im Betrieb Dateisysteme einbinden, @code{user-file-systems} als Voraussetzung benennen. @code{user-processes} hängt bereits von @code{user-file-systems} ab. Daher genügt nur die Voraussetzung @code{user-processes} auch schon."
 
 msgid "one-shot services, for the Shepherd"
 msgstr "einmalig ausgeführte Dienste, für Shepherd"
@@ -53276,8 +53334,14 @@ msgstr "Ein Abbild erstellen, das auf dem Abbild @code{efi32-disk-image} basiert
 msgid "qcow2-image-type"
 msgstr "qcow2-image-type"
 
-msgid "Build an image based on the @code{mbr-disk-image} image but with the @code{compressed-qcow2} image format."
-msgstr "Ein Abbild erstellen, das auf dem Abbild @code{mbr-disk-image} basiert, aber mit dem Abbildformat @code{compressed-qcow2}."
+msgid "Build an image based on the @code{mbr-disk-image} image but with the @code{compressed-qcow2} image format. The resulting image will have an MBR embedded bootloader as well as an EFI bootloader. This image is not suitable for architectures that do not support `grub-pc`, such as AArch64. See @code{qcow2-gpt-image-type} for an alternative."
+msgstr "Ein Abbild auf Grundlage des @code{mbr-disk-image}-Abbilds erstellen, aber im Abbildformat @code{compressed-qcow2}. Das resultierende Abbild wird einen im MBR eingebetteten Bootloader sowie einen EFI-Bootloader enthalten. Das Abbild ist ungeeignet auf Architekturen, die „grub-pc“ nicht unterstützen, etwa AArch64. Siehe @code{qcow2-gpt-image-type} als Alternative."
+
+msgid "qcow2-gpt-image-type"
+msgstr "qcow2-gpt-image-type"
+
+msgid "Build an image based on the @code{efi-disk-image} image but with the @code{compressed-qcow2} image format. The resulting image will have only EFI bootloader, unlike @code{qcow2-image-type}. This image is suitable for architectures that do not support `grub-pc`, such as AArch64."
+msgstr "Ein Abbild auf Grundlage des @code{efi-disk-image}-Abbilds erstellen, aber im Abbildformat @code{compressed-qcow2}. Das resultierende Abbild wird nur einen EFI-Bootloader enthalten, anders als beim Abbildformat @code{qcow2-image-type}. Das Abbild ist geeignet auf Architekturen, die „grub-pc“ nicht unterstützen, etwa AArch64."
 
 msgid "iso-image-type"
 msgstr "iso-image-type"
@@ -53994,3 +54058,18 @@ msgstr "Lizenz, GNU-Lizenz für freie Dokumentation"
 
 msgid "fdl-1.3.texi"
 msgstr "fdl-1.3.texi"
+
+#. type: Plain text
+#: doc/guix.texi:2156
+msgid "While this works for @file{guix-install.sh}, it will most likely not work if you installed Guix through the package manager of another distribution (for instance with @command{sudo apt install guix}, @command{pacman -S guix}, or similar commands) because on many distributions @file{guix-daemon.service} will only run the Guix daemon provided by the distribution."
+msgstr "So funktioniert es, wenn @file{guix-install.sh} benutzt wurde. Andernfalls genügt es jedoch @emph{nicht}, wenn Sie Guix mit der Paketverwaltung einer anderen Distribution installiert haben (etwa mit @command{sudo apt install guix}, @command{pacman -S guix} oder ähnliche Befehle), weil auf vielen Distributionen @file{guix-daemon.service} nur den von der Distribution mitgelieferten Guix-Daemon ausführen wird."
+
+#. type: Plain text
+#: doc/guix.texi:2156
+msgid "While this works for @file{guix-install.sh}, it will most likely not work if you installed Guix through the package manager of another distribution (for instance with @command{sudo apt install guix}, @command{pacman -S guix}, or similar commands)  because on many distributions @file{guix-daemon.service} will only run the Guix daemon provided by the distribution."
+msgstr "So funktioniert es, wenn @file{guix-install.sh} benutzt wurde. Andernfalls genügt es jedoch @emph{nicht}, wenn Sie Guix mit der Paketverwaltung einer anderen Distribution installiert haben (etwa mit @command{sudo apt install guix}, @command{pacman -S guix} oder ähnliche Befehle), weil auf vielen Distributionen @file{guix-daemon.service} nur den von der Distribution mitgelieferten Guix-Daemon ausführen wird."
+
+#. type: Plain text
+#: doc/guix.texi:779
+msgid "The @uref{https://guix.gnu.org/guix-install.sh, @file{guix-install.sh}} shell script automates the binary installation process.  Use of @file{guix-install.sh} requires Bash, GnuPG, GNU@tie{}tar, wget, and Xz.  On systems where systemd is detected, the tool @command{newgidmap} from the @code{uidmap} package is also required."
+msgstr "Das Shell-Skript @uref{https://guix.gnu.org/guix-install.sh, @file{guix-install.sh}} automatisiert den Installationsvorgang aus Binärdateien. Um @file{guix-install.sh} benutzen zu können, werden Bash, GnuPG, GNU@tie{}tar, wget und Xz vorausgesetzt. Auf Systemen, wo systemd gefunden wird, brauchen Sie außerdem das Programm @code{newgidmap} aus dem Paket @code{uidmap} als Voraussetzung."

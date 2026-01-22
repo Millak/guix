@@ -25,8 +25,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre2\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-10-24 03:18+0000\n"
-"PO-Revision-Date: 2025-12-10 14:56+0000\n"
+"POT-Creation-Date: 2026-01-06 03:18+0000\n"
+"PO-Revision-Date: 2026-01-01 14:27+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Russian <https://translate.codeberg.org/projects/guix/documentation-manual/ru/>\n"
 "Language: ru\n"
@@ -34,7 +34,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 5.15.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -241,12 +241,6 @@ msgstr "@url{https://gcc.gnu.org, GCC's g++} с поддержкой"
 msgid "C++11 standard."
 msgstr "стандарта C++11."
 
-msgid "If you want to hack Guix itself, it is recommended to use the latest version from the Git repository:"
-msgstr "Если вы собираетесь хакать сам Guix, рекомендуется использовать последнюю версию из репозитория Git:"
-
-msgid "git clone https://git.guix.gnu.org/guix.git\n"
-msgstr "git clone https://git.guix.gnu.org/guix.git\n"
-
 msgid "authentication, of a Guix checkout"
 msgstr "аутентификация рабочего каталога Guix"
 
@@ -277,9 +271,6 @@ msgstr "guix shell -D guix -CPW\n"
 msgid "or even, from within a Git worktree for Guix:"
 msgstr "или даже из-под рабочей ветки Git для Guix:"
 
-msgid "guix shell -CPW\n"
-msgstr "guix shell -CPW\n"
-
 msgid "If @option{-C} (short for @option{--container}) is not supported on your system, try @command{--pure} instead of @option{-CPW}.  @xref{Invoking guix shell}, for more information on that command."
 msgstr "Если @option{-C} (сокр. от @option{--container}) не поддерживается на вашей системе, попробуйте @command{--pure} вместо @option{-CPW}. см. @xref{Invoking guix shell}, чтобы получить информацию по данной команде."
 
@@ -303,12 +294,6 @@ msgstr "@url{https://www.graphviz.org/, Graphviz};"
 
 msgid "@url{https://www.gnu.org/software/help2man/, GNU Help2man (optional)}."
 msgstr "@url{https://www.gnu.org/software/help2man/, GNU Help2man (optional)}."
-
-msgid "On Guix, extra dependencies can be added by instead running @command{guix shell}:"
-msgstr "В Guix дополнительные зависимости можно добавить, запустив @command{guix shell}:"
-
-msgid "guix shell -D guix help2man git strace --pure\n"
-msgstr "guix shell -D guix help2man git strace --pure\n"
 
 msgid "From there you can generate the build system infrastructure using Autoconf and Automake:"
 msgstr "Вы можете инициировать инфраструктуру сборки системы, используя Autoconf и Automake:"
@@ -3155,9 +3140,6 @@ msgstr "установка Guix из бинарных файлов"
 
 msgid "installer script"
 msgstr "скрипт установки"
-
-msgid "Likewise, on openSUSE:"
-msgstr "Подобным же образом на openSUSE:"
 
 msgid ""
 "# cd /tmp\n"

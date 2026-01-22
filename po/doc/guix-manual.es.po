@@ -60,8 +60,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-10-24 03:18+0000\n"
-"PO-Revision-Date: 2025-12-10 14:56+0000\n"
+"POT-Creation-Date: 2026-01-06 03:18+0000\n"
+"PO-Revision-Date: 2026-01-01 14:27+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Spanish <https://translate.codeberg.org/projects/guix/documentation-manual/es/>\n"
 "Language: es\n"
@@ -69,7 +69,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 5.15.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -303,12 +303,6 @@ msgstr "@url{https://gcc.gnu.org, g++ de GCC}, con implementación"
 msgid "C++11 standard."
 msgstr "del estándar C++11."
 
-msgid "If you want to hack Guix itself, it is recommended to use the latest version from the Git repository:"
-msgstr "Si quiere picar en el mismo Guix se recomienda usar la última versión del repositorio Git:"
-
-msgid "git clone https://git.guix.gnu.org/guix.git\n"
-msgstr "git clone https://git.guix.gnu.org/guix.git\n"
-
 msgid "authentication, of a Guix checkout"
 msgstr "identificación, de una copia de Guix"
 
@@ -339,9 +333,6 @@ msgstr "guix shell -D guix -CPW\n"
 msgid "or even, from within a Git worktree for Guix:"
 msgstr "o incluso, desde dentro de un árbol Git para Guix:"
 
-msgid "guix shell -CPW\n"
-msgstr "guix shell -CPW\n"
-
 msgid "If @option{-C} (short for @option{--container}) is not supported on your system, try @command{--pure} instead of @option{-CPW}.  @xref{Invoking guix shell}, for more information on that command."
 msgstr "Si @option{-C} (breve para @option{--container}) no está admitido en su sistema, intente @command{--pure} en lugar de @option{-CPW}.  @xref{Invoking guix shell}, para más información en esa instrucción."
 
@@ -365,12 +356,6 @@ msgstr "@url{https://www.graphviz.org/, Graphviz};"
 
 msgid "@url{https://www.gnu.org/software/help2man/, GNU Help2man (optional)}."
 msgstr "@url{https://www.gnu.org/software/help2man/, GNU Help2man (opcional)}."
-
-msgid "On Guix, extra dependencies can be added by instead running @command{guix shell}:"
-msgstr "En Guix se pueden añadir dependencias adicionales ejecutando en su lugar @command{guix shell}:"
-
-msgid "guix shell -D guix help2man git strace --pure\n"
-msgstr "guix shell -D guix help2man git strace --pure\n"
 
 msgid "From there you can generate the build system infrastructure using Autoconf and Automake:"
 msgstr "Desde allí puede generar la infraestructura del sistema de construcción usando Autoconf y Automake:"
@@ -18892,35 +18877,17 @@ msgstr "Opciones de línea de órdenes adicionales que se le proporcionarán a @
 msgid "Redis"
 msgstr "Redis"
 
-msgid "This is the service type for the @uref{https://redis.io/, Redis} key/value store, whose value is a @code{redis-configuration} object."
-msgstr "Es el tipo de servicio para el almacén de clave/valor @uref{https://redis.io/, Redis}, cuyo valor es un objeto @code{redis-configuration}."
-
 msgid "{Data Type} redis-configuration"
 msgstr "{Tipo de datos} redis-configuration"
-
-msgid "Data type representing the configuration of redis."
-msgstr "Tipo de datos que representa la configuración de redis."
-
-msgid "@code{redis} (default: @code{redis})"
-msgstr "@code{redis} (predeterminado: @code{redis})"
 
 msgid "The Redis package to use."
 msgstr "El paquete Redis usado."
 
-msgid "@code{bind} (default: @code{\"127.0.0.1\"})"
-msgstr "@code{bind} (predeterminada: @code{\"127.0.0.1\"})"
-
 msgid "Network interface on which to listen."
 msgstr "La interfaz de red en la que se escucha."
 
-msgid "@code{port} (default: @code{6379})"
-msgstr "@code{port} (predeterminado: @code{6379})"
-
 msgid "Port on which to accept connections on, a value of 0 will disable listening on a TCP socket."
 msgstr "Puerto en el que se aceptan conexiones, el valor 0 desactiva la escucha en un socket TCP."
-
-msgid "@code{working-directory} (default: @code{\"/var/lib/redis\"})"
-msgstr "@code{working-directory} (predeterminado: @code{\"/var/lib/redis\"})"
 
 msgid "Directory in which to store the database and related files."
 msgstr "Directorio en el que se almacena los archivos de base de datos y relacionados."

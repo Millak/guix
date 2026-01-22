@@ -357,7 +357,7 @@ Path addPermRoot(StoreAPI & store, const Path & storePath,
 
 
 /* Sort a set of paths topologically under the references relation.
-   If p refers to q, then p preceeds q in this list. */
+   If p refers to q, then p precedes q in this list. */
 Paths topoSortPaths(StoreAPI & store, const PathSet & paths);
 
 

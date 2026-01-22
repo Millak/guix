@@ -108,20 +108,23 @@ all data on disk will be lost, are you sure you want to proceed?") item)
 
 (define (run-label-page button-text button-callback)
   "Run a page asking the user to select a partition table label."
-  ;; Force the GPT label if UEFI is supported.
-  (if (efi-installation?)
-      ((run-label-confirmation-page button-callback) "gpt")
-      (run-listbox-selection-page
-       #:info-text (G_ "Select a new partition table type. \
+        ;; Force the GPT label if UEFI is supported.
+  (cond ((efi-installation?)
+         ((run-label-confirmation-page button-callback) "gpt"))
+        ;; Force the MSDOS label on Hurd.
+        ((target-hurd?)
+         ((run-label-confirmation-page button-callback) "msdos"))
+        (else (run-listbox-selection-page
+               #:info-text (G_ "Select a new partition table type. \
 Be careful, all data on the disk will be lost.")
-       #:title (G_ "Partition table")
-       #:listbox-items '("msdos" "gpt")
-       #:listbox-default-item (if (target-hurd?) "msdos" "gpt")
-       #:listbox-item->text identity
-       #:listbox-callback-procedure
-       (run-label-confirmation-page button-callback)
-       #:button-text button-text
-       #:button-callback-procedure button-callback)))
+               #:title (G_ "Partition table")
+               #:listbox-items '("msdos" "gpt")
+               #:listbox-default-item (if (target-hurd?) "msdos" "gpt")
+               #:listbox-item->text identity
+               #:listbox-callback-procedure
+               (run-label-confirmation-page button-callback)
+               #:button-text button-text
+               #:button-callback-procedure button-callback))))
 
 (define (run-type-page partition)
   "Run a page asking the user to select a partition type."

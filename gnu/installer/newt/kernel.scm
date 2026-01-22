@@ -48,12 +48,14 @@
            ;; TRANSLATORS: "Hurd" is a proper noun and must not be translated.
            ;; TRANSLATORS: "Linux Libre" is a literal and must not be translated.
            (G_ "Please select a kernel.  When in doubt, choose \"Linux Libre\".
+
 The Hurd is offered as a technology preview and development aid; many packages \
 are not yet available in Guix, such as a desktop environment or even a \
 windowing system (X, Wayland).")
            #:listbox-items kernels
            #:listbox-item->text identity
            #:listbox-default-item default
+           #:sort-listbox-items? #f               ;keep Linux first
            #:button-text (G_ "Back")
            #:button-callback-procedure
            (lambda _

@@ -53,8 +53,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-10-24 03:18+0000\n"
-"PO-Revision-Date: 2025-12-10 14:56+0000\n"
+"POT-Creation-Date: 2026-01-06 03:18+0000\n"
+"PO-Revision-Date: 2026-01-01 14:27+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: French <https://translate.codeberg.org/projects/guix/documentation-manual/fr/>\n"
 "Language: fr\n"
@@ -62,7 +62,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 5.15.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -299,12 +299,6 @@ msgstr "@url{https://gcc.gnu.org, GCC's g++}, avec le support pour le"
 msgid "C++11 standard."
 msgstr "Standard C++11."
 
-msgid "If you want to hack Guix itself, it is recommended to use the latest version from the Git repository:"
-msgstr "Si vous souhaitez travailler sur Guix lui-même, il est recommandé d'utiliser la dernière version du dépôt Git :"
-
-msgid "git clone https://git.guix.gnu.org/guix.git\n"
-msgstr "git clone https://git.guix.gnu.org/guix.git\n"
-
 msgid "authentication, of a Guix checkout"
 msgstr "authentification, d'un extrait de Guix"
 
@@ -335,9 +329,6 @@ msgstr "guix shell -D guix -CPW\n"
 msgid "or even, from within a Git worktree for Guix:"
 msgstr "ou encore, à partir d'une arborescence Git pour Guix :"
 
-msgid "guix shell -CPW\n"
-msgstr "guix shell -CPW\n"
-
 msgid "If @option{-C} (short for @option{--container}) is not supported on your system, try @command{--pure} instead of @option{-CPW}.  @xref{Invoking guix shell}, for more information on that command."
 msgstr "Si @option{-C} (abréviation de @option{--container}) n'est pas pris en charge par votre système, essayez @command{--pure} au lieu de @option{-CPW}.  @xref{Invoking guix shell} pour plus d'informations sur cette commande."
 
@@ -361,12 +352,6 @@ msgstr "@url{https://www.graphviz.org/, Graphviz} ;"
 
 msgid "@url{https://www.gnu.org/software/help2man/, GNU Help2man (optional)}."
 msgstr "@url{https://www.gnu.org/software/help2man/, GNU Help2man (facultatif)}."
-
-msgid "On Guix, extra dependencies can be added by instead running @command{guix shell}:"
-msgstr "Avec Guix, vous pouvez ajouter des dépendances supplémentaires en lançant @command{guix shell} :"
-
-msgid "guix shell -D guix help2man git strace --pure\n"
-msgstr "guix shell -D guix help2man git strace --pure\n"
 
 msgid "From there you can generate the build system infrastructure using Autoconf and Automake:"
 msgstr "Vous pouvez maintenant générer l'infrastructure du système de construction avec Autoconf et Automake :"
@@ -4216,12 +4201,6 @@ msgstr "installer Guix depuis les binaires"
 
 msgid "installer script"
 msgstr "script d'installation"
-
-msgid "sudo apt install guix\n"
-msgstr "sudo apt install guix\n"
-
-msgid "sudo zypper install guix\n"
-msgstr "sudo zypper install guix\n"
 
 msgid ""
 "# cd /tmp\n"
@@ -23342,9 +23321,6 @@ msgstr "gestionnaire de fenêtre"
 msgid "To use X11, you must install at least one @dfn{window manager}---for example the @code{windowmaker} or @code{openbox} packages---preferably by adding it to the @code{packages} field of your operating system definition (@pxref{operating-system Reference, system-wide packages})."
 msgstr "Pour utiliser X11, vous devez installer au moins un @dfn{gestionnaire de fenêtre} — par exemple les paquets @code{windowmaker} ou @code{openbox} — de préférence en l'ajoutant au champ @code{packages} de votre définition de système d'exploitation (@pxref{operating-system Reference, system-wide packages})."
 
-msgid "wayland-gdm"
-msgstr "wayland-gdm"
-
 msgid "gdm-service-type"
 msgstr "gdm-service-type"
 
@@ -26416,35 +26392,17 @@ msgstr "Redis"
 msgid "redis-service-type"
 msgstr "redis-service-type"
 
-msgid "This is the service type for the @uref{https://redis.io/, Redis} key/value store, whose value is a @code{redis-configuration} object."
-msgstr "C'est le type de service pour la base clef-valeur @uref{https://redis.io/, Redis} dont la valeur est un objet @code{redis-configuration}."
-
 msgid "{Data Type} redis-configuration"
 msgstr "{Type de données} redis-configuration"
-
-msgid "Data type representing the configuration of redis."
-msgstr "Type de données représentant la configuration de redis."
-
-msgid "@code{redis} (default: @code{redis})"
-msgstr "@code{redis} (par défaut : @code{redis})"
 
 msgid "The Redis package to use."
 msgstr "Le paquet Redis à utiliser."
 
-msgid "@code{bind} (default: @code{\"127.0.0.1\"})"
-msgstr "@code{bind} (par défaut : @code{\"127.0.0.1\"})"
-
 msgid "Network interface on which to listen."
 msgstr "Interface réseau sur laquelle écouter."
 
-msgid "@code{port} (default: @code{6379})"
-msgstr "@code{port} (par défaut : @code{6379})"
-
 msgid "Port on which to accept connections on, a value of 0 will disable listening on a TCP socket."
 msgstr "Port sur lequel accepter les connexions, une valeur de 0 désactive l'écoute sur un socket TCP."
-
-msgid "@code{working-directory} (default: @code{\"/var/lib/redis\"})"
-msgstr "@code{working-directory} (par défaut : @code{\"/var/lib/redis\"})"
 
 msgid "Directory in which to store the database and related files."
 msgstr "Répertoire dans lequel stocker la base de données et les fichiers liés."
@@ -40973,9 +40931,6 @@ msgstr "La commande @code{--list-image-types} liste tous les types d'images disp
 
 msgid "creating virtual machine images"
 msgstr "créer des images de machines virtuelles"
-
-msgid "When using the @code{qcow2} image type, the returned image is in qcow2 format, which the QEMU emulator can efficiently use. @xref{Running Guix in a VM}, for more information on how to run the image in a virtual machine.  The @code{grub-bootloader} bootloader is always used independently of what is declared in the @code{operating-system} file passed as argument.  This is to make it easier to work with QEMU, which uses the SeaBIOS BIOS by default, expecting a bootloader to be installed in the Master Boot Record (MBR)."
-msgstr "Lorsque vous utilisez le type d'image @code{qcow2}, l'image renvoyée est au format qcow2, que l'émulateur QEMU peut utiliser efficacement.  @xref{Running Guix in a VM}, pour plus d'information sur la manière de lancer l'image dans une machine virtuelle.  Le chargeur d'amorçage @code{grub-bootloader} est toujours utilisé quelque soit celui déclaré dans le fichier @code{operating-system} passé en argument.  Cela facilite l'utilisation de QEMU, qui utilise le BIOS SeaBIOS par défaut, et s'attend à un chargeur d'amorçage installé dans le Master Boot Record (MBR)."
 
 msgid "docker-image, creating docker images"
 msgstr "docker-image, créer des images docker"

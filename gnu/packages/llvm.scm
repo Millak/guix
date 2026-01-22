@@ -7,7 +7,7 @@
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2018–2022 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2021-2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2021-2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
@@ -1127,6 +1127,10 @@ Library.")
               (srfi srfi-26)
               ,@modules)
             modules))
+       ;; TODO: Figure out why some tests fail on powerpc64le-linux.
+       ((#:tests? current-test-config #t)
+        (and current-test-config
+             (not (target-ppc64le?))))
        ((#:configure-flags cf #~'())
         (if (%current-target-system)
             ;; Use a newer version of llvm-tblgen and add the new

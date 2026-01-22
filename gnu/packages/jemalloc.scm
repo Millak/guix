@@ -48,6 +48,8 @@
     (build-system gnu-build-system)
     (arguments
      (list
+      #:tests? (and (not (%current-target-system))
+                    (not (target-arm32?)))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'delete-thp-test

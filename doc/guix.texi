@@ -770,57 +770,43 @@ This section only applies to systems without Guix.  Following it for
 existing Guix installations will overwrite important system files.
 @end quotation
 
-Some GNU/Linux distributions, such as openSUSE, Alpine and NixOS provide
-Guix through their own package managers.  The version of Guix may be
-older than @value{VERSION} but you can update it afterwards by running
-@samp{guix pull}.
-
-We advise system administrators who install Guix, both from the
-installation script or @i{via} the native package manager of their
-foreign distribution, to also regularly read and follow security
-notices, as shown by @command{guix pull}.
-
-If you are running Parabola, after enabling the pcr (Parabola
-Community Repo) repository, you can install Guix with:
-@example
-sudo pacman -S guix
-@end example
-
-For other package managers with a @var{guix} package, you should be able
-to install it like any other package.
-
-The Guix project also provides a shell script, @file{guix-install.sh},
-which automates the binary installation process without use of a foreign
-distro package
-manager@footnote{@uref{https://guix.gnu.org/guix-install.sh}}.
+The
+@uref{https://guix.gnu.org/guix-install.sh, @file{guix-install.sh}}
+shell script automates the binary installation process.
 Use of @file{guix-install.sh} requires Bash, GnuPG, GNU@tie{}tar, wget,
-and Xz.  On systems where @code{systemd} is detected, the tool
-@code{newgidmap} from the @code{uidmap} package is also required.
+and Xz.  On systems where systemd is detected, the tool
+@command{newgidmap} from the @code{uidmap} package is also required.
 
-The script guides you through the following:
-
-@itemize
-@item Downloading and extracting the binary tarball
-@item Setting up the build daemon
-@item Making the ‘guix’ command available to non-root users
-@item Configuring substitute servers
-@end itemize
-
-As root, run:
+To install Guix on top of your GNU/Linux system, run the following
+commands as root:
 
 @example
-# cd /tmp
-# wget https://guix.gnu.org/guix-install.sh
-# chmod +x guix-install.sh
-# ./guix-install.sh
+cd /tmp
+wget https://guix.gnu.org/guix-install.sh
+chmod +x guix-install.sh
+./guix-install.sh
 @end example
 
-The script to install Guix is also packaged in Parabola (in the pcr
-repository). You can install and run it with:
-@example
-sudo pacman -S guix-installer
-sudo guix-install.sh
-@end example
+When you're done installing Guix, @pxref{Application Setup} for extra
+configuration you might need, and @ref{Getting Started} for your first
+steps!
+
+The script goes through the following steps:
+
+@enumerate
+@item
+Downloading the binary tarball from
+@indicateurl{@value{BASE-URL}/guix-binary-@value{VERSION}.x86_64-linux.tar.xz}
+(where @code{x86_64-linux} can be replaced with @code{i686-linux} for an
+@code{i686} (32-bits) machine already running the kernel Linux, and so
+on---@pxref{GNU Distribution}) and extracting it.
+@item
+Setting up the build daemon (@pxref{Setting Up the Daemon}).
+@item
+Making the @command{guix} command available to non-root users.
+@item
+Configuring substitute servers (@pxref{Official Substitute Servers}).
+@end enumerate
 
 @quotation Note
 By default, @file{guix-install.sh} will configure Guix to download
@@ -837,16 +823,12 @@ To use substitutes from @code{@value{SUBSTITUTE-SERVER-1}},
 For example,
 
 @example
-# guix archive --authorize < \
-     ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-1}.pub
-# guix archive --authorize < \
-     ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-2}.pub
+guix archive --authorize < \
+   ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-1}.pub
+guix archive --authorize < \
+   ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-2}.pub
 @end example
 @end quotation
-
-When you're done installing Guix, @pxref{Application Setup} for extra
-configuration you might need, and @ref{Getting Started} for your first
-steps!
 
 @quotation Note
 The binary installation tarball can be (re)produced and verified simply
@@ -878,6 +860,16 @@ the @option{--uninstall} flag:
 
 With @option{--uninstall}, the script irreversibly deletes all the Guix
 files, configuration, and services.
+
+Some GNU/Linux distributions, such as openSUSE, Alpine and NixOS provide
+Guix through their own package managers.  The version of Guix may be
+older than @value{VERSION} but you can update it afterwards by running
+@command{guix pull}.
+
+We advise system administrators who install Guix, both from the
+installation script or @i{via} the native package manager of their
+foreign distribution, to also regularly read and follow security
+notices, as shown by @command{guix pull}.
 
 @node Setting Up the Daemon
 @section Setting Up the Daemon
@@ -2157,8 +2149,9 @@ systemctl restart guix-daemon.service
 
 While this works for @file{guix-install.sh}, it will most likely not
 work if you installed Guix through the package manager of another
-distribution (for instance with sudo apt install guix, pacman -S guix,
-etc) because on many distributions @file{guix-daemon.service} will only
+distribution (for instance with @command{sudo apt install guix},
+@command{pacman -S guix}, or similar commands)
+because on many distributions @file{guix-daemon.service} will only
 run the Guix daemon provided by the distribution.
 
 Waiting for your distribution to provide security fixes sometimes work,

@@ -97,7 +97,7 @@
 
 (define* (composer-fetch name #:key version partial-version?)
   "Return a composer-package representation of the Composer metadata for the
-package NAME with optional VERSION, or #f on failure.  VERSION may be gien as
+package NAME with optional VERSION, or #f on failure.  VERSION may be given as
 version prefix if PARTIAL-VERSION? is #t."
   (and-let* ((url (string-append (%composer-base-url) "/p/" name ".json"))
              (packages (and=> (json-fetch url)

@@ -1060,6 +1060,9 @@ to use as the tty.  This is primarily useful for headless systems."
   (with-imported-modules (source-module-closure
                           '((gnu build linux-boot))) ;for 'find-long-options'
     #~(begin
+        (use-modules (gnu build linux-boot)
+                     (srfi srfi-1))
+
         ;; console=device,options
         ;; device: can be tty0, ttyS0, lp0, ttyUSB0 (serial).
         ;; options: BBBBPNF. P n|o|e, N number of bits,
@@ -1083,7 +1086,20 @@ to use as the tty.  This is primarily useful for headless systems."
                                       (find-long-options "console" command)))
                (specs (append agetty-specs console-specs)))
           (match specs
-            (() #f)
+            ;; Fallback to a physical console registered in /proc/consoles.
+            (() (let* ((consoles (read-linux-consoles))
+                       (chosen-console
+                        ;; Prioritize preferred, if none, choose any enabled.
+                        (or (find (lambda (c)
+                                    (and (not (linux-console-virtual? c))
+                                         (linux-console-preferred? c)))
+                                  consoles)
+                            (find (lambda (c)
+                                    (and (not (linux-console-virtual? c))
+                                         (linux-console-enabled? c)))
+                                  consoles))))
+                  (and chosen-console
+                       (linux-console-device chosen-console))))
             ((spec _ ...)
              ;; Extract device name from first spec.
              (match (string-tokenize spec not-comma)
@@ -1111,7 +1127,8 @@ to use as the tty.  This is primarily useful for headless systems."
       (requirement (cons* 'user-processes 'host-name 'udev
                           shepherd-requirement))
 
-      (modules '((ice-9 match) (gnu build linux-boot)))
+      (modules '((ice-9 match) (gnu build linux-boot)
+                 (srfi srfi-1)))
       (start
        (with-imported-modules  (source-module-closure
                                 '((gnu build linux-boot)))

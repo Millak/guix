@@ -1,7 +1,7 @@
 # German translations for the Guix Cookbook.
 # Copyright (C) 2019, 2020 the authors of Guix (msgids) and the following authors (msgstr)
 # This file is distributed under the same license as the guix manual package.
-# Florian Pelz <pelzflorian@pelzflorian.de>, 2020, 2021, 2022, 2023, 2024, 2025.
+# Florian Pelz <pelzflorian@pelzflorian.de>, 2020, 2021, 2022, 2023, 2024, 2025, 2026.
 # Jens Maucher <jensmaucher@gmail.com>, 2023.
 # Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>, 2024, 2025.
 msgid ""
@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: guix 1.0.1.4876-09145-dirty\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-12-10 03:18+0000\n"
-"PO-Revision-Date: 2025-12-03 14:14+0000\n"
+"PO-Revision-Date: 2026-01-01 14:27+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/documentation-cookbook/de/>\n"
 "Language: de\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 5.15.1\n"
 
 msgid "@documentencoding UTF-8"
 msgstr ""
@@ -27,6 +27,9 @@ msgstr ""
 
 msgid "GNU Guix Cookbook"
 msgstr "GNU-Guix-Kochbuch"
+
+msgid "Copyright @copyright{} 2019, 2022 Ricardo Wurmus@* Copyright @copyright{} 2019 Efraim Flashner@* Copyright @copyright{} 2019 Pierre Neidhardt@* Copyright @copyright{} 2020 Oleg Pykhalov@* Copyright @copyright{} 2020 Matthew Brooks@* Copyright @copyright{} 2020 Marcin Karpezo@* Copyright @copyright{} 2020 Brice Waegeneire@* Copyright @copyright{} 2020 André Batista@* Copyright @copyright{} 2020 Christine Lemmer-Webber@* Copyright @copyright{} 2021 Joshua Branson@* Copyright @copyright{} 2022, 2023 Maxim Cournoyer@* Copyright @copyright{} 2023-2025 Ludovic Courtès@* Copyright @copyright{} 2023 Thomas Ieong@* Copyright @copyright{} 2024 Florian Pelz@* Copyright @copyright{} 2025 45mg@* Copyright @copyright{} 2023 Marek Felšöci@* Copyright @copyright{} 2023 Konrad Hinsen@* Copyright @copyright{} 2023 Philippe Swartvagher@*"
+msgstr "Copyright @copyright{} 2019, 2022 Ricardo Wurmus@* Copyright @copyright{} 2019 Efraim Flashner@* Copyright @copyright{} 2019 Pierre Neidhardt@* Copyright @copyright{} 2020 Oleg Pykhalov@* Copyright @copyright{} 2020 Matthew Brooks@* Copyright @copyright{} 2020 Marcin Karpezo@* Copyright @copyright{} 2020 Brice Waegeneire@* Copyright @copyright{} 2020 André Batista@* Copyright @copyright{} 2020 Christine Lemmer-Webber@* Copyright @copyright{} 2021 Joshua Branson@* Copyright @copyright{} 2022, 2023 Maxim Cournoyer@* Copyright @copyright{} 2023-2025 Ludovic Courtès@* Copyright @copyright{} 2023 Thomas Ieong@* Copyright @copyright{} 2024 Florian Pelz@* Copyright @copyright{} 2025 45mg@* Copyright @copyright{} 2023 Marek Felšöci@* Copyright @copyright{} 2023 Konrad Hinsen@* Copyright @copyright{} 2023 Philippe Swartvagher@*"
 
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A copy of the license is included in the section entitled ``GNU Free Documentation License''."
 msgstr "Es ist Ihnen gestattet, dieses Dokument zu vervielfältigen, weiterzugeben und/oder zu verändern, unter den Bedingungen der GNU Free Documentation License, entweder gemäß Version 1.3 der Lizenz oder (nach Ihrer Option) einer späteren Version, die von der Free Software Foundation veröffentlicht wurde, ohne unveränderliche Abschnitte, ohne vorderen Umschlagtext und ohne hinteren Umschlagtext. Eine Kopie der Lizenz finden Sie im Abschnitt mit dem Titel „GNU-Lizenz für freie Dokumentation“."
@@ -102,6 +105,12 @@ msgstr "Umgebungen verwalten"
 
 msgid "Control environment"
 msgstr "Umgebungen festlegen."
+
+msgid "Reproducible Research"
+msgstr "Reproduzierbare Wissenschaft"
+
+msgid "A foundation for reproducible research."
+msgstr "Eine Grundlage für reproduzierbare Wissenschaft."
 
 msgid "Installing Guix on a Cluster"
 msgstr "Auf einem Rechencluster installieren"
@@ -375,6 +384,9 @@ msgstr "Guix-Umgebung mit direnv"
 
 msgid "Setup Guix environment with direnv"
 msgstr "Mit direnv Guix-Umgebungen einrichten."
+
+msgid "Using Guix for Reproducible Research"
+msgstr "Guix zur reproduzierbaren Wissenschaft heranziehen"
 
 msgid "Setting Up a Head Node"
 msgstr "Den Zentralrechner konfigurieren"
