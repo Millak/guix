@@ -1423,6 +1423,14 @@ which will be used as a snippet in origin."
    "0.23.12"
    #:grammar-directories '("php" "php_only")))
 
+(define-public tree-sitter-phpdoc
+  (tree-sitter-grammar
+   "phpdoc" "PHPDoc"
+   "1m5fsbl4zv44rjxv21jzcv64mz9gs702m9s6qjkb0c0rill2bqaz"
+   "0.1.8"
+   #:repository-url "https://github.com/claytonrcarter/tree-sitter-phpdoc"
+   #:inputs (list tree-sitter-php)))
+
 (define-public tree-sitter-plantuml
   ;; No tags
   (let ((commit "c7361a1d481dc1ff6700b14ea1d5efc549b72713")
