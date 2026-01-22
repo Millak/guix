@@ -15905,20 +15905,6 @@ application monitoring and error tracking software.")
 versions number match PEP 440.")
     (license license:expat)))
 
-(define-public python-pep517
-  (package
-    (inherit python-pep517-bootstrap)
-    (name "python-pep517")
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (delete-file "pytest.ini")
-                      (delete-file "tests/test_meta.py")
-                      (if tests?
-                          (invoke "pytest") #t))))))
-    (native-inputs (list python-mock python-pytest python-testpath))))
-
 (define-public python-pyproject-metadata
   (package
     (name "python-pyproject-metadata")

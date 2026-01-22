@@ -841,33 +841,6 @@ installed with a newer @code{pip} or with wheel's own command line utility.")
         (sha256
          (base32 "0ww8fgkvwv35ypj4cnngczdwp6agr4qifvk2inb32azfzbrrc4fd"))))))
 
-;;; TODO: Deprecate with https://github.com/pypa/pyproject-hooks.
-;;;
-;;; From PyPI web page: The core of this package has been renamed to
-;;; pyproject-hooks (https://pyproject-hooks.readthedocs.io). Please use that
-;;; package or build (https://pypa-build.readthedocs.io/en/stable/) in place
-;;; of pep517.
-(define-public python-pep517-bootstrap
-  (hidden-package
-   (package
-     (name "python-pep517-bootstrap")
-     (version "0.13.1")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pep517" version))
-        (sha256
-         (base32 "05xk0x7b5n7zmcqrznm4lnbakgdjpin19mp5zyzb92wksgzs4bqv"))))
-     (build-system pyproject-build-system)
-     (arguments
-      `(#:tests? #f))                     ;to avoid circular dependencies
-      (native-inputs (list python-flit-core))
-     (home-page "https://github.com/pypa/pep517")
-     (synopsis "Wrappers to build Python packages using PEP 517 hooks")
-     (description
-      "Wrappers to build Python packages using PEP 517 hooks.")
-     (license license:expat))))
-
 (define-public python-pyparsing
   (package
     (name "python-pyparsing")
