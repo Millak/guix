@@ -178,6 +178,7 @@
 ;;; Copyright © 2025 Luca Kredel <luca.kredel@web.de>
 ;;; Copyright © 2025 Isidor Zeuner <guix@quidecco.pl>
 ;;; Copyright © 2025 Andy Tai <atai@atai.org>
+;;; Copyright © 2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1072,6 +1073,29 @@ dicts.")
      "This package implements a preferred system exit codes as defined by
 @url{https://man.openbsd.org/sysexits, sysexits.h}. This library is inspired by
 Rust's @url{https://docs.rs/exitcode, exitcode}.")
+    (license license:expat)))
+
+(define-public python-ezdxf
+  (package
+    (name "python-ezdxf")
+    (version "1.3.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mozman/ezdxf")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "14rb99dakzzpdflnsw2wr2y0s28fhqz4dp78mi823457bdpv18ix"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-cython python-pillow python-pytest
+                         python-setuptools unzip))
+    (propagated-inputs (list python-fonttools python-numpy python-pyparsing
+                             python-typing-extensions))
+    (home-page "https://ezdxf.mozman.at/")
+    (synopsis "Python library to read and write DXF drawings")
+    (description "ezdxf is a Python package to create new DXF files and
+read/modify/write existing DXF files.")
     (license license:expat)))
 
 (define-public python-fastnumbers
