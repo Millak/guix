@@ -46,6 +46,7 @@
        ;; Useful extras for patches submission.
        (specifications->manifest
         (list "b4"
+              "codeberg-cli"
               "git"
               "git:send-email"
               "mumi"
