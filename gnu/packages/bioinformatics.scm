@@ -18788,16 +18788,16 @@ and many lower level support classes.
 (define-public biobambam2
   (package
     (name "biobambam2")
-    (version "2.0.182")
+    (version "2.0.185")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://gitlab.com/german.tischler/biobambam2")
-                    (commit (string-append version "-release-20210412001032"))))
+                    (commit (string-append version "-release-20221211202123"))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0b7w7a2a7hpkgrdn0n7hy4pilzrj82zqrh7q4bg1l0cd6bqr60m5"))))
+                "1ysj0y11wi5z9y05qhbzhd198iqv8d1fh9b5f7ky9c3dklh1nfba"))))
     (build-system gnu-build-system)
     (arguments
      ;; The test suite attempts to execute ../test-driver, which does not exist.
