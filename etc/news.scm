@@ -44,7 +44,8 @@
 
  (entry (commit "6d4cb99a15da7f4fd55f956c55f4f4aacfcc7742")
         (title
-         (en "@code{%desktop-services} now includes GDM on AArch64"))
+         (en "@code{%desktop-services} now includes GDM on AArch64")
+         (de "@code{%desktop-services} enthält jetzt GDM auf AArch64"))
         (body
          (en "On Guix System in an operating system configuration, your value for the
 @code{services} field is based on @code{%desktop-services} for desktop
@@ -60,6 +61,21 @@ the end, as other 64-bit architectures aren't mature enough to use
 
 In case you're on AArch64 and you've changed the login manager, you will have
 to adapt your config to remove @code{gdm-service-type} instead of
+@code{sddm-service-type}.")
+         (de "Auf Guix System liegen in einer Betriebssystemkonfiguration Ihrem
+Wert des @code{services}-Feldes auf Desktop-Maschinen die
+@code{%desktop-services} zugrunde.
+
+Zu den @code{%desktop-services} gehört eine Anmeldeverwaltung, die sich je nach
+Architektur unterscheidet. Bisher wurde GDM auf x86_64 benutzt und SDDM auf
+anderen Architekturen.
+
+Ab jetzt wird GDM auf allen 64-Bit-Architekturen benutzt. Das betrifft
+letztlich nur AArch64, weil andere 64-Bit-Architecturen bisher noch nicht weit
+genug fortgeschritten sind, um die %desktop-services zu benutzen.
+
+Falls Sie auf AArch64 sind und die Anmeldeverwaltung geändert haben, müssen Sie
+Ihre Konfiguration ändern und dort @code{gdm-service-type} entfernen statt
 @code{sddm-service-type}.")))
 
  (entry (commit "d3b79beaa806452dceaffb8b211b69dc4c346aba")
