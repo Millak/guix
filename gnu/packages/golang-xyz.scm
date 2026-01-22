@@ -1593,63 +1593,6 @@ use case for these are for command-line applications but alternate progress
 bar writers can be supplied for alternate environments.")
     (license license:expat)))
 
-(define-public go-github-com-anacrolix-fuse
-  (package
-    (name "go-github-com-anacrolix-fuse")
-    (version "0.3.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             ;; It's an alternative and maintained fork
-             ;; https://github.com/bazil/fuse
-             ;; -> https://github.com/zegl/fuse
-             ;;    ->
-             (url "https://github.com/anacrolix/fuse")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0rlzcdgv7s3ywmhapp35qgi0p5cz8acw589n7hr918hq30dp7w9z"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:tests? #f ; tests require fuse mount
-      #:import-path "github.com/anacrolix/fuse"))
-    (propagated-inputs
-     (list go-github-com-anacrolix-envpprof
-           go-github-com-tv42-httpunix
-           go-golang-org-x-sys))
-    (home-page "https://github.com/anacrolix/fuse")
-    (synopsis "FUSE implementation in Golang")
-    (description
-     "Package fuse enables writing FUSE file systems on Linux, OS X, and
-@code{FreeBSD}.")
-    (license license:bsd-3)))
-
-(define-public go-github-com-anacrolix-generics
-  (package
-    (name "go-github-com-anacrolix-generics")
-    (version "0.0.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/anacrolix/generics")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "19nagwx6s5sjyphn5czlplqvzj4zxcv3jl9zskpix5yxg5l24san"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/anacrolix/generics"))
-    (propagated-inputs (list go-golang-org-x-exp))
-    (home-page "https://github.com/anacrolix/generics")
-    (synopsis "Generic implementation for Golang")
-    ;; FIXME: The project provides no documentatin of README. Report upstream.
-    (description "This package provides generic implementations for Go.")
-    (license license:mpl2.0)))
-
 (define-public go-github-com-anacrolix-dms
   (package
     (name "go-github-com-anacrolix-dms")
@@ -1710,6 +1653,63 @@ all available network interfaces.")
     (home-page "https://github.com/anacrolix/ffprobe")
     (synopsis "Go ffprobe wrapper")
     (description "This package wraps and interprets ffmpeg's ffprobe for Go.")
+    (license license:mpl2.0)))
+
+(define-public go-github-com-anacrolix-fuse
+  (package
+    (name "go-github-com-anacrolix-fuse")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              ;; It's an alternative and maintained fork
+              ;; https://github.com/bazil/fuse
+              ;; -> https://github.com/zegl/fuse
+              ;;    ->
+              (url "https://github.com/anacrolix/fuse")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rlzcdgv7s3ywmhapp35qgi0p5cz8acw589n7hr918hq30dp7w9z"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; tests require fuse mount
+      #:import-path "github.com/anacrolix/fuse"))
+    (propagated-inputs
+     (list go-github-com-anacrolix-envpprof
+           go-github-com-tv42-httpunix
+           go-golang-org-x-sys))
+    (home-page "https://github.com/anacrolix/fuse")
+    (synopsis "FUSE implementation in Golang")
+    (description
+     "Package fuse enables writing FUSE file systems on Linux, OS X, and
+@code{FreeBSD}.")
+    (license license:bsd-3)))
+
+(define-public go-github-com-anacrolix-generics
+  (package
+    (name "go-github-com-anacrolix-generics")
+    (version "0.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/anacrolix/generics")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19nagwx6s5sjyphn5czlplqvzj4zxcv3jl9zskpix5yxg5l24san"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/anacrolix/generics"))
+    (propagated-inputs (list go-golang-org-x-exp))
+    (home-page "https://github.com/anacrolix/generics")
+    (synopsis "Generic implementation for Golang")
+    ;; FIXME: The project provides no documentatin of README. Report upstream.
+    (description "This package provides generic implementations for Go.")
     (license license:mpl2.0)))
 
 (define-public go-github-com-anacrolix-log
@@ -5813,34 +5813,6 @@ Features:
 @end itemize")
     (license license:expat)))
 
-(define-public go-github-com-danieljoos-wincred
-  (package
-    (name "go-github-com-danieljoos-wincred")
-    (version "1.2.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/danieljoos/wincred")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1cgf74srid92gzkd094mwp0jvakgi0a22a8hpl7v9w28a9d61bf3"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/danieljoos/wincred"))
-    (propagated-inputs (list go-golang-org-x-sys
-                             go-github-com-stretchr-testify))
-    (home-page "https://github.com/danieljoos/wincred")
-    (synopsis "Go interface to Windows Credentials Management")
-    (description
-     "Package wincred provides primitives for accessing the Windows Credentials
-Management API. This includes functions for retrieval, listing and storage of
-credentials as well as Go structures for convenient access to the credential
-data.")
-    (license license:expat)))
-
 (define-public go-github-com-danielgtaylor-mexpr
   (package
     (name "go-github-com-danielgtaylor-mexpr")
@@ -5904,6 +5876,34 @@ if-statement evaluation) so is minimal in what it supports by design.")
     (description
      "Shorthand is a superset and friendlier variant of JSON designed with
 several use-cases in mind..")
+    (license license:expat)))
+
+(define-public go-github-com-danieljoos-wincred
+  (package
+    (name "go-github-com-danieljoos-wincred")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/danieljoos/wincred")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cgf74srid92gzkd094mwp0jvakgi0a22a8hpl7v9w28a9d61bf3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/danieljoos/wincred"))
+    (propagated-inputs (list go-golang-org-x-sys
+                             go-github-com-stretchr-testify))
+    (home-page "https://github.com/danieljoos/wincred")
+    (synopsis "Go interface to Windows Credentials Management")
+    (description
+     "Package wincred provides primitives for accessing the Windows Credentials
+Management API. This includes functions for retrieval, listing and storage of
+credentials as well as Go structures for convenient access to the credential
+data.")
     (license license:expat)))
 
 (define-public go-github-com-dannav-hhmmss
@@ -8568,30 +8568,6 @@ it effectively reuses the JSON struct tags as well as the custom JSON methods
 @code{MarshalJSON} and @code{UnmarshalJSON} unlike go-yaml.")
     (license license:expat)))
 
-(define-public go-github-com-gosimple-unidecode
-  (package
-    (name "go-github-com-gosimple-unidecode")
-    (version "1.0.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/gosimple/unidecode")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1dxdddn744l0s1lr006s2a4k02w6qx8j3k31c7sfflh7wvwzcdzx"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/gosimple/unidecode"))
-    (home-page "https://github.com/gosimple/unidecode")
-    (synopsis "Unicode transliterator for Golang")
-    (description
-     "Package unidecode implements a unicode transliterator which
-replaces non-ASCII characters with their ASCII approximations.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-git-lfs-go-netrc
   (package
     (name "go-github-com-git-lfs-go-netrc")
@@ -10132,6 +10108,30 @@ which satisfies the cron expression.")
     (description "Package gettext provides bindings for @url{GNU Gettext,
 https://www.gnu.org/software/gettext/}.")
     (license license:expat)))
+
+(define-public go-github-com-gosimple-unidecode
+  (package
+    (name "go-github-com-gosimple-unidecode")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gosimple/unidecode")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dxdddn744l0s1lr006s2a4k02w6qx8j3k31c7sfflh7wvwzcdzx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gosimple/unidecode"))
+    (home-page "https://github.com/gosimple/unidecode")
+    (synopsis "Unicode transliterator for Golang")
+    (description
+     "Package unidecode implements a unicode transliterator which replaces
+non-ASCII characters with their ASCII approximations.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-gosuri-uilive
   (package
@@ -15616,29 +15616,6 @@ functions in packages @code{fmt} and @code{log}.")
 requests.  Browse requests are not supported yet.")
     (license license:expat)))
 
-(define-public go-github-com-miolini-datacounter
-  (package
-    (name "go-github-com-miolini-datacounter")
-    (version "1.0.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/miolini/datacounter")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0s1hxqy6666qd524rdp1dr3778davc8gx9brg9lkcjvr5l05s9wa"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/miolini/datacounter"))
-    (home-page "https://github.com/miolini/datacounter")
-    (synopsis "Counters for Go readers and writers")
-    (description
-     "The datacounter package provides counters for Go readers and writers.")
-    (license license:expat)))
-
 (define-public go-github-com-minio-xxml
   (package
     (name "go-github-com-minio-xxml")
@@ -15662,6 +15639,29 @@ requests.  Browse requests are not supported yet.")
      "This package implements a simple XML 1.0 parser that understands XML name
 spaces, along with extended support for control characters.")
     (license license:bsd-3)))
+
+(define-public go-github-com-miolini-datacounter
+  (package
+    (name "go-github-com-miolini-datacounter")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/miolini/datacounter")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s1hxqy6666qd524rdp1dr3778davc8gx9brg9lkcjvr5l05s9wa"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/miolini/datacounter"))
+    (home-page "https://github.com/miolini/datacounter")
+    (synopsis "Counters for Go readers and writers")
+    (description
+     "The datacounter package provides counters for Go readers and writers.")
+    (license license:expat)))
 
 (define-public go-github-com-mistifyio-go-zfs-v3
   (package
@@ -22640,6 +22640,32 @@ structures using selector strings.  It's similar to @code{jq}/@code{yq}, but
 supports JSON, YAML, TOML, XML and CSV with zero runtime dependencies.")
     (license license:expat)))
 
+(define-public go-github-com-tonistiigi-dchapes-mode
+  (package
+    (name "go-github-com-tonistiigi-dchapes-mode")
+    (version "0.0.0-20250318174251-73d941a28323")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tonistiigi/dchapes-mode")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bs5jvq3045mspyq42pk3dliqgn3a975l30030abvggidnbxpggw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tonistiigi/dchapes-mode"))
+    (home-page "https://github.com/tonistiigi/dchapes-mode")
+    (synopsis "BSD's setmode and getmode for Golang")
+    (description
+     "Package @code{mode} provides a native Go implementation of BSD's
+setmode and getmode which can be used to modify the mode bits of an
+@code{os.FileMode} value based on a symbolic value as described by the Unix
+chmod command.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-tonistiigi-go-archvariant
   (package
     (name "go-github-com-tonistiigi-go-archvariant")
@@ -22692,32 +22718,6 @@ value.  It is more efficient than the standard library csv package for parsing
 many small values.  For multi-line CSV parsing, the standard library is
 recommended.")
     (license license:expat)))
-
-(define-public go-github-com-tonistiigi-dchapes-mode
-  (package
-    (name "go-github-com-tonistiigi-dchapes-mode")
-    (version "0.0.0-20250318174251-73d941a28323")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/tonistiigi/dchapes-mode")
-              (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0bs5jvq3045mspyq42pk3dliqgn3a975l30030abvggidnbxpggw"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/tonistiigi/dchapes-mode"))
-    (home-page "https://github.com/tonistiigi/dchapes-mode")
-    (synopsis "BSD's setmode and getmode for Golang")
-    (description
-     "Package @code{mode} provides a native Go implementation of BSD's
-setmode and getmode which can be used to modify the mode bits of an
-@code{os.FileMode} value based on a symbolic value as described by the Unix
-chmod command.")
-    (license license:bsd-2)))
 
 (define-public go-github-com-tonistiigi-units
   (package
@@ -22987,6 +22987,43 @@ line apps in Go.  The goal is to enable developers to write fast and
 distributable command line applications in an expressive way.")
     (license license:expat)))
 
+(define-public go-github-com-urfave-cli-altsrc-v3
+  (package
+    (name "go-github-com-urfave-cli-altsrc-v3")
+    (version "3.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/urfave/cli-altsrc")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nk1c31li7yijfa2p9s2723p5727ad3fl80dj6a5cwjg1qkbsl12"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;tests need git in PATH
+      #:import-path "github.com/urfave/cli-altsrc/v3"
+      ;; Pattern autocomplete: cannot embed directory autocomplete: contains
+      ;; no embeddable files.
+      #:embed-files
+      #~(list "bash_autocomplete"
+              "powershell_autocomplete.ps1"
+              "zsh_autocomplete")))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-github-com-urfave-cli-v3))
+    (propagated-inputs
+     (list go-github-com-burntsushi-toml
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/urfave/cli-altsrc")
+    (synopsis "Read values for urfave/cli/v3 flags from config files")
+    (description
+     "This package provides an extension for https://github.com/urfave/cli, to
+read flag values from JSON, YAML, and TOML.")
+    (license license:expat)))
+
 (define-public go-github-com-urfave-cli-v2
   (package
     (inherit go-github-com-urfave-cli)
@@ -23042,43 +23079,6 @@ distributable command line applications in an expressive way.")
       #:test-flags
       #~(list "-vet=off")))
     (propagated-inputs '())))
-
-(define-public go-github-com-urfave-cli-altsrc-v3
-  (package
-    (name "go-github-com-urfave-cli-altsrc-v3")
-    (version "3.0.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/urfave/cli-altsrc")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0nk1c31li7yijfa2p9s2723p5727ad3fl80dj6a5cwjg1qkbsl12"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:tests? #f ;tests need git in PATH
-      #:import-path "github.com/urfave/cli-altsrc/v3"
-      ;; Pattern autocomplete: cannot embed directory autocomplete: contains
-      ;; no embeddable files.
-      #:embed-files
-      #~(list "bash_autocomplete"
-              "powershell_autocomplete.ps1"
-              "zsh_autocomplete")))
-    (native-inputs
-     (list go-github-com-stretchr-testify
-           go-github-com-urfave-cli-v3))
-    (propagated-inputs
-     (list go-github-com-burntsushi-toml
-           go-gopkg-in-yaml-v3))
-    (home-page "https://github.com/urfave/cli-altsrc")
-    (synopsis "Read values for urfave/cli/v3 flags from config files")
-    (description
-     "This package provides an extension for https://github.com/urfave/cli, to
-read flag values from JSON, YAML, and TOML.")
-    (license license:expat)))
 
 (define-public go-github-com-valyala-bytebufferpool
   (package
@@ -27329,30 +27329,6 @@ also: @url{https://github.com/westes/flex}.")
 recognizers) at run time.")
     (license license:bsd-3)))
 
-(define-public go-modernc-org-memory
-  (package
-    (name "go-modernc-org-memory")
-    (version "1.8.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/cznic/memory")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "066pzk0i1jxahialzp97ra0k0f191y1756sgppiw50zkpnpwzjxr"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "modernc.org/memory"))
-    (propagated-inputs
-     (list go-modernc-org-mathutil))
-    (home-page "https://gitlab.com/cznic/memory")
-    (synopsis "Memory allocator implementation")
-    (description "Package memory implements a memory allocator.")
-    (license license:bsd-3)))
-
 (define-public go-modernc-org-libc
   (package
     (name "go-modernc-org-libc")
@@ -27392,6 +27368,30 @@ recognizers) at run time.")
     (description
      "Package libc provides a C standard library implementation for use
 with ccgo-generated code.")
+    (license license:bsd-3)))
+
+(define-public go-modernc-org-memory
+  (package
+    (name "go-modernc-org-memory")
+    (version "1.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/cznic/memory")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "066pzk0i1jxahialzp97ra0k0f191y1756sgppiw50zkpnpwzjxr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/memory"))
+    (propagated-inputs
+     (list go-modernc-org-mathutil))
+    (home-page "https://gitlab.com/cznic/memory")
+    (synopsis "Memory allocator implementation")
+    (description "Package memory implements a memory allocator.")
     (license license:bsd-3)))
 
 (define-public go-modernc-org-opt
