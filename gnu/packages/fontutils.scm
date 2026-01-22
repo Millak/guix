@@ -8,7 +8,7 @@
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2024 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2018, 2019, 2020, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2021, 2023, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2020, 2021, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
@@ -1317,6 +1317,12 @@ TTF (TrueType/OpenType Font) files.")
               (modules '((guix build utils)))
               (snippet
                '(begin
+                  ;; Include <unistd.h> for the 'getopt' declaration.
+                  (substitute* "t1asm.c"
+                    (("#include <stdio.h>" all)
+                     (string-append all "\n"
+                                    "#include <unistd.h>\n")))
+
                   ;; Remove trailing backslashes in the sed expression of the
                   ;; 'install' rule since sed would otherwise fail.
                   (substitute* "Makefile"
