@@ -1615,7 +1615,7 @@ sequences that lead from a given start lanelet to some goal lanelet(s).")
 (define-public sumo
   (package
     (name "sumo")
-    (version "1.14.1")
+    (version "1.25.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1626,7 +1626,7 @@ sequences that lead from a given start lanelet to some goal lanelet(s).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1965vrsff0k14z3y3b1c460zdwp9nx6q6plrdyxn496vg6846k1y"))))
+                "0nqz4izbwgbpz3xwx0mczagilhf06jxxpr3pmr7axjk80yk1r4ri"))))
     (build-system cmake-build-system)
     (arguments
      (list
