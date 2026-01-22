@@ -1697,6 +1697,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libinfinity-renew-test-certificate.patch \
   %D%/packages/patches/libjami-pkgconf.patch                    \
   %D%/packages/patches/libjami-simdutf.patch                    \
+  %D%/packages/patches/libmaus2-fix-gcc-13-require-include-cstdint.patch	\
   %D%/packages/patches/libretro-dolphin-emu-data.patch		\
   %D%/packages/patches/libretro-dolphin-emu-gc-font-tool.patch  \
   %D%/packages/patches/libretro-dolphin-emu-libusb-assert.patch \

@@ -30,6 +30,7 @@
 ;;; Copyright © 2025 nomike Postmann <nomike@nomike.com>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2026 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -18745,19 +18746,22 @@ contigs alone.")
 (define-public libmaus2
   (package
     (name "libmaus2")
-    (version "2.0.786")
+    (version "2.0.813")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://gitlab.com/german.tischler/libmaus2")
-                    (commit (string-append version "-release-20210531143054"))))
+                    (commit (string-append version "-release-20221210220409"))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rxakmwjcx2yq5sjh3v849f7dfw4xzc2fyzf6s28s3p95z84w564"))))
+                "1hbkp3vjykkn8vkplzxyc6vnm69rzqhnj041jgfk61wvn5r1xzw8"))
+              (patches
+               (search-patches "libmaus2-fix-gcc-13-require-include-cstdint.patch"))))
     (build-system gnu-build-system)
     ;; The test suite attempts to execute ../test-driver, which does not exist.
     (arguments '(#:tests? #false))
+    (inputs (list boost))
     (propagated-inputs
      (list zlib))
     (native-inputs

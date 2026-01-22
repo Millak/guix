@@ -1,0 +1,24 @@
+From 3c272a9dc85c74de983d5b0b1ebca593aeb86a75 Mon Sep 17 00:00:00 2001
+From: Kuoi <starsareintherose@outlook.com>
+Date: Sat, 8 Feb 2025 05:23:32 +0000
+Subject: [PATCH] fix: gcc 13 require #include <cstdint>
+
+---
+ src/libmaus2/util/MemUsage.hpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/libmaus2/util/MemUsage.hpp b/src/libmaus2/util/MemUsage.hpp
+index 039a64907..8181e7285 100644
+--- a/src/libmaus2/util/MemUsage.hpp
++++ b/src/libmaus2/util/MemUsage.hpp
+@@ -23,6 +23,7 @@
+ #include <fstream>
+ #include <map>
+ #include <sstream>
++#include <cstdint>
+ 
+ namespace libmaus2
+ {
+-- 
+GitLab
+
