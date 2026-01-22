@@ -1316,38 +1316,38 @@ TTF (TrueType/OpenType Font) files.")
                 "1l718n4k4widx49xz7qrj4mybzb8q67kp2jw7f47604ips4654mf"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  ;; Include <unistd.h> for the 'getopt' declaration.
-                  (substitute* "t1asm.c"
-                    (("#include <stdio.h>" all)
-                     (string-append all "\n"
-                                    "#include <unistd.h>\n")))
+               #~(begin
+                   ;; Include <unistd.h> for the 'getopt' declaration.
+                   (substitute* "t1asm.c"
+                     (("#include <stdio.h>" all)
+                      (string-append all "\n"
+                                     "#include <unistd.h>\n")))
 
-                  ;; Remove trailing backslashes in the sed expression of the
-                  ;; 'install' rule since sed would otherwise fail.
-                  (substitute* "Makefile"
-                    (("\\|;\\\\[[:space:]]*$") "|; "))
-                  #t))))
+                   ;; Remove trailing backslashes in the sed expression of the
+                   ;; 'install' rule since sed would otherwise fail.
+                   (substitute* "Makefile"
+                     (("\\|;\\\\[[:space:]]*$") "|; "))
+                   #t))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f                                ;no tests
-       #:phases (modify-phases %standard-phases
-                  (replace 'configure
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
-                        (substitute* "Makefile"
-                          (("INSTDIR =.*")
-                           (string-append "INSTDIR = " out "\n"))
-                          (("OWNER = .*")
-                           "OWNER = `id -un`\n")
-                          (("GROUP = .*")
-                           "GROUP = `id -g`\n"))
-                        #t)))
-                  (replace 'build
-                    (lambda _
-                      (invoke "make" "-j"
-                              (number->string (parallel-job-count))
-                              "all" "CC=gcc"))))))
+     (list #:tests? #f ;no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((out (assoc-ref outputs "out")))
+                     (substitute* "Makefile"
+                       (("INSTDIR =.*")
+                        (string-append "INSTDIR = " out "\n"))
+                       (("OWNER = .*")
+                        "OWNER = `id -un`\n")
+                       (("GROUP = .*")
+                        "GROUP = `id -g`\n")) #t)))
+               (replace 'build
+                 (lambda _
+                   (invoke "make" "-j"
+                           (number->string (parallel-job-count))
+                           "all" "CC=gcc"))))))
     (inputs (list perl))
     (synopsis "Convert TrueType fonts to Postscript Type 1")
     (description
