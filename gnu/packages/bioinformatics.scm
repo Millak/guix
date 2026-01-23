@@ -2410,7 +2410,7 @@ from bokeh.util.dataclasses import entries\n"))
                                python-scikit-image
                                python-scipy
                                python-seaborn
-                               python-tornado-6
+                               python-tornado
                                python-tqdm
                                python-umap-learn))
       (native-inputs (list python-pytest python-setuptools python-wheel))

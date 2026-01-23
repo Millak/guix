@@ -5347,8 +5347,37 @@ data.")
 
 (define-public python-tornado
   (package
-    ;; TODO: Try to refresh and check all dependents.
     (name "python-tornado")
+    (version "6.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tornado" version))
+       (sha256
+        (base32 "02v2mlvr58xg0l0gh08nswl53z73wkf23sziggypk63ffjsdbflj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; AttributeError: 'TestIOStreamWebMixin' object has no attribute 'io_loop'
+      #~(list "--ignore=tornado/test/iostream_test.py")))
+    (native-inputs
+     (list python-certifi
+           python-pytest
+           python-setuptools))
+    (home-page "https://www.tornadoweb.org/")
+    (synopsis "Python web framework and asynchronous networking library")
+    (description
+     "Tornado is a Python web framework and asynchronous networking library,
+originally developed at FriendFeed.  By using non-blocking network I/O,
+Tornado can scale to tens of thousands of open connections, making it ideal
+for long polling, WebSockets, and other applications that require a long-lived
+connection to each user.")
+    (license license:asl2.0)))
+
+(define-public python-tornado-5
+  (package
+    (inherit python-tornado)
     (version "5.1.1")
     (source
      (origin
@@ -5388,47 +5417,10 @@ data.")
                        "--verbose=yes")))))))
     (native-inputs
      (list python-certifi
-           python-setuptools))
-    (home-page "https://www.tornadoweb.org/")
-    (synopsis "Python web framework and asynchronous networking library")
-    (description
-     "Tornado is a Python web framework and asynchronous networking library,
-originally developed at FriendFeed.  By using non-blocking network I/O,
-Tornado can scale to tens of thousands of open connections, making it ideal
-for long polling, WebSockets, and other applications that require a long-lived
-connection to each user.")
-    (license license:asl2.0)))
+           python-setuptools))))
 
-(define-public python-tornado-6
-  (package
-    (name "python-tornado")
-    (version "6.4.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "tornado" version))
-       (sha256
-        (base32 "02v2mlvr58xg0l0gh08nswl53z73wkf23sziggypk63ffjsdbflj"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; AttributeError: 'TestIOStreamWebMixin' object has no attribute 'io_loop'
-      #~(list "--ignore=tornado/test/iostream_test.py")))
-    (native-inputs
-     (list python-certifi
-           python-pytest
-           python-setuptools
-           python-wheel))
-    (home-page "https://www.tornadoweb.org/")
-    (synopsis "Python web framework and asynchronous networking library")
-    (description
-     "Tornado is a Python web framework and asynchronous networking library,
-originally developed at FriendFeed.  By using non-blocking network I/O,
-Tornado can scale to tens of thousands of open connections, making it ideal
-for long polling, WebSockets, and other applications that require a long-lived
-connection to each user.")
-    (license license:asl2.0)))
+;; XXX: Deprecated on <2026-01-23>.
+(define-deprecated/public-alias python-tornado-6 python-tornado)
 
 (define-public python-tornado-http-auth
   (package

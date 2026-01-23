@@ -1073,7 +1073,7 @@ interoperability offered by HDF5.")
            python-sortedcontainers
            python-tblib
            python-toolz
-           python-tornado-6
+           python-tornado
            python-urllib3
            python-zict))
     (home-page "https://distributed.dask.org")

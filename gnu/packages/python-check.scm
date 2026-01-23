@@ -4223,7 +4223,7 @@ simplify testing of asynchronous tornado applications.")
      (list python-pytest-bootstrap
            python-setuptools))
     (propagated-inputs
-     (list python-tornado-6))
+     (list python-tornado))
     (home-page "https://github.com/eukaryote/pytest-tornasync")
     (synopsis "Pytest plugin for testing Tornado code")
     (description

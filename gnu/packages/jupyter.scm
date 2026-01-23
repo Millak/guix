@@ -164,7 +164,7 @@ simulation, statistical modeling, machine learning and much more.")
            python-packaging
            python-psutil
            python-pyzmq
-           python-tornado-6
+           python-tornado
            python-traitlets))
     (inputs (list python))              ;for cross compilation
     (native-inputs
@@ -291,7 +291,7 @@ Jupytext are:
                              python-pyzmq
                              python-send2trash
                              python-terminado
-                             python-tornado-6
+                             python-tornado
                              python-traitlets))
     (native-inputs (list python-nbval
                          python-jupyter-packaging
@@ -386,7 +386,7 @@ the namespace @code{/nbclassic/}.")
            python-pyzmq
            python-send2trash
            python-terminado
-           python-tornado-6
+           python-tornado
            python-traitlets))
     (native-inputs
      (list python-coverage
@@ -478,7 +478,7 @@ to Jupyter Server for their Python Web application backend.")
      (list python-dateutil
            python-jupyter-core
            python-pyzmq
-           python-tornado-6
+           python-tornado
            python-traitlets))
     (home-page "https://jupyter.org/")
     (synopsis "Jupyter protocol implementation and client libraries")
@@ -514,7 +514,7 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
            python-jupyter-core
            python-nest-asyncio
            python-pyzmq
-           python-tornado-6
+           python-tornado
            python-traitlets))))
 
 ;; Bootstrap variant of jupyter-client, which breaks the loop between ipykernel
@@ -773,7 +773,7 @@ Messaging Protocol}.")
                          python-ipykernel
                          python-pytest
                          python-pytest-timeout
-                         python-tornado-6))
+                         python-tornado))
     (home-page "https://jupyter.org")
     (synopsis "Pytest plugin for testing Jupyter libraries and extensions.")
     (description
@@ -812,7 +812,7 @@ extensions.")
            python-pytest-timeout))
     (propagated-inputs
      (list python-ptyprocess
-           python-tornado-6))
+           python-tornado))
     (home-page "https://github.com/jupyter/terminado")
     (synopsis "Terminals served to term.js using Tornado websockets")
     (description "This package provides a Tornado websocket backend for the
@@ -1106,7 +1106,7 @@ JavaScript build steps.")
            python-pyzmq
            python-send2trash
            python-terminado
-           python-tornado-6
+           python-tornado
            python-traitlets
            python-websocket-client))
     (native-inputs
@@ -1188,7 +1188,7 @@ are interactive HTML widgets for Jupyter notebooks and the IPython kernel.")
                          python-pytest-console-scripts
                          python-pytest-cov
                          python-pytest-xdist
-                         python-tornado-6))
+                         python-tornado))
     (home-page "https://github.com/jupyterlite/jupyterlite")
     (synopsis "Core functionality for building JupyterLite websites")
     (description "The jupyterlite-core package provides the core functionality
@@ -1336,7 +1336,7 @@ It was formerly known as nbconvert's @code{ExecutePreprocessor.}")
            python-nbformat
            python-pygments
            python-requests
-           python-tornado-6))
+           python-tornado))
     (native-inputs
      (list git-minimal/pinned
            python-hatch-jupyter-builder
@@ -1876,7 +1876,7 @@ rich media output.")
            python-pandas
            python-pytest
            python-pytest-tornasync
-           python-tornado-6
+           python-tornado
            (origin
              (method url-fetch)
              (uri "https://unpkg.com/@jupyterlab/apputils@3.2.8/style/materialcolors.css")
