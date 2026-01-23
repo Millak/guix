@@ -201,10 +201,6 @@ it.")
         (base32 "0z3zx66v1qx80b97vmb8hhpb52jjbjs9rfz31myw6mf2fsgqb2b7"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
-    (native-inputs
-     (if (supported-package? valgrind/pinned)
-         (list valgrind/pinned)
-         '()))
     (inputs
      (list curl
            gsl
@@ -219,9 +215,7 @@ it.")
       #~(list (string-append "PREFIX=" #$output)
               (string-append "CC=" #$(cc-for-target))
               (string-append "HOST_CC=" #$(cc-for-target)))
-      #:test-target (if (this-package-native-input "valgrind")
-                        "check"
-                        "test")
+      #:test-target "test"
       #:phases
       #~(modify-phases %standard-phases
           ;; Upstream does not use a configure script.
