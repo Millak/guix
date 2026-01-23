@@ -2134,8 +2134,6 @@ guix pull --url=/path/to/your/checkout --profile=/tmp/guix.master --disable-auth
 @node Configuring Git
 @subsection Configuring Git
 @cindex git configuration
-@cindex @code{git format-patch}
-@cindex @code{git send-email}
 
 If you have not done so already, you may wish to set a name and email
 that will be associated with your commits (@pxref{telling git your name,
@@ -2172,24 +2170,20 @@ patch submissions and topic branches.
 @node The Issue Tracker
 @subsection The Issue Tracker
 
-@cindex bug reports, tracking
-@cindex patch submissions, tracking
-@cindex issue tracking
+@cindex email workflow, deprecated
+@cindex issue tracker, for the email workflow
 @cindex Debbugs, issue tracking system
 Bug reports (@dfn{issues}) and patch submissions (@dfn{pull requests})
 are currently tracked at the @uref{https://codeberg.org/guix/guix,
 project's home at Codeberg}.
 
-Before May 25th, 2025, bug reports and patches were exclusively tracked
-using the Debbugs instance at @uref{https://bugs.gnu.org}; it may still
-be used for these purposes until December 31st, 2025, after which
-Codeberg will become the sole option to report new bugs and propose new
-changes@footnote{Check out
+Before January 1st, 2026, bug reports and patches were tracked using the
+Debbugs instance at @uref{https://bugs.gnu.org}, which can also be
+browsed at @uref{https://issues.guix.gnu.org}.  This has been
+discontinued and Codeberg is now the sole option to report new bugs and
+propose new changes@footnote{Check out
 @uref{https://codeberg.org/guix/guix-consensus-documents/src/branch/main/002-codeberg.md,
-Guix Consensus Document 002} for details on this decision.}.  With
-Debbugs, bug reports are sent by email to @email{bug-guix@@gnu.org} and
-patches are sent to @email{guix-patches@@gnu.org} (@pxref{Submitting
-Patches}).
+Guix Consensus Document 002} for details on this decision.}.
 
 @node Managing Patches and Branches
 @subsection Managing Patches and Branches
@@ -2301,11 +2295,10 @@ only then should the merge requests be created, as documented earlier.
 
 @quotation Warning
 This section is about bug reports and patches sent by email to
-@uref{https://issues.guix.gnu.org, Debbugs}.  This option is supported
-until December 31st, 2025, after which
-@uref{https://codeberg.org/guix/guix, Codeberg} will be the only
-interface for submitting bug reports and changes.  @xref{Submitting
-Patches}, for more info.
+@uref{https://issues.guix.gnu.org, Debbugs}, which is discontinued.
+Since January 1st, 2026, bug reports and patches are submitted as issues
+and pull requests on @uref{https://codeberg.org/guix/guix, Codeberg}.
+@xref{Submitting Patches}, for more info.
 @end quotation
 
 @subsubsection Web interface
