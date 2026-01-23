@@ -113,7 +113,7 @@
 (define dbus
   (package
     (name "dbus")
-    (version "1.15.8")
+    (version "1.16.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -121,21 +121,18 @@
                     version ".tar.xz"))
               (sha256
                (base32
-                "016j3rqc8m62bg0h7z4rpvbvm5bg0hbjrld733f0aby8drz5kz44"))
+                "1qmppvb4nf23nvdr1hnywl43ab4ckblrqzn0nb77pzkan6ja38hb"))
               (patches (search-patches "dbus-helper-search-path.patch"))))
-    (build-system gnu-build-system)
+    (build-system meson-build-system)
     (arguments
      (list
       #:configure-flags
       #~(list
          ;; Install the system bus socket under /var.
-         "--localstatedir=/var"
+         "-Dlocalstatedir=/var"
 
          ;; Install the session bus socket under /tmp.
-         "--with-session-socket-dir=/tmp"
-
-         ;; Build shared libraries only.
-         "--disable-static"
+         "-Dsession_socket_dir=/tmp"
 
          ;; Use /etc/dbus-1 for system-wide config.
          ;; Look for configuration file under
@@ -145,7 +142,7 @@
          ;; regardless of what '--config-file' was
          ;; passed to 'dbus-daemon' on the command line;
          ;; see <https://bugs.freedesktop.org/show_bug.cgi?id=92458>.
-         "--sysconfdir=/etc")
+         "-Dsysconfdir=/etc")
       #:phases
       #~(modify-phases %standard-phases
           #$@(if (target-hurd?)
@@ -158,23 +155,25 @@
           (replace 'install
             (lambda _
               ;; Don't try to create /var and /etc.
-              (invoke "make"
-                      "localstatedir=/tmp/dummy"
-                      "sysconfdir=/tmp/dummy"
-                      "install"))))))
+              (invoke "meson"
+                      "install"
+                      "--destdir=/tmp/dummy")
+              (copy-recursively (string-append "/tmp/dummy/" #$output)
+                                #$output)
+              (mkdir-p (string-append #$output:doc "/share"))
+              (rename-file (string-append #$output "/share/doc")
+                           (string-append #$output:doc "/share/doc")))))))
     (native-inputs
      ;; Some dependencies are required to generate the documentation.  Also,
-     ;; quoting NEWS for 1.15.8: “Autotools-generated files are no longer
+     ;; quoting NEWS for 1.16.2: “Autotools-generated files are no longer
      ;; included in the tarball release.”
-     (list autoconf
-           autoconf-archive
-           automake
-           docbook-xml-4.4
+     (list docbook-xml-4.4
            docbook-xsl
            doxygen
            libtool
            libxslt
            which
+           python
            xmlto
            yelp-tools
            pkg-config))
