@@ -2465,7 +2465,7 @@ test_local_files_are_importable"
               ;; coverage when running tests.
               (delete-file-recursively "coverage"))))))
     (native-inputs
-     (list python-pytest
+     (list python-pytest-8
            python-pytest-xdist  ;some tests need xdist_group
            python-flaky
            python-setuptools))
