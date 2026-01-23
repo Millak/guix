@@ -2088,7 +2088,6 @@ the KDE Plasma 6 desktop.")
                          ;; require QtWaylandScanner
                          qtwayland))
     (inputs (list packagekit-qt6
-                  signon-plugin-oauth2
                   signond-qt6
                   attica
                   appstream-qt6
