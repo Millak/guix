@@ -146,6 +146,7 @@ Packaging Rust Crates
 * Common Workflow for Rust Packaging::
 * Cargo Workspaces and Development Snapshots::
 * Using Rust Libraries in Other Build Systems::
+* Common Workflow for Resolving Merge Conflicts on Existing Pull Requests::
 
 System Configuration
 
@@ -1647,6 +1648,7 @@ $ guix shell rust rust:cargo cargo-audit cargo-license
 * Common Workflow for Rust Packaging::
 * Cargo Workspaces and Development Snapshots::
 * Using Rust Libraries in Other Build Systems::
+* Common Workflow for Resolving Merge Conflicts on Existing Pull Requests::
 @end menu
 
 @node Common Workflow for Rust Packaging
@@ -1987,6 +1989,101 @@ method, one of the most popular choices for Traditional Chinese users.")
     (license license:lgpl2.1+)))
 @end lisp
 
+
+@node Common Workflow for Resolving Merge Conflicts on Existing Pull Requests
+@subsubsection Common Workflow for Resolving Merge Conflicts on Existing Pull Requests
+
+Whenever a Rust package change is merged into our target branch from a different
+Pull Request, we often encounter many merge conflicts in @code{(gnu packages
+rust-crates)} when rebasing the Pull Request on top of the target branch. Since
+we should avoid modifying the rust-crates file manually (e.g. using the git
+interface to solve merge conflicts), it is recommended (and often much faster)
+to drop all changes to @code{(gnu packages rust-crates)} and run the lockfile
+importer once again, manually adding back all the manual changes.
+
+This workflow describes one of many ways to do the described procedure.
+
+In this example we'll update the @code{codeberg-cli} package, which has produced
+some merge conflicts in @file{gnu/packages/rust-crates.scm} when we tried a git
+pull rebase.
+
+Before starting, make sure we're not in a rebase environment, by aborting the
+rebase we tried previously (the one which created the merge conflicts by git
+pulling):
+
+@example
+$ git rebase --abort
+@end example
+
+@cindex git rebase --interactive
+@cindex interactive rebase
+To begin, we interactively rebase our PR branch by marking as
+@code{edit} the commit we want to edit, which is the one containing the
+@file{gnu/packages/rust-crates.scm} changes:
+
+@example
+# Change 1 to the number of relevant commits
+$ git rebase -i HEAD~1
+@end example
+
+In our example, we would mark the @code{codeberg-cli} commit like so:
+
+@example
+edit 6ef4f1ad043 # gnu: codeberg-cli: Update to 0.5.4.
+@end example
+
+After that, we'll be in rebase mode, where we can restore the changes made to
+@file{gnu/packages/rust-crates.scm}:
+
+@quotation Note
+Notice that we will lose all manual changes we have previously made to
+@file{gnu/packages/rust-crates.scm} (e.g. snippets, deleting TODO comments,
+if there were any). We'll need to manually add them back after we run the guix
+lockfile importer once again, so make sure you have them saved somewhere, for
+example in your PR link under the @code{Files changed} tab.
+@end quotation
+
+@example
+$ git restore --source=HEAD~ gnu/packages/rust-crates.scm
+@end example
+
+Having restored the file, we can stage the changes, commit, finish the rebase
+and pull rebase from the target branch:
+
+@example
+$ git add gnu/packages/rust-crates.scm
+$ git commit --amend --no-edit
+$ git rebase --continue
+$ git pull <remote> <target branch>
+@end example
+
+We then proceed to run the guix lockfile importer:
+
+@quotation Note
+Remember to checkout the correct tag you're packaging in the package repository
+checkout. Don't forget to run @code{cargo generate-lockfile} before running
+the lockfile importer, see @ref{Common Workflow for Rust Packaging} for more
+detailed steps on what to do before running the guix lockfile importer.
+@end quotation
+
+@example
+$ guix import --insert=gnu/packages/rust-crates.scm \
+      crate --lockfile=/path/to/Cargo.lock codeberg-cli
+@end example
+
+Now is the time we manually add back the snippets and remove the relevant TODOs
+we have already checked (if there are any).
+
+After running the lockfile importer and checking if there are any changes to
+manually add back, we can finally:
+
+@example
+$ git add gnu/packages/rust-crates.scm
+# Our target commit is the last one:
+$ git commit --amend --no-edit
+@end example
+
+We now have a non-conflicting tree, from which we can now update our PR with.
 
 @c *********************************************************************
 @node System Configuration
