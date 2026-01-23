@@ -670,35 +670,22 @@ and a lot more.")
 (define-public python-dcor
   (package
     (name "python-dcor")
-    (version "0.6")
+    (version "0.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dcor" version))
        (sha256
-        (base32 "0cc4an2p3ifm62d50w5h83myyhck6vcnrgp691rpid0x21v9glzm"))))
+        (base32 "1knbaygh489v5hz6fggdv09lz323zklqjb5m52pkkv6pjs2l0v9q"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 34 passed, 9 deselected, 1 warning
-      #:test-flags
-      #~(list "-k" (string-join
-                    ;; TODO: Report upstream, failing with NumPy deprecation
-                    ;; warning and errors:
-                    ;; AttributeError: 'numpy.ndarray' object has no attribute '_array'.
-                    ;; AttributeError: module 'numpy' has no attribute 'bool'.
-                    (list "not test_u_v_statistics"
-                          "test_same_distribution_different_means"
-                          "test_same_distribution_same_parameters"
-                          "test_independent_variables"
-                          "test_same_variable")
-                    " and not ")
-              "dcor/tests")))
     (native-inputs
-     (list python-pytest
+     (list python-array-api-strict
+           python-pytest
+           python-pytest-cov    ;test collection fails without
            python-setuptools))
     (propagated-inputs
-     (list python-joblib
+     (list python-array-api-compat
+           python-joblib
            python-numba
            python-numpy-1
            python-scipy))
