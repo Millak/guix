@@ -2163,7 +2163,6 @@ patch submissions and topic branches.
 * The Issue Tracker::           The official bug and patch tracker.
 * Managing Patches and Branches::  How changes to Guix are managed.
 * Debbugs User Interfaces::     Ways to interact with Debbugs.
-* Debbugs Usertags::            Tag reports with custom labels.
 * Cuirass Build Notifications::  Be alerted of any breakage via RSS feeds.
 @end menu
 
@@ -2486,63 +2485,6 @@ used.
 
 @xref{Top,,, debbugs-ug, Debbugs User Guide}, for more information on
 this nifty tool!
-
-@node Debbugs Usertags
-@subsection Debbugs Usertags
-
-@cindex usertags, for debbugs
-@cindex Debbugs usertags
-Debbugs provides a feature called @dfn{usertags} that allows any user to
-tag any bug with an arbitrary label.  Bugs can be searched by usertag,
-so this is a handy way to organize bugs@footnote{The list of usertags is
-public information, and anyone can modify any user's list of usertags,
-so keep that in mind if you choose to use this feature.}.  If you use
-Emacs Debbugs, the entry-point to consult existing usertags is the
-@samp{C-u M-x debbugs-gnu-usertags} procedure.  To set a usertag, press
-@samp{C} while consulting a bug within the *Guix-Patches* buffer opened
-with @samp{C-u M-x debbugs-gnu-bugs} buffer, then select @code{usertag}
-and follow the instructions.
-
-For example, to view all the bug reports (or patches, in the case of
-@code{guix-patches}) tagged with the usertag @code{powerpc64le-linux}
-for the user @code{guix}, open a URL like the following in a web
-browser:
-@url{https://debbugs.gnu.org/cgi-bin/pkgreport.cgi?tag=powerpc64le-linux;users=guix}.
-
-For more information on how to use usertags, please refer to the
-documentation for Debbugs or the documentation for whatever tool you use
-to interact with Debbugs.
-
-In Guix, we are experimenting with usertags to keep track of
-architecture-specific issues, as well as reviewed ones.  To facilitate
-collaboration, all our usertags are associated with the single user
-@code{guix}.  The following usertags currently exist for that user:
-
-@table @code
-
-@item powerpc64le-linux
-The purpose of this usertag is to make it easy to find the issues that
-matter most for the @code{powerpc64le-linux} system type.  Please assign
-this usertag to bugs or patches that affect @code{powerpc64le-linux} but
-not other system types.  In addition, you may use it to identify issues
-that for some reason are particularly important for the
-@code{powerpc64le-linux} system type, even if the issue affects other
-system types, too.
-
-@item reproducibility
-For issues related to reproducibility.  For example, it would be
-appropriate to assign this usertag to a bug report for a package that
-fails to build reproducibly.
-
-@item reviewed-looks-good
-You have reviewed the series and it looks good to you (LGTM).
-
-@end table
-
-If you're a committer and you want to add a usertag, just start using it
-with the @code{guix} user.  If the usertag proves useful to you,
-consider updating this section of the manual so that others will know
-what your usertag means.
 
 @node Cuirass Build Notifications
 @subsection Cuirass Build Notifications
@@ -3045,7 +2987,7 @@ to that commit message.
 
 If you are not a committer, you can help others find a @emph{series} you
 have reviewed more easily by adding a @code{reviewed-looks-good} usertag
-for the @code{guix} user (@pxref{Debbugs Usertags}).
+for the @code{guix} user.
 
 @node Updating the Guix Package
 @section Updating the Guix Package
