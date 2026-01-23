@@ -1752,6 +1752,16 @@ entry.
 
 @end itemize
 
+@subsubsection Resolving merge conflicts in Pull Requests
+
+For Rust crates, the recommended way to solve merge conflicts is to drop all
+changes to @code{gnu/packages/rust-crates.scm}, rebase onto the desired branch
+and run the lockfile importer again, manually adding back all relevant snippets
+(if any).
+
+@xref{Common Workflow for Resolving Merge Conflicts on Existing Pull Requests,,, guix-cookbook, GNU Guix Cookbook} for
+a suggested workflow on resolving merge conflicts.
+
 @node Elm Packages
 @subsection Elm Packages
 
