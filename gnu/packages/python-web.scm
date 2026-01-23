@@ -2012,13 +2012,16 @@ for adding, removing and dropping callbacks.")
 (define-public python-aiohttp
   (package
     (name "python-aiohttp")
-    (version "3.11.11")
+    ;; TODO: Newer versions require zlib-ng:
+    ;; <https://github.com/zlib-ng/zlib-ng>,
+    ;; <https://github.com/pycompression/python-zlib-ng>.
+    (version "3.11.18")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aiohttp" version))
        (sha256
-        (base32 "0gihj076nm3863sqfnbh786621w1ad7lj7fq88d85wzbwvqwfjdv"))
+        (base32 "12jmkxkc5nnk6ma6m7rrs0w4vzswfc47ffxn5m0pwav1708nx1df"))
        (snippet
         #~(begin
             (use-modules ((guix build utils)))
@@ -2029,8 +2032,10 @@ for adding, removing and dropping callbacks.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 3045 passed, 32 skipped, 29 xfailed, 2 subtests passed
       #:test-flags
       '(list
+        "--numprocesses" (number->string (parallel-job-count))
         ;; This tests requires the 'proxy.py' module, not yet packaged.
         "--ignore=tests/test_proxy_functional.py"
         ;; These tests need brotli.
@@ -2067,6 +2072,12 @@ for adding, removing and dropping callbacks.")
          "and not test_add_static_path_resolution"))
       #:phases
       '(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "setup.cfg"
+                (("--numprocesses=auto") "")
+                (("-p pytest_cov") "")
+                (("--cov.*") ""))))
          (add-after 'unpack 'fix-tests
            (lambda _
              ;; Make sure the timestamp of this file is > 1990, because a few
@@ -2086,7 +2097,6 @@ for adding, removing and dropping callbacks.")
     (propagated-inputs
      (list python-aiohappyeyeballs
            python-aiosignal
-           python-async-timeout
            python-attrs
            python-frozenlist
            python-multidict
@@ -2096,13 +2106,12 @@ for adding, removing and dropping callbacks.")
      (list gunicorn-bootstrap
            python-cython
            python-freezegun
+           python-isal
            python-pytest
-           python-pytest-cov
            python-pytest-mock
            python-pytest-xdist
            python-re-assert
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://github.com/aio-libs/aiohttp/")
     (synopsis "Async HTTP client/server framework (asyncio)")
     (description "@code{aiohttp} is an asynchronous HTTP client/server
