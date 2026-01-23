@@ -20165,7 +20165,7 @@ or compiler for Python.")
 (define-public python-kombu
   (package
     (name "python-kombu")
-    (version "5.6.0")
+    (version "5.6.2")
     (source
      (origin
        (method git-fetch)
@@ -20174,17 +20174,20 @@ or compiler for Python.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10h73mxfqy8g02bmibc9m2xklcm4pxc9r674c8l6j0v2igf3ycmb"))))
+        (base32 "1yglhylq1vfi43yv2q02k9kf5kwdr0xhrmghmmhyna87qd108ir7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 854 passed, 196 skipped
+      ;; tests: 854 passed, 193 skipped
       #:test-flags
       #~(list
          ;; TODO: Package azure-identity (required for this file)
          "--ignore=t/unit/transport/test_azurestoragequeues.py"
          ;; XXX: Requires google-cloud-pubsub.
-         "--ignore=t/unit/transport/test_gcpubsub.py")
+         "--ignore=t/unit/transport/test_gcpubsub.py"
+         ;; XXX: Requires pyro, see:
+         ;; <https://codeberg.org/guix/guix/issues/5857>
+         "--ignore=t/unit/transport/test_pyro.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-requirements
@@ -20194,7 +20197,6 @@ or compiler for Python.")
                  "tzdata>=2025.1")))))))
     (native-inputs
      (list python-botocore
-           python-pyro4
            python-pytest
            python-pytest-freezer
            python-pytest-sugar
