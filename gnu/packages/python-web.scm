@@ -85,7 +85,7 @@
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
 ;;; Copyright © 2025-2026 Artur Wroblewski <wrobell@riseup.net>
-;;; Copyright © 2025 Allan Adair <allan@adair.no>
+;;; Copyright © 2025, 2026 Allan Adair <allan@adair.no>
 ;;; Copyright © 2025 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1416,13 +1416,13 @@ datasets and other repos on the @url{huggingface.co} hub.")
 (define-public python-kubernetes
   (package
     (name "python-kubernetes")
-    (version "34.1.0")
+    (version "35.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "kubernetes" version))
        (sha256
-        (base32 "04ir03887spls3wqspvbsivqjrbwz0innn86mkrs546jnnqfvs4g"))))
+        (base32 "1vh9bzq175fzv9av3v37lcfh37yzss2d9vxrb0a84fa2ji2d601x"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1443,7 +1443,7 @@ datasets and other repos on the @url{huggingface.co} hub.")
            python-requests
            python-requests-oauthlib
            python-six           ;XXX: hard dependency
-           python-urllib3-1.26  ;sanity check, requires urllib3<2.4.0,>=1.24.2
+           python-urllib3
            python-websocket-client))
     (home-page "https://github.com/kubernetes-client/python")
     (synopsis "Python client for Kubernetes")
