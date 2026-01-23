@@ -1416,6 +1416,11 @@ the \"texlive\" importer."
                        "softwarelibre@urutau-ltd.org"
                        "FuncProgLinux")
   mate)
+
+(define-member (person "Reza Housseini"
+                       "reza@housseini.me"
+                       "rhou")
+  python science c++)
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
