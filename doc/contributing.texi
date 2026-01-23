@@ -1948,35 +1948,19 @@ keyword parameters for procedures that take more than four parameters.
 @node Submitting Patches
 @section Submitting Patches
 
+@cindex pull requests
+@cindex patch submission
 Development is done using the Git distributed version control system.
 Thus, access to the repository is not strictly necessary.  We welcome
-contributions in one of the following forms:
-
-@itemize
-@item
-@cindex pull request, for contributions
-As a @dfn{pull request} (PR) at
-@url{https://codeberg.org/guix/guix/pulls/}.  This is now the preferred
-form.
-
-@item
-Until December 31st, 2025@footnote{This date is the result of a decision
-made collectively in
+contributions as @dfn{pull requests} (PR) at
+@url{https://codeberg.org/guix/guix/pulls/}@footnote{Before January 1st,
+2026, changes would be submitted by email to
+@email{guix-patches@@gnu.org} and could be
+@uref{https://issues.guix.gnu.org, browsed online}.  In accordance with
 @uref{https://codeberg.org/guix/guix-consensus-documents/src/branch/main/002-codeberg.md,
-Guix Consensus Document 002} in May 2025.}, you may also send patches as
-produced by @code{git format-patch} to the @email{guix-patches@@gnu.org}
-mailing list (@pxref{Submitting patches to a project,,, git, Git User
-Manual}).
+Guix Consensus Document 002}, this method is no longer supported.}.
 
-This mailing list is backed by a Debbugs instance, which allows us to
-keep track of submissions (@pxref{Tracking Bugs and Changes}).
-Each message sent to that mailing list gets a new tracking number
-assigned; people can then follow up on the submission by sending email
-to @code{@var{ISSUE_NUMBER}@@debbugs.gnu.org}, where @var{ISSUE_NUMBER}
-is the tracking number (@pxref{Sending a Patch Series}).
-@end itemize
-
-Either way, contributors are encouraged to take a moment to set some Git
+Contributors are encouraged to take a moment to set some Git
 repository options (@pxref{Configuring Git}) first, which can improve
 the readability of patches.  Seasoned Guix developers may also want to
 look at the section on commit access (@pxref{Commit Access}).
@@ -2142,26 +2126,6 @@ guix pull --url=/path/to/your/checkout --profile=/tmp/guix.master --disable-auth
 @end example
 
 @end enumerate
-
-When posting a patch to the mailing list, use @samp{[PATCH] @dots{}} as
-a subject, if your patch is to be applied on a branch other than
-@code{master}, say @code{core-updates}, specify it in the subject like
-@samp{[PATCH core-updates] @dots{}}.
-
-You may use your email client, the @command{git send-email} command
-(@pxref{Sending a Patch Series}) or the @command{mumi send-email}
-command (@pxref{Debbugs User Interfaces}).  We prefer to get patches in
-plain text messages, either inline or as MIME attachments.  You are
-advised to pay attention if your email client changes anything like line
-breaks or indentation which could potentially break the patches.
-
-Expect some delay when you submit your very first patch to
-@email{guix-patches@@gnu.org}. You have to wait until you get an
-acknowledgement with the assigned tracking number. Future acknowledgements
-should not be delayed.
-
-When a bug is resolved, please close the thread by sending an email to
-@email{@var{ISSUE_NUMBER}-done@@debbugs.gnu.org}.
 
 @menu
 * Configuring Git::
