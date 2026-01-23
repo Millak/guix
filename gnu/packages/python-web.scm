@@ -7788,13 +7788,13 @@ that may possibly end up in the main package.")
 (define-public python-s3fs
   (package
     (name "python-s3fs")
-    (version "2025.9.0")
+    (version "2026.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "s3fs" version))
        (sha256
-        (base32 "0c5w09ryyfwlrqbhxgn1yl2kl1ksmz2481vjs1l4k9lyy5z2ai3d"))))
+        (base32 "17fhx4qnpcwhrfckn27wdjvlxink1kcpaiganxij4fjmp7gm58xp"))))
     (build-system pyproject-build-system)
     ;; TODO: Many tests fail with "No such file or directory" raised by the
     ;; HTTP client.
