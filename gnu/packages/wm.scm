@@ -1910,7 +1910,8 @@ for wlroots-based Wayland compositors.")
            xcb-util-keysyms
            xcb-util-renderutil
            xcb-util-xrm
-           xcb-util-wm))
+           xcb-util-wm
+           xterm))
     (arguments
      `(#:modules ((guix build cmake-build-system)
                   (guix build utils)
@@ -1930,6 +1931,9 @@ for wlroots-based Wayland compositors.")
              (substitute* "lib/awful/completion.lua"
                (("/usr/bin/env")
                 ""))
+             (substitute* '("lib/menubar/utils.lua" "awesomerc.lua")
+               (("(terminal = ).*$" _ p)
+                (string-append p "'" (assoc-ref inputs "xterm") "/bin/xterm'\n")))
              ;; The build process needs to load Cairo dynamically.
              (let* ((cairo (string-append (assoc-ref inputs "cairo") "/lib"))
                     (lua-version ,(version-major+minor (package-version lua)))
