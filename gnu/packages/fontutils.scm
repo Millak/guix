@@ -2206,7 +2206,7 @@ work well with other GTK desktop environments.")
        ("gettext" ,gettext-minimal)))
     (inputs
      `(("cairo" ,cairo)
-       ("bash-minimal", bash-minimal)
+       ("bash-minimal" ,bash-minimal)
        ("fontconfig" ,fontconfig)
        ("freetype" ,freetype)
        ("glib" ,glib)
