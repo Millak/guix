@@ -146,6 +146,7 @@ Packaging Rust Crates
 * Common Workflow for Rust Packaging::
 * Cargo Workspaces and Development Snapshots::
 * Using Rust Libraries in Other Build Systems::
+* Common Workflow for Updating Existing Rust Packages::
 * Common Workflow for Resolving Merge Conflicts on Existing Pull Requests::
 
 System Configuration
@@ -1648,6 +1649,7 @@ $ guix shell rust rust:cargo cargo-audit cargo-license
 * Common Workflow for Rust Packaging::
 * Cargo Workspaces and Development Snapshots::
 * Using Rust Libraries in Other Build Systems::
+* Common Workflow for Updating Existing Rust Packages::
 * Common Workflow for Resolving Merge Conflicts on Existing Pull Requests::
 @end menu
 
@@ -1989,6 +1991,221 @@ method, one of the most popular choices for Traditional Chinese users.")
     (license license:lgpl2.1+)))
 @end lisp
 
+@node Common Workflow for Updating Existing Rust Packages
+@subsubsection Common Workflow for Updating Existing Rust Packages
+
+For this example, we'll update @code{niri}. The package definition looks like
+this initially:
+
+@lisp
+(define-public niri
+  (package
+   (name "niri")
+   (version "25.08")
+   (source (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/YaLTeR/niri")
+                   (commit (string-append "v" version))))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "09nsxd211mly8r1ys2lq6ia4jxgb980h1axrbgw748r0knfbbj7n"))))
+   (build-system cargo-build-system)
+...
+@end lisp
+
+We start by running the usual @command{guix refresh -u niri}.
+
+The @command{-u} flag will update in place the version and hash for the
+@code{niri} package.
+
+The package definition will then look like this:
+
+@lisp
+(define-public niri
+  (package
+   (name "niri")
+   (version "25.11")
+   (source (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/YaLTeR/niri")
+                   (commit (string-append "v" version))))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "0752qm245wc2gak0jhp0fnr0rdj3z54m2h97k3cxbjym9pcn658n"))))
+   (build-system cargo-build-system)
+...
+@end lisp
+
+This means the source field was updated successfully, thus we can now proceed to
+get the updated source with @command{guix build --source niri} as follows:
+
+@example shell
+$ cp -r $(./pre-inst-env guix build --source niri) /tmp
+$ cd /tmp/<hash>-niri-25.11-checkout/
+@end example
+
+@quotation Note
+In this specific example, the source is a git checkout, thus a directory. If the
+package source is a compressed archive, you would at this point extract it to a
+directory to proceed.
+@end quotation
+
+Now, given that we have access to the @code{Cargo.toml} file, we can now run
+the following inside the checkout:
+
+@example shell
+$ guix shell rust rust:cargo -- cargo generate-lockfile
+$ guix shell rust rust:cargo -- cargo audit
+$ guix shell rust rust:cargo -- cargo license
+@end example
+
+@quotation Note
+Sometimes the package will require a more up-to-date version of rust, that is
+not yet the default rust on guix. For these cases you can use:
+@example shell
+$ guix shell -e "(@ (gnu packages rust) rust-1.90)" \
+     -e '`(,(@ (gnu packages rust) rust-1.90) "cargo")'
+@end example
+@end quotation
+
+The first command will ensure that all cargo dependencies are up to date
+and semver compatible, while also providing some other benefits, as further
+explained in @ref{Common Workflow for Rust Packaging}.
+
+The following command will warn if there are any known vulnerabilities in the
+crates being imported. The last one will output the license information of all
+the dependent crates.
+
+If everything looks good, we can now replace the contents of the @code{niri}
+indentifier, located inside the @code{lookup-cargo-inputs} variable on the
+bottom of the @file{gnu/packages/rust-crates.scm} module, with the newer updated
+crates by running the importer on the lockfile as follows:
+
+@example shell
+$ guix import -i /path/to/gnu/packages/rust-crates.scm \
+     crate -f Cargo.lock niri
+@end example
+
+@quotation Note
+For the purpose of contributing a package to Guix (@pxref{Contributing,,,
+guix, GNU Guix Reference Manual}), there is no need to cleanup the leftover
+crates as a result of the package update.  This is tasked to the rust-team
+(@pxref{Teams,,, guix, GNU Guix Reference Manual}) to periodically run a
+convenient script in @code{etc/teams/rust} to cleanup unused crates from
+@file{gnu/packages/rust-crates.scm}.
+@end quotation
+
+We then need to check whether the importer has placed some TODOs for us,
+inside @file{gnu/packages/rust-crates.scm} (you can use @command{git diff --
+gnu/packages/rust-crates.scm} for this purpose).
+
+There are a few types of TODO messages that you might encounter during this
+step, each type requiring you to perform a different action.
+
+The first one we encounter in our example is:
+
+@lisp
+(define rust-libdisplay-info-sys-0.3.0
+  ;; TODO REVIEW: Check bundled sources.
+  (crate-source "libdisplay-info-sys" "0.3.0"
+                "07xmkc2aqcdn6d58321y87rd3gzdr4nx3ncm1mmrr7w1p1ahsn96"))
+@end lisp
+
+This specific TODO message tells us that there is a high probability of
+encountering bundled sources within a crate definition generated by the
+importer.
+
+We then check if there are any bundled sources within the
+@code{rust-libdisplay-info-sys-0.3.0} crate. Since there are none (in our
+example), we can simply remove the TODO line, and continue to the next TODO.
+
+If there were any bundled sources inside the crate, we would have to patch
+it with a snippet, in order to unbundle it. You can see some examples on
+how to unbundle inside @file{gnu/packages/rust-crates.scm} (search for the
+@code{#:snippet} keyword).
+
+@quotation Note
+If the unbundle is considered too difficult to be executed (e.g. the effort
+needed to unbundle is unreasonable), the @code{TODO REVIEW} line should be
+converted to a regular TODO comment explicitly stating the unbundle was not done
+(e.g. @code{TODO: Unbundle rust-libdisplay-info-sys.}).
+@end quotation
+
+Continuing, another TODO message we encounter in this example is the following:
+
+@lisp
+(define rust-smithay-0.7.0.d743e1a
+  ;; TODO REVIEW: Define standalone package if this is a workspace.
+  (origin
+    (method git-fetch)
+    (uri (git-reference (url "https://github.com/Smithay/smithay.git")
+                        (commit "d743e1a317fa0f01d1c4cadd96d277a1ec7b59d9")))
+    (file-name (git-file-name "rust-smithay" "0.7.0.d743e1a"))
+    (sha256 (base32 "11327mhxxf844bs0v5bw1g9bzjssnzhidsissywy6kwng16x727v"))))
+@end lisp
+
+This specific TODO message tells us that there is a high probability of the
+@code{rust-smithay-0.7.0.d743e1a} crate being a workspace.
+
+After verifying that it is indeed a workspace, we now need to make it an
+actual package in @file{gnu/packages/rust-sources.scm}, referencing it in the
+crate-source definition (see @ref{Common Workflow for Rust Packaging} for more
+details).
+
+@quotation Note
+You can verify if a crate is a workspace by cloning the crate repository (in
+this case @code{https://github.com/Smithay/smithay.git}), checking out the
+specific revision (in this case @command{git checkout d743e1a}), and looking
+for @code{[workspace]} in its main @file{Cargo.toml} file. If it does not have a
+TOML @code{[workspace]} section, then it is not a workspace.
+@end quotation
+
+After defining the separate source package for the workspace in
+@file{gnu/packages/rust-sources.scm} (see @ref{Common Workflow for Rust
+Packaging} for more details on how to do this), the crate definition for
+@code{rust-smithay-0.7.0.d743e1a} would then become the following (notice we
+also remove the TODO line):
+
+@lisp
+(define rust-smithay-0.7.0.d743e1a package:rust-smithay-0.7.0.d743e1a)
+@end lisp
+
+If @code{rust-smithay-0.7.0.d743e1a} was not a workspace, we would simply remove
+the TODO line and move on.
+
+We then try to build the package with @command{guix build niri}, and make sure
+whether it builds successfully, which it does.
+
+As a good practice, we can further check the output of the
+@code{check-for-pregenerated-files} phase to ensure there are no extraneous
+pregenerated files inside the crates. If there are any, it is important to
+snippet them out, like these:
+
+@lisp
+(define rust-winapi-x86-64-pc-windows-gnu-0.4.0
+  (crate-source "winapi-x86_64-pc-windows-gnu" "0.4.0"
+                "0gqq64czqb64kskjryj8isp62m2sgvx25yyj3kpc2myh85w24bki"
+                #:snippet '(delete-file-recursively "lib")))
+
+(define rust-flate2-1.1.4
+  (crate-source "flate2" "1.1.4"
+                "1a8a3pk2r2dxays4ikc47ygydhpd1dcxlgqdi3r9kiiq9rb4wnnw"
+                #:snippet '(for-each delete-file-recursively '("examples" "tests"))))
+
+(define rust-flo-curves-0.3.1
+  (crate-source "flo_curves" "0.3.1"
+                "16x293dp8825jh465kgms4yyvl4960j26gh37h3skflq9zxpy8hw"
+                #:snippet '(for-each delete-file '("logo-small.png" "logo.png"))))
+
+(define rust-interception-sys-0.1.3
+  (crate-source "interception-sys" "0.1.3"
+                "1lgwbml7gzq5a5rriy708w68gx6yiw9cdg7xy2c5vsrrck7pbs5b"
+                #:snippet '(for-each delete-file (find-files "." "\\.(dll|lib)$"))))
+@end lisp
 
 @node Common Workflow for Resolving Merge Conflicts on Existing Pull Requests
 @subsubsection Common Workflow for Resolving Merge Conflicts on Existing Pull Requests
