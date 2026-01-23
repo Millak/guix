@@ -1699,6 +1699,58 @@ tree.
 @xref{Packaging Rust Crates,,, guix-cookbook, GNU Guix Cookbook}, for
 packaging workflow.
 
+@subsubsection Commit messages
+
+The commit message must have a general brief mention to entry changes
+in @code{(gnu packages rust-crates)}. For changes in @code{(gnu packages
+rust-sources)}, the commit message must explicitly mention all changes to the
+packages.
+
+Here are some examples for different situations:
+
+@itemize
+
+@item
+Adding a new Rust package:
+
+@example
+gnu: Add catppuccin-whiskers.
+
+* gnu/packages/rust-apps.scm (catppuccin-whiskers): New variable.
+* gnu/packages/rust-crates.scm (lookup-cargo-inputs)
+[catppuccin-whiskers]: New entry.
+@end example
+
+@item
+Updating a simple package:
+
+@example
+gnu: watchexec: Update to 2.3.2.
+
+* gnu/packages/rust-apps.scm (watchexec): Update to 2.3.2.
+* gnu/packages/rust-crates.scm (lookup-cargo-inputs)[watchexec]:
+Update entry.
+@end example
+
+@item
+Updating a package with sources:
+
+@example
+gnu: typst: Update to 0.14.0.
+
+* gnu/packages/rust-apps.scm (typst): Update to 0.14.0.
+[arguments]<#:rust>: Use rust-1.88.
+* gnu/packages/rust-crates.scm (lookup-cargo-inputs)[typst]: Update
+entry.
+[rust-syntect-5]: Rename to rust-syntect-5.2.
+[rust-syntect-5.3]: New entry.
+* gnu/packages/rust-sources.scm (rust-hypher-0.1): Update to 0.1.6.
+(rust-syntect-5): Rename to rust-syntect-5.2.
+[inputs]: Rename cargo-inputs rust-syntect-5 to rust-syntect-5.2.
+(rust-syntect-5.3): New variable.
+@end example
+
+@end itemize
 
 @node Elm Packages
 @subsection Elm Packages
