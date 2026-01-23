@@ -1908,29 +1908,29 @@ by calling @code{FrozenList.freeze}.")
 (define-public python-aiobotocore
   (package
     (name "python-aiobotocore")
-    (version "2.25.1")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aiobotocore" version))
        (sha256
-        (base32 "1g7dv81bw7vq55gv3c5jxdw7wp7dp6dwjbh79y3fiv6ppwwyg6za"))))
+        (base32 "0bcmnbm30hwaks8l895j8xy08cil0dpjcfpidg2qjawbs4a9s0ra"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      ;; TODO: Too many tests fail seemingly because they need Internet access.
-      #:tests? #false))
-    (propagated-inputs (list python-aiohttp
-                             python-aioitertools
-                             python-botocore
-                             python-jmespath
-                             python-multidict
-                             python-dateutil
-                             python-urllib3
-                             python-wrapt))
+     ;; TODO: Tests need some setupt, see Makefile.
+     (list #:tests? #f))
     (native-inputs
      (list python-setuptools))
-    (home-page "https://pypi.org/project/aiobotocore/")
+    (propagated-inputs
+     (list python-aiohttp
+           python-aioitertools
+           python-botocore
+           python-dateutil
+           python-jmespath
+           python-multidict
+           python-typing-extensions
+           python-wrapt))
+    (home-page "https://github.com/aio-libs/aiobotocore")
     (synopsis "Async client for AWS services using botocore and aiohttp")
     (description "This package provides an async client for Amazon services
 using botocore and aiohttp/asyncio.  This library is a mostly full featured
