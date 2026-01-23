@@ -7814,18 +7814,19 @@ S3.")
 (define-public python-s3transfer
   (package
     (name "python-s3transfer")
-    (version "0.14.0")
+    (version "0.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "s3transfer" version))
        (sha256
-        (base32 "09a17scf96zfdw2chb22yyvmnj4anfijgkncfi89id68wxj25wgg"))))
+        (base32 "087rmdwsn9drkh5rwwbfym5p8qvirc8gllnd54i7j9c04q9hz6cf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 630 passed, 51 skipped
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               ;; Tests require networking.
               "--ignore" "tests/integration")))
     (native-inputs
