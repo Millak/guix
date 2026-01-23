@@ -7901,6 +7901,7 @@ package looks like this:
 
 @lisp
 (define-module (gnu packages hello)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
