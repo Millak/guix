@@ -19863,23 +19863,24 @@ enhancements to optimization and data fitting problems.")
 browser from Python.")
     (license license:bsd-3)))
 
+;; TODO: Move to python-web.
 (define-public python-botocore
   ;; Note: When updating botocore, also make sure that boto3 and awscli
   ;; are compatible.
   (package
     (name "python-botocore")
-    (version "1.40.61")
+    (version "1.42.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "botocore" version))
        (sha256
         (base32
-         "1kajxzrh4nq4hx7rgbam0sffx06d45q7rw2csv69q3q9kgb7lj52"))))
+         "0vqkfzrljd15qnzgdzqqbf1l1f8qhg5pz010b5wxk1j2y63w9grp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 4491 passed, 72 skipped
+      ;; tests: 4496 passed, 87 skipped
       #:test-flags
       #~(list "--numprocesses" (number->string (min (parallel-job-count) 8))
               ;; The full test suite is huge, run some of it's portion.
