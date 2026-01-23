@@ -424,13 +424,13 @@ ensuring that a design refactor preserves correctness in all conditions.")
       ;; pass 1055 of 1648
       #:tests? #f
       #:install-plan
-      #~'(("ieee" "share/ieee/p1076/ieee" #:include ("vhdl"))
-          ("std" "share/ieee/p1076/std" #:include ("vhdl")))))
+      #~'(("ieee" "share/ieee-p1076/ieee" #:include ("vhdl"))
+          ("std" "share/ieee-p1076/std" #:include ("vhdl")))))
     (native-search-paths
      (list (search-path-specification
-             (variable "IEEE-1076")
+             (variable "FW_IEEE_p1076")
              (separator #f)
-             (files (list "share/ieee/p1076")))))
+             (files (list "share/ieee-p1076")))))
     (home-page "https://IEEE-P1076.gitlab.io")
     (synopsis "VHDL libraries corresponding to the IEEE 1076 standard")
     (description
