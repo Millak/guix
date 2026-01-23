@@ -198,6 +198,7 @@ gnu/packages/haskell-web.scm
 gnu/packages/haskell-xyz.scm
 gnu/packages/haskell.scm
 gnu/packages/haxe.scm
+gnu/packages/hdl.scm
 gnu/packages/heads.scm
 gnu/packages/hexedit.scm
 gnu/packages/high-availability.scm

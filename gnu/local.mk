@@ -367,6 +367,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/haskell-web.scm			\
   %D%/packages/haskell-xyz.scm			\
   %D%/packages/haxe.scm				\
+  %D%/packages/hdl.scm				\
   %D%/packages/heads.scm			\
   %D%/packages/hexedit.scm			\
   %D%/packages/high-availability.scm			\

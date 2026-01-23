@@ -146,6 +146,7 @@ gnu/system/examples/lightweight-desktop\.tmpl      @guix/documentation
 gnu/system/examples/desktop\.tmpl                  @guix/documentation
 
 gnu/packages/electronics\.scm                      @guix/electronics
+gnu/packages/hdl\.scm                              @guix/electronics
 gnu/packages/libftdi\.scm                          @guix/electronics
 gnu/packages/engineering\.scm                      @guix/electronics
 gnu/packages/flashing-tools\.scm                   @guix/electronics

@@ -630,6 +630,7 @@ of Rebar and Mix build systems and Hex.pm importer."
         #:name "Electronics team"
         #:description "Electronics and hardware related packages."
         #:scope (list "gnu/packages/electronics.scm"
+                      "gnu/packages/hdl.scm"
                       "gnu/packages/libftdi.scm"
                       "gnu/packages/engineering.scm"
                       "gnu/packages/flashing-tools.scm")))
