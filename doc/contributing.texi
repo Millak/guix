@@ -1667,6 +1667,9 @@ can be turned into a version string via @code{git-version}, for example
 @code{rust-pipewire-0.8.0.fd3d8f7} and @code{rust-pubgrub-0.3.0.b70cf70}.
 @end table
 
+When contributing Rust packages, we should have all modifications to these
+two modules, in the same commit as the package we are contributing.
+
 To avoid merge conflicts with changes from multiple branches, these two modules
 are maintained by the Rust team (@pxref{Teams}).
 
