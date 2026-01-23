@@ -89,7 +89,7 @@
 (define pypi-ignored-inputs
   ;; This list contains packages that are useful for development or quality
   ;; testing, but that most of the time are not necessary to have as an input.
-  (list "argparse" "wheel" "import-metadata" ; native, backports
+  (list "argparse" "wheel" "importlib-metadata" ; native, backports
         "nox" "tox" ; test wrapper for other environments
         "codecov" "coverage" ; test coverage reporting
         "black" "isort" "pycodestyle" "pep8" ; style
