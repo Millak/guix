@@ -7109,23 +7109,23 @@ opt.override_default_trust_store_from_path(None, os.getenv('SSL_CERT_FILE')) if 
   (package
     ;; Note: updating awscli typically requires updating botocore as well.
     (name "awscli")
-    (version "1.42.61")
+    (version "1.43.11")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/aws/aws-cli")
-             (commit version)))
+              (url "https://github.com/aws/aws-cli")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fbqh4w7jj5abn87nbhyir25hdviirj0lblcdsqqkadcjh67877h"))))
+        (base32 "1idvcnc6jw7xr1jqpza472ksj3i2kyk0bv8wr7acz3xnba1v8xmi"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 2692 passed, 40 warnings 
+      ;; tests: 2715 passed, 32 warnings
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              ;; Compete test suite is huge and compute hungry, run just unit
+              ;; Complete test suite is huge and compute hungry, run just unit
               ;; tests.
               "--ignore=tests/dependencies"
               "--ignore=tests/functional"
