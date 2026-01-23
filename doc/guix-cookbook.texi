@@ -1709,6 +1709,15 @@ $ cargo audit
 $ cargo license
 @end example
 
+@quotation Note
+Before running @command{cargo generate-lockfile}, make sure you have checked
+out the correct tag for the version you are packaging. This ensures that
+@code{Cargo.toml} matches the file used in the packages's @code{source} field.
+To make sure, you can obtain the exact source with @command{./pre-inst-env guix
+build --source <package>} and only then run @command{cargo generate-lockfile} on
+that source tree.
+@end quotation
+
 @command{cargo generate-lockfile} updates dependencies to compatible versions.
 Applying it to all Rust applications helps reduce a great number of Rust
 libraries we need to check later.  Although sometimes libraries may fail to
