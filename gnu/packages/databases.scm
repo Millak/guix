@@ -1406,6 +1406,7 @@ as a drop-in replacement of MySQL.")
 
 (define-public mariadb-embedded
   (package/inherit mariadb
+    (name "mariadb-embedded")
     (arguments
      (substitute-keyword-arguments (package-arguments mariadb)
        ((#:configure-flags flags)
