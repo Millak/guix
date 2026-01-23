@@ -3658,8 +3658,6 @@ CSS3 that adds programming capabilities and some other syntactic sugar.")
              (setenv "TZ" "UTC")
              (setenv "TZDIR"
                      (search-input-directory inputs "share/zoneinfo")))))))
-    (propagated-inputs
-     (list python-importlib-metadata))
     (native-inputs
      (list python-bson
            python-ecdsa
@@ -7341,7 +7339,6 @@ WSGI.")
      (list python-asgiref               ;async extra
            python-click
            python-blinker
-           python-importlib-metadata
            python-itsdangerous
            python-jinja2
            python-werkzeug))

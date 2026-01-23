@@ -333,8 +333,7 @@ do what is needed for client/server Kerberos authentication based on
            python-setuptools-scm
            python-wheel))
     (propagated-inputs
-     (list python-importlib-metadata
-           python-jaraco-classes
+     (list python-jaraco-classes
            python-secretstorage))
     (home-page "https://github.com/jaraco/keyring")
     (synopsis "Store and access your passwords safely")

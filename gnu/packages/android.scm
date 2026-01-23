@@ -1168,7 +1168,6 @@ useful for reverse engineering, analysis of Android applications and more.")
            python-croniter
            python-cryptography
            python-defusedxml
-           python-importlib-metadata
            python-netifaces
            python-pytz
            python-pyyaml

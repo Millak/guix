@@ -1417,7 +1417,6 @@ Trisquel's @code{apt}.")
            python-entrypoints
            python-fastjsonschema
            python-findpython
-           python-importlib-metadata
            python-installer
            python-keyring
            python-packaging

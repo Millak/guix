@@ -404,7 +404,6 @@ following algorithms are available:
                (base32
                 "1hvm3c3mb20z25kmbzyyn6pr5inx50z0ignl8b0bggxaik82ws4b"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-importlib-metadata))
     (native-inputs
      (list python-pytest
            python-setuptools

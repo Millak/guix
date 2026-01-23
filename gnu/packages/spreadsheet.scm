@@ -125,7 +125,6 @@
                    (when tests? (invoke "pytest")))))))
     (inputs
      (list python-dateutil
-           python-importlib-metadata
            python-requests
            python-lxml
            python-openpyxl

@@ -5121,7 +5121,6 @@ more.")
            python-aiosqlite
            python-cryptography
            python-dateutil
-           python-importlib-metadata
            python-pyopenssl
            python-pytz
            python-sortedcontainers

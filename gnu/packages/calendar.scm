@@ -275,7 +275,6 @@ data units.")
                             (string-append #$output "/share/man/man1")))))))
     (native-inputs
      (list python-freezegun
-           python-importlib-metadata
            python-packaging
            python-pytest
            python-setuptools

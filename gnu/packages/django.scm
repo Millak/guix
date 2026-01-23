@@ -1364,7 +1364,6 @@ using Python multiprocessing.")
                              python-django-q-sentry
                              python-django-redis
                              python-hiredis
-                             python-importlib-metadata
                              python-iron-mq
                              python-psutil
                              python-pymongo

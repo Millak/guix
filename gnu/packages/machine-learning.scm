@@ -2738,8 +2738,7 @@ to return meaningful clusters (if there are any).")
         (base32 "1x94mjdf62f2yqql50qn0qjh4bkhwdvx7xx9aph421s0bgxy1zbz"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-setuptools))
-    (propagated-inputs (list python-importlib-metadata
-                             python-joblib
+    (propagated-inputs (list python-joblib
                              python-llvmlite
                              python-numba
                              python-scikit-learn
@@ -6975,8 +6974,7 @@ Brian 2 simulator.")
               (with-output-to-file "tests/__init__.py"
                 (lambda _ (display ""))))))))
     (propagated-inputs (list python-cloudpickle python-farama-notifications
-                             python-importlib-metadata python-numpy
-                             python-typing-extensions))
+                             python-numpy python-typing-extensions))
     (native-inputs
      (list python-pytest python-scipy python-setuptools python-wheel))
     (home-page "https://gymnasium.farama.org/")

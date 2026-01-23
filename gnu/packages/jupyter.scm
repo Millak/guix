@@ -921,7 +921,6 @@ the JupyterLab CSS variables.")
            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-babel
-           python-importlib-metadata    ;TODO: remove after Python >= 3.10
            python-jinja2
            python-json5
            python-jsonschema
@@ -1183,8 +1182,7 @@ are interactive HTML widgets for Jupyter notebooks and the IPython kernel.")
        (sha256
         (base32 "18ysrqlsh7a31sknfnng419r7wpx9nfj59lxxd6zl1kcj6wazh34"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-doit python-importlib-metadata
-                             python-jupyter-core))
+    (propagated-inputs (list python-doit python-jupyter-core))
     (native-inputs (list python-ansi2html
                          python-hatchling
                          python-pytest-console-scripts

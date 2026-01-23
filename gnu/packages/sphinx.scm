@@ -219,7 +219,6 @@ sources.")
            python-filelock
            python-html5lib
            python-imagesize
-           python-importlib-metadata
            python-jinja2
            python-packaging
            python-pygments

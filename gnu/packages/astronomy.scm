@@ -6198,7 +6198,6 @@ milliarcsecond).")
            python-crds-minimal
            python-drizzle
            python-gwcs
-           python-importlib-metadata
            python-jsonschema
            python-numpy
            python-packaging
@@ -10016,7 +10015,6 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
      (list python-asdf
            python-astropy
            python-crds
-           python-importlib-metadata
            python-pyyaml))
     (home-page "https://github.com/spacetelescope/stpipe")
     (synopsis "STScI framework for calibration pipeline software")
