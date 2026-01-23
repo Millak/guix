@@ -19434,107 +19434,36 @@ for the module to work under Python 3.3.")
 (define-public python-moto
   (package
     (name "python-moto")
-    (version "5.1.5")
+    (version "5.1.20")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "moto" version))
               (sha256
-               (base32 "0kpqdn96gw9h2bq05bp943q85f4lq89c4nk1gf71w60nkbm65cs2"))))
+               (base32 "1h1yy584gs061s3yrgggqvg3m3hp71aivq5pwj00smbawa0xf4kd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 10158 passed, 41 skipped, 143 deselected, 2 xfailed, 4 warnings
+      ;; tests: 11149 passed, 38 skipped, 52 deselected, 2 xfailed, 4 warnings
       #:test-flags
       #~(list "-m" "not network and not requires_docker"
               ;; Not all of the tests are thread save, see:
               ;; <https://github.com/getmoto/moto/issues/7786>.
               ;; "--numprocesses" (number->string (min 8 (parallel-job-count)))
               "-k" (string-join
-                    ;; Outbound access to AWS servcies is required to reach
-                    ;; endpoint URLs:
-                    ;; "https://s3.amazonaws.com/"
-                    ;; "https://realbucket.s3.amazonaws.com/"
-                    ;; "https://s3.amazonaws.com/companyname_prod"
+                    ;; Network access is required.
                     (list "not test_passthrough_calls_for_entire_service"
                           "test_passthrough_calls_for_specific_url"
                           "test_passthrough_calls_for_wildcard_urls"
-                          ;; TypeError: Got unexpected keyword argument
-                          ;; 'account_id_endpoint_mode'
-                          "test_dynamodb_with_account_id_routing[disabled]"
-                          "test_dynamodb_with_account_id_routing[preferred]"
-                          "test_dynamodb_with_account_id_routing[required]"
-                          ;; botocore.exceptions.ParamValidationError:
-                          ;; Parameter validation failed: Missing required
-                          ;; parameter in input: "VpcId"; Missing required
-                          ;; parameter in input: "SubnetMappings"
-                          "test_create_firewall"
-                          "test_describe_logging_configuration"
-                          "test_list_firewalls"
-                          "test_update_logging_configuration"
-                          ;; RuntimeError: Firehose PutRecord(Batch) to HTTP
-                          ;; destination failed
-                          "test_put_record_http_destination"
                           "test_put_record_batch_http_destination"
-                          ;; Timed out to connect to foo.localhost:5001
-                          "test_with_custom_request_header"
-                          ;; Timed out to connect to testcors.localhost:6789
+                          "test_put_record_http_destination"
                           "test_s3_server_post_cors_multiple_origins"
-                          ;; AttributeError: 'TimestreamInfluxDB' object has
-                          ;; no attribute 'list_db_clusters'
-                          "test_list_db_clusters"
-                          "test_get_db_cluster"
-                          "test_create_db_cluster"
-                          ;; Checksum error
-                          "test_upload_file_with_checksum_algorithm"
-                          "test_list_objects_v2_checksum_algo"
-                          ;; Assertion is not equal
-                          "test_create_describe_update_and_delete_ledger"
-                          "test_s3tables_get_table"
-                          "test_tag_resource_and_list_tags_for_resource"
-
-                          ;; XXX: Probably will be resolved in the next
-                          ;; release, as botocore's refresh pace is fast.
-                          ;;
-                          ;; botocore.exceptions.UnknownServiceError: Unknown
-                          ;; service: <...>
-                          "test_create_app_response"
-                          "test_describe_apps"
-                          "test_create_instance"
-                          "test_describe_instances"
-                          "test_ec2_integration"
-                          "test_create_layer_response"
-                          "test_describe_layers"
-                          "test_create_stack_response"
-                          "test_describe_stacks"
-                          "test_robot_application"
-                          "test_create_describe_update_and_delete_ledger"
-                          "test_tag_resource_and_list_tags_for_resource"
-                          ;; botocore.exceptions.ClientError: An error
-                          ;; occurred (404) when calling <...>
-                          "test_create_event_source_mapping"
-                          "test_delete_event_source_mapping"
-                          "test_delete_table_deletes_underlying_table_storage"
-                          "test_event_source_mapping_create_from_cloudformation_json"
-                          "test_event_source_mapping_delete_from_cloudformation_json"
-                          "test_event_source_mapping_delete_stack"
-                          "test_event_source_mapping_update_from_cloudformation_json"
-                          "test_get_event_source_mapping"
-                          "test_get_table"
-                          "test_invoke_fake_function_from_sqs_queue"
-                          "test_list_event_source_mappings"
-                          "test_rename_table"
-                          "test_underlying_table_storage_does_not_support_delete_object"
-                          "test_underlying_table_storage_does_not_support_list_objects"
-                          "test_update_event_source_mapping"
-                          "test_update_table_metadata_location"
-                          "test_write_metadata_to_table"
-                          ;; botocore.exceptions.ParamValidationError:
-                          ;; Parameter validation failed <...>
-                          "test_create_db_proxy"
-                          "test_create_db_proxy_duplicate_name"
-                          "test_create_db_proxy_invalid_subnet"
-                          "test_describe_db_proxies"
-                          "test_list_tags_db_proxy")
+                          "test_with_custom_request_header"
+                          ;; AttributeError: 'ImportError' object has no
+                          ;; attribute 'message'
+                          "test_batch_update"
+                          "test_batch_update__not_enough_parameters"
+                          "test_execute_transaction"
+                          "test_without_primary_key_in_where_clause")
                     " and not ")
               "tests")
       #:phases
