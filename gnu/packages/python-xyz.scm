@@ -27551,7 +27551,7 @@ values.  Partd excels at shuffling operations.")
 (define-public python-fsspec
   (package
     (name "python-fsspec")
-    (version "2025.9.0")
+    (version "2026.1.0")
     (source
      (origin
        (method git-fetch)
@@ -27560,10 +27560,11 @@ values.  Partd excels at shuffling operations.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1f11jjp7xd4q9a5lmb00i5l9v36162gjr6h1hkfzvgq78xa735xp"))))
+        (base32 "049ybsinlvaa0br8ijm58jbrwbvaffbdv4gpxjcb2rc06qb4a2wg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1500 passed, 267 skipped, 3 deselected, 2 xfailed, 2 warnings
       #:test-flags
       #~(list "--ignore=fsspec/implementations/tests/test_github.py"
               "-k" (string-join
@@ -27575,6 +27576,8 @@ values.  Partd excels at shuffling operations.")
                           ;; Test hangs
                           "test_processes")
                     " and not "))))
+    ;; The most of the inputs are optional, project does not force to include
+    ;; any dependencies according to pyproject.toml.
     (propagated-inputs
      (list python-aiohttp python-libarchive-c python-requests python-tqdm))
     (native-inputs
