@@ -79,6 +79,7 @@
 ;;; Copyright © 2025 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2025 Luca Kredel <luca.kredel@web.de>
 ;;; Copyright © 2025 ROCKTAKEY <rocktakey@gmail.com>
+;;; Copyright © 2026 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5847,6 +5848,11 @@ This program allows you to view and manipulate this EEPROM list.")
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
              (setenv "CONFIG_SHELL" (which "bash"))
+             (setenv "CFLAGS"
+               (string-append "-g -O2 "
+                              "-Wno-error=implicit-int "
+                              "-Wno-error=implicit-function-declaration "
+                              "-Wno-error=incompatible-pointer-types"))
              (invoke "./configure"
               (string-append "--prefix="
                              (assoc-ref outputs "out"))))))))
