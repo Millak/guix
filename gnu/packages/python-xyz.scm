@@ -15776,7 +15776,7 @@ PNG and terminal output.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; 2358 passed, 16 skipped, 6 xfailed, 17 warnings
+      ;; tests: 2354 passed, 16 skipped, 6 xfailed, 224 warnings
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count))
               ;; XXX: See: <https://github.com/mwaskom/seaborn/issues/3892>.
@@ -15788,7 +15788,7 @@ PNG and terminal output.")
               "--deselect=tests/test_distributions.py::TestKDEPlotBivariate::test_weights")))
     (native-inputs
      (list python-flit-core
-           python-pytest
+           python-pytest-8
            python-pytest-xdist))
     (propagated-inputs
      (list python-matplotlib
