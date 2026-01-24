@@ -5013,7 +5013,7 @@ podcasts) in Emacs.")
               (install-file "emms-print-metadata.1"
                             (string-append #$output "/share/man/man1")))))))
     (inputs
-     (list taglib))
+     (list taglib zlib))
     (home-page "https://www.gnu.org/software/emms/")
     (synopsis "The Emacs Multimedia System")
     (description
