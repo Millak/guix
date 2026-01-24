@@ -1137,18 +1137,17 @@ scientific documentation.")
 (define-public python-sphinx-rtd-theme
   (package
     (name "python-sphinx-rtd-theme")
-    (version "3.0.2")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sphinx_rtd_theme" version))
        (sha256
-        (base32 "11azdqbkxcibxgl3x852c2mrx19wjnwp19l6n0h3nwnsbp17nidp"))))
+        (base32 "0k4fnxnwgaqbqsqj6yarg3mszak7lrd9av2gk8ihksbnqbr7chml"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-docutils
            python-sphinx
