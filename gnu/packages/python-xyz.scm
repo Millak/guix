@@ -2818,39 +2818,6 @@ Python dataclasses.")
 from JSON payloads using the @code{databind.core} framework.")
     (license license:expat)))
 
-(define-public python-dlmanager
-  (package
-    (name "python-dlmanager")
-    (version "0.1.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/parkouss/dlmanager")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0f2j7d396z50yd5r86jx8m5bxyv2i0cw967j68xcwpcg3b216zmr"))
-              (modules '((guix build utils)))
-              (snippet
-               #~(begin
-                   (substitute* "setup.py"
-                     (("pytest.main.self.pytest_args.")
-                      "pytest.main(self.pytest_args.split(' '))"))))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest python-mock))
-    (propagated-inputs
-     (list python-requests python-six))
-    (home-page "https://github.com/parkouss/dlmanager")
-    (synopsis "Download manager library")
-    (description
-     "Dlmanager is a download manager library.  It can download files in
-background and in parallel, and cancel downloads.  It stores downloads in
-a given directory, avoiding re-downloading files and limits the size of this
-directory, removing oldest files.")
-    (license license:gpl3+)))
-
 (define-public python-docspec
   (package
     (name "python-docspec")
