@@ -60,10 +60,7 @@
 or 'stow, but ~a was found.")
         value))))
 
-(define list-of-strings?
-  (list-of string?))
-
-(define-maybe list-of-strings)
+(define-maybe/no-serialization list-of-strings)
 
 (define-configuration/no-serialization home-dotfiles-configuration
   (source-directory
