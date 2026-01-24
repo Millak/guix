@@ -1960,6 +1960,47 @@ contributions as @dfn{pull requests} (PR) at
 @uref{https://codeberg.org/guix/guix-consensus-documents/src/branch/main/002-codeberg.md,
 Guix Consensus Document 002}, this method is no longer supported.}.
 
+There are two ways to create a pull request:
+
+@itemize
+@item
+By creating a personal ``fork'' of @uref{https://codeberg.org/guix/guix,
+the repository}, creating a branch with your changes, and
+@uref{https://docs.codeberg.org/collaborating/pull-requests-and-git-flow/,
+submitting a pull request for that branch}.
+
+@item
+@cindex AGit workflow, for pull requests
+By following the @uref{https://forgejo.org/docs/next/user/agit-support/,
+@dfn{AGit workflow}}, which is somewhat more convenient and consumes
+less disk space at Codeberg since it removes the need to create a
+``fork''.
+
+Assuming your local checkout is on the branch containing the changes you
+would like to submit for inclusion in the @code{master} branch, run:
+
+@example
+git push origin HEAD:refs/for/master \
+  -o topic=@var{topic} \
+  -o title=@var{title} -o description=@var{description}
+@end example
+
+@var{topic} must be an identifier without whitespace, similar to a
+branch name; @var{title} and @var{description} are arbitrary text that
+can be omitted, in which case the message of the last commit on the
+branch fills that role.
+
+To send an update to an AGit pull request of yours, run:
+
+@example
+git push origin HEAD:refs/for/master \
+  -o topic=@var{topic} -o force-push=yes
+@end example
+
+Codeberg automatically figures out which pull request @var{topic}
+corresponds to and updates the associated branch.
+@end itemize
+
 Contributors are encouraged to take a moment to set some Git
 repository options (@pxref{Configuring Git}) first, which can improve
 the readability of patches.  Seasoned Guix developers may also want to
