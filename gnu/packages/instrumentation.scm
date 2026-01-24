@@ -190,7 +190,7 @@ bindings, and the command-line tool @command{babeltrace2}.")
                    ;; Some tests invoke a compiler.
                    (setenv "CC" "gcc"))))))
     (native-inputs
-     (list python-poetry-core python-pytest))
+     (list python-poetry-core python-pytest-8))
     (propagated-inputs
      (list python-jinja2 python-jsonschema python-pyyaml python-termcolor-1))
     (home-page "https://barectf.org")
