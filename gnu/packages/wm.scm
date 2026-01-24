@@ -461,7 +461,7 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
 (define-public hyprland
   (package
     (name "hyprland")
-    (version "0.53.1")
+    (version "0.53.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/hyprwm/Hyprland"
@@ -478,7 +478,7 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
                               "subprojects"))))
               (sha256
                (base32
-                "0q88rfgv080xpxp25bxvv17yy3ppn6nkaxz35fdmaajdlg7j578x"))))
+                "07zfjdjc326zl057qwwb1zsysw1rc2ph5sj108h3r2lpr4ynbgvv"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f                  ;No tests.
@@ -516,6 +516,7 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
      (list aquamarine
            binutils
            cairo
+           glaze
            hyprcursor
            hyprgraphics
            hyprland-protocols
