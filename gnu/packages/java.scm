@@ -5703,6 +5703,7 @@ The jMock library
 (define-public java-hamcrest-all
   (package (inherit java-hamcrest-core)
     (name "java-hamcrest-all")
+    (properties `((superseded . ,java-hamcrest)))
     (arguments
      `(#:jdk ,icedtea-8
        ,@(substitute-keyword-arguments (package-arguments java-hamcrest-core)
