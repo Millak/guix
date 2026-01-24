@@ -3286,6 +3286,10 @@ specified directories.")
 import re
 sys.argv[0] = re.sub(r'\\.([^/]*)-real$', r'\\1', sys.argv[0])
 ")))))
+          (add-before 'build 'set-HOME
+            (lambda _
+              ;; Otherwise Ansible fails to create its config directory.
+              (setenv "HOME" "/tmp")))
           (add-after 'install 'replace-symlinks
             (lambda _
               ;; Replace symlinks with duplicate copies of the ansible
@@ -3317,8 +3321,6 @@ sys.argv[0] = re.sub(r'\\.([^/]*)-real$', r'\\1', sys.argv[0])
          (replace 'check
            (lambda* (#:key inputs outputs tests? test-flags #:allow-other-keys)
              (when tests?
-               ;; Otherwise Ansible fails to create its config directory.
-               (setenv "HOME" "/tmp")
                ;; The test suite needs to be run with 'ansible-test', which
                ;; does some extra environment setup.  Taken from
                ;; https://raw.githubusercontent.com/ansible/ansible/\
@@ -3329,7 +3331,7 @@ sys.argv[0] = re.sub(r'\\.([^/]*)-real$', r'\\1', sys.argv[0])
            openssl
            python-mock
            python-pycryptodome
-           python-pytest
+           python-pytest-8
            python-pytest-forked
            python-pytest-mock
            python-pytest-xdist
