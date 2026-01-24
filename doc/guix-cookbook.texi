@@ -6035,19 +6035,25 @@ avoids collecting software they refer to.
 It may be a good idea to periodically remove unused bits from
 @file{/gnu/store} by running @command{guix gc} (@pxref{Invoking guix
 gc,,, guix, GNU Guix Reference Manual}).  This can be done by adding a
-systemd timer or a crontab entry on the head node:
+systemd timer based on the one shipped with Guix:
 
 @example
-root@@master# crontab -e
+cp \
+ /var/guix/profiles/per-user/root/current-guix/lib/systemd/system/guix-gc.* \
+ /etc/systemd/system
 @end example
 
-@noindent
-... with something like this:
+Make sure to edit @file{guix-gc.service} and @file{guix-gc.timer} under
+@file{/etc/systemd/system} to adjust the parameters to your need: timer
+frequency, amount of free space, and whether to delete user's old
+generations.  We recommend executing @command{guix gc -F50G} every
+night, which will ensure that at least 50@tie{}GiB are available,
+without deleting user generations.  Once you're satisfied, you can start
+the timer:
 
 @example
-# Every day at 5AM, run the garbage collector to make sure
-# at least 10 GB are free on /gnu/store.
-0 5 * * 1  /usr/local/bin/guix gc -F10G
+systemctl daemon-reload
+systemctl start guix-gc.timer
 @end example
 
 We're done with the head node! Let's look at compute nodes now.
