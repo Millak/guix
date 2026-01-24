@@ -4967,7 +4967,7 @@ parsing code in hiredis.  It primarily speeds up parsing of multi bulk replies."
 (define-public python-fakeredis
   (package
     (name "python-fakeredis")
-    (version "2.31.2")
+    (version "2.33.0")
     (source
      (origin
        (method git-fetch)
@@ -4976,24 +4976,22 @@ parsing code in hiredis.  It primarily speeds up parsing of multi bulk replies."
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ccywkm42drm2l1l2a1r6v5y5sycsbfbdlgvrrlr5a9ns9s1sb7s"))))
+        (base32 "02zi7dl4dm90z4aiadq8bba4vjhrpj8ns34ziazqcxlm72pyzxms"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 2652 passed, 319 skipped, 194 deselected, 24 warnings
       #:test-flags
       #~(list "-m" "not slow"
-              ;; XXX: Requires additional valkey package,
-              ;; but not the one in this module.
-              "--ignore-glob=test/test_valkey/*"
-              ;; XXX: Unclear why these tests fail. Wrong Redis version?
               "-k" (string-join
-                    (list "not test_acl_cat"
-                          "test_acl_log_auth_exist"
-                          "test_acl_log_invalid_key"
-                          "test_acl_log_invalid_channel"
-                          "test_client_list"
-                          "test_client_info"
-                          "test_client_id")
+                    ;; redis.exceptions.ResponseError: unknown command
+                    ;; 'evalsha', with args beginning with:
+                    (list "not test_async_lock[fake_resp2]"
+                          "test_async_lock[fake_resp3]"
+                          ;; AssertionError: Commands not found in category
+                          ;; b'write'...
+                          "test_acl_cat[StrictRedis2]"
+                          "test_acl_cat[StrictRedis3]")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
@@ -5003,13 +5001,16 @@ parsing code in hiredis.  It primarily speeds up parsing of multi bulk replies."
               (when tests?
                 (invoke "redis-server" "--daemonize" "yes"
                         "--port" "6390")))))))
-    (native-inputs (list python-hatchling python-pytest
-                         python-pytest-asyncio python-pytest-mock
-                         redis))
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-mock
+           redis))
     (propagated-inputs
      (list python-redis
            python-sortedcontainers
-           python-typing-extensions))
+           python-valkey))
     (home-page "https://github.com/cunla/fakeredis-py")
     (synopsis "Fake implementation of redis API for testing purposes")
     (description
