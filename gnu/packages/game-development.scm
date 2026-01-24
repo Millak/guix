@@ -1353,8 +1353,7 @@ archive on a per-file basis.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list devil
-           freetype
+     (list freetype
            libmodplug
            libtheora
            libvorbis
