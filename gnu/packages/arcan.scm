@@ -65,16 +65,16 @@
 (define-public arcan
   (package
     (name "arcan")
-    (version "0.6.3.3")
+    (version "0.7.1")
     (source (origin
               (method git-fetch)
               (file-name (git-file-name name version))
               (uri (git-reference
-                    (url "https://github.com/letoram/arcan")
+                    (url "https://codeberg.org/letoram/arcan")
                     (commit version)))
               (sha256
                (base32
-                "0rbswqqrgh9bkv0fzsswpkfw2zp1a7znwy0abgrxha5vpn13qd8c"))
+                "1sn8rljghrw57q99n9hl03pr2ndgkzg4g3p443iaslg42bmww05c"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove some bundled packages.
