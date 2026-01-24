@@ -6022,15 +6022,28 @@ The @file{/gnu/store} directory can be exported read-only since only
 package}; thus, to allow users to install packages with @code{guix
 package}, this must be read-write.
 
-Users can create as many profiles as they like in addition to the
-default profile, @file{~/.guix-profile}.  For instance, @code{guix
-package -p ~/dev/python-dev -i python} installs Python in a profile
-reachable from the @code{~/dev/python-dev} symlink.  To make sure that
+@quotation Note
+Although it is rarely used, Guix allows for the creation of profiles in
+non-default locations.  For instance, @code{guix package -p
+~/dev/python-dev -i python} installs Python in a profile reachable from
+the @code{~/dev/python-dev} symlink instead of the default
+@file{~/.guix-profile}.
+
+To make sure that
 this profile is protected from garbage collection---i.e., that Python
 will not be removed from @file{/gnu/store} while this profile exists---,
 @emph{home directories should be mounted on the head node} as well so
 that @code{guix-daemon} knows about these non-standard profiles and
 avoids collecting software they refer to.
+
+@c The following paragraph refers to Guix commit
+@c d12c4452a49b355369636de1dfc766b5bad6437b, which changed
+@c 'time-machine' and 'shell' to store GC roots under /var/guix.
+Doing so is optional though: profiles created by default by
+@command{guix package}, @command{guix pull}, and @command{guix shell}
+are all stored under @file{/var/guix} and thus protected from garbage
+collection.
+@end quotation
 
 It may be a good idea to periodically remove unused bits from
 @file{/gnu/store} by running @command{guix gc} (@pxref{Invoking guix
