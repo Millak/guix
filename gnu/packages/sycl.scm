@@ -52,13 +52,16 @@
                (base32
                 "0sv5f366ybzpsdpka0fb578pb4q3537h6hkn825m0kbssh32wxk7"))))
     (build-system cmake-build-system)
-    ;; Sync with llvm-for-rocm llvm release.
-    (native-inputs (list clang-19 lld-19 python-minimal))
+    ;; Sync with llvm version used by llvm-rocm.
+    (native-inputs (list clang-20 lld-20 python-minimal))
     (inputs
      (list boost
            libffi
            numactl
            rocm-opencl-runtime
+           rocm-device-libs
+           rocm-hip-runtime
+           rocr-runtime
            spirv-headers
            spirv-tools))
     (arguments
@@ -69,15 +72,25 @@
                         #$output "/lib,-rpath="
                         #$output "/lib/hipSYCL/llvm-to-backend")
          (string-append
-          "-DACPP_LLD_PATH=" (search-input-file %build-inputs "/bin/ld.lld")))
+          "-DACPP_LLD_PATH=" (search-input-file %build-inputs "/bin/ld.lld"))
+         "-DWITH_ROCM_BACKEND=ON"
+         (string-append
+          "-DROCM_PATH=" #$(this-package-input "rocm-device-libs"))
+         (string-append
+          "-DROCM_DEVICE_LIBS_PATH=" #$(this-package-input "rocm-device-libs")
+          "/amdgcn/bitcode"))
       #:tests? #f)) ; no tests
     (home-page "https://adaptivecpp.github.io/")
     (synopsis
-     "Implementation of the SYCL programming language for accelerators")
+     "Compiler for multiple programming models for CPUs and GPUs")
     (description
-     "AdaptiveCpp is aImplementation of SYCL and C++ standard parallelism
-for CPUs and GPUs from all vendors, with independent, community-driven
-compiler for C++-based heterogeneous programming models")
+     "AdaptiveCpp is a community-driven compiler for C++-based heterogeneous
+programming models.  It implements SYCL, C++ standard parallelism, and
+HIP/CUDA, targeting CPUs and GPUs from all major vendors.  AdaptiveCpp lets
+applications adapt themselves to all the hardware found in the system.  This
+includes use cases where a single binary needs to be able to target all
+supported hardware, or utilize hardware from different vendors
+simultaneously.")
     (license license:bsd-2)))
 
 (define-deprecated-package opensycl
