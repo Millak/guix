@@ -24052,35 +24052,6 @@ instead of servers and network commands.")
                          python-hatch-vcs))
     (arguments `(#:tests? #f))))
 
-(define-public python-cliapp
-  (package
-    (name "python-cliapp")
-    (version "1.20180812.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "http://git.liw.fi/cgi-bin/cgit/cgit.cgi/cliapp/snapshot/cliapp-"
-             version ".tar.gz"))
-       (sha256
-        (base32
-         "1c1jlblbns8qhiaqjpg4xi6lip8xwfc5w643p43rg543havaj45x"))))
-    (build-system python-build-system)
-    (arguments
-     `(;; XXX: The tests only do style and coverage checks, which
-       ;; fails due to deprecation warnings, etc.
-       #:tests? #f))
-    (native-inputs
-     (list python-coverage-test-runner))
-    (propagated-inputs
-     (list python-pyaml))
-    (home-page "https://liw.fi/cliapp/")
-    (synopsis "Python framework for command line programs")
-    (description "@code{cliapp} is a Python framework for command line
-     programs.  It contains the typical stuff such programs need to do, such
-     as parsing the command line for options, and iterating over input files.")
-    (license license:gpl2+)))
-
 (define-public python-astroid
   (package
     (name "python-astroid")
