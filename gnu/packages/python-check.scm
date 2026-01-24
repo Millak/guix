@@ -3155,7 +3155,7 @@ import them in their actual tests to use them.")
       ;; XXX: 261 failed, 170 errors
       #:tests? #f))
     (native-inputs
-     (list python-pytest
+     (list python-pytest-8
            python-pytest-asyncio
            python-setuptools
            python-wheel))
