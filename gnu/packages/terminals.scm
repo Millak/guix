@@ -313,42 +313,43 @@ asciinema-created terminal session recordings.")
    (license license:gpl3)))
 
 (define-public libtsm
-  (let ((commit "f70e37982f382b03c6939dac3d5f814450bda253")
-        (revision "1"))
-    (package
-      (name "libtsm")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         ;; The freedesktop repository is no longer maintained.
-         (uri (git-reference
-               (url (string-append "https://github.com/Aetf/" name))
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0mwn91i5h5d518i1s05y7hzv6bc13vzcvxszpfh77473iwg4wprx"))
-         (modules '((guix build utils)))
-         (snippet
-          '(begin
-             ;; Remove a bundled copy of libxkbcommon's xkbcommon-keysyms.h.
-             (delete-file-recursively "external/xkbcommon")
-             #t))))
-      (build-system cmake-build-system)
-      (native-inputs
-       (list check libxkbcommon ; for xkbcommon-keysyms.h
-             pkg-config))
-      (synopsis "Xterm state machine library")
-      (description "TSM is a state machine for DEC VT100-VT520 compatible
-terminal emulators.  It tries to support all common standards while keeping
-compatibility to existing emulators like xterm, gnome-terminal, konsole, etc.")
-      (home-page "https://www.freedesktop.org/wiki/Software/libtsm")
-      ;; Hash table implementation is lgpl2.1+ licensed.
-      ;; The wcwidth implementation in external/wcwidth.{h,c} uses a license
-      ;; derived from ISC.
-      ;; UCS-4 to UTF-8 encoding is copied from "terminology" which is released
-      ;; under the bsd 2 license.
-      (license (list license:expat license:lgpl2.1+ license:isc license:bsd-2)))))
+  (package
+    (name "libtsm")
+    (version "4.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kmscon/libtsm")
+              (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "02ab605bh6raq4kvb73s6fqqblra65jcl7cd3swmcmqwdimgzmpi"))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)))
+       (snippet
+        #~(delete-file-recursively "external/xkbcommon"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list check
+           libxkbcommon
+           pkg-config))
+    (home-page "https://github.com/kmscon/libtsm")
+    (synopsis "Terminal Emulator State Machine library")
+    (description
+     "TSM is a state machine for @acronym{DEC, Digital Equipment Corporation}
+VT100-VT520 compatible terminal emulators.  It tries to support all common
+standards while keeping compatibility to existing emulators like xterm,
+gnome-terminal, konsole, among others.")
+    ;; Hash table implementation is lgpl2.1+ licensed.
+    ;; The wcwidth implementation in external/wcwidth.{h,c} uses a MIT-style
+    ;; license.
+    ;; UCS-4 to UTF-8 encoding is copied from "terminology" which is released
+    ;; under the bsd 2 license.
+    (license
+     (list license:bsd-2
+           license:expat
+           license:lgpl2.1+))))
 
 (define-public kmscon
   (let ((commit "01dd0a231e2125a40ceba5f59fd945ff29bf2cdc")
