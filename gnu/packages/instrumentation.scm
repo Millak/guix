@@ -175,20 +175,10 @@ bindings, and the command-line tool @command{babeltrace2}.")
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'relax-requirements
-                 (lambda _
-                   ;; Remove version constraints as the program appears
-                   ;; to work (tests pass!) with later versions.
-                   ;; Try removing these when updating barectf.
-                   (substitute* "pyproject.toml"
-                     (("pyyaml = '\\^5")
-                      "pyyaml = '>=5")
-                     (("jsonschema = '\\^3")
-                      "jsonschema = '>=3"))))
                (add-before 'check 'set-CC
                  (lambda _
                    ;; Some tests invoke a compiler.
-                   (setenv "CC" "gcc"))))))
+                   (setenv "CC" #$(cc-for-target)))))))
     (native-inputs
      (list python-poetry-core python-pytest-8))
     (propagated-inputs
