@@ -29483,7 +29483,7 @@ library are feedforward neural networks trained using backpropagation.")
 (define-public sbcl-simple-optimization
   (package
     (name "sbcl-simple-optimization")
-    (version "1.2")
+    (version "2.0")
     (source
      (origin
        (method git-fetch)
@@ -29492,7 +29492,7 @@ library are feedforward neural networks trained using backpropagation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-simple-optimization" version))
        (sha256
-        (base32 "197iq6b7g0zdfz6nqyx69cvp6j39ax4aijc8x3w71rmmlfps515k"))))
+        (base32 "0hfqz960vj510cbx8p7g677mqbabzf6s9l8mzd0cp6f2gaz0dm00"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs (list sbcl-fiveam))
     (inputs (list sbcl-simple-matrix))
