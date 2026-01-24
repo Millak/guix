@@ -5687,7 +5687,7 @@ as torchvision, torchtext, and others.")
          "16ypci664l54ka6ickwkpaa2id14h9h00y7z24z0bv0szld4mrxg"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest
+     (list python-pytest-8
            python-pytest-cov
            python-setuptools))
     (home-page "https://github.com/magmax/python-readchar")
