@@ -3539,6 +3539,36 @@ documentation.  Documentation source files are written in Markdown, and
 configured with a single YAML configuration file.")
     (license license:bsd-3)))
 
+(define-public python-mkdocs-get-deps
+  (package
+    (name "python-mkdocs-get-deps")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mkdocs/get-deps")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f5ibliw1ccqgydsin27bb7sl7haca09s24xywhmg1cqhm4nda0d"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-hatchling))
+    (propagated-inputs
+     (list python-mergedeep
+           python-platformdirs
+           python-pyyaml))
+    (home-page "https://github.com/mkdocs/get-deps")
+    (synopsis "MkDocs extension to list dependencies according to a mkdocs.yml")
+    (description
+     "This package provides an @code{MkDocs} extension that lists all dependencies
+according to a mkdocs.yml file. This command guesses the Python dependencies
+that a MkDocs site requires in order to build.  It simply prints the PyPI
+packages that need to be installed.")
+    (license license:expat)))
+
 (define-public python-mkdocs-markdownextradata-plugin
   (package
     (name "python-mkdocs-markdownextradata-plugin")
