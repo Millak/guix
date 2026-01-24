@@ -4542,7 +4542,7 @@ different backends")
 (define-public koboldcpp
   (package
     (name "koboldcpp")
-    (version "1.105.4")
+    (version "1.106.2")
     (source
      (origin
        (method git-fetch)
@@ -4551,7 +4551,7 @@ different backends")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13ihvqxbf1gl3bnml4cn403z9nvwwc8vfc26a18wzanbkszfjylv"))))
+        (base32 "0599c2h251b5d3nvyvaxh02lqcn7lqd75i432vdjaq1kf9gbpfaz"))))
     (build-system gnu-build-system)
     (arguments
      (list
