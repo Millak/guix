@@ -2502,9 +2502,6 @@ performance computing environments.")
           (add-after 'unpack 'patch-pyproject
             (lambda _
               (substitute* "pyproject.toml"
-                ;; XXX: error: Field `project.license` has an invalid type,
-                ;; expecting a dictionary of strings (got `BSD-3-Clause`)
-                (("^license = .*") "license = {text = \"BSD-3-Clause\"}\n")
                 ;; FIXME: This line contains regexps and breaks toml parser.
                 (("notice-rgx.*") ""))))
           (add-before 'build 'configure
