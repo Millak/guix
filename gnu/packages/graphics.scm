@@ -622,7 +622,7 @@ applications.")
        (list (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
                             (assoc-ref %outputs "out") "/lib"))))
     (inputs
-     (list boost c-blosc jemalloc tbb zlib))
+     (list boost c-blosc jemalloc onetbb zlib))
     (native-inputs
      (list pkg-config))
     (home-page "https://www.openvdb.org/")
