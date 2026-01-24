@@ -5558,20 +5558,19 @@ Integration Center (4DN-DCIC).")
 (define-public python-feedparser
   (package
     (name "python-feedparser")
-    (version "6.0.11")
+    (version "6.0.12")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "feedparser" version ".tar.gz"))
        (sha256
-        (base32 "1mc4856draxac5s7acywq060a0awng195cpbs1js1wn6cixl1l69"))
-       (patches (search-patches "python-feedparser-missing-import.patch"))))
+        (base32 "0a22z6jx9lhw5glfb2nxf77bq9nfa0xqs3yy3rfyzs731blnrxv4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-backend #~'custom
       #:test-flags #~(list "tests/runtests.py")))
-    (native-inputs (list python-setuptools))
+    (native-inputs (list python-setuptools python-wheel))
     (propagated-inputs (list python-sgmllib3k))
     (home-page "https://github.com/kurtmckee/feedparser")
     (synopsis "Parse feeds in Python")

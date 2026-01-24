@@ -2072,7 +2072,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-chai-drop-python2.patch		\
   %D%/packages/patches/python-clarabel-blas.patch		\
   %D%/packages/patches/python-docrepr-fix-tests.patch		\
-  %D%/packages/patches/python-feedparser-missing-import.patch	\
   %D%/packages/patches/python-gpg-setup-72.patch                \
   %D%/packages/patches/python-hdmedians-replace-nose.patch	\
   %D%/packages/patches/python-louvain-fix-test.patch		\
