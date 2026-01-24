@@ -10495,7 +10495,7 @@ SunPy.")
               "-k" "not test_print_params")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
+          (add-before 'build 'set-HOME
             ;; It requires during sanity check as well to prevent error like:
             ;; PermissionError: [Errno 13] Permission denied:
             ;; '/homeless-shelter'
