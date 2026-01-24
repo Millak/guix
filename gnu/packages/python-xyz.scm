@@ -9501,25 +9501,26 @@ increment.  It also creates commits and tags.")
 (define-public python-deprecated
   (package
     (name "python-deprecated")
-    (version "1.2.14")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/tantale/deprecated")
-             (commit (string-append "v" version))))
+              (url "https://github.com/tantale/deprecated")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0knjsacv0r4gyz6ngjn3ih6352yz05r63ll73y2cg162bzcak48z"))))
+        (base32 "07rppvppxwnlf4pgaci5nd1sqfv1i0jxabm76axsbcaf2rlpsq6n"))))
     (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-wrapt))
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/tantale/deprecated")
     (synopsis "Python decorator to deprecate classes, functions or methods")
-    (description "The @code{deprecated} decorator provides a convenient way to deprecate
+    (description
+     "The @code{deprecated} decorator provides a convenient way to deprecate
 to deprecate classes, functions or methods.")
     (license license:expat)))
 
