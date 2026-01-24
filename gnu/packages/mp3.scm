@@ -285,24 +285,6 @@ Speex, WavPack TrueAudio, WAV, AIFF, MP4 and ASF files.")
                (base32
                 "0phliksg5r1n15prcbp391xk2z1fh2c7zlc7h0nabpwkf6j08za1"))))))
 
-(define-public taglib-next
-  (package
-    (inherit taglib)
-    (name "taglib")
-    (version "2.1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/taglib/taglib")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0m1xyjsg6a8p4prn1xr1g29zsxqr7606cv3cblgjgxkb1dk26fx7"))))
-    (inputs
-     (list utfcpp
-           zlib))))
-
 (define-public minimp3
   ;; The latest commit is used as there is no release.
   (let ((commit   "afb604c06bc8beb145fecd42c0ceb5bda8795144")
@@ -792,7 +774,7 @@ fingerprinting library and the Acoustid API.")
            python-pytest
            python-setuptools))
     (inputs
-     (list taglib-next))
+     (list taglib))
     (home-page "https://github.com/supermihi/pytaglib")
     (synopsis "Python bindings for taglib")
     (description
