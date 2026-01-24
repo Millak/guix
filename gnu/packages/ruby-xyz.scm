@@ -31,7 +31,7 @@
 ;;; Copyright © 2022-2025 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
-;;; Copyright © 2023, 2024, 2025 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023, 2024, 2025, 2026 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023-2025 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -8201,19 +8201,27 @@ differences (added or removed nodes) between two XML/HTML documents.")
 (define-public ruby-racc
   (package
     (name "ruby-racc")
-    (version "1.5.2")
+    (version "1.8.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (rubygems-uri "racc" version))
+       (method git-fetch) ;for tests
+       (uri (git-reference
+             (url "https://github.com/ruby/racc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "178k7r0xn689spviqzhvazzvxfq6fyjldxb3ywjbgipbfi4s8j1g"))))
+         "1sg2mqp6yxdxrn9kbbsxkd6930fxvm4yjl8knsc0wq6fkipnhm8q"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:tests? #f))            ; Fails while parsing test instructions.
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'compile
+            (lambda _
+              (invoke "rake" "compile"))))))
     (native-inputs
-     (list ruby-hoe ruby-rake-compiler))
+     (list ruby-rake-compiler ruby-test-unit-ruby-core))
     (synopsis "LALR(1) parser generator for Ruby")
     (description
      "Racc is a LALR(1) parser generator.  It is written in Ruby itself, and
