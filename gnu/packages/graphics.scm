@@ -42,6 +42,7 @@
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 James Smith <jsubuntuxp@disroot.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -111,6 +112,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages opencl)
+  #:use-module (gnu packages oneapi)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
@@ -575,7 +577,7 @@ with the @command{autotrace} utility or as a C library, @code{libautotrace}.")
           ;; (that would be AVX512--and that segfaults GCC (!)).
           "-DEMBREE_MAX_ISA=AVX2")))
     (inputs
-     (list tbb glfw))
+     (list glfw onetbb))
     (home-page "https://www.embree.org/")
     (synopsis "High performance ray tracing kernels")
     (description
