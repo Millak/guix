@@ -4222,19 +4222,20 @@ methodxs at scale on CPU or GPU.")
 (define-public python-umap-learn
   (package
     (name "python-umap-learn")
-    (version "0.5.9")
+    (version "0.5.11")
     (source
      (origin
-       (method git-fetch)               ;no tests in pypi release
+       (method git-fetch)
        (uri (git-reference
              (url "https://github.com/lmcinnes/umap")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pkniia9lccdbshwl4sh2iria7dny13qk0flkk67msb777sm5bmn"))))
+        (base32 "0jl2vj51gj0dkngyn1c9ipvjq33cj1k4aic6zawym23vmksxdbap"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1 failed, 145 passed, 61 skipped, 58 warnings
       #:test-flags
       ;; XXX: this one fails with unusually large deviation from the expected
       ;; result.
@@ -4242,10 +4243,12 @@ methodxs at scale on CPU or GPU.")
       #:phases
       #~(modify-phases %standard-phases
           ;; Numba needs a writable dir to cache functions.
-          (add-before 'check 'set-numba-cache-dir
+          (add-before 'build 'set-numba-cache-dir
             (lambda _
               (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-numba
            python-numpy
