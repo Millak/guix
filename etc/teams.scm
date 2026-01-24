@@ -285,13 +285,24 @@ PARAMETERS."
 
 ;; API documentation at <https://codeberg.org/api/swagger>.
 
-(define-forgejo-request (organization-teams organization)
-  "Return the list of teams of ORGANIZATION."
+(define-forgejo-request (organization-teams/paginated organization page)
+  "Return the list of teams of ORGANIZATION, for the given PAGE (1-indexed)."
   (GET "orgs" organization "teams"
-       & '(("limit" . "100")))                    ;get up to 100 teams
+       & `(("page" . ,(number->string page))))
   => 200
   (lambda (port)
     (map json->forgejo-team (vector->list (json->scm port)))))
+
+(define (organization-teams token organization)
+  "Return the list of teams of ORGANIZATION."
+  (let loop ((index 1)
+             (pages '()))
+    (match (organization-teams/paginated token organization index)
+      (()
+       (concatenate (reverse pages)))
+      (lst
+       (loop (+ 1 index)
+             (cons lst pages))))))
 
 (define-forgejo-request (create-team organization team)
   "Create TEAM, a Forgejo team, under ORGANIZATION."
