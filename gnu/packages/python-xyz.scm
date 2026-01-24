@@ -5862,28 +5862,6 @@ conventions and aliases in the same expression.")
 commonly used storage backends.")
     (license license:expat)))
 
-(define-public python-lockfile
-  (package
-    (name "python-lockfile")
-    (version "0.12.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "lockfile" version))
-       (sha256
-        (base32
-         "16gpx5hm73ah5n1079ng0vy381hl802v606npkx4x8nb0gg05vba"))))
-    (build-system python-build-system)
-    (arguments '(#:test-target "check"))
-    (native-inputs
-     (list python-pbr))
-    (home-page "https://launchpad.net/pylockfile")
-    (synopsis "Platform-independent file locking module")
-    (description
-     "The lockfile package exports a LockFile class which provides a simple
-API for locking files.")
-    (license license:expat)))
-
 (define-public python-fb-re2
   (package
     (name "python-fb-re2")
