@@ -12874,27 +12874,6 @@ resources using Web Application Description Language (WADL) files as guides.")
 @end itemize")
     (license license:expat)))
 
-(define-public python-pysimplesoap
-  (package
-    (name "python-pysimplesoap")
-    (version "1.16.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "PySimpleSOAP" version))
-              (sha256
-               (base32
-                "1qb7dn8m1cjwzql7vqj9i1hsscb7nyhimmlp45jrpzxds38g9fxi"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:tests? #f))               ;tests fail due to attempted web access
-    (home-page "https://github.com/pysimplesoap/pysimplesoap")
-    (synopsis "Simple and lightweight SOAP library for Python")
-    (description
-     "This package provides a simple and lightweight Python SOAP library for
-client and server webservices interfaces, aimed to be as small and easy as
-possible, supporting most common functionality.")
-    (license license:lgpl3+)))
-
 (define-public python-http-client
   (package
     (name "python-http-client")
