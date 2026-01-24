@@ -616,15 +616,13 @@
       (call-with-output-file (string-append directory "/foo.patch")
         (const #t))
 
-      (parameterize ((test-directory directory)
-                     (%patch-path (list directory))
-                     (%package-module-path (list directory "")))
+      (parameterize ((test-directory directory))
         (with-temporary-git-repository repository
             `((add "README" "Initial commit")
               (commit "First commit")
               (tag "1.0" "Initial release"))
           (mock ((guix import utils) git-repository-url? (const #t))
-                (mock ((gnu packages) specification->package
+                (mock ((gnu packages) specification->package+output
                        (lambda (spec)
                          (car
                           (vhash-fold* cons '() spec
@@ -723,6 +721,209 @@
                "my-coreutils")
 
       ;; File should be unchanged
+      (equal? (call-with-input-file file port-sha256) before-hash))))
+
+
+;;;
+;;; remove-input, remove-native-input, remove-propagated-input
+;;;
+
+(test-equal "remove-input, single input removed"
+  '((inputs (list)))
+  (call-with-test-package '((inputs (list gmp)))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+
+      (system* "guix" "style" "-L" directory
+               "-S" "remove-input" "--parameter=gmp"
+               "my-coreutils")
+
+      (load file)
+      (read-package-field (@ (my-packages) my-coreutils) 'inputs))))
+
+(test-equal "remove-input, one of multiple inputs removed"
+  `(("acl" ,acl))
+  (call-with-test-package '((inputs (list gmp acl)))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+
+      (system* "guix" "style" "-L" directory
+               "-S" "remove-input" "--parameter=gmp"
+               "my-coreutils")
+
+      (load file)
+      (package-inputs (@ (my-packages) my-coreutils)))))
+
+(test-equal "remove-input, middle input removed from list"
+  `(("gmp" ,gmp) ("mpfr" ,mpfr))
+  (call-with-test-package '((inputs (list gmp acl mpfr)))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+
+      (system* "guix" "style" "-L" directory
+               "-S" "remove-input" "--parameter=acl"
+               "my-coreutils")
+
+      (load file)
+      (package-inputs (@ (my-packages) my-coreutils)))))
+
+(test-equal "remove-input, non-existent input unchanged"
+  `(("gmp" ,gmp) ("acl" ,acl))
+  (call-with-test-package '((inputs (list gmp acl)))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+
+      (system* "guix" "style" "-L" directory
+               "-S" "remove-input" "--parameter=mpfr"
+               "my-coreutils")
+
+      (load file)
+      (package-inputs (@ (my-packages) my-coreutils)))))
+
+(test-equal "remove-input, input with output specifier"
+  `(("acl" ,acl))
+  (call-with-test-package '((inputs (list `(,gmp "debug") acl)))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+
+      (system* "guix" "style" "-L" directory
+               "-S" "remove-input" "--parameter=gmp:debug"
+               "my-coreutils")
+
+      (load file)
+      (package-inputs (@ (my-packages) my-coreutils)))))
+
+;; (test-skip 100)
+
+(test-equal "remove-native-input, single input removed"
+  '()
+  (call-with-test-package '((native-inputs (list gmp)))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+
+      (system* "guix" "style" "-L" directory
+               "-S" "remove-native-input" "--parameter=gmp"
+               "my-coreutils")
+
+      (load file)
+      (package-native-inputs (@ (my-packages) my-coreutils)))))
+
+(test-equal "remove-native-input, one of multiple inputs removed"
+  `(("acl" ,acl))
+  (call-with-test-package '((native-inputs (list gmp acl)))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+
+      (system* "guix" "style" "-L" directory
+               "-S" "remove-native-input" "--parameter=gmp"
+               "my-coreutils")
+
+      (load file)
+      (package-native-inputs (@ (my-packages) my-coreutils)))))
+
+(test-equal "remove-native-input, does not affect inputs field"
+  `(("gmp" ,gmp))
+  (call-with-test-package '((inputs (list gmp))
+                            (native-inputs (list acl)))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+
+      (system* "guix" "style" "-L" directory
+               "-S" "remove-native-input" "--parameter=acl"
+               "my-coreutils")
+
+      (load file)
+      (package-inputs (@ (my-packages) my-coreutils)))))
+
+(test-equal "remove-propagated-input, single input removed"
+  '()
+  (call-with-test-package '((propagated-inputs (list gmp)))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+
+      (system* "guix" "style" "-L" directory
+               "-S" "remove-propagated-input" "--parameter=gmp"
+               "my-coreutils")
+
+      (load file)
+      (package-propagated-inputs (@ (my-packages) my-coreutils)))))
+
+(test-equal "remove-propagated-input, one of multiple inputs removed"
+  `(("acl" ,acl))
+  (call-with-test-package '((propagated-inputs (list gmp acl)))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+
+      (system* "guix" "style" "-L" directory
+               "-S" "remove-propagated-input" "--parameter=gmp"
+               "my-coreutils")
+
+      (load file)
+      (package-propagated-inputs (@ (my-packages) my-coreutils)))))
+
+(test-equal "remove-propagated-input, does not affect other fields"
+  (list `(("gmp" ,gmp)) `(("acl" ,acl)))
+  (call-with-test-package '((inputs (list gmp))
+                            (native-inputs (list acl))
+                            (propagated-inputs (list mpfr)))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+
+      (system* "guix" "style" "-L" directory
+               "-S" "remove-propagated-input" "--parameter=mpfr"
+               "my-coreutils")
+
+      (load file)
+      (list (package-inputs (@ (my-packages) my-coreutils))
+            (package-native-inputs (@ (my-packages) my-coreutils))))))
+
+(test-equal "remove-input from all three fields independently"
+  (list '() '() '())
+  (call-with-test-package '((inputs (list gmp))
+                            (native-inputs (list acl))
+                            (propagated-inputs (list mpfr)))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+
+      (system* "guix" "style" "-L" directory
+               "-S" "remove-input" "--parameter=gmp"
+               "my-coreutils")
+      (system* "guix" "style" "-L" directory
+               "-S" "remove-native-input" "--parameter=acl"
+               "my-coreutils")
+      (system* "guix" "style" "-L" directory
+               "-S" "remove-propagated-input" "--parameter=mpfr"
+               "my-coreutils")
+
+      (load file)
+      (list (package-inputs (@ (my-packages) my-coreutils))
+            (package-native-inputs (@ (my-packages) my-coreutils))
+            (package-propagated-inputs (@ (my-packages) my-coreutils))))))
+
+(test-assert "remove-input, dry-run does not modify file"
+  (call-with-test-package '((inputs (list gmp acl)))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+      (define before-hash
+        (call-with-input-file file port-sha256))
+
+      (system* "guix" "style" "-L" directory "-n"
+               "-S" "remove-input" "--parameter=gmp"
+               "my-coreutils")
+
       (equal? (call-with-input-file file port-sha256) before-hash))))
 
 (test-end)

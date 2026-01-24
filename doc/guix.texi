@@ -16137,6 +16137,29 @@ rebuild of the affected packages.  Furthermore, if a package definition
 happens to be using G-expressions already, @command{guix style} leaves
 it unchanged.
 
+@item remove-input
+@itemx remove-native-input
+@itemx remove-propagated-input
+These styling rules remove an input from the given package(s).
+
+Removing these packages respects the package syntax, doesn't affect
+margin comments or parentheses, and will put all remaining inputs on a
+single line if there are less than three.
+
+This is a focused styling rule for use in teams, when updating
+build-systems, or removing unwanted development inputs from
+native-inputs.
+
+To remove package @var{whatnot} from all inputs, use the
+@code{--parameter} option:
+
+@example
+guix style -S remove-input --parameter=@var{whatnot}
+@end example
+
+It is also possible to do that for a collection of packages by appending
+them to the above invocation.
+
 @item git-source
 If the @code{home-page} is a Git repository (as per
 @code{git-repository-url?}), and the actual Git repository is tagged

@@ -30,7 +30,7 @@
 ;;; Code:
 
 (define-module (guix scripts style)
-  #:autoload   (gnu packages) (specification->package fold-packages)
+  #:autoload   (gnu packages) (specification->package+output fold-packages)
   #:autoload   (guix import utils) (default-git-error
                                     generate-git-source
                                     git-repository-url?
@@ -55,6 +55,119 @@
   #:use-module (srfi srfi-37)
   #:use-module (srfi srfi-71)
   #:export (guix-style))
+
+
+
+;;;
+;;; Transform package field.
+;;;
+;;; Currently: remove
+;;; Ideas : append / prepend / sort
+
+(define* (input-matches? expr package-name #:optional output)
+  "Return true if EXPR refers to package named PACKAGE-NAME."
+  (let ((sym (string->symbol package-name)))
+    (match expr
+      ((? symbol? s) (eq? s sym))
+      (('quasiquote (('unquote s) . _)) (eq? s sym))
+      (('list (? symbol? s) . _) (eq? s sym))
+      (_ #f))))
+
+(define (package-list->string package-list location)
+  "Format the PACKAGE-LIST S-expression to LOCATION."
+  (call-with-output-string
+   (cut pretty-print-with-comments <> package-list
+        #:indent (location-column location)
+        ;; Try to keep a coherent list,
+        ;; 3 seems to lead to better results.
+        #:long-list 3)))
+
+(define %field-accessors
+  `((inputs            . ,package-inputs)
+    (native-inputs     . ,package-native-inputs)
+    (propagated-inputs . ,package-propagated-inputs)))
+
+(define* (remove-from-package-field package field to-remove
+                                    #:key
+                                    (policy 'safe)
+                                    (edit-expression edit-expression))
+  "Remove package TO-REMOVE from FIELD in PACKAGE.
+
+Pass EDIT-EXPRESSION further to `transform-package-field'.  POLICY is
+currently ignored."
+  (let* ((get-field (assq-ref %field-accessors field))
+         ;; All current %field-accessors are plural.
+         (formatted-field (string-drop-right
+                           (symbol->string field)
+                           1))
+         (to-remove-list
+          ((match-lambda
+             ((? package? package)
+             (package-name package))
+            (((? package? package) output)
+             (list (package-name package) output)))
+           to-remove))
+         (to-remove? (cute equal? to-remove <>))
+         (select? (lambda (package location)
+                    (and (any (match-lambda
+                                ((_ rest ...)
+                                 (to-remove? rest) #t)
+                                (_                 #f))
+                              (get-field package))
+                         (info location
+                               (G_ "~a: removing ~a '~a'~%")
+                               (package-full-name package)
+                               formatted-field
+                               (string-join (delete "out" to-remove-list) ":"))))))
+    (transform-package-field package
+                             field
+                             (lambda (items)
+                               (remove (cute apply input-matches? <> to-remove-list)
+                                       items))
+                             #:edit-expression edit-expression
+                             #:select? select?)))
+
+(define* (transform-package-field package field
+                                  transform
+                                  #:key
+                                  (edit-expression edit-expression)
+                                  (select? (const #t)))
+  "TRANSFORM PACKAGE FIELD (list content only) if SELECT? matches.
+
+SELECT? is a procedure taking the list content and location.
+TRANSFORM is a procedure taking items from the list and returning a list of
+new items.  Call EDIT-EXPRESSION to edit the source code."
+  (define (transform-expr location str)
+    (match (call-with-input-string str read-with-comments)
+      (((or 'list 'cons*) . items)
+       (let ((new-items (transform items)))
+         (cond
+          ((equal? new-items items)
+           str)
+          ((find (negate blank?) new-items)
+           (package-list->string `(list ,@new-items) location))
+          ((null? new-items)
+           "(list)")
+          (else
+           #f))))
+      (_
+       (warning location
+                (G_ "~a: unsupported format, only list, and cons*\
+ are accepted~%")
+                field)
+       str)))
+
+  (match ((assq-ref %field-accessors field) package)
+    (() #f)
+    (items
+     (match (package-field-location package field)
+       (#f #f)
+       (location
+        (when (select? package location)
+          (edit-expression
+           (location->source-properties (absolute-location location))
+           (lambda (str)
+             (or (transform-expr location str) str)))))))))
 
 
 ;;;
@@ -660,15 +773,32 @@ Return the new origin S-expression or #f if transformation isn't applicable."
                   (alist-cons 'order? #t result)))
         (option '(#\S "styling") #t #f
                 (lambda (opt name arg result)
+                  (define (remove-from-field field)
+                    (lambda (parameter)
+                      (lambda* (package #:key
+                                        (policy 'safe)
+                                        (edit-expression edit-expression))
+                        (remove-from-package-field package field parameter
+                                                   #:policy policy
+                                                   #:edit-expression edit-expression))))
                   (alist-cons 'styling-procedure
                               (match arg
                                 ("inputs" simplify-package-inputs)
                                 ("arguments" gexpify-package-arguments)
                                 ("format" format-package-definition)
                                 ("git-source" url-fetch->git-fetch)
+                                ("remove-input" (remove-from-field 'inputs))
+                                ("remove-native-input"
+                                 (remove-from-field 'native-inputs))
+                                ("remove-propagated-input"
+                                 (remove-from-field 'propagated-inputs))
                                 (_ (leave (G_ "~a: unknown styling~%")
                                           arg)))
                               result)))
+        (option '("parameter") #t #f
+                (lambda (opt name arg result)
+                  (let ((package output (specification->package+output arg)))
+                    (alist-cons 'parameter (list package output) result))))
         (option '("input-simplification") #t #f
                 (lambda (opt name arg result)
                   (let ((symbol (string->symbol arg)))
@@ -767,13 +897,17 @@ Update package definitions to the latest style.\n"))
             (for-each
               (cute format-whole-file <> (assoc-ref opts 'order?))
               files))
-          (let ((packages (filter-map (match-lambda
-                                        (('argument . spec)
-                                         (specification->package spec))
-                                        (('expression . str)
-                                         (read/eval str))
-                                        (_ #f))
-                                      opts)))
+          (let* ((packages (filter-map (match-lambda
+                                         (('argument . spec)
+                                          (specification->package+output spec))
+                                         (('expression . str)
+                                          (read/eval str))
+                                         (_ #f))
+                                       opts))
+                 (parameter (assoc-ref opts 'parameter))
+                 (style (if parameter
+                            (style parameter)
+                            style)))
             (for-each (lambda (package)
                         (style package #:policy policy
                                #:edit-expression edit))
