@@ -7,6 +7,7 @@
 ;;; Copyright © 2020 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2026 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +33,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages file)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages javascript)
   #:use-module (gnu packages linux)
@@ -41,6 +43,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages video)
   #:use-module (gnu packages xiph)
@@ -207,7 +210,9 @@ It aims to be fully compliant with DLNA and UPnP-AV standards.")
 (define-public gerbera
   (package
     (name "gerbera")
-    (version "2.5.0")
+    ;; Version 3.1.1 requires libzippp, which would have to be packaged
+    ;; before the next update.
+    (version "3.0.0")
     (source
      (origin
        (method git-fetch)
@@ -216,14 +221,20 @@ It aims to be fully compliant with DLNA and UPnP-AV standards.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lhzjln7ljfvr696wsghhjqn2hrwwvxga4ifpxnjypraxkqkyzyx"))))
+        (base32 "0997zj56m60jkrkwh95b229vkl42nlmd6nnq5jqfb34kckhxvk3n"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:configure-flags
       #~(list "-DWITH_SYSTEMD=NO"
               "-DWITH_AVCODEC=YES"
-              "-DWITH_TESTS=YES")))
+              "-DWITH_TESTS=YES")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("/usr/share") (string-append #$output "/share"))))))))
     (inputs
      (list curl
            duktape
@@ -231,12 +242,14 @@ It aims to be fully compliant with DLNA and UPnP-AV standards.")
            ffmpeg
            file
            fmt
+           icu4c
+           jsoncpp
            libebml
            libexif
            libmatroska
            libupnp
            pugixml
-           spdlog-1.13
+           spdlog
            sqlite
            taglib
            `(,util-linux "lib")
