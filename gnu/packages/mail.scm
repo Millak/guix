@@ -60,12 +60,13 @@
 ;;; Copyright © 2024, 2025 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Zacchaeus <eikcaz@zacchae.us>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
+;;; Copyright © 2026 Sergey Trofimov <sarg@sarg.org.ru>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1410,7 +1411,7 @@ attachments, create new maildirs, and so on.")
 (define-public alot
   (package
     (name "alot")
-    (version "0.11")
+    (version "v0.12")
     (source
      (origin
        (method git-fetch)
@@ -1419,31 +1420,58 @@ attachments, create new maildirs, and so on.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19rn587n81gwx1f49bvm34m60708h5z47hcgiaqlpsznbv792xlr"))))
+        (base32 "018zqpjrl3cggj1myysjj04a054mg890khhdh1qjmd70k8l3w1di"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; TODO: Tests fail with error: alot.settings.errors.ConfigError:
-      ;; failed to read notmuch config with command
-      ;;
-      ;; CI is complex, see: <.github/workflows/test.yml>.
-      #:tests? #f
+      ;; tests: 334 passed, 4 deselected, 9 xfailed, 29 warnings, 11 subtests
+      #:test-flags
+      #~(list
+         "-k" (string-join
+               ;; alot.settings.errors.ConfigError: failed to read notmuch
+               ;; config with command ...
+               (list "not test_read_notmuch_config_doesnt_exist"
+                     "test_reading_synchronize_flags_from_notmuch_config"
+                     "test_reload_notmuch_config"
+                     "test_save_named_query")
+               " and not "))
       #:phases
       #~(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "pyproject.toml"
-               ;; python-gpg is added and it's on the latest version.
-               (("gpg>1.10.0") "gpg")))))))
+          (add-after 'unpack 'include-defaults
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("setuptools_scm]")
+                 "setuptools.package-data]\nalot = [\"defaults/*\"]\n"))))
+          (add-after 'unpack 'fix-share-path
+            (lambda _
+              (substitute* "alot/settings/manager.py"
+                (("/usr/share")
+                 (string-append #$output "/share")))))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; python-gpg is added and it's on the latest version from
+                ;; PyPI, where Git provides v2.0.0, see:
+                ;; <https://codeberg.org/guix/guix/pulls/2812>.
+                (("gpg>1.10.0") "gpg"))))
+          (add-after 'install 'install-themes
+            (lambda _
+              (let ((share (string-append #$output "/share/alot")))
+                (mkdir-p share)
+                (copy-recursively "extra/themes" share)))))))
     (native-inputs
-     (list procps
+     (list gawk
+           procps
+           python-pytest
+           python-setuptools-scm
            python-setuptools))
     (inputs
      (list gnupg
            python-configobj
            python-gpg
-           python-notmuch2
            python-magic
+           python-notmuch2
+           ;; python-standard-mailcap ;Python > 3.12
            python-twisted
            python-urwid
            python-urwidtrees))
