@@ -633,36 +633,36 @@ content to your Sphinx documentation.")
 (define-public python-sphinx-issues
   (package
     (name "python-sphinx-issues")
-    (version "4.0.0")
+    (version "5.0.1")
     (source
      (origin
-       ;; No tests in the PyPI tarball.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/sloria/sphinx-issues")
-             (commit version)))
+              (url "https://github.com/sloria/sphinx-issues")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q4as8gibvin0n6h5y1q4cwz3b1nwgs0idfc94dbndx42pjiz1vn"))))
+        (base32 "0jyd47ihs2wldzzq49bd8db1zwvswja9327m63i5q4svss13jxzy"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases #~(modify-phases %standard-phases
-                   (add-before 'check 'patch-sphinx-build-path
-                     (lambda _
-                       ;; The path to the sphinx-build binary is hardcoded to
-                       ;; be in the same directory as the python
-                       ;; executable. That does not work when building the
-                       ;; package.
-                       (substitute* "tests/test_sphinx_issues.py"
-                         (((string-append "Path\\(sys\\.executable\\)"
-                                          "\\.parent\\.joinpath\\"
-                                          "(\"sphinx-build\"\\)"))
-                          (string-append "\""
-                                         #$(this-package-native-input
-                                            "python-sphinx")
-                                         "/bin/sphinx-build\""))))))))
-    (native-inputs (list python-flit-core python-pytest python-sphinx))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'patch-sphinx-build-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; The path to the sphinx-build binary is hardcoded to be in the
+              ;; same directory as the python executable. That does not work
+              ;; when building the package.
+              (substitute* "tests/test_sphinx_issues.py"
+                (((string-append "Path\\(sys\\.executable\\)"
+                                 "\\.parent\\.joinpath\\"
+                                 "(\"sphinx-build\"\\)"))
+                 (format #f "~s" (search-input-file
+                                  inputs "/bin/sphinx-build")))))))))
+    (native-inputs
+     (list python-flit-core
+           python-pytest
+           python-sphinx))
     (home-page "https://github.com/sloria/sphinx-issues")
     (synopsis "Sphinx extension for linking to a project's issue tracker")
     (description
