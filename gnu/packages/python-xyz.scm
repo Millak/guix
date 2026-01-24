@@ -30640,7 +30640,7 @@ library.")
        (sha256
         (base32 "0j061hd1iwcyz1rvasprjwwgb39x6h36n1l3dw310ig3pzbr84wh"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-flit-core python-pytest python-setuptools))
+    (native-inputs (list python-flit-core python-pytest-8 python-setuptools))
     (home-page "https://github.com/mahmoud/boltons")
     (synopsis "Extensions to the Python standard library")
     (description
