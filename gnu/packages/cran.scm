@@ -54949,9 +54949,6 @@ the @code{raster} package that is suitable for extracting raster values using
       #:tests? #false
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'use-system-tbb
-            (lambda _
-              (setenv "TBB_ROOT" #$(this-package-input "tbb"))))
           (add-before 'install 'relax-gcc-14-strictness
             (lambda _
               ;; XXX FIXME: $HOME/.R/Makevars seems to be the only way to
