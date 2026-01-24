@@ -1318,6 +1318,32 @@ collision) and the extra storage is linear with respect to the number of
 keys.")
       (license license:asl2.0))))
 
+(define-public glaze
+  (package
+    (name "glaze")
+    (version "7.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/stephenberry/glaze")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1plzxrpk470yqm0pzdw5ghc39jvcafn2xj90hk4gpy7r82wvwfhs"))))
+    (build-system cmake-build-system)
+    (arguments
+      (list #:tests? #f
+            #:configure-flags
+            ;; Building tests require fetching external libraries
+            #~(list "-DBUILD_TESTING=OFF")))
+    (home-page "https://github.com/stephenberry/glaze")
+    (synopsis "Fast, in memory, JSON and reflection library for modern C++")
+    (description "Glaze is an in-memory JSON and reflection library for modern
+C++.  It also provides support for BEVE, CBOR, CSV, MessagePack, TOML, YAML,
+and EETF.")
+    (license license:expat)))
+
 (define-public json-dto
   (package
     (name "json-dto")
