@@ -3492,45 +3492,40 @@ that best match text queries.")
 (define-public python-mkdocs
   (package
     (name "python-mkdocs")
-    (version "1.3.0")
+    (version "1.6.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mkdocs/mkdocs")
-             (commit version)))
+              (url "https://github.com/mkdocs/mkdocs")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n5rdllrxvhnxmdrddf55p3s86dakx0rq2gg6bj6pr6jg2pn932b"))))
+        (base32 "02gllyq6myvgmqqsmj3il4f48bsvd617dwg62qx832bnbn0qw115"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 724 passed
       #:test-backend #~'unittest
       #:test-flags
-      #~(list "discover" "-p" "*tests.py" "mkdocs" "--top-level-directory" ".")
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; Requirements refer to a specific version of dependencies,
-          ;; which are too old. So we patch to refer to any later version.
-          (add-after 'unpack 'patch-requirements
-            (lambda _
-              (substitute* "setup.py"
-                (("==") ">=")))))))
-    (native-inputs (list python-setuptools))
+      #~(list "discover" "-p" "*tests.py" "mkdocs" "--top-level-directory" ".")))
+    (native-inputs
+     (list python-hatchling))
     (propagated-inputs
-     (list python-babel
-           python-click
+     (list python-click
            python-ghp-import
-           python-importlib-metadata
            python-jinja2
            python-markdown
            python-markupsafe
-           python-mdx-gh-links
            python-mergedeep
+           python-mkdocs-get-deps
            python-packaging
+           python-pathspec
            python-pyyaml
            python-pyyaml-env-tag
-           python-watchdog))
+           python-watchdog
+           ;; [optional]
+           python-babel))
     (home-page "https://www.mkdocs.org")
     (synopsis "Project documentation with Markdown")
     (description
