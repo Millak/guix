@@ -303,8 +303,9 @@ not succeed."
                  (mlet* %store-monad
                      ((drv (lower-object unzip))
                       (built (built-derivations (list drv))))
-                   (return (string-append (derivation->output-path drv) "/bin/unzip"))))))))
-    (system* (string-append unzip-cmd (string-join args " " 'prefix)))))
+                   (return (string-append (derivation->output-path drv)
+                                          "/bin/unzip"))))))))
+    (apply invoke unzip-cmd args)))
 
 (define (parse-requires.txt requires.txt)
   "Given REQUIRES.TXT, a path to a Setuptools requires.txt file, return a list
@@ -414,10 +415,9 @@ be extracted in a temporary directory."
            (metadata (string-append dirname "/METADATA")))
       (call-with-temporary-directory
        (lambda (dir)
-         (if (zero?
-              (parameterize ((current-error-port (%make-void-port "rw+"))
-                             (current-output-port (%make-void-port "rw+")))
-                (unzip-command wheel-archive "-d" dir metadata)))
+         (if (parameterize ((current-error-port (%make-void-port "rw+"))
+                            (current-output-port (%make-void-port "rw+")))
+               (unzip-command wheel-archive "-d" dir metadata))
              (parse-wheel-metadata (string-append dir "/" metadata))
              (begin
                (warning
@@ -430,8 +430,7 @@ be extracted in a temporary directory."
     (call-with-temporary-output-file
      (lambda (temp port)
        (if wheel-url
-           (and (url-fetch wheel-url temp)
-                (read-wheel-metadata temp))
+           (and=> (url-fetch wheel-url temp) read-wheel-metadata)
            (list '() '())))))
 
   (define (guess-requirements-from-pyproject.toml dir)

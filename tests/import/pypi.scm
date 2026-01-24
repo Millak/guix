@@ -270,6 +270,12 @@ files specified by SPECS.  Return its file name."
          call-with-input-string)
         (parse-requires.txt test-requires.txt-beaker)))
 
+(test-equal "parse-wheel-metadata"
+  (list '("baz" "bar") '("pytest"))
+  (mock ((ice-9 ports) call-with-input-file
+         call-with-input-string)
+        (parse-wheel-metadata test-metadata)))
+
 (test-equal "parse-wheel-metadata, with extras"
   (list '("wrapt" "bar") '("tox" "bumpversion"))
   (mock ((ice-9 ports) call-with-input-file
@@ -328,8 +334,7 @@ files specified by SPECS.  Return its file name."
             (build-system pyproject-build-system)
             (propagated-inputs (list python-bar python-foo))
             (native-inputs (list python-pytest
-                                 python-setuptools
-                                 python-wheel))
+                                 python-setuptools))
             (home-page "https://example.com")
             (synopsis "summary")
             (description "summary.")
@@ -431,8 +436,7 @@ files specified by SPECS.  Return its file name."
     (with-pypi `(("/foo-1.0.0.tar.gz" 200 ,(file-dump tarball))
                  ("/foo-1.0.0-py2.py3-none-any.whl"
                   200 ,(file-dump wheel))
-                 ("/foo/json" 200 ,(lambda (port)
-                                     (display (foo-json) port))))
+                 ("/foo/json" 200 ,(cut display (foo-json) <>)))
       ;; Not clearing the memoization cache here would mean returning the value
       ;; computed in the previous test.
       (invalidate-memoization! pypi->guix-package)
@@ -448,8 +452,7 @@ files specified by SPECS.  Return its file name."
             (build-system pyproject-build-system)
             (propagated-inputs (list python-bar python-baz))
             (native-inputs (list python-pytest
-                                 python-setuptools
-                                 python-wheel))
+                                 python-setuptools))
             (home-page "https://example.com")
             (synopsis "summary")
             (description "summary.")
@@ -478,7 +481,7 @@ files specified by SPECS.  Return its file name."
                        (sha256
                         (base32 ,(? string? hash)))))
             (build-system pyproject-build-system)
-            (native-inputs (list python-setuptools python-wheel))
+            (native-inputs (list python-setuptools))
             (home-page "https://example.com")
             (synopsis "summary")
             (description "summary.")
@@ -509,8 +512,7 @@ files specified by SPECS.  Return its file name."
             (build-system pyproject-build-system)
             (propagated-inputs (list python-bar python-foo))
             (native-inputs (list python-pytest
-                                 python-setuptools
-                                 python-wheel))
+                                 python-setuptools))
             (home-page "https://example.com")
             (synopsis "summary")
             (description "summary.")
@@ -537,10 +539,6 @@ files specified by SPECS.  Return its file name."
               (upstream-input
                (name "setuptools")
                (downstream-name "python-setuptools")
-               (type 'native))
-              (upstream-input
-               (name "wheel")
-               (downstream-name "python-wheel")
                (type 'native))))
   (let ((tarball (pypi-tarball
                   "foo-1.0.0"
