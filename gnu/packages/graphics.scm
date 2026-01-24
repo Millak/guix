@@ -718,6 +718,7 @@ typically encountered in feature film production.")
            libxi
            libxrender
            lzo
+           onetbb
            openal
            opencolorio
            openexr
@@ -728,7 +729,6 @@ typically encountered in feature film production.")
            pugixml
            python
            python-numpy-1
-           tbb
            zlib
            `(,zstd "lib")))
     (home-page "https://www.blender.org/")
