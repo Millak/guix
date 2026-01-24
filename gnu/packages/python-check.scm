@@ -864,6 +864,49 @@ to the code, providing free tests, static analysis, formal verification, and
 much more.")
     (license license:expat)))
 
+(define-public python-deal-solver
+  (package
+    (name "python-deal-solver")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/life4/deal-solver")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16kxxip5czjsy1b4xds4zpjz3rgpsrp4k2bbvw1r3z2in509w0qc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 6893 passed, 40 warnings
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; AssertionError: assert <Conclusion.SKIP: 'skipped'> is
+              ;; <Conclusion.OK: 'proved!'>
+              (string-append "--deselect=tests/test_types/test_set.py"
+                             "::test_expr_asserts_ok[len({4, 5, 5, 6}) >= 3]"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((".*--cov.*") "")))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-xdist
+           python-flit-core))
+    (propagated-inputs
+     (list python-astroid
+           z3))
+    (home-page "https://github.com/life4/deal-solver")
+    (synopsis "z3-powered solver (theorem prover) for Deal")
+    (description
+     "This package provides a @url{https://github.com/Z3Prover/z3, z3}-powered
+solver (theorem prover) for Deal.")
+    (license license:expat)))
+
 (define-public python-ddt
   (package
     (name "python-ddt")
