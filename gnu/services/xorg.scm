@@ -44,7 +44,6 @@
   #:use-module (gnu system privilege)
   #:use-module (gnu services base)
   #:use-module (gnu services dbus)
-  #:use-module (gnu services desktop)
   #:use-module (gnu packages base)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages xorg)
