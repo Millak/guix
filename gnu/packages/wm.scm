@@ -1230,22 +1230,8 @@ to events.")
            python-xcffib))
     (native-inputs
      (list pkg-config
-           pre-commit
-           python-anyio
-           python-check-manifest
-           python-coverage
-           python-isort
-           python-mypy
-           python-pycairo
-           python-pytest
-           python-pytest-asyncio
-           python-pytest-cov
-           python-pytest-httpbin
            python-setuptools
-           python-setuptools-scm
-           python-twine
-           python-wheel
-           xorg-server-for-tests))
+           python-setuptools-scm))
     (home-page "http://qtile.org")
     (synopsis "Hackable tiling window manager written and configured in Python")
     (description "Qtile is simple, small, and extensible.  It's easy to write
