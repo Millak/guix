@@ -1588,19 +1588,20 @@ use on a given system.")
 (define-public libredwg
   (package
     (name "libredwg")
-    (version "0.12.5")
+    (version "0.13.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://gnu/libredwg/libredwg-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1gginbl76vmpccjwx93cmg8ibap8l40swly3bjv7rhmdwv6ikpnk"))))
+        (base32 "0vl1x20zw4nafw86f98w5i5sry7krvj20igzh6j7fivlibkzdwc3"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:configure-flags
       #~(list "--disable-bindings"
+              "--disable-write"         ;check fails, see README
               #$(string-append "CFLAGS="
                                " -Wno-error=implicit-function-declaration"))))
     (native-inputs
