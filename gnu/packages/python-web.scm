@@ -8458,25 +8458,6 @@ Templates.")
               (sha256
                (base32 "1bkwmgr0ia9gcn4bszs2xlvml79f0bi2s4a87xg22ky9rq8avy2s"))))))
 
-(define-public python-publicsuffix
-  (package
-    (name "python-publicsuffix")
-    (version "1.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "publicsuffix" version))
-              (sha256
-               (base32
-                "1adx520249z2cy7ykwjr1k190mn2888wqn9jf8qm27ly4qymjxxf"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)) ; tests use the internet
-    (home-page "https://www.tablix.org/~avian/git/publicsuffix.git")
-    (synopsis "Get suffix for a domain name")
-    (description "Get a public suffix for a domain name using the Public Suffix
-List.")
-    (license license:expat)))
-
 (define-public python-publicsuffix2
   (package
     (name "python-publicsuffix2")
