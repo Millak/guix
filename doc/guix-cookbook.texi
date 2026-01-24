@@ -22,7 +22,7 @@ Copyright @copyright{} 2020 André Batista@*
 Copyright @copyright{} 2020 Christine Lemmer-Webber@*
 Copyright @copyright{} 2021 Joshua Branson@*
 Copyright @copyright{} 2022, 2023 Maxim Cournoyer@*
-Copyright @copyright{} 2023-2025 Ludovic Courtès@*
+Copyright @copyright{} 2023--2026 Ludovic Courtès@*
 Copyright @copyright{} 2023 Thomas Ieong@*
 Copyright @copyright{} 2024 Florian Pelz@*
 Copyright @copyright{} 2025 45mg@*
@@ -5958,6 +5958,15 @@ installation instructions (@pxref{Binary Installation,,, guix, GNU Guix
 Reference Manual}).  Thanks to the installation script, this should be
 quick.  Once installation is complete, we need to make some adjustments.
 
+@quotation Note
+Starting from Guix version 1.5.0, @command{guix-daemon} runs without
+root privileges by default; previously installed systems can also be
+migrated to this ``rootless'' mode (@pxref{Build Environment Setup,,,
+guix, GNU Guix Reference Manual}).  Learn more about this change in a
+@uref{https://hpc.guix.info/blog/2025/03/build-daemon-drops-its-privileges/,
+2025 blog post}.
+@end quotation
+
 Since we want @code{guix-daemon} to be reachable not just from the head
 node but also from the compute nodes, we need to arrange so that it
 listens for connections over TCP/IP.  To do that, we'll edit the systemd
@@ -5972,13 +5981,12 @@ something like this:
 @ifnothtml
 @example
 ExecStart=/var/guix/profiles/per-user/root/current-guix/bin/guix-daemon \
-    --build-users-group=guixbuild \
     --listen=/var/guix/daemon-socket/socket --listen=0.0.0.0
 @end example
 @end ifnothtml
 @ifhtml
 @example
-ExecStart=/var/guix/profiles/per-user/root/current-guix/bin/guix-daemon --build-users-group=guixbuild --listen=/var/guix/daemon-socket/socket --listen=0.0.0.0
+ExecStart=/var/guix/profiles/per-user/root/current-guix/bin/guix-daemon --listen=/var/guix/daemon-socket/socket --listen=0.0.0.0
 @end example
 @end ifhtml
 
@@ -6027,7 +6035,7 @@ avoids collecting software they refer to.
 It may be a good idea to periodically remove unused bits from
 @file{/gnu/store} by running @command{guix gc} (@pxref{Invoking guix
 gc,,, guix, GNU Guix Reference Manual}).  This can be done by adding a
-crontab entry on the head node:
+systemd timer or a crontab entry on the head node:
 
 @example
 root@@master# crontab -e
