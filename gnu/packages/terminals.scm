@@ -44,6 +44,7 @@
 ;;; Copyright © 2024, 2025-2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2025 Liam Hupfer <liam@hpfr.net>
+;;; Copyright © 2026 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -261,6 +262,29 @@ managers.")
 Forget screen recording apps and blurry video.  Enjoy a lightweight, purely
 text-based approach to terminal recording.")
     (license license:gpl3)))
+
+(define-public asciinema-agg
+  (package
+   (name "asciinema-agg")
+   (home-page "https://github.com/asciinema/agg")
+   (version "1.7.0")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url home-page)
+           (commit (string-append "v" version))))
+     (file-name (git-file-name name version))
+     (sha256
+      (base32 "04vbj7mmn8cdgrh1563ghadfanpw4ga1jbm2i7jnp6m69qyafiz9"))))
+   (build-system cargo-build-system)
+   (arguments (list #:install-source? #f))
+   (inputs (cargo-inputs 'asciinema-agg))
+   (synopsis "Asciinema gif generator")
+   (description
+    "Agg is a command-line tool for generating animated GIF files from
+asciinema-created terminal session recordings.")
+   (license license:gpl3)))
 
 (define-public libtsm
   (let ((commit "f70e37982f382b03c6939dac3d5f814450bda253")
