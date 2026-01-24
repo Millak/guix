@@ -11819,7 +11819,7 @@ Python.")
            python-typing-extensions))
     (native-inputs
      (list python-flask
-           python-pytest
+           python-pytest-8
            python-pytest-aiohttp
            python-pytest-asyncio
            python-pytest-trio
