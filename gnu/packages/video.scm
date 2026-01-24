@@ -2482,7 +2482,7 @@ media, 2D/3D graphics and ECMAScript.")
 (define-public vlc
   (package
     (name "vlc")
-    (version "3.0.21")
+    (version "3.0.23")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2491,8 +2491,7 @@ media, 2D/3D graphics and ECMAScript.")
                     "/vlc-" version ".tar.xz"))
               (sha256
                (base32
-                "1c7vbbicx95nymrybgvd2d3p65q0wayhpvsx9ncs1vpsglfvxnr4"))
-              (patches (search-patches "vlc-livemedia-2024.11.28.patch"))))
+                "1q77ygpnjvk646diplmiv6kwfmdwbh8daws1z6dsdk9wmbkcm4g8"))))
     (build-system gnu-build-system)
     (native-inputs
      (list flex bison gettext-minimal pkg-config))
