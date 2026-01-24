@@ -3229,20 +3229,23 @@ Microsoft cabinet (.@dfn{CAB}) files.")
 (define-public msitools
   (package
     (name "msitools")
-    (version "0.100")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/msitools/"
-                                  version "/msitools-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1skq17qr2ic4qr3779j49byfm8rncwbsq9rj1a33ncn2m7isdwdv"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list bison pkg-config))
-    (inputs
-     (list gcab glib libgsf libxml2
-           `(,util-linux "lib")))
+    (version "0.106")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnome/sources/msitools/" version
+                           "/msitools-" version ".tar.xz"))
+       (sha256
+        (base32 "16v5b8pgm7g5f35ff4lr10m4j9a18x4yc44g3d7z3040rxwl5lqy"))))
+    (build-system meson-build-system)
+    (native-inputs (list bison
+                         `(,glib "bin")
+                         gobject-introspection
+                         perl
+                         pkg-config
+                         vala))
+    (inputs (list gcab glib libgsf libxml2
+                  `(,util-linux "lib")))
     (home-page "https://wiki.gnome.org/msitools")
     (synopsis "Windows Installer file manipulation tool")
     (description
