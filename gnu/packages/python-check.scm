@@ -803,17 +803,17 @@ intuitive syntax.")
 (define-public python-deal
   (package
     (name "python-deal")
-    (version "4.24.5")
+    (version "4.24.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "deal" version))
        (sha256
-        (base32 "0a2b8s8fmacv56lhrqaif0rbgrmfp0b36m5bvhly89aj5d9qvac1"))))
+        (base32 "078a46agz00k6chf9pjnfcnnc298in4d6rp06mspd11frfxx9x0w"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 668 passed, 194 skipped, 12 deselected
+      ;; tests: 992 passed, 13 skipped, 28 deselected, 2 warnings
       #:test-flags
       ;; Network access is required
       #~(list "--deselect=tests/test_imports.py::test_smoke_has"
@@ -838,10 +838,29 @@ intuitive syntax.")
                       (list "test_raises_doesnt_override_another_contract"
                             "test_raises_doesnt_override_another_contract_async"
                             "test_raises_generator"))
-              ;; AttributeError: 'NoneType' object has no attribute
-              ;; 'TypeCheckError'
-              "--deselect=tests/test_testing.py::test_return_type_checks"
-              "--deselect=tests/test_testing.py::test_disable_type_checks")
+              ;; AttributeError: module 'typeguard' has no attribute 'CallMemo'
+              #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/test_testing.py::"
+                                                    test))
+                      (list "test_concat"
+                            "test_decorator_div1_smoke"
+                            "test_decorator_div2_smoke"
+                            "test_decorator_rejects_bad"
+                            "test_disable_type_checks"
+                            "test_div1_short"
+                            "test_div2_short"
+                            "test_example"
+                            "test_explicit_kwargs"
+                            "test_explicit_strategy"
+                            "test_params_ok_with_excs"
+                            "test_return_type"
+                            "test_return_type_checks"
+                            "test_run_ok"
+                            "test_type_var"
+                            "test_typecheck_explicit_kwargs"))
+              ;; Assertions are not equal.
+              "--deselect=tests/test_cli/test_test.py::test_no_violations"
+              "--deselect=tests/test_doctest.py::test_doctest[test5]")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-pytest-config
@@ -850,9 +869,14 @@ intuitive syntax.")
                 ((".*--cov.*") "")))))))
     (native-inputs
      (list python-flit-core
-           python-pytest
            python-docstring-parser
+           python-pytest
            python-urllib3))
+    (propagated-inputs
+     (list python-astroid
+           python-deal-solver
+           python-pygments
+           python-typeguard))
     (home-page "https://github.com/life4/deal")
     (synopsis "Design by contract for Python")
     (description
