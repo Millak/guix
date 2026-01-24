@@ -108,10 +108,11 @@ like sockets.")
 @file{/var/log}, but for user.  It is not a part of XDG Base Directory
 Specification, but helps to make implementation of home services more
 consistent."
-   (lambda (field-name val)
-     (when (maybe-value-set? val)
-       (warn-about-deprecation field-name #f #:replacement 'state-home))
-     (serialize-path field-name val)))
+   (serializer
+    (lambda (field-name val)
+      (when (maybe-value-set? val)
+        (warn-about-deprecation field-name #f #:replacement 'state-home))
+      (serialize-path field-name val))))
   (state-home
    (path "$HOME/.local/state")
    "Base directory for programs to store state data that should persist
