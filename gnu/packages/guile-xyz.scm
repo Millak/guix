@@ -7368,8 +7368,8 @@ is an attempt to combine both into something useful.")
       (license license:asl2.0))))
 
 (define-public guile-knots
-  (let ((commit "a8e07b738b558d701c6de1f5ee6452ee4095198e")
-        (revision "28"))
+  (let ((commit "35f4c16ab0b3846cd10f5209b39a6a3f5bf8a3f1")
+        (revision "29"))
     (package
     (name "guile-knots")
     (version (git-version "0" revision commit))
@@ -7380,7 +7380,7 @@ is an attempt to combine both into something useful.")
                     (commit commit)))
               (sha256
                (base32
-                "13cc81pnjw55y1p8v6zvbk46bsf0snwbk3fkg3xh9girl9z5krj3"))
+                "0zd4k5c0v4rdbhlb6fwa51v53s8rs8xjrznvdnw3yhkpiy66x1ki"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
@@ -7394,12 +7394,12 @@ is an attempt to combine both into something useful.")
      (list guile-next))
     (propagated-inputs
      (list guile-fibers-next))
-    (home-page "https://forge.cbaines.net/cbaines/guile-knots")
+    (home-page "https://cbaines.codeberg.page/guile-knots/")
     (synopsis "Patterns and functionality to use with Guile Fibers")
     (description
      "Guile Knots is a collection of patterns and functionality that is useful
 when using Guile Fibers.  This includes higher level concurrency utilities,
-support for timeouts and an alternative web server implementation.")
+support for timeouts and a web server.")
     (license license:gpl3+))))
 
 (define-public guile-kolam
