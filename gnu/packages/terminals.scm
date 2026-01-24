@@ -352,79 +352,58 @@ gnome-terminal, konsole, among others.")
            license:lgpl2.1+))))
 
 (define-public kmscon
-  (let ((commit "01dd0a231e2125a40ceba5f59fd945ff29bf2cdc")
-        (revision "1"))
-    (package
-      (name "kmscon")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                ;; The freedesktop repository is no longer maintained.
-                (uri (git-reference
-                      (url (string-append "https://github.com/Aetf/" name))
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "0q62kjsvy2iwy8adfiygx2bfwlh83rphgxbis95ycspqidg9py87"))
-                (patches
-                 (search-patches "kmscon-runtime-keymap-switch.patch"))
-                (modules '((guix build utils)))
-                (file-name (git-file-name name version))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:phases (modify-phases %standard-phases
-                    ;; Use elogind instead of systemd.
-                    (add-before 'configure 'remove-systemd
-                      (lambda _
-                        (substitute* "configure"
-                          (("libsystemd-daemon libsystemd-login")
-                           "libelogind"))
-                        (substitute* "src/uterm_systemd.c"
-                          (("#include <systemd/sd-login.h>")
-                           "#include <elogind/sd-login.h>")
-                          ;; We don't have this header.
-                          (("#include <systemd/sd-daemon\\.h>")
-                           "")
-                          ;; Replace the call to 'sd_booted' by the truth value.
-                          (("sd_booted\\(\\)")
-                           "1")))))))
-      (native-inputs
-       (list pkg-config
-             autoconf
-             automake
-             libtool
-             libxslt ;to build the man page
-             docbook-xsl))
-      (inputs
-       `(("libdrm" ,libdrm)
-         ("libtsm" ,libtsm)
-         ("libxkbcommon" ,libxkbcommon)
-         ("logind" ,elogind)
-         ;; MESA can be used for accelerated video output via OpenGLESv2, but
-         ;; it's a big dependency that we'd rather avoid in the installation
-         ;; image.
-         ;; ("mesa" ,mesa)
-         ("pango" ,pango)
-         ("udev" ,eudev)))
-      (synopsis "Linux KMS-based terminal emulator")
-      (description "Kmscon is a terminal emulator based on Linux's @dfn{kernel
-mode setting} (KMS).  It can replace the in-kernel virtual terminal (VT)
+  (package
+    (name "kmscon")
+    (version "9.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kmscon/kmscon")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0jssf69n76lhvx4b2kmk4hn0sjfj6pjmdq5h7hz57n6qgpg3zlxx"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list check
+           pkg-config
+           libxslt
+           docbook-xsl))
+    (inputs
+     (list elogind
+           eudev
+           libdrm
+           libtsm
+           libxkbcommon
+           ;; MESA is useful for accelerated video output via OpenGLESv2, but,
+           ;; being a big dependency, we would rather avoid it in the
+           ;; installation image.
+           ;; mesa
+           pango))
+    (home-page "https://www.freedesktop.org/wiki/Software/kmscon")
+    (synopsis "Linux KMS-based terminal emulator")
+    (description
+     "Kmscon is a terminal emulator based on Linux's @acronym{KMS, kernel mode
+setting}.  It can replace the in-kernel @acronym{VT, virtual terminal}
 implementation with a user-space console.  Compared to the Linux console,
 kmscon provides enhanced features including XKB-compatible internationalized
 keyboard support, UTF-8 input/font support, hardware-accelerated rendering,
 multi-seat support, a replacement for @command{mingetty}, and more.")
-      (home-page "https://www.freedesktop.org/wiki/Software/kmscon")
-      ;; Hash table implementation is lgpl2.1+ licensed.
-      ;; The wcwidth implementation in external/wcwidth.{h,c} uses a license
-      ;; derived from ISC.
-      ;; UCS-4 to UTF-8 encoding is copied from "terminology" which is released
-      ;; under the bsd 2 license.
-      ;; Unifont-Font is from http://unifoundry.com/unifont.html and licensed
-      ;; under the terms of the GNU GPL.
-      (license (list license:expat license:lgpl2.1+ license:bsd-2
-                     license:gpl2+))
-      (supported-systems (filter (cut string-suffix? "-linux" <>)
-                                 %supported-systems)))))
+    ;; Hash table implementation is lgpl2.1+ licensed.
+    ;; The wcwidth implementation in external/wcwidth.{h,c} uses a license
+    ;; derived from ISC.
+    ;; UCS-4 to UTF-8 encoding is copied from "terminology" which is released
+    ;; under the bsd 2 license.
+    ;; Unifont-Font is from http://unifoundry.com/unifont.html and licensed
+    ;; under the terms of the GNU GPL.
+    (license (list license:expat
+                   license:lgpl2.1+
+                   license:bsd-2
+                   license:gpl2+))
+    (supported-systems (filter (cut string-suffix? "-linux" <>)
+                               %supported-systems))))
 
 (define-public libtermkey
   (package
