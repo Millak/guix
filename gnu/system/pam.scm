@@ -428,7 +428,7 @@ now use the <pam-extension> record~%"))
   (service-type (name 'pam)
                 (extensions
                  (list (service-extension
-                        setuid-program-service-type
+                        privileged-program-service-type
                         (lambda (_)
                           (list (file-like->setuid-program
                                  (file-append linux-pam "/sbin/unix_chkpwd")))))
@@ -456,5 +456,3 @@ all the PAM services."
            (pam-configuration (services base)
                               (transformers transformers)
                               (shepherd-requirements shepherd-requirements))))
-
-
