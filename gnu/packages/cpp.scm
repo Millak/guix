@@ -1080,7 +1080,7 @@ ecosystem.")
 (define-public hyprtoolkit
   (package
     (name "hyprtoolkit")
-    (version "0.5.2")
+    (version "0.5.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1089,7 +1089,7 @@ ecosystem.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lyc5mmk7i83q3rq11yyggwxpcx3kmav3hg3ss1xl723v27cnj80"))))
+                "0jjb1bf55270r3qc3fzxd1l3ahqsbgs948z46qi9niapa3gx1zli"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f)) ; No tests in Release build type
     (native-inputs (list pkg-config hyprwayland-scanner))
