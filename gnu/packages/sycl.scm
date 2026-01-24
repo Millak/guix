@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023, 2024 Andy Tai <atai@atai.org>
+;;; Copyright © 2025, 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,36 +65,11 @@
      (list
       #:configure-flags
       #~(list
-         "-DACPP_COMPILER_FEATURE_PROFILE=full"
+         (string-append "-DCMAKE_EXE_LINKER_FLAGS=" "-Wl,-rpath="
+                        #$output "/lib,-rpath="
+                        #$output "/lib/hipSYCL/llvm-to-backend")
          (string-append
           "-DACPP_LLD_PATH=" (search-input-file %build-inputs "/bin/ld.lld")))
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; FIXME: There is probably a much better way.
-          ;; This file: bin/hipSYCL/llvm-to-backend/llvm-to-host-tool
-          ;; requires libacpp-common.so and libllvm-to-{backend,host}.so
-          ;; in RUNPATH
-          (add-before 'validate-runpath 'create-symlinks
-            (lambda _
-              (symlink
-               (string-append #$output "/lib/libacpp-common.so")
-               (string-append
-                #$output
-                "/bin/hipSYCL/llvm-to-backend/libacpp-common.so"))
-              (symlink
-               (string-append
-                #$output
-                "/lib/hipSYCL/llvm-to-backend/libllvm-to-backend.so")
-               (string-append
-                #$output
-                "/bin/hipSYCL/llvm-to-backend/libllvm-to-backend.so"))
-              (symlink
-               (string-append
-                #$output
-                "/lib/hipSYCL/llvm-to-backend/libllvm-to-host.so")
-               (string-append
-                #$output
-                "/bin/hipSYCL/llvm-to-backend/libllvm-to-host.so")))))
       #:tests? #f)) ; no tests
     (home-page "https://adaptivecpp.github.io/")
     (synopsis
