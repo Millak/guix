@@ -2140,25 +2140,28 @@ backward differences are used.")
 (define-public python-numpoly
   (package
     (name "python-numpoly")
-    (version "1.3.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/jonathf/numpoly")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "19cld52ddvlbza1l8g1irfj603m6f5yifqy4pm397ffrxipfbbq6"))))
+    (version "1.3.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jonathf/numpoly")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1abz6ch2bzghbzwkvrr2yrg6zkkaz4wn7qqc5810szryrv0is3ih"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 219 passed, 2 deselected, 4 warnings
-      #:test-flags
-      ;; AssertionError: invalid results type: 3 != <class 'int'>
-      #~(list "--deselect=test/test_array_function.py::test_count_nonzero")
+      ;; tests: 221 passed, 4 warnings
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            ;; Version is hardcoded.
+            (lambda _ 
+              (substitute* "pyproject.toml"
+                (("0.1.0")
+                 #$version))))
           (add-before 'check 'remove-local-source
             (lambda _
               (delete-file-recursively "numpoly"))))))
