@@ -33231,28 +33231,37 @@ It implements advanced Python dictionaries with dot notation access.")
 (define-public python-aspectlib
   (package
     (name "python-aspectlib")
-    (version "1.5.2")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ionelmc/python-aspectlib")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ionelmc/python-aspectlib")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mfhflg33684gkp6ckkywshn4xa3vqaia521kcagaxgr3xm6c9pv"))))
+        (base32 "07xwp6gp1h5hcyakx607xbgmciqxm799v2k7c8wnrqqxd410zyis"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list ;; XXX: Require more dependencies.
          "--ignore=tests/test_integrations.py"
-         "--ignore=tests/test_integrations_py3.py"
-         ;; XXX: Unimportant warning errors.
-         "-k" (string-append "not test_story_empty_play_proxy_class"
-                             " and not test_story_half_play_proxy_class"))))
-    (native-inputs (list python-pytest python-setuptools python-tornado python-wheel))
-    (propagated-inputs (list python-fields))
+         "--ignore=tests/test_integrations_py3.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; Tests fails with warnings: pytest.PytestRemovedIn9Warning:
+              ;; The (path: py.path.local) argument is deprecated, please
+              ;; use (collection_path: pathlib.Path).
+              (delete-file "pytest.ini"))))))
+    (native-inputs
+     (list python-pytest-8
+           python-setuptools
+           python-tornado))
+    (propagated-inputs
+     (list python-fields))
     (home-page "https://github.com/ionelmc/python-aspectlib")
     (synopsis "Python monkey-patching and decorators")
     (description
