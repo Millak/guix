@@ -3316,11 +3316,6 @@ cross-validation.")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "meson.build"
-                ;; boost
-                (("1.88.0") "1.89.0"))))
           (add-after 'set-paths 'hide-gfortran
             ;; See: <https://issues.guix.gnu.org/73439#45>.
             (lambda* (#:key inputs #:allow-other-keys)
@@ -3342,12 +3337,11 @@ cross-validation.")
                   (apply invoke "pytest" "-vv" test-flags))))))))
     (native-inputs
      (list gfortran
-           meson-python
            pkg-config
            python-click
-           python-cython
            python-doit
            python-hypothesis
+           python-meson-python
            python-mpmath
            python-numpydoc
            python-pooch
@@ -3361,7 +3355,7 @@ cross-validation.")
            python-threadpoolctl
            python-typing-extensions))
     (inputs
-     (list boost
+     (list boost-1.88
            openblas
            pybind11
            qhull
