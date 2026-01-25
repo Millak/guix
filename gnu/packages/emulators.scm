@@ -27,6 +27,7 @@
 ;;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;; Copyright © 2025 Laura Kirsch <laurakirsch240406@gmail.com>
 ;;; Copyright © 2026 Nikita Alkhovik <forgoty13@gmail.com>
+;;; Copyright © 2026 Justin Veilleux <terramorpha@cock.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -124,13 +125,14 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages toolkits)
   #:use-module (gnu packages upnp)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vulkan)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
-  #:use-module (gnu packages web)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
@@ -1862,6 +1864,50 @@ Mupen64Plus emulator.")
 System (NES/Famicom) emulator Nestopia, with enhancements from members of the
 emulation community.  It provides highly accurate emulation.")
     (license license:gpl2+)))
+
+(define-public nx-tzdb
+  (package
+    (name "nx-tzdb")
+    (version "121125")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.crueter.xyz/misc/tzdb_to_nx")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0fqxvwdlqysgdb0vhb6jvk8mw0f2r6hc6hckw1bsw58z71s5248h"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; No tests.
+      #:tests? #f
+      #:configure-flags
+      #~(list
+         ;; Use Guix's tzdata instead of building from the tz submodule.
+         (string-append "-DTZDB2NX_ZONEINFO_DIR="
+                        #$(this-package-native-input "tzdata")
+                        "/share/zoneinfo")
+         (string-append "-DTZDB2NX_VERSION=" #$version))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'build-tzdb
+            (lambda _
+              ;; Build the x80e target which converts timezone data.
+              (invoke "make" "x80e")))
+          (replace 'install
+            (lambda _
+              (let ((nx-dir (string-append (getcwd) "/src/tzdb/nx")))
+                (copy-recursively nx-dir #$output)))))))
+    (native-inputs
+     (list git-minimal tzdata))
+    (synopsis "Nintendo Switch timezone database")
+    (description "This package provides timezone data in the format expected by
+Nintendo Switch emulators.  It converts standard IANA timezone data to the
+Nintendo Switch's proprietary format.")
+    (home-page "https://git.crueter.xyz/misc/tzdb_to_nx")
+    ;; The converter is MIT licensed; the generated data is public domain.
+    (license (list license:expat license:public-domain))))
 
 (define (make-libretro-beetle-psx name hw)
   (let ((commit "80d3eba272cf6efab6b76e4dc44ea2834c6f910d")
