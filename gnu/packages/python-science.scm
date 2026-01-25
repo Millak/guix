@@ -5123,8 +5123,8 @@ arrays.  It is a fork of the Aesara library.")
                           (this-package-native-input "pythoncapi-compat"))
                        "scs/pythoncapi-compat"))))))
     (native-inputs
-     (list meson-python
-           pkg-config
+     (list pkg-config
+           python-meson-python
            python-pytest
            pythoncapi-compat
            scs))
