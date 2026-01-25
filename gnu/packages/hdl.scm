@@ -22,7 +22,45 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
-  #:use-module (gnu packages electronics))
+  #:use-module (gnu packages electronics)
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages python-xyz))
+
+(define-public ieee-p1076
+  (package
+    (name "ieee-p1076")
+    (version "2019")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://opensource.ieee.org/vasg/Packages/")
+              (commit (string-append "1076-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1va626i5ww2ziw3dghw0d2mq7mrj5dwcn0h019h77866yw2pq9xn"))))
+    (build-system copy-build-system)
+    (native-inputs (list python-minimal-wrapper nvc python-vunit))
+    (arguments
+     (list
+      ;; Not all 2019 features are supported by nvc compiler.
+      ;; pass 1055 of 1648
+      #:tests? #f
+      #:install-plan
+      #~'(("ieee" "share/ieee-p1076/ieee" #:include ("vhdl"))
+          ("std" "share/ieee-p1076/std" #:include ("vhdl")))))
+    (native-search-paths
+     (list (search-path-specification
+             (variable "FW_IEEE_p1076")
+             (separator #f)
+             (files (list "share/ieee-p1076")))))
+    (home-page "https://IEEE-P1076.gitlab.io")
+    (synopsis "VHDL libraries corresponding to the IEEE 1076 standard")
+    (description
+     "Open source materials intended for reference by the IEEE standard 1076,
+as approved and published by the @acronym{VHDL, Very High Speed Hardware
+Description Language} Analysis and Standardization Group.")
+    (license license:asl2.0)))
 
 (define-public neorv32
   (package
