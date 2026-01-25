@@ -20821,11 +20821,9 @@ codebase to support both Python 2 and Python 3 with minimal overhead.")
        (sha256
         (base32 "1syixz6xlmy1pjcr03ij7hcvaklgjy4mmwggssrmmnr9pxnn5xw9"))))
     (build-system pyproject-build-system)
-    (native-inputs (list meson-python
-                         pkg-config
+    (native-inputs (list python-meson-python
                          python-cython
-                         python-pytest
-                         python-sphinx))
+                         python-pytest))
     (home-page "https://github.com/sagemath/cysignals")
     (synopsis "Handling of interrupts and signals for Cython")
     (description
