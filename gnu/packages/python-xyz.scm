@@ -10837,6 +10837,7 @@ writing C extensions for Python as easy as Python itself.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 47513 passed, 1740 skipped, 33 xfailed, 5 xpassed, 341 warnings
       #:modules '((guix build utils)
                   (guix build pyproject-build-system)
                   (ice-9 format))
@@ -10915,10 +10916,8 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas"))))))
                        (find-files (in-vicinity #$output "/bin"))))))))
     (native-inputs
      (list gfortran
-           meson-python
-           ninja
-           pkg-config
            python-hypothesis
+           python-meson-python
            python-pytest
            python-pytest-xdist
            python-setuptools
