@@ -129,7 +129,7 @@ chip written in platform-independent VHDL.")
 (define-public open-logic
   (package
     (name "open-logic")
-    (version "4.2.0")
+    (version "4.3.0")
     (source
      (origin
        (method git-fetch)
@@ -141,7 +141,7 @@ chip written in platform-independent VHDL.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1792a6i9jq2yawipmk0nr01z092kx3kkav9v5sjf34khk3biav6q"))))
+         "0hgdic67s5lxpkg9cn212zrvxqal7l11r9v7513534vf2402cnzj"))))
     (outputs
      '("out" "olo"))
     (properties
