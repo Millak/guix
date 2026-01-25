@@ -3046,18 +3046,14 @@ logic, also known as grey logic.")
               (substitute* "pyproject.toml"
                 (("dynamic = \\['version'\\]")
                  (string-append "version = \"" #$version "\""))))))))
-    (propagated-inputs (list meson-python
-                             python-numpy
-                             python-spin))
-    (native-inputs (list gfortran
-                         pkg-config
-                         python-cython
-                         python-meson-python
-                         python-numpy
-                         python-numpydoc
-                         python-pytest
-                         python-setuptools
-                         python-wheel))
+    (native-inputs
+     (list gfortran
+           python-meson-python
+           python-spin
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-numpy))
     (home-page "https://has2k1.github.io/scikit-misc/stable")
     (synopsis "Miscellaneous tools for scientific computing.")
     (description "This package provides miscellaneous tools for data analysis
