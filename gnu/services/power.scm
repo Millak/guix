@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2025, 2026 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -100,108 +100,116 @@
    "Additional modules to import into the generated handler script.")
   (killpower
    (gexp
-    #~((wall "Apccontrol doing: apcupsd --killpower on UPS ~a" name)
-       (sleep 10)
-       (apcupsd "--killpower")
-       (wall "Apccontrol has done: apcupsd --killpower on UPS ~a" name)))
+    #~(begin
+        (wall "Apccontrol doing: apcupsd --killpower on UPS ~a" name)
+        (sleep 10)
+        (apcupsd "--killpower")
+        (wall "Apccontrol has done: apcupsd --killpower on UPS ~a" name)))
    "The handler for the killpower event.")
   (commfailure
    (gexp
-    #~((let ((msg (format #f "~a Communications with UPS ~a lost."
-                          (gethostname) name)))
-         (mail-to-root msg msg))
-       (wall "Warning: communications lost with UPS ~a" name)))
+    #~(begin
+        (let ((msg (format #f "~a Communications with UPS ~a lost."
+                           (gethostname) name)))
+          (mail-to-root msg msg))
+        (wall "Warning: communications lost with UPS ~a" name)))
    "The handler for the commfailure event.")
   (commok
    (gexp
-    #~((let ((msg (format #f "~a Communications with UPS ~a restored."
-                          (gethostname) name)))
-         (mail-to-root msg msg))
-       (wall "Communications restored with UPS ~a" name)))
+    #~(begin
+        (let ((msg (format #f "~a Communications with UPS ~a restored."
+                           (gethostname) name)))
+          (mail-to-root msg msg))
+        (wall "Communications restored with UPS ~a" name)))
    "The handler for the commfailure event.")
   (powerout
    (gexp
-    #~(#t))
+    #~#t)
    "The handler for the powerout event.")
   (onbattery
    (gexp
-    #~((let ((msg (format #f "~a UPS ~a Power Failure !!!"
-                          (gethostname) name)))
-         (mail-to-root msg msg))
-       (wall "Power failure on UPS ~a.  Running on batteries." name)))
+    #~(begin
+        (let ((msg (format #f "~a UPS ~a Power Failure !!!"
+                           (gethostname) name)))
+          (mail-to-root msg msg))
+        (wall "Power failure on UPS ~a.  Running on batteries." name)))
    "The handler for the onbattery event.")
   (offbattery
    (gexp
-    #~((let ((msg (format #f "~a UPS ~a Power has returned."
-                          (gethostname) name)))
-         (mail-to-root msg msg))
-       (wall "Power has returned on UPS ~a..." name)))
+    #~(begin
+        (let ((msg (format #f "~a UPS ~a Power has returned."
+                           (gethostname) name)))
+          (mail-to-root msg msg))
+        (wall "Power has returned on UPS ~a..." name)))
    "The handler for the offbattery event.")
   (mainsback
    (gexp
-    #~((when (file-exists? powerfail-file)
-         (wall "Continuing with shutdown."))))
+    #~(when (file-exists? powerfail-file)
+        (wall "Continuing with shutdown.")))
    "The handler for the mainsback event.")
   (failing
    (gexp
-    #~((wall "Battery power exhausted on UPS ~a.  Doing shutdown." name)))
+    #~(wall "Battery power exhausted on UPS ~a.  Doing shutdown." name))
    "The handler for the failing event.")
   (timeout
    (gexp
-    #~((wall "Battery time limit exceeded on UPS ~a.  Doing shutdown." name)))
+    #~(wall "Battery time limit exceeded on UPS ~a.  Doing shutdown." name))
    "The handler for the timeout event.")
   (loadlimit
    (gexp
-    #~((wall "Remaining battery charge below limit on UPS ~a.  Doing shutdown." name)))
+    #~(wall "Remaining battery charge below limit on UPS ~a.  Doing shutdown." name))
    "The handler for the loadlimit event.")
   (runlimit
    (gexp
-    #~((wall "Remaining battery runtime below limit on UPS ~a.  Doing shutdown." name)))
+    #~(wall "Remaining battery runtime below limit on UPS ~a.  Doing shutdown." name))
    "The handler for the runlimit event.")
   (doreboot
    (gexp
-    #~((wall "UPS ~a initiating Reboot Sequence" name)
-       (system* #$(file-append shepherd "/sbin/reboot"))))
+    #~(begin
+        (wall "UPS ~a initiating Reboot Sequence" name)
+        (system* #$(file-append shepherd "/sbin/reboot"))))
    "The handler for the doreboot event.")
   (doshutdown
    (gexp
-    #~((wall "UPS ~a initiated Shutdown Sequence" name)
-       (system* #$(file-append shepherd "/sbin/halt"))))
+    #~(begin
+        (wall "UPS ~a initiated Shutdown Sequence" name)
+        (system* #$(file-append shepherd "/sbin/halt"))))
    "The handler for the doshutdown event.")
   (annoyme
    (gexp
-    #~((wall "Power problems with UPS ~a.  Please logoff." name)))
+    #~(wall "Power problems with UPS ~a.  Please logoff." name))
    "The handler for the annoyme event.")
   (emergency
    (gexp
-    #~((wall "Emergency Shutdown.  Possible battery failure on UPS ~a." name)))
+    #~(wall "Emergency Shutdown.  Possible battery failure on UPS ~a." name))
    "The handler for the emergency event.")
   (changeme
    (gexp
-    #~((let ((msg (format #f "~a UPS ~a battery needs changing NOW."
-                          (gethostname) name)))
-         (mail-to-root msg msg))
-       (wall "Emergency!  Batteries have failed on UPS ~a.  Change them NOW." name)))
+    #~(begin
+        (let ((msg (format #f "~a UPS ~a battery needs changing NOW."
+                           (gethostname) name)))
+          (mail-to-root msg msg))
+        (wall "Emergency!  Batteries have failed on UPS ~a.  Change them NOW." name)))
    "The handler for the changeme event.")
   (remotedown
    (gexp
-    #~((wall "Remote Shutdown.  Beginning Shutdown Sequence.")))
+    #~(wall "Remote Shutdown.  Beginning Shutdown Sequence."))
    "The handler for the remotedown event.")
   (startselftest
    (gexp
-    #~(#t))
+    #~#t)
    "The handler for the startselftest event.")
   (endselftest
    (gexp
-    #~(#t))
+    #~#t)
    "The handler for the endselftest event.")
   (battdetach
    (gexp
-    #~(#t))
+    #~#t)
    "The handler for the battdetach event.")
   (battattach
    (gexp
-    #~(#t))
+    #~#t)
    "The handler for the battattach event."))
 
 (define mangle-field-name
