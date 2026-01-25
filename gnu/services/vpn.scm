@@ -92,6 +92,8 @@
             wireguard-configuration-table
             wireguard-configuration-auto-start?
 
+            wireguard-configuration-file
+
             wireguard-service-type))
 
 ;;;
