@@ -59,6 +59,7 @@
 ;;; Copyright © 2025 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2025 Isidor Zeuner <guix@quidecco.pl>
 ;;; Copyright © 2025 Evgenii Klimov <eugene.dev@lipklim.org>
+;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3281,6 +3282,30 @@ similar to hardware mixing desks.  It has lot of useful features, apart
 from being able to mix multiple JACK audio streams.")
     (home-page "https://rdio.space/jackmixer/")
     (license license:gpl2+)))
+
+(define-public pipemixer
+  (package
+    (name "pipemixer")
+    (version "0.4.0")
+    (source
+     (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/heather7283/pipemixer")
+            (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "08ji4lg24flzi6g3yaavfq8hz3kr98q2ripk5m4qk9z172qxbbc9"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list libinih ncurses pipewire-minimal))
+    (synopsis "TUI volume control app for pipewire.")
+    (description "This is a TUI volume control application for pipewire built with
+ncurses. Heavily inspired by pulsemixer and pwvucontrol.")
+    (home-page "https://github.com/heather7283/pipemixer")
+    (license license:gpl3)))
 
 (define-public jalv
   (package
