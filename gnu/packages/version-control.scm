@@ -3527,7 +3527,7 @@ email header.")
 (define-public b4
   (package
     (name "b4")
-    (version "0.14.2")
+    (version "0.14.3")
     (source
      (origin
        (method git-fetch)
@@ -3537,7 +3537,7 @@ email header.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "18pacf7brvkmvxwkrsjigq9ymrr289a82wg4f1f1n4xr3k7vyr9i"))))
+         "1xxrdh0pr7yml83xdk0x20dqrnmwkhvhjkqwk16d41kxx0p391zr"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? (not (%current-target-system)) ;git path hardcoded.
@@ -3562,7 +3562,7 @@ email header.")
            python-dnspython
            python-requests))
     (native-inputs
-     (list python-pytest python-setuptools python-wheel))
+     (list python-pytest python-setuptools))
     (home-page "https://git.kernel.org/pub/scm/utils/b4/b4.git")
     (synopsis "Tool for working with patches in public-inbox archives")
     (description
