@@ -175,6 +175,7 @@
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages oneapi)
+  #:use-module (gnu packages opencl)
   #:use-module (gnu packages parallel)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages popt)
@@ -366,6 +367,36 @@ is a hybrid approach to constraint solving that combines features of
 finite domain propagation and Boolean satisfiability.")
     (home-page "https://github.com/chuffed/chuffed")
     (license license:expat)))
+
+(define-public clblast
+  (package
+    (name "clblast")
+    (version "1.6.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/CNugteren/CLBlast")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zp8rfkscnh4l9x71kp39hsg5zxfhkkf88886mv40hw0a1hafdvz"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))      ;no device available during tests
+    (inputs
+     (list opencl-icd-loader opencl-headers))
+    (native-inputs
+     (list python-minimal-wrapper))
+    (home-page "https://cnugteren.github.io/clblast/")
+    (synopsis "Tunable OpenCL BLAS library")
+    (description
+     "CLBlast is a lightweight, performant and tunable OpenCL BLAS library
+written in C++11.  It is designed to leverage the full performance potential
+of a wide variety of OpenCL devices from different vendors, including desktop
+and laptop GPUs, embedded GPUs, and other accelerators.  CLBlast implements
+BLAS routines: basic linear algebra subprograms operating on vectors and
+matrices.")
+    (license license:asl2.0)))
 
 (define-public coda
   (package
