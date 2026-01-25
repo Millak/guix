@@ -2048,7 +2048,7 @@ bindings for Python, Java, OCaml and more.")
 (define-public python-platypush
   (package
     (name "python-platypush")
-    (version "1.3.14")
+    (version "1.3.17")
     (source
      (origin
        (method git-fetch)
@@ -2057,7 +2057,7 @@ bindings for Python, Java, OCaml and more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nmpdcjamc2nw1kq4m4kvypmilvrq59xh099cnlg0hlkrly0kigc"))))
+        (base32 "0b9374dcp6bqwq0mj273g0bjh5h9i8mzria3yby04d0i9zbf1wyl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2066,19 +2066,20 @@ bindings for Python, Java, OCaml and more.")
           (add-before 'check 'pre-check
             (lambda _
               (setenv "HOME" "/tmp"))))))
-    (native-inputs (list python-setuptools python-wheel python-pytest redis))
+    (native-inputs (list python-setuptools python-pytest redis))
     (propagated-inputs (list python-alembic
                              python-croniter
+                             python-dateutil
                              python-docutils
                              python-flask
+                             python-magic
                              ;; v4 is supported in upcomming release, see
                              ;; <https://git.platypush.tech/platypush/platypush/issues/445>.
                              python-marshmallow-3
                              python-pillow
+                             python-psutil
                              python-pygments
                              python-pyotp
-                             python-dateutil
-                             python-magic
                              python-pyyaml
                              python-pyzbar
                              python-qrcode
