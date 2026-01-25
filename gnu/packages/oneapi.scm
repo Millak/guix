@@ -60,7 +60,7 @@
       #:configure-flags
       #~(list "-DSYSTEM_SPDLOG=ON"
               (string-append "-DVERSION_SHA=" #$version))))
-    (inputs (list spdlog-1.13))
+    (inputs (list spdlog-1.14))
     (native-inputs (list pkg-config python-minimal-wrapper))
     (home-page
      "https://oneapi-src.github.io/level-zero-spec/level-zero/latest/index.html")
@@ -73,7 +73,9 @@
 @item validation layer
 @item tracing layer
 @end itemize")
-    (license license:expat)))
+    (license
+     (list license:expat                ;level-zero
+           license:asl2.0))))           ;third-party/xla
 
 ;;; Updates and replaces oneapi-dnnl in (gnu packages machine-learning)
 (define-public onednn
