@@ -2494,9 +2494,8 @@ three consecutive points in a polyline or polygon
                 (("^license = .*")
                  "license = {text = \"Apache-2.0 OR LGPL-2.1-or-later\"}\n")))))))
     (native-inputs
-     (list meson-python
-           pkg-config
-           python-cython
+     (list pkg-config
+           python-meson-python
            python-pytest))
     (inputs
      (list c-siphash))
