@@ -87,3 +87,69 @@ chip written in platform-independent VHDL.")
      `((output-synopsis "out" "Instance this design library as work")
        (output-synopsis "neorv32" "Instance this design library as neorv32")))
     (license license:bsd-3)))
+
+(define-public open-logic
+  (package
+    (name "open-logic")
+    (version "4.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/open-logic/open-logic/")
+              (commit version)
+              ;; Required by the en_cl_fix submodule.
+              (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1792a6i9jq2yawipmk0nr01z092kx3kkav9v5sjf34khk3biav6q"))))
+    (outputs
+     '("out" "olo"))
+    (properties
+     `((output-synopsis "out" "Instance this design library as work")
+       (output-synopsis "olo" "Instance this design library as olo")))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'check
+            (lambda* (#:key tests? inputs #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "3rdParty/en_cl_fix/sim"
+                  (invoke "python3" "run.py" "--simulator" "nvc"
+                          "--simulator-path"
+                          (dirname (search-input-file inputs "bin/nvc"))))
+                (with-directory-excursion "sim"
+                  (substitute* "run.py"
+                    ;; This is required to comply with current VUnit, see:
+                    ;; https://github.com/VUnit/vunit/issues/777
+                    (("compile_builtins=False, ")
+                     ""))
+                  (invoke "python3" "run.py" "--nvc" "-v"))))))
+      #:install-plan
+      #~'(;; Library work.
+          ("src" "share/open-logic/work/src"
+           #:include ("vhd"))
+          ("3rdParty" "share/open-logic/work/3rdParty"
+           #:include ("vhd"))
+          ;; Library olo.
+          ("src" "share/open-logic/olo/src"
+           #:include ("vhd") #:output "olo")
+          ("3rdParty" "share/open-logic/olo/3rdParty"
+           #:include ("vhd") #:output "olo"))))
+    (native-inputs
+     (list nvc python-matplotlib python-minimal python-vunit))
+    (native-search-paths
+     (list (search-path-specification
+             (variable "FW_OPEN_LOGIC")
+             (separator #f)
+             (files (list "share/open-logic")))))
+    (home-page "https://github.com/open-logic/open-logic/")
+    (synopsis "Open library of VHDL standard components")
+    (description "Open Logic implements commonly used design units in a
+reusable and vendor/tool-independent way.  It is written following the VHDL
+2008 standard, but can also be used from System Verilog.")
+    (license (list license:lgpl2.1
+                   license:expat)))) ;en_cl_fix uses Expat license
