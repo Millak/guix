@@ -438,6 +438,51 @@ hardware designs in Verilog.")
       (home-page "https://github.com/ZipCPU/zipcpu/")
       (license license:lgpl3+))))
 
+(define-public gdstk
+  (package
+    (name "gdstk")
+    (version "0.9.62")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/heitzmann/gdstk")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0q07g7h613yqszgs49vbnran3pz6yayc0hyisdnp4fi60cyzsz1l"))
+       (file-name (git-file-name name version))
+       (snippet '(begin
+                   ;; This snippet is also inherited by python-gdstk.
+                   (use-modules (guix build utils))
+                   ;; Disable 'external' source code directory.
+                   (substitute* "CMakeLists.txt"
+                     (("add_subdirectory\\(external\\)")
+                      ""))
+                   (delete-file-recursively "external")
+                   (substitute* "src/CMakeLists.txt"
+                     (("clipper)")
+                      "polyclipping)"))
+                   (substitute* "src/clipper_tools.cpp"
+                     (("clipper/")
+                      "polyclipping/"))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-examples
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "examples")))))))
+    (inputs (list clipper qhull zlib))
+    (home-page "https://heitzmann.github.io/gdstk/")
+    (synopsis "Library for creation and manipulation of GDSII files")
+    (description
+     "@code{gdstk} is a library for creation and manipulation of GDSII
+layout files which are commonly used for
+@acronym{EDA, elecronic design automation} and chip design.")
+    (license license:boost1.0)))
+
 (define-public gerbv
   (package
     (name "gerbv")
