@@ -80,14 +80,14 @@
 (define-public avro-cpp
   (package
     (name "avro-cpp")
-    (version "1.12.0")
+    (version "1.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "mirror://apache/avro/avro-" version
                     "/avro-src-" version ".tar.gz"))
               (sha256
-               (base32 "0ywg7s7m7ngiddcg78hwb34c49yjzal6glcckinvcik2fr9nmg88"))))
+               (base32 "0bkd05q0pgir09ngyjrm4hhh9l5828xzrzd65salzw0dhp04g3i6"))))
     (build-system cmake-build-system)
     (arguments
      (list #:phases
@@ -100,7 +100,7 @@
                      (("^FetchContent_MakeAvailable\\(fmt\\)")
                       "find_package(fmt REQUIRED)")))))))
     (inputs
-     (list boost-1.83 fmt snappy))
+     (list boost-1.88 fmt snappy zlib))
     (home-page "https://avro.apache.org/")
     (synopsis "Data serialization system")
     (description "Apache Avro is a data serialization system.  Avro provides:
