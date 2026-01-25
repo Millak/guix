@@ -74,9 +74,15 @@
     (arguments
      (list
       #:test-flags
-      ;; This tests if find_library was called once, but we remove
-      ;; the call in the stage below to make the library find libzbar.
-      #~(list "-k" "not test_*_found_non_windows")
+      ;; This tests if find_library was called once, but we remove the call in
+      ;; the stage below to make the library find libzbar.
+      #~(list #$@(map (lambda (test) (string-append "--deselect="
+                                                    "pyzbar/tests/"
+                                                    "test_zbar_library.py::"
+                                                    "TestLoad::"
+                                                    test))
+                      (list "test_found_non_windows"
+                            "test_not_found_non_windows")))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-library-file-name
