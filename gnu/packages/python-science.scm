@@ -3002,8 +3002,7 @@ logic, also known as grey logic.")
            ;; python-scikit-learn
            #;python-simpleitk))
     (native-inputs
-     (list meson-python
-           python-cython
+     (list python-meson-python
            python-pytest
            python-pytest-localserver
            python-pythran))
