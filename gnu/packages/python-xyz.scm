@@ -3342,17 +3342,15 @@ into dataclasses.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1746 passed, 17 skipped, 8 warnings
+      ;; tests: 1746 passed, 17 skipped, 750 deselected, 1 warning
       #:test-flags
       ;; To prevent adding Matplotlib reducing closure size, and break cycle.
       #~(list "-m" "not image"
               ;; Tests that pass but avoided for load reasons.
               "-k" "not test_filled_random_big and not test_lines_random_big")))
     (native-inputs
-     (list cmake-minimal
-           meson-python
-           pkg-config
-           pybind11
+     (list pybind11
+           python-meson-python
            python-pytest
            python-wurlitzer))
     (propagated-inputs
