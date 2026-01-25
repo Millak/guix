@@ -1759,9 +1759,8 @@ color switches, and many more, with multiple options to customize.")
                        (setenv "HOME" "/tmp")
                        (setenv "SDL_VIDEODRIVER" "dummy")
                        (setenv "SDL_AUDIODRIVER" "disk"))))))
-    (native-inputs (list meson-python
-                         pkg-config
-                         python-cython
+    (native-inputs (list pkg-config
+                         python-meson-python
                          python-numpy
                          python-pytest
                          python-setuptools))
