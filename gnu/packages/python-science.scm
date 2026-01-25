@@ -3972,8 +3972,7 @@ tissue-specificity metrics for gene expression.")
     (inputs
      (list xclip xsel))
     (native-inputs
-     (list meson
-           meson-python
+     (list python-meson-python
            python-lxml
            python-pytest
            python-pytest-asyncio
