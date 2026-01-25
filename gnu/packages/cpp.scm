@@ -51,6 +51,7 @@
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2025 Philippe Swartvagher <phil.swart@gmx.fr>
 ;;; Copyright © 2025 Murilo <murilo@disroot.org>
+;;; Copyright © 2026 Justin Veilleux <terramorpha@cock.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -847,6 +848,33 @@ combination of these streams.")
 @code{DEBUG_ASSERT()} macro, which among other features can be selectively
 enabled in different parts of your code.")
       (license license:zlib)))
+
+(define-public xbyak
+  (package
+    (name "xbyak")
+    (version "7.30")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/herumi/xbyak")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0rb0q5i3lj2jfrkmkxcgbczflw05p1x9fdpwrhv7gng7vp2byydw"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; No tests are registered with CTest; the test/ directory contains
+      ;; shell scripts that are not integrated into the CMake build.
+      #:tests? #f))
+    (native-inputs
+     (list pkg-config))
+    (synopsis "JIT assembler for x86(IA-32)/x64(AMD64/x86-64) architecture")
+    (description "Xbyak is a C++ header-only JIT assembler for x86(IA-32),
+x64(AMD64/x86-64) architecture.  It supports MASM/NASM-like syntax and
+advanced instruction sets including AVX-512, APX, and AVX10.2.")
+    (home-page "https://github.com/herumi/xbyak")
+    (license license:bsd-3)))
 
 (define-public xdgpp
   (let ((commit "f01f810714443d0f10c333d4d1d9c0383be41375")
