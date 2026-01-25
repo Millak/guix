@@ -86,6 +86,7 @@
 ;;; Copyright © 2025 Mathieu Laparie <mlaparie@disr.it>
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2025 Arjan Adriaanse <arjan@adriaan.se>
+;;; Copyright © 2026 Justin Veilleux <terramorpha@cock.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7748,6 +7749,54 @@ Ridge, Joliet, and zisofs.")
 applications running on the Linux console.  It allows users to select items
 and copy/paste text in the console and in xterm.")
     (license license:gpl2+)))
+
+(define-public gamemode
+  (package
+    (name "gamemode")
+    (version "1.8.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/FeralInteractive/gamemode")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "14i3y385jzpr30lxk38z84rq76sy4cz0pwm54rm62f4mnk0xwjjp"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         ;; Don't build sample programs.
+         "-Dwith-examples=false"
+         ;; Build gamemoderun and other utilities.
+         "-Dwith-util=true"
+         ;; Use elogind instead of systemd for sd-bus.
+         "-Dwith-sd-bus-provider=elogind"
+         ;; Install PAM limits.d config to the package prefix; a Guix
+         ;; service can then install it to /etc/security/limits.d/.
+         (string-append "-Dwith-pam-limits-dir=" #$output
+                        "/etc/security/limits.d")
+         ;; Guix does not use systemd.
+         "-Dwith-systemd-user-unit=false"
+         "-Dwith-systemd-group=false")))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list
+      dbus
+      elogind
+      libinih))
+    (synopsis "Optimise Linux system performance on demand")
+    (description "GameMode is a daemon and library for Linux that allows games to
+request a set of optimisations be temporarily applied to the host OS and/or a
+game process.  GameMode was designed primarily as a stop-gap solution to problems
+with the Intel and AMD CPU powersave or ondemand governors, but is now host to a
+range of optimisation features and configurations, including CPU governor, I/O
+priority, process niceness, kernel scheduler, screensaver inhibiting, GPU
+performance mode, and custom scripts.")
+    (home-page "https://github.com/FeralInteractive/gamemode")
+    (license license:bsd-3)))
 
 (define-public btrfs-progs
   (package
