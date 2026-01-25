@@ -33219,7 +33219,7 @@ It implements advanced Python dictionaries with dot notation access.")
       (build-system pyproject-build-system)
       (arguments
        (list #:test-flags #~(list "--ignore=tests/test_perf.py")))
-      (native-inputs (list python-pytest
+      (native-inputs (list python-pytest-8
                            python-pytest-benchmark
                            python-setuptools
                            python-wheel))
