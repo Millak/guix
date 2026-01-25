@@ -11106,10 +11106,8 @@ include_dirs = ~:*~a/include~%"
                                          ,(list (site-packages inputs outputs)))))
                        (find-files (in-vicinity #$output "/bin"))))))))
     (native-inputs
-     (list meson-python
-           pkg-config
-           python-cython
-           python-hypothesis
+     (list python-hypothesis
+           python-meson-python
            python-pytest
            python-pytest-xdist
            python-setuptools
