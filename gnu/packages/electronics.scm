@@ -118,6 +118,7 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages java)
+  #:use-module (gnu packages jupyter)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libftdi)
@@ -142,6 +143,7 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-graphics)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -3286,6 +3288,112 @@ developing hardware based on synchronous digital logic using the Python
 programming language, as well as evaluation board definitions and a System on
 Chip toolkit.")
     (license license:bsd-3)))
+
+(define-public python-gdsfactory
+  (package
+    (name "python-gdsfactory")
+    (version "9.45.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gdsfactory/gdsfactory")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bd8i385z83hvgrbbksyqrrrkdwi54rja4bc6kgj7agnh15givq4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; FileNotFoundError: No such file or directory.
+         "--deselect=tests/test_path.py::test_gds[transition]"
+         "--deselect=tests/test_path.py::test_settings[transition]"
+         "--deselect=tests/test_port.py::test_rename_ports[electrical]"
+         "--deselect=tests/test_port.py::test_rename_ports[optical]"
+         "--deselect=tests/test_port.py::test_rename_ports[placement]"
+         "--deselect=tests/test_schematic.py::test_schematic"
+         "--deselect=tests/test_write_cells.py::test_write_cells_recursively"
+         "--deselect=tests/test_write_cells.py::test_write_cells"
+         ;; Failed: File not found in data directory, created.
+         "--deselect=tests/components"
+         "--deselect=tests/read/test_component_from_yaml.py"
+         "--deselect=tests/read/test_component_from_yaml2.py"
+         "--deselect=tests/read/test_import_gds.py"
+         ;; Reference GDS file for 'sample_fiber_array' not found.
+         "--deselect=tests/routing")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("kfactory\\[ipy\\]~=2.6.1") "kfactory~=2.6.0"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              ;; Running tests together fails with error:
+              ;;
+              ;; import file mismatch:
+              ;; imported module 'conftest' has this __file__ attribute:
+              ;;   /<...>/source/tests/backend/conftest.py
+              ;; which is not the same as the test file we want to collect:
+              ;;   /<...>/source/tests/conftest.py
+              ;;
+              ;; HINT: remove __pycache__ / .pyc files and/or use a unique
+              ;; basename for your test file modules
+              (when tests?
+                (apply invoke "pytest" "-vv" "tests" test-flags)))))))
+    (native-inputs
+     (list python-flit-core
+           python-jsondiff
+           python-pytest
+           python-pytest-regressions))
+    (propagated-inputs
+     (list python-aenum
+           python-attrs
+           python-freetype-py
+           python-graphviz
+           python-ipykernel
+           python-jinja2
+           python-kfactory
+           python-klayout
+           python-loguru
+           python-matplotlib
+           python-natsort
+           python-networkx
+           python-mapbox-earcut
+           python-numpy
+           python-orjson
+           python-pandas
+           python-pydantic
+           python-pydantic-settings
+           python-pygit2
+           python-pyglet
+           python-pyyaml
+           python-qrcode
+           python-rectpack
+           python-rich
+           python-scikit-image
+           python-scipy
+           python-shapely
+           python-toolz
+           python-trimesh
+           python-typer
+           python-types-pyyaml
+           python-typing-extensions
+           python-watchdog))
+    (home-page "https://gdsfactory.github.io/gdsfactory/")
+    (synopsis "Python library for chip design automation")
+    (description
+     "GDSFactory is a Python library for designing chips including
+photonics, analog, quantum, and MEMS devices.  It provides tools for creating,
+manipulating, and validating designs, outputting industry-standard GDSII and
+OASIS formats.  GDSFactory leverages the KLayout library for high-performance
+geometry operations.")
+    (license license:expat)))
 
 (define-public python-gdstk
   (package
