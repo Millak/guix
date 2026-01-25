@@ -847,34 +847,58 @@ high-performance computing} clusters.")
 (define-public guix-xsearch
   (package
     (name "guix-xsearch")
-    (version "2.2")
+    (version "2.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://codeberg.org/Baleine/guix-xsearch.git")
-             (commit version)))
+              (url "https://codeberg.org/Baleine/guix-xsearch.git")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rx1984841jv6y4wkhlfgdjylfffl6zl07scl1l7wgm5kmaqc6br"))))
+        (base32 "0id4g9slkciirmr442ygyb2044h3fhr5vavsy024g470qr6nz4vs"))))
     (build-system guile-build-system)
     (arguments
      (list
       #:source-directory "src"
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-load-paths-in-entry-point
+            (lambda _
+              (define load-path
+                (cons (string-append #$output
+                                     "/share/guile/site/"
+                                     (target-guile-effective-version))
+                      (parse-path (getenv "GUILE_LOAD_PATH"))))
+              (define load-compiled-path
+                (cons (string-append #$output
+                                     "/lib/guile/"
+                                     (target-guile-effective-version)
+                                     "/site-ccache")
+                      (parse-path (getenv "GUILE_LOAD_COMPILED_PATH"))))
+              (define search-paths-header
+                `(begin
+                   (set! %load-path
+                         (append (list ,@load-path) %load-path))
+                   (set! %load-compiled-path
+                         (append (list ,@load-compiled-path) %load-compiled-path))))
+
+              (substitute* "src/guix/extensions/xsearch.scm"
+                ((";;@load-paths@")
+                 (with-output-to-string (lambda () (write search-paths-header)))))))
           (add-after 'build 'add-extension-to-search-path
             (lambda _
               (with-directory-excursion #$output
                 (mkdir-p "share/guix/extensions")
-                (symlink (string-append #$output
-                          "/share/guile/site/3.0/guix/extensions/xsearch.scm")
-                         "share/guix/extensions/xsearch.scm")))))))
+                (symlink
+                 (string-append
+                  #$output
+                  "/share/guile/site/3.0/guix/extensions/xsearch.scm")
+                 "share/guix/extensions/xsearch.scm")))))))
     ;; Avoid setting guix as propagated so that we use the user’s profile.
     (native-inputs (list guile-3.0
                          guile-xapian
                          guix))
-    (propagated-inputs (list guile-xapian))
     ;; This is very important since we want the extension to be available
     ;; without having to add a vanilla guix to the current profile.
     (native-search-paths
