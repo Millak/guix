@@ -3331,7 +3331,7 @@ block devices, UUIDs, TTYs, and many other tools.")
 (define-public chimerautils
   (package
     (name "chimerautils")
-    (version "14.3.1")
+    (version "15.0.3")
     (source
      (origin
        (method git-fetch)
@@ -3340,7 +3340,7 @@ block devices, UUIDs, TTYs, and many other tools.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10xs9i9w9an9jjq7vgkyfqfyzdisbb57c8c1rryjpfiz8dmi8g41"))))
+        (base32 "1inagax7gg2rl2a9ymfxxk71xrwd4sngwc45ph61rlk345jhnxpw"))))
     (build-system meson-build-system)
     (arguments
      (list
