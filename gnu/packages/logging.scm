@@ -312,6 +312,24 @@ library.")
      (modify-inputs (package-propagated-inputs spdlog-1.15)
        (replace "fmt" fmt-9)))))
 
+(define-public spdlog-1.14
+  (package/inherit spdlog-1.15
+    (version "1.14.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gabime/spdlog")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name (package-name spdlog-1.15) version))
+       (sha256
+        (base32 "192hlxrz6nv27lca07ll19cwzwyi04vrz2p7dxwvi592ndfj3f8p"))
+       (modules '((guix build utils)))
+       (snippet #~(delete-file-recursively "include/spdlog/fmt/bundled"))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs spdlog-1.15)
+       (replace "fmt" fmt-9)))))
+
 ;; Update when changing the pinned version of fmt.
 (define-public spdlog spdlog-1.13)
 
