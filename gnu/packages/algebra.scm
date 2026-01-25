@@ -557,11 +557,11 @@ fast arithmetic.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 905 passed
       #:test-flags #~(list "--pyargs" "flint")))
     (native-inputs
-     (list meson-python
-           pkg-config
-           python-cython
+     (list pkg-config
+           python-meson-python
            python-pytest))
     (inputs
      (list gmp
