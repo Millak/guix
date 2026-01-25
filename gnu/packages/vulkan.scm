@@ -11,6 +11,7 @@
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Justin Veilleux <terramorpha@cock.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -572,6 +573,28 @@ API.")
     (description "Shaderc is a collection of tools, libraries, and tests for
 shader compilation.")
     (license license:asl2.0)))
+
+(define-public sirit
+  (package
+    (name "sirit")
+    (version "1.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/eden-emulator/sirit/releases/download/v"
+                    version "/sirit-source-" version ".tar.zst"))
+              (sha256
+               (base32 "1crp9663vl2bhr2ml4dm12prxra4w3la0jlz544k12aprzf9n0l7"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list spirv-headers))
+    (synopsis "Runtime SPIR-V assembler")
+    (description "Sirit is a runtime SPIR-V assembler.  It allows dynamic
+generation of SPIR-V shader code, handling declaration sorting, type and
+constant management, and opcode emission.")
+    (home-page "https://github.com/eden-emulator/sirit")
+    ;; Dual-licensed on top of being a fork of bsd-3 software.
+    (license (list license:agpl3+ license:gpl3+ license:bsd-3))))
 
 (define-public vkd3d
   (let ((commit "56cd4a94d541707959ce7677af6d1a34739e5579")) ; Release 1.2.
