@@ -311,6 +311,42 @@ retrieval of all your quantified self data.")
     (description
      "This package provides a X11 window watcher for @code{ActivityWatch}.")))
 
+(define-public aw-watcher-window-wayland
+  (let ((commit "aea9aca029bd33d373bf53946a16dc05ef81e0b3")
+        (revision "0"))
+    (package
+      (name "aw-watcher-window-wayland")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+            (url "https://github.com/ActivityWatch/aw-watcher-window-wayland")
+            (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0viir38q1vr5q2w3kfrz42m1lx9fxvxwq7l939m9sycqzmawi3fy"))))
+      (build-system cargo-build-system)
+      (arguments
+       (list
+        #:install-source? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-aw-requirements
+              (lambda _
+                (substitute* "Cargo.toml"
+                  (("^aw-client-rust = .*")
+                   "aw-client-rust = \"*\"\n")))))))
+      (native-inputs (list pkg-config))
+      (inputs (cons* openssl (cargo-inputs 'aw-watcher-window-wayland)))
+      (home-page "https://activitywatch.net/")
+      (synopsis "Wayland window watcher for ActivityWatch")
+      (description
+       "This package provides a wayland window watcher for
+@code{ActivityWatch}.")
+      (license license:mpl2.0))))
+
 (define-public glances
   (package
     (name "glances")
