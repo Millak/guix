@@ -2493,7 +2493,7 @@ performance computing environments.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 34005 passed, 4844 skipped, 150 xfailed, 65 xpassed, 4551 warnings
+      ;; tests: 34005 passed, 4844 skipped, 150 xfailed, 65 xpassed, 4545 warnings
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               "-m" "not network")
@@ -2524,9 +2524,7 @@ performance computing environments.")
      (list openblas))
     (native-inputs
      (list gfortran
-           meson-python
-           pkg-config
-           python-cython
+           python-meson-python
            python-pandas
            python-pytest
            python-pytest-xdist))
