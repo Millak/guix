@@ -11955,6 +11955,7 @@ comparison.
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 6584 passed, 1519 skipped, 29 xfailed
       #:configure-flags
       ''(("setup-args" . #("-DrcParams-backend=TkAgg"
                            "-Dsystem-freetype=true"
@@ -12028,15 +12029,14 @@ comparison.
            tcl
            tk))
     (native-inputs
-     (list meson-python
-           pkg-config
+     (list pkg-config
+           python-meson-python
            pybind11
            python-pytest
            python-pytest-timeout
            python-pytest-xdist
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (home-page "https://matplotlib.org/")
     (synopsis "2D plotting library for Python")
     (description
