@@ -7158,11 +7158,9 @@ and the use of a modern programming language, techniques, and libraries
     ;; tests: 41 passed, 2 warnings
     (native-inputs
      (list gfortran
-           meson-python
            perl ; fortran/Makefile
-           pkg-config
-           python-cython
            python-h5py
+           python-meson-python
            python-pytest
            python-pyyaml))
     (propagated-inputs
