@@ -2174,6 +2174,22 @@ programming language, as well as evaluation board definitions and a System on
 Chip toolkit.")
     (license license:bsd-3)))
 
+(define-public python-gdstk
+  (package
+    (inherit gdstk)
+    (name "python-gdstk")
+    (build-system pyproject-build-system)
+    (arguments (list #:test-flags #~(list ".")))
+    (native-inputs (list cmake-minimal python-pytest python-minimal-wrapper
+                         python-scikit-build-core))
+    (inputs (modify-inputs (package-inputs gdstk)
+              (prepend python-numpy)))
+    (synopsis "Python module for creation and manipulation of GDSII files")
+    (description
+     "@code{python-gdstk} is a Python library for creation
+and manipulation of GDSII layout files which are commonly used
+for @acronym{EDA, elecronic design automation} and chip design.")))
+
 (define-public python-klayout
   (package
     (name "python-klayout")
