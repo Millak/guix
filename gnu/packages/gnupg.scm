@@ -25,6 +25,7 @@
 ;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Antoine Côté <antoine.cote@posteo.net>
+;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -78,7 +79,6 @@
   #:use-module (gnu packages tor)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xorg)
-  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages xdisorg)
@@ -87,6 +87,7 @@
   #:use-module (guix download)
   #:use-module (guix utils)
   #:use-module (guix git-download)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
@@ -1035,6 +1036,38 @@ with @code{rofi-pass} a good front end for @code{password-store}.")
     (description
      "This package provides a Pinentry implementation based on Bemenu.")
     (license license:gpl3+)))
+
+(define-public pinentry-fuzzel
+  (package
+    (name "pinentry-fuzzel")
+    (version "1.0.0")
+    (source
+     (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/JonasToth/pinentry-fuzzel")
+            (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "1ykmxckiy361rl4aj3bkyihx1639x61ic4995yxkqr9r4vc7zha1"))))
+    (build-system copy-build-system)
+    (arguments
+     (list #:install-plan
+           #~'(("pinentry-fuzzel" "bin/"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-scripts
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "pinentry-fuzzel"
+                    (("fuzzel") (search-input-file inputs "bin/fuzzel"))))))))
+    (inputs
+     (list fuzzel))
+    (synopsis "Pinentry implementation based on @code{fuzzel}")
+    (description
+     "This package provides a very simple Pinentry implementation based
+on Fuzzel.")
+    (home-page "https://github.com/JonasToth/pinentry-fuzzel")
+    (license license:gpl3)))
 
 (define-public pinentry
   (package (inherit pinentry-gtk2)
