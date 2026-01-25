@@ -3301,6 +3301,62 @@ Chip toolkit.")
 and manipulation of GDSII layout files which are commonly used
 for @acronym{EDA, elecronic design automation} and chip design.")))
 
+(define-public python-kfactory
+  (package
+    (name "python-kfactory")
+    (version "2.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gdsfactory/kfactory")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0aa3q638ajrardn0fyp20bwwnz0y2jywfx8hn1irx1bk6dmj5y9g"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ;requires python-kfnetlist, which depends on klayout.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("cachetools >= 6.2.4") "cachetools >= 6.1.0")
+                (("pydantic-extra-types>=2.11") "pydantic-extra-types>=2.10")
+                (("pygit2 >= 1.19.1, < 2") "pygit2 >= 1.18.2, < 2")
+                (("ruamel.yaml >= 0.19.1, < 0.20") "ruamel.yaml >= 0.18.4, < 0.20")
+                (("typer >= 0.21.1, < 0.25") "typer >= 0.21.1, <= 0.26.4")))))))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-aenum
+           python-cachetools
+           python-klayout
+           python-loguru
+           python-pydantic
+           python-pydantic-extra-types
+           python-pydantic-settings
+           python-pygit2
+           python-rapidfuzz
+           python-rectangle-packer
+           python-requests
+           python-ruamel.yaml
+           python-ruamel.yaml.string
+           python-scipy
+           python-semver
+           python-toolz
+           python-typer))
+    (home-page "https://gdsfactory.github.io/kfactory")
+    (synopsis "Gdsfactory with a KLayout backend")
+    (description
+     "KFactory is a Python framework for photonic and electronic chip layout,
+built on KLayout's C++ geometry engine.  It provides parametric cells with
+caching, optical and electrical routing, enclosures via Minkowski sums, and
+schematic-driven design with LVS.")
+    (license license:expat)))
+
 (define-public python-klayout
   (package
     (name "python-klayout")
