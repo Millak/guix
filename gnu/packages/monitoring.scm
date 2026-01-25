@@ -80,12 +80,189 @@
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages rrdtool)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages web)
+  #:use-module (gnu packages xml)
+  #:use-module (gnu packages xorg))
+
+(define aw-source
+  (let ((name "activitywatch")
+        (version "0.13.2"))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+             (url "https://github.com/ActivityWatch/activitywatch")
+             (commit (string-append "v" version))
+             (recursive? #t)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "0yaa7g35rz9dmgxvahvkfhjpkvmi50rd6bjd9ckxvk7mfs1q0xb7"))
+      (modules '((guix build utils)))
+      (snippet
+       #~(begin
+           ;; Relax platformdirs requirement.
+           (for-each delete-file (find-files "." "poetry\\.lock"))
+           (substitute* "aw-core/pyproject.toml"
+             (("^platformdirs = .*")
+              "platformdirs = \"*\"\n")))))))
+
+(define-public aw-core
+  (package
+    (name "aw-core")
+    (version "0.5.17")
+    (source aw-source)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:modules
+      '((guix build pyproject-build-system)
+        (guix build utils)
+        (ice-9 ftw)
+        (srfi srfi-1)
+        (srfi srfi-26))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda* (#:key name #:allow-other-keys)
+              ;; All subprojects are in directories that match their name
+              ;; Here name still contains the version suffixed.
+              (and=> (find (cute string-prefix? <> name) (scandir "."))
+                     chdir)))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" (getcwd)))))))
+    (native-inputs (list python-poetry-core python-pytest))
+    (propagated-inputs
+     (list python-click
+           python-deprecation
+           python-iso8601
+           python-jsonschema
+           python-peewee
+           python-platformdirs
+           python-rfc3339-validator
+           python-strict-rfc3339
+           python-timeslot
+           python-tomlkit))
+    (home-page "https://activitywatch.net/")
+    (synopsis "Core library for ActivityWatch")
+    (description
+     "This package provides the core library for @code{ActivityWatch}.")
+    (license license:mpl2.0)))
+
+(define-public aw-client
+  (package/inherit aw-core
+    (name "aw-client")
+    (version "0.5.15")
+    (arguments
+     (substitute-keyword-arguments (package-arguments aw-core)
+       ((#:test-flags test-flags #~(list))
+        #~(list
+            ;; Most likely requires the server to run.
+           "--deselect=tests/test_client.py::test_full"
+           ;; Tries to read from stdin.
+           "--deselect=tests/test_failqueue.py::test_failqueue"))))
+    (propagated-inputs
+     (list aw-core
+           python-click
+           python-persist-queue
+           python-requests
+           python-tabulate
+           python-typing-extensions))
+    (synopsis "Client library for ActivityWatch")
+    (description
+     "This package provides the c]lient library for @code{ActivityWatch}.")))
+
+(define-public aw-notify
+  (package/inherit aw-core
+    (name "aw-notify")
+    (version "0.0.0")                   ;unreleased.
+    (arguments
+     (substitute-keyword-arguments (package-arguments aw-core)
+       ((#:tests? tests? #t)
+        #f)))                           ;No tests.
+    (synopsis "Notify library for ActivityWatch")
+    (description
+     "This package provides the notify library for @code{ActivityWatch}.")))
+
+(define-public aw-qt
+  (package/inherit aw-core
+    (name "aw-qt")
+    (version "0.1.0")
+    (arguments
+     (substitute-keyword-arguments (package-arguments aw-core)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            ;; (delete 'sanity-check)
+            (add-before 'check 'start-xserver
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let* ((Xvfb (search-input-file inputs "/bin/Xvfb"))
+                       (display ":1")
+                       (command (string-join (list Xvfb display "&") " ")))
+                  (setenv "DISPLAY" display)
+                  (zero? (system command)))))))
+       ((#:test-backend _ #f)
+        #~'custom)
+       ((#:test-flags _ #~(list))
+        #~(list "tests/integration_tests.py"))))
+    (native-inputs
+     (list python-poetry-core xorg-server-for-tests))
+    (propagated-inputs
+     (list aw-core python-click python-pyqt-6))
+    (synopsis "Trayicon for ActivityWatch")
+    (description
+     "This package provides a tray icon for @code{ActivityWatch}.")))
+
+(define-public aw-watcher-afk
+  (package/inherit aw-core
+    (name "aw-watcher-afk")
+    (version "0.2.0")
+    (arguments
+     (substitute-keyword-arguments (package-arguments aw-core)
+       ((#:tests? tests? #t)
+        #f) ;Most likely requires the server to run.
+       ((#:test-backend _ #f)
+        #~'custom)
+       ((#:test-flags _ #~(list))
+        #~(list "tests/test_continuous_events.py"))))
+    (propagated-inputs
+     (list aw-client python-pynput python-xlib))
+    (synopsis "AFK watcher for ActivityWatch")
+    (description
+     "This package provides a @acronym{AFK, away from keyboard} watcher for
+@code{ActivityWatch}.")))
+
+(define-public aw-watcher-input
+  (package/inherit aw-core
+    (name "aw-watcher-input")
+    (version "0.1.0")
+    (arguments
+     (substitute-keyword-arguments (package-arguments aw-core)
+       ((#:tests? tests? #t)
+        #f)))                           ;No tests.
+    (propagated-inputs
+     (list aw-client aw-watcher-afk))
+    (synopsis "Input watcher for ActivityWatch")
+    (description
+     "This package provide an input watcher for @code{ActivityWatch}.")))
+
+(define-public aw-watcher-window
+  (package/inherit aw-core
+    (name "aw-watcher-window")
+    (version "0.2.0")
+    (arguments
+     (substitute-keyword-arguments (package-arguments aw-core)
+       ((#:tests? tests? #t)
+        #f)))                           ;No tests.
+    (propagated-inputs
+     (list aw-client python-xlib))
+    (synopsis "X11 Window watcher for ActivityWatch")
+    (description
+     "This package provides a X11 window watcher for @code{ActivityWatch}.")))
 
 (define-public glances
   (package
