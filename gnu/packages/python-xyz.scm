@@ -15864,15 +15864,29 @@ file (e.g. @file{PKG-INFO}).")
 (define-public python-meson-python
   (package
     (name "python-meson-python")
-    (version "0.15.0")
+    (version "0.19.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "meson_python" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mesonbuild/meson-python")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0vyjhjabvm41hqijifk33idbdl62i76kfyf884f9rs29rpp77nzx"))))
-    (build-system meson-build-system)
-    (propagated-inputs (list python-pyproject-metadata python-tomli))
+        (base32 "0kbp3iax1w12bkx0kfxsavdw4almksi1yh9866pcsf9zim49k5nz"))))
+    (build-system pyproject-build-system)
+    ;; tests: 124 passed, 16 skipped
+    (native-inputs
+     (list git-minimal
+           patchelf
+           python-pytest
+           python-pytest-mock))
+    (propagated-inputs
+     (list meson
+           ninja
+           python-cython
+           python-packaging
+           python-pyproject-metadata))
     (home-page "https://github.com/mesonbuild/meson-python")
     (synopsis "Meson Python build backend (PEP 517)")
     (description "This package provides a PEP 517 build backend that makes
