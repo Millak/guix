@@ -32520,18 +32520,17 @@ handle.")
 (define-public r-tfmpvalue
   (package
     (name "r-tfmpvalue")
-    (version "0.0.9")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "TFMPvalue" version))
        (sha256
         (base32
-         "1rsxqvq1nkyhwmhm7mf7rd02rvh7xinnhqbqic6q9vicbvkmdnxr"))))
+         "11yf94jq32piwxj5cvj6map6vhz01vyn0lr74ns64343i1q0m1wg"))))
     (properties `((upstream-name . "TFMPvalue")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
-    (native-inputs (list r-testthat))
     (home-page "https://github.com/ge11232002/TFMPvalue")
     (synopsis "P-value computation for position weight matrices")
     (description
