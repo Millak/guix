@@ -341,7 +341,7 @@ single executable called @code{bam}.")
 (define-public bcftools
   (package
     (name "bcftools")
-    (version "1.21")
+    (version "1.23")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/samtools/bcftools/"
@@ -349,11 +349,11 @@ single executable called @code{bam}.")
                                   version "/bcftools-" version ".tar.bz2"))
               (sha256
                (base32
-                "10p2ligd9pqn8wq6szw2s4zqknlm7hmb4057fpdnhlsmsg0lr2jj"))
+                "0y075hjs8k604lcmhxpbw5sw5l95ljhm324xp2hiv67p72nf1kas"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; Delete bundled htslib.
-                          (delete-file-recursively "htslib-1.21")))))
+                          (delete-file-recursively "htslib-1.23")))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
