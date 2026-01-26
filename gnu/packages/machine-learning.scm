@@ -2594,15 +2594,15 @@ to return meaningful clusters (if there are any).")
 (define-public python-pynndescent
   (package
     (name "python-pynndescent")
-    (version "0.5.13")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pynndescent" version))
        (sha256
-        (base32 "1yq0k15964klz7135gpa7rcpixywzs4zxmcp8p4fw7haxv058hnp"))))
+        (base32 "1x94mjdf62f2yqql50qn0qjh4bkhwdvx7xx9aph421s0bgxy1zbz"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-importlib-metadata
                              python-joblib
                              python-llvmlite
