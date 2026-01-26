@@ -912,15 +912,12 @@ displayed in a terminal.")
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
-               (add-after 'install 'record-absolute-file-names
+               (add-after 'install 'record-absolute-file-name
                  (lambda _
-                   ;; 'imv' is a script that execs 'imv-x11' or 'imv-wayland'.
-                   ;; 'imv-dir' execs 'imv'. Record their absolute file names.
-                   (let ((bin (string-append #$output "/bin")))
-                     (substitute* (string-append bin "/imv")
-                       (("imv-") (string-append bin "/imv-")))
-                     (substitute* (string-append bin "/imv-dir")
-                       (("imv") (string-append bin "/imv")))))))))
+                   ;; 'imv-dir' execs 'imv'.  Record the absolute file name.
+                   (substitute* (string-append #$output "/bin/imv-dir")
+                     (("exec imv")
+                      (string-append "exec " #$output "/bin/imv"))))))))
     (native-inputs
      (list asciidoc
            cmocka
