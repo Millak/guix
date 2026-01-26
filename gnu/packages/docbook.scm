@@ -666,7 +666,8 @@ the in DocBook SGML DTDs.")
                (base32
                 "0yd09nypswy3q4scri1dg7dr99d7gd6r2dwx0xm81l9f4y32gs0n"))
               (patches
-               (search-patches "dblatex-inkscape-1.0.patch"))))
+               (search-patches "dblatex-importlib.patch"
+                               "dblatex-inkscape-1.0.patch"))))
     (outputs '("out" "doc"))
     (build-system pyproject-build-system)
     (arguments

@@ -1191,6 +1191,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/date-output-pkg-config-files.patch	\
   %D%/packages/patches/dbacl-include-locale.h.patch		\
   %D%/packages/patches/dbacl-icheck-multiple-definitions.patch	\
+  %D%/packages/patches/dblatex-importlib.patch		\
   %D%/packages/patches/dblatex-inkscape-1.0.patch		\
   %D%/packages/patches/dbus-helper-search-path.patch		\
   %D%/packages/patches/ddd-build.patch				\

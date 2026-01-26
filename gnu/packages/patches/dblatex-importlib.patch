@@ -1,0 +1,134 @@
+From 0094f13cf133c575d26b61a0b23351e085fb6142 Mon Sep 17 00:00:00 2001
+Message-ID: <0094f13cf133c575d26b61a0b23351e085fb6142.1769464831.git.ngraves@ngraves.fr>
+From: Nicolas Graves <ngraves@ngraves.fr>
+Date: Mon, 26 Jan 2026 22:59:33 +0100
+Subject: [PATCH] Replace imp with importlib
+
+Combining
+https://sourceforge.net/p/dblatex/patches/12/attachment/dblatex-0.3.12-replace-imp-by-importlib.patch
+https://sourceforge.net/p/dblatex/patches/13/attachment/dblatex-0.3.12-adjust-submodule-imports.patch
+---
+ lib/dbtexmf/core/dbtex.py              | 20 ++++++++++----------
+ lib/dbtexmf/dblatex/grubber/plugins.py | 20 ++++++++++----------
+ lib/dbtexmf/xslt/xslt.py               | 24 +++++++++++++-----------
+ 3 files changed, 33 insertions(+), 31 deletions(-)
+
+diff --git a/lib/dbtexmf/core/dbtex.py b/lib/dbtexmf/core/dbtex.py
+index b3ec732..4cf9591 100644
+--- a/lib/dbtexmf/core/dbtex.py
++++ b/lib/dbtexmf/core/dbtex.py
+@@ -15,7 +15,8 @@ try:
+ except ImportError:
+     from urllib.request import pathname2url
+ import glob
+-import imp
++import importlib.machinery
++import importlib.util
+ from optparse import OptionParser
+ from io import open
+ 
+@@ -540,15 +541,14 @@ class DbTexCommand:
+ 
+     def load_plugin(self, pathname):
+         moddir, modname = os.path.split(pathname)
+-        try:
+-            filemod, path, descr = imp.find_module(modname, [moddir])
+-        except ImportError:
+-            try:
+-                filemod, path, descr = imp.find_module(modname)
+-            except ImportError:
+-                failed_exit("Error: '%s' module not found" % modname)
+-        mod = imp.load_module(modname, filemod, path, descr)
+-        filemod.close()
++        spec = importlib.machinery.PathFinder.find_spec(modname, [moddir])
++        if not spec:
++            spec = importlib.machinery.PathFinder.find_spec(modname)
++        if not spec:
++            failed_exit("Error: '%s' module not found" % modname)
++        mod = importlib.util.module_from_spec(spec)
++        spec.loader.exec_module(mod)
++        sys.modules[modname] = mod
+         return mod
+ 
+     def run_setup(self, options):
+diff --git a/lib/dbtexmf/dblatex/grubber/plugins.py b/lib/dbtexmf/dblatex/grubber/plugins.py
+index 9e333c9..6b4ecb4 100644
+--- a/lib/dbtexmf/dblatex/grubber/plugins.py
++++ b/lib/dbtexmf/dblatex/grubber/plugins.py
+@@ -4,7 +4,8 @@
+ Mechanisms to dynamically load extra modules to help the LaTeX compilation.
+ All the modules must be derived from the TexModule class.
+ """
+-import imp
++import importlib.machinery
++import importlib.util
+ 
+ from os.path import *
+ from dbtexmf.dblatex.grubber.msg import _, msg
+@@ -108,17 +109,16 @@ class Plugins (object):
+         """
+         if name in self.modules:
+             return 2
+-        try:
+-            file, path, descr = imp.find_module(name, [""])
+-        except ImportError:
++        spec = importlib.machinery.PathFinder.find_spec(name, [""])
++        if not spec:
+             if not self.path:
+                 return 0
+-            try:
+-                file, path, descr = imp.find_module(name, self.path)
+-            except ImportError:
+-                return 0
+-        module = imp.load_module(name, file, path, descr)
+-        file.close()
++            spec = importlib.machinery.PathFinder.find_spec(name, self.path)
++        if not spec:
++            return 0
++        module = importlib.util.module_from_spec(spec)
++        spec.loader.exec_module(module)
++        sys.modules[name] = module
+         self.modules[name] = module
+         return 1
+ 
+diff --git a/lib/dbtexmf/xslt/xslt.py b/lib/dbtexmf/xslt/xslt.py
+index 0350e30..7cc2038 100644
+--- a/lib/dbtexmf/xslt/xslt.py
++++ b/lib/dbtexmf/xslt/xslt.py
+@@ -2,20 +2,22 @@
+ # Very simple plugin loader for Xslt classes
+ #
+ import os
+-import imp
++import importlib.machinery
++import importlib.util
+ import glob
++import sys
+ 
+ def load(modname):
+-    try:
+-        file, path, descr = imp.find_module(modname, [""])
+-    except ImportError:
+-        try:
+-            file, path, descr = imp.find_module(modname,
+-                                                [os.path.dirname(__file__)])
+-        except ImportError:
+-            raise ValueError("Xslt '%s' not found" % modname)
+-    mod = imp.load_module(modname, file, path, descr)
+-    file.close()
++    spec = importlib.machinery.PathFinder.find_spec(modname, [""])
++    if not spec:
++        spec = importlib.machinery.PathFinder.find_spec(modname,
++                                                        [os.path.dirname(__file__)])
++    if not spec:
++        raise ValueError("Xslt '%s' not found" % modname)
++
++    mod = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(mod)
++    sys.modules[modname] = mod
+     o = mod.Xslt()
+     return o
+ 
+-- 
+2.52.0
+
