@@ -49,6 +49,7 @@
 ;;; Copyright © 2025 bdunahu <bdunahu@operationnull.com>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
+;;; Copyright © 2026 Spencer King <spencer.king@wustl.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2152,7 +2153,7 @@ bootloader in Espressif ESP8266 & ESP32 series chips.")
 (define-public radare2
   (package
     (name "radare2")
-    (version "6.0.7")
+    (version "6.0.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2160,7 +2161,7 @@ bootloader in Espressif ESP8266 & ESP32 series chips.")
                     (commit version)))
               (sha256
                (base32
-                "1nkqa8mkmvmbc3812gf5ayfmzyf0krjgc1695rpkphw3fsl76rgx"))
+                "1fxrwlgliizxz71svdsvkd03yanxif88cxhiaw5i8znf7f97nh4v"))
               (file-name (git-file-name name version))
               (patches
                (search-patches "radare2-fix-meson-build-to-use-sys-sdb.patch"
@@ -2169,7 +2170,12 @@ bootloader in Espressif ESP8266 & ESP32 series chips.")
     (arguments
      (list
       #:configure-flags
-      #~(list "-Duse_libuv=true"
+      ;; XXX: 6.0.8 fails to build when use_libuv=true
+      ;; this is because some functions in libr/core/rtr.c
+      ;; are in an #if HAVE_LIBUV block and were being removed by the preprocessor
+      ;; https://github.com/radareorg/radare2/issues/25156
+      ;; Re-evaluate this setting in future updates
+      #~(list "-Duse_libuv=false"
               "-Duse_ssl=true"
               "-Duse_sys_capstone=true"
               "-Duse_sys_lz4=true"
