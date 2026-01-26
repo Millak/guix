@@ -28,7 +28,7 @@
 ;;; Copyright © 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2015, 2017, 2018, 2019, 2021-2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2019, 2021-2026 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Kristofer Buffington <kristoferbuffington@gmail.com>
 ;;; Copyright © 2018 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
@@ -5397,7 +5397,7 @@ with integrated support for finding required rows quickly.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "22.0.0")
+    (version "23.0.0")
     (source
      (origin
        (method git-fetch)
@@ -5407,7 +5407,7 @@ with integrated support for finding required rows quickly.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "09ra9p2majsczjq6ygcz2jqafdryvrzahxsbflfqp2z8invsd14b"))))
+         "1bkr0m4nc29f1fp9rkbgjy3wbrw8ngr76zwkmvjhn9s6pfar8nq6"))))
     (build-system cmake-build-system)
     (arguments
      (list
