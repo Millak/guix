@@ -68,6 +68,7 @@
 ;;; Copyright © 2025 Philippe Swartvagher <phil.swart@gmx.fr>
 ;;; Copyright © 2025 Simen Endsjø <contact@simendsjo.me>
 ;;; Copyright © 2025 bdunahu <bdunahu@operationnull.com>
+;;; Copyright © 2026 Spencer King <spencer.king@wustl.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5829,7 +5830,7 @@ be blown away by a SQL-DB or an external database server.")
 (define-public sdb
   (package
     (name "sdb")
-    (version "2.2.4")
+    (version "2.3.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5838,7 +5839,7 @@ be blown away by a SQL-DB or an external database server.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "15pc807s2nmhnr3mspyz9h47rkxkv1r07x959ir17v5b6zs7wxvw"))))
+                "0x99sjmd8h0r6rh1ahr48lbqlg6swf2s3m2slqzlf19bxvy2firs"))))
     (build-system meson-build-system)
     (arguments
      (list
