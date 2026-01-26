@@ -36026,17 +36026,26 @@ whole genome approach to detecting significant QTL in linkage maps.")
 (define-public r-bedr
   (package
     (name "r-bedr")
-    (version "1.1.3")
+    (version "1.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bedr" version))
        (sha256
         (base32
-         "1mxscr02n81jcwmw4rzmixwvcipjv018gdaqigyvis0p7y0iras7"))))
+         "1r4zd7fg7z8bvc06dry9avqnym2kyi3pr1i3zfyglc5has5wg3f0"))))
     (build-system r-build-system)
-    ;; FIXME Tests fail with: could not find function "context"
-    (arguments (list #:tests? #false))
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'skip-bad-tests
+           (lambda _
+             ;; FIXME This test fails with: object 'a.b.overlap.sorted' not
+             ;; found.
+             (substitute* "tests/testthat/test-in.region.R"
+               ((".*check in.region.*" m)
+                (string-append m "skip('skip');\n"))))))))
     (propagated-inputs
      (list r-data-table
            r-r-utils
