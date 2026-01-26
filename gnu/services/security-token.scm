@@ -20,6 +20,7 @@
 
 (define-module (gnu services security-token)
   #:use-module (gnu services)
+  #:use-module (gnu services dbus)
   #:use-module (gnu services shepherd)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
@@ -88,5 +89,7 @@
     (list (service-extension shepherd-root-service-type
                              (compose list pcscd-shepherd-service))
           (service-extension activation-service-type
-                             pcscd-activation)))
+                             pcscd-activation)
+          (service-extension polkit-service-type
+                             (compose list pcscd-configuration-pcsc-lite))))
    (default-value (pcscd-configuration))))
