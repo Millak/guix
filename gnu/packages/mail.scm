@@ -3094,16 +3094,14 @@ converts them to maildir format directories.")
 (define-public mblaze
   (package
     (name "mblaze")
-    (version "1.2")
+    (version "1.4")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/leahneukirchen/mblaze")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "https://leahneukirchen.org/releases/"
+                           name "-" version ".tar.gz"))
        (sha256
-        (base32 "0fa8s9dp5ilwmfcwkx72x2b5i0maa5sl97hv2cdknqmc27gv0b1c"))))
+        (base32 "06x4k1zvhzzk9gwz84hp2c5ijrxf0w54lgwcsgin66g3z6rz5dkv"))))
     (outputs '("out" "contrib"))
     (build-system gnu-build-system)
     (inputs (list bash-minimal
