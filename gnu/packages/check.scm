@@ -3020,26 +3020,6 @@ pragmas to control it from within your code.  Additionally, it is
 possible to write plugins to add your own checks.")
     (license license:gpl2+)))
 
-(define-public python-discover
-  (package
-    (name "python-discover")
-    (version "0.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "discover" version))
-       (sha256
-        (base32
-         "0y8d0zwiqar51kxj8lzmkvwc3b8kazb04gk5zcb4nzg5k68zmhq5"))))
-    (build-system python-build-system)
-    (home-page "https://pypi.org/project/discover/")
-    (synopsis
-     "Python test discovery for unittest")
-    (description
-     "Discover provides test discovery for unittest, a feature that has been
-backported from Python 2.7 for Python 2.4+.")
-    (license license:bsd-3)))
-
 (define-public behave
   (package
     (name "behave")
