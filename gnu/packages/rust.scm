@@ -2024,9 +2024,6 @@ ar = \"" (search-input-file inputs (string-append "/bin/" #$(ar-for-target targe
            (package-propagated-inputs base-rust)))
       (native-inputs
        (modify-inputs (package-native-inputs base-rust)
-         ;; Build with the same version as the cross-gcc version.
-         ;; TODO: Remove this when gcc and %xgcc are the same version again.
-         (prepend gcc-14)
          (prepend (cross-gcc target
                              #:libc (cross-libc target)))
          (prepend (if (target-mingw? target)
