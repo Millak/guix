@@ -1523,30 +1523,10 @@ have been used.  This library is now part of Python (since Python 3.3),
 available via the @code{unittest.mock} module.")
     (license license:expat)))
 
+;; XXX: Deprecated on <2026-01-26>.
 ;;; This package is unmaintained (see the note at the top of doc/index.rst).
-(define-public python-nose
-  (package
-    (name "python-nose")
-    (version "1.3.7")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "nose" version))
-        (sha256
-          (base32
-            "164a43k7k2wsqqk1s6vavcdamvss4mz0vd6pwzv2h9n8rgwzxgzi"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'invoke-2to3
-                    (lambda _
-                      (invoke "2to3" "-w" "."))))))
-    (home-page "https://readthedocs.org/docs/nose/")
-    (synopsis "Python testing library")
-    (description
-     "Nose extends the unittest library to make testing easier.")
-    (license license:lgpl2.0+)))
+;;; Pynose is actively maintained successor of Nose tests runner.
+(define-deprecated/public-alias python-nose python-pynose)
 
 (define-public python-nose2
   (package
