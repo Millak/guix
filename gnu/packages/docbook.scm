@@ -37,6 +37,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages base)
   #:use-module (gnu packages web)
   #:use-module (gnu packages web-browsers)
@@ -51,6 +52,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (srfi srfi-26))
 
@@ -666,21 +668,24 @@ the in DocBook SGML DTDs.")
               (patches
                (search-patches "dblatex-inkscape-1.0.patch"))))
     (outputs '("out" "doc"))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Using setuptools causes an invalid "package_base" path in
-      ;; out/bin/.dblatex-real due to a missing leading '/'.  This is caused
-      ;; by dblatex's setup.py stripping the root path when creating the
-      ;; script.  (dblatex's setup.py still uses distutils and thus has to
-      ;; create the script by itself. The feature for creating scripts is one
-      ;; of setuptools' features.)
-      ;; See this thread for details:
-      ;; https://lists.gnu.org/archive/html/guix-devel/2016-12/msg00030.html
-      #:use-setuptools? #f
       #:tests? #f                       ;no test suite
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-modern-entry-points
+            (lambda _
+              (substitute* "setup.py"
+                (("'build_scripts': BuildScripts,")
+                 "")
+                (("scripts=\\['scripts/dblatex'\\],")
+                 (format #f "entry_points={'console_scripts':[~s]},"
+                         "dblatex = dbtexmf.dblatex.dblatex:main")))
+              (substitute* "lib/dbtexmf/dblatex/dblatex.py"
+                (("main\\(base=\"\"\\)")
+                 (format #f "main(base=~s)"
+                         (string-append #$output "/share/dblatex"))))))
           (add-after 'install 'move-doc
             (lambda _
               (let ((old (string-append #$output "/share/doc"))
@@ -705,7 +710,7 @@ the in DocBook SGML DTDs.")
                 (unsetenv "GUIX_TEXMF")
                 (invoke/quiet (string-append #$output "/bin/dblatex")
                               "--quiet" "tests/mathml/mmltest2.xml")))))))
-    (native-inputs (list docbook-mathml-1.0))
+    (native-inputs (list docbook-mathml-1.0 python-setuptools))
     (inputs
      (list bash-minimal
            texlive-bin
