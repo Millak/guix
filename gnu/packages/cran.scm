@@ -54433,17 +54433,30 @@ Kogalur and Eiran Z. Gorodeski and Andy J. Minn and Michael S. Lauer (2010)
 (define-public r-randomforestsrc
   (package
     (name "r-randomforestsrc")
-    (version "2.9.3")
+    (version "3.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "randomForestSRC" version))
        (sha256
         (base32
-         "05ifvj49jv0n5p6k46milpgj9r10sc5aw23fypyyibdgwpwvwixw"))))
+         "1kjpjkjm81pqm4j185nv66qwlqc9f94s2s5dsgn5mkp7az377d1k"))))
     (properties
      `((upstream-name . "randomForestSRC")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; DiagrammeR cannot be built from source yet.
+         (add-after 'unpack 'remove-diagrammer
+           (lambda _
+             (substitute* "DESCRIPTION"
+               ((", DiagrammeR") ""))
+             (substitute* "NAMESPACE"
+               (("importFrom\\(\"DiagrammeR\".*") "")
+               (("^ +\"create_node_df\".*") "")))))))
+    (propagated-inputs (list r-data-tree))
     (home-page "https://cran.r-project.org/web/packages/randomForestSRC/")
     (synopsis "Random forests for survival, regression, and classification")
     (description
