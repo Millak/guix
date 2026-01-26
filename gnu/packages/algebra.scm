@@ -561,7 +561,7 @@ fast arithmetic.")
       #:test-flags #~(list "--pyargs" "flint")))
     (native-inputs
      (list pkg-config
-           python-meson-python
+           python-meson
            python-pytest))
     (inputs
      (list gmp

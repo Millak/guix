@@ -2043,7 +2043,7 @@ that allows you to run services and through them access the Bitcoin Cash network
            gnupg
            meson
            ninja
-           python-meson-python
+           python-meson
            python-pytest
            python-setuptools
            python-wheel))

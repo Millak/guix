@@ -1760,7 +1760,7 @@ color switches, and many more, with multiple options to customize.")
                        (setenv "SDL_VIDEODRIVER" "dummy")
                        (setenv "SDL_AUDIODRIVER" "disk"))))))
     (native-inputs (list pkg-config
-                         python-meson-python
+                         python-meson
                          python-numpy
                          python-pytest
                          python-setuptools))

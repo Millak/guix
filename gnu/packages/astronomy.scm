@@ -7160,7 +7160,7 @@ and the use of a modern programming language, techniques, and libraries
      (list gfortran
            perl ; fortran/Makefile
            python-h5py
-           python-meson-python
+           python-meson
            python-pytest
            python-pyyaml))
     (propagated-inputs
