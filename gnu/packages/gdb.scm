@@ -48,26 +48,6 @@
   #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (srfi srfi-1))
 
-
-(define (gdb-python-config pkg-config)
-  "Return a script to satisfy gdb to enable python support."
-  ;; based on https://www.sourceware.org/gdb/wiki/CrossCompilingWithPythonSupport
-  (program-file "gdb-python-config"
-                #~(begin
-                      (use-modules (ice-9 match))
-                      (let ((pkg-config #$pkg-config))
-                        (match (command-line)
-                          ((_ _ "--includes")
-                           (execlp pkg-config pkg-config
-                                   "python3-embed" "--cflags"))
-                          ((_ _ "--ldflags")
-                           (execlp pkg-config pkg-config
-                                   "python3-embed" "--libs"))
-                          ((_ _ "--exec-prefix")
-                           (execlp pkg-config pkg-config
-                                   "python3-embed" "--variable=exec_prefix"))
-                          (_  (exit 1)))))))
-
 (define-public gdb-14
   (package
     (name "gdb")
@@ -87,16 +67,9 @@
       #:out-of-source? #t
       #:modules `((srfi srfi-1)
                   ,@%default-gnu-modules)
-      #:configure-flags
-      #~(list
-         #$@(if (and (this-package-input "python-wrapper")
-                     (%current-target-system))
-                #~((string-append "--with-python="
-                                  #+(gdb-python-config (pkg-config-for-target))))
-                #~())
-         #$@(if (target-hurd64?)
-                #~("--enable-targets=i586-pc-gnu,x86_64-pc-gnu")
-                #~()))
+      #:configure-flags (if (target-hurd64?)
+                            #~'("--enable-targets=i586-pc-gnu,x86_64-pc-gnu")
+                            #~'())
       #:phases #~(modify-phases %standard-phases
                    ;; The following phase only applies to gdb@12, which
                    ;; inherits from this package. Remove it when removing
@@ -108,13 +81,6 @@
                            (("aarch64_get_CPSR_bits  \\(sim_cpu \\*, uint32_t\\)")
                              "aarch64_get_CPSR_bits  (sim_cpu *, FlagMask)")))))
                      #~())
-                   #$@(if (%current-target-system)
-                          #~((add-after 'unpack 'enable-guile
-                               (lambda* (#:key native-inputs #:allow-other-keys)
-                                 (setenv "ac_cv_guild_program_name" (which "guild"))
-                                 (setenv "ac_cv_path_pkg_config_prog_path"
-                                         (which #$(pkg-config-for-target))))))
-                          #~())
                    (add-after 'unpack 'patch-paths
                      (lambda* (#:key inputs #:allow-other-keys)
                        (let ((sh (string-append (assoc-ref inputs "bash")
@@ -170,7 +136,6 @@
      `(("texinfo" ,texinfo)
        ("dejagnu" ,dejagnu)
        ("pkg-config" ,pkg-config)
-       ("guile" ,guile-3.0) ;; cross-compiling
        ,@(if (target-hurd?)
              ;; When cross-compiling from x86_64-linux, make sure to use a
              ;; 32-bit MiG because we assume target i586-pc-gnu.
