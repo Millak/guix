@@ -56431,14 +56431,16 @@ for testing and developing your own models.")
 (define-public r-misctools
   (package
     (name "r-misctools")
-    (version "0.6-28")
+    (version "0.6-30")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "miscTools" version))
        (sha256
-        (base32 "089vb57ynqzqa9ppalqfgn0n5wazfjng2kc7z4wgb2ll40hjyk5x"))))
-    (properties `((upstream-name . "miscTools")))
+        (base32 "0ggxzr3q7ir765iwnr450s54ymx5frkx7kp1h9qb3bnp5bxx47cn"))))
+    (properties
+     '((upstream-name . "miscTools")
+       (updater-extra-native-inputs . ("r-ecdat"))))
     (build-system r-build-system)
     (propagated-inputs (list r-digest))
     (native-inputs (list r-ecdat))
