@@ -2962,36 +2962,6 @@ each of the environments.")
     (description "Pytest plugin for checking Python source code with pyflakes.")
     (license license:expat)))
 
-(define-public python-coverage-test-runner
-  (package
-    (name "python-coverage-test-runner")
-    (version "1.15")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "http://git.liw.fi/cgi-bin/cgit/cgit.cgi/"
-             "coverage-test-runner/snapshot/coverage-test-runner-"
-             version ".tar.gz"))
-       (sha256
-        (base32
-         "1kjjb9llckycnfxag8zcvqsn4z1s3dwyw6b1n0avxydihgf30rny"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "./testrun"))))))
-    (propagated-inputs
-     (list python-coverage))
-    (home-page "https://liw.fi/coverage-test-runner/")
-    (synopsis "Python module for running unit tests")
-    (description "@code{CoverageTestRunner} is a python module for running
-unit tests and failing them if the unit test module does not exercise all
-statements in the module it tests.")
-    (license license:gpl3+)))
-
 (define-public python-pylint
   (package
     (name "python-pylint")
