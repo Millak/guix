@@ -14,7 +14,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2019, 2022 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2015, 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2015, 2016 Erik Edrosa <erik.edrosa@gmail.com>
-;;; Copyright © 2015-2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2017, 2020 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
@@ -5309,7 +5309,7 @@ concepts.")
 (define-public python-hdf5storage
   ;; XXX: Use the latest commit containing compatability with Pytest and Python
   ;; 3.11, see: <https://github.com/frejanordsiek/hdf5storage/issues/135>.
-  ;; 
+  ;;
   ;; This package probably is sun setting, consider to remove when stops
   ;; building, see: <https://github.com/frejanordsiek/hdf5storage/issues/136>.
   (let ((commit "7ee2a96de134b44beaa79c3a11c559f9ac87c5a6")
@@ -11033,6 +11033,15 @@ writing C extensions for Python as easy as Python itself.")
                 ;; Relay on python from the PATH instead of full reference
                 ;; stored in built wheel.
                 (("'py.full_path\\(\\)'") "'python'"))))
+          ;; This isn't architecture specific.
+          ;; TODO: Remove this conditional and apply for all builds.
+          #$@(if (target-ppc64le?)
+                 #~((add-after 'unpack 'patch-bin-true
+                      (lambda* (#:key inputs #:allow-other-keys)
+                        (substitute* "numpy/_core/tests/test_cpu_features.py"
+                          (("/bin/true")
+                           (search-input-file inputs "bin/true"))))))
+                 #~())
           (add-before 'build 'parallelize-build
             (lambda _
               (setenv "OMP_NUM_THREAD"
