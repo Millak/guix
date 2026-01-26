@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017, 2018 Nikolai Merinov <nikolai.merinov@member.fsf.org>
-;;; Copyright © 2017, 2019-2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2019-2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
@@ -1642,6 +1642,11 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
        (substitute-keyword-arguments
          (strip-keyword-arguments '(#:tests?)
                                   (package-arguments base-rust))
+         ((#:disallowed-references _ '())
+          (list (this-package-native-input "rustc-bootstrap")
+                ;; Refer to cargo-bootstrap as #$rustc-bootstrap:cargo.
+                (gexp-input (this-package-native-input "rustc-bootstrap")
+                            "cargo")))
          ((#:modules modules)
           (cons '(srfi srfi-26) modules))
          ((#:phases phases)
@@ -1899,6 +1904,15 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                  ;; on Guix and it retains a reference to the host's bash.
                  (substitute* "src/tools/rust-installer/install-template.sh"
                    (("install_uninstaller \"") "# install_uninstaller \""))))
+             (add-after 'install-rust-src 'dont-reference-previous-cargo-version
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (with-directory-excursion
+                   (string-append (assoc-ref outputs "rust-src")
+                                  "/lib/rustlib/src/rust/src/tools/")
+                   (substitute* (find-files "." "cargo-test-fixture\\.rs")
+                     (("#!.*/bin/cargo")
+                      (string-append "#!" (assoc-ref outputs "cargo")
+                                     "/bin/cargo"))))))
              (add-after 'install-rust-src 'wrap-rust-analyzer
                (lambda* (#:key outputs #:allow-other-keys)
                  (let ((bin (string-append (assoc-ref outputs "tools") "/bin")))
@@ -2074,6 +2088,7 @@ ar = \"" (search-input-file inputs (string-append "/bin/" #$(ar-for-target targe
                   (invoke "./x.py" "install" "library/std")))
               (delete 'enable-profiling)
               (delete 'install-rust-src)
+              (delete 'dont-reference-previous-cargo-version)
               (delete 'wrap-rust-analyzer)
               (delete 'wrap-rustc)))))
       (inputs
