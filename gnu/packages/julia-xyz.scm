@@ -5,7 +5,7 @@
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2024, 2025 Spencer King <spencer.king@geneoscopy.com>
+;;; Copyright © 2024-2026 Spencer King <spencer.king@wustl.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5590,6 +5590,28 @@ arbitrary normed vector spaces (e.g. matrix-valued integrands).")
     (description "This is a Julia interface to @code{libquadmath}, providing a
 @code{Float128} type corresponding to the IEEE754 binary128 floating point
 format.")
+    (license license:expat)))
+
+(define-public julia-quantuminterface
+  (package
+    (name "julia-quantuminterface")
+    (version "0.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/qojulia/QuantumInterface.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05792hkhjghlpm919ip8hzbhwv8xcngmyyks2nr8bln6qa8f8r9i"))))
+    (build-system julia-build-system)
+    (native-inputs (list julia-safetestsets))
+    (home-page "https://github.com/qojulia/QuantumInterface.jl")
+    (synopsis "Lightweight interface for Quantum Physics related packages")
+    (description
+     "This package provides a lightweight interface for Quantum Physics
+related packages.")
     (license license:expat)))
 
 (define-public julia-quaternions
