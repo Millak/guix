@@ -289,14 +289,6 @@ install.")
               (for-each (lambda (file)
                           (chmod file #o755))
                         (find-files #$output "autopkgtest-virt-.*"))))
-          ;; Adjust use of importlib.resources to use python 3.10 compatible
-          ;; syntax, which requires an argument.
-          ;; Drop when switching to python 3.12+.
-          (add-after 'unpack 'adjust-importlib-resources-for-old-python
-            (lambda _
-              (substitute* "reprotest/__init__.py"
-                (("importlib.resources.files\\(\\)")
-                  "importlib.resources.files(package='reprotest')"))))
           (add-after 'unpack 'skip-most-tests
             ;; These tests require functionality not available in the guix
             ;; build environment
