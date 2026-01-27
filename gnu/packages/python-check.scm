@@ -3551,9 +3551,8 @@ for the @code{pytest} framework.")
         (base32 "0gjm9qy1rsngvli042szqc45y0q5zk1crq28ja01iyjw3n74nxl8"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
+     (list python-pytest-8
+           python-setuptools))
     (propagated-inputs
      (list python-pylint))
     (home-page "https://github.com/carsongee/pytest-pylint")
