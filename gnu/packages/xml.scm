@@ -1207,19 +1207,26 @@ XSL-T processor.  It also performs any necessary post-processing.")
 (define-public xmlsec
   (package
     (name "xmlsec")
-    (version "1.3.7")
+    (version "1.3.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.aleksey.com/xmlsec/download/"
                                   "xmlsec1-" version ".tar.gz"))
               (sha256
                (base32
-                "1shk40mpaqaf05skgyxa7qxgcarjd6i1fadn2sk0b8lakfv96bnq"))))
+                "0bxnz4y097gbx1hx945h7j5pdycwbba3bfgmp6nyd1kbgb6whcd6"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      ;; Enabling dynamic loading requires to set LD_LIBRARY_PATH, instead
+      ;; separate packages are used, so it has no added value.
+      #~(list "--disable-crypto-dl"
+              "--disable-apps-crypto-dl")))
     (propagated-inputs                  ; according to xmlsec1.pc
      (list libxml2 libxslt))
     (inputs
-     (list gnutls libgcrypt libltdl))
+     (list gnutls libgcrypt))
     (native-inputs
      (list pkg-config))
     (home-page "https://www.aleksey.com/xmlsec/")
