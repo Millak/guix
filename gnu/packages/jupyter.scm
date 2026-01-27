@@ -430,7 +430,7 @@ interactive computing.")
 to Jupyter Server for their Python Web application backend.")
     (license license:bsd-3)))
 
-(define-public python-jupyter-client
+(define-public python-jupyter-client-8
   (package
     (name "python-jupyter-client")
     (version "8.7.0")
@@ -491,7 +491,7 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
 
 (define-public python-jupyter-client-7
   (package
-    (inherit python-jupyter-client)
+    (inherit python-jupyter-client-8)
     (name "python-jupyter-client")
     (version "7.4.9")
     (source
@@ -516,6 +516,8 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
            python-pyzmq
            python-tornado
            python-traitlets))))
+
+(define-public python-jupyter-client python-jupyter-client-7)
 
 ;; Bootstrap variant of jupyter-client, which breaks the loop between ipykernel
 ;; and jupyter-client by removing the former from its native-inputs and
