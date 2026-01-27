@@ -8848,7 +8848,7 @@ for httplib2 transport.")
 (define-public python-google-auth-oauthlib
   (package
     (name "python-google-auth-oauthlib")
-    (version "1.2.3")
+    (version "1.2.4")
     (home-page
      "https://github.com/GoogleCloudPlatform/\
 google-auth-library-python-oauthlib")
@@ -8860,7 +8860,7 @@ google-auth-library-python-oauthlib")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1f269aaj02403shbj0iz4w16wwxr6im5fl42dkkk4mf2jw8ns46l"))))
+        (base32 "1j25kdbs2j1x23pdv4n49xl9pz2ppn55vsav65ir796kq4lf9nca"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-google-auth python-requests-oauthlib))
     (native-inputs
