@@ -17,7 +17,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020-2024, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -872,14 +872,14 @@ Initiation Protocol (SIP) and a multimedia framework.")
     (license license:gpl2+)))
 
 (define-public pjproject-jami
-  (let ((commit "93dc96918bb6ba74e1e1d00c40c80402e856f2ac")
+  (let ((commit "59d9e1355686cf4f3f3d81d45560058354f42802")
         (revision "0"))
     (package
       (inherit pjproject)
       (name "pjproject-jami")
       ;; The version is taken from
       ;; <https://raw.githubusercontent.com/savoirfairelinux/pjproject/master/version.mak>.
-      (version (git-version "2.15" revision commit))
+      (version (git-version "2.13.1" revision commit))
       (source (origin
                 (inherit (package-source pjproject))
                 ;; The Jami development team regularly issues patches to
@@ -894,7 +894,7 @@ Initiation Protocol (SIP) and a multimedia framework.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "139w1i7sp9w3ki5chd0xqkipd66i0d06hh6b82kkzanpfimwmin2"))))
+                  "1n5k1pk8v2rbq8gnhnpck6m9ljyl9ynr5bbyy2k1ln1nmdjn909n"))))
       (arguments
        (substitute-keyword-arguments (package-arguments pjproject)
          ((#:configure-flags _ ''())
