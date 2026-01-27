@@ -30169,8 +30169,8 @@ their meaning for the current Emacs major-mode.")
     (license license:gpl3+)))
 
 (define-public emacs-org-ref
-  (let ((commit "732a20bd236fd02db4a651da29f87f87f458a54a")
-        (revision "0"))
+  (let ((commit "dc2481d430906fe2552f9318f4405242e6d37396")
+        (revision "1"))
     (package
       (name "emacs-org-ref")
       (version (git-version "3.1" revision commit))
@@ -30183,22 +30183,15 @@ their meaning for the current Emacs major-mode.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1kbjxz56fvln6drd2wqdxrpgwjshzpdbyaq7dz0gn285z93y1knk"))))
+           "0q3fkqzdk52y6cnl5p6igrczr8v9l0jc1rp7pp27isjq8mjyvkgs"))))
       (build-system emacs-build-system)
       (arguments
        (list
+        #:emacs emacs-no-x              ;needs libxml support
         #:include #~(cons* "org-ref.org" "org-ref.bib" %default-include)
         #:exclude #~(list
                      ;; author doesn't recommend using it
-                     "org-ref-pdf.el")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'check 'skip-failing-test
-              (lambda _
-                (substitute* "test/all-org-test.el"
-                  (("\\(ert-deftest preprocess .*" all)
-                   (string-append all
-                                  " (skip-unless (libxml-available-p))"))))))))
+                     "org-ref-pdf.el")))
       (propagated-inputs
        (list emacs-avy
              emacs-citeproc
@@ -30209,6 +30202,7 @@ their meaning for the current Emacs major-mode.")
              emacs-hydra
              emacs-ox-pandoc
              emacs-parsebib
+             emacs-pdf-tools
              emacs-request
              emacs-s))
       (native-inputs (list emacs-ert-runner))
