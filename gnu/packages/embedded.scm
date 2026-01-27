@@ -1779,41 +1779,43 @@ STC89, STC90, STC10, STC11, STC12, STC15, STC8 and STC32 series.")
     (license license:expat)))
 
 (define-public stlink
-  (package
-    (name "stlink")
-    (version "1.8.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/stlink-org/stlink")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1g5ahnj400sdf75k3xafawa6x0pzz7s86nqnfd65gqjr3bdlhlc6"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list #:tests? #f                      ;no tests
-           #:configure-flags
-           #~(let* ((etc (in-vicinity #$output "etc"))
-                    (modprobe (in-vicinity etc "modprobe.d"))
-                    (udev-rules (in-vicinity etc "udev/rules.d")))
-               (list (string-append "-DSTLINK_UDEV_RULES_DIR=" udev-rules)
-                     (string-append "-DSTLINK_MODPROBED_DIR=" modprobe)))))
-    (inputs
-     (list libusb))
-    (synopsis "Programmer for STM32 Discovery boards")
-    (description "This package provides a firmware programmer for the STM32
-Discovery boards.  It supports two versions of the chip: ST-LINK/V1 (on
-STM32VL discovery kits) and ST-LINK/V2 (on STM32L discovery and later kits).
-Two different transport layers are used: ST-LINK/V1 uses SCSI passthru
-commands over USB, and ST-LINK/V2 and ST-LINK/V2-1 (seen on Nucleo boards) use
-raw USB commands.")
-    (home-page "https://github.com/stlink-org/stlink")
-    ;; The flashloaders/stm32l0x.s and flashloaders/stm32lx.s source files are
-    ;; licensed under the GPLv2+.
-    (license (list license:bsd-3 license:gpl2+))))
+  (let ((commit "6a6718b3342b6c5e282a4e33325b9f97908a0692")
+        (revision "0"))
+    (package
+      (name "stlink")
+      (version (git-version "1.8.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/stlink-org/stlink")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1sk9qr3f8v1rm735vq6pxckgwzsgr4k2kl6skh79f4v2qm0hc4qd"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:tests? #f                      ;no tests
+             #:configure-flags
+             #~(let* ((etc (in-vicinity #$output "etc"))
+                      (modprobe (in-vicinity etc "modprobe.d"))
+                      (udev-rules (in-vicinity etc "udev/rules.d")))
+                 (list (string-append "-DSTLINK_UDEV_RULES_DIR=" udev-rules)
+                       (string-append "-DSTLINK_MODPROBED_DIR=" modprobe)))))
+      (inputs
+       (list libusb))
+      (synopsis "Programmer for STM32 Discovery boards")
+      (description "This package provides a firmware programmer for the STM32
+  Discovery boards.  It supports two versions of the chip: ST-LINK/V1 (on
+  STM32VL discovery kits) and ST-LINK/V2 (on STM32L discovery and later kits).
+  Two different transport layers are used: ST-LINK/V1 uses SCSI passthru
+  commands over USB, and ST-LINK/V2 and ST-LINK/V2-1 (seen on Nucleo boards) use
+  raw USB commands.")
+      (home-page "https://github.com/stlink-org/stlink")
+      ;; The flashloaders/stm32l0x.s and flashloaders/stm32lx.s source files are
+      ;; licensed under the GPLv2+.
+      (license (list license:bsd-3 license:gpl2+)))))
 
 (define-public west
   (package
