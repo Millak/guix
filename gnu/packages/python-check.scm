@@ -4176,7 +4176,7 @@ support and @code{subtests} fixture.")
 (define-public python-pytest-testmon
   (package
     (name "python-pytest-testmon")
-    (version "2.1.1")
+    (version "2.2.0")
     (source
      (origin
        (method git-fetch)
@@ -4185,7 +4185,7 @@ support and @code{subtests} fixture.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01qhbkb3n8c5c4id94w6b06q9wb7b6a33mqwyrkdfzk5pzv1gcyd"))))
+        (base32 "0f3rz17w6pb3gi8c1bc4sjfmdxpdqzhm371fsh36svdc9fn3nm05"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #false)) ;there are none
     (native-inputs
