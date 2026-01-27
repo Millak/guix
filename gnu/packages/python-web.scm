@@ -8211,7 +8211,7 @@ jspacker or CSS tidy.  It also supports URL rewriting in CSS files.")
                          python-opentelemetry-sdk
                          python-orjson
                          python-pytest
-                         python-pytest-asyncio
+                         python-pytest-asyncio-0.26
                          ;; python-pytest-cov
                          python-pytest-httpbin
                          python-pytest-httpserver
