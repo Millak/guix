@@ -34822,7 +34822,7 @@ client library.")
       ;; test_decode_error[00000101-unpack_from requires a buffer of at least
       ;; 1 bytes] - AssertionError
       #:test-flags #~(list "-k" "not test_decode_error")))
-    (native-inputs (list python-pytest python-setuptools))
+    (native-inputs (list python-pytest-8 python-setuptools))
     (home-page "https://ndeflib.readthedocs.io/")
     (synopsis "NFC Data Exchange Format decoder and encoder.")
     (description "This package provides a NFC (Near-Field Communication)
