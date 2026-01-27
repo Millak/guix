@@ -2465,11 +2465,10 @@ rounds that are calibrated to the chosen timer.")
          "04dmhv8dzh356qdxz6hrwfz3nk3mlc9shicgpns5r03rydap9dzc"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-pytest-8
+           python-setuptools))
     (propagated-inputs
      (list python-black
-           python-pytest
            python-toml))
     ;; Project maintenance has been changed, see
     ;; <https://github.com/shopkeep/pytest-black/issues/70>.
