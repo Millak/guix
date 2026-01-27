@@ -3000,9 +3000,8 @@ testing framework.")
          "1rhz7mxcg7x9dbabfcjai3zxikfgw7az07m4ddf92bg35ib3byw8"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
+     (list python-pytest-8
+           python-setuptools))
     (propagated-inputs
      (list python-flake8))
     (home-page "https://github.com/tholo/pytest-flake8")
