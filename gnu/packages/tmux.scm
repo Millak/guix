@@ -199,42 +199,6 @@ manager in Python.  It creates object mappings to traverse, inspect and interact
 with live tmux sessions.")
     (license license:expat)))
 
-(define-public python-daemux
-  (package
-    (name "python-daemux")
-    (version "0.1.0")
-    (source
-     ;; We fetch from the Git repo because there are no tests in the PyPI
-     ;; archive.
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/edouardklein/daemux")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0cb8v552f2hkwz6d3hwsmrz3gd28jikga3lcc3r1zlw8ra7804ph"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (mkdir-p "tmptmux")
-                      (setenv "TMUX_TMPDIR" (string-append (getcwd) "/tmptmux"))
-                      (invoke "tmux" "new-session" "-d")
-                      (invoke "make" "test"))))))
-    (propagated-inputs
-     (list python-libtmux))
-    (native-inputs
-     (list python-coverage python-flake8 python-sphinx tmux))
-    (home-page "https://github.com/edouardklein/daemux")
-    (synopsis "Start, stop, restart and check daemons via tmux")
-    (description
-     "Daemux lets you run daemons in a @command{tmux} pane.  Users can launch
-long-running background tasks, and check these tasks' health by hand, relaunch
-them, etc., by attaching to the corresponding pane in tmux.")
-    (license license:agpl3+)))
-
 (define-public tmux-xpanes
   (package
     (name "tmux-xpanes")
