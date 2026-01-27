@@ -2869,13 +2869,16 @@ mypy plugins.")
 (define-public python-pytest-mypy-testing
   (package
     (name "python-pytest-mypy-testing")
-    (version "0.1.2")
+    (version "0.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-mypy-testing" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/davidfritzsche/pytest-mypy-testing")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0kqb3hi4jrc4knhc9pxv44m7c1jjkkwqx0dyghq4mw6wphlsv3q8"))))
+        (base32 "09m7cpk47hvpxylv5mwdlyhyafzikbkl70pvxgcb6ss24778w3l0"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-flit-core))
     (propagated-inputs (list python-mypy python-pytest))
