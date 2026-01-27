@@ -24271,7 +24271,8 @@ the point of maximum curvature.")
       ;; Dropp check of flake8 in tests.
       #~(list "-k" "not test_file_does_not_exist")))
     (native-inputs
-     (list python-poetry-core
+     (list python-pycodestyle
+           python-poetry-core
            python-pyflakes
            python-pylint
            python-pytest
