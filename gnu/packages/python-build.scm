@@ -375,6 +375,7 @@ write-only counterpart to Tomli, which is a read-only TOML parser.")
 (define-public python-pygments
   (package
     (name "python-pygments")
+    ;; XXX: When updating, drop python-textual 'relax-requirements phase.
     (version "2.19.1")
     (source
      (origin

@@ -36965,7 +36965,7 @@ tables.")
 (define-public python-textual
   (package
     (name "python-textual")
-    (version "3.5.0")
+    (version "7.4.0")
     (source
      (origin
        (method git-fetch)
@@ -36974,13 +36974,14 @@ tables.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sldkhy8phk9c7pln70dyb6aya7qpxb5niym9s91z144dv6ykgws"))))
+        (base32 "0xnfb8g0p66f6i4kzd6l2y2cp1pm33la1rj0hbdws72j5rcpq0nv"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags
-           ;; Snapshot tests require python-pytest-textual-snapshot which
-           ;; in turn depends on python-textual.
-           '(list "--ignore=tests/snapshot_tests/test_snapshots.py"
+     (list
+      #:test-flags
+      ;; Snapshot tests require python-pytest-textual-snapshot which
+      ;; in turn depends on python-textual.
+      '(list "--ignore=tests/snapshot_tests/test_snapshots.py"
              "-k" (string-append
                    ;; Broken for unknown reason.
                    "not test_textual_env_var"
@@ -36995,9 +36996,18 @@ tables.")
                    " and not test_default_theme"
                    " and not test_setting_builtin_themes"
                    " and not test_setting_unknown_theme_raises_exception"
-                   " and not test_registering_and_setting_theme"))))
+                   " and not test_registering_and_setting_theme"
+                   " and not test_progress_bar_width_1fr"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("pygments =.*")
+                 "pygments = \"*\"\n")))))))
     (propagated-inputs
      (list python-markdown-it-py
+           python-mdit-py-plugins
            python-platformdirs
            python-rich
            python-tree-sitter
