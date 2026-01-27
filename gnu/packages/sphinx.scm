@@ -1462,18 +1462,26 @@ executed during the Sphinx build process.")
 (define-public python-sphobjinv
   (package
     (name "python-sphobjinv")
-    (version "2.3.1.1")
+    (version "2.3.1.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "sphobjinv" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bskinn/sphobjinv")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "10x4g92agj6aai0lj0xpcx58zlm1zamzws1w9dczsl1izpz07ij7"))
+        (base32 "0cgnxadwjijpqyragbz0ibinhpbaw8l56az4a3i1m2x9hh589jbi"))
        (patches (search-patches "python-sphobjinv-defer-ssl-import.patch"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-dictdiffer python-pytest python-pytest-check
-           python-setuptools python-wheel python-sphinx python-stdio-mgr))
+     (list python-dictdiffer
+           python-pytest
+           python-pytest-check
+           python-pytest-retry
+           python-setuptools
+           python-sphinx
+           python-stdio-mgr))
     (propagated-inputs
      (list python-attrs python-certifi python-jsonschema))
     (home-page "https://github.com/bskinn/sphobjinv")
