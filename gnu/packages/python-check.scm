@@ -4205,16 +4205,24 @@ support and @code{subtests} fixture.")
     (version "1.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest_textual_snapshot" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Textualize/pytest-textual-snapshot")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1ss4hm2xgxx07qn9s7p9fykzvmzxsl4g0rg198xjm1862fq8mm4n"))))
+        (base32 "16zwybmjw16pxcm9qdql14xh3fj4iwry8r219yzjd5z7w1l31p12"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f ; no tests in PyPI or Git
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("syrupy = .*")
+                 "syrupy = \"*\"\n"))))
           (add-after 'unpack 'patch-path
             (lambda _
               ;; Taken from NixOS package definition.
