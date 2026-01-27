@@ -711,16 +711,7 @@ them do this.")
       ;; tests: 1812 passed, 9 warnings
       #:test-flags
       ;; XXX: KeyError: location
-      #~(list "--ignore=allauth/socialaccount/providers/openid/tests.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; FIXME: This should be fixed in python-xmlsec
-          ;; E   xmlsec.Error: (1, 'cannot load crypto library for xmlsec.')
-          (add-before 'check 'pre-check
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((lib (search-input-file inputs "lib/libxmlsec1-openssl.so")))
-                (setenv "LD_LIBRARY_PATH"
-                        (dirname lib))))))))
+      #~(list "--ignore=allauth/socialaccount/providers/openid/tests.py")))
     (propagated-inputs
      (list python-asgiref
            python-django
