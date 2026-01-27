@@ -293,14 +293,16 @@ interactive dialogs to guide them.")
 (define-public calc
   (package
     (name "calc")
-    (version "2.15.1.1")
+    (version "2.16.1.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "http://www.isthe.com/chongo/src/calc/calc-"
-                           version ".tar.bz2"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lcn2/calc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1710wsyjg3k6qx5xaa5fa1r81izpgjiy676ayznd2p42rn3czmm2"))))
+        (base32 "18vb5gi9mf4c8vmhvimxqdzja8b56glyk23bpb2igwm903x3ciav"))))
     (build-system gnu-build-system)
     (inputs (list readline))
     (native-inputs (list man-db util-linux)) ;for col
