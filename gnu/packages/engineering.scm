@@ -4422,7 +4422,7 @@ G-codes to binary and vice versa.")
            ;; with regular wxwidgets.
            prusa-wxwidgets
            qhull
-           tbb
+           onetbb
            webkitgtk-for-gtk3
            webkitgtk-with-libsoup2
            z3
