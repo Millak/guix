@@ -11258,20 +11258,20 @@ basically a text box in which notes can be written.")
 (define-public gucharmap
   (let ((unicode-files
          '(("Blocks.txt"
-            "041sk54v6rjzb23b9x7yjdwzdp2wc7gvfz7ybavgg4gbh51wm8x1")
+            "05fbpc7miqpv7yic5xkm74ybzxkaf5r58ww21a1iwxqr3apyzvf0")
            ("DerivedAge.txt"
-            "04j92xp07v273z3pxkbfmi1svmw9kmnjl9nvz9fv0g5ybk9zk7r6")
+            "160r7wwidj3c2jl4cw3am0c5d0l7qndis9xx38h0y8fwidvdzv7q")
            ("NamesList.txt"
-            "0vsq8gx7hws8mvxy3nlglpwxw7ky57q0fs09d7w9xgb2ylk7fz61")
+            "1x1smmn2kmy8clf6ny2njln75i888lidckc6ssyp2gdhgasdrkhd")
            ("Scripts.txt"
-            "18c63hx4y5yg408a8d0wx72d2hfnlz4l560y1fsf9lpzifxpqcmx")
+            "1grmn3bd4m0rcmz544h94kimlj3gf1f343s8177ddrxfmg9m0plz")
            ("UnicodeData.txt"
-            "07d1kq190kgl92ispfx6zmdkvwvhjga0ishxsngzlw8j3kdkz4ap")
+            "0327jqfw2hyq8x986cfhwrp717r2jl7ydjjwvzp7biarrcfzq7if")
            ("Unihan.zip"
-            "1kfdhgg2gm52x3s07bijb5cxjy0jxwhd097k5lqhvzpznprm6ibf"))))
+            "0pjbyf77lbaxdhwidvpgp81cw13lfhlaw1ynn9vsmkssahmqp97p"))))
     (package
       (name "gucharmap")
-      (version "12.0.1")
+      (version "17.0.1")
       (source
        (origin
          (method url-fetch)
@@ -11280,16 +11280,19 @@ basically a text box in which notes can be written.")
                              name "-" version ".tar.xz"))
          (sha256
           (base32
-           "0m915hm2b2d6r3vs1l80rqpssvg78pv8j6nv54yg62kzknnqmpir"))))
-      (build-system glib-or-gtk-build-system)
+           "0sfixlmk7qajcvls6kv2hfczmjafjcr54aczwcdfmp5jjll4m17r"))))
+      (build-system meson-build-system)
       (arguments
        `(#:modules ((ice-9 match)
-                    (guix build glib-or-gtk-build-system)
+                    (guix build meson-build-system)
                     (guix build utils))
+         #:glib-or-gtk? #t
          #:configure-flags
          (list
-          "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types"
-          "--with-unicode-data=../unicode-data")
+          "-Ducd_path=../unicode-data"
+          "-Dvapi=false"
+          ;; gtk-doc fails because it didn't generate a devhelp2 file
+          "-Ddocs=false")
          #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'prepare-unicode-data
@@ -11308,13 +11311,14 @@ basically a text box in which notes can be written.")
                intltool
                itstool
                pkg-config
+               python
                unzip
                (map (match-lambda
                       ((file hash)
                        (origin
                          (method url-fetch)
                          (uri (string-append
-                                "https://www.unicode.org/Public/12.0.0/ucd/"
+                                "https://www.unicode.org/Public/17.0.0/ucd/"
                                 file))
                          (sha256 (base32 hash)))))
                     unicode-files)))
