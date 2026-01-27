@@ -3611,41 +3611,28 @@ can connect to any JACK port and record the output into a stereo WAV file.")
               (sha256
                (base32
                 "1zijk9ly2fczxsnnrqr8s0ajmlyx1j1vd8gk0rm5dj5zyhhmia7f"))))
-    (build-system gnu-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:modules ((guix build gnu-build-system)
-                  ((guix build python-build-system) #:prefix python:)
-                  (guix build utils))
-       #:imported-modules (,@%default-gnu-imported-modules
-                           (guix build python-build-system))
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:tests? #f                      ; there are none
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; python-dbus cannot be found but it's really there.  See
-             ;; https://github.com/SpotlightKid/jack-select/issues/2
-             (substitute* "setup.py"
-               (("'dbus-python',") ""))
-             ;; Fix reference to dlopened libraries.
-             (substitute* "jackselect/alsainfo.py"
-               (("libasound.so.2")
-                (search-input-file inputs "/lib/libasound.so.2")))))
-         (replace 'build
-           (assoc-ref python:%standard-phases 'build))
-         (add-after 'install 'wrap
-           (assoc-ref python:%standard-phases 'wrap)))))
+     (list
+      #:tests? #f                      ; there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-libasound-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Fix reference to dlopened libraries.
+              (substitute* "jackselect/alsainfo.py"
+                (("libasound.so.2")
+                 (search-input-file inputs "/lib/libasound.so.2"))))))))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config
+           python-setuptools))
     (inputs
      (list alsa-lib
-           python-dbus
+           gtk+
+           python-dbus-python
            python-pygobject
            python-pyudev
-           python-pyxdg
-           python-wrapper))
+           python-pyxdg))
     (home-page "https://github.com/SpotlightKid/jack-select")
     (synopsis "Systray application to quickly change the JACK-DBus configuration")
     (description "This application displays an icon in the system tray (also
