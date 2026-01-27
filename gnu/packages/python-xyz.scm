@@ -32957,6 +32957,15 @@ a Python program in an customizable and pythonic way.")
         (base32 "030lncdmrcvzgp8v1jw04snnplqxlwf3vikzd0a3jbk5sgrp2cih"))))
     (build-system pyproject-build-system)
     ;; tests: 15102 passed, 36 skipped, 5489 warnings
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"deprecated ~=.*\",")
+                 "\"deprecated\",")))))))
     (native-inputs
      (list python-lxml
            python-pytest
