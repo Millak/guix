@@ -90,7 +90,9 @@
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "02ms4s6kfxkbghc24rx9g1axdv50rndzdm0s3iz1vxv8wb7c5ds2"))))
+         "02ms4s6kfxkbghc24rx9g1axdv50rndzdm0s3iz1vxv8wb7c5ds2"))
+       (patches
+        (search-patches "mate-common-honor-aclocal.patch"))))
     (build-system gnu-build-system)
     (home-page "https://mate-desktop.org/")
     (synopsis "Common files for development of MATE packages")

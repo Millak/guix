@@ -1856,6 +1856,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/luit-posix.patch				\
   %D%/packages/patches/lxc-no-static-bin.patch	\
   %D%/packages/patches/lxsession-potfiles-ignore.patch		\
+  %D%/packages/patches/mate-common-honor-aclocal.patch		\
   %D%/packages/patches/mactelnet-remove-init.patch		\
   %D%/packages/patches/mailutils-variable-lookup.patch		\
   %D%/packages/patches/mandoc-support-zstd-compression.patch	\
