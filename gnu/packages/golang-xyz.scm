@@ -4896,6 +4896,37 @@ This in-memory cache uses @url{https://go.dev/blog/generics-proposal, Go
 Generics} which is introduced in 1.18.")
     (license license:expat)))
 
+(define-public go-github-com-container-storage-interface-spec
+  (package
+    (name "go-github-com-container-storage-interface-spec")
+    (version "1.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/container-storage-interface/spec")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1chim23b89xv1nz6kb1nr95dq994igy94izrkd9m440qf7rh2ig6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/container-storage-interface/spec"))
+    (propagated-inputs
+     (list go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/container-storage-interface/spec")
+    (synopsis "Container Storage Interface specification")
+    (description
+     "This project contains the CSI
+@url{https://github.com/container-storage-interface/spec/blob/v1.12.0/spec.md,
+specification} and
+@url{https://github.com/container-storage-interface/spec/blob/v1.12.0/csi.proto,
+protobuf} files.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-containerd-btrfs-v2
   (package
     (name "go-github-com-containerd-btrfs-v2")
