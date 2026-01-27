@@ -442,26 +442,6 @@ powerful language for representing information.")
     (license (license:non-copyleft "file://LICENSE"
                                    "See LICENSE in the distribution."))))
 
-(define-public python-cfgraph
-  (package
-    (name "python-cfgraph")
-    (version "0.2.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "CFGraph" version))
-        (sha256
-         (base32
-          "0x7yz0lvqb6mkhl5fbml27sppmscgpf8v2ism9jzzf0h982ffzxm"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-rdflib))
-    (home-page "https://github.com/hsolbrig/CFGraph")
-    (synopsis "RDF Collections flattener for rdflib")
-    (description
-     "This package contains RDF Collections flattener for @code{rdflib}.")
-    (license license:asl2.0)))
-
 (define-public hdt-cpp
   (package
     (name "hdt-cpp")
