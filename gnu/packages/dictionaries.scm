@@ -818,7 +818,7 @@ Guix package is installed.")
           (add-after 'unpack 'relax-requirements
             (lambda _
               (substitute* "pyproject.toml"
-                ((".*importlib-resources.*")
+                ((".*importlib-(metadata|resources).*")
                  ""))))
           (add-after 'ensure-no-mtimes-pre-1980 'inject-data
             (lambda* (#:key inputs #:allow-other-keys)
