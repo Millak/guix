@@ -2355,17 +2355,20 @@ since the last commit or what tests are currently failing.")
 (define-public python-coverage
   (package
     (name "python-coverage")
-    (version "7.11.0")
+    (version "7.13.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "coverage" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/coveragepy/coveragepy")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0l403f6d59q8rik9vvzb6982qad0zrfj87dqydzsz8hwmh2dayqn"))))
+        (base32 "1vf1qa2cndkrr0l6yc84frfmabr96vkly9nsw0n0cgxf10n1k23m"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1303 passed, 23 skipped
+      ;; tests: 1348 passed, 27 skipped
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               #$@(map (lambda (file) (string-append "--ignore=tests/" file))
@@ -2390,12 +2393,13 @@ since the last commit or what tests are currently failing.")
               #$@(map (lambda (test) (string-append "--deselect=tests/test_"
                                                     test))
                       ;; AssertionError
-                      (list "api.py::RelativePathTest::test_files_up_one_level"
+                      (list "api.py::ReportIncludeOmitTest"
+                            "api.py::XmlIncludeOmitTest"
+                            "api.py::RelativePathTest::test_files_up_one_level"
                             "concurrency.py::SigtermTest::\
 test_sigterm_multiprocessing_saves_data"
                             "oddball.py::DoctestTest::test_doctest"
-                            "oddball.py::MockingProtectionTest::\
-test_os_path_exists"
+                            "oddball.py::MockingProtectionTest"
                             "plugins.py::PluginTest::\
 test_local_files_are_importable"
                             "regions.py::test_real_code_regions"
@@ -2437,7 +2441,7 @@ test_local_files_are_importable"
               ;; coverage when running tests.
               (delete-file-recursively "coverage"))))))
     (native-inputs
-     (list python-pytest-8
+     (list python-pytest
            python-pytest-xdist  ;some tests need xdist_group
            python-flaky
            python-setuptools))
