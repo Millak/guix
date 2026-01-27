@@ -3622,7 +3622,7 @@ Encryption} (JOSE) Web Standards.")
           (base32 "00msypxf5dm57gyfp3jxvjinigi4km84v33w83635pms9li2k3y7"))))
       (build-system pyproject-build-system)
       (native-inputs
-       (list python-pytest
+       (list python-pytest-8
              python-setuptools))
       (inputs
        (list pcre))
