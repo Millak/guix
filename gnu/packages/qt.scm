@@ -19,7 +19,7 @@
 ;;; Copyright © 2020 TomZ <tomz@freedommail.ch>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021, 2022, 2025 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021, 2022, 2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -5141,7 +5141,7 @@ that can be only started once per user.
 (define-public qwindowkit
   (package
     (name "qwindowkit")
-    (version "1.0.1")
+    (version "1.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5150,12 +5150,12 @@ that can be only started once per user.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18yqmfnncah60hpyy7r9pvyhcda0n407wvp5hwinjzicj2ja83v7"))))
+                "1h9w6abdnf5yyyga54caxwn4vihim1400gw3rv8bgf2b7w53chpw"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f                  ;no test suite
            #:configure-flags
-           #~(list "-DQWINDOWKIT_BUILD_STATIC=OFF"))) ;build a shared library
+           #~(list "-DQWINDOWKIT_BUILD_QUICK=ON"))) ;required by Jami
     (native-inputs (list qmsetup))
     (inputs (list qtbase qtdeclarative))
     (home-page "https://github.com/stdware/qwindowkit")
