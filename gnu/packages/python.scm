@@ -1093,7 +1093,7 @@ def contents() -> str:
 
 (define-public python-3.12
   (package
-    (name "python-next")
+    (name "python")
     (version "3.12.12")
     (source
      (origin
