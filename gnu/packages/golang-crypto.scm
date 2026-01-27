@@ -1163,6 +1163,31 @@ derived keys.")
 messages.")
     (license license:expat)))
 
+(define-public go-github-com-fernet-fernet-go
+  (package
+    (name "go-github-com-fernet-fernet-go")
+    (version "0.0.0-20240119011108-303da6aec611")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fernet/fernet-go")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pvc4v4r1sh7zgfps39wvdzh2j9a9fgfwrmhhad5l2sgq15kh70z"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/fernet/fernet-go"))
+    (home-page "https://github.com/fernet/fernet-go")
+    (synopsis "Fernet symmetric encryption for Golang")
+    (description
+     "This package provides a Golang implementation of the Fernet symmetric
+encryption specification.  It handles key management, token creation,
+encryption/decryption, and integrity verification.")
+    (license license:expat)))
+
 (define-public go-github-com-flynn-noise
   (package
     (name "go-github-com-flynn-noise")
