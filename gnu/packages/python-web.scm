@@ -11978,7 +11978,7 @@ the @code{googleapis/api-common-protos} repository.")
 (define-public python-google-api-core
   (package
     (name "python-google-api-core")
-    (version "2.28.1")
+    (version "2.29.0")
     (source
      (origin
        (method git-fetch)
@@ -11987,7 +11987,7 @@ the @code{googleapis/api-common-protos} repository.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h12187s5jlj3x6gl13byfwkr2mnyiabyc6i74kc6bazz3r4iizx"))))
+        (base32 "0ahs8abyl7719paarlnspqp8yds149w7vm3w7zz6f7q04sscd862"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-google-auth
