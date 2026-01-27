@@ -6144,7 +6144,14 @@ your Python package version as a calendar version.")
          ;; package for in Guix.
          "--ignore=test/test_interface_canalystii.py"
          ;; These tests fail with "OSError: [Errno 19] No such device".
-         "-k" "not BasicTestUdpMulticastBusIPv")))
+         "-k" "not BasicTestUdpMulticastBusIPv")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"wrapt~=.*\"")
+                 "\"wrapt\"")))))))
     (propagated-inputs (list python-packaging python-wrapt))
     (native-inputs
      (list ;; python-canalystii ; Not packed yet
