@@ -3604,13 +3604,13 @@ can connect to any JACK port and record the output into a stereo WAV file.")
 (define-public jack-select
   (package
     (name "jack-select")
-    (version "1.5.0")
+    (version "1.5.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "jack-select" version))
               (sha256
                (base32
-                "1zijk9ly2fczxsnnrqr8s0ajmlyx1j1vd8gk0rm5dj5zyhhmia7f"))))
+                "0jrdz44v4cj1qvlnqrijzxivzgxiyvbkbdhcz88cixd347i2ph2z"))))
     (build-system pyproject-build-system)
     (arguments
      (list
