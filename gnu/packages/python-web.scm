@@ -2815,15 +2815,7 @@ SRP} support.")
      (list
       ;; 214 tests pass, 50 fail; many fail because of required Internet
       ;; access or because of assumptions about the location of test files.
-      #:tests? #false
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; FIXME: This should be fixed in python-xmlsec
-          (add-before 'check 'pre-check
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((lib (search-input-file inputs
-                                            "lib/libxmlsec1-openssl.so")))
-                (setenv "LD_LIBRARY_PATH" (dirname lib))))))))
+      #:tests? #false))
     (native-inputs
      (list python-freezegun
            python-poetry-core))
