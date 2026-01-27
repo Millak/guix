@@ -1488,7 +1488,7 @@ data types.")
 (define-public python-next python-3.12)
 
 ;; Current 3.x version.
-(define-public python-3 python-3.11)
+(define-public python-3 python-3.12)
 
 ;; Current major version.
 (define-public python python-3)
