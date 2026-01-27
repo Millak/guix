@@ -905,6 +905,38 @@ system.  The extension allows generation of API documentation by
 introspection of @code{zope.interface} instances in code.")
     (license license:repoze)))
 
+(define-public python-sphinx-reredirects
+  (package
+    (name "python-sphinx-reredirects")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch) ;FIXME use git-fetch instead?
+       (uri (pypi-uri "sphinx_reredirects" version))
+       (sha256
+        (base32 "0acbf7v04wml24f5hrkcqnk7nqzbgq67sa3kh8zv855b6m9ik6zv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Test requires network access
+      #:test-flags #~(list "-k" "not test_linkcheck")))
+    (native-inputs (list python-pytest python-sphinx python-flit))
+    (propagated-inputs (list python-linkify-it-py
+                             python-myst-parser
+                             python-sphinx-copybutton
+                             python-sphinx-design
+                             python-sphinx-sitemap
+                             python-sphinx-copybutton
+                             python-sphinxcontrib-mermaid
+                             python-sphinxext-opengraph))
+    (home-page "https://documatt.com/sphinx-reredirects/")
+    (synopsis "Extension for sphinx to handle redirects")
+    (description
+     "The extension for Sphinx documentation projects that handle redirects for
+moved pages.  It generates HTML pages with meta refresh redirects to the new
+page location to prevent 404 errors if you rename or move your documents.")
+    (license license:expat)))
+
 (define-public python-sphinx-prompt
   (package
     (name "python-sphinx-prompt")
