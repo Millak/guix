@@ -40633,13 +40633,13 @@ such as lines length, trailing spaces, indentation, etc.")
 (define-public python-yamlloader
   (package
     (name "python-yamlloader")
-    (version "1.5.2")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "yamlloader" version))
        (sha256
-        (base32 "06y4xaajsjjynrv2m6ar3hwiif2mk3z3lgwxn2l1qsv238rc22n1"))))
+        (base32 "0gw21aa94fcbf5knx9csc0l44rzgz5pjdcvlxxwx044rdjbk50li"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-backend #~'unittest
@@ -40647,7 +40647,8 @@ such as lines length, trailing spaces, indentation, etc.")
     (native-inputs
      (list python-hatch-vcs
            python-hatchling
-           python-hypothesis))
+           python-hypothesis
+           python-pytest))
     (propagated-inputs
      (list python-pyyaml))
     (home-page "https://github.com/Phynix/yamlloader")
