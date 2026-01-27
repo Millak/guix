@@ -98,9 +98,27 @@
   ((indent-tabs-mode . nil)
 
    ;; Emacs 28 changed the behavior of 'lisp-fill-paragraph', which causes the
-   ;; first line of package descriptions to extrude past 'fill-column'. The
-   ;; following variable reverts its behavior to the previous one.
-   (lisp-fill-paragraphs-as-doc-string nil)
+   ;; first line of package descriptions to extrude past 'fill-column', and
+   ;; somehow that is deemed more correct upstream (see:
+   ;; https://issues.guix.gnu.org/56197).
+   (eval . (progn
+             (require 'lisp-mode)
+             (defun emacs27-lisp-fill-paragraph (&optional justify)
+               (interactive "P")
+               (or (fill-comment-paragraph justify)
+                   (let ((paragraph-start
+                          (concat paragraph-start
+                                  "\\|\\s-*\\([(;\"]\\|\\s-:\\|`(\\|#'(\\)"))
+                         (paragraph-separate
+                          (concat paragraph-separate "\\|\\s-*\".*[,\\.]$"))
+                         (fill-column (if (and (integerp emacs-lisp-docstring-fill-column)
+                                               (derived-mode-p 'emacs-lisp-mode))
+                                          emacs-lisp-docstring-fill-column
+                                        fill-column)))
+                     (fill-paragraph justify))
+                   ;; Never return nil.
+                   t))
+             (setq-local fill-paragraph-function #'emacs27-lisp-fill-paragraph)))
 
    ;; This notably allows '(' in Paredit to not insert a space when the
    ;; preceding symbol is one of these.
