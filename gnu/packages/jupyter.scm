@@ -113,7 +113,7 @@ explanatory text.  Uses include: data cleaning and transformation, numerical
 simulation, statistical modeling, machine learning and much more.")
     (license license:bsd-3)))
 
-(define-public python-ipykernel
+(define-public python-ipykernel-7
   (package
     (name "python-ipykernel")
     (version "7.1.0")
@@ -133,6 +133,8 @@ simulation, statistical modeling, machine learning and much more.")
       #~(list "--deselect=tests/test_matplotlib_eventloops.py::test_matplotlib_gui[tk]")
       #:phases
       #~(modify-phases %standard-phases
+          ;; XXX: Requirement.parse('jupyter-client>=8.0.0'), {'ipykernel'})
+          (delete 'sanity-check)
           (add-after 'unpack 'fix-pytest-config
             (lambda _
               (substitute* "pyproject.toml"
@@ -157,7 +159,7 @@ simulation, statistical modeling, machine learning and much more.")
      (list python-comm
            python-debugpy
            python-ipython
-           python-jupyter-client
+           python-jupyter-client-7
            python-jupyter-core
            python-matplotlib-inline
            python-nest-asyncio
@@ -172,13 +174,75 @@ simulation, statistical modeling, machine learning and much more.")
            python-hatchling
            python-ipyparallel-bootstrap
            python-pytest
-           python-pytest-asyncio
+           python-pytest-asyncio-0.26  ;some tests fail with v1
            python-pytest-cov
            python-pytest-timeout))
     (home-page "https://ipython.org")
     (synopsis "IPython Kernel for Jupyter")
     (description "This package provides the IPython kernel for Jupyter.")
     (license license:bsd-3)))
+
+(define-public python-ipykernel-6
+  (package
+    (name "python-ipykernel")
+    ;; XXX: The higher versions need jupyter_client>7, we are not ready yet,
+    ;; see: <https://codeberg.org/guix/guix/issues/5955>.
+    (version "6.29.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ipykernel" version))
+       (sha256
+        (base32 "05b2qn0wzrg8dpnqsryr7fqwlgdrghlrq2ikis7q5y2098na54zh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-Wignore::DeprecationWarning"
+              "--deselect=tests/inprocess/test_kernel.py::test_pylab")
+      #:phases
+      #~(modify-phases %standard-phases
+           (add-before 'check 'pre-check
+             (lambda _
+               ;; jupyter-core demands this be set.
+               (setenv "JUPYTER_PLATFORM_DIRS" "1")
+               (setenv "HOME" "/tmp")))
+          (add-after 'install 'set-python-file-name
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Record the absolute file name of the 'python' executable in
+              ;; 'kernel.json'.
+              (substitute* (string-append #$output "/share/jupyter"
+                                          "/kernels/python3/kernel.json")
+                (("\"python\"")
+                 (format #f "~s" (search-input-file inputs
+                                                    "/bin/python3")))))))))
+    (native-inputs
+     (list python-flaky
+           python-hatchling
+           python-ipyparallel-bootstrap
+           python-pytest
+           python-pytest-asyncio-0.26   ;some tests fail with v1
+           python-pytest-timeout))
+    (inputs (list python))              ;for cross compilation
+    (propagated-inputs
+     (list python-comm
+           python-debugpy
+           python-ipython
+           python-jupyter-client
+           python-jupyter-core
+           python-matplotlib-inline
+           python-nest-asyncio
+           python-packaging
+           python-psutil
+           python-pyzmq
+           python-tornado-6
+           python-traitlets))
+    (home-page "https://ipython.org")
+    (synopsis "IPython Kernel for Jupyter")
+    (description "This package provides the IPython kernel for Jupyter.")
+    (license license:bsd-3)))
+
+(define-public python-ipykernel python-ipykernel-6)
 
 ;; Bootstrap variant of ipykernel, which uses the bootstrap jupyter-client to
 ;; break the cycle between ipykernel and jupyter-client.
