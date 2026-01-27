@@ -3250,7 +3250,7 @@ requests to be replied to with user provided responses.")
 (define-public python-pytest-isort
   (package
     (name "python-pytest-isort")
-    (version "3.1.0")
+    (version "4.0.0")
     (source
      (origin
        (method git-fetch)
@@ -3259,7 +3259,7 @@ requests to be replied to with user provided responses.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07hj2z2jsshk0m60j0w10q3yzis69714k7qbw2f0cprc5li9b06n"))))
+        (base32 "1bhcmn4589l228n05bn8mgk7chyr9262bm9zxpwhcdiyhyspdjvw"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-isort python-pytest))
     (native-inputs (list python-poetry-core))
