@@ -331,7 +331,7 @@ library.")
        (replace "fmt" fmt-9)))))
 
 ;; Update when changing the pinned version of fmt.
-(define-public spdlog spdlog-1.13)
+(define-public spdlog spdlog-1.15)
 
 (define-public rsyslog
   (package

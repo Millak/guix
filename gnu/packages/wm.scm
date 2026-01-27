@@ -3160,7 +3160,7 @@ compository, supporting the following features:
                   pipewire
                   playerctl
                   pulseaudio
-                  spdlog-1.13
+                  spdlog
                   wayland
                   wireplumber))
     (native-inputs
