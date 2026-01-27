@@ -4276,7 +4276,7 @@ configuration file.")
 (define-public python-pytooling
   (package
     (name "python-pytooling")
-    (version "8.7.6")
+    (version "8.11.0")
     (source
      (origin
        (method git-fetch)
@@ -4285,7 +4285,7 @@ configuration file.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n0idfiwcsssvy3kfwkgdpwx7zmvzp44mv0285d8argdy6rd48p0"))))
+        (base32 "07vlx2kfcxhkm0dj3d3pgdxmqbv2hzgzgdrnpnjjf30pacwrlq1m"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4294,17 +4294,26 @@ configuration file.")
       #:tests? (not (or (%current-target-system)
                              (target-x86-32?)))
       #:test-flags
-      #~(list "tests/unit"
-              "-k" (string-join
-                    ;; Tests checking in /usr/bin and /usr/bin/git paths.
-                    (list "not test_BinaryDirectory"
-                          "test_ExecutablePath"
-                          "test_VersionFlag")
-                    " and not "))))
+      #~(list
+         "tests/unit"
+         ;; These tests try to access the network.
+         "--deselect=tests/unit/Dependency/Python.py::PyPI::test_SphinxReports"
+         "--deselect=tests/unit/Dependency/Python.py::PyPI::test_pyTooling"
+         "--deselect=tests/unit/Dependency/Python.py::PyPI::test_pyVersioning")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-git-bin-for-tests
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (list "tests/unit/CLIAbstraction/Executable.py"
+                                 "tests/unit/CLIAbstraction/Program.py")
+                (("/usr/bin")
+                 (dirname (search-input-file inputs "/bin/git")))))))))
     (native-inputs
      (list git-minimal/pinned
+           python-aiohttp
            python-colorama
            python-pytest
+           python-requests
            python-ruamel.yaml
            python-setuptools))
     (home-page "https://pytooling.github.io/pyTooling/")
