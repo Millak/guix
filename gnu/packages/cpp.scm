@@ -31,7 +31,7 @@
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022-2025 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2022-2024 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2022, 2023, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022-2024, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023, 2025 Sughosha <Sughosha@disroot.org>
 ;;; Copyright © 2023, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
@@ -1718,32 +1718,36 @@ lock-free fixed size queue written in C++11.")
     (license license:expat)))
 
 (define-public syscmdline
-  (package
-    (name "syscmdline")
-    (version "0.0.1.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/SineStriker/syscmdline")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "00n9vkyymp1dzixxl93f6pkpd3ndsk1vib7shhlxv4zvy5hjqhqw"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list #:configure-flags
-           #~(list "-DSYSCMDLINE_BUILD_STATIC=OFF" ;build a shared library
-                   "-DSYSCMDLINE_BUILD_TESTS=ON")
-           #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          ;; There isn't currently any exposed test target.
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "bin/tst_basic")))))))
-    (home-page "https://github.com/SineStriker/syscmdline")
-    (synopsis "C++ advanced command line parser")
-    (description "SysCmdLine is a C++ command line parser that is inspired by
+  (let ((commit "0c9f3de8b11bd2f33b03bea5521bf446af4ead69")
+        (revision "0"))
+    (package
+      (name "syscmdline")
+      ;; The version string is taken from
+      ;; <https://raw.githubusercontent.com/SineStriker/syscmdline/refs/heads/main/CMakeLists.txt>.
+      (version (git-version "1.0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/SineStriker/syscmdline")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "168dij7p2kjl0qs3k5lzrnbzf2s2mbfpm83jimk028whx8cbv4jh"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:configure-flags
+             #~(list "-DSYSCMDLINE_BUILD_STATIC=OFF" ;build a shared library
+                     "-DSYSCMDLINE_BUILD_TESTS=ON")
+             #:phases #~(modify-phases %standard-phases
+                          (replace 'check
+                            ;; There isn't currently any exposed test target.
+                            (lambda* (#:key tests? #:allow-other-keys)
+                              (when tests?
+                                (invoke "bin/tst_basic")))))))
+      (home-page "https://github.com/SineStriker/syscmdline")
+      (synopsis "C++ advanced command line parser")
+      (description "SysCmdLine is a C++ command line parser that is inspired by
 @code{QCommandLineParser} from Qt and @code{System.CommandLine} from C#.  It
 has features such as:
 @itemize
@@ -1758,7 +1762,7 @@ has features such as:
 @item Highly configurable
 @item Friendly interface
 @end itemize")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public gperftools
   (package
