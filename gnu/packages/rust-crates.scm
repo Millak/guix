@@ -881,6 +881,10 @@
                 "0r6shv717rl3qzccjc9qlxmnaj3l22rr9197jsahkn33v7wr98ar"
                 #:snippet '(delete-file-recursively "tests")))
 
+(define rust-async-compression-0.4.25
+  (crate-source "async-compression" "0.4.25"
+                "1m6s01ck0jnqw14r8m2kyh1afd200brbdjfhbys66rl57x7h5xj0"))
+
 (define rust-async-compression-0.4.33
   (crate-source "async-compression" "0.4.33"
                 "1ck71vshj9ci0yrwgrl4hslhxwbz2hiq77m19x8kvby1b5lgihck"
@@ -889,10 +893,6 @@
 (define rust-async-compression-0.4.37
   (crate-source "async-compression" "0.4.37"
                 "0h3fawp8pxz2sa01v5y0hi506jyjyscig8y05cip8d2m3acly3ni"))
-
-(define rust-async-compression-0.4.25
-  (crate-source "async-compression" "0.4.25"
-                "1m6s01ck0jnqw14r8m2kyh1afd200brbdjfhbys66rl57x7h5xj0"))
 
 (define rust-async-executor-1.13.1
   (crate-source "async-executor" "1.13.1"
@@ -2627,13 +2627,13 @@
   (crate-source "cc" "1.2.46"
                 "0diynsnlmw8fr032dxci5a79il5br2ws1l2a730v3cac0vhn6x5r"))
 
-(define rust-cc-1.2.54
-  (crate-source "cc" "1.2.54"
-                "10q5q3kzcqg9s1zrgpk9sn1a98xjnz177ixkkkx9qbfnpwdwhm33"))
-
 (define rust-cc-1.2.50
   (crate-source "cc" "1.2.50"
                 "0g1q2k30bwnym5hlhk2y3k08hhrklgn68gr61b63f73s49ixal4z"))
+
+(define rust-cc-1.2.54
+  (crate-source "cc" "1.2.54"
+                "10q5q3kzcqg9s1zrgpk9sn1a98xjnz177ixkkkx9qbfnpwdwhm33"))
 
 (define rust-cedarwood-0.4.6
   (crate-source "cedarwood" "0.4.6"
@@ -10015,13 +10015,13 @@
   (crate-source "itoa" "1.0.15"
                 "0b4fj9kz54dr3wam0vprjwgygvycyw8r0qwg7vp19ly8b2w16psa"))
 
-(define rust-itoa-1.0.17
-  (crate-source "itoa" "1.0.17"
-                "1lh93xydrdn1g9x547bd05g0d3hra7pd1k4jfd2z1pl1h5hwdv4j"))
-
 (define rust-itoa-1.0.16
   (crate-source "itoa" "1.0.16"
                 "040hqvfkxl7mpjs54y495ch2qkxx26kbfxyydmi42k7vk8rvbrby"))
+
+(define rust-itoa-1.0.17
+  (crate-source "itoa" "1.0.17"
+                "1lh93xydrdn1g9x547bd05g0d3hra7pd1k4jfd2z1pl1h5hwdv4j"))
 
 (define rust-itoa-1.0.9
   (crate-source "itoa" "1.0.9"
@@ -10627,13 +10627,13 @@
   (crate-source "libc" "0.2.177"
                 "0xjrn69cywaii1iq2lib201bhlvan7czmrm604h5qcm28yps4x18"))
 
-(define rust-libc-0.2.180
-  (crate-source "libc" "0.2.180"
-                "1z2n7hl10fnk1xnv19ahhqxwnb4qi9aclnl6gigim2aaahw5mhxw"))
-
 (define rust-libc-0.2.178
   (crate-source "libc" "0.2.178"
                 "1490yks6mria93i3xdva1gm05cjz824g14mbv0ph32lxma6kvj9p"))
+
+(define rust-libc-0.2.180
+  (crate-source "libc" "0.2.180"
+                "1z2n7hl10fnk1xnv19ahhqxwnb4qi9aclnl6gigim2aaahw5mhxw"))
 
 (define rust-libc-stdhandle-0.1.0
   (crate-source "libc-stdhandle" "0.1.0"
@@ -17332,13 +17332,13 @@
   (crate-source "ryu" "1.0.20"
                 "07s855l8sb333h6bpn24pka5sp7hjk2w667xy6a0khkf6sqv5lr8"))
 
-(define rust-ryu-1.0.22
-  (crate-source "ryu" "1.0.22"
-                "1139acr2kd4n8p36bp1n42xrpaphn6dhwklnazh8hpdnfps4q3x5"))
-
 (define rust-ryu-1.0.21
   (crate-source "ryu" "1.0.21"
                 "1sja0gi4s0h3yjrx7hky72vivhzx73p5dllsiwg844mzfwl9n132"))
+
+(define rust-ryu-1.0.22
+  (crate-source "ryu" "1.0.22"
+                "1139acr2kd4n8p36bp1n42xrpaphn6dhwklnazh8hpdnfps4q3x5"))
 
 (define rust-safe-arch-0.7.4
   (crate-source "safe_arch" "0.7.4"
@@ -24276,13 +24276,13 @@
   (crate-source "zerocopy" "0.8.27"
                 "0b1870gf2zzlckca69v2k4mqwmf8yh2li37qldnzvvd3by58g508"))
 
-(define rust-zerocopy-0.8.33
-  (crate-source "zerocopy" "0.8.33"
-                "1z9d6z8p1ndf0yrvw99jr5zcjnd4270kv4rivqqyi7hbs5l533v6"))
-
 (define rust-zerocopy-0.8.31
   (crate-source "zerocopy" "0.8.31"
                 "1hwqn8f0zd8h1a7qz2hxym4iaqyzk8kdxgalllydn2i5p6cfqx7x"))
+
+(define rust-zerocopy-0.8.33
+  (crate-source "zerocopy" "0.8.33"
+                "1z9d6z8p1ndf0yrvw99jr5zcjnd4270kv4rivqqyi7hbs5l533v6"))
 
 (define rust-zerocopy-derive-0.7.35
   (crate-source "zerocopy-derive" "0.7.35"
@@ -24304,13 +24304,13 @@
   (crate-source "zerocopy-derive" "0.8.27"
                 "0c9qrylm2p55dvaplxsl24ma48add9qk4y0d6kjbkllaqvcvill8"))
 
-(define rust-zerocopy-derive-0.8.33
-  (crate-source "zerocopy-derive" "0.8.33"
-                "1wbh4bil3kqfmiwxlpzhxba6fyh09nsy87k7idk8b1hadfr64y9c"))
-
 (define rust-zerocopy-derive-0.8.31
   (crate-source "zerocopy-derive" "0.8.31"
                 "0sjw20qqxbax8z8k9ifcmwjjlljjddpm0nmvih9zap7lzl4x5a6q"))
+
+(define rust-zerocopy-derive-0.8.33
+  (crate-source "zerocopy-derive" "0.8.33"
+                "1wbh4bil3kqfmiwxlpzhxba6fyh09nsy87k7idk8b1hadfr64y9c"))
 
 (define rust-zerofrom-0.1.4
   (crate-source "zerofrom" "0.1.4"
