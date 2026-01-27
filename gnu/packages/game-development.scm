@@ -3294,7 +3294,7 @@ fiction and classic point-and-click adventures.")
 (define-public openvr
   (package
     (name "openvr")
-    (version "1.26.7")
+    (version "2.12.14")
     (home-page "https://github.com/ValveSoftware/openvr/")
     (source
      (origin
@@ -3304,7 +3304,7 @@ fiction and classic point-and-click adventures.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09rvrja3pz6ggs41ra71p4dwjl4n0rpqrqw8jiy92xl33hhxbsmx"))))
+        (base32 "0i85awq7w669j0x091chma8rcx1zqwn1j4v0d42bcjcvhqa6iv0v"))))
     (build-system cmake-build-system)
     (arguments
      ;; No tests.
