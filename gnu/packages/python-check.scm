@@ -2693,13 +2693,14 @@ running the tests.")
          "17518f2fn5l98lyk9p8r7215c1whi61imzrh6ahrmcksr8w0zz04"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest-flake8
+     (list python-pytest-8
+           python-pytest-flake8
            python-pytest-xdist
            python-setuptools
            python-tabulate
            python-wheel))
     (propagated-inputs
-     (list python-pytest python-six))
+     (list python-six))
     (home-page "https://github.com/nicoulaj/pytest-csv")
     (synopsis "CSV reporter for Pytest")
     (description "This package provides a plugin for Pytest that enables a
