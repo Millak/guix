@@ -1,26 +1,25 @@
 From c99706475cde3d963a17f4f8871149711ce6c467 Mon Sep 17 00:00:00 2001
 From: Andrew Tropin <andrew@trop.in>
-Date: Wed, 4 Sep 2024 21:36:16 +0400
+Date: Wed, 28 Jan 2026 12:23:20 +0100
 Subject: [PATCH] libcamera: ipa_manager: Disable signature verification
 
 ---
- src/libcamera/ipa_manager.cpp | 28 +++++-----------------------
- 1 file changed, 5 insertions(+), 23 deletions(-)
+ src/libcamera/ipa_manager.cpp | 27 +++------------------------
+ 1 file changed, 3 insertions(+), 24 deletions(-)
 
 diff --git a/src/libcamera/ipa_manager.cpp b/src/libcamera/ipa_manager.cpp
-index cfc24d38..4fd3cf3e 100644
+index 35171d09..4ab394da 100644
 --- a/src/libcamera/ipa_manager.cpp
 +++ b/src/libcamera/ipa_manager.cpp
-@@ -284,33 +284,15 @@ IPAModule *IPAManager::module(PipelineHandler *pipe, uint32_t minVersion,
+@@ -288,32 +288,11 @@ IPAModule *IPAManager::module(PipelineHandler *pipe, uint32_t minVersion,
  
  bool IPAManager::isSignatureValid([[maybe_unused]] IPAModule *ipa) const
  {
 -#if HAVE_IPA_PUBKEY
--	char *force = utils::secure_getenv("LIBCAMERA_IPA_FORCE_ISOLATION");
--	if (force && force[0] != '\0') {
+-	if (forceIsolation_) {
 -		LOG(IPAManager, Debug)
 -			<< "Isolation of IPA module " << ipa->path()
--			<< " forced through environment variable";
+-			<< " forced through configuration";
 -		return false;
 -	}
 -
@@ -33,14 +32,12 @@ index cfc24d38..4fd3cf3e 100644
 -		return false;
 -
 -	bool valid = pubKey_.verify(data, ipa->signature());
-+	LOG(IPAManager, Debug)
+-
+ 	LOG(IPAManager, Debug)
+-		<< "IPA module " << ipa->path() << " signature is "
+-		<< (valid ? "valid" : "not valid");
 +		<< "Signature verification is disabled by Guix. "
 +		<< "See https://issues.guix.gnu.org/72828 for more details.";
- 
- 	LOG(IPAManager, Debug)
- 		<< "IPA module " << ipa->path() << " signature is "
--		<< (valid ? "valid" : "not valid");
-+		<< "not verified (verification skipped).";
  
 -	return valid;
 -#else
@@ -51,5 +48,4 @@ index cfc24d38..4fd3cf3e 100644
  
  } /* namespace libcamera */
 -- 
-2.45.2
-
+2.52.0

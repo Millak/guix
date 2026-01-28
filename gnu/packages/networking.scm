@@ -444,7 +444,7 @@ them in order to efficiently transfer a minimal amount of data.")
 (define-public libcamera
   (package
     (name "libcamera")
-    (version "0.3.1")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -457,7 +457,7 @@ them in order to efficiently transfer a minimal amount of data.")
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "15wgy6dc56dwjyasw6w6x6d4j8475clbrxkgphc2zly6232ds7mw"))))
+        (base32 "0g6rphsa1hi9y22l2vw5cj75bf57clq3cggviwd1bnjhpp61nryc"))))
     (build-system meson-build-system)
     (outputs '("out" "doc" "gst" "tools"))
     (arguments
@@ -465,19 +465,22 @@ them in order to efficiently transfer a minimal amount of data.")
            #:configure-flags
            #~(list (string-append "-Dbindir="
                                   (assoc-ref %outputs "tools") "/bin")
-
-                   ;; In 0.3.1 release simple pipeline wasn't enabled for
-                   ;; x86_64 by mistake, it's enabled a couple commits later.
-                   ;; Remove this expression on the next release.
-                   #$@(if (target-x86-64?)
-                          '("-Dpipelines=ipu3,vimc,uvcvideo,simple")
-                          '())
                    "-Dudev=enabled"
-                   "-Dtest=true" "-Dv4l2=true"
-                   ;; XXX: Requires bundled pybind11.
-                   "-Dpycamera=disabled")
+                   "-Dv4l2=true"
+                   "-Dtest=true")
            #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'set-sphinx-theme
+                 ;; sphinx_book_theme requires node for packaging
+                 ;; use the default sphinx theme instead
+                 (lambda _
+                   (substitute* "Documentation/conf.py.in"
+                     (("sphinx_book_theme") "alabaster"))))
+               (add-after 'unpack 'disable-gstreamer-tests
+                 ;; these require /dev/udmabuf
+                 (lambda _
+                   (substitute* "test/meson.build"
+                     (("subdir\\('gstreamer'\\)") ""))))
                #$@(if (target-aarch64?)
                       #~((add-after 'unpack 'disable-problematic-tests
                            (lambda _
@@ -511,14 +514,18 @@ them in order to efficiently transfer a minimal amount of data.")
            pkg-config
            python-wrapper
            python-sphinx
+           python-sphinxcontrib-doxylink
            python-pyyaml))
     (inputs
      (list eudev
            glib
            gst-plugins-base
            libevent
+           libjpeg-turbo
            libtiff
            libyaml
+           libyuv
+           pybind11
            python-jinja2
            python-ply
            qtbase))
