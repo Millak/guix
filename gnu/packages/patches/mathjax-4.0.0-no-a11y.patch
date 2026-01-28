@@ -1,0 +1,489 @@
+diff -ur a/components/mjs/a11y/explorer/config.json b/components/mjs/a11y/explorer/config.json
+--- a/components/mjs/a11y/explorer/config.json	1970-01-01 01:00:01.000000000 +0100
++++ b/components/mjs/a11y/explorer/config.json	2026-01-26 09:55:11.623580625 +0100
+@@ -7,8 +7,6 @@
+     "name": "a11y/explorer",
+     "libs": [
+       "components/src/a11y/semantic-enrich/lib",
+-      "components/src/a11y/speech/lib",
+-      "components/src/a11y/sre/lib",
+       "components/src/input/mml/lib",
+       "components/src/core/lib"
+     ]
+diff -ur a/components/mjs/a11y/semantic-enrich/config.json b/components/mjs/a11y/semantic-enrich/config.json
+--- a/components/mjs/a11y/semantic-enrich/config.json	1970-01-01 01:00:01.000000000 +0100
++++ b/components/mjs/a11y/semantic-enrich/config.json	2026-01-26 09:54:51.467512431 +0100
+@@ -10,7 +10,6 @@
+     "libs": [
+       "components/src/input/mml/lib",
+       "components/src/core/lib",
+-      "components/src/a11y/sre/lib",
+       "components/src/loader/lib"
+     ]
+   }
+diff -ur a/components/mjs/a11y/util.js b/components/mjs/a11y/util.js
+--- a/components/mjs/a11y/util.js	1970-01-01 01:00:01.000000000 +0100
++++ b/components/mjs/a11y/util.js	2026-01-26 11:27:00.259216414 +0100
+@@ -1,13 +1,7 @@
+ import {Loader} from '#js/components/loader.js';
+ import '../input/mml/init.js';
+-import './sre/sre.js';
+ import './semantic-enrich/semantic-enrich.js';
+-import './speech/speech.js';
+-import './explorer/explorer.js';
+ 
+ Loader.preLoaded(
+-  'a11y/sre',
+   'a11y/semantic-enrich',
+-  'a11y/speech',
+-  'a11y/explorer'
+ );
+diff -ur a/components/mjs/dependencies.js b/components/mjs/dependencies.js
+--- a/components/mjs/dependencies.js	1970-01-01 01:00:01.000000000 +0100
++++ b/components/mjs/dependencies.js	2026-01-26 11:27:31.211335738 +0100
+@@ -16,10 +16,8 @@
+  */
+ 
+ export const dependencies = {
+-  'a11y/semantic-enrich': ['input/mml', 'a11y/sre'],
+-  'a11y/speech': ['a11y/semantic-enrich'],
++  'a11y/semantic-enrich': ['input/mml'],
+   'a11y/complexity': ['a11y/semantic-enrich'],
+-  'a11y/explorer': ['a11y/speech'],
+   '[mml]/mml3': ['input/mml'],
+   '[tex]/action': ['input/tex-base'],
+   '[tex]/ams': ['input/tex-base', '[tex]/newcommand'],
+@@ -61,7 +59,6 @@
+   '[tex]/units': ['input/tex-base'],
+   '[tex]/upgreek': ['input/tex-base'],
+   '[tex]/verb': ['input/tex-base'],
+-  'ui/menu': ['a11y/sre'],
+ };
+ 
+ export const paths = {
+diff -ur a/components/mjs/mml-chtml/mml-chtml.js b/components/mjs/mml-chtml/mml-chtml.js
+--- a/components/mjs/mml-chtml/mml-chtml.js	1970-01-01 01:00:01.000000000 +0100
++++ b/components/mjs/mml-chtml/mml-chtml.js	2026-01-26 09:51:40.893614207 +0100
+@@ -4,7 +4,6 @@
+ import '../input/mml/mml.js';
+ import {loadFont} from '../output/chtml/chtml.js';
+ import '../ui/menu/menu.js';
+-import '../a11y/util.js';
+ 
+ Loader.preLoaded(
+   'loader', 'startup',
+diff -ur a/components/mjs/mml-chtml-nofont/mml-chtml-nofont.js b/components/mjs/mml-chtml-nofont/mml-chtml-nofont.js
+--- a/components/mjs/mml-chtml-nofont/mml-chtml-nofont.js	1970-01-01 01:00:01.000000000 +0100
++++ b/components/mjs/mml-chtml-nofont/mml-chtml-nofont.js	2026-01-26 09:53:38.319264663 +0100
+@@ -4,7 +4,6 @@
+ import '../input/mml/mml.js';
+ import {loadFont} from '../output/chtml/chtml.js';
+ import '../ui/menu/menu.js';
+-import '../a11y/util.js';
+ 
+ Loader.preLoaded(
+   'loader', 'startup',
+diff -ur a/components/mjs/mml-svg/mml-svg.js b/components/mjs/mml-svg/mml-svg.js
+--- a/components/mjs/mml-svg/mml-svg.js	1970-01-01 01:00:01.000000000 +0100
++++ b/components/mjs/mml-svg/mml-svg.js	2026-01-26 09:55:49.927710134 +0100
+@@ -4,7 +4,6 @@
+ import '../input/mml/mml.js';
+ import {loadFont} from '../output/svg/svg.js';
+ import '../ui/menu/menu.js';
+-import '../a11y/util.js';
+ 
+ Loader.preLoaded(
+   'loader', 'startup',
+diff -ur a/components/mjs/mml-svg-nofont/mml-svg-nofont.js b/components/mjs/mml-svg-nofont/mml-svg-nofont.js
+--- a/components/mjs/mml-svg-nofont/mml-svg-nofont.js	1970-01-01 01:00:01.000000000 +0100
++++ b/components/mjs/mml-svg-nofont/mml-svg-nofont.js	2026-01-26 09:53:45.819290087 +0100
+@@ -4,7 +4,6 @@
+ import '../input/mml/mml.js';
+ import {loadFont} from '../output/svg/svg.js';
+ import '../ui/menu/menu.js';
+-import '../a11y/util.js';
+ 
+ Loader.preLoaded(
+   'loader', 'startup',
+diff -ur a/components/mjs/source.js b/components/mjs/source.js
+--- a/components/mjs/source.js	1970-01-01 01:00:01.000000000 +0100
++++ b/components/mjs/source.js	2026-01-26 11:28:05.171466461 +0100
+@@ -73,11 +73,7 @@
+   'output/svg': `${src}/output/svg/svg.js`,
+   'a11y/assistive-mml': `${src}/a11y/assistive-mml/assistive-mml.js`,
+   'a11y/semantic-enrich': `${src}/a11y/semantic-enrich/semantic-enrich.js`,
+-  'a11y/speech': `${src}/a11y/speech/speech.js`,
+   'a11y/complexity': `${src}/a11y/complexity/complexity.js`,
+-  'a11y/explorer': `${src}/a11y/explorer/explorer.js`,
+-  'a11y/sre': `${src}/a11y/sre/sre.js`,
+-  '[mathmaps]': `${src}/../../bundle/sre/mathmaps`,
+   'ui/lazy': `${src}/ui/lazy/lazy.js`,
+   'ui/menu': `${src}/ui/menu/menu.js`,
+   'ui/safe': `${src}/ui/safe/safe.js`,
+diff -ur a/components/mjs/tex-chtml/tex-chtml.js b/components/mjs/tex-chtml/tex-chtml.js
+--- a/components/mjs/tex-chtml/tex-chtml.js	1970-01-01 01:00:01.000000000 +0100
++++ b/components/mjs/tex-chtml/tex-chtml.js	2026-01-26 09:53:41.947276962 +0100
+@@ -4,7 +4,6 @@
+ import '../input/tex/tex.js';
+ import {loadFont} from '../output/chtml/chtml.js';
+ import '../ui/menu/menu.js';
+-import '../a11y/util.js';
+ 
+ Loader.preLoaded(
+   'loader', 'startup',
+diff -ur a/components/mjs/tex-chtml-nofont/tex-chtml-nofont.js b/components/mjs/tex-chtml-nofont/tex-chtml-nofont.js
+--- a/components/mjs/tex-chtml-nofont/tex-chtml-nofont.js	1970-01-01 01:00:01.000000000 +0100
++++ b/components/mjs/tex-chtml-nofont/tex-chtml-nofont.js	2026-01-26 09:51:32.803991787 +0100
+@@ -4,7 +4,6 @@
+ import '../input/tex/tex.js';
+ import {loadFont} from '../output/chtml/chtml.js';
+ import '../ui/menu/menu.js';
+-import '../a11y/util.js';
+ 
+ Loader.preLoaded(
+   'core',
+diff -ur a/components/mjs/tex-mml-chtml/tex-mml-chtml.js b/components/mjs/tex-mml-chtml/tex-mml-chtml.js
+--- a/components/mjs/tex-mml-chtml/tex-mml-chtml.js	1970-01-01 01:00:01.000000000 +0100
++++ b/components/mjs/tex-mml-chtml/tex-mml-chtml.js	2026-01-26 09:53:30.887239463 +0100
+@@ -5,7 +5,6 @@
+ import '../input/mml/mml.js';
+ import {loadFont} from '../output/chtml/chtml.js';
+ import '../ui/menu/menu.js';
+-import '../a11y/util.js';
+ 
+ Loader.preLoaded(
+   'loader', 'startup',
+diff -ur a/components/mjs/tex-mml-chtml-nofont/tex-mml-chtml-nofont.js b/components/mjs/tex-mml-chtml-nofont/tex-mml-chtml-nofont.js
+--- a/components/mjs/tex-mml-chtml-nofont/tex-mml-chtml-nofont.js	1970-01-01 01:00:01.000000000 +0100
++++ b/components/mjs/tex-mml-chtml-nofont/tex-mml-chtml-nofont.js	2026-01-26 09:51:22.243799809 +0100
+@@ -5,7 +5,6 @@
+ import '../input/mml/mml.js';
+ import {loadFont} from '../output/chtml/chtml.js';
+ import '../ui/menu/menu.js';
+-import '../a11y/util.js';
+ 
+ Loader.preLoaded(
+   'loader', 'startup',
+diff -ur a/components/mjs/tex-mml-svg/tex-mml-svg.js b/components/mjs/tex-mml-svg/tex-mml-svg.js
+--- a/components/mjs/tex-mml-svg/tex-mml-svg.js	1970-01-01 01:00:01.000000000 +0100
++++ b/components/mjs/tex-mml-svg/tex-mml-svg.js	2026-01-26 09:51:14.670501005 +0100
+@@ -5,7 +5,6 @@
+ import '../input/mml/mml.js';
+ import {loadFont} from '../output/svg/svg.js';
+ import '../ui/menu/menu.js';
+-import '../a11y/util.js';
+ 
+ Loader.preLoaded(
+   'loader', 'startup',
+diff -ur a/components/mjs/tex-mml-svg-nofont/tex-mml-svg-nofont.js b/components/mjs/tex-mml-svg-nofont/tex-mml-svg-nofont.js
+--- a/components/mjs/tex-mml-svg-nofont/tex-mml-svg-nofont.js	1970-01-01 01:00:01.000000000 +0100
++++ b/components/mjs/tex-mml-svg-nofont/tex-mml-svg-nofont.js	2026-01-26 09:53:34.387251331 +0100
+@@ -5,7 +5,6 @@
+ import '../input/mml/mml.js';
+ import {loadFont} from '../output/svg/svg.js';
+ import '../ui/menu/menu.js';
+-import '../a11y/util.js';
+ 
+ Loader.preLoaded(
+   'loader', 'startup',
+diff -ur a/components/mjs/tex-svg/tex-svg.js b/components/mjs/tex-svg/tex-svg.js
+--- a/components/mjs/tex-svg/tex-svg.js	1970-01-01 01:00:01.000000000 +0100
++++ b/components/mjs/tex-svg/tex-svg.js	2026-01-26 09:53:26.683225207 +0100
+@@ -4,7 +4,6 @@
+ import '../input/tex/tex.js';
+ import {loadFont} from '../output/svg/svg.js';
+ import '../ui/menu/menu.js';
+-import '../a11y/util.js';
+ 
+ Loader.preLoaded(
+   'loader', 'startup',
+diff -ur a/components/mjs/tex-svg-nofont/tex-svg-nofont.js b/components/mjs/tex-svg-nofont/tex-svg-nofont.js
+--- a/components/mjs/tex-svg-nofont/tex-svg-nofont.js	1970-01-01 01:00:01.000000000 +0100
++++ b/components/mjs/tex-svg-nofont/tex-svg-nofont.js	2026-01-26 09:55:54.519725652 +0100
+@@ -4,7 +4,6 @@
+ import '../input/tex/tex.js';
+ import {loadFont} from '../output/svg/svg.js';
+ import '../ui/menu/menu.js';
+-import '../a11y/util.js';
+ 
+ Loader.preLoaded(
+   'core',
+diff -ur a/components/mjs/ui/menu/config.json b/components/mjs/ui/menu/config.json
+--- a/components/mjs/ui/menu/config.json	1970-01-01 01:00:01.000000000 +0100
++++ b/components/mjs/ui/menu/config.json	2026-01-26 09:52:50.136135319 +0100
+@@ -1,14 +1,13 @@
+ {
+   "build": {
+     "component": "ui/menu",
+-    "targets": ["ui/menu", "a11y/speech/SpeechMenu.ts"],
++    "targets": ["ui/menu"],
+     "excludeSubdirs": true
+   },
+   "webpack": {
+     "name": "ui/menu",
+     "libs": [
+       "components/src/core/lib",
+-      "components/src/a11y/sre/lib",
+       "node_modules/mj-context-menu/js"
+     ]
+   }
+diff -ur a/ts/a11y/explorer.ts b/ts/a11y/explorer.ts
+--- a/ts/a11y/explorer.ts	1970-01-01 01:00:01.000000000 +0100
++++ b/ts/a11y/explorer.ts	2026-01-26 11:23:15.894346209 +0100
+@@ -25,7 +25,6 @@
+ import { MmlNode } from '../core/MmlTree/MmlNode.js';
+ import { MathML } from '../input/mathml.js';
+ import { STATE, newState } from '../core/MathItem.js';
+-import { SpeechMathItem, SpeechMathDocument, SpeechHandler } from './speech.js';
+ import { MathDocumentConstructor } from '../core/MathDocument.js';
+ import { OptionList, expandable } from '../util/Options.js';
+ import { SerializedMmlVisitor } from '../core/MmlTree/SerializedMmlVisitor.js';
+@@ -35,8 +34,6 @@
+ 
+ import { ExplorerPool, RegionPool } from './explorer/ExplorerPool.js';
+ 
+-import * as Sre from './sre.js';
+-
+ const isUnix = context.os === 'Unix';
+ 
+ /**
+@@ -167,26 +164,16 @@
+      * @override
+      */
+     public attachSpeech(document: ExplorerMathDocument) {
+-      super.attachSpeech(document);
+-      this.outputData.speechPromise
+-        ?.then(() => this.explorers.speech.attachSpeech())
+-        ?.then(() => {
+-          if (this.explorers?.speech) {
+-            this.explorers.speech.restarted = this.refocus;
+-          }
+-          this.refocus = null;
+-          if (this.explorers) {
+-            this.explorers.restart();
+-          }
+-        });
++      console.log("ignoring attachSpeech: speech is disabled");
++      return;
+     }
+ 
+     /**
+      * @override
+      */
+     public detachSpeech(document: ExplorerMathDocument) {
+-      super.detachSpeech(document);
+-      this.explorers.speech.detachSpeech();
++      console.log("ignoring detachSpeech: speech is disabled");
++      return;
+     }
+ 
+     /**
+@@ -243,7 +230,7 @@
+     public setTemporaryFocus(document: ExplorerMathDocument): HTMLElement {
+       let focus = null;
+       if (this.explorers) {
+-        const speech = this.explorers.speech;
++        const speech = null;
+         focus = speech?.attached ? document.tmpFocus : null;
+         if (focus) {
+           this.refocus = speech.semanticFocus() ?? null;
+@@ -325,10 +312,6 @@
+         ...BaseDocument.OPTIONS.renderActions,
+         explorable: [STATE.EXPLORER]
+       }),
+-      sre: expandable({
+-        ...BaseDocument.OPTIONS.sre,
+-        speech: 'none',                    // None as speech is explicitly computed
+-      }),
+       a11y: {
+         ...BaseDocument.OPTIONS.a11y,
+         align: 'top',                      // placement of magnified expression
+@@ -527,9 +510,6 @@
+       const visitor = new SerializedMmlVisitor(this.mmlFactory);
+       const toMathML = (node: MmlNode) => visitor.visitTree(node);
+       const options = this.options;
+-      if (!options.a11y.speechRules) {
+-        options.a11y.speechRules = `${options.sre.domain}-${options.sre.style}`;
+-      }
+       const mathItem = (options.MathItem = ExplorerMathItemMixin(
+         options.MathItem,
+         toMathML
+@@ -653,12 +633,9 @@
+ ) {
+   // TODO (volker): This needs to be replace by the engine feature vector.
+   // Minus rule sets etc. Breaking change in SRE.
+-  const sreOptions = Sre.engineSetup() as { [name: string]: string };
+   for (const key in options) {
+     if (document.options.a11y[key] !== undefined) {
+       setA11yOption(document, key, options[key]);
+-    } else if (sreOptions[key] !== undefined) {
+-      document.options.sre[key] = options[key];
+     }
+   }
+   if (options.roleDescription) {
+@@ -684,9 +661,6 @@
+ ) {
+   switch (option) {
+     case 'speechRules': {
+-      const [domain, style] = (value as string).split('-');
+-      document.options.sre.domain = domain;
+-      document.options.sre.style = style;
+       break;
+     }
+     case 'magnification':
+@@ -728,7 +702,6 @@
+       }
+       break;
+     case 'locale':
+-      document.options.sre.locale = value;
+       break;
+     default:
+       document.options.a11y[option] = value;
+diff -ur a/ts/ui/menu/MenuHandler.ts b/ts/ui/menu/MenuHandler.ts
+--- a/ts/ui/menu/MenuHandler.ts	1970-01-01 01:00:01.000000000 +0100
++++ b/ts/ui/menu/MenuHandler.ts	2026-01-26 11:40:15.606237915 +0100
+@@ -24,21 +24,11 @@
+ import { mathjax } from '../../mathjax.js';
+ 
+ import { STATE, newState } from '../../core/MathItem.js';
+-import { MathDocumentConstructor } from '../../core/MathDocument.js';
++import { MathDocument, MathDocumentConstructor } from '../../core/MathDocument.js';
+ import { Handler } from '../../core/Handler.js';
+-import {
+-  ComplexityMathDocument,
+-  ComplexityMathItem,
+-} from '../../a11y/complexity.js';
+-import {
+-  AssistiveMmlMathDocument,
+-  AssistiveMmlMathItem,
+-} from '../../a11y/assistive-mml.js';
+-import { SpeechMathDocument } from '../../a11y/speech.js';
+ import { expandable } from '../../util/Options.js';
+ 
+ import { Menu } from './Menu.js';
+-import '../../a11y/speech/SpeechMenu.js';
+ 
+ /*==========================================================================*/
+ 
+@@ -50,8 +40,7 @@
+ /**
+  * Generic A11Y MathItem type
+  */
+-export type A11yMathItem = ComplexityMathItem<HTMLElement, Text, Document> &
+-  AssistiveMmlMathItem<HTMLElement, Text, Document>;
++export type A11yMathItem = MathItem<HTMLElement, Text, Document>;
+ 
+ /**
+  * Constructor for base MathItem for MenuMathItem
+@@ -63,13 +52,11 @@
+ /**
+  * Generic A11Y MathDocument type
+  */
+-export type A11yMathDocument = ComplexityMathDocument<
++export type A11yMathDocument = MathDocument<
+   HTMLElement,
+   Text,
+   Document
+-> &
+-  SpeechMathDocument<HTMLElement, Text, Document> &
+-  AssistiveMmlMathDocument<HTMLElement, Text, Document>;
++>;
+ 
+ /**
+  * Constructor for base document for MenuMathDocument
+@@ -87,7 +74,7 @@
+  * The new function for MathItem that adds the context menu
+  */
+ export interface MenuMathItem
+-  extends ComplexityMathItem<HTMLElement, Text, Document> {
++  extends MathItem<HTMLElement, Text, Document> {
+   /**
+    * @param {MenuMathDocument} document   The document where the menu is being added
+    * @param {boolean} force               True if menu should be added even if enableMenu is false
+@@ -151,8 +138,7 @@
+  * The properties needed in the MathDocument for context menus
+  */
+ export interface MenuMathDocument
+-  extends ComplexityMathDocument<HTMLElement, Text, Document>,
+-    SpeechMathDocument<HTMLElement, Text, Document> {
++  extends MathDocument<HTMLElement, Text, Document> {
+   /**
+    * The menu associated with this document
+    */
+@@ -208,7 +194,7 @@
+       MenuClass: Menu,
+       menuOptions: Menu.OPTIONS,
+       enableMenu: true,
+-      sre: BaseDocument.OPTIONS.sre || expandable({}),
++      sre: false,
+       a11y: BaseDocument.OPTIONS.a11y || expandable({}),
+       renderActions: expandable({
+         ...BaseDocument.OPTIONS.renderActions,
+@@ -249,10 +235,10 @@
+       const settings = this.menu.settings;
+       const options = this.options;
+       const enrich = (options.enableEnrichment = settings.enrich);
+-      options.enableSpeech = settings.speech && enrich;
++      options.enableSpeech = false;
+       options.enableBraille = settings.braille && enrich;
+-      options.enableComplexity = settings.collapsible && enrich;
+-      options.enableExplorer = enrich;
++      options.enableComplexity = false;
++      options.enableExplorer = false;
+     }
+ 
+     /**
+@@ -304,12 +290,6 @@
+           this.menu.loadingPromise.catch((err) => console.log(err))
+         );
+       }
+-      if (this.options.enableComplexity) {
+-        this.menu.checkComponent('a11y/complexity');
+-      }
+-      if (this.options.enableExplorer) {
+-        this.menu.checkComponent('a11y/explorer');
+-      }
+       return this;
+     }
+ 
+diff -ur a/ts/ui/menu/Menu.ts b/ts/ui/menu/Menu.ts
+--- a/ts/ui/menu/Menu.ts	1970-01-01 01:00:01.000000000 +0100
++++ b/ts/ui/menu/Menu.ts	2026-01-26 11:29:48.979864791 +0100
+@@ -149,10 +149,10 @@
+       breakInline: true,
+       autocollapse: false,
+       collapsible: false,
+-      enrich: true,
++      enrich: false,
+       inTabOrder: true,
+       assistiveMml: false,
+-      speech: true,
++      speech: false,
+       braille: true,
+       brailleCode: 'nemeth',
+       speechRules: 'clearspeak-default',
+@@ -1190,7 +1190,7 @@
+    * Enable/disable assistive menus based on enrichment setting
+    */
+   protected setAccessibilityMenus() {
+-    const enable = this.settings.enrich;
++    const enable = false;
+     const method = enable ? 'enable' : 'disable';
+     ['Speech', 'Braille', 'Explorer'].forEach((id) =>
+       this.menu.findID(id)[method]()
+@@ -1210,6 +1210,7 @@
+    * @param {boolean} speech   True to enable speech, false to not
+    */
+   protected setSpeech(speech: boolean) {
++    speech = false;
+     this.enableAccessibilityItems('Speech', speech);
+     this.document.options.enableSpeech = speech;
+     if (!speech || MathJax._?.a11y?.explorer) {
+@@ -1223,6 +1224,7 @@
+    * @param {boolean} braille   True to enable braille, false to not
+    */
+   protected setBraille(braille: boolean) {
++    braille = false;
+     this.enableAccessibilityItems('Braille', braille);
+     this.document.options.enableBraille = braille;
+     if (!braille || MathJax._?.a11y?.explorer) {

@@ -1,0 +1,15 @@
+Guix uses esbuild to “link” the files. We only need the build step.
+
+diff --git a/components/bin/makeAll b/components/bin/makeAll
+--- a/components/bin/makeAll
++++ b/components/bin/makeAll
+@@ -154,7 +154,7 @@
+     const fulldir = path.resolve(root, dir);
+     const config = getConfig(fulldir);
+     processDir(fulldir, buildLib, config);
+-    processDir(fulldir, copyLib, config);
+-    processDir(fulldir, webpackLib, config);
++    //processDir(fulldir, copyLib, config);
++    //processDir(fulldir, webpackLib, config);
+   }
+ }

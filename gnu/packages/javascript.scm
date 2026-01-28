@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2017, 2019, 2020, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2019, 2020, 2022, 2023, 2026 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017-2020, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Nicolas Goaziou <mail@nicolasgoaziou.fr>
@@ -316,11 +316,10 @@ be able to view it naturally and easily.")))
     (description (package-description js-mathjax))
     (license license:asl2.0)))
 
-(define-public js-mathjax-for-r-mathjaxr
+(define-public js-mathjax-4
   (package
-    (inherit js-mathjax-3)
     (name "js-mathjax")
-    (version "3.1.2")
+    (version "4.0.0")
     (source
      (origin
        (method git-fetch)
@@ -330,39 +329,136 @@ be able to view it naturally and easily.")))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0kqcb6pl0zfs4hf8zqb4l50kkfq7isv35vpy05m0lg0yr9w0w4ai"))
-       (patches (search-patches "mathjax-disable-webpack.patch"
-                                "mathjax-3.1.2-no-a11y.patch"))))
+         "1ak864p80bvsvmz5fb41snrb165zs5miy54h08lld005ph8pqgk0"))
+       (patches (search-patches "mathjax-4.0.0-disable-webpack.patch"
+                                "mathjax-4.0.0-no-a11y.patch"))))
+    (build-system gnu-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments js-mathjax-3)
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (replace 'prepare-sources
-             (lambda* (#:key inputs #:allow-other-keys)
-               ;; All a11y components depend on speech-rule-engine, which cannot be
-               ;; built from source. Since this only affects accessibility, remove them.
-               (delete-file-recursively "ts/a11y")
-               (delete-file-recursively "components/src/a11y")
-               (delete-file-recursively "components/src/sre")
-               (delete-file-recursively "components/src/node-main")
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-sources
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; All a11y components depend on speech-rule-engine, which cannot be
+              ;; built from source. Since this only affects accessibility, remove them.
+              (delete-file-recursively "ts/a11y/")
+              (delete-file-recursively "components/mjs/a11y")
+              (delete-file-recursively "components/mjs/sre")
+              (delete-file-recursively "components/mjs/node-main")
 
-               ;; Copy sources of dependencies, so we can create symlinks.
-               (mkdir-p "node_modules")
-               (with-directory-excursion "node_modules"
-                 (for-each
-                  (lambda (p)
-                    (copy-recursively (assoc-ref inputs (string-append "node-" p)) p))
-                  '("mj-context-menu")))
+              ;; Copy sources of dependencies, so we can create symlinks.
+              (mkdir-p "node_modules")
+              (let ((components (string-append (getcwd) "/components"))
+                    (subdir "mathjax-newcm-font"))
+                (with-directory-excursion "node_modules"
+                  (for-each
+                   (lambda (p)
+                     (copy-recursively (assoc-ref inputs (string-append "node-" p)) p))
+                   '("mj-context-menu" "mhchemparser")))
 
-               ;; Make sure esbuild can find imports. This way we don’t have to rewrite files.
-               (symlink "ts" "js")
-               (symlink "ts" "node_modules/mj-context-menu/js")))))))
+                ;; Unpack font files.
+                (mkdir-p subdir)
+                (invoke "tar" "-xf" (assoc-ref inputs "node-mathjax-newcm-font")
+                        "-C" subdir
+                        "--strip-components=1")
+                (substitute* (find-files subdir "\\.js$")
+                  (("@mathjax/src/mjs/output/chtml/")
+                   (string-append components "/mjs/output/chtml/lib/output/chtml/"))
+                  (("@mathjax/src/mjs/output/svg/")
+                   (string-append components "/mjs/output/svg/lib/output/svg/"))
+                  (("@mathjax/src/mjs/output/common/")
+                   (string-append components "/mjs/output/chtml/lib/output/common/"))
+                  (("@mathjax/src/components/")
+                   (string-append components "/"))
+                  (("@mathjax/src/mjs/util/Options.js")
+                   (string-append components "/mjs/core/lib/util/Options.js")))
+                (rename-file (string-append subdir "/mjs") "components/mjs/font"))
+
+              ;; Make sure esbuild can find imports. This way we don’t have to rewrite files.
+              (symlink "ts" "js")
+              (symlink "ts" "mjs")
+              (symlink "ts" "node_modules/mj-context-menu/js")
+              (substitute* "package.json"
+                (("@mathjax/src/") "./js/")
+                (("@mathjax/mathjax-newcm-font/mjs/") "./components/mjs/font/"))))
+          (delete 'configure)
+          (replace 'build
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((esbuild (string-append (assoc-ref inputs "esbuild")
+                                            "/bin/esbuild"))
+                    (node (string-append (assoc-ref inputs "node")
+                                         "/bin/node"))
+                    (npm (string-append (assoc-ref inputs "node")
+                                         "/bin/npm"))
+                    (target (string-append #$output
+                                           "/share/javascript/mathjax")))
+                ;; Prepare fonts.
+                (invoke node "components/bin/makeAll" "--mjs" "components/mjs/font")
+                ;; Preprocess files and generate lib/ subdirs.
+                (invoke node "components/bin/makeAll" "--mjs" "components/mjs")
+                ;; Build components.
+                (apply
+                 invoke
+                 esbuild
+                 "--bundle"
+                 "--minify"
+                 ;; esbuild cannot transpile some features to ES5, so use ES6 instead.
+                 "--target=es6"
+                 (string-append "--outdir=" target)
+                 "--sourcemap"
+                 "--outbase=components/mjs"
+                 "--define:__dirname=\"/\""
+                 ;; In the browser the global object is window, see
+                 ;; https://developer.mozilla.org/en-US/docs/Glossary/Global_object
+                 "--define:global=window"
+                 ;; Find all component entry points, which have the same name as their
+                 ;; parent directory.
+                 (filter
+                  (lambda (f)
+                    (string=?
+                     (basename (dirname f))
+                     (string-drop-right (basename f) 3)))
+                  (find-files "components/mjs" "\\.js$")))
+                ;; Move all .js files into their parent directory, where MathJax
+                ;; expects them.
+                (for-each
+                 (lambda (f)
+                   (rename-file f (string-append (dirname (dirname f)) "/" (basename f))))
+                 (find-files target "\\.js(\\.map)?$"))
+
+                ;; Copy font files.  These files contain character tables,
+                ;; which is why they are so large.  The tools to generate
+                ;; these tables has not been released yet, so we install them
+                ;; as opaque data instead of building them from font
+                ;; definition files.
+                (install-file
+                 "mathjax-newcm-font/chtml.js"
+                 (string-append target "/font/"))
+                (install-file
+                 "mathjax-newcm-font/tex-mml-chtml-mathjax-newcm.js"
+                 (string-append target "/font/"))
+                (copy-recursively
+                 "mathjax-newcm-font/chtml/woff2"
+                 (string-append target "/font/chtml/woff2")))))
+          (delete 'check)
+          (delete 'install))))
     (native-inputs
      `(("esbuild" ,esbuild)
        ("node" ,node-lts)
+       ;; There is no public source code repository for this component.  See
+       ;; <https://github.com/mathjax/MathJax-src/issues/973>.
+       ("node-mathjax-newcm-font"
+        ,(origin
+           (method url-fetch)
+           (uri (string-append "https://registry.npmjs.org/@mathjax/"
+                               "mathjax-newcm-font/-/mathjax-newcm-font-"
+                               version ".tgz"))
+           (sha256
+            (base32
+             "0cklfhl2n5zy20cnik1ww068rk91bsvllx8bnrjhjbk1sz7yw63q"))))
        ("node-mj-context-menu"
         ,(let ((name "context-menu")
-               (version "0.6.1"))
+               (version "0.9.1"))
            (origin
              (method git-fetch)
              (uri (git-reference
@@ -371,7 +467,27 @@ be able to view it naturally and easily.")))
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1q063l6477z285j6h5wvccp6iswvlp0jmb96sgk32sh0lf7nhknh")))))))))
+               "03wdf8v99sxr91h4b21gaggf32h5l0h2jk0yw3wm6f6r1ildxdap")))))
+       ("node-mhchemparser"
+        ,(let ((name "mhchemparser")
+               ;; Version 4.2.1. There are no tags.
+               (commit "2159346e2bb45ec6beaf64b617e0e5a049b4d200")
+               (revision "0"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/mhchem/mhchemParser.git")
+                    (commit commit)))
+             (file-name (git-file-name name (git-version "4.2.1" revision commit)))
+             (sha256
+              (base32
+               "1xzzfrk5bl5cby77qm0bdsmzjmfxxzjrzdh0cw5f811r78js0cib")))))))
+    (home-page "https://www.mathjax.org/")
+    (synopsis (package-synopsis js-mathjax))
+    (description (package-description js-mathjax))
+    (license license:asl2.0)))
+
+(define-public js-mathjax-for-r-mathjaxr js-mathjax-4)
 
 (define-public js-commander
   (package
