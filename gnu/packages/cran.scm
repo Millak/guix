@@ -16538,13 +16538,13 @@ approach is used to estimate the lower cut-off for the scaling region.")
 (define-public r-ptw
   (package
     (name "r-ptw")
-    (version "1.9-16")
+    (version "1.9-17")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ptw" version))
               (sha256
                (base32
-                "0rma3h9ksc5qigdvk5vappb4ipd4rpk64wckzcxvxspakr5w71vy"))))
+                "0n2mih54rwq2wnb1lb6mdnrp02l2mh0dpdrjwqppb6jy7ldz6prw"))))
     (properties `((upstream-name . "ptw")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcppde))
