@@ -129,24 +129,22 @@
            (delete-file-recursively "branding/thirdparty")
            (call-with-output-file "pkg/config/version/version.go"
              (lambda (port)
-               (format port "package version\n")
-               (format port "\n")
-               (format port (string-append "var VERSION = \"" ,version "\""))))
-           #t))))
+               (format port "package version~%~% var VERSION = ~s"
+                       version)))))))
     (build-system go-build-system)
     (arguments
      `(#:imported-modules
        ((guix build cmake-build-system)
         (guix build copy-build-system)
-        (guix build python-build-system)
         (guix build qt-build-system)
         (guix build qt-utils)
-        ,@%go-build-system-modules)
+        ,@%go-build-system-modules
+        ,@%pyproject-build-system-modules)
        #:modules
        (((guix build copy-build-system)
          #:prefix copy:)
-        ((guix build python-build-system)
-         #:prefix python:)
+        ((guix build pyproject-build-system)
+         #:prefix py:)
         ((guix build qt-build-system)
          #:prefix qt:)
         (guix build utils)
@@ -176,29 +174,14 @@
                       (policy-dir (string-append out "/share/polkit-1/actions"))
                       (policy-file "se.leap.bitmask.policy")
                       (policy-path (string-append policy-dir "/" policy-file))
-                      (ip (string-append (assoc-ref inputs "iproute")
-                                         "/sbin/ip"))
-                      (iptables (string-append (assoc-ref inputs "iptables")
-                                               "/sbin/iptables"))
-                      (ip6tables (string-append (assoc-ref inputs "iptables")
-                                                "/sbin/ip6tables"))
-                      (sysctl (string-append (assoc-ref inputs "procps")
-                                             "/sbin/sysctl"))
-                      (pkttyagent (string-append (assoc-ref inputs "polkit")
-                                                 "/bin/pkttyagent"))
-                      (openvpn (string-append (assoc-ref inputs "openvpn")
-                                              "/sbin/openvpn"))
+                      (pkttyagent (search-input-file inputs "/bin/pkttyagent"))
+                      (openvpn (search-input-file inputs "/sbin/openvpn"))
                       (bitmask-root (string-append (assoc-ref outputs "out")
                                                    "/sbin/bitmask-root")))
                  (substitute* (find-files "." "(\\.go$|\\.policy$|bitmask-root)")
-                   (("swhich\\(\"ip\"\\)")
-                    (string-append "\"" ip "\""))
-                   (("swhich\\(\"iptables\"\\)")
-                    (string-append "\"" iptables "\""))
-                   (("swhich\\(\"ip6tables\"\\)")
-                    (string-append "\"" ip6tables "\""))
-                   (("swhich\\(\"sysctl\"\\)")
-                    (string-append "\"" sysctl "\""))
+                   (("swhich\\(\"(ip|iptables|ip6tables|sysctl)\"\\)" _ bin)
+                    (let ((sbin (string-append "/sbin/" bin)))
+                      (format #f "~s" (search-input-file inputs sbin))))
                    (("/usr/(bin|lib|libexec)/.*(kit|agent|agent-1)") pkttyagent)
                    (("/usr/sbin/openvpn") openvpn)
                    (("/usr/sbin/bitmask-root") bitmask-root)
@@ -263,25 +246,25 @@
                ;; Make bitmask-root script executable.
                (chmod bitmask-root #o777))))
          (add-after 'post-install 'python-wrap
-           (assoc-ref python:%standard-phases 'wrap))
+           (assoc-ref py:%standard-phases 'wrap))
          (add-after 'python-wrap 'qt-wrap
            (assoc-ref qt:%standard-phases 'qt-wrap)))))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("iproute" ,iproute)
-       ("iptables" ,iptables)
-       ("mesa" ,mesa)
-       ("openvpn" ,openvpn)
-       ("polkit" ,polkit)
-       ("procps" ,procps)
-       ("python" ,python)
-       ("qtbase" ,qtbase-5)
-       ("qtdeclarative-5" ,qtdeclarative-5)
-       ("qtgraphicaleffects" ,qtgraphicaleffects)
-       ("qtquickcontrols-5" ,qtquickcontrols-5)
-       ("qtquickcontrols2-5" ,qtquickcontrols2-5)
-       ("qtsvg-5" ,qtsvg-5)))
+     (list iproute
+           iptables
+           mesa
+           openvpn
+           polkit
+           procps
+           python
+           qtbase-5
+           qtdeclarative-5
+           qtgraphicaleffects
+           qtquickcontrols-5
+           qtquickcontrols2-5
+           qtsvg-5))
     (propagated-inputs
      (list go-0xacab-org-leap-shapeshifter
            go-github-com-apparentlymart-go-openvpn-mgmt
