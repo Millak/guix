@@ -396,7 +396,9 @@ designs.")
                               ("tools.edn" "lib/clojure/")
                               ("exec.jar" "lib/clojure/libexec/")
                               ("clojure" "bin/")
-                              ("clj" "bin/"))
+                              ("clojure.1" "share/man/man1/")
+                              ("clj" "bin/")
+                              ("clj.1" "share/man/man1/"))
            #:phases
            #~(modify-phases %standard-phases
                (add-before 'install 'fix-paths
