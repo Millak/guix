@@ -2868,14 +2868,14 @@ normals.")
 (define-public r-sn
   (package
     (name "r-sn")
-    (version "2.1.1")
+    (version "2.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sn" version))
        (sha256
         (base32
-         "1g92vwbg0kqnqpsgianid2r91334p5shi39hr26v2z6wj5nvbxpr"))))
+         "0riyb3r38cy582c0ppd72s07jlzf375v1b9bqs2dsw6rfhzix01f"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-mnormt r-numderiv r-quantreg))
