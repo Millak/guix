@@ -197,6 +197,7 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
@@ -13506,10 +13507,10 @@ generates it as a string.  Please see the homepage for usage examples.")
     (arguments
      (list
       #:test-command #~(list "make" "test" "CASK=")
-      #:imported-modules `(,@%emacs-build-system-modules
-                           (guix build python-build-system))
+      #:imported-modules (append %emacs-build-system-modules
+                                 %pyproject-build-system-modules)
       #:modules '((guix build emacs-build-system)
-                  ((guix build python-build-system) #:prefix python:)
+                  ((guix build python-build-system) #:prefix py:)
                   (guix build emacs-utils)
                   (guix build utils))
       #:phases
@@ -13524,8 +13525,7 @@ generates it as a string.  Please see the homepage for usage examples.")
                 (("env: .*$")
                  (string-append "env: " #$output "/bin/jediepcserver\n")))))
           (add-after 'unpack 'ensure-no-mtimes-pre-1980
-            (assoc-ref python:%standard-phases
-                       'ensure-no-mtimes-pre-1980))
+            (assoc-ref py:%standard-phases 'ensure-no-mtimes-pre-1980))
           (add-before 'check 'setenv
             (lambda _
               (setenv "HOME" "/tmp")))
@@ -13536,15 +13536,11 @@ generates it as a string.  Please see the homepage for usage examples.")
               (substitute* "setup.py"
                 ((".*argparse.*") ""))))
           (add-after 'relax-python-requirements 'python:add-install-to-pythonpath
-            (assoc-ref python:%standard-phases 'add-install-to-pythonpath))
+            (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
           (add-after 'python:add-install-to-pythonpath 'python:install
-            ;; This is needed to get the Python-built 'jediepcserver' command.
-            (lambda args
-              (apply (assoc-ref python:%standard-phases 'install)
-                     #:use-setuptools? #t ; make reproducible
-                     args)))
+            (assoc-ref py:%standard-phases 'install))
           (add-after 'python:install 'python:wrap
-            (assoc-ref python:%standard-phases 'wrap))
+            (assoc-ref py:%standard-phases 'wrap))
           (add-after 'python:wrap 'patch-jedi:server-command
             (lambda* (#:key outputs #:allow-other-keys)
               (emacs-substitute-variables "jedi-core.el"
