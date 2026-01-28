@@ -14875,13 +14875,13 @@ work well on small screens.")
 (define-public r-minty
   (package
     (name "r-minty")
-    (version "0.0.5")
+    (version "0.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "minty" version))
        (sha256
-        (base32 "0sr25z83v00hvq5c80jp70yialnay6c3fjykn1j8clr9s2z5ins7"))))
+        (base32 "1aazbvqm186b84n2f4cg3zzyiwksyi4sidh8iacyyzp9cidy1xpb"))))
     (properties
      '((upstream-name . "minty")
        (updater-extra-native-inputs . ("tzdata-for-tests"))))
