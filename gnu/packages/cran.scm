@@ -2048,13 +2048,13 @@ effectively deal with variable labels, attributes, and missing data.")
 (define-public r-collections
   (package
     (name "r-collections")
-    (version "0.3.9")
+    (version "0.3.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "collections" version))
        (sha256
-        (base32 "024xhgfzj3yc8kvzlq0gzsammbfa3v3v0x5rkfww3m6l28cf63r0"))))
+        (base32 "0bpg6m8pfjkhkx5fvzbppfmxzjyxk78b22g710rz34090rlhg87n"))))
     (properties `((upstream-name . "collections")))
     (build-system r-build-system)
     (native-inputs (list r-testthat))
