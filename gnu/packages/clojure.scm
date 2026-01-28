@@ -945,7 +945,7 @@ work with command-line arguments.")
 (define-public clojure-tools-deps
   (package
     (name "clojure-tools-deps")
-    (version "0.28.1569")
+    (version "0.28.1578")
     (home-page "https://github.com/clojure/tools.deps")
     (source (origin
               (method git-fetch)
@@ -955,7 +955,7 @@ work with command-line arguments.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04s8cishxm1y4vnx8mpdk1qma6j0khmb356j69fsy14s615yjgfg"))))
+                "1w3f8cl81q4kln6iz74fnfzms4c4x279ivh1962pcg22q8l1w8d5"))))
     (build-system clojure-build-system)
     (arguments
      `(#:source-dirs '("src/main/clojure" "src/main/resources")
