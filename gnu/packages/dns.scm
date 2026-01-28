@@ -852,7 +852,7 @@ Extensions} (DNSSEC).")
 (define-public knot
   (package
     (name "knot")
-    (version "3.5.2")
+    (version "3.5.3")
     (source
      (origin
        (method git-fetch)
@@ -861,7 +861,7 @@ Extensions} (DNSSEC).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0z1h22qjhjvjlli66nq3bl5nskdid6g86jk7v37y02vwy5xq93rm"))
+        (base32 "19nasxzkv805am7skkzs0vnqxjrdc4dqm67crdgqj36jli24zs3s"))
        (patches
         (search-patches "knot-remove-runtime-deps.patch"))
        (modules '((guix build utils)))
