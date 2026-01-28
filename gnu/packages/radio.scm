@@ -1289,6 +1289,20 @@ to the fix block above.
        (sha256
         (base32 "0mcrxwb27n2v8v8vmcmmm1pbmy3c02a22mz2wnpdsfb2163qpchw"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:modules `((guix build cmake-build-system)
+                  ((guix build python-build-system) #:prefix python:)
+                  (guix build utils))
+      #:imported-modules `(,@%cmake-build-system-modules
+                           (guix build python-build-system))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-test-environment
+            (lambda _
+              (setenv "HOME" "/tmp")))
+          (add-after 'install 'wrap-python
+            (assoc-ref python:%standard-phases 'wrap)))))
     (native-inputs
      (list pkg-config pybind11 python-six))
     (inputs
@@ -1304,19 +1318,6 @@ to the fix block above.
            python-requests
            spdlog-1.13
            volk))
-    (arguments
-     `(#:modules ((guix build cmake-build-system)
-                  ((guix build python-build-system) #:prefix python:)
-                  (guix build utils))
-       #:imported-modules (,@%cmake-build-system-modules
-                           (guix build python-build-system))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-test-environment
-           (lambda _
-             (setenv "HOME" "/tmp")))
-         (add-after 'install 'wrap-python
-           (assoc-ref python:%standard-phases 'wrap)))))
     (synopsis "GNU Radio decoders for several Amateur satellites")
     (description
      "@code{gr-satellites} is a GNU Radio out-of-tree module encompassing
