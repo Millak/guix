@@ -1413,13 +1413,13 @@ visualizations, and written reports.")
 (define-public r-castor
   (package
     (name "r-castor")
-    (version "1.8.4")
+    (version "1.8.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "castor" version))
               (sha256
                (base32
-                "1wgjc065kagbp6xq2mch58ld8a2khh81ww27cd24wvrv34kd6xdf"))))
+                "1f7w7wp2n49g220zpyjd81dpl9kjr7g0nwbl68d8cg2h73vv7vnk"))))
     (properties `((upstream-name . "castor")))
     (build-system r-build-system)
     (propagated-inputs (list r-jsonlite r-matrix r-naturalsort r-rcpp
