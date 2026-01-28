@@ -6428,14 +6428,14 @@ such as OpenStreetMap, OpenCycleMap, OpenAerialMap, and Maps for free.")
     (build-system meson-build-system)
     (arguments
      (list
-      #:imported-modules `(,@%meson-build-system-modules
-                           (guix build python-build-system))
+      #:imported-modules (append %meson-build-system-modules
+                                 %pyproject-build-system-modules)
       #:modules '((guix build meson-build-system)
-                  ((guix build python-build-system) #:prefix python:)
+                  ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
       #:configure-flags
       #~(list (string-append "-Dpygobject-override-dir="
-                             (python:site-packages %build-inputs %outputs)
+                             (py:site-packages %build-inputs %outputs)
                              "/gi/overrides"))))
     (native-inputs
      (list gettext-minimal
