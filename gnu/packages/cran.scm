@@ -48360,13 +48360,13 @@ tree manipulations and analyses that are valuable for phylogenetic research.")
 (define-public r-kmer
   (package
     (name "r-kmer")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "kmer" version))
        (sha256
-        (base32 "0jimn9r0abglwxdl1zqz0lxa99cmj6haydkxjzqfbpx9by80wnww"))))
+        (base32 "0ydcl27208pqg93shcj994i779lil5wh48vfmvxqpxd2kv59xas6"))))
     (properties `((upstream-name . "kmer")))
     (build-system r-build-system)
     (propagated-inputs
