@@ -24,17 +24,19 @@
 
 (define-module (gnu packages clojure)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages java)
   #:use-module (gnu packages maven)
   #:use-module (gnu packages readline)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system ant)
   #:use-module (guix build-system copy)
-  #:use-module (guix build-system clojure)
-  #:use-module (ice-9 match))
+  #:use-module (guix build-system clojure))
 
 (define-public clojure-spec-alpha
   (package
@@ -390,41 +392,44 @@ designs.")
         `(delete-file ,(string-append "clojure-tools-" version ".jar")))))
     (build-system copy-build-system)
     (arguments
-     `(#:install-plan
-       '(("deps.edn" "lib/clojure/")
-         ("example-deps.edn" "lib/clojure/")
-         ("tools.edn" "lib/clojure/")
-         ("exec.jar" "lib/clojure/libexec/")
-         ("clojure" "bin/")
-         ("clj" "bin/"))
-       #:modules ((guix build copy-build-system)
-                  (guix build utils)
-                  (srfi srfi-1)
-                  (ice-9 match))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "clojure"
-               (("PREFIX") (string-append (assoc-ref outputs "out") "/lib/clojure")))
-             (substitute* "clj"
-               (("BINDIR") (string-append (assoc-ref outputs "out") "/bin"))
-               (("rlwrap") (which "rlwrap")))))
-         (add-after 'fix-paths 'copy-tools-deps-alpha-jar
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "clojure"
-               (("\\$install_dir/libexec/clojure-tools-\\$version\\.jar")
-                (string-join
-                 (append-map (match-lambda
-                               ((label . dir)
-                                (find-files dir "\\.jar$")))
-                             inputs)
-                 ":"))))))))
+     (list #:install-plan #~'(("deps.edn" "lib/clojure/")
+                              ("example-deps.edn" "lib/clojure/")
+                              ("tools.edn" "lib/clojure/")
+                              ("exec.jar" "lib/clojure/libexec/")
+                              ("clojure" "bin/")
+                              ("clj" "bin/"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'install 'fix-paths
+                 (lambda _
+                   (substitute* "clj"
+                     (("BINDIR") (string-append #$output "/bin")))
+                   (substitute* "clojure"
+                     (("PREFIX") (string-append #$output "/lib/clojure")))
+                   (let ((coreutils #$(this-package-input "coreutils-minimal"))
+                         (jre #$(this-package-input "openjdk")))
+                     (wrap-script "clojure"
+                       `("JAVA_HOME" = (,jre))
+                       `("PATH" = (,(string-append coreutils "/bin")))))))
+               (add-after 'fix-paths 'copy-tools-deps-alpha-jar
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "clojure"
+                     (("\\$install_dir/libexec/clojure-tools-\\$version\\.jar")
+                      (let* ((selected (assq-remove! inputs "openjdk"))
+                             (input-dirs (map cdr selected))
+                             (jars (apply append
+                                          (map (lambda (dir)
+                                                 (find-files dir "\\.jar$"))
+                                               input-dirs))))
+                        (string-join jars ":")))))))))
     (inputs (list rlwrap
+                  coreutils-minimal
                   clojure
                   clojure-tools-deps
+                  guile-3.0/pinned
                   java-commons-logging-minimal
-                  java-slf4j-nop))
+                  java-slf4j-nop
+                  openjdk))
     (home-page "https://clojure.org/releases/tools")
     (synopsis "CLI tools for the Clojure programming language")
     (description "The Clojure command line tools can be used to start a
