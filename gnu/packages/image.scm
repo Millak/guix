@@ -3106,17 +3106,30 @@ your terminal.")
 (define-public libyuv
   (package
     (name "libyuv")
-    (version "2021.4")
+    (version "1922")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
 	     (url "https://chromium.googlesource.com/libyuv/libyuv")
-	     (commit "4620f1705822fd6ab99939f43ce63099bd3d9ae0")))
+             ;; corresponds to version increase in include/libyuv/version.h
+             (commit "500f45652c459cfccd20f83f297eb66cb7b015cb")))
        (sha256
-	(base32 "17vdm2g5qvrby7xa3agiqwh7ips33dxg6sw18s3q2xkfil4xw3mm"))))
+        (base32 "0lmmag8rlpsbq5qg7cv89dcm5j7r0rbbsmjnkg8f5ld29mdd50y3"))))
     (build-system cmake-build-system)
-    (arguments (list #:tests? #f))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DUNIT_TEST=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda _
+              ;; tests are configured in GN instead of ctest
+              ;; invoke them manually
+              (invoke "./libyuv_unittest"))))))
+    (inputs (list libjpeg-turbo))
+    (native-inputs (list googletest))
     (home-page "https://chromium.googlesource.com/libyuv/libyuv/")
     (synopsis "YUV scaling and conversion functionality")
     (description "libyuv is an open source project that includes YUV scaling and
@@ -3129,3 +3142,9 @@ filter.
 @item Rotate by 90/180/270 degrees to adjust for mobile devices in portrait mode.
 @end itemize")
     (license license:expat)))
+
+(define-public libyuv-prev
+  (package
+    (inherit libyuv)
+    (version "2021.4")
+    (properties `((superseded . ,libyuv)))))
