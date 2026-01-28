@@ -28,7 +28,6 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages java)
   #:use-module (gnu packages maven)
-  #:use-module (gnu packages readline)
   #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -422,8 +421,7 @@ designs.")
                                                  (find-files dir "\\.jar$"))
                                                input-dirs))))
                         (string-join jars ":")))))))))
-    (inputs (list rlwrap
-                  coreutils-minimal
+    (inputs (list coreutils-minimal
                   clojure
                   clojure-tools-deps
                   guile-3.0/pinned
@@ -432,8 +430,15 @@ designs.")
                   openjdk))
     (home-page "https://clojure.org/releases/tools")
     (synopsis "CLI tools for the Clojure programming language")
-    (description "The Clojure command line tools can be used to start a
-Clojure repl, use Clojure and Java libraries, and start Clojure programs.")
+    (description "This package provides the @command{clojure} and
+@command{clj} command line tools that can be used to start a Clojure REPL,
+launch a main or execute any Clojure function.
+
+Dependencies declared in @file{deps.edn} files are resolved and downloaded
+beforehand.
+
+The @command{clj} executable is a readline wrapper around @command{clojure}
+delegating to the @command{rlwrap} optional dependency.")
     (license license:epl1.0)))
 
 (define-public clojure-algo-generic
