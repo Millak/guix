@@ -49,6 +49,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages documentation)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages graphviz)
@@ -493,6 +494,31 @@ size responsive web components.")
      "@code{sphinxcontrib-devhelp} is a Sphinx extension which outputs
 @url{Devhelp,https://wiki.gnome.org/Apps/Devhelp} documents.")
     (license license:bsd-2)))
+
+(define-public python-sphinxcontrib-doxylink
+  (package
+    (name "python-sphinxcontrib-doxylink")
+    (version "1.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sphinx-contrib/doxylink")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jl019g65jfnam1pqqw0r95iaary8xyqqx797v9qq6r17vp141dy"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-dateutil python-pyparsing))
+    (native-inputs (list doxygen python-poetry-core python-testfixtures
+                         python-sphinx python-pytest))
+    (home-page "https://github.com/sphinx-contrib/doxylink")
+    (synopsis "Sphinx extension for linking to Doxygen documentation")
+    (description
+     "Doxylink is a Sphinx extension to link to external Doxygen API
+documentation.  It allows you to specify C++ symbols and it will convert them
+into links to the HTML page of their Doxygen documentation.")
+    (license license:bsd-3)))
 
 (define-public python-sphinxcontrib-github-alt
   (package
