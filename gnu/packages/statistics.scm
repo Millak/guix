@@ -2556,14 +2556,14 @@ Zurich, including many that are related to graphics.")
 (define-public r-rocr
   (package
     (name "r-rocr")
-    (version "1.0-11")
+    (version "1.0-12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ROCR" version))
        (sha256
         (base32
-         "0amvvrkiflmr3qygrsgrsja4gaf2v6r6h6i2bgpsm8r069vmlf2p"))))
+         "1ywmij9pcspjn10j1p6hp42p79xm2hyyzfqny2167kz2fzckp411"))))
     (properties `((upstream-name . "ROCR")))
     (build-system r-build-system)
     (propagated-inputs
