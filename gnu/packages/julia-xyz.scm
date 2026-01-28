@@ -5445,11 +5445,11 @@ This can help users track the progress of long-running tasks.")
     (build-system julia-build-system)
     (arguments
      (list
-      #:imported-modules `((guix build python-build-system)
+      #:imported-modules `((guix build pyproject-build-system)
                            ,@%julia-build-system-modules)
       #:modules '((guix build julia-build-system)
                   (guix build utils)
-                  ((guix build python-build-system) #:prefix python:))
+                  ((guix build pyproject-build-system) #:prefix py:))
       #:phases
       #~(modify-phases %standard-phases
         (add-after 'link-depot 'remove-conda
@@ -5463,23 +5463,23 @@ This can help users track the progress of long-running tasks.")
               (("Conda.PYTHONDIR") "\"/\""))))
         (add-after 'link-depot 'set-python
           (lambda* (#:key inputs outputs #:allow-other-keys)
-            (let ((python (assoc-ref inputs "python")))
-              (setenv "PYCALL_JL_RUNTIME_PYTHON"
-                      (string-append python "/bin/python3"))
+            (let* ((python (search-input-file inputs "/bin/python3"))
+                   (python-install (dirname (dirname python))))
+              (setenv "PYCALL_JL_RUNTIME_PYTHON" python)
               (with-output-to-file "deps/deps.jl"
                 (lambda _
                   (format #t
-                          "const python = \"~a/bin/python3\"~@
-                           const pyprogramname = \"~a/bin/python3\"~@
+                          "const python = ~s~@
+                           const pyprogramname = ~s~@
                            const libpython = \"~a/lib/libpython~a.so.1.0\"~@
                            const PYTHONHOME = \"~a\"~@
                            const pyversion_build = v\"~a\"~@
                            const conda = false~%"
                           python
                           python
-                          python
-                          (python:python-version python)
-                          python
+                          python-install
+                          (py:python-version python-install)
+                          python-install
                           #$(package-version python)))))))
         (add-before 'check 'pre-check
           (lambda _
