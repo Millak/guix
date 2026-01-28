@@ -18842,14 +18842,14 @@ interface to @code{PostgreSQL}, a relational database.")
 (define-public r-linprog
   (package
     (name "r-linprog")
-    (version "0.9-4")
+    (version "0.9-6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "linprog" version))
        (sha256
         (base32
-         "1d34m2nyk7m6j2dci69bhy5mlw479xax1517j7f14pq7vhpsm9l1"))))
+         "1q23d9ixdxw1x4v8chd69f7iax2wsf1l5z8mywd5yycmgchkhpcf"))))
     (build-system r-build-system)
     (propagated-inputs (list r-lpsolve))
     (home-page "https://linprog.r-forge.r-project.org/")
