@@ -931,6 +931,83 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
        (sha256
         (base32 "0al8rci1fpz8sqkk4i2ncy8lc0hd5d04in9wj7isw7gsmirlzkz3"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:modules `((guix build cmake-build-system)
+                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+                  ((guix build python-build-system) #:prefix python:)
+                  (guix build utils)
+                  (ice-9 match))
+      #:imported-modules `(,@%cmake-build-system-modules
+                           (guix build glib-or-gtk-build-system)
+                           (guix build python-build-system))
+      #:configure-flags
+      #~(list "-DENABLE_GRC=ON"
+              (string-append "-DMATHJAX2_ROOT="
+                             (assoc-ref %build-inputs "js-mathjax")
+                             "/share/javascript/mathjax"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-source-writable
+            (lambda _
+              ;; The test_add and test_newmod open(sources, "w") for some reason.
+              (for-each make-file-writable
+                        (find-files "." ".*"))))
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((qwt (assoc-ref inputs "qwt")))
+                (substitute* "cmake/Modules/FindQwt.cmake"
+                  (("/usr/include")
+                   (string-append qwt "/include"))
+                  (("/usr/lib")
+                   (string-append qwt "/lib"))
+                  (("qwt6-\\$\\{QWT_QT_VERSION\\}")
+                   "qwt")))
+              (substitute* "cmake/Modules/GrPython.cmake"
+                (("dist-packages")
+                 "site-packages"))
+              (substitute* '("gr-vocoder/include/gnuradio/vocoder/codec2.h"
+                             "gr-vocoder/include/gnuradio/vocoder/freedv_api.h")
+                (("<codec2/")
+                 "<"))))
+          (add-before 'check 'set-test-environment
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "HOME" "/tmp")
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1")))
+          (replace 'check
+            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+              (invoke "ctest"
+                      "-j"
+                      (if parallel-tests?
+                          (number->string (parallel-job-count))
+                          "1")
+                      "--output-on-failure"
+                      ;;disable broken tests
+                      "-E"
+                      (string-join
+                       '( ;; https://github.com/gnuradio/gnuradio/issues/3871
+                         "qa_header_payload_demux"
+                         ;; https://github.com/gnuradio/gnuradio/issues/4348
+                         "qa_packet_headerparser_b"
+                         ;; qa_rotator_cc sometimes fails, it looks like
+                         ;; a floating point number precision issue.
+                         "qa_rotator_cc")
+                       "|"))))
+          (add-after 'install 'wrap-python
+            (assoc-ref python:%standard-phases 'wrap))
+          (add-after 'wrap-python 'wrap-glib-or-gtk
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
+          (add-after 'wrap-glib-or-gtk 'wrap-with-GI_TYPELIB_PATH
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/gnuradio-companion")
+                `("GI_TYPELIB_PATH" ":" prefix
+                  ,(filter file-exists?
+                           (map (match-lambda
+                                  ((output . directory)
+                                   (string-append directory
+                                                  "/lib/girepository-1.0")))
+                                inputs)))))))))
     (native-inputs
      (list doxygen
            ghostscript
@@ -981,83 +1058,6 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
            spdlog-1.15
            volk
            zeromq))
-    (arguments
-     `(#:modules ((guix build cmake-build-system)
-                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
-                  ((guix build python-build-system) #:prefix python:)
-                  (guix build utils)
-                  (ice-9 match))
-       #:imported-modules (,@%cmake-build-system-modules
-                           (guix build glib-or-gtk-build-system)
-                           (guix build python-build-system))
-       #:configure-flags
-       (list "-DENABLE_GRC=ON"
-             (string-append "-DMATHJAX2_ROOT="
-                            (assoc-ref %build-inputs "js-mathjax")
-                            "/share/javascript/mathjax"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-source-writable
-           (lambda _
-             ;; The test_add and test_newmod open(sources, "w") for some reason.
-             (for-each make-file-writable
-                       (find-files "." ".*"))))
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((qwt (assoc-ref inputs "qwt")))
-               (substitute* "cmake/Modules/FindQwt.cmake"
-                 (("/usr/include")
-                  (string-append qwt "/include"))
-                 (("/usr/lib")
-                  (string-append qwt "/lib"))
-                 (("qwt6-\\$\\{QWT_QT_VERSION\\}")
-                  "qwt")))
-             (substitute* "cmake/Modules/GrPython.cmake"
-               (("dist-packages")
-                "site-packages"))
-             (substitute* '("gr-vocoder/include/gnuradio/vocoder/codec2.h"
-                            "gr-vocoder/include/gnuradio/vocoder/freedv_api.h")
-               (("<codec2/")
-                "<"))))
-         (add-before 'check 'set-test-environment
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "HOME" "/tmp")
-             (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")))
-         (replace 'check
-           (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
-             (invoke "ctest" "-j" (if parallel-tests?
-                                      (number->string (parallel-job-count))
-                                      "1")
-                     "--output-on-failure"
-                     ;;disable broken tests
-                     "-E" (string-join
-                           '(;; https://github.com/gnuradio/gnuradio/issues/3871
-                             "qa_header_payload_demux"
-                             ;; https://github.com/gnuradio/gnuradio/issues/4348
-                             "qa_packet_headerparser_b"
-                             ;; qa_rotator_cc sometimes fails, it looks like
-                             ;; a floating point number precision issue.
-                             "qa_rotator_cc")
-                           "|"))))
-         (add-after 'install 'wrap-python
-           (assoc-ref python:%standard-phases 'wrap))
-         (add-after 'wrap-python 'wrap-glib-or-gtk
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
-         (add-after 'wrap-glib-or-gtk 'wrap-with-GI_TYPELIB_PATH
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (paths (map (match-lambda
-                                 ((output . directory)
-                                  (let ((girepodir (string-append
-                                                    directory
-                                                    "/lib/girepository-1.0")))
-                                    (if (file-exists? girepodir)
-                                        girepodir
-                                        #f))))
-                               inputs)))
-               (wrap-program (string-append out "/bin/gnuradio-companion")
-                 `("GI_TYPELIB_PATH" ":" prefix ,(filter identity paths)))))))))
     (native-search-paths
      ;; Variables required to find third-party plugins at runtime.
      (list (search-path-specification
