@@ -1096,21 +1096,21 @@ environment.")
      (list
       #:tests? #f
       #:modules '((guix build cmake-build-system)
-                  ((guix build python-build-system) #:prefix python:)
+                  ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
-      #:imported-modules `(,@%cmake-build-system-modules
-                           (guix build python-build-system))
+      #:imported-modules (append %cmake-build-system-modules
+                                 %pyproject-build-system-modules)
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-gnuradio-iqbalance-detection
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "CMakeLists.txt"
                 (("find_package\\(gnuradio-iqbalance PATHS \\$\\{Gnuradio_DIR\\}\\)")
-                 (string-append "find_package(gnuradio-iqbalance PATHS "
-                                #$(this-package-input "gr-iqbal")
-                                "/lib/cmake/gnuradio)")))))
+                 (format #f "find_package(gnuradio-iqbalance PATHS ~a)"
+                         (search-input-directory inputs
+                                                 "/lib/cmake/gnuradio"))))))
           (add-after 'install 'wrap-python
-            (assoc-ref python:%standard-phases 'wrap)))))
+            (assoc-ref py:%standard-phases 'wrap)))))
     (native-inputs
      (list doxygen pkg-config pybind11 python-mako python-six))
     (inputs
