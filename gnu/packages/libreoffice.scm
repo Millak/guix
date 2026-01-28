@@ -942,6 +942,49 @@ commonly called @code{ftoa} or @code{dtoa}.")
                   (srfi srfi-26)
                   ,@%glib-or-gtk-build-system-default-modules)
       #:tests? #f                       ; Building the tests already fails.
+      #:configure-flags
+      #~(list
+         "--enable-release-build"
+         "--with-vendor=GNU Guix"
+         ;; Without the SAL logging system enabled, LibreOffice is utterly
+         ;; silent.  Setting the environment variable 'SAL_INFO=+INFO' can be
+         ;; useful to debug problems.
+         "--enable-sal-log"
+         ;; Avoid using all cpu cores by default
+         (format #f "--with-parallelism=~d" (parallel-job-count))
+         "--disable-fetch-external"     ; disable downloads
+         "--with-system-libs"           ; enable all --with-system-* flags
+         (string-append "--with-boost-libdir="
+                        (dirname
+                         (search-input-file %build-inputs
+                                            "lib/libboost_system.so")))
+         ;; The fonts require an external tarball (crosextrafonts).
+         ;; They should not be needed when system fonts are available.
+         "--without-fonts"
+         ;; With java, the build fails since sac.jar is missing.
+         "--without-java"
+         ;; FIXME: Enable once the corresponding inputs are packaged.
+         "--disable-coinmp"
+         "--disable-skia"
+         ;; This could (Debian does this) be a separate output containing only
+         ;; program/libfirebird_sdbclo.so, if there's a way to point to it.
+         "--enable-firebird-sdbc"
+         ;; XXX: PDFium support requires fetching an external tarball and
+         ;; patching the build scripts to work with GCC5.  Try enabling this
+         ;; when our default compiler is >=GCC 6.
+         "--disable-pdfium"
+         "--without-doxygen"
+         ;; Avoid linker errors about non-virtual thunks on i686-linux.
+         "--enable-lto"
+         ;; Avoid errors rebuilding the Gtk icon cache, at least on i686-linux.
+         "--without-galleries"
+         "--enable-build-opensymbol"
+         ;; Avoid CVE tests.
+         "--disable-cve-tests"
+         ;; Do not try to write to the store.
+         "--enable-readonly-installset"
+         ;; XXX: This flag should speed-up builds.
+         "--disable-dependency-tracking")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'insert-external-tarballs
@@ -1073,50 +1116,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
                 (for-each install-python-script
                           '("access2base" "mailmerge" "msgbox" "officehelper"
                             "pythonloader" "pythonscript" "scriptforge"
-                            "unohelper" "uno"))))))
-      #:configure-flags
-      #~(list
-         "--enable-release-build"
-         "--with-vendor=GNU Guix"
-         ;; Without the SAL logging system enabled, LibreOffice is utterly
-         ;; silent.  Setting the environment variable 'SAL_INFO=+INFO' can be
-         ;; useful to debug problems.
-         "--enable-sal-log"
-         ;; Avoid using all cpu cores by default
-         (format #f "--with-parallelism=~d" (parallel-job-count))
-         "--disable-fetch-external"     ; disable downloads
-         "--with-system-libs"           ; enable all --with-system-* flags
-         (string-append "--with-boost-libdir="
-                        (dirname
-                         (search-input-file %build-inputs
-                                            "lib/libboost_system.so")))
-         ;; The fonts require an external tarball (crosextrafonts).
-         ;; They should not be needed when system fonts are available.
-         "--without-fonts"
-         ;; With java, the build fails since sac.jar is missing.
-         "--without-java"
-         ;; FIXME: Enable once the corresponding inputs are packaged.
-         "--disable-coinmp"
-         "--disable-skia"
-         ;; This could (Debian does this) be a separate output containing only
-         ;; program/libfirebird_sdbclo.so, if there's a way to point to it.
-         "--enable-firebird-sdbc"
-         ;; XXX: PDFium support requires fetching an external tarball and
-         ;; patching the build scripts to work with GCC5.  Try enabling this
-         ;; when our default compiler is >=GCC 6.
-         "--disable-pdfium"
-         "--without-doxygen"
-         ;; Avoid linker errors about non-virtual thunks on i686-linux.
-         "--enable-lto"
-         ;; Avoid errors rebuilding the Gtk icon cache, at least on i686-linux.
-         "--without-galleries"
-         "--enable-build-opensymbol"
-         ;; Avoid CVE tests.
-         "--disable-cve-tests"
-         ;; Do not try to write to the store.
-         "--enable-readonly-installset"
-         ;; XXX: This flag should speed-up builds.
-         "--disable-dependency-tracking")))
+                            "unohelper" "uno"))))))))
     (native-inputs
      (list bison
            cppunit
