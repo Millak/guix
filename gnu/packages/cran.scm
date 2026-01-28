@@ -37567,14 +37567,14 @@ the corresponding outputs (tables and graphs).")
 (define-public r-rjava
   (package
     (name "r-rjava")
-    (version "1.0-11")
+    (version "1.0-14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rJava" version))
        (sha256
         (base32
-         "05v4k0vzv1yx80b5dgmp6l7q3w64cr3k5a29hvggg1ixapswr84y"))))
+         "0mf3r25vgfv2jcgr748l57b3qb954wfjg4i9q8z7nvl4s8jf7jdr"))))
     (properties `((upstream-name . "rJava")))
     (build-system r-build-system)
     (arguments
