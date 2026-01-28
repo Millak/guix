@@ -10867,10 +10867,10 @@ existing databases over the internet.")
       #:glib-or-gtk? #t
       #:configure-flags #~(list "-Dlocalstatedir=/tmp"
                                 "-Dsysconfdir=/tmp")
-      #:imported-modules `((guix build python-build-system)
-                           ,@%meson-build-system-modules)
+      #:imported-modules (append %meson-build-system-modules
+                                 %pyproject-build-system-modules)
       #:modules '((guix build meson-build-system)
-                  ((guix build python-build-system) #:prefix python:)
+                  ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
@@ -10883,14 +10883,14 @@ existing databases over the internet.")
                (("update_desktop_database: true")
                 "update_desktop_database: false"))))
           (add-after 'install 'wrap
-            (assoc-ref python:%standard-phases 'wrap))
+            (assoc-ref py:%standard-phases 'wrap))
           (add-after 'wrap 'wrap-gi-typelib-and-python
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (wrap-program (search-input-file outputs "bin/gnome-tweaks")
                 `("GI_TYPELIB_PATH" ":" prefix
                   (,(getenv "GI_TYPELIB_PATH")))
                 `("GUIX_PYTHONPATH" ":" prefix
-                  (,(python:site-packages inputs outputs)))))))))
+                  (,(py:site-packages inputs outputs)))))))))
     (native-inputs
      (list `(,glib "bin")               ; for glib-compile-resources, etc.
            gettext-minimal
