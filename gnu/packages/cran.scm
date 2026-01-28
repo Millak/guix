@@ -39626,14 +39626,14 @@ formatting intent.")
 (define-public r-scrime
   (package
     (name "r-scrime")
-    (version "1.3.5")
+    (version "1.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "scrime" version))
        (sha256
         (base32
-         "0y2mh9fsffjf3i15bafpasa17z99c1s75r8g6h4hgcwfgpjx75sx"))))
+         "0yyshji71nhgw84b24kvlmlpgaji0aqqw5v68b3iv526k0k9l8vx"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/scrime/")
     (synopsis "Analysis of high-dimensional categorical data such as SNP data")
