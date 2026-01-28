@@ -2944,8 +2944,8 @@ guidelines.")
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
-      #:imported-modules `((guix build python-build-system)
-                           ,@%glib-or-gtk-build-system-modules)
+      #:imported-modules (append %glib-or-gtk-build-system-modules
+                                 %pyproject-build-system-modules)
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-build-files
@@ -2970,19 +2970,18 @@ guidelines.")
                                   '("config.guess" "config.sub")))))
                  #~())
           (add-after 'install 'add-install-to-pythonpath
-            (@@ (guix build python-build-system) add-install-to-pythonpath))
+            py:add-install-to-pythonpath)
           (add-after 'add-install-to-pythonpath 'wrap-for-python
-            (@@ (guix build python-build-system) wrap))
+            py:wrap)
           (add-after 'install 'wrap
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((out               (assoc-ref outputs "out"))
-                    (gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
+            (lambda _
+              (let ((gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
                 (for-each
                  (lambda (program)
                    (wrap-program program
                      `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
                  (map (lambda (name)
-                        (string-append out "/bin/" name))
+                        (string-append #$output "/bin/" name))
                       '("system-config-printer"
                         "system-config-printer-applet"
                         "install-printerdriver"
