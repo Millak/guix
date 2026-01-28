@@ -131,26 +131,26 @@
     (arguments
      (list
       #:imported-modules (append %cmake-build-system-modules
-                                 %python-build-system-modules)
+                                 %pyproject-build-system-modules)
       #:modules '((guix build cmake-build-system)
-                  ((guix build python-build-system) #:prefix python:)
+                  ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
       #:configure-flags
       #~(list (string-append "-DPYRE_VERSION=" #$version)
               (string-append "-DPYRE_DEST_PACKAGES="
-                             (python:site-packages %build-inputs %outputs)))
+                             (py:site-packages %build-inputs %outputs)))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'enable-bytecode-determinism
-            (assoc-ref python:%standard-phases 'enable-bytecode-determinism))
+            (assoc-ref py:%standard-phases 'enable-bytecode-determinism))
           ;; Move the check phase after the Python 'pyre' module
           ;; is installed and made available.
           (delete 'check)
           (add-after 'install 'add-to-pythonpath
             (lambda* (#:key inputs outputs #:allow-other-keys)
-              (python:add-installed-pythonpath inputs outputs)))
+              (py:add-installed-pythonpath inputs outputs)))
           (add-after 'add-to-pythonpath 'wrap
-            (assoc-ref python:%standard-phases 'wrap))
+            (assoc-ref py:%standard-phases 'wrap))
           (add-after 'add-to-pythonpath 'check
             (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
               (when tests?
