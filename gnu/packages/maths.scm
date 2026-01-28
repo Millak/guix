@@ -10869,55 +10869,50 @@ half-precision floating point formats.")
                         (("file.*package.*$" all)
                          (string-append "# " all))
                         ((".*[^l].[.]txt\\)\n") "")
-                        (("add_license.*\"\n") ""))
-           #t))))
+                        (("add_license.*\"\n") ""))))))
     (build-system cmake-build-system)
     (arguments
-     `(#:imported-modules ((guix build python-build-system)
-                           ,@%cmake-build-system-modules)
-       #:modules (((guix build python-build-system) #:select
-                   (python-version))
+     (list
+      #:imported-modules (append %cmake-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules `(((guix build pyproject-build-system) #:prefix py:)
                   (guix build cmake-build-system)
                   (guix build utils))
-       #:configure-flags `("-DCMAKE_CXX_FLAGS:STRING=-pthread"
-                           "-DENABLE_CPP_UNIT:BOOL=ON"
-                           "-DENABLE_CPP_EXAMPLES:BOOL=ON"
-                           "-DENABLE_PYTHON:BOOL=ON"
-                           "-DENABLE_PYTHON_UNIT:BOOL=ON"
-                           "-DENABLE_PYTHON_EXAMPLES:BOOL=ON"
-                           ,(string-append "-DBLAS_LIBRARY:FILEPATH="
-                                           (assoc-ref %build-inputs
-                                                      "blas/lapack")
-                                           "/lib/libopenblas.so")
-                           ,(string-append "-DLAPACK_LIBRARY:FILEPATH="
-                                           (assoc-ref %build-inputs
-                                                      "fortran:lib")
-                                           "/lib/libgfortran.so;"
-                                           (assoc-ref %build-inputs
-                                                      "fortran:lib")
-                                           "/lib/libquadmath.so"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-numpy-path ; Needed for the unit tests.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((pyver (python-version (assoc-ref inputs "python")))
-                    (npdir (string-append (assoc-ref inputs "numpy")
-                                          "/lib/python" pyver
-                                          "/site-packages")))
+      #:configure-flags
+      #~(list "-DCMAKE_CXX_FLAGS:STRING=-pthread"
+              "-DENABLE_CPP_UNIT:BOOL=ON"
+              "-DENABLE_CPP_EXAMPLES:BOOL=ON"
+              "-DENABLE_PYTHON:BOOL=ON"
+              "-DENABLE_PYTHON_UNIT:BOOL=ON"
+              "-DENABLE_PYTHON_EXAMPLES:BOOL=ON"
+              (string-append "-DBLAS_LIBRARY:FILEPATH="
+                             (search-input-file %build-inputs
+                                                "/lib/libopenblas.so"))
+              (string-append "-DLAPACK_LIBRARY:FILEPATH="
+                             (search-input-file %build-inputs
+                                                "/lib/libgfortran.so")
+                             ";" (search-input-file %build-inputs
+                                                    "/lib/libquadmath.so")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-numpy-path ; Needed for the unit tests.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((numpy-out (dirname (dirname (which "numpy-config"))))
+                     (outputs (list (cons "out" numpy-out))))
                 (substitute* "src/cmake/Modules/Optizelle.cmake"
                   (("PYTHONPATH=")
-                   (string-append "LD_LIBRARY_PATH=$ENV{LIBRARY_PATH};"
-                                  "PYTHONPATH=" npdir ":"))))))
-         (delete 'install-license-files)))) ; LICENSE.txt is installed.
+                   (string-append
+                    "LD_LIBRARY_PATH=$ENV{LIBRARY_PATH};"
+                    "PYTHONPATH=" (py:site-packages inputs outputs) ":"))))))
+          (delete 'install-license-files)))) ; LICENSE.txt is installed.
     (inputs
-     `(("blas/lapack" ,openblas)
-       ("fortran:lib" ,gfortran "lib")
-       ("jsoncpp" ,jsoncpp)
-       ("numpy" ,python-numpy)
-       ("python" ,python)))
+     (list openblas
+           (list gfortran "lib")
+           jsoncpp
+           python-numpy
+           python))
     (native-inputs
-     `(("fortran" ,gfortran)
-       ("pkg-config" ,pkg-config)))
+     (list gfortran pkg-config))
     (home-page "https://www.optimojoe.com/products/optizelle/")
     (synopsis "Mathematical optimization library")
     (description "@code{optizelle} is a software library designed to
