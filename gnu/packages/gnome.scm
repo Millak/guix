@@ -7529,13 +7529,6 @@ classes for commonly used data structures.")
                (base32
                 "1j722x96kavgm4prgkcs84n94gb54m5jlgzg9za37cz9aqn4vri1"))))
     (build-system meson-build-system)
-    (arguments
-     (list
-      #:imported-modules `(,@%meson-build-system-modules
-                           (guix build python-build-system))
-      #:modules '((guix build meson-build-system)
-                  ((guix build python-build-system) #:prefix python:)
-                  (guix build utils))))
     (native-inputs
      (list gcr-3
            `(,glib "bin")
