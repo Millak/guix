@@ -11634,10 +11634,10 @@ views can be printed as PDF or PostScript files, or exported to HTML.")
         (base32 "15bpg217vqbnspnls5mjg05424i6c9wd6g9ryr3h96lbgg90l93s"))))
     (build-system meson-build-system)
     (arguments
-     (list #:imported-modules `(,@%meson-build-system-modules
-                                (guix build python-build-system))
+     (list #:imported-modules (append %meson-build-system-modules
+                                      %pyproject-build-system-modules)
            #:modules '((guix build meson-build-system)
-                       ((guix build python-build-system) #:prefix python:)
+                       ((guix build pyproject-build-system) #:prefix py:)
                        (guix build utils))
            #:glib-or-gtk? #t
            #:phases
@@ -11651,7 +11651,7 @@ views can be printed as PDF or PostScript files, or exported to HTML.")
                      (list "GI_TYPELIB_PATH" ":" 'prefix
                            (list (getenv "GI_TYPELIB_PATH"))))))
                (add-after 'install 'wrap-python
-                 (assoc-ref python:%standard-phases 'wrap)))))
+                 (assoc-ref py:%standard-phases 'wrap)))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")               ; For glib-compile-resources
