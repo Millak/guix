@@ -83,6 +83,21 @@
     (home-page "https://registry.khronos.org/OpenCL/")
     (license license:asl2.0)))
 
+(define-public opencl-headers-2022
+  (package
+    (inherit opencl-headers)
+    (name "opencl-headers")
+    (version "2022.09.30")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/KhronosGroup/OpenCL-Headers")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vzzkj5kd0invm5pvzlnhdl21n00jci6131a2cjviyz0vxp7xf2m"))))))
+
 (define-public opencl-clhpp
   (package
     (name "opencl-clhpp")
