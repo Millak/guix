@@ -1226,22 +1226,20 @@ basic geometries.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; There are
-      #:modules '((guix build pyproject-build-system)
-                  (guix build utils)
-                  (ice-9 format))
       ;; Some tests fail due to small differences in the expected result (see:
       ;; <https://github.com/typemytype/booleanOperations/issues/69>).
-      #:test-flags #~(list "-k"
-                           (format #f "not ~{~a~^ and not ~}"
-                                   '("test_QTail_reversed_difference"
-                                     "test_QTail_reversed_intersection"
-                                     "test_QTail_reversed_union"
-                                     "test_QTail_reversed_xor"
-                                     "test_Q_difference"
-                                     "test_Q_intersection"
-                                     "test_Q_union"
-                                     "test_Q_xor")))))
+      #:test-flags
+      #~(list "-k"
+              (string-join
+               (list "not test_QTail_reversed_difference"
+                     "test_QTail_reversed_intersection"
+                     "test_QTail_reversed_union"
+                     "test_QTail_reversed_xor"
+                     "test_Q_difference"
+                     "test_Q_intersection"
+                     "test_Q_union"
+                     "test_Q_xor")
+               " and not "))))
     (propagated-inputs (list python-fonttools-minimal python-pyclipper))
     (native-inputs
      (list python-defcon-bootstrap
