@@ -1803,7 +1803,8 @@ definitions.")
                (base32 "1y30bk9rdya8bkw4q77y6nq5xfg7nm0qliz5miqdlk8c0r6fr0na"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list pkg-config))
+     (list pkg-config
+           python-setuptools))
     (inputs
      (list cairo
            bash-minimal
