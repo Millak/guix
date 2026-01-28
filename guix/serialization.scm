@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2021, 2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2025, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,7 +20,6 @@
   #:autoload   (guix base16) (base16-string->bytevector
                               bytevector->base16-string)
   #:use-module (rnrs bytevectors)
-  #:autoload   (rnrs bytevectors gnu) (bytevector-slice)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
@@ -30,6 +29,7 @@
   #:use-module ((ice-9 rdelim) #:prefix rdelim:)
   #:use-module (ice-9 match)
   #:use-module (ice-9 ftw)
+  #:autoload   (system foreign) (pointer->bytevector bytevector->pointer)
   #:export (write-value
             read-value
             write-bytevector
@@ -106,6 +106,28 @@
                          (port port)))))
     bv))
 
+(define sub-bytevector
+  ;; 'bytevector-slice' was added in Guile 3.0.9, but this code might be
+  ;; running on older versions of Guile when running 'guix pull' from 1.4.0
+  ;; for instance.
+  (match (and=> (false-if-exception
+              (resolve-interface '(rnrs bytevectors gnu)))
+             (lambda (module)
+               (module-ref module 'bytevector-slice)))
+    (#f
+     (lambda (bv len)
+       "Return a bytevector that aliases the first LEN bytes of BV."
+       (define max (bytevector-length bv))
+       (cond ((= len max) bv)
+             ((< len max)
+              ;; Yes, this is safe because the result of each conversion procedure
+              ;; has its life cycle synchronized with that of its argument.
+              (pointer->bytevector (bytevector->pointer bv) len))
+             (else
+              (error "sub-bytevector called to get a super bytevector")))))
+    (slice
+     (cut slice <> 0 <>))))
+
 (define (write-int n p)
   (let ((b (make-bytevector 8 0)))
     (bytevector-u32-set! b 0 n (endianness little))
@@ -153,7 +175,7 @@
          (m   (modulo len 8))
          (pad (if (zero? m) 0 (- 8 m)))
          (bv  (get-bytevector-n* p (+ len pad))))
-    (bytevector-slice bv 0 len)))
+    (sub-bytevector bv len)))
 
 (define (read-string p)
   (utf8->string (read-byte-string p)))
