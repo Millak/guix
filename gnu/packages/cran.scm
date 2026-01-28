@@ -57005,17 +57005,18 @@ matching or aggregation, retrieving coordinates, print, summary, etc.")
 (define-public r-tesseract
   (package
     (name "r-tesseract")
-    (version "5.2.4")
+    (version "5.2.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tesseract" version))
        (sha256
-        (base32 "1sv8gs5zvqgxhr0y2y584szdj581xw0vla7hqg6wq2143qakbdla"))))
-    (properties `((upstream-name . "tesseract")))
+        (base32 "1ax632rx09xr3a7w8v0qv7z7vpn8qgsalg81jr0iyyhkjxaa1vyy"))))
+    (properties
+     '((upstream-name . "tesseract")
+       (updater-extra-inputs . ("tesseract-ocr"))))
     (build-system r-build-system)
-    (inputs (list tesseract-ocr
-                  zlib))
+    (inputs (list tesseract-ocr zlib))
     (propagated-inputs (list r-curl
                              r-digest
                              r-pdftools
@@ -57025,11 +57026,12 @@ matching or aggregation, retrieving coordinates, print, summary, etc.")
                          r-knitr
                          r-spelling))
     (home-page "https://github.com/ropensci/tesseract")
-    (synopsis "Open Source OCR Engine")
+    (synopsis "Optical character recognition (OCR) engine")
     (description
-     "Bindings to @code{tesseract}: an optical character recognition (OCR) engine
-that supports over 100 languages.  The engine is highly configurable in order
-to tune the detection algorithms and obtain the best possible results.")
+     "This package provides bindings to @code{tesseract}: an @dfn{optical
+character recognition} (OCR) engine that supports over 100 languages.  The
+engine is highly configurable in order to tune the detection algorithms and
+obtain the best possible results.")
     (license license:asl2.0)))
 
 (define-public r-gstat
