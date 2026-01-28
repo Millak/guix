@@ -851,6 +851,29 @@ by GDBus included in Glib.")
                (base32
                 "0j181yw0jpw3bkq45hg0vhha5nyjjcssvfjj0y92311bkz15rf4q"))))
     (build-system meson-build-system)
+    (arguments
+     (list
+      #:tests? #f                  ;one test fails.
+      #:imported-modules `((guix build python-build-system)
+                           ,@%meson-build-system-modules)
+      #:modules '(((guix build python-build-system)
+                   #:select (python-version))
+                  (guix build meson-build-system)
+                  (guix build utils))
+      ;; don't try installing to python store path.
+      #:configure-flags
+      #~(list (string-append "-Dpy-overrides-dir="
+                             #$output "/lib/python"
+                             (python-version #$(this-package-input
+                                                "python"))
+                             "/site-packages/gi/overrides"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "dbus-run-session" "--" "meson" "test"
+                        "--print-errorlogs")))))))
     (native-inputs (list dbus
                          `(,glib "bin")
                          gobject-introspection
@@ -859,27 +882,6 @@ by GDBus included in Glib.")
                          vala))
     (inputs (list check python python-pygobject))
     (propagated-inputs (list glib libxml2 sqlite))
-    (arguments
-     (list #:tests? #f                  ;one test fails.
-           #:imported-modules `((guix build python-build-system)
-                                ,@%meson-build-system-modules)
-           #:modules '(((guix build python-build-system)
-                        #:select (python-version))
-                       (guix build meson-build-system)
-                       (guix build utils))
-           ;; don't try installing to python store path.
-           #:configure-flags
-           #~(list (string-append "-Dpy-overrides-dir="
-                                  #$output "/lib/python"
-                                  (python-version #$(this-package-input
-                                                     "python"))
-                                  "/site-packages/gi/overrides"))
-           #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "dbus-run-session" "--" "meson" "test"
-                                      "--print-errorlogs")))))))
     (home-page "https://accounts-sso.gitlab.io/")
     (synopsis "Accounts SSO (Single Sign-On) management library for GLib
 applications")
