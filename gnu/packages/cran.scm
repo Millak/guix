@@ -21259,14 +21259,14 @@ their own grammars and easily expose them in R packages.")
 (define-public r-uuid
   (package
     (name "r-uuid")
-    (version "1.2-1")
+    (version "1.2-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "uuid" version))
        (sha256
         (base32
-         "15jbzj0i4qphakbi8s9yk55lm8z9s2vhgp5bj77sfvkx7mrlj3pr"))))
+         "0pq2x6xiw5dq24kni4bp2z9pxgcxrwn0jcvbbq4iayqd323kpdxi"))))
     (build-system r-build-system)
     (home-page "https://www.rforge.net/uuid")
     (synopsis "Tools for generating and handling of UUIDs")
