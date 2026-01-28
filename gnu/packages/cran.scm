@@ -18222,15 +18222,16 @@ from knitr Rmarkdown.")
 (define-public r-kit
   (package
     (name "r-kit")
-    (version "0.0.20")
+    (version "0.0.21")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "kit" version))
        (sha256
-        (base32 "11sy1j6k20fxx7fbbdsaqzm9ax74m62534zqi6jafq643fnnzng6"))))
+        (base32 "1jjg8acsngv5m3v0ap24zg2q30xfrf16zf87fbcbf771hyxzzr5z"))))
     (properties `((upstream-name . "kit")))
     (build-system r-build-system)
+    (native-inputs (list r-knitr))
     (home-page "https://cran.r-project.org/package=kit")
     (synopsis "Data manipulation functions implemented in C")
     (description
