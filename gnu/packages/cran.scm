@@ -536,14 +536,14 @@ designs, one-way designs, general ANOVA designs, and linear regression.")
 (define-public r-bbmisc
   (package
     (name "r-bbmisc")
-    (version "1.13")
+    (version "1.13.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "BBmisc" version))
        (sha256
         (base32
-         "01a43raxj374cg6khs14r0bxvfm8v1sp0p2ambp7npnizvwxqi8i"))))
+         "0ql1s0nhl0k50wivjl2s37hlm4wpw89v5rdqaxb7xd15z4jrnncg"))))
     (properties
      '((upstream-name . "BBmisc")
        (updater-extra-native-inputs . ("r-codetools"))))
