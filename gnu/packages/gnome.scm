@@ -13180,31 +13180,34 @@ your operating-system definition:
              (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (arguments
-     `(#:imported-modules ((guix build python-build-system)
-                           ,@%meson-build-system-modules)
-       #:modules (((guix build python-build-system) #:prefix python:)
+     (list
+      #:imported-modules (append %meson-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules `(((guix build pyproject-build-system) #:prefix py:)
                   (guix build meson-build-system)
                   (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'dont-update-gtk-icon-cache
-           (lambda _
-             (substitute* "meson.build"
-               (("gtk_update_icon_cache: true")
-                "gtk_update_icon_cache: false"))))
-         (add-after 'unpack 'do-not-require-flake8
-           (lambda _
-             (substitute* "meson.build"
-               (("find_program\\('flake8'" all)
-                (string-append all ", required : false")))))
-         (add-after 'install 'wrap-python
-           (assoc-ref python:%standard-phases 'wrap))
-         (add-after 'wrap-python 'wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (wrap-script (search-input-file outputs "bin/piper")
-               `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
-               `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
-                                      ,(python:site-packages inputs outputs)))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'dont-update-gtk-icon-cache
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))))
+          (add-after 'unpack 'do-not-require-flake8
+            (lambda _
+              (substitute* "meson.build"
+                (("find_program\\('flake8'" all)
+                 (string-append all ", required : false")))))
+          (add-after 'install 'wrap-python
+            (assoc-ref py:%standard-phases 'wrap))
+          (add-after 'wrap-python 'wrap
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (wrap-script (search-input-file outputs "bin/piper")
+                `("GI_TYPELIB_PATH" =
+                  (,(getenv "GI_TYPELIB_PATH")))
+                `("GUIX_PYTHONPATH" =
+                  (,(getenv "GUIX_PYTHONPATH")
+                   ,(py:site-packages inputs outputs)))))))))
     (native-inputs
      (list appstream
            desktop-file-utils           ;for update-desktop-database
