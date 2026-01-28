@@ -37,6 +37,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -1158,13 +1159,13 @@ RTSP connections and messages.")
      (list
       #:modules `((guix build meson-build-system)
                   (guix build utils)
-                  ((guix build python-build-system) #:prefix python:))
-      #:imported-modules `(,@%meson-build-system-modules
-                           (guix build python-build-system))
+                  ((guix build pyproject-build-system) #:prefix py:))
+      #:imported-modules (append %meson-build-system-modules
+                                 %pyproject-build-system-modules)
       #:configure-flags
       #~(list (string-append
                "-Dpygi-overrides-dir="
-               (python:site-packages %build-inputs %outputs) "/gi/overrides"))))
+               (py:site-packages %build-inputs %outputs) "/gi/overrides"))))
     (native-inputs
      (list pkg-config python))
     (propagated-inputs
