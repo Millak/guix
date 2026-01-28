@@ -2120,10 +2120,9 @@ client desktops.
                                                "/bin/xmlto")))
        #:modules ((guix build gnu-build-system)
                   (guix build utils)
-                  ((guix build python-build-system)
-                   #:select (ensure-no-mtimes-pre-1980)))
+                  ((guix build pyproject-build-system) #:prefix py:))
        #:imported-modules ,(append %default-gnu-imported-modules
-                                   %python-build-system-modules)
+                                   %pyproject-build-system-modules)
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)            ; no configure script
@@ -2143,7 +2142,7 @@ client desktops.
              (substitute* "criu/include/plugin.h"
                (("/var") (string-append (assoc-ref outputs "out"))))))
          (add-after 'unpack 'ensure-no-mtimes-pre-1980
-           ensure-no-mtimes-pre-1980)
+           py:ensure-no-mtimes-pre-1980)
          (add-before 'build 'fix-symlink
            (lambda* (#:key inputs #:allow-other-keys)
              ;; The file 'images/google/protobuf/descriptor.proto' points to
@@ -2159,10 +2158,7 @@ client desktops.
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; Make sure 'crit' runs with the correct PYTHONPATH.
              (let* ((out  (assoc-ref outputs "out"))
-                    (site (string-append out "/lib/python"
-                                         ,(version-major+minor
-                                           (package-version python))
-                                         "/site-packages"))
+                    (site (py:site-packages inputs outputs))
                     (path (getenv "GUIX_PYTHONPATH")))
                ;; manually install stuff that was pip-installed
                (for-each (lambda (dir)
