@@ -7153,21 +7153,20 @@ the server and cleaning up before returning the exit status of the command.")
      (list
       #:imported-modules
       (append %meson-build-system-modules
-              %python-build-system-modules)
+              %pyproject-build-system-modules)
       #:modules
       '((guix build utils)
         (guix build meson-build-system)
-        ((guix build python-build-system) #:prefix python:))
+        ((guix build pyproject-build-system) #:prefix py:))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'enable-bytecode-determinism
-            (assoc-ref python:%standard-phases 'enable-bytecode-determinism))
+            (assoc-ref py:%standard-phases 'enable-bytecode-determinism))
           (add-after 'install 'python-install
             (lambda args
               (for-each
                (lambda (phase)
-                 (apply (assoc-ref python:%standard-phases phase)
-                        args))
+                 (apply (assoc-ref py:%standard-phases phase) args))
                '(add-install-to-pythonpath
                  add-install-to-path
                  wrap))))
