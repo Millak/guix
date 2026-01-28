@@ -26619,14 +26619,14 @@ and automatically generate usage notices.")
 (define-public r-hash
   (package
     (name "r-hash")
-    (version "2.2.6.3")
+    (version "2.2.6.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "hash" version))
        (sha256
         (base32
-         "044ifii4gpinzi9vbv5aw0da956ccslxg34xmx24njf6x5dhn0wa"))))
+         "0ylvkwn2m6w9whgpp3zn7r529jm5n0a7rsrb3dplkiij52d78y6x"))))
     (build-system r-build-system)
     (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/hash/")
