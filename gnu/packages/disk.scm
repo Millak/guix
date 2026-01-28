@@ -1123,6 +1123,13 @@ Duperemove can also take input from the @command{fdupes} program.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-paths
+            (lambda _
+              (substitute* (find-files "ranger" "\\.py$")
+                (("\"file\"")
+                 (simple-format #f "~s"
+                   #$(file-append (this-package-input "file")
+                                  "/bin/file"))))))
           (add-after 'install 'wrap-program
             ;; Tell 'ranger' where 'w3mimgdisplay' is.
             (lambda _
@@ -1134,7 +1141,7 @@ Duperemove can also take input from the @command{fdupes} program.")
                   `("W3MIMGDISPLAY_PATH" ":" prefix
                     (,w3mimgdisplay)))))))))
     (native-inputs (list python-pytest python-setuptools python-wheel))
-    (inputs (list bash-minimal w3m))
+    (inputs (list bash-minimal file w3m))
     (home-page "https://ranger.github.io/")
     (synopsis "Console file manager")
     (description
