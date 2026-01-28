@@ -935,12 +935,12 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
      (list
       #:modules `((guix build cmake-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
-                  ((guix build python-build-system) #:prefix python:)
+                  ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils)
                   (ice-9 match))
-      #:imported-modules `(,@%cmake-build-system-modules
-                           (guix build glib-or-gtk-build-system)
-                           (guix build python-build-system))
+      #:imported-modules (append %cmake-build-system-modules
+                                 %glib-or-gtk-build-system-modules
+                                 %pyproject-build-system-modules)
       #:configure-flags
       #~(list "-DENABLE_GRC=ON"
               (string-append "-DMATHJAX2_ROOT="
@@ -995,7 +995,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
                          "qa_rotator_cc")
                        "|"))))
           (add-after 'install 'wrap-python
-            (assoc-ref python:%standard-phases 'wrap))
+            (assoc-ref py:%standard-phases 'wrap))
           (add-after 'wrap-python 'wrap-glib-or-gtk
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
           (add-after 'wrap-glib-or-gtk 'wrap-with-GI_TYPELIB_PATH
