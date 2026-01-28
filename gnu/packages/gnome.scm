@@ -11920,32 +11920,28 @@ mp3, Ogg Vorbis and FLAC")
         (base32 "1jv8m82hi23ilrgdznlc1jhp2jm8bw1yrw0chh3qw2l0sixvkl11"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(#:imported-modules ((guix build python-build-system)
-                           (guix build glib-or-gtk-build-system)
-                           ,@%default-gnu-imported-modules)
-
-       #:modules ((guix build glib-or-gtk-build-system)
+     (list
+      #:imported-modules (append %glib-or-gtk-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '((guix build glib-or-gtk-build-system)
                   (guix build utils)
-                  ((guix build gnu-build-system) #:prefix gnu:)
-                  ((guix build python-build-system) #:prefix python:))
-
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-soundconverter-for-python
-           (assoc-ref python:%standard-phases 'wrap))
-         (add-after 'install 'wrap-soundconverter
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out               (assoc-ref outputs "out"))
-                   (gi-typelib-path   (getenv "GI_TYPELIB_PATH"))
-                   (gst-plugin-path   (getenv "GST_PLUGIN_SYSTEM_PATH")))
-               (wrap-program (string-append out "/bin/soundconverter")
-                 `("GI_TYPELIB_PATH"        ":" prefix (,gi-typelib-path))
-                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))
-             #t)))))
+                  ((guix build pyproject-build-system) #:prefix py:))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-soundconverter-for-python
+            (assoc-ref py:%standard-phases 'wrap))
+          (add-after 'install 'wrap-soundconverter
+            (lambda _
+              (let ((gi-typelib-path   (getenv "GI_TYPELIB_PATH"))
+                    (gst-plugin-path   (getenv "GST_PLUGIN_SYSTEM_PATH")))
+                (wrap-program (string-append #$output "/bin/soundconverter")
+                  `("GI_TYPELIB_PATH"        ":" prefix (,gi-typelib-path))
+                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
+                    (,gst-plugin-path)))))))))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("glib:bin" ,glib "bin")))
+     (list intltool
+           pkg-config
+           (list glib "bin")))
     (inputs
      (list bash-minimal
            gtk+
