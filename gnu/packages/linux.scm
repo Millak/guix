@@ -11502,7 +11502,7 @@ found in custom keyboard firmware like QMK.")
 (define-public pipewire
   (package
     (name "pipewire")
-    (version "1.4.5")
+    (version "1.5.85")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11511,7 +11511,7 @@ found in custom keyboard firmware like QMK.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1k3b412zspmx2v0finb5g8kns8xsynlnz48cmlcg7ch62av6kw75"))))
+                "1nd74wjy16bw8ng00acc26rakpqabcq1z64h23w97i18pb7z64xq"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -11521,7 +11521,12 @@ found in custom keyboard firmware like QMK.")
               "-Drlimits-install=false"
               "-Dsession-managers=[]"
               "-Dsysconfdir=/etc"
-              "-Dsystemd=disabled")))
+              "-Dlibsystemd=disabled"
+
+              ;; XXX: link with -Wl,--no-as-needed so that libgcc_s.so.1 does not get dropped
+              ;; Otherwise test_loop will fail with:
+              ;;   libgcc_s.so.1 must be installed for pthread_cancel to work
+              "-Db_asneeded=false")))
     (native-inputs
      (list `(,glib "bin")
            pkg-config
@@ -11579,8 +11584,6 @@ of Linux application development.")
                "-Dflatpak=disabled"
                ;; XXX: Otherwise test_loop will fail with:
                ;;   libgcc_s.so.1 must be installed for pthread_cancel to work
-               (string-append "-Dc_link_args=-Wl,-rpath=" #$output "/lib"
-                              " -lgcc_s")
                "-Db_asneeded=false")))
      (native-inputs '())
      (inputs '()))))
