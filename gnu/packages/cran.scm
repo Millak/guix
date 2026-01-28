@@ -32587,13 +32587,13 @@ accompanying package @code{rnaturalearth}.")
 (define-public r-rncl
   (package
     (name "r-rncl")
-    (version "0.8.8")
+    (version "0.8.9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rncl" version))
               (sha256
                (base32
-                "0bqdgvp2zw6kkq6zah6rv6jlx3n8h9qrgbvjw91wyc91f2xfpqw5"))))
+                "0297042xmg3n1bdxf3pz1qpawhw1n7qmia577a74j400wv5a0r4f"))))
     (properties
      '((updater-extra-native-inputs . ("r-ape"))))
     (build-system r-build-system)
