@@ -21568,13 +21568,13 @@ of prediction methods available in @code{caret}.")
 (define-public r-ncdfcf
   (package
     (name "r-ncdfcf")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ncdfCF" version))
        (sha256
-        (base32 "0ynl6lsxhk7rwd9hplahl2lx4ysvgpdl1mikh3vrjm4i4jmdalym"))))
+        (base32 "173wcibfni2vcvlcy7ikpkg8i290an4sss3ap66s93hip8dh78m6"))))
     (properties `((upstream-name . "ncdfCF")))
     (build-system r-build-system)
     (propagated-inputs (list r-abind r-cftime r-r6 r-rnetcdf r-stringr))
