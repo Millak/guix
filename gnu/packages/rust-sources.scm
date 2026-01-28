@@ -1196,6 +1196,69 @@ extensions, such as @code{wlr-protocols} and @code{plasma-wayland-protocols}.")
        (base32
         "0vzs9i3sdh6f1b25vdbxwyphmxzbqixrnjlgws56fzfngy4my9dj")))))
 
+;;; Same source as (@ (gnu packages elf) lief), but cannot be inherited
+;;; due to cyclic module dependencies.
+(define-public rust-lief
+  (hidden-package
+   (package
+     (name "rust-lief")
+     (version "1.0.0")
+     (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/lief-project/LIEF")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0yhs1x8nli5lhwiq383nnfv8ajgbdidcjckdls1j0zrmyf9kbfa2"))))
+     (build-system cargo-build-system)
+     (arguments
+      (list #:skip-build? #t
+            #:cargo-package-crates ''("lief-build"
+                                      "lief-ffi"
+                                      "lief")
+            #:phases #~(modify-phases %standard-phases
+                         (add-after 'unpack 'change-directory
+                           (lambda _
+                             (chdir "api/rust/crates")))
+                         (add-after 'change-directory 'use-guix-vendored-dependencies
+                           (lambda _
+                             (substitute* '("lief-ffi/Cargo.toml"
+                                            "lief-ffigen/Cargo.toml")
+                               (("git[^,]+,")
+                                "")
+                               (("branch[^,]+, (version.*)$" _ end)
+                                end)
+                               (("branch = \"([^\"]+)\"" _ branch)
+                                (string-append "version = \"" branch "\""))))))))
+     (inputs (cargo-inputs 'rust-lief-1.0.0))
+     (home-page "https://lief.re/")
+     (synopsis "Library to instrument executable formats")
+     (description "The @acronym{LIEF, Library to Instrument Executable Formats}
+library can parse, modify and abstract ELF, PE, MachO and other formats.  It
+provides an abstraction over common features like sections, symbols and entry
+points.  This package provides the C/C++ API.  The table below lists its main
+features in more details:
+@table @asis
+@item Parsing
+LIEF can parse ELF, PE, MachO, COFF, OAT, DEX, VDEX, ART and provides a
+user-friendly API to access their internals.
+
+@item Modify
+LIEF can be used to modify some parts of these formats (adding a section,
+changing a symbol's name, etc.)
+
+@item Abstract
+Three formats have common features like sections, symbols, entry point, etc.  LIEF
+factors them.
+
+@item API
+The LIEF API is available for C/C++ (this package), Python (@code{python-lief}),
+and other languages.
+@end table")
+     (license license:asl2.0))))
+
 (define-public rust-syntect-5.3
   (hidden-package
    (package
