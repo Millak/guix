@@ -258,11 +258,10 @@ servers from Python programs.")
      (list
       #:modules '((srfi srfi-1)
                   (guix build gnu-build-system)
-                  ((guix build python-build-system)
-                   #:select (add-installed-pythonpath python-version))
+                  ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
-      #:imported-modules `((guix build python-build-system)
-                           ,@%default-gnu-imported-modules)
+      #:imported-modules (append %default-gnu-imported-modules
+                                 %pyproject-build-system-modules)
       #:disallowed-references (list (this-package-native-input "httpd"))
       #:configure-flags
       #~(list
@@ -320,12 +319,9 @@ servers from Python programs.")
                  "etc_dirsrv_path = '/etc/dirsrv/'\n"))))
           (add-after 'unpack 'fix-install-location-of-python-tools
             (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let ((pythondir (string-append
-                                #$output "/lib/python"
-                                (python-version #$(this-package-input "python"))
-                                "/site-packages/")))
+              (let ((pythondir (py:site-packages inputs outputs)))
                 ;; Install directory must be on PYTHONPATH.
-                (add-installed-pythonpath inputs outputs)
+                (py:add-installed-pythonpath inputs outputs)
                 ;; Install directory must exist.
                 (mkdir-p pythondir)
                 (setenv "INSTALL_PREFIX" #$output)
