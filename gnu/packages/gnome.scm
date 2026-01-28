@@ -3297,11 +3297,11 @@ the GNOME desktop environment.")
     (arguments
      (list
       #:imported-modules
-      `(,@%meson-build-system-modules
-        (guix build python-build-system))
+      (append %meson-build-system-modules
+              %pyproject-build-system-modules)
       #:modules
       `((guix build meson-build-system)
-        ((guix build python-build-system) #:prefix python:)
+        ((guix build pyproject-build-system) #:prefix py:)
         (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
@@ -3310,7 +3310,7 @@ the GNOME desktop environment.")
               (system "Xvfb :1 &")
               (setenv "DISPLAY" ":1")))
           (add-after 'install 'wrap-python
-            (assoc-ref python:%standard-phases 'wrap))
+            (assoc-ref py:%standard-phases 'wrap))
           (add-after 'wrap-python 'gi-wrap
             (lambda _
               (let ((prog (string-append #$output "/bin/blueprint-compiler")))
