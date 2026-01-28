@@ -3368,10 +3368,10 @@ compiles to GTKBuilder XML.")
     (arguments
      (list
       #:glib-or-gtk? #t
-      #:imported-modules `((guix build python-build-system)
-                           ,@%meson-build-system-modules)
+      #:imported-modules (append %meson-build-system-modules
+                                 %pyproject-build-system-modules)
       #:modules '((guix build meson-build-system)
-                  ((guix build python-build-system) #:prefix python:)
+                  ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
       #:tests? #f                       ; XXX: tests spawn a socket...
       #:phases
@@ -3394,10 +3394,11 @@ compiles to GTKBuilder XML.")
             (lambda _
               (substitute* "tools/cmb_init_dev.py"
                 (("\"cc") (string-append "\"" #$(cc-for-target))))))
-          (add-after 'install 'python-wrap (assoc-ref python:%standard-phases 'wrap))
+          (add-after 'install 'python-wrap
+            (assoc-ref py:%standard-phases 'wrap))
           (delete 'check)
           (add-after 'install 'add-install-to-pythonpath
-            (assoc-ref python:%standard-phases 'add-install-to-pythonpath))
+            (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
           (add-after 'add-install-to-pythonpath 'pre-check
             (lambda _
               (system "Xvfb :1 &")
