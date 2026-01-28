@@ -56918,19 +56918,16 @@ analyses.")
 (define-public r-mathjaxr
   (package
     (name "r-mathjaxr")
-    (version "1.8-0")
+    (version "2.0-0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mathjaxr" version))
               (sha256
                (base32
-                "0d0h686zdif2khjwnib9l7fwpy0l3zg5bixhyxa5diq13k2rf8gb"))
+                "1hsxhpxqw1lk00k187k9icn9k401fq8mzkn8g9s4bgq21m0prpsy"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  (delete-file-recursively "src/mathjax/es5/input")
-                  (delete-file-recursively "src/mathjax/es5/output")
-                  (delete-file "src/mathjax/es5/tex-chtml-full.js")))))
+               '(delete-file-recursively "inst/doc/mathjax"))))
     (properties `((upstream-name . "mathjaxr")))
     (build-system r-build-system)
     (arguments
@@ -56941,16 +56938,8 @@ analyses.")
            (lambda* (#:key inputs #:allow-other-keys)
              (symlink
               (search-input-directory
-               inputs "/share/javascript/mathjax/es5/output")
-              "src/mathjax/es5/output")
-             (symlink
-              (search-input-directory
-               inputs "/share/javascript/mathjax/es5/input")
-              "src/mathjax/es5/input")
-             (symlink
-              (search-input-file
-               inputs "/share/javascript/mathjax/es5/tex-chtml-full.js")
-              "src/mathjax/es5/tex-chtml-full.js"))))))
+               inputs "/share/javascript/mathjax")
+              "inst/doc/mathjax"))))))
     (inputs
      (list js-mathjax-for-r-mathjaxr))
     (home-page "https://github.com/wviechtb/mathjaxr")
