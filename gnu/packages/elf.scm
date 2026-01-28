@@ -40,6 +40,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system gnu)
   #:use-module ((guix licenses) #:prefix license:)
@@ -58,6 +59,7 @@
   #:use-module (gnu packages m4)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
@@ -394,6 +396,144 @@ The LIEF API is available for C/C++ (this package), Python (@code{python-lief}),
 and other languages.
 @end table")
     (license license:asl2.0)))
+
+(define-public lief-patchelf
+  (package
+    (inherit lief)
+    (name "lief-patchelf")
+    (outputs '("out" "precompiled" "sdk"))
+    (arguments
+     (substitute-keyword-arguments (package-arguments lief)
+       ((#:imported-modules _ ''())
+        `(,@%cargo-build-system-modules
+          ,@%cmake-build-system-modules))
+       ((#:modules _ ''())
+        '(((guix build cargo-build-system) #:prefix cargo:)
+          (guix build cmake-build-system)
+          (guix build utils)
+          (srfi srfi-1))) ;for append
+       ((#:build-type _ ''())
+        "Release")
+       ((#:configure-flags flags ''())
+        #~(append (list "-DLIEF_PYTHON_API=OFF" ;Separated into the python-lief package
+                        "-DLIEF_RUST_API=ON"
+                        (string-append "-DCMAKE_INSTALL_PREFIX="
+                                       (assoc-ref %outputs "sdk")))
+                  (delete "-DBUILD_SHARED_LIBS=ON"
+                          #$flags)))
+       ((#:phases phases '%standard-phases)
+        (with-extensions (list (cargo-guile-json))
+          #~(modify-phases #$phases
+              (add-after 'configure 'prepare-cargo-build-system
+                  (lambda args
+                    (for-each (lambda (phase)
+                                (format #t
+                                        "Running cargo phase: ~a~%"
+                                        phase)
+                                (apply (assoc-ref
+                                        cargo:%standard-phases
+                                        phase) args))
+                              '(prepare-rust-crates
+                                unpack-rust-crates
+                                configure
+                                check-for-pregenerated-files
+                                patch-cargo-checksums))))
+                (add-after 'install 'finish-sdk-build
+                  (lambda _
+                    (chdir "../source")))
+                (add-after 'finish-sdk-build 'use-guix-vendored-dependencies
+                  (lambda _
+                    ;; Delete Cargo.lock files, the cargo configure phase would do
+                    ;; this, but the package is built from multiple directories.
+                    (delete-file
+                     "api/rust/crates/Cargo.lock")
+                    (delete-file "tools/Cargo.lock")
+                    (substitute* '("api/rust/crates/lief-ffi/Cargo.toml"
+                                   "api/rust/crates/lief-ffigen/Cargo.toml")
+                      (("git[^,]+,")
+                       "")
+                      (("branch[^,]+, (version.*)$" _ end)
+                       end)
+                      (("branch = \"([^\"]+)\"" _ branch)
+                       (string-append "version = \""
+                                      branch "\"")))
+                    (substitute* "tools/lief-patchelf/Cargo.toml"
+                      (("path = \"[^\"]+\"")
+                       (string-append "version = \""
+                                      #$(package-version
+                                         this-package)
+                                      "\"")))))
+                (add-after 'use-guix-vendored-dependencies 'build-lief-ffigen
+                  (lambda* (#:key cargo:cargo-build-flags
+                            #:allow-other-keys #:rest args)
+                    (chdir "api/rust/crates")
+                    ;; Only build lief-ffigen, this is the prerequisite for
+                    ;; everything else.
+                    (apply (assoc-ref
+                            cargo:%standard-phases
+                            'build)
+                           (append args
+                                   (list
+                                    #:cargo-build-flags '
+                                    ("--release" "-p"
+                                     "lief-ffigen"))))
+                    (chdir "../../../")))
+                (add-after 'build-lief-ffigen 'build-rust-precompiled
+                  (lambda _
+                    (setenv "RUSTFLAGS" "-l dylib=spdlog")
+                    ;; First compile the C++ bridge files
+                    (invoke "api/rust/crates/target/release/lief-ffigen"
+                            "--output-dir" "cxx-bridge"
+                            "--source-dir" "api/rust/crates/lief-ffi")
+                    (substitute* '("api/rust/cmake-ffi/rust_cpp_bridge.cpp")
+                      (("#include \"asm/config.hpp\"")
+                       "#include <asm/config.hpp>"))
+                    ;; Second, compile the results with CMake
+                    (invoke "cmake"
+                            "-GNinja"
+                            "-S" "api/rust/cmake-ffi"
+                            "-B" "cxx-bridge-build"
+                            (string-append "-DLIEF_DIR=" #$output:sdk "/lib/cmake/LIEF/")
+                            (string-append "-DLIEF_RUST_FFI_SRC=" (getcwd) "/cxx-bridge")
+                            (string-append "-DCMAKE_CXX_FLAGS=-I" (getcwd) "/cxx-bridge")
+                            "-DCMAKE_INSTALL_PREFIX=cxx-bridge-out")
+                    (invoke "ninja" "-C" "cxx-bridge-build/")))
+                (add-after 'build-rust-precompiled 'install-rust-precompiled
+                  (lambda _
+                    (install-file (string-append #$output:sdk
+                                                 "/lib/libLIEF.a")
+                                  (string-append #$output:precompiled
+                                                 "/lib"))
+                    (install-file
+                     "cxx-bridge-build/liblief-sys.a"
+                     (string-append #$output:precompiled
+                                    "/lib"))))
+                (add-after 'install-rust-precompiled 'build-patchelf
+                  (lambda args
+                    ;; The lief-ffi lib checks for some precompiled lief files,
+                    ;; if not found it tries to download them from github.
+                    (setenv "LIEF_RUST_PRECOMPILED"
+                            #$output:precompiled)
+                    (setenv "RUSTFLAGS"
+                            (string-join (list "fmt"
+                                               "mbedtls"
+                                               "mbedcrypto"
+                                               "mbedx509"
+                                               "spdlog")
+                                         " -l dylib="
+                                         'prefix))
+                    (chdir "tools")
+                    (apply (assoc-ref
+                            cargo:%standard-phases
+                            'build) args)))
+                (add-after 'build-patchelf 'install-patchelf
+                  (lambda _
+                    (install-file
+                     "target/release/lief-patchelf"
+                     (string-append #$output:out "/bin")))))))))
+    (native-inputs (cons* rust
+                          `(,rust "cargo")
+                          (cargo-inputs 'lief-patchelf)))))
 
 (define-public patchelf
   (package
