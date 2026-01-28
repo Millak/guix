@@ -14241,10 +14241,10 @@ Protocol} for @acronym{VoIP, Voice over @acronym{IP, Internet Protocol}}.")
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t
-           #:imported-modules `(,@%meson-build-system-modules
-                                (guix build python-build-system))
+           #:imported-modules (append %meson-build-system-modules
+                                      %pyproject-build-system-modules)
            #:modules '((guix build meson-build-system)
-                       ((guix build python-build-system) #:prefix python:)
+                       ((guix build pyproject-build-system) #:prefix py:)
                        (guix build utils))
            #:phases
            #~(modify-phases %standard-phases
@@ -14255,17 +14255,12 @@ Protocol} for @acronym{VoIP, Voice over @acronym{IP, Internet Protocol}}.")
                       "gtk_update_icon_cache: false")
                      (("update_desktop_database: true")
                       "update_desktop_database: false"))))
-               (add-after 'unpack 'patch-for-compatibility
-                 (lambda _
-                   ;; TODO: Remove when Python is updated to >= 3.11.
-                   (substitute* (find-files "." "\\.py$")
-                     (("import Self") "import Any as Self"))))
                (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
                  (lambda* (#:key inputs outputs #:allow-other-keys)
                    (wrap-program (search-input-file outputs "bin/confy")
                      `("GUIX_PYTHONPATH" =
                        (,(getenv "GUIX_PYTHONPATH")
-                        ,(python:site-packages inputs outputs)))
+                        ,(py:site-packages inputs outputs)))
                      `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
     (inputs (list gtk
                   libadwaita
