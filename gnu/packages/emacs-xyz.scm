@@ -36536,8 +36536,8 @@ the standard @code{Dockerfile} file format.")
 (define-public emacs-lsp-mode
   ;; Last release is one year old.
   ;; Latest revision enables support for new lsp spec 3.17 features.
-  (let ((commit "147233313576c844e2bf56640827b0d0e5c2ee6c")
-        (revision "0"))
+  (let ((commit "328c97945c345e32e4b8fd6bb5ccd6bb6c5d462f")
+        (revision "1"))
     (package
       (name "emacs-lsp-mode")
       (version (git-version "9.0.1" revision commit)) ;taken from lsp-mode.el
@@ -36549,11 +36549,11 @@ the standard @code{Dockerfile} file format.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "14317wgi0mrxbcrlgrfqyf80lh86n7x6bv07b43cxl3k4c4fqk0l"))))
+          (base32 "0dyk685q6z7z4bcb9pnwb045b819j6qkbm0qng4kn677laa51ikn"))))
       (build-system emacs-build-system)
       (arguments
        (list
-        #:emacs emacs                   ;need libxml support
+        #:emacs emacs-no-x              ;need libxml support
         #:test-command #~(list "ert-runner"
                                "-L" "."
                                "-L" "clients"
