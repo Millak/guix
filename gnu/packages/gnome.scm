@@ -13045,10 +13045,10 @@ GTK+.  It integrates well with the GNOME desktop environment.")
     (arguments
      (list
       #:glib-or-gtk? #t
-      #:imported-modules `(,@%meson-build-system-modules
-                           (guix build python-build-system))
+      #:imported-modules (append %meson-build-system-modules
+                                 %pyproject-build-system-modules)
       #:modules '((guix build meson-build-system)
-                  ((guix build python-build-system) #:prefix python:)
+                  ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
@@ -13060,7 +13060,7 @@ GTK+.  It integrates well with the GNOME desktop environment.")
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (wrap-program (search-input-file outputs "bin/apostrophe")
                 `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
-                                       ,(python:site-packages inputs outputs)))
+                                       ,(py:site-packages inputs outputs)))
                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
                 `("PATH" prefix (,(dirname
                                    (search-input-file inputs
