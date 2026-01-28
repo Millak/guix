@@ -32545,13 +32545,13 @@ Touzet and Varre (2007).")
 (define-public r-rnaturalearth
   (package
     (name "r-rnaturalearth")
-    (version "1.1.0")
+    (version "1.2.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rnaturalearth" version))
               (sha256
                (base32
-                "0ql6f3w5wyychxfx9vff0nsl76d9l1rapa28in70fsij3qkvjj8a"))))
+                "1bw7l9zwqxw4i35hzprxr00w1rwzsx9sfjcz3li4r1d74f6mzain"))))
     (properties `((upstream-name . "rnaturalearth")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli r-httr r-jsonlite r-sf r-terra))
