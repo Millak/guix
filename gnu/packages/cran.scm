@@ -25765,14 +25765,14 @@ hierarchical models using Markov Chain Monte Carlo (MCMC) simulation.")
 (define-public r-rbibutils
   (package
     (name "r-rbibutils")
-    (version "2.4")
+    (version "2.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rbibutils" version))
        (sha256
         (base32
-         "0ni1yg09zq8l8n38lnafpdbn4fa9fc3k7mlw5jfpk35wz8l7lzh0"))))
+         "0clgkh94hhb7p2fm26pisyhbbch4i6x2jjd563gzyd8g1a93scfs"))))
     (properties `((upstream-name . "rbibutils")))
     (build-system r-build-system)
     (native-inputs (list r-devtools r-pkgload r-testthat))
