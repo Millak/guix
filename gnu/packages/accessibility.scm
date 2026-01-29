@@ -32,6 +32,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system meson)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -159,11 +160,11 @@ terminals.")
          "PYTHON_ROOT=/"
          (string-append "TCL_DIR=" #$output "/lib")
          "INSTALL_WRITABLE_DIRECTORY=no-thanks")
-      #:imported-modules `((guix build python-build-system)
-                           ,@%glib-or-gtk-build-system-modules)
+      #:imported-modules (append %glib-or-gtk-build-system-modules
+                                 %pyproject-build-system-modules)
       #:modules '((guix build utils)
                   (guix build glib-or-gtk-build-system)
-                  ((guix build python-build-system) #:prefix python:))
+                  ((guix build pyproject-build-system) #:prefix python:))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-errors
