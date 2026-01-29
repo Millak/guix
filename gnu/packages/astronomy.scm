@@ -10672,7 +10672,7 @@ functionality needed for solar data analysis.")
               "--ignore=docs/data_types/spectrogram.rst")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
+          (add-before 'build 'set-home-env
             (lambda _
               ;; PermissionError: [Errno 13] Permission denied:
               ;; '/homeless-shelter'
