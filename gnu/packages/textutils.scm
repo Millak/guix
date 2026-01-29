@@ -1601,61 +1601,50 @@ absolute \"path\" to it.")
     (build-system cmake-build-system)
     (arguments
      ;; Required to locate the install script properly.
-     `(#:out-of-source? #f
-       #:tests? #f
-       #:parallel-build? #f             ;occasionally failed.
-       #:imported-modules
-       (,@%cmake-build-system-modules
-        (guix build python-build-system))
-       #:modules ((guix build cmake-build-system)
-                  ((guix build python-build-system) #:prefix python:)
+     (list
+      #:out-of-source? #f
+      #:tests? #f
+      #:parallel-build? #f             ;occasionally failed.
+      #:imported-modules (append %cmake-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '((guix build cmake-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'prevent-rebuild-during-installation
-           (lambda _
-             (substitute* "python/setup.py"
-               (("'build_py': BuildPyCommand,") ""))
-             #t))
-         (add-after 'unpack 'patch-3rd-party-references
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((rapidjson (assoc-ref inputs "rapidjson")))
-               (substitute* "src/CMakeLists.txt"
-                 (("../deps/rapidjson-1.1.0")
-                  (string-append rapidjson "/include/rapidjson")))
-               #t)))
-         (add-before 'configure 'patch-python-binding-installation
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "python/opencc/__init__.py"
-                 (("(_libopenccfile =).*$" _ prefix)
-                  (format #f "~a os.path.join('~a/lib', _libopenccfilename)~%"
-                          prefix out))
-                 (("(_opencc_share_dir =).*$" _ prefix)
-                  (format #f "~a '~a/share/opencc'~%" prefix out))))
-             #t))
-         (add-after 'install 'install-python-binding
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (dist (string-append
-                           out "/lib/python"
-                           ,(version-major+minor (package-version python))
-                           "/site-packages")))
-               (chdir "python")
-               (mkdir-p dist)
-               (setenv "PYTHONPATH"
-                       (string-append dist ":" (getenv "GUIX_PYTHONPATH")))
-               (invoke "python" "setup.py" "install"
-                       "--root=/" "--single-version-externally-managed"
-                       (string-append "--prefix=" out))
-               #t)))
-         (add-before 'install-python-binding 'enable-bytecode-determinism
-           (assoc-ref python:%standard-phases 'enable-bytecode-determinism)))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prevent-rebuild-during-installation
+            (lambda _
+              (substitute* "python/setup.py"
+                (("'build_py': BuildPyCommand,") ""))))
+          (add-after 'unpack 'patch-3rd-party-references
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/CMakeLists.txt"
+                (("../deps/rapidjson-1.1.0")
+                 (search-input-directory inputs "/include/rapidjson")))))
+          (add-before 'configure 'patch-python-binding-installation
+            (lambda _
+              (substitute* "python/opencc/__init__.py"
+                (("(_libopenccfile =).*$" _ prefix)
+                 (format #f "~a os.path.join('~a/lib', _libopenccfilename)~%"
+                         prefix #$output))
+                (("(_opencc_share_dir =).*$" _ prefix)
+                 (format #f "~a '~a/share/opencc'~%" prefix #$output)))))
+          (add-after 'install 'install-python-binding
+            (lambda* (#:key outputs inputs #:allow-other-keys)
+              (let ((dist (py:site-packages inputs outputs)))
+                (chdir "python")
+                (mkdir-p dist)
+                (setenv "PYTHONPATH"
+                        (string-append dist ":" (getenv "GUIX_PYTHONPATH")))
+                (invoke "python" "setup.py" "install"
+                        "--root=/" "--single-version-externally-managed"
+                        (string-append "--prefix=" #$output)))))
+          (add-before 'install-python-binding 'enable-bytecode-determinism
+            (assoc-ref py:%standard-phases 'enable-bytecode-determinism)))))
     (native-inputs
-     `(("python" ,python-wrapper)
-       ("rapidjson" ,rapidjson)
-       ("python-setuptools" ,python-setuptools)
-       ("python-wheel" ,python-wheel)))
+     (list python-wrapper
+           rapidjson
+           python-setuptools))
     (home-page "https://github.com/BYVoid/OpenCC")
     (synopsis "Convert between Traditional Chinese and Simplified Chinese")
     (description "Open Chinese Convert (OpenCC) converts between Traditional
