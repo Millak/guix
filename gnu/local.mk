@@ -2430,7 +2430,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/torbrowsers-add-store-to-rdd-allowlist.patch     \
   %D%/packages/patches/tpetra-remove-duplicate-using.patch	\
   %D%/packages/patches/transcode-ffmpeg.patch	\
-  %D%/packages/patches/transmission-4.0.6-fix-build.patch	\
   %D%/packages/patches/trytond-add-guix_trytond_path.patch	\
   %D%/packages/patches/ttf2eot-cstddef.patch			\
   %D%/packages/patches/turbovnc-custom-paths.patch		\
