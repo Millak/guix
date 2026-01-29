@@ -10855,8 +10855,8 @@ implementations of TLS, RFC5246, ASN.1, x{501,509}, and PKCS{1,3,5,8}.")
        ;; cl-typegraph
        `(#:tests? #f))
       (inputs
-       `(("cl-pdf" ,sbcl-cl-pdf)
-         ("xmls" ,sbcl-xmls)))
+       (list sbcl-cl-pdf
+             sbcl-xmls))
       (home-page "https://github.com/mbattyani/cl-typesetting")
       (synopsis "Stand-alone Common Lisp typesetting system")
       (description
