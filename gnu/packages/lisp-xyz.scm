@@ -1331,8 +1331,8 @@ computer known.")
     (inherit sbcl-antik-base)
     (name "sbcl-antik")
     (inputs
-     `(("antik-base" ,sbcl-antik-base)
-       ("gsll" ,sbcl-gsll)))
+     (list sbcl-antik-base
+           sbcl-gsll))
     (arguments
      '(#:asd-systems '("antik"
                        "science-data")
