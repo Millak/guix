@@ -1146,11 +1146,11 @@ exception-handling library.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:imported-modules `((guix build python-build-system)
-                           ,@%cmake-build-system-modules)
+      #:imported-modules (append %cmake-build-system-modules
+                                 %pyproject-build-system-modules)
       #:modules '((guix build cmake-build-system)
                   (guix build utils)
-                  ((guix build python-build-system) #:prefix python:))
+                  ((guix build pyproject-build-system) #:prefix python:))
       #:configure-flags
       #~(list "-D2GEOM_BUILD_SHARED=ON"
               "-D2GEOM_BOOST_PYTHON=ON"
