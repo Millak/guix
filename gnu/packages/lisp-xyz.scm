@@ -82,9 +82,10 @@
   #:use-module (guix hg-download)
   #:use-module (guix utils)
   #:use-module (guix build-system asdf)
-  #:use-module (guix build-system gnu)
-  #:use-module (guix build-system trivial)
   #:use-module (guix build-system emacs)
+  #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system trivial)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
@@ -2896,20 +2897,20 @@ cartesian product.")
       (arguments
        (list
         #:tests? #f
-        #:imported-modules `((guix build python-build-system)
-                             ,@%asdf-build-system-modules)
-        #:modules `(((guix build python-build-system) #:select (python-version))
+        #:imported-modules (append %asdf-build-system-modules
+                                   %pyproject-build-system-modules)
+        #:modules `(((guix build pyproject-build-system) #:prefix py:)
                     ,@%asdf-build-system-modules)
         #:phases
         #~(modify-phases (@ (guix build asdf-build-system) %standard-phases)
             (add-after 'unpack 'set-*cpython-include-dir*-var
               (lambda* (#:key inputs #:allow-other-keys)
-                (let ((python (assoc-ref inputs "python")))
+                (let* ((lib (search-input-file inputs "/lib/libpython3.so"))
+                       (base (dirname (dirname lib))))
+                  (setenv "BB_PYTHON3_DYLIB" lib)
                   (setenv "BB_PYTHON3_INCLUDE_DIR"
-                          (string-append python "/include/python"
-                                         (python-version python)))
-                  (setenv "BB_PYTHON3_DYLIB"
-                          (string-append python "/lib/libpython3.so")))))
+                          (string-append base "/include/python"
+                                         (py:python-version base))))))
             (add-after 'unpack 'adjust-for-python-3.10
               (lambda _
                 ;; These methods are no longer part of the public API.
