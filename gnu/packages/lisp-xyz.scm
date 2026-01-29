@@ -3841,6 +3841,9 @@ This package provides the text-based interface for Chemboy.")
 (define-public ecl-chemboy
   (sbcl-package->ecl-package sbcl-chemboy))
 
+(define-public clasp-chemboy
+  (sbcl-package->clasp-package sbcl-chemboy))
+
 (define-public sbcl-chemical-compounds
   (package
     (name "sbcl-chemical-compounds")
