@@ -10433,9 +10433,9 @@ ability to store all Common Lisp data types into streams.")
               (file-name (git-file-name name version))))
     (build-system asdf-build-system/sbcl)
     (inputs
-     `(("cl-ppcre" ,sbcl-cl-ppcre)
-       ("cl-ppcre-unicode" ,sbcl-cl-ppcre-unicode)
-       ("cl-change-case" ,sbcl-cl-change-case)))
+     (list sbcl-cl-ppcre
+           sbcl-cl-ppcre-unicode
+           sbcl-cl-change-case))
     (native-inputs
      (list sbcl-prove))
     (arguments
