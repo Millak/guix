@@ -10653,10 +10653,10 @@ rendering of the XML Infoset.")
         (base32 "17ran8xp77asagl31xv8w819wafh6whwfc9p6dgx22ca537gyl4y"))))
     (build-system asdf-build-system/sbcl)
     (inputs
-     `(("cl-annot" ,sbcl-cl-annot)
-       ("cl-interpol" ,sbcl-cl-interpol)
-       ("named-readtables" ,sbcl-named-readtables)
-       ("trivial-types" ,sbcl-trivial-types)))
+     (list sbcl-cl-annot
+           sbcl-cl-interpol
+           sbcl-named-readtables
+           sbcl-trivial-types))
     (arguments
      '(#:asd-systems '("cl-syntax"
                        "cl-syntax-annot"
