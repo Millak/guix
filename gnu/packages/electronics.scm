@@ -579,8 +579,10 @@ individual low-level driver modules.")
     (build-system gnu-build-system)
     (arguments
      (list
-      #:imported-modules (append %default-gnu-imported-modules
-                                 %python-build-system-modules)
+      #:imported-modules %pyproject-build-system-modules
+      #:modules '((guix build gnu-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
       #:make-flags
       #~(list (string-append "PREFIX=" #$output))
       #:phases
@@ -606,8 +608,7 @@ individual low-level driver modules.")
                 ;; https://github.com/YosysHQ/eqy/actions/runs/18767539188/job/53545383858
                 (invoke "make" "-C" "examples/spm")
                 (invoke "make" "-C" "examples/simple"))))
-          (add-after 'install 'python:wrap
-            (@@ (guix build python-build-system) wrap)))))
+          (add-after 'install 'python:wrap py:wrap))))
     (native-inputs
      (list clang python-minimal-wrapper python-sphinx texinfo yosys))
     (inputs
