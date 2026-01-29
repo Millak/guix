@@ -11041,14 +11041,14 @@ mixture models.")
 (define-public r-mnormt
   (package
     (name "r-mnormt")
-    (version "2.1.1")
+    (version "2.1.2")
     (source
      (origin
        (method url-fetch)
         (uri (cran-uri "mnormt" version))
         (sha256
           (base32
-           "020ka48jsxm9l109ksvy2l17xcpm51avm0l971dgs2mgg01sgz4m"))))
+           "1ch919ysx600cc4g2xzh43yy9x6q0rk05nhfdz7lid7hgkhfjkv8"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran))
