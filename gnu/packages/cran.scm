@@ -48560,14 +48560,14 @@ bibliographic data) and PubMed.")
 (define-public r-semver
   (package
     (name "r-semver")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "semver" version))
         (sha256
           (base32
-            "10wpkyms2cix3bsin2q0qhkbl445pwwpa5gm2s4jjw1989namkxy"))))
+            "0bgyqbgfkcxc0390yv3b8qj7bl4nms5bn7gi2s74wzix5qr0xgca"))))
     (properties `((upstream-name . "semver")))
     (build-system r-build-system)
     (propagated-inputs
