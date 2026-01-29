@@ -10004,13 +10004,13 @@ residuals and other information on the model.")
 (define-public r-plumber
   (package
     (name "r-plumber")
-    (version "1.3.2")
+    (version "1.3.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "plumber" version))
               (sha256
                (base32
-                "1maiya8iva4yiw0vznf9n8130l844a0mbv2xpdyjswdbfkappssa"))))
+                "14cw3pd5cbw8ka9907h2v56lvk2k6673n6zafl54yh1j9k446az7"))))
     (properties
      '((upstream-name . "plumber")
        (updater-extra-native-inputs
