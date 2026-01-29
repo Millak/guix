@@ -10378,6 +10378,34 @@ facilitating virtual networking for container runtimes and reliable TCP/UDP
 forwarding and DNS resolution across host and VM boundaries.")
     (license license:asl2.0)))
 
+(define-public go-github-com-mreiferson-go-httpclient
+  (package
+    (name "go-github-com-mreiferson-go-httpclient")
+    (version "0.0.0-20201222173833-5e475fde3a4d")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mreiferson/go-httpclient")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13s8va5zlbmh5lgxpkdrcxvbqkbxszjvf27p1njv75q4jk8g5vhq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mreiferson/go-httpclient"
+      #:test-flags
+      ;; Test require internet access
+      #~(list "-skip" "TestHttpsConnection")))
+    (home-page "https://github.com/mreiferson/go-httpclient")
+    (synopsis "HTTP client in Golang with retries and hooks")
+    (description
+     "This package provides a HTTP Transport that implements the
+@code{RoundTripper} interface and can be used as a built in replacement for
+the standard library.")
+    (license license:expat)))
+
 (define-public go-github-com-muhlemmer-httpforwarded
   (package
     (name "go-github-com-muhlemmer-httpforwarded")
