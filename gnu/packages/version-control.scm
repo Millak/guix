@@ -66,6 +66,7 @@
 ;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2025 Matthew Elwin <elwin@northwestern.edu>
+;;; Copyright © 2026 Ingar <ingar@onionmail.info>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -178,6 +179,7 @@
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages tor)
   #:use-module (gnu packages)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
@@ -1597,6 +1599,41 @@ Git transport.
 The aim is to provide confidential, authenticated Git storage and
 collaboration using typical untrusted file hosts or services.")
    (license license:gpl3+)))
+
+(define-public git-remote-tor
+  (package
+    (name "git-remote-tor")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "git-remote-tor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "146nyd5ww073iim48r71knfwnldq635xv732h3kl4ycsh2ki3ycx"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'adjust-torify
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((torsocks (search-input-file inputs "/bin/torsocks")))
+                (substitute* '("src/main.rs" "git-remote-tor.sh")
+                  (("Command::new\\(\"torsocks\"\\)")
+                   (string-append "Command::new(\"" torsocks "\")"))
+                  (("exec torsocks")
+                   (string-append "exec " torsocks))
+                  ((" and torsocks installed")
+                   ""))))))))
+    (inputs (cons torsocks
+                  (cargo-inputs 'git-remote-tor)))
+    (home-page "https://agentofuser.com/git-remote-tor/")
+    (synopsis "Seamless .onion and tor-ified git remotes")
+    (description
+     "This package provides Seamless .onion and tor-ified git remotes.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public git-repo-go
   (package

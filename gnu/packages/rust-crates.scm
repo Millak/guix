@@ -34900,6 +34900,15 @@
                                                    rust-zerofrom-derive-0.1.6
                                                    rust-zerovec-0.10.4
                                                    rust-zerovec-derive-0.10.3))
+                     (git-remote-tor =>
+                                     (list rust-indoc-0.3.6
+                                      rust-indoc-impl-0.3.6
+                                      rust-proc-macro-hack-0.5.20+deprecated
+                                      rust-proc-macro2-1.0.106
+                                      rust-quote-1.0.44
+                                      rust-syn-1.0.109
+                                      rust-unicode-ident-1.0.22
+                                      rust-unindent-0.1.11))
                      (gitoxide =>
                                (list rust-addr2line-0.24.2
                                 rust-adler2-2.0.0
