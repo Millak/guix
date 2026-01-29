@@ -13001,6 +13001,33 @@ functionality is similar to the go builtin @code{flag} package, but
 way of specifying command line options.")
     (license license:bsd-3)))
 
+(define-public go-github-com-jhump-gopoet
+  (package
+    (name "go-github-com-jhump-gopoet")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jhump/gopoet")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wb1ldpc9l8p29xhl9nkkq4vcp4rfrz72a4xlfn1qsjdg66b1rhq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jhump/gopoet"))
+    (home-page "https://github.com/jhump/gopoet")
+    (synopsis "Golang API for generating .go source files")
+    (description
+     "Package gopoet is a library to assist with generating Go code.  It
+includes a model of the Go language that is simpler, and thus easier to work
+with, than those provided by the @code{go/ast} and @code{go/types} packages.
+It also provides adapter methods to allow simple interoperability with
+elements from the @code{go/types} and @code{reflect} packages.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-jiangxin-multi-log
   (package
     (name "go-github-com-jiangxin-multi-log")
