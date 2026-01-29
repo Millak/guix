@@ -463,8 +463,7 @@ them in order to efficiently transfer a minimal amount of data.")
     (arguments
      (list #:glib-or-gtk? #t         ; To wrap binaries and/or compile schemas
            #:configure-flags
-           #~(list (string-append "-Dbindir="
-                                  (assoc-ref %outputs "tools") "/bin")
+           #~(list (string-append "-Dbindir=" #$output:tools "/bin")
                    "-Dudev=enabled"
                    "-Dv4l2=true"
                    "-Dtest=true")
@@ -496,17 +495,14 @@ them in order to efficiently transfer a minimal amount of data.")
                                 "")))))
                       #~())
                (add-after 'install 'move-doc-and-gst
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let* ((out (assoc-ref outputs "out"))
-                          (doc (assoc-ref outputs "doc"))
-                          (gst (assoc-ref outputs "gst")))
-                     (mkdir-p (string-append doc "/share"))
-                     (rename-file (string-append out "/share/doc")
-                                  (string-append doc "/share/doc"))
-                     (mkdir-p (string-append gst "/lib"))
-                     (rename-file
-                      (string-append out "/lib/gstreamer-1.0")
-                      (string-append gst "/lib/gstreamer-1.0"))))))))
+                 (lambda _
+                   (mkdir-p (string-append #$output:doc "/share"))
+                   (rename-file (string-append #$output "/share/doc")
+                                (string-append #$output:doc "/share/doc"))
+                   (mkdir-p (string-append #$output:gst "/lib"))
+                   (rename-file
+                    (string-append #$output "/lib/gstreamer-1.0")
+                    (string-append #$output:gst "/lib/gstreamer-1.0")))))))
     (native-inputs
      (list googletest
            graphviz                     ;for 'dot'
