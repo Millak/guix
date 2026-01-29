@@ -3807,8 +3807,8 @@ too.")
         (base32 "0lr134l16mjcgdj3fm2yff4chlfbihn1sji7q80y7lnr176zgs7d"))))
     (build-system asdf-build-system/sbcl)
     (inputs
-     `(("chemical-compounds" ,sbcl-chemical-compounds)
-       ("periodic-table" ,sbcl-periodic-table)))
+     (list sbcl-chemical-compounds
+           sbcl-periodic-table))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
