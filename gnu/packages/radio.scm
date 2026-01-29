@@ -1292,17 +1292,17 @@ to the fix block above.
     (arguments
      (list
       #:modules `((guix build cmake-build-system)
-                  ((guix build python-build-system) #:prefix python:)
+                  ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
-      #:imported-modules `(,@%cmake-build-system-modules
-                           (guix build python-build-system))
+      #:imported-modules (append %cmake-build-system-modules
+                                 %pyproject-build-system-modules)
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-test-environment
             (lambda _
               (setenv "HOME" "/tmp")))
           (add-after 'install 'wrap-python
-            (assoc-ref python:%standard-phases 'wrap)))))
+            (assoc-ref py:%standard-phases 'wrap)))))
     (native-inputs
      (list pkg-config pybind11 python-six))
     (inputs
