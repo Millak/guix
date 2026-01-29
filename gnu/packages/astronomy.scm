@@ -2835,7 +2835,8 @@ a path (for moving targets) and combining cutouts
      (list python-poetry-core
            python-objgraph
            python-pytest
-           python-pytest-doctestplus))
+           python-pytest-doctestplus
+           python-tomli))
     (propagated-inputs
      (list python-asdf-3
            python-astropy-6
