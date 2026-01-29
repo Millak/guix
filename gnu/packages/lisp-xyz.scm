@@ -12409,20 +12409,19 @@ Common Lisp.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/sharplispers/closure-common")
-               (commit commit)))
+                (url "https://github.com/sharplispers/closure-common")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32
            "0k5r2qxn122pxi301ijir3nayi9sg4d7yiy276l36qmzwhp4mg5n"))))
       (inputs
-       `(("trivial-gray-streams" ,sbcl-trivial-gray-streams)
-         ("babel" ,sbcl-babel)))
+       (list sbcl-trivial-gray-streams
+             sbcl-babel))
       (synopsis "Support Common Lisp library for CXML")
       (description "Closure-common is an internal helper library.  The name
 Closure is a reference to the web browser it was originally written for.")
-      ;; TODO: License?
-      (license #f))))
+      (license license:llgpl))))
 
 (define-public sbcl-closure-template
   ;; There are no releases since 2015.
