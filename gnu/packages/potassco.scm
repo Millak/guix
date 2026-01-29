@@ -521,10 +521,10 @@ directly from the python command line.")))
               (string-append "-DCMAKE_MODULE_PATH="
                              #$(this-package-native-input "python-scikit-build")
                              "/lib/cmake/modules"))
-      #:imported-modules  `(,@%cmake-build-system-modules
-                            (guix build python-build-system))
+      #:imported-modules (append %cmake-build-system-modules
+                                 %pyproject-build-system-modules)
       #:modules '((guix build cmake-build-system)
-                  ((guix build python-build-system) #:prefix python:)
+                  ((guix build pyproject-build-system) #:prefix python:)
                   (guix build utils))
       (substitute-keyword-arguments (package-arguments clingcon)
         ((#:phases phases)
