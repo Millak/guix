@@ -6164,9 +6164,9 @@ built at runtime.")
           (base32 "0xgmhx766q4nmrvn5z7ag3ikpr9phlh8ypi8b14azshq9lqbq0m7"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("usocket" ,sbcl-usocket)
-         ("cffi" ,sbcl-cffi)
-         ("fcgi" ,fcgi)))
+       (list sbcl-usocket
+             sbcl-cffi
+             fcgi))
       (arguments
        `(#:phases
          (modify-phases %standard-phases
