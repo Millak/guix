@@ -14311,10 +14311,10 @@ manipulations as the composition of more primitive operations.")
        ;; All test cases test a function that has been removed.
        `(#:tests? #f))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("parse-number" ,sbcl-parse-number)
-         ("puri" ,sbcl-puri)))
+       (list sbcl-alexandria
+             sbcl-cl-ppcre
+             sbcl-parse-number
+             sbcl-puri))
       (native-inputs
        (list sbcl-lift))
       (home-page "https://github.com/archimag/data-sift")
