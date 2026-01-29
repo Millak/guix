@@ -77,6 +77,7 @@
   #:use-module (gnu packages)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -382,11 +383,11 @@ clients.  The key features are:
       #:tests? #f
       #:imported-modules
       (append %default-gnu-imported-modules
-              %python-build-system-modules)
+              %pyproject-build-system-modules)
       #:validate-runpath? #f
       #:modules '((guix build gnu-build-system)
                   (guix build utils)
-                  ((guix build python-build-system) #:prefix python:)
+                  ((guix build pyproject-build-system) #:prefix py:)
                   (ice-9 rdelim)
                   (ice-9 popen))
       #:configure-flags
@@ -453,7 +454,7 @@ clients.  The key features are:
                        `("LD_LIBRARY_PATH" ":" prefix (,(string-append #$output "/lib"))))))
                  binaries))))
           (add-after 'patchelf 'python:wrap
-            (assoc-ref python:%standard-phases 'wrap))
+            (assoc-ref py:%standard-phases 'wrap))
           (add-after 'python:wrap 'wrap-python-scripts
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((scripts '("bin/spdk_cli" "bin/spdk_rpc" ))
