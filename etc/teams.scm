@@ -14,7 +14,7 @@ exec $pre_inst_env_maybe guix repl -- "$0" "$@"
 ;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2025 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
-;;; Copyright © 2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2025-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2025 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -520,7 +520,8 @@ of Rebar and Mix build systems and Hex.pm importer."
   (team 'core
         #:name "Core / Tools / Internals"
         #:scope
-        (list "guix/avahi.scm"
+        (list "etc/teams.scm"
+              "guix/avahi.scm"
               "guix/base16.scm"
               "guix/base32.scm"
               "guix/base64.scm"
@@ -580,6 +581,7 @@ of Rebar and Mix build systems and Hex.pm importer."
               "guix/read-print.scm"
               "guix/records.scm"
               "guix/remote.scm"
+              "guix/remote-procedures.scm"
               "guix/repl.scm"
               "guix/search-paths.scm"
               "guix/self.scm"

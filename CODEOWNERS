@@ -34,6 +34,7 @@ gnu/packages/cpp\.scm                              @guix/cpp
 gnu/packages/ninja\.scm                            @guix/cpp
 gnu/packages/valgrind\.scm                         @guix/cpp
 
+etc/teams\.scm                                     @guix/core
 guix/avahi\.scm                                    @guix/core
 guix/base16\.scm                                   @guix/core
 guix/base32\.scm                                   @guix/core
@@ -94,6 +95,7 @@ guix/quirks\.scm                                   @guix/core
 guix/read-print\.scm                               @guix/core
 guix/records\.scm                                  @guix/core
 guix/remote\.scm                                   @guix/core
+guix/remote-procedures\.scm                        @guix/core
 guix/repl\.scm                                     @guix/core
 guix/search-paths\.scm                             @guix/core
 guix/self\.scm                                     @guix/core
