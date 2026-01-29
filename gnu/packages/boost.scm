@@ -43,6 +43,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -79,19 +80,10 @@
                (base32
                 "0yhcb8dn7g5k9dfr54j99wpd4qwk59g1lpp8z0ag7d114si3z8w5"))))
     (build-system gnu-build-system)
-    (inputs
-     (append
-      (list icu4c zlib)
-      (if (%current-target-system)
-          '()
-          (list python-minimal-wrapper))))
-    (native-inputs
-     (list perl tcsh))
     (arguments
      (list
-      #:imported-modules `((guix build python-build-system)
-                           ,@%default-gnu-imported-modules)
-      #:modules `(((guix build python-build-system) #:select (python-version))
+      #:imported-modules %pyproject-build-system-modules
+      #:modules `(((guix build pyproject-build-system) #:select (python-version))
                   ,@%default-gnu-modules)
       #:tests? #f
       #:configure-flags
@@ -230,7 +222,14 @@
                                      (string-append "libboost_python"
                                                     (string-take python-version 1)
                                                     libext)))))))))))
-
+    (inputs
+     (append
+      (list icu4c zlib)
+      (if (%current-target-system)
+          '()
+          (list python-minimal-wrapper))))
+    (native-inputs
+     (list perl tcsh))
     (home-page "https://www.boost.org")
     (synopsis "Peer-reviewed portable C++ source libraries")
     (description
