@@ -4736,10 +4736,9 @@ different backends")
     (arguments
      (list
       #:tests? #f                       ;no tests
-      #:imported-modules `(,@%default-gnu-imported-modules
-                           (guix build python-build-system))
+      #:imported-modules %pyproject-build-system-modules
       #:modules '((guix build gnu-build-system)
-                  ((guix build python-build-system) #:prefix python:)
+                  ((guix build pyproject-build-system) #:prefix python:)
                   (guix build utils))
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
