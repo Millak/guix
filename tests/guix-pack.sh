@@ -85,10 +85,10 @@ is_available () {
 if is_available chroot && is_available unshare && unshare -r true; then
     # Verify we can use what we built.
     unshare -r chroot . /opt/gnu/bin/guile --version
-    cd -
 else
     echo "warning: skipped some verification because chroot or unshare is unavailable" >&2
 fi
+cd -
 
 # For the tests that build Docker images below, we currently have to use
 # --dry-run because if we don't, there are only two possible cases:
