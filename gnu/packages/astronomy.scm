@@ -7953,13 +7953,15 @@ Features:
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'build 'set-home-env
+            (lambda _
+              ;; No such file or directory: '/homeless-shelter/.pysat'
+              (setenv "HOME" "/tmp")))
           (add-before 'check 'pre-check
             (lambda _
               ;; Do not run test coverage.
               (substitute* "pyproject.toml"
                 ((".*addopts.*cov.*") ""))
-              ;; No such file or directory: '/homeless-shelter/.pysat'
-              (setenv "HOME" "/tmp")
               (mkdir "pysatData")
               (invoke "python" "-c"
                       "import pysat; pysat.params['data_dirs'] = 'pysatData'"))))))
