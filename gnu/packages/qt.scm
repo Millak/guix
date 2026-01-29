@@ -6266,20 +6266,18 @@ credentials and service-specific settings.")
                 "0gnx9gqsh0hcfm1lk7w60g64mkn1iicga5f5xcy1j9a9byacsfd0"))))
     (build-system meson-build-system)
     (arguments
-     (list #:tests? #f                  ;TODO: ninja: no work to do.
-           #:imported-modules `((guix build python-build-system)
-                                ,@%meson-build-system-modules)
-           #:modules '(((guix build python-build-system)
-                        #:select (python-version))
-                       (guix build meson-build-system)
-                       (guix build utils))
-           #:configure-flags
-           #~(list "-Dtests=true"
-                   (string-append "-Dpy-overrides-dir="
-                                  #$output "/lib/python"
-                                  (python-version #$(this-package-input
-                                                     "python"))
-                                  "/site-packages/gi/overrides"))))
+     (list
+      #:tests? #f                  ;TODO: ninja: no work to do.
+      #:imported-modules (append %meson-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '(((guix build pyproject-build-system) #:prefix py:)
+                  (guix build meson-build-system)
+                  (guix build utils))
+      #:configure-flags
+      #~(list "-Dtests=true"
+              (string-append "-Dpy-overrides-dir="
+                             (py:site-packages %build-inputs %outputs)
+                             "/gi/overrides"))))
     (native-inputs (list dbus
                          dbus-test-runner
                          `(,glib "bin")
