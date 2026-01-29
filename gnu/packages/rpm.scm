@@ -90,14 +90,14 @@ applying deltarpms, compatible with the original deltarpm packages.")
     (outputs '("out" "doc"))            ;2.6 MiB of HTML documentation
     (arguments
      (list
+      #:imported-modules (append %meson-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '((guix build meson-build-system)
+                  ((guix build pyproject-build-system) #:prefix python:)
+                  (guix build utils))
       #:configure-flags
       #~(list (string-append "-Dgobject_overrides_dir_py3="
                              (python:site-packages %build-inputs %outputs)))
-      #:imported-modules `(,@%meson-build-system-modules
-                           (guix build python-build-system))
-      #:modules '((guix build meson-build-system)
-                  ((guix build python-build-system) #:prefix python:)
-                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-glib-doc-prefix
