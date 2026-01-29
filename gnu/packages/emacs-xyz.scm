@@ -14050,7 +14050,7 @@ libraries from Swagger specs.")
       #:imported-modules (append %emacs-build-system-modules
                                  %pyproject-build-system-modules)
       #:modules '((guix build emacs-build-system)
-                  ((guix build python-build-system) #:prefix py:)
+                  ((guix build pyproject-build-system) #:prefix py:)
                   (guix build emacs-utils)
                   (guix build utils))
       #:phases
