@@ -686,7 +686,7 @@ system, and additional features in the full system.")
           (base32 "06lby4i6xbbgs7kgb0f3fqybvyskyg6djhrf967lnysv7hn3zpg9"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("closer-mop" ,sbcl-closer-mop)))
+       (list sbcl-closer-mop))
       (arguments
        `(#:asd-systems '("abstract-classes" "singleton-classes")))
       (home-page "https://bitbucket.org/eeeickythump/cl-abstract-classes")
