@@ -2253,7 +2253,10 @@ versus schematic} tests and can assist with automatic routing.")
      (list
       #:tests? #f                       ;there are no tests
       #:imported-modules (append %qt-build-system-modules
-                                 %python-build-system-modules)
+                                 %pyproject-build-system-modules)
+      #:modules '((guix build qt-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'build-info-documentation
@@ -2281,8 +2284,7 @@ versus schematic} tests and can assist with automatic routing.")
                   (chmod bin_ #o755)))
               (install-it "mcy")
               (install-it "mcy-dash")))
-          (add-after 'make-install 'python:wrap
-            (@@ (guix build python-build-system) wrap)))))
+          (add-after 'make-install 'python:wrap py:wrap))))
     (native-inputs
      (list pkg-config
            python-sphinx
