@@ -3578,10 +3578,9 @@ orienteering sport.")
        (list
         #:tests? #f                    ; No tests
         #:modules `((guix build gnu-build-system)
-                    ((guix build python-build-system) #:prefix python:)
+                    ((guix build pyproject-build-system) #:prefix python:)
                     (guix build utils))
-        #:imported-modules `(,@%default-gnu-imported-modules
-                             (guix build python-build-system))
+        #:imported-modules %pyproject-build-system-modules
         #:configure-flags
         #~(list "--with-blas"
                 "--with-bzlib"
