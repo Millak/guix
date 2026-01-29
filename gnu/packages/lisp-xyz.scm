@@ -17191,8 +17191,8 @@ covered by the Common Lisp standard.")
       ;; COMMONQT which is not packed yet and required tweaks with QT. Remove
       ;; this when it's ready.
       (inputs
-       `(("closer-mop" ,sbcl-closer-mop)
-         ("documentation-utils" ,sbcl-documentation-utils)))
+       (list sbcl-closer-mop
+             sbcl-documentation-utils))
       (home-page "https://shinmera.github.io/flow/")
       (synopsis "Tools for the representation of graphs and flowcharts")
       (description
