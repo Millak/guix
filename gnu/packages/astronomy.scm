@@ -6683,16 +6683,20 @@ will depend on your needs.")
 (define-public python-mapsims
   (package
     (name "python-mapsims")
-    (version "2.6.0")
+    (version "2.7.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "mapsims" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/galsci/mapsims")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "15mkdbmcys42vh46wzvaw8avx54dicav3dazflpfr634jw9bd8hs"))))
+        (base32 "0w3vslss6aal1ll91pvg23r9f6l63jhbkvjz2756hm7r4b468h5w"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 12 passed, 2 skipped, 8 deselected, 2 warnings
       #:test-flags
       ;; Tests requiring additional FITS files.
       ;; <https://portal.nersc.gov/project/cmb>
@@ -6705,14 +6709,7 @@ will depend on your needs.")
                           "test_from_config_v02"
                           "test_from_classes"
                           "test_s4sim_202222_ame_high")
-                    " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "pyproject.toml"
-               ;; pixell==0.17.3
-               (("==0.17.3") ">=0.17.3")))))))
+                    " and not "))))
     (native-inputs
      (list nss-certs-for-test
            python-flit-core
@@ -6722,8 +6719,8 @@ will depend on your needs.")
            python-pytest-astropy))
     (propagated-inputs
      (list python-astropy
-           python-healpy
-           python-numpy
+           python-healpy-1.18
+           python-numpy-1
            python-pixell
            python-pysm3
            python-pyyaml
