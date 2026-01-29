@@ -438,11 +438,11 @@ Lua code.")))
                  "-DCLINGO_USE_LIB=yes"
                  #$flags))
        ((#:imported-modules _ '())
-        `(,@%cmake-build-system-modules
-          (guix build python-build-system)))
+        (append %cmake-build-system-modules
+                %pyproject-build-system-modules))
        ((#:modules _ '())
         '((guix build cmake-build-system)
-          ((guix build python-build-system) #:prefix python:)
+          ((guix build pyproject-build-system) #:prefix python:)
           (guix build utils)))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
