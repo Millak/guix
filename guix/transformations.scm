@@ -356,7 +356,9 @@ a checkout of the Git repository at the given URL."
                                        (origin-uri (package-source old))))
                              (recursive? (if (or (git-checkout? uri)
                                                  (git-reference? uri))
-                                             (package-git-url+recursive? old)
+                                             (let ((_ recursive?
+                                                      (package-git-url+recursive? old)))
+                                               recursive?)
                                              #t)))
                         (package
                           (inherit old)

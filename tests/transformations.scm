@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016-2017, 2019-2024, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -371,6 +372,22 @@
                    (match (package-native-inputs dep2)
                      ((("x" dep3))
                       (map package-source (list dep1 dep3)))))))))))
+
+(test-equal "options->transformation, with-git-url, recursive? inheritance"
+  (git-checkout (url "https://example2.org")
+                (recursive? #f))
+  (let* ((p (dummy-package "chbouib"
+              (source (origin
+                        (method git-fetch)
+                        (uri (git-reference
+                               (url "https://example1.org")
+                               (commit "cabba9e")
+                               (recursive? #f)))
+                        (sha256 #f)))))
+         (t (options->transformation
+             '((with-git-url . "chbouib=https://example2.org")))))
+    (let ((new (t p)))
+      (package-source new))))
 
 (define* (depends-on-toolchain? p #:optional (toolchain "gcc-toolchain"))
   "Return true if P depends on TOOLCHAIN instead of the default tool chain."
