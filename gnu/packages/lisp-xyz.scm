@@ -17136,8 +17136,8 @@ a sequence (or chain) of such elements.")
   (sbcl-package->cl-source-package sbcl-flexichain))
 
 (define-public sbcl-float-features
-  (let ((commit "c1f86aea91cfaa3aa59799162be23ef8a12b199d")
-        (revision "2"))
+  (let ((commit "daecae28000ea0eac49065a86c7eed727fe450db")
+        (revision "3"))
     (package
       (name "sbcl-float-features")
       (version (git-version "1.0.0" revision commit))
@@ -17145,11 +17145,11 @@ a sequence (or chain) of such elements.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/float-features")
-               (commit commit)))
+                (url "https://codeberg.org/shinmera/float-features")
+                (commit commit)))
          (file-name (git-file-name "float-features" version))
          (sha256
-          (base32 "0vqm9xhn2i4vbjrxnp4hr1l3lydjflhjykdz6cmqg2j48c5kh3g3"))))
+          (base32 "0749spr7b6scclj49jhpz9pzhzr8lka0krp0x71b0lnyx0x6a6f4"))))
       (build-system asdf-build-system/sbcl)
       (synopsis "Common Lisp IEEE float portability library")
       (description
@@ -17157,10 +17157,10 @@ a sequence (or chain) of such elements.")
 covered by the Common Lisp standard.")
       (home-page "https://github.com/Shinmera/float-features")
       (license license:zlib)
+      (native-inputs (list sbcl-parachute))
       (inputs
-       `(("documentation-utils" ,sbcl-documentation-utils)))
-      (arguments
-       `(#:tests? #f)))))
+       (list sbcl-documentation-utils
+             sbcl-trivial-features)))))
 
 (define-public cl-float-features
   (sbcl-package->cl-source-package sbcl-float-features))
