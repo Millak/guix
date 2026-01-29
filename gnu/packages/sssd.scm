@@ -31,6 +31,7 @@
   #:use-module (guix utils)
   #:use-module (guix build utils)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages)
@@ -153,8 +154,11 @@ fundamental object types for C.")
     (build-system gnu-build-system)
     (arguments
      (list
-      #:imported-modules (source-module-closure
-                          '((guix build python-build-system)))
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  ((guix build pyproject-build-system) #:prefix py:))
+      #:imported-modules (append %default-gnu-imported-modules
+                                 %pyproject-build-system-modules)
       #:make-flags
       #~(list (string-append "CFLAGS=-DRENEWAL_PROG_PATH=\\\""
                              #$(this-package-input "adcli") "/sbin/adcli"
@@ -189,16 +193,10 @@ fundamental object types for C.")
                              "/xml/docbook/"
                              #$(package-version (this-package-native-input "docbook-xml"))
                              "/catalog.xml"))
-      #:modules '((guix build gnu-build-system)
-                  (guix build utils)
-                  ((guix build python-build-system)
-                   #:select (ensure-no-mtimes-pre-1980)))
-      #:imported-modules (append %default-gnu-imported-modules
-                                 %python-build-system-modules)
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'ensure-no-mtimes-pre-1980
-                     ensure-no-mtimes-pre-1980)
+                     py:ensure-no-mtimes-pre-1980)
           ;; sssd looks in lib/samba, but the Guix package puts things in lib/
           ;; Patch the path before we autoreconf.
           (add-before 'bootstrap 'patch-samba-pkgconfig
@@ -248,7 +246,7 @@ fundamental object types for C.")
               (delete-file
                (string-append #$output "/lib/ldb/modules/ldb/memberof.la"))))
           (add-after 'install 'wrap-binaries
-            (lambda _
+            (lambda* (#:key inputs outputs #:allow-other-keys)
               (with-directory-excursion #$output
                 ;; Set path to LDB modules for sssd and utilities.
                 (for-each (lambda (bin)
@@ -260,11 +258,7 @@ fundamental object types for C.")
                 (for-each (lambda (script)
                             (wrap-program script
                               `("GUIX_PYTHONPATH" ":" prefix
-                                (,(string-append #$output "/lib/python"
-                                                 #$(version-major+minor
-                                                    (package-version
-                                                     (this-package-input "python")))
-                                                 "/site-packages")))))
+                                (,(py:site-packages inputs outputs)))))
                           '("libexec/sssd/sss_analyze" "sbin/sss_obfuscate"))))))))
     (inputs
      (list adcli
