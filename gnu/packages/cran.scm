@@ -13599,14 +13599,14 @@ Markdown documents.  More generally, icons can be inserted in any
 (define-public r-bslib
   (package
     (name "r-bslib")
-    (version "0.9.0")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bslib" version))
        (sha256
         (base32
-         "01q9zy2dwhag0jl0dbhfhwbqj09ghd2wrkqihpv8acbazw3s3mxd"))
+         "1lsnbbm6adb2scqfa6zgz1py3mqkc8dhzb4f1fca96g2am4d5a5l"))
        (snippet
         '(for-each delete-file
                    '("inst/components/dist/components.min.js"
@@ -13690,6 +13690,10 @@ Markdown documents.  More generally, icons can be inserted in any
                   ((".*sidebar\\(\\) - sets `aria-expanded` correctly on collapse toggle.*" m)
                    (string-append m "skip('skip');\n"))
                   ((".*sidebar\\(\\) - warns if `max_height_mobile` used with `open != 'always'.*" m)
+                   (string-append m "skip('skip');\n")))
+                ;; This test requires r-shiny.
+                (substitute* "test-input-submit.R"
+                  ((".*input_submit_textarea\\(\\) markup snapshots.*" m)
                    (string-append m "skip('skip');\n")))))))))
     (propagated-inputs
      (list r-base64enc
