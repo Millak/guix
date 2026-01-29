@@ -10499,23 +10499,23 @@ arrows.")
        (origin
          (method hg-fetch)
          (uri (hg-reference
-               (url "https://github.com/vityok/cl-string-match")
-               (changeset changeset)))
+                (url "https://github.com/vityok/cl-string-match")
+                (changeset changeset)))
          (sha256
           (base32
            "01wn5qx562w43ssy92xlfgv79w7p0nv0wbl76mpmba131n9ziq2y"))
          (file-name (git-file-name "cl-string-match" version))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("babel" ,sbcl-babel)
-         ("iterate" ,sbcl-iterate)
-         ("jpl-queues" ,sbcl-jpl-queues)
-         ("jpl-util" ,sbcl-jpl-util)
-         ("mgl-pax" ,sbcl-mgl-pax)
-         ("parse-float" ,sbcl-parse-float)
-         ("proc-parse" ,sbcl-proc-parse)
-         ("yacc" ,sbcl-cl-yacc)))
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-iterate
+             sbcl-jpl-queues
+             sbcl-jpl-util
+             sbcl-mgl-pax
+             sbcl-parse-float
+             sbcl-proc-parse
+             sbcl-cl-yacc))
       ;; TODO: Tests are not evaluated properly.
       (native-inputs
        ;; For testing:
