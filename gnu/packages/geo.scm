@@ -1728,11 +1728,11 @@ vector data.")
     (arguments
      (list
       #:tests? #f
+      #:imported-modules (append %cmake-build-system-modules
+                                 %pyproject-build-system-modules)
       #:modules '((guix build cmake-build-system)
-                  ((guix build python-build-system) #:prefix python:)
+                  ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
-      #:imported-modules `(,@%cmake-build-system-modules
-                           (guix build python-build-system))
       #:configure-flags
       #~(list "-DGDAL_USE_INTERNAL_LIBS=WHEN_NO_EXTERNAL"
               "-DGDAL_USE_JPEG12_INTERNAL=OFF"
@@ -1741,20 +1741,19 @@ vector data.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'swap-files
-            (lambda _
+            (lambda* (#:key inputs outputs #:allow-other-keys)
               ;; The RPATH of the binaries in build/swig/python/build/ is
               ;; rewritten in build/swig/python/for_install/build/.  For
               ;; unknown reasons the files in the former directory are
               ;; installed when it should be those in the latter directory.
               ;; So we copy them ourselves.
-              (with-directory-excursion "../build/swig/python/for_install/build"
+              (with-directory-excursion
+                  "../build/swig/python/for_install/build"
                 (for-each (lambda (file)
                             (install-file file
                                           (string-append
-                                           #$output
-                                           "/lib/python"
-                                           (python:python-version #$(this-package-native-input "python"))
-                                           "/site-packages/osgeo")))
+                                           (py:site-packages inputs outputs)
+                                           "/osgeo")))
                           (find-files "." "\\.so"))))))))
     (inputs
      (list curl
