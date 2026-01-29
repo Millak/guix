@@ -36,6 +36,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages rocm)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tcl))
 
@@ -223,14 +224,16 @@ testing InfiniBand networks.")
                                           #$(this-package-input "rdma-core"))
 
                            (string-append "--with-rdmacm="
-                                          #$(this-package-input "rdma-core")))
+                                          #$(this-package-input "rdma-core"))
+                           (string-append "--with-rocm="
+                                          #$(this-package-input "rocr-runtime")))
 
       ;; Be verbose so that compiler flags are displayed.
       #:make-flags #~'("V=1")))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (inputs
-     (list numactl rdma-core))
+     (list numactl rdma-core rocr-runtime))
     (synopsis "Optimized communication layer for message passing in HPC")
     (description
      "Unified Communication X (UCX) provides an optimized communication layer
