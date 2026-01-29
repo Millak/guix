@@ -394,43 +394,44 @@ and dynamically with report tools based on filtering and graphical charts.")
         (base32 "023265i1hd009jwsb8qpjgz8jjqn601rkk7fy1c0dklli7hbykna"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:modules (,@%cmake-build-system-modules
+     (list
+      #:modules `(,@%cmake-build-system-modules
                   ((guix build python-build-system) #:select (python-version)))
-       #:imported-modules (,@%cmake-build-system-modules
+      #:imported-modules `(,@%cmake-build-system-modules
                            (guix build python-build-system))
-       #:configure-flags
-       `("-DBUILD_DOCS:BOOL=ON"
-         "-DBUILD_WEB_DOCS:BOOL=ON"
-         "-DUSE_PYTHON:BOOL=ON"
-         "-DCMAKE_INSTALL_LIBDIR:PATH=lib")
-       #:phases
-       (modify-phases (@ (guix build cmake-build-system) %standard-phases)
-         (add-after 'unpack 'fix-python-installation-directory
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; By default the package attempts to install its Python bindings
-             ;; to the Python store directory, which obviously does not work.
-             ;; Passing -DPython_SITEARCH in #:configure-flags has no effect.
-             (let ((python-version (python-version (assoc-ref inputs "python")))
-                   (out (assoc-ref outputs "out")))
-               (substitute* "src/CMakeLists.txt"
-                 (("DESTINATION \\$\\{Python_SITEARCH\\}")
-                  (string-append "DESTINATION " out "/lib/python"
-                                 python-version "/site-packages"))))))
-         (add-before 'configure 'install-examples
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((examples (string-append (assoc-ref outputs "out")
-                                            "/share/doc/ledger/examples")))
-               (install-file "test/input/sample.dat" examples)
-               (install-file "test/input/demo.ledger" examples)
-               (install-file "contrib/report" examples))))
-         (add-after 'build 'build-doc
-           (lambda _ (invoke "make" "doc")))
-         (add-before 'check 'check-setup
-           ;; One test fails if it can't set the timezone.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "TZDIR"
-                     (search-input-directory inputs
-                                             "share/zoneinfo")))))))
+      #:configure-flags
+      #~(list "-DBUILD_DOCS:BOOL=ON"
+              "-DBUILD_WEB_DOCS:BOOL=ON"
+              "-DUSE_PYTHON:BOOL=ON"
+              "-DCMAKE_INSTALL_LIBDIR:PATH=lib")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-python-installation-directory
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; By default the package attempts to install its Python bindings
+              ;; to the Python store directory, which obviously does not work.
+              ;; Passing -DPython_SITEARCH in #:configure-flags has no effect.
+              (let ((python-version (python-version (assoc-ref inputs "python")))
+                    (out (assoc-ref outputs "out")))
+                (substitute* "src/CMakeLists.txt"
+                  (("DESTINATION \\$\\{Python_SITEARCH\\}")
+                   (string-append "DESTINATION " out "/lib/python"
+                                  python-version "/site-packages"))))))
+          (add-before 'configure 'install-examples
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((examples (string-append (assoc-ref outputs "out")
+                                             "/share/doc/ledger/examples")))
+                (install-file "test/input/sample.dat" examples)
+                (install-file "test/input/demo.ledger" examples)
+                (install-file "contrib/report" examples))))
+          (add-after 'build 'build-doc
+            (lambda _ (invoke "make" "doc")))
+          (add-before 'check 'check-setup
+            ;; One test fails if it can't set the timezone.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "TZDIR"
+                      (search-input-directory inputs
+                                              "share/zoneinfo")))))))
     (inputs
      (list boost-1.83
            gmp
