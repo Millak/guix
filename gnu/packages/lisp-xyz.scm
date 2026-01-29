@@ -1723,8 +1723,8 @@ Common Lisp (ASDF) projects from the command line.")
           (base32 "1w56c9yjjydjshsgqxz57qlp2v3r4ilbisnsgiqphvxnhvd41y0v"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
-       `(("fare-utils" ,sbcl-fare-utils)
-         ("hu.dwim.stefil" ,sbcl-hu.dwim.stefil)))
+       (list sbcl-fare-utils
+             sbcl-hu.dwim.stefil))
       (home-page "https://gitlab.common-lisp.net/asdf/asdf-finalizers")
       (synopsis "Enforced calling of finalizers for Lisp code")
       (description "This library allows you to implement and enforce proper
