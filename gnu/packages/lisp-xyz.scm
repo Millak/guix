@@ -11134,7 +11134,7 @@ generation as well as numerous distributions.")
          "04lhwi0kq8pkwhgd885pk80m1cp9sfvjjn5zj70s1dnckibhdmqh"))))
     (build-system asdf-build-system/sbcl)
     (inputs
-     `(("zpb-ttf" ,sbcl-zpb-ttf)))
+     (list sbcl-zpb-ttf))
     (arguments
      '(#:asd-systems '("cl-vectors"
                        "cl-paths"
