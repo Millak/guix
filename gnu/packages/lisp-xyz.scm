@@ -699,6 +699,9 @@ abstract, final and singleton classes.")
 (define-public ecl-abstract-classes
   (sbcl-package->ecl-package sbcl-abstract-classes))
 
+(define-public clasp-abstract-classes
+  (sbcl-package->clasp-package sbcl-abstract-classes))
+
 (define-public cl-abstract-classes
   (sbcl-package->cl-source-package sbcl-abstract-classes))
 
