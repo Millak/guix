@@ -13757,10 +13757,10 @@ additional form that is considered as a candidate for a constant.")
       (home-page "https://github.com/numcl/constantfold")
       (license license:lgpl3+)
       (inputs
-       `(("trivia" ,sbcl-trivia)
-         ("alexandria" ,sbcl-alexandria)
-         ("iterate" ,sbcl-iterate)
-         ("lisp-namespace" ,sbcl-lisp-namespace)))
+       (list sbcl-trivia
+             sbcl-alexandria
+             sbcl-iterate
+             sbcl-lisp-namespace))
       (native-inputs
        (list sbcl-fiveam)))))
 
