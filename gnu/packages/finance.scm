@@ -395,10 +395,11 @@ and dynamically with report tools based on filtering and graphical charts.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:modules `(,@%cmake-build-system-modules
-                  ((guix build python-build-system) #:select (python-version)))
-      #:imported-modules `(,@%cmake-build-system-modules
-                           (guix build python-build-system))
+      #:imported-modules (append %cmake-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '((guix build cmake-build-system)
+                  (guix build utils)
+                  ((guix build pyproject-build-system) #:prefix py:))
       #:configure-flags
       #~(list "-DBUILD_DOCS:BOOL=ON"
               "-DBUILD_WEB_DOCS:BOOL=ON"
@@ -411,12 +412,10 @@ and dynamically with report tools based on filtering and graphical charts.")
               ;; By default the package attempts to install its Python bindings
               ;; to the Python store directory, which obviously does not work.
               ;; Passing -DPython_SITEARCH in #:configure-flags has no effect.
-              (let ((python-version (python-version (assoc-ref inputs "python")))
-                    (out (assoc-ref outputs "out")))
-                (substitute* "src/CMakeLists.txt"
-                  (("DESTINATION \\$\\{Python_SITEARCH\\}")
-                   (string-append "DESTINATION " out "/lib/python"
-                                  python-version "/site-packages"))))))
+              (substitute* "src/CMakeLists.txt"
+                (("DESTINATION \\$\\{Python_SITEARCH\\}")
+                 (string-append "DESTINATION "
+                                (py:site-packages inputs outputs))))))
           (add-before 'configure 'install-examples
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((examples (string-append (assoc-ref outputs "out")
