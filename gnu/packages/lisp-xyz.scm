@@ -14414,8 +14414,8 @@ database files (dbf and db3 files).")
   (sbcl-package->ecl-package sbcl-db3))
 
 (define-public sbcl-dbi
-  (let ((commit "be4df4f236391f4e4150a1fe77f8acc92b9f3996")
-        (revision "3"))
+  (let ((commit "5cf8b754affee7b20782e64ac7c80db9a45e488b")
+        (revision "4"))
     (package
       (name "sbcl-dbi")
       (version (git-version "0.11.1" revision commit))
@@ -14423,24 +14423,24 @@ database files (dbf and db3 files).")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/fukamachi/cl-dbi")
-               (commit commit)))
+                (url "https://github.com/fukamachi/cl-dbi")
+                (commit commit)))
          (file-name (git-file-name "cl-dbi" version))
          (sha256
-          (base32 "0n3lh0rng5gbbb9aqcrszvc99f80j5zk1hdrcvz20qg6c31hhjl6"))))
+          (base32 "19kai3kd061valrr3v31shrizyh9qsyxmcl034b16zllqjrnmyi7"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("rove" ,sbcl-rove)
-         ("trivial-types" ,sbcl-trivial-types)))
+       (list sbcl-alexandria
+             sbcl-rove
+             sbcl-trivial-types))
       (inputs
-       `(("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("cl-mysql" ,sbcl-cl-mysql)
-         ("cl-sqlite" ,sbcl-cl-sqlite)
-         ("closer-mop" ,sbcl-closer-mop)
-         ("postmodern" ,sbcl-postmodern)
-         ("split-sequence" ,sbcl-split-sequence)
-         ("trivial-garbage" ,sbcl-trivial-garbage)))
+       (list sbcl-bordeaux-threads
+             sbcl-cl-mysql
+             sbcl-cl-sqlite
+             sbcl-closer-mop
+             sbcl-postmodern
+             sbcl-split-sequence
+             sbcl-trivial-garbage))
       (arguments
        `(#:asd-systems '("dbi"
                          "dbd-mysql"
