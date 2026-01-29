@@ -588,33 +588,32 @@ takes advantage of modern hardware using OpenGL.")
                (base32
                 "1s06kd2dhsb143piw89yzwfck7qwzlh4nlgjj2bxpsa3g68c1g11"))))
     (arguments
-     (list #:glib-or-gtk? #t
-           #:imported-modules `(,@%meson-build-system-modules
-                                (guix build python-build-system))
-           #:modules '((guix build meson-build-system)
-                       ((guix build python-build-system)
-                        #:prefix python:)
-                       (guix build utils))
-           #:phases #~(modify-phases %standard-phases
-                        (add-after 'install 'rename-executable
-                          (lambda _
-                            (with-directory-excursion (string-append #$output
-                                                                     "/bin")
-                              (symlink "dev.tchx84.Portfolio" "portfolio"))))
-                        (add-after 'unpack 'skip-gtk-update-icon-cache
-                          (lambda _
-                            (substitute* "build-aux/meson/postinstall.py"
-                              (("gtk-update-icon-cache") "true"))))
-                        (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
-                          (lambda* (#:key inputs outputs #:allow-other-keys)
-                            (wrap-program (search-input-file outputs
-                                                             "bin/dev.tchx84.Portfolio")
-                              `("GUIX_PYTHONPATH" =
-                                (,(getenv "GUIX_PYTHONPATH") ,(python:site-packages
-                                                               inputs
-                                                               outputs)))
-                              `("GI_TYPELIB_PATH" =
-                                (,(getenv "GI_TYPELIB_PATH")))))))))
+     (list
+      #:glib-or-gtk? #t
+      #:imported-modules (append %meson-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '((guix build meson-build-system)
+                  ((guix build pyproject-build-system) #:prefix python:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'rename-executable
+            (lambda _
+              (with-directory-excursion (string-append #$output "/bin")
+                (symlink "dev.tchx84.Portfolio" "portfolio"))))
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "build-aux/meson/postinstall.py"
+                (("gtk-update-icon-cache") "true"))))
+          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs
+                                               "bin/dev.tchx84.Portfolio")
+                `("GUIX_PYTHONPATH" =
+                  (,(getenv "GUIX_PYTHONPATH")
+                   ,(python:site-packages inputs outputs)))
+                `("GI_TYPELIB_PATH" =
+                  (,(getenv "GI_TYPELIB_PATH")))))))))
     (build-system meson-build-system)
     (inputs (list bash-minimal python-pygobject gtk libadwaita))
     (native-inputs
