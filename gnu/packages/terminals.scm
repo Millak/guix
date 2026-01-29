@@ -45,6 +45,7 @@
 ;;; Copyright © 2025 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2025 Liam Hupfer <liam@hpfr.net>
 ;;; Copyright © 2026 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2026 Nemin <bergengocia@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -86,6 +87,9 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dlang)
   #:use-module (gnu packages docbook)
+  #:use-module (gnu packages elf)
+  #:use-module (gnu packages fcitx5)
+  #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fribidi)
@@ -118,9 +122,12 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages version-control)
+  #:use-module (gnu packages vulkan)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -1664,3 +1671,215 @@ running;
 @item background image for eye candy.
 @end itemize")
     (license license:gpl2+)))
+
+;; See https://github.com/wezterm/wezterm/blob/main/README-DISTRO-MAINTAINER.md
+(define-public wezterm
+  (let ((commit "05343b387085842b434d267f91b6b0ec157e4331")
+        ;; git -c "core.abbrev=8" show -s "--format=%cd" "--date=format:%Y%m%d.%H%M%S"
+        (date "20260117.154428"))
+    (package
+      (name "wezterm")
+      (version (string-append date "." (substring commit 0 8)))
+      (source
+       (origin
+         (method git-fetch)
+         (file-name "wezterm")
+         (uri (git-reference
+                (url "https://github.com/wezterm/wezterm")
+                (commit commit)))
+         (sha256
+          (base32 "1pkng8dvjc917j4i8sly8cz91nx1yh2k83i78rcs43gdxs79gjds"))
+         (modules
+          '((ice-9 match)
+            (guix build utils)))
+         (snippet
+          '(begin
+             ;; Remove bundled dependencies.
+             (for-each
+              delete-file-recursively
+              '("assets/fonts"
+                "assets/macos"
+                "assets/windows"
+                "deps/cairo/cairo"
+                "deps/cairo/pixman"))
+             ;; Link static libraries for dependencies under ./deps.
+             (for-each
+              (match-lambda
+                ((name dependencies)
+                 (with-directory-excursion (in-vicinity "deps" name)
+                   (make-file-writable "build.rs")
+                   (with-output-to-file "build.rs"
+                     (lambda ()
+                       (format #t "\
+// Modified by Guix.
+fn main() {
+~{\
+    println!(\"cargo:rustc-link-lib=~a\");
+~}\
+}~%"
+                               dependencies))))))
+              '(("cairo"      ("cairo" "pixman-1"))
+                ("fontconfig" ("fontconfig"))
+                ("freetype"   ("freetype" "png" "z"))
+                ("harfbuzz"   ("harfbuzz"))))))))
+      (build-system cargo-build-system)
+      (arguments
+       (list
+        #:install-source? #f
+        #:features
+        ''("distro-defaults")
+        #:cargo-test-flags
+        ''("--"
+           ;; Test data differs, probably due to unbundling of fonts.
+           ;; https://codeberg.org/guix/guix/pulls/6020#issuecomment-10364990
+           "--skip=shapecache::test::ligatures_jetbrains")
+        #:modules
+        '((srfi srfi-26)
+          (ice-9 match)
+          (guix build cargo-build-system)
+          (guix build utils))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'use-guix-vendored-dependencies
+              (lambda _
+                ;; Override dependencies declared with git repos / revisions.
+                (substitute* "Cargo.toml"
+                  ;; finl-unicode
+                  ((",  git.*default-features")
+                   ", default-features")
+                  ;; xcb-imdkit-rs.
+                  ((", git.*, rev.*}")
+                   ;; use-system-lib ensures the package won't try pulling in
+                   ;; additional dependencies and instead relies on the inputs
+                   ;; we passed in.
+                   ", features=[\"use-system-lib\"]}"))))
+            (add-after 'unpack 'prepare-build-environment
+              (lambda _
+                (with-output-to-file ".tag"
+                  (lambda ()
+                    (display #$(package-version this-package))))
+                ;; These libraries will be used at runtime.  Add into RUNPATH.
+                (setenv "RUSTFLAGS"
+                        (string-join
+                         '("-C" "link-arg=-lEGL"
+                           "-C" "link-arg=-lvulkan")
+                         " "))))
+            (add-after 'unpack 'fix-font-load-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "wezterm-font/src/parser.rs"
+                  (("../../assets/fonts/(.*\\.ttf)" _ font)
+                   (search-input-file
+                    inputs (in-vicinity "share/fonts/truetype" font))))))
+            (replace 'install
+              (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                ;; Binaries
+                (with-directory-excursion "target/release"
+                  (for-each (cut install-file <> (in-vicinity #$output "bin"))
+                            '("wezterm" "wezterm-gui"
+                              "wezterm-mux-server"
+                              "strip-ansi-escapes")))
+
+                ;; Terminfo
+                (with-directory-excursion "termwiz/data"
+                  (let ((terminfo (in-vicinity #$output "share/terminfo"))
+                        (tic (search-input-file
+                              (or native-inputs inputs) "bin/tic")))
+                    (mkdir-p terminfo)
+                    (for-each (cut invoke tic "-x" "-o" terminfo <>)
+                              '("wezterm.terminfo"
+                                ;; Wezterm by default identifies itself as
+                                ;; xterm-256color, which this terminfo provides
+                                ;; despite the "-italic" part.
+                                "xterm-256color-italic.terminfo"))))
+
+                ;; Completions
+                (with-directory-excursion "assets/shell-completion"
+                  (for-each
+                   (match-lambda
+                     ((shell . target)
+                      (let ((path (in-vicinity #$output target)))
+                        (mkdir-p (dirname path))
+                        (copy-file shell path))))
+                   '(("bash" . "share/bash-completion/completions/wezterm")
+                     ("fish" . "share/fish/vendor_completions.d/wezterm.fish")
+                     ("zsh"  . "share/zsh/site-functions/_wezterm"))))
+
+                ;; Integrations
+                (with-directory-excursion "assets/shell-integration"
+                  (let ((profile-d (in-vicinity #$output "etc/profile.d")))
+                    (mkdir-p profile-d)
+                    (install-file "wezterm.sh" profile-d)))
+
+                ;; Icon
+                (with-directory-excursion "assets/icon"
+                  (let ((icons (in-vicinity
+                                #$output "share/icons/hicolor/scalable/apps")))
+                    (mkdir-p icons)
+                    (copy-file
+                     "wezterm-icon.svg"
+                     (in-vicinity icons "org.wezfurlong.wezterm.svg"))))
+
+                ;; Desktop file
+                (install-file "assets/wezterm.desktop"
+                              (in-vicinity #$output "share/applications"))
+                (install-file "assets/wezterm.appdata.xml"
+                              (in-vicinity #$output "share/metainfo"))
+
+                ;; Nautilus extension
+                (install-file
+                 "assets/wezterm-nautilus.py"
+                 (in-vicinity #$output "share/nautilus-python/extensions"))
+
+                ;; Helper script
+                (install-file "assets/open-wezterm-here"
+                              (in-vicinity #$output "bin")))))))
+      (native-inputs (list ncurses pkg-config))
+      (inputs
+       (cons* font-google-noto-emoji
+              font-google-roboto
+              font-jetbrains-mono
+              font-nerd-symbols
+              libgit2
+              libssh
+              libssh2
+              libx11
+              libxcb
+              libxkbcommon
+              mesa
+              openssl
+              sqlite
+              vulkan-loader
+              wayland
+              xcb-imdkit
+              xcb-util
+              xcb-util-image
+              `(,zstd "lib")
+              ;; Replacements for deps/ libraries.
+              cairo
+              fontconfig
+              freetype
+              harfbuzz
+              libpng
+              pixman
+              zlib
+              (cargo-inputs 'wezterm)))
+      (native-search-paths
+       ;; FIXME: This should only be located in 'ncurses'.  Nonetheless it is
+       ;; provided for usability reasons.  See <https://bugs.gnu.org/22138>.
+       (list (search-path-specification
+              (variable "TERMINFO_DIRS")
+              (files '("share/terminfo")))))
+      (home-page "https://wezterm.org/")
+      (synopsis "Cross-platform terminal emulator and multiplexer")
+      (description
+       "WezTerm is a GPU-accelerated terminal emulator and multiplexer that
+features:
+
+@itemize
+@item Multiplex terminal panes, tabs and windows on local and remote hosts, with
+native mouse and scrollback.
+@item Ligatures, color emoji and font fallback, with true color and dynamic
+color schemes.
+@item Hyperlinks.
+@end itemize")
+      (license license:expat))))
