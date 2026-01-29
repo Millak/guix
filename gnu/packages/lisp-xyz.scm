@@ -7937,9 +7937,9 @@ format.")
            "1kwix4si8a8hza34ab2k7whrh7z0yrmx39v2wc3qblv9m244jkh1"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cffi" ,sbcl-cffi)
-         ("libuv" ,libuv)))
+       (list sbcl-alexandria
+             sbcl-cffi
+             libuv))
       (arguments
        `(#:phases
          (modify-phases %standard-phases
