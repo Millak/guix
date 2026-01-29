@@ -17151,16 +17151,16 @@ a sequence (or chain) of such elements.")
          (sha256
           (base32 "0749spr7b6scclj49jhpz9pzhzr8lka0krp0x71b0lnyx0x6a6f4"))))
       (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-parachute))
+      (inputs
+       (list sbcl-documentation-utils
+             sbcl-trivial-features))
       (synopsis "Common Lisp IEEE float portability library")
       (description
        "Portability library for IEEE float features that are not
 covered by the Common Lisp standard.")
       (home-page "https://github.com/Shinmera/float-features")
-      (license license:zlib)
-      (native-inputs (list sbcl-parachute))
-      (inputs
-       (list sbcl-documentation-utils
-             sbcl-trivial-features)))))
+      (license license:zlib))))
 
 (define-public cl-float-features
   (sbcl-package->cl-source-package sbcl-float-features))
