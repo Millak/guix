@@ -4458,43 +4458,32 @@ module provides support functions to the automatically generated code.")
        (sha256
         (base32 "04a23cgsnx150xq86w1z44b6vr2zyazysy9mqax0fy346zlr77dk"))))
     (build-system gnu-build-system)
-    (native-inputs `(("python" ,python-wrapper)))
-    (propagated-inputs `())
     (arguments
-     `(#:tests? #f ;no check target
-       #:imported-modules ((guix build python-build-system)
-                           ,@%default-gnu-imported-modules)
-       #:modules ((srfi srfi-1)
-                  ((guix build python-build-system)
-                   #:select (python-version))
+     (list
+      #:tests? #f ;no check target
+      #:imported-modules %pyproject-build-system-modules
+      #:modules `((srfi srfi-1)
+                  ((guix build pyproject-build-system) #:prefix py:)
                   ,@%default-gnu-modules)
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'substitute
-                    (lambda _
-                      (substitute* "siplib/siplib.c"
-                        ;; Replaces the internal data-structure usage
-                        ;; that was removed in python 3.11 with the
-                        ;; new official API call so the code will compile
-                        ;; with python > 3.11
-                        (("frame->f_back")
-                         "PyFrame_GetBack(frame)"))))
-                  (replace 'configure
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (bin (string-append out "/bin"))
-                             (include (string-append out "/include"))
-                             (python (assoc-ref inputs "python"))
-                             (lib (string-append out "/lib/python"
-                                                 (python-version python)
-                                                 "/site-packages")))
-                        (invoke "python"
-                                "configure.py"
-                                "--bindir"
-                                bin
-                                "--destdir"
-                                lib
-                                "--incdir"
-                                include)))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'substitute
+            (lambda _
+              (substitute* "siplib/siplib.c"
+                ;; Replaces the internal data-structure usage
+                ;; that was removed in python 3.11 with the
+                ;; new official API call so the code will compile
+                ;; with python > 3.11
+                (("frame->f_back")
+                 "PyFrame_GetBack(frame)"))))
+          (replace 'configure
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (invoke "python" "configure.py"
+                      "--bindir" (string-append #$output "/bin")
+                      "--destdir" (py:site-packages inputs outputs)
+                      "--incdir" (string-append #$output "/include")))))))
+    (native-inputs (list python-wrapper))
+    (propagated-inputs (list))
     (license license:gpl3)))
 
 (define-public python-pyqt
