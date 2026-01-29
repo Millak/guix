@@ -7220,10 +7220,11 @@ and the use of a modern programming language, techniques, and libraries
            python-dateutil
            python-ducc0
            python-ephem
-           python-healpy
+           python-healpy-1.18
            python-matplotlib
            python-numba
-           python-numpy
+           ;; See: <https://github.com/simonsobs/pixell/issues/325>.
+           python-numpy-1
            python-pillow
            python-scipy))
     (home-page "https://pixell.readthedocs.io/")
