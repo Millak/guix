@@ -866,6 +866,12 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
       (build-system cmake-build-system)
       (arguments
        (list
+        #:imported-modules (append %cmake-build-system-modules
+                                   %pyproject-build-system-modules)
+        #:modules '((ice-9 textual-ports)
+                    (guix build utils)
+                    ((guix build pyproject-build-system) #:prefix python:)
+                    (guix build cmake-build-system))
         #:configure-flags
         #~(list "-DBUILD_SHARED_LIBS=ON"
                 "-DLLAMA_USE_SYSTEM_GGML=ON"
