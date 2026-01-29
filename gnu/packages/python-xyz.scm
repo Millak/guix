@@ -36042,32 +36042,39 @@ functionality and customization to your projects with their own plugins.")
        (uri (pypi-uri "streamtracer" version))
        (sha256
         (base32 "01ncr8q58xkz2dydjdg4a0c3kv4mpd6j1lzj4p0cmpg7jdi24cmr"))))
-    (build-system cargo-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:imported-modules `(,@%cargo-build-system-modules
                            ,@%pyproject-build-system-modules)
-      #:modules '((guix build cargo-build-system)
-                  ((guix build pyproject-build-system) #:prefix py:)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
                   (guix build utils))
+      #:test-flags
+      #~(list "--pyargs" "streamtracer")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'build 'build-python-module
-            (assoc-ref py:%standard-phases 'build))
-          (add-after 'build-python-module 'install-python-module
-            (assoc-ref py:%standard-phases 'install))
-          (add-after 'install-python-module 'add-install-to-pythonpath
-            (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
-          (add-after 'check 'check-python-module
+          (add-after 'unpack 'prepare-cargo-build-system
             (lambda args
-                (with-directory-excursion #$output
-                (apply (assoc-ref py:%standard-phases 'check) args)))))
-      #:install-source? #false))
+              (for-each (lambda (phase)
+                          (format #t "Running cargo phase: ~a~%" phase)
+                          (apply (assoc-ref cargo:%standard-phases phase)
+                                 #:cargo-target #$(cargo-triplet)
+                                 args))
+                        '(unpack-rust-crates
+                          configure
+                          check-for-pregenerated-files
+                          patch-cargo-checksums)))))))
     (native-inputs
-     (list maturin
-           python-pytest
-           python-pytest-doctestplus
-           python-wrapper))
+     (append
+      (list maturin
+            python-pytest
+            python-pytest-doctestplus
+            rust
+            `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
     (propagated-inputs
      (list python-numpy
            python-packaging))
