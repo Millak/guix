@@ -3752,13 +3752,13 @@ growing set of geoscientific methods.")
     (build-system cmake-build-system)
     (arguments
      (list
+      #:imported-modules (append %cmake-build-system-modules
+                                 %pyproject-build-system-modules
+                                 '((guix build qt-utils)))
       #:modules '((guix build cmake-build-system)
-                  ((guix build python-build-system) #:prefix python:)
+                  ((guix build pyproject-build-system) #:prefix py:)
                   (guix build qt-utils)
                   (guix build utils))
-      #:imported-modules `(,@%cmake-build-system-modules
-                           (guix build python-build-system)
-                           (guix build qt-utils))
       #:configure-flags
       #~(list "-DWITH_QTWEBKIT=NO")
       #:phases
@@ -3919,11 +3919,10 @@ growing set of geoscientific methods.")
             ;; Configure correct path to PyQt5 SIP directory
             (add-after 'unpack 'configure-pyqt5-sip-path
               (lambda* (#:key inputs #:allow-other-keys)
-                (let ((sip-dir (string-append
-                                (assoc-ref inputs "python-pyqt+qscintilla")
-                                "/lib/python"
-                                (python:python-version (assoc-ref inputs "python"))
-                                "/site-packages/PyQt5/bindings")))
+                (let* ((pyqt (assoc-ref inputs "python-pyqt+qscintilla"))
+                       (sip-dir (string-append
+                                 (py:site-packages inputs `(("out" . ,pyqt)))
+                                 "/PyQt5/bindings")))
                   (substitute* "cmake/FindPyQt5.py"
                     (("sip_dir = cfg.default_sip_dir")
                      (string-append "sip_dir = \"" sip-dir "\"")))
@@ -3953,7 +3952,7 @@ SET\\(PYQT5_SIP_DIR \"\\$\\{Python_SITEARCH\\}/PyQt5/bindings\"\\)")
                               "-E" (string-join ignored-tests "|")))
                     (format #t "test suite not run~%"))))
             (add-after 'install 'wrap-python
-              (assoc-ref python:%standard-phases 'wrap))
+              (assoc-ref py:%standard-phases 'wrap))
             (add-after 'wrap-python 'wrap-qt
               (lambda* (#:key inputs #:allow-other-keys)
                 (wrap-qt-program "qgis" #:output #$output #:inputs inputs)))
