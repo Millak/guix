@@ -23782,6 +23782,32 @@ recommended.")
 emulator.")
     (license license:expat)))
 
+(define-public go-github-com-transparency-dev-merkle
+  (package
+    (name "go-github-com-transparency-dev-merkle")
+    (version "0.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/transparency-dev/merkle")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03yzjzc8rmvxy8vy6jwgjyir8lplw19xikl0bvbiy5g3gy2wi7qy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/transparency-dev/merkle"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (home-page "https://github.com/transparency-dev/merkle")
+    (synopsis "Merkle trees in Golang")
+    (description
+     "Thi package provides a @url{https://en.wikipedia.org/wiki/Merkle_tree,
+Merkle tree} implementation in Golang.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-twpayne-go-shell
   (package
     (name "go-github-com-twpayne-go-shell")
