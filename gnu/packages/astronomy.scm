@@ -8179,8 +8179,7 @@ natively in Siril.")
           (add-after 'unpack 'relax-requirements
             (lambda _
               (substitute* "pyproject.toml"
-                (("scipy < 1.15") "scipy")
-                (("numpy < 2") "numpy")))) ; no constain on master branch
+                (("scipy < 1.15") "scipy"))))
           (add-before 'build 'set-version
             (lambda _
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
@@ -8199,9 +8198,9 @@ natively in Siril.")
     (propagated-inputs
      (list python-astropy
            python-h5py
-           python-healpy
+           python-healpy-1.18
            python-numba
-           python-numpy
+           python-numpy-1
            python-scipy
            python-toml))
     (home-page "https://pysm3.readthedocs.io/")
