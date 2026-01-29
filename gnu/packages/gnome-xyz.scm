@@ -1770,10 +1770,10 @@ that are completely black and completely white.")
     (build-system meson-build-system)
     (arguments
      (list
-      #:imported-modules `(,@%meson-build-system-modules
-                           (guix build python-build-system))
+      #:imported-modules (append %meson-build-system-modules
+                                 %pyproject-build-system-modules)
       #:modules '((guix build meson-build-system)
-                  ((guix build python-build-system) #:prefix python:)
+                  ((guix build pyproject-build-system) #:prefix python:)
                   (guix build utils))
       #:glib-or-gtk? #t
       #:phases
