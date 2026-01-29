@@ -9844,9 +9844,9 @@ Raylib game development library.")
           (base32 "14iskvqfw71ssaav483vmqw62lrpznysjs800gjjppxs785p1fa0"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cffi" ,sbcl-cffi)
-         ("readline" ,readline)))
+       (list sbcl-alexandria
+             sbcl-cffi
+             readline))
       (arguments
        '(#:phases
          (modify-phases %standard-phases
