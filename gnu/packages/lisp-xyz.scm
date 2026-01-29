@@ -16545,8 +16545,8 @@ perform a variety of optimizations.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/fukamachi/fast-http")
-               (commit commit)))
+                (url "https://github.com/fukamachi/fast-http")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32 "0al2g7g219jjljsf7b23pbilpgacxy5as5gs2nqf76b5qni396mi"))))
@@ -16554,8 +16554,8 @@ perform a variety of optimizations.")
       (arguments
        '(#:asd-systems '("fast-http-test" "fast-http")))
       (native-inputs
-       `(("sbcl-prove" ,sbcl-prove)
-         ("cl-syntax" ,sbcl-cl-syntax)))
+       (list sbcl-prove
+             sbcl-cl-syntax))
       (inputs
        (list sbcl-alexandria sbcl-proc-parse sbcl-xsubseq
              sbcl-smart-buffer sbcl-cl-utilities))
