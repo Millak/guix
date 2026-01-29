@@ -38798,14 +38798,14 @@ interface for editing @code{ggplot2} theme elements.")
 (define-public r-flexdashboard
   (package
     (name "r-flexdashboard")
-    (version "0.6.2")
+    (version "0.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "flexdashboard" version))
        (sha256
         (base32
-         "0zxyrfp1inv19palaba81pxlq0nz655hcliynvh995a58cvg6c5n"))
+         "0s0h66prg6176s53wwxj9cmxi9qwcfnmkxnlx18i17gkif85ijff"))
        ;; Delete bundled minified JavaScript files
        (snippet
         '(for-each delete-file
