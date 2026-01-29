@@ -319,12 +319,10 @@ and metadata, and the journal with querying and full text search.")
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
-      #:imported-modules
-      `(,@%glib-or-gtk-build-system-modules
-        (guix build python-build-system))
-      #:modules
-      `(((guix build python-build-system) #:prefix python:)
-        ,@%glib-or-gtk-build-system-default-modules)
+      #:imported-modules (append %glib-or-gtk-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules `(((guix build pyproject-build-system) #:prefix python:)
+                  ,@%glib-or-gtk-build-system-default-modules)
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-build-system
