@@ -336,10 +336,10 @@ GiB).")
     (arguments
      (list
       #:glib-or-gtk? #t
-      #:imported-modules `(,@%meson-build-system-modules
-                           (guix build python-build-system))
+      #:imported-modules (append %meson-build-system-modules
+                                 %pyproject-build-system-modules)
       #:modules '((guix build meson-build-system)
-                  ((guix build python-build-system) #:prefix python:)
+                  ((guix build pyproject-build-system) #:prefix python:)
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
