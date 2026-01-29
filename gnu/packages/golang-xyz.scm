@@ -13080,6 +13080,30 @@ destinations: the console and a log file.")
 struct to another.")
     (license license:expat)))
 
+(define-public go-github-com-jinzhu-now
+  (package
+    (name "go-github-com-jinzhu-now")
+    (version "1.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jinzhu/now")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10ywpaxs6d3y8gqlzx6rh3yw4ya83bnx0hrs0k0wq5bxbjhfmlil"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jinzhu/now"))
+    (home-page "https://github.com/jinzhu/now")
+    (synopsis "Human-friendly time formatting for Golang")
+    (description
+     "This package provides a Go library to print timestamps in different
+formats.")
+    (license license:expat)))
+
 (define-public go-github-com-jkeiser-iter
   (package
     (name "go-github-com-jkeiser-iter")
