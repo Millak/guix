@@ -9154,13 +9154,13 @@ integers.")
 (define-public r-orgmassspecr
   (package
     (name "r-orgmassspecr")
-    (version "0.5-3")
+    (version "0.5-4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "OrgMassSpecR" version))
               (sha256
                (base32
-                "1dx9d8rb1dfqyhyc26zhfnxiv3rz2ikvs2mwqnsrq3lsjs9dvyc8"))))
+                "0v0vkidp134a7im43wjjqf2fcki19nxyz900hq24039syjpx1kv6"))))
     (properties `((upstream-name . "OrgMassSpecR")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
