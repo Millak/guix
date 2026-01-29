@@ -4514,6 +4514,27 @@ dumbbell charts, the ability to encircle points and coordinate-system-based
 text annotations.")
     (license license:agpl3)))
 
+(define-public r-ggamma
+  (package
+    (name "r-ggamma")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ggamma" version))
+       (sha256
+        (base32 "05kdswyl04x9g6z94rgpm7p4c6maa2vr96xfrxfsq21bqjqknx6b"))))
+    (properties `((upstream-name . "ggamma")))
+    (build-system r-build-system)
+    (native-inputs (list r-flexsurv r-testthat))
+    (home-page "https://github.com/matheushjs/ggamma")
+    (synopsis "Generalized Gamma probability distribution")
+    (description
+     "This package provides density, distribution function, quantile function
+and random generation for the Generalized Gamma proposed in Stacy,
+E. W. (1962) <doi:10.1214/aoms/1177704481>.")
+    (license license:expat)))
+
 (define-public r-ggbeeswarm
   (package
     (name "r-ggbeeswarm")
