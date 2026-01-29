@@ -14461,6 +14461,46 @@ routes, and configure IPsec.")
 namespaces in Go.")
     (license license:asl2.0)))
 
+(define-public go-github-com-weppos-publicsuffix-go
+  (package
+    (name "go-github-com-weppos-publicsuffix-go")
+    (version "0.50.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/weppos/publicsuffix-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mj4mg4p5ap41281qbn39rwz0wr8pa314qfjyp2h7aybjkpdm1ag"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/weppos/publicsuffix-go"
+      #:embed-files
+      #~(list
+         ;; golang.org/x/net/publicsuffix/table.go:63:12: pattern
+         ;; data/children: cannot embed irregular file data/children
+         "children"
+         ;; golang.org/x/net/publicsuffix/table.go:48:12: pattern data/nodes:
+         ;; cannot embed irregular file data/nodes
+         "nodes"
+         ;; golang.org/x/net/publicsuffix/table.go:33:12: pattern data/text:
+         ;; cannot embed irregular file data/text
+         "text")))
+    (propagated-inputs (list go-golang-org-x-net))
+    (home-page "https://github.com/weppos/publicsuffix-go")
+    (synopsis "Public suffix domain utility for Golang")
+    (description
+     "This package provides a Golang implementation of the
+@url{https://publicsuffix.org/, Public Suffix List} used to determine domain
+boundaries (e.g., distinguishing <example.co.uk> from its TLD).  It allows
+parsing domain names and identifying effective top-level domains for cookie
+policies, host validation, and domain processing.")
+    (license license:expat)))
+
 (define-public go-github-com-whyrusleeping-cbor
   (package
     (name "go-github-com-whyrusleeping-cbor")
