@@ -320,8 +320,8 @@ P2P-DHT.")
 
 (define-public jami-docs
   ;; There aren't any tags, so use the latest commit.
-  (let ((revision "4")
-        (commit "d7930e51a50a8a5f1cec0fe186dbc3e5b9143294"))
+  (let ((revision "5")
+        (commit "f95825cdda2570d0c30d0fdf076186fe72da71b1"))
     (package
       (name "jami-docs")
       (version (git-version "0.0.0" revision commit))
@@ -333,7 +333,7 @@ P2P-DHT.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "12g17yl78vhkjn97x62dlxjijhkhbrzvxk4g1jm5s1cxrrqg2bg2"))))
+                  "1f92l4ym14w8j70x9b4nybvpb967sv6359vjdxnqd71b6pal8pjr"))))
       (build-system copy-build-system)
       (arguments
        (list
