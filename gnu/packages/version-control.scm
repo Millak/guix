@@ -4488,12 +4488,10 @@ TkDiff is included for browsing and merging your changes.")
     (build-system gnu-build-system)
     (arguments
      (list
-      #:imported-modules
-      `(,@%default-gnu-imported-modules
-        (guix build python-build-system))
+      #:imported-modules %pyproject-build-system-modules
       #:modules
       '((guix build gnu-build-system)
-        ((guix build python-build-system) #:select (site-packages))
+        ((guix build pyproject-build-system) #:select (site-packages))
         (guix build utils)
         (srfi srfi-26))
       #:make-flags
