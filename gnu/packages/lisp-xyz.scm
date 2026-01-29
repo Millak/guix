@@ -33391,8 +33391,8 @@ the elements in compound type specifier, e.g. @code{dimensions} in
       (home-page "https://github.com/guicho271828/type-r")
       (license license:lgpl3+)
       (inputs
-       `(("trivia" ,sbcl-trivia)
-         ("alexandria" ,sbcl-alexandria)))
+       (list sbcl-trivia
+             sbcl-alexandria))
       (native-inputs
        (list sbcl-fiveam)))))
 
