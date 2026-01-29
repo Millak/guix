@@ -11678,11 +11678,11 @@ Common Lisp folders on a per-application or per-library basis.")
           (base32 "0fdr9nqfmmpxm6hvjdxi1jkclya9xlnrw1yc3cn1m4ww3f50p31m"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("iterate" ,sbcl-iterate)
-         ("cl-syntax" ,sbcl-cl-syntax)))
+       (list sbcl-iterate
+             sbcl-cl-syntax))
       (native-inputs
-       `(("cl-unit" ,sbcl-clunit)
-         ("check-it" ,sbcl-check-it)))
+       (list sbcl-clunit
+             sbcl-check-it))
       (arguments
        `(#:phases
          (modify-phases %standard-phases
