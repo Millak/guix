@@ -1615,11 +1615,11 @@ accessibility and gene expression across individual single cells.")
       (license license:expat))))
 
 (define-public r-saige
-  (let ((commit "44c8dd4d7641fcb4b591a49e10e7ecf501943202")
-        (revision "2"))
+  (let ((commit "7172b7fa774ec56b3ab6e45173cede3de010a41b")
+        (revision "1"))
     (package
       (name "r-saige")
-      (version (git-version "1.3.4" revision commit))
+      (version (git-version "1.5.1" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -1628,7 +1628,7 @@ accessibility and gene expression across individual single cells.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0n5gaah0fdhd6affmaml3kfmk7knxkr26knyg6hjmwx836fbbyif"))))
+          (base32 "0j5nzw5bvfvi48gkh2l60dai4av8z07kkf981y9wf22phnvnpcaw"))))
       (properties `((upstream-name . "SAIGE")))
       (build-system r-build-system)
       (arguments
