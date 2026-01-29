@@ -278,6 +278,78 @@ learning models with just a fraction of the examples and compute.")
 family of functions.")
     (license license:expat)))
 
+(define-public python-burr
+  (package
+    (name "python-burr")
+    (version "0.40.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/apache/burr/")
+              (commit (string-append "burr-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0scdfdn2dkan5rkrh5ngai8j4i01rj6d6ncrhvab62r43c0h042q"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Avoid "async def functions are not natively supported." with 70+
+         ;; test failures.  This hack triggers a bunch of warnings, because
+         ;; now also synchronous tests are marked with @pytest.mark.asyncio,
+         ;; but at least the tests run successfully.
+         (add-after 'unpack 'patch-tests
+           (lambda _
+             (substitute* "tests/common/test_async_utils.py"
+               (("from typing.*" m)
+                (string-append m "\
+import asyncio
+import pytest
+pytestmark = pytest.mark.asyncio\n")))
+             (substitute* '("tests/visibility/test_tracing.py"
+                            "tests/core/test_parallelism.py"
+                            "tests/core/test_action.py"
+                            "tests/core/test_application.py"
+                            "tests/test_end_to_end.py")
+               (("^import asyncio.*" m)
+                (string-append m "\
+import pytest
+pytestmark = pytest.mark.asyncio\n"))))))
+      ;; There are integration tests and examples comparing Burr to and
+      ;; interfacing with alternatives, such as the overly complex langchain.
+      ;; We should not add them here just to run these tests.
+      #:test-flags
+      #~(list "--ignore-glob=tests/integration**"
+              "--ignore-glob=examples/**"
+              "--ignore-glob=burr/examples/**"
+              "--ignore=tests/core/test_graphviz_display.py"
+              "--ignore=tests/core/test_persistence.py")))
+    (native-inputs
+     (list python-flit-core
+           python-anyio
+           python-pytest
+           python-pytest-asyncio
+           python-setuptools))
+    ;; Burr has very few hard dependencies.  Including these optional packages
+    ;; makes it more useful, though.
+    (propagated-inputs
+     (list python-pydantic           ;optional
+           python-pydantic-settings  ;optional
+           python-loguru
+           python-requests))
+    (home-page "https://burr.apache.org/")
+    (synopsis "Build applications that make decisions")
+    (description
+     "Apache Burr makes it easy to develop applications that make
+decisions (chatbots, agents, simulations, etc...) from simple Python building
+blocks.  Apache Burr works well for any application that uses LLMs, and can
+integrate with any of your favorite frameworks.  Burr includes a UI that can
+track/monitor/trace your system in real time, along with pluggable
+persisters (e.g. for memory) to save and load application state.")
+    (license license:asl2.0)))
+
 (define-public python-faster-whisper
   (package
     (name "python-faster-whisper")
