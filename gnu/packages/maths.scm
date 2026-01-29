@@ -8700,12 +8700,7 @@ theories} (SMT) solver.  It provides a C/C++ API, as well as Python bindings.")
     (name "ocaml-z3")
     (build-system gnu-build-system)
     (arguments
-     `(#:imported-modules ((guix build python-build-system)
-                           ,@%default-gnu-imported-modules)
-       #:modules (((guix build python-build-system) #:select (site-packages))
-                  (guix build gnu-build-system)
-                  (guix build utils))
-       #:tests? #f; no ml tests
+     `(#:tests? #f; no ml tests
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'bootstrap
