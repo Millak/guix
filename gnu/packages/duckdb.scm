@@ -148,13 +148,13 @@ system.")
 (define-public r-duckdb
   (package
     (name "r-duckdb")
-    (version "1.4.3")
+    (version "1.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "duckdb" version))
        (sha256
-        (base32 "0br7d7gadi0gbpd45syvig6zs1b0sl3vpn8wa272hs8jv4d73ar3"))
+        (base32 "1hch36v3lsymnx30lv3cjy12gs3v3mhd44ha97l7w9mwp9wbzmxl"))
        ;; This package bundles the duckdb sources and builds a custom variant
        ;; of duckdb.  I'd be happy to link it with our duckdb library instead,
        ;; but it does not seem possible to do that.
