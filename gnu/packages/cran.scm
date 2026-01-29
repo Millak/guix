@@ -43944,16 +43944,20 @@ communities\" by MS Johnson (1926) @url{doi:10.2307/1373575}.")
 (define-public r-expint
   (package
     (name "r-expint")
-    (version "0.2-0")
+    (version "0.2-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "expint" version))
        (sha256
         (base32
-         "0gkmk98j5irz6x7vs17yv36b2mld0rr35lc7r8qzg30vx4hwzpww"))))
-    (properties `((upstream-name . "expint")))
+         "1nlz4ifj1z3yh5znh06syjzj2pg27iw6995ccn6msal2xbydz18j"))))
+    (properties
+     '((upstream-name . "expint")
+       ;; For vignettes.
+       (updater-extra-native-inputs . ("r-gsl" "r-pracma"))))
     (build-system r-build-system)
+    (native-inputs (list r-gsl r-pracma))
     (home-page "https://gitlab.com/vigou3/expint")
     (synopsis "Exponential integral and incomplete Gamma function")
     (description
