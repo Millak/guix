@@ -5551,13 +5551,19 @@ and a 3D volume rendering viewer.")
        (sha256
         (base32 "0k2qgy6d443lgxb140w70q078hclaf2c1jl85czkzkmz77yiiblc"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; See: <https://github.com/Hazboun6/gw_sky/issues/2>.
+      ;; 
+      ;; 0.1.0 was released in 2023 and might be not compatible with some
+      ;; function in Jupyter: subprocess.CalledProcessError: Command
+      ;; '['jupyter', 'nbconvert', <...>
+      #~(list "--deselect=tests/test_notebooks.py::test_pta_smbbh")))
     (native-inputs
-     (list jupyter
-           python-pytest
+     (list python-pytest
            python-healpy
-           python-nbconvert
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-astropy
            python-matplotlib
