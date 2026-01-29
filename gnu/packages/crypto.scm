@@ -241,9 +241,9 @@ fast, secure, parallelizable, capable of incremental updates.")
       (outputs '("out" "python" "doc"))
       (arguments
        (list #:imported-modules (append %cmake-build-system-modules
-                                        %python-build-system-modules)
+                                        %pyproject-build-system-modules)
              #:modules '((guix build cmake-build-system)
-                         ((guix build python-build-system) #:prefix python:)
+                         ((guix build pyproject-build-system) #:prefix python:)
                          (guix build utils))
              #:configure-flags #~(list "-DENABLE_STATIC=OFF")
              #:phases
