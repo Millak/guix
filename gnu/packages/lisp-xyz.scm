@@ -2894,37 +2894,37 @@ cartesian product.")
           (search-patches "sbcl-burgled-batteries3-fix-signals.patch"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       `(#:tests? #f
-         #:modules (((guix build python-build-system) #:select (python-version))
-                    ,@%asdf-build-system-modules)
-         #:imported-modules ((guix build python-build-system)
+       (list
+        #:tests? #f
+        #:imported-modules `((guix build python-build-system)
                              ,@%asdf-build-system-modules)
-         #:phases
-         (modify-phases (@ (guix build asdf-build-system) %standard-phases)
-           (add-after 'unpack 'set-*cpython-include-dir*-var
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((python (assoc-ref inputs "python")))
-                 (setenv "BB_PYTHON3_INCLUDE_DIR"
-                         (string-append python "/include/python"
-                                        (python-version python)))
-                 (setenv "BB_PYTHON3_DYLIB"
-                         (string-append python "/lib/libpython3.so"))
-                 #t)))
-           (add-after 'unpack 'adjust-for-python-3.10
-             (lambda _
-               ;; These methods are no longer part of the public API.
-               (substitute* "ffi-interface.lisp"
-                 ((".*PyEval_ReInitThreads.*") "")
-                 ((".*\"PyErr_Warn\".*") "")
-                 ((".*\"PyFloat_ClearFreeList\".*") "")
-                 ((".*\"PyParser_SimpleParseString\".*") "")
-                 ((".*\"PyParser_SimpleParseStringFlags\".*") "")
-                 ((".*\"PyParser_SimpleParseStringFlagsFilename\".*") "")
-                 ((".*\"PyParser_SimpleParseFile\".*") "")
-                 ((".*\"PyParser_SimpleParseFileFlags\".*") "")
-                 ((".*\"PyLong_FromUnicode\".*") "")
-                 ((".*\"PyUnicodeEncodeError_Create\".*") "")
-                 ((".*\"PyUnicodeTranslateError_Create\".*") "")))))))
+        #:modules `(((guix build python-build-system) #:select (python-version))
+                    ,@%asdf-build-system-modules)
+        #:phases
+        #~(modify-phases (@ (guix build asdf-build-system) %standard-phases)
+            (add-after 'unpack 'set-*cpython-include-dir*-var
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((python (assoc-ref inputs "python")))
+                  (setenv "BB_PYTHON3_INCLUDE_DIR"
+                          (string-append python "/include/python"
+                                         (python-version python)))
+                  (setenv "BB_PYTHON3_DYLIB"
+                          (string-append python "/lib/libpython3.so")))))
+            (add-after 'unpack 'adjust-for-python-3.10
+              (lambda _
+                ;; These methods are no longer part of the public API.
+                (substitute* "ffi-interface.lisp"
+                  ((".*PyEval_ReInitThreads.*") "")
+                  ((".*\"PyErr_Warn\".*") "")
+                  ((".*\"PyFloat_ClearFreeList\".*") "")
+                  ((".*\"PyParser_SimpleParseString\".*") "")
+                  ((".*\"PyParser_SimpleParseStringFlags\".*") "")
+                  ((".*\"PyParser_SimpleParseStringFlagsFilename\".*") "")
+                  ((".*\"PyParser_SimpleParseFile\".*") "")
+                  ((".*\"PyParser_SimpleParseFileFlags\".*") "")
+                  ((".*\"PyLong_FromUnicode\".*") "")
+                  ((".*\"PyUnicodeEncodeError_Create\".*") "")
+                  ((".*\"PyUnicodeTranslateError_Create\".*") "")))))))
       (native-inputs
        (list sbcl-cl-fad sbcl-lift sbcl-cl-quickcheck))
       (inputs
