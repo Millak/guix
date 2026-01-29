@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
-;;; Copyright © 2016-2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
@@ -88,7 +88,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "9.1.1525")
+    (version "9.1.2110")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -97,7 +97,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "19qkf9hq4rd4y3592wxd2x7bw2wxq0p607wddv4p8cv8wsk5y7dv"))))
+               "1b0b9wg136xpqxsc5xhl47nygj2xr2rf9lw3j7rwlgh3xkyyr4f6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -109,6 +109,7 @@
              (substitute* '("src/testdir/Makefile"
                             "src/testdir/test_filetype.vim"
                             "src/testdir/test_normal.vim"
+                            "src/testdir/test_plugin_matchparen.vim"
                             "src/testdir/test_popupwin.vim"
                             "src/testdir/test_prompt_buffer.vim"
                             "src/testdir/test_shell.vim"
@@ -128,56 +129,36 @@
                      (search-input-directory inputs "share/zoneinfo"))
 
              ;; Make sure the TERM environment variable is set for the tests.
-             (setenv "TERM" "xterm")
+             (setenv "TERM" "xterm")))
+         (add-before 'check 'skip-or-fix-failing-tests
+           (lambda _
+             ;; These tests try to download from the internet.
+             (setenv "TEST_SKIP_PAT"
+                     "Test_glvs_default")
 
              ;; Ignore failure of some flaky tests.
              (setenv "TEST_MAY_FAIL"
                      (string-join
-                      (list "Test_diff_overlapped_diff_blocks_will_be_merged"
-                            "Test_linematch_diff_grouping")
-                      ","))))
-         (add-before 'check 'skip-or-fix-failing-tests
-           (lambda _
-             ;; This test failure is shared between BSD and Guix.
-             (with-fluids ((%default-port-encoding #f))
-               (substitute* "src/testdir/test_writefile.vim"
-                 (("!has\\('bsd'\\)") "0")))
+                       (list "Test_write_backup_symlink"
+                             ;; These tests compare the output of commands and
+                             ;; expect to run on a FHS-compliant system.
+                             "Test_echo_verbose_system"
+                             "Test_matchparen_ignore_sh_case"
+                             "Test_popup_drag_termwin"
+                             "Test_combining_double_width"
+                             "Test_open_term_from_cmd"
+                             "Test_terminal_postponed_scrollback")
+                       ","))
 
-             ;; These tests crash the build environment.
-             (substitute* "src/testdir/Make_all.mak"
-               ((".*test_plugin_glvs.*") ""))
-
-             ;; These tests check how the terminal looks after executing some
-             ;; actions.  The path of the bash binary is shown, which results in
-             ;; a difference being detected.  Patching the expected result is
-             ;; non-trivial due to the special format used, so skip the test.
-             (substitute* "src/testdir/test_messages.vim"
-               ((".*Test_echo_verbose_system.*" line)
-                (string-append line "return\n")))
-             (substitute* "src/testdir/test_normal.vim"
-               ((".*Test_mouse_shape_after_cancelling_gr.*" line)
-                (string-append line "return\n")))
-             (substitute* "src/testdir/test_terminal.vim"
-               ((".*Test_open_term_from_cmd.*" line)
-                (string-append line "return\n"))
-               ((".*Test_terminal_postponed_scrollback.*" line)
-                (string-append line "return\n"))
-               ((".*Test_combining_double_width.*" line)
-                (string-append line "return\n")))
-             (substitute* "src/testdir/test_popupwin.vim"
-               ((".*Test_popup_drag_termwin.*" line)
-                (string-append line "return\n")))
-             (with-fluids ((%default-port-encoding #f))
-               (substitute* "src/testdir/test_writefile.vim"
-                 ;; No setfattr in the build environment.
-                 ((".*Test_write_with_xattr_support.*" line)
-                  (string-append line "return\n"))))
              ;; These depend on full bash.
              (with-directory-excursion "runtime/syntax/testdir/input"
                (for-each delete-file
-                         (list "sh_11.sh"
+                         (list "sh_10.sh"
+                               "sh_11.sh"
                                "sh_12.sh"
                                "sh_14.sh"
+                               "sh_bash.bash"
+                               "sh_bash_alias.sh"
                                "sh_sundrous.bash")))))
          (add-before 'install 'fix-installman.sh
            (lambda _
