@@ -1,7 +1,7 @@
 Upstream-status: <https://review.jami.net/c/jami-client-qt/+/31456>
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index c046b597..366758f5 100644
+index 80017d20..30b10471 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -101,13 +101,13 @@ endif()
@@ -11,7 +11,7 @@ index c046b597..366758f5 100644
 -  TARGET qwindowkit
 +  TARGET QWindowKit
    URL https://github.com/stdware/qwindowkit.git
-   BRANCH 758b00cb6c2d924be3a1ea137ec366dc33a5132d
+   BRANCH d4536ebe12dd35504abdba66986daf21c0aee805
    PATCHES ${QWINDOWKIT_PATCHES}
    OPTIONS ${QWINDOWKIT_OPTIONS}
  )
@@ -21,7 +21,7 @@ index c046b597..366758f5 100644
  
  # If ENABLE_CRASHREPORTS is enabled, we will use crashpad_cmake for now.
 diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
-index a1aeb22f..94f558e0 100644
+index 33a892b8..502a9434 100644
 --- a/tests/CMakeLists.txt
 +++ b/tests/CMakeLists.txt
 @@ -61,7 +61,7 @@ target_include_directories(test_common_obj PRIVATE

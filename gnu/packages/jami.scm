@@ -65,7 +65,7 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages)
   #:use-module (guix build-system copy)
-  #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system qt)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -81,8 +81,8 @@
 ;;; When updating Jami, make sure that the patches used for ffmpeg-jami are up
 ;;; to date with those listed in
 ;;; <https://git.jami.net/savoirfairelinux/jami-daemon/-/blob/master/contrib/src/ffmpeg/rules.mak>.
-(define %jami-nightly-version "20251212.0")
-(define %jami-daemon-commit "663dc3f7b625abcd05e516d819c70fd883a3c9f2")
+(define %jami-nightly-version "20260126.0")
+(define %jami-daemon-commit "60f72b3b957c3d8fcaf5ee58771f7a01dd23a754")
 
 (define-public libjami
   (package
@@ -91,49 +91,32 @@
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://review.jami.net/jami-daemon")
-                    (commit %jami-daemon-commit)))
+                     (url "https://review.jami.net/jami-daemon")
+                     (commit %jami-daemon-commit)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1379vq5afqgrjgwhl2qwapzrs9irjsxr2gzm35jrsg31rms5xgzb"))
-              (patches (search-patches "libjami-pkgconf.patch"
-                                       "libjami-simdutf.patch"))))
-    (outputs '("out" "bin" "debug"))    ;"bin' contains jamid
-    (build-system gnu-build-system)
+                "07l6zwwp385ryd41bnfga1p6qa640af7llvkx44b688wpj32ir6h"))
+              (patches (search-patches "libjami-pkgconf.patch"))))
+    ;; Reduce the output by about 2 MiB by splitting the seldom used 'jamid'
+    ;; daemon binary to the "bin" output.
+    (outputs '("out" "bin" "debug"))
+    (build-system meson-build-system)
     (arguments
      (list
-      ;; XXX: The test suites reportedly takes 2 h 30 to run by upstream's CI.
-      ;; Many tests also fail, within and without the containerized
-      ;; environment.  Some issues have recently been fixed, so try again in
-      ;; the next release.  More problematically, it currently fails to build
-      ;; at all (see: <https://git.jami.net/savoirfairelinux/jami-daemon/-/issues/1168>).
+      #:configure-flags
+      #~(list "-Dinterfaces=library,dbus"
+              ;; The test suite currently fails to build (see:
+              ;; <https://git.jami.net/savoirfairelinux/jami-daemon/-/issues/1168>).
+              "-Dtests=false")
       #:tests? #f
-      ;; The agent links the daemon binary with libguile, which enables the
-      ;; execution of test plans described in Scheme.  It may be useful in
-      ;; user scripts too, until more general purpose Scheme bindings are made
-      ;; available (see: test/agent/README.md).
-      ;; FIXME: compiling the agent currently fails (see:
-      ;; <https://git.jami.net/savoirfairelinux/jami-daemon/-/issues/1139>).
-      #:configure-flags #~(list "--disable-agent" "--enable-debug")
-      #:make-flags #~(list"V=1")        ;build verbosely
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'change-directory/maybe
             (lambda _
               ;; Allow building from the tarball or a git checkout.
               (false-if-exception (chdir "daemon"))))
-          (add-after 'install 'delete-static-libraries
-            ;; Remove 100+ MiB of static libraries.  "--disable-static" cannot
-            ;; be used as the test suite requires access to private symbols
-            ;; not included in the shared library.
-            (lambda _
-              (for-each delete-file
-                        (find-files (string-append #$output "/lib")
-                                    "\\.a$"))))
           (add-after 'install 'move-jamid
-            ;; This reduces the size of the main output, due to not depending
-            ;; on sdbus-c++.
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((libexec (string-append #$output:bin "/libexec"))
                     (share (string-append #$output:bin "/share")))
@@ -142,12 +125,16 @@
                              (string-append libexec "/jamid"))
                 (mkdir-p share)
                 (rename-file (search-input-directory outputs "share/dbus-1")
-                             (string-append share "/dbus-1"))))))))
+                             (string-append share "/dbus-1")))))
+          (add-after 'install 'sanitize-jami.pc
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; The Meson-generated pkg-config file adds most inputs to
+              ;; Requires.private, which is unnecessary for our shared library
+              ;; use and would require propagating them.
+              (substitute* (search-input-file outputs "lib/pkgconfig/jami.pc")
+                (("^Requires.private:.*") "")))))))
     (native-inputs
-     (list autoconf
-           automake
-           cppunit
-           libtool
+     (list cppunit
            perl                         ;to generate manpages with pod2man
            pkg-config
            which))
@@ -157,7 +144,6 @@
            dhtnet
            eudev
            ffmpeg-jami
-           ;guile-3.0
            jack-1
            jsoncpp
            libarchive
@@ -237,9 +223,8 @@ QSortFilterProxyModel conveniently exposed for QML.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13mpv62pw4f8cb9h8qaplxkn2ydsy9d2fr4v4p54r225ynzbq04h"))
+                "0j1fx7a74hm5y6x301yppp1wg5h6wnmigpvp19rzvpnc64xffsqr"))
               (patches (search-patches
-                        "jami-allow-system-zxing-cpp.patch"
                         "jami-libjami-cmake.patch"
                         "jami-qwindowkit.patch"
                         "jami-avutil-link.patch"))))
@@ -256,9 +241,6 @@ QSortFilterProxyModel conveniently exposed for QML.")
               ;; Disable the webengine since it grows the closure size by
               ;; about 450 MiB and requires more resources.
               "-DWITH_WEBENGINE=OFF"
-              ;; Use libwrap to link directly to libjami instead of
-              ;; communicating via D-Bus to jamid, the Jami daemon.
-              "-DENABLE_LIBWRAP=ON"
               ;; Ensure FetchContent contribs are looked from the system.
               "-DFETCHCONTENT_TRY_FIND_PACKAGE_MODE=ALWAYS")
       #:phases

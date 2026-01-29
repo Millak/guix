@@ -1647,7 +1647,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/irrlicht-link-against-needed-libs.patch	\
   %D%/packages/patches/isl-0.11.1-aarch64-support.patch		\
   %D%/packages/patches/ispell-for-linphone-cmake.patch		\
-  %D%/packages/patches/jami-allow-system-zxing-cpp.patch        \
   %D%/packages/patches/jami-avutil-link.patch   		\
   %D%/packages/patches/jami-qwindowkit.patch			\
   %D%/packages/patches/jamvm-1.5.1-aarch64-support.patch	\
@@ -1696,7 +1695,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/libguestfs-syms.patch            	\
   %D%/packages/patches/libinfinity-renew-test-certificate.patch \
   %D%/packages/patches/libjami-pkgconf.patch                    \
-  %D%/packages/patches/libjami-simdutf.patch                    \
   %D%/packages/patches/libmaus2-fix-gcc-13-require-include-cstdint.patch	\
   %D%/packages/patches/libretro-dolphin-emu-data.patch		\
   %D%/packages/patches/libretro-dolphin-emu-gc-font-tool.patch  \

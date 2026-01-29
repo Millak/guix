@@ -1,7 +1,7 @@
 Upstream-status: <https://review.jami.net/c/jami-client-qt/+/32711>
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index c046b597..8ee7b16d 100644
+index 80017d20..9ece96ef 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -60,7 +60,6 @@ endif()
@@ -12,17 +12,18 @@ index c046b597..8ee7b16d 100644
  endif()
  
  # init some variables for includes, libs, etc.
-@@ -236,9 +235,6 @@ endif()
+@@ -236,8 +235,8 @@ endif()
  list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/extras/build/cmake/modules)
  if (NOT JAMICORE_AS_SUBDIR)
    find_package(LibJami REQUIRED)
 -  if(LIBJAMI_FOUND)
 -    include_directories(${LIBJAMI_INCLUDE_DIR})
--  endif()
++  if (NOT TARGET LibJami::LibJami)
++    message(FATAL_ERROR "libjami could not be found")
+   endif()
  endif()
  
- include(FindPython3)
-@@ -751,7 +747,7 @@ if(MSVC)
+@@ -756,7 +755,7 @@ if(MSVC)
      WIN32_EXECUTABLE TRUE)
  
    list(APPEND CLIENT_LIBS
@@ -31,7 +32,7 @@ index c046b597..8ee7b16d 100644
      ${GNUTLS_LIB}
      ${LIBCLIENT_NAME}
      ${QT_LIBS}
-@@ -794,7 +790,8 @@ elseif (NOT APPLE)
+@@ -799,7 +798,8 @@ elseif (NOT APPLE)
      ${LIBNOTIFY_LIBRARIES}
      ${LIBGDKPIXBUF_LIBRARIES}
      ${GLIB_LIBRARIES}
@@ -94,7 +95,7 @@ index ee2bf6d9..31ec9c02 100644
  message(STATUS "Jami daemon headers are in " ${LIBJAMI_INCLUDE_DIR})
  message(STATUS "Jami daemon library is at " ${LIBJAMI_LIB})
 diff --git a/src/libclient/CMakeLists.txt b/src/libclient/CMakeLists.txt
-index 5c35e402..94d77523 100644
+index 04cdbc6d..0214d813 100644
 --- a/src/libclient/CMakeLists.txt
 +++ b/src/libclient/CMakeLists.txt
 @@ -47,9 +47,6 @@ endif()
@@ -108,7 +109,7 @@ index 5c35e402..94d77523 100644
  string(SUBSTRING ${CMAKE_GENERATOR} 0 14 CMAKE_GENERATOR_SHORT)
  if(CMAKE_GENERATOR_SHORT MATCHES "Visual Studio ")
 diff --git a/src/libclient/qtwrapper/CMakeLists.txt b/src/libclient/qtwrapper/CMakeLists.txt
-index 761278c9..b4b5a708 100644
+index c412112f..ba4bd5cb 100644
 --- a/src/libclient/qtwrapper/CMakeLists.txt
 +++ b/src/libclient/qtwrapper/CMakeLists.txt
 @@ -39,7 +39,6 @@ else()
