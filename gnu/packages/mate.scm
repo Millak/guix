@@ -29,6 +29,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -1744,11 +1745,11 @@ used to bring up authentication dialogs.")
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
-      #:imported-modules `((guix build python-build-system)
-                           ,@%glib-or-gtk-build-system-modules)
+      #:imported-modules (append %glib-or-gtk-build-system-modules
+                                 %pyproject-build-system-modules)
       #:modules '((guix build utils)
                   (guix build glib-or-gtk-build-system)
-                  ((guix build python-build-system) #:prefix python:))
+                  ((guix build pyproject-build-system) #:prefix python:))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
