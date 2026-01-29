@@ -30395,14 +30395,14 @@ ways.")
 (define-public r-summarytools
   (package
     (name "r-summarytools")
-    (version "1.1.4")
+    (version "1.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "summarytools" version))
        (sha256
         (base32
-         "0xp80mh6y5n3rq0bci6kvfd2maf378k9ghldhf8ap7f6c8s0w9r3"))))
+         "107dagb6yr2ihyd2a7413kq5i3mswi75d402lqsdaqyj5l6bwza5"))))
     (build-system r-build-system)
     ;; TODO
     ;; inst/includes/scripts/bootstrap.min.js
@@ -30416,7 +30416,6 @@ ways.")
            r-magick
            r-matrixstats
            r-pander
-           r-pryr
            r-rapportools
            r-tibble
            r-tidyr))
