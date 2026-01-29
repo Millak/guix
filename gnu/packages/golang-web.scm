@@ -14020,6 +14020,31 @@ AWS SDK.")
      (list go-github-com-aws-aws-sdk-go
            go-github-com-jpillora-backoff)))))
 
+(define-public go-github-com-tomasen-realip
+  (package
+    (name "go-github-com-tomasen-realip")
+    (version "0.0.0-20180522021738-f0c99a92ddce")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tomasen/realip")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1iz2cwks2ywwvvnbfmw3pfyz4ql7z0f8s9sdj6pzirpp75zar9nn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tomasen/realip"))
+    (home-page "https://github.com/tomasen/realip")
+    (synopsis "Extract real client IP from Go requests")
+    (description
+     "This package provides a Golang library to determine the real client IP
+address by inspecting common headers such as X-Forwarded-For and X-Real-IP,
+with safe fallbacks in the presence of proxies.")
+    (license license:expat)))
+
 (define-public go-github-com-tomnomnom-linkheader
   (package
     (name "go-github-com-tomnomnom-linkheader")
