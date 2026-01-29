@@ -40,8 +40,6 @@ struct Settings {
 
     string pack();
 
-    SettingsMap getOverrides();
-
     /* The directory where we store sources and derived files. */
     Path nixStore;
 
@@ -216,7 +214,7 @@ struct Settings {
     Path slirp4netns;
 
 private:
-    SettingsMap settings, overrides;
+    SettingsMap settings;
 
     void _get(string & res, const string & name);
     void _get(bool & res, const string & name);
@@ -228,9 +226,6 @@ private:
 
 // FIXME: don't use a global variable.
 inline Settings settings;
-
-
-inline const string nixVersion {PACKAGE_VERSION};
 
 
 }

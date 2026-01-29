@@ -72,7 +72,6 @@ void Settings::processEnvironment()
 void Settings::set(const string & name, const string & value)
 {
     settings[name] = value;
-    overrides[name] = value;
 }
 
 
@@ -193,12 +192,6 @@ string Settings::pack()
         s += i.first; s += '='; s += i.second; s += '\n';
     }
     return s;
-}
-
-
-Settings::SettingsMap Settings::getOverrides()
-{
-    return overrides;
 }
 
 
