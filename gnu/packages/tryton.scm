@@ -198,7 +198,7 @@ filterwarnings =
   "Return the phases for building and testing a Tryton module named MODULE.
 If present, pass EXTRA-TEST-ARGUMENTS to pytest as well."
   #~(modify-phases %standard-phases
-      (add-before 'check 'prepare-check
+      (add-after 'wrap 'prepare-check
         (lambda* (#:key tests? #:allow-other-keys)
           (when tests?
             (setenv "DB_NAME" ":memory:")
