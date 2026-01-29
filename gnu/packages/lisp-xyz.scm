@@ -33576,7 +33576,7 @@ RFC7564.")
           (base32 "1xlkaqmjcpkiv2xl2s2pvvrv976dlc846wm16s1lj62iy1315i49"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("bordeaux-threads" ,sbcl-bordeaux-threads)))
+       (list sbcl-bordeaux-threads))
       (arguments
        '(#:asd-systems '("ubiquitous"
                          "ubiquitous-concurrent")))
