@@ -54712,34 +54712,18 @@ time zone manipulations.")
 (define-public r-vroom
   (package
     (name "r-vroom")
-    (version "1.6.7")
+    (version "1.7.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (cran-uri "vroom" version))
-        (sha256
-          (base32
-            "1jknbkxjcbqk5831zpjqswb8dmrwbi1nw0vh1n9fmh4bdsvynb16"))))
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "vroom" version))
+       (sha256
+        (base32
+         "1z2hg6fswpglkr34f0hcvsxzwqwi7mvhssl1ql3shhkky97w4jb7"))))
     (properties
      '((upstream-name . "vroom")
        (updater-extra-native-inputs . ("tzdata-for-tests"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-failing-test
-           (lambda _
-             ;; This test produces an unexpected warning.
-             (substitute* "tests/testthat/test-vroom.R"
-               (("expect_warning\\(expect_equal\\(as.data.frame\\(x\\), y\\), NA\\)") ""))))
-         (add-before 'check 'set-timezone
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Two tests would fail without this.
-             (setenv "TZ" "UTC+1")
-             (setenv "TZDIR"
-                     (search-input-directory inputs
-                                             "share/zoneinfo")))))))
     (propagated-inputs
      (list r-bit64
            r-cli
@@ -54757,13 +54741,12 @@ time zone manipulations.")
            r-withr))
     (native-inputs (list r-knitr r-spelling r-testthat tzdata-for-tests))
     (home-page "https://vroom.r-lib.org")
-    (synopsis
-      "Read and Write Rectangular Text Data")
+    (synopsis "Read and write rectangular text data")
     (description
-      "This package reads and writes data files like @acronym{CSV},
-@acronym{TSV} and @acronym{FWF}.  When reading it uses a quick initial indexing
-step, then reads the values lazily, so only the data you actually use needs to
-be read.  The writer formats the data in parallel and writes to disk
+     "This package reads and writes data files like @acronym{CSV},
+@acronym{TSV} and @acronym{FWF}.  When reading it uses a quick initial
+indexing step, then reads the values lazily, so only the data you actually use
+needs to be read.  The writer formats the data in parallel and writes to disk
 asynchronously from formatting.")
     (license license:expat)))
 
