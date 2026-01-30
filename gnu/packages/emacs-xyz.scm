@@ -141,7 +141,7 @@
 ;;; Copyright © 2024 Ilya Chernyshov <ichernyshovvv@gmail.com>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Noé Lopez <noelopez@free.fr>
-;;; Copyright © 2024, 2025 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2024, 2025, 2026 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2024 Daniel Szmulewicz <daniel.szmulewicz@gmail.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
@@ -219,6 +219,7 @@
   #:use-module (gnu packages file-systems)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages game-development)
   #:use-module (gnu packages games)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages golang-apps)
@@ -4809,6 +4810,45 @@ regexps, including deprecated syntax and bad practice.  It also checks the
 regexp-like arguments to @code{skip-chars-forward} and
 @code{skip-chars-backward}.")
     (license license:gpl3+)))
+
+(define-public emacs-renpy-mode
+  (let ((revision "0")
+        (commit "f4b7512af930efbf6a9be8dd7d43f47031acba40"))
+    (package
+      (name "emacs-renpy-mode")
+      (version (git-version "0.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Reagankm/renpy-mode")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "09qrshrnbay0dd85d98hbm4fvpwr37hjjsdmf5mry9jswxrkppnq"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:test-command
+        #~'("ert-runner" "test")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-RenPy-program
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-variables "renpy-mode.el"
+                  ("renpy-program"
+                   (search-input-file inputs "/bin/renpy"))))))))
+      (native-inputs (list emacs-ert-runner))
+      (inputs (list renpy))
+      (home-page "https://github.com/Reagankm/renpy-mode")
+      (synopsis "Emacs major mode for editing Ren'Py files")
+      (description
+       "This package provides an Emacs major mode for editing
+@url{https://www.renpy.org/,Ren'Py} files.  It supports indentation,
+syntax highlighting, movement and navigation, context-sensitive symbol
+completion, and running Ren'Py commands from within Emacs with error
+highlighting.")
+      (license license:gpl3+))))
 
 (define-public emacs-bug-hunter
   (let ((commit "b88d981afa9154b236c5a3a83b50d5889d46c6a7")
