@@ -23,7 +23,7 @@
 ;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
 ;;; Copyright © 2023 Eidvilas Markevičius <markeviciuseidvilas@gmail.com>
 ;;; Copyright © 2025 aurtzy <aurtzy@gmail.com>
-;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
+;;; Copyright © 2025, 2026 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;; Copyright © 2025 Noé Lopez <noelopez@free.fr>
@@ -2071,45 +2071,51 @@ way they prefer.")
     (license license:gpl3+)))
 
 (define-public blackbox-terminal
-  (package
-    (name "blackbox-terminal")
-    (version "0.14.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.gnome.org/raggesilver/blackbox")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0g7n2z0m7jjbn93zvx3ix7ph4mpncwq80cjjc2prp878cksj3g3r"))))
-    (build-system meson-build-system)
-    (arguments
-     (list #:glib-or-gtk? #t
-           #:configure-flags #~(list "-Dblackbox_is_flatpak=false")
-           #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'fix-gtk4-update-icon-cache
-                          (lambda _
-                            (substitute* "build-aux/meson/postinstall.py"
-                              (("gtk-update-icon-cache")
-                               "true")))))))
-    (native-inputs (list pkg-config
-                         vala
-                         python
-                         desktop-file-utils ;for update-desktop-database
-                         (list glib "bin") ;for glib-compile-schemas, etc.
-                         gettext-minimal))
-    (inputs (list gtk
-                  vte-with-sixel
-                  json-glib
-                  libpqmarble
-                  libadwaita
-                  pcre2
-                  libxml2
-                  libgee
-                  librsvg))
-    (home-page "https://gitlab.gnome.org/raggesilver/blackbox/")
-    (synopsis "Beautiful GTK 4 terminal")
-    (description
-     "@code{blackbox-terminal} is an elegant and customizable terminal for GNOME.")
-    (license license:gpl3+)))
+  ;; Last release from 2023 fails to build.
+  (let ((commit "4bf9ac59a53801df7de538d426721af590689dcc")
+        (revision "0"))
+    (package
+      (name "blackbox-terminal")
+      (version (git-version "0.14.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.gnome.org/raggesilver/blackbox")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1sijhhw2crhxa19d1l3y7aimz6hz8yjwyawydr91ziad8qq38z3i"))))
+      (build-system meson-build-system)
+      (arguments
+       (list
+        #:glib-or-gtk? #t
+        #:configure-flags
+        #~(list "-Dblackbox_is_flatpak=false")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-gtk4-update-icon-cache
+              (lambda _
+                (substitute* "build-aux/meson/postinstall.py"
+                  (("gtk-update-icon-cache")
+                   "true")))))))
+      (native-inputs (list pkg-config
+                           vala
+                           python
+                           desktop-file-utils ;for update-desktop-database
+                           (list glib "bin") ;for glib-compile-schemas, etc.
+                           gettext-minimal))
+      (inputs (list gtk
+                    vte-with-sixel
+                    json-glib
+                    libpqmarble
+                    libadwaita
+                    pcre2
+                    libxml2
+                    libgee
+                    librsvg))
+      (home-page "https://gitlab.gnome.org/raggesilver/blackbox/")
+      (synopsis "Beautiful GTK 4 terminal")
+      (description
+       "@code{blackbox-terminal} is an elegant and customizable terminal for GNOME.")
+      (license license:gpl3+))))
