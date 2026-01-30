@@ -22827,8 +22827,8 @@ RFC 1321 by R. Rivest, published April 1992.")
      (list ecl-flexi-streams))))
 
 (define-public sbcl-messagebox
-  (let ((commit "ea3688d9a9954bee7079c0173bc7b3f327021e9f")
-        (revision "1"))
+  (let ((commit "0bdec8ee00619a7a516b89628811793908d1e926")
+        (revision "2"))
     (package
       (name "sbcl-messagebox")
       (version (git-version "1.0.0" revision commit))
@@ -22836,11 +22836,11 @@ RFC 1321 by R. Rivest, published April 1992.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/messagebox")
-               (commit commit)))
+                (url "https://codeberg.org/shinmera/messagebox")
+                (commit commit)))
          (file-name (git-file-name "messagebox" version))
          (sha256
-          (base32 "0jkbzlca0wvspgsfj0b0hjwlyyy8jlywsldsbkp79q48fc3aa8jd"))))
+          (base32 "0i8j8sxggsqlglyyinjcgpris02s2vwc7rsmgn10slp03nqfhdc0"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:phases
@@ -22855,7 +22855,7 @@ RFC 1321 by R. Rivest, published April 1992.")
        (list sbcl-documentation-utils
              sbcl-trivial-features
              zenity))
-      (home-page "https://shinmera.github.io/messagebox/")
+      (home-page "https://shinmera.com/docs/messagebox/")
       (synopsis "Display a native GUI message box")
       (description
        "This is a small library to display a native GUI message box.  This can be
