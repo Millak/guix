@@ -8108,8 +8108,8 @@ For a YAML parser and emitter using this, check out cl-yaml.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/fukamachi/cl-locale")
-               (commit commit)))
+                (url "https://github.com/fukamachi/cl-locale")
+                (commit commit)))
          (file-name (git-file-name "cl-locale" version))
          (sha256
           (base32 "1rhannhpsw1yg1fpflam483a3w9qb1izgyvmnmiddv3dn4qsmn9p"))))
@@ -8117,13 +8117,13 @@ For a YAML parser and emitter using this, check out cl-yaml.")
       (arguments
        '(#:asd-systems '("cl-locale-test" "cl-locale")))
       (native-inputs
-       `(("prove" ,sbcl-prove)
-         ("flexi-streams" ,sbcl-flexi-streams)))
+       (list sbcl-prove
+             sbcl-flexi-streams))
       (inputs
-       `(("anaphora" ,sbcl-anaphora)
-         ("arnesi" ,sbcl-arnesi)
-         ("cl-annot" ,sbcl-cl-annot)
-         ("cl-syntax" ,sbcl-cl-syntax)))
+       (list sbcl-anaphora
+             sbcl-arnesi
+             sbcl-cl-annot
+             sbcl-cl-syntax))
       (home-page "https://github.com/fukamachi/cl-locale")
       (synopsis "Internalization library for Common Lisp")
       (description
