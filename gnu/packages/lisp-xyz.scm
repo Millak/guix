@@ -20502,10 +20502,10 @@ defined.")
           (base32 "0j5haabnvj0vz0rx9mwyfsb3qzpga9nickbjw8xs6vypkdzlqv1b"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("cl-ppcre" ,sbcl-cl-ppcre)
-         ("alexandria" ,sbcl-alexandria)
-         ("cl-interpol" ,sbcl-cl-interpol)
-         ("split-sequence" ,sbcl-split-sequence)))
+       (list sbcl-cl-ppcre
+             sbcl-alexandria
+             sbcl-cl-interpol
+             sbcl-split-sequence))
       (native-inputs
        (list sbcl-prove))
       (arguments
