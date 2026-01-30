@@ -23430,8 +23430,8 @@ place.")
           (base32 "1zys29rfkb649rkgl3snxhajk8d5yf7ryxkrwy020kwdh7zdsg7d"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("documentation-utils" ,sbcl-documentation-utils)
-         ("trivial-package-local-nicknames" ,sbcl-trivial-package-local-nicknames)))
+       (list sbcl-documentation-utils
+             sbcl-trivial-package-local-nicknames))
       (home-page "https://shinmera.github.io/modularize/")
       (synopsis "Common Lisp modularization framework")
       (description
