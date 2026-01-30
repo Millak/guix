@@ -828,10 +828,10 @@ code.")
                (chdir "acl-compat")
                #t)))))
       (inputs
-       `(("puri" ,sbcl-puri)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("ironclad" ,sbcl-ironclad)
-         ("cl-fad" ,sbcl-cl-fad)))
+       (list sbcl-puri
+             sbcl-cl-ppcre
+             sbcl-ironclad
+             sbcl-cl-fad))
       (home-page "https://sourceforge.net/projects/portableaserve/")
       (synopsis "AllegroServe, a web server written in Common Lisp")
       (description
