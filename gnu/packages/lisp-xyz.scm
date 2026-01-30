@@ -26207,8 +26207,8 @@ between S-expressions and the Plump DOM.")
                                  (assoc-ref inputs "libpng")
                                  "/lib/libpng\""))))))))
       (inputs
-       `(("cffi" ,sbcl-cffi)
-         ("libpng" ,libpng)))
+       (list sbcl-cffi
+             libpng))
       (home-page "https://github.com/ljosa/cl-png")
       (synopsis "Read and write PNG file format")
       (description
