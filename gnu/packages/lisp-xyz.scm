@@ -22547,10 +22547,10 @@ addition, removal, and random selection.")
       (native-inputs
        (list sbcl-fiveam))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cl-str" ,sbcl-cl-str)
-         ("named-readtables" ,sbcl-named-readtables)
-         ("trivial-gray-streams" ,sbcl-trivial-gray-streams)))
+       (list sbcl-alexandria
+             sbcl-cl-str
+             sbcl-named-readtables
+             sbcl-trivial-gray-streams))
       (home-page "https://github.com/moderninterpreters/markup")
       (synopsis "Reader-macro to read HTML tags inside of Common Lisp code")
       (description
