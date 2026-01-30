@@ -7867,11 +7867,11 @@ be used with @code{cl-yacc}.")
                    (("lib \".so\"" all)
                     (string-append "\"" allegro-lib-path "\"" " lib \".so\"")))))))))
       (inputs
-       `(("allegro" ,allegro)
-         ("cffi" ,sbcl-cffi)
-         ("float-features" ,sbcl-float-features)
-         ("trivial-garbage" ,sbcl-trivial-garbage)
-         ("trivial-main-thread" ,sbcl-trivial-main-thread)))
+       (list allegro
+             sbcl-cffi
+             sbcl-float-features
+             sbcl-trivial-garbage
+             sbcl-trivial-main-thread))
       (home-page "https://github.com/resttime/cl-liballegro")
       (synopsis "Allegro 5 game programming library bindings for Common Lisp")
       (description
