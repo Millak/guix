@@ -14354,20 +14354,20 @@ library inspired by @code{cl-data-format-validation} and WTForms validators.")
           (base32 "16b78kzmglp2a4nxlxxl7rpf5zaibsgagn0p3c56fsxvx0c4hszv"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("iterate" ,sbcl-iterate)
-         ("optima" ,sbcl-optima)
-         ("trivial-types" ,sbcl-trivial-types)
-         ("closer-mop" ,sbcl-closer-mop)
-         ("cl-syntax" ,sbcl-cl-syntax)
-         ("sxql" ,sbcl-sxql)
-         ("dbi" ,sbcl-dbi)
-         ("babel" ,sbcl-babel)
-         ("local-time" ,sbcl-local-time)
-         ("function-cache" ,sbcl-function-cache)
-         ("jonathan" ,sbcl-jonathan)
-         ("kebab" ,sbcl-kebab)
-         ("log4cl" ,sbcl-log4cl)))
+       (list sbcl-alexandria
+             sbcl-iterate
+             sbcl-optima
+             sbcl-trivial-types
+             sbcl-closer-mop
+             sbcl-cl-syntax
+             sbcl-sxql
+             sbcl-dbi
+             sbcl-babel
+             sbcl-local-time
+             sbcl-function-cache
+             sbcl-jonathan
+             sbcl-kebab
+             sbcl-log4cl))
       (native-inputs
        (list sbcl-prove))
       (arguments
