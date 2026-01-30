@@ -2321,20 +2321,20 @@ decimals, and hexadecimal notation.")
                (chdir "src")
                #t)))))
       (native-inputs
-       `(("cl-store" ,sbcl-cl-store)
-         ("fiveam" ,sbcl-fiveam)
-         ("unit-test" ,sbcl-unit-test)))
+       (list sbcl-cl-store
+             sbcl-fiveam
+             sbcl-unit-test))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("closer-mop" ,sbcl-closer-mop)
-         ("cl-interpol" ,sbcl-cl-interpol)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("cxml" ,sbcl-cxml)
-         ("flexi-streams" ,sbcl-flexi-streams)
-         ("md5" ,sbcl-md5)
-         ("trivial-utf-8" ,sbcl-trivial-utf-8)
-         ("yason" ,sbcl-yason)))
+       (list sbcl-alexandria
+             sbcl-bordeaux-threads
+             sbcl-closer-mop
+             sbcl-cl-interpol
+             sbcl-cl-ppcre
+             sbcl-cxml
+             sbcl-flexi-streams
+             sbcl-md5
+             sbcl-trivial-utf-8
+             sbcl-yason))
       (home-page "https://github.com/hanshuebner/bknr-datastore")
       (synopsis "In-memory database for Common Lisp")
       (description
