@@ -24747,17 +24747,17 @@ symbols.")
       (native-inputs
        (list sbcl-fiveam))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cl-randist" ,sbcl-cl-randist)
-         ("constantfold" ,sbcl-constantfold)
-         ("float-features" ,sbcl-float-features)
-         ("function-cache" ,sbcl-function-cache)
-         ("gtype" ,sbcl-gtype)
-         ("iterate" ,sbcl-iterate)
-         ("lisp-namespace" ,sbcl-lisp-namespace)
-         ("specialized-function" ,sbcl-specialized-function)
-         ("trivia" ,sbcl-trivia)
-         ("type-r" ,sbcl-type-r)))
+       (list sbcl-alexandria
+             sbcl-cl-randist
+             sbcl-constantfold
+             sbcl-float-features
+             sbcl-function-cache
+             sbcl-gtype
+             sbcl-iterate
+             sbcl-lisp-namespace
+             sbcl-specialized-function
+             sbcl-trivia
+             sbcl-type-r))
       (home-page "https://numcl.github.io/numcl/")
       (synopsis "Numpy clone in Common Lisp")
       (description
