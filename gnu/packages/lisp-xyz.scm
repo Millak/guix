@@ -3385,16 +3385,16 @@ of Cephes special functions.")
         (base32 "0izbw2advqm3wailj3dpq6zqfrfirwn14pw5qmqh8i71r51xwmm2"))))
      (build-system asdf-build-system/sbcl)
      (inputs
-      `(("alexandria" ,sbcl-alexandria)
-        ("bordeaux-threads" ,sbcl-bordeaux-threads)
-        ("cffi" ,sbcl-cffi)
-        ("cl-opengl" ,sbcl-cl-opengl)
-        ("cl-ppcre" ,sbcl-cl-ppcre)
-        ("documentation-utils" ,sbcl-documentation-utils)
-        ("float-features" ,sbcl-float-features)
-        ("ieee-floats" ,sbcl-ieee-floats)
-        ("split-sequence" ,sbcl-split-sequence)
-        ("varjo" ,sbcl-varjo)))
+      (list sbcl-alexandria
+            sbcl-bordeaux-threads
+            sbcl-cffi
+            sbcl-cl-opengl
+            sbcl-cl-ppcre
+            sbcl-documentation-utils
+            sbcl-float-features
+            sbcl-ieee-floats
+            sbcl-split-sequence
+            sbcl-varjo))
      (propagated-inputs
       (list sbcl-quickproject))
      (home-page "https://github.com/cbaggers/cepl")
