@@ -9811,11 +9811,11 @@ Raylib game development library.")
                 (string-append (assoc-ref inputs "librdkafka") "/lib/"
                                all))))))))
     (inputs
-     `(("bordeaux-threads" ,sbcl-bordeaux-threads)
-       ("cffi" ,sbcl-cffi)
-       ("librdkafka" ,librdkafka)
-       ("lparallel" ,sbcl-lparallel)
-       ("trivial-garbage" ,sbcl-trivial-garbage)))
+     (list sbcl-bordeaux-threads
+           sbcl-cffi
+           librdkafka
+           sbcl-lparallel
+           sbcl-trivial-garbage))
     (home-page "https://github.com/SahilKang/cl-rdkafka")
     (synopsis "Common Lisp client library for Apache Kafka")
     (description "A Common Lisp client library for Apache Kafka.")
