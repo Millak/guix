@@ -26268,14 +26268,14 @@ Portable Network Graphics file format.")
           (base32 "0s94fdbrbqj12qvgyn2g4lfwvz7qhhzbclrpz5ni7adwxgrmvxl1"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("3bz" ,sbcl-3bz)
-         ("alexandria" ,sbcl-alexandria)
-         ("cffi" ,sbcl-cffi)
-         ("mmap" ,sbcl-mmap)
-         ("parse-float" ,sbcl-parse-float)
-         ("static-vectors" ,sbcl-static-vectors)
-         ("swap-bytes" ,sbcl-swap-bytes)
-         ("zpb-exif" ,sbcl-zpb-exif)))
+       (list sbcl-3bz
+             sbcl-alexandria
+             sbcl-cffi
+             sbcl-mmap
+             sbcl-parse-float
+             sbcl-static-vectors
+             sbcl-swap-bytes
+             sbcl-zpb-exif))
       (arguments
        ;; Test suite disabled because of a dependency cycle.
        ;; pngload tests depend on opticl which depends on pngload.
