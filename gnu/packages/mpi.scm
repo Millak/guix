@@ -277,43 +277,43 @@ bind processes, and much more.")
     (outputs '("out" "debug"))
     (arguments
      (list
-      #:configure-flags #~`(#$(string-append
-                               "CFLAGS=-g -O2"
-                               " -Wno-error=implicit-function-declaration"
-                               " -Wno-error=incompatible-pointer-types")
-                            "--enable-mpi-ext=affinity" ;cr doesn't work
-                            "--with-sge"
-                            "--disable-static"
+      #:configure-flags #~(list (string-append
+                                 "CFLAGS=-g -O2"
+                                 " -Wno-error=implicit-function-declaration"
+                                 " -Wno-error=incompatible-pointer-types")
+                                "--enable-mpi-ext=affinity" ;cr doesn't work
+                                "--with-sge"
+                                "--disable-static"
 
-                            #$@(if (package? (this-package-input "valgrind"))
-                                   #~("--enable-memchecker"
-                                      "--with-valgrind")
-                                   #~("--without-valgrind"))
+                                #$@(if (package? (this-package-input "valgrind"))
+                                       #~("--enable-memchecker"
+                                          "--with-valgrind")
+                                       #~("--without-valgrind"))
 
-                            "--with-hwloc=external"
-                            "--with-libevent"
+                                "--with-hwloc=external"
+                                "--with-libevent"
 
-                            ;; Help 'orterun' and 'mpirun' find their tools
-                            ;; under $prefix by default.
-                            "--enable-mpirun-prefix-by-default"
+                                ;; Help 'orterun' and 'mpirun' find their tools
+                                ;; under $prefix by default.
+                                "--enable-mpirun-prefix-by-default"
 
-                            ;; InfiniBand support
-                            "--enable-openib-control-hdr-padding"
-                            "--enable-openib-dynamic-sl"
-                            "--enable-openib-udcm"
-                            "--enable-openib-rdmacm"
-                            "--enable-openib-rdmacm-ibaddr"
+                                ;; InfiniBand support
+                                "--enable-openib-control-hdr-padding"
+                                "--enable-openib-dynamic-sl"
+                                "--enable-openib-udcm"
+                                "--enable-openib-rdmacm"
+                                "--enable-openib-rdmacm-ibaddr"
 
-                            ;; Enable support for the 'Process Management
-                            ;; Interface for Exascale' (PMIx) used e.g. by
-                            ;; Slurm for the management communication and
-                            ;; coordination of MPI processes.
-                            "--with-pmix=internal"
+                                ;; Enable support for the 'Process Management
+                                ;; Interface for Exascale' (PMIx) used e.g. by
+                                ;; Slurm for the management communication and
+                                ;; coordination of MPI processes.
+                                "--with-pmix=internal"
 
-                            ;; Enable support for SLURM's Process Manager
-                            ;; Interface (PMI).
-                            ,(string-append "--with-pmi="
-                                            #$(this-package-input "slurm")))
+                                ;; Enable support for SLURM's Process Manager
+                                ;; Interface (PMI).
+                                (string-append "--with-pmi="
+                                               #$(this-package-input "slurm")))
       #:phases #~(modify-phases %standard-phases
                    ;; opensm is needed for InfiniBand support.
                    (add-after 'unpack 'find-opensm-headers
