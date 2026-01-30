@@ -26950,18 +26950,18 @@ pattern-matching-like, but a char-by-char procedural parser.")
          "0fzczls2kfgdx18pja4lqxjrz72i583185d8nq0pb3s331hhzh0z"))))
     (build-system asdf-build-system/sbcl)
     (inputs
-     `(("alexandria" ,sbcl-alexandria)
-       ("bordeaux-threads" ,sbcl-bordeaux-threads)
-       ("cffi" ,sbcl-cffi)
-       ("cl-fad" ,sbcl-cl-fad)
-       ("cl-ppcre" ,sbcl-cl-ppcre)
-       ("drakma" ,sbcl-drakma)
-       ("hunchentoot" ,sbcl-hunchentoot)
-       ("local-time" ,sbcl-local-time)
-       ("quantile-estimator" ,sbcl-quantile-estimator)
-       ("salza2" ,sbcl-salza2)
-       ("split-sequence" ,sbcl-split-sequence)
-       ("trivial-utf-8" ,sbcl-trivial-utf-8)))
+     (list sbcl-alexandria
+           sbcl-bordeaux-threads
+           sbcl-cffi
+           sbcl-cl-fad
+           sbcl-cl-ppcre
+           sbcl-drakma
+           sbcl-hunchentoot
+           sbcl-local-time
+           sbcl-quantile-estimator
+           sbcl-salza2
+           sbcl-split-sequence
+           sbcl-trivial-utf-8))
     (arguments
      '(#:asd-systems '("prometheus"
                        "prometheus.collectors.sbcl"
