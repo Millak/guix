@@ -9500,10 +9500,10 @@ for drawning progress bars")
           (base32 "1rmh6s1ncv8s2yrr14ja9wisgg745sq6xibqwb341ikdicxdp26y"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("cl-emb" ,sbcl-cl-emb)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("local-time" ,sbcl-local-time)
-         ("prove" ,sbcl-prove)))
+       (list sbcl-cl-emb
+             sbcl-cl-ppcre
+             sbcl-local-time
+             sbcl-prove))
       (arguments
        ;; Tests depend on caveman, which in turns depends on cl-project.
        '(#:tests? #f))
