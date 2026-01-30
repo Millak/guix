@@ -18509,13 +18509,13 @@ possible.")
       (native-inputs
        (list sbcl-lisp-unit))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("antik-base" ,sbcl-antik-base)
-         ("cffi" ,sbcl-cffi)
-         ("gsl" ,gsl)
-         ("metabang-bind" ,sbcl-metabang-bind)
-         ("trivial-features" ,sbcl-trivial-features)
-         ("trivial-garbage" ,sbcl-trivial-garbage)))
+       (list sbcl-alexandria
+             sbcl-antik-base
+             sbcl-cffi
+             gsl
+             sbcl-metabang-bind
+             sbcl-trivial-features
+             sbcl-trivial-garbage))
       (arguments
        `(#:tests? #f
          #:phases
