@@ -25154,8 +25154,8 @@ macros for the Opticl image processing library.")
           (base32
            "1yw4ymq7ms89342kkvb3aqxgv0w38m9kd8ikdqxxzyybnkjhndal"))))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("closer-mop" ,sbcl-closer-mop)))
+       (list sbcl-alexandria
+             sbcl-closer-mop))
       (native-inputs
        (list sbcl-eos))
       (arguments
