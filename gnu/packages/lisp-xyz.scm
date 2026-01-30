@@ -27963,13 +27963,13 @@ whichever package you switch to.")
                   (string-append (assoc-ref inputs "libcap")
                                  "/lib/libcap.so"))))))))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("cffi" ,sbcl-cffi)
-         ("data-sift" ,sbcl-data-sift)
-         ("hunchentoot" ,sbcl-hunchentoot)
-         ("libcap" ,libcap)
-         ("routes" ,sbcl-routes)))
+       (list sbcl-alexandria
+             sbcl-bordeaux-threads
+             sbcl-cffi
+             sbcl-data-sift
+             sbcl-hunchentoot
+             libcap
+             sbcl-routes))
       (home-page "https://github.com/archimag/restas")
       (synopsis "Common Lisp web framework")
       (description "@code{RESTAS} is a Common Lisp web application framework.")
