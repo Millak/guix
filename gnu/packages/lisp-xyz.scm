@@ -25736,10 +25736,10 @@ features.  Any resemblance to esrap-liquid is merely coincidental.")
       ;;  `(("hu.dwim.stefil" ,sbcl-hu.dwim.stefil)
       ;;    ("infix" ,sbcl-femlisp)))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cl-containers" ,sbcl-cl-containers)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("iterate" ,sbcl-iterate)))
+       (list sbcl-alexandria
+             sbcl-cl-containers
+             sbcl-cl-ppcre
+             sbcl-iterate))
       (home-page "https://github.com/Ramarren/cl-parser-combinators")
       (synopsis "Parser combinators in Common Lisp")
       (description
