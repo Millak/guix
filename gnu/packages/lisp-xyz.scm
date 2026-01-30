@@ -10253,12 +10253,12 @@ Common Lisp.")
          "08iv7b4m0hh7qx2cvq4f510nrgdld0vicnvmqsh9w0fgrcgmyg4k"))))
     (build-system asdf-build-system/sbcl)
     (inputs
-     `(("iterate" ,sbcl-iterate)
-       ("cffi" ,sbcl-cffi)
-       ("sqlite" ,sqlite)))
+     (list sbcl-iterate
+           sbcl-cffi
+           sqlite))
     (native-inputs
-     `(("fiveam" ,sbcl-fiveam)
-       ("bordeaux-threads" ,sbcl-bordeaux-threads)))
+     (list sbcl-fiveam
+           sbcl-bordeaux-threads))
     (arguments
      `(#:asd-systems '("sqlite")
        #:phases
