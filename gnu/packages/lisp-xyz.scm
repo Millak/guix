@@ -3858,7 +3858,7 @@ This package provides the text-based interface for Chemboy.")
         (base32 "12fd8a6ay5qlsq4givzgh9d55mbg4ci2vvmymig6pjl2ms64v0pf"))))
     (build-system asdf-build-system/sbcl)
     (inputs
-     `(("periodic-table" ,sbcl-periodic-table)))
+     (list sbcl-periodic-table))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
