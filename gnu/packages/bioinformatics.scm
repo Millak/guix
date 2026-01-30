@@ -1398,7 +1398,7 @@ RNA-seq or spatial transcriptomics.")
                                python-anndata
                                python-geosketch
                                python-scanpy
-                               scvelo))
+                               python-scvelo))
       (native-inputs (list r-knitr))
       (home-page "https://github.com/WWXkenmo/NetID_package")
       (synopsis
@@ -17541,10 +17541,10 @@ t-SNE algorithm.  The implementation is described here:
            python-scanpy
            python-scikit-learn
            python-scipy
+           python-scvelo
            python-seaborn
            python-tqdm
-           python-umap-learn
-           scvelo))
+           python-umap-learn))
     (home-page "https://github.com/welch-lab/MultiVelo")
     (synopsis "Velocity inference from single-cell multi-omic data")
     (description "MultiVelo uses a probabilistic latent variable model to
@@ -24382,9 +24382,9 @@ aligner.")
     ;; bwa itself is licenced under GNU General Public License v3.0.
     (license license:mpl2.0)))
 
-(define-public scvelo
+(define-public python-scvelo
   (package
-    (name "scvelo")
+    (name "python-scvelo")
     (version "0.3.3")
     (source
      (origin
@@ -24442,6 +24442,9 @@ dynamical model that solves the full transcriptional dynamics.  It thereby
 adapts RNA velocity to widely varying specifications such as non-stationary
 populations.")
     (license license:bsd-3)))
+
+(define-deprecated-package scvelo
+  python-scvelo)
 
 (define-public scregseg
   ;; 0.1.3 was released in 2023, there are a lot of comparability fixes on
