@@ -8073,8 +8073,8 @@ child nodes enumeration, etc.
       (native-inputs
        (list sbcl-fiveam))
       (inputs
-       `(("cffi" ,sbcl-cffi)
-         ("libyaml" ,libyaml)))
+       (list sbcl-cffi
+             libyaml))
       (arguments
        '(#:phases
          (modify-phases %standard-phases
