@@ -8880,8 +8880,8 @@ cl-plumbing libraries.")
       (native-inputs
        (list sbcl-prove))
       (inputs
-       `(("cl-libsvm-format" ,sbcl-cl-libsvm-format)
-         ("cl-store" ,sbcl-cl-store)))
+       (list sbcl-cl-libsvm-format
+             sbcl-cl-store))
       (home-page "https://github.com/masatoi/cl-online-learning")
       (synopsis "Online Machine Learning for Common Lisp")
       (description
