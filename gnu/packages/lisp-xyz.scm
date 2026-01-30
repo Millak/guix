@@ -20158,8 +20158,8 @@ TurboJPEG API for compressing and decompressing JPEG images.")
          "1wvvv7j117h9a42qaj1g4fh4mji28xqs7s60rn6d11gk9jl76h96"))))
     (build-system asdf-build-system/sbcl)
     (inputs
-     `(("jpl-util" ,sbcl-jpl-util)
-       ("bordeaux-threads" ,sbcl-bordeaux-threads)))
+     (list sbcl-jpl-util
+           sbcl-bordeaux-threads))
     (arguments
      ;; Tests seem to be broken.
      `(#:tests? #f))
