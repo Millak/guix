@@ -28214,8 +28214,8 @@ Rucksack with some enhancements.")
                ;; disabled, so let's delete it.
                (delete-file "rutilsx-test.asd"))))))
       (inputs
-       `(("closer-mop" ,sbcl-closer-mop)
-         ("named-readtables" ,sbcl-named-readtables)))
+       (list sbcl-closer-mop
+             sbcl-named-readtables))
       (home-page "https://github.com/vseloved/rutils")
       (synopsis "Radical Utilities for Common Lisp")
       (description "RUTILS is a syntactic utilities package for Common Lisp.")
