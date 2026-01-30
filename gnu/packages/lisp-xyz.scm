@@ -9719,13 +9719,13 @@ density, distribution and quantiles for these distributions.")
            "0wqh4dxy5hrvm14jgyfypwhdw35f24rsksid4blz5a6l2z16rlmq"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
-       `(("prove" ,sbcl-prove)
-         ("trivial-garbage" ,sbcl-trivial-garbage)))
+       (list sbcl-prove
+             sbcl-trivial-garbage))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cl-libsvm-format" ,sbcl-cl-libsvm-format)
-         ("cl-online-learning" ,sbcl-cl-online-learning)
-         ("lparallel" ,sbcl-lparallel)))
+       (list sbcl-alexandria
+             sbcl-cl-libsvm-format
+             sbcl-cl-online-learning
+             sbcl-lparallel))
       (arguments
        `(#:tests? #f)) ; The tests download data from the Internet
       (synopsis "Random Forest and Global Refinement for Common Lisp")
