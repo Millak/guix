@@ -1848,7 +1848,7 @@ extension.")
                  (("\\(asdf:oos 'asdf:load-op :ptester\\)") ""))
                #t)))))
       (inputs
-       `(("acl-compat" ,sbcl-acl-compat)))
+       (list sbcl-acl-compat))
       (home-page
        "https://franz.com/support/documentation/current/doc/aserve/aserve.html")
       (synopsis "AllegroServe, a web server written in Common Lisp")
