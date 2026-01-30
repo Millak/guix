@@ -12605,14 +12605,14 @@ interfaces as well as a functional and an object oriented interface.")
   (package
     (inherit (sbcl-package->cl-source-package sbcl-clsql))
     (native-inputs
-     `(("rt" ,cl-rt)))
+     (list cl-rt))
     (inputs
      (list (list mariadb "dev") postgresql sqlite zlib))
     (propagated-inputs
-     `(("cffi" ,cl-cffi)
-       ("md5" ,cl-md5)
-       ("postmodern" ,cl-postmodern)
-       ("uffi" ,cl-uffi)))
+     (list cl-cffi
+           cl-md5
+           cl-postmodern
+           cl-uffi))
     (arguments
      `(#:phases
        ;; asdf-build-system/source has its own phases and does not inherit
