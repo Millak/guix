@@ -15448,7 +15448,7 @@ coloured printing via @code{cl-ansi-text} and readline completion.")
           (base32 "1k9lkchwyi2xhygp2v8ifq3kg1l3wcnihhzgr06jrivjxgdqpc1a"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("metatilities-base" ,sbcl-metatilities-base)))
+       (list sbcl-metatilities-base))
       (arguments
        ;; NOTE: (Sharlatan-20210106222900+0000) Circular dependencies and failing
        ;; test suites. lift-standard.config contains references to deprecated
