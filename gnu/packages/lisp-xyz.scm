@@ -18606,12 +18606,12 @@ type correctness in Common Lisp.  It is based on CLtL2 extensions.")
       (home-page "https://github.com/numcl/gtype")
       (license license:lgpl3+)
       (inputs
-       `(("trivialib.type-unify" ,sbcl-trivialib-type-unify)
-         ("trivial-cltl2" ,sbcl-trivial-cltl2)
-         ("trivia" ,sbcl-trivia)
-         ("alexandria" ,sbcl-alexandria)
-         ("iterate" ,sbcl-iterate)
-         ("type-r" ,sbcl-type-r)))
+       (list sbcl-trivialib-type-unify
+             sbcl-trivial-cltl2
+             sbcl-trivia
+             sbcl-alexandria
+             sbcl-iterate
+             sbcl-type-r))
       (native-inputs
        (list sbcl-fiveam)))))
 
