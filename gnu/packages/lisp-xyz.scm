@@ -33348,9 +33348,9 @@ optimization policies.")
           (base32
            "12wsga0pwjkkr176lnjwkmmlm3ccp0n310sjj9h20lk53iyd0z69"))))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("introspect-environment" ,sbcl-introspect-environment)
-         ("trivia.trivial" ,sbcl-trivia.trivial)))
+       (list sbcl-alexandria
+             sbcl-introspect-environment
+             sbcl-trivia.trivial))
       (native-inputs
        (list sbcl-fiveam))
       (synopsis "Type inference utility on unary predicates for Common Lisp")
