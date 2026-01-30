@@ -25587,7 +25587,7 @@ high-level way.  This library provides such operators.")
       (native-inputs
        (list sbcl-lisp-unit))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)))
+       (list sbcl-alexandria))
       (home-page "https://github.com/soemraws/parse-float")
       (synopsis "Parse a floating point value from a string in Common Lisp")
       (description
