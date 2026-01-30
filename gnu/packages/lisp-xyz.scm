@@ -18459,8 +18459,8 @@ path, maximum flow, minimum spanning tree, etc.).")
            "1czw7nr0dwfps76h8hjvglk1wdh53yqbfbvv30whwbgqx33iippz"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("cl-async-future" ,sbcl-cl-async-future)
-         ("cl-cont" ,sbcl-cl-cont)))
+       (list sbcl-cl-async-future
+             sbcl-cl-cont))
       (native-inputs
        (list sbcl-prove))
       (arguments
