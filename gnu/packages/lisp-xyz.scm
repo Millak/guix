@@ -25381,25 +25381,25 @@ It has extensive support for Guix, among others:
           (base32 "1maqm53yhlhaa3cka8xcc4sq24ifrr4y3y0s5dyyn682xsh14hb4"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("babel" ,sbcl-babel)
-         ("bit-smasher" ,sbcl-bit-smasher)
-         ("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("cl-strftime" ,sbcl-cl-strftime)
-         ("cmd" ,sbcl-cmd)
-         ("drakma" ,sbcl-drakma)
-         ("exit-hooks" ,sbcl-exit-hooks)
-         ("fset" ,sbcl-fset)
-         ("local-time" ,sbcl-local-time)
-         ("lparallel" ,sbcl-lparallel)
-         ("md5" ,sbcl-md5)
-         ("murmurhash" ,sbcl-cl-murmurhash)
-         ("named-readtables" ,sbcl-named-readtables)
-         ("ppcre" ,sbcl-cl-ppcre)
-         ("serapeum" ,sbcl-serapeum)
-         ("trivia" ,sbcl-trivia)
-         ("trivial-file-size" ,sbcl-trivial-file-size)))
+       (list sbcl-babel
+             sbcl-bit-smasher
+             sbcl-bordeaux-threads
+             sbcl-cl-strftime
+             sbcl-cmd
+             sbcl-drakma
+             sbcl-exit-hooks
+             sbcl-fset
+             sbcl-local-time
+             sbcl-lparallel
+             sbcl-md5
+             sbcl-cl-murmurhash
+             sbcl-named-readtables
+             sbcl-cl-ppcre
+             sbcl-serapeum
+             sbcl-trivia
+             sbcl-trivial-file-size))
       (propagated-inputs
-       `(("quickproject" ,sbcl-quickproject)))
+       (list sbcl-quickproject))
       (native-inputs
        (list sbcl-fiveam))
       (arguments
