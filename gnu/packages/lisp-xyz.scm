@@ -3193,20 +3193,20 @@ purpose of financial calculations.")
           (base32 "1wvjm9m1fnapg0r9imhhcwgnhhqkkccnj3c0iw9yg1f72d7zhm2w"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("ningle" ,cl-ningle)
-         ("lack" ,sbcl-lack)
-         ("cl-project" ,sbcl-cl-project)
-         ("dbi" ,sbcl-dbi)
-         ("sxql" ,sbcl-sxql)
-         ("cl-syntax" ,sbcl-cl-syntax)
-         ("myway" ,sbcl-myway)
-         ("quri" ,sbcl-quri)))
+       (list cl-ningle
+             sbcl-lack
+             sbcl-cl-project
+             sbcl-dbi
+             sbcl-sxql
+             sbcl-cl-syntax
+             sbcl-myway
+             sbcl-quri))
       (native-inputs
-       `(("usocket" ,sbcl-usocket)
-         ("dexador" ,sbcl-dexador)
-         ("lack" ,sbcl-lack)
-         ("trivial-types" ,sbcl-trivial-types)
-         ("prove" ,sbcl-prove)))
+       (list sbcl-usocket
+             sbcl-dexador
+             sbcl-lack
+             sbcl-trivial-types
+             sbcl-prove))
       (arguments
        `(#:asd-systems '("caveman2"
                          "caveman2-db"
