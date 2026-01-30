@@ -7982,16 +7982,16 @@ format.")
           (base32 "09049c13cfp5sc6x9lrw762jd7a9qkfq5jgngqgrzn4kn9qscarw"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cffi" ,sbcl-cffi)
-         ("flexi-streams" ,sbcl-flexi-streams)
-         ("garbage-pools" ,sbcl-garbage-pools)
-         ("iterate" ,sbcl-iterate)
-         ("metabang-bind" ,sbcl-metabang-bind)
-         ("puri" ,sbcl-puri)
-         ;; Non-Lisp inputs:
-         ("libxml2" ,libxml2)
-         ("libxslt" ,libxslt)))
+       (list sbcl-alexandria
+             sbcl-cffi
+             sbcl-flexi-streams
+             sbcl-garbage-pools
+             sbcl-iterate
+             sbcl-metabang-bind
+             sbcl-puri
+             ;; Non-Lisp inputs:
+             libxml2
+             libxslt))
       (native-inputs
        (list sbcl-lift))
       (arguments
