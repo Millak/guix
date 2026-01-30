@@ -5525,8 +5525,8 @@ cookie headers, cookie creation, cookie jar creation and more.")
            "1cqdhdjxffgfs116l1swjlsmcbly0xgcgrckvaajd566idj9yj4l"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cl-cont" ,sbcl-cl-cont)))
+       (list sbcl-alexandria
+             sbcl-cl-cont))
       (native-inputs
        (list sbcl-prove))
       (arguments
