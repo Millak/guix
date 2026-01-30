@@ -21097,8 +21097,8 @@ not counting tests)
                  (("libev.so" _)
                   (search-input-file inputs "/lib/libev.so"))))))))
       (inputs
-       `(("cffi" ,sbcl-cffi)
-         ("libev" ,libev)))
+       (list sbcl-cffi
+             libev))
       (home-page "https://github.com/fukamachi/lev")
       (synopsis "Common Lisp bindings for libev")
       (description "This package provides Common Lisp bindings for libev.")
