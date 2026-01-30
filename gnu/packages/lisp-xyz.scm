@@ -16425,9 +16425,9 @@ great for REPL interaction and debugging.")
          (sha256
           (base32 "1g6q11l50kgija9f55lzqpcwvaq0ljiw8v1j265hnyg6nahjwjvg"))))
       (inputs
-       `(("fare-utils" ,sbcl-fare-utils)
-         ("named-readtables" ,sbcl-named-readtables)
-         ("optima" ,sbcl-optima)))
+       (list sbcl-fare-utils
+             sbcl-named-readtables
+             sbcl-optima))
       (arguments
        ;; XXX: Circular dependencies: Tests depend on subsystems,
        ;; which depend on the main systems.
