@@ -23661,7 +23661,7 @@ library for Ruby, which is itself based on the Lucene library for Java.")
           (base32 "1q12bqjbj47lx98yim1kfnnhgfhkl80102fkgp9pdqxg0fp6g5fc"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("closer-mop" ,sbcl-closer-mop)))
+       (list sbcl-closer-mop))
       (native-inputs
        (list sbcl-lift))
       (arguments
