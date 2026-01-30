@@ -28076,9 +28076,9 @@ process form data posted with HTTP POST method using enctype
                (substitute* "routes.asd"
                  ((" :force t") "")))))))
       (inputs
-       `(("iterate" ,sbcl-iterate)
-         ("puri" ,sbcl-puri)
-         ("split-sequence" ,sbcl-split-sequence)))
+       (list sbcl-iterate
+             sbcl-puri
+             sbcl-split-sequence))
       (native-inputs
        (list sbcl-lift))
       (home-page "https://github.com/archimag/cl-routes")
