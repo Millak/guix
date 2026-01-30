@@ -67,6 +67,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages rocm)
   #:use-module (gnu packages rocm-tools)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages valgrind)
@@ -462,6 +463,25 @@ software vendors, application developers and computer science researchers.")
                      (("_ABSOLUTE") "")))))
 
            #:disallowed-references (list (canonical-package gcc))))))
+
+;; XXX: ROCm support in Open MPI is enabled in a variant and not in the base
+;; package due to its dependency rocm-hip-runtime retaining references to
+;; clang-rocm, which causes the closure to go from ~400MB to ~2.4GB. See
+;; https://codeberg.org/guix/guix/issues/5585
+(define-public openmpi-rocm
+  (package/inherit openmpi-5
+    (name "openmpi-rocm")
+    (arguments
+     (substitute-keyword-arguments (package-arguments openmpi-5)
+       ((#:configure-flags flags '())
+        #~(cons* (string-append "--with-rocm="
+                                #$(this-package-input "rocm-hip-runtime"))
+                 #$flags))))
+    (inputs (modify-inputs (package-inputs openmpi-5)
+              ;; XXX: This might break openmpi-5 for architectures where ROCm
+              ;; is not supported.
+              (append rocm-hip-runtime)))
+    (synopsis "MPI-3 implementation (with ROCm support)")))
 
 (define-public openmpi-c++
   (package/inherit openmpi
