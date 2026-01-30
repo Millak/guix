@@ -3949,18 +3949,18 @@ the format used by the popular compression tool bzip2.")
       (arguments
        `(#:asd-systems '("chirp-core" "chirp-dexador" "chirp-drakma" "chirp")))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("babel" ,sbcl-babel)
-         ("cl-base64" ,sbcl-cl-base64)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("dexador" ,sbcl-dexador)
-         ("drakma" ,sbcl-drakma)
-         ("flexi-streams" ,sbcl-flexi-streams)
-         ("ironclad" ,sbcl-ironclad)
-         ("local-time" ,sbcl-local-time)
-         ("split-sequence" ,sbcl-split-sequence)
-         ("uuid" ,sbcl-uuid)
-         ("yason" ,sbcl-yason)))
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-cl-base64
+             sbcl-cl-ppcre
+             sbcl-dexador
+             sbcl-drakma
+             sbcl-flexi-streams
+             sbcl-ironclad
+             sbcl-local-time
+             sbcl-split-sequence
+             sbcl-uuid
+             sbcl-yason))
       (home-page "https://codeberg.org/shinmera/chirp")
       (synopsis "Twitter client library for Common Lisp")
       (description
