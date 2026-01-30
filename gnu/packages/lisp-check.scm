@@ -1057,10 +1057,10 @@ SIMPLET.")
            "0bqz64q2szzhf91zyqyssmvrz7da6442rs01808pf3wrdq28bclh"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("iterate" ,sbcl-iterate)
-         ("metabang-bind" ,sbcl-metabang-bind)
-         ("swank" ,sbcl-slime-swank)))
+       (list sbcl-alexandria
+             sbcl-iterate
+             sbcl-metabang-bind
+             sbcl-slime-swank))
       (arguments
        '(#:phases
          (modify-phases %standard-phases
