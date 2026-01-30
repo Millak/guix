@@ -13080,6 +13080,30 @@ destinations: the console and a log file.")
 struct to another.")
     (license license:expat)))
 
+(define-public go-github-com-jinzhu-inflection
+  (package
+    (name "go-github-com-jinzhu-inflection")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jinzhu/inflection")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "165i20d11s03771gi43skl66salxj36212r25fbs0cgr4qgfj7fy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jinzhu/inflection"))
+    (home-page "https://github.com/jinzhu/inflection")
+    (synopsis "Inflection rules for English words in Golang")
+    (description
+     "This package provides a map between English nouns and their plurals
+and vice-versa (e.g. people is mapped to person).")
+    (license license:expat)))
+
 (define-public go-github-com-jinzhu-now
   (package
     (name "go-github-com-jinzhu-now")
