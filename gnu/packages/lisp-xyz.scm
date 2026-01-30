@@ -34138,16 +34138,16 @@ algorithms.")
              #t))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("overlord" ,sbcl-overlord)
-         ("trivial-macroexpand-all" ,sbcl-trivial-macroexpand-all)
-         ("local-time" ,sbcl-local-time)
-         ("parse-js" ,sbcl-parse-js)
-         ("trivia" ,sbcl-trivia)
-         ("trivial-garbage" ,sbcl-trivial-garbage)
-         ("named-readtables" ,sbcl-named-readtables)
-         ("alexandria" ,sbcl-alexandria)
-         ("serapeum" ,sbcl-serapeum)
-         ("trivial-gray-streams" ,sbcl-trivial-gray-streams)))
+       (list sbcl-overlord
+             sbcl-trivial-macroexpand-all
+             sbcl-local-time
+             sbcl-parse-js
+             sbcl-trivia
+             sbcl-trivial-garbage
+             sbcl-named-readtables
+             sbcl-alexandria
+             sbcl-serapeum
+             sbcl-trivial-gray-streams))
       (arguments
        ;; Circular dependency: Tests depend on core-lisp
        ;; (http://github.com/ruricolist/core-lisp) which depends on
