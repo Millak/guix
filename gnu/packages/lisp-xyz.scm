@@ -2274,8 +2274,8 @@ makes use of CLOS for event handling.")
           (base32 "0wjmwn06fjpw0rlpaksf3ab727p8fnzj58z7jajl3m0wqd4ii74w"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("cl-base64" ,sbcl-cl-base64)
-         ("cl-base58" ,sbcl-cl-base58)))
+       (list sbcl-cl-base64
+             sbcl-cl-base58))
       (home-page "https://github.com/thephoeron/bit-smasher/")
       (synopsis "Handle bit vectors, bit vector arithmetic, and type conversions")
       (description
