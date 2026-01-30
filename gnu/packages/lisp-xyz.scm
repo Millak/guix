@@ -27451,7 +27451,7 @@ Streams in ICDE’05.")
            "0wdhfnzi4v6d97pggzj2aw55si94w4327br94jrmyvwf351wqjvv"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("bordeaux-threads" ,sbcl-bordeaux-threads)))
+       (list sbcl-bordeaux-threads))
       (arguments
        '(#:asd-systems '("queues"
                          "queues.simple-queue"
