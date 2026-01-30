@@ -6560,11 +6560,11 @@ objects.")
                  (("libglfw.so.3" _)
                   (search-input-file inputs "/lib/libglfw.so.3"))))))))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cffi" ,sbcl-cffi)
-         ("cl-opengl" ,sbcl-cl-opengl)
-         ("glfw" ,glfw)
-         ("trivial-main-thread" ,sbcl-trivial-main-thread)))
+       (list sbcl-alexandria
+             sbcl-cffi
+             sbcl-cl-opengl
+             glfw
+             sbcl-trivial-main-thread))
       (home-page "https://github.com/AlexCharlton/cl-glfw3")
       (synopsis "Common Lisp bindings to GLFW version 3.x")
       (description
