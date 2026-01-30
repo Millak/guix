@@ -30253,12 +30253,12 @@ code.  The main target of this macro is speed.")
       (home-page "https://github.com/numcl/specialized-function")
       (license license:lgpl3+)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("iterate" ,sbcl-iterate)
-         ("lisp-namespace" ,sbcl-lisp-namespace)
-         ("trivia" ,sbcl-trivia)
-         ("trivial-cltl2" ,sbcl-trivial-cltl2)
-         ("type-r" ,sbcl-type-r)))
+       (list sbcl-alexandria
+             sbcl-iterate
+             sbcl-lisp-namespace
+             sbcl-trivia
+             sbcl-trivial-cltl2
+             sbcl-type-r))
       (native-inputs
        (list sbcl-fiveam)))))
 
