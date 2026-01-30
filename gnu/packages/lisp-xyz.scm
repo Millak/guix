@@ -22852,9 +22852,9 @@ RFC 1321 by R. Rivest, published April 1992.")
                   (string-append "\"" (assoc-ref inputs "zenity")
                                  "/bin/zenity\""))))))))
       (inputs
-       `(("documentation-utils" ,sbcl-documentation-utils)
-         ("trivial-features" ,sbcl-trivial-features)
-         ("zenity" ,zenity)))
+       (list sbcl-documentation-utils
+             sbcl-trivial-features
+             zenity))
       (home-page "https://shinmera.github.io/messagebox/")
       (synopsis "Display a native GUI message box")
       (description
