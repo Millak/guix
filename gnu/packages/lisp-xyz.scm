@@ -4300,8 +4300,8 @@ reset to 0 and you're able to read it again.")
          (base32 "0f09nsndxa90acm71zd4qdnp40v705a4sqm04mnv9x76h6dlggmz"))))
      (build-system asdf-build-system/sbcl)
      (inputs
-      `(("cl-ppcre" ,sbcl-cl-ppcre)
-        ("esrap" ,sbcl-esrap)))
+      (list sbcl-cl-ppcre
+            sbcl-esrap))
      (arguments
       `(#:asd-systems '("abnf")))
      (home-page "https://github.com/dimitri/cl-abnf")
