@@ -3241,7 +3241,7 @@ web applications.  Caveman2 has three design goals:
     (inherit
      (sbcl-package->cl-source-package sbcl-caveman))
     (propagated-inputs
-     `(("ningle" ,cl-ningle)))))
+     (list cl-ningle))))
 
 (define-public ecl-caveman
   (sbcl-package->ecl-package sbcl-caveman))
