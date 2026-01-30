@@ -23618,9 +23618,9 @@ which may be useful when building slightly complex systems.")
                (substitute* "montezuma.asd"
                  ((":force t") "")))))))
       (inputs
-       `(("babel" ,sbcl-babel)
-         ("cl-fad" ,sbcl-cl-fad)
-         ("cl-ppcre" ,sbcl-cl-ppcre)))
+       (list sbcl-babel
+             sbcl-cl-fad
+             sbcl-cl-ppcre))
       (native-inputs
        (list sbcl-trivial-timeout))
       (home-page "https://github.com/sharplispers/montezuma")
