@@ -27299,12 +27299,12 @@ writing code that contains string literals that contain code themselves.")
           (base32 "19mdhxhzzghlmff1fic4chg5iz0psglkim09z6dgpijm26biny05"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
-       `(("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("fiveam" ,sbcl-fiveam)
-         ("let-plus" ,sbcl-let-plus)))
+       (list sbcl-bordeaux-threads
+             sbcl-fiveam
+             sbcl-let-plus))
       (inputs
-       `(("cffi" ,sbcl-cffi)
-         ("zeromq" ,zeromq)))
+       (list sbcl-cffi
+             zeromq))
       (arguments
        `(#:phases (modify-phases %standard-phases
                     (add-after 'unpack 'fix-paths
