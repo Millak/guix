@@ -10131,7 +10131,7 @@ and can be used in conjunction with other FFI wrappers like cl-charms.")
       (native-inputs
        (list sbcl-prove))
       (inputs
-       `(("ppcre" ,sbcl-cl-ppcre)))
+       (list sbcl-cl-ppcre))
       (home-page "https://github.com/EuAndreh/cl-slug")
       (synopsis "Multi-language slug formatter")
       (description
