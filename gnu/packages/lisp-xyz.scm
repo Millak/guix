@@ -8927,12 +8927,12 @@ online linear classification written in Common Lisp.")
                  (("libglut.so" all)
                   (search-input-file inputs "/lib/libglut.so"))))))))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cffi" ,sbcl-cffi)
-         ("float-features" ,sbcl-float-features)
-         ("freeglut" ,freeglut)
-         ("glu" ,glu)
-         ("mesa" ,mesa)))
+       (list sbcl-alexandria
+             sbcl-cffi
+             sbcl-float-features
+             freeglut
+             glu
+             mesa))
       (home-page "https://github.com/3b/cl-opengl")
       (synopsis "Common Lisp bindings to OpenGL, GLU and GLUT APIs")
       (description
