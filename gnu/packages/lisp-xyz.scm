@@ -7605,10 +7605,10 @@ for Common Lisp, using the HTTP API for (almost) everything, except for pubsub
       (native-inputs
        (list sbcl-rt))
       (inputs
-       `(("cl+ssl" ,sbcl-cl+ssl)
-         ("flexi-streams" ,sbcl-flexi-streams)
-         ("split-sequence" ,sbcl-split-sequence)
-         ("usocket" ,sbcl-usocket)))
+       (list sbcl-cl+ssl
+             sbcl-flexi-streams
+             sbcl-split-sequence
+             sbcl-usocket))
       (arguments
        `(#:asd-test-systems '("cl-irc-test")))
       (synopsis "IRC client library for Common Lisp")
