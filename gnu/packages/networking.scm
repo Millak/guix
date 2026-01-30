@@ -4205,8 +4205,8 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                 (sha256
                  (base32
                   "1v8miwsslqlqlpp7p210jhxwkblqyc69cgxaq680qhg7h1sf3y2i"))
-                (patches (search-patches "opendht-meson-install-headers.patch"
-                                         "opendht-meson-liburing.patch"))))
+                (patches
+                 (search-patches "opendht-meson-install-headers.patch"))))
       (outputs '("out" "python" "tools" "debug"))
       (build-system meson-build-system)
       (arguments
@@ -4224,25 +4224,10 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
             (add-after 'unpack 'disable-problematic-tests
               (lambda _
                 (substitute* "meson.build"
-                  ;; The 'proxy' test fails with "killed by signal 6 SIGABRT"
-                  ;; inside the build environment (see:
-                  ;; <https://github.com/savoirfairelinux/opendht/issues/819#issuecomment-3701318124>)
-                  (("test\\('(DhtProxy)', test_proxy)")
-                   "")
-                  ;; The 'http' test fails due to liburing not being
-                  ;; functional inside build environment, causing
-                  ;; "io_uring_queue_init: Cannot allocate memory" errors
-                  ;; (see:
-                  ;; <https://github.com/savoirfairelinux/opendht/issues/819#issuecomment-3701318124>).
-                  (("test\\('Http', test_http)")
-                   "")
                   ;; The 'peerdiscovery' test fails even outside of the build
                   ;; environment (see:
                   ;; <https://github.com/savoirfairelinux/opendht/issues/819#issuecomment-3701328516>).
                   (("test\\('PeerDiscovery', test_peerdiscovery)")
-                   ""))
-                (substitute* "tests/Makefile.am"
-                  (("\\bdhtrunnertester\\.(h|cpp)\\b")
                    ""))))
             (add-after 'unpack 'relax-test-timeouts
               (lambda _
@@ -4281,7 +4266,8 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
              argon2
              gnutls
              jsoncpp
-             liburing
+             ;; liburing causes issues (see
+             ;; <https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/2179>).
              nettle
              openssl                      ;required for the DHT proxy
              simdutf))
