@@ -5851,9 +5851,9 @@ sequences based on the Python difflib module.")
                   (which "df")))
                #t)))))
       (inputs
-       `(("cl-ppcre" ,sbcl-cl-ppcre)
-         ("cffi" ,sbcl-cffi)
-         ("grep" ,grep)))
+       (list sbcl-cl-ppcre
+             sbcl-cffi
+             grep))
       (home-page "https://github.com/muyinliu/cl-diskspace")
       (synopsis "Disk space information library for Common Lisp")
       (description
