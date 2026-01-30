@@ -18416,13 +18416,13 @@ Lisp, inspired by BODOL (@url{https://github.com/bodil/BODOL}).")
       (native-inputs
        (list sbcl-stefil))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cl-heap" ,sbcl-cl-heap)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("curry-compose-reader-macros" ,sbcl-curry-compose-reader-macros)
-         ("metabang-bind" ,sbcl-metabang-bind)
-         ("named-readtables" ,sbcl-named-readtables)
-         ("yason" ,sbcl-yason)))
+       (list sbcl-alexandria
+             sbcl-cl-heap
+             sbcl-cl-ppcre
+             sbcl-curry-compose-reader-macros
+             sbcl-metabang-bind
+             sbcl-named-readtables
+             sbcl-yason))
       (arguments
        '(#:asd-systems '("graph"
                          "graph/dot"
