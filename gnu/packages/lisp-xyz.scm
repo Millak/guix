@@ -33275,10 +33275,10 @@ correctly.")
       (home-page "https://github.com/guicho271828/trivialib.type-unify")
       (license license:lgpl3+)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("trivia" ,sbcl-trivia)
-         ("introspect-environment" ,sbcl-introspect-environment)
-         ("type-r" ,sbcl-type-r)))
+       (list sbcl-alexandria
+             sbcl-trivia
+             sbcl-introspect-environment
+             sbcl-type-r))
       (native-inputs
        (list sbcl-fiveam))
       (arguments
