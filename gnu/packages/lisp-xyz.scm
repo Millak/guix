@@ -1270,18 +1270,18 @@ new fiends in addition to old friends like @command{aif} and
            "047ga2c38par2xbgg4qx6hwv06qhf1c1f67as8xvir6s80lip1km"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cffi" ,sbcl-cffi)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("drakma" ,sbcl-drakma)
-         ("fare-utils" ,sbcl-fare-utils)
-         ("iterate" ,sbcl-iterate)
-         ("metabang-bind" ,sbcl-metabang-bind)
-         ("named-readtables" ,sbcl-named-readtables)
-         ("split-sequence" ,sbcl-split-sequence)
-         ("static-vectors" ,sbcl-static-vectors)
-         ("trivial-garbage" ,sbcl-trivial-garbage)
-         ("trivial-utf-8" ,sbcl-trivial-utf-8)))
+       (list sbcl-alexandria
+             sbcl-cffi
+             sbcl-cl-ppcre
+             sbcl-drakma
+             sbcl-fare-utils
+             sbcl-iterate
+             sbcl-metabang-bind
+             sbcl-named-readtables
+             sbcl-split-sequence
+             sbcl-static-vectors
+             sbcl-trivial-garbage
+             sbcl-trivial-utf-8))
       (native-inputs
        (list sbcl-lisp-unit))
       (arguments
