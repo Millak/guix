@@ -3264,9 +3264,6 @@ video streaming services of the Finnish national broadcasting company Yle.")
              (url "https://github.com/yt-dlp/yt-dlp/")
              (commit version)))
        (file-name (git-file-name name version))
-       (modules '((guix build utils)))
-       (snippet #~(substitute* "pyproject.toml"
-                    (("^.*Programming Language :: Python :: 3\\.13.*$") "")))
        (sha256
         (base32 "095lk2zc8syra8s1156m4qywbfm1zhmg4wkddn198058avpwn3wz"))))
     (build-system pyproject-build-system)
