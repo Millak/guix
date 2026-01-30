@@ -4587,17 +4587,17 @@ tables.")
            "11xi9dxb8mjgwzrkj88i0xkgk26z9w9ddxzbv6xsvfc1d4x5cf4x"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("babel" ,sbcl-babel)
-         ("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("cffi" ,sbcl-cffi)
-         ("cl-libuv" ,sbcl-cl-libuv)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("fast-io" ,sbcl-fast-io)
-         ("openssl" ,openssl)
-         ("static-vectors" ,sbcl-static-vectors)
-         ("trivial-features" ,sbcl-trivial-features)
-         ("trivial-gray-streams" ,sbcl-trivial-gray-streams)
-         ("vom" ,sbcl-vom)))
+       (list sbcl-babel
+             sbcl-bordeaux-threads
+             sbcl-cffi
+             sbcl-cl-libuv
+             sbcl-cl-ppcre
+             sbcl-fast-io
+             openssl
+             sbcl-static-vectors
+             sbcl-trivial-features
+             sbcl-trivial-gray-streams
+             sbcl-vom))
       (arguments
        `(#:asd-systems '("cl-async"
                          "cl-async-repl"
