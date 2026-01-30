@@ -23718,11 +23718,11 @@ MOP easier to use.")
           (base32 "09i50adppgc1ybm3ka9vbindhwa2x29f9n3n0jkrryymdhb8zknm"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("cffi" ,sbcl-cffi)
-         ("freetds" ,freetds)
-         ("garbage-pools" ,sbcl-garbage-pools)
-         ("iterate" ,sbcl-iterate)
-         ("parse-number" ,sbcl-parse-number)))
+       (list sbcl-cffi
+             freetds
+             sbcl-garbage-pools
+             sbcl-iterate
+             sbcl-parse-number))
       (arguments
        `(#:phases
          (modify-phases %standard-phases
