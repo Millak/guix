@@ -21011,9 +21011,9 @@ Lem to manage packages within the user configuration directory.")
        ;;   required by #<SYSTEM "let-over-lambda">
        `(#:tests? #f))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("named-readtables" ,sbcl-named-readtables)))
+       (list sbcl-alexandria
+             sbcl-cl-ppcre
+             sbcl-named-readtables))
       (native-inputs
        (list sbcl-prove))
       (home-page "https://github.com/thephoeron/let-over-lambda")
