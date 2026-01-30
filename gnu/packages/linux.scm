@@ -3162,7 +3162,7 @@ the system when powering it off via userspace.")
 (define-public v4l2loopback-linux-module
   (package
     (name "v4l2loopback-linux-module")
-    (version "0.15.1")
+    (version "0.15.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3171,7 +3171,7 @@ the system when powering it off via userspace.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00vkn4c1wlfmf8kqklklxj5kalwgiwwnxwbh4pw7dj9l1ivycm4f"))))
+                "1fpzsymsas4d2maj81k1al02m62d81ll4q15xwc4n0rhh88hkdv7"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f))                ; no test suite
