@@ -5487,11 +5487,11 @@ decisions becomes significantly easier.")
           (base32
            "090g7z75h98zvc1ldx0vh4jn4086dhjm2w30jcwkq553qmyxwl8h"))))
       (inputs
-       `(("proc-parse" ,sbcl-proc-parse)
-         ("alexandria" ,sbcl-alexandria)
-         ("quri" ,sbcl-quri)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("local-time" ,sbcl-local-time)))
+       (list sbcl-proc-parse
+             sbcl-alexandria
+             sbcl-quri
+             sbcl-cl-ppcre
+             sbcl-local-time))
       (native-inputs
        (list sbcl-prove))
       (arguments
