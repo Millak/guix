@@ -5140,9 +5140,9 @@ camelCase, PascalCase, snake_case, param-case, CONSTANT_CASE and more.")
           (base32 "1jczaypa9dhxr34yyhsxb6lrdnircjx8am4iqkc3shfpjn32q323"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cffi" ,sbcl-cffi)
-         ("ncurses" ,ncurses)))
+       (list sbcl-alexandria
+             sbcl-cffi
+             ncurses))
       (arguments
        '(#:phases
          (modify-phases %standard-phases
