@@ -7484,6 +7484,35 @@ It is used in @code{go-ipfs} and related packages to refer to a typed hunk of
 data.")
     (license license:expat)))
 
+(define-public go-github-com-ishidawataru-sctp
+  (package
+    (name "go-github-com-ishidawataru-sctp")
+    (version "0.0.0-20251114114122-19ddcbc6aae2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ishidawataru/sctp")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04xp753kal8mb9sjxvcmal8x42q2x3ag9msk3af3f1gnfd0942r5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ishidawataru/sctp"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestSCTPConcurrentAccept"
+                             "TestStreams")
+                       "|"))))
+    (home-page "https://github.com/ishidawataru/sctp")
+    (synopsis "SCTP support for Golang")
+    (description
+     "This package provides support for @acronym{SCTP,Stream Control
+Transmission Protocol} support for Golang.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-jackpal-gateway
   (package
     (name "go-github-com-jackpal-gateway")
