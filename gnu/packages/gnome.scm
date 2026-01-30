@@ -5864,7 +5864,24 @@ faster results and to avoid unnecessary server load.")
                 (("test_bluetooth_hidpp_mouse")
                  "disabled_test_bluetooth_hidpp_mouse")
                 (("test_daemon_restart")
-                 "disabled_test_daemon_restart"))
+                 "disabled_test_daemon_restart")
+                ;; TODO: This needs to be fixed on python-dbusmock side by
+                ;; adding python-setuptools-scm to native inptus, due to a
+                ;; large rebuild count, mostly not Python related packages, it
+                ;; left for the next refresh iteration for python-team or
+                ;; gnome-team, see:
+                ;; <https://codeberg.org/guix/guix/issues/6028>.
+                ;;
+                ;; Pretend current python-dbusmock version explicitly.
+                (("dbusmock.__version__")
+                 "'0.37.2'")
+                ;; XXX: File "<...>/integration-test.py", line 2174, in
+                ;; test_bluetooth_le_device
+                ;; self.assertEqual(self.get_dbus_dev_property(mouse_bat0_up,
+                ;; 'Type'), UP_DEVICE_KIND_BLUETOOTH_GENERIC)
+                ;; AssertionError: 8 != 28
+                (("test_bluetooth_le_device")
+                 "__off_test_bluetooth_le_device"))
               #$@(if (target-x86-32?)
                      ;; Address test failure caused by excess precision
                      ;; on i686:
