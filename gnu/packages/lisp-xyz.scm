@@ -15692,8 +15692,8 @@ the concrete syntax tree library.")
           (base32 "19yh5ihirzi1d8xqy1cjqipzd6ly3245cfxa5s9xx496rryz0s01"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("enchant" ,enchant)
-         ("cffi" ,sbcl-cffi)))
+       (list enchant
+             sbcl-cffi))
       (arguments
        `(#:phases
          (modify-phases %standard-phases
