@@ -31041,8 +31041,8 @@ If features:
            "16fshnxp9212503z1vjlmx5pafv14bzpihn486x1ljakqjigfnfz"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("iterate" ,sbcl-iterate)))
+       (list sbcl-alexandria
+             sbcl-iterate))
       (arguments
        ;; There is a cyclical dependency between symbol-munger and lisp-unit2.
        ;; See https://github.com/AccelerationNet/symbol-munger/issues/4
