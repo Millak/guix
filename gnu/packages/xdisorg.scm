@@ -4559,73 +4559,77 @@ other than GNOME and KDE.  It does the following tasks:
       (license license:gpl3))))
 
 (define-public darkman
-  (package
-    (name "darkman")
-    (version "2.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://gitlab.com/WhyNotHugo/darkman")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0h02fa81czj5lg373d9zwp34ifxh7kc12966y9gx9xfqwjrv8hra"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (substitute* "Makefile"
-             ;; Avoid building the binary again when installing.
-             (("install: build") "install: darkman.1")
-             ;; Don't install the systemd service.
-             (("install.*contrib/darkman.service") "true")
-             ;; Don't install the openrc service.
-             (("install.*openrc") "true")
-             ;; The binary will be installed by `go install'.
-             ((".@install.*bin.*") ""))))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:tests? #f ; No tests.
-      #:install-source? #f
-      #:import-path "gitlab.com/WhyNotHugo/darkman/cmd/darkman"
-      #:unpack-path "gitlab.com/WhyNotHugo/darkman"
-      #:build-flags
-      #~(list (string-append "-ldflags= -X main.Version=" #$version))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-paths
-            (lambda* (#:key unpack-path #:allow-other-keys)
-              (substitute*
-                  (find-files (string-append "src/" unpack-path "/contrib/dbus/")
-                              "\\.service$")
-                (("/usr") #$output))))
-          (replace 'install
-            (lambda* (#:key unpack-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" unpack-path)
-                (let ((darkman (string-append #$output "/bin/darkman")))
-                  (with-output-to-file "_darkman.zsh"
-                    (lambda ()
-                      (invoke darkman "completion" "zsh")))
-                  (with-output-to-file "darkman.bash"
-                    (lambda ()
-                      (invoke darkman "completion" "bash")))
-                  (with-output-to-file "darkman.fish"
-                    (lambda ()
-                      (invoke darkman "completion" "fish"))))
-                (invoke "make" "install" (string-append "PREFIX=" #$output))))))))
-    (native-inputs
-     (list gnu-make
-           go-github-com-goccy-go-yaml
-           go-github-com-godbus-dbus-v5
-           go-github-com-lmittmann-tint
-           go-github-com-sj14-astral
-           go-github-com-spf13-cobra
-           scdoc))
-    (home-page "https://gitlab.com/WhyNotHugo/darkman")
-    (synopsis "Control dark-mode and light-mode transitions")
-    (description
-     "Darkman is a framework for dark-mode and light-mode transitions on Unix-like
+  ;; Pick the commit after the last version tag which fixes a bug detecting
+  ;; executable scripts.
+  (let ((revision "0")
+        (commit "b7c84de3990977eb4ace8c9719ae708a45739d0d"))
+    (package
+      (name "darkman")
+      (version (git-version "2.3.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://gitlab.com/WhyNotHugo/darkman")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1rkwjs3rjrzw6gkcm4q91d0axhdhnrwfp4f503dji2jvs8wqa33m"))
+         (modules '((guix build utils)))
+         (snippet
+          '(begin
+             (substitute* "Makefile"
+               ;; Avoid building the binary again when installing.
+               (("install: build") "install: darkman.1")
+               ;; Don't install the systemd service.
+               (("install.*contrib/darkman.service") "true")
+               ;; Don't install the openrc service.
+               (("install.*openrc") "true")
+               ;; The binary will be installed by `go install'.
+               ((".@install.*bin.*") ""))))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:tests? #f ; No tests.
+        #:install-source? #f
+        #:import-path "gitlab.com/WhyNotHugo/darkman/cmd/darkman"
+        #:unpack-path "gitlab.com/WhyNotHugo/darkman"
+        #:build-flags
+        #~(list (string-append "-ldflags= -X main.Version=" #$version))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-paths
+              (lambda* (#:key unpack-path #:allow-other-keys)
+                (substitute*
+                    (find-files (string-append "src/" unpack-path "/contrib/dbus/")
+                                "\\.service$")
+                  (("/usr") #$output))))
+            (replace 'install
+              (lambda* (#:key unpack-path #:allow-other-keys)
+                (with-directory-excursion (string-append "src/" unpack-path)
+                  (let ((darkman (string-append #$output "/bin/darkman")))
+                    (with-output-to-file "_darkman.zsh"
+                      (lambda ()
+                        (invoke darkman "completion" "zsh")))
+                    (with-output-to-file "darkman.bash"
+                      (lambda ()
+                        (invoke darkman "completion" "bash")))
+                    (with-output-to-file "darkman.fish"
+                      (lambda ()
+                        (invoke darkman "completion" "fish"))))
+                  (invoke "make" "install" (string-append "PREFIX=" #$output))))))))
+      (native-inputs
+       (list gnu-make
+             go-github-com-goccy-go-yaml
+             go-github-com-godbus-dbus-v5
+             go-github-com-lmittmann-tint
+             go-github-com-sj14-astral
+             go-github-com-spf13-cobra
+             scdoc))
+      (home-page "https://gitlab.com/WhyNotHugo/darkman")
+      (synopsis "Control dark-mode and light-mode transitions")
+      (description
+       "Darkman is a framework for dark-mode and light-mode transitions on Unix-like
 desktops.")
-    (license license:bsd-0)))
+      (license license:bsd-0))))
