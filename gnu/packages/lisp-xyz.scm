@@ -27521,8 +27521,8 @@ operations on the Quicklisp download statistics.")
         (base32 "1szs8p2wr1yr9mjmj3h3557l6wxzzga0iszimb68z0hb1jj3lva6"))))
     (build-system asdf-build-system/sbcl)
     (inputs
-     `(("cl-fad" ,sbcl-cl-fad)
-       ("html-template" ,sbcl-html-template)))
+     (list sbcl-cl-fad
+           sbcl-html-template))
     (home-page "https://xach.com/lisp/quickproject/")
     (synopsis "Create Common Lisp project skeletons")
     (description
