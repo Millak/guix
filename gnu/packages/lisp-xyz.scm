@@ -5665,9 +5665,9 @@ portability, and boilerplate reduction in CSS.")
        ;; See: https://github.com/AccelerationNet/cl-csv/pull/34
        `(#:tests? #f))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cl-interpol" ,sbcl-cl-interpol)
-         ("iterate" ,sbcl-iterate)))
+       (list sbcl-alexandria
+             sbcl-cl-interpol
+             sbcl-iterate))
       (native-inputs
        (list sbcl-lisp-unit2))
       (synopsis "Common lisp library for comma-separated values")
