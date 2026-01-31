@@ -5215,7 +5215,7 @@ Selectrum.")
 (define-public emacs-empv
   (package
     (name "emacs-empv")
-    (version "5.1.0")
+    (version "6.1.0")
     (source
      (origin
        (method git-fetch)
@@ -5225,17 +5225,18 @@ Selectrum.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0in9yyssahrp0qfbwziymg85bmysxlzr58vycb13k4m4g9i4s3r7"))))
+         "159s9hyn8z35ja3f297lb2335ihjyp60zkk7lsz8r3jc4vv0kgqs"))))
     (build-system emacs-build-system)
     (arguments
      (list
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'set-default-binaries
-                     (lambda* (#:key inputs #:allow-other-keys)
-                       (emacs-substitute-variables "empv.el"
-                         ("empv-fd-binary" (search-input-file inputs "/bin/fd"))
-                         ("empv-mpv-binary" (search-input-file inputs "/bin/mpv"))))))))
-    (inputs (list fd mpv))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-default-binaries
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "empv.el"
+                ("empv-ytdl-binary" (search-input-file inputs "/bin/yt-dlp"))
+                ("empv-mpv-binary" (search-input-file inputs "/bin/mpv"))))))))
+    (inputs (list mpv yt-dlp))
     (propagated-inputs (list emacs-compat emacs-consult emacs-s))
     (home-page "https://github.com/isamert/empv.el")
     (synopsis
