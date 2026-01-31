@@ -9844,7 +9844,7 @@ through portals.")
 (define-public nautilus
   (package
     (name "nautilus")
-    (version "46.4")
+    (version "48.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9852,7 +9852,7 @@ through portals.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0kb21wjvz9nb6sq29hqpzbrcxfhiiznzszj387gwjvgcyph4ipxh"))
+                "0bwxvapfidanblwv732w98xvvzaz3203zz2g4mcq52hwphyk7cpg"))
               (patches
                (search-patches "nautilus-extension-search-path.patch"))))
     (build-system meson-build-system)
@@ -9922,8 +9922,8 @@ through portals.")
            libportal
            libseccomp
            libselinux
-           tracker
-           tracker-miners
+           localsearch
+           tinysparql
            ;; XXX: gtk is required by libnautilus-extension.pc
            ;;
            ;; Don't propagate it to reduce "profile pollution" of the 'gnome' meta

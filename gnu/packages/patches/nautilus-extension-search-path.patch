@@ -5,17 +5,12 @@ Index: nautilus-46.1/src/nautilus-module.c
 ===================================================================
 --- nautilus-46.1.orig/src/nautilus-module.c
 +++ nautilus-46.1/src/nautilus-module.c
-@@ -219,8 +219,16 @@ static void
+@@ -219,7 +219,11 @@ static void
  load_module_dir (const char *dirname)
  {
      GDir *dir;
 -
 +    static GHashTable *loaded = NULL;
-     g_autoptr (GStrvBuilder) installed_module_name_builder = g_strv_builder_new ();
-+
-+    if (installed_module_names != NULL)
-+        g_strv_builder_addv (installed_module_name_builder,
-+                             (const gchar **)installed_module_names);
 +
 +    if (loaded == NULL)
 +        loaded = g_hash_table_new (g_str_hash, g_str_equal);
@@ -32,7 +27,7 @@ Index: nautilus-46.1/src/nautilus-module.c
 -                filename = g_build_filename (dirname,
 -                                             name,
 -                                             NULL);
--                nautilus_module_load_file (filename, installed_module_name_builder);
+-                nautilus_module_load_file (filename);
 -                g_free (filename);
 +                /* Make sure each module is loaded only twice or this could
 +                   lead to a crash.  Double loading can occur if DIRNAME
@@ -44,7 +39,7 @@ Index: nautilus-46.1/src/nautilus-module.c
 +                    filename = g_build_filename (dirname,
 +                                                 name,
 +                                                 NULL);
-+                    nautilus_module_load_file (filename, installed_module_name_builder);
++                    nautilus_module_load_file (filename);
 +                    g_hash_table_add (loaded, g_strdup (name));
 +                    g_free (filename);
 +                }
