@@ -3326,6 +3326,37 @@ automated testing of HDL code.")
     ;; subdirectories are under ASL.
     (license (list license:mpl2.0 license:asl2.0))))
 
+(define-public qrouter
+  (package
+    (name "qrouter")
+    (version "1.4.90")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/RTimothyEdwards/qrouter")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1djqbli6bs0cqmcvrh3m9i94bncm3bvjs2iz5y7yszcagjq51wja"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           (string-append "PREFIX=" #$output))
+      #:configure-flags
+      #~(list (string-append "--with-tcl=" #$(this-package-input "tcl"))
+              (string-append "--with-tk=" #$(this-package-input "tk")))))
+    (inputs (list libx11 libxt readline tcl tk))
+    (home-page "http://opencircuitdesign.com/qrouter/")
+    (synopsis "Visual @acronym{EDA, electronic design automation} router")
+    (description
+     "@code{qrouter} is an @acronym{ASIC, application specific integrated
+circuits}s tool intended for digital chip design.  It creates the detailed
+routes for layouts of digital circuits and generates metal layers and vias.")
+    (license license:gpl2)))
+
 (define-public qucsrflayout-cli
   (package
     (name "qucsrflayout-cli")
