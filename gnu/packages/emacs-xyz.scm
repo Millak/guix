@@ -43734,7 +43734,7 @@ personal wiki.")
 (define-public emacs-org-mem
   (package
     (name "emacs-org-mem")
-    (version "0.25.0")
+    (version "0.27.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -43743,7 +43743,7 @@ personal wiki.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ga21yxyy2yr9bplgdqfhf8sc67ynjvzacl8l2j1i1rjj9a3h3g4"))))
+                "0jlc65qfv1sjca6r0ysrx9rq8a3gddsdhm55dk6y7xbss41wbl6m"))))
     (build-system emacs-build-system)
     (arguments
      (list
