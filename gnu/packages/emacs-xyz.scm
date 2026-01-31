@@ -2175,7 +2175,7 @@ separate, named tab groups.")
 (define-public emacs-dicom
   (package
     (name "emacs-dicom")
-    (version "1.2")
+    (version "1.3")
     (source
      (origin
        (method git-fetch)
@@ -2184,7 +2184,7 @@ separate, named tab groups.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1inmzamm88zzq98x5xjc97c0kk9mgdmj9jw6vklmhiady2v8jy6y"))))
+        (base32 "0k4gq0bznkq8i017xpycmyii5x48xqcq8x04p3r5a7qg9ljlwvfk"))))
     (build-system emacs-build-system)
     (arguments
      (list
