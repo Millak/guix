@@ -44529,7 +44529,7 @@ displayed for sharing.")
 (define-public emacs-orglink
   (package
     (name "emacs-orglink")
-    (version "1.2.8")
+    (version "1.2.9")
     (source
      (origin
        (method git-fetch)
@@ -44538,7 +44538,7 @@ displayed for sharing.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bwyfpql49jns953skl4ndyzrx8y6i71ngb9y3fr7zaal2rcrwl2"))))
+        (base32 "11173ja0cga82fp7qxw900l8wg5fhygi7d5qn0vi5hrh1rwyg9da"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs
