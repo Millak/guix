@@ -170,6 +170,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages onc-rpc)
+  #:use-module (gnu packages oneapi)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pkg-config)
@@ -192,7 +193,6 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages slang)
   #:use-module (gnu packages sqlite)
-  #:use-module (gnu packages tbb)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
@@ -11415,7 +11415,7 @@ set as @code{LD_PRELOAD} to override the C library file system functions.")
            ;; available.
            curl
            re2
-           tbb))
+           onetbb))
     (home-page "https://github.com/falcosecurity/libs/")
     (synopsis "Falco security libraries")
     (description "The Falco security libraries include @code{libsinsp} and
