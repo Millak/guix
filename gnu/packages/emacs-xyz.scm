@@ -6896,7 +6896,7 @@ that the binary uses instead of the actual binary contents.")
 (define-public emacs-ellama
   (package
     (name "emacs-ellama")
-    (version "1.10.11")
+    (version "1.11.0")
     (source
      (origin
        (method git-fetch)
@@ -6906,7 +6906,7 @@ that the binary uses instead of the actual binary contents.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1sn6b8qfjgf8vx7sffzv8irhsk5ciy24q58ynfr354k5jpxxxkqm"))))
+         "1667i7xqa321d0yd8abz55z7srfcqrmqvsazwjaaxx37klydc7a3"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -6923,6 +6923,7 @@ that the binary uses instead of the actual binary contents.")
                              "-l" "ellama.el"
                              "-l" "tests/test-ellama.el"
                              "-f" "ert-run-tests-batch-and-exit")))
+    (native-inputs (list emacs-yaml))
     (propagated-inputs (list emacs-compat emacs-llm emacs-plz))
     (home-page "https://github.com/s-kostyaev/ellama")
     (synopsis "Tool for interacting with LLMs")
