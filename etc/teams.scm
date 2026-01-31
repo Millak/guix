@@ -1233,6 +1233,11 @@ the \"texlive\" importer."
                        "abcdw")
   home emacs)
 
+(define-member (person "Trevor Richards"
+                       "trev@trevdev.ca"
+                       "trevdev")
+  emacs lisp)
+
 (define-member (person "pukkamustard"
                        "pukkamustard@posteo.net"
                        "pukkamustard")
