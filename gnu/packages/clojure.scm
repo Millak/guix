@@ -273,7 +273,6 @@ and line numbers not only to lists, but also to symbols, vectors and maps.")
                    (base32
                     "072dv6s2gxcg8snlgkpjk6bp1cb17bgfshdq6ijsa4yslpqbf9wc")))))
       (build-system ant-build-system)
-      (inputs (list icedtea))
       (arguments
        `(#:imported-modules ((guix build clojure-utils)
                              (guix build clojure-build-system)
