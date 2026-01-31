@@ -3068,7 +3068,7 @@ bottom, or top, of the buffer, or to a trash file.")
 (define-public emacs-minions
   (package
     (name "emacs-minions")
-    (version "1.1.2")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -3077,7 +3077,7 @@ bottom, or top, of the buffer, or to a trash file.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06s2gd47q2lp4lj0ycrjihhn41ws9d3mh6ap9a7gz3b0blifpb4i"))))
+        (base32 "0kl269rq1abjcpnxffd8xgcdw3bwgcq31bzfvmp8wvdnkdpfi3ci"))))
     (build-system emacs-build-system)
     (arguments
      (list #:test-command
