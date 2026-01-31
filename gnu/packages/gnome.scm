@@ -12607,7 +12607,7 @@ integrate seamlessly with the GNOME desktop.")
 (define-public gnome-boxes
   (package
     (name "gnome-boxes")
-    (version "48.0")
+    (version "48.1")
     (source
      (origin
        (method url-fetch)
@@ -12615,7 +12615,7 @@ integrate seamlessly with the GNOME desktop.")
                            (version-major version) "/"
                            "gnome-boxes-" version ".tar.xz"))
        (sha256
-        (base32 "1b9ya5pcb5dfii0qs9r167a3kxymdsq624bpi1nvzbwgar15ypyh"))))
+        (base32 "1q2zzq6hizz5dillhqqddddlyjz7wy1sffyj06mh9axdrpa5aaj1"))))
     (outputs '("out" "debug"))
     (build-system meson-build-system)
     (arguments
@@ -12663,7 +12663,7 @@ integrate seamlessly with the GNOME desktop.")
            libxml2
            qemu-minimal                 ;for qemu-img
            sparql-query
-           tracker
+           tinysparql
            webkitgtk-for-gtk3))
     (propagated-inputs
      ;; Propagating spice-gtk is necessary so that the gnome-desktop-service
