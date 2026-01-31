@@ -3144,7 +3144,7 @@ indentation for @acronym{NFT, netfilter rule files}.")
 (define-public emacs-moody
   (package
     (name "emacs-moody")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
      (origin
        (method git-fetch)
@@ -3153,7 +3153,7 @@ indentation for @acronym{NFT, netfilter rule files}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nay6mpphb8ri0b92jjj15h9dfff2nwl9rwsdjfay976qdnfffmi"))))
+        (base32 "1ash61h0w26yzjgxzi8ga4baki35724h75nf3ivp8hlgpcnnb8rj"))))
     (build-system emacs-build-system)
     (arguments
      (list #:test-command #~(list "make" "check-declare")))
