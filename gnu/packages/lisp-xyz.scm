@@ -30543,7 +30543,7 @@ and comparison operations when used heavily in numeric code.")
 (define-public sbcl-static-vectors
   (package
     (name "sbcl-static-vectors")
-    (version "1.8.9")
+    (version "1.9.3")
     (source
      (origin
        (method git-fetch)
@@ -30552,7 +30552,7 @@ and comparison operations when used heavily in numeric code.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "079qa20lhanzsz1qf4iags91n0ziylbjgbcymm5a5qj7yryas4fw"))))
+        (base32 "1sn37hyf6x56irn2qqc51ncqswa3n94j6cxwcj2ixgxmszcyzx5h"))))
     (native-inputs
      (list sbcl-fiveam))
     (inputs
