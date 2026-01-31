@@ -1703,7 +1703,7 @@ project.")
 (define-public gnome-menus
   (package
     (name "gnome-menus")
-    (version "3.36.0")
+    (version "3.38.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-menus/"
@@ -1711,7 +1711,7 @@ project.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "07xvaf8s0fiv0035nk8zpzymn5www76w2a1vflrgqmp9plw8yd6r"))))
+                "06418hf95c63c3wf6yrjkq12czb14xafywafz4nj7yywvcfak60i"))))
     (build-system gnu-build-system)
     (arguments
      (list
