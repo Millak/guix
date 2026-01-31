@@ -13555,7 +13555,7 @@ the locations of docstrings, arguments, and functions.")
 (define-public emacs-jira
   (package
     (name "emacs-jira")
-    (version "2.14.1")
+    (version "2.17.0")
     (source
      (origin
        (method git-fetch)
@@ -13564,7 +13564,7 @@ the locations of docstrings, arguments, and functions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "108zm86iq0ica9jqd5pcs4msa7gcy55k2svq5af0y1zghz8gbxy9"))))
+        (base32 "1nvzwn22ppfwcglmb5r26aza1wlhq59y88059vs3d283bh2xsi7n"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f)) ; no tests
     (propagated-inputs (list emacs-magit
