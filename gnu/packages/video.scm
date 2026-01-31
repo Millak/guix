@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2016 David Thompson <davet@gnu.org>
-;;; Copyright © 2014-2016, 2018, 2020, 2025 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2014-2016, 2018, 2020, 2025, 2026 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015-2024, 2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016 Andy Patterson <ajpatter@uwaterloo.ca>
@@ -3256,7 +3256,7 @@ video streaming services of the Finnish national broadcasting company Yle.")
 (define-public yt-dlp
   (package
     (name "yt-dlp")
-    (version "2025.12.08")
+    (version "2026.01.29")
     (source
      (origin
        (method git-fetch)
@@ -3268,7 +3268,7 @@ video streaming services of the Finnish national broadcasting company Yle.")
        (snippet #~(substitute* "pyproject.toml"
                     (("^.*Programming Language :: Python :: 3\\.13.*$") "")))
        (sha256
-        (base32 "1s4gbf49y6mpnfqy7n0lz2klfs9q1cbzcrg9mp353bl2zw68qknb"))))
+        (base32 "095lk2zc8syra8s1156m4qywbfm1zhmg4wkddn198058avpwn3wz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
