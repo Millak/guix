@@ -46791,7 +46791,7 @@ into the current buffer.")
 (define-public emacs-flymake-mypy
   (package
     (name "emacs-flymake-mypy")
-    (version "0.3.1")
+    (version "0.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -46800,7 +46800,7 @@ into the current buffer.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1w9bx0ay7jshwflndmf0ix5ghglw57isp2903x3jiv79lkd28xhg"))))
+                "101pplcspdr54kka34dnqcrw1n98wym2q5kmx4b9zz8m0j4kbkhh"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/com4/flymake-mypy")
     (synopsis "Flymake checker for mypy")
