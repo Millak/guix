@@ -11400,7 +11400,7 @@ that support the Assistive Technology Service Provider Interface (AT-SPI).")
 (define-public gspell
   (package
     (name "gspell")
-    (version "1.12.2")
+    (version "1.14.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -11408,31 +11408,35 @@ that support the Assistive Technology Service Provider Interface (AT-SPI).")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0f91vl42i6fz5yrbw31biffbxqzwa24mw6qbfxmfnk3yhayr7sdl"))))
-    (build-system glib-or-gtk-build-system)
+                "0xql3rz6r1qy5hrzx8qvp0c3hwxy0q0c1fynmhdjh4whrjnfbisf"))))
+    (build-system meson-build-system)
     (arguments
-     '(#:configure-flags (list "--enable-vala")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-problematic-tests
-           (lambda _
-             (substitute* "testsuite/test-checker.c"
-               ;; This test is known to fail with Aspell, as a comment
-               ;; mentions it.  Disable it.
-               ((".*g_test_add_func.*test_dashes.*") ""))))
-         (add-before 'check 'pre-check
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Tests require a running X server.
-             (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags #~(list "-Dinstall_tests=false"
+                                ;; Avoid circular dependency.
+                                "-Dgtk_doc=false")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              (substitute* "tests/unit-tests/test-checker.c"
+                ;; This test is known to fail with Aspell, as a comment
+                ;; mentions it.  Disable it.
+                ((".*g_test_add_func.*test_dashes.*") ""))))
+          (add-before 'check 'pre-check
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Tests require a running X server.
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1")
 
-             ;; For the missing /etc/machine-id.
-             (setenv "DBUS_FATAL_WARNINGS" "0")
+              ;; For the missing /etc/machine-id.
+              (setenv "DBUS_FATAL_WARNINGS" "0")
 
-             ;; Allow Enchant and its Aspell backend to find the en_US
-             ;; dictionary.
-             (setenv "ASPELL_DICT_DIR"
-                     (search-input-directory inputs "/lib/aspell")))))))
+              ;; Allow Enchant and its Aspell backend to find the en_US
+              ;; dictionary.
+              (setenv "ASPELL_DICT_DIR"
+                      (search-input-directory inputs "/lib/aspell")))))))
     (inputs
      (list iso-codes/pinned))
     (native-inputs
