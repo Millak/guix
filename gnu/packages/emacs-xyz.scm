@@ -1063,7 +1063,7 @@ for multiple backends.")
   (let ((commit "7b67facc657a7388a53ea8bba5d6e7eba20fa3e0"))
     (package
       (name "emacs-acp")
-      (version "0.8.2")
+      (version "0.8.3")
       (source
        (origin
          (method git-fetch)
