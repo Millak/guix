@@ -10368,7 +10368,7 @@ their original location with another.")
 (define-public emacs-orgmdb
   (package
     (name "emacs-orgmdb")
-    (version "1.0.2")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -10377,7 +10377,7 @@ their original location with another.")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "0ypga3ywmaiv74r14bxn668zvv77mv6dhw6f3hrmlmvm20k7q0f0"))
+         "1199smcxxnixq5716y29g97fhykmiva5ygz433ywm7yh09gl7bxa"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
