@@ -34567,7 +34567,7 @@ and comments.")
 (define-public emacs-yeetube
   (package
     (name "emacs-yeetube")
-    (version "2.1.10")
+    (version "2.1.11")
     (source
      (origin
        (method git-fetch)
@@ -34576,7 +34576,7 @@ and comments.")
               (commit version)))
        (sha256
         (base32
-         "0krd2x0vyysqsgb7r3ca2qc7cl1s929gm52j5rihnqw0yfjpwgpv"))
+         "0jydjijmmj1nkr4462w5j5b3hhy7ms43zpxs325mjna6f9cmylgd"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
