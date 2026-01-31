@@ -25210,7 +25210,7 @@ fetches weather information based on your location or on a given location from
 (define-public emacs-ffi
   (package
     (name "emacs-ffi")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method git-fetch)
@@ -25219,7 +25219,7 @@ fetches weather information based on your location or on a given location from
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05crpgscpbzkg4k0ylbfjz2wyw2r8lki8q9w2kmdpljsqrpdrwl0"))))
+        (base32 "0h2al3an1mf2mpjsgffra9x18hiigw8q9zsh4srmvs3z5rvk5lyw"))))
     (build-system emacs-build-system)
     (arguments
      (list
