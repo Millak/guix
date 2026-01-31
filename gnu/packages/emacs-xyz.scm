@@ -4361,16 +4361,16 @@ index is considered the key).")
 (define-public emacs-abyss-theme
   (package
     (name "emacs-abyss-theme")
-    (version "0.7")
+    (version "0.7.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/mgrbyte/emacs-abyss-theme")
-                    (commit version)))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07z0djv7h3yrv4iw9n633j6dxzxb4nnzijsqkmz22ik6fbwxg5mh"))))
+                "1fy1id4qvqs5ya3lig0galf0z54ym939cn3hzg4h5qg8jdcsj1nz"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/mgrbyte/emacs-abyss-theme")
     (synopsis "Dark theme with strong colours for Emacs")
