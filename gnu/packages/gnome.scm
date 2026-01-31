@@ -9196,7 +9196,7 @@ Libadwaita.")
 (define-public gnome-control-center
   (package
     (name "gnome-control-center")
-    (version "46.8")
+    (version "48.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9204,7 +9204,7 @@ Libadwaita.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0q4frcgq3466f9f12p7s63371msngwhf71lpj1dy6hj25wgagl0s"))))
+                "1cx22qg21cinqx4y8f3m2xpfr3z9394l5yab0np611r56gn1wgyz"))))
     (build-system meson-build-system)
     (arguments
      (list
