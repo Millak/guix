@@ -13441,7 +13441,7 @@ GtkTextView widgets.")
 (define-public gnome-builder
   (package
     (name "gnome-builder")
-    (version "47.2")
+    (version "48.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -13449,7 +13449,7 @@ GtkTextView widgets.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "15dlm6zvq54djx6h1z3jg21fw4v21dwh7i9db9k367nd8wybk1s6"))))
+                "0qycfin7sfbq55aqfvpml155904k0md7v4nbfhxk2jl1gva804pc"))))
     (build-system meson-build-system)
     (arguments
      (list
