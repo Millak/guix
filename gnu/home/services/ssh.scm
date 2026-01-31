@@ -3,6 +3,7 @@
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2026 Oleg Pykhalov <go.wigust@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -311,6 +312,8 @@ through before connecting to the server.")
                      (default #f))
   (known-hosts       home-openssh-configuration-known-hosts ;unspec | list of file-like
                      (default *unspecified*))
+  (known-hosts2      home-openssh-configuration-known-hosts2 ;unspec | list of file-like
+                     (default *unspecified*))
   (hosts             home-openssh-configuration-hosts   ;list of <openssh-host>
                      (default '()))
   (add-keys-to-agent home-openssh-configuration-add-keys-to-agent ;string with limited values
@@ -376,6 +379,7 @@ inserted after each of them."
   (let* ((ssh-config (plain-file "ssh.conf"
                                  (openssh-configuration->string config)))
          (known-hosts (home-openssh-configuration-known-hosts config))
+         (known-hosts2 (home-openssh-configuration-known-hosts2 config))
          (authorized-keys (home-openssh-configuration-authorized-keys config))
          (authorized-keys (and
                            authorized-keys
@@ -387,6 +391,10 @@ inserted after each of them."
             '()
             `((".ssh/known_hosts"
                ,(file-join "known_hosts" known-hosts "\n"))))
+      ,@(if (unspecified? known-hosts2)
+            '()
+            `((".ssh/known_hosts2"
+               ,(file-join "known_hosts2" known-hosts2 "\n"))))
       (".ssh/config" ,ssh-config))))
 
 (define openssh-activation

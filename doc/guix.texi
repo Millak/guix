@@ -56,7 +56,7 @@ Copyright @copyright{} 2017 Andy Wingo@*
 Copyright @copyright{} 2017, 2018, 2019, 2020, 2023, 2024, 2025 Arun Isaac@*
 Copyright @copyright{} 2017 nee@*
 Copyright @copyright{} 2018 Rutger Helling@*
-Copyright @copyright{} 2018, 2021, 2023, 2025 Oleg Pykhalov@*
+Copyright @copyright{} 2018, 2021, 2023, 2025, 2026 Oleg Pykhalov@*
 Copyright @copyright{} 2018 Mike Gerwitz@*
 Copyright @copyright{} 2018 Pierre-Antoine Rouby@*
 Copyright @copyright{} 2018, 2019 Gábor Boskovits@*
@@ -51749,6 +51749,19 @@ If you instead provide a list of host keys upfront in the
 stateless: it can be replicated elsewhere or at another point in time.
 Preparing this list can be relatively tedious though, which is why
 @code{*unspecified*} is kept as a default.
+
+@item @code{known-hosts2} (default: @code{*unspecified*})
+Either @code{*unspecified*} or a list of file-like objects containing
+known host keys.  When specified, these files will be concatenated and
+installed as @file{~/.ssh/known_hosts2}.  This allows for declaratively
+manage known hosts (stored in @file{known_hosts2}), while leaving the
+primary @file{known_hosts} file unmanaged by Guix.
+
+The SSH client by default reads both @code{known-hosts} and
+@code{known-hosts2} for host key verification.  If only
+@code{known-hosts2} is specified in Guix Home, @file{known_hosts}
+remains as a regular file that SSH can modify, while @file{known_hosts2}
+contains the declaratively managed host keys.
 
 @item @code{authorized-keys} (default: @code{#false})
 The default @code{#false} value means: Leave any
