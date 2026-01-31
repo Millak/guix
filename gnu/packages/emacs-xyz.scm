@@ -40594,20 +40594,32 @@ a variety of languages, including elisp itself.")
 (define-public emacs-flyspell-correct
   (package
     (name "emacs-flyspell-correct")
-    (version "0.6.1")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/d12frosted/flyspell-correct")
-             (commit (string-append "v" version))))
+              (url "https://github.com/d12frosted/flyspell-correct")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m5da6r82hk0c2x3lw03qnkk79sx67875afw0ybblj3cmfk6szd1"))))
+        (base32 "1f9q9i5k34kg13lnhl2vzc3w8gvh5mzpv557mj9sngaqvgw03nzx"))))
     (build-system emacs-build-system)
     ;; XXX: emacs-avy-menu is not packaged, so we ignore the file below.
     (arguments
-     `(#:exclude '("flyspell-correct-avy-menu\\.el")))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'set-home
+                 (lambda _
+                   (setenv "HOME" (getenv "TMPDIR"))))
+               (add-before 'check 'remove-avy-menu-dependency
+                 (lambda _
+                   (delete-file "flyspell-correct-avy-menu.el"))))
+           #:test-command
+           #~(list #$(file-append (this-package-native-input "makem")
+                                  "/bin/makem.sh") "test")))
+    (native-inputs
+     (list emacs-buttercup ispell makem-minimal))
     (propagated-inputs
      (list emacs-helm emacs-ivy emacs-popup))
     (home-page "https://github.com/d12frosted/flyspell-correct")
