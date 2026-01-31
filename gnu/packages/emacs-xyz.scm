@@ -46768,7 +46768,7 @@ into the current buffer.")
 (define-public emacs-org-wild-notifier
   (package
     (name "emacs-org-wild-notifier")
-    (version "0.5.0")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -46778,7 +46778,7 @@ into the current buffer.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "00xssqg0mvh5ma2053719bcchbrl7mmj8wzhbrjk34cl4lx9p9fb"))))
+         "001yzk25l9yamkzi8x16vv4lfwy228qcrh05hyp9rdki68f8pbzs"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash emacs-alert emacs-async))
