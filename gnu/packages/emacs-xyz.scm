@@ -40790,11 +40790,10 @@ Emacs.")
     (license license:gpl3+)))
 
 (define-public emacs-ssh-config-mode
-  (let ((commit "d0596f5fbeab3d2c3c30eb83527316403bc5b2f7")
-        (revision "2"))
+  (let ((commit "1c08999ab47cd4d4a523eeadbf59c0b6a272b8c2")) ;version bump
     (package
       (name "emacs-ssh-config-mode")
-      (version (git-version "8.0" revision commit))
+      (version "9.7")
       (source
        (origin
          (method git-fetch)
@@ -40812,9 +40811,9 @@ Emacs.")
       (home-page
        "https://github.com/jhgorrell/ssh-config-mode-el")
       (synopsis
-       "Mode for fontification of ~/.ssh/config")
+       "Mode for fontification of @file{~/.ssh/config}")
       (description
-       "This package fontifies the ssh config keywords and creates
+       "This package fontifies the ssh @file{config} keywords and creates
 keybindings for skipping from host section to host section.")
       (license license:gpl3+))))
 
