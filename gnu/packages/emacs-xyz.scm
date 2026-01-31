@@ -16059,11 +16059,10 @@ text excepting lines containing matches.")
 
 (define-public emacs-realgud
   ;; Last tagged release is from 2019.
-  (let ((commit "56a8d82830ad65c9cbb9c694617f078f007281ac")
-        (revision "0"))
+  (let ((commit "7a93c29c04a4f0d283d3acb3918c4d6381bbfc20")) ;version bump
     (package
       (name "emacs-realgud")
-      (version (git-version "1.5.1" revision commit))
+      (version "1.6.0")
       (source
        (origin
          (method git-fetch)
@@ -16072,7 +16071,7 @@ text excepting lines containing matches.")
                 (commit commit)))
          (sha256
           (base32
-           "1n232jphfgqbb44p806bpgg2wisbmr5iz09js71knk7n5gslrz25"))
+           "1xprzpy70skg6ncmv1f22p1z7jpxsy9ycar8w3xhdk3mgpsf65dv"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (arguments
