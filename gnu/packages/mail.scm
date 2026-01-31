@@ -1285,64 +1285,62 @@ repository and Maildir/IMAP as LOCAL repository.")
   offlineimap3)
 
 (define-public emacs-mew
-  (let ((commit "35772ee0b44dd7e56b0f3899b27fa545b2bc6f03")
-        (revision "1"))
-    (package
-      (name "emacs-mew")
-      (version (git-version "6.9" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/kazu-yamamoto/Mew")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0xazygwdc328m5l31rxjazq9giv2xrygp2p2q455lf3jhdxwq1km"))))
-      (build-system gnu-build-system)
-      (arguments
-       (let ((icon-dir  #~(string-append #$output "/share/mew")))
-         (list
-          #:modules '((guix build gnu-build-system)
-                      (guix build utils)
-                      ((guix build emacs-build-system) #:prefix emacs:)
-                      (guix build emacs-utils))
-          #:imported-modules %emacs-build-system-modules
-          #:tests? #f
-          #:configure-flags
-          #~(list (string-append "--with-elispdir="
-                                 (emacs:elpa-directory #$output))
-                  (string-append "--with-etcdir=" #$icon-dir))
-          #:phases
-          #~(modify-phases %standard-phases
-              (add-after 'configure 'patch-mew-icon-directory
-                (lambda _
-                  (emacs-substitute-sexps "elisp/mew-key.el"
-                    ("(def.* mew-icon-directory"
-                     `(progn
-                       (add-to-list 'image-load-path 'mew-icon-directory)
-                       ,#$icon-dir)))))
-              (add-after 'unpack 'generate-autoloads
-                (lambda _
-                  (emacs-generate-autoloads "mew" "elisp")
-                  (substitute* "elisp/mew-autoloads.el"
-                    ((";; no-byte-compile.*") ""))
-                  ;; Add generated autoloads to Makefile, so they get compiled
-                  (substitute* "elisp/Makefile"
-                    (("OBJS =") "OBJS = mew-autoloads.elc")
-                    (("SRCS =") "SRCS = mew-autoloads.el"))))))))
-      (native-inputs
-       (list emacs))
-      (propagated-inputs
-       (list ruby        ; to set GEM_PATH so ruby-sqlite3 is found at runtime
-             ruby-sqlite3))            ; optional for the database of messages
-      (home-page "https://mew.org")
-      (synopsis "Emacs e-mail client")
-      (description "Mew (Messaging in the Emacs World) is a user interface
+  (package
+    (name "emacs-mew")
+    (version "6.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kazu-yamamoto/Mew")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "13ajr51yk2hcfiq532cayb0kvpdb3psf877cxl6qwx0pgaf1qm57"))))
+    (build-system gnu-build-system)
+    (arguments
+     (let ((icon-dir  #~(string-append #$output "/share/mew")))
+       (list
+        #:modules '((guix build gnu-build-system)
+                    (guix build utils)
+                    ((guix build emacs-build-system) #:prefix emacs:)
+                    (guix build emacs-utils))
+        #:imported-modules %emacs-build-system-modules
+        #:tests? #f
+        #:configure-flags
+        #~(list (string-append "--with-elispdir="
+                               (emacs:elpa-directory #$output))
+                (string-append "--with-etcdir=" #$icon-dir))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'configure 'patch-mew-icon-directory
+              (lambda _
+                (emacs-substitute-sexps "elisp/mew-key.el"
+                  ("(def.* mew-icon-directory"
+                   `(progn
+                     (add-to-list 'image-load-path 'mew-icon-directory)
+                     ,#$icon-dir)))))
+            (add-after 'unpack 'generate-autoloads
+              (lambda _
+                (emacs-generate-autoloads "mew" "elisp")
+                (substitute* "elisp/mew-autoloads.el"
+                  ((";; no-byte-compile.*") ""))
+                ;; Add generated autoloads to Makefile, so they get compiled
+                (substitute* "elisp/Makefile"
+                  (("OBJS =") "OBJS = mew-autoloads.elc")
+                  (("SRCS =") "SRCS = mew-autoloads.el"))))))))
+    (native-inputs
+     (list emacs))
+    (propagated-inputs
+     (list ruby          ; to set GEM_PATH so ruby-sqlite3 is found at runtime
+           ruby-sqlite3))              ; optional for the database of messages
+    (home-page "https://mew.org")
+    (synopsis "Emacs e-mail client")
+    (description "Mew (Messaging in the Emacs World) is a user interface
 for text messages, multimedia messages (MIME), news articles and
 security functionality including PGP, S/MIME, SSH, and SSL.")
-      (license license:bsd-3))))
+    (license license:bsd-3)))
 
 (define-public mu
   (package
