@@ -6127,28 +6127,29 @@ rather than the contents of files.")
     (license license:gpl3+)))
 
 (define-public emacs-aio
-  (let ((revision "0")
-        (commit "289c1e9530b59b4e2fd88f87f303547b23f2a3e3"))
+  (let ((commit "e0105f8ec8c47c12c0958442d0eaef72c94e8747")) ;version bump
     (package
       (name "emacs-aio")
-      (version (git-version "1.0" revision commit))
+      (version "1.1")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      ;; Switched from <https://github.com/skeeto/emacs-aio>
-                      ;; since <https://github.com/skeeto/emacs-aio/issues/31>
-                      ;; is open since Jan 1 2025 with no merge.
-                      (url "https://github.com/kiennq/emacs-aio")
-                      (commit commit)))
+                       ;; Switched from <https://github.com/skeeto/emacs-aio>
+                       ;; since <https://github.com/skeeto/emacs-aio/issues/31>
+                       ;; is open since Jan 1 2025 with no merge.
+                       (url "https://github.com/kiennq/emacs-aio")
+                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1jaq3xbk69ki10bfdphl4ac2hsnvr56bg4fcr0si8q31zgar7xzj"))))
+                  "15pyqf0k3k1z2p97zz86xqbjd28i3qmrb6ypdvflfs5zrmxs16hb"))))
       (build-system emacs-build-system)
       (arguments
-       `(#:test-command '("emacs" "--batch"
-                          "-l" "aio-test.el"
-                          "-f" "ert-run-tests-batch-and-exit")))
+       (list
+        #:test-command
+        #~(list "emacs" "--batch"
+                "-l" "aio-test.el"
+                "-f" "ert-run-tests-batch-and-exit")))
       (propagated-inputs
        (list emacs-elfeed emacs-skewer-mode))
       (home-page "https://github.com/skeeto/emacs-aio")
