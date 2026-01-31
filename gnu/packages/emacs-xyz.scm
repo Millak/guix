@@ -10994,42 +10994,37 @@ the speedbar window.")
     (license license:gpl3+)))
 
 (define-public emacs-shx
-  ;; XXX: Some tests fails in the latest stable release.
-  (let ((commit "b99d16f36bc278d668d8428c4bc9af77064c336a")
-        (revision "1"))
-    (package
-      (name "emacs-shx")
-      (version (git-version "1.5.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/riscy/shx-for-emacs")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1wkqnc5n8if8fsh7f3bdr5nzn6dbj1nzdxlmnz8nflmx4g32fp6v"))
-                (patches
-                 (search-patches "emacs-shx-byte-compilation-test.patch"))))
-      (build-system emacs-build-system)
-      (arguments
-       (list
-        #:test-command
-        #~(list "emacs" "--batch" "--quiet" "--script" "test/script.el")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'appease-checkdoc
-              (lambda _
-                (substitute* "shx.el"
-                  (("Toggle shx-mode on") "Toggle `shx-mode' on")))))))
-      (home-page "https://github.com/riscy/shx-for-emacs")
-      (synopsis "Extras for the Comint mode shell")
-      (description
-       "This package extends Comint mode: it parses markup in the output
+  (package
+    (name "emacs-shx")
+    (version "1.5.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/riscy/shx-for-emacs")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1f137fj5gcpnwk9a0rp92lvg2rpzdxb0dh4l25hr35lghbj2bcpw"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command
+      #~(list "emacs" "--batch" "--quiet" "--script" "test/script.el")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'appease-checkdoc
+            (lambda _
+              (substitute* "shx.el"
+                (("Toggle shx-mode on") "Toggle `shx-mode' on")))))))
+    (home-page "https://github.com/riscy/shx-for-emacs")
+    (synopsis "Extras for the Comint mode shell")
+    (description
+     "This package extends Comint mode: it parses markup in the output
 stream, enabling plots and graphics to be embedded, and adds command-line
 functions which plug into Emacs (e.g., use @code{:e <filename>} to edit
 a file).")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-names
   (let ((commit "d8baba5360e5253938a25d3e005455b6d2d86971")
