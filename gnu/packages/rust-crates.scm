@@ -3082,6 +3082,10 @@
   (crate-source "cc" "1.0.96"
                 "1ggqp5lgmxr02kbgxl9wq6x6kymzlsf9yqkj14k59fjk3lk2jnh6"))
 
+(define rust-cc-1.0.97
+  (crate-source "cc" "1.0.97"
+                "1d6rv3nk5q6lrr3mf7lifqpjr44slylsz3pw6pmn2k2cv1bm76h9"))
+
 (define rust-cc-1.1.30
   (crate-source "cc" "1.1.30"
                 "0icr3vn2r5scpgylbplffd5mh7jcdivqh9dfgsxymnc13fk06s5i"))
@@ -3259,6 +3263,10 @@
 (define rust-cfg-expr-0.15.8
   (crate-source "cfg-expr" "0.15.8"
                 "00lgf717pmf5qd2qsxxzs815v6baqg38d6m5i6wlh235p14asryh"))
+
+(define rust-cfg-expr-0.17.0
+  (crate-source "cfg-expr" "0.17.0"
+                "174y5f7035cx99d83hn1m97xd5xr83nd5fpkcxr3w8nkqihh12fh"))
 
 (define rust-cfg-expr-0.18.0
   (crate-source "cfg-expr" "0.18.0"
@@ -20028,6 +20036,10 @@
   (crate-source "ref-cast-impl" "1.0.25"
                 "1nkhn1fklmn342z5c4mzfzlxddv3x8yhxwwk02cj06djvh36065p"))
 
+(define rust-reference-counted-singleton-0.1.4
+  (crate-source "reference-counted-singleton" "0.1.4"
+                "1fcc50l2xh74r2qn4nx2kk0h4i5ys3v4fhgpg5cz793g00gq8br4"))
+
 (define rust-referencing-0.30.0
   (crate-source "referencing" "0.30.0"
                 "03j27y4zbghw2pi4ccfjc072zi89lzijypswx1bjlp4bfzxg9vy8"))
@@ -21780,6 +21792,15 @@
 (define rust-self-update-0.42.0
   (crate-source "self_update" "0.42.0"
                 "0p3vwhj44z75z44722z4x4py3xmq351bnir9zclwrnp0xj3c0cnq"))
+
+(define rust-selinux-0.4.4
+  (crate-source "selinux" "0.4.4"
+                "02vy0n6rrhh8idxadi5xjmv5phvfg1f8jg5cwmjzvzxvkcg1ndsk"))
+
+(define rust-selinux-sys-0.6.9
+  ;; TODO: Check bundled sources.
+  (crate-source "selinux-sys" "0.6.9"
+                "1v2z4002x3k7vzfq3z2p05xn85f0439iybmpxg47xh9x6yc59m49"))
 
 (define rust-sem-safe-0.2.1
   (crate-source "sem_safe" "0.2.1"
@@ -42516,6 +42537,109 @@
                                            rust-zvariant-3.15.2
                                            rust-zvariant-derive-3.15.2
                                            rust-zvariant-utils-1.0.1))
+                     (gnome-user-share =>
+                                       (list rust-aho-corasick-1.1.3
+                                        rust-autocfg-1.3.0
+                                        rust-bindgen-0.69.5
+                                        rust-bitflags-2.9.0
+                                        rust-block-0.1.6
+                                        rust-cc-1.0.97
+                                        rust-cexpr-0.6.0
+                                        rust-cfg-expr-0.17.0
+                                        rust-cfg-if-1.0.0
+                                        rust-clang-sys-1.8.1
+                                        rust-dunce-1.0.5
+                                        rust-either-1.13.0
+                                        rust-equivalent-1.0.1
+                                        rust-errno-0.3.14
+                                        rust-futures-channel-0.3.31
+                                        rust-futures-core-0.3.31
+                                        rust-futures-executor-0.3.31
+                                        rust-futures-io-0.3.31
+                                        rust-futures-macro-0.3.31
+                                        rust-futures-task-0.3.31
+                                        rust-futures-util-0.3.31
+                                        rust-gettext-rs-0.7.2
+                                        rust-gettext-sys-0.22.5
+                                        rust-gio-0.20.12
+                                        rust-gio-sys-0.20.10
+                                        rust-glib-0.20.12
+                                        rust-glib-macros-0.20.12
+                                        rust-glib-sys-0.20.10
+                                        rust-glob-0.3.1
+                                        rust-gobject-sys-0.20.10
+                                        rust-hashbrown-0.16.0
+                                        rust-heck-0.5.0
+                                        rust-home-0.5.9
+                                        rust-indexmap-2.11.4
+                                        rust-itertools-0.12.1
+                                        rust-lazy-static-1.4.0
+                                        rust-lazycell-1.3.0
+                                        rust-libc-0.2.176
+                                        rust-libloading-0.8.8
+                                        rust-linux-raw-sys-0.4.14
+                                        rust-locale-config-0.3.0
+                                        rust-log-0.4.28
+                                        rust-malloc-buf-0.0.6
+                                        rust-memchr-2.7.4
+                                        rust-minimal-lexical-0.2.1
+                                        rust-nom-7.1.3
+                                        rust-objc-0.2.7
+                                        rust-objc-foundation-0.1.1
+                                        rust-objc-id-0.1.1
+                                        rust-once-cell-1.21.3
+                                        rust-pin-project-lite-0.2.14
+                                        rust-pin-utils-0.1.0
+                                        rust-pkg-config-0.3.32
+                                        rust-prettyplease-0.2.37
+                                        rust-proc-macro-crate-3.3.0
+                                        rust-proc-macro2-1.0.101
+                                        rust-quote-1.0.41
+                                        rust-reference-counted-singleton-0.1.4
+                                        rust-regex-1.11.3
+                                        rust-regex-automata-0.4.11
+                                        rust-regex-syntax-0.8.6
+                                        rust-rustc-hash-1.1.0
+                                        rust-rustix-0.38.44
+                                        rust-same-file-1.0.6
+                                        rust-selinux-0.4.4
+                                        rust-selinux-sys-0.6.9
+                                        rust-serde-1.0.228
+                                        rust-serde-core-1.0.228
+                                        rust-serde-derive-1.0.228
+                                        rust-serde-spanned-0.6.9
+                                        rust-shlex-1.3.0
+                                        rust-slab-0.4.9
+                                        rust-smallvec-1.15.1
+                                        rust-syn-2.0.106
+                                        rust-system-deps-7.0.5
+                                        rust-target-lexicon-0.12.16
+                                        rust-temp-dir-0.1.16
+                                        rust-thiserror-1.0.69
+                                        rust-thiserror-impl-1.0.69
+                                        rust-toml-0.8.23
+                                        rust-toml-datetime-0.6.11
+                                        rust-toml-edit-0.22.27
+                                        rust-unicode-ident-1.0.12
+                                        rust-version-compare-0.2.0
+                                        rust-walkdir-2.5.0
+                                        rust-which-4.4.2
+                                        rust-winapi-0.3.9
+                                        rust-winapi-i686-pc-windows-gnu-0.4.0
+                                        rust-winapi-util-0.1.11
+                                        rust-winapi-x86-64-pc-windows-gnu-0.4.0
+                                        rust-windows-sys-0.52.0
+                                        rust-windows-targets-0.52.6
+                                        rust-windows-aarch64-gnullvm-0.52.6
+                                        rust-windows-aarch64-msvc-0.52.6
+                                        rust-windows-i686-gnu-0.52.6
+                                        rust-windows-i686-gnullvm-0.52.6
+                                        rust-windows-i686-msvc-0.52.6
+                                        rust-windows-x86-64-gnu-0.52.6
+                                        rust-windows-x86-64-gnullvm-0.52.6
+                                        rust-windows-x86-64-msvc-0.52.6
+                                        rust-winnow-0.5.40
+                                        rust-winnow-0.7.13))
                      (greetd =>
                              (list rust-addr2line-0.24.2
                                    rust-adler2-2.0.0
