@@ -2508,7 +2508,7 @@ syntax for short lambda.")
 (define-public emacs-llm
   (package
     (name "emacs-llm")
-    (version "0.28.4")
+    (version "0.28.5")
     (source
      (origin
        (method git-fetch)
@@ -2517,7 +2517,7 @@ syntax for short lambda.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14y852vddsppf1izsm5jcdhd59rkgj5la2vmxachia5pxicrqlb6"))))
+        (base32 "14cvcq5hqd81b9ivjpiv4w4nwra8szxvh7f4h5gb7fcj1z863z2q"))))
     (build-system emacs-build-system)
     (arguments
      (list
