@@ -2328,7 +2328,7 @@ and frame size or even a custom callback.")
 (define-public emacs-git-modes
   (package
     (name "emacs-git-modes")
-    (version "1.4.7")
+    (version "1.4.8")
     (source
      (origin
        (method git-fetch)
@@ -2337,7 +2337,7 @@ and frame size or even a custom callback.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pjsxw5ni47c8mfd40l9x5fnpi1423djhxxr2ixvk81p7xcrcsyi"))))
+        (base32 "12r2n3w3yigszh2cszfca1rmrifj2lib5aswcjrx4rd9pzziavzk"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs
