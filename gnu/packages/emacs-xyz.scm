@@ -43279,7 +43279,7 @@ supports generation of phonetic and numeric passwords.")
 (define-public emacs-qrencode
   (package
     (name "emacs-qrencode")
-    (version "1.2")
+    (version "1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -43288,7 +43288,7 @@ supports generation of phonetic and numeric passwords.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yrshahci319lnjdpsksdy11a69k1n91qk9r2zfyhqmng09s6i0y"))))
+                "0ivcdr89531yps6izk7fs7xqrz00m4b02c5rrbjalz33sj06ss41"))))
     (build-system emacs-build-system)
     (arguments
      (list #:test-command #~(list "emacs" "-Q" "--batch"
