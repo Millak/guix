@@ -14,7 +14,7 @@
 ;;; Copyright © 2016, 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2019 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2016-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2016-2026 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2016, 2017, 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2016-2022, 2024–2026 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
@@ -1001,7 +1001,7 @@ summarizing text using an LLM.")
 (define-public emacs-chatgpt-shell
   (package
     (name "emacs-chatgpt-shell")
-    (version "2.30.2")
+    (version "2.30.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1010,7 +1010,7 @@ summarizing text using an LLM.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0jyhcy27g4dpcd49a2f23smmnxjsvbdzpa71207svillrgiafg8f"))))
+                "0bq9p4pg59pvr4lck90xv72glyhfibsv5v6f1ic2pp01v40s478y"))))
     (build-system emacs-build-system)
     (arguments
      (list #:phases
