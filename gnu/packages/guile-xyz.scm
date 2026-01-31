@@ -4090,7 +4090,7 @@ See http://minikanren.org/ for more on miniKanren generally.")
 (define-public guile-irregex
   (package
     (name "guile-irregex")
-    (version "0.9.11")
+    (version "0.9.12")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4098,7 +4098,7 @@ See http://minikanren.org/ for more on miniKanren generally.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "026kzl96pmwbjqdc7kh8rdh8ng813sjvdsik0dag5acza20sjm19"))))
+                "1rmlmkf2pnly7mqi407vi2k6k19m2h44d4jvzfkrizk892qj61yc"))))
     (build-system guile-build-system)
     (arguments
      (list
