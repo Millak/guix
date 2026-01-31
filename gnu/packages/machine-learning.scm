@@ -4610,7 +4610,7 @@ different backends")
 (define-public koboldcpp
   (package
     (name "koboldcpp")
-    (version "1.106.2")
+    (version "1.107")
     (source
      (origin
        (method git-fetch)
@@ -4618,8 +4618,15 @@ different backends")
              (url "https://github.com/LostRuins/koboldcpp")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils)
+                         (ice-9 ftw)
+                         (srfi srfi-26))
+            (delete-file-recursively "lib")
+            (for-each delete-file (find-files "." "\\.(dll|exe|bat)$"))))
        (sha256
-        (base32 "0599c2h251b5d3nvyvaxh02lqcn7lqd75i432vdjaq1kf9gbpfaz"))))
+        (base32 "14zcksqlq0a9hhx41gw23imcazpqa19wzvm3kd28hnhkpg4ah75v"))))
     (build-system gnu-build-system)
     (arguments
      (list
