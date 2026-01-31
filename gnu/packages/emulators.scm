@@ -1909,6 +1909,41 @@ Nintendo Switch's proprietary format.")
     ;; The converter is MIT licensed; the generated data is public domain.
     (license (list license:expat license:public-domain))))
 
+(define-public mcl-cpp-for-eden
+  (let ((commit "7b08d83418f628b800dfac1c9a16c3f59036fbad"))
+    (package
+      (name "mcl-cpp-for-eden")
+      (version (git-version "0.1.12" "0" commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/azahar-emu/mcl")
+                       ;; This commit is pinned by Eden's dependency specification
+                       ;; in src/dynarmic/externals/cpmfile.json for compatibility.
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32 "1hpjhknx02vwmc1bm8i1zzr6dvskhlm5bvd8ii9bca9kacxa4cxr"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        ;; No tests.
+        #:tests? #f
+        #:configure-flags
+        ;; MCL_INSTALL generates installation targets for headers and CMake
+        ;; config files; it defaults to ON only when built as the master
+        ;; project, so we enable it explicitly.
+        #~(list "-DMCL_INSTALL=ON")))
+      (inputs
+       (list fmt))
+      (synopsis "C++20 utilities collection, patched for Eden")
+      (description "MCL is a collection of C++20 utilities which is common to a
+number of merry's projects.  It provides bit manipulation, intrinsics, type
+traits, and other utility functions.  This version includes patches from Eden
+to avoid macro conflicts.")
+      (home-page "https://github.com/azahar-emu/mcl")
+      (license license:expat))))
+
 (define (make-libretro-beetle-psx name hw)
   (let ((commit "80d3eba272cf6efab6b76e4dc44ea2834c6f910d")
 	(revision "0"))
