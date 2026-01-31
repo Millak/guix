@@ -11773,7 +11773,7 @@ src blocks.")
 (define-public emacs-ol-notmuch
   (package
     (name "emacs-ol-notmuch")
-    (version "2.1.2")
+    (version "2.1.3")
     (source
      (origin
        (method git-fetch)
@@ -11782,7 +11782,7 @@ src blocks.")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "0cdi73vfikhm8gcj1y05b07fvzvninz811yppb3kyhdis8kzc7qk"))
+         "0vlb6wgp314n6ilzfhz3j3lkzdpv4y0mngp6l2q04np9cqffkvf3"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
