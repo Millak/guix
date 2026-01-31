@@ -38699,7 +38699,7 @@ all of your projects, then override or add variables on a per-project basis.")
 (define-public emacs-casual
   (package
     (name "emacs-casual")
-    (version "2.11.2")
+    (version "2.13.1")
     (source
      (origin
        (method git-fetch)
@@ -38708,7 +38708,7 @@ all of your projects, then override or add variables on a per-project basis.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10hdhpgsxhvyi6ybcvlfhwm88q34sgsb43jvgg7m4jm98n1nvima"))))
+        (base32 "1qgrraffmgxhcqdsi1x4xy0byp758khk69xyr68cllap5xnmdhgc"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -38717,7 +38717,7 @@ all of your projects, then override or add variables on a per-project basis.")
           (add-after 'unpack 'build-info-manual
             (lambda _
               ;; FIXME: Re-generating documentation is not possible at the
-              ;; moment (release 2.11.2) because the "casual" Texinfo class is
+              ;; moment (release 2.13.1) because the "casual" Texinfo class is
               ;; missing from the repository, and this prevents Org from
               ;; exporting properly the "casual.org" file to Texinfo.
               ;;
