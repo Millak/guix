@@ -22984,27 +22984,51 @@ actually changing the buffer's text.")
     (license license:gpl3+)))
 
 (define-public emacs-diff-hl
-  (package
-    (name "emacs-diff-hl")
-    (version "1.10.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dgutov/diff-hl")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0vfqyhzf3lyrhn788fbyc4p3lf36fkh8qnxvg6vddg4bxmqcjnsw"))))
-    (build-system emacs-build-system)
-    (arguments (list #:test-command #~(list "make" "test")))
-    (home-page "https://github.com/dgutov/diff-hl")
-    (synopsis "Highlight uncommitted changes using VC")
-    (description
-     "Diff Hl mode highlights uncommitted changes on the side of the
+  ;; No new tags or releases since 2024.
+  (let ((commit "e79aa49ad3cbbe85379cf6646db3aaacd3b04708")
+        (revision "0"))
+    (package
+      (name "emacs-diff-hl")
+      (version (git-version "1.10.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/dgutov/diff-hl")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0fvxngcbx36vqj72fllfp5iqwihcqd1dfhmqr3m1284191q83na3"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:test-command #~(list "make" "test")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'disable-hg-test
+              (lambda _
+                (substitute* "test/diff-hl-test.el"
+                  (((string-append "\\(diff-hl-deftest "
+                                   "diff-hl-resolved-revision-with-hg \\(\\)")
+                    all)
+                   (string-append all "(skip-unless nil)")))))
+            ;; Tests require an active git repository.
+            (add-before 'check 'git-init
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "git" "config" "--global" "user.email" "user@mail.org")
+                (invoke "git" "config" "--global" "user.name" "User Name")
+                (invoke "git" "init")
+                (invoke "git" "add" ".")
+                (invoke "git" "commit" "-m" "Commit all."))))))
+      (native-inputs (list git-minimal))
+      (home-page "https://github.com/dgutov/diff-hl")
+      (synopsis "Highlight uncommitted changes using VC")
+      (description
+       "Diff Hl mode highlights uncommitted changes on the side of the
 window (using the fringe, by default), allows you to jump between the hunks
 and revert them selectively.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-difftastic
   ;; No releases or tags.
