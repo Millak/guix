@@ -70,6 +70,7 @@
 ;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2025 Lee Thompson <lee.p.thomp@gmail.com>
 ;;; Copyright © 2025 Alexandre Hannud Abdo <abdo@member.fsf.org>
+;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3857,6 +3858,52 @@ designs.  Meera Inimai can be thought of as similar to Helvetica and its
 variation Arial.  Tamil characters are inherently vertically-elliptical.  The
 orthography of Roman glyphs of Meera Inimai are also based on this
 characteristic so that they sit smoothly with the Tamil glyphs.")
+    (license license:silofl1.1)))
+
+(define-public font-meslo-lg
+  (package
+    (name "font-meslo-lg")
+    (version "1.2.1")
+    (source
+     (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/andreberg/Meslo-Font")
+            (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "1594lxdk6788bb3i3c2fh74z4pwpzcp2r1xl3cz8cz77nrcjkl8m"))))
+    (build-system trivial-build-system)
+    (arguments
+     (list #:modules '((guix build utils)
+                       (ice-9 ftw))
+           #:builder
+           #~(let* ((orig #$(package-source this-package))
+                    (dist (string-append orig "/dist/v" #$version))
+                    (dest (string-append #$output "/share/fonts/truetype"))
+                    (meslo-lg (string-append "Meslo LG v" #$version))
+                    (meslo-lg-dz (string-append "Meslo LG DZ v" #$version))
+                    (unzip (string-append #$(this-package-native-input "unzip")
+                                          "/bin/unzip")))
+               (use-modules (guix build utils) (ice-9 ftw))
+               (mkdir-p dest)
+               (for-each (lambda (variant)
+                           (chdir dist)
+                           (invoke unzip variant "-d" dest)
+                           (chdir dest)
+                           (for-each (lambda (file)
+                                       (when (string-suffix? ".ttf" file)
+                                         (copy-file (string-append variant "/" file)
+                                                    file)))
+                                     (scandir variant))
+                           (delete-file-recursively variant))
+                         (list meslo-lg meslo-lg-dz)))))
+    (native-inputs (list unzip))
+    (home-page "https://github.com/andreberg/Meslo-Font")
+    (synopsis "Font for dyslexics and high readability")
+    (description
+     "Meslo LG is a customized version of Apple's Menlo-Regular font (which is
+a customized Bitstream Vera Sans Mono).")
     (license license:silofl1.1)))
 
 (define-public font-ipa
