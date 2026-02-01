@@ -5028,7 +5028,7 @@ podcasts) in Emacs.")
 (define emacs-emms-print-metadata
   (package
     (name "emacs-emms-print-metadata")
-    (version "24")
+    (version "25")
     (source
      (origin
        (method git-fetch)
@@ -5037,7 +5037,7 @@ podcasts) in Emacs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1x0lja7k2vn3dhnmhg3gvhiv6yid899k26f79c7slwfs0sl680yc"))))
+        (base32 "0pvlkybdpf1bfpjs0np89kfnxj3qjvyawk1g0b2l5jg21k6c20ww"))))
     (build-system gnu-build-system)
     (arguments
      (list
