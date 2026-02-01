@@ -67,6 +67,7 @@
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;; Copyright © 2026 Sergey Trofimov <sarg@sarg.org.ru>
+;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -93,6 +94,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages c)
   #:use-module (gnu packages calendar)
   #:use-module (gnu packages check)
@@ -767,7 +769,7 @@ operating systems.")
 (define-public neomutt
   (package
     (name "neomutt")
-    (version "20250404")
+    (version "20260105")
     (source
      (origin
        (method git-fetch)
@@ -776,8 +778,21 @@ operating systems.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-          "1w53g6l98cd3x2a6m0q245fm5gln95vzpgskvg4dz9yysmbki9az"))))
+        (base32 "1sg6ifabci7xyp3zds1w906vx6jsmyjlfr6bqld7m7hj07by9ndd"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "autosetup"
+              "mutt-gettext.tcl"
+              "mutt-iconv.tcl")))))
     (build-system gnu-build-system)
     (inputs
      (list cyrus-sasl
@@ -793,18 +808,19 @@ operating systems.")
            libxml2
            lmdb
            notmuch
+           sqlite
            `(,zstd "lib")))
     (native-inputs
      `(("automake" ,automake)
+       ("autosetup" ,autosetup)
        ("gettext-minimal" ,gettext-minimal)
        ("pkg-config" ,pkg-config)
        ("docbook-xsl" ,docbook-xsl)
        ("docbook-xml" ,docbook-xml-4.2)
        ("w3m" ,w3m)
-       ("tcl" ,tcl)
        ;; Test file data for the unit tests included in the neomutt source.
        ("neomutt-test-files"
-        ,(let ((commit "8629adab700a75c54e8e28bf05ad092503a98f75"))
+        ,(let ((commit "c769cdefd45bcdfc4a72664821bd7f67ad4d5f6c"))
            (origin
              (method git-fetch)
              (uri (git-reference
@@ -813,12 +829,13 @@ operating systems.")
              (file-name (git-file-name "neomutt-test-files" commit))
              (sha256
               (base32
-                "1ci04nqkab9mh60zzm66sd6mhsr6lya8wp92njpbvafc86vvwdlr")))))))
+               "0jvy9z2hmpvcxa10k7f68l2lqdxrppj36c4v8nmjrldkwgpkdaq3")))))))
     (arguments
      (list
       #:test-target "test"
       #:configure-flags
-      #~(list "--gpgme"
+      #~(list "--enable-autocrypt"
+              "--gpgme"
               ;; Database, implies header caching.
               "--disable-tokyocabinet"
               "--disable-qdbm"
@@ -829,7 +846,6 @@ operating systems.")
               "--gdbm"
 
               "--gnutls"
-              "--ssl=1"
               "--sasl"
               (string-append "--with-sasl="
                              #$(this-package-input "cyrus-sasl"))
@@ -851,18 +867,11 @@ operating systems.")
               "--zstd=1")
       #:phases
       #~(modify-phases %standard-phases
-          ;; TODO: autosetup is meant to be included in the source,
-          ;; but we should package autosetup and use our own version of it.
           (replace 'configure
-            (lambda* (#:key outputs inputs configure-flags #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (flags `(,@configure-flags))
-                     (bash (which "bash")))
-                (setenv "SHELL" bash)
-                (setenv "CONFIG_SHELL" bash)
-                (apply invoke bash
-                       (string-append (getcwd) "/configure")
-                       flags))))
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              (apply invoke "autosetup"
+                     (string-append "--prefix=" #$output)
+                     configure-flags)))
           (add-before 'check 'prepare-test-files
             (lambda _
               (copy-recursively
@@ -872,7 +881,6 @@ operating systems.")
               ;; (a different) one: test_expando_node_padding.
               (substitute* "test/main.c"
                 (("NEOMUTT_TEST_ITEM\\(test_expando_filter\\)") "")
-                (("NEOMUTT_TEST_ITEM\\(test_mutt_sig_exit_handler\\)") "")
                 (("NEOMUTT_TEST_ITEM\\(test_mutt_path_tilde\\)") ""))
               (with-directory-excursion "tests"
                 (setenv "NEOMUTT_TEST_DIR" (getcwd)) ; must be absolute
