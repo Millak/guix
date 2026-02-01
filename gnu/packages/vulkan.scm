@@ -122,6 +122,15 @@ SPIR-V modules.  The project includes an assembler, binary module
 parser,disassembler, validator, and optimizer for SPIR-V.")
     (license license:asl2.0)))
 
+(define-public spirv-tools-static
+  (package/inherit spirv-tools
+    (name "spirv-tools-static")
+    (arguments
+     (substitute-keyword-arguments (package-arguments spirv-tools)
+       ((#:configure-flags flags)
+        #~(cons* "-DSPIRV_TOOLS_BUILD_STATIC=ON"
+                 (delete "-DSPIRV_TOOLS_BUILD_STATIC=OFF" #$flags)))))))
+
 (define-public spirv-cross
   (package
     (name "spirv-cross")
