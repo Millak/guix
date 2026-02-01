@@ -43,6 +43,7 @@
 ;;; Copyright © 2024-2025 Tor-björn Claesson <tclaesson@gmail.com>
 ;;; Copyright © 2025 Jonas Freimuth <jonas.freimuth@posteo.de>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Yarl Baudig <yarl-baudig@mailoo.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21687,6 +21688,18 @@ Institute of Standards and Technology}, USA.")
        (sha256
         (base32 "0qkki4x49808cmvj1fmsivq68b836f0rq3ayxrfpgdjc6il89dr3"))))
     (build-system r-build-system)
+    (arguments
+     ;; Enable tests to pass, there's a floating point inequality without this
+     ;; flag on aarch64
+     (if (target-aarch64?)
+         '(#:phases
+           (modify-phases %standard-phases
+             (add-after 'unpack 'ffp-contract-off
+               (lambda _
+                 (substitute* "src/Makevars"
+                   (("PKG_CFLAGS=" all)
+                    (string-append all "-ffp-contract=off ")))))))
+         '()))
     (propagated-inputs
      (list r-lattice))
     (native-inputs
