@@ -10019,17 +10019,17 @@ boxes, and more.")
 (define-public emacs-org-books
   (package
     (name "emacs-org-books")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/lepisma/org-books")
-             (commit version)))
+             (url "https://git.sr.ht/~lepisma/org-books")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1sgckvpjdaig9r2clcvs6ckgf2kx7amikkpq26y30jbnfnbskf0v"))))
+         "0nf5d5nc9x7sjg35hcjk19xspr6k722g60lmfrb855m4vxliril7"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash
