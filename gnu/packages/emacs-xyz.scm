@@ -1404,11 +1404,10 @@ antiquity.")
     (license license:gpl3+)))
 
 (define-public emacs-inspector
-  (let ((commit "0c02fd712ff89006227838e18a4685678abd9ba8")
-        (revision "1"))
+  (let ((commit "52a64993ac36ed3ed0be51b6a0d54d190edc9c74"))
     (package
       (name "emacs-inspector")
-      (version (git-version "0.38" revision commit))
+      (version "0.39")
       (source
        (origin
          (uri (git-reference
@@ -1416,7 +1415,7 @@ antiquity.")
                (commit commit)))
          (method git-fetch)
          (sha256
-          (base32 "0fidzh8zwaxvkxdzj01rznixaqs00kl3w5xi1qylcjl5jvl6vrmg"))
+          (base32 "0nknvm7fw3p77vk6vznysw0hz2axyrw5w5l4w9ydd1ib1vs9m3xa"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (arguments
