@@ -9302,10 +9302,10 @@ column by drawing a thin line down the length of the editing window.")
     (license license:gpl3+)))
 
 (define-public emacs-greader
-  (let ((commit "c3f28c1ca3d6dea5b44b0c7677c94a4a20d6370b")) ;version bump
+  (let ((commit "b25974aeae49f11b91bb78d94ab51913fdfcdc05")) ;version bump
     (package
       (name "emacs-greader")
-      (version "0.13.0")
+      (version "0.13.1")
       (source
        (origin
          (uri (git-reference
@@ -9314,7 +9314,7 @@ column by drawing a thin line down the length of the editing window.")
          (method git-fetch)
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1al5cqkh7x0wmhf69780pgdm77zrrq5c323nmbqsbifh65d468l6"))))
+          (base32 "1qkszb4yrfnzb2rqkf6vmzca53w68p78zb58frcxslxn7s5l7ih1"))))
       (build-system emacs-build-system)
       (arguments
        (list #:tests? #f))              ;no tests
