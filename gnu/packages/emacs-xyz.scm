@@ -31026,11 +31026,9 @@ perform regression test for packages that provide font-lock rules.")
       (license license:gpl3+))))
 
 (define-public emacs-racket-mode
-  ;; XXX: Upstream does not tag releases, nor does it bump versions.  The
-  ;; "1" version below does not exist.  It might change, tho.  See
-  ;; <https://github.com/greghendershott/racket-mode/issues/389>.
-  (let ((commit "7f2813da48baf980f1ae188f651dafa98ba951cd")
-        (revision "8"))
+  ;; XXX: Upstream does not tag releases, nor does it bump versions.
+  (let ((commit "71f27c643dadf70847e447e773760df6df48fe5a")
+        (revision "9"))
     (package
       (name "emacs-racket-mode")
       (version (git-version "1" revision commit))
@@ -31043,7 +31041,7 @@ perform regression test for packages that provide font-lock rules.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "124zr2432kqyjak516mrc801kdkmb2072c906j942mf0zwjvh16v"))))
+           "1a2h6hmylh1hih7ndn4avp9x462vgc45pf7w325kd7kkz8m6sy39"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -31053,14 +31051,21 @@ perform regression test for packages that provide font-lock rules.")
         #~(modify-phases %standard-phases
             (add-before 'check 'pre-check
               (lambda _
-                (setenv "HOME" (dirname (getcwd)))
-                (substitute* "test/racket-tests.el"
-                  (("\\(ert-deftest racket-tests/(repl|run) .*" all)
-                   (string-append all "(skip-unless nil)"))))))))
+                (setenv "HOME" (dirname (getcwd)))))
+            (add-after 'unpack 'configure
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-variables "racket-custom.el"
+                  ("racket-program"
+                   (search-input-file inputs "bin/racket")))))
+            (add-after 'unpack 'make-info
+              (lambda _
+                (with-directory-excursion "doc"
+                  (invoke "makeinfo" "-o"
+                          "../racket-mode.info" "racket-mode.texi")))))))
       (native-inputs
-       (list racket))
+       (list emacs-faceup emacs-paredit racket texinfo))
       (propagated-inputs
-       (list emacs-faceup emacs-paredit emacs-pos-tip emacs-s))
+       (list emacs-pos-tip))
       (home-page "https://www.racket-mode.com/")
       (synopsis "Major mode for the Racket language")
       (description "Racket mode provides thorough font-lock and indentation.
