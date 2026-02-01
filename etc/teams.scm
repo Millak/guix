@@ -1483,6 +1483,11 @@ the \"texlive\" importer."
                        "tux1c")
   python sysadmin)
 
+(define-member (person "Wilko Meyer"
+                       "w@wmeyer.eu"
+                       "theesm")
+  kernel)
+
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
       (error (format #false
