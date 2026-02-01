@@ -73,6 +73,7 @@
 ;;; Copyright © 2025 nomike Postmann <nomike@nomike.com>
 ;;; Copyright © 2025 Reza Housseini <reza@housseini.me>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Peter Polidoro <peter@polidoro.io>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3546,7 +3547,9 @@ script files.")
       #:tests? #f
       #:configure-flags
       #~(list "-DCMAKE_CXX_FLAGS=-fpermissive" ;from unsigned char* to char*
+              "-DUSE_DRACO:BOOL=ON"
               "-DUSE_FREEIMAGE:BOOL=ON"
+              "-DUSE_RAPIDJSON:BOOL=ON"
               "-DUSE_TBB:BOOL=ON"
               "-DUSE_VTK:BOOL=OFF"
               "-DBUILD_DOC_Overview:BOOL=OFF"
@@ -3555,7 +3558,8 @@ script files.")
               "-UCMAKE_INSTALL_LIBDIR")))
     (native-inputs (list doxygen fontconfig))
     (inputs
-     (list freetype
+     (list draco
+           freetype
            freeimage
            glu
            libxext
@@ -3563,6 +3567,7 @@ script files.")
            libxmu
            mesa
            onetbb
+           rapidjson
            tcl
            tk))
     ;; TODO: build Overview documentation and add 'doc' output.
