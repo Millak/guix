@@ -22,7 +22,6 @@
   #:autoload   (lzlib) (call-with-lzip-input-port)
   #:use-module (guix progress)
   #:use-module (web uri)
-  #:use-module (web response)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 format)
@@ -70,7 +69,7 @@ item.  Return #t on success, #f otherwise."
       ((url rest ...)
        (format #t "Trying content-addressed mirror at ~a...~%"
                (uri-host (string->uri url)))
-       (let-values (((port response)
+       (let-values (((port size)
                      (catch #t
                        (lambda ()
                          (http-fetch (string->uri url)))
@@ -82,7 +81,7 @@ item.  Return #t on success, #f otherwise."
                          (values #f #f)))))
          (if (not port)
              (loop rest)
-             (let ((size (response-content-length response)))
+             (begin
                (if size
                    (format #t "Downloading from ~a (~,2h MiB)...~%" url
                            (/ size (expt 2 20.)))
