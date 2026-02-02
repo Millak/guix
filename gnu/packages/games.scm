@@ -6510,7 +6510,7 @@ tactics.")
 (define-public widelands
   (package
     (name "widelands")
-    (version "1.2.1")
+    (version "1.3")
     (source
      (origin
        (method git-fetch)
@@ -6519,7 +6519,7 @@ tactics.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n8daxarwcagcxpzlxrrdy0piir1zinwnfbcsyyg4yd789pixhgw"))
+        (base32 "1j288rkflqmzxbacrrx35y8qm4mvbvd30c03cmkvh8b29jkgz3gp"))
        (modules '((guix build utils)))
        (snippet
         #~(delete-file-recursively "src/third_party/minizip"))))
@@ -6532,15 +6532,12 @@ tactics.")
                 (string-append "-DWL_INSTALL_BINDIR=" #$output "/bin")
                 (string-append "-DWL_INSTALL_BASEDIR=" share)
                 (string-append "-DWL_INSTALL_DATADIR=" share)
-                "-DOPTION_BUILD_WEBSITE_TOOLS=OFF"
-                ;; CMakeLists.txt does not handle properly RelWithDebInfo build
-                ;; type.  When used, no game data is installed!
-                "-DCMAKE_BUILD_TYPE=Release"))
+                "-DOPTION_BUILD_WEBSITE_TOOLS=OFF"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'unbundle-fonts
             ;; Unbundle fonts already packaged in Guix.  XXX: missing fonts are
-            ;; amiri, Culmus, mmrCensus, Nakula, and Sinhala.
+            ;; mmrCensus, Nakula, and Sinhala.
             (lambda* (#:key inputs #:allow-other-keys)
               (for-each
                (lambda (font)
@@ -6554,6 +6551,8 @@ tactics.")
      (list gettext-minimal pkg-config python))
     (inputs
      (list asio
+           font-amiri
+           font-culmus
            font-dejavu
            font-wqy-microhei
            glew
