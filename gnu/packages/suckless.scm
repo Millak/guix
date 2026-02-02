@@ -231,7 +231,7 @@ a custom raw video format with a simple container.")
 (define-public dwm
   (package
     (name "dwm")
-    (version "6.7")
+    (version "6.8")
     (synopsis "Dynamic Window Manager")
     (source (origin
               (method git-fetch)
@@ -240,7 +240,7 @@ a custom raw video format with a simple container.")
                      (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "176djmvsy0cpghlf36k69w5fbhyp42hjcm32j46x7daz8wwlafym"))))
+               (base32 "1jim52kp34dbkzna1m2l0dhz9fjgzv3mpaiifj9m2dbxlnd0ahws"))))
     (build-system gnu-build-system)
     (arguments
      (list
