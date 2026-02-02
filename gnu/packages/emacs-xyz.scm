@@ -23814,13 +23814,13 @@ containing words from the Rime project.")
 (define-public emacs-pyim
   (package
     (name "emacs-pyim")
-    (version "5.3.5")
+    (version "5.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/pyim-" version ".tar"))
        (sha256
-        (base32 "1s452swgbkbnpfhiwmipmvbqn6wkf6f7dq63gr349h7n29nbnnnk"))))
+        (base32 "00szld154fgbrrpn0p8lxbjg73kc9kx49x6lz2y5y2jm0yxn58gm"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ; tests require emacs-pyim-basedict
     (propagated-inputs
