@@ -39666,7 +39666,7 @@ advice system without dropping support for Emacs<24.4.")
 (define-public emacs-url-http-oauth
   (package
     (name "emacs-url-http-oauth")
-    (version "0.8.4")
+    (version "0.8.5")
     (source
      (origin
        (method url-fetch)
@@ -39674,7 +39674,7 @@ advice system without dropping support for Emacs<24.4.")
              "https://elpa.gnu.org/packages/url-http-oauth-" version
              ".tar"))
        (sha256 (base32
-                "10iznck31ilfjwjbbwfalqchg260yqypai487436cc0s1fm47vvf"))))
+                "17j1bzvg9a6k1fqkwphlkrqyihpgp5zia3hgbnjkz7j76adbxmgv"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/url-http-oauth.html")
     (synopsis "OAuth 2.0 for URL library")
