@@ -647,6 +647,14 @@ from the command line.
 @item @command{unireverse} reverse each line of UTF-8 input
 character-by-character.
 
+@item @command{unifuzz} generates test input for programs that expect Unicode.
+It can generate a random string of characters, tokens of various potentially
+problematic characters and sequences, very long lines, strings with embedded
+nulls, and ill-formed UTF-8.
+
+@item @command{unisurrogate} takes a codepoint on the command line and, if it
+falls outside the BMP, reports its surrogate decomposition.
+
 @end itemize")
     (license license:gpl3)))
 
