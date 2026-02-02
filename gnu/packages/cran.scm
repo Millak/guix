@@ -45477,7 +45477,7 @@ well as extracting and replacing names and symbols from these objects.")
                ((".*use_nan is working.*" m)
                 (string-append m "skip('skip');\n"))))))))
     (native-inputs (list r-entropy r-knitr r-proxy r-testthat))
-    (inputs (list tbb))
+    (inputs (list onetbb))
     (propagated-inputs
      (list r-matrix r-rcpp r-rcpparmadillo))
     (home-page "https://cran.r-project.org/package=proxyC")
