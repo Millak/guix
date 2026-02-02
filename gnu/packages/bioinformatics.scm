@@ -31,6 +31,7 @@
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2026 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2025-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -17086,7 +17087,7 @@ The following file formats are supported:
               "-DCMAKE_CXX_FLAGS=\"-DHAVE_NUMERIC_LIMITS128=1\""
               "-Dlibgff_FOUND=TRUE"
               "-DTBB_FOUND=TRUE"
-              #$(string-append "-DTBB_VERSION=" (package-version tbb))
+              #$(string-append "-DTBB_VERSION=" (package-version onetbb))
               "-DFETCHED_PUFFERFISH=TRUE"
               "-DUSE_SHARED_LIBS=TRUE")
        #:phases
@@ -17173,7 +17174,7 @@ The following file formats are supported:
            htscodecs
            jemalloc
            libgff
-           tbb
+           onetbb
            libstadenio-for-salmon
            xz
            zlib))
