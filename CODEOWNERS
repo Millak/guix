@@ -244,13 +244,17 @@ gnu/packages/hurd\.scm                             @guix/hurd
 
 gnu/installer(\.scm$|/)                            @guix/installer
 
+gnu/packages/clojure\.scm                          @guix/java
 gnu/packages/java(-.+|)\.scm$                      @guix/java
 gnu/packages/maven(-.+|)\.scm$                     @guix/java
 guix/build/ant-build-system\.scm                   @guix/java
+guix/build/clojure-build-system\.scm               @guix/java
+guix/build/clojure-utils\.scm                      @guix/java
 guix/build/java-utils\.scm                         @guix/java
 guix/build/maven-build-system\.scm                 @guix/java
 guix/build/maven/                                  @guix/java
 guix/build-system/ant\.scm                         @guix/java
+guix/build-system/clojure\.scm                     @guix/java
 guix/build-system/maven\.scm                       @guix/java
 
 gnu/packages/node-xyz\.scm                         @guix/javascript
