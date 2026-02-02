@@ -247,18 +247,15 @@ a custom raw video format with a simple container.")
       #:tests? #f
       #:make-flags
       #~(list
+         (string-append "CC=" #$(cc-for-target))
+         "PREFIX="
+         (string-append "DESTDIR=" #$output)
          (string-append "FREETYPEINC="
                         #$(this-package-input "freetype")
                         "/include/freetype2"))
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'configure
-            (lambda _
-              (substitute* "Makefile" (("\\$\\{CC\\}") #$(cc-for-target)))))
-          (replace 'install
-            (lambda _
-              (invoke "make" "install"
-                      (string-append "DESTDIR=" #$output) "PREFIX=")))
+          (delete 'configure)
           (add-after 'build 'install-xsession
             (lambda _
               ;; Add a .desktop file to xsessions.
