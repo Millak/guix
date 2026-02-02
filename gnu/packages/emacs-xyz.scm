@@ -47213,7 +47213,7 @@ in Emacs.")
 (define-public emacs-vertico-posframe
   (package
     (name "emacs-vertico-posframe")
-    (version "0.9.0")
+    (version "0.9.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -47221,7 +47221,7 @@ in Emacs.")
                     ".tar"))
               (sha256
                (base32
-                "16vnacmz52d1rwdmddsr1rm1zki1p3bw10ngpw39a3dszbwqkl3m"))))
+                "1xq30aj2jkk1g4gnniixg0rzh03irf7vci551fwd6gg50sphaqj4"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-posframe emacs-vertico))
     (arguments (list #:tests? #f)) ; there are no tests
