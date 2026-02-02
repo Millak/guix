@@ -24511,7 +24511,7 @@ lines, and @code{gc} to comment out the target of a motion.")
 (define-public emacs-eglot
   (package
     (name "emacs-eglot")
-    (version "1.19")
+    (version "1.21")
     (source
      (origin
        (method url-fetch)
@@ -24519,7 +24519,7 @@ lines, and @code{gc} to comment out the target of a motion.")
                            ".tar"))
        (sha256
         (base32
-         "0bsz3grw41nh5r76brfdb4gb3hncs5chlhwsqm6qqg0ach69m7zi"))))
+         "03fx22rv8ijxq0jnn7xlfqhkpk2b109ygpjbcchp41sa4q7d6nbl"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-eldoc
