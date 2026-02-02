@@ -1459,7 +1459,11 @@ the \"texlive\" importer."
                        "rekahsoft")
   embedded electronics haskell sysadmin)
 
-
+(define-member (person "Mathieu Lirzin"
+                       "mthl@gnu.org"
+                       "mthl")
+  java)
+
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
       (error (format #false
