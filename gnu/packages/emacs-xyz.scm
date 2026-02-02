@@ -37375,7 +37375,7 @@ compatibility.")
 (define-public emacs-notmuch-indicator
   (package
     (name "emacs-notmuch-indicator")
-    (version "1.2.0")
+    (version "1.3.0")
     (home-page "https://git.sr.ht/~protesilaos/notmuch-indicator")
     (source (origin
               (method url-fetch)
@@ -37384,7 +37384,7 @@ compatibility.")
                     ".tar"))
               (sha256
                (base32
-                "1n525slxs0l5nbila1sy62fz384yz7f54nrq1ixdlq0j3czgh9kz"))))
+                "00497l8gz6vpf7yciq4bd2spyil9bf73vn7s8as2sr8l0izr3psd"))))
     (build-system emacs-build-system)
     (synopsis "Display a mode line indicator with @code{notmuch-count} output")
     (description "This package renders an indicator with an email count of the
