@@ -22195,14 +22195,14 @@ Additionally it can display the number of unread emails in the mode line.")
 (define-public emacs-org-notify
   (package
     (name "emacs-org-notify")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/org-notify-" version
                            ".tar"))
        (sha256
-        (base32 "1vg0h32x5lc3p5n71m23q8mfdd1fq9ffmy9rsm5rcdphfk8s9x5l"))))
+        (base32 "02ndims0d0rbzjql6riadnhxn7d8br4s9fybm70j5hknli7x0azc"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/p-m/org-notify")
     (synopsis "Notifications for Org-mode")
