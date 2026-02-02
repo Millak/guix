@@ -10912,7 +10912,7 @@ levels to unlock.")
 (define simgear
   (package
     (name "simgear")
-    (version "2024.1.3")
+    (version "2024.1.4")
     (source
      (origin
        (method git-fetch)
@@ -10924,7 +10924,7 @@ levels to unlock.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gjx1yylrsqhzp2g6am6wljriyf4cmsbvkqihxqbak93abzg0dnp"))
+        (base32 "1k855yxq06gv42f83c3k9hrsz05xxj6vi1c60227zm0dx3jkb4jq"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -10976,7 +10976,7 @@ and also provides the base for the FlightGear Flight Simulator.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w4zsqfhn2fg2qh37b91z2q5r611mgqv5yj669ms5h0p0ddxp1lv"))
+        (base32 "0xlpry1g5xci4qmj37rjk4sdhg9zada0vw6a047gsm7cq5p7pkxk"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -11065,7 +11065,7 @@ and also provides the base for the FlightGear Flight Simulator.")
                                "FlightGear-" version "-data.txz"))
            (sha256
             (base32
-             "1xp2c6gfbch4c59w7w1zblqw5casn8ch52j094kmv11mjfwdds60"))))))
+             "0pgwxpm5cdm0y6klrmpqspmhmqsfxshz4jljw2kd4wy18fqzd1s6"))))))
     (home-page "https://www.flightgear.org/")
     (synopsis "Flight simulator")
     (description "The goal of the FlightGear project is to create a
