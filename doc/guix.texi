@@ -50488,6 +50488,29 @@ cat $(herd configuration tor)
 This can come in as a handy debugging tool!
 @end deffn
 
+@deffn {Procedure} shepherd-signal-action name signal @
+[#:documentation `Send signal @var{signal} to the running service`] @
+[#:message `Service has been asked to perform @var{name}`]
+Return a shepherd action with @var{name} to send @var{signal} to the
+running process. The optional @var{documentation} and @var{message} can be used
+to customize the documentation and output message.
+
+Many daemons perform special actions after receiving a specific signal.
+
+For example the @command{syslogd} logger will reread its configuration file
+after receiving @code{SIGHUP}.
+
+After adding
+@lisp
+(shepherd-signal-action 'reload SIGHUP))
+@end lisp
+
+the @code{reload} action will be available and can be used with
+@example
+herd reload syslogd
+@end example
+@end deffn
+
 @defvar shepherd-root-service-type
 The service type for the Shepherd ``root service''---i.e., PID@tie{}1.
 

@@ -969,24 +969,16 @@ cache.size = 100 * MB
       (mkdir-p "/var/lib/misc")))
 
 (define (dnsmasq-service-reload-action config)
-  (match-record config <dnsmasq-configuration> ()
-    (shepherd-action
-     (name 'reload)
-     (documentation "Send a @code{SIGHUP} signal to @command{dnsmasq} to clear
-cache and reload hosts files.")
-     (procedure #~(lambda (running)
-                    (let ((pid (process-id running)))
-                      (kill pid SIGHUP)))))))
+  (shepherd-signal-action
+   'reload SIGHUP
+   #:documentation "Send a @code{SIGHUP} signal to @command{dnsmasq} to clear
+cache and reload hosts files."))
 
 (define (dnsmasq-service-stats-action config)
-  (match-record config <dnsmasq-configuration> ()
-    (shepherd-action
-     (name 'stats)
-     (documentation "Send a @code{SIGUSR1} to write statistics to the system
-log.")
-     (procedure #~(lambda (running)
-                    (let ((pid (process-id running)))
-                      (kill pid SIGUSR1)))))))
+  (shepherd-signal-action
+   'stats SIGUSR1
+   #:documentation "Send a @code{SIGUSR1} to write statistics to the system
+log."))
 
 (define dnsmasq-service-type
   (service-type

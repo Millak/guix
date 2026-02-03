@@ -636,18 +636,10 @@ appended to the configuration.")
        (stop  #~(make-kill-destructor))
        (actions
         (list (shepherd-configuration-action config-file)
-              (shepherd-action
-               (name 'reopen)
-               (documentation "Re-open log files and flush caches.")
-               (procedure
-                #~(lambda (pid)
-                    (if pid
-                        (begin
-                          (kill pid SIGHUP)
-                          (format #t
-                                  "Issued SIGHUP to Service MPD (PID ~a)."
-                                  pid))
-                        (format #t "Service MPD is not running.")))))))))))
+              (shepherd-signal-action
+               'reopen SIGHUP
+               #:documentation "Re-open log files and flush caches."
+               #:message "Issued SIGHUP to Service MPD.")))))))
 
 (define (mpd-accounts config)
   (match-record config <mpd-configuration> (user group)

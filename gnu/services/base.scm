@@ -1708,17 +1708,11 @@ mail.*                                 -/var/log/maillog
    (requirement '(user-processes))
    (actions
     (list (shepherd-configuration-action syslog.conf)
-          (shepherd-action
-           (name 'reload)
-           (documentation "Reload the configuration file from disk.")
-           (procedure
-            #~(lambda (pid)
-                (if pid
-                    (begin
-                      (kill pid SIGHUP)
-                      (display #$(G_ "Service syslog has been asked to \
+          (shepherd-signal-action
+           'reload SIGHUP
+           #:documentation "Reload the configuration file from disk."
+           #:message "Service syslog has been asked to \
 reload its settings file.")))
-                    (display #$(G_ "Service syslog is not running."))))))))
    ;; Note: a static file name is used for syslog.conf so that the reload
    ;; action work as intended.
    (start #~(make-forkexec-constructor

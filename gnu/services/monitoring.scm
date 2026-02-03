@@ -640,18 +640,10 @@ resolution.")
        (stop #~(make-kill-destructor))
        (actions
         (list (shepherd-configuration-action config-file)
-              (shepherd-action
-               (name 'reload)
-               (documentation "Reload vnstatd.")
-               (procedure
-                #~(lambda (pid)
-                    (if pid
-                        (begin
-                          (kill pid SIGHUP)
-                          (format #t
-                                  "Issued SIGHUP to vnstatd (PID ~a)."
-                                  pid))
-                        (format #t "vnstatd is not running.")))))))))))
+              (shepherd-signal-action
+               'reload SIGHUP
+               #:documentation "Reload vnstatd."
+               #:message "Issued SIGHUP to vnstatd.")))))))
 
 (define (vnstat-account-service config)
   (match-record config <vnstat-configuration> (daemon-group daemon-user)
