@@ -871,3 +871,28 @@ operations on this type.")
 machine learning primitives.  This package contains the HIP version based on
 ROCm.")
     (license license:expat)))
+
+(define-public rocfft
+  (package
+    (name "rocfft")
+    (version %rocm-version)
+    (source (rocm-library-source "rocfft"))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; requires GPU
+      #:build-type "Release"
+      #:configure-flags
+      #~(list "-DCMAKE_CXX_COMPILER=hipcc"
+              "-DCMAKE_C_COMPILER=hipcc"
+              #$(string-append "-DAMDGPU_TARGETS="
+                               (current-amd-gpu-targets-string))
+              "-DSQLITE_USE_SYSTEM_PACKAGE=ON")))
+    (inputs (list rocm-hip-runtime sqlite-next))        ;needs sqlite >= 3.50.2
+    (native-inputs (list python rocm-cmake rocm-toolchain))
+    (properties `((amd-gpu-targets . ,%default-amd-gpu-targets)))
+    (home-page %rocm-libraries-url)
+    (synopsis "FFT library for the HIP programming language")
+    (description "This package contains a HIP library for computing fast
+Fourier transforms.")
+    (license license:expat)))
