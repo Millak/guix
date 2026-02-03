@@ -1403,7 +1403,9 @@ Library.")
               ;; is necessary.
               (patches
                (map search-patch
-                    (assoc-ref %llvm-patches (package-version llvm-base))))))
+                    (cons
+                     "clang-rocm-default-new-dtags.patch"
+                     (assoc-ref %llvm-patches (package-version llvm-base)))))))
     (arguments
      (substitute-keyword-arguments (package-arguments llvm-base)
        ((#:configure-flags flags)

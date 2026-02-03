@@ -1107,6 +1107,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/clang-17.0-link-dsymutil-latomic.patch	\
   %D%/packages/patches/clang-17.0-fix-build-with-gcc-14-on-arm.patch    \
   %D%/packages/patches/clang-18.0-libc-search-path.patch	\
+  %D%/packages/patches/clang-rocm-default-new-dtags.patch	\
   %D%/packages/patches/clang-runtime-esan-build-fixes.patch	\
   %D%/packages/patches/clang-runtime-12-remove-crypt-interceptors.patch \
   %D%/packages/patches/clang-runtime-13-glibc-2.36-compat.patch	\

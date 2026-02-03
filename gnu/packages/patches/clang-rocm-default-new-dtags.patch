@@ -1,0 +1,23 @@
+Revert to the behavior that if no flag is specified, the LLVM default is
+used. Otherwise, the 'validate-runpath phase in Guix fails, as it looks at
+RUNPATH, not RPATH.
+
+The lines removed by this patch were introduced in
+https://github.com/ROCm/llvm-project/commit/eab679eba1ebe61b2cda99b27ad3f122a9caa14b
+
+diff --git a/clang/lib/Driver/ToolChains/CommonArgs.cpp b/clang/lib/Driver/ToolChains/CommonArgs.cpp
+index 4ce53b29e326..379b0507180e 100644
+--- a/clang/lib/Driver/ToolChains/CommonArgs.cpp
++++ b/clang/lib/Driver/ToolChains/CommonArgs.cpp
+@@ -1313,11 +1313,6 @@ void tools::addOpenMPRuntimeSpecificRPath(const ToolChain &TC,
+     // lib-debug/lib-perf
+     if (LibSuffix != "lib")
+       addRPathCmdArg(Args, CmdArgs, DefaultLibPath.c_str());
+-
+-    if (llvm::find_if(CmdArgs, [](StringRef str) {
+-          return !str.compare("--enable-new-dtags");
+-        }) == CmdArgs.end())
+-      CmdArgs.push_back("--disable-new-dtags");
+   }
+ }
+ 
