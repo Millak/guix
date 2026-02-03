@@ -428,24 +428,19 @@ particular CPU vendor or architecture.")
             (lambda _
               (substitute* (find-files "." "CMakeLists\\.txt$|\\.cmake$")
                 ((":\\\\\\$ORIGIN(/\\.\\./lib)?/llvm/lib") "")))))))
-    (inputs (list rocr-runtime
-                  rocm-hip-runtime
-                  rocm-cmake
-                  rocm-device-libs
-                  rocm-comgr
+    (inputs (list rocm-hip-runtime
                   numactl
                   curl
                   fmt-11
-                  nlohmann-json
                   spdlog-1.15
                   boost
-                  cli11
                   catch2-3.8))
+    (native-inputs
+     (list cli11
+           nlohmann-json
+           rocm-cmake
+           rocm-toolchain))
     (properties `((amd-gpu-targets . ,%default-amd-gpu-targets)))
-    (native-inputs (list
-                    rocm-hipcc
-                    clang-rocm
-                    lld-rocm))
     (home-page "https://github.com/ROCm/rocm_bandwidth_test")
     (synopsis "Bandwidth test for ROCm")
     (description "RocBandwidthTest is designed to capture the performance
