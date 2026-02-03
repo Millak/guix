@@ -25,7 +25,7 @@
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022-2025 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
-;;; Copyright © 2024 Alexis Simon <alexis.simon@runbox.com>
+;;; Copyright © 2024, 2026 Alexis Simon <alexis.simon@runbox.com>
 ;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
 ;;; Copyright © 2025 nomike Postmann <nomike@nomike.com>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
@@ -167,6 +167,7 @@
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages ruby-xyz)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages skribilo)
@@ -191,6 +192,29 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match))
+
+(define-public alignoth
+  (package
+    (name "alignoth")
+    (version "1.4.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "alignoth" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11m2cwpy270dlsw48xgsmrlzmrbac0gxidwgbpahd5jchwnxl26f"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:rust rust-1.88
+           #:install-source? #f))
+    (native-inputs (list clang pkg-config))
+    (inputs (cons* curl openssl zlib (cargo-inputs 'alignoth)))
+    (home-page "https://github.com/alignoth/alignoth")
+    (synopsis "Tool for creating alignment plots from bam files.")
+    (description
+     "This package provides a tool for creating alignment plots from bam files.")
+    (license license:expat)))
 
 (define-public aragorn
   (package
