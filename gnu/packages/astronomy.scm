@@ -9778,7 +9778,7 @@ spherical polygons that represent arbitrary regions of the sky.")
     (propagated-inputs
      (list python-astropy
            python-matplotlib
-           python-numpy-1
+           python-numpy
            python-pysynphot
            python-scipy))
     (home-page "https://spisea.readthedocs.io/en/stable/index.html")
