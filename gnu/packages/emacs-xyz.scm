@@ -4455,6 +4455,33 @@ but the design of key/command choice is based on command frequency statistics
 and ease-of-key score.  Most frequently used commands have most easy keys.")
       (license license:gpl3))))
 
+(define-public emacs-xdg-launcher
+  ;; XXX: Upstream did not tag any commit so far.  Base version is extracted
+  ;; from Version keyword.
+  (let ((commit "ca774d066c2049ef1bcf73ebd690664ca3fc0642")
+        (revision "0"))
+    (package
+      (name "emacs-xdg-launcher")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emacs-exwm/xdg-launcher")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1k4q96zs7k6bfgkcg05zqjvkfyhaxv3q3br56y0dwi70vyn1nwjq"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:tests? #f))              ; No tests upstream
+      (home-page "https://github.com/emacs-exwm/xdg-launcher")
+      (synopsis "Use Emacs standard completion to launch applications")
+      (description "This package defines the @code{xdg-launcher-run-app}
+command, which uses Emacs standard completion to select an application
+installed on your machine and launch it.")
+      (license license:gpl3+))))
+
 (define-public emacs-xr
   (package
     (name "emacs-xr")
