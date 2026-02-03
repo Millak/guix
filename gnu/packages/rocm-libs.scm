@@ -729,3 +729,46 @@ primitives, in particular via rocPRIM for AMD GPUs.")
     (description "@code{rocThrust} is a parallel algorithm library for ROCm,
 based on @code{rocPRIM}.  It is a port of the CUDA Thrust library.")
     (license license:asl2.0)))
+
+(define-public composable-kernel
+  (package
+    (name "composable-kernel")
+    (version %rocm-version)
+    (source
+     (rocm-library-source
+      "composablekernel"
+      #:patches (search-patches "composable-kernel-conditional-kernels.patch")))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:build-type "Release"
+      #:configure-flags
+      #~(list
+         "-DCMAKE_CXX_COMPILER=hipcc"
+         "-DBUILD_TESTING=OFF"
+         #$(string-append "-DGPU_TARGETS=" (current-amd-gpu-targets-string)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-cmake
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("find_package\\(Git.*") "")
+                (("execute_process\\(COMMAND.*GIT_EXECUTABLE.*")
+                 (string-append
+                  "set(COMMIT_ID " #$%rocm-libraries-commit ")\n"))
+                ;; Reduce memory consumption:
+                ;; https://gitweb.gentoo.org/repo/gentoo.git/tree/sci-libs/composable-kernel/composable-kernel-7.1.0.ebuild?id=a772170f741d75565652cb319a4e37eeb7efe6e9#n86
+                ((".*(-amdgpu-early-inline-all|-amdgpu-function-calls).*") ""))))
+          (add-after 'unpack 'setenv
+            (lambda _
+              (setenv "HIP_PATH" #$(this-package-input "rocm-hip-runtime")))))))
+    (inputs (list rocm-hip-runtime))
+    (native-inputs (list python rocm-cmake rocm-toolchain))
+    (properties `((amd-gpu-targets . ,%default-amd-gpu-targets)))
+    (home-page %rocm-libraries-url)
+    (synopsis "Library for writing performance-portable kernels")
+    (description "Composable Kernel is a library which provides a tile-based
+programming model for writing performance-portable kernels, in particular for
+GPUs using the HIP programming language.")
+    (license license:expat)))

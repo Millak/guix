@@ -1,0 +1,18 @@
+Taken from: https://github.com/gentoo/gentoo/blob/91670e3163c4f7daa9821da683fb16875845f263/sci-libs/composable-kernel/files/composable-kernel-6.3.0-conditional-kernels.patch
+
+Fix component discovery, when some targets are not installed.
+Upstream bug: https://github.com/ROCm/composable_kernel/issues/1646
+--- a/Config.cmake.in
++++ b/Config.cmake.in
+@@ -6,6 +6,10 @@ foreach(_comp ${composable_kernel_FIND_COMPONENTS})
+ 	if(NOT _comp IN_LIST _composable_kernel_supported_components)
+ 		set(composable_kernel_FOUND False)
+ 		set(composable_kernel_NOT_FOUND_MESSAGE "Unsupported component: ${_comp}")
++	elseif(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/composable_kernel${_comp}Targets.cmake")
++		set(composable_kernel_FOUND False)
++		set(composable_kernel_NOT_FOUND_MESSAGE "Unsupported component for current targets: ${_comp}")
++	else()
++		include("${CMAKE_CURRENT_LIST_DIR}/composable_kernel${_comp}Targets.cmake")
+ 	endif()
+-	include("${CMAKE_CURRENT_LIST_DIR}/composable_kernel${_comp}Targets.cmake")
+ endforeach()

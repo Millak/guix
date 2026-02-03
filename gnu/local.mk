@@ -1129,6 +1129,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/collectd-5.11.0-python-3.11.patch	\
   %D%/packages/patches/combinatorial-blas-awpm.patch		\
   %D%/packages/patches/combinatorial-blas-io-fix.patch		\
+  %D%/packages/patches/composable-kernel-conditional-kernels.patch \
   %D%/packages/patches/compsize-fix-btrfs-progs-compatibility.patch	\
   %D%/packages/patches/containerd-create-pid-file.patch	\
   %D%/packages/patches/containerd-fix-includes.patch            \
