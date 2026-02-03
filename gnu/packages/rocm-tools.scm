@@ -22,12 +22,14 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages pciutils)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages rocm))
 
 ;; The components are tightly integrated and can only be upgraded as a unit. If
 ;; you want to upgrade ROCm, bump this version number and the version number in
 ;; - rocm.scm
+;; - gdb.scm
 ;; and update the hashes of the affected packages.
 
 (define %rocm-version "7.1.1")
@@ -80,3 +82,4 @@
 translate CUDA source code into portable HIP C++.")
     (home-page "https://github.com/ROCm/HIPIFY")
     (license license:ncsa)))
+

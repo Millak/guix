@@ -8,6 +8,7 @@
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2026 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,17 +34,22 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages dejagnu)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages pciutils)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages rocm)
   #:use-module (guix download)
   #:use-module (guix gexp)
-  #:use-module ((guix licenses) #:select (gpl3+))
+  #:use-module (guix git-download)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (srfi srfi-1))
@@ -194,7 +200,7 @@ doing while it runs or what it was doing just before a crash.  It allows you
 to specify the runtime conditions, to define breakpoints, and to change how
 the program is running to try to fix bugs.  It can be used to debug programs
 written in C, C++, Ada, Objective-C, Pascal and more.")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public gdb/pinned
   ;; This is the fixed version that packages depend on.  Update it rarely
@@ -307,3 +313,50 @@ the program is running to try to fix bugs.
 
 This variant of GDB can be used to debug programs written for the AVR
 microcontroller architecture.")))
+
+;; This must match '%rocm-version' in the following files:
+;; - rocm.scm
+;; - rocm-tools.scm
+(define %rocm-gdb-version "7.1.1")
+
+(define-public rocdbgapi
+  (package
+    (name "rocdbgapi")
+    (version %rocm-gdb-version)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url (string-append "https://github.com/ROCm/rocdbgapi"))
+              (commit (string-append "rocm-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1lq7xkfpzy9iyvp4zgqsqzvxrm5h00nq74pr999dp106zhj1j1j7"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:build-type "Release"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-pci.ids-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("/usr/share/hwdata")
+                 (string-append
+                  #$(this-package-native-input "hwdata")
+                  "/share/hwdata"))))))))
+    (inputs
+     (list rocm-comgr
+           rocr-runtime))
+    (native-inputs
+     (list hwdata
+           rocm-cmake))
+    (synopsis "AMD Debugger API")
+    (description "The AMD Debugger API is a library that provides all
+the support necessary for a debugger and other tools to perform low
+level control of the execution and inspection of execution state of
+AMD's commercially available GPU architectures.")
+    (home-page "https://github.com/ROCm/ROCdbgapi")
+    (license license:expat)))
