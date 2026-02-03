@@ -499,3 +499,29 @@ functionalities beyond a traditional BLAS library.")
      "The rocPRIM is a header-only library providing HIP parallel primitives
 for developing performant GPU-accelerated code on the AMD ROCm platform.")
     (license license:expat)))
+
+(define-public rocsparse
+  (package
+    (name "rocsparse")
+    (version %rocm-version)
+    (source
+     (rocm-library-source
+      "rocsparse"))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; requires GPU
+      #:build-type "Release"
+      #:configure-flags
+      #~(list
+         "-DCMAKE_CXX_COMPILER=hipcc"
+         #$(string-append "-DAMDGPU_TARGETS="
+                          (current-amd-gpu-targets-string)))))
+    (inputs (list rocm-hip-runtime rocprim))
+    (native-inputs (list rocm-cmake rocm-toolchain))
+    (properties `((amd-gpu-targets . ,%default-amd-gpu-targets)))
+    (home-page %rocm-libraries-url)
+    (synopsis "Sparse linear algebra library for ROCm")
+    (description "This package exposes a sparse BLAS interface for ROCm.  It
+is implemented in the HIP programming language.")
+    (license (list license:expat license:bsd-3))))
