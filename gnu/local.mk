@@ -64,7 +64,7 @@
 # Copyright © 2023, 2024 gemmaro <gemmaro.dev@gmail.com>
 # Copyright © 2023 Herman Rimm <herman@rimm.ee>
 # Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
-# Copyright © 2024, 2025 David Elsing <david.elsing@posteo.net>
+# Copyright © 2024-2026 David Elsing <david.elsing@posteo.net>
 # Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 # Copyright © 2024 Fabio Natali <me@fabionatali.com>
 # Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
@@ -602,6 +602,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/regex.scm				\
   %D%/packages/robotics.scm			\
   %D%/packages/rocm.scm				\
+  %D%/packages/rocm-tools.scm			\
   %D%/packages/rpc.scm				\
   %D%/packages/rpm.scm				\
   %D%/packages/rrdtool.scm			\

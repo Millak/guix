@@ -51,7 +51,9 @@
             current-amd-gpu-targets))
 
 ;; The components are tightly integrated and can only be upgraded as a unit. If
-;; you want to upgrade ROCm, bump this version number and update hashes below.
+;; you want to upgrade ROCm, bump this version number and the version number in
+;; - rocm-tools.scm
+;; and update the hashes of the affected packages.
 
 (define %rocm-version "7.1.1")
 
