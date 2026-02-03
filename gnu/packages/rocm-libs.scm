@@ -54,6 +54,9 @@
 (define %rocm-version "7.1.1")
 (define %rocm-libraries-url "https://github.com/ROCm/rocm-libraries")
 
+;; Needed by some CMake scripts, should correspond to %rocm-version
+(define %rocm-libraries-commit "f322e9ab6100cc638959e2caf636043faec9124e")
+
 (define rocm-libraries-monorepo
   (origin
     (method git-fetch)
@@ -637,4 +640,44 @@ functionality for ROCm.  It is written in the HIP programming language.")
     (synopsis "LAPACK library with multiple supported backends")
     (description "This package contains a wrapper library for LAPACK on GPUs,
 in particular via rocSOLVER for AMD GPUs.")
+    (license license:expat)))
+
+(define-public hipblas
+  (package
+    (name "hipblas")
+    (version %rocm-version)
+    (source (rocm-library-source "hipblas"))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; requires GPU
+      #:build-type "Release"
+      #:configure-flags
+      #~(list
+         "-DCMAKE_CXX_COMPILER=hipcc"
+         #$(string-append "-DAMDGPU_TARGETS=" (current-amd-gpu-targets-string)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-cmake
+            (lambda _
+              (substitute* "library/CMakeLists.txt"
+                (("find_package\\(Git.*") "")
+                (("execute_process\\(COMMAND.*GIT_EXECUTABLE.*")
+                 "set(dummy\n")
+                (("(set\\(hipblas_VERSION_COMMIT_ID ).*" _ orig)
+                 (string-append orig #$%rocm-libraries-commit ")\n"))))))))
+    (inputs
+     (list hipblas-common
+           rocblas
+           rocm-hip-runtime
+           rocrand
+           rocsolver
+           rocsparse))
+    (native-inputs (list gfortran rocm-cmake rocm-toolchain))
+    (properties `((amd-gpu-targets . ,%default-amd-gpu-targets)))
+    (home-page %rocm-libraries-url)
+    (synopsis "BLAS library with multiple supported backends")
+    (description "This package contains a wrapper library for linear algebra
+algorithms on GPUs, in particular via rocRAND, rocBLAS, rocSPARSE and
+rocSOLVER for AMD GPUs.")
     (license license:expat)))
