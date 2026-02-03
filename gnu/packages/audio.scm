@@ -815,6 +815,147 @@ attacks, performing pitch detection, tapping the beat and producing MIDI
 streams from live audio.")
     (license license:gpl3+)))
 
+(define-public dexed
+  (package
+    (name "dexed")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/asb2m10/dexed")
+                     (commit (string-append "v" version))
+                     ;; This is a JUCE project and so it bundles a particular
+                     ;; version of the JUCE repository and the sources of
+                     ;; other libraries.
+                     (recursive? #true)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1n604cvkjs11wqnaxnqzx8fgjj1klz85fnka15nnmhz49lqdlipl"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there are none
+      #:modules '((guix build utils)
+                  (guix build cmake-build-system)
+                  (guix base32)
+                  (ice-9 string-fun)
+                  (ice-9 regex)
+                  (rnrs bytevectors))
+      #:imported-modules `((guix base32)
+                           (guix build cmake-build-system)
+                           ,@%default-gnu-imported-modules)
+      #:configure-flags
+      ;; We extract the build identifer from the output prefix.  This is more
+      ;; useful than setting it to a constant string.
+      #~(let ((build-id
+               (lambda (out)
+                 (let* ((nix-store (string-append
+                                    (or (getenv "NIX_STORE") "/gnu/store")
+                                    "/"))
+                        (filename
+                         (string-replace-substring out nix-store ""))
+                        (hash (match:substring (string-match "[0-9a-z]{32}"
+                                                             filename)))
+                        (bv (nix-base32-string->bytevector hash)))
+                   (format #f "0x~x"
+                           (bytevector-u32-ref bv 0 (endianness big)))))))
+          (list (string-append "-DBUILD_ID=" (build-id #$output))))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; HOME must be defined for .vst3
+          (add-after 'unpack 'set-home-directory
+            (lambda _ (setenv "HOME" "HOME")))
+          (add-after 'unpack 'patch-libraries
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "libs/JUCE/modules/juce_gui_basics/native/juce_XSymbols_linux.h"
+                (("libX11.so.6")
+                 (search-input-file inputs "/lib/libX11.so.6"))
+                (("libXext.so.6")
+                 (search-input-file inputs "/lib/libXext.so.6"))
+                (("libXcursor.so.1")
+                 (search-input-file inputs "/lib/libXcursor.so.1"))
+                (("libXinerama.so.1")
+                 (search-input-file inputs "/lib/libXinerama.so.1"))
+                (("libXrender.so.1")
+                 (search-input-file inputs "/lib/libXrender.so.1"))
+                (("libXrandr.so.2")
+                 (search-input-file inputs "/lib/libXrandr.so.2")))))
+          (add-after 'unpack 'enable-lv2-format
+            (lambda _
+              (substitute* "Source/CMakeLists.txt"
+                (("set\\(DEXED_JUCE_FORMATS Standalone\\).*" m)
+                 (string-append m "
+if(NOT DEXED_SKIP_LV2)
+  list(APPEND DEXED_JUCE_FORMATS LV2)
+endif()
+"))
+                (("PRODUCT_NAME \"Dexed\".*" m)
+                 (string-append m "
+LV2URI \"https://github.com/asb2m10/dexed\"
+")))))
+          (replace 'install
+            (lambda* (#:key build-type #:allow-other-keys)
+              (with-directory-excursion "Source/Dexed_artefacts"
+                (install-file (string-append build-type "/Standalone/Dexed")
+                              (string-append #$output "/bin"))
+                (mkdir-p (string-append #$output:clap "/lib"))
+                (copy-recursively (string-append build-type "/CLAP")
+                                  (string-append #$output:clap "/lib"))
+                (mkdir-p (string-append #$output:lv2 "/lib"))
+                (copy-recursively (string-append build-type "/LV2")
+                                  (string-append #$output:lv2 "/lib"))
+                (mkdir-p (string-append #$output:vst3 "/lib"))
+                (copy-recursively (string-append build-type "/VST3")
+                                  (string-append #$output:vst3 "/lib"))))))))
+    (inputs
+     (list alsa-lib
+           freetype
+           gtk+
+           jack-2
+           libx11
+           libxcursor
+           libxext
+           libxinerama
+           libxrandr
+           libxrender
+           lv2
+           mesa))
+    (native-inputs
+     (list pkg-config))
+    (outputs '("out" "lv2" "clap" "vst3"))
+    (home-page "https://asb2m10.github.io/dexed/")
+    (synopsis "Frequency modulation (FM) plugin synthesizer")
+    (description
+     "Dexed is a multi-platform, multi-format plugin synthesizer.  The sound
+engine is closely modeled on the original Yamaha DX7 characteristics.  Dexed
+is also a MIDI cartridge librarian/manager for the DX7.  Features include:
+
+@enumerate
+@item 144 DAW automatable DX7 parameters available from one single panel;
+@item It fully supports DX7 input and output Sysex messages; including
+  controller change. This means that you can use this with a native DX7/TX7 as
+  a patch editor and sysex manager.
+@item Every FM operator has a realtime VU meter to know which one is active.
+@item It can load/save any DX7/TX7 sysex programs.  It is also possible to
+  save a single program into a different sysex file.
+@end enumerate
+
+Dexed can be configured to use some of the original math limitation of a DX
+synthesizer. This does not only apply to the DAC, it also involves the bit
+resolution of the sine waves and the way that the amplitude is applied to each
+operator.  Dexed comes with three engine types:
+
+@enumerate
+@item Modern: this is the original 24-bit implementation.
+@item Mark I: Based on the OPL Series but at a higher resolution (LUT are
+  10-bits).  The target of this engine is to be closest to the real DX7.
+@item OPL Series: this is an experimental 8-bit implementation of the reversed
+  engineered OPL family chips.
+@end enumerate
+")
+    (license license:gpl3+)))
+
 (define-public dsp
   (package
     (name "dsp")
