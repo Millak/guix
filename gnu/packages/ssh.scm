@@ -23,6 +23,7 @@
 ;;; Copyright © 2024, 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Patrick Norton <patrick.147.norton@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -52,6 +53,8 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages guile)
@@ -79,6 +82,7 @@
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (guix download)
@@ -1000,6 +1004,86 @@ program doesn't depend on any cryptographic libraries.  It's a simple,
 single-threaded, standalone C program.  It uses @code{poll()} to trap multiple
 clients at a time.")
     (license license:unlicense)))
+
+(define-public ssh-tools
+  (package
+    (name "ssh-tools")
+    (version "1.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/vaporup/ssh-tools")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bh6pp5ic4b8pbgzwqr516z8466x62kzwyaka38agz294qwck5sh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:modules '((srfi srfi-26)
+                  (guix build go-build-system)
+                  (guix build utils))
+      #:install-source? #f
+      #:import-path "codeberg.org/vaporup/ssh-tools/cmd/go/..."
+      #:unpack-path "codeberg.org/vaporup/ssh-tools"
+      #:test-flags
+      ;; "non-constant format string in call to fmt.Fprintf"
+      #~(list "-vet=off")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-bash
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (let ((files (find-files (string-append "src/" unpack-path
+                                                      "/cmd/bash") "ssh-"))
+                    (bin (string-append #$output "/bin")))
+                (for-each (cut install-file <> bin) files))))
+          (add-after 'install-bash 'install-manpages
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (copy-recursively (string-append "src/" unpack-path "/man/")
+                                (string-append #$output "/share/man/man1")))))))
+    (native-inputs
+     (list go-golang-org-x-crypto
+           go-sigs-k8s-io-yaml))
+    (home-page "https://codeberg.org/vaporup/ssh-tools")
+    (synopsis "Miscellaneous SSH utilities")
+    (description
+     "This package provides a suite of miscellaneous SSH-related utilities.
+
+This package includes the following commands:
+@itemize
+
+@item @command{ssh-ping}: Checks if a host is reachable using
+@code{ssh_config}.
+
+@item @command{ssh-last}: Like @command{last} but for SSH sessions.
+
+@item @command{ssh-certinfo}: Shows validity and information for SSH
+certificates.
+
+@item @command{ssh-force-password}: Forces password authentication.
+
+@item @command{ssh-keyinfo}: Prints keys in several formats.
+
+@item @command{ssh-hostkeys}: Prints server host keys in several formats.
+
+@item @command{ssh-facts}: Gets some facts about the remote system.
+
+@item @command{ssh-diff}: Diffs a file over SSH.
+
+@item @command{ssh-version}: Shows version of the SSH server you are
+connecting to.
+
+@item @command{ssh-pwd}: Quickly echos path to use for @command{scp} or
+@command{rsync}.
+
+@item @command{ssh-authorized-keys}: Collects info from
+@command{authorized_keys} files from every user it can find.
+
+@item @command{ssh-sig}: Makes @code{ssh-keygen -Y} easier to use.
+
+@end itemize")
+    (license license:gpl3)))
 
 (define-public webssh
   (package
