@@ -500,7 +500,8 @@ of Rebar and Mix build systems and Hex.pm importer."
   (team 'bootstrap
         #:name "Bootstrap"
         #:description "Full-source bootstrap: stage0, Mes, Gash, etc."
-        #:scope (list "gnu/packages/commencement.scm"
+        #:scope (list "gnu/packages/bootstrap.scm"
+                      "gnu/packages/commencement.scm"
                       "gnu/packages/mes.scm")))
 
 (define-team c++

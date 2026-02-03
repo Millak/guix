@@ -23,6 +23,7 @@ guix/scripts/import/hexpm\.scm                     @guix/beam
 
 gnu/packages/bioinformatics\.scm                   @guix/bioinformatics
 
+gnu/packages/bootstrap\.scm                        @guix/bootstrap
 gnu/packages/commencement\.scm                     @guix/bootstrap
 gnu/packages/mes\.scm                              @guix/bootstrap
 
