@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2022 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2017, 2018 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2017, 2018, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -174,6 +174,32 @@ helper macros.  You can log a message by simply streaming things to log at a
 particular severity level.  It allows logging to be controlled from the
 command line.")
     (license license:bsd-3)))
+
+(define-public glog-next
+  (package
+    (inherit glog)
+    (version "0.7.1")
+    (home-page "https://github.com/google/glog")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page)
+                                  (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1zh482ga8mndsw277h9wrq4i5xffji0li3v0xha1i6j1llzicz7s"))
+              (file-name (git-file-name "glog" version))))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'set-temporary-directory
+                 (lambda _
+                   ;; By default tests produce junk straight under
+                   ;; /tmp/guix-build-glog*, which confuses the
+                   ;; 'install-license-files' phase.  Set 'TMPDIR' so that
+                   ;; junk is out of the way.
+                   (setenv "TMPDIR"
+                           (string-append (getcwd) "/test-tmp"))
+                   (mkdir (getenv "TMPDIR")))))))))
 
 (define-public plog
   (package
