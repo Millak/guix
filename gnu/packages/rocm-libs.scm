@@ -22,20 +22,26 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages gcc)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages logging)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rocm)
-  #:use-module (gnu packages serialization))
+  #:use-module (gnu packages rocm-tools)
+  #:use-module (gnu packages serialization)
+  #:use-module (srfi srfi-1))
 
 ;; The components are tightly integrated and can only be upgraded as a unit. If
 ;; you want to upgrade ROCm, bump this version number and the version number in
@@ -228,7 +234,9 @@ AMD GPU assembly kernels.")
           (add-after 'unpack 'fix-cmake
             (lambda _
               (substitute* "cmake/dependencies.cmake"
-                (("find_package\\(Git REQUIRED\\)") "")))))))
+                (("find_package\\(Git REQUIRED\\)") ""))
+              (substitute* "cmake/origami-config.cmake.in"
+                (("origami::origami") "roc::origami")))))))
     (inputs (list rocm-hip-runtime))
     (native-inputs
      (list boost
@@ -308,3 +316,116 @@ Tensile library is mainly used as backend library to rocBLAS.  Tensile
 acts as the performance backbone for a wide variety of compute
 applications running on AMD GPUs.")
     (license license:expat)))
+
+(define hipblaslt-supported-targets
+  (list "gfx1100"
+        "gfx1101"
+        "gfx1102"
+        "gfx1103"
+        "gfx1150"
+        "gfx1151"
+        "gfx1200"
+        "gfx1201"
+        "gfx908"
+        "gfx90a"
+        "gfx940"
+        "gfx941"
+        "gfx942"
+        "gfx950"))
+
+(define (hipblaslt-targets targets)
+  (string-join
+   (lset-intersection string=? hipblaslt-supported-targets targets)
+   ";"))
+
+(define-public hipblaslt
+  (package
+    (name "hipblaslt")
+    (version %rocm-version)
+    (source
+     (rocm-library-source
+      "hipblaslt"
+      #:patches (search-patches "hipblaslt-python-nanobind.patch")))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; requires GPU
+      #:build-type "Release"
+      #:validate-runpath? #f ; Fails with GPU kernel files
+      #:configure-flags
+      #~(let ((targets
+               #$(hipblaslt-targets (current-amd-gpu-targets))))
+          (cons*
+           (string-append "-DCMAKE_CXX_COMPILER=clang++")
+           (string-append "-DCMAKE_C_COMPILER=clang")
+           (string-append "-DGPU_TARGETS=" targets)
+           ;; Unbundle rocroller and mxdatagenerator.
+           "-DHIPBLASLT_ENABLE_THEROCK=ON"
+           "-DHIPBLASLT_ENABLE_BLIS=OFF"
+           (string-append "-DCMAKE_PREFIX_PATH="
+                          #$(this-package-native-input "python-nanobind")
+                          "/lib/python"
+                          #$(version-major+minor
+                             (package-version python))
+                          "/site-packages/nanobind/cmake")
+           "-DHIPBLASLT_BUILD_TESTING=OFF"
+           "-DHIPBLASLT_ENABLE_ROCROLLER=OFF"
+           (string-append "-DTENSILELITE_BUILD_PARALLEL_LEVEL="
+                          (number->string (parallel-job-count)))
+           (if (string-null? targets) '("-DHIPBLASLT_ENABLE_DEVICE=OFF")
+               '())))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-cmake
+            (lambda* (#:key parallel-build? #:allow-other-keys)
+              (substitute* "tensilelite/Makefile"
+                (("AS :=.*")
+                 "AS := amdclang++\n")
+                (("LDD :=.*")
+                 "LDD := amdclang++\n"))
+              (substitute* "cmake/dependencies.cmake"
+                (("find_package\\(Git REQUIRED\\)") ""))
+              (substitute* "CMakeLists.txt"
+                (("add_subdirectory.*origami.*")
+                 "find_package(origami REQUIRED)\n")
+                ;; Do not enable default GPU targets if empty
+                (("NOT GPU_TARGETS OR") ""))))
+          (add-after 'fix-cmake 'setenv
+            (lambda _
+              (setenv "HIP_PATH" #$(this-package-input "rocm-hip-runtime")))))))
+    (inputs
+     (list blis
+           hipblas-common
+           lapack
+           msgpack-cxx
+           rocm-hip-runtime
+           rocm-smi
+           rocm-toolchain
+           roctracer))
+    (native-inputs
+     (list gfortran
+           mxdatagenerator
+           origami
+           procps
+           python
+           python-distro
+           python-joblib
+           python-msgpack
+           python-nanobind
+           python-orjson
+           python-packaging
+           python-pyyaml
+           python-setuptools
+           python-simplejson
+           python-ujson
+           rocm-cmake
+           rocm-toolchain
+           rocroller))
+    (properties `((amd-gpu-targets . ,%default-amd-gpu-targets)
+                  (max-silent-time . ,(* 6 3600))))
+    (home-page %rocm-libraries-url)
+    (synopsis "Flexible library for general matrix-matrix operations")
+    (description "hipBLASLt is a library that provides general
+matrix-matrix operations with a flexible API and extends
+functionalities beyond a traditional BLAS library.")
+    (license (list license:expat))))
