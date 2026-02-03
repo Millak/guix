@@ -138,6 +138,26 @@ random numbers on GPUs, in particular via rocRAND for AMD GPUs.")
 definitions for hipBLAS and hipBLASLt.")
     (license license:expat)))
 
+(define-public mxdatagenerator
+  (package
+    (name "mxdatagenerator")
+    (version %rocm-version)
+    (source
+     (rocm-library-source
+      name
+      #:location "shared/mxdatagenerator"))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; tests use a lot of memory
+      #:configure-flags #~'("-DMXDATAGENERATOR_BUILD_TESTING=ON")))
+    (native-inputs (list googletest))
+    (home-page "https://github.com/ROCm/hipBLASLt")
+    (synopsis "Library for generating AMD GPU kernel assembly")
+    (description "This package contains a library for generating and analyzing
+AMD GPU assembly kernels.")
+    (license (list license:expat))))
+
 (define-public tensile
   (package
     (name "tensile")
