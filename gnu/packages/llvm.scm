@@ -2167,6 +2167,43 @@ the host.")
     ;; Apache license 2.0 with LLVM exception
     (license license:asl2.0)))
 
+(define-public rocm-toolchain
+  (package
+    (inherit clang-rocm-toolchain)
+    (name "rocm-toolchain")
+    (inputs
+     (modify-inputs (package-inputs clang-rocm-toolchain)
+       (append lld-wrapper-rocm
+               offload-rocm
+               rocr-runtime
+               rocm-device-libs)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments clang-rocm-toolchain)
+       ((#:builder _)
+        #~(begin
+            (use-modules (ice-9 match)
+                         (guix build union))
+
+            (match %build-inputs
+              (((names . directories) ...)
+               (union-build #$output directories)))
+
+            (union-build #$output:debug
+                         (list #$(this-package-input "libc-debug")))
+            (union-build #$output:static
+                         (list #$(this-package-input "libc-static")))))))
+    (native-search-paths
+     (append (package-native-search-paths clang-rocm-toolchain)
+             (list (search-path-specification
+                     (variable "HIP_DEVICE_LIB_PATH")
+                     (files '("amdgcn/bitcode"))))))
+    (synopsis "Clang-based ROCm toolchain for C/C++ development")
+    (description
+     "This package provides a complete ROCm toolchain for C/C++ development to
+be installed in user profiles.  This includes Clang, as well as libc (headers
+and binaries, plus debugging symbols in the @code{debug} output), Binutils,
+the ROCm device libraries, and the ROCr runtime.")))
+
 
 
 (define-public include-what-you-use
