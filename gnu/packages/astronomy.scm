@@ -6720,7 +6720,7 @@ will depend on your needs.")
     (propagated-inputs
      (list python-astropy
            python-healpy-1.18
-           python-numpy-1
+           python-numpy
            python-pixell
            python-pysm3
            python-pyyaml
