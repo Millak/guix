@@ -2118,6 +2118,9 @@ existing compilers together.")
        (replace "clang" clang-rocm)
        (replace "llvm" llvm-rocm)))))
 
+(define-public clang-rocm-toolchain
+  (make-clang-toolchain clang-rocm libomp-rocm))
+
 
 
 (define-public include-what-you-use
