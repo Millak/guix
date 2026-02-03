@@ -970,6 +970,19 @@ supports a very flexible form of test discovery.")
 has been designed to be fast, light and unintrusive.")
     (license license:expat)))
 
+(define-public doctest-next
+  (package
+    (inherit doctest)
+    (version "2.4.12")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url (package-home-page doctest))
+                                  (commit (string-append "v" version))))
+              (file-name (git-file-name (package-name doctest) version))
+              (sha256
+               (base32
+                "1bwywljm4lzgwl5mig0h4621z7lx3xz0lzhwq9ys71lxdh8ka6qp"))))))
+
 (define-public ftest
   ;; There aren't any releases and it looks more like a small side project.
   ;; It is included for completeness to run tests for package utfcpp.
