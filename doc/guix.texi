@@ -20705,6 +20705,9 @@ The syslog configuration file to use.
 @xref{syslogd invocation,,, inetutils, GNU Inetutils}, for more
 information on the configuration file syntax.
 
+@item @code{pid-file} (default: @code{"/var/run/syslog.pid"})
+The pid file for @command{syslogd}.
+
 @item @code{extra-options} (default: @code{'()})
 List of extra command-line options for @command{syslog}.
 

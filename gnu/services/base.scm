@@ -216,6 +216,10 @@
 
             syslog-configuration
             syslog-configuration?
+            syslog-configuration-syslogd
+            syslog-configuration-config-file
+            syslog-configuration-pid-file
+            syslog-configuration-extra-options
             syslog-service  ; deprecated
             syslog-service-type
             %default-syslog.conf
@@ -1686,6 +1690,8 @@ mail.*                                 -/var/log/maillog
                         (default (file-append inetutils "/libexec/syslogd")))
   (config-file          syslog-configuration-config-file
                         (default %default-syslog.conf))
+  (pid-file             syslog-configuration-pid-file
+                        (default "/var/run/syslog.pid"))
   (extra-options        syslog-configuration-extra-options
                         (default '())))
 
@@ -1721,7 +1727,7 @@ reload its settings file.")))
                    "-f" #$syslog.conf
                    #$@(syslog-configuration-extra-options config))
              #:file-creation-mask #o137
-             #:pid-file "/var/run/syslog.pid"))
+             #:pid-file #$(syslog-configuration-pid-file config)))
    (stop #~(make-kill-destructor))))
 
 (define %default-syslog-files
