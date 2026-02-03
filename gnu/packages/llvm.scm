@@ -32,6 +32,7 @@
 ;;; Copyright © 2025 Liam Hupfer <liam@hpfr.net>
 ;;; Copyright © 2025 dan <i@dan.games>
 ;;; Copyright © 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2026 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2080,6 +2081,42 @@ existing compilers together.")
   (package
     (inherit (make-lld-wrapper lld-rocm))
     (name "lld-wrapper-rocm")))
+
+(define-public libomp-rocm
+  (package
+    (inherit libomp-20)
+    (name "libomp-rocm")
+    (version (package-version llvm-rocm))
+    (source (package-source llvm-rocm))
+    (arguments
+     (substitute-keyword-arguments (package-arguments libomp-20)
+       ((#:configure-flags flags '())
+        #~(cons
+           (string-append "-DOPENMP_LIT_ARGS="
+                          "-sv --show-unsupported --show-xfail"
+                          ;; This test fails
+                          " --filter-out tasking/task_teams_stress_test.cpp")
+           #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'fix-lit
+              (lambda _
+                (substitute* "openmp/cmake/OpenMPTesting.cmake"
+                  (((string-append "COMMAND \\$\\{Python3_EXECUTABLE\\}"
+                                   " \\$\\{OPENMP_LLVM_LIT_EXECUTABLE\\}"))
+                   "COMMAND ${OPENMP_LLVM_LIT_EXECUTABLE}"))
+                (substitute* "openmp/runtime/test/lit.cfg"
+                  (("config\\.name =.*" orig)
+                   (string-append
+                    orig
+                    "\nconfig.environment['C_INCLUDE_PATH']"
+                    " = os.environ['C_INCLUDE_PATH']\n"
+                    "config.environment['CPLUS_INCLUDE_PATH']"
+                    " = os.environ['CPLUS_INCLUDE_PATH']\n")))))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-20)
+       (replace "clang" clang-rocm)
+       (replace "llvm" llvm-rocm)))))
 
 
 
