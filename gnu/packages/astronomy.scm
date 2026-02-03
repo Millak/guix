@@ -8107,16 +8107,21 @@ natively in Siril.")
 (define-public python-pysm3
   (package
     (name "python-pysm3")
-    (version "3.4.3")
+    ;; NumPy2 support was added after 3.4.4 was released.
+    (properties '((commit . "7e5980e18a03aac9adf0eea09ef94b8e359a7fe0")
+                  (revision . "0")))
+    (version (git-version "3.4.3"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/galsci/pysm")
-              (commit version)))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qi01g71m0biqchdy1v7sk54kg1w3s75qfbf2s50ifsmprajjs5r"))))
+        (base32 "03d4dn79741j7acgma4ida8q6ps4xf5d4mpfv22rl3f1s8fbfx6y"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -8175,10 +8180,11 @@ natively in Siril.")
           (add-after 'unpack 'relax-requirements
             (lambda _
               (substitute* "pyproject.toml"
-                (("scipy < 1.15") "scipy"))))
+                (("scipy.* < 1.15") "scipy"))))
           (add-before 'build 'set-version
             (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                      #$(version-major+minor+point version)))))))
     (native-inputs
      (list nss-certs-for-test
            python-hatch-vcs
@@ -8196,7 +8202,7 @@ natively in Siril.")
            python-h5py
            python-healpy-1.18
            python-numba
-           python-numpy-1
+           python-numpy
            python-scipy
            python-toml))
     (home-page "https://pysm3.readthedocs.io/")
