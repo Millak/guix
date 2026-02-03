@@ -469,3 +469,33 @@ functionalities beyond a traditional BLAS library.")
     (description "rocBLAS is the ROCm Basic Linear Algebra Subprograms
 (BLAS) library.  It is implemented in the HIP programming language.")
     (license (list license:expat license:bsd-3))))
+
+(define-public rocprim
+  (package
+    (name "rocprim")
+    (version %rocm-version)
+    (source
+     (rocm-library-source
+      "rocprim"
+      ;; XXX: With libstdc++, the placement new operator is not defined for
+      ;; device code.
+      #:patches (search-patches "rocprim-placement-new-delete.patch")))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:build-type "Release"
+      #:tests? #f ; requires GPU
+      #:configure-flags
+      #~(list "-DCMAKE_CXX_COMPILER=hipcc"
+              #$(string-append "-DAMDGPU_TARGETS="
+                               (current-amd-gpu-targets-string)))))
+    (inputs (list rocm-hip-runtime))
+    (native-inputs (list rocm-cmake rocm-toolchain))
+    (properties `((amd-gpu-targets . ,%default-amd-gpu-targets)))
+    (home-page %rocm-libraries-url)
+    (synopsis
+     "Header-only library providing HIP parallel primitives")
+    (description
+     "The rocPRIM is a header-only library providing HIP parallel primitives
+for developing performant GPU-accelerated code on the AMD ROCm platform.")
+    (license license:expat)))
