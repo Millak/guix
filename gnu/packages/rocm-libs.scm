@@ -525,3 +525,40 @@ for developing performant GPU-accelerated code on the AMD ROCm platform.")
     (description "This package exposes a sparse BLAS interface for ROCm.  It
 is implemented in the HIP programming language.")
     (license (list license:expat license:bsd-3))))
+
+(define-public hipsparse
+  (package
+    (name "hipsparse")
+    (version %rocm-version)
+    (source (rocm-library-source "hipsparse"))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; requires GPU
+      #:build-type "Release"
+      #:configure-flags
+      #~(list
+         "-DCMAKE_CXX_COMPILER=hipcc"
+         #$(string-append "-DGPU_TARGETS=" (current-amd-gpu-targets-string)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-example-fpie
+            (lambda _
+              (substitute* "clients/samples/CMakeLists.txt"
+                (("add_executable.*EXAMPLE_TARGET.*" all)
+                 (string-append
+                  all "target_compile_options(${EXAMPLE_TARGET}"
+                  " PRIVATE -fpie)\n"))))))))
+    (inputs
+     (list googletest
+           gfortran
+           rocm-hip-runtime
+           rocsparse))
+    (native-inputs (list rocm-cmake rocm-toolchain))
+    (properties `((amd-gpu-targets . ,%default-amd-gpu-targets)))
+    (home-page %rocm-libraries-url)
+    (synopsis "Sparse linear algebra library with multiple supported
+backends")
+    (description "This package contains a wrapper library for sparse linear
+algebra on GPUs, in particular via rocSPARSE for AMD GPUs.")
+    (license license:expat)))
