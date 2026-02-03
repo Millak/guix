@@ -569,3 +569,27 @@ command-line tool, @command{amd-smi}, which can be used to do the same.")
 modification of the intercept API table(s) of the HSA/HIP/ROCTx
 runtime libraries by the ROCprofiler (v2) library.")
     (license license:expat)))
+
+(define-public rocm-core
+  (package
+    (name "rocm-core")
+    (version %rocm-version)
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/ROCm/rocm-core")
+                     (commit (string-append "rocm-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1a0sp50vql4nl6h19frpf1swka8j2hwmy0iaw8l1lbgvpd3hyr6x"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:configure-flags
+      `(list ,(string-append "-DROCM_VERSION=" %rocm-version))))
+    (home-page "https://github.com/Rocm/rocm-core")
+    (synopsis "Utility to get the ROCm release version")
+    (description "Utility to get the ROCm release version")
+    (license license:expat)))
