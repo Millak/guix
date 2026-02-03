@@ -6687,6 +6687,69 @@ It handles reciprocal-space structure factors and real-space pair distribution
 functions, performing Fourier transforms between them and applying filters to
 remove spurious artifacts in the data.")
     (license license:gpl3+)))
+
+(define-public python-orsopy
+  (package
+    (name "python-orsopy")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "orsopy" version))
+       (sha256
+        (base32 "1fpp9h93p55sa4cfsix71ibj74fdrgh2kzmw2rg06ya8q0c4ndik"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv"
+                        ;; These tests require network access.
+                        "--ignore=orsopy/slddb/tests/test_webapi.py"
+                        "--deselect=orsopy/fileio/tests/test_model_language.py::TestSubStack::test_resolve_layers"
+                        "--deselect=orsopy/fileio/tests/test_model_language.py::TestMaterial::test_density_lookup_elements"
+                        "--deselect=orsopy/fileio/tests/test_model_language.py::TestSampleModel::test_resolve_to_layers")))))))
+    (propagated-inputs
+     (list python-numpy python-pyyaml python-jsonschema python-h5py))
+    (native-inputs
+     (list python-pytest python-pint))
+    (home-page "https://github.com/reflectivity/orsopy")
+    (synopsis "Open Reflectometry Standards Organization Python tools")
+    (description
+     "This package provides Python tools for the Open Reflectometry Standards
+Organization (ORSO).  It includes utilities for working with reflectometry
+data files and the ORSO file format.")
+    (license license:expat)))
+
+(define-public python-pycifrw
+  (package
+    (name "python-pycifrw")
+    (version "4.4.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyCifRW" version))
+       (sha256
+        (base32 "05ggj4l9cir02m593azhl03wfjimx3rvwbznpx01bdqawxsmkgq2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Tests are not included in the PyPI tarball.
+     (list #:tests? #f))
+    (propagated-inputs
+     (list python-numpy python-ply))
+    (native-inputs
+     (list python-setuptools))  ; build-backend = setuptools.build_meta
+    (home-page "https://github.com/jamesrhester/pycifrw")
+    (synopsis "CIF file reader and writer")
+    (description
+     "PyCifRW provides support for reading and writing CIF (Crystallographic
+Information File) format files.  CIF is the standard format for
+crystallographic data exchange endorsed by the International Union of
+Crystallography.")
+    (license license:psfl)))
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
