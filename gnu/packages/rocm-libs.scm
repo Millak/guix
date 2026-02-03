@@ -24,6 +24,7 @@
   #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages llvm)
@@ -208,6 +209,36 @@ AMD GPU assembly kernels.")
     (synopsis "Library for generating AMD GPU kernel assembly")
     (description "This package contains a library for generating and analyzing
 AMD GPU assembly kernels.")
+    (license (list license:expat))))
+
+(define-public origami
+  (package
+    (name "origami")
+    (version %rocm-version)
+    (source
+     (rocm-library-source
+      name
+      #:location "shared/origami"))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~'("-DROCM_FOUND=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-cmake
+            (lambda _
+              (substitute* "cmake/dependencies.cmake"
+                (("find_package\\(Git REQUIRED\\)") "")))))))
+    (inputs (list rocm-hip-runtime))
+    (native-inputs
+     (list boost
+           googletest
+           rocm-cmake
+           rocm-toolchain))
+    (home-page %rocm-libraries-url)
+    (synopsis "Library for selecting GEMM configurations for AMD GPU kernels")
+    (description "@code{origami} provides a method for selecting GEMM
+configurations deterministically based on compute and memory latencies.")
     (license (list license:expat))))
 
 (define-public tensile
