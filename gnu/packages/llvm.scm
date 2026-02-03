@@ -1477,9 +1477,7 @@ This AMD fork includes AMD-specific additions."))))
                    ;; TODO: test this on llvm-rocm.
                    (string-append
                     "-DLLVM_EXTERNAL_LIT="
-                    (search-input-file %build-inputs "bin/.lit-real"))
-                   ;; Disable clang wrapper which depends on lld as well.
-                   "-DCLANG_ENABLE_AMDCLANG=OFF")))
+                    (search-input-file %build-inputs "bin/.lit-real")))))
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
             (replace 'check
