@@ -33,6 +33,7 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages logging)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -601,3 +602,39 @@ algebra on GPUs, in particular via rocSPARSE for AMD GPUs.")
     (description "rocSOLVER is a partial implementation of the LAPACK
 functionality for ROCm.  It is written in the HIP programming language.")
     (license license:bsd-2)))
+
+(define-public hipsolver
+  (package
+    (name "hipsolver")
+    (version %rocm-version)
+    (source (rocm-library-source "hipsolver"))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; requires GPU
+      #:build-type "Release"
+      #:configure-flags
+      #~(list
+         "-DCMAKE_CXX_COMPILER=hipcc"
+         #$(string-append "-DAMDGPU_TARGETS=" (current-amd-gpu-targets-string)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'suitesparse-include
+            (lambda _
+              (substitute* "library/src/amd_detail/hipsolver_sparse.cpp"
+                (("<suitesparse/cholmod\\.h>")
+                 "<cholmod.h>")))))))
+    (inputs (list
+             rocblas
+             rocm-hip-runtime
+             rocsolver
+             rocsparse
+             suitesparse-config
+             suitesparse-cholmod))
+    (native-inputs (list gfortran pkg-config rocm-cmake rocm-toolchain))
+    (properties `((amd-gpu-targets . ,%default-amd-gpu-targets)))
+    (home-page %rocm-libraries-url)
+    (synopsis "LAPACK library with multiple supported backends")
+    (description "This package contains a wrapper library for LAPACK on GPUs,
+in particular via rocSOLVER for AMD GPUs.")
+    (license license:expat)))
