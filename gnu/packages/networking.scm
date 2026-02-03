@@ -3093,7 +3093,7 @@ procedure calls (RPCs).")
 (define-public opensnitch-daemon
   (package
     (name "opensnitch-daemon")
-    (version "1.7.2")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -3102,7 +3102,7 @@ procedure calls (RPCs).")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r36khc8jfijh3385453az10d442kb6mg4ji44qv7kf0k34pn12w"))))
+        (base32 "1bvpv4n3a4q8pg3wj9cv7fyqs7l2d1cw96g5j7lmpsq267c62gh7"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -3154,9 +3154,9 @@ procedure calls (RPCs).")
                 (with-directory-excursion (string-append "src/" import-path)
                   (for-each (lambda (name)
                               (install-file name dest))
-                            '("default-config.json"
-                              "network_aliases.json"
-                              "system-fw.json")))))))))
+                            '("data/default-config.json"
+                              "data/network_aliases.json"
+                              "data/system-fw.json")))))))))
     (native-inputs
      (list go-github-com-fsnotify-fsnotify
            go-github-com-cilium-ebpf
@@ -3210,39 +3210,36 @@ a per-application basis whenever a new outbound connection is attempted.")
               ;; Debian does the following after install
               (with-directory-excursion "i18n"
                 (invoke "make"))
-              (invoke "pyrcc5" "-o" "opensnitch/resources_rc.py"
+              (invoke (string-append (assoc-ref inputs "qtbase")
+                                     "/lib/qt6/libexec/rcc")
+                      "-g" "python"
+                      "-o" "opensnitch/resources_rc.py"
                       "opensnitch/res/resources.qrc")
               ;; resources_rc.py is not installed automatically.
               (install-file "opensnitch/resources_rc.py"
-                            (string-append (site-packages inputs outputs) "/opensnitch"))
-              (substitute* "tests/test_nodes.py"
-                (("from opensnitch import ui_pb2")
-                 "from opensnitch.proto import ui_pb2"))
-              (for-each (lambda (name)
-                          (substitute* name
-                            (("^import ui_pb2")
-                             "from . import ui_pb2")))
-                        (find-files "opensnitch/proto" "ui_pb2_grpc.py"))))
+                            (string-append (site-packages inputs outputs) "/opensnitch"))))
           (add-after 'install-rc 'wrap-qt
             (lambda* (#:key inputs #:allow-other-keys)
-              (wrap-qt-program "opensnitch-ui"
+              (wrap-qt-program "opensnitch-ui" ; doesn't do it? why not?
                                #:output #$output
-                               #:inputs inputs))))))
+                               #:inputs inputs
+                               #:qt-major-version "6"))))))
     (native-inputs
      (list python-setuptools
            python-wheel
-           qttools-5))
+           qttools))
     (inputs
      (list python-grpcio-tools
            python-notify2
            python-pyasn1
            python-pyinotify
-           python-pyqt
+           python-pyqt-6
            python-protobuf
            python-requests
            python-slugify
-           qtsvg-5
-           qtwayland-5))
+           qtbase
+           qtsvg
+           qtwayland))
     (synopsis "UI for @code{opensnitch}")))
 
 (define-public openvswitch
