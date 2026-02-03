@@ -6998,3 +6998,28 @@ add_subdirectory[(][.][.]/[.][.]/dlib/external/pybind11 pybind11_build[)]")
            pybind11
            python-pytest
            python-setuptools))))
+
+;; Version 0.16 breaks miopen
+(define-public frugally-deep
+  (package
+    (name "frugally-deep")
+    (version "0.15.31")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/Dobiasd/frugally-deep")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0gzkv03kz9p94a9apmds77npvxhmqyahhah4bq5yz3v9pvw6kx10"))))
+    (build-system cmake-build-system)
+    ;; Tests require tensorflow
+    (arguments (list #:tests? #f))
+    (native-inputs (list eigen functionalplus nlohmann-json))
+    (home-page "https://github.com/Dobiasd/frugally-deep")
+    (synopsis "Header-only library for using Keras (TensorFlow) models
+in C++")
+    (description "@code{frugally-deep} is a header-only C++ library for
+inference of Keras machine learning models on a single CPU core.")
+    (license license:expat)))
