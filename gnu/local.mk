@@ -1907,6 +1907,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/minisat-friend-declaration.patch		\
   %D%/packages/patches/minisat-install.patch			\
   %D%/packages/patches/miniz-for-pytorch.patch			\
+  %D%/packages/patches/miopen-zstd.patch			\
   %D%/packages/patches/mit-krb5-hurd.patch			\
   %D%/packages/patches/mitm-cache-head-requests.patch   	\
   %D%/packages/patches/mpc123-initialize-ao.patch		\

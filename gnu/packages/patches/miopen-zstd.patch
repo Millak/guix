@@ -1,0 +1,16 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 377dbe3..8d65dfd 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -846,10 +846,7 @@ if(HAS_LIB_STD_FILESYSTEM)
+     target_link_libraries(MIOpen PRIVATE stdc++fs)
+ endif()
+ 
+-find_package(zstd)
+-if(zstd_FOUND)
+-    target_link_libraries(MIOpen PRIVATE $<IF:$<TARGET_EXISTS:zstd::libzstd_shared>,zstd::libzstd_shared,zstd::libzstd_static>)
+-endif()
++target_link_libraries(MIOpen PRIVATE zstd)
+ 
+ function(target_internal_library TARGET)
+     target_link_libraries(${TARGET} PRIVATE ${ARGN})

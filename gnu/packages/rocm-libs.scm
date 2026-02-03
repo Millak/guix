@@ -24,14 +24,17 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages algebra)
   #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages logging)
+  #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
@@ -42,6 +45,7 @@
   #:use-module (gnu packages rocm)
   #:use-module (gnu packages rocm-tools)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages sqlite)
   #:use-module (srfi srfi-1))
 
 ;; The components are tightly integrated and can only be upgraded as a unit. If
@@ -795,4 +799,75 @@ GPUs using the HIP programming language.")
     (description "This package provides a header-only C++ library for a
 half-precision floating point type (IEEE 754 conformant) together with common
 operations on this type.")
+    (license license:expat)))
+
+(define-public miopen
+  (package
+    (name "miopen")
+    (version %rocm-version)
+    (source
+     (rocm-library-source
+      "miopen"
+      #:patches
+      (search-patches
+       "miopen-zstd.patch")))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; requires GPU
+      #:build-type "Release"
+      #:configure-flags
+      #~(list
+         "-DCMAKE_CXX_COMPILER=hipcc"
+         "-DBoost_USE_STATIC_LIBS=OFF"
+         #$(string-append "-DAMDGPU_TARGETS=" (current-amd-gpu-targets-string)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-tidy+tests
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("add_subdirectory.*test.*") "")
+                (("set\\(MIOPEN_TIDY_ERRORS ALL\\)") ""))))
+          (add-after 'unpack 'adjust-ck-checks
+            (lambda _
+              (substitute* (find-files "src" ".*mha.*\\.cpp$")
+                (("MIOPEN_USE_COMPOSABLEKERNEL") "MIOPEN_USE_CK_MHA_OPS"))
+              (substitute*
+                  (cons*
+                   "src/mlo_dir_conv.cpp"
+                   "src/solver/conv_ck_igemm_fwd_bias_res_add_activ_fused.cpp"
+                   "src/solver/conv_ck_igemm_fwd_bias_activ_fused.cpp"
+                   (find-files "src" ".*xdl.*\\.cpp$"))
+                (("MIOPEN_USE_COMPOSABLEKERNEL") "MIOPEN_USE_CK_XDL_OPS")))))))
+    (inputs
+     (list
+      boost
+      composable-kernel
+      hipblas
+      hipblas-common
+      hipblaslt
+      rocblas
+      rocm-hip-runtime
+      rocmlir
+      rocrand
+      roctracer
+      sqlite
+      `(,zstd "lib")))
+    (native-inputs
+     (list
+      eigen
+      frugally-deep
+      functionalplus
+      googletest
+      half-rocm
+      nlohmann-json
+      pkg-config
+      rocm-cmake
+      rocm-toolchain))
+    (properties `((amd-gpu-targets . ,%default-amd-gpu-targets)))
+    (home-page %rocm-libraries-url)
+    (synopsis "GPU library for machine learning primitives")
+    (description "@code{MIOpen} is a library which exposes a C API to GPU
+machine learning primitives.  This package contains the HIP version based on
+ROCm.")
     (license license:expat)))
