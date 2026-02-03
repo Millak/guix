@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021-2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2026 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -517,6 +518,20 @@
                        (result1 (lower-object obj1)))
     (return (and (eq? drv0 result0)
                  (eq? drv1 result1)))))
+
+(test-assertm "delayed-object"
+  (let ((evaluated #f))
+    (mlet* %store-monad ((drv (package->derivation coreutils))
+                         (obj -> (delayed-object
+                                  (begin
+                                    (set! evaluated #t)
+                                    coreutils)))
+                         (first-evaluated -> evaluated)
+                         (result (lower-object obj)))
+      (return (and (string=? (derivation-file-name drv)
+                             (derivation-file-name result))
+                   (not first-evaluated)
+                   evaluated)))))
 
 (test-assert "with-parameters + file-append"
   (let* ((system (match (%current-system)

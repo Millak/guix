@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2026 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -95,6 +96,10 @@
 
             with-parameters
             parameterized?
+
+            delayed-object
+            delayed-object?
+            delayed-object-promise
 
             load-path-expression
             gexp-modules
@@ -777,6 +782,21 @@ x86_64-linux when COREUTILS is lowered."
                               (expand base lowered output)))
                            (obj                   ;store item
                             obj)))))))))
+
+;; Object which evaluates its promise when it is lowered.
+(define-record-type <delayed-object>
+  (%delayed-object promise)
+  delayed-object?
+  (promise delayed-object-promise))
+
+(define-syntax-rule (delayed-object body ...)
+  "Delays the evaluation of BODY to lowering time of the return object."
+  (%delayed-object (delay (begin body ...))))
+
+(define-gexp-compiler (delayed-object-compiler (object <delayed-object>)
+                                               system target)
+  (with-monad %store-monad
+    (return (force (delayed-object-promise object)))))
 
 
 ;;;

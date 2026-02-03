@@ -148,6 +148,7 @@ Copyright @copyright{} 2025 Edouard Klein@*
 Copyright @copyright{} 2025 Rodion Goritskov@*
 Copyright @copyright{} 2025 dan@*
 Copyright @copyright{} 2025 Noé Lopez@*
+Copyright @copyright{} 2026 David Elsing@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -12980,6 +12981,15 @@ for a given object:
 
 The example above returns an object that corresponds to the i686 build
 of Coreutils, regardless of the current value of @code{%current-system}.
+@end defmac
+
+@defmac delayed object exp
+This macro delays the evaluation of @var{exp} until the returned object
+is lowered to a derivation or store item.
+
+Its intended use case is to prevent the use of a non-delayed top-level
+variable of another module, e.g. when using a gexp in the @code{source}
+field of a @var{package}.
 @end defmac
 
 @anchor{gexp-input}
