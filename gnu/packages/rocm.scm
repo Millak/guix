@@ -186,8 +186,7 @@ and in-process/in-memory compilation.")
          (string-append
           "-DHIP_COMMON_DIR=" #$(package-source this-package) "/projects/hip")
          ;; for now
-         "-DUSE_PROF_API=OFF"
-         "-DHIP_ENABLE_ROCPROFILER_REGISTER=OFF")
+         "-DUSE_PROF_API=OFF")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir
@@ -224,6 +223,7 @@ and in-process/in-memory compilation.")
            rocm-comgr
            rocr-runtime
            rocm-device-libs
+           rocprofiler-register
            libffi
            clang-rocm))
     (native-inputs
