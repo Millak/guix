@@ -98,7 +98,8 @@
            clang-rocm
            lld-rocm
            numactl
-           rocm-device-libs))           ; For bitcode.
+           rocm-device-libs
+           rocprofiler-register))
     (native-inputs (list pkg-config xxd))
     (home-page %rocm-systems-url)
     (synopsis "ROCm Platform Runtime")
