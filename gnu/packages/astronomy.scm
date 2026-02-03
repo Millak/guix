@@ -8234,6 +8234,12 @@ memory usage, improving performance and run in parallel with MPI.")
         ;; tests: 189 passed, 213 skipped, 3 xfailed
         #:phases
         #~(modify-phases %standard-phases
+            ;; NumPy2 should work even though not officially supported.
+            ;; See <https://github.com/spacetelescope/pysynphot/pull/164>
+            (add-after 'unpack 'relax-dependencies
+              (lambda _
+                (substitute* "setup.py"
+                  (("'numpy<2'") "'numpy'"))))
             (add-before 'build 'set-version
               (lambda _
                 (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "2.0.0")))
@@ -8248,7 +8254,7 @@ memory usage, improving performance and run in parallel with MPI.")
       (propagated-inputs
        (list python-astropy
              python-beautifulsoup4
-             python-numpy-1
+             python-numpy
              python-pytest-astropy-header
              python-six))
       (home-page "https://github.com/spacetelescope/pysynphot")
