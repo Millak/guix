@@ -4998,3 +4998,24 @@ and stable references (iterators are NOT stable) on insert.")
     (description "This package provides a single-header C++14 library for
 saving and loading C++ objects using a binary format.")
     (license license:expat)))
+
+(define-public libdivide
+  (package
+    (name "libdivide")
+    (version "5.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/ridiculousfish/libdivide")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18gpi9z9kimidkijpbrbf9vxg9s2md3nhyx9yh3n17cdj6aabgq2"))))
+    (build-system cmake-build-system)
+    (home-page "https://libdivide.com/")
+    (synopsis "Header-only library for optimized integer division")
+    (description "This package provides a header-only C and C++ library for
+calculating integer division by using shift, add and multiply instructions.")
+    ;; dual licensed
+    (license (list license:zlib license:boost1.0))))
