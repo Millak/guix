@@ -2,6 +2,8 @@
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2022, 2023, 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2026 Jean-Baptiste Note <jean-baptiste.note@m4x.org>
+;;; Copyright © 2023 Advanced Micro Devices, Inc.
+;;; Copyright © 2026 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify it
 ;;; under the terms of the GNU General Public License as published by
@@ -531,3 +533,43 @@ applications to control GPU operations, monitor performance, and retrieve
 information about the system's drivers and GPUs.  It also provides a
 command-line tool, @command{amd-smi}, which can be used to do the same.")
     (license (list license:expat license:ncsa))))
+
+(define-public rocprofiler-register
+  (package
+    (name "rocprofiler-register")
+    (version %rocm-version)
+    (source %rocm-systems-origin)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         "-DROCPROFILER_REGISTER_BUILD_GLOG=OFF"
+         "-DROCPROFILER_REGISTER_BUILD_FMT=OFF"
+         "-DROCPROFILER_REGISTER_BUILD_TESTS=ON")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _
+             (chdir "projects/rocprofiler-register")))
+         (add-after 'chdir 'patch-cmake
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               (("find_package\\(Git.*") ""))
+             (substitute* "cmake/rocprofiler_register_config_packaging.cmake"
+               (("set\\(_DESC.*" orig)
+                (string-append orig "\ninclude(CPack)\n")))
+             (substitute* "source/lib/rocprofiler-register/CMakeLists.txt"
+               (("target_link_libraries" orig)
+                (string-append
+                 "find_package(fmt REQUIRED)\n"
+                 "find_package(glog REQUIRED)\n"
+                 orig))))))))
+    (inputs (list glog-next))
+    (native-inputs (list fmt-11))
+    (home-page %rocm-systems-url)
+    (synopsis "Support library to be used with rocprofiler")
+    (description "The rocprofiler-register library coordinates the
+modification of the intercept API table(s) of the HSA/HIP/ROCTx
+runtime libraries by the ROCprofiler (v2) library.")
+    (license license:expat)))
