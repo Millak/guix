@@ -429,3 +429,43 @@ applications running on AMD GPUs.")
 matrix-matrix operations with a flexible API and extends
 functionalities beyond a traditional BLAS library.")
     (license (list license:expat))))
+
+(define-public rocblas
+  (package
+    (name "rocblas")
+    (version %rocm-version)
+    (source
+     (rocm-library-source
+      "rocblas"))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; requires GPU
+      #:build-type "Release"
+      #:validate-runpath? #f
+      #:configure-flags
+      #~(list
+         "-DCMAKE_CXX_COMPILER=hipcc"
+         #$(string-append "-DAMDGPU_TARGETS=" (current-amd-gpu-targets-string))
+         "-DBUILD_WITH_PIP=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-cmake
+            (lambda _
+              (substitute* "library/CMakeLists.txt"
+                (("find_package\\(Git REQUIRED\\)") "")))))))
+    (inputs
+     (list rocm-hip-runtime
+           hipblas-common
+           hipblaslt
+           msgpack-cxx
+           python
+           roctracer
+           tensile))
+    (native-inputs (list rocm-cmake rocm-toolchain))
+    (properties `((amd-gpu-targets . ,%default-amd-gpu-targets)))
+    (home-page %rocm-libraries-url)
+    (synopsis "BLAS implementation for ROCm")
+    (description "rocBLAS is the ROCm Basic Linear Algebra Subprograms
+(BLAS) library.  It is implemented in the HIP programming language.")
+    (license (list license:expat license:bsd-3))))
