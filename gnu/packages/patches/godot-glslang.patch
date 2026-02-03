@@ -1,0 +1,23 @@
+From 4011d426468eda71e11e13ad3232ad252a141b93 Mon Sep 17 00:00:00 2001
+From: Sertonix <sertonix@posteo.net>
+Date: Sat, 22 Jun 2024 17:14:11 +0000
+Subject: [PATCH] Fix missing lib with builtin_glslang=false
+
+The `GetDefaultResource` function is in separate library file.
+---
+ platform/linuxbsd/detect.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/platform/linuxbsd/detect.py b/platform/linuxbsd/detect.py
+index e1e6886ac0d8..35415dc269c2 100644
+--- a/platform/linuxbsd/detect.py
++++ b/platform/linuxbsd/detect.py
+@@ -514,7 +514,7 @@ def configure(env: "SConsEnvironment"):
+             env.ParseConfig("pkg-config vulkan --cflags --libs")
+         if not env["builtin_glslang"]:
+             # No pkgconfig file so far, hardcode expected lib name.
+-            env.Append(LIBS=["glslang", "SPIRV"])
++            env.Append(LIBS=["glslang", "SPIRV", "glslang-default-resource-limits"])
+ 
+     if env["opengl3"]:
+         env.Append(CPPDEFINES=["GLES3_ENABLED"])

@@ -29,7 +29,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 dan <i@dan.games>
 ;;; Copyright © 2022 Cairn <cairn@pm.me>
-;;; Copyright © 2023, 2024 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2023-2026 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022-2023, 2025 Adam Faiz <adam.faiz@disroot.org>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024-2025 Maxim Cournoyer <maxim@guixotic.coop>
@@ -2547,7 +2547,7 @@ scripted in a Python-like language.")
 (define-public godot
   (package
     (name "godot")
-    (version "4.5")
+    (version "4.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2556,10 +2556,10 @@ scripted in a Python-like language.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0s9ymgy9cwnk4v35qpn9fm993pn64h1i5k9khpd7mqs6023hl8i4"))
-              ;; TODO: Remove this patch on next update as it was merged post
-              ;; 4.5 release.
-              (patches (search-patches "godot-libjpeg-turbo-unbundle.patch"))
+                "1lwjydaa4cvnfrllxlryppcfmba3qq1518zi4qr5580n731xfg10"))
+              ;; TODO: Remove on next release; see
+              ;; <https://github.com/godotengine/godot/pull/93478>.
+              (patches (search-patches "godot-glslang.patch"))
               (modules '((guix build utils)
                          (ice-9 ftw)
                          (srfi srfi-1)))
@@ -2582,17 +2582,12 @@ scripted in a Python-like language.")
                               "certs"
                               "clipper2"
                               "cvtt"
+                              "dr_libs"
                               "linuxbsd_headers"
                               "etc2comp"
                               "etcpak"
                               "fonts"
                               "glad"
-                              ;; TODO: Remove once Godot once again builds
-                              ;; with our glslang package, or with a
-                              ;; workaround.  Currently it looks for a Types.h
-                              ;; which is no longer in the glslang output
-                              ;; after the most recent update.
-                              "glslang"
                               ;; This is part of the simdjson package though
                               ;; modified by Godot.
                               "grisu2"
@@ -2612,6 +2607,7 @@ scripted in a Python-like language.")
                               "oidn"
                               "openxr"
                               "pvrtccompressor"
+                              "re-spirv"
                               "recastnavigation"
                               "rvo2"
                               "smaa"
@@ -2639,9 +2635,7 @@ scripted in a Python-like language.")
                         "builtin_embree=no"
                         "builtin_enet=no"
                         "builtin_freetype=no"
-                        ;; TODO: Uncomment this option when the todo for
-                        ;; glslang in the snippet is resolved.
-                        ;; "builtin_glslang=no"
+                        "builtin_glslang=no"
                         "builtin_graphite=no"
                         "builtin_harfbuzz=no"
                         "builtin_icu4c=no"
@@ -2734,7 +2728,12 @@ scripted in a Python-like language.")
                 (("./thirdparty/linuxbsd_headers/xkbcommon/xkbcommon-keysyms.h")
                  (string-append
                   (search-input-file inputs "include/xkbcommon/xkbcommon-keysyms.h"))))))
-          (add-after 'unbundle-xkbcommon 'unbundle-wayland
+          (add-after 'unbundle-xkbcommon 'unpack-mesa
+            (lambda _
+              (mkdir "mesa-src")
+              (invoke "tar" "--strip-components=1" "-C"
+                      "mesa-src" "-xf" #$(package-source mesa))))
+          (add-after 'unpack-mesa 'unbundle-wayland
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "platform/linuxbsd/wayland/SCsub"
                 ;; This first file does not exist in a "protocol" directory of
@@ -2742,6 +2741,9 @@ scripted in a Python-like language.")
                 ;; other substitutions.
                 (("#thirdparty/wayland/protocol/wayland.xml")
                  (search-input-file inputs "share/wayland/wayland.xml"))
+                ;; And this one is from the mesa source.
+                (("#thirdparty/wayland-protocols/mesa/wayland-drm.xml")
+                 "../../../mesa-src/src/egl/wayland/wayland-drm/wayland-drm.xml")
                 (("#thirdparty/wayland-protocols")
                  (string-append
                   #$(this-package-input "wayland-protocols") "/share/wayland-protocols"))
@@ -2755,6 +2757,11 @@ scripted in a Python-like language.")
                 (copy-recursively (string-append #$(this-package-input "vulkan-volk")
                                                  "/include")
                                   volk-dir))))
+          (add-after 'unbundle-volk 'use-system-spirv
+            (lambda _
+              (substitute* "thirdparty/spirv-reflect/spirv_reflect.h"
+                (("#if defined\\(SPIRV_REFLECT_USE_SYSTEM_SPIRV_H\\)")
+                 "#if 1"))))
           (replace 'install
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((zenity (search-input-file inputs "bin/zenity")))
@@ -2823,13 +2830,14 @@ scripted in a Python-like language.")
            pulseaudio
            sdl3
            speech-dispatcher
+           spirv-headers
            vulkan-volk
            wayland
            wayland-protocols
            wslay
            zenity
            zlib
-           `(,zstd "lib")))
+           `(,zstd-1.5.7 "lib")))
     (home-page "https://godotengine.org/")
     (synopsis "Advanced 2D and 3D game engine")
     (description

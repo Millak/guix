@@ -1521,7 +1521,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/go-github-com-warpfork-go-wish-fix-tests.patch \
   %D%/packages/patches/go-github-com-wraparound-wrap-free-fonts.patch \
   %D%/packages/patches/go-skip-gc-test.patch			\
-  %D%/packages/patches/godot-libjpeg-turbo-unbundle.patch	\
+  %D%/packages/patches/godot-glslang.patch			\
   %D%/packages/patches/gourmet-sqlalchemy-compat.patch		\
   %D%/packages/patches/gpaste-fix-paths.patch			\
   %D%/packages/patches/gpm-glibc-2.26.patch			\
