@@ -9922,7 +9922,7 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
-     (list python-asdf-4
+     (list python-asdf
            python-asdf-transform-schemas
            python-asdf-astropy
            python-astropy
