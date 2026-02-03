@@ -596,3 +596,26 @@ runtime libraries by the ROCprofiler (v2) library.")
     (synopsis "Utility to get the ROCm release version")
     (description "Utility to get the ROCm release version")
     (license license:expat)))
+
+(define-public aqlprofile
+  (package
+    (name "aqlprofile")
+    (version %rocm-version)
+    (source %rocm-systems-origin)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _
+             (chdir "projects/aqlprofile"))))
+      ;; XXX: Tests require CMake HIP language support, which expects a common
+      ;; ROCm root directory.
+      #:tests? #f))
+    (inputs (list rocr-runtime))
+    (home-page %rocm-systems-url)
+    (synopsis "Architected Queuing Language Profiling Library")
+    (description "AQLprofile is an open source library that enables advanced
+ GPU profiling and tracing on AMD platforms.")
+    (license license:expat)))
