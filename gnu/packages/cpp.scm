@@ -5019,3 +5019,31 @@ saving and loading C++ objects using a binary format.")
 calculating integer division by using shift, add and multiply instructions.")
     ;; dual licensed
     (license (list license:zlib license:boost1.0))))
+
+(define-public functionalplus
+  (package
+    (name "functionalplus")
+    (version "0.2.27")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/Dobiasd/FunctionalPlus")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1my5npxj9fnm1lxpqnx5jpp7s278zjb9l06wdzjbg4f52z7rsm9f"))))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "test"))))))
+    (build-system cmake-build-system)
+    (native-inputs (list doctest-next))
+    (home-page "https://github.com/Dobiasd/FunctionalPlus")
+    (synopsis "Functional Programming Library for C++")
+    (description "@code{FunctionalPlus} is a header-only library for
+simplifying functional programming in C++.")
+    (license license:boost1.0)))
