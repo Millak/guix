@@ -772,3 +772,27 @@ based on @code{rocPRIM}.  It is a port of the CUDA Thrust library.")
 programming model for writing performance-portable kernels, in particular for
 GPUs using the HIP programming language.")
     (license license:expat)))
+
+(define-public half-rocm
+  (package
+    (name "half-rocm")
+    (version %rocm-version)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ROCm/half")
+              (commit (string-append "rocm-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0vlsmrs3aiv30j1ifks9g9cl8b1xdjv7dd706w5npjhy27j4xzr1"))))
+    (build-system cmake-build-system)
+    (arguments '(#:tests? #f))
+    (native-inputs (list rocm-cmake))
+    (home-page "https://github.com/ROCm/half")
+    (synopsis "Half-precision floating-point library")
+    (description "This package provides a header-only C++ library for a
+half-precision floating point type (IEEE 754 conformant) together with common
+operations on this type.")
+    (license license:expat)))
