@@ -8,7 +8,7 @@
 ;;; Copyright © 2019 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2020, 2021, 2023, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2020, 2021, 2023-2026 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020, 2021, 2022, 2024, 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
@@ -4152,16 +4152,16 @@ features:
 (define-public juce
   (package
     (name "juce")
-    (version "8.0.6")
+    (version "8.0.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/juce-framework/JUCE")
-                    (commit version)))
+                     (url "https://github.com/juce-framework/JUCE")
+                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1n2w571wc7fl178x5ynxiaxvhjvqskfwnd0x295yzr6vpc35a1mv"))))
+                "0m4kbpwg2gblnilly0h2a3rr7f7lb13gsx4fvs2mnvyvy6jfbbls"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f                  ;no test suite
@@ -4171,20 +4171,17 @@ features:
                (add-after 'unpack 'patch-paths
                  (lambda* (#:key inputs #:allow-other-keys)
                    (substitute*
-                       (find-files "." "jucer_ProjectExport_CodeBlocks.h$")
-                     (("/usr/include/freetype2")
-                      (search-input-directory inputs "/include/freetype2")))
-                   (substitute*
-                       (find-files "." "juce_linux_Fonts.cpp$")
+                       (find-files "." "juce_Fonts_linux.cpp$")
                      (("fonts\\.conf\" };")
                       (string-append
-                       "fonts.conf\"\n\""
+                       "fonts.conf\",\n\""
                        (search-input-file inputs "/etc/fonts/fonts.conf")
                        "\"\n};"))))))))
     (native-inputs
      (list alsa-lib
            curl
-           jack-1
+           jack-2
+           ladspa
            libx11
            pkg-config
            webkitgtk-with-libsoup2))
