@@ -562,3 +562,42 @@ backends")
     (description "This package contains a wrapper library for sparse linear
 algebra on GPUs, in particular via rocSPARSE for AMD GPUs.")
     (license license:expat)))
+
+(define-public rocsolver
+  (package
+    (name "rocsolver")
+    (version %rocm-version)
+    (source (rocm-library-source "rocsolver"))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; requires GPU
+      #:build-type "Release"
+      #:configure-flags
+      #~(list
+         "-DCMAKE_CXX_COMPILER=hipcc"
+         #$(string-append "-DAMDGPU_TARGETS=" (current-amd-gpu-targets-string)))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; No matching template is found without these fixes
+          (add-after 'unpack 'fix-std-templates
+            (lambda _
+              (substitute* "library/src/auxiliary/rocauxiliary_bdsqr_hybrid.hpp"
+                ((" pow\\(") " std::pow("))
+              (substitute* "library/src/include/lapack_host_functions.hpp"
+                (("\\(isnan") "(std::isnan"))
+              (substitute* "library/src/lapack/roclapack_syevj_heevj.hpp"
+                (("std::norm\\((.*)\\)" _ orig)
+                 (string-append "std::norm(rocblas_complex_num(" orig "))"))))))))
+    (inputs
+     (list rocblas
+           rocm-hip-runtime
+           rocprim
+           rocsparse))
+    (native-inputs (list fmt rocm-cmake rocm-toolchain))
+    (properties `((amd-gpu-targets . ,%default-amd-gpu-targets)))
+    (home-page %rocm-libraries-url)
+    (synopsis "LAPACK implementation for ROCm")
+    (description "rocSOLVER is a partial implementation of the LAPACK
+functionality for ROCm.  It is written in the HIP programming language.")
+    (license license:bsd-2)))
