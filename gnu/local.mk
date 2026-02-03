@@ -2404,6 +2404,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/telegram-desktop-unbundle-cppgir.patch   \
   %D%/packages/patches/telegram-purple-adjust-test.patch	\
   %D%/packages/patches/telepathy-glib-fix-test.patch	\
+  %D%/packages/patches/tensile-copy-if-not-exist.patch		\
   %D%/packages/patches/teuchos-remove-duplicate-using.patch	\
   %D%/packages/patches/texi2html-document-encoding.patch	\
   %D%/packages/patches/texi2html-i18n.patch			\

@@ -17,15 +17,20 @@
 
 (define-module (gnu packages rocm-libs)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system python)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
-  #:use-module (gnu packages rocm))
+  #:use-module (gnu packages rocm)
+  #:use-module (gnu packages serialization))
 
 ;; The components are tightly integrated and can only be upgraded as a unit. If
 ;; you want to upgrade ROCm, bump this version number and the version number in
@@ -131,4 +136,72 @@ random numbers on GPUs, in particular via rocRAND for AMD GPUs.")
     (synopsis "Common files shared by hipBLAS and hipBLASLt")
     (description "hipBLAS-common is a header-only library with common
 definitions for hipBLAS and hipBLASLt.")
+    (license license:expat)))
+
+(define-public tensile
+  (package
+    (name "tensile")
+    (version %rocm-version)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url (string-append "https://github.com/ROCm/tensile"))
+              (commit (string-append "rocm-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1wff80vd1x1vcg3n56qlc9hdabk9svz6qk0sznycjwzbsmpfb0mr"))
+       (patches
+        (search-patches "tensile-copy-if-not-exist.patch"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-rocm-directory
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("Tensile/Utilities/Toolchain.py")
+                (("/opt/rocm/bin")
+                 (dirname
+                  (search-input-file inputs "/bin/clang++")))
+                (("/opt/rocm/llvm/bin")
+                 (dirname
+                  (search-input-file inputs "/bin/clang++"))))))
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* "Tensile/Tests/yaml_only/test_config.py"
+                (("availableArchs = findAvailableArchs\\(\\)")
+                 #$(string-append
+                    "availableArchs = ['"
+                    (string-join (current-amd-gpu-targets) "', '") "']")))
+              (setenv "TENSILE_ROCM_ASSEMBLER_PATH"
+                      (string-append (which "clang")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "Tensile/Tests" "-m" "unit"
+                        "-k" "not test_prepAsm")))))))
+    (native-inputs
+     (list python-filelock
+           python-pandas
+           python-pytest
+           rocminfo
+           rocm-hip-runtime
+           rocm-toolchain))
+    (propagated-inputs
+     (list msgpack-3
+           python-msgpack
+           python-pyyaml
+           python-joblib
+           python-rich))
+    (properties `((amd-gpu-targets . ,%default-amd-gpu-targets)))
+    (home-page %rocm-libraries-url)
+    (synopsis "GEMM kernel generator for AMD GPUs")
+    (description "Tensile is a tool for creating benchmark-driven
+backend libraries for GEMMs, GEMM-like problems (such as batched
+GEMM), and general N-dimensional tensor contractions on a GPU.  The
+Tensile library is mainly used as backend library to rocBLAS.  Tensile
+acts as the performance backbone for a wide variety of compute
+applications running on AMD GPUs.")
     (license license:expat)))
