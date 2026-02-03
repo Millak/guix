@@ -41,6 +41,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages vim)
   #:use-module (gnu packages perl)
@@ -618,4 +619,52 @@ runtime libraries by the ROCprofiler (v2) library.")
     (synopsis "Architected Queuing Language Profiling Library")
     (description "AQLprofile is an open source library that enables advanced
  GPU profiling and tracing on AMD platforms.")
+    (license license:expat)))
+
+(define-public roctracer
+  (package
+    (name "roctracer")
+    (version %rocm-version)
+    (source %rocm-systems-origin)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; requires GPU
+      #:build-type "Release"
+      #:configure-flags
+      #~(list
+         (string-append "-DCMAKE_CXX_COMPILER=clang++")
+         (string-append "-DCMAKE_C_COMPILER=clang")
+         (string-append "-DCMAKE_MODULE_PATH="
+                        #$(this-package-input "rocm-hip-runtime")
+                        "/lib/cmake/hip"))
+      #:modules '((srfi srfi-1)
+                  (guix build cmake-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "projects/roctracer")))
+          (add-after 'chdir 'fix-experimental
+            (lambda _
+              (substitute* (list
+                            "plugin/file/file.cpp"
+                            "src/hip_stats/hip_stats.cpp"
+                            "src/roctracer/loader.h"
+                            "src/tracer_tool/tracer_tool.cpp")
+                (("experimental(/|::)") "")))))))
+    (inputs (list rocm-hip-runtime))
+    (native-inputs
+     (list
+      rocm-toolchain
+      python
+      python-cppheaderparser
+      rocm-cmake))
+    (home-page %rocm-systems-url)
+    (synopsis "ROCm performance tracing library")
+    (description "The ROCTracer library provides APIs for tracing (also
+asynchronous) runtime calls in an application.  It is intended for tracing
+ROCm API calls in GPU applications, such as kernel dispatches and memory
+moves.")
     (license license:expat)))
