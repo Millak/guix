@@ -51,7 +51,7 @@
 ;; The components are tightly integrated and can only be upgraded as a unit. If
 ;; you want to upgrade ROCm, bump this version number and update hashes below.
 
-(define %rocm-version "7.1.0")
+(define %rocm-version "7.1.1")
 
 ;; ROCm-systems derived packages belong here.
 
@@ -65,7 +65,7 @@
     (file-name (git-file-name "rocm-systems" %rocm-version))
     (sha256
      (base32
-      "16h88j5440csz69s7gpcbmiwn72bz4zjlkdm2c7wcyp73m2knnm2"))
+      "056dwpkddjj5gq4xys1vbca0znq4qlhqnfdsgp1y9c5y9avqfkxx"))
     (patches
      (search-patches
       "rocclr-5.6.0-enable-gfx800.patch"
@@ -334,7 +334,7 @@ particular CPU vendor or architecture.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09ssn8lkjaypq8qy3v28z25qvxsyha4cv4dk6xmfxmgfy8252yqy"))
+                "03icj943x9qhilw112qbp8lc974f949qz0hc7gn1iv8q9zn2pcp8"))
               (patches
                (search-patches
                 "rocm-bandwidth-test-take-default-gpus-from-environment.patch"
@@ -463,16 +463,16 @@ the system in terms of memory pools and their agents.")
     (file-name (git-file-name "esmi_ib_library" version))
     (sha256 hash)))
 
-(define %e-smi-version-for-rocm "esmi_pkg_ver-4.1.2")
+(define %e-smi-version-for-rocm "esmi_pkg_ver-4.2")
 (define e-smi-for-amd-smi
   (make-esmi-source
    %e-smi-version-for-rocm
-   (base32 "1lj35gsa5pgfpsv0bl5y3xpk3xhk8kgsi4nkl2kxj0gsiyny8gf2")))
+   (base32 "0z7yarzf1yzmbjicamcagxj0w1zlnwpg7qa51vp46fq075xpscbk")))
 
 (define-public amd-smi
   (package
     (name "amd-smi")
-    (version "25.5.1")
+    (version "26.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -481,7 +481,7 @@ the system in terms of memory pools and their agents.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0cfsj91pwzvc3c306ivvkzp819g4mxr88h091r2hr4f6h4xvvvgl"))
+                "10qjisjz4shsznh61in6zjjzsag49mdzj1ahclsyxhh5qvxvfrq4"))
               (patches
                (search-patches "amd-smi-python.patch"))))
     (build-system cmake-build-system)
@@ -521,6 +521,7 @@ the system in terms of memory pools and their agents.")
     (inputs (list libdrm
                   python
                   e-smi-for-amd-smi))
+    (native-inputs (list pkg-config))
     (home-page "https://github.com/ROCm/amdsmi")
     (synopsis "ROCm library and application for managing AMD devices")
     (description "The AMD @acronym{SMI,System Management Interface} allows

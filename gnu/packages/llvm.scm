@@ -1294,7 +1294,7 @@ Library.")
 
 ;; This must match '%rocm-version' in rocm.scm.  They cannot be shared because
 ;; toplevel variables cannot be called from one file to another.
-(define %rocm-llvm-version "7.1.0")
+(define %rocm-llvm-version "7.1.1")
 
 (define %clang-rocm-supported-gpu-targets
   ;; List of supported GPU targets for the current version of clang-rocm.
@@ -1394,7 +1394,7 @@ Library.")
               (file-name (git-file-name "rocm-llvm" %rocm-llvm-version))
               (sha256
                (base32
-                "1nwbj2cz99psgq9s9l4wbsxj41l2d2dga5l9rw9jndk05jsn4n7s"))
+                "0ni9s9sd8hlgmj34nkqn96kmbs6xlmrcsw8x5b15cisy2lhjgy89"))
               ;; Some of these patches require a further dynamic substitution during
               ;; package build.  Therefore, it is important to derive from the base
               ;; packages or to duplicate such substitutions.  Additionally, some of
