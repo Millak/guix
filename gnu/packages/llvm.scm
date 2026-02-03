@@ -2076,6 +2076,11 @@ existing compilers together.")
 
 (define-public lld-rocm (make-lld-rocm lld-20))
 
+(define-public lld-wrapper-rocm
+  (package
+    (inherit (make-lld-wrapper lld-rocm))
+    (name "lld-wrapper-rocm")))
+
 
 
 (define-public include-what-you-use
