@@ -28,21 +28,24 @@
 (define-module (gnu packages gdb)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages cross-base)
-  #:use-module (gnu packages hurd)
-  #:use-module (gnu packages ncurses)
-  #:use-module (gnu packages readline)
   #:use-module (gnu packages dejagnu)
-  #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages flex)
+  #:use-module (gnu packages guile)
+  #:use-module (gnu packages hurd)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pciutils)
-  #:use-module (gnu packages xml)
-  #:use-module (gnu packages guile)
+  #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
-  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages readline)
   #:use-module (gnu packages rocm)
+  #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages xml)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -360,3 +363,49 @@ level control of the execution and inspection of execution state of
 AMD's commercially available GPU architectures.")
     (home-page "https://github.com/ROCm/ROCdbgapi")
     (license license:expat)))
+
+(define-public rocgdb
+  (package
+    (inherit gdb)
+    (name "rocgdb")
+    (version %rocm-gdb-version)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url (string-append "https://github.com/ROCm/rocgdb"))
+              (commit (string-append "rocm-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1msxz5xnm6fl2p9hzjnkaayd8x3dc0dp34ff60asr8mgxwxlcd9c"))))
+    (inputs
+     (modify-inputs (package-inputs gdb)
+       (prepend rocdbgapi)))
+    (native-inputs
+     (modify-inputs (package-native-inputs gdb)
+       (prepend bison flex perl)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments gdb)
+       ((#:configure-flags _ '())
+        ''("--program-prefix=roc"
+           "--disable-binutils"
+           "--disable-gprofng"
+           "--disable-gprof"
+           "--enable-tui"
+           "--enable-64-bit-bfd"
+           "--enable-targets=x86_64-linux-gnu,amdgcn-amd-amdhsa"
+           "--with-system-readline"
+           "--with-expat"
+           "--with-system-zlib"
+           "--with-lzma"
+           "--disable-gdbtk"
+           "--disable-ld"
+           "--disable-gas"
+           "--disable-gdbserver"
+           "--disable-sim"))))
+    (synopsis "ROCm source-level debugger for Linux based on GDB")
+    (description "The AMD ROCm Debugger (ROCgdb) is the AMD
+source-level debugger for Linux, based on the GNU Debugger (GDB).")
+    (home-page "https://github.com/ROCm/ROCgdb")
+    (license license:gpl3+)))
