@@ -220,14 +220,14 @@ and in-process/in-memory compilation.")
            numactl
            perl
            opencl-headers
-           rocm-comgr
            rocr-runtime
            rocm-device-libs
            rocprofiler-register
            libffi
            clang-rocm))
-    (native-inputs
-     (list rocm-hipcc))
+    (native-inputs (list rocm-hipcc))
+    (propagated-inputs
+     (list rocm-comgr rocminfo))
     (synopsis "ROCm HIP Runtime")
     (description "HIP language runtime, allowing execution of HIP kernels
 on AMD harware, with library support for in-process/in-memory
