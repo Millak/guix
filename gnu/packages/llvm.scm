@@ -1994,6 +1994,37 @@ existing compilers together.")
 (define-public mlir-15
   (mlir-from-llvm llvm-15))
 
+(define-public rocmlir
+  (package
+    (name "rocmlir")
+    (version %rocm-llvm-version)
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/ROCm/rocMLIR")
+                     (commit (string-append "rocm-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0yr76dj465rw4ck9dk1mjjn3rgp8gb0v273f256rkb8rq6zd9nq3"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:build-type "Release"
+      #:configure-flags
+      #~(list
+         "-DCMAKE_C_COMPILER=clang"
+         "-DCMAKE_CXX_COMPILER=clang++"
+         "-DBUILD_FAT_LIBROCKCOMPILER=ON")
+      ;; Tests require hip-python, which depends on several ROCm libraries
+      #:tests? #f))
+    (native-inputs (list clang-rocm rocm-hip-runtime python rocm-cmake))
+    (home-page "https://github.com/ROCm/rocMLIR")
+    (synopsis "MLIR-based convolution and GEMM kernel generator")
+    (description "rocMLIR is a MLIR-based convolution and GEMM kernel
+generator targetting AMD hardware.")
+    (license license:expat)))
+
 (define-public python-llvmlite
   (package
     (name "python-llvmlite")
