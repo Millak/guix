@@ -329,6 +329,10 @@ particular CPU vendor or architecture.")
   (or (assoc-ref (package-properties this-package) 'amd-gpu-targets)
       %default-amd-gpu-targets))
 
+(define-syntax-rule (current-amd-gpu-targets-string)
+  "Return the list of AMD GPU targets for this package, as a string separated by \";\"."
+  (string-join (current-amd-gpu-targets) ";"))
+
 (define-public rocm-bandwidth-test
   (package
     (name "rocm-bandwidth-test")
