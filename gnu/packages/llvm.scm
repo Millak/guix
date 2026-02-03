@@ -2121,6 +2121,52 @@ existing compilers together.")
 (define-public clang-rocm-toolchain
   (make-clang-toolchain clang-rocm libomp-rocm))
 
+(define-public offload-rocm
+  (package
+    (name "offload-rocm")
+    (version (package-version llvm-rocm))
+    (source (package-source llvm-rocm))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         "-DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=lld"
+         "-DCMAKE_SHARED_LINKER_FLAGS=-fuse-ld=lld")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "offload")))
+          (add-after 'chdir 'libffi-dynamic-link
+            (lambda _
+              (substitute* "plugins-nextgen/host/CMakeLists.txt"
+                (("if\\(FFI_STATIC.*") "if(FALSE)\n"))))
+          (add-after 'install 'install-license
+            (lambda _
+              (install-file "../LICENSE.TXT"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))
+      ;; XXX: Tests cannot be built with ROCm version 7.1.1:
+      ;; https://github.com/ROCm/llvm-project/blob/27682a16360e33e37c4f3cc6adf9a620733f8fe1/offload/CMakeLists.txt#L443
+      #:tests? #f))
+    (native-inputs
+     (list clang-rocm-toolchain
+           lld-wrapper-rocm
+           python))
+    (inputs
+     (list libffi
+           libomp-rocm
+           rocm-device-libs
+           rocr-runtime))
+    (home-page "https://github.com/ROCm/llvm-project/")
+    (synopsis "LLVM offloading library")
+    (description "This LLVM component provides tooling, runtimes and APIs for
+executing code on accelerators which may have a different architecture than
+the host.")
+    ;; Apache license 2.0 with LLVM exception
+    (license license:asl2.0)))
+
 
 
 (define-public include-what-you-use
