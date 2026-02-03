@@ -5,6 +5,7 @@
 ;;; Copyright © 2023 dan <i@dan.games>
 ;;; Copyright © 2025 Luca Cirrottola <luca.cirro@gmail.com>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,6 +29,7 @@
   #:use-module ((guix licenses) #:prefix license:) ; avoid zlib, expat clashes
   #:use-module (guix download)
   #:use-module (guix utils)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -149,6 +151,36 @@ performance measurement opportunities across the hardware and software stack.")
                    ;; not used in output
                    license:gpl2+ ;src/components/appio/tests/iozone/gengnuplot.sh
                    ))))
+
+(define-public ittapi
+  (package
+    (name "ittapi")
+    (version "3.26.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/intel/ittapi/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "15g3cjyl29y7ryqgbdbf5zr31kzqvshwlknpp5yl1khbqdb3jz54"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;there are no tests
+      #:configure-flags #~(list "-DITT_API_IPT_SUPPORT=ON")))
+    (native-inputs
+     (list python-minimal-wrapper))
+    (home-page
+     "https://github.com/intel/ittapi/")
+    (synopsis "Intel instrumentation and tracing APIs")
+    (description
+     "This package provides the Intel @acronym{ITT, Instrumentation and
+Tracing Technology} and @acronym{JIT, Just-In-Time} profiling APIs, to
+generate and control the collection of trace data during program execution.")
+    (license license:gpl2)))
 
 ;; NB. there's a potential name clash with libotf.
 (define-public otf2
