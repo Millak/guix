@@ -200,6 +200,12 @@ guix/import/go\.scm                                @guix/go
 guix/scripts/import/go\.scm                        @guix/go
 tests/import/go\.scm                               @guix/go
 
+gnu/packages/guile\.scm                            @guix/guile
+gnu/packages/guile-wm\.scm                         @guix/guile
+gnu/packages/guile-xyz\.scm                        @guix/guile
+guix/build-system/guile\.scm                       @guix/guile
+guix/build/guile-build-system\.scm                 @guix/guile
+
 gnu/packages/hare\.scm                             @guix/hare
 gnu/packages/hare-apps\.scm                        @guix/hare
 gnu/packages/hare-xyz\.scm                         @guix/hare

@@ -715,6 +715,17 @@ GLib/GIO, GTK, GStreamer and Webkit."
                       "guix/scripts/import/go.scm"
                       "tests/import/go.scm")))
 
+(define-team guile
+  (team 'guile
+        #:name "Guile team"
+        #:description
+        "Team for the Guile platform, libraries, and build system."
+        #:scope (list "gnu/packages/guile.scm"
+                      "gnu/packages/guile-wm.scm"
+                      "gnu/packages/guile-xyz.scm"
+                      "guix/build-system/guile.scm"
+                      "guix/build/guile-build-system.scm")))
+
 (define-team hare
   (team 'hare
         #:name "Hare"
