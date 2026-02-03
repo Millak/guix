@@ -25,7 +25,11 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages logging)
+  #:use-module (gnu packages maths)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
@@ -153,6 +157,54 @@ definitions for hipBLAS and hipBLASLt.")
       #:configure-flags #~'("-DMXDATAGENERATOR_BUILD_TESTING=ON")))
     (native-inputs (list googletest))
     (home-page "https://github.com/ROCm/hipBLASLt")
+    (synopsis "Library for generating AMD GPU kernel assembly")
+    (description "This package contains a library for generating and analyzing
+AMD GPU assembly kernels.")
+    (license (list license:expat))))
+
+(define-public rocroller
+  (package
+    (name "rocroller")
+    (version %rocm-version)
+    (source
+     (rocm-library-source
+      name
+      #:location "shared/rocroller"))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; requires GPU
+      #:configure-flags
+      #~(list
+         "-DROCROLLER_ENABLE_CATCH=OFF"
+         "-DROCROLLER_ENABLE_GEMM_CLIENT_TESTS=OFF"
+         "-DROCROLLER_ENABLE_SLOW_TESTS=OFF"
+         "-DROCROLLER_ENABLE_TEST_DISCOVERY=OFF"
+         (string-append "-DCMAKE_MODULE_PATH="
+                        #$(this-package-native-input "rocm-cmake")
+                        "/share/rocmcmakebuildtools/cmake"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-cmake
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("FetchContent_MakeAvailable\\(ROCmCMakeBuildTools\\)") "")))))))
+    (inputs
+     (list rocm-hip-runtime
+           msgpack-cxx
+           fmt-11
+           spdlog-1.15))
+    (native-inputs
+     (list cli11
+           googletest
+           lapack
+           libdivide
+           mxdatagenerator
+           openblas
+           rocm-cmake
+           rocm-toolchain
+           yaml-cpp))
+    (home-page %rocm-libraries-url)
     (synopsis "Library for generating AMD GPU kernel assembly")
     (description "This package contains a library for generating and analyzing
 AMD GPU assembly kernels.")
