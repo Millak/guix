@@ -94,3 +94,27 @@
     (description "This package contains implementations for
 pseudorandom and quasirandom number generation in HIP.")
     (license license:expat)))
+
+(define-public hiprand
+  (package
+    (name "hiprand")
+    (version %rocm-version)
+    (source (rocm-library-source "hiprand"))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; requires GPU
+      #:build-type "Release"
+      #:configure-flags
+      #~(list
+         "-DCMAKE_CXX_COMPILER=hipcc"
+         (string-append "-DAMDGPU_TARGETS="
+                        #$(current-amd-gpu-targets-string)))))
+    (inputs (list rocm-hip-runtime rocrand))
+    (native-inputs (list rocm-cmake rocm-toolchain))
+    (properties `((amd-gpu-targets . ,%default-amd-gpu-targets)))
+    (home-page %rocm-libraries-url)
+    (synopsis "RAND library with multiple supported backends")
+    (description "This package contains a wrapper library for generating
+random numbers on GPUs, in particular via rocRAND for AMD GPUs.")
+    (license license:expat)))
