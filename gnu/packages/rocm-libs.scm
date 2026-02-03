@@ -118,3 +118,17 @@ pseudorandom and quasirandom number generation in HIP.")
     (description "This package contains a wrapper library for generating
 random numbers on GPUs, in particular via rocRAND for AMD GPUs.")
     (license license:expat)))
+
+(define-public hipblas-common
+  (package
+    (name "hipblas-common")
+    (version %rocm-version)
+    (source (rocm-library-source "hipblas-common"))
+    (build-system cmake-build-system)
+    (arguments '(#:tests? #f)) ; requires GPU
+    (native-inputs (list rocm-cmake))
+    (home-page %rocm-libraries-url)
+    (synopsis "Common files shared by hipBLAS and hipBLASLt")
+    (description "hipBLAS-common is a header-only library with common
+definitions for hipBLAS and hipBLASLt.")
+    (license license:expat)))
