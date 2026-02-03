@@ -319,6 +319,7 @@ microcontroller architecture.")))
 
 ;; This must match '%rocm-version' in the following files:
 ;; - rocm.scm
+;; - rocm-libs.scm
 ;; - rocm-tools.scm
 (define %rocm-gdb-version "7.1.1")
 

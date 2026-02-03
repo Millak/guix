@@ -49,10 +49,12 @@
   #:use-module (gnu packages libffi)
   #:use-module (ice-9 match)
   #:export (%default-amd-gpu-targets
-            current-amd-gpu-targets))
+            current-amd-gpu-targets
+            current-amd-gpu-targets-string))
 
 ;; The components are tightly integrated and can only be upgraded as a unit. If
 ;; you want to upgrade ROCm, bump this version number and the version number in
+;; - rocm-libs.scm
 ;; - rocm-tools.scm
 ;; - gdb.scm
 ;; and update the hashes of the affected packages.

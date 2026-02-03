@@ -39,6 +39,7 @@
 ;; The components are tightly integrated and can only be upgraded as a unit. If
 ;; you want to upgrade ROCm, bump this version number and the version number in
 ;; - rocm.scm
+;; - rocm-libs.scm
 ;; - gdb.scm
 ;; and update the hashes of the affected packages.
 
