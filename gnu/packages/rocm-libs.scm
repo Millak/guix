@@ -705,3 +705,27 @@ rocSOLVER for AMD GPUs.")
     (description "This package contains a wrapper library with HIP parallel
 primitives, in particular via rocPRIM for AMD GPUs.")
     (license license:bsd-3)))
+
+(define-public rocthrust
+  (package
+    (name "rocthrust")
+    (version %rocm-version)
+    (source (rocm-library-source "rocthrust"))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:build-type "Release"
+      #:configure-flags
+      #~(list
+         "-DCMAKE_CXX_COMPILER=hipcc"
+         #$(string-append "-DAMDGPU_TARGETS="
+                          (current-amd-gpu-targets-string)))))
+    (inputs (list rocm-hip-runtime rocprim))
+    (native-inputs (list rocm-cmake rocm-toolchain))
+    (properties `((amd-gpu-targets . ,%default-amd-gpu-targets)))
+    (home-page %rocm-libraries-url)
+    (synopsis "Thrust port for HIP and ROCm")
+    (description "@code{rocThrust} is a parallel algorithm library for ROCm,
+based on @code{rocPRIM}.  It is a port of the CUDA Thrust library.")
+    (license license:asl2.0)))
