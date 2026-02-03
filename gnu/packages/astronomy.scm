@@ -7220,8 +7220,7 @@ and the use of a modern programming language, techniques, and libraries
            python-healpy-1.18
            python-matplotlib
            python-numba
-           ;; See: <https://github.com/simonsobs/pixell/issues/325>.
-           python-numpy-1
+           python-numpy
            python-pillow
            python-scipy))
     (home-page "https://pixell.readthedocs.io/")
