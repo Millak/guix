@@ -674,3 +674,56 @@ asynchronous) runtime calls in an application.  It is intended for tracing
 ROCm API calls in GPU applications, such as kernel dispatches and memory
 moves.")
     (license license:expat)))
+
+(define-public rccl
+  (package
+    (name "rccl")
+    (version %rocm-version)
+    (source %rocm-systems-origin)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; requires GPU
+      #:build-type "Release"
+      #:configure-flags
+      #~(list
+         (string-append "-DCMAKE_CXX_COMPILER="
+                        #$(this-package-input "rocm-hip-runtime")
+                        "/bin/hipcc")
+         (string-append "-DEXPLICIT_ROCM_VERSION=" #$%rocm-version)
+         #$(string-append "-DGPU_TARGETS=" (current-amd-gpu-targets-string)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "projects/rccl")))
+          (add-after 'chdir 'patch-rocm-version
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("cat \\$\\{ROCM_PATH\\}/\\.info/version")
+                 (string-append "echo " #$%rocm-version)))))
+          (add-after 'chdir 'fix-cmake
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("bash.*/etc/os-release.*")
+                 "echo guix\n")))))))
+    (inputs
+     (list libdrm
+           rocm-hip-runtime
+           rocprofiler-register
+           (@ (gnu packages rocm-tools) hipify)
+           (@ (gnu packages rocm-tools) rocm-smi)))
+    (native-inputs
+     (list fmt
+           perl
+           python
+           rocm-cmake
+           rocm-core
+           rocm-toolchain))
+    (properties `((amd-gpu-targets . ,%default-amd-gpu-targets)))
+    (home-page %rocm-systems-url)
+    (synopsis "ROCm Communication Collectives Library")
+    (description "@code{RCCL} (ROCm Communication Collectives Library) is a
+library for collective communication on GPUs, such as reduce, gather or
+scatter operations.")
+    (license license:bsd-3)))
