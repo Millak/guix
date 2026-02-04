@@ -31,6 +31,7 @@
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Robin Templeton <robin@guixotic.coop>
 ;;; Copyright © 2026 Hennadii Stepanov <hebasto@gmail.com>
+;;; Copyright © 2026 Noé Lopez <noelopez@free.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -142,6 +143,49 @@
     (description
      "This package provides architecture-specific implementations of the
 CRC32C algorithm, which is specified in RFC 3720, section 12.1.")
+    (license license:bsd-3)))
+
+(define-public crcpp
+  (package
+    (name "crcpp")
+    (version "1.2.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/d-bahr/CRCpp.git")
+                     (commit (string-append "release-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "005hc25srr4r80md57cg9fax98c8n57ljrhxyw0chjlyq3c0d07n"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-pkgconfig-description
+            (lambda _
+              (let ((dir (string-append #$output "/lib/pkgconfig")))
+                (mkdir-p (string-append dir))
+                (with-output-to-file (string-append dir "/CRCpp.pc")
+                  (lambda _
+                    (simple-format #t "\
+prefix=~a
+includedir=${prefix}/include
+
+Name: ~a
+Description: CRC (cyclic redundancy check) library for C++
+Version: ~a
+Cflags: -I${includedir}"
+                                   #$output #$name #$version)))))))))
+    (home-page "https://github.com/d-bahr/CRCpp")
+    (synopsis "@acronym{CRC, cyclic redundancy check} library for C++")
+    (description "CRC++ is a C++ library for calculating cyclic redundancy
+checks.  It supports bit-by-bit and byte-by-byte calculation of full and
+multipart CRCs.  It aims to have highly optimized algorithms that can run
+branchless for projects with a need for efficiency.  Many common CRCs are
+provided out-of-the-box, such as CRC-32 (used in PKZip and Ethernet),
+CRC-XMODEM, and CRC-CCITT.")
     (license license:bsd-3)))
 
 (define-public libblake3
