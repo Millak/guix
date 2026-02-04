@@ -17507,52 +17507,6 @@ t-SNE algorithm.  The implementation is described here:
 @url{http://lvdmaaten.github.io/publications/papers/JMLR_2014.pdf}.")
       (license license:bsd-3))))
 
-(define-public python-multivelo
-  (package
-    (name "python-multivelo")
-    (version "0.1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "multivelo" version))
-              (sha256
-               (base32
-                "1b4qyngwagh5sc2ygyfqyirg63myzh1g1glk03a1ykxfii32cjlp"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ;pypi source does not contain tests
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'sanity-check 'set-env
-            (lambda _
-              ;; numba RuntimeError: cannot cache function 'rdist'
-              (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
-    (native-inputs (list python-pypa-build))
-    (propagated-inputs
-     (list python-anndata
-           python-h5py
-           python-ipywidgets
-           python-joblib
-           python-loompy
-           python-matplotlib
-           python-numba
-           python-numpy
-           python-pandas
-           python-scanpy
-           python-scikit-learn
-           python-scipy
-           python-scvelo
-           python-seaborn
-           python-tqdm
-           python-umap-learn))
-    (home-page "https://github.com/welch-lab/MultiVelo")
-    (synopsis "Velocity inference from single-cell multi-omic data")
-    (description "MultiVelo uses a probabilistic latent variable model to
-estimate the switch time and rate parameters of gene regulation, providing a
-quantitative summary of the temporal relationship between epigenomic and
-transcriptomic changes.")
-    (license license:bsd-3)))
-
 (define-public python-mygene
   (package
     (name "python-mygene")
