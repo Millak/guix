@@ -6796,7 +6796,7 @@ Carlo.")
               "-k" "not test_crop_by_extra_coords_values_all_axes_with_coord")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'set-home-env
+          (add-before 'sanity-check 'set-home-env
             (lambda _
               ;; Tests require HOME to be set.
               ;;  Permission denied: '/homeless-shelter'
