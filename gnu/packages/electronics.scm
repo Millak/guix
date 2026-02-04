@@ -3833,15 +3833,30 @@ parallel computing platforms.  It also supports serial execution.")
             (lambda* (#:key inputs #:allow-other-keys)
               (wrap-program (string-append #$output "/bin/yosys-witness")
                 `("GUIX_PYTHONPATH" ":" prefix
-                  (,(getenv "GUIX_PYTHONPATH")))))))))
+                  (,(getenv "GUIX_PYTHONPATH"))))))
+          (add-before 'build 'build-info
+            (lambda _
+              (substitute* '("docs/Makefile")
+                (("SPHINXOPTS    = -W --keep-going")
+                 "SPHINXOPTS    = --keep-going"))
+              (invoke "make" "-C" "docs" "info")
+              (install-file "docs/build/texinfo/yosyshqyosys.info"
+                            (string-append #$output "/share/info"))
+              (copy-recursively
+               "docs/build/texinfo/yosyshqyosys-figures"
+               (string-append
+                #$output "/share/info/yosyshqyosys-figures")))))))
     (native-inputs (list bison
                          cxxopts ;header-only library
                          flex
                          gawk ;for the tests and "make" progress pretty-printing
                          gtkwave        ;for the tests
                          iverilog ;for the tests
+                         perl
                          pkg-config
-                         perl))
+                         python-sphinxcontrib-bibtex
+                         python-sphinx-inline-tabs
+                         texinfo))
     ;; Optional dependencies increase considerably package closure.
     ;; - gtkwave: required only for vcd2fst binary, used by ‘sim’ command.
     ;; - graphviz, xdot: used by ‘show’ command to display schematics.
