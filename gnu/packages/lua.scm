@@ -1775,17 +1775,6 @@ way, following established lisp conventions.")
             (lambda _
               (delete-file-recursively "fennel")
               (delete-file-recursively "deps/")))
-          (add-before 'build 'set-lua-path
-            (lambda _
-              (setenv "LUA_PATH"
-                      (string-join
-                       (list
-                        (string-append
-                         #$fennel "/share/lua/" luajit-major+minor "/?.lua")
-                        (string-append
-                         #$dkjson "/share/lua/" luajit-major+minor "/?.lua")
-                        "?.lua")
-                       ";"))))
           (replace 'install
             (lambda _
               (install-file "fennel-ls"
@@ -1793,17 +1782,7 @@ way, following established lisp conventions.")
           (add-after 'install 'wrap
             (lambda _
               (wrap-program (string-append #$output "/bin/fennel-ls")
-                `("LUA_PATH" ";" suffix
-                  (,(string-append
-                     #$fennel
-                     "/share/lua/"
-                     luajit-major+minor
-                     "/?.lua")
-                   ,(string-append
-                     #$dkjson
-                     "/share/lua/"
-                     luajit-major+minor
-                     "/?.lua"))))))))))
+                `("GUIX_LUA_PATH" ";" prefix (,(getenv "GUIX_LUA_PATH"))))))))))
     (inputs (list bash-minimal lua fennel pandoc dkjson))
     (synopsis "Language server for Fennel")
     (description
