@@ -803,36 +803,6 @@ is based on Vim's builtin plugin support.")
                           '("-DPREFER_LUA:BOOL=YES")))
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'set-lua-paths
-                 (lambda* _
-                   (let* ((lua-version "5.1")
-                          (lua-cpath-spec (lambda (prefix)
-                                            (let ((path (string-append
-                                                         prefix
-                                                         "/lib/lua/"
-                                                         lua-version)))
-                                              (string-append
-                                               path
-                                               "/?.so;"
-                                               path
-                                               "/?/?.so"))))
-                          (lua-path-spec (lambda (prefix)
-                                           (let ((path (string-append prefix
-                                                        "/share/lua/"
-                                                        lua-version)))
-                                             (string-append path "/?.lua;"
-                                                            path "/?/?.lua"))))
-                          (lua-inputs (list (or #$(this-package-input "lua")
-                                                #$(this-package-input "luajit"))
-                                            #$lua5.1-luv
-                                            #$lua5.1-lpeg
-                                            #$lua5.1-bitop
-                                            #$lua5.1-libmpack)))
-                     (setenv "LUA_PATH"
-                             (string-join (map lua-path-spec lua-inputs) ";"))
-                     (setenv "LUA_CPATH"
-                             (string-join (map lua-cpath-spec lua-inputs) ";"))
-                     #t)))
                (add-after 'unpack 'prevent-embedding-gcc-store-path
                  (lambda _
                    ;; nvim remembers its build options, including the compiler with
