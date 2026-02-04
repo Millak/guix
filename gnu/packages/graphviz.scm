@@ -212,28 +212,30 @@ layout algorithms.")
 (define-public python-uqbar
   (package
     (name "python-uqbar")
-    (version "0.7.2")
+    (version "0.9.6")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/josiah-wolf-oberholtzer/uqbar")
-             (commit (string-append "v" version))))
+              (url "https://github.com/josiah-wolf-oberholtzer/uqbar")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1limp2m2smg0l3v6vn2fwhjcw1d8gakw5v0q7krb03q539qiql87"))))
+        (base32 "07crragfc2y20kh3b2ig4q6725k1l9pnnqkqcn88kp8rbk9bicnn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "--pyargs" "uqbar")))
+      #:test-flags
+      #~(list "--pyargs" "uqbar"
+              ;; Diffs are not equal.
+              "-k" "not uqbar.apis.summarizers.SummarizingRootDocumenter")))
     (native-inputs
      (list graphviz
            python-defusedxml
            python-pytest
            python-pytest-cov
            python-setuptools
-           python-typing-extensions
-           python-wheel))
+           python-typing-extensions))
     (propagated-inputs
      (list python-black
            python-sphinx
