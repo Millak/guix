@@ -3703,7 +3703,7 @@ Python.")
         #:tests? #false                 ;There are no automated tests
         #:phases
         #~(modify-phases %standard-phases
-            (add-before 'check 'set-home
+            (add-before 'sanity-check 'set-home
               ;; A HOME directory is required when importing the module during
               ;; the sanity check.
               (lambda _ (setenv "HOME" "/tmp")))
