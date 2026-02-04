@@ -4774,27 +4774,8 @@ the scores.")
               (commit "ded5dbec16b45e0df44750d9ae021ae2416ff921")))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "04l244qagbplksqp81w2s60pkymyhjq389xmqwsyc0n4q6b054h2"))))
+        (base32 "04l244qagbplksqp81w2s60pkymyhjq389xmqwsyc0n4q6b054h2"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-beautifulsoup4
-           python-dateutil
-           python-levenshtein
-           python-logomaker
-           python-numpy
-           python-pandas
-           python-plotly
-           python-psutil
-           python-pybio
-           python-pysam
-           python-rangehttpserver
-           python-requests
-           python-scanrbp))
-    (native-inputs
-     (list python-setuptools
-           python-wheel
-           snakemake))
     (arguments
      (list
       #:tests? #false                   ;There are no tests.
@@ -4817,10 +4798,29 @@ the scores.")
                 (("import fireducks.pandas as pd") "import pandas as pd"))
               (substitute* "splicekit.yaml"
                 ((".*fireducks.*") "")))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel
+           snakemake))
+    (propagated-inputs
+     (list python-beautifulsoup4
+           python-dateutil
+           python-levenshtein
+           python-logomaker
+           python-numpy
+           python-pandas
+           python-plotly
+           python-psutil
+           python-pybio
+           python-pysam
+           python-rangehttpserver
+           python-requests
+           python-scanrbp))
     (synopsis "Python toolkit for splicing analysis from short-read RNA-seq")
-    (description "Splicekit is a modular platform for splicing analysis from
-short-read RNA-seq datasets.  The platform also integrates pybio for genomic
-operations and scanRBP for RNA-protein binding studies.  The whole analysis is
+    (description
+     "Splicekit is a modular platform for splicing analysis from short-read
+RNA-seq datasets.  The platform also integrates pybio for genomic operations
+and scanRBP for RNA-protein binding studies.  The whole analysis is
 self-contained (one single directory) and the platform is written in Python,
 in a modular way.")
     (license license:gpl3)))
