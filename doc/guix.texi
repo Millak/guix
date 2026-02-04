@@ -27878,24 +27878,47 @@ record as in this example:
 See below for details about @code{alsa-configuration}.
 @end defvar
 
+@deftp {Data Type} alsa-pcm-configuration
+Data type representing an ALSA @code{pcm} block.
+
+@table @asis
+@item @code{alsa-pcm-configuration-type} (type: symbol)
+The type of the PCM (if not builtin to alsa, should be introduced via a ``pcm_type'' block).
+@item @code{alsa-pcm-configuration-hint} (type: maybe-string)
+A human-readable description of the PCM.
+
+@item @code{alsa-pcm-configuration-configuration} (type: list-of-string)
+Raw additional configuration.
+Each item will be printed on a separate line.
+@end table
+@end deftp
+
+@deftp {Data Type} alsa-ctl-configuration
+Data type representing an ALSA @code{ctl} block.
+
+@table @asis
+@item @code{alsa-pcm-configuration-type} (type: symbol)
+The type of the ctl (if not builtin to alsa, should be introduced via a ``ctl_type'' block).
+
+@item @code{alsa-pcm-configuration-configuration} (type: list-of-string)
+Raw additional configuration.
+Each item will be printed on a separate line.
+@end table
+@end deftp
+
 @deftp {Data Type} alsa-configuration
 Data type representing the configuration for @code{alsa-service}.
 
 @table @asis
-@item @code{alsa-plugins} (default: @var{alsa-plugins})
-@code{alsa-plugins} package to use.
+@item @code{default-pcm} (default: #f)
+The configuration to use for the default @code{pcm}.
 
-@item @code{pulseaudio?} (default: @var{#t})
-Whether ALSA applications should transparently be made to use the
-@uref{https://www.pulseaudio.org/, PulseAudio} sound server.
+@item @code{default-ctl} (default: #f)
+The configuration to use for the default @code{ctl}.
 
-Using PulseAudio allows you to run several sound-producing applications
-at the same time and to individual control them @i{via}
-@command{pavucontrol}, among other things.
-
-@item @code{extra-options} (default: @var{""})
-String to append to the @file{/etc/asound.conf} file.
-
+@item @code{options} (default: '()) (type: list-of-strings)
+Additional configuration strings to
+append to the @file{/etc/asound.conf} file.
 @end table
 @end deftp
 
@@ -27933,6 +27956,12 @@ pcm.!default @{
 
 See @uref{https://www.alsa-project.org/main/index.php/Asoundrc} for the
 details.
+
+Services can likewise extend alsa-service-type to add options and
+configure the default PCM and CTL.  One service, which transparently
+extends alsa-service-type to make use of the
+@uref{https://www.pulseaudio.org/, PulseAudio} sound server,
+is the pulseaudio-service-type, shown below.
 
 @defvar pulseaudio-service-type
 This is the type for the  @uref{https://www.pulseaudio.org/, PulseAudio}
@@ -27985,6 +28014,11 @@ commands, refer to @command{man pulse-cli-syntax}.
 
 @item @code{system-script-file} (default: @code{(file-append pulseaudio "/etc/pulse/system.pa")})
 Script file to use as @file{system.pa}.
+
+@item @code{alsa-lib}
+The alsa-lib package to use for defining the “pulse” pcm_type
+and ctl_type.
+
 @end table
 
 The example below sets the default PulseAudio card profile, the default
