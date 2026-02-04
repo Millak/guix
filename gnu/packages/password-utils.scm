@@ -1515,7 +1515,7 @@ program.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'set-home
+          (add-before 'build 'set-home
             (lambda _
               (setenv "HOME" (getcwd)))))))
     (native-inputs
