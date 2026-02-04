@@ -1024,7 +1024,7 @@ specific SMBIOS tables.")
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
-               (add-before 'check 'set-runtime-dir
+               (add-before 'build 'set-runtime-dir
                  (lambda _
                    (setenv "XDG_RUNTIME_DIR" "/tmp"))))))
     (native-inputs
