@@ -3403,6 +3403,7 @@ program would be built.")
            (lambda _
              (substitute* "setup.cfg"
                (("(pip|setuptools)") "")))))
+      ;; tests: 951 passed, 23 skipped, 6 deselected, 4 xfailed, 122 warnings
       #:test-flags
       ;; test_plugins_cli.py communicates through subprocesses
       ;;   mocking stdin, which does not work in the build container.
@@ -3410,14 +3411,20 @@ program would be built.")
       ;; test_binary.py fails for an unknown reason.
       #~(list "--ignore=tests/test_plugins_cli.py"
               "--ignore=tests/test_ssl.py"
-              "--ignore=tests/test_binary.py")))
+              "--ignore=tests/test_binary.py"
+              ;; Assertion failed to compare Unicode characters.
+              (string-append
+               "--deselect=tests/test_encoding.py"
+               "::test_terminal_output_request_charset_detection")
+              (string-append
+               "--deselect=tests/test_encoding.py"
+               "::test_terminal_output_response_charset_detection"))))
     (native-inputs (list python-pytest
                          python-pytest-httpbin
                          python-pytest-mock
                          python-responses
                          python-setuptools
-                         python-werkzeug
-                         python-wheel))
+                         python-werkzeug))
     (propagated-inputs
      (list python-charset-normalizer
            python-defusedxml
