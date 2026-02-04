@@ -109,7 +109,7 @@
 (define-public rapid-photo-downloader
   (package
     (name "rapid-photo-downloader")
-    (version "0.9.36")
+    (version "0.9.37a5")
     (source
      (origin
        (method git-fetch)
@@ -118,7 +118,7 @@
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1x4hgsxyn6nf12whwmmaxh447n88diix5wazcwv4hqm6mip8hnbw"))))
+        (base32 "0pb7gfsbgq9zl6yiapmaax814c0ydkl75xj8025mqygy3lmm9mba"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -171,8 +171,10 @@
      (list file
            intltool
            gobject-introspection
-           python-pytest
-           python-setuptools))
+           python-hatchling
+           python-hatch-argparse-manpage
+           python-hatch-gettext
+           python-pytest))
     (inputs
      (list bash-minimal ;for wrap-program
            gdk-pixbuf
@@ -190,6 +192,7 @@
            python-pyqt
            python-pygobject
            python-gphoto2
+           python-pillow
            python-pyzmq
            python-tornado
            python-psutil
