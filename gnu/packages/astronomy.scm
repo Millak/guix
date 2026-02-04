@@ -9811,13 +9811,18 @@ over many parameters:
        (sha256
         (base32 "1c4srrmfzx8iszcc140ylljs0dzqs6d9ya2z7wic96p6y6gixb9h"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Test fails due to numerical uncertainties.
+      ;; See: <https://github.com/vrodgom/statmorph/issues/17>.
+      #~(list"--deselect=statmorph/tests/test_statmorph.py::test_full_gini_segmap")))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-astropy
-           python-numpy-1
+           python-numpy
            python-photutils
            python-scikit-image
            python-scipy
