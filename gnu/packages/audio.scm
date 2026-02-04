@@ -60,6 +60,7 @@
 ;;; Copyright © 2025 Isidor Zeuner <guix@quidecco.pl>
 ;;; Copyright © 2025 Evgenii Klimov <eugene.dev@lipklim.org>
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
+;;; Copyright © 2026 Noé Lopez <noelopez@free.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -92,6 +93,7 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages documentation)
@@ -6036,6 +6038,56 @@ loudness level. r128gain can also be used as a Python module from other
 Python projects to scan and/or tag audio files.")
     ;; 'setup.py' claims LGPL2+, 'LICENSE' is LGPLv2.1.
     (license license:lgpl2.1+)))
+
+(define-public rsgain
+  (package
+    (name "rsgain")
+    (version "3.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/complexlogic/rsgain.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1bnpmm3bxij0l54i39vr70q3l1gdaac3l4vdv76pcdk9nlydmavn"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Remove bundled dependencies.
+               #~(delete-file-recursively "src/external"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f            ;no tests
+      #:configure-flags
+      #~(list "-DINSTALL_MANPAGE=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'link-unbundled-libraries
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "CMakeLists.txt"
+                (("find_package(PkgConfig MODULE REQUIRED)" all)
+                 (string-append all "\nfind_package (CRCpp REQUIRED)")))
+              (substitute* "src/tag.cpp"
+                (("external/CRC.h")
+                 "CRC.h")))))))
+    (native-inputs (list pkg-config gzip))
+    (inputs
+     (list crcpp
+           ffmpeg
+           fmt
+           libebur128
+           libinih
+           taglib
+           zlib))
+    (home-page "https://github.com/complexlogic/rsgain")
+    (synopsis "ReplayGain 2.0 tagging utility")
+    (description "This package provides @acronym{rsgain, really simple gain}, a
+ReplayGain 2.0 command line utility.  rsgain applies loudness metadata tags to
+files, while leaving the audio stream untouched.  A ReplayGain-compatible player
+will dynamically adjust the volume of tagged files during playback.")
+    (license license:bsd-2)))
 
 (define-public filteraudio
   (let ((revision "1")
