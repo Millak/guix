@@ -712,6 +712,7 @@ and generic API, and was originally intended for use with dynamic web
 applications.")
     (license license:bsd-3)))
 
+;; See: <https://codeberg.org/guix/guix/issues/6122>.
 (define-public libmemcached
   (package
     (name "libmemcached")
@@ -738,7 +739,7 @@ applications.")
            bison
            flex
            perl
-           python-sphinx)) ;to build the HTML doc.
+           python-sphinx-6)) ;to build the HTML doc.
     (inputs
      (list libevent cyrus-sasl))
     (outputs '("out" "doc"))
