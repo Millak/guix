@@ -342,7 +342,7 @@ except ImportError:
               ;; The build script tries to write to demo/version.py. So, we set
               ;; correct write permissions.
               (chmod "demo/version.py" #o644)))
-          (add-before 'check 'add-missing-.so
+          (add-before 'sanity-check 'add-missing-.so
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let ((site (site-packages inputs outputs)))
                 (with-directory-excursion (string-append site "/wx")
