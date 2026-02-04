@@ -11416,6 +11416,11 @@ the Wolfram language.")
                        "-o" "op-tables.json")
                (invoke "mathics3-generate-operator-json-table"
                        "-o" "operator-tables.json"))))
+         (add-before 'build 'set-home
+           (lambda _
+             ;; The sanity check imports mathics which tries to create a
+             ;; config directory in HOME.  Set HOME to a writable location.
+             (setenv "HOME" "/tmp")))
          (add-before 'check 'prepare-check
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;(copy-file "operator-tables.json" "mathics/data/operator-tables.json")
@@ -11425,12 +11430,7 @@ the Wolfram language.")
            (lambda _
              ;; Otherwise 210 tests fail because the real output would use
              ;; unicode arrow characters.  With this, only 18 (symbolic) tests fail.
-             (setenv "MATHICS_CHARACTER_ENCODING" "ASCII")))
-         (add-before 'check 'set-home
-           (lambda _
-             ;; The sanity check imports mathics which tries to create a
-             ;; config directory in HOME.  Set HOME to a writable location.
-             (setenv "HOME" "/tmp"))))))
+             (setenv "MATHICS_CHARACTER_ENCODING" "ASCII"))))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-setuptools python-wheel))
     (inputs (list llvm))
