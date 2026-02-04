@@ -2774,20 +2774,17 @@ Newton-Raphson power flow solvers in the C++ library lightsim2grid, and the
 (define-public python-pandapipes
   (package
     (name "python-pandapipes")
-    (version "0.11.0")
+    (version "0.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pandapipes" version))
        (sha256
-        (base32 "0rvbfpb42hd2hh2321vwj758yda2zrpj62hmdr7qrhfnzjhcr9z3"))))
+        (base32 "1wgxnbb68spd9gc2brb0lin1j2h44m04aa1rfks65ky5h5drgjmx"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-nbmake
                          python-pytest
-                         python-pytest-xdist
-                         python-setuptools
-                         python-wheel
-                         unzip))
+                         python-setuptools))
     (propagated-inputs (list python-matplotlib
                              python-pandapower
                              python-shapely))
