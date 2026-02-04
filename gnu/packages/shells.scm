@@ -643,7 +643,8 @@ ksh, and tcsh.")
      ;; with os.getcwd(), not activating virtual environments, not finding
      ;; some commands (man, echo), and not running subprocesses.
      (list #:test-flags
-           #~(list "-k"
+           #~(list "--ignore=tests/completers/test_pip_completer.py" ;Avoid pip
+                   "-k"
                    (string-append
                     "not "
                     (string-join
