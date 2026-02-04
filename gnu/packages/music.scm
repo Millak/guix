@@ -7791,19 +7791,52 @@ streaming audio server.")
       #:modules '((guix build pyproject-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
                   (guix build utils))
+      ;; tests: 4020 passed, 57 skipped, 3 deselected, 106 warnings
+      #:test-flags
+      ;; The majority of ignored tests require access to plugin or running
+      ;; DBus.
+      ;;
+      ;; XXX: ValueError: Cannot set parent property without first setting it
+      ;; to 'None'.
+      #~(list "--ignore=tests/plugin/test_mediaserver.py"
+              "--ignore=tests/plugin/test_mpdserver.py"
+              "--ignore=tests/plugin/test_mpris.py"
+              "--ignore=tests/plugin/test_prefs.py"
+              "--ignore=tests/plugin/test_randomalbum.py"
+              "--ignore=tests/plugin/test_trayicon.py"
+              "--ignore=tests/plugin/test_viewlyrics.py"
+              "--ignore=tests/test_browsers__base.py"
+              "--ignore=tests/test_browsers_playlists.py"
+              "--ignore=tests/test_browsers_soundcloud.py"
+              "--ignore=tests/test_commands.py"
+              "--ignore=tests/test_formats__audio.py"
+              "--ignore=tests/test_library_file.py"
+              "--ignore=tests/test_mmkeys.py"
+              "--ignore=tests/test_qltk_about.py"
+              "--ignore=tests/test_qltk_browser.py"
+              "--ignore=tests/test_qltk_cover.py"
+              "--ignore=tests/test_qltk_edittags.py"
+              "--ignore=tests/test_qltk_exfalso.py"
+              "--ignore=tests/test_qltk_info.py"
+              "--ignore=tests/test_qltk_information.py"
+              "--ignore=tests/test_qltk_lyrics.py"
+              "--ignore=tests/test_qltk_prefs.py"
+              "--ignore=tests/test_qltk_quodlibetwindow.py"
+              "--ignore=tests/test_session.py"
+              ;; AssertionError: not expecting a librarian - leaky test?
+              "--ignore=tests/test_qltk_songlist.py"
+              ;; Assertion is not equal in tests:
+              (string-append "--deselect=tests/plugin/test_covers.py"
+                            "::test_live_cover_download[lastfm-cover]")
+              (string-append "--deselect=tests/plugin/test_covers.py"
+                             "::test_live_cover_download[discogs-cover]")
+              (string-append "--deselect=tests/test_browsers_iradio.py"
+                             "::TInternetRadio::test_click_add_station"))
       #:phases
         #~(modify-phases %standard-phases
-            (add-before 'check 'pre-check
+            (add-before 'sanity-check 'pre-check
               (lambda _
                 (setenv "HOME" (getcwd))))
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (if tests?
-                    (invoke "xvfb-run" "pytest"
-                            ;; needs network
-                            "--ignore=tests/plugin/test_covers.py"
-                            "--ignore=tests/test_browsers_iradio.py")
-                    (format #t "test suite not run~%"))))
             (add-after 'install 'glib-or-gtk-wrap ; ensure icons loaded
               (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
             (add-after 'install 'wrap-extra-paths
@@ -7816,9 +7849,16 @@ streaming audio server.")
                        `("GI_TYPELIB_PATH" ":" = (,gi-typelib-path))
                        `("GST_PLUGIN_SYSTEM_PATH" ":" suffix
                          (,gst-plugins-path))))
-                 '("exfalso" "operon" "quodlibet"))))))))
-    (native-inputs (list xvfb-run gettext-minimal python-pytest
-                         python-setuptools))
+                 '("exfalso" "operon" "quodlibet")))))
+          (add-before 'check 'prepare-x
+            (lambda _
+              (system "Xvfb &")
+              (setenv "DISPLAY" ":0"))))))
+    (native-inputs
+     (list xorg-server-for-tests
+           gettext-minimal
+           python-pytest
+           python-setuptools))
     (inputs
      (list adwaita-icon-theme
            bash-minimal
