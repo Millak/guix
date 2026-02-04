@@ -1747,13 +1747,16 @@ template tag.")
 (define-public python-django-dbbackup
   (package
     (name "python-django-dbbackup")
-    (version "4.3.0")
+    (version "5.1.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "django_dbbackup" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Archmonger/django-dbbackup")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1p66xs6c2sw1l2zlskpa64zslyawlpgv0vn2l86g4rxizp6chj9m"))))
+        (base32 "1iapp6kln4sc459w97x2hzdz471d4c2ikqwq556c6bqafdgh8brn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1762,26 +1765,15 @@ template tag.")
           (add-before 'check 'pre-check
             (lambda _
               ;; To write a .env file.
-              (setenv "HOME" "/tmp")
-              ;; 'env' command is not available in the build environment.
-              (substitute* "dbbackup/tests/test_connectors/test_base.py"
-                (("def test_run_command_with_parent_env")
-                 "def _test_run_command_with_parent_env"))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (setenv "DJANGO_SETTINGS_MODULE" "dbbackup.tests.settings")
-                (invoke "django-admin" "test" "dbbackup/tests"
-                        "--pythonpath=.")))))))
+              (setenv "HOME" "/tmp"))))))
     (native-inputs (list gnupg
                          python-dotenv
                          python-gnupg
+                         python-hatchling
                          python-pytest
                          python-pytz
-                         python-setuptools
                          python-testfixtures
-                         python-tzdata
-                         python-wheel))
+                         python-tzdata))
     (propagated-inputs (list python-django))
     (home-page "https://github.com/Archmonger/django-dbbackup")
     (synopsis "Backup and restore a Django project database and media")
