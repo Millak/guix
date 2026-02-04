@@ -208,35 +208,7 @@ and argument placeholders.")
             (replace 'install
               (lambda _
                 (install-file "glirc-lua.so" (string-append #$output "/lib"))))
-            (add-after 'install 'set-lua-paths
-              (lambda _
-                (let ((x.y       #$(version-major+minor
-                                    (package-version
-                                     (this-package-native-input "lua"))))
-                      (libraries (filter (match-lambda
-                                           ((label . _)
-                                            (string-prefix? "lua-" label)))
-                                         '#$(package-native-inputs
-                                             this-package))))
-                  (setenv "LUA_PATH"
-                          (string-join
-                           (map (match-lambda
-                                  ((_ dir)
-                                   (string-append
-                                    dir "/share/lua/" x.y "/?.lua;"
-                                    dir "/share/lua/" x.y "/?/?.lua")))
-                                libraries)
-                           ";"))
-                  (setenv "LUA_CPATH"
-                          (string-join
-                           (map (match-lambda
-                                  ((_ dir)
-                                   (string-append
-                                    dir "/lib/lua/" x.y "/?.so;"
-                                    dir "/lib/lua/" x.y "/?/?.so")))
-                                libraries)
-                           ";")))))
-            (add-after 'set-lua-paths 'document
+            (add-after 'install 'document
               (lambda _
                 (with-directory-excursion "../lua-extension/doc"
                   ;; Guix's ldoc command is a shell script without a shebang.
