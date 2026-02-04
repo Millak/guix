@@ -1910,63 +1910,32 @@ using the string similarity calculations from FuzzyWuzzy.")
 (define-public cpplint
   (package
     (name "cpplint")
-    (version "2.0.0")
+    (version "2.0.2")
     (source
      (origin
        (method git-fetch)
-       ;; Fetch from github instead of pypi, since the test cases are not in
-       ;; the pypi archive.
        (uri (git-reference
-             (url "https://github.com/cpplint/cpplint")
-             (commit version)))
+              (url "https://github.com/cpplint/cpplint")
+              (commit version)))
        (sha256
-        (base32 "06km4wh4944az1hk61g5w8pjhbvbccpgarz1dy7vhwkhfvmvggnk"))
+        (base32 "0n9v4zayxp2r6lhmsi4xpk5lnjs4x6h6p7isr86xyhm7mjxd7jp1"))
        (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:modules `((srfi srfi-1)
-                       (srfi srfi-26)
-                       ,@%pyproject-build-system-modules)
-           #:phases
-           #~(modify-phases (@ (guix build pyproject-build-system) %standard-phases)
-               (add-after 'unpack 'patch-build-system
-                 (lambda _
-                   (substitute* "pyproject.toml"
-                     (("setuptools\\.build_meta:__legacy__")
-                      "setuptools.build_meta"))))
-               (add-before 'wrap 'reduce-GUIX_PYTHONPATH
-                 (lambda _
-                   ;; Hide the transitive native inputs from GUIX_PYTHONPATH
-                   ;; to prevent them from ending up in the run-time closure.
-                   ;; See also <https://bugs.gnu.org/25235>.
-                   (let ((transitive-native-inputs
-                          '#$(match (package-transitive-native-inputs
-                                     this-package)
-                               (((labels packages) ...) packages))))
-                     ;; Save the original PYTHONPATH because we need it for
-                     ;; tests later.
-                     (setenv "TMP_PYTHONPATH" (getenv "GUIX_PYTHONPATH"))
-                     (setenv "GUIX_PYTHONPATH"
-                             (string-join
-                              (filter (lambda (path)
-                                        (not (any (cut string-prefix? <> path)
-                                                  transitive-native-inputs)))
-                                      (search-path-as-string->list
-                                       (getenv "GUIX_PYTHONPATH")))
-                              ":")))))
-               (add-after 'wrap 'reset-GUIX_PYTHONPATH
-                 (lambda _
-                   (setenv "GUIX_PYTHONPATH"
-                           (getenv "TMP_PYTHONPATH")))))))
+     (list
+      ;; tests: 222 passed
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((" \"pytest-cov\", ") "")
+                ((" --cov-fail-under=90 --cov=cpplint") "")))))))
     (native-inputs
-     (list python-parameterized
-           python-pytest
-           python-pytest-cov
-           python-pytest-runner
+     (list python-pytest
            python-pytest-timeout
            python-setuptools
-           python-testfixtures
-           python-wheel))
+           python-testfixtures))
     (home-page "https://github.com/cpplint/cpplint")
     (synopsis "Static code checker for C++")
     (description "@code{cpplint} is a command-line tool to check C/C++ files
