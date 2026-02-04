@@ -390,7 +390,7 @@ individual low-level driver modules.")
 (define-public eqy
   (package
     (name "eqy")
-    (version "0.61")
+    (version "0.62")
     (source
      (origin
        (method git-fetch)
