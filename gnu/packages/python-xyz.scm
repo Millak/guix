@@ -349,7 +349,7 @@
     (native-inputs
      (list python-hatch-vcs
            python-hatchling
-           python-pytest
+           python-pytest-8
            python-pytest-mock
            python-setuptools-scm))
     (propagated-inputs
