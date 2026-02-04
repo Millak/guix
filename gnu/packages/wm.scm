@@ -1972,33 +1972,8 @@ for wlroots-based Wayland compositors.")
                (("(terminal = ).*$" _ p)
                 (string-append p "'" (assoc-ref inputs "xterm") "/bin/xterm'\n")))
              ;; The build process needs to load Cairo dynamically.
-             (let* ((cairo (string-append (assoc-ref inputs "cairo") "/lib"))
-                    (lua-version ,(version-major+minor (package-version lua)))
-                    (lua-dependencies
-                     (filter (match-lambda
-                               ((label . _) (string-prefix? "lua-" label)))
-                             inputs))
-                    (lua-path
-                     (string-join
-                      (map (match-lambda
-                             ((_ . dir)
-                              (string-append
-                               dir "/share/lua/" lua-version "/?.lua;"
-                               dir "/share/lua/" lua-version "/?/?.lua")))
-                           lua-dependencies)
-                      ";"))
-                    (lua-cpath
-                     (string-join
-                      (map (match-lambda
-                             ((_ . dir)
-                              (string-append
-                               dir "/lib/lua/" lua-version "/?.so;"
-                               dir "/lib/lua/" lua-version "/?/?.so")))
-                           lua-dependencies)
-                      ";")))
+             (let* ((cairo (string-append (assoc-ref inputs "cairo") "/lib")))
                (setenv "LD_LIBRARY_PATH" cairo)
-               (setenv "LUA_PATH" (string-append "?.lua;" lua-path))
-               (setenv "LUA_CPATH" lua-cpath)
                (setenv "HOME" (getcwd))
                (setenv "XDG_CACHE_HOME" (getcwd)))))
          (replace 'check
@@ -2019,10 +1994,8 @@ for wlroots-based Wayland compositors.")
                     (lua-version ,(version-major+minor (package-version lua)))
                     (lua-lgi (assoc-ref inputs "lua-lgi")))
                (wrap-program (string-append awesome "/bin/awesome")
-                 `("LUA_PATH" ";" suffix
-                   (,(format #f "~a/share/lua/~a/?.lua" lua-lgi lua-version)))
-                 `("LUA_CPATH" ";" suffix
-                   (,(format #f "~a/lib/lua/~a/?.so" lua-lgi lua-version)))
+                 `("GUIX_LUA_PATH" ";" prefix (,(getenv "GUIX_LUA_PATH")))
+                 `("GUIX_LUA_CPATH" ";" prefix (,(getenv "GUIX_LUA_CPATH")))
                  `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))
                  `("LD_LIBRARY_PATH" suffix (,cairo)))))))))
     (home-page "https://awesomewm.org/")
