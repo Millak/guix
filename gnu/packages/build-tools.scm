@@ -1234,14 +1234,29 @@ but it does away with a lot of the complexity that comes with its history.")
     (build-system gnu-build-system)
     (arguments
      (list
-      #:test-target "test"
-      #:make-flags
-      #~(list "DESTDIR=\"\""
-              (string-append "CC=" #$(cc-for-target))
-              (string-append "PREFIX=" #$output))
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'configure))))
+          (delete 'configure)
+          ;; pdpmake can be built easily without relying on a previous Make
+          ;; implementation; let's do this for the sake of bootstrappability.
+          (replace 'build
+            (lambda _
+              (let ((args (append (find-files "." "\\.c$")
+                                  (list "-o" "make"))))
+                (apply invoke #$(cc-for-target) args))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "testsuite"
+                  (invoke "./runtest" "-v")))))
+          (replace 'install
+            (lambda _
+              (let ((bindir (string-append #$output "/bin"))
+                    (mandir (string-append #$output "/share/man/man1")))
+                (mkdir-p bindir)
+                (mkdir-p mandir)
+                (install-file "make" bindir)
+                (install-file "pdpmake.1" mandir)))))))
     (home-page "https://frippery.org/make/")
     (synopsis "Public domain POSIX make")
     (description
