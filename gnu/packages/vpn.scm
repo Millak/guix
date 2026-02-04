@@ -1105,24 +1105,24 @@ LocalAgent, server, and python-bindings for that crate.")
 (define-public proton-vpn-cli
   (package
     (name "proton-vpn-cli")
-    (version "0.1.3")
+    (version "0.1.5")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ProtonVPN/proton-vpn-cli")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ProtonVPN/proton-vpn-cli")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kckgdqx9mgayyj3dh2fgd9brzw2s4wrxl6ajsfssnfmpqnz2zhy"))))
+        (base32 "076aixjwzpggwrgsrjg3z78qcv79cmqfzlpbll1c4mz94bs1gdvs"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'prepare-tests
+          (add-before 'build 'prepare-envs
             (lambda _
-              (setenv "HOME" (getcwd))
+              (setenv "HOME" "/tmp")
               (setenv "XDG_RUNTIME_DIR" (string-append (getcwd) "/.run")))))))
     (native-inputs
      (list python-pytest
@@ -1134,10 +1134,10 @@ LocalAgent, server, and python-bindings for that crate.")
      (list python-click
            python-dbus-fast
            python-proton-core
+           python-proton-keyring-linux
            python-proton-vpn-api-core
            python-proton-vpn-local-agent
-           python-proton-keyring-linux
-           python-sentry-sdk))
+           python-tabulate))
     (synopsis "Command-line client for ProtonVPN")
     (description
      "This is the official command-line interface for ProtonVPN, a secure
