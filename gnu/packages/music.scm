@@ -3100,6 +3100,9 @@ using a system-independent interface.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; XXX: Tests are not compatible with current Sphinx version, enable
+      ;; after Python 3.12 is default and the package is updated.
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           ;; Error message changed in latest python-roman; fixed in abjad 3.21.
@@ -3111,7 +3114,7 @@ using a system-independent interface.")
     (inputs
      (list lilypond))
     (native-inputs
-     (list python-pytest python-setuptools python-wheel))
+     (list python-setuptools))
     (propagated-inputs
      (list python-quicktions
            python-ply
