@@ -474,7 +474,7 @@ services.")
     (native-inputs
      (list python-bottle
            python-mock
-           python-pytest
+           python-pytest-8
            python-pytest-cov
            python-pytest-mock
            python-setuptools))
