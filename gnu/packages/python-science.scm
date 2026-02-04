@@ -3517,7 +3517,7 @@ its software deployment plugins.")
 (define-public python-snakemake-interface-storage-plugins
   (package
     (name "python-snakemake-interface-storage-plugins")
-    (version "3.3.0")
+    (version "3.6.0")
     (source
      (origin
        (method git-fetch)
@@ -3527,13 +3527,18 @@ its software deployment plugins.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05n5xgwagb01nyzi8xfvp0nvdfl24lxidgksm7k86p68n1rijd5a"))))
+        (base32 "1dh52nkvq9zhh28xmbbq74kzhzagcy48d3vgb39bd3ckjz8libgy"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f ;circular dependency on snakemake
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("wrapt = \".*\"")
+                 "wrapt = \"*\""))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
