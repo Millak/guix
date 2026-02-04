@@ -1448,6 +1448,11 @@ the \"texlive\" importer."
                        "reza@housseini.me"
                        "rhou")
   python science c++)
+
+(define-member (person "Yunqi Shao"
+                       "me@yqshao.se"
+                       "yqshao")
+  sysadmin)
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
