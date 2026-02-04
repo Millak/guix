@@ -93,8 +93,8 @@ in the @url{https://schema.org/Recipe} format.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/thinkle/gourmet")
-               (commit commit)))
+                (url "https://github.com/thinkle/gourmet")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32
@@ -109,9 +109,9 @@ in the @url{https://schema.org/Recipe} format.")
         #~(list "--ignore-glob=gourmet/tests/**/*.py")
         #:phases
         #~(modify-phases %standard-phases
-            (add-before 'check 'configure-tests
+            (add-before 'build 'set-environemnt
               (lambda _
-                (setenv "HOME" "/tmp") ;needed by tests
+                (setenv "HOME" "/tmp")
                 (system "Xvfb &")
                 (setenv "DISPLAY" ":0")))
             (add-after 'install 'install-dekstop-file-and-icons
