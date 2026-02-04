@@ -38335,6 +38335,32 @@ expanding regions of text without modifying the actual contents.")
 (define-deprecated-package emacs-origami-el
   emacs-origami)
 
+(define-public emacs-origami-ts
+  (package
+    (name "emacs-origami-ts")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/mst/origami-ts.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f4z3i8kx35m8vzm7rqsm9sxkqw1fxar6mb73r63sj713p9xks3y"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ; no tests
+    (propagated-inputs (list emacs-origami))
+    (home-page "https://codeberg.org/mst/origami-ts.git")
+    (synopsis "Fold code in Emacs with @code{emacs-origami} and tree-sitter")
+    (description
+     "@code{origami-ts} creates a general language parser for
+@code{emacs-origami} that leverages the Emacs treesit library to fold
+code.")
+    (license license:gpl3+)))
+
 (define-public emacs-peep-dired
   (let ((commit "c88a9a3050197840edfe145f11e0bb9488de32f4")
         (version "0")
