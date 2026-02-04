@@ -166,6 +166,9 @@
             (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
               (assoc-ref glib-or-gtk:%standard-phases
                          'generate-gdk-pixbuf-loaders-cache-file))
+            (add-before 'build 'set-home-env
+              (lambda _
+                (setenv "HOME" "/tmp")))
             (replace 'check
               (lambda* (#:key tests? #:allow-other-keys)
                 (when tests?
@@ -176,7 +179,6 @@
                           (string-join '("test_export_pdf"
                                          "test_import_aacircuit_export_pdf")
                                        ","))
-                  (setenv "HOME" "/tmp")
                   (invoke "xvfb-run" "./testrunner.sh"))))
             (add-after 'wrap 'glib-or-gtk-wrap
               (assoc-ref glib-or-gtk:%standard-phases
