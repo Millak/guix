@@ -13326,7 +13326,17 @@ Python documentation with @code{pydoc} in Emacs.")
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash emacs-reformatter python-black-macchiato))
-    (arguments `(#:tests? #f))
+    (arguments
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-exec-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (emacs-substitute-variables "python-black.el"
+               ("python-black-command"
+                (search-input-file inputs "bin/black"))
+               ("python-black-macchiato-command"
+                (search-input-file inputs "bin/black-macchiato"))))))))
     (home-page "https://github.com/wbolster/emacs-python-black")
     (synopsis "Reformat Python code via @code{python-black}")
     (description
