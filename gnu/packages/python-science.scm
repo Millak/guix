@@ -6100,13 +6100,13 @@ are source structure, project manager, interactive help, workspace...")
 (define-public snakemake
   (package
     (name "snakemake")
-    (version "8.29.2")
+    (version "8.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "snakemake" version))
        (sha256
-        (base32 "1ilpmrjmnc529p4gw2x23ik1d8b5pm6k1dhq08dknvfjsf3vgyjr"))))
+        (base32 "08k6qk886a6f79higkd0pjjrq9sn6w5gk0gdgx88rhr1aln1qk7x"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6117,7 +6117,7 @@ are source structure, project manager, interactive help, workspace...")
          "--ignore=tests/test_script_py/scripts/test_explicit_import.py"
          "--ignore=tests/test_output_index.py"
          ;; We don't care about testing old python@3.7 on Guix.
-         "--ignore=tests/test_conda_python_3_7_script/test_script.py"
+         "--ignore=tests/test_conda_python_3_7_script/test_script_python_3_7.py"
          ;; Those require additional snakemake plugins.
          "--ignore=tests/test_api.py"
          "--ignore=tests/test_executor_test_suite.py"
@@ -6206,8 +6206,7 @@ are source structure, project manager, interactive help, workspace...")
            python-numpy
            python-pandas
            python-setuptools
-           python-tomli
-           python-wheel))
+           python-tomli))
     (home-page "https://snakemake.readthedocs.io")
     (synopsis "Python-based execution environment for make-like workflows")
     (description
