@@ -370,16 +370,10 @@ intuitive, while also taking advantage of the capabilities of modern terminals."
          (delete 'check)                ; the tests need a wrapped vis
          (add-after 'install 'wrap-binary
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lpeg (assoc-ref inputs "lua-lpeg"))
-                    (lua-version ,(version-major+minor (package-version lua)))
-                    (LUA_PATH (string-append lpeg "/share/lua/"
-                                             lua-version "/?.lua"))
-                    (LUA_CPATH (string-append lpeg "/lib/lua/"
-                                              lua-version "/?.so")))
+             (let* ((out (assoc-ref outputs "out")))
                (wrap-program (string-append out "/bin/vis")
-                 `("LUA_PATH" ":" prefix (,LUA_PATH))
-                 `("LUA_CPATH" ":" prefix (,LUA_CPATH)))
+                 `("GUIX_LUA_PATH" ":" prefix (,(getenv "GUIX_LUA_PATH")))
+                 `("GUIX_LUA_CPATH" ":" prefix (,(getenv "GUIX_LUA_CPATH"))))
                #t)))
          (add-after 'wrap-binary 'check
            (assoc-ref %standard-phases 'check))
