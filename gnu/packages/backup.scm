@@ -1360,7 +1360,7 @@ borgmatic is powered by borg.")
                  (string-append "which('" #$(this-package-input "borg")
                                 "/bin/borg')")))))
           ;; XXX The test suite tries to write to $HOME.
-          (add-before 'check 'set-HOME
+          (add-before 'sanity-check 'set-HOME
             (lambda _
               (setenv "HOME" "/tmp")))
           ;; Otherwise, the user interface's icons will be missing.
