@@ -1955,24 +1955,16 @@ Python file for configuration.")
          ;; This one fails with "Unexpected argument of type <class 'tuple'>".
          "--ignore=tests/test_typeguard.py"
          ;; This one runs pip and fails.
-         "--ignore=tests/test_wheel.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-source-date-epoch
-            (lambda _
-              ;; Otherwise the wheel building test would fail with "ZIP does
-              ;; not support timestamps before 1980".
-              (setenv "SOURCE_DATE_EPOCH" "315532800"))))))
+         "--ignore=tests/test_wheel.py")))
     (native-inputs
      (list python-beartype
            python-feedparser
            python-pandas
            python-pytest
            python-setuptools
-           python-typeguard
-           python-wheel))
+           python-typeguard))
     (propagated-inputs
-     (list python-numpy
+     (list python-numpy-1
            python-typing-extensions
            python-pandas-stubs))
     (home-page "https://github.com/ramonhagenaars/nptyping")
