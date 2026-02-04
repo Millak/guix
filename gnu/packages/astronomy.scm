@@ -17,7 +17,7 @@
 ;;; Copyright © 2024-2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Vasilii Smirnov <vasilii.smirnov@mailbox.org>
 ;;; Copyright © 2025 Daniel Ziltener <dziltener@lyrion.ch>
-;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
+;;; Copyright © 2025-2026 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
 ;;; Copyright © 2025 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -6553,13 +6553,16 @@ emission lines in 1-D spectra, especially galaxy and quasar spectra.")
 (define-public python-lofar-h5plot
   (package
     (name "python-lofar-h5plot")
-    (version "2.9.1")
+    (version "2.9.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "lofar_h5plot" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tikk3r/lofar-h5plot")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0gxri18iqsw1l5zxn40475zj34h5nn1bscfrhkc739vpqjmj60hz"))))
+        (base32 "14v7jld6cd39f4l57jk93xn94s911x1zi53ms3dmd414chklsgys"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ; no tests provided
@@ -6569,7 +6572,7 @@ emission lines in 1-D spectra, especially galaxy and quasar spectra.")
     (propagated-inputs
      (list python-losoto
            python-matplotlib
-           python-numpy-1
+           python-numpy
            python-pyqt
            python-pyqt5-sip))
     (home-page "https://github.com/tikk3r/lofar-h5plot")
