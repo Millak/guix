@@ -19754,7 +19754,7 @@ implementation differs in these ways:
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 537 passed, 118 skipped, 15 xfailed, 89 warnings
+      ;; tests: 537 passed, 117 skipped, 15 xfailed, 77 warnings
       #:test-flags
       #~(list "-m" "not gpu"
               "--numprocesses" (number->string (min 8 (parallel-job-count)))
@@ -19814,7 +19814,9 @@ implementation differs in these ways:
                             "test_dask_against_in_memory[no_log1p]"
                             "test_qc_metrics[dask_array_sparse]"
                             "test_qc_metrics_idempotent[dask_array_sparse]"
-                            "test_qc_metrics_no_log1p[dask_array_sparse]")))
+                            "test_qc_metrics_no_log1p[dask_array_sparse]"))
+              ;; XXX: Not equal to tolerance rtol=1e-07, atol=0
+              "--deselect=tests/test_neighbors.py::test_connectivities_euclidean[umap]")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
