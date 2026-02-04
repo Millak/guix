@@ -59,7 +59,7 @@
         (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'configure-tests
+          (add-before 'sanity-check 'configure-tests
             (lambda _
               (setenv "HOME" (getcwd))))
           ;; Make sure rednotebook can find the typelibs and webkitgtk shared
