@@ -11467,7 +11467,7 @@ to Wolfram.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-before 'check 'setenv
+         (add-before 'build 'set-home-env
            (lambda _
              (setenv "HOME" "/tmp"))))))
     (propagated-inputs (list python-click
