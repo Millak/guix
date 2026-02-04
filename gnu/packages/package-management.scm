@@ -169,20 +169,6 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
-(define (boot-guile-uri arch)
-  "Return the URI for the bootstrap Guile tarball for ARCH."
-  (cond ((string=? "armhf" arch)
-         (string-append "http://alpha.gnu.org/gnu/guix/bootstrap/"
-                        arch "-linux"
-                        "/20150101/guile-2.0.11.tar.xz"))
-        ((string=? "aarch64" arch)
-         (string-append "http://alpha.gnu.org/gnu/guix/bootstrap/"
-                        arch "-linux/20170217/guile-2.0.14.tar.xz"))
-        (else
-         (string-append "http://alpha.gnu.org/gnu/guix/bootstrap/"
-                        arch "-linux"
-                        "/20131110/guile-2.0.9.tar.xz"))))
-
 ;; NOTE: The commit IDs used here form a linked list threaded through the git
 ;; history. In a phenomenon known as boot-stripping, not only the head of this
 ;; list is used, but also a few older versions, when a guix from this package is
