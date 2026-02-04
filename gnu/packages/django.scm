@@ -340,40 +340,45 @@ with a @var{CACHE_URL} environment variable.")
 (define-public python-django-configurations
   (package
     (name "python-django-configurations")
-    (version "2.4.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "django-configurations" version))
-              (sha256
-               (base32
-                "11chll26iqqy5chyx62hya20cadk10nm2la7sch7pril70a5rhm6"))))
+    (version "2.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jazzband/django-configurations")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zmaczfd3y6fsb80i4w5v4zjv8hk36v51p943ag5dk4745r4p050"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'skip-bad-test
-                 (lambda _
-                   (substitute* "tests/test_values.py"
-                     (("test_database_url_value") "_test_database_url_value"))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     ;; Taken from tox.ini.
-                     (setenv "DJANGO_SETTINGS_MODULE" "tests.settings.main")
-                     (setenv "DJANGO_CONFIGURATION" "Test")
-                     (setenv "PYTHONPATH"
-                             (string-append ".:" (getenv "GUIX_PYTHONPATH")))
-                     (invoke "django-cadmin" "test" "-v2")))))))
-    (propagated-inputs
-     (list python-django-4))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-bad-test
+            (lambda _
+              (substitute* "tests/test_values.py"
+                (("test_database_url_value")
+                 "__off_test_database_url_value"))))
+          (add-before 'build 'set-environemnt
+            (lambda _
+              (setenv "DJANGO_SETTINGS_MODULE" "tests.settings.main")
+              (setenv "DJANGO_CONFIGURATION" "Test")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "PYTHONPATH"
+                        (string-append ".:" (getenv "GUIX_PYTHONPATH")))
+                (invoke "django-cadmin" "test" "-v2")))))))
     (native-inputs
      (list python-dj-database-url
            python-dj-email-url
            python-dj-search-url
            python-django-cache-url
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-django))
     (home-page "https://django-configurations.readthedocs.io/")
     (synopsis "Helper module for organizing Django settings")
     (description
