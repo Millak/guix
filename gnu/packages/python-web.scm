@@ -12316,10 +12316,13 @@ can be handled by the @code{colorsys} module in the Python standard library.")
       #~(modify-phases %standard-phases
           (add-before 'build 'relax-requirements
             (lambda _
-              ;; "packaging ~= 23.0",
               (substitute* "pyproject.toml"
+                ;; packaging ~= 23.0
                 (("\"packaging .*\",")
-                 "")))))))
+                 "")
+                ;; rich~=13.0
+                (("\"rich .*\",")
+                 "\"rich\",")))))))
     (native-inputs
      (list nss-certs-for-test
            python-pytest
