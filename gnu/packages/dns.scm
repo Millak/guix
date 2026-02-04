@@ -979,18 +979,10 @@ synthesis, and on-the-fly re-configuration.")
                   "info")))))
          (add-after 'install 'wrap-binary
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lua-* (map cdr (filter
-                                     (lambda (input)
-                                       (string-prefix? "lua-" (car input)))
-                                     inputs)))
-                    (lua-path (lambda (p)
-                                (string-append p "/share/lua/5.1/?.lua")))
-                    (lua-cpath (lambda (p)
-                                 (string-append p "/lib/lua/5.1/?.so"))))
+             (let* ((out (assoc-ref outputs "out")))
                (wrap-program (string-append out "/sbin/kresd")
-                 `("LUA_PATH" ";" prefix ,(map lua-path lua-*))
-                 `("LUA_CPATH" ";" prefix ,(map lua-cpath lua-*)))))))))
+                 `("GUIX_LUA_PATH" ";" prefix (,(getenv "GUIX_LUA_PATH")))
+                 `("GUIX_LUA_CPATH" ";" prefix (,(getenv "GUIX_LUA_CPATH"))))))))))
     (native-inputs
      (list cmocka ; for unit tests
            doxygen
