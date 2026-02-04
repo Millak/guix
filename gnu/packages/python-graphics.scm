@@ -327,7 +327,7 @@ multitouch applications.")
               ;; Check phase fails struggling to find tests module.
               (with-output-to-file "kivymd/tests/__init__.py"
                 (lambda _ (display "")))))
-          (add-before 'check 'set-home
+          (add-before 'build 'set-home
             (lambda _
               ;; FileNotFoundError: [Errno 2] No such file or directory:
               ;; '/homeless-shelter/.kivy'
