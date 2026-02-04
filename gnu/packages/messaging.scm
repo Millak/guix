@@ -1481,25 +1481,6 @@ default.")
              ;; modules at runtime.
              (let* ((out   (assoc-ref outputs "out"))
                     (bin   (string-append out "/bin/"))
-                    (deps  (delete #f (map (match-lambda
-                                             ((label . directory)
-                                              (if (string-prefix? "lua" label)
-                                                  directory #f)))
-                                           inputs)))
-                    (lua-path (string-join
-                               (map (lambda (path)
-                                      (string-append
-                                       path "/share/lua/5.2/?.lua;"
-                                       path "/share/lua/5.2/?/?.lua"))
-                                    (cons out deps))
-                               ";"))
-                    (lua-cpath (string-join
-                                (map (lambda (path)
-                                       (string-append
-                                        path "/lib/lua/5.2/?.so;"
-                                        path "/lib/lua/5.2/?/?.so"))
-                                     (cons out deps))
-                                ";"))
                     (openssl (assoc-ref inputs "openssl"))
                     (coreutils (assoc-ref inputs "coreutils"))
                     (path (map (lambda (dir)
@@ -1507,8 +1488,8 @@ default.")
                                (list openssl coreutils))))
                (for-each (lambda (file)
                            (wrap-program file
-                             `("LUA_PATH"  ";" = (,lua-path))
-                             `("LUA_CPATH" ";" = (,lua-cpath))
+                             `("GUIX_LUA_PATH"  ";" prefix (,(getenv "GUIX_LUA_PATH")))
+                             `("GUIX_LUA_CPATH" ";" prefix (,(getenv "GUIX_LUA_CPATH")))
                              `("PATH" ":" prefix ,path)))
                          (find-files bin ".*"))))))))
     (inputs
