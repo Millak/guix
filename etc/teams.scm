@@ -1453,6 +1453,12 @@ the \"texlive\" importer."
                        "me@yqshao.se"
                        "yqshao")
   sysadmin)
+
+(define-member (person "Collin Doering"
+                       "collin@rekahsoft.ca"
+                       "rekahsoft")
+  embedded electronics haskell sysadmin)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
