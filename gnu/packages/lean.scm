@@ -193,7 +193,7 @@ interactive and automated theorem proving.")
                            " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'fix-home-directory
+          (add-before 'build 'set-home-env
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (native-inputs (list python-pytest python-setuptools))
