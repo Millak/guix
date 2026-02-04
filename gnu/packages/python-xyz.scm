@@ -13304,50 +13304,6 @@ It implements generator functions for reading and writing data to and from
 FFMPEG, reliably terminating the process when done.")
     (license license:bsd-2)))
 
-(define-public python-imageio-freeimage
-  (package
-    (name "python-imageio-freeimage")
-    (version "0.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "imageio_freeimage" version))
-       (sha256
-        (base32 "1la0iv3617m52dnidhhrdaz9dpnlfqs7b83550d3jkjavv30md72"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #f ; tests need internet and are not distributed in PyPI
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; imageio_freeimage expects a copy of the library in its source
-          ;; tree.  Changing this would require hacky substitutions.
-          (add-after 'install 'freeimage-path
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let* ((pylib (string-append #$output "/lib/python"
-                                           #$(version-major+minor
-                                              (package-version python))
-                                           "/site-packages"))
-                     (iofi (string-append pylib "/imageio_freeimage")))
-                (mkdir-p (string-append iofi "/_lib"))
-                (symlink (search-input-file inputs "lib/libfreeimage.so")
-                         (string-append iofi "/_lib/libfreeimage.so"))))))))
-    (native-inputs (list python-poetry-core python-requests python-setuptools
-                         python-wheel))
-    (inputs (list freeimage))
-    (propagated-inputs (list python-imageio))
-    (home-page "https://github.com/imageio/imageio-freeimage")
-    (synopsis "Plugin for ImageIO that wraps the FreeImage library")
-    (description
-     "This package provides a plugin for @code{ImageIO} that wraps the
-@code{FreeImage} library.")
-    ;; As a derivative work of FreeImage, imageio_freeimage is licensed under
-    ;; GPLv2 or GPLv3, and the FreeImage Public License (FIPL).
-    ;; For more information, see the LICENSE file.
-    (license
-     (list license:gpl2 license:gpl3
-           (license:non-copyleft "https://spdx.org/licenses/FreeImage.html")))))
-
 (define-public python-imageio
   (package
     (name "python-imageio")
