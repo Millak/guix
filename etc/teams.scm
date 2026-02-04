@@ -1267,7 +1267,7 @@ the \"texlive\" importer."
 (define-member (person "Katherine Cox-Buday"
                        "cox.katherine.e+guix@gmail.com"
                        "katco")
-  emacs go lisp)
+  emacs lisp)
 
 (define-member (person "Munyoki Kilyungi"
                        "me@bonfacemunyoki.com"
