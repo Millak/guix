@@ -2254,16 +2254,27 @@ LLVM."))))
 (define-public wllvm
   (package
     (name "wllvm")
-    (version "1.3.1")
+    (properties '((commit . "948cdb8bd8fb446c700a6aefc218153db5ce2591")
+                  (revision . "0")))
+    (version (git-version "1.3.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "wllvm" version))
+       (method git-fetch)
+       (uri (git-reference
+              ;; Maintained fork.
+              (url "https://github.com/travitch/whole-program-llvm")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0cf31hixzq5bzkxv91rvadlhrpxzy934134scv4frj85bxbpl19y"))))
+        (base32 "0ksasakx0ihg86j0qdla0zy14ljdhzpgi11as4kkgj51v4haihn4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      ;; This test requires access to binary llvm-gcc.
+      #~(list "--ignore=test/test_dragonegg_driver.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-paths
@@ -2281,7 +2292,7 @@ LLVM."))))
                   (("'file'")
                    (pystr (search-input-file inputs "/bin/file"))))))))))
     (inputs (list binutils file))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list clang procps python-pytest python-setuptools))
     (home-page "https://github.com/SRI-CSL/whole-program-llvm")
     (synopsis "Whole Program LLVM")
     (description "This package provides a toolkit for building whole-program
