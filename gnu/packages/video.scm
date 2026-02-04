@@ -4029,7 +4029,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
                   (("\"streamlink ")
                    (format #f "\"~a "
                            (search-input-file inputs "/bin/streamlink"))))))
-            (add-before 'check 'check-setup
+            (add-before 'sanity-check 'check-setup
               (lambda _
                 (setenv "HOME" (getcwd)))) ;Needs to write to ‘$HOME’.
             (add-after 'install 'install-rofi-plugin
