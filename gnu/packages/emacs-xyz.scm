@@ -16227,6 +16227,29 @@ line program.")
 requests library that uses the url library.")
       (license license:gpl2+))))
 
+(define-public emacs-rtfm-mode
+  (package
+   (name "emacs-rtfm-mode")
+   (version "0.1.1")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://codeberg.org/lilyp/emacs-rtfm-mode.git")
+                  (commit version)))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "0da5wxj88davv47zj53mp2i6g742j53ry1nr81jclij3anx0k2al"))))
+   (build-system emacs-build-system)
+   (arguments (list #:tests? #f))       ;no tests
+   (home-page "https://codeberg.org/lilyp/emacs-rtfm-mode")
+   (synopsis "Address gender discrimination in documentation")
+   (description "This package provides a minor mode for reading the feminist
+manuals, inspired by a browser extension of the same name.  It replaces
+occurences of gendered language with gender-neutral one and provides
+means of counting their occurences.")
+   (license license:gpl3+)))
+
 (define-public emacs-ruby-electric
   (let ((revision "0")
         (commit "c53376da891713e0c49f01aad2ff64d4fbb0b812"))
