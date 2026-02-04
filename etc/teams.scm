@@ -1497,6 +1497,11 @@ the \"texlive\" importer."
                        "mysticmoksh@riseup.net"
                        "untrusem")
   mozilla)
+
+(define-member (person "David Thompson"
+                       "dthompson2@worcester.edu"
+                       "flockofbirbs")
+  guile)
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
