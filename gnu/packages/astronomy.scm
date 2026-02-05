@@ -6013,7 +6013,7 @@ observationally-derived galaxy merger catalogs.")
       ;; tests: 65 passed, 2 skipped, 9 deselected
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'set-home
+          (add-before 'sanity-check 'set-home
             (lambda _
               ;; E PermissionError: [Errno 13] Permission denied:
               ;; '/homeless-shelter'
