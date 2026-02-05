@@ -24324,7 +24324,7 @@ aligner.")
       #:phases
       #~(modify-phases %standard-phases
           ;; Numba needs a writable dir to cache functions.
-          (add-before 'check 'set-numba-cache-dir
+          (add-before 'build 'set-numba-cache-dir
             (lambda _
               (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (native-inputs
