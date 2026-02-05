@@ -101,13 +101,15 @@
     (name "transmission")
     (version "4.1.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/transmission/transmission"
-                                  "/releases/download/" version "/transmission-"
-                                  version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/transmission/transmission")
+                    (commit version)
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mj9xkfqqk30fhm1yjkgwzbsxm4zbklwknqp9jf249k1kqf8rlnw"))))
+                "1bhvl0axkd5cqbm7dfwhzvxyiz5f32gp74bdyj5jr35y9rmv0nc2"))))
     (build-system cmake-build-system)
     (outputs '("out"                      ; library and command-line interface
                "gui"))                    ; graphical user interface
