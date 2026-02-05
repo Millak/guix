@@ -22139,35 +22139,34 @@ single-cell RNA-seq data.")
 (define-public python-ikarus
   (package
     (name "python-ikarus")
-    (version "0.0.2")
+    (version "0.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ikarus" version))
        (sha256
-        (base32 "086czpvj4yafz4vrq5rx2gy0bj2l8nzwnkk0gw8qvy4w133xjysy"))))
+        (base32 "1nzhy1a4mnr23wnxg7sy0pgyydfiavvk8b53cyxh1z8s6wqq1yqj"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f
-       #:phases (modify-phases %standard-phases
-                  ;; See https://github.com/BIMSBbioinfo/ikarus/issues/12
-                  (add-after 'unpack 'fix-issue-12
-                    (lambda _
-                      (substitute* "ikarus/classifier.py"
-                        (("pyscenic.genesig")
-                         "ctxcore.genesig"))))
-                  ;; Numba needs a writable dir to cache functions.
-                  (add-before 'check 'set-numba-cache-dir
-                    (lambda _
-                      (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
-    (propagated-inputs (list python-numpy
-                             python-pandas
-                             python-scipy
-                             python-scanpy
+     (list
+      #:test-backend #~'custom
+      #:test-flags
+      ;; There are no actual tests, it is a step from GitHub Actions.
+      #~(list "-c" "'from ikarus import classifier, utils, data'")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Numba needs a writable dir to cache functions.
+          (add-before 'build 'set-numba-cache-dir
+            (lambda _
+              (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (propagated-inputs (list pyscenic
                              python-anndata
-                             python-ctxcore ;because of issue 12
-                             pyscenic))
-    (native-inputs (list python-setuptools python-wheel))
+                             python-ctxcore
+                             python-numpy
+                             python-pandas
+                             python-scanpy
+                             python-scipy))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/BIMSBbioinfo/ikarus")
     (synopsis "Machine learning classifier of tumor cells")
     (description
