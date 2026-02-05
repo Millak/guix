@@ -1408,6 +1408,11 @@ the \"texlive\" importer."
                        "rodion-goritskov")
   release)
 
+(define-member (person "Jason Conroy"
+                       "jconroy@tscripta.net"
+                       "conroj")
+  ocaml)
+
 (define-member (person "Rutherther"
                        "rutherther@ditigal.xyz"
                        "Rutherther")
