@@ -5092,19 +5092,20 @@ test_xgroup_create_entriesread")
 (define-public python-rq
   (package
     (name "python-rq")
-    (version "2.3.1")
+    (version "2.6.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/rq/rq")
-             (commit (string-append "v" version))))
+              (url "https://github.com/rq/rq")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w9aqvbvh1mfpgng0mdcskxl5y3ybcqqai5dnwgvg18am0xxhya6"))))
+        (base32 "0n2bn9awd3sbl9bkz0h7y8c356w0n7fdhifzfvzylrx2jggczv73"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 520 passed, 16 skipped, 76 warnings
       #:phases #~(modify-phases %standard-phases
                    (add-before 'check 'start-redis
                      (lambda _
@@ -5116,7 +5117,9 @@ test_xgroup_create_entriesread")
            python-pytest
            redis))
     (propagated-inputs
-     (list python-click python-redis))
+     (list python-click
+           python-croniter
+           python-redis))
     (home-page "https://python-rq.org/")
     (synopsis "Simple job queues for Python")
     (description
