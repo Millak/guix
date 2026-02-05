@@ -9067,6 +9067,37 @@ professionally translated
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-go-redis-redis
+  (package
+    (name "go-github-com-go-redis-redis")
+    (version "6.15.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/redis/go-redis")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y13zhv4isf28bq249pz9dp08rb8amyfp2gdbfah09zcmlhjsaki"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Tests requir running Redis server.
+      #~(list "-skip" "Example|TestGinkgoSuite")
+      #:import-path "github.com/go-redis/redis"))
+    (native-inputs
+     (list go-github-com-onsi-ginkgo))
+    (home-page "https://github.com/redis/go-redis")
+    (synopsis "Redis client for Golang")
+    (description
+     "@code{go-redis} is the official Redis client library for the Go
+programming language.  It offers a straightforward interface for interacting
+with Redis servers.  @code{github.com/redis/go-redis} and
+@code{github.com/go-redis/redis} are distributed from the same source.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-go-spatial-proj
   (package
     (name "go-github-com-go-spatial-proj")
