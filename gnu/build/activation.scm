@@ -141,12 +141,13 @@ and bits are set according to the default behaviour of 'mkdir'."
                                  #:key
                                  (directory %skeleton-directory)
                                  uid gid)
-  "Copy the account skeletons from DIRECTORY to HOME.  When UID is an integer,
-make it the owner of all the files created except the home directory; likewise
-for GID."
-  (define (set-owner file)
+  "Copy the account skeletons from DIRECTORY to HOME and make them writable.
+When UID is an integer, make it the owner of all the files created except the
+home directory; likewise for GID."
+  (define (set-permission file)
     (when (or uid gid)
-      (chown file (or uid -1) (or gid -1))))
+      (chown file (or uid -1) (or gid -1)))
+    (make-file-writable file))
 
   (let ((files (scandir directory (negate dot-or-dot-dot?)
                         string<?)))
@@ -156,10 +157,9 @@ for GID."
                   (copy-recursively (string-append directory "/" file)
                                     target
                                     #:log (%make-void-port "w"))
-                  (for-each set-owner
+                  (for-each set-permission
                             (find-files target (const #t)
-                                        #:directories? #t))
-                  (make-file-writable target)))
+                                        #:directories? #t))))
               files)))
 
 (define* (make-skeletons-writable home
