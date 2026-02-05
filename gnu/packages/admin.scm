@@ -4068,7 +4068,7 @@ plug-in architecture to allow monitoring other system metrics.")
     (native-inputs
      (list go
            python-mock
-           python-pytest
+           python-pytest-8
            python-pytest-mock
            python-setuptools
            python-wheel))
