@@ -25246,7 +25246,7 @@ word on a list of words, if none is found, look for a similar word.")
 (define-public go-go-abhg-dev-log-silog
   (package
     (name "go-go-abhg-dev-log-silog")
-    (version "0.1.0")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
@@ -25255,7 +25255,7 @@ word on a list of words, if none is found, look for a similar word.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1287i6qqg7hp8g49mbbr4n0l67v5b3dqz263ynpqjzrz1yck5q3v"))))
+        (base32 "1lsms1na9hp23m2b2za3v567wf6c8ywri23b707sbs29rwf25yrr"))))
     (build-system go-build-system)
     (arguments
      (list
