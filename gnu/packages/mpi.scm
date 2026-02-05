@@ -107,42 +107,43 @@
     (native-inputs
      (list pkg-config))
     (arguments
-     `(#:configure-flags '("--localstatedir=/var")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'skip-linux-libnuma-test
-           (lambda _
-             ;; Arrange to skip 'tests/linux-libnuma', which fails on some
-             ;; machines: <https://github.com/open-mpi/hwloc/issues/213>.
-             (substitute* "tests/linux-libnuma.c"
-               (("numa_available\\(\\)")
-                "-1"))))
-         (add-after 'install 'refine-libnuma
-           ;; Give -L arguments for libraries to avoid propagation
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out  (assoc-ref outputs "lib"))
-                   (numa (assoc-ref inputs "numactl")))
-               (substitute* (map (lambda (f) (string-append out "/" f))
-                                 '("lib/pkgconfig/hwloc.pc" "lib/libhwloc.la"))
-                 (("-lnuma" lib)
-                  (string-append "-L" numa "/lib " lib))))))
-         (add-after 'install 'avoid-circular-references
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((lib (assoc-ref outputs "lib")))
-               ;; Suppress the 'prefix=' and 'exec_prefix=' lines so that the
-               ;; "lib" output doesn't refer to "out".
-               (substitute* (string-append lib "/lib/pkgconfig/hwloc.pc")
-                 (("^.*prefix=.*$")
-                  "")))))
-         (add-after 'install 'move-man3-pages
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Move section 3 man pages to the "doc" output.
-             (let ((out (assoc-ref outputs "out"))
-                   (doc (assoc-ref outputs "doc")))
-               (copy-recursively (string-append out "/share/man/man3")
-                                 (string-append doc "/share/man/man3"))
-               (delete-file-recursively
-                (string-append out "/share/man/man3"))))))))
+     (list #:configure-flags
+           #~(list "--localstatedir=/var")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'skip-linux-libnuma-test
+                 (lambda _
+                   ;; Arrange to skip 'tests/linux-libnuma', which fails on some
+                   ;; machines: <https://github.com/open-mpi/hwloc/issues/213>.
+                   (substitute* "tests/linux-libnuma.c"
+                     (("numa_available\\(\\)")
+                      "-1"))))
+               (add-after 'install 'refine-libnuma
+                 ;; Give -L arguments for libraries to avoid propagation
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let ((out  (assoc-ref outputs "lib"))
+                         (numa (assoc-ref inputs "numactl")))
+                     (substitute* (map (lambda (f) (string-append out "/" f))
+                                       '("lib/pkgconfig/hwloc.pc" "lib/libhwloc.la"))
+                       (("-lnuma" lib)
+                        (string-append "-L" numa "/lib " lib))))))
+               (add-after 'install 'avoid-circular-references
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((lib (assoc-ref outputs "lib")))
+                     ;; Suppress the 'prefix=' and 'exec_prefix=' lines so that the
+                     ;; "lib" output doesn't refer to "out".
+                     (substitute* (string-append lib "/lib/pkgconfig/hwloc.pc")
+                       (("^.*prefix=.*$")
+                        "")))))
+               (add-after 'install 'move-man3-pages
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   ;; Move section 3 man pages to the "doc" output.
+                   (let ((out (assoc-ref outputs "out"))
+                         (doc (assoc-ref outputs "doc")))
+                     (copy-recursively (string-append out "/share/man/man3")
+                                       (string-append doc "/share/man/man3"))
+                     (delete-file-recursively
+                      (string-append out "/share/man/man3"))))))))
     (home-page "https://www.open-mpi.org/projects/hwloc/")
     (synopsis "Abstraction of hardware architectures")
     (description
@@ -183,25 +184,25 @@ bind processes, and much more.")
     (arguments
      (substitute-keyword-arguments (package-arguments hwloc-1)
        ((#:phases phases)
-        `(modify-phases ,phases
-           (replace 'skip-linux-libnuma-test
-             (lambda _
-               ;; Arrange to skip 'tests/hwloc/linux-libnuma', which fails on
-               ;; some machines: <https://github.com/open-mpi/hwloc/issues/213>.
-               (substitute* "tests/hwloc/linux-libnuma.c"
-                 (("numa_available\\(\\)")
-                  "-1"))))
-           (add-before 'check 'skip-tests-that-require-/sys
-             (lambda _
-               ;; 'test-gather-topology.sh' requires /sys as of 2.9.0; skip it.
-               (setenv "HWLOC_TEST_GATHER_TOPOLOGY" "0")))
-           (add-before 'check 'skip-test-that-fails-on-qemu
-             (lambda _
-               ;; Skip test that fails on emulated hardware due to QEMU bug:
-               ;; <https://bugs.gnu.org/40342>.
-               (substitute* "tests/hwloc/hwloc_get_last_cpu_location.c"
-                 (("hwloc_topology_init" all)
-                  (string-append "exit (77);\n" all)))))))))))
+        #~(modify-phases #$phases
+            (replace 'skip-linux-libnuma-test
+              (lambda _
+                ;; Arrange to skip 'tests/hwloc/linux-libnuma', which fails on
+                ;; some machines: <https://github.com/open-mpi/hwloc/issues/213>.
+                (substitute* "tests/hwloc/linux-libnuma.c"
+                  (("numa_available\\(\\)")
+                   "-1"))))
+            (add-before 'check 'skip-tests-that-require-/sys
+              (lambda _
+                ;; 'test-gather-topology.sh' requires /sys as of 2.9.0; skip it.
+                (setenv "HWLOC_TEST_GATHER_TOPOLOGY" "0")))
+            (add-before 'check 'skip-test-that-fails-on-qemu
+              (lambda _
+                ;; Skip test that fails on emulated hardware due to QEMU bug:
+                ;; <https://bugs.gnu.org/40342>.
+                (substitute* "tests/hwloc/hwloc_get_last_cpu_location.c"
+                  (("hwloc_topology_init" all)
+                   (string-append "exit (77);\n" all)))))))))))
 
 (define-public hwloc
   ;; The latest stable series of hwloc.
