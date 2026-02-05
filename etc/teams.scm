@@ -1487,6 +1487,11 @@ the \"texlive\" importer."
                        "w@wmeyer.eu"
                        "theesm")
   kernel)
+
+(define-member (person "Untrusem"
+                       "mysticmoksh@riseup.net"
+                       "untrusem")
+  mozilla)
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
