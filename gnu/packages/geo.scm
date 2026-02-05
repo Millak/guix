@@ -2700,7 +2700,7 @@ from multiple records.")
 (define-public python-scitools-iris
   (package
     (name "python-scitools-iris")
-    (version "3.12.3")                  ;3.13.x fails some tests
+    (version "3.14.1")
     (source
      (origin
        (method git-fetch)
@@ -2709,13 +2709,24 @@ from multiple records.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09al2nkn1ndjib84fck61njz3y76k7zn7496gwaq582h30akxd1n"))))
+        (base32 "0l94bmc7bc0q76nabr67ndxfrdbcl2smp1v94y03gzdrwf2lf2nd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count))
-              "--pyargs" "iris"
+              ;; XXX: Currently incompatible with pytest@9.
+              "--ignore=iris/tests/test_plot.py"
+              "--ignore=iris/tests/test_quickplot.py"
+              ;; XXX: Requires network.
+              "--ignore=iris/tests/integration/test_mask_cube_from_shape.py"
+              "--deselect=iris/tests/integration/plot/test_vector_plots.py::TestBarbs"
+              "--deselect=iris/tests/integration/plot/test_vector_plots.py::TestQuiver"
+              "--deselect=iris/tests/integration/plot/test_plot_2d_coords.py::Test"
+              ;; XXX: Requires the iris-sample-data.
+              "--deselect=iris/tests/test_constraints.py::TestCubeExtract__name_constraint"
+              "--deselect=iris/tests/test_constraints.py::TestCubeExtract__names"
+
               "-k" (string-join
                     ;; Tests requiring additional data files distributed
                     ;; separately from this project from
@@ -2724,135 +2735,69 @@ from multiple records.")
                     ;;
                     ;; XXX: Review this list and try to ignore by files
                     ;; instead in individual tests.
-                    (list "not test_both_transposed"
-                          "test_2d_coords_contour"
-                          "test_2d_plain_latlon"
-                          "test_2d_plain_latlon_on_polar_map"
-                          "test_2d_rotated_latlon"
-                          "test_2d_rotated_latlon"
-                          "test_ancillary_variables_pass_0"
-                          "test_auxiliary_coordinates_pass_0"
-                          "test_bounds"
-                          "test_bounds_pass_0"
-                          "test_broadcast_cubes"
-                          "test_broadcast_cubes_weighted"
-                          "test_broadcast_transpose_cubes_weighted"
-                          "test_cell_measures_pass_0"
-                          "test_common_mask_broadcast"
-                          "test_common_mask_simple"
-                          "test_compatible_cubes"
-                          "test_compatible_cubes_weighted"
-                          "test_coord_transposed"
-                          "test_coordinates_pass_0"
-                          "test_cube_transposed"
-                          "test_cube_with_deferred_unit_conversion"
-                          "test_data_pass_0"
-                          "test_destructor"
-                          "test_formula_terms_pass_0"
-                          "test_global_attributes_pass_0"
-                          "test_grid_mapping_pass_0"
-                          "test_grouped_dim"
-                          "test_incompatible_cubes"
-                          "test_izip_different_shaped_coords"
-                          "test_izip_different_valued_coords"
-                          "test_izip_extra_coords_both_slice_dims"
-                          "test_izip_extra_coords_slice_dim"
-                          "test_izip_extra_coords_step_dim"
-                          "test_izip_extra_dim"
-                          "test_izip_input_collections"
-                          "test_izip_missing_slice_coords"
-                          "test_izip_nd_non_ortho"
-                          "test_izip_nd_ortho"
-                          "test_izip_no_args"
-                          "test_izip_no_common_coords_on_step_dim"
-                          "test_izip_onecube_height_lat_long"
-                          "test_izip_onecube_lat"
-                          "test_izip_onecube_lat_lon"
-                          "test_izip_onecube_no_coords"
-                          "test_izip_ordered"
-                          "test_izip_returns_iterable"
-                          "test_izip_same_cube_lat"
-                          "test_izip_same_cube_lat_lon"
-                          "test_izip_same_cube_no_coords"
-                          "test_izip_same_dims_single_coord"
-                          "test_izip_same_dims_two_coords"
-                          "test_izip_subcube_of_same"
-                          "test_izip_unequal_slice_coords"
-                          "test_izip_use_in_analysis"
-                          "test_label_dim_end"
-                          "test_label_dim_start"
-                          "test_lenient_handling"
-                          "test_load_laea_grid"
-                          "test_load_pp_timevarying_orography"
-                          "test_load_pp_timevarying_orthography"
-                          "test_mdtol"
-                          "test_netcdf_v3"
-                          "test_no_delayed_writes"
-                          "test_no_transpose"
-                          "test_no_u"
-                          "test_no_v"
-                          "test_non_existent_coord"
-                          "test_none"
-                          "test_perfect_corr"
-                          "test_perfect_corr_all_dims"
-                          "test_points"
+                    (list "not test_load_pp_timevarying_orography"
+                          "test_oblique_cs"
                           "test_python_versions"
-                          "test_realfile_loadsave_equivalence"
-                          "test_realise_data"
-                          "test_realise_data_multisource"
-                          "test_realistic"
-                          "test_scheduler_types"
-                          "test_single_coord"
-                          "test_stream"
-                          "test_stream_multisource"
-                          "test_stream_multisource__manychunks"
-                          "test_time_of_writing"
-                          "test_ungrouped_dim"
-                          "test_variable_attribute_touch_pass_0"
-                          "test_variable_cf_group_pass_0"
-                          "test_weight_error")
-                    " and not "))
+                          "test_simple"
+                          "test_scatter"
+                          "test_transform_geometry")
+                    " and not ")
+              )
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "requirements/pypi-core.txt"
-                ;; dask[array]>=2025.1.0  # github.com/SciTools/iris/issues/6264
-                ;; TODO: Update python-dask to >=2025.1.0 to fix referenced bug.
-                ((">=2025.1.0") ""))))
           (add-after 'unpack 'delete-failing-test-files
             (lambda _
               (with-directory-excursion "lib/iris/tests"
-                ;; Tries to load the test data on import. Uncomment for 3.13.x.
-                ;; (delete-file
-                ;;  "tests/integration/netcdf/derived_bounds/test_bounds_files.py")
+                ;; Tries to load the test data on import.
+                (delete-file
+                 "integration/netcdf/derived_bounds/test_bounds_files.py")
                 ;; GeoVista is not packaged yet, "--ignore" option did not work
                 ;; to skip test files.
                 (for-each delete-file-recursively
                           (list "integration/experimental/geovista"
                                 "unit/experimental/geovista")))))
           (add-after 'unpack 'fix-paths
-            (lambda _
-              (let ((netcdf #$(this-package-native-input "netcdf")))
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((netcdf-bin (dirname
+                                 (search-input-file inputs "bin/ncgen"))))
                 (substitute* (list "lib/iris/tests/__init__.py"
-                                   ;; "tests/_shared_utils.py" ;for 3.13.x.
+                                   "lib/iris/tests/_shared_utils.py"
                                    "lib/iris/tests/stock/netcdf.py")
                   (("env_bin_path\\(\"ncgen\"\\)")
-                   (format #f "'~a/bin/ncgen'" netcdf))
+                   (format #f "'~a/ncgen'" netcdf-bin))
                   (("env_bin_path\\(\"ncdump\"\\)")
-                   (format #f "'~a/bin/ncdump'" netcdf))))))
-          (add-before 'check 'pre-check
-            (lambda _
-              (setenv "HOME" "/tmp"))))))
+                   (format #f "'~a/ncdump'" netcdf-bin))))))
+          ;; XXX: Tests are installed, but they need to be compiled
+          ;; before being run, and I fear breaking the ABI/compiled
+          ;; files when removing.
+          (replace 'check
+            (lambda* (#:key tests? test-flags inputs outputs
+                      #:allow-other-keys)
+              (setenv "HOME" "/tmp")
+              (delete-file-recursively "lib")
+              (let ((site (site-packages inputs outputs)))
+                (with-directory-excursion site
+                  ((assoc-ref %standard-phases 'unpack)
+                   #:source #$iris-test-data)
+                  (copy-recursively "test_data" "../iris/test_data")
+                  (chdir "..")
+                  (delete-file-recursively "source")
+                  ((assoc-ref %standard-phases 'check)
+                   #:tests? tests?
+                   #:test-flags test-flags)
+                  (delete-file-recursively "iris/test_data"))))))))
     (native-inputs
      (list netcdf ; for ncdump and ncgen
            nss-certs-for-test
+           python-affine
            python-distributed
            python-filelock
            python-imagehash
            python-pytest
            python-pytest-mock
            python-pytest-xdist          ;for 'pytest -n'
+           python-rasterio
+           python-scitools-mo-pack
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
