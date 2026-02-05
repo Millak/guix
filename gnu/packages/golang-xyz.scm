@@ -3516,7 +3516,7 @@ tools.")
 (define-public go-github-com-charmbracelet-bubbles
   (package
     (name "go-github-com-charmbracelet-bubbles")
-    (version "0.20.0")
+    (version "0.21.1")
     (source
      (origin
        (method git-fetch)
@@ -3525,7 +3525,7 @@ tools.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qdcln01bq9lk6r33b8p5d5x850wgd8ddq57n4bg3xn76z2fd657"))))
+        (base32 "16skxb77zs3c8wkc2f4gd4cmwwj9lmh8k62jn3003cfzprq00af6"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/charmbracelet/bubbles"))
