@@ -1473,6 +1473,11 @@ the \"texlive\" importer."
                        "mthl")
   java)
 
+(define-member (person "Hugo Buddelmeijer"
+                       "hugo@buddelmeijer.nl"
+                       "hugobuddel")
+  python)
+
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
       (error (format #false
