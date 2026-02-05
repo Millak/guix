@@ -67,9 +67,11 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages rocm-tools)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages xdisorg)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match))
 
@@ -184,14 +186,22 @@ bind processes, and much more.")
                      (append bash)))              ;for completion tests
     (inputs (modify-inputs (package-inputs hwloc-1)
               (append level-zero)
+              ;; XXX: rocm-smi requires libdrm/drm.h but doesn't propagate a
+              ;; package providing these. For now, libdrm is used to provide
+              ;; this header.
+              (append libdrm)
               (append libxml2)
               (append opencl-icd-loader)
+              (append rocm-smi-lib)
               (delete "numactl")))               ;libnuma is no longer needed.
     (arguments
      (substitute-keyword-arguments (package-arguments hwloc-1)
        ((#:configure-flags flags '())
         #~(cons* (string-append "--with-opencl="
                                 #$(this-package-input "opencl-icd-loader"))
+                 "--enable-rsmi"
+                 (string-append "--with-rocm="
+                                #$(this-package-input "rocm-smi-lib"))
                  #$flags))
        ((#:phases phases)
         #~(modify-phases #$phases
