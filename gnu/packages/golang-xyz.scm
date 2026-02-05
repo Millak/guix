@@ -3950,6 +3950,33 @@ ECMA-48} specs.")
      "Package cellbuf provides terminal cell buffer functionality.")
     (license license:expat)))
 
+(define-public go-github-com-charmbracelet-x-conpty
+  (package
+    (name "go-github-com-charmbracelet-x-conpty")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/charmbracelet/x")
+              (commit (go-version->git-ref version
+                                           #:subdir "conpty"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pjz85racg5302xdq96sbxjzizsks7nrg3as7k2al9fd7lnhv3vc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/charmbracelet/x/conpty"
+      #:unpack-path "github.com/charmbracelet/x"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/charmbracelet/x")
+    (synopsis "Windows Console Pseudo-terminal support")
+    (description
+     "Package conpty implements Windows Console Pseudo-terminal support.")
+    (license license:expat)))
+
 (define-public go-github-com-charmbracelet-x-exp-golden
   (package
     (name "go-github-com-charmbracelet-x-exp-golden")
