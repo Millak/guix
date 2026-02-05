@@ -27825,13 +27825,13 @@ format.")
 (define-public python-crontab
   (package
     (name "python-crontab")
-    (version "3.2.0")
+    (version "3.3.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri name version))
+       (uri (pypi-uri "python_crontab" version))
        (sha256
-        (base32 "0sy3qlki43n6qmhzzzyya4wcs50mcp3mg1ddn9h39plsscfps1j0"))))
+        (base32 "06r9vqaplqd9saazqw3lprlbv4sb2an0zkjdxh23xpyxd3p8lz00"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
@@ -27847,7 +27847,7 @@ format.")
     (inputs
      (list mcron python-dateutil))
     (native-inputs
-     (list python-pytest python-setuptools python-wheel))
+     (list python-pytest python-setuptools))
     (home-page "https://gitlab.com/doctormo/python-crontab/")
     (synopsis "Module for reading and writing crontab files")
     (description "This Python module can read, write crontab files, and
