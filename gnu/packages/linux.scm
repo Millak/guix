@@ -11469,7 +11469,7 @@ types and interfaces and translates so that the X server can use them.")
 (define-public keyd
   (package
     (name "keyd")
-    (version "2.5.0")
+    (version "2.6.0")
     (source
       (origin
         (method git-fetch)
@@ -11478,7 +11478,7 @@ types and interfaces and translates so that the X server can use them.")
                (commit (string-append "v" version))))
         (sha256
           (base32
-            "0nkra6lwdjhjcwj6486cgy562n4bcp98fjgl52rj8pp76i15yad7"))))
+            "14rgrg8d1ys1cqq46mgi34yqg9jd1q3yw1acw5r5jpwwk0da7g4p"))))
     (arguments
       (list #:tests? #f ; tests require root
             #:make-flags
