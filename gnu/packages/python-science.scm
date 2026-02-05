@@ -3174,7 +3174,7 @@ be accessible and easy to use in many contexts.")
       ;; tests: 82 passed
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'set-home
+          (add-before 'sanity-check 'set-home
             (lambda _
               ;; Change from /homeless-shelter to /tmp for write
               ;; permission.
