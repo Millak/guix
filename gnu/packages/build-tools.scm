@@ -686,12 +686,6 @@ software.")
               (chdir "build/scons"))))))
     (native-inputs (list python-setuptools python-wheel))))
 
-;; TODO Remove on the next python-team iteration.
-(define-deprecated/public scons-python2 scons
-  (package
-    (inherit (package-with-python2 scons-3))
-    (name "scons-python2")))
-
 (define-public tup
   (package
     (name "tup")
