@@ -2685,6 +2685,18 @@ from multiple records.")
      "RTree is a Python package with bindings for @code{libspatialindex}.")
     (license license:expat)))
 
+(define iris-test-data
+  (let ((name "iris-test-data")
+        (version "2.28"))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+             (url "https://github.com/SciTools/iris-test-data")
+             (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "11pfd7jrmznvgcwwr4nfyd9w1rfx377svzlfzalbdcv7rhg2pcfx")))))
+
 (define-public python-scitools-iris
   (package
     (name "python-scitools-iris")
