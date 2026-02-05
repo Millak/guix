@@ -304,10 +304,10 @@ home-config"))
       ;; after ~/.zshrc.  To avoid interfering with any customizations a user
       ;; may have made in their ~/.zshrc, put this in .zprofile, not .zlogin.
       (".zprofile" ,zprofile)
-      (".nanorc" ,%default-nanorc)
+      (".config/nano/nanorc" ,%default-nanorc)
       (".Xdefaults" ,xdefaults)
       (".guile" ,%default-dotguile)
-      (".gdbinit" ,gdbinit)
+      (".config/gdb/gdbinit" ,gdbinit)
       ("guix-home-config.scm" ,%default-skeleton-home-config))))
 
 (define (skeleton-directory skeletons)
@@ -328,15 +328,7 @@ home-config"))
                                    ((target source)
                                     (mkdir-p (dirname target))
                                     (copy-recursively source target)))
-                                 '#$skeletons)
-                       ;; Make nanorc respect XDG_CONFIG_HOME.
-                       (when (file-exists? ".nanorc")
-                         (mkdir-p ".config/nano")
-                         (rename-file ".nanorc" ".config/nano/nanorc"))
-                       (when (file-exists? ".gdbinit")
-                         (mkdir-p ".config/gdb")
-                         (rename-file ".gdbinit" ".config/gdb/gdbinit"))
-                       #t))))
+                                 '#$skeletons)))))
 
 (define (find-duplicates list)
   "Find duplicate entries in @var{list}.
