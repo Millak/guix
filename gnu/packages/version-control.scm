@@ -1033,7 +1033,7 @@ the date of the most recent commit that modified them
 (define-public git-spice
   (package
     (name "git-spice")
-    (version "0.15.2")
+    (version "0.23.0")
     (source
      (origin
        (method git-fetch)
@@ -1042,11 +1042,12 @@ the date of the most recent commit that modified them
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cymx784rrdrbhsfacdl30pgimzxfwkjr93cjkh2v37r8dv5145y"))))
+        (base32 "1za4rr1jxjhlbbx0gw8wlsfa9dhw4zrpm43fz8scxlbh126wlid7"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "go.abhg.dev/gs"
+      #:go go-1.25
       #:install-source? #f
       #:build-flags
       #~(list (string-append "-ldflags=-X main._version=" #$version))
@@ -1056,11 +1057,17 @@ the date of the most recent commit that modified them
                ;; XXX: Tests failing with various reasons: requiring
                ;; networking config or write access, or outbound access, check
                ;; if some of them may be fixed.
-               (list "TestScript"
-                     "TestSelectAuthenticator/oauth_public"
-                     "TestSelectAuthenticator/oauth"
-                     "TestAuthenticationFlow_PAT/pat"
-                     "TestDeviceFlowAuthenticator")
+               (list "TestAuthenticationFlow_PAT"
+                     "TestBuildRESTHandler_GETRequest"
+                     "TestBuildRESTHandler_GenericError"
+                     "TestBuildRESTHandler_HTTPError"
+                     "TestBuildRESTHandler_IntegerPath"
+                     "TestBuildRESTHandler_InvalidIntegerPath"
+                     "TestBuildRESTHandler_PathParameters"
+                     "TestDeviceFlowAuthenticator"
+                     "TestDeviceFlowAuthenticator"
+                     "TestForkWorkflow"
+                     "TestSelectAuthenticator")
                "|"))
       #:phases
       #~(modify-phases %standard-phases
@@ -1098,6 +1105,7 @@ the date of the most recent commit that modified them
            go-github-com-cli-browser
            go-github-com-creack-pty
            go-github-com-dustin-go-humanize
+           go-github-com-hexops-autogold-v2
            go-github-com-mattn-go-isatty
            go-github-com-rogpeppe-go-internal-1.14
            go-github-com-sahilm-fuzzy
@@ -1107,6 +1115,7 @@ the date of the most recent commit that modified them
            go-github-com-vito-midterm
            go-github-com-zalando-go-keyring
            go-gitlab-com-gitlab-org-api-client-go
+           go-go-abhg-dev-container-ring
            go-go-abhg-dev-io-ioutil
            go-go-abhg-dev-komplete
            go-go-abhg-dev-log-silog
