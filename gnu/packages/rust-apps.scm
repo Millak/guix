@@ -2430,14 +2430,14 @@ specified image or color, easing the process of theme creation.")
 (define-public maturin
   (package
     (name "maturin")
-    (version "1.8.1")
+    (version "1.11.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "maturin" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1mxgal826395cq9klg9h2f4qvqhi4s0v4x54bhvsikq2bjcf934w"))
+                "1w36bxbxn455bh5ymv1i2crqkvpkzjni06b25gj7bb14sq4h7s10"))
               (patches (search-patches "maturin-no-cross-compile.patch"))))
     (build-system cargo-build-system)
     (arguments
@@ -2451,16 +2451,19 @@ specified image or color, easing the process of theme creation.")
       #:install-source? #f
       #:cargo-test-flags
       ''("--"
-         ;; Not all files are included.
-         "--skip=build_options::test::test_find_bridge_bin"
-         "--skip=build_options::test::test_find_bridge_cffi"
-         "--skip=build_options::test::test_find_bridge_pyo3"
-         "--skip=build_options::test::test_find_bridge_pyo3_abi3"
-         "--skip=build_options::test::test_find_bridge_pyo3_feature"
-         "--skip=metadata::test::test_implicit_readme"
-         "--skip=metadata::test::test_merge_metadata_from_pyproject_dynamic_license_test"
-         "--skip=metadata::test::test_merge_metadata_from_pyproject_toml"
-         "--skip=metadata::test::test_merge_metadata_from_pyproject_toml_with_customized_python_source_dir"
+         ;; A sample pyproject.toml is not provided by the package for the
+         ;; tests to run.
+         "--skip=build_options::tests::test_find_bridge_bin"
+         "--skip=build_options::tests::test_find_bridge_cffi"
+         "--skip=build_options::tests::test_find_bridge_pyo3"
+         "--skip=build_options::tests::test_find_bridge_pyo3_abi3"
+         "--skip=build_options::tests::test_find_bridge_pyo3_feature"
+         "--skip=metadata::tests::test_implicit_readme"
+         "--skip=metadata::tests::test_merge_metadata_from_pyproject_dynamic_license_test"
+         "--skip=metadata::tests::test_merge_metadata_from_pyproject_toml"
+         "--skip=metadata::tests::test_merge_metadata_from_pyproject_toml_with_customized_python_source_dir"
+         "--skip=metadata::tests::test_pep639"
+         "--skip=module_writer::mock_writer::metadata_hello_world_pep639"
          "--skip=pyproject_toml::tests::test_warn_missing_maturin_version")
       #:phases
       #~(modify-phases %standard-phases
@@ -2512,9 +2515,13 @@ specified image or color, easing the process of theme creation.")
                   (lambda _ (invoke maturin "completions" "nushell")))))))))
     (propagated-inputs
      (list python-tomli))
-    (inputs (cons bzip2 (cargo-inputs 'maturin)))
+    (inputs (append
+             (list (list zstd "lib")
+                   bzip2)
+             (cargo-inputs 'maturin)))
     (native-inputs
-     (list python-wheel
+     (list pkg-config
+           python-wheel
            python-wrapper
            python-setuptools-rust))
     (home-page "https://github.com/pyo3/maturin")
