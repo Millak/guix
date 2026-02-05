@@ -3217,7 +3217,7 @@ completion.")
            r-dbplyr
            zlib))
     (native-inputs
-     (list python-pytest
+     (list python-pytest-8
            python-setuptools))
     (home-page "https://rpy2.github.io")
     (synopsis "Python interface to the R language")
