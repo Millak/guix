@@ -6232,9 +6232,8 @@ It includes a sentence boundary component of a relatively small size.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'writable-home
+          (add-before 'build 'set-home-env
             (lambda _
-              ;; Tests want a writable home
               (setenv "HOME" "/tmp"))))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-setuptools))
