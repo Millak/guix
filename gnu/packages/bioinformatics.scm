@@ -2548,30 +2548,33 @@ from high-throughput single-cell RNA sequencing (scRNA-seq) data.")
 (define-public python-celltypist
   (package
     (name "python-celltypist")
-    (version "1.6.2")
+    (version "1.7.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/Teichlab/celltypist")
-             (commit version)))
+              (url "https://github.com/Teichlab/celltypist")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0c42cx01zkxr0dk5f1d7q71qdi18v2smlc3wpvwyjlzplya7k2iy"))))
+        (base32 "1ha19wak8lnbm2j929lswncswygl1qiv53b8fs321s6708gyhv4v"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #false ;there are none
       #:phases
-      '(modify-phases %standard-phases
-         (add-before 'check 'set-home
-           ;; The sanity check requires a HOME directory, because celltypist
-           ;; wants to write settings.
-           (lambda _ (setenv "HOME" "/tmp")))
-         ;; Numba needs a writable dir to cache functions.
-         (add-before 'build 'set-numba-cache-dir
-           (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (setenv "NUMBA_CACHE_DIR" "/tmp")))
+          (replace 'check
+            ;; Simple regression check, taken from project's Dockerfile,
+            ;; "--update-models" requires network access.
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "celltypist" "--help")))))))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-click
            python-leidenalg
@@ -2581,7 +2584,6 @@ from high-throughput single-cell RNA sequencing (scRNA-seq) data.")
            python-scanpy
            python-scikit-learn
            python-requests))
-    (native-inputs (list python-wheel))
     (home-page "https://github.com/Teichlab/celltypist")
     (synopsis "Tool for semi-automatic cell type classification")
     (description
