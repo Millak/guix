@@ -3553,7 +3553,7 @@ tools.")
 (define-public go-github-com-charmbracelet-bubbletea
   (package
     (name "go-github-com-charmbracelet-bubbletea")
-    (version "1.2.4")
+    (version "1.3.10")
     (source
      (origin
        (method git-fetch)
@@ -3563,7 +3563,7 @@ tools.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0g5pj40lsdkh2gwixlpg53ji7fajncj512xj0v1x3mk5grgbc2zr"))))
+         "0vs332va0w76xf65fm7lirzs54vlchcaq4zhf171vql6v33nqwxw"))))
     (build-system go-build-system)
     (arguments
      (list
