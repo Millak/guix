@@ -1268,37 +1268,38 @@ server headers required for Cross-Origin Resource Sharing (CORS).")
 (define-public python-django-rq
   (package
     (name "python-django-rq")
-    (version "3.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "django-rq" version))
-              (sha256
-               (base32
-                "1b371w4cdjlz83i2sg4gpx0z3svl3bfrn6zfy661374hv62xpnkv"))))
+    (version "3.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ui/django-rq")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zdzbg7ld7325x5c8rl9n08w5n1srxfrwn54gfm8b04k4hbw9axw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      #~(list "-k" "not test_scheduled_jobs and not test_started_jobs")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
+          (add-before 'check 'start-redis
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                (invoke "redis-server" "--daemonize" "yes")
-                (setenv "DJANGO_SETTINGS_MODULE" "django_rq.tests.settings")
-                (setenv "PYTHONPATH" (getcwd))))))))
+                (invoke "redis-server" "--daemonize" "yes")))))))
     (native-inputs
      (list python-django-redis
            python-pytest
            python-pytest-django
            python-rq-scheduler
-           python-setuptools
-           python-wheel
+           python-hatchling
            redis
            tzdata-for-tests))
     (propagated-inputs
-     (list python-django python-redis python-rq python-pyaml))
+     (list python-django
+           python-redis
+           python-rq
+           python-pyaml))
     (home-page "https://github.com/ui/django-rq")
     (synopsis "Django integration with RQ")
     (description
