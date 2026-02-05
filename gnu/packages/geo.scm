@@ -2603,6 +2603,29 @@ persisted.
 ")
     (license license:expat)))
 
+(define-public libmo-unpack
+  (package
+    (name "libmo-unpack")
+    (version "3.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/SciTools/libmo_unpack")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14das3rrha3mlw1p57nn67sg22yig0jnmf86w8jqvj98v06f5xl3"))))
+    (build-system cmake-build-system)
+    (arguments (list #:out-of-source? #t))
+    (native-inputs (list cmake-minimal check))
+    (home-page "https://github.com/SciTools/libmo_unpack")
+    (synopsis "Handle WGDOS and RLE compression schemes")
+    (description
+     "This package provides a library for handling the WGDOS and RLE
+compression schemes used in UM files.")
+    (license license:bsd-3)))
+
 (define-public libmseed
   (package
     (name "libmseed")
