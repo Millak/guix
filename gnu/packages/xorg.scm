@@ -6615,9 +6615,9 @@ basic eye-candy effects.")
                 #$(this-package-input "xf86-input-mouse") "/lib/xorg/modules,"
                 #$(this-package-input "xorg-server") "/lib/xorg/modules\"\n"
                 "EndSection\n\n"))
-              (substitute* '("xpra/scripts/config.py"
+              (substitute* (filter file-exists? '("xpra/scripts/config.py"
                              "fs/etc/xpra/conf.d/60_server.conf.in"
-                             "tests/unittests/unit/server/subsystem/notification_test.py")
+                             "tests/unittests/unit/server/subsystem/notification_test.py"))
                 ;; The trailing -- is intentional, so we only replace it inside
                 ;; a command line.
                 (("dbus-launch --")
