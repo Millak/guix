@@ -9666,7 +9666,7 @@ process automation (RPA).")
      (list python-docutils
            python-robotframework-stacktrace
            python-setuptools
-           python-wheel))
+           python-xlrd))
     (propagated-inputs
      (list python-openpyxl
            python-pandas
