@@ -25170,7 +25170,7 @@ created by running @code{python setup.py develop}).")
                   (substitute* "tests/conftest.py"
                     (("pytest.collect.File") "pytest.File")))))))
     (native-inputs
-     (list python-pytest
+     (list python-pytest-8
            python-pytest-asyncio-0.26
            python-setuptools))
     (home-page "https://github.com/RazerM/ratelimiter")
