@@ -1478,6 +1478,11 @@ the \"texlive\" importer."
                        "hugobuddel")
   python)
 
+(define-member (person "Yan Abu Arab"
+                       "yanabuarab@gmail.com"
+                       "tux1c")
+  python sysadmin)
+
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
       (error (format #false
