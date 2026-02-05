@@ -4121,6 +4121,34 @@ package provides an API for comparing Golden files.")
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-charmbracelet-x-termios
+  (package
+    (name "go-github-com-charmbracelet-x-termios")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/charmbracelet/x")
+              (commit (go-version->git-ref version
+                                           #:subdir "termios"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "059b9kxqlmvfif2xrj8j21ih2476n0aphg5w5ajrf974hl0fy3k1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/charmbracelet/x/termios"
+      #:unpack-path "github.com/charmbracelet/x"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/charmbracelet/x")
+    (synopsis "Low-level terminal I/O control for Unix-like systems")
+    (description
+     "This package provides a low-level terminal I/O control for Unix-like
+ systems.")
+    (license license:expat)))
+
 (define-public go-github-com-charmbracelet-x-windows
   (package
     (name "go-github-com-charmbracelet-x-windows")
