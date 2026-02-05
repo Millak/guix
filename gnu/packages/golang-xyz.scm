@@ -19651,7 +19651,7 @@ policy.")
 (define-public go-github-com-redis-go-redis-v9
   (package
     (name "go-github-com-redis-go-redis-v9")
-    (version "9.13.0")
+    (version "9.17.3")
     (source
      (origin
        (method git-fetch)
@@ -19660,7 +19660,7 @@ policy.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19scv5fbwacrbpv329w2a48z1w5wmxi7ax93bp1p398k4yqx6izf"))
+        (base32 "1d66g7sdgimiyd7aal8zay7h1p42pd4v8frl7lik79cqmyb17q6q"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
