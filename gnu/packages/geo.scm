@@ -2865,6 +2865,48 @@ tabular representations become unwieldy and inefficient.  Iris implements a
 data model based on the CF conventions.")
     (license license:lgpl3+)))
 
+(define-public python-scitools-mo-pack
+  (package
+    (name "python-scitools-mo-pack")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/SciTools/mo_pack")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zg6vsicvx1yxw0vky71dax3nnfk8yl6li4vnwvd50smxm3lv6hj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "src/mo_pack/tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'compile-bytecode 'cleanup-installed-tests
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((site (site-packages inputs outputs)))
+                (delete-file-recursively
+                 (string-append site "/mo_pack/tests")))
+              (for-each delete-file
+                        (list "src/mo_pack/__init__.py"
+                              "src/mo_pack/_version.py")))))))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (inputs (list libmo-unpack))
+    (propagated-inputs (list python-numpy))
+    (home-page "https://github.com/SciTools/mo_pack")
+    (synopsis "Python wrapper for @code{libmo_unpack}")
+    (description
+     "This package provide Python bindings to the C library
+@code{libmo_unpack} which contains packing methods used to encode and decode
+the data payloads of Met Office UM Post-Processing and Fields files.")
+    (license license:bsd-3)))
+
 (define-public java-jmapviewer
   (package
     (name "java-jmapviewer")
