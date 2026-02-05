@@ -5132,41 +5132,68 @@ is designed to have a low barrier to entry.")
   (package
     (name "python-rq-scheduler")
     (version "0.14")
-    (home-page "https://github.com/rq/rq-scheduler")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url home-page)
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "09fh9m2vcl1jndq35xp1x0j8ih009r71qmhn2pkl93fykrqfavyn"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rq/rq-scheduler")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09fh9m2vcl1jndq35xp1x0j8ih009r71qmhn2pkl93fykrqfavyn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 60 passed, 15 deselected, 12 warnings
       #:test-flags
-      #~(list "-k" (string-append "not test_cron"
-                                  " and not test_job_creation_with"
-                                  " and not test_job_with_crontab"))
-      #:phases #~(modify-phases %standard-phases
-                   (add-before 'check 'start-redis
-                     (lambda _
-                       (invoke "redis-server" "--daemonize" "yes")))
-                   (add-after 'unpack 'loosen-requirements
-                     (lambda _
-                       (substitute* "setup.py"
-                         (("crontab>=[0-9.]*")
-                          "python-crontab")))))))
+      #~(list #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/test_scheduler.py"
+                                                    "::TestScheduler::"
+                                                    test))
+                      ;; OSError: Read crontab <...>: mcron: Only root can use
+                      ;; the -u option.
+                      (list "test_cron_sets_default_result_ttl_to_minus_1"
+                            "test_cron_sets_default_ttl_to_none"
+                            "test_cron_sets_provided_result_ttl"
+                            "test_cron_sets_provided_ttl"
+                            "test_crontab_persisted_correctly"
+                            "test_crontab_persisted_correctly_with_local_timezone"
+                            "test_crontab_rescheduled_correctly_with_local_timezone"
+                            "test_crontab_schedules_correctly"
+                            "test_crontab_sets_default_result_ttl"
+                            "test_crontab_sets_description"
+                            "test_crontab_sets_id"
+                            "test_crontab_sets_timeout"
+                            "test_job_with_crontab_get_rescheduled"))
+              #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/test_callbacks.py"
+                                                    "::JobCallbackTestCase::"
+                                                    test))
+                      ;; AssertionError: <object object at 0x7ffff7599c10> !=
+                      ;; None
+                      (list "test_job_creation_with_failure_callback"
+                            "test_job_creation_with_success_callback")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-redis
+            (lambda _
+              (invoke "redis-server" "--daemonize" "yes")))
+          (add-after 'unpack 'loosen-requirements
+            (lambda _
+              ;; crontab package is python_crontab in PyPI.
+              (substitute* "setup.py"
+                (("crontab>=[0-9.]*")
+                 "python-crontab")))))))
     (native-inputs
-     (list python-crontab
-           python-freezegun
-           python-pytest
+     (list python-pytest
            python-setuptools
-           python-wheel
            redis))
     (propagated-inputs
-     (list python-croniter python-rq))
+     (list python-crontab
+           python-freezegun
+           python-dateutil
+           python-rq))
+    (home-page "https://github.com/rq/rq-scheduler")
     (synopsis "Job scheduling capabilities for RQ (Redis Queue)")
     (description
      "This package provides job scheduling capabilities to @code{python-rq}
