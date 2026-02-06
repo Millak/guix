@@ -41,7 +41,7 @@
 (define-public cryptsetup-minimal
   (package
    (name "cryptsetup-minimal")
-   (version "2.8.0")
+   (version "2.8.4")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://kernel.org/linux/utils/cryptsetup/v"
@@ -49,7 +49,7 @@
                                 "/cryptsetup-" version ".tar.xz"))
             (sha256
              (base32
-              "18j3a8zzcwc0sragq47vf0b0qyr06bajh2sj6zm1r1ssq8vjv7nc"))))
+              "10wa3vx0dx04kv2wy165gvnyi81swawgnnj51xwcr6jcjvw4cgj4"))))
    (build-system gnu-build-system)
    (arguments
     `(#:configure-flags
