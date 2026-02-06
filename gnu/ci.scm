@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2017, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2017, 2020, 2026 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2019 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020, 2021 Mathieu Othacehe <othacehe@gnu.org>
@@ -254,6 +254,7 @@ SYSTEM."
 
 (define %guix-system-images
   (list hurd-barebones-qcow2-image
+        hurd64-barebones-qcow2-image
         pine64-barebones-raw-image
         pinebook-pro-barebones-raw-image
         novena-barebones-raw-image
