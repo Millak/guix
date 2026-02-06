@@ -2,7 +2,7 @@
 ;;; Copyright © 2018 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2022, 2024, 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2022, 2024-2026  Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
 ;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
@@ -428,7 +428,7 @@ instrumentation
 (define-public corosync
   (package
     (name "corosync")
-    (version "3.1.9")
+    (version "3.1.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -437,7 +437,7 @@ instrumentation
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1l6vgn61q3qv439lrdb9nnbkx5yvda6hy9da0jf3bggjdwqq9g3a"))))
+                "12i9a3fgr0dwkb36iwqz8chxm1bc4pkkqcpl9bd7sng8f84g1hjm"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags #~'("--disable-static")
