@@ -5183,12 +5183,14 @@ information.  Useful for cross-architecture tools (such as @code{python-pyvex}).
        (snippet #~(map delete-file-recursively
                        (list "output/lua5.1.dll" "output/lua51.dll"
                              "src/drivers/win" "fceux-server" "vc")))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list
       ;; No test suite.
       #:tests? #f))
     (inputs (list qtbase-5
+                  qtsvg-5
+                  qtwayland-5
                   zlib
                   minizip
                   sdl2
