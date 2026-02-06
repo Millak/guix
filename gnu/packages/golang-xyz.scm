@@ -15036,6 +15036,23 @@ format.")
     (arguments
      (list #:import-path "github.com/blevesearch/zapx/v15"))))
 
+(define-public go-github-com-blevesearch-zapx-v14
+  (package
+    (inherit go-github-com-blevesearch-zapx-v16)
+    (name "go-github-com-blevesearch-zapx-v14")
+    (version "14.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/blevesearch/zapx")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n4jzycy0z5iczvv018x6dvkh2nd47vijpx2a669bfdlybxan1cq"))))
+    (arguments
+     (list #:import-path "github.com/blevesearch/zapx/v14"))))
+
 (define-public go-github-com-blevesearch-gtreap
   (package
     (name "go-github-com-blevesearch-gtreap")
