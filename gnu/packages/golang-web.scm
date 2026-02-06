@@ -14760,6 +14760,26 @@ https://openid.net/developers/how-connect-works/}.")
 interact with GitLab in a simple and uniform way.")
     (license license:asl2.0)))
 
+(define-public go-gitlab-com-gitlab-org-api-client-go-0.116
+  (package
+    (inherit go-gitlab-com-gitlab-org-api-client-go)
+    (name "go-gitlab-com-gitlab-org-api-client-go")
+    (version "0.116.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/gitlab-org/api/client-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cajw57mcsgf0b8xk8z0bgfqsmz7wp7dwzwyapvdxn8a9kqzx59r"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments go-gitlab-com-gitlab-org-api-client-go)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (delete 'remove-examples)))))))
+
 (define-public go-gitlab-torproject-org-tpo-anti-censorship-geoip
   (package
     (name "go-gitlab-torproject-org-tpo-anti-censorship-geoip")
