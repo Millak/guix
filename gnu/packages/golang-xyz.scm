@@ -15019,6 +15019,23 @@ provides that index API interface.")
 format.")
     (license license:asl2.0)))
 
+(define-public go-github-com-blevesearch-zapx-v15
+  (package
+    (inherit go-github-com-blevesearch-zapx-v16)
+    (name "go-github-com-blevesearch-zapx-v15")
+    (version "15.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/blevesearch/zapx")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bw6083f47047y4m8pz76kaiiwwx8732ffvfi7bj1w0yvvf23ha7"))))
+    (arguments
+     (list #:import-path "github.com/blevesearch/zapx/v15"))))
+
 (define-public go-github-com-blevesearch-gtreap
   (package
     (name "go-github-com-blevesearch-gtreap")
