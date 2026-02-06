@@ -103,10 +103,21 @@ subdirectory from XDG_CONFIG_HOME to generate a target path."
            (define backup
              (string-append backup-directory "/" (preprocess-file file)))
 
+           (define (copy-file* oldfile newfile)
+             "Like 'copy-file', but also copies dangling symlinks."
+             (catch 'system-error
+               (lambda ()
+                 (copy-file oldfile newfile))
+               (lambda args
+                 (if (and (eq? 'symlink (stat:type (lstat oldfile)))
+                          (= ENOENT (system-error-errno args)))
+                     (symlink (readlink oldfile) newfile)
+                     (apply throw args)))))
+
            (mkdir-p backup-directory)
            (format #t (G_ "Backing up ~a...") (target-file file))
            (mkdir-p (dirname backup))
-           (copy-file (target-file file) backup)
+           (copy-file* (target-file file) backup)
            (delete-file (target-file file))
            (display (G_ " done\n")))
 
