@@ -1739,7 +1739,7 @@ SunMD5, sha1crypt, NT, bsdicrypt, bigcrypt, and descrypt.")
 (define-public keychain
   (package
     (name "keychain")
-    (version "2.9.6")
+    (version "2.9.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1748,7 +1748,7 @@ SunMD5, sha1crypt, NT, bsdicrypt, bigcrypt, and descrypt.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nj5rq9vzvf5g8axmicy5zfcjir7a6fr1ai4ha3cpqj4zgridga7"))))
+                "1ps1hm6xf12agbrgw3jpja28q6b52cpa0fgsvkyhp4j1b2hfhkf6"))))
     (build-system gnu-build-system)
     (arguments
      (list
