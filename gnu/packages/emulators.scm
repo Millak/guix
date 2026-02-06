@@ -399,9 +399,10 @@ console.")
             (sha256
              (base32
               "0qrpqgiw678kcdvjl6hm9wi223m6igngppkvws3q86lmkwrhg039"))))
-   (build-system cmake-build-system)
-   (arguments ; no test suite
-    '(#:tests? #f))
+   (build-system qt-build-system)
+   (arguments
+    (list #:qtbase qtbase
+          #:tests? #f)) ; no test suite
    (native-inputs
     (list extra-cmake-modules
           pkg-config))
@@ -409,10 +410,11 @@ console.")
     (list enet
           libarchive
           sdl2
+          wayland
           qtbase
           qtmultimedia
           qtsvg
-          wayland
+          qtwayland
           (list zstd "lib")))
    (home-page "https://melonds.kuribo64.net")
    (synopsis "Nintendo DS emulator")
