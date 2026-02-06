@@ -19147,6 +19147,30 @@ the network.")
 that avoids runtime memory allocations.")
     (license license:asl2.0)))
 
+(define-public go-github-com-mschoch-smat
+  (package
+    (name "go-github-com-mschoch-smat")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mschoch/smat")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qcb2jjg37krxmc915kqynghd6n26w2wxwgcafvxcwn8g0jx96qd"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/mschoch/smat"))
+    (native-inputs
+     (list go-github-com-boltdb-bolt))
+    (home-page "https://github.com/mschoch/smat")
+    (synopsis "State machine assisted testing")
+    (description "This package provides a state machine assisted testing
+library for Go.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-pbnjay-memory
   (let ((commit "7b4eea64cf580186c0eceb10dc94ba3a098af46c")
         (revision "2"))
