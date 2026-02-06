@@ -27,6 +27,14 @@ gnu/packages/bootstrap\.scm                        @guix/bootstrap
 gnu/packages/commencement\.scm                     @guix/bootstrap
 gnu/packages/mes\.scm                              @guix/bootstrap
 
+gnu/packages/assembly\.scm                         @guix/build-tools
+gnu/packages/autogen\.scm                          @guix/build-tools
+gnu/packages/autotools\.scm                        @guix/build-tools
+gnu/packages/bison\.scm                            @guix/build-tools
+gnu/packages/m4\.scm                               @guix/build-tools
+gnu/packages/oyacc\.scm                            @guix/build-tools
+gnu/packages/re2c\.scm                             @guix/build-tools
+
 gnu/build-system/cmake\.scm                        @guix/cpp
 gnu/build/cmake-build-system\.scm                  @guix/cpp
 gnu/packages/c\.scm                                @guix/cpp

@@ -504,6 +504,18 @@ of Rebar and Mix build systems and Hex.pm importer."
                       "gnu/packages/commencement.scm"
                       "gnu/packages/mes.scm")))
 
+(define-team build-tools
+  (team 'build-tools
+        #:name "Build tools team"
+        #:description "Build tools and parser generators."
+        #:scope (list "gnu/packages/assembly.scm"
+                      "gnu/packages/autogen.scm"
+                      "gnu/packages/autotools.scm"
+                      "gnu/packages/bison.scm"
+                      "gnu/packages/m4.scm"
+                      "gnu/packages/oyacc.scm"
+                      "gnu/packages/re2c.scm")))
+
 (define-team c++
   (team 'c++
         #:name "C/C++ team"
@@ -1396,7 +1408,7 @@ the \"texlive\" importer."
 (define-member (person "Janneke Nieuwenhuizen"
                        "janneke@gnu.org"
                        "janneke")
-  bootstrap core-packages home hurd installer qa-packages)
+  bootstrap build-tools core-packages home hurd installer qa-packages)
 
 (define-member (person "Ian Eure"
                        "ian@retrospec.tv"
@@ -1515,7 +1527,7 @@ the \"texlive\" importer."
 (define-member (person "Nguyễn Gia Phong"
                        "cnx@loang.net"
                        "cnx")
-  python qa-packages sysadmin)
+  build-tools python qa-packages sysadmin)
 
 (define-member (person "Lilah Tascheter"
                        "lilah@lunabee.space"
