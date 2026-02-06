@@ -15303,6 +15303,61 @@ Text Segmentation as described in Unicode Standard Annex #29.")
 project.")
     (license license:bsd-3)))
 
+(define-public go-github-com-blevesearch-bleve
+  (package
+    (name "go-github-com-blevesearch-bleve")
+    (version "2.5.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/blevesearch/bleve")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vszzxj76236phd1iq5r31jccnxv8i20ykxgmffmfqy3g215njh0"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; Delete bundled dependencies.
+            (delete-file-recursively "cmd/bleve/vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list #:tests? #f  ;; tests require several unpackaged dependencies
+           #:import-path "github.com/blevesearch/bleve"))
+    (propagated-inputs (list go-github-com-bits-and-blooms-bitset
+                             go-github-com-blevesearch-bleve-index-api
+                             go-github-com-blevesearch-geo-geojson
+                             go-github-com-blevesearch-geo-r1
+                             go-github-com-blevesearch-geo-r2
+                             go-github-com-blevesearch-geo-r3
+                             go-github-com-blevesearch-geo-s1
+                             go-github-com-blevesearch-geo-s2
+                             go-github-com-blevesearch-go-porterstemmer
+                             go-github-com-blevesearch-gtreap
+                             go-github-com-blevesearch-scorch-segment-api
+                             go-github-com-blevesearch-segment
+                             go-github-com-blevesearch-snowballstem
+                             go-github-com-blevesearch-upsidedown-store-api
+                             go-github-com-blevesearch-vellum
+                             go-github-com-blevesearch-zapx-v11
+                             go-github-com-blevesearch-zapx-v12
+                             go-github-com-blevesearch-zapx-v13
+                             go-github-com-blevesearch-zapx-v14
+                             go-github-com-blevesearch-zapx-v15
+                             go-github-com-blevesearch-zapx-v16
+                             go-github-com-couchbase-moss
+                             go-github-com-golang-protobuf
+                             go-github-com-roaringbitmap-roaring
+                             go-github-com-spf13-cobra
+                             go-go-etcd-io-bbolt
+                             go-golang-org-x-text))
+    (home-page "https://github.com/blevesearch/bleve")
+    (synopsis "Go indexing and search library")
+    (description "Bleve is a Go library for indexing and searching text,
+numeric, geo-spatial and vector data.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-liyue201-gostl
   (package
     (name "go-github-com-liyue201-gostl")
