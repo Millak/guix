@@ -18726,7 +18726,7 @@ Thus the per-base error rate is similar to the raw input reads.")
             (lambda _
               (install-file "Bandage" (string-append #$output "/bin")))))))
     (inputs
-     (list qtbase-5 qtsvg-5))
+     (list qtbase-5 qtsvg-5 qtwayland-5))
     (native-inputs
      ;; imagemagick/stable cannot be used here, as it will end up in
      ;; the closure.  See <https://issues.guix.gnu.org/47475>.
