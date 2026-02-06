@@ -27,7 +27,6 @@
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Patrick Norton <patrick.147.norton@gmail.com>
-;;; Copyright © 2026 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3070,37 +3069,6 @@ the end of a test.")
      "This package provides a mocking framework which integrates well with
 built-in @code{testing} package, but can be used in other contexts too.")
     (license license:asl2.0)))
-
-(define-public go-github-com-matryer-moq
-  (package
-    (name "go-github-com-matryer-moq")
-    (version "0.6.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/matryer/moq")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0s2ls1wkqapdqw4yjlbwbyp25c3iwi4pp706qlxapds5sx1izq5x"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:go go-1.25
-           #:import-path "github.com/matryer/moq"
-           ;; Disable failing tests.
-           #:test-flags #~(list "-skip"
-                                (string-join (list "TestGoGenerateVendoredPackages"
-                                                   "TestMockGolden/TypeAlias"
-                                                   "TestModulesNestedPackage")
-                                             "|"))))
-    (propagated-inputs (list go-github-com-pmezard-go-difflib
-                             go-golang-org-x-tools))
-    (home-page "https://github.com/matryer/moq")
-    (synopsis "Interface mocking tool for @command{go generate}")
-    (description "Moq is a tool that generates a struct from any
-interface.  The struct can be used in test code as a mock of the interface.")
-    (license license:expat)))
 
 (define-public go-golang-org-x-lint
   (package
