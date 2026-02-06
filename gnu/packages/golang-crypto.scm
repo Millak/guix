@@ -2779,6 +2779,89 @@ to support the streaming mode required by Go's standard Hash interface.")
 @url{https://www.rfc-editor.org/errata/rfc7512, errata} specifications.")
     (license license:asl2.0)))
 
+(define-public go-github-com-tink-crypto-tink-go-v2
+  (package
+    (name "go-github-com-tink-crypto-tink-go-v2")
+    (version "2.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tink-crypto/tink-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g0a9f8a3fa860121ib2s3w7r97cdq90fxk31blzrqnxi79ghy8i"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/tink-crypto/tink-go/v2"
+      ;; XXX: Tests try to download JSON data from
+      ;; <https://github.com/C2SP/wycheproof>, similar like in
+      ;; go-golang-org-x-crypto package, limit to subdirs which do not require
+      ;; test data.
+      #:test-subdirs
+      #~(list "aead/xaesgcm"
+              "core/cryptofmt"
+              "hybrid/hpke"
+              "hybrid/internal/ecies"
+              "insecurecleartextkeyset"
+              "internal/config"
+              "internal/config/daeadconfig"
+              "internal/config/hybridconfig"
+              "internal/config/jwtmacconfig"
+              "internal/config/jwtsignatureconfig"
+              "internal/config/keyderivationconfig"
+              "internal/config/macconfig"
+              "internal/config/prfconfig"
+              "internal/config/signatureconfig"
+              "internal/config/streamingaeadconfig"
+              "internal/ec"
+              "internal/internalregistry"
+              "internal/jwk"
+              "internal/keygenregistry"
+              "internal/legacykeymanager"
+              "internal/mac/hmac"
+              "internal/outputprefix"
+              "internal/prefixmap"
+              "internal/primitiveregistry"
+              "internal/registryconfig"
+              "internal/signature/ecdsa"
+              "internal/signature/mldsa"
+              "internal/signature/slhdsa"
+              "internal/testing/stubkeymanager"
+              "internal/tinkerror"
+              "jwt/jwtecdsa"
+              "jwt/jwthmac"
+              "jwt/jwtrsassapkcs1"
+              "jwt/jwtrsassapss"
+              "keyderivation/internal/keyderivers"
+              "keyderivation/prfbasedkeyderivation"
+              "mac/internal/mactest"
+              "secretdata"
+              "signature/mldsa"
+              "signature/rsassapkcs1"
+              "signature/rsassapss"
+              "signature/slhdsa"
+              "streamingaead/subtle"
+              "streamingaead/subtle/noncebased"
+              "subtle/random"
+              "testing/fakekms"
+              "testing/fakemonitoring"
+              "testkeyset"
+              "testutil/hybrid")))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp
+           go-golang-org-x-crypto
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/tink-crypto/tink-go")
+    (synopsis "Go implementation of Tink")
+    (description
+     "This package provides a Go implementation of
+@url{https://github.com/tink-crypto, Tink} cryptographic library.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-titanous-rocacheck
   (package
     (name "go-github-com-titanous-rocacheck")
