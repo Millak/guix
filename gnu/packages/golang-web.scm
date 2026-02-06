@@ -14273,6 +14273,14 @@ makes it especially suitable for working with geographic data.")
      (list #:import-path "github.com/blevesearch/geo/r3"
            #:unpack-path "github.com/blevesearch/geo"))))
 
+(define-public go-github-com-blevesearch-geo-s1
+  (package
+    (inherit go-github-com-blevesearch-geo-geojson)
+    (name "go-github-com-blevesearch-geo-s1")
+    (arguments
+     (list #:import-path "github.com/blevesearch/geo/s1"
+           #:unpack-path "github.com/blevesearch/geo"))))
+
 (define-public go-github-com-xo-dburl
   (package
     (name "go-github-com-xo-dburl")
