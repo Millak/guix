@@ -13,6 +13,7 @@
 ;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2025 Mark Walker <mark.damon.walker@gmail.com>
 ;;; Copyright © 2025 Tiago de Paula Peixoto <tiago@skewed.de>
+;;; Copyright © 2026 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -557,7 +558,8 @@ intuitive way.")
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
-           #~'("-DFAISS_ENABLE_GPU=OFF"     ; thanks, but no thanks, CUDA.
+           #~'("-DFAISS_ENABLE_C_API=ON"
+               "-DFAISS_ENABLE_GPU=OFF"     ; thanks, but no thanks, CUDA.
                "-DFAISS_ENABLE_PYTHON=OFF")))
     (inputs
      (list openblas))
