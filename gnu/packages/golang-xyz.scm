@@ -15088,31 +15088,6 @@ Printf/Sprintf etc.")
 dates and other date-only dates in Go.")
     (license license:bsd-3)))
 
-(define-public go-github-com-araddon-dateparse
-  (package
-    (name "go-github-com-araddon-dateparse")
-    (version "0.0.0-20210429162001-6b43995a97de")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/araddon/dateparse")
-              (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0p60rdbfk7d97hb1kk225lvnqvhw04d822782hn66i4yfvigrraj"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/araddon/dateparse"))
-    (propagated-inputs (list go-github-com-scylladb-termtables
-                             go-github-com-stretchr-testify))
-    (home-page "https://github.com/araddon/dateparse")
-    (synopsis "Go date parser")
-    (description "This package parses date strings without knowing the format
-in advance.  It uses a scanner to read bytes and use a state machine to find
-format.  It is much faster than shotgun based parse methods.")
-    (license license:expat)))
-
 (define-public go-github-com-lucasb-eyer-go-colorful
   (package
     (name "go-github-com-lucasb-eyer-go-colorful")
