@@ -14947,28 +14947,6 @@ textwrap.dedent)} in Python.")
 library bevacqua/fuzzysearch.")
     (license license:expat)))
 
-(define-public go-github-com-blevesearch-gtreap
-  (package
-    (name "go-github-com-blevesearch-gtreap")
-    (version "0.1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/blevesearch/gtreap")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0pkcwgn2nkgqg01w95ivwbggcxihrc04k8i3wgaif2f437jpz2h7"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/blevesearch/gtreap"))
-    (home-page "https://github.com/blevesearch/gtreap")
-    (synopsis "Go immutable treap library")
-    (description "This package provides an immutable treap implementation in
-the Go Language.")
-    (license license:expat)))
-
 (define-public go-github-com-liyue201-gostl
   (package
     (name "go-github-com-liyue201-gostl")
