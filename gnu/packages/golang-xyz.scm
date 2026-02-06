@@ -29344,6 +29344,37 @@ library.")
 ;;; Executables:
 ;;;
 
+(define-public containers-storage
+  (package/inherit go-github-com-containers-storage
+    (name "containers-storage")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-containers-storage)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _)
+        "github.com/containers/storage/cmd/containers-storage")
+       ((#:unpack-path _ "") "github.com/containers/storage")))
+    (native-inputs
+     (append (package-inputs go-github-com-containers-storage)
+             (package-native-inputs go-github-com-containers-storage)
+             (package-propagated-inputs go-github-com-containers-storage)))
+    (propagated-inputs '())
+    (inputs '())
+    (synopsis "CLI tool for manipulating local layer/image/container stores")
+    (description
+     "This provides @code{containers-storage}, a command line tool for
+manipulating local layer/image/container stores.
+
+It depends on storage, which is a pretty barebones wrapping of the graph
+drivers that exposes the create/mount/unmount/delete operations and adds
+enough bookkeeping to know about the relationships between layers.
+
+It wraps that as thinly as possible, so that other tooling can use it to
+import layers from images.  Those other tools can then either manage the
+concept of images on their own, or let the API/CLI handle storing the image
+metadata and/or configuration.")))
+
 (define-public glua
   (package/inherit go-github-com-yuin-gopher-lua
     (name "glua")
