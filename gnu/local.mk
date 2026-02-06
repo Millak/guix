@@ -2469,6 +2469,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/tbb-other-arches.patch			\
   %D%/packages/patches/tclxml-3.2-install.patch			\
   %D%/packages/patches/tcsh-fix-autotest.patch			\
+  %D%/packages/patches/tkremind-fix-fontchooser.patch		\
   %D%/packages/patches/teensy-loader-cli-help.patch		\
   %D%/packages/patches/tensorflow-c-api-fix.patch		\
   %D%/packages/patches/texinfo-headings-single.patch		\

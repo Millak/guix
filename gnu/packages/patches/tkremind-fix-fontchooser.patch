@@ -1,0 +1,31 @@
+Fix tkremind fontchooser issues.
+
+1. Pass -name to wish to set the window class explicitly.  Without this,
+   wrap-program renames tkremind to .tkremind-real, and Tk uses the script
+   basename as the window class.  A class starting with "." breaks the
+   fontchooser which interprets it as a window path.
+
+2. Fix bug in SetHeadingFont: it references Option(HeadingFont) before it
+   is set, causing "can't read Option(HeadingFont): no such variable" when
+   selecting a heading font.  Use the just-configured HeadingFont instead.
+
+diff --git a/scripts/tkremind.in b/scripts/tkremind.in
+--- a/scripts/tkremind.in
++++ b/scripts/tkremind.in
+@@ -13,7 +13,7 @@
+ #--------------------------------------------------------------
+
+ # the next line restarts using wish \
+-exec wish "$0" "$@"
++exec wish "$0" -name Tkremind "$@"
+
+ tk appname tkremind
+
+@@ -5190,7 +5190,7 @@ proc SetHeadingFont {font} {
+     global tmpOpt
+     font configure HeadingFont {*}[font actual $font]
+-    font configure BoldFont {*}$Option(HeadingFont) -weight bold
++    font configure BoldFont {*}[font actual HeadingFont] -weight bold
+     set tmpOpt(HeadingFont) [font actual $font]
+     raise .opt
+ }

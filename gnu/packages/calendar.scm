@@ -341,7 +341,8 @@ command-line interface} and a @acronym{TUI, textual user interface} named
                                         ".")
                            ".tar.gz"))
        (sha256
-        (base32 "1hp24d48nhlv6f7p6sj4qnqc9pyfgyhjah8w9426bzkqkqb31j9c"))))
+        (base32 "1hp24d48nhlv6f7p6sj4qnqc9pyfgyhjah8w9426bzkqkqb31j9c"))
+       (patches (search-patches "tkremind-fix-fontchooser.patch"))))
     (properties
      `((output-synopsis "tcl" "graphical front-end to Remind calendar program")))
     (build-system gnu-build-system)
