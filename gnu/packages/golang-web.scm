@@ -14249,14 +14249,6 @@ geometry, i.e., shapes drawn on a sphere rather than on a planar 2D map.  This
 makes it especially suitable for working with geographic data.")
     (license license:asl2.0)))
 
-(define-public go-github-com-blevesearch-geo-r1
-  (package
-    (inherit go-github-com-blevesearch-geo-geojson)
-    (name "go-github-com-blevesearch-geo-r1")
-    (arguments
-     (list #:import-path "github.com/blevesearch/geo/r1"
-           #:unpack-path "github.com/blevesearch/geo"))))
-
 (define-public go-github-com-xo-dburl
   (package
     (name "go-github-com-xo-dburl")
