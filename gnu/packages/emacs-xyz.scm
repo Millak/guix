@@ -16975,6 +16975,35 @@ called.  If there are more, each window will have its first character
 highlighted.  Pressing that character will switch to that window.")
     (license license:gpl3+)))
 
+(define-public emacs-spatial-window
+  (package
+    (name "emacs-spatial-window")
+    (version "0.9.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lewang/spatial-window")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19whlw6p2q6ma20ifkr6iyrhj5l99vj1hv06s7j6j6pvgah27lm4"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command
+      #~(list "emacs" "-Q" "-batch" "-L"  "."
+              "-l" "spatial-window-geometry-test.el"
+              "-l" "spatial-window-test.el"
+              "-f" "ert-run-tests-batch-and-exit")))
+    (propagated-inputs (list emacs-posframe))
+    (home-page "https://github.com/lewang/spatial-window")
+    (synopsis "Jump to windows by spatial position")
+    (description
+     "Jump to Emacs windows by pressing keys that match their spatial position
+on your keyboard.")
+    (license license:gpl3+)))
+
 (define-public emacs-windsize
   ;; There is no proper release.  The base version is extracted from the
   ;; "Version" keyword in the main file.
