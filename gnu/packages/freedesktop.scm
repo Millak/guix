@@ -2856,7 +2856,7 @@ to the C library @code{uchardet} to increase performance.")
 (define-public udiskie
   (package
     (name "udiskie")
-    (version "2.6.0")
+    (version "2.6.1")
     (source
      (origin
        (method git-fetch)
@@ -2865,7 +2865,7 @@ to the C library @code{uchardet} to increase performance.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0adj4ssl9zvq7vync9qznnlqhvx531nl4pg236app4d26j7iza35"))))
+        (base32 "0ngr8sdzd32mxamzfh82ar8m40z52lx91339b7dq3in0cr5r1ynp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2892,7 +2892,6 @@ to the C library @code{uchardet} to increase performance.")
            python-docopt
            python-keyutils
            python-pygobject
-           python-pyxdg
            python-pyyaml
            udisks))
     (home-page "https://github.com/coldfix/udiskie")
