@@ -330,7 +330,7 @@ command-line interface} and a @acronym{TUI, textual user interface} named
 (define-public remind
   (package
     (name "remind")
-    (version "6.0.1")
+    (version "6.02.01")
     (source
      (origin
        (method url-fetch)
@@ -341,7 +341,7 @@ command-line interface} and a @acronym{TUI, textual user interface} named
                                         ".")
                            ".tar.gz"))
        (sha256
-        (base32 "01zhs8lgncpm1229s7b49fhnwwnxyyan845gb47ppkfn03vvc187"))))
+        (base32 "1hp24d48nhlv6f7p6sj4qnqc9pyfgyhjah8w9426bzkqkqb31j9c"))))
     (properties
      `((output-synopsis "tcl" "graphical front-end to Remind calendar program")))
     (build-system gnu-build-system)
