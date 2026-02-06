@@ -14947,6 +14947,28 @@ textwrap.dedent)} in Python.")
 library bevacqua/fuzzysearch.")
     (license license:expat)))
 
+(define-public go-github-com-blevesearch-bleve-index-api
+  (package
+    (name "go-github-com-blevesearch-bleve-index-api")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/blevesearch/bleve_index_api")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04lcracjsx2wbgqfm1rj29km0j4cvfnlb2w3lnslgh0l51ca0m7b"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/blevesearch/bleve_index_api"))
+    (home-page "https://github.com/blevesearch/bleve_index_api")
+    (synopsis "Bleve internal index API")
+    (description "Bleve supports a pluggable index interface.  This package
+provides that index API interface.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-blevesearch-gtreap
   (package
     (name "go-github-com-blevesearch-gtreap")
