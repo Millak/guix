@@ -15394,8 +15394,12 @@ versions utilizing Consult's internal API.")
                 "1xx5g4z4l0kanf2mh3f798gw8ydfzbx15wfyqrnhwhiljz796xis"))
               (file-name (git-file-name name version))))
     (build-system emacs-build-system)
-    (arguments (list #:tests? #f))      ; no tests
-    (propagated-inputs (list emacs-consult emacs-eglot))
+    (arguments
+     (list
+      #:tests? #f                       ;no tests
+      #:include #~(cons "^extensions\\/consult-eglot-embark"
+                        %default-include)))
+    (propagated-inputs (list emacs-consult emacs-eglot emacs-embark))
     (home-page "https://github.com/mohkale/consult-eglot")
     (synopsis "Consulting-read interface for eglot")
     (description "This package acts as a parallel of consult-lsp for eglot and
