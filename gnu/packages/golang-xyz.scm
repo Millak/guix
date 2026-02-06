@@ -22971,6 +22971,47 @@ for securing software update systems.  It provides tools for creating and
 managing TUF repositories and clients for securely downloading updates.")
     (license license:bsd-3)))
 
+(define-public go-github-com-theupdateframework-go-tuf-v2
+  (package
+    (inherit go-github-com-theupdateframework-go-tuf)
+    (name "go-github-com-theupdateframework-go-tuf-v2")
+    (version "2.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/theupdateframework/go-tuf")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1213y7g9vdbzgymfz03fgmnvrj6r00yfpdvz0qqfsaz2nfj0pmdz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.25
+      #:skip-build? #t
+      #:import-path "github.com/theupdateframework/go-tuf/v2"
+      #:test-flags
+      #~(list "-failfast"
+              "-skip" (string-join
+                       (list "TestDownLoadFile"
+                             "TestDownloadFile_NoHTTPClientSet")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Taken from project's CI.
+              (setenv "GODEBUG" "rsa1024min=0"))))))
+    (native-inputs
+     (list go-github-com-spf13-cobra
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-cenkalti-backoff-v5
+           go-github-com-go-logr-stdr
+           go-github-com-secure-systems-lab-go-securesystemslib
+           go-github-com-sigstore-sigstore))))
+
 (define-public go-github-com-tidwall-cities
   (package
     (name "go-github-com-tidwall-cities")
