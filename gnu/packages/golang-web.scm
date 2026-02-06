@@ -13813,6 +13813,106 @@ and is designed to be accessible to both humans and machines.")
 implementation as closely while remaining idiomatic and easy to use.")
     (license license:expat)))
 
+;; git-bug specifically requires version 0.17.73 of
+;; go-github-com-99designs-gqlgen. If updating this package, please create a
+;; 0.17.73 variant of this package.
+(define-public go-github-com-99designs-gqlgen
+  (package
+    (name "go-github-com-99designs-gqlgen")
+    (version "0.17.73")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/99designs/gqlgen")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xs867y230zzbx9ws42nzqxnp44205v9hsdqv0hifljx26igv85k"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/99designs/gqlgen"
+           #:test-flags
+           #~(list "-skip" (string-join
+                            (list
+                             ;; These tests require network access.
+                             "TestAltairHandler_Integrity"
+                             "TestApolloSandboxHandler_Integrity"
+                             "TestHandler_Integrity"
+                             ;; These tests fail due to the way our
+                             ;; go-build-system unpacks and lays out the
+                             ;; source code.
+                             "TestImportPathForDir"
+                             "TestRewriter/out_of_scope_dir"
+                             ;; Commenting out autobind generates the modules
+                             ;; necessary for these tests. See discussion at
+                             ;; https://github.com/99designs/gqlgen/issues/1765
+                             ;; But then, go mod tidy fails probably because
+                             ;; modules are disabled by GO111MODULE=off
+                             "TestAutobinding"
+                             "TestCodeGeneration"
+                             "TestCodeGenerationFederation2"
+                             "TestGenerate"
+                             "TestInjectSourceLate"
+                             "TestNoEntities"
+                             "TestWithEntities")
+                            "|"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-tests
+                 (lambda _
+                   ;; Remove column number from expected error message. TODO:
+                   ;; Revisit this fix later when we update this package or
+                   ;; one of its dependencies.
+                   (substitute* "src/github.com/99designs/gqlgen/graphql/executor/executor_test.go"
+                     (("input:1:2:") "input:1:"))
+                   ;; Make some go files writable. Some tests fail when they
+                   ;; are not.
+                   (for-each (lambda (file)
+                               (chmod file #o644))
+                             (append (find-files "src/github.com/99designs/gqlgen/plugin"
+                                                 "^generated_omit_root_models.go$")
+                                     (find-files "src/github.com/99designs/gqlgen/plugin"
+                                                 "^schema.custom.go$")
+                                     (find-files "src/github.com/99designs/gqlgen/plugin"
+                                                 "^schema.resolvers.go$")
+                                     (find-files "src/github.com/99designs/gqlgen/plugin"
+                                                 "^generated\\.go$")))))
+               (add-after 'unpack 'realize-symlinks
+                 (lambda _
+                   ;; Replace symlinks with a copy of the file. With symlinks,
+                   ;; the build fails with "cannot embed irregular file".
+                   (let* ((symlink-path
+                           "src/github.com/vektah/gqlparser/v2/validator/prelude.graphql")
+                          (canonical-path (canonicalize-path symlink-path)))
+                     (delete-file symlink-path)
+                     (copy-file canonical-path symlink-path)))))))
+    (propagated-inputs (list go-github-com-go-viper-mapstructure-v2
+                             go-github-com-goccy-go-yaml
+                             go-github-com-google-uuid
+                             go-github-com-gorilla-websocket
+                             go-github-com-hashicorp-golang-lru-v2
+                             go-github-com-kevinmbeaulieu-eq-go
+                             go-github-com-logrusorgru-aurora-v4
+                             go-github-com-matryer-moq
+                             go-github-com-mattn-go-colorable
+                             go-github-com-mattn-go-isatty
+                             go-github-com-puerkitobio-goquery
+                             go-github-com-sosodev-duration
+                             go-github-com-stretchr-testify
+                             go-github-com-urfave-cli-v2
+                             go-github-com-vektah-gqlparser-v2
+                             go-golang-org-x-text
+                             go-golang-org-x-tools
+                             go-google-golang-org-protobuf
+                             go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/99designs/gqlgen")
+    (synopsis "Go GraphQL server library")
+    (description "gqlgen is a @command{go generate} based GraphQL server
+library.  It generates Go server code from a schema written in the GraphQL
+Schema Definition Language.")
+    (license license:expat)))
+
 (define-public go-github-com-vishvananda-netlink
   (package
     (name "go-github-com-vishvananda-netlink")
