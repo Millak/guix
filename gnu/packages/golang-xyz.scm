@@ -16888,30 +16888,6 @@ running in a Linux user namespace.")
 terminal (state, sizes).")
     (license license:asl2.0)))
 
-(define-public go-github-com-michaelmure-go-term-text
-  (package
-    (name "go-github-com-michaelmure-go-term-text")
-    (version "0.3.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/MichaelMure/go-term-text")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "05xf32xvx30xrv52h0dd06qly498lk7xqn8wvjkqgmyr2vvzrjcg"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/MichaelMure/go-term-text"))
-    (propagated-inputs (list go-github-com-mattn-go-runewidth
-                             go-github-com-stretchr-testify))
-    (home-page "https://github.com/MichaelMure/go-term-text")
-    (synopsis "Format text for the terminal")
-    (description "This package provides a Go library implementing a collection
-of algorithms to help format and manipulate text for the terminal.")
-    (license license:expat)))
-
 (define-public go-github-com-modern-go-concurrent
   (package
     (name "go-github-com-modern-go-concurrent")
