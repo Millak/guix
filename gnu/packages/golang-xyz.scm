@@ -20366,6 +20366,26 @@ servers.")
 Porter Stemming Algorithm.")
       (license license:expat))))
 
+(define-public go-github-com-blevesearch-go-porterstemmer
+  (package
+    (inherit go-github-com-reiver-go-porterstemmer)
+    (name "go-github-com-blevesearch-go-porterstemmer")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/blevesearch/go-porterstemmer")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nj448j7kj31vg76xa7nh2i6iz4b4fnvarh0dgsl11ay1pmfhj45"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/blevesearch/go-porterstemmer"
+           ;; Disable tests that require network access.
+           #:test-flags #~(list "-skip" "TestStemString")))))
+
 (define-public go-github-com-relvacode-iso8601
   (package
     (name "go-github-com-relvacode-iso8601")
