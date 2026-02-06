@@ -3898,9 +3898,10 @@ find_package(VulkanHeaders REQUIRED)"))
 target_link_libraries\\(PCSX2_FLAGS INTERFACE vulkan-headers\\)") ""))
             (substitute* "pcsx2/Host/AudioStream.cpp"
               (("SoundTouch.h") "soundtouch/SoundTouch.h"))))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:configure-flags
       #~(list "-DCMAKE_C_COMPILER=clang"
               "-DCMAKE_CXX_COMPILER=clang++"
@@ -3948,6 +3949,7 @@ target_link_libraries\\(PCSX2_FLAGS INTERFACE vulkan-headers\\)") ""))
                   qtdeclarative
                   qtsvg
                   qttools
+                  qtwayland
                   rapidjson
                   sdl3
                   shaderc
