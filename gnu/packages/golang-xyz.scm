@@ -15016,28 +15016,6 @@ the Go Language.")
 provides that segment API interface.")
     (license license:asl2.0)))
 
-(define-public go-github-com-blevesearch-upsidedown-store-api
-  (package
-    (name "go-github-com-blevesearch-upsidedown-store-api")
-    (version "1.0.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/blevesearch/upsidedown_store_api")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1sjs1ad4iprnmrac6g5acrb68g30q6zfihvnxx498iwq3sg4rbrz"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/blevesearch/upsidedown_store_api"))
-    (home-page "https://github.com/blevesearch/upsidedown_store_api")
-    (synopsis "Upside Down key-value store API")
-    (description "Upside Down supports a pluggable key-value storage
-interface.  This package provides that key-value store API interface.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-liyue201-gostl
   (package
     (name "go-github-com-liyue201-gostl")
