@@ -14988,37 +14988,6 @@ library bevacqua/fuzzysearch.")
 provides that index API interface.")
     (license license:asl2.0)))
 
-(define-public go-github-com-blevesearch-zapx-v16
-  (package
-    (name "go-github-com-blevesearch-zapx-v16")
-    (version "16.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/blevesearch/zapx")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "19qjnp85y4p7fx66cd2n39pc38p7n6fvi263cjpbq3l4b3zf62j2"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/blevesearch/zapx"))
-    (propagated-inputs (list go-github-com-bits-and-blooms-bitset
-                             go-github-com-blevesearch-bleve-index-api
-                             go-github-com-blevesearch-go-faiss
-                             go-github-com-blevesearch-mmap-go
-                             go-github-com-blevesearch-scorch-segment-api
-                             go-github-com-blevesearch-vellum
-                             go-github-com-golang-snappy
-                             go-github-com-roaringbitmap-roaring
-                             go-github-com-spf13-cobra))
-    (home-page "https://github.com/blevesearch/zapx")
-    (synopsis "Go zap file format library")
-    (description "This package is a Go implementation of the zap file
-format.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-blevesearch-gtreap
   (package
     (name "go-github-com-blevesearch-gtreap")
