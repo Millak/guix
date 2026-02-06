@@ -1147,7 +1147,7 @@ the \"texlive\" importer."
                        "ludo@gnu.org"
                        "civodul")
   core core-packages hpc installer
-  mentors)
+  guile)
 
 (define-member (person "Andreas Enge"
                        "andreas@enge.fr"
