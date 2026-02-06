@@ -21141,6 +21141,37 @@ and branchless algorithms shine.")
 various data formats.")
     (license license:expat)))
 
+(define-public go-github-com-segmentio-ksuid
+  (package
+    (name "go-github-com-segmentio-ksuid")
+    (version "1.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/segmentio/ksuid")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qc9w7imal5jk0lw0hwyszs2fh7wjsnbkawgw7kwzdvg9nbahjg7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/segmentio/ksuid"))
+    (home-page "https://github.com/segmentio/ksuid")
+    (synopsis "K-Sortable Globally Unique IDs")
+    (description
+     "@code{ksuid} is an efficient, comprehensive, battle-tested Go library
+for generating and parsing a specific kind of globally unique identifier
+called a KSUID.  This library serves as its reference implementation.
+
+KSUID is for K-Sortable Unique IDentifier.  It is a kind of globally unique
+identifier similar to a
+@url{https://en.wikipedia.org/wiki/Universally_unique_identifier, RFC 4122
+UUID}, built from the ground-up to be \"naturally\" sorted by generation
+timestamp without any special type-aware logic.")
+    (license license:expat)))
+
 (define-public go-github-com-sereal-sereal-go-sereal
   (package
     (name "go-github-com-sereal-sereal-go-sereal")
