@@ -1743,7 +1743,7 @@ SunMD5, sha1crypt, NT, bsdicrypt, bigcrypt, and descrypt.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/funtoo/keychain")
+                    (url "https://github.com/danielrobbins/keychain")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
@@ -1775,7 +1775,7 @@ with various operating systems (including GNU/Linux and HURD) and
 shells (like bourne-compatible, csh-compatible and fish shells).  By
 default Keychain will only start ssh-agent, but it can also be
 configured to start gpg-agent.")
-    (home-page "https://www.funtoo.org/Keychain")
+    (home-page "https://github.com/danielrobbins/keychain")
     (license license:gpl2)))
 
 (define-public libdigidocpp
