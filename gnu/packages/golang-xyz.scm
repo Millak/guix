@@ -15119,30 +15119,6 @@ and executing an @acronym{FST, finite state transducer}.")
                     (("\\{na, k, ids_ham_knn.data[^\n]*" all)
                      (string-append "faiss::int_maxheap_array_t" all))))))))))))
 
-(define-public go-github-com-blevesearch-go-faiss
-  (package
-    (name "go-github-com-blevesearch-go-faiss")
-    (version "1.0.27")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/blevesearch/go-faiss")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1y9gf2nbg3gjncs6l9fg4q2sxjildszanb24jhhsmivhwlzhcgzh"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/blevesearch/go-faiss"))
-    (inputs
-     (list blevesearch-faiss))
-    (home-page "https://github.com/blevesearch/go-faiss")
-    (synopsis "Go bindings for Faiss")
-    (description "This package provides Go bindings for faiss, a library for
-vector similarity search.")
-    (license license:expat)))
-
 (define-public go-github-com-blevesearch-segment
   (package
     (name "go-github-com-blevesearch-segment")
