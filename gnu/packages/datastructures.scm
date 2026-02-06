@@ -292,14 +292,14 @@ allows multiple concurrent reader and writer threads.")
 (define-public liburcu
   (package
     (name "liburcu")
-    (version "0.14.1")
+    (version "0.15.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.lttng.org/files/urcu/"
                                   "userspace-rcu-" version ".tar.bz2"))
               (sha256
                (base32
-                "1h5bg0k94by2v7cjq7fb3ridqixbd9pndw506vl27h3fvh9wn6i3"))))
+                "0ks1mj5r11ir9ssbxgm13pj9wix7gny9g3qfqzrfn4gbjqh1j2w5"))))
     (build-system gnu-build-system)
     (native-inputs
      ;; riscv64 needs >= gcc-13.3.0
