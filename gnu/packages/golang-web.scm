@@ -47,7 +47,6 @@
 ;;; Copyright © 2025 Danny Milosavljevic <dannym@friendly-machines.com>
 ;;; Copyright © 2025 Patrick Norton <patrick.147.norton@gmail.com>
 ;;; Copyright © 2025 Jared Klingenberger <jkling@noreply.codeberg.org>
-;;; Copyright © 2026 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -14218,35 +14217,6 @@ programming language.")
     (description
      "This package provides an implementation of JSON Schema for the Go
 programming language, which supports draft-04, draft-06 and draft-07.")
-    (license license:asl2.0)))
-
-(define-public go-github-com-blevesearch-geo-geojson
-  (package
-    (name "go-github-com-blevesearch-geo-geojson")
-    (version "0.2.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/blevesearch/geo")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "05vgzxf6g7gmw9wymxxwkq2xxwakr1lrhs2jy6v91k7akgz9alsv"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/blevesearch/geo/geojson"
-           #:unpack-path "github.com/blevesearch/geo"))
-    (propagated-inputs
-     (list go-github-com-blevesearch-bleve-index-api
-           go-github-com-json-iterator-go
-           go-github-com-google-go-cmp))
-    (home-page "https://github.com/blevesearch/geo")
-    (synopsis "Go S2 geometry library")
-    (description "This is a library for manipulating geometric shapes.  Unlike
-many geometry libraries, S2 is primarily designed to work with spherical
-geometry, i.e., shapes drawn on a sphere rather than on a planar 2D map.  This
-makes it especially suitable for working with geographic data.")
     (license license:asl2.0)))
 
 (define-public go-github-com-xo-dburl
