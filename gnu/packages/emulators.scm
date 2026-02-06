@@ -4000,9 +4000,10 @@ your PC, with many additional features and benefits.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0dwrfjs9b3ldwyn68nmyf0qip4hm1w8c3picdl3zk7z76j7rrhal"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:configure-flags
       #~(list
          ;; -fexceptions is needed to compile part of yaml-cpp.
@@ -4099,6 +4100,7 @@ your PC, with many additional features and benefits.")
             qtbase
             qtmultimedia
             qtsvg
+            qtwayland
             rtmidi
             sdl3
             spirv-tools
