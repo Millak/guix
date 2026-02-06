@@ -17,7 +17,7 @@
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020, 2021 raingloom <raingloom@riseup.net>
-;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2021, 2026 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Guix Together <jgart@dismail.de>
@@ -1617,6 +1617,32 @@ synchronizes across processes.")
 use case for these are for command-line applications but alternate progress
 bar writers can be supplied for alternate environments.")
     (license license:expat)))
+
+(define-public go-github-com-vbauerster-mpb
+  (package
+    (name "go-github-com-vbauerster-mpb")
+    (version "8.11.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/vbauerster/mpb")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zq7k0jpi8322n6f2kgygxlbldnan0x57ifyhhja74q6vlqjp1k8"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/vbauerster/mpb"))
+    (propagated-inputs (list go-github-com-acarl005-stripansi
+                             go-github-com-mattn-go-runewidth
+                             go-github-com-vividcortex-ewma
+                             go-golang-org-x-sys))
+    (home-page "https://github.com/vbauerster/mpb")
+    (synopsis "Multi progress bar for Go CLI applications")
+    (description "mpb is a Go library for rendering progress bars in terminal
+applications.")
+    (license license:unlicense)))
 
 (define-public go-github-com-anacrolix-dms
   (package
