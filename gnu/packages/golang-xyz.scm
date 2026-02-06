@@ -19280,36 +19280,6 @@ that avoids runtime memory allocations.")
 library for Go.")
     (license license:asl2.0)))
 
-(define-public go-github-com-couchbase-moss
-  (package
-    (name "go-github-com-couchbase-moss")
-    (version "0.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/couchbase/moss")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1wxy8d6116w5a3rwsjbkc9p8x1r2q011gxwx2ciqr2if4g59i601"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/couchbase/moss"
-           ;; Some tests times out. Disable them.
-           #:test-flags #~(list "-skip"
-                                (string-join (list "TestStoreCollHistograms"
-                                                   "TestStoreCrashRecovery")
-                                             "|"))))
-    (propagated-inputs (list go-github-com-couchbase-ghistogram
-                             go-github-com-blevesearch-mmap-go
-                             go-github-com-mschoch-smat))
-    (home-page "https://github.com/couchbase/moss")
-    (synopsis "Go key-value storage library")
-    (description "This package provides a simple, fast, persistable, ordered
-key-value collection implementation as a Go library.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-pbnjay-memory
   (let ((commit "7b4eea64cf580186c0eceb10dc94ba3a098af46c")
         (revision "2"))
