@@ -7570,6 +7570,24 @@ program's running, don't expect consistent results between platforms
 @end itemize")
     (license license:bsd-3)))
 
+(define-public go-github-com-blevesearch-mmap-go
+  (package
+    (inherit go-github-com-edsrzf-mmap-go)
+    (name "go-github-com-blevesearch-mmap-go")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/blevesearch/mmap-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wnjv27jf0lg9vdmcnzc56b5gl7250qiq0y917yc2lghvp3qdafy"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/blevesearch/mmap-go"))))
+
 (define-public go-github-com-edwvee-exiffix
   (package
     (name "go-github-com-edwvee-exiffix")
