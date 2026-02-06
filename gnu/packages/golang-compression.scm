@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
-;;; Copyright © 2021, 2026 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
@@ -556,35 +556,6 @@ LZ4 data blocks.  The implementation is based on the reference C
      (list go-code-cloudfoundry-org-bytefmt
            go-github-com-pierrec-cmdflag
            go-github-com-schollz-progressbar-v3))))
-
-(define-public go-github-com-roaringbitmap-roaring
-  (package
-    (name "go-github-com-roaringbitmap-roaring")
-    (version "2.14.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/RoaringBitmap/roaring")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0qs11vr7bnsabrzhfz0fdphjsvv7xbp11d4ixd6qhbg5bvkzikyc"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/RoaringBitmap/roaring"))
-    (propagated-inputs (list go-github-com-bits-and-blooms-bitset
-                             go-github-com-google-uuid
-                             go-github-com-mschoch-smat
-                             go-github-com-stretchr-testify))
-    (home-page "https://github.com/RoaringBitmap/roaring")
-    (synopsis "Roaring bitmaps in Go")
-    (description "This package is an implementation of Roaring Bitmaps in Go.
-They provide fast compressed bitmap data structures (also called bitset).
-They are ideally suited to represent sets of integers over relatively small
-ranges.")
-    (license license:asl2.0)))
 
 (define-public go-github-com-saracen-fastzip
   (package
