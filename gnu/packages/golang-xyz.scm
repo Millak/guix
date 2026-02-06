@@ -15056,6 +15056,31 @@ provides that segment API interface.")
 interface.  This package provides that key-value store API interface.")
     (license license:asl2.0)))
 
+(define-public go-github-com-blevesearch-vellum
+  (package
+    (name "go-github-com-blevesearch-vellum")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/blevesearch/vellum")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z0k2pf0qmdsg30a842l78f1dx1x6b8jnfpvvvgdk8cmq8bra0kf"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/blevesearch/vellum"))
+    (propagated-inputs (list go-github-com-blevesearch-mmap-go
+                             go-github-com-spf13-cobra
+                             go-github-com-bits-and-blooms-bitset))
+    (home-page "https://github.com/blevesearch/vellum")
+    (synopsis "Go finite state transducer")
+    (description "This package provides a Go library for building, serializing
+and executing an @acronym{FST, finite state transducer}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-liyue201-gostl
   (package
     (name "go-github-com-liyue201-gostl")
