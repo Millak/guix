@@ -15081,28 +15081,6 @@ interface.  This package provides that key-value store API interface.")
 and executing an @acronym{FST, finite state transducer}.")
     (license license:asl2.0)))
 
-(define-public go-github-com-blevesearch-segment
-  (package
-    (name "go-github-com-blevesearch-segment")
-    (version "0.9.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/blevesearch/segment")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0y761p1m98kii5ccgfsc96wmlccj41dmg16pa4m0dj03dry130c9"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/blevesearch/segment"))
-    (home-page "https://github.com/blevesearch/segment")
-    (synopsis "Go unicode text segmentation library")
-    (description "This package provides a Go library for performing Unicode
-Text Segmentation as described in Unicode Standard Annex #29.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-liyue201-gostl
   (package
     (name "go-github-com-liyue201-gostl")
