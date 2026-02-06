@@ -237,7 +237,7 @@ applications.")
 (define-public kronosnet
   (package
     (name "kronosnet")
-    (version "1.32")
+    (version "1.33")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -246,7 +246,7 @@ applications.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1sn2y5z52y0z2bjh1rrv722lm6nma9bsk0dqwwri9397s6qpv1dc"))))
+                "068q6v4hyr46iw12nb8mq59fxx92hcy6p5vcqprd0x99gfv1rkjd"))))
     (build-system gnu-build-system)
     (arguments
      ;; XXX: Multiple tests failed. Tests
