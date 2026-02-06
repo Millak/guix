@@ -12650,35 +12650,6 @@ Golang.")
 text, etc. with a heavy emphasis on customization.")
     (license license:expat)))
 
-(define-public go-github-com-scylladb-termtables
-  (package
-    (name "go-github-com-scylladb-termtables")
-    (version "0.0.0-20191203121021-c4c0b6d42ff4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/scylladb/termtables")
-              (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "12qjh5gjw2hvrjdh99d4ng8sxicjgdf5bbadrlp4sbd86rwskr54"))
-       (snippet
-        #~(begin
-            (use-modules (guix build utils))
-            ;; Delete bundled dependencies.
-            (delete-file-recursively "vendor")))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/scylladb/termtables"))
-    (propagated-inputs
-     (list go-github-com-mattn-go-runewidth))
-    (home-page "https://github.com/scylladb/termtables")
-    (synopsis "Go ASCII table generator")
-    (description "This package is a Go port of the Ruby @samp{terminal-tables}
-library for fast and simple ASCII table generation.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-jeffail-gabs
   (package
     (name "go-github-com-jeffail-gabs")
