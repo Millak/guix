@@ -4,6 +4,7 @@
 ;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 jgart <jgart@dismail.de>
+;;; Copyright © 2026 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,6 +31,8 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-vcs)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz))
 
@@ -422,3 +425,63 @@ editing and auto-completion.  Some of its features include:
     (description "mnc (my next cron) opens the user's crontab and echos the
 time when the next cronjob will be ran.")
     (license license:unlicense)))
+
+(define-public git-bug
+  (package
+    (name "git-bug")
+    (version "0.10.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/git-bug/git-bug")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1s3y8ll2942d6my2wz6bbipram4l6brbwwfvp2nr8cchzrb23dl8"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:tests? #f  ;; tests require several unpackaged dependencies
+           #:import-path "github.com/git-bug/git-bug"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'realize-symlinks
+                 (lambda _
+                   ;; Replace symlinks with a copy of the file. With symlinks,
+                   ;; the build fails with "cannot embed irregular file".
+                   (let* ((symlink-path
+                           "src/github.com/vektah/gqlparser/v2/validator/prelude.graphql")
+                          (canonical-path (canonicalize-path symlink-path)))
+                     (delete-file symlink-path)
+                     (copy-file canonical-path symlink-path)))))))
+    (native-inputs
+     (list go-github-com-99designs-gqlgen
+           go-github-com-99designs-keyring
+           go-github-com-araddon-dateparse
+           go-github-com-awesome-gocui-gocui
+           go-github-com-blevesearch-bleve
+           go-github-com-dustin-go-humanize
+           go-github-com-fatih-color
+           go-github-com-go-git-go-billy-v5
+           go-github-com-go-git-go-git-v5
+           go-github-com-gorilla-mux
+           go-github-com-hashicorp-golang-lru-v2
+           go-github-com-michaelmure-go-term-text
+           go-github-com-phayes-freeport
+           go-github-com-protonmail-go-crypto
+           go-github-com-shurcool-githubv4
+           go-github-com-skratchdot-open-golang
+           go-github-com-spf13-cobra
+           go-github-com-stretchr-testify
+           go-github-com-vbauerster-mpb
+           go-github-com-vektah-gqlparser-v2
+           ;; The build fails without this specific version of
+           ;; go-gitlab-com-gitlab-org-api-client-go.
+           go-gitlab-com-gitlab-org-api-client-go-0.116
+           go-golang-org-x-oauth2))
+    (home-page "https://github.com/git-bug/git-bug")
+    (synopsis "Distributed, offline-first bug tracker embedded in git")
+    (description "git-bug is a standalone, distributed, offline-first issue
+management tool that embeds issues, comments, and more as objects in a git
+repository.")
+    (license license:gpl3+)))
