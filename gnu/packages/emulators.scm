@@ -1944,6 +1944,96 @@ to avoid macro conflicts.")
       (home-page "https://github.com/azahar-emu/mcl")
       (license license:expat))))
 
+(define-public eden
+  (package
+    (name "eden")
+    (version "0.1.1")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://git.eden-emu.dev/eden-emu/eden")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name "eden" version))
+        (sha256
+         (base32 "013594cqgagawpss2h1j5ixsrs7qp6wgqpsbyls6z7z0j7nyhjmn"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; Tests require packaging additional dependencies (oaknut) and fail
+      ;; to build on x86 systems.
+      #:tests? #f
+      #:configure-flags
+      #~(list
+         ;; Use system libraries instead of bundled copies.
+         "-DCPMUTIL_FORCE_SYSTEM=ON"
+         ;; Prevent CMake from downloading dependencies during build.
+         "-DFETCHCONTENT_FULLY_DISCONNECTED=ON"
+         "-DCPM_DOWNLOAD_ALL=OFF"
+         ;; Enable the Qt frontend with translations and web applet.
+         "-DENABLE_QT=ON"
+         "-DENABLE_QT_TRANSLATION=ON"
+         "-DYUZU_USE_QT_WEB_ENGINE=ON"
+         ;; Disable web services (telemetry, etc.).
+         "-DENABLE_WEB_SERVICE=OFF"
+         ;; Update checker is not useful in Guix.
+         "-DENABLE_UPDATE_CHECKER=OFF"
+         ;; Disable OpenSSL to avoid the cpp-httplib dependency.  This means
+         ;; the emulator will use the 'none' SSL backend, which returns errors
+         ;; for all SSL/TLS operations.  Games requiring online connectivity
+         ;; (multiplayer, leaderboards, DLC checks) will not function, but
+         ;; offline/single-player games are unaffected.
+         "-DENABLE_OPENSSL=OFF"
+         ;; Use our nx-tzdb package for timezone data.
+         (string-append "-DYUZU_TZDB_PATH="
+                        #$(this-package-input "nx-tzdb")))))
+    (inputs
+     (list
+      boost
+      cubeb
+      enet
+      ffmpeg
+      fmt
+      frozen
+      gamemode
+      glslang
+      libusb
+      lz4
+      mbedtls
+      mcl-cpp-for-eden
+      nlohmann-json
+      nx-tzdb
+      opus
+      qt5compat
+      qtbase
+      qttools
+      qtwebengine
+      quazip
+      sdl2
+      simpleini
+      sirit
+      spirv-headers
+      spirv-tools
+      stb
+      unordered-dense
+      vulkan-headers
+      vulkan-memory-allocator
+      vulkan-utility-libraries
+      xbyak
+      zlib
+      (list zstd "lib")))
+    (native-inputs
+     (list pkg-config))
+    (synopsis "Nintendo Switch emulator")
+    (description "Eden is a Nintendo Switch emulator derived from Yuzu and
+Sudachi.  It is written in C++ with portability in mind and is capable of
+running most commercial games at full speed.
+
+This emulator requires encryption keys and firmware files obtained from a
+Nintendo Switch console.")
+    (home-page "https://git.eden-emu.dev/eden-emu/eden")
+    (license license:gpl3+)))
+
 (define (make-libretro-beetle-psx name hw)
   (let ((commit "80d3eba272cf6efab6b76e4dc44ea2834c6f910d")
 	(revision "0"))
