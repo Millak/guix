@@ -15554,7 +15554,6 @@ recommended way to use GLib from Python.")
     (description "python-dbus provides bindings for libdbus, the reference
 implementation of D-Bus.")
     (home-page "https://www.freedesktop.org/wiki/Software/DBusBindings/")
-    (properties `((python2-variant . ,(delay python2-dbus))))
     (license license:expat)))
 
 (define-public python-notify2
