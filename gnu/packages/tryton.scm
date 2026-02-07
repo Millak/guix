@@ -3165,13 +3165,13 @@ routings for production: Routing, Step and Operation.")
 (define-public trytond-production-split
   (package
     (name "trytond-production-split")
-    (version "7.0.1")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_production_split" version))
        (sha256
-        (base32 "06ic3w4zskk08q617660w1gx5l8dmf782n9kq0kg8x82m2lw0f0n"))))
+        (base32 "1v8zh6b926a7alpnh9lw3m0hn2wmr3fq9shzl91rdkx050cajbq5"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "production_split"))
     (native-inputs %standard-trytond-native-inputs)
