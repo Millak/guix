@@ -384,3 +384,29 @@ systems, web content management systems and web frameworks.")
 
 ;; php should always point to the latest php version
 (define-public php php-8.5)
+
+;; older supported php version
+;; actively supported until: 31 Dec 2026
+;; security support until: 31 Dec 2028
+(define-public php-8.4
+  (package
+    (inherit php-8.5)
+    (home-page "https://www.php.net/")
+    (version "8.4.17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append home-page "distributions/" "php-" version ".tar.xz"))
+       (sha256
+        (base32 "1yhbigrhy9k7cnbzbrfjr6dxhs8ixf1i5mi1x755hq988zik9ci8"))
+       (modules '((guix build utils)))
+       (snippet
+        '(with-directory-excursion "ext"
+           (for-each delete-file-recursively
+                     ;; Some of the bundled libraries have no proper upstream.
+                     ;; Ideally we'd extract these out as separate packages:
+                     ;; "mbstring/libmbfl"
+                     ;; "date/lib"
+                     ;; "bcmath/libbcmath"
+                     ;; "fileinfo/libmagic" ; a patched version of libmagic
+                     '("gd/libgd" "pcre/pcre2lib"))))))))
