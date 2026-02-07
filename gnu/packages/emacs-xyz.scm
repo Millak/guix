@@ -24347,15 +24347,15 @@ on mouse-control.")
 (define-public emacs-gnugo
   (package
     (name "emacs-gnugo")
-    (version "3.1.2")
+    ;; Use a snapshot from the GNU-devel ELPA, as it includes unreleased
+    ;; fixes.
+    (version "3.1.2.0.20250131.151403")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://elpa.gnu.org/packages/gnugo-"
-                           version ".tar"))
+       (uri (string-append "https://elpa.gnu.org/devel/gnugo-" version ".tar"))
        (sha256
-        (base32
-         "138gzdyi8scqimvs49da66j8f5a43bhgpasn1bxzdj2zffwlwp6g"))))
+        (base32 "1afx15bab0zx5iykx9fjn0k32m8rj58n2998kgvpmnyxwl449v77"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
