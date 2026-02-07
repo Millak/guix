@@ -2581,26 +2581,24 @@ test coverage and has a web user interface that will refresh automatically.")
 (define-public go-github-com-stretchr-testify
   (package
     (name "go-github-com-stretchr-testify")
-    (version "1.10.0")
+    (version "1.11.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/stretchr/testify")
-             (commit (string-append "v" version))))
+              (url "https://github.com/stretchr/testify")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g1bdpqih38a7dl1malahz5x4ag01adk61gx47jg2534cqzvid05"))))
+        (base32 "01z104142yrnih9vq3zrhypalh1d3kmyddyapqxgzggvhsw5b6pl"))))
     (build-system go-build-system)
     (arguments
      (list
-      ;; See the list of supported Golang versions in
-      ;; <testify/.github/workflows/main.yml>.
-      #:go go-1.23
       ;; XXX: Tests are shaky on non x86_64 architectures, check if some may
       ;; be enabled.
       #:tests? (target-x86-64?)
-      #:import-path "github.com/stretchr/testify"))
+      #:import-path "github.com/stretchr/testify"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-github-com-davecgh-go-spew
            go-github-com-pmezard-go-difflib
