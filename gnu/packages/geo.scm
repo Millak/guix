@@ -2657,13 +2657,13 @@ from multiple records.")
 (define-public python-rtree
   (package
     (name "python-rtree")
-    (version "1.0.1")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "Rtree" version))
+       (uri (pypi-uri "rtree" version))
        (sha256
-        (base32 "0aalh07fyf6vpr0a6zswnqvvrjhyic1zg6w4bl368fihkilj2892"))))
+        (base32 "0ijyhw8giab5824ppcrhkks9pkc7zkzczihcafz7xrc111av7cf6"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:phases
