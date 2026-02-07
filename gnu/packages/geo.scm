@@ -955,7 +955,7 @@ OpenGeoSys")
            spdlog
            tclap
            tfel
-           vtk
+           vtk-9.3
            xmlpatch
            zlib))
     (propagated-inputs

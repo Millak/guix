@@ -5622,7 +5622,7 @@ and aims to provide a similar API and functionality in Python.")
            python-pillow
            python-pooch
            python-scooby
-           vtk))
+           vtk-9.3))
     (home-page "https://docs.pyvista.org/")
     (synopsis "3D plotting and mesh analysis through VTK")
     (description

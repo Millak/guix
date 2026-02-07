@@ -26,7 +26,7 @@
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
-;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2025, 2026 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2025 dan <i@dan.games>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
@@ -353,7 +353,7 @@ many popular formats.")
 (define-public vtk
   (package
     (name "vtk")
-    (version "9.3.1")
+    (version "9.4.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://vtk.org/files/release/"
@@ -361,7 +361,7 @@ many popular formats.")
                                   "/VTK-" version ".tar.gz"))
               (sha256
                (base32
-                "1f6ac40db7wkb3bfh31d71qc5gy44cw29r6v4cyxrlm09q4fqm43"))
+                "00kahpi53hld3ip3cfswdnvfg4llmabq0w2kzqq2mcbbm46qxj9n"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -371,13 +371,9 @@ many popular formats.")
                       (string-append "ThirdParty/" dir "/vtk" dir)))
                    ;; pugixml depended upon unconditionally
                    '("doubleconversion" "eigen" "expat" "freetype" "gl2ps"
-                     "glew" "hdf5" "jpeg" "jsoncpp" "libharu" "libproj"
+                     "hdf5" "jpeg" "jsoncpp" "libharu" "libproj"
                      "libxml2" "lz4" "netcdf" "ogg" "png" "sqlite" "theora"
-                     "tiff" "zlib"))
-                  (substitute* "IO/ExportPDF/vtkPDFContextDevice2D.cxx"
-                    (("\\bHPDF_UINT16 (noPen|dash|dot|denseDot|dashDot|dashDotDot)\\b"
-                      _ var)
-                     (string-append "HPDF_REAL " var)))))))
+                     "tiff" "zlib"))))))
     (properties `((release-monitoring-url . "https://vtk.org/download/")))
     (build-system cmake-build-system)
     (arguments
@@ -485,6 +481,35 @@ triangulation.  VTK has an extensive information visualization framework, has
 a suite of 3D interaction widgets, supports parallel processing, and
 integrates with various databases on GUI toolkits such as Qt and Tk.")
     (license license:bsd-3)))
+
+(define-public vtk-9.3
+  (package
+    (inherit vtk)
+    (version "9.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://vtk.org/files/release/"
+                                  (version-major+minor version)
+                                  "/VTK-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1f6ac40db7wkb3bfh31d71qc5gy44cw29r6v4cyxrlm09q4fqm43"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (for-each
+                   (lambda (dir)
+                     (delete-file-recursively
+                      (string-append "ThirdParty/" dir "/vtk" dir)))
+                   ;; pugixml depended upon unconditionally
+                   '("doubleconversion" "eigen" "expat" "freetype" "gl2ps"
+                     "glew" "hdf5" "jpeg" "jsoncpp" "libharu" "libproj"
+                     "libxml2" "lz4" "netcdf" "ogg" "png" "sqlite" "theora"
+                     "tiff" "zlib"))
+                  (substitute* "IO/ExportPDF/vtkPDFContextDevice2D.cxx"
+                    (("\\bHPDF_UINT16 (noPen|dash|dot|denseDot|dashDot|dashDotDot)\\b"
+                      _ var)
+                     (string-append "HPDF_REAL " var)))))))))
 
 (define-public vktdiff
   (package
@@ -773,7 +798,7 @@ different data arrays similar to those available in the numdiff software.")
            protobuf
            python
            python-numpy
-           vtk
+           vtk-9.3
            zlib))
     ;; These three CVEs are not a problem of OpenCV, see:
     ;; https://github.com/opencv/opencv/issues/10998
