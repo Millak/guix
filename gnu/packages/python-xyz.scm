@@ -41927,16 +41927,6 @@ you do not want to store entirely on disk or on memory.")
     ;; No copyright headers in the source.  The LICENSE file indicates GPL3.
     (license license:gpl3)))
 
-(define-public python2-dbus
-  (package/inherit python-dbus-1.2
-    (name "python2-dbus")
-    (inputs `(("python" ,python-2)
-              ("libxcrypt" ,libxcrypt)  ;required by Python.h
-              ,@(alist-delete "python"
-                              (package-inputs python-dbus-1.2))))
-    (arguments
-     `(#:configure-flags '("PYTHON_VERSION=2")))))
-
 (define-public shrinkwrap
   (package
     (name "shrinkwrap")
