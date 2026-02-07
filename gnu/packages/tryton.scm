@@ -165,13 +165,13 @@ and security.")
 (define-public python-proteus
   (package
     (name "python-proteus")
-    (version "7.0.2")
+    (version "7.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "proteus" version))
        (sha256
-        (base32 "1mh82lqc3dbg1kq21lwbk4wa2ghjkrmkz1xx1mzkk50cyhdd800w"))))
+        (base32 "08qx8c5kknmg6jkf6k3zlv4v3dsrls2p61h899mk41afa503gskg"))))
     (build-system pyproject-build-system)
     ;; Tests require python-trytond-party which requires python-proteus.
     (arguments
