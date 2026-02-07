@@ -2262,13 +2262,13 @@ process incoming documents.")
 (define-public trytond-document-incoming-invoice
   (package
     (name "trytond-document-incoming-invoice")
-    (version "7.0.1")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_document_incoming_invoice" version))
        (sha256
-        (base32 "0fa11cgr8hi1ssirb8c9jgn8li5rwcil7z5ck1n8wpyql5waa6qz"))))
+        (base32 "14pd0b9h9fv4m85qs141r3c7p90z8dvgh1xr8raivwid9i8nnj87"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "document_incoming_invoice"))
     (native-inputs %standard-trytond-native-inputs)
