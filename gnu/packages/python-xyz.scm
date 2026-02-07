@@ -34976,6 +34976,29 @@ versa.  Extended WKB/WKT are also supported.")
 Python code as generators in your source files to generate arbitrary text.")
     (license license:expat)))
 
+(define-public python-cxxheaderparser
+  (package
+    (name "python-cxxheaderparser")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/robotpy/cxxheaderparser")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x8bd8zffjg1cq9hgglr445582kyjw5qs6mq7n6k7n01ihhni3hs"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatch-vcs python-pytest))
+    (home-page "https://github.com/robotpy/cxxheaderparser/")
+    (synopsis "Python C++ header parser")
+    (description "Pure python C++ header parser that parses C++ headers in a
+mildly naive manner that allows it to handle many C constructs, including
+many (C++11 and beyond) features.")
+    (license license:bsd-3)))
+
 (define-public python-bsdiff4
   (package
     (name "python-bsdiff4")
