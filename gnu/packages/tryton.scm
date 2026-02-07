@@ -2647,13 +2647,13 @@ to the email.")
 (define-public trytond-party
   (package
     (name "trytond-party")
-    (version "7.0.6")
+    (version "7.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_party" version))
        (sha256
-        (base32 "19mlqkykih95h28r6d9ibmdvh93hxjw4ykgr6svc204rvpjqlbmg"))))
+        (base32 "0lirpyzigfy1bz2bm8rd4f1dg70gsny4a5blr7d6qsiawcc4v5gz"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "party"))
     (native-inputs
