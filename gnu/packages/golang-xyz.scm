@@ -23087,6 +23087,33 @@ Porter2 stemmer}.  It is written completely using finite state machines to do
 suffix comparison, rather than the string-based or tree-based approaches.")
     (license license:asl2.0)))
 
+(define-public go-github-com-syncthing-notify
+  (package
+    (name "go-github-com-syncthing-notify")
+    (version "0.0.0-20250528144937-c7027d4f7465")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/syncthing/notify")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vg9w1anzg8v3ikm3h81wg8njhp4aq60sj4p25zg0glw9nk14zd5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:parallel-tests? #f
+      #:import-path "github.com/syncthing/notify"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/syncthing/notify")
+    (synopsis "File system event notification library")
+    (description
+     "This package provides @code{notify}, a file system event notification
+library in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-syndtr-gocapability
   (package
     (name "go-github-com-syndtr-gocapability")
