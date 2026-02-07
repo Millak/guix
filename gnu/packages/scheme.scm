@@ -228,17 +228,18 @@ features an integrated Emacs-like editor and a large runtime library.")
 (define-public bigloo
   ;; Upstream modifies source tarballs in place, making significant changes
   ;; long after the initial publication: <https://bugs.gnu.org/33525>.
-  (let ((upstream-version "4.3g"))
+  (let ((upstream-version "4.6a"))
     (package
       (name "bigloo")
-      (version "4.3g")
+      (version "4.6a")
       (source (origin
                 (method url-fetch)
-                (uri (string-append "ftp://ftp-sop.inria.fr/indes/fp/Bigloo/bigloo"
-                                    upstream-version ".tar.gz"))
+                (uri (string-append
+                      "https://www-sop.inria.fr/indes/fp/Bigloo/download/bigloo-"
+                      upstream-version ".tar.gz"))
                 (sha256
                  (base32
-                  "07305c134v7s1nz44igwsyqpb9qqia5zyng1q2qj60sskw3nbd67"))
+                  "0xvrd9557x3n9s981ppz27xscrr5lf0g367fxim2xnv2a5rh4wni"))
                 ;; Remove bundled libraries.
                 (modules '((guix build utils)))
                 (snippet
@@ -302,17 +303,20 @@ features an integrated Emacs-like editor and a large runtime library.")
                          (string-append "EMACSDIR=" dir))))))))
       (inputs
        (list emacs ;UDE needs the X version of Emacs
+             (module-ref
+              (resolve-interface '(gnu packages debug)) 'libbacktrace)
              libgc
              libunistring
              libuv
              openssl
+             pcre2
              sqlite
              ;; Optional APIs for which Bigloo has bindings.
              avahi
              libphidget
              pcre))
       (native-inputs
-       (list pkg-config))
+       (list pkg-config which))
       (propagated-inputs
        (list gmp))                            ; bigloo.h refers to gmp.h
       (home-page "https://www-sop.inria.fr/indes/fp/Bigloo/")
