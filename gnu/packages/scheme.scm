@@ -243,66 +243,63 @@ features an integrated Emacs-like editor and a large runtime library.")
                 ;; Remove bundled libraries.
                 (modules '((guix build utils)))
                 (snippet
-                 '(begin
-                    (for-each delete-file-recursively
-                              '("gc" "gmp" "libuv" "libunistring" "pcre"))
-                    #t))))
+                 #~(begin
+                     (for-each delete-file-recursively
+                               '("gc" "gmp" "libuv" "libunistring" "pcre"))))))
       (build-system gnu-build-system)
       (arguments
-       `(#:test-target "test"
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-gmp-detection
-             (lambda _
-               (substitute* "configure"
-                 (("gmpversion=`\\$autoconf gmp --lib=\\$gmplib`")
-                  "gmpversion=`\\$autoconf gmp --lib=\"\\$gmplib\"`"))))
-           (replace 'configure
-             (lambda* (#:key inputs outputs #:allow-other-keys)
+       (list
+        #:test-target "test"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-gmp-detection
+              (lambda _
+                (substitute* "configure"
+                  (("gmpversion=`\\$autoconf gmp --lib=\\$gmplib`")
+                   "gmpversion=`\\$autoconf gmp --lib=\"\\$gmplib\"`"))))
+            (replace 'configure
+              (lambda _
 
-               (substitute* "configure"
-                 (("^shell=.*$")
-                  (string-append "shell=" (which "bash") "\n"))
-                 (("`date`") "0"))
-               (substitute* "autoconf/runtest.in"
-                 ((", @DATE@") ""))
-               (substitute* "autoconf/osversion"
-                 (("^version.*$") "version=\"\"\n"))
-               (substitute* "comptime/Makefile"
-                 (("\\$\\(LDCOMPLIBS\\)")
-                  "$(LDCOMPLIBS) $(LDFLAGS)"))
+                (substitute* "configure"
+                  (("^shell=.*$")
+                   (string-append "shell=" (which "bash") "\n"))
+                  (("`date`") "0"))
+                (substitute* "autoconf/runtest.in"
+                  ((", @DATE@") ""))
+                (substitute* "autoconf/osversion"
+                  (("^version.*$") "version=\"\"\n"))
+                (substitute* "comptime/Makefile"
+                  (("\\$\\(LDCOMPLIBS\\)")
+                   "$(LDCOMPLIBS) $(LDFLAGS)"))
 
-               ;; The `configure' script doesn't understand options
-               ;; of those of Autoconf.
-               (let ((out (assoc-ref outputs "out")))
-                 (invoke "./configure"
-                         (string-append "--prefix=" out)
-                                                  ; use system libraries
-                         "--customgc=no"
-                         "--enable-gmp"
-                         "--customgmp=no"
-                         "--customunistring=no"
-                         "--customlibuv=no"
-                         (string-append"--mv=" (which "mv"))
-                         (string-append "--rm=" (which "rm"))
-                         "--cflags=-fPIC"
-                         (string-append "--ldflags=-Wl,-rpath="
-                                        (assoc-ref outputs "out")
-                                        "/lib/bigloo/" ,upstream-version)
-                         (string-append "--lispdir=" out
-                                        "/share/emacs/site-lisp")
-                         "--sharedbde=yes"
-                         "--sharedcompiler=yes"
-                         "--disable-patch"))))
-           (add-after 'install 'install-emacs-modes
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (dir (string-append out "/share/emacs/site-lisp")))
-                 (invoke "make" "-C" "bmacs" "all" "install"
-                         (string-append "EMACSBRAND=emacs25")
-                         (string-append "EMACSDIR=" dir))))))))
+                ;; The `configure' script doesn't understand options
+                ;; of those of Autoconf.
+                (invoke "./configure"
+                        (string-append "--prefix=" #$output)
+                        ;; use system libraries
+                        "--customgc=no"
+                        "--enable-gmp"
+                        "--customgmp=no"
+                        "--customunistring=no"
+                        "--customlibuv=no"
+                        (string-append"--mv=" (which "mv"))
+                        (string-append "--rm=" (which "rm"))
+                        "--cflags=-fPIC"
+                        (string-append "--ldflags=-Wl,-rpath=" #$output
+                                       "/lib/bigloo/" #$version)
+                        (string-append "--lispdir=" #$output
+                                       "/share/emacs/site-lisp")
+                        "--sharedbde=yes"
+                        "--sharedcompiler=yes"
+                        "--disable-patch")))
+            (add-after 'install 'install-emacs-modes
+              (lambda _
+                (invoke "make" "-C" "bmacs" "all" "install"
+                        (string-append "EMACSBRAND=emacs25")
+                        (string-append "EMACSDIR="
+                                       #$output "/share/emacs/site-lisp")))))))
       (inputs
-       (list emacs ;UDE needs the X version of Emacs
+       (list gmp                        ;bigloo.h refers to gmp.h
              (module-ref
               (resolve-interface '(gnu packages debug)) 'libbacktrace)
              libgc
@@ -316,9 +313,9 @@ features an integrated Emacs-like editor and a large runtime library.")
              libphidget
              pcre))
       (native-inputs
-       (list pkg-config which))
-      (propagated-inputs
-       (list gmp))                            ; bigloo.h refers to gmp.h
+       (list emacs ;UDE needs the X version of Emacs
+             pkg-config
+             which))
       (home-page "https://www-sop.inria.fr/indes/fp/Bigloo/")
       (synopsis "Efficient Scheme compiler")
       (description
