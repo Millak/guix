@@ -11,7 +11,7 @@
 ;;; Copyright © 2015-2020, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2015-2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2018 Rene Saavedra <pacoon@protonmail.com>
 ;;; Copyright © 2016 Jochem Raat <jchmrt@riseup.net>
 ;;; Copyright © 2016, 2017, 2019 Kei Kebreau <kkebreau@posteo.net>
@@ -2946,6 +2946,9 @@ guidelines.")
      (list
       #:imported-modules (append %glib-or-gtk-build-system-modules
                                  %pyproject-build-system-modules)
+      #:modules '((guix build glib-or-gtk-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-build-files
@@ -2970,9 +2973,9 @@ guidelines.")
                                   '("config.guess" "config.sub")))))
                  #~())
           (add-after 'install 'add-install-to-pythonpath
-            py:add-install-to-pythonpath)
+            (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
           (add-after 'add-install-to-pythonpath 'wrap-for-python
-            py:wrap)
+            (assoc-ref py:%standard-phases 'wrap))
           (add-after 'install 'wrap
             (lambda _
               (let ((gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
