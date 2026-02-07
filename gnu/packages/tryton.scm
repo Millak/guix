@@ -1193,13 +1193,13 @@ substitute default accounts with other accounts.")
 (define-public trytond-account-statement
   (package
     (name "trytond-account-statement")
-    (version "7.0.5")
+    (version "7.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_statement" version))
        (sha256
-        (base32 "10byw4b1h1kfdrz3fzs10pvmi9vjzwhd6ih76jczydsqz8nl8dps"))))
+        (base32 "1q2d0r9b2clw7phjyqrfkcm579a9f2gidrs9vnk52xpprgzx3sj5"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_statement"))
     (native-inputs %standard-trytond-native-inputs)
