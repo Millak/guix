@@ -4005,36 +4005,6 @@ interrupted, published, and collaborated on while in progress.")
 matching.")
     (license license:expat)))
 
-(define-public go-github-com-git-lfs-gitobj-v2
-  (package
-    (name "go-github-com-git-lfs-gitobj-v2")
-    (version "2.1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/git-lfs/gitobj")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1sd7y4xbx00js1g2az4nq8g5lvsm4d7nqr3v4kxy8fxrfzdm63j9"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/git-lfs/gitobj/v2"))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (home-page "https://github.com/git-lfs/gitobj")
-    (synopsis "Read and write git objects")
-    (description
-     "This package reads and writes loose and packed (objects found in git
-packfiles) Git objects.  It uses the pack package to search pack index files
-and locate the corresponding delta-base chain in the appropriate pack file.
-If gitobj can't find a loose object with the appropriate SHA-1, it will search
-the repository's packfile(s) instead.  If it finds an object in a packfile, it
-will reconstruct the object along its delta-base chain and return it.")
-    (license license:expat)))
-
 (define-public git-lfs
   (package
     (name "git-lfs")
