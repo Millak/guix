@@ -46,6 +46,7 @@
 ;;; Copyright © 2025 Julian Flake <julian@flake.de>
 ;;; Copyright © 2025 Ahmad Jarara <ajarara@fastmail.com>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3131,6 +3132,44 @@ themes independent from the collection of file extensions.  Instead of using
 cryptic ANSI escape codes, colors can be specified in the RRGGBB format and
 will be translated to either truecolor (24-bit) ANSI codes or 8-bit codes for
 older terminal emulators.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public vtracer
+  (package
+    (name "vtracer")
+    (version "0.6.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "vtracer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "035x0dbbyi3nnyc2ajawdjq9j6slpsq2k2hmyf3p77n9qn3p2c62"))))
+    (build-system cargo-build-system)
+    (native-inputs (list maturin python-wrapper))
+    (inputs (cargo-inputs 'vtracer))
+    (arguments
+     (list
+      #:install-source? #f
+      #:imported-modules
+       `(,@%cargo-build-system-modules ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system)
+                   #:prefix py:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'build-python-module
+            (assoc-ref py:%standard-phases
+                       'build))
+          (add-after 'build-python-module 'install-python-module
+            (assoc-ref py:%standard-phases
+                       'install)))))
+    (home-page "http://www.visioncortex.org/vtracer")
+    (synopsis "Raster to vector graphics converter with Python bindings")
+    (description
+     "VTracer is a command-line tool and library to convert raster images (like
+PNG and JPEG) into vector graphics (SVG).")
     (license (list license:expat license:asl2.0))))
 
 (define-public watchexec

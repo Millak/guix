@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2025 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4555,6 +4556,10 @@
   (crate-source "defer-heavy" "0.1.0"
                 "1qd00mmhj43ic47mphdmjwc561jbxfvh6mdmrxwmj3kc7qg6jlsh"))
 
+(define rust-deflate-0.8.6
+  (crate-source "deflate" "0.8.6"
+                "0x6iqlayg129w63999kz97m279m0jj4x4sm6gkqlvmp73y70yxvk"))
+
 (define rust-deflate64-0.1.9
   (crate-source "deflate64" "0.1.9"
                 "06scix17pa7wzzfsnhkycpcc6s04shs49cdaxx2k1sl0226jnsfs"))
@@ -6053,6 +6058,11 @@
                 "1n2a9hsi1vw2qlqbl7v101dfp12hhsajjmk44r7pq4rf5f4ad9c8"
                 #:snippet '(delete-file-recursively "docs")))
 
+(define rust-flo-curves-0.3.1
+  (crate-source "flo_curves" "0.3.1"
+                "16x293dp8825jh465kgms4yyvl4960j26gh37h3skflq9zxpy8hw"
+                #:snippet '(for-each delete-file '("logo-small.png" "logo.png"))))
+
 (define rust-float-cmp-0.10.0
   (crate-source "float-cmp" "0.10.0"
                 "1n760i3nxd2x0zc7fkxkg3vhvdyfbvzngna006cl9s9jacaz775h"))
@@ -6686,6 +6696,11 @@
 (define rust-ghash-0.5.1
   (crate-source "ghash" "0.5.1"
                 "1wbg4vdgzwhkpkclz1g6bs4r5x984w5gnlsj4q5wnafb5hva9n7h"))
+
+(define rust-gif-0.11.4
+  (crate-source "gif" "0.11.4"
+                "01hbw3isapzpzff8l6aw55jnaqx2bcscrbwyf3rglkbbfp397p9y"
+                #:snippet '(for-each delete-file-recursively '("benches" "tests"))))
 
 (define rust-gif-0.12.0
   (crate-source "gif" "0.12.0"
@@ -9524,6 +9539,10 @@
   (crate-source "im-rc" "15.1.0"
                 "1zp5vdjj4b4lg8jnrz0wmdln2cdd9gn24a4psdvwd050bykma6dg"))
 
+(define rust-image-0.23.14
+  (crate-source "image" "0.23.14"
+                "18gn2f7xp30pf9aqka877knlq308khxqiwjvsccvzaa4f9zcpzr4"))
+
 (define rust-image-0.24.9
   (crate-source "image" "0.24.9"
                 "17gnr6ifnpzvhjf6dwbl9hki8x6bji5mwcqp0048x1jm5yfi742n"
@@ -10081,6 +10100,10 @@
   (crate-source "itertools" "0.14.0"
                 "118j6l1vs2mx65dqhwyssbrxpawa90886m3mzafdvyip41w2q69b"))
 
+(define rust-itertools-0.8.2
+  (crate-source "itertools" "0.8.2"
+                "1154j48aw913v5jnyhpxialxhdn2sfpl4d7bwididyb1r05jsspm"))
+
 (define rust-itertools-0.9.0
   (crate-source "itertools" "0.9.0"
                 "0jyml7ygr7kijkcjdl3fk5f34y5h5jsavclim7l13zjiavw1hkr8"))
@@ -10295,6 +10318,11 @@
 (define rust-jobserver-0.1.34
   (crate-source "jobserver" "0.1.34"
                 "0cwx0fllqzdycqn4d6nb277qx5qwnmjdxdl0lxkkwssx77j3vyws"))
+
+(define rust-jpeg-decoder-0.1.22
+  (crate-source "jpeg-decoder" "0.1.22"
+                "1wnh0bmmswpgwhgmlizz545x8334nlbmkq8imy9k224ri3am7792"
+                #:snippet '(delete-file-recursively "benches")))
 
 (define rust-jpeg-decoder-0.3.1
   (crate-source "jpeg-decoder" "0.3.1"
@@ -12097,6 +12125,14 @@
   (crate-source "minidom" "0.12.0"
                 "06nbqscsv2clc4mvdzzl1syn89plsqvmxn2lqxjfrxbllqar2m7y"))
 
+(define rust-miniz-oxide-0.3.7
+  (crate-source "miniz_oxide" "0.3.7"
+                "0dblrhgbm0wa8jjl8cjp81akaj36yna92df4z1h9b26n3spal7br"))
+
+(define rust-miniz-oxide-0.4.4
+  (crate-source "miniz_oxide" "0.4.4"
+                "0jsfv00hl5rmx1nijn59sr9jmjd4rjnjhh4kdjy8d187iklih9d9"))
+
 (define rust-mintex-0.1.4
   (crate-source "mintex" "0.1.4"
                 "0dnmh1l2n8zmf9p0s4jn6lsjgqqfaqnbnzz6s9z0mdyngvhv61f5"))
@@ -13214,6 +13250,10 @@
 (define rust-num-rational-0.2.4
   (crate-source "num-rational" "0.2.4"
                 "1vsaz96chxcgpqd5a0dq8hb3b4sj6dnlhwmpbkf4mx6vnls0202w"))
+
+(define rust-num-rational-0.3.2
+  (crate-source "num-rational" "0.3.2"
+                "01sgiwny9iflyxh2xz02sak71v2isc3x608hfdpwwzxi3j5l5b0j"))
 
 (define rust-num-rational-0.4.2
   (crate-source "num-rational" "0.4.2"
@@ -14769,6 +14809,10 @@
 (define rust-pnet-sys-0.35.0
   (crate-source "pnet_sys" "0.35.0"
                 "0jqgl34w5jckvby74nh89hjc94m8m6pz7hjh21s0hsyvsk9l6ikx"))
+
+(define rust-png-0.16.8
+  (crate-source "png" "0.16.8"
+                "1ipl44q3vy4kvx6j296vk7d4v8gvcg203lrkvvixwixq1j98fciw"))
 
 (define rust-png-0.17.16
   (crate-source "png" "0.17.16"
@@ -16741,6 +16785,10 @@
   (crate-source "ron" "0.9.0-alpha.1"
                 "0dh8fd4l54a36881b51275z3hbbjrmrj6rglr28sjzzz76js4i3n"
                 #:snippet '(delete-file-recursively "tests")))
+
+(define rust-roots-0.0.6
+  (crate-source "roots" "0.0.6"
+                "1nx6rm5avh9m32nwa1ica6firhfdsx0456n4s0lmgm3spm288d44"))
 
 (define rust-ropey-1.6.1
   (crate-source "ropey" "1.6.1"
@@ -20189,14 +20237,19 @@
   (crate-source "thrussh-libsodium" "0.3.0"
                 "18vf8zpvyhbcdkn3cl6rdc2s57676jj6j4m2ykszc3fyi2xh1vaq"))
 
-(define rust-tiff-0.10.3
-  (crate-source "tiff" "0.10.3"
-                "0vrkdk9cdk07rh7iifcxpn6m8zv3wz695mizhr8rb3gfgzg0b5mg"
+(define rust-tiff-0.6.1
+  (crate-source "tiff" "0.6.1"
+                "0ds48vs919ccxa3fv1www7788pzkvpg434ilqkq7sjb5dmqg8lws"
                 #:snippet '(delete-file-recursively "tests")))
 
 (define rust-tiff-0.9.1
   (crate-source "tiff" "0.9.1"
                 "0ghyxlz566dzc3scvgmzys11dhq2ri77kb8sznjakijlxby104xs"
+                #:snippet '(delete-file-recursively "tests")))
+
+(define rust-tiff-0.10.3
+  (crate-source "tiff" "0.10.3"
+                "0vrkdk9cdk07rh7iifcxpn6m8zv3wz695mizhr8rb3gfgzg0b5mg"
                 #:snippet '(delete-file-recursively "tests")))
 
 (define rust-tikv-jemalloc-sys-0.6.0+5.3.0-1-ge13ca993e8ccb9ba9847cc330696e02839f328f7
@@ -21998,6 +22051,10 @@
 (define rust-versions-6.3.2
   (crate-source "versions" "6.3.2"
                 "0ff12avdiqhiv6nanikkjl1x3s2y7amkj3r5nivb7zficf5ljpgj"))
+
+(define rust-visioncortex-0.8.9
+  (crate-source "visioncortex" "0.8.9"
+                "1vc3sqaxzp9k1sq68q0ca3x2yav25h5m8nhbgy8giyxfzfdaafy0"))
 
 (define rust-vlq-0.5.1
   (crate-source "vlq" "0.5.1"
@@ -61042,6 +61099,88 @@
                                   rust-windows-x86-64-msvc-0.48.5
                                   rust-windows-x86-64-msvc-0.52.6
                                   rust-yaml-rust-0.4.5))
+                     (vtracer =>
+                             (list rust-adler-1.0.2
+                                   rust-adler32-1.2.0
+                                   rust-ansi-term-0.12.1
+                                   rust-atty-0.2.14
+                                   rust-autocfg-1.5.0
+                                   rust-bit-vec-0.6.3
+                                   rust-bitflags-1.3.2
+                                   rust-bitflags-2.9.4
+                                   rust-bumpalo-3.19.0
+                                   rust-bytemuck-1.24.0
+                                   rust-byteorder-1.5.0
+                                   rust-cfg-if-1.0.4
+                                   rust-clap-2.34.0
+                                   rust-color-quant-1.1.0
+                                   rust-crc32fast-1.5.0
+                                   rust-crossbeam-deque-0.8.6
+                                   rust-crossbeam-epoch-0.9.18
+                                   rust-crossbeam-utils-0.8.21
+                                   rust-deflate-0.8.6
+                                   rust-either-1.15.0
+                                   rust-fastrand-2.3.0
+                                   rust-flo-curves-0.3.1
+                                   rust-getrandom-0.2.16
+                                   rust-gif-0.11.4
+                                   rust-hermit-abi-0.1.19
+                                   rust-image-0.23.14
+                                   rust-indoc-1.0.9
+                                   rust-itertools-0.8.2
+                                   rust-jpeg-decoder-0.1.22
+                                   rust-js-sys-0.3.81
+                                   rust-libc-0.2.177
+                                   rust-lock-api-0.4.14
+                                   rust-log-0.4.28
+                                   rust-memoffset-0.9.1
+                                   rust-miniz-oxide-0.3.7
+                                   rust-miniz-oxide-0.4.4
+                                   rust-num-integer-0.1.46
+                                   rust-num-iter-0.1.45
+                                   rust-num-rational-0.3.2
+                                   rust-num-traits-0.2.19
+                                   rust-once-cell-1.21.3
+                                   rust-parking-lot-0.12.5
+                                   rust-parking-lot-core-0.9.12
+                                   rust-png-0.16.8
+                                   rust-proc-macro2-1.0.101
+                                   rust-pyo3-0.19.2
+                                   rust-pyo3-build-config-0.19.2
+                                   rust-pyo3-ffi-0.19.2
+                                   rust-pyo3-macros-0.19.2
+                                   rust-pyo3-macros-backend-0.19.2
+                                   rust-quote-1.0.41
+                                   rust-rayon-1.11.0
+                                   rust-rayon-core-1.13.0
+                                   rust-redox-syscall-0.5.18
+                                   rust-roots-0.0.6
+                                   rust-rustversion-1.0.22
+                                   rust-scoped-threadpool-0.1.9
+                                   rust-scopeguard-1.2.0
+                                   rust-smallvec-1.15.1
+                                   rust-strsim-0.8.0
+                                   rust-syn-1.0.109
+                                   rust-syn-2.0.106
+                                   rust-target-lexicon-0.12.16
+                                   rust-textwrap-0.11.0
+                                   rust-tiff-0.6.1
+                                   rust-unicode-ident-1.0.19
+                                   rust-unicode-width-0.1.14
+                                   rust-unindent-0.1.11
+                                   rust-vec-map-0.8.2
+                                   rust-visioncortex-0.8.9
+                                   rust-wasi-0.11.1+wasi-snapshot-preview1
+                                   rust-wasm-bindgen-0.2.104
+                                   rust-wasm-bindgen-backend-0.2.104
+                                   rust-wasm-bindgen-macro-0.2.104
+                                   rust-wasm-bindgen-macro-support-0.2.104
+                                   rust-wasm-bindgen-shared-0.2.104
+                                   rust-weezl-0.1.10
+                                   rust-winapi-0.3.9
+                                   rust-winapi-i686-pc-windows-gnu-0.4.0
+                                   rust-winapi-x86-64-pc-windows-gnu-0.4.0
+                                   rust-windows-link-0.2.1))
                      (wallust =>
                               (list rust-adler2-2.0.0
                                     rust-aho-corasick-1.1.3
