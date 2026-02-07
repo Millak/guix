@@ -1612,26 +1612,35 @@ combine the information contained in both.")
 |MeshWorkspace|SegmentationMesh|VolumeRendering|Reloading|4DToMC|MCTo4D\
 |DeformationGrid)")
                  ""))))
-          (add-after 'unpack 'make-reproducible
-            (lambda _
-              (substitute* "CMakeLists.txt"
-                (("TODAY\\(SNAP_VERSION_COMPILE_DATE\\)")
-                 "SET(SNAP_VERSION_COMPILE_DATE \"(removed for reproducibility)\")"))))
           (add-after 'unpack 'prepare-submodules
             (lambda _
-              (rmdir "Submodules/c3d")
-              (symlink #$(this-package-native-input "c3d-checkout")
-                       "Submodules/c3d")
+              ;; Copy submodule instead of symlink because it is patched in
+              ;; 'make-reproducible phase.
+              (copy-recursively #$(this-package-native-input "c3d-checkout")
+                                "Submodules/c3d")
               (rmdir "Submodules/digestible")
               (symlink #$(this-package-native-input "digestible-checkout")
                        "Submodules/digestible")
-              (rmdir "Submodules/greedy")
-              (symlink #$(this-package-native-input "greedy-checkout")
-                       "Submodules/greedy")))
+              (copy-recursively #$(this-package-native-input "greedy-checkout")
+                                "Submodules/greedy")))
           (add-after 'unpack 'remove-bundled-jsoncpp
             (lambda _
               (substitute* "CMakeLists.txt"
                 (("  Common/JSon/jsoncpp\\.cpp") ""))))
+          (add-after 'prepare-submodules 'make-reproducible
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("TODAY\\(SNAP_VERSION_COMPILE_DATE\\)")
+                 "SET(SNAP_VERSION_COMPILE_DATE \"(removed for reproducibility)\")"))
+              (substitute* "Common/SNAPCommon.cxx.in"
+                (("@CMAKE_HOST_SYSTEM@ @CMAKE_HOST_SYSTEM_PROCESSOR@")
+                 "(removed for reproducibility)"))
+              (substitute* "Submodules/c3d/ConvertImageVersion.cxx.in"
+                (("@CONVERT3D_VERSION_COMPILE_DATE@")
+                 "(removed for reproducibility)"))
+              (substitute* "Submodules/greedy/src/GreedyVersion.cxx.in"
+                (("@GREEDY_VERSION_COMPILE_DATE@")
+                 "(removed for reproducibility)"))))
           (add-before 'check 'prepare-tests
             (lambda _
               ;; Needed by at least one test.
