@@ -95,6 +95,7 @@
   #:use-module (guix build-system trivial)
   #:use-module (srfi srfi-1))
 
+;; XXX: This project was archived by the owner on Dec 14, 2024.
 (define-public cf-tool
   (package
     (name "cf-tool")
@@ -117,9 +118,10 @@
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:install-source? #f
       #:import-path "github.com/xalanq/cf-tool"
+      #:test-flags
+      #~(list "-vet=off")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'add-alternate-name
