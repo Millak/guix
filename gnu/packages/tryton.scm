@@ -4781,13 +4781,13 @@ ordering to location.")
 (define-public trytond-stock-lot-sled
   (package
     (name "trytond-stock-lot-sled")
-    (version "7.0.1")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_lot_sled" version))
        (sha256
-        (base32 "1bvdd4jlw3rplpqpjl3k34hzlpv4mmahc1ga3qacr3n03w1040sc"))))
+        (base32 "0siggk6l0nzs5550kb0w1a0x5hf18hadmwhyys7iy6lb8ysii00w"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_lot_sled"))
     (native-inputs %standard-trytond-native-inputs)
