@@ -733,13 +733,13 @@ using the credential from the accounting configuration.")
 (define-public trytond-account-invoice
   (package
     (name "trytond-account-invoice")
-    (version "7.0.14")
+    (version "7.0.15")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_invoice" version))
        (sha256
-        (base32 "0s2slws07s3gfarjnc8ps65w9zgpmrr0xj51vlb9rykswynf7515"))))
+        (base32 "1dk51qs5a6afkad4qvyisl82mgw6pmx3hib9dfkhsplv2d7dk2q0"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_invoice"))
     (native-inputs %standard-trytond-native-inputs)
