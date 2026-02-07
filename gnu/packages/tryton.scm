@@ -3926,13 +3926,13 @@ on sale based on criteria.")
 (define-public trytond-sale-gift-card
   (package
     (name "trytond-sale-gift-card")
-    (version "7.0.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_gift_card" version))
        (sha256
-        (base32 "1brfyrdd3j1lk8accdjv1jx6ila0rbskjjhlg0vv2jflwq81hpvn"))))
+        (base32 "1yjg0n61bnhai0rr3sx2jfvnxcx6g1iw2s59qgn331vvjhvw3jar"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_gift_card"))
     (native-inputs
