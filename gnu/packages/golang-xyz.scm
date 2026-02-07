@@ -22725,16 +22725,16 @@ consisting of standard ASCII letters.")
 (define-public go-github-com-stretchr-objx
   (package
     (name "go-github-com-stretchr-objx")
-    (version "0.5.2")
+    (version "0.5.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/stretchr/objx")
-             (commit (string-append "v" version))))
+              (url "https://github.com/stretchr/objx")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jcxpfgfpk82lryjkhbd5dy7xzx08d7b9dvbx4bpkmjvn6p339jl"))))
+        (base32 "07v1j3yxm68vwf99k2w7rs2rwcn2km821r08xlmswajiqzn1vkz2"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -22747,12 +22747,6 @@ consisting of standard ASCII letters.")
                   ;; The tests fail when run with gccgo.
                   (false-if-exception (search-input-file inputs "/bin/gccgo"))
                 (apply (assoc-ref %standard-phases 'check) args)))))))
-    (native-inputs
-     ;; go-spew and go-difflib are to cover testify-bootstrap and not required
-     ;; for odjx itself.
-     (list go-github-com-davecgh-go-spew
-           go-github-com-pmezard-go-difflib
-           go-github-com-stretchr-testify-bootstrap))
     (home-page "https://github.com/stretchr/objx")
     (synopsis "Go package for dealing with maps, slices, JSON and other data")
     (description
