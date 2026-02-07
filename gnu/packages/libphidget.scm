@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
@@ -19,6 +19,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages libphidget)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
@@ -38,6 +39,9 @@
             (sha256
              (base32 "07w54dmr75vq2imngfy66nk1sxlvkzhl2p6g362q0a02f099jy0f"))))
    (build-system gnu-build-system)
+   (arguments
+    (list #:configure-flags
+          #~(list "CFLAGS=-Wno-incompatible-pointer-types -O2 -g")))
    (inputs (list libusb))
    (outputs '("out" "debug"))
    (home-page "https://www.phidgets.com/")
