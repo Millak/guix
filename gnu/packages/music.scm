@@ -7840,9 +7840,9 @@ streaming audio server.")
             (add-before 'sanity-check 'pre-check
               (lambda _
                 (setenv "HOME" (getcwd))))
-            (add-after 'install 'glib-or-gtk-wrap ; ensure icons loaded
+            (add-after 'wrap 'glib-or-gtk-wrap ; ensure icons loaded
               (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
-            (add-after 'install 'wrap-extra-paths
+            (add-after 'glib-or-gtk-wrap 'wrap-extra-paths
               (lambda _
                 (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH"))
                       (gst-plugins-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
