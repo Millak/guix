@@ -4758,18 +4758,16 @@ ordering to location.")
 (define-public trytond-stock-lot
   (package
     (name "trytond-stock-lot")
-    (version "7.0.4")
+    (version "7.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_lot" version))
        (sha256
-        (base32 "1vgc9j221sp0wrs5c90pl5z5xmi6qdn2jm5s0hpaw94sv883j464"))))
+        (base32 "0nfbnmxw9cdkydkb7fmx2y9mgvxy60qi85xqnzw1dv0k8g1w4spg"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_lot"))
-    (native-inputs
-     (cons* trytond-stock-split
-            %standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond
            trytond-product
