@@ -121,13 +121,13 @@ and security.")
 (define-public tryton
   (package
     (name "tryton")
-    (version "7.0.29")
+    (version "7.0.32")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tryton" version))
        (sha256
-        (base32 "0s44cn1p1q9bddnzfnj68gb5j1sm5rbamy36z2gpc1z55v6q19q2"))))
+        (base32 "0xmxxd3apcql7lz702kziimanglik1vxs1q9pxhrfwscp302l9nw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
