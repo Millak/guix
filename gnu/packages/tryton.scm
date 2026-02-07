@@ -3086,13 +3086,13 @@ which contains the unit price computed by the parent price list.")
 (define-public trytond-production
   (package
     (name "trytond-production")
-    (version "7.0.4")
+    (version "7.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_production" version))
        (sha256
-        (base32 "1jlhipmcvr09xdjh8f6qzmfas5yjii31ymhb2cgkp52b1kp563xw"))))
+        (base32 "1wkx8hn0273pljk4j1clszgmpw8b3b2rz95292y5m662b5ggriaa"))))
     (build-system pyproject-build-system)
     (arguments
      (list
