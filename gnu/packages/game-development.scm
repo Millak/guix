@@ -24,7 +24,7 @@
 ;;; Copyright © 2021 Dmitry Polyakov <polyakov@liltechdude.xyz>
 ;;; Copyright © 2020-2022, 2024-2025 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
-;;; Copyright © 2021 Andy Tai <atai@atai.org>
+;;; Copyright © 2021, 2026 Andy Tai <atai@atai.org>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 dan <i@dan.games>
@@ -4127,6 +4127,50 @@ calculations and create complete applications.")
        "This repository contains CMake modules which are used across
 @uref{https://www.shlomifish.org/, Shlomi Fish's} projects.")
       (license license:expat))))
+
+(define-public angelscript
+  (package
+    (name "angelscript")
+    (version "2.38.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://www.angelcode.com/angelscript/sdk/files/angelscript_"
+             version ".zip"))
+       (sha256
+        (base32 "0vrflpmj3ldfq96js45czkk4r6266bc570v2gpv7wc8hvay5sfxk"))))
+    (build-system cmake-build-system)
+    (outputs '("out" "doc"))
+    (arguments
+     (list
+      #:tests? #f ;there are no tests
+      #:configure-flags
+      #~(list "-DBUILD_SHARED_LIBS=true")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "angelscript/projects/cmake")))
+          (add-after 'install 'install-doc
+            (lambda* (#:key outputs #:allow-other-keys)
+              (chdir "../../../")
+              (let ((docdir (string-append (assoc-ref outputs "doc")
+                                           "/share/doc/anglescript")))
+                (copy-recursively "docs" docdir)))))))
+    (native-inputs (list unzip))
+    (home-page "https://www.angelcode.com/angelscript/")
+    (synopsis "Flexible cross-platform scripting library")
+    (description
+     "AngelScript is an cross-platform scripting library designed to allow
+applications to extend their functionality through external scripts.  It has
+been designed from the beginning to be an easy to use component, both for the
+application programmer and the script writer.  It can call standard C functions
+and C++ methods with little to no need for proxy functions.  The application
+registers the functions, objects, and methods that the scripts work with.  The
+same functions used by the application internally can be used by the scripting
+engine, which eliminates the need to duplicate functionality.")
+    (license license:zlib)))
 
 (define-public rinutils
   (package
