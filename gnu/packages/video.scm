@@ -4750,14 +4750,14 @@ different filters than the original.")
   (package
     (name "obs-source-copy")
     (version "0.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/exeldro/obs-source-copy/releases/download/"
-                                  version
-                                  "/source-copy-" version "-source.tar.xz"))
-              (sha256
-               (base32
-                "0zr1yayzd4x3m108ji9c4xs7d7bavbz2hr81782l25kfhv3ry9f7"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/exeldro/obs-source-copy/releases/download/"
+             version "/source-copy-" version "-source.tar.xz"))
+       (sha256
+        (base32 "0zr1yayzd4x3m108ji9c4xs7d7bavbz2hr81782l25kfhv3ry9f7"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -4765,8 +4765,7 @@ different filters than the original.")
       #:configure-flags
       #~(list (string-append "-DLIBOBS_INCLUDE_DIR="
                              #$(this-package-input "obs") "/lib")
-              "-DBUILD_OUT_OF_TREE=On"
-              "-Wno-dev")))
+              "-DBUILD_OUT_OF_TREE=On" "-Wno-dev")))
     (inputs (list obs qtbase simde))
     (home-page "https://github.com/exeldro/obs-source-copy")
     (synopsis "OBS plugin for copy and paste scenes, sources and filters")
