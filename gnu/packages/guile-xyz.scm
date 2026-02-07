@@ -17,7 +17,7 @@
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2021-2025 Maxim Cournoyer <maxim@guixotic.coop>
-;;; Copyright © 2018–2025 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2018–2026 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2019 swedebugia <swedebugia@riseup.net>
@@ -7110,7 +7110,7 @@ including parsing and code generation.")
     (inputs
      (list guile-3.0))
     (propagated-inputs
-     (list guile-bytestructures nyacc))
+     (list guile-bytestructures nyacc-2.02))
     (home-page "https://git.elephly.net/software/guile-drmaa.git")
     (synopsis "Guile bindings to DRMAA")
     (description "This project provides Guile bindings to the DRMAA library

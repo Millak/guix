@@ -4,7 +4,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021, 2022, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
-;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2021, 2026 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2025 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;;
@@ -108,7 +108,7 @@ parsers to allow execution with Guile as extension languages.")
 
     (inputs (list guile-3.0))))
 
-(define-public nyacc
+(define-public nyacc-2.02
   (package
     (inherit nyacc-1.00.2)
     (version "2.02.5")
@@ -130,6 +130,25 @@ $prefix/share/guile/site/$GUILE_EFFECTIVE_VERSION\n"))
                     (("@NYACC_FH_BS_BINS@") "$(NYACC_FH_BS_BINS)"))))))
     (propagated-inputs (list guile-bytestructures))))
 
+(define-public nyacc
+  (package
+    (inherit nyacc-2.02)
+    (version "3.02.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://savannah/nyacc/nyacc-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "148hljzmikl68z8jzryrdmqy9ifgz5xmid2ggdxvbyb07iawx93g"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (substitute* "configure"
+                    (("GUILE_GLOBAL_SITE=\\$prefix.*")
+                     "GUILE_GLOBAL_SITE=\
+$prefix/share/guile/site/$GUILE_EFFECTIVE_VERSION\n"))))))))
+
 (define-public mes
   (package
     (name "mes")
@@ -143,7 +162,7 @@ $prefix/share/guile/site/$GUILE_EFFECTIVE_VERSION\n"))
                 "0pgjzlynfzdfq5xrxirvsrj4sdvnwq99s6xxwfhzhjga8zm40fhq"))))
     (supported-systems '("armhf-linux" "i686-linux"
                          "x86_64-linux" "riscv64-linux"))
-    (propagated-inputs (list mescc-tools nyacc))
+    (propagated-inputs (list mescc-tools nyacc-2.02))
     (native-inputs
      (append (list guile-3.0)
          (let ((target-system (or (%current-target-system)
