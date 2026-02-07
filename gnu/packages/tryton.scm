@@ -2540,13 +2540,13 @@ fundamentals for marketing modules.")
 (define-public trytond-marketing-automation
   (package
     (name "trytond-marketing-automation")
-    (version "7.0.1")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_marketing_automation" version))
        (sha256
-        (base32 "0cnnaijg9f7l92gir3sbr066b67zzbhqqxxrlypiyk83wwca9l76"))))
+        (base32 "070m2cx2fjmjc7vyvddnb2ib60j1fssfx40jvyraysgy4pd1l8qr"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "marketing_automation"))
     (native-inputs
