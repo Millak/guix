@@ -7628,7 +7628,7 @@ into machine friendly values.")
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/docopt/docopt.go")
-               (commit version)))
+               (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32 "0hlra7rmi5pmd7d93rv56ahiy4qkgmq8a6mz0jpadvbi5qh8lq6j"))))
