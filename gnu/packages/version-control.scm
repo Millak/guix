@@ -4761,45 +4761,39 @@ comes as a command line app and also an Emacs interface.")
   (package
     (name "git-sizer")
     (version "1.5.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/github/git-sizer")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1b4sl4djnfaxwph41y4bh9yal4bpd1nz4403ryp7nzna7h2x0zis"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/github/git-sizer")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1b4sl4djnfaxwph41y4bh9yal4bpd1nz4403ryp7nzna7h2x0zis"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/github/git-sizer"
-       #:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* '("src/github.com/github/git-sizer/git/git.go")
-               (("gitBin, err := findGitBin\\(\\)")
-                (string-append "gitBin := \""
-                               (search-input-file inputs "bin/git")
-                               "\"\n\tvar err error")))
-             (substitute* '("src/github.com/github/git-sizer/git_sizer_test.go")
-               (("bin/git-sizer")
-                (string-append (assoc-ref outputs "out")
-                               "/bin/git-sizer")))))
-         (replace 'check
-           (lambda* (#:key tests? import-path #:allow-other-keys)
-             (when tests?
-               (for-each (lambda (test)
-                           (invoke "go" "test" "-v" "-run" test import-path))
-                         ;; TestExec and TestSubmodule require a copy of the
-                         ;; Git repository.
-                         '("TestBomb" "TestFromSubdir" "TestRefgroups"
-                           "TestRefSelections" "TestTaggedTags"))))))))
-    (inputs (list git-minimal/pinned))
-    (propagated-inputs
+     (list
+      #:install-source? #f
+      #:import-path "github.com/github/git-sizer"
+      #:test-flags
+      ;; TestExec and TestSubmodule require a copy of the Git repository.
+      #~(list "-skip" "TestExec|TestSubmodule")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("src/github.com/github/git-sizer/git/git.go")
+                (("gitBin, err := findGitBin\\(\\)")
+                 (string-append "gitBin := \""
+                                (search-input-file inputs "bin/git")
+                                "\"\n\tvar err error")))
+              (substitute* '("src/github.com/github/git-sizer/git_sizer_test.go")
+                (("bin/git-sizer")
+                 (string-append #$output "/bin/git-sizer"))))))))
+    (inputs
+     (list git-minimal))
+    (native-inputs
      (list go-github-com-cli-safeexec
-           go-github-com-davecgh-go-spew
            go-github-com-pmezard-go-difflib
            go-github-com-spf13-pflag
            go-github-com-stretchr-testify
@@ -4808,8 +4802,9 @@ comes as a command line app and also an Emacs interface.")
            go-gopkg-in-yaml-v3))
     (home-page "https://github.com/github/git-sizer")
     (synopsis "Analyze size of a Git repo")
-    (description "Compute various size metrics for a Git repository, flagging
-those that might cause problems or inconvenience.")
+    (description
+     "Compute various size metrics for a Git repository, flagging those that
+might cause problems or inconvenience.")
     (license license:expat)))
 
 ;;;
