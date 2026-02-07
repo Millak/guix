@@ -62,7 +62,10 @@
   #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:))
 
-(define-public php
+;; current PHP version
+;; actively supported until: 31 Dec 2027
+;; security support until: 31 Dec 2029
+(define-public php-8.5
   (package
     (name "php")
     (version "8.5.2")
@@ -378,3 +381,6 @@ systems, web content management systems and web frameworks.")
                    license:lgpl2.1+     ;ext/bcmath/libbcmath
                    license:bsd-2        ;ext/fileinfo/libmagic
                    license:expat))))                             ; ext/date/lib
+
+;; php should always point to the latest php version
+(define-public php php-8.5)
