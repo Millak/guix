@@ -289,16 +289,20 @@ platform-specific directories, e.g. the ``user data dir''.")
     (version "1.6.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pluggy" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pytest-dev/pluggy")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1wr2vnbb7gy9wlz01yvb7rn4iqzd3mwmidk11ywk7395fq5i7k3x"))))
+        (base32 "01q2cmzdfi8sgyl1indbpl75142csizz9s8cryk2a0cjkcy26i56"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;to break cycle with pytest
     (native-inputs
      (list python-setuptools-bootstrap
-           python-setuptools-scm
-           python-wheel))
-    (home-page "https://pypi.org/project/pluggy/")
+           python-setuptools-scm))
+    (home-page "https://pluggy.readthedocs.io/en/latest/")
     (synopsis "Plugin and hook calling mechanism for Python")
     (description
      "Pluggy is an extraction of the plugin manager as used by Pytest but
