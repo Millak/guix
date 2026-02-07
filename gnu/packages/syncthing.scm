@@ -50,7 +50,7 @@
 (define-public syncthing
   (package
     (name "syncthing")
-    (version "1.30.0")
+    (version "2.0.14")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/syncthing/syncthing"
@@ -58,7 +58,8 @@
                                   "/syncthing-source-v" version ".tar.gz"))
               (sha256
                (base32
-                "1fpwqbslw2jlhcg4dicdv6x6im3qwr4cbjdi58hh8g3mcqfff6zg"))))
+                "00isf0j9nf0752wrn79nh4aj5ij5gapv1kvhrg8ydmmw1gi6rhzy"))))
+    ;; TODO: Build from git, remove vendor.
     (build-system go-build-system)
     ;; The primary Syncthing executable goes to "out", while the auxiliary
     ;; server programs and utility tools go to "utils".  This reduces the size
@@ -66,7 +67,6 @@
     (outputs '("out" "utils"))
     (arguments
      (list
-      #:go go-1.23
        #:modules '((srfi srfi-26) ; for cut
                    (guix build utils)
                    (guix build go-build-system))
