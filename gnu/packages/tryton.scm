@@ -5203,13 +5203,13 @@ measurement and the quantity of their moves.")
 (define-public trytond-stock-split
   (package
     (name "trytond-stock-split")
-    (version "7.0.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_split" version))
        (sha256
-        (base32 "0hvkk7n160w05xwyjlh11p41q2wg2wq7zylmh7wypbc6k7qx0m2g"))))
+        (base32 "0dcl3nlrjjjm8hw5f74wxkpnf2p9p9halgaa37szb7jsxfbawzih"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_split"))
     (native-inputs %standard-trytond-native-inputs)
