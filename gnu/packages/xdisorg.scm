@@ -4013,7 +4013,7 @@ autostarter compliant with the XDG autostart specification.")
 (define-public sx
   (package
     (name "sx")
-    (version "2.1.7")
+    (version "3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4022,7 +4022,7 @@ autostarter compliant with the XDG autostart specification.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xv15m30nhcknasqiybj5wwf7l91q4a4jf6xind8x5x00c6br6nl"))))
+                "05179dxlw5z5yr648dklyl33l2rr0afd619xxhlwdcxfmgn37al4"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f                      ; no tests
