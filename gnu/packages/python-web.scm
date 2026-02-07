@@ -87,6 +87,7 @@
 ;;; Copyright © 2025-2026 Artur Wroblewski <wrobell@riseup.net>
 ;;; Copyright © 2025, 2026 Allan Adair <allan@adair.no>
 ;;; Copyright © 2025 Aaron Covrig <aaron.covrig.us@ieee.org>
+;;; Copyright © 2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -309,6 +310,29 @@ environments.")
 broad range of notification services, such as Telegram, Discord, Slack, Amazon
 SNS, Gotify, etc.")
     (license license:bsd-2)))
+
+(define-public python-asyncudp
+  (package
+    (name "python-asyncudp")
+    (version "0.11.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/eerimoq/asyncudp")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i2s8mmmggzq6vk5aldz3g85jnqfbgxfqi60wl58jpn2lbr8fqlr"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page (git-reference-url (origin-uri source)))
+    (synopsis "High level UDP sockets for asyncio")
+    (description
+     "This package provides a Python library offering high level UDP sockets
+for asyncio.  Import it alongside asyncio and use its API to send and receive
+UDP packets.")
+    (license license:expat)))
 
 (define-public python-behave-web-api
   (package
