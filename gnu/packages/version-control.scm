@@ -4009,21 +4009,21 @@ matching.")
   (package
     (name "go-github-com-git-lfs-gitobj-v2")
     (version "2.1.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/git-lfs/gitobj")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1sd7y4xbx00js1g2az4nq8g5lvsm4d7nqr3v4kxy8fxrfzdm63j9"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/git-lfs/gitobj")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sd7y4xbx00js1g2az4nq8g5lvsm4d7nqr3v4kxy8fxrfzdm63j9"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/git-lfs/gitobj/v2"))
-    (propagated-inputs (list go-github-com-stretchr-testify
-                             go-github-com-pmezard-go-difflib
-                             go-github-com-davecgh-go-spew))
+     (list
+      #:import-path "github.com/git-lfs/gitobj/v2"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (home-page "https://github.com/git-lfs/gitobj")
     (synopsis "Read and write git objects")
     (description
