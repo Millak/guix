@@ -3364,33 +3364,6 @@ for notification of events.")
     (home-page "https://github.com/taylordotfish/librecaptcha")
     (license license:gpl3+)))
 
-(define-public python-harmony
-  ;; TODO: Remove python-harmony? Repository is archived.
-  (package
-    (name "python-harmony")
-    (version "0.7.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/taylordotfish/harmony")
-                     (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1d202pymabzvkzmxpplyjv55x74g937abxmnxdg9bxjjvp85c1nv"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f)) ;no tests in repository
-    (native-inputs
-     (list python-setuptools))
-    (inputs
-     (list python-librecaptcha python-keyring python-requests))
-    (synopsis "Discord account management")
-    (description "This package provides account management tools for
-Discord.")
-    (home-page "https://github.com/taylordotfish/harmony")
-    (license license:gpl3+)))
-
 (define-public python-pypresence
   (package
     (name "python-pypresence")
