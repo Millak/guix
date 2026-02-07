@@ -523,7 +523,7 @@ without requiring the source code to be rewritten.")
 (define-public guile-3.0-latest
   ;; At the moment 3.0.11 leads to test failures in the 'guix' package so we
   ;; cannot switch just yet: see <https://codeberg.org/guix/guix/pulls/5360>.
-  guile-3.0)
+  guile-3.0.11)
 
 ;;; The symbol guile-3.0/fixed should be used when guile-3.0 needs fixes
 ;;; (security or else) and this deprecation could be removed.

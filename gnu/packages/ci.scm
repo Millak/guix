@@ -8,7 +8,7 @@
 ;;; Copyright © 2022, 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2023 David Pflug <david@pflug.io>
 ;;; Copyright © 2025 David Thompson <davet@gnu.org>
-;;; Copyright © 2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2025-2026 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -93,6 +93,7 @@
                        (srfi srfi-1))
            #:configure-flags #~'("--localstatedir=/var" ;for /var/log/cuirass
                                  "--sysconfdir=/etc") ;for /etc/cuirass/forge-tokens
+
            ;; XXX: HTTP tests fail on aarch64 due to Fibers errors, disable them
            ;; on that architecture for now.
            #:tests? (let ((s (or (%current-target-system)
@@ -101,6 +102,21 @@
            #:parallel-tests? #f
            #:phases
            #~(modify-phases %standard-phases
+               (add-before 'check 'skip-known-failing-tests
+                 (lambda _
+                   ;; Skip tests that fail with SRFI-64 as found in Guile
+                   ;; 3.0.11.  Remove this phase when
+                   ;; <https://codeberg.org/guix/cuirass/pulls/125> is merged.
+                   (substitute* "tests/database.scm"
+                     (("\\(test-equal \"db-update-specification, \
+missing spec\"" all)
+                      (string-append "(test-skip 1)\n" all)))
+                   (substitute* "tests/forgejo.scm"
+                     (("\\(test-equal \"forgejo-handle-notification\"" all)
+                      (string-append "(test-skip 1)\n" all)))
+                   (substitute* "tests/remote.scm"
+                     (("\\(test-group-with-cleanup")
+                      "(test-group"))))
                (add-after 'install 'wrap-program
                  (lambda* (#:key inputs outputs #:allow-other-keys)
                    ;; Wrap the 'cuirass' command to refer to the right modules.
