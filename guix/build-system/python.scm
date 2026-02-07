@@ -34,7 +34,6 @@
   #:use-module (srfi srfi-1)
   #:export (%python-build-system-modules
             package-with-python2
-            strip-python2-variant
             default-python
             default-python2
             python-build
@@ -136,11 +135,6 @@ pre-defined variants."
   (package-with-explicit-python (delay (default-python2))
                                 "python-" "python2-"
                                 #:variant-property 'python2-variant))
-
-(define (strip-python2-variant p)
-  "Remove the 'python2-variant' property from P."
-  (package/inherit p
-    (properties (alist-delete 'python2-variant (package-properties p)))))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
