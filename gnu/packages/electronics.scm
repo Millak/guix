@@ -4118,11 +4118,6 @@ parallel computing platforms.  It also supports serial execution.")
        (uri (git-reference
               (url "https://github.com/YosysHQ/yosys")
               (commit (string-append "v" version))))
-       (snippet
-        #~(begin
-            (use-modules (guix build utils)
-                         (srfi srfi-26))
-            (delete-file-recursively "abc")))
        (sha256
         (base32 "1x4j191wsp276jallp0xr92z19q4r5ddy2vr8vli95nrn5chy1hl"))
        (file-name (git-file-name name version))))
@@ -4130,7 +4125,11 @@ parallel computing platforms.  It also supports serial execution.")
     (arguments
      (list
       #:test-target "test"
-      #:make-flags #~(list (string-append "PREFIX=" #$output))
+      #:make-flags #~(list (string-append "PREFIX=" #$output)
+                           "ENABLE_EDITLINE=1"
+                           "ENABLE_LIBYOSYS=1"
+                           (format #f "ABCEXTERNAL=~a/bin/abc"
+                                   #$(this-package-input "abc-yosyshq")))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'configure 'fix-paths
@@ -4157,16 +4156,6 @@ parallel computing platforms.  It also supports serial execution.")
                                   ,(string-append "CXX="#$(cxx-for-target))))))
                 (format #t "CONFIGURE FLAGS: ~s~%" flags)
                 (apply invoke "make" flags))))
-          (add-after 'configure 'configure-makefile
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* '("Makefile")
-                (("ENABLE_EDITLINE \\:= 0")
-                 "ENABLE_EDITLINE := 1")
-                (("ENABLE_LIBYOSYS \\:= 0")
-                 "ENABLE_LIBYOSYS := 1")
-                (("ABCEXTERNAL \\?=")
-                 (string-append "ABCEXTERNAL = "
-                                (search-input-file inputs "/bin/abc"))))))
           (add-after 'install 'add-symbolic-link
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Previously this package provided a copy of the "abc"
