@@ -2736,13 +2736,13 @@ identification numbers SIREN and SIRET on party and address.")
 (define-public trytond-product
   (package
     (name "trytond-product")
-    (version "7.0.3")
+    (version "7.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_product" version))
        (sha256
-        (base32 "0d03zmhay1kaaw8a9yalfsyzn54pb9yzkg1kxpywzd4ysxs295iz"))))
+        (base32 "1bqp67bzm3fz8jpcxj0nz959qvgvglj630vxdg98jg6pypfa24xr"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "product"))
     (native-inputs %standard-trytond-native-inputs)
