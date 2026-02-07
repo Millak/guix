@@ -5439,12 +5439,12 @@ configuration of an online web shop.")
 (define-public trytond-web-shop-shopify
   (package
     (name "trytond-web-shop-shopify")
-    (version "7.0.12")
+    (version "7.0.14")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "trytond_web_shop_shopify" version))
               (sha256
-               (base32 "18v46n58di6rk1kzslqgbjqrpf4d2wqi9qcxcsq3lv1a9lf2z8b8"))))
+               (base32 "17xs8kafscl6bxjf07h2fy0hip1kvvz8rbmhzs8bc7yxxdc7b83v"))))
     (build-system pyproject-build-system)
     ;; doctest requires network and an account at shopify
     (arguments
