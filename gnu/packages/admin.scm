@@ -3927,6 +3927,18 @@ rules is done with the @code{auditctl} utility.")
                 (wrap-program (string-append ndiff "/bin/ndiff")
                   `("GUIX_PYTHONPATH" prefix
                     (,(python-path ndiff)))))))
+          (add-before 'check 'fix-tests-for-python-3.12
+            (lambda _
+              (substitute* "ndiff/ndifftest.py"
+                (("import imp")
+                 "import importlib.util")
+                (("ndiff = imp\\.load_source\\(\"ndiff\", \"ndiff\\.py\"\\)")
+                 (string-join
+                  '("spec = \
+importlib.util.spec_from_file_location(\"ndiff\", \"ndiff.py\")"
+                    "ndiff = importlib.util.module_from_spec(spec)"
+                    "spec.loader.exec_module(ndiff)")
+                  "\n")))))
           ;; These are the tests that do not require network access.
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
