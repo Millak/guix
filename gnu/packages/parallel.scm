@@ -561,54 +561,6 @@ processing or with @code{multiprocessing}) and deployment on a cluster or
 supercomputer (via, e.g., MPI or JobLib).")
     (license license:expat)))
 
-(define-public python-slurm-magic
-  (let ((commit "4c708cc137cb9f4bd5b44cf26837b466d9bf7b65")
-        (revision "0"))
-    (package
-      (name "python-slurm-magic")
-      (version (git-version "0.0.0" revision commit))
-      (home-page "https://github.com/NERSC/slurm-magic")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url home-page)
-               (commit commit)))
-         (sha256
-          (base32 "0s69bmiskc6i9x98z6nf9jyi0jc51jpr5599f9b2f2jznz5wr64v"))
-         (file-name (git-file-name name version))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:tests? #f                     ; No tests.
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'build 'set-slurm-path
-              (lambda* (#:key inputs #:allow-other-keys)
-                ;; The '_execute' method tries to exec 'salloc'
-                ;; etc. from $PATH.  Record the absolute file name
-                ;; instead.
-                (let ((slurm-bin (dirname
-                                  (search-input-file inputs "/bin/sinfo"))))
-                  (substitute* "slurm_magic.py"
-                    (("name = (.*)$" _ value)
-                     (string-append "name = \"" slurm-bin "/\" + "
-                                    value "\n")))))))))
-      (native-inputs (list python-setuptools))
-      (inputs (list slurm))
-      (propagated-inputs (list python-ipython python-pandas))
-      (synopsis "Control the SLURM batch scheduler from Jupyter Notebook")
-      (description
-       "This package implements Jupyter/IPython
-@uref{http://ipython.readthedocs.io/en/stable/interactive/magics.html, magic
-commands} for interacting with the SLURM workload manager.  SLURM magic simply
-wraps command-line executables and the commands themselves should look like
-their command-line counterparts.  Commands are spawned via @code{subprocess}
-and output captured in the notebook.  Whatever arguments are accepted by a
-SLURM command line executable are also accepted by the corresponding magic
-command---e.g., @code{%salloc}, @code{%sbatch}, etc.")
-      (license license:bsd-3))))
-
 (define-public pthreadpool
   ;; This repository has only one tag, 0.1, which is older than what users
   ;; such as XNNPACK expect.
