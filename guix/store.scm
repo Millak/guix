@@ -1980,7 +1980,7 @@ valid inputs."
 
 (define (derivation-path? path)
   "Return #t if PATH is a derivation path."
-  (and (store-path? path) (string-suffix? ".drv" path)))
+  (and (direct-store-path? path) (string-suffix? ".drv" path)))
 
 (define (store-path-base path)
   "Return the base path of a path in the store."
