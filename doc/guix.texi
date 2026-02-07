@@ -15079,6 +15079,11 @@ contained in the GnuPG keyring at
 signatures,, emacs, The GNU Emacs Manual}).
 
 @item
+@uref{https://elpa.gnu.org/devel, GNU-devel}, selected by the
+@code{gnu-devel} identifier.  This repository exists for testing
+development changes before they make it to a stable release.
+
+@item
 @uref{https://elpa.nongnu.org/nongnu/, NonGNU}, selected by the
 @code{nongnu} identifier.
 

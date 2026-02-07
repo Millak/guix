@@ -84,6 +84,7 @@ NAMES (strings)."
 
 (define %elpa-archives
   '((gnu . "https://elpa.gnu.org/packages")
+    (gnu-devel . "https://elpa.gnu.org/devel")
     (gnu/http . "http://elpa.gnu.org/packages") ;for testing
     (nongnu . "https://elpa.nongnu.org/nongnu")
     (melpa-stable . "https://stable.melpa.org/packages")
