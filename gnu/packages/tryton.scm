@@ -3717,13 +3717,13 @@ certain operations are performed.")
 (define-public trytond-sale
   (package
     (name "trytond-sale")
-    (version "7.0.15")
+    (version "7.0.16")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale" version))
        (sha256
-        (base32 "171ihl762iizlyvhn4zvg52waffsaxr9yh7d7gy4vsdciym6vm8k"))))
+        (base32 "16087y6c58f5xh8s0frm4fy5a1f394z14vc1yljw4dmvhzknfpap"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale"))
     (native-inputs %standard-trytond-native-inputs)
