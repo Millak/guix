@@ -808,13 +808,13 @@ deferring the expense or the revenue of an invoice line over many periods.")
 (define-public trytond-account-invoice-history
   (package
     (name "trytond-account-invoice-history")
-    (version "7.0.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_invoice_history" version))
        (sha256
-        (base32 "07ggrwqq6dz7c49bc20ly7nxznw3sm9q5cmskjycmfx6h72j5l8y"))))
+        (base32 "1a9ni8sfp85c5rcn5dn03l1a8j92n77as6cgzvry53fl6c9hv1k1"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_invoice_history"))
     (native-inputs %standard-trytond-native-inputs)
