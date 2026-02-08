@@ -2527,6 +2527,15 @@ reporting or the build process.")))
        (replace "maven-model" maven-3.8-model)
        (replace "maven-pom" maven-3.8-pom)))))
 
+(define-public maven-3.8-repository-metadata
+  (package
+    (inherit maven-repository-metadata)
+    (version (package-version maven-3.8-pom))
+    (source (package-source maven-3.8-pom))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs maven-repository-metadata)
+       (replace "maven-pom" maven-3.8-pom)))))
+
 ;; Many plugins require maven 3.0 as a dependency.
 (define maven-3.0-pom
   (package
