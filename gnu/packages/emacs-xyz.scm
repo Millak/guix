@@ -1061,27 +1061,26 @@ for multiple backends.")
       (license license:gpl3+))))
 
 (define-public emacs-acp
-  (let ((commit "7b67facc657a7388a53ea8bba5d6e7eba20fa3e0"))
-    (package
-      (name "emacs-acp")
-      (version "0.8.3")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/xenodium/acp.el")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0znm5qihx2qy3hgw0idg8j7bnhz8k3yaadff3y6696qckdh0qlnr"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/xenodium/acp.el")
-      (synopsis "@acronym{ACP, Agent Client Protocol} for Emacs")
-      (description
-       "This package implements the @uref{https://agentclientprotocol.com/,
+  (package
+    (name "emacs-acp")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xenodium/acp.el")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vq0b22zf9nwhyl7vspn95cq3xwy6y5f5a6b42r3f34wvx3jay14"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/xenodium/acp.el")
+    (synopsis "@acronym{ACP, Agent Client Protocol} for Emacs")
+    (description
+     "This package implements the @uref{https://agentclientprotocol.com/,
 Agent Client Protocol} (ACP) for Emacs, a standardized protocol for
 communicating with LLM agents.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-agent-shell
   (package
