@@ -621,66 +621,46 @@ contains supporting code for evaluation and parameter tuning.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:imported-modules `(,@%cmake-build-system-modules
-                           (guix build gremlin)
-                           (guix build python-build-system))
+      #:imported-modules (append %cmake-build-system-modules
+                                 %pyproject-build-system-modules)
       #:modules '((guix build cmake-build-system)
-                  ((guix build python-build-system) #:prefix python:)
-                  (guix build utils)
-                  (guix build gremlin)
-                  (ice-9 match)
-                  (srfi srfi-1)
-                  (srfi srfi-26))
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
       #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
-            (lambda _ (chdir "faiss/python")))
-          (add-before 'install 'python-build
-            (lambda _
-              ((assoc-ref python:%standard-phases 'build)
-               #:use-setuptools? #t)))
-          (replace 'install
-            (lambda args
-              (apply
-               (assoc-ref python:%standard-phases 'install)
-               #:use-setuptools? #t
-               #:configure-flags ''()
-               args)
-              (for-each
-               delete-file
-               (find-files #$output
-                           "_*faiss_example_external_module\\.(so|py)$"))))
-          ;; Move check phase after 'install.
-          (delete 'check)
-          (add-after 'install 'check
-            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-              (if tests?
-                  (with-directory-excursion "../../tests"
-                    (let* ((version #$(version-major+minor
-                                       (package-version
-                                        (this-package-input "python-wrapper"))))
-                           (destination (string-append "/lib/python" version
-                                                       "/site-packages/")))
-                      (setenv
-                       "PYTHONPATH"
-                       (string-join
-                        (filter
-                         directory-exists?
-                         (map (match-lambda
-                                ((name . directory)
-                                 (string-append directory destination)))
-                              (append outputs inputs)))
-                        ":")))
-                    (for-each
-                     (lambda (file)
-                       (invoke "python" file))
-                     (remove (cut member <> '(;; External module removed
-                                              "./external_module_test.py"
-                                              ;; Avoid torch dependency
-                                              "./torch_test_contrib.py"
-                                              "./torch_test_neural_net.py"))
-                             (find-files "." "\\.py$"))))
-                  (format #t "test suite not run~%")))))))
+      (with-extensions (list (pyproject-guile-json))
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _
+                (chdir "faiss/python")))
+            (add-before 'install 'python-build
+              (assoc-ref py:%standard-phases 'build))
+            (replace 'install
+              (assoc-ref py:%standard-phases 'install))
+            (add-after 'install 'cleanup
+              (lambda _
+                (let ((external "_*faiss_example_external_module\\.(so|py)$"))
+                  (for-each delete-file (find-files #$output external)))))
+            ;; Move check phase after 'install.
+            (delete 'check)
+            (add-after 'install 'check
+              (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+                (if tests?
+                    (with-directory-excursion "../../tests"
+                      (setenv "PYTHONPATH"
+                              (string-append (py:site-packages inputs outputs)
+                                             ":" (getenv "GUIX_PYTHONPATH")))
+                      (let ((ignored '(;; External module removed
+                                       "./external_module_test.py"
+                                       ;; Avoid torch dependency
+                                       "./torch_test_contrib.py"
+                                       "./torch_test_neural_net.py")))
+                        (for-each
+                         (lambda (file)
+                           (invoke "python" file))
+                         (find-files "." (lambda (file stat)
+                                           (and (string-suffix? ".py" file)
+                                                (not (member file ignored))))))))
+                    (format #t "test suite not run~%"))))))))
     (native-inputs
      (list python-scipy))
     (inputs
