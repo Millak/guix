@@ -734,31 +734,32 @@ compiler for the D programming language.")
   (package
     (name "dub")
     (version "1.33.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dlang/dub")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "09p3rvsv11f8lgqgxgz2zj0szsw5lzrsc7y7471hswksc7nmmj70"))))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/dlang/dub")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09p3rvsv11f8lgqgxgz2zj0szsw5lzrsc7y7471hswksc7nmmj70"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:tests? #f                  ; tests try to install packages
-           #:phases
-           #~(modify-phases %standard-phases
-               (delete 'configure)      ; no configure script
-               (replace 'build
-                 (lambda _
-                   (setenv "CC" #$(cc-for-target))
-                   (setenv "LD" #$(ld-for-target))
-                   (invoke "./build.d")))
-               (replace 'install
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let* ((out (assoc-ref outputs "out"))
-                          (bin (string-append out "/bin")))
-                     (install-file "bin/dub" bin)))))))
+     (list
+      #:tests? #f                       ; tests try to install packages
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ; no configure script
+          (replace 'build
+            (lambda _
+              (setenv "CC" #$(cc-for-target))
+              (setenv "LD" #$(ld-for-target))
+              (invoke "./build.d")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bin (string-append out "/bin")))
+                (install-file "bin/dub" bin)))))))
     (inputs
      (list curl))
     (native-inputs
