@@ -768,7 +768,7 @@ compiler for the D programming language.")
            (module-ref (resolve-interface
                         '(gnu packages commencement))
                        'ld-gold-wrapper)))
-    (home-page "https://code.dlang.org/getting_started")
+    (home-page "https://dub.pm/")
     (synopsis "Package and build manager for D projects")
     (description
      "DUB is a package and build manager for applications and
