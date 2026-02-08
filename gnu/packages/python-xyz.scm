@@ -13098,14 +13098,8 @@ e.g. copy examples, fetch data, etc.")
      (list
       ;; tests: 1395 passed
       #:test-flags
-      #~(list "--ignore-glob=tests/test_*_benchmarks.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pytest.ini"
-                (("-p pytest_cov") "")
-                (("--cov.*") "")))))))
+      #~(list  "-o" "addopts=''"        ; Avoid -p pytest_cov.
+              "--ignore-glob=tests/test_*_benchmarks.py")))
     (native-inputs
      (list python-objgraph
            python-psutil
