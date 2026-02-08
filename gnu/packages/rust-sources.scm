@@ -678,3 +678,108 @@ intelligence.")
 webview, a tiny cross-platform library to render web-based GUIs as desktop
 applications.")
        (license license:expat)))))
+(define-public rust-codex-0.0.0.785c0c43
+  (let ((commit "785c0c43df941e6997ff3a9e8a9dd48da2661f20")
+        (revision "0"))
+    (hidden-package
+     (package
+       (name "rust-codex")
+       (version (git-version "0.0.0" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/zed-industries/codex")
+                (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "0rwj1ykknng39mhzna3fw3rcl3vngynsjdcj1namgkvw91zd9dl7"))
+          ;; TODO: Remove patches when Rust provides stable file locking API.
+          ;; The file_lock feature is tracked at
+          ;; <https://github.com/rust-lang/rust/issues/130994>.
+          (patches (search-patches "rust-codex-0.98.0-execpolicy-file-lock.patch"
+                                   "rust-codex-0.98.0-core-file-lock.patch"
+                                   "rust-codex-0.98.0-arg0-file-lock.patch"
+                                   "rust-codex-0.98.0-core-remove-self-dep.patch"))))
+       (build-system cargo-build-system)
+       (arguments
+        (list
+         #:skip-build? #t
+         #:cargo-package-crates
+         ;; Order matters: dependencies must come before packages that need them
+         ''("codex-async-utils"        ; No internal deps
+            "codex-client"             ; No internal deps
+            "codex-execpolicy"         ; No internal deps
+            "codex-file-search"        ; No internal deps
+            "codex-git"                ; No internal deps
+            "codex-keyring-store"      ; No internal deps
+            "codex-utils-absolute-path" ; No internal deps
+            "codex-utils-cache"        ; No internal deps
+            "codex-utils-cargo-bin"    ; No internal deps
+            "codex-utils-home-dir"     ; No internal deps
+            "codex-utils-json-to-toml" ; No internal deps
+            "codex-utils-pty"          ; No internal deps
+            "codex-utils-readiness"    ; No internal deps
+            "codex-utils-string"       ; No internal deps
+            "codex-utils-image"        ; Depends on codex-utils-cache
+            "codex-apply-patch"        ; Depends on codex-utils-cargo-bin
+            "codex-protocol"           ; Depends on codex-git, codex-utils-*
+            "codex-windows-sandbox"    ; Depends on codex-utils-absolute-path, codex-protocol
+            "codex-api"                ; Depends on codex-client, codex-protocol
+            "codex-experimental-api-macros" ; Macro crate (must come before app-server-protocol)
+            "codex-app-server-protocol" ; Depends on codex-protocol, codex-experimental-api-macros
+            "codex-rmcp-client"        ; Depends on codex-keyring-store, codex-protocol
+            "codex-otel"               ; Depends on codex-app-server-protocol, codex-api
+            "codex-state"              ; Depends on codex-protocol, codex-otel
+            "codex-core"               ; Depends on many packages above
+            "codex-linux-sandbox"      ; Depends on codex-core, codex-utils-absolute-path
+            "codex-arg0"               ; Depends on codex-apply-patch, codex-core, codex-linux-sandbox
+            "codex-lmstudio"           ; Depends on codex-core
+            "codex-login"              ; Depends on codex-core
+            "codex-ollama"             ; Depends on codex-core
+            "codex-common"             ; Depends on codex-core, codex-lmstudio, codex-ollama
+            "codex-mcp-server")         ; Depends on codex-core, codex-common
+         #:phases
+         #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir-to-workspace
+              (lambda _
+                (chdir "codex-rs")))
+            (add-after 'chdir-to-workspace 'patch-git-deps-to-vendor
+              (lambda _
+                ;; Avoid git fetches in offline builds by pointing patches
+                ;; at the vendored sources provided via cargo-inputs.
+                (substitute* "Cargo.toml"
+                  (("crossterm = \\{ git = [^}]+\\}")
+                   "crossterm = { version = \"0.28.1\" }")
+                  (("ratatui = \\{ git = [^}]+\\}")
+                   "ratatui = { version = \"0.29.0\" }")
+                  (("tokio-tungstenite = \\{ git = [^}]+\\}")
+                   "tokio-tungstenite = { version = \"0.28.0\" }")
+                  ;; Point nucleo git dependency to vendored checkout.
+                  (("nucleo = \\{ git = [^}]+\\}")
+                   "nucleo = { version = \"0.5.0\" }")
+                  ;; Point runfiles git dependency to vendored checkout.
+                  (("runfiles = \\{ git = [^}]+\\}")
+                   "runfiles = { version = \"0.1.0\" }"))))
+            (add-after 'chdir-to-workspace 'add-version-to-workspace-deps
+              (lambda _
+                ;; cargo package requires all dependencies to have versions.
+                ;; Add version = "0.0.0" to internal path dependencies.
+                (let ((cargo-files (find-files "." "^Cargo\\.toml$")))
+                  (substitute* cargo-files
+                    ;; Handle inline deps: name = { path = "..." }
+                    (("(codex-[a-z0-9-]+) = \\{ path = " all name)
+                     (string-append name " = { version = \"0.0.0\", path = "))
+                    ;; Handle inline deps with package: name = { package = "...", path = "..." }
+                    (("(codex-[a-z0-9-]+) = \\{ package = " all name)
+                     (string-append name " = { version = \"0.0.0\", package = "))
+                    ;; Handle section deps: [dependencies.X] with path = "..."
+                    (("^(path = \"\\.\\./[^\"]*\")" all path-line)
+                     (string-append path-line "\nversion = \"0.0.0\"")))))))))
+       (inputs (cargo-inputs 'rust-codex-0.0.0.785c0c43))
+       (home-page "https://github.com/zed-industries/codex")
+       (synopsis "Zed Codex workspace crates")
+       (description
+        "This package provides the workspace crates for the Zed Codex CLI
+and runtime for AI-assisted coding.")
+       (license license:asl2.0)))))

@@ -1,0 +1,49 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-01-25
+License: ASL2.0
+Subject: Use libc::flock instead of unstable std File::lock().
+
+The file_lock feature is tracked at <https://github.com/rust-lang/rust/issues/130994>.
+and is not yet stable in old Rust versions like Rust 1.85.
+
+The file_lock feature was stabilized after Rust 1.88, but we only have 1.88.
+
+diff -u a/codex-rs/execpolicy/Cargo.toml b/codex-rs/execpolicy/Cargo.toml
+--- a/codex-rs/execpolicy/Cargo.toml
++++ b/codex-rs/execpolicy/Cargo.toml
+@@ -19,6 +19,7 @@
+ [dependencies]
+ anyhow = { workspace = true }
+ clap = { workspace = true, features = ["derive"] }
++libc = { workspace = true }
+ multimap = { workspace = true }
+ serde = { workspace = true, features = ["derive"] }
+ serde_json = { workspace = true }
+diff -u a/codex-rs/execpolicy/src/amend.rs b/codex-rs/execpolicy/src/amend.rs
+--- a/codex-rs/execpolicy/src/amend.rs
++++ b/codex-rs/execpolicy/src/amend.rs
+@@ -1,4 +1,5 @@
+ use std::fs::OpenOptions;
++use std::os::unix::io::AsRawFd;
+ use std::io::Read;
+ use std::io::Seek;
+ use std::io::SeekFrom;
+@@ -100,10 +101,14 @@
+             path: policy_path.to_path_buf(),
+             source,
+         })?;
+-    file.lock().map_err(|source| AmendError::LockPolicyFile {
+-        path: policy_path.to_path_buf(),
+-        source,
+-    })?;
++    // FIXME: Use file.lock() when Rust 1.91 is available
++    let ret = unsafe { libc::flock(file.as_raw_fd(), libc::LOCK_EX) };
++    if ret != 0 {
++        return Err(AmendError::LockPolicyFile {
++            path: policy_path.to_path_buf(),
++            source: std::io::Error::last_os_error(),
++        });
++    }
+
+     let len = file
+         .metadata()

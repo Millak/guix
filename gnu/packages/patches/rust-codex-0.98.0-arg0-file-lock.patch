@@ -1,0 +1,89 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-02-07
+License: ASL2.0
+Subject: Use libc::flock instead of unstable std File::try_lock().
+
+The file_lock feature is tracked at <https://github.com/rust-lang/rust/issues/130994>
+and is not yet stable in old Rust versions like Rust 1.88.
+
+diff -ruN a/codex-rs/arg0/Cargo.toml b/codex-rs/arg0/Cargo.toml
+--- a/codex-rs/arg0/Cargo.toml
++++ b/codex-rs/arg0/Cargo.toml
+@@ -17,5 +17,6 @@
+ codex-core = { workspace = true }
+ codex-linux-sandbox = { workspace = true }
+ dotenvy = { workspace = true }
++libc = { workspace = true }
+ tempfile = { workspace = true }
+ tokio = { workspace = true, features = ["rt-multi-thread"] }
+diff -ruN a/codex-rs/arg0/src/lib.rs b/codex-rs/arg0/src/lib.rs
+--- a/codex-rs/arg0/src/lib.rs
++++ b/codex-rs/arg0/src/lib.rs
+@@ -5,6 +5,8 @@
+
+ use codex_core::CODEX_APPLY_PATCH_ARG1;
+ #[cfg(unix)]
++use std::os::unix::io::AsRawFd;
++#[cfg(unix)]
+ use std::os::unix::fs::symlink;
+ use tempfile::TempDir;
+
+@@ -13,6 +15,18 @@
+ const MISSPELLED_APPLY_PATCH_ARG0: &str = "applypatch";
+ const LOCK_FILENAME: &str = ".lock";
+
++// FIXME: Remove this helper when Rust provides stable file locking API.
++// The file_lock feature is tracked at <https://github.com/rust-lang/rust/issues/130994>.
++#[cfg(unix)]
++fn try_lock_exclusive(file: &File) -> std::io::Result<()> {
++    let ret = unsafe { libc::flock(file.as_raw_fd(), libc::LOCK_EX | libc::LOCK_NB) };
++    if ret == 0 {
++        Ok(())
++    } else {
++        Err(std::io::Error::last_os_error())
++    }
++}
++
+ /// Keeps the per-session PATH entry alive and locked for the process lifetime.
+ pub struct Arg0PathEntryGuard {
+     _temp_dir: TempDir,
+@@ -216,7 +230,7 @@
+         .create(true)
+         .truncate(false)
+         .open(&lock_path)?;
+-    lock_file.try_lock()?;
++    try_lock_exclusive(&lock_file)?;
+
+     for filename in &[
+         APPLY_PATCH_ARG0,
+@@ -307,10 +321,10 @@
+         Err(err) => return Err(err),
+     };
+
+-    match lock_file.try_lock() {
++    match try_lock_exclusive(&lock_file) {
+         Ok(()) => Ok(Some(lock_file)),
+-        Err(std::fs::TryLockError::WouldBlock) => Ok(None),
+-        Err(err) => Err(err.into()),
++        Err(ref e) if e.raw_os_error() == Some(libc::EWOULDBLOCK) => Ok(None),
++        Err(err) => Err(err),
+     }
+ }
+
+@@ -318,6 +332,7 @@
+ mod tests {
+     use super::LOCK_FILENAME;
+     use super::janitor_cleanup;
++    use super::try_lock_exclusive;
+     use std::fs;
+     use std::fs::File;
+     use std::path::Path;
+@@ -350,7 +365,7 @@
+         let dir = root.path().join("locked");
+         fs::create_dir(&dir)?;
+         let lock_file = create_lock(&dir)?;
+-        lock_file.try_lock()?;
++        try_lock_exclusive(&lock_file)?;
+
+         janitor_cleanup(root.path())?;
+

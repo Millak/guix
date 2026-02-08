@@ -1,0 +1,91 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-01-25
+License: ASL2.0
+Subject: Use libc::flock instead of unstable std File::try_lock()/try_lock_shared().
+
+The file_lock feature is tracked at <https://github.com/rust-lang/rust/issues/130994>.
+and is not yet stable in old Rust versions like Rust 1.85.
+
+The file_lock feature was stabilized after Rust 1.88, but we only have 1.88.
+
+diff -u a/codex-rs/core/src/message_history.rs b/codex-rs/core/src/message_history.rs
+--- a/codex-rs/core/src/message_history.rs
++++ b/codex-rs/core/src/message_history.rs
+@@ -41,6 +41,8 @@
+ use std::os::unix::fs::OpenOptionsExt;
+ #[cfg(unix)]
+ use std::os::unix::fs::PermissionsExt;
++#[cfg(unix)]
++use std::os::unix::io::AsRawFd;
+
+ /// Filename that stores the message history inside `~/.codex`.
+ const HISTORY_FILENAME: &str = "history.jsonl";
+@@ -51,6 +53,28 @@
+ const MAX_RETRIES: usize = 10;
+ const RETRY_SLEEP: Duration = Duration::from_millis(100);
+
++// FIXME: Remove these helpers when Rust provides stable file locking API
++// The file_lock feature is tracked at <https://github.com/rust-lang/rust/issues/130994>.
++#[cfg(unix)]
++fn try_lock_exclusive(file: &File) -> std::io::Result<()> {
++    let ret = unsafe { libc::flock(file.as_raw_fd(), libc::LOCK_EX | libc::LOCK_NB) };
++    if ret == 0 {
++        Ok(())
++    } else {
++        Err(std::io::Error::last_os_error())
++    }
++}
++
++#[cfg(unix)]
++fn try_lock_shared(file: &File) -> std::io::Result<()> {
++    let ret = unsafe { libc::flock(file.as_raw_fd(), libc::LOCK_SH | libc::LOCK_NB) };
++    if ret == 0 {
++        Ok(())
++    } else {
++        Err(std::io::Error::last_os_error())
++    }
++}
++
+ #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+ pub struct HistoryEntry {
+     pub session_id: String,
+@@ -126,7 +150,7 @@
+     tokio::task::spawn_blocking(move || -> Result<()> {
+         // Retry a few times to avoid indefinite blocking when contended.
+         for _ in 0..MAX_RETRIES {
+-            match history_file.try_lock() {
++            match try_lock_exclusive(&history_file) {
+                 Ok(()) => {
+                     // While holding the exclusive lock, write the full line.
+                     // We do not open the file with `append(true)` on Windows, so ensure the
+@@ -137,10 +161,10 @@
+                     enforce_history_limit(&mut history_file, history_max_bytes)?;
+                     return Ok(());
+                 }
+-                Err(std::fs::TryLockError::WouldBlock) => {
++                Err(ref e) if e.kind() == std::io::ErrorKind::WouldBlock => {
+                     std::thread::sleep(RETRY_SLEEP);
+                 }
+-                Err(e) => return Err(e.into()),
++                Err(e) => return Err(e),
+             }
+         }
+
+@@ -341,7 +365,7 @@
+     // Open & lock file for reading using a shared lock.
+     // Retry a few times to avoid indefinite blocking.
+     for _ in 0..MAX_RETRIES {
+-        let lock_result = file.try_lock_shared();
++        let lock_result = try_lock_shared(&file);
+
+         match lock_result {
+             Ok(()) => {
+@@ -368,7 +392,7 @@
+                 // Not found at requested offset.
+                 return None;
+             }
+-            Err(std::fs::TryLockError::WouldBlock) => {
++            Err(ref e) if e.kind() == std::io::ErrorKind::WouldBlock => {
+                 std::thread::sleep(RETRY_SLEEP);
+             }
+             Err(e) => {

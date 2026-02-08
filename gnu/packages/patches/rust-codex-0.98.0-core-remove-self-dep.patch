@@ -1,0 +1,24 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-02-08
+License: ASL2.0
+Subject: Remove codex-core circular dev-dependencies.
+
+codex-core has a dev-dependency on itself with different features enabled,
+and a dev-dependency on codex-arg0 which in turn depends on codex-core.
+Both cause cargo package to fail when resolving from the vendor directory
+because neither is available at the time codex-core is packaged.
+
+diff -u a/codex-rs/core/Cargo.toml b/codex-rs/core/Cargo.toml
+--- a/codex-rs/core/Cargo.toml
++++ b/codex-rs/core/Cargo.toml
+@@ -140,10 +140,7 @@
+ assert_cmd = { workspace = true }
+ assert_matches = { workspace = true }
+-codex-arg0 = { workspace = true }
+-codex-core = { path = ".", default-features = false, features = [
+-    "deterministic_process_ids",
+-] }
++# codex-arg0 and codex-core self-ref removed for packaging
+ codex-otel = { workspace = true, features = [
+     "disable-default-metrics-exporter",
+ ] }
