@@ -41,6 +41,8 @@
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages emacs-xyz)
   #:use-module (gnu packages firmware)
+  #:use-module (gnu packages fonts)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages ocr)
   #:use-module (gnu packages package-management)
@@ -1968,11 +1970,27 @@ build (current-guix) and then store a couple of full system images.")
       (sync)
       #t))
 
-(define %extra-packages
+(define %extra-encrypted-packages
   ;; Packages needed when installing with an encrypted root.
   (list isc-dhcp
         lvm2-static cryptsetup-static e2fsck/static
         loadkeys-static grub-efi fatfsck/static dosfstools))
+
+(define %extra-desktop-packages
+  ;; Packages needed when using a desktop system containing fonts
+  ;; in the base system.
+  (list font-google-noto
+        font-google-noto-emoji
+        font-sarasa-gothic
+        ;; These are used for profile hooks
+        mkfontscale
+        mkfontdir))
+
+(define %extra-mandb-packages
+  ;; Packages needed for building man pages during profile hook
+  (list guile-gdbm-ffi
+        guile-zlib
+        guile-zstd))
 
 (define installation-os-for-gui-tests
   ;; Operating system that contains all of %EXTRA-PACKAGES, needed for the
@@ -1983,7 +2001,9 @@ build (current-guix) and then store a couple of full system images.")
      (inherit (operating-system-with-console-syslog
                (operating-system-add-packages
                 installation-os
-                %extra-packages)))
+                (append %extra-encrypted-packages
+                        %extra-mandb-packages
+                        %extra-desktop-packages))))
      (kernel-arguments '("console=ttyS0")))
    #:imported-modules '((gnu services herd)
                         (gnu installer tests)
