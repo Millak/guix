@@ -1,0 +1,52 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-02-08
+License: ASL2.0
+
+Replace Result::flatten() with and_then(|x| x).
+
+Result::flatten() was stabilized in Rust 1.89.0 but the build
+toolchain only provides Rust 1.88.0.  Use the equivalent
+.and_then(|x| x) form which works on all stable Rust versions.
+
+diff -u a/src/local_spawner.rs b/src/local_spawner.rs
+--- a/src/local_spawner.rs
++++ b/src/local_spawner.rs
+@@ -156,7 +156,7 @@
+         });
+         rx.recv()
+             .map_err(|e| std::io::Error::other(e.to_string()))
+-            .flatten()
++            .and_then(|x| x)
+     }
+
+     fn write(&self, path: &std::path::Path, contents: &[u8]) -> std::io::Result<()> {
+@@ -174,7 +174,7 @@
+         });
+         rx.recv()
+             .map_err(|e| std::io::Error::other(e.to_string()))
+-            .flatten()
++            .and_then(|x| x)
+     }
+ }
+
+@@ -207,7 +207,7 @@
+             let file = rx
+                 .await
+                 .map_err(|e| std::io::Error::other(e.to_string()))
+-                .flatten()?;
++                .and_then(|x| x)?;
+
+             Ok(Box::new(tokio::io::BufReader::new(Cursor::new(file.into_bytes()))) as _)
+         })
+diff -u a/src/thread.rs b/src/thread.rs
+--- a/src/thread.rs
++++ b/src/thread.rs
+@@ -1817,7 +1817,7 @@
+                     let mut new_custom_prompts = load_custom_prompts
+                         .await
+                         .map_err(|_| Error::internal_error())
+-                        .flatten()
++                        .and_then(|x| x)
+                         .inspect_err(|e| error!("Failed to load custom prompts {e:?}"))
+                         .unwrap_or_default();
+

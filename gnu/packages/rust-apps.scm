@@ -712,6 +712,49 @@ through tools like `gdb`.")
      "This package provides CLI Tool for codeberg similar to gh and glab.")
     (license license:agpl3+)))
 
+(define-public codex-acp
+  (package
+    (name "codex-acp")
+    (version "0.9.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zed-industries/codex-acp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "190sq6s6jfz8dkj1y8305r7x6ln86qqr2j1bnfjci7f1x2wyzmsj"))
+       (patches (search-patches "codex-acp-0.9.2-remove-patch-sections.patch"
+                                "codex-acp-0.9.2-replace-result-flatten.patch"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:rust rust-1.88
+      #:install-source? #f
+      ;; Skip doctests (--doc) because rustdoc is unavailable for non-default
+      ;; Rust versions in Guix.
+      #:cargo-test-flags '(list "--lib" "--bins" "--tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-codex-deps
+            (lambda _
+              ;; Rewrite git dependencies to use vendored sources from rust-codex
+              (substitute* "Cargo.toml"
+                (("git = \"https://github.com/zed-industries/codex\", branch = \"acp\"")
+                 "version = \"0.0.0\"")))))))
+    (native-inputs (list pkg-config))
+    (inputs (cons* openssl sqlite `(,zstd "lib") (cargo-inputs 'codex-acp)))
+    (home-page "https://github.com/zed-industries/codex-acp")
+    (synopsis "ACP-compatible agent bridging Zed Codex with ACP clients")
+    (description
+     "This package provides an Agent Client Protocol (ACP) compatible agent
+that bridges the Zed Codex runtime with ACP clients over stdio.  It
+supports multiple LLM providers through configuration in
+@file{~/.codex/config.toml} and integrates with MCP servers for filesystem
+operations.")
+    (license license:asl2.0)))
+
 (define-public complgen
   (package
     (name "complgen")

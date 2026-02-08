@@ -1123,6 +1123,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/clucene-gcc-14.patch			\
   %D%/packages/patches/clucene-pkgconfig.patch			\
   %D%/packages/patches/coda-use-system-libs.patch		\
+  %D%/packages/patches/codex-acp-0.9.2-remove-patch-sections.patch \
+  %D%/packages/patches/codex-acp-0.9.2-replace-result-flatten.patch    \
   %D%/packages/patches/cogl-fix-double-free.patch		\
   %D%/packages/patches/collada-dom-boost.patch			\
   %D%/packages/patches/collectd-5.11.0-noinstallvar.patch	\
