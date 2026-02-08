@@ -207,6 +207,52 @@ frameworks.")
 representations and sentence classification.")
     (license license:expat)))
 
+(define-public ggml
+  (package
+    (name "ggml")
+    (version "0.9.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ggml-org/ggml")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l979hsbqbiwi8wl6z43r2gras4xhw1v1dd3rcap97s3jysb6bda"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list #$(string-append "-DGGML_BUILD_NUMBER=" version)
+              "-DBUILD_SHARED_LIBS_DEFAULT=ON"
+              "-DGGML_BACKEND_DL=ON"
+              "-DGGML_VULKAN=ON"
+              "-DGGML_BUILD_TESTS=ON"
+              "-DGGML_OPENCL=ON"
+              "-DGGML_NATIVE_DEFAULT=OFF" ;no '-march=native'
+              "-DGGML_BLAS_DEFAULT=ON"
+              "-DGGML_BLAS_VENDOR_DEFAULT=OpenBLAS")))
+    (inputs
+     (list glslang
+           openblas
+           openblas-ilp64
+           opencl-icd-loader
+           shaderc
+           spirv-headers
+           spirv-tools
+           vulkan-headers
+           vulkan-loader))
+    (native-inputs
+     (list opencl-headers pkg-config python-minimal-wrapper))
+    (properties '((tunable? . #true)))
+    (home-page "https://github.com/ggml-org/ggml")
+    (synopsis "Tensor library for machine learning")
+    (description "@code{ggml} is a @acronym{ML, Machine Learning} library
+written in C and C++ with a focus on transformer inference, similar to ML
+libraries such as PyTorch and TensorFlow.")
+    (license license:expat)))
+
 (define-public python-apricot-select
   (package
     (name "python-apricot-select")
