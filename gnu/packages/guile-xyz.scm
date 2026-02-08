@@ -53,7 +53,7 @@
 ;;; Copyright © 2024 Alec Barreto <mrh57@posteo.net>
 ;;; Copyright © 2024 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
-;;; Copyright © 2025 Florian Pelz <pelzflorian@pelzflorian.de>
+;;; Copyright © 2025, 2026 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2025 Libre en Communs <contact@a-lec.org>
 ;;; Copyright © 2025 Noé Lopez <noelopez@free.fr>
 ;;; Copyright © 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
@@ -3023,12 +3023,12 @@ users and in some situations.")
 (define-public guile-g-golf
   (package
     (name "guile-g-golf")
-    (version "0.8.2")
+    (version "0.8.3")
     (source
      (g-golf-source #:version version
                     #:hash
                     (content-hash
-                     "10qxhbfdysh4mhw6rxr40lfq24m4smk37cpr4wvjf008s6w7f4nz")))
+                     "1cbvb42dy94612m8040y3km9941jhi17mf78yc4pavlala8x6937")))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3098,12 +3098,7 @@ users and in some situations.")
 modern applications in Guile Scheme.  It comprises a direct binding to the
 GObject Introspection API and higher-level functionality for importing Gnome
 libraries and making GObject classes (and methods) available in Guile's
-object-oriented programming system, GOOPS.
-
-Note: Currently, when developing with G-Golf in @command{guix shell}, there is
-a @uref{https://bugs.gnu.org/75157, grafts bug in Guix}.  To avoid it, use
-Guix' @code{--no-grafts} option.  Guix packages that use @code{wrap-program}
-are unaffected.")
+object-oriented programming system, GOOPS.")
     (license license:lgpl3+)))
 
 (define-public g-golf
