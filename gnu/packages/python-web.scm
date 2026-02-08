@@ -2326,7 +2326,10 @@ for adding, removing and dropping callbacks.")
       ;; tests: 3045 passed, 32 skipped, 29 xfailed, 2 subtests passed
       #:test-flags
       '(list
+        "-o" "addopts=''"               ; Avoid -p pytest_cov.
+        "-m" "not dev_mode"
         "--numprocesses" (number->string (parallel-job-count))
+        "--ignore=aiohttp/test_utils.py"
         ;; This tests requires the 'proxy.py' module, not yet packaged.
         "--ignore=tests/test_proxy_functional.py"
         ;; These tests need brotli.
@@ -2363,12 +2366,6 @@ for adding, removing and dropping callbacks.")
          "and not test_add_static_path_resolution"))
       #:phases
       '(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "setup.cfg"
-                (("--numprocesses=auto") "")
-                (("-p pytest_cov") "")
-                (("--cov.*") ""))))
          (add-after 'unpack 'fix-tests
            (lambda _
              ;; Make sure the timestamp of this file is > 1990, because a few
