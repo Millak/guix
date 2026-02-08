@@ -3640,42 +3640,60 @@ export filters.")
 (define-public meshlab
   (package
     (name "meshlab")
-    (version "2022.02")
+    (version "2025.07")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/cnr-isti-vclab/meshlab")
                     (commit (string-append "MeshLab-" version))
-                    (recursive? #t)))
+                    (recursive? #t)))    ;for vcglib
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0dkh9qw9z2160s6gjiv0a601kp6hvl66cplvi8rfc892zcykgiwd"))))
-    (build-system cmake-build-system)
+               (base32 "2n1l1rd2qbdsy9vw4pdlz19hsg7x8zkd6vfvdqh54gzhkn4f2k08"))))
+    (build-system qt-build-system)
     (inputs
-     (list qtbase-5
-           mesa
-           glu
+     (list boost
+           cgal
+           embree
            glew
-           muparser
-           gmp
-           eigen
-           libfreenect
            lib3ds
+           lib3mf
+           libe57format
+           libigl
+           mpfr
+           muparser
+           onetbb
            openctm
-           qhull))
+           qhull
+           tinygltf
+           xerces-c))
     (arguments
      (list #:tests? #f                  ; Has no tests
            #:configure-flags
-           #~(list (string-append "-DCMAKE_MODULE_LINKER_FLAGS=-Wl,-rpath="
-                                  #$output "/lib/meshlab")
-                   (string-append "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,-rpath="
-                                  #$output "/lib/meshlab")
-                   (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
-                                  #$output "/lib/meshlab"))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'go-to-source-dir
-                 (lambda _ (chdir "src"))))))
+           #~(list
+              "-DMESHLAB_ALLOW_DOWNLOAD_SOURCE_BOOST=OFF"
+              "-DMESHLAB_ALLOW_DOWNLOAD_SOURCE_CGAL=OFF"
+              "-DMESHLAB_ALLOW_DOWNLOAD_SOURCE_EMBREE=OFF"
+              "-DMESHLAB_ALLOW_BUNDLED_SOURCE_GLEW=OFF"
+              "-DMESHLAB_ALLOW_DOWNLOAD_SOURCE_LEVMAR=OFF"
+              "-DMESHLAB_ALLOW_DOWNLOAD_SOURCE_LIB3DS=OFF"
+              "-DMESHLAB_ALLOW_DOWNLOAD_SOURCE_LIB3MF=OFF"
+              "-DMESHLAB_ALLOW_DOWNLOAD_SOURCE_LIBE57=OFF"
+              "-DMESHLAB_ALLOW_DOWNLOAD_SOURCE_LIBIGL=OFF"
+              "-DMESHLAB_ALLOW_DOWNLOAD_SOURCE_MUPARSER=OFF"
+              "-DMESHLAB_ALLOW_DOWNLOAD_SOURCE_NEXUS=OFF"
+              "-DMESHLAB_ALLOW_DOWNLOAD_SOURCE_OPENCTM=OFF"
+              "-DMESHLAB_ALLOW_DOWNLOAD_SOURCE_QHULL=OFF"
+              "-DMESHLAB_ALLOW_DOWNLOAD_SOURCE_STRUCTURE_SYNTH=OFF"
+              "-DMESHLAB_ALLOW_DOWNLOAD_SOURCE_TINYGLTF=OFF"
+              "-DMESHLAB_ALLOW_DOWNLOAD_SOURCE_U3D=OFF"
+              "-DMESHLAB_ALLOW_DOWNLOAD_SOURCE_XERCES=OFF"
+              (string-append "-DCMAKE_MODULE_LINKER_FLAGS=-Wl,-rpath="
+                             #$output "/lib/meshlab")
+              (string-append "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,-rpath="
+                             #$output "/lib/meshlab")
+              (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
+                             #$output "/lib/meshlab"))))
     (synopsis "3D triangular mesh processing and editing software")
     (home-page "https://www.meshlab.net/")
     (description "MeshLab is a system for the processing and editing of large,
