@@ -2315,6 +2315,16 @@ reporting or the build process.")))
      (modify-inputs (package-propagated-inputs maven-resolver-spi)
        (replace "maven-resolver-api" maven-resolver-1.6-api)))))
 
+(define-public maven-resolver-1.6-test-util
+  (package
+    (inherit maven-resolver-test-util)
+    (version (package-version maven-resolver-1.6-parent-pom))
+    (source (package-source maven-resolver-1.6-parent-pom))
+    (inputs
+     (modify-inputs (package-inputs maven-resolver-test-util)
+       (replace "maven-resolver-api" maven-resolver-1.6-api)
+       (replace "maven-resolver-spi" maven-resolver-1.6-spi)))))
+
 ;; Many plugins require maven 3.0 as a dependency.
 (define maven-3.0-pom
   (package
