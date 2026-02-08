@@ -37774,9 +37774,11 @@ ISO 8859, etc.).")
        (if (supported-package? python-trustme)
            (list python-trustme)
            '())
-       (list python-async-generator
-             python-cryptography
-             python-jedi
+       (list python-async-generator)
+       (if (supported-package? python-cryptography)
+           (list python-cryptography)
+           '())
+       (list python-jedi
              python-pylint
              python-pytest
              python-setuptools)))
