@@ -779,7 +779,7 @@ them in the build process.
 The design emphasis is on maximum simplicity for simple projects,
 while providing the opportunity to customize things when
 needed.")
-    (license license:expat)))
+    (license license:boost1.0)))
 
 (define-public d-tools
   (package
