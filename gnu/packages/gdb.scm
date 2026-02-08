@@ -210,21 +210,14 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
   ;; enough to avoid massive rebuilds.
   (package
     (inherit gdb-17)
-    (version "12.1")
+    (version "17.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gdb/gdb-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1vczsqcbh5y0gx7qrclpna0qzx26sk7lra6y8qzxam1biyzr65qf"))))
-    ;; TODO: Remove this when updating gdb/pinned.
-    (arguments
-     (substitute-keyword-arguments (package-arguments gdb-17)
-       ((#:configure-flags flags '())
-        (if (target-hurd64?)
-            #~'("--enable-targets=i586-pc-gnu,x86_64-pc-gnu")
-            #~'()))))
+                "0xnqqv3j463r5rnfmblj3zwhf0l0lyy4bp1zaid8zxn9fignz68l"))))
     (properties `((hidden? . #t)))))
 
 (define-public gdb-15
