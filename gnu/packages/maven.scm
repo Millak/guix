@@ -2424,6 +2424,36 @@ reporting or the build process.")))
      (modify-inputs (package-native-inputs maven-resolver-transport-file)
        (replace "maven-resolver-test-util" maven-resolver-1.6-test-util)))))
 
+(define-public maven-resolver-1.6-transport-http
+  (package
+    (inherit maven-resolver-transport-http)
+    (version (package-version maven-resolver-1.6-parent-pom))
+    (source (package-source maven-resolver-1.6-parent-pom))
+    (arguments
+     `(#:jar-name "maven-resolver-transport-http.jar"
+       #:source-dir "maven-resolver-transport-http/src/main/java"
+       #:test-dir "maven-resolver-transport-http/src/test"
+       ;; Tests all fail because
+       ;; org.eclipse.aether.transport.http.SslSocketFactory is not available.
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'generate-sisu
+           (lambda _
+             (mkdir-p "build/classes/META-INF/sisu")
+             (with-output-to-file "build/classes/META-INF/sisu/javax.inject.Named"
+               (lambda _
+                 (display "org.eclipse.aether.transport.http.HttpTransporterFactory\n"))))))))
+    (inputs
+     (modify-inputs (package-inputs maven-resolver-transport-http)
+       (delete "maven-wagon-provider-api")
+       (replace "maven-resolver-api" maven-resolver-1.6-api)
+       (replace "maven-resolver-spi" maven-resolver-1.6-spi)
+       (replace "maven-resolver-util" maven-resolver-1.6-util)))
+    (native-inputs
+     (modify-inputs (package-native-inputs maven-resolver-transport-http)
+       (replace "maven-resolver-test-util" maven-resolver-1.6-test-util)))))
+
 ;; Many plugins require maven 3.0 as a dependency.
 (define maven-3.0-pom
   (package
