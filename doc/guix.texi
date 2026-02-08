@@ -35258,6 +35258,25 @@ its environment variables template} for the list of available options.
 @end table
 @end deftp
 
+@subsubheading go-wbedav
+@cindex go-webdav
+@uref{https://github.com/emersion/go-webdav, go-webdav} is a
+server for the
+@uref{https://www.rfc-editor.org/rfc/rfc4918, WebDAV} protocol.
+
+@defvar go-webdav-service-type
+This is the service type for go-webdav.  Since go-webdav does not
+have a configuration file, its value must be a list of command-line
+arguments that should be passed to the @code{webdav-server} command.
+For example, the following configuration will serve all files in
+@file{"/srv/http/"} via port 8080 on 127.0.0.1:
+
+@lisp
+(service go-webdav-service-type
+         '("-addr" "127.0.0.1:8080" "/srv/http/"))
+@end lisp
+@end defvar
+
 @subsubheading Patchwork
 @cindex Patchwork
 Patchwork is a patch tracking system.  It can collect patches sent to a

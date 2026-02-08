@@ -39,6 +39,7 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages patchutils)
   #:use-module (gnu packages python)
   #:use-module (gnu packages tls)
@@ -57,6 +58,7 @@
             %test-php-fpm
             %test-hpcguix-web
             %test-anonip
+            %test-go-webdav
             %test-patchwork
             %test-agate
             %test-miniflux-admin-string
@@ -601,6 +603,26 @@ HTTP-PORT, along with php-fpm."
    (name "anonip")
    (description "Anonymize logs via Anonip")
    (value (run-anonip-test))))
+
+
+;;;
+;;; go-webdav
+;;;
+
+(define %go-webdav-os
+  (simple-operating-system
+    (service dhcpcd-service-type)
+    (simple-service 'make-http-root activation-service-type
+                    %make-http-root)
+    (service go-webdav-service-type
+      ;; run-webserver-test requires :8080 to be used as the port.
+      '("-addr" ":8080" "/srv/http/"))))
+
+(define %test-go-webdav
+  (system-test
+    (name "go-webdav")
+    (description "Test that go-webdav can handle HTTP requests.")
+    (value (run-webserver-test name %go-webdav-os))))
 
 
 ;;;
