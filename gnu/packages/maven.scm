@@ -2552,6 +2552,16 @@ reporting or the build process.")))
        (replace "maven-resolver-impl" maven-resolver-1.6-impl)
        (replace "maven-resolver-util" maven-resolver-1.6-util)))))
 
+(define-public maven-3.8-plugin-api
+  (package
+    (inherit maven-plugin-api)
+    (version (package-version maven-3.8-pom))
+    (source (package-source maven-3.8-pom))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs maven-plugin-api)
+       (replace "maven-artifact" maven-3.8-artifact)
+       (replace "maven-model" maven-3.8-model)))))
+
 ;; Many plugins require maven 3.0 as a dependency.
 (define maven-3.0-pom
   (package
