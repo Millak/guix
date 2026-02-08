@@ -6105,16 +6105,6 @@ Unicode-to-LaTeX conversion.")
        (sha256
         (base32 "07p8s5a0xacn404x6l0i04q1gz2h0h9m5azbhdvbhgxlp7bgw9c2"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'remove-unwanted-pytest-options
-                 (lambda _
-                   (substitute* "setup.cfg"
-                     (("doctest_optionflags.*")
-                      "")
-                     (("--cov.*")
-                      "")))))))
     (propagated-inputs
      (list python-numpy))
     (native-inputs
