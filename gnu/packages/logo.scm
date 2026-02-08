@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,50 +20,30 @@
 (define-module (gnu packages logo)
   #:use-module (gnu packages qt)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix packages)
-  #:use-module (guix build-system gnu))
+  #:use-module (guix build-system qt))
 
 (define-public qlogo
   (package
     (name "qlogo")
-    (version "0.92")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://qlogo.org/assets/sources/QLogo-"
-                           version ".tgz"))
-       (sha256
-        (base32
-         "0cpyj1ji6hjy7zzz05672f0j6fr0mwpc1y3sq36hhkv2fkpidw22"))))
-    (build-system gnu-build-system)
+    (version "0.961")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jasonsikes/QLogo")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1yaz8jyn2qzpv8ml7ddjjblnbx2yfa21hxxf8a9r2l5jx95db2cg"))))
+    (build-system qt-build-system)
     (inputs
-     (list qtbase-5))
+     (list qtsvg))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "QLogo.pro"
-               (("target\\.path = /usr/bin")
-                (string-append "target.path = "
-                               (assoc-ref outputs "out") "/bin")))
-             (invoke "qmake" "QLogo.pro")))
-         ;; The check phase rebuilds the source for tests. So, it needs to be
-         ;; run after the install phase has installed the outputs of the build
-         ;; phase.
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda _
-             ;; Clean files created by the build phase.
-             (invoke "make" "clean")
-             ;; QLogo tries to create its "dribble file" in the home
-             ;; directory. So, set HOME.
-             (setenv "HOME" "/tmp")
-             ;; Build and run tests.
-             (invoke "qmake" "TestQLogo.pro")
-             (invoke "make" "-j" (number->string (parallel-job-count)))
-             (invoke "./testqlogo"))))))
+     (list
+      #:qtbase qtbase
+      #:tests? #f)) ; no tests
     (home-page "https://qlogo.org")
     (synopsis "Logo interpreter using Qt and OpenGL")
     (description "QLogo is an interpreter for the Logo language written in C++
