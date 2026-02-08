@@ -2454,6 +2454,20 @@ reporting or the build process.")))
      (modify-inputs (package-native-inputs maven-resolver-transport-http)
        (replace "maven-resolver-test-util" maven-resolver-1.6-test-util)))))
 
+(define maven-3.8-pom
+  (package
+    (inherit maven-pom)
+    (version "3.8.8")
+    (source (origin
+              (inherit (package-source maven-pom))
+              (uri (string-append "mirror://apache/maven/"
+                                  "maven-3/" version "/source/"
+                                  "apache-maven-" version "-src.tar.gz"))
+              (sha256 (base32 "01q2g8sklxsys46i4dxqr89klcxfzz40f2kz4lxbdl1phyibqk92"))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs maven-pom)
+       (replace "maven-parent-pom" maven-parent-pom-35)))))
+
 ;; Many plugins require maven 3.0 as a dependency.
 (define maven-3.0-pom
   (package
