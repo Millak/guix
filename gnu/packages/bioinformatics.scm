@@ -15597,16 +15597,15 @@ using high-throughput sc-RNAseq data.")
     (package
       (name "sambamba")
       (version (git-version base-version revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/biod/sambamba")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1wmka4ickrsfvkhc1mrrkxqy65g6wylsv0scmjq7m8l8qnllxbak"))))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/biod/sambamba")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1wmka4ickrsfvkhc1mrrkxqy65g6wylsv0scmjq7m8l8qnllxbak"))))
       (build-system gnu-build-system)
       (arguments
        `(#:tests? #f                    ; there is no test target
@@ -15631,17 +15630,16 @@ using high-throughput sc-RNAseq data.")
                  (mkdir-p bin)
                  (copy-file (string-append "bin/sambamba-" ,base-version)
                             (string-append bin "/sambamba"))))))))
-      (native-inputs
-       (list python))
       (inputs
        (list ldc lz4 zlib))
+      (native-inputs
+       (list python))
       (home-page "https://github.com/biod/sambamba")
       (synopsis "Tools for working with SAM/BAM data")
-      (description "Sambamba is a high performance modern robust and
-fast tool (and library), written in the D programming language, for
-working with SAM and BAM files.  Current parallelised functionality is
-an important subset of samtools functionality, including view, index,
-sort, markdup, and depth.")
+      (description "Sambamba is a high performance modern robust and fast tool
+(and library), written in the D programming language, for working with SAM and
+BAM files.  Current parallelised functionality is an important subset of
+samtools functionality, including view, index, sort, markdup, and depth.")
       (license license:gpl2+))))
 
 (define-public r-rphyloxml
