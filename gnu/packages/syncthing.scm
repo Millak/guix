@@ -136,6 +136,94 @@ Protocol.")
        (tunable? . #t)))
     (license mpl2.0)))
 
+(define-public syncthing-gtk
+  ;; The commit used below corresponds to the latest commit of the Python 3
+  ;; fork maintained by Debian.  Upstream hasn't bothered porting to Python 3
+  ;; (see: https://github.com/kozec/syncthing-gtk/issues/487).
+  (let ((revision "2")
+        (commit "1e84f332e413ba123bcd443443ffc2b435ffafd2"))
+    (package
+      (name "syncthing-gtk")
+      (version (git-version "0.9.4.4" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://salsa.debian.org/debian/syncthing-gtk.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1b77rdmx74zyz3lfhzzvdf3rrm7lfc7246varnr5xi366z3410ha"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:tests? #f  ;has no tests
+        #:phases
+        #~(modify-phases %standard-phases
+           (add-after 'unpack 'hardcode-dependencies
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let ((psmisc (assoc-ref inputs "psmisc"))
+                     (syncthing (assoc-ref inputs "syncthing")))
+                 ;; Hardcode dependencies paths to avoid propagation.
+                 (substitute* "syncthing_gtk/tools.py"
+                   (("killall") (string-append psmisc "/bin/killall")))
+                 (substitute* "syncthing_gtk/configuration.py"
+                   (("/usr/bin/syncthing") (string-append syncthing
+                                                          "/bin/syncthing"))))))
+           (add-after 'unpack 'fix-autostart-path
+             ;; Change the autostart .desktop file 'Exec' command so it finds
+             ;; the Python wrapper of 'syncthing-gtk', rather than the unwrapped
+             ;; '.syncthing-gtk-real'.
+             (lambda _
+               (substitute* "syncthing_gtk/tools.py"
+                 (("return executable")
+                  "return \"syncthing-gtk\""))
+               ;; Prevent complaints from 'pip3 check':
+               ;;   DEPRECATION: syncthing-gtk unknown has a non-standard
+               ;;   version number. pip 24.1 will enforce this behaviour change.
+               (substitute* "setup.py"
+                 (("return version")
+                  (string-append
+                   "return \"" (car (string-split #$version #\-)) "\"")))))
+           (add-after 'unpack 'remove-windows.py
+             (lambda _
+               ;; A Windows-specific module that fails to load with
+               ;; "ModuleNotFoundError: No module named 'msvcrt'.
+               (delete-file "syncthing_gtk/windows.py")))
+           (add-after 'wrap 'wrap-libs
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (wrap-program (string-append out "/bin/syncthing-gtk")
+                   `("GUIX_GDK_PIXBUF_MODULE_FILES" ":" suffix
+                     (,(getenv "GUIX_GDK_PIXBUF_MODULE_FILES")))
+                   `("GI_TYPELIB_PATH" ":" suffix
+                     (,(getenv "GI_TYPELIB_PATH"))))))))))
+      (native-inputs (list python-setuptools))
+      (inputs
+       (list bash-minimal
+             gtk+
+             libappindicator
+             libnotify
+             python-bcrypt
+             python-dateutil
+             python-pycairo
+             python-pygobject
+             psmisc
+             syncthing))
+      (home-page "https://github.com/kozec/syncthing-gtk")
+      (synopsis "GTK3 based GUI and notification area icon for Syncthing")
+      (description "@code{syncthing-gtk} is a GTK3 Python based GUI and
+notification area icon for Syncthing.  Supported Syncthing features:
+
+@itemize
+@item Everything that WebUI can display
+@item Adding, editing and deleting nodes
+@item Adding, editing and deleting repositories
+@item Restart, shutdown server
+@item Editing daemon settings
+@end itemize\n")
+      (license gpl2))))
+
 (define-public go-github-com-syncthing-notify
   (package
     (name "go-github-com-syncthing-notify")
