@@ -91,6 +91,7 @@
 ;;; Copyright © 2026 Spencer King <spencer.king@wustl.edu>
 ;;; Copyright © 2026 Igorj Gorjaĉev <igor@goryachev.org>
 ;;; Copyright © 2026 Nikita Mitasov <me@ch4og.com>
+;;; Copyright © 2026 Alissa Istleyeva <awth13@sdf.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -161,6 +162,8 @@
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages guile)
+  #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages haskell-check)
   #:use-module (gnu packages haskell-web)
   #:use-module (gnu packages haskell-xyz)
@@ -3266,6 +3269,63 @@ core/thread.")
           #~(cons "-Dexperimental=true"
                   #$flags))))
       (synopsis "Waybar with experimental features"))))
+
+(define-public gubar
+  (package
+    (name "gubar")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/trevarj/gubar")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1fdg9dvfyhmqsivgj262jczijfcpk8hqwbcs5q5nrxbw59a9wl96"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no tests
+      #:modules `(((guix build guile-build-system)
+                   #:select (target-guile-effective-version))
+                  (srfi srfi-26)
+                  ,@%default-gnu-imported-modules)
+      #:phases
+      (with-imported-modules `((guix build guile-build-system)
+                               ,@%default-gnu-imported-modules)
+        #~(modify-phases %standard-phases
+            (delete 'strip)
+            (add-before 'configure 'setenv
+              (lambda _
+                (setenv "GUILE_AUTO_COMPILE" "0")))
+            (add-after 'install 'wrap
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let* ((version (target-guile-effective-version))
+                       (site-ccache (string-append "/lib/guile/" version
+                                                   "/site-ccache"))
+                       (site (string-append "/share/guile/site/" version))
+                       (bin (string-append #$output "/bin/")))
+                  (define (dep-path env path)
+                    (list env '= (map (cut string-append <> path)
+                                      (list #$output
+                                            #$(this-package-input
+                                               "guile-fibers")
+                                            #$(this-package-input
+                                               "guile-json")))))
+                  (wrap-program (string-append bin "gubar")
+                    (dep-path "GUILE_LOAD_PATH" site)
+                    (dep-path "GUILE_LOAD_COMPILED_PATH" site-ccache)))))))))
+    (native-inputs (list autoconf automake guile-3.0 pkg-config))
+    (inputs (list bash-minimal guile-fibers guile-json-4))
+    (home-page "https://codeberg.org/trevarj/gubar")
+    (synopsis "Swaybar generator written in Guile Scheme")
+    (description "gubar is a text generator for swaybar written and configured
+with Guile Scheme.  It provides an interface for defining status line blocks,
+runs block update commands concurrently, and displays the output of the update
+commands in the status line using swaybar-protocol.")
+    (license license:gpl3+)))
 
 (define-public wlr-randr
   (package
