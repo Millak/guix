@@ -549,18 +549,23 @@ components.")
            python-sphinxcontrib-doxylink
            python-pyyaml))
     (inputs
-     (list eudev
-           glib
-           gst-plugins-base
-           libevent
-           libjpeg-turbo
-           libtiff
-           libyaml
-           libyuv
-           pybind11
-           python-jinja2
-           python-ply
-           qtbase))
+     (append
+      (list eudev
+            glib
+            gst-plugins-base
+            libevent
+            libjpeg-turbo
+            libtiff
+            libyaml
+            libyuv
+            pybind11
+            python-jinja2
+            python-ply
+            qtbase)
+      ;; libpisp is only needed for the rpi/pisp pipeline on ARM.
+      (if (target-arm?)
+          (list libpisp)
+          '())))
     (synopsis "Camera stack and framework")
     (description "LibCamera is a complex camera support library for GNU+Linux,
 Android, and ChromeOS.")
