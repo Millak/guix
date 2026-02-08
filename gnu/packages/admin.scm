@@ -6727,14 +6727,14 @@ file or files to several hosts.")
 (define-public du-dust
   (package
     (name "du-dust")
-    (version "1.2.0")
+    (version "1.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "du-dust" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1nx3a1vij6m7jkmjybaxpjmwqygh0byjqis94f8lx02i1yyw2w1d"))))
+        (base32 "0lksdw44s4fwyfscn79f8c8s3a5ijwfbxny539lgq0fsv5nx6bid"))))
     (build-system cargo-build-system)
     (arguments
      (list #:install-source? #f
