@@ -428,6 +428,22 @@ UTF-32 support.")
      (description "This package provided safe, fast, small crypto using Rust.")
      (license (list license:isc license:openssl)))))
 
+(define-public rust-ring-0.17.14
+  (hidden-package
+   (package
+     (inherit rust-ring-0.17)
+     (version "0.17.14")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "ring" version))
+        (file-name (string-append "rust-ring-" version ".tar.gz"))
+        (sha256
+         (base32 "1dw32gv19ccq4hsx3ribhpdzri1vnrlcfqb2vj41xn4l49n9ws54"))))
+     (arguments
+      (list #:skip-build? #t
+            #:cargo-package-crates ''("ring"))))))
+
 (define-public rust-rustc-demangle-capi-0.1
   (hidden-package
    (package
