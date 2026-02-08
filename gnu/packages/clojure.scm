@@ -975,15 +975,10 @@ work with command-line arguments.")
                 (string-append "org.clojure/clojure {:local/root \""
                                (assoc-ref inputs "clojure")
                                "/share/java/clojure.jar\"}"))))))))
-    (propagated-inputs (list maven-resolver-api
-                             maven-resolver-spi
-                             maven-resolver-impl
-                             maven-resolver-util
-                             maven-resolver-connector-basic
-                             maven-resolver-provider
-                             maven-core
-                             maven-resolver-transport-http
-                             maven-resolver-transport-file
+    (propagated-inputs (list maven-3.8-core
+                             maven-resolver-1.6-connector-basic
+                             maven-resolver-1.6-transport-http
+                             maven-resolver-1.6-transport-file
                              clojure-tools-gitlibs
                              clojure-tools-cli
                              clojure-data-xml
