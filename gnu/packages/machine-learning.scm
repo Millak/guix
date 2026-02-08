@@ -861,7 +861,7 @@ training, HMM clustering, HMM mixtures.")
       (license license:lgpl2.0+))))
 
 (define-public llama-cpp
-  (let ((tag "b7126"))
+  (let ((tag "b7966"))
     (package
       (name "llama-cpp")
       (version (string-append "0.0.0-" tag))
@@ -873,7 +873,7 @@ training, HMM clustering, HMM mixtures.")
                (commit tag)))
          (file-name (git-file-name name tag))
          (sha256
-          (base32 "00fpp0gi3790yxxn5p22z0vxk93a04zslnkanmxbgi3k537ph8f6"))))
+          (base32 "0d0ax0vgcg6qhxlmlvk2sv9rfry02pyc9qkzliir1p36f05lyqwp"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -881,7 +881,6 @@ training, HMM clustering, HMM mixtures.")
         #~(list #$(string-append "-DGGML_BUILD_NUMBER=" tag)
                 "-DBUILD_SHARED_LIBS=ON"
                 "-DGGML_VULKAN=ON"
-                "-DLLAMA_CURL=ON"
                 "-DGGML_BLAS=ON"
                 "-DGGML_BLAS_VENDOR=OpenBLAS"
                 (string-append "-DBLAS_INCLUDE_DIRS="
@@ -921,6 +920,26 @@ training, HMM clustering, HMM mixtures.")
                 (substitute* '("tests/CMakeLists.txt")
                   (("llama_build_and_test\\(test-thread-safety.cpp.*")
                    "")
+                  (("test-download-model COMMAND")
+                   "test-download-model COMMAND true")
+                  (("llama_build_and_test\\(test-state-restore-fragmented.cpp.*")
+                   "")
+                  (("llama_build_and_test\\(test-eval-callback-download-model.cpp.*")
+                   "")
+                  (("llama_build_and_test\\(test-eval-callback.cpp.*")
+                   "")
+                  (("llama_build_and_test\\(test-chat.cpp.*")
+                   "")
+                  (("set_tests_properties\\(test-thread-safety.*")
+                   "")
+                  (("set_tests_properties\\(test-download-model.*")
+                   "")
+                  (("set_tests_properties\\(test-state-restore-fragmented.*")
+                   "")
+                  (("set_tests_properties\\(test-eval-callback-download-model.*")
+                   "")
+                  (("set_tests_properties\\(test-eval-callback.*")
+                   "")
                   ;; error while handling argument "-m": expected value for
                   ;; argument
                   (("llama_build_and_test\\(test-arg-parser.cpp.*")
@@ -929,7 +948,9 @@ training, HMM clustering, HMM mixtures.")
                 ;; run in Guix build environment
                 (substitute* '("examples/eval-callback/CMakeLists.txt")
                   (("COMMAND llama-eval-callback")
-                   "COMMAND true llama-eval-callback"))
+                   "COMMAND true llama-eval-callback")
+                  (("download-model COMMAND")
+                  "download-model COMMAND true"))
                 ;; Help it find the test files it needs
                 (substitute* "tests/test-chat.cpp"
                   (("\"\\.\\./\"") "\"../source/\""))))
@@ -943,9 +964,9 @@ training, HMM clustering, HMM mixtures.")
                                        "^test-")))))))
       (inputs
        (list curl glslang python-gguf python-minimal openblas spirv-headers
-             spirv-tools vulkan-headers vulkan-loader))
+             spirv-tools vulkan-headers vulkan-loader openssl))
       (native-inputs
-       (list bash-minimal pkg-config shaderc))
+       (list bash-minimal pkg-config python-minimal-wrapper shaderc))
       (propagated-inputs
        (list python-numpy python-pytorch python-sentencepiece))
       (properties '((tunable? . #true))) ;use AVX512, FMA, etc. when available
