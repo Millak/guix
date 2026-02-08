@@ -129,7 +129,7 @@ across multiple machines.")
 (define-public konsave
   (package
     (name "konsave")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method git-fetch)
@@ -138,7 +138,7 @@ across multiple machines.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j5nszy41j4fd6b5w7188gphfk2s0dj44rs7fg55a4izvm0brbx9"))))
+        (base32 "0454cjcnlwpylia6lb40xzjvm07p3hxmfl21zmlxhl2xjlbjhsg4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
