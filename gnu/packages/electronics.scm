@@ -4047,18 +4047,9 @@ design.")
       ;; Tests are expensive and may introduce race condition on systems with
       ;; high (more than 16) threads count; limit parallel jobs to 8x.
       #~(list
-         "--numprocesses" (number->string (min 8 (parallel-job-count))))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'pathch-pytest-options
-            (lambda _
-              (substitute* "pyproject.toml"
-                ((".*--cov=.*") "")
-                ((".*--self-contained-html.*") "")
-                ((".*-n.*auto.*") "")))))))
+         "--numprocesses" (number->string (min 8 (parallel-job-count))))))
     (native-inputs
-     (list python-pytest-cov
-           python-pytest-html
+     (list python-pytest
            python-pytest-xdist
            python-setuptools))
     (propagated-inputs
