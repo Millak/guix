@@ -2409,6 +2409,21 @@ reporting or the build process.")))
        (delete "java-mockito-1")
        (replace "maven-resolver-test-util" maven-resolver-1.6-test-util)))))
 
+(define-public maven-resolver-1.6-transport-file
+  (package
+    (inherit maven-resolver-transport-file)
+    (version (package-version maven-resolver-1.6-parent-pom))
+    (source (package-source maven-resolver-1.6-parent-pom))
+    (inputs
+     (modify-inputs (package-inputs maven-resolver-transport-file)
+       (delete "maven-wagon-provider-api")
+       (replace "maven-resolver-api" maven-resolver-1.6-api)
+       (replace "maven-resolver-spi" maven-resolver-1.6-spi)
+       (replace "maven-resolver-util" maven-resolver-1.6-util)))
+    (native-inputs
+     (modify-inputs (package-native-inputs maven-resolver-transport-file)
+       (replace "maven-resolver-test-util" maven-resolver-1.6-test-util)))))
+
 ;; Many plugins require maven 3.0 as a dependency.
 (define maven-3.0-pom
   (package
