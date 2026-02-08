@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2019, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2019, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2019, 2021, 2023, 2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
@@ -77,17 +77,17 @@
                      "python3-embed" "--variable=exec_prefix"))
             (_  (exit 1)))))))
 
-(define-public gdb-14
+(define-public gdb-17
   (package
     (name "gdb")
-    (version "14.2")
+    (version "17.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gdb/gdb-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0wkprsjyyh204fdjlkaz20k847l88i9y8m9zqsv15vcd3l3dhk9d"))))
+                "0xnqqv3j463r5rnfmblj3zwhf0l0lyy4bp1zaid8zxn9fignz68l"))))
     (build-system gnu-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -209,7 +209,7 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
   ;; This is the fixed version that packages depend on.  Update it rarely
   ;; enough to avoid massive rebuilds.
   (package
-    (inherit gdb-14)
+    (inherit gdb-17)
     (version "12.1")
     (source (origin
               (method url-fetch)
@@ -220,7 +220,7 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
                 "1vczsqcbh5y0gx7qrclpna0qzx26sk7lra6y8qzxam1biyzr65qf"))))
     ;; TODO: Remove this when updating gdb/pinned.
     (arguments
-     (substitute-keyword-arguments (package-arguments gdb-14)
+     (substitute-keyword-arguments (package-arguments gdb-17)
        ((#:configure-flags flags '())
         (if (target-hurd64?)
             #~'("--enable-targets=i586-pc-gnu,x86_64-pc-gnu")
@@ -229,7 +229,7 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
 
 (define-public gdb-15
   (package
-    (inherit gdb-14)
+    (inherit gdb-17)
     (version "15.2")
     (source (origin
               (method url-fetch)
@@ -242,7 +242,7 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
 
 (define-public gdb-16
   (package
-    (inherit gdb-14)
+    (inherit gdb-17)
     (version "16.3")
     (source (origin
               (method url-fetch)
@@ -253,17 +253,17 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
                (base32
                 "1i940b04404xr44xc66c4r4nk091czqz7zzrmhbpk64aaaax1z5w"))))))
 
-(define-public gdb-17
+(define-public gdb-14
   (package
-    (inherit gdb-14)
-    (version "17.1")
+    (inherit gdb-17)
+    (version "14.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gdb/gdb-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0xnqqv3j463r5rnfmblj3zwhf0l0lyy4bp1zaid8zxn9fignz68l"))))))
+                "0wkprsjyyh204fdjlkaz20k847l88i9y8m9zqsv15vcd3l3dhk9d"))))))
 
 (define-public gdb
   ;; The "default" version.
