@@ -1134,7 +1134,7 @@ JSON, so you have a lot of control over the search and cleanup process.")
 (define-public fd
   (package
     (name "fd")
-    (version "10.2.0")
+    (version "10.3.0")
     (source
      (origin
        (method url-fetch)
@@ -1142,7 +1142,7 @@ JSON, so you have a lot of control over the search and cleanup process.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0d5zv6pmxxsblbvk4pzxjbj072d2bg3byhss57699y2s37xdw26y"))))
+         "1nw58x3y016qkzh3y8fkypg2r13p5h1f4dv2wy9apvxxbd5h1grg"))))
     (build-system cargo-build-system)
     (arguments
      (list
