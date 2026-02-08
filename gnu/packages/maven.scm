@@ -2504,6 +2504,17 @@ reporting or the build process.")))
      (modify-inputs (package-propagated-inputs maven-settings)
        (replace "maven-pom" maven-3.8-pom)))))
 
+(define-public maven-3.8-settings-builder
+  (package
+    (inherit maven-settings-builder)
+    (version (package-version maven-3.8-pom))
+    (source (package-source maven-3.8-pom))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs maven-settings-builder)
+       (replace "maven-builder-support" maven-3.8-builder-support)
+       (replace "maven-settings" maven-3.8-settings)
+       (replace "maven-pom" maven-3.8-pom)))))
+
 ;; Many plugins require maven 3.0 as a dependency.
 (define maven-3.0-pom
   (package
