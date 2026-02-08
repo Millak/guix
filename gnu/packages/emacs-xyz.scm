@@ -8047,31 +8047,40 @@ evaluations.  The entry point is @code{M-x build-farm} command.")
     (license license:gpl3+)))
 
 (define-public emacs-d-mode
-  (package
-    (name "emacs-d-mode")
-    (version "2.0.12")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Emacs-D-Mode-Maintainers/Emacs-D-Mode")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0mwd412d2kha8avkyhvvkh8r7an859xk18f7phgx7kj989pr3xkr"))))
-    (build-system emacs-build-system)
-    (arguments (list #:tests? #f        ; XXX: too many failures
-                     #:test-command
-                     #~(list "emacs" "-Q" "-batch" "-l" "d-mode-test.el"
-                             "-l" "d-mode.el"
-                             "-f" "ert-run-tests-batch-and-exit")))
-    (propagated-inputs
-     (list emacs-undercover))
-    (home-page "https://github.com/Emacs-D-Mode-Maintainers/Emacs-D-Mode")
-    (synopsis "Emacs major mode for editing D code")
-    (description "This package provides an Emacs major mode for highlighting
+  ;;  Tag is from 2022-06-02, latest commit from 2024-12-25.
+  (let ((commit "a4f9026d9e7fadfcfb138189c18c639b57467ce5")
+        (revision "1"))
+    (package
+      (name "emacs-d-mode")
+      (version (git-version "2.0.12" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/Emacs-D-Mode-Maintainers/Emacs-D-Mode")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "00ls640l30fdx8ii2axsyy5ab0n01jp1nsn8lfparm6ajylxyjpz"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:test-command
+        #~(list "emacs" "-Q" "-batch" "-l" "d-mode-test.el"
+                "-l" "d-mode.el"
+                "-f" "ert-run-tests-batch-and-exit")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'skip-failing-tests
+              (lambda _
+                (with-directory-excursion "tests"
+                  (for-each delete-file
+                            '("I0021.d" "fonts.d" "fonts_enums.d"))))))))
+      (home-page "https://github.com/Emacs-D-Mode-Maintainers/Emacs-D-Mode")
+      (synopsis "Emacs major mode for editing D code")
+      (description "This package provides an Emacs major mode for highlighting
 code written in the D programming language.")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public emacs-extempore-mode
   ;; Use the latest commit at time of packaging.  There are no releases or tags.
