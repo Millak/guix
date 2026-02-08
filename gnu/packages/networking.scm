@@ -441,6 +441,42 @@ local filesystem.  It splits the file into blocks, hashes them, and compares
 them in order to efficiently transfer a minimal amount of data.")
     (license (list license:gpl2 license:gpl3))))
 
+(define-public libpisp
+  (package
+    (name "libpisp")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/raspberrypi/libpisp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mm3f4fjj87kl1h1xjfjjfr1vz5avqja3hxly2mp264w9zmra33j"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-Dlogging=disabled")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'fix-pkg-config
+                 ;; Remove nlohmann_json from Requires.private since the
+                 ;; nlohmann-json package doesn't provide a pkg-config file.
+                 ;; This is safe because nlohmann-json is header-only.
+                 (lambda _
+                   (substitute* (string-append #$output
+                                               "/lib/pkgconfig/libpisp.pc")
+                     (("Requires.private:.*") "")))))))
+    (inputs (list nlohmann-json))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/raspberrypi/libpisp")
+    (synopsis "Helper library for Raspberry Pi ISP configuration")
+    (description
+     "libpisp is a helper library to generate run-time configuration for the
+Raspberry Pi ISP (PiSP), consisting of the Frontend and Backend hardware
+components.")
+    (license license:bsd-2)))
+
 (define-public libcamera
   (package
     (name "libcamera")
