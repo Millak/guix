@@ -17,7 +17,7 @@
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Ben Sturmfels <ben@sturm.com.au>
 ;;; Copyright © 2019,2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2020-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2026 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2024 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020, 2022, 2023, 2024, 2025 Maxim Cournoyer <maxim@guixotic.coop>
@@ -98,6 +98,7 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages ocr)
@@ -1344,7 +1345,7 @@ using a stylus.")
 (define-public xournalpp
   (package
     (name "xournalpp")
-    (version "1.2.8")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)
@@ -1353,11 +1354,17 @@ using a stylus.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "134qmx6nvxfpfbx3sb6ss0vc5jcxlhysk699aaklpid03p8ps0y9"))))
+        (base32 "1bw6w7k0vz41ijr73vxg2ccv5cs2wh6asx7m0hhnx56hdkzwpp39"))))
     (build-system cmake-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "-DENABLE_GTEST=ON")
+      #:generator "Ninja"
+      ;; FIXME: Building the tests fails if DOWNLOAD_GTEST is off.  Ignore
+      ;; them for now.
+      #:tests? #false
+      #:configure-flags
+      #~(list "-DENABLE_GTEST=ON"
+              "-DENABLE_CPPTRACE=OFF") ;require unpackaged "cpp-trace"
       #:imported-modules `((guix build glib-or-gtk-build-system)
                            ,@%cmake-build-system-modules)
       #:modules '(((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
@@ -1375,8 +1382,9 @@ using a stylus.")
                                 (search-input-file inputs "/bin/addr2line")
                                 " ")))))
           (add-after 'build 'prepare-tests
-            (lambda _
-              (invoke "cmake" "--build" "." "--target" "test-units")))
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "cmake" "--build" "." "--target" "test-units"))))
           (add-after 'install 'glib-or-gtk-wrap
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
           (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
@@ -1389,7 +1397,13 @@ using a stylus.")
                 (wrap-program (string-append #$output "/bin/xournalpp")
                   `("GDK_PIXBUF_MODULE_FILE" = (,pixbuf-module-file)))))))))
     (native-inputs
-     (list cppunit gettext-minimal googletest help2man pkg-config))
+     (list cppunit
+           gettext-minimal
+           `(,glib "bin") ;for glib-compile-resources
+           googletest
+           help2man
+           ninja
+           pkg-config))
     (inputs
      (list adwaita-icon-theme
            alsa-lib
@@ -1401,7 +1415,8 @@ using a stylus.")
            libzip
            lua
            poppler
-           portaudio))
+           portaudio
+           qpdf))
     (home-page "https://github.com/xournalpp/xournalpp")
     (synopsis "Handwriting notetaking software with PDF annotation support")
     (description "Xournal++ is a hand note taking software written in
