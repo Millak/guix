@@ -729,8 +729,10 @@ by 'mdadm'.")
                  (bootloader grub-bootloader)
                  (targets '("/dev/vdb"))))
 
-    ;; Note: Do not pass "console=ttyS0" so we can use our passphrase prompt
-    ;; detection logic in 'enter-luks-passphrase'.
+    ;; Pass "console=ttyS0" so initrd messages (including luks-master-key
+    ;; diagnostics) are visible on serial.  The GRUB passphrase prompt
+    ;; appears on VGA regardless and is detected via OCR.
+    (kernel-arguments '("console=ttyS0"))
 
     (mapped-devices (list (mapped-device
                            (source (uuid "12345678-1234-1234-1234-123456789abc"))
@@ -786,16 +788,12 @@ reboot\n"))
 
 (define (enter-luks-passphrase marionette)
   "Return a gexp to be inserted in the basic system test running on MARIONETTE
-to enter the LUKS passphrase."
+to enter the LUKS passphrase.  Only the GRUB passphrase prompt is expected;
+the initrd reuses the master key passed by GRUB via (proc)/luks_script."
   (let ((ocrad (file-append ocrad "/bin/ocrad")))
     #~(begin
         (define (passphrase-prompt? text)
           (string-contains (pk 'screen-text text) "Enter pass"))
-
-        (define (bios-boot-screen? text)
-          ;; Return true if TEXT corresponds to the boot screen, before GRUB's
-          ;; menu.
-          (string-prefix? "SeaBIOS" text))
 
         (test-assert "enter LUKS passphrase for GRUB"
           (begin
@@ -806,26 +804,9 @@ to enter the LUKS passphrase."
             (marionette-type #$(string-append %luks-passphrase "\n")
                              #$marionette)
 
-            ;; Now wait until we leave the boot screen.  This is necessary so
-            ;; we can then be sure we match the "Enter passphrase" prompt from
-            ;; 'cryptsetup', in the initrd.
-            (wait-for-screen-text #$marionette (negate bios-boot-screen?)
-                                  #:ocr #$ocrad
-                                  #:timeout 20)))
-
-        (test-assert "enter LUKS passphrase for the initrd"
-          (begin
-            ;; XXX: Here we use OCR as well but we could instead use QEMU
-            ;; '-serial stdio' and run it in an input pipe,
-            (wait-for-screen-text #$marionette passphrase-prompt?
-                                  #:ocr #$ocrad
-                                  #:timeout 60)
-            (marionette-type #$(string-append %luks-passphrase "\n")
-                             #$marionette)
-
             ;; Take a screenshot for debugging purposes.
             (marionette-control (string-append "screendump " #$output
-                                               "/post-initrd-passphrase.ppm")
+                                               "/post-grub-passphrase.ppm")
                                 #$marionette))))))
 
 (define %test-encrypted-root-os

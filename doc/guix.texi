@@ -19148,6 +19148,10 @@ swap file is encrypted because the entire device is encrypted.
 @xref{Swap Space}, or @xref{Preparing for Installation,,Disk
 Partitioning}, for an example.
 
+When using GRUB as the bootloader, the LUKS password is only requested
+once: GRUB passes the master key to the initial RAM disk automatically.
+@xref{Bootloader Configuration, Automatic LUKS Master Key Passing}, for
+details.
 
 @end defvar
 
@@ -48868,48 +48872,55 @@ This option in enabled by default.  In some cases involving the
 in RAM, it can be handy to disable the option by setting it to
 @code{#f}.
 
+@subsubheading Automatic LUKS Master Key Passing
+
+When booting from a LUKS-encrypted device using GRUB, the password is
+normally requested twice: once by GRUB to access @file{/boot}, and a
+second time by the initial RAM disk to mount the root file system.
+
+When GRUB's @code{cryptomount} command unlocks a LUKS device, GRUB
+retains the volume's master key in memory.  The @code{cryptodisk}
+module exposes these master keys via a GRUB-internal virtual file
+system called @dfn{procfs}, accessible as @code{(proc)/luks_script}.
+Each line of this virtual file has the form:
+
+@example
+luks_mount @var{uuid} @var{offset} @var{sector-size} @var{cipher-mode-iv} @var{hex-master-key}
+@end example
+
+@noindent
+(or @code{luks2_mount} for LUKS2 volumes).
+
+When the store resides on an encrypted device, the generated GRUB
+configuration automatically injects this virtual file into the initial
+RAM disk using GRUB's @code{newc:} initrd prefix---a documented
+mechanism for synthesizing a CPIO archive on the fly
+(@pxref{GNU/Linux,,, grub, GNU GRUB manual}).  The resulting initrd
+line is equivalent to:
+
+@example
+initrd newc:etc/luks_script:(proc)/luks_script @dots{} /boot/initrd
+@end example
+
+@noindent
+The initial RAM disk then reads @file{/etc/luks_script}, looks up the
+matching UUID, and calls @command{cryptsetup open --volume-key-file} to
+unlock the device without prompting for a password a second time.  If
+the master key is missing or does not match, the system falls back to
+an interactive password prompt, so this mechanism is transparent to the
+user.
+
+No configuration is required: GRUB's @code{procfs} and @code{luks}
+modules are loaded automatically when encrypted devices are declared
+via @code{luks-device-mapping} (@pxref{Mapped Devices}).
+
 @item @code{extra-initrd} (default: @code{#f})
 File name of an additional initrd to load during the boot.  It may or
 may not point to a file in the store, but the main use case is for
 out-of-store files containing secrets.
 
-In order to be able to provide decryption keys for LUKS devices, they
-need to be available in the initial RAM disk.  However they cannot be
-stored inside the usual initrd, since it is stored in the store and
-being world-readable (as files in the store are) is not a desired
-property for an initrd containing decryption keys.  You can therefore
-use this field to instruct GRUB to also load a manually created initrd
-not stored in the store.
-
 For any use case not involving secrets, you should use regular initrd
 (@pxref{operating-system Reference, @code{initrd}}) instead.
-
-Suitable image can be created for example like this:
-
-@example
-echo /key-file.bin | cpio -oH newc >/key-file.cpio
-chmod 0000 /key-file.cpio
-@end example
-
-After it is created, you can use it in this manner:
-
-@lisp
-;; Operating system with encrypted boot partition
-(operating-system
-  @dots{}
-  (bootloader (bootloader-configuration
-               (bootloader grub-efi-bootloader)
-               (targets '("/boot/efi"))
-               ;; Load the initrd with a key file...
-               (extra-initrd "/key-file.cpio")))
-  (mapped-devices
-   (list (mapped-device
-          (source (uuid "12345678-1234-1234-1234-123456789abc"))
-          (target "my-root")
-          (type luks-device-mapping)
-          ;; ... and use it to unlock the root device.
-          (arguments '(#:key-file "/key-file.bin"))))))
-@end lisp
 
 Be careful when using this option, since pointing to a file that is not
 readable by the grub while booting will cause the boot to fail and

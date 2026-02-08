@@ -404,7 +404,10 @@ when booting a root file system on a Btrfs subvolume."
               (initrd (normalize-file (menu-entry-initrd entry)
                                       device-mount-point
                                       store-directory-prefix))
-              (extra-initrd (bootloader-configuration-extra-initrd config)))
+              (extra-initrd (bootloader-configuration-extra-initrd config))
+              (luks-script-initrd
+               (and (pair? store-crypto-devices)
+                    "newc:etc/luks_script:(proc)/luks_script")))
           ;; Here DEVICE is the store and DEVICE-MOUNT-POINT is its mount point.
           ;; Use the right file names for LINUX and INITRD in case
           ;; DEVICE-MOUNT-POINT is not "/", meaning that the store is on a
@@ -412,14 +415,20 @@ when booting a root file system on a Btrfs subvolume."
 
           ;; When STORE-DIRECTORY-PREFIX is defined, prepend it the linux and
           ;; initrd paths, to allow booting from a Btrfs subvolume.
+
+          ;; When the store is on an encrypted device, inject GRUB's
+          ;; (proc)/luks_script into the initrd as /etc/luks_script so the
+          ;; initrd can use the already-decrypted master key to open LUKS
+          ;; volumes without prompting for the password a second time.
           #~(format port "menuentry ~s {
   ~a
   linux ~a ~a
-  initrd ~a ~a
+  initrd ~a ~a ~a
 }~%"
                     #$label
                     #$(grub-root-search device linux)
                     #$linux (string-join (list #$@arguments))
+                    (or #$luks-script-initrd "")
                     (or #$extra-initrd "")
                     #$initrd)))
        (multiboot-kernel
@@ -464,7 +473,7 @@ menuentry ~s {
           ;; Other type of devices aren't implemented.
           #~()))
     (let ((devices (map crypto-device->cryptomount store-crypto-devices))
-          (modules #~(format port "insmod luks~%insmod luks2~%")))
+          (modules #~(format port "insmod procfs~%insmod luks~%insmod luks2~%")))
       (if (null? devices)
           devices
           (cons modules devices))))

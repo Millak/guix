@@ -209,58 +209,162 @@ requests is allowed for the underlying device.  EXTRA-OPTIONS is a list of
 additional options to be passed to the 'cryptsetup open' command."
   (with-imported-modules (source-module-closure
                           '((gnu build file-systems)
+                            (guix base16)
                             (guix build utils))) ;; For mkdir-p
     (match targets
       ((target)
-       #~(let ((source #$(if (uuid? source)
-                             (uuid-bytevector source)
-                             source))
-               (keyfile #$key-file))
+       #~(begin
+           (use-modules (guix base16))
 
-           ;; Create '/run/cryptsetup/' if it does not exist, as device locking
-           ;; is mandatory for LUKS2.
-           (mkdir-p "/run/cryptsetup/")
+           (let ((source #$(if (uuid? source)
+                               (uuid-bytevector source)
+                               source))
+                 (keyfile #$key-file))
 
-           ;; Use 'cryptsetup-static', not 'cryptsetup', to avoid pulling the
-           ;; whole world inside the initrd (for when we're in an initrd).
-           ;; 'cryptsetup open' requires standard input to be a tty to allow
-           ;; for interaction but shepherd sets standard input to /dev/null;
-           ;; thus, explicitly request a tty.
-           (let ((partition
-                  ;; Note: We cannot use the "UUID=source" syntax here
-                  ;; because 'cryptsetup' implements it by searching the
-                  ;; udev-populated /dev/disk/by-id directory but udev may
-                  ;; be unavailable at the time we run this.
-                  (if (bytevector? source)
-                      (or (let loop ((tries-left 10))
-                            (and (positive? tries-left)
-                                 (or (find-partition-by-luks-uuid source)
-                                     ;; If the underlying partition is
-                                     ;; not found, try again after
-                                     ;; waiting a second, up to ten
-                                     ;; times.  FIXME: This should be
-                                     ;; dealt with in a more robust way.
-                                     (begin (sleep 1)
-                                            (loop (- tries-left 1))))))
-                          (error "LUKS partition not found" source))
-                      source)))
-             (let ((cryptsetup #$(file-append cryptsetup-static
-                                              "/sbin/cryptsetup"))
-                   (cryptsetup-flags (cons*
-                                      "open" "--type" "luks"
-                                      (append
-                                       (if #$allow-discards?
-                                           '("--allow-discards")
-                                           '())
-                                       '#$extra-options
-                                       (list partition #$target)))))
-               ;; We want to fallback to the password unlock if the keyfile
-               ;; fails.
-               (or (and keyfile
-                        (zero? (apply system*/tty cryptsetup
-                                      "--key-file" keyfile cryptsetup-flags)))
-                   (zero? (apply system*/tty cryptsetup
-                                 cryptsetup-flags))))))))))
+             (define (luks-script-lookup-key partition)
+               "Parse /etc/luks_script and return the master key as a
+bytevector for PARTITION.  Throw to 'luks-script-error with a message
+string if the file is missing, the partition UUID cannot be read, or
+no matching entry is found."
+               (let ((script-file "/etc/luks_script"))
+                 (unless (file-exists? script-file)
+                   (throw 'luks-script-error
+                          (format #f "~a not found, skipping"
+                                  script-file)))
+                 (let ((part-uuid-hex
+                        (or (and=> (read-luks-partition-uuid partition)
+                                   bytevector->base16-string)
+                            (throw 'luks-script-error
+                                   (format #f
+                                           "could not read UUID from ~a"
+                                           partition)))))
+                   (call-with-input-file script-file
+                     (lambda (port)
+                       (let loop ((line (read-line port)))
+                         (when (eof-object? line)
+                           (throw 'luks-script-error
+                                  (format #f
+                                          "no matching UUID ~a in ~a"
+                                          part-uuid-hex script-file)))
+                         (match (string-tokenize line)
+                           (((or "luks_mount" "luks2_mount")
+                             script-uuid _ ... hex-key)
+                            (if (string-ci=? (string-delete #\- script-uuid)
+                                             part-uuid-hex)
+                                (base16-string->bytevector hex-key)
+                                (loop (read-line port))))
+                           (_ (loop (read-line port))))))))))
+
+             (define (open-luks-with-volume-key cryptsetup-program key-bv
+                                                partition target
+                                                extra-open-flags)
+               "Open LUKS device PARTITION as TARGET using volume key KEY-BV.
+Return the exit status of cryptsetup.  KEY-BV is securely wiped and
+the temporary key file removed regardless of outcome."
+               (let ((key-file "/run/.luks-master-key"))
+                 (dynamic-wind
+                   (const #t)
+                   (lambda ()
+                     (call-with-port (open-file key-file "wb")
+                       (lambda (p) (put-bytevector p key-bv)))
+                     (chmod key-file #o400)
+                     (apply system*/tty cryptsetup-program
+                            "open" "--type" "luks"
+                            "--volume-key-file" key-file
+                            (append extra-open-flags
+                                    (list partition target))))
+                   (lambda ()
+                     (bytevector-fill! key-bv 0)
+                     (when (file-exists? key-file)
+                       (delete-file key-file))))))
+
+             (define (try-luks-script-master-key cryptsetup-program
+                                                 partition target
+                                                 extra-open-flags)
+               "Try to open LUKS device PARTITION as TARGET using a master key
+from /etc/luks_script (injected by GRUB).  EXTRA-OPEN-FLAGS is a list of
+additional flags to pass to 'cryptsetup open' (e.g., \"--allow-discards\").
+Return #t on success, #f if /etc/luks_script does not exist or the UUID
+does not match.  Any other error (parse failure, cryptsetup failure) is
+NOT caught--it will be visible so bugs cannot hide."
+               (catch 'luks-script-error
+                 (lambda ()
+                   (let* ((key-bv (luks-script-lookup-key partition))
+                          (status (open-luks-with-volume-key
+                                   cryptsetup-program key-bv
+                                   partition target extra-open-flags)))
+                     (if (zero? status)
+                         (begin
+                           (format (current-error-port)
+                                   "luks-master-key: unlocked ~a as ~a~%"
+                                   partition target)
+                           #t)
+                         (begin
+                           (format (current-error-port)
+                                   "luks-master-key: cryptsetup failed (status ~a) for ~a~%"
+                                   status partition)
+                           #f))))
+                 (lambda (key msg . rest)
+                   (format (current-error-port)
+                           "luks-master-key: ~a~%" msg)
+                   #f)))
+
+             ;; Create '/run/cryptsetup/' if it does not exist, as device locking
+             ;; is mandatory for LUKS2.
+             (mkdir-p "/run/cryptsetup/")
+
+             ;; Use 'cryptsetup-static', not 'cryptsetup', to avoid pulling the
+             ;; whole world inside the initrd (for when we're in an initrd).
+             ;; 'cryptsetup open' requires standard input to be a tty to allow
+             ;; for interaction but shepherd sets standard input to /dev/null;
+             ;; thus, explicitly request a tty.
+             (let ((partition
+                     ;; Note: We cannot use the "UUID=source" syntax here
+                     ;; because 'cryptsetup' implements it by searching the
+                     ;; udev-populated /dev/disk/by-id directory but udev may
+                     ;; be unavailable at the time we run this.
+                     (if (bytevector? source)
+                         (or (let loop ((tries-left 10))
+                               (and (positive? tries-left)
+                                    (or (find-partition-by-luks-uuid source)
+                                        ;; If the underlying partition is
+                                        ;; not found, try again after
+                                        ;; waiting a second, up to ten
+                                        ;; times.  FIXME: This should be
+                                        ;; dealt with in a more robust way.
+                                        (begin (sleep 1)
+                                               (loop (- tries-left 1))))))
+                             (error "LUKS partition not found" source))
+                         source)))
+               (let ((cryptsetup #$(file-append cryptsetup-static
+                                                "/sbin/cryptsetup"))
+                     (cryptsetup-flags (cons*
+                                        "open" "--type" "luks"
+                                        (append
+                                         (if #$allow-discards?
+                                             '("--allow-discards")
+                                             '())
+                                         '#$extra-options
+                                         (list partition #$target)))))
+                 ;; Try the GRUB-provided LUKS master key first (from
+                 ;; /etc/luks_script, injected into the initrd via GRUB's
+                 ;; newc: mechanism).  This avoids prompting for the password
+                 ;; a second time when GRUB already decrypted the same LUKS
+                 ;; volume.  Fall back to keyfile or interactive password on
+                 ;; any failure.
+                 (or (try-luks-script-master-key cryptsetup partition #$target
+                                                 (append
+                                                  (if #$allow-discards?
+                                                      '("--allow-discards")
+                                                      '())
+                                                  '#$extra-options))
+                     ;; We want to fallback to the password unlock if the
+                     ;; keyfile fails.
+                     (and keyfile
+                          (zero? (apply system*/tty cryptsetup
+                                        "--key-file" keyfile cryptsetup-flags)))
+                     (zero? (apply system*/tty cryptsetup
+                                   cryptsetup-flags)))))))))))
 
 (define* (close-luks-device source targets #:rest _)
   "Return a gexp that closes TARGET, a LUKS device."
@@ -310,8 +414,13 @@ argument of `open-luks-device'")
    (close close-luks-device)
    (check check-luks-device)
    (modules '((rnrs bytevectors)                  ;bytevector?
+              (rnrs io ports)                      ;put-bytevector
+              (ice-9 match)                        ;match
+              (ice-9 rdelim)                       ;read-line
               ((gnu build file-systems)
-               #:select (find-partition-by-luks-uuid system*/tty))))))
+               #:select (find-partition-by-luks-uuid
+                         read-luks-partition-uuid
+                         system*/tty))))))
 
 (define-deprecated (luks-device-mapping-with-options #:key
                                                      key-file allow-discards?)
