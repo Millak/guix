@@ -35165,6 +35165,114 @@ flattened into one line.
 @end table
 @end deftp
 
+@subsubheading gunicorn
+@cindex gunicorn
+
+@defvar gunicorn-service-type
+Service type for the @uref{https://gunicorn.org/,gunicorn} Python Web
+Server Gateway Interface (WSGI) HTTP server.  The value for this
+service type is a @code{<gunicorn-configuration>} record.  A simple
+example follows where gunicorn is used in combination with a web
+server, Nginx, configured as a reverse proxy.
+
+@lisp
+(define %socket "unix:/var/run/gunicorn/werkzeug/socket")
+(define %body (format #f "proxy_pass http://~a;" %socket))
+
+(operating-system
+  ;; ...
+  (services
+    ;; ...
+    (service gunicorn-service-type
+             (gunicorn-configuration
+              (apps
+               (list (gunicorn-app
+                      (name "werkzeug")
+                      (package python-werkzeug)
+                      (wsgi-app-module "werkzeug.testapp:test_app")
+                      (sockets `(,%socket))
+                      (user "user")
+                      (group "users"))))))
+    (service nginx-service-type
+             (nginx-configuration
+              (server-blocks
+               (list (nginx-server-configuration
+                      (server-name '("localhost"))
+                      (listen '("127.0.0.1:80"))
+                      (locations
+                       (list (nginx-location-configuration
+                              (uri "/")
+                              (body `(,%body))))))))))))
+@end lisp
+@end defvar
+
+In practice, it is likely one might want to use
+@code{gunicorn-service-type} by extending it from within a Python
+service that requires gunicorn.
+
+@deftp {Data Type} gunicorn-configuration
+This data type represents the configuration for gunicorn.
+
+@table @asis
+@item @code{gunicorn} (default: @code{gunicorn})
+The gunicorn package to use.
+
+@item @code{apps} (default: @code{'()})
+This is a list of gunicorn apps.
+
+@end table
+@end deftp
+
+@deftp {Data Type} gunicorn-app
+This data type represents the configuration for a gunicorn
+application.
+
+@table @asis
+@item @code{name} (type: string)
+The name of the gunicorn application.
+
+@item @code{package} (type: symbol)
+The Python package associated to the gunicorn app.
+
+@item @code{wsgi-app-module} (type: string)
+The Python module that should be invoked by gunicorn.
+
+@item @code{user} (type: string)
+Launch the app as this user (it must be an existing user).
+
+@item @code{group} (type: string)
+Launch the app as this group (it must be an existing group).
+
+@item @code{sockets} (default: @code{'("unix:/var/run/gunicorn/APP-NAME/socket")}) (type: list-of-strings)
+A list of sockets (as path strings) which gunicorn will be listening
+on.  This list must contain at least one socket.
+
+@item @code{workers} (default: @code{1}) (type: integer)
+The number of workers for the gunicorn app.
+
+@item @code{extra-cli-arguments} (default: @code{'()}) (type: list-of-strings)
+A list of extra arguments to be passed to gunicorn.
+
+@item @code{environment-variables} (default: @code{'()}) (type: list)
+An association list of environment variables that will be visible to
+the gunicorn app, as per this example:
+
+@lisp
+(gunicorn-app (name "example")
+              ...
+              (environment-variables '(("foo" . "bar"))))
+@end lisp
+
+@item @code{timeout} (default: @code{30}) (type: integer)
+Workers silent for more than this many seconds are killed and
+restarted.
+
+@item @code{mappings} (default: @code{'()}) (type: list)
+Volumes that will be visible to the gunicorn app, as a list of
+source-target pairs.
+@end table
+@end deftp
+
 @subsubheading Varnish Cache
 @cindex Varnish
 Varnish is a fast cache server that sits in between web applications

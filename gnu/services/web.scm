@@ -11,7 +11,7 @@
 ;;; Copyright © 2019, 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020, 2025 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2020, 2025, 2026 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2022 Simen Endsjø <simendsjo@gmail.com>
@@ -20,6 +20,7 @@
 ;;; Copyright © 2024 Leo Nikkilä <hello@lnikki.la>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2025 Rodion Goritskov <rodion@goritskov.com>
+;;; Copyright © 2026 Fabio Natali <me@fabionatali.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -65,12 +66,14 @@
   #:autoload   (guix i18n) (G_)
   #:autoload   (gnu build linux-container) (%namespaces)
   #:use-module (guix diagnostics)
-  #:use-module (guix least-authority)
-  #:use-module (guix packages)
-  #:use-module (guix records)
-  #:use-module (guix modules)
-  #:use-module (guix utils)
   #:use-module (guix gexp)
+  #:use-module (guix least-authority)
+  #:use-module (guix modules)
+  #:use-module (guix packages)
+  #:use-module (guix profiles)
+  #:use-module (guix records)
+  #:use-module (guix search-paths)
+  #:use-module (guix utils)
   #:use-module ((guix store) #:select (text-file))
   #:use-module ((guix utils) #:select (version-major))
   #:use-module ((guix packages) #:select (package-version))
@@ -81,6 +84,7 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
   #:use-module (ice-9 regex)
+  #:use-module (web uri)
   #:export (httpd-configuration
             httpd-configuration?
             httpd-configuration-package
@@ -169,6 +173,25 @@
 
             nginx-service
             nginx-service-type
+
+            gunicorn-app
+            gunicorn-app-environment-variables
+            gunicorn-app-extra-cli-arguments
+            gunicorn-app-group
+            gunicorn-app-mappings
+            gunicorn-app-name
+            gunicorn-app-package
+            gunicorn-app-sockets
+            gunicorn-app-timeout
+            gunicorn-app-user
+            gunicorn-app-workers
+            gunicorn-app-wsgi-app-module
+            gunicorn-app?
+            gunicorn-configuration
+            gunicorn-configuration-apps
+            gunicorn-configuration-package
+            gunicorn-configuration?
+            gunicorn-service-type
 
             fcgiwrap-configuration
             fcgiwrap-configuration?
@@ -1001,6 +1024,180 @@ renewed TLS certificates, or @code{include}d files.")
                               servers)))))
                 (default-value (nginx-configuration))
                 (description "Run the nginx Web server.")))
+
+(define-record-type* <gunicorn-configuration>
+  gunicorn-configuration make-gunicorn-configuration
+  gunicorn-configuration?
+  (package gunicorn-configuration-package
+           (default gunicorn))
+  (apps gunicorn-configuration-apps
+        (default '())))
+
+(define (sanitize-gunicorn-app-sockets value)
+  (unless (and (list? value)
+               (not (null? value)))
+    (leave (G_ "gunicorn: '~a' is invalid; must be a non-empty list~%") value))
+  value)
+
+(define-record-type* <gunicorn-app>
+  gunicorn-app make-gunicorn-app
+  gunicorn-app?
+  this-gunicorn-app
+  (name gunicorn-app-name)
+  (package gunicorn-app-package)
+  (wsgi-app-module gunicorn-app-wsgi-app-module)
+  (user gunicorn-app-user)
+  (group gunicorn-app-group)
+  (sockets gunicorn-app-sockets
+           (default (list (string-append "unix:/var/run/gunicorn/"
+                                         (gunicorn-app-name this-gunicorn-app)
+                                         "/socket")))
+           (sanitize sanitize-gunicorn-app-sockets)
+           (thunked))
+  (workers gunicorn-app-workers
+           (default 1))
+  (extra-cli-arguments gunicorn-app-extra-cli-arguments
+                       (default '()))
+  (environment-variables gunicorn-app-environment-variables
+                         (default '()))
+  (timeout gunicorn-app-timeout
+           (default 30))
+  (mappings gunicorn-app-mappings
+            (default '())))
+
+(define (unix-socket? string)
+  "Whether STRING indicates a Unix socket."
+  (eq? 'unix (uri-scheme (string->uri string))))
+
+(define (socket-dir string)
+  "Return the socket directory."
+  (dirname (uri-path (string->uri string))))
+
+(define (gunicorn-activation config)
+  (with-imported-modules '((guix build utils))
+    #~(begin
+        (use-modules (guix build utils)
+                     (ice-9 match))
+
+        ;; Create socket directories and set ownership.
+        (for-each (match-lambda
+                    ((user group socket-directories ...)
+                     (for-each (lambda (socket-directory)
+                                 (mkdir-p socket-directory)
+                                 (chown socket-directory
+                                        (passwd:uid (getpw user))
+                                        (group:gid (getgrnam group))))
+                               socket-directories)))
+                  '#$(map (lambda (app)
+                            (cons* (gunicorn-app-user app)
+                                   (gunicorn-app-group app)
+                                   (filter-map (lambda (socket)
+                                                 (and
+                                                  (unix-socket? socket)
+                                                  (socket-dir socket)))
+                                               (gunicorn-app-sockets app))))
+                          (gunicorn-configuration-apps config))))))
+
+(define (gunicorn-shepherd-services config)
+  (map (lambda (app)
+         (let ((name (string-append "gunicorn-" (gunicorn-app-name app)))
+               (user (gunicorn-app-user app))
+               (group (gunicorn-app-group app)))
+           (shepherd-service
+            (documentation (string-append "Run gunicorn for app "
+                                          (gunicorn-app-name app)
+                                          "."))
+            (provision (list (string->symbol name)))
+            (requirement '(networking))
+            (modules '((guix search-paths)
+                       (ice-9 match)))
+            (start
+             (let* ((app-manifest (packages->manifest
+                                   ;; Using python-minimal in the
+                                   ;; manifest creates collisions with
+                                   ;; the python in the app package.
+                                   (list python
+                                         (gunicorn-app-package app))))
+                    (app-profile (profile
+                                  (content app-manifest)
+                                  (allow-collisions? #t))))
+               (with-imported-modules
+                   (source-module-closure '((guix search-paths)))
+                 #~(make-forkexec-constructor
+                    (cons*
+                     #$(least-authority-wrapper
+                        (file-append (gunicorn-configuration-package config)
+                                     "/bin/gunicorn")
+                        #:name (string-append name "-pola-wrapper")
+                        #:mappings
+                        (cons (file-system-mapping
+                               ;; Mapping the app package
+                               (source app-profile)
+                               (target source))
+                              (append
+                               ;; Mappings for Unix socket directories
+                               (filter-map
+                                (lambda (socket)
+                                  (and (unix-socket? socket)
+                                       (file-system-mapping
+                                        (source (socket-dir socket))
+                                        (target source)
+                                        (writable? #t))))
+                                (gunicorn-app-sockets app))
+                               ;; Additional mappings
+                               (gunicorn-app-mappings app)))
+                        #:preserved-environment-variables
+                        (map search-path-specification-variable
+                             (manifest-search-paths app-manifest))
+                        #:namespaces (delq 'net %namespaces))
+                     "--workers" #$(number->string (gunicorn-app-workers app))
+                     "--timeout" #$(number->string (gunicorn-app-timeout app))
+                     (list
+                      #$@(append
+                          (append-map (lambda (socket)
+                                        (list "--bind" socket))
+                                      (gunicorn-app-sockets app))
+                          (append-map
+                           (lambda (pair)
+                             (list "--env"
+                                   #~(string-append
+                                      #$(car pair) "=" #$(cdr pair))))
+                           (gunicorn-app-environment-variables app))
+                          (gunicorn-app-extra-cli-arguments app)
+                          (list (gunicorn-app-wsgi-app-module app)))))
+                    #:user #$user
+                    #:group #$group
+                    #:environment-variables
+                    (map (match-lambda
+                           ((spec . value)
+                            (string-append
+                             (search-path-specification-variable spec)
+                             "="
+                             value)))
+                         (evaluate-search-paths
+                          (map sexp->search-path-specification
+                               '#$(map search-path-specification->sexp
+                                       (manifest-search-paths app-manifest)))
+                          (list #$app-profile)))
+                    #:log-file #$(string-append "/var/log/" name ".log")))))
+            (stop #~(make-kill-destructor)))))
+       (gunicorn-configuration-apps config)))
+
+(define gunicorn-service-type
+  (service-type
+   (name 'gunicorn)
+   (description "Run gunicorn.")
+   (extensions (list (service-extension activation-service-type
+                                        gunicorn-activation)
+                     (service-extension shepherd-root-service-type
+                                        gunicorn-shepherd-services)))
+   (compose concatenate)
+   (extend (lambda (config apps)
+             (gunicorn-configuration
+              (inherit config)
+              (apps (append (gunicorn-configuration-apps config)
+                            apps)))))
+   (default-value (gunicorn-configuration))))
 
 (define-record-type* <fcgiwrap-configuration> fcgiwrap-configuration
   make-fcgiwrap-configuration
