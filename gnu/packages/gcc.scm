@@ -1561,15 +1561,15 @@ also includes the druntime and phobos libraries."
     (package
       (name "gdmd")
       (version gdmd-version)
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/D-Programming-GDC/gdmd")
-                (commit (string-append "script-" gdmd-version))))
-         (file-name (git-file-name name gdmd-version))
-         (sha256
-          (base32 "02zncqbjrrbh5w9s18frcylhn5x3qmqb3gdlr4kxd8dkajkr3vjj"))))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/D-Programming-GDC/gdmd")
+                       (commit (string-append "script-" gdmd-version))))
+                (file-name (git-file-name name gdmd-version))
+                (sha256
+                 (base32
+                  "02zncqbjrrbh5w9s18frcylhn5x3qmqb3gdlr4kxd8dkajkr3vjj"))))
       (build-system copy-build-system)
       (arguments
        (list
@@ -1583,14 +1583,15 @@ also includes the druntime and phobos libraries."
                 (substitute* "dmd-script"
                   (("my \\$gdc_dir.*")
                    (string-append "my $gdc_dir = \""
-                                  (dirname (search-input-file inputs "/bin/gdc"))
+                                  (dirname
+                                   (search-input-file inputs "/bin/gdc"))
                                   "\";\n"))))))))
       (inputs (list gdc perl))
-      (home-page "https://github.com/D-Programming-GDC/gdmd")
       (synopsis "DMD-like wrapper for GDC")
       (description "This package provides a DMD-like wrapper for the
 @acronym{GNU D Compiler,GDC}.")
-      (license gpl3+))))
+      (license gpl3+)
+      (home-page "https://github.com/D-Programming-GDC/gdmd"))))
 
 (define-public gm2
   (hidden-package
