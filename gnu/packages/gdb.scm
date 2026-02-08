@@ -267,13 +267,13 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
 
 (define-public gdb
   ;; The "default" version.
-  gdb-14)
+  gdb-17)
 
 (define-public gdb-multiarch
-  (package/inherit gdb-16
+  (package/inherit gdb
     (name "gdb-multiarch")
     (arguments
-     (substitute-keyword-arguments (package-arguments gdb-14)
+     (substitute-keyword-arguments (package-arguments gdb)
        ((#:configure-flags flags '())
         #~(cons* "--enable-targets=all"
                  "--enable-multilib"
@@ -284,7 +284,7 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
     (synopsis "The GNU debugger (with all architectures enabled)")))
 
 (define-public gdb-minimal
-  (package/inherit gdb-14
+  (package/inherit gdb
     (name "gdb-minimal")
     (inputs (fold alist-delete (package-inputs gdb)
                   '("libxml2" "ncurses" "python-wrapper" "source-highlight")))))
