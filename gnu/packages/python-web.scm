@@ -2176,8 +2176,8 @@ API rules.")
     ;; XXX: Without "wheel", the 'install phase can't find the wheel.
     (outputs (list "out" "wheel"))
     (build-system pyproject-build-system)
-    ;; The configuration contains explicit calls to pytest_cov.
-    (arguments (list #:test-flags #~(list "-c" "/dev/null")))
+    ;; The configuration contains explicit early calls to pytest_cov.
+    (arguments (list #:test-flags #~(list  "-o" "addopts=''")))
     (native-inputs
      (list python-cython
            python-expandvars
