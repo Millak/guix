@@ -12449,13 +12449,11 @@ colorspaces like sRGB, XYZ, CIEL*a*b*, CIECAM02, CAM02-UCS, etc.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags '(list "--ignore=tests/test_benchmarks.py")
+      #:test-flags
+      #~(list "-o" "addopts=''"         ; Avoid -p pytest_cov.
+              "--ignore=tests/test_benchmarks.py")
       #:phases
       '(modify-phases %standard-phases
-         (add-after 'unpack 'avoid-pytest-cov-preload
-           (lambda _
-             (substitute* "pytest.ini"
-               (("-p pytest_cov") ""))))
          (add-after 'unpack 'patch-build-system
            (lambda _
              ;; XXX: I don't know how to tell it to build the extensions in
