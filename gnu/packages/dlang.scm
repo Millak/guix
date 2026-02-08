@@ -935,19 +935,14 @@ from lines)
   (package
     (name "gtkd")
     (version "3.10.0")
-    (source
-     (origin
-      (method url-fetch/zipbomb)
-      (uri (string-append "https://gtkd.org/Downloads/sources/GtkD-"
-                          version ".zip"))
-      (sha256
-       (base32 "0vc5ssb3ar02mg2pngmdi1xg4qjaya8332a9mk0sv97x6b4ddy3g"))))
+    (source (origin
+              (method url-fetch/zipbomb)
+              (uri (string-append "https://gtkd.org/Downloads/sources/GtkD-"
+                                  version ".zip"))
+              (sha256
+               (base32
+                "0vc5ssb3ar02mg2pngmdi1xg4qjaya8332a9mk0sv97x6b4ddy3g"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list unzip
-           ldc
-           pkg-config
-           xorg-server-for-tests))
     (arguments
      `(#:test-target "test"
        #:make-flags
@@ -984,6 +979,11 @@ from lines)
              (system "Xvfb :1 &")
              (setenv "DISPLAY" ":1")
              (setenv "CC" ,(cc-for-target)))))))
+    (native-inputs
+     (list unzip
+           ldc
+           pkg-config
+           xorg-server-for-tests))
     (home-page "https://gtkd.org/")
     (synopsis "D binding and OO wrapper of GTK+")
     (description "This package provides bindings to GTK+ for D.")
