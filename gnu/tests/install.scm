@@ -240,12 +240,14 @@ reboot\n")
                       (installation-image-type 'mbr-raw)
                       (install-size 'guess)
                       (target-size (* 2200 MiB))
+                      (memory "1200")
                       (number-of-disks 1))
   "Run SCRIPT (a shell script following the system installation procedure) in
 OS to install TARGET-OS.  Return the VM disk images of TARGET-SIZE bytes
 containing the installed system.  PACKAGES is a list of packages added to OS.
 NUMBER-OF-DISKS can be used to specify a number of disks different than one,
-such as for RAID systems."
+such as for RAID systems. The VM running the installation is ran with -m
+MEMORY."
   (mlet* %store-monad ((_      (set-grafting #f))
                        (system (current-system))
 
@@ -300,7 +302,7 @@ such as for RAID systems."
                          "-cpu" "host")
                        '())
                  "-no-reboot"
-                 "-m" "1200"
+                 "-m" #$memory
                  ,@(if #$uefi-firmware
                        '("-bios" #$uefi-firmware)
                        '())
@@ -2090,6 +2092,7 @@ build (current-guix) and then store a couple of full system images.")
                                    (encrypted? #f)
                                    (uefi-support? #f)
                                    target-os
+                                   (installer-memory "2048")
                                    (install-size 'guess)
                                    (target-size (* 2200 MiB)))
   (system-test
@@ -2104,6 +2107,7 @@ build (current-guix) and then store a couple of full system images.")
                               #:uefi-support? uefi-support?
                               #:install-size install-size
                               #:target-size target-size
+                              #:memory installer-memory
                               #:installation-image-type
                               'uncompressed-iso9660
                               #:gui-test
