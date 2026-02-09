@@ -7986,60 +7986,59 @@ Rate} 3600x2250 bit/s vocoder used in various radio systems.")
                   (delete-file-recursively "third_party")
                   (delete-file-recursively "modules")))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DLINK_BUILD_QT_EXAMPLES=ON"
+              "-DLINK_BUILD_JACK=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key inputs tests? #:allow-other-keys)
+              (when tests?
+                (let* ((python (search-input-file inputs "/bin/python3"))
+                       (run-tests "../source/ci/run-tests.py"))
+                  (invoke python run-tests "--target" "LinkCoreTest")
+                  (invoke python run-tests "--target" "LinkDiscoveryTest")))))
+          (add-before 'install 'patch-cmake
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((source "../source/"))
+                (substitute* (string-append source
+                                            "cmake_include/AsioStandaloneConfig.cmake")
+                  (((string-append "\\$\\{CMAKE_CURRENT_LIST_DIR\\}/\\.\\./"
+                                   "modules/asio-standalone/asio/include"))
+                   (dirname (search-input-file inputs "include/asio.hpp"))))
+                (substitute* (string-append source "AbletonLinkConfig.cmake")
+                  (("\\$\\{CMAKE_CURRENT_LIST_DIR\\}/include")
+                   "${CMAKE_CURRENT_LIST_DIR}/../../../include")
+                  (("\\$\\{CMAKE_CURRENT_LIST_DIR\\}/include/ableton/Link\\.hpp")
+                   "${CMAKE_CURRENT_LIST_DIR}/../../../include/ableton/Link.hpp")))))
+          (replace 'install
+            (lambda _
+              (let* ((out #$output)
+                     (lib-cmake (string-append out "/lib/cmake/ableton-link"))
+                     (source "../source"))
+                (for-each delete-file
+                          '("bin/LinkDiscoveryTest" "bin/LinkCoreTest"))
+                (copy-recursively "bin" (string-append out "/bin"))
+                (copy-recursively (string-append source "/include/ableton")
+                                  (string-append out "/include/ableton"))
+                (install-file (string-append source "/AbletonLinkConfig.cmake")
+                              lib-cmake)
+                (install-file (string-append source
+                                             "/cmake_include/AsioStandaloneConfig.cmake")
+                              (string-append lib-cmake "/cmake_include"))))))))
     (native-inputs
      (list catch-framework
-           python ;for running tests
-           portaudio)) ;for portaudio examples
+           portaudio                    ;for portaudio examples
+           python                       ;for running tests
+           python-setuptools))          ;for running tests
     (inputs
      (list jack-1)) ;for JACK examples
     (propagated-inputs
      ;; This is because include/ableton/platforms/asio/AsioWrapper.hpp
      ;; contains '#include <asio.hpp>'.
      (list asio-1.28))
-    (arguments
-     `(#:configure-flags
-       '("-DLINK_BUILD_QT_EXAMPLES=ON"
-         "-DLINK_BUILD_JACK=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs tests? #:allow-other-keys)
-             (when tests?
-               (let* ((python (search-input-file inputs "/bin/python3"))
-                      (run-tests "../source/ci/run-tests.py"))
-                 (invoke python run-tests "--target" "LinkCoreTest")
-                 (invoke python run-tests "--target" "LinkDiscoveryTest")))))
-         (add-before 'install 'patch-cmake
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((source "../source/"))
-               (substitute* (string-append source
-                                           "cmake_include/AsioStandaloneConfig.cmake")
-                 (((string-append "\\$\\{CMAKE_CURRENT_LIST_DIR\\}/\\.\\./"
-                                  "modules/asio-standalone/asio/include"))
-                  (string-append (assoc-ref inputs "asio")
-                                 "/include")))
-               (substitute* (string-append source "AbletonLinkConfig.cmake")
-                 (("\\$\\{CMAKE_CURRENT_LIST_DIR\\}/include")
-                  "${CMAKE_CURRENT_LIST_DIR}/../../../include")
-                 (("\\$\\{CMAKE_CURRENT_LIST_DIR\\}/include/ableton/Link\\.hpp")
-                  "${CMAKE_CURRENT_LIST_DIR}/../../../include/ableton/Link.hpp")))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (lib-cmake (string-append out "/lib/cmake/ableton-link"))
-                    (source "../source"))
-               (for-each (lambda (test-file)
-                           (delete-file test-file))
-                         '("bin/LinkDiscoveryTest" "bin/LinkCoreTest"))
-               (copy-recursively "bin" bin)
-               (copy-recursively (string-append source "/include/ableton")
-                                 (string-append out "/include/ableton"))
-               (install-file (string-append source "/AbletonLinkConfig.cmake")
-                             lib-cmake)
-               (install-file (string-append source
-                                            "/cmake_include/AsioStandaloneConfig.cmake")
-                             (string-append lib-cmake "/cmake_include"))))))))
     (home-page "https://github.com/Ableton/link")
     (synopsis "Synchronize musical beat, tempo, and phase across multiple applications")
     (description
