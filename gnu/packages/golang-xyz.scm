@@ -469,16 +469,16 @@ file along with an index.html file.")
 (define-public go-codeberg-org-anaseto-gruid-tcell
   (package
     (name "go-codeberg-org-anaseto-gruid-tcell")
-    (version "0.3.0")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://codeberg.org/anaseto/gruid-tcell.git")
+             (url "https://codeberg.org/anaseto/gruid-tcell")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zr5xlmnxva5n3c5fj5hxg1wcsw1pq4favfwwv5nclwgzbd0mjr5"))))
+        (base32 "1qmr3nm2pm6sgcs8cflyrypwa26g5fvps33ia6q43if3vqjw1y1z"))))
     (build-system go-build-system)
     (arguments
      (list
