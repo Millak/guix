@@ -294,8 +294,11 @@ any Web site.  Django focuses on automating as much as possible and adhering
 to the @dfn{don't repeat yourself} (DRY) principle.")
     (license license:bsd-3)
     (properties `((cpe-name . "django")
-                  ;; This CVE seems fixed since 5.2.1.
-                  (lint-hidden-cve . ("CVE-2025-32873"))))))
+                  (lint-hidden-cve
+                   ;; This CVE seems fixed since 5.2.1.
+                   . ("CVE-2025-32873"
+                      ;; This CVE is fixed in 4.1.9.
+                      "CVE-2023-31047"))))))
 
 (define-public python-django-4
   (package
