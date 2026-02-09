@@ -25,6 +25,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages pkg-config)
@@ -123,7 +124,7 @@ library")))
     (inherit libfreenect)
     (name "python-libfreenect")
     (native-inputs
-     (list python-cython-0))
+     (list python-cython-0 python-setuptools))
     (inputs
      (list libfreenect))
     (propagated-inputs
