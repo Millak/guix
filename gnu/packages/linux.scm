@@ -1933,7 +1933,8 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                              "rk3588-mnt-reform2/0114-media-dt-bindings-video-interfaces-add-defines-for-s.patch"
                              "rk3588-mnt-reform2/2001-drm-bridge-dw-hdmi-qp-Return-0-in-audio-prepare-when.patch"
                              "rk3588-mnt-reform2/2003-drm-bridge-synopsys-Do-not-warn-about-audio-params-c.patch"
-                             "rk3588-mnt-reform2/5200-drm-rockchip-Set-dma-mask-to-64-bit.patch"))))
+                             "rk3588-mnt-reform2/5200-drm-rockchip-Set-dma-mask-to-64-bit.patch"
+                             "rk3588-mnt-reform2/7001-PCI-dw-rockchip-Disable-root-port-BARs.patch"))))
               (add-after 'apply-reform-patches 'copy-reform-dts-files
                 (lambda* (#:key inputs #:allow-other-keys)
                   (for-each (lambda (dts)
@@ -1948,6 +1949,7 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                              "freescale/imx8mp-mnt-pocket-reform.dts"
                              "freescale/imx8mp-mnt-reform2.dts"
                              "freescale/imx8mq-mnt-reform2-hdmi.dts"
+                             "rockchip/rk3588-mnt-desktop-reform.dts"
                              "rockchip/rk3588-mnt-pocket-reform.dts"
                              "rockchip/rk3588-mnt-reform-next.dts"
                              "rockchip/rk3588-mnt-reform2.dts"
@@ -1972,6 +1974,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mq-mnt-reform2-hdmi.dtb"))
                   (substitute* "arch/arm64/boot/dts/rockchip/Makefile"
                     (("rk3588-mnt-reform2.dtb")
                      "rk3588-mnt-reform2.dtb
+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-desktop-reform.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-reform2-dsi.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-reform-next.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-pocket-reform.dtb")))))))))))
