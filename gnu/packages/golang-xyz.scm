@@ -20546,6 +20546,29 @@ and bash completion for the go command line.")
      "This package provides a wrapper round runit service status.")
     (license license:expat)))
 
+(define-public go-github-com-protonmail-go-autostart
+  (package
+    (name "go-github-com-protonmail-go-autostart")
+    (version "0.0.0-20250402094843-326608c16033")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ProtonMail/go-autostart")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ngf042p5lkcmj3kqcvbbrky0j5bpkavizasyhndk10mcrkb2716"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ProtonMail/go-autostart"))
+    (home-page "https://github.com/ProtonMail/go-autostart")
+    (synopsis "Go library to run a command after login")
+    (description
+     "This package provides a Go library to run a command after login.")
+    (license license:expat)))
+
 (define-public go-github-com-protonmail-go-mbox
   (package
     (name "go-github-com-protonmail-go-mbox")
