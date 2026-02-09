@@ -622,16 +622,16 @@ an internal library for both Prometheus and Open Telemetry,")
 (define-public go-github-com-prometheus-procfs
   (package
     (name "go-github-com-prometheus-procfs")
-    (version "0.16.1")
+    (version "0.19.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/prometheus/procfs")
-             (commit (string-append "v" version))))
+              (url "https://github.com/prometheus/procfs")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0k2x2kqghr34ggc888ldaj0crx6zvxclr3c3r6n3nhznjwx0p79f"))))
+        (base32 "1szpgj5w4bbrrjy7whpmaz0l05zkrzscg6nwkph8fajfq78aalvg"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -651,9 +651,10 @@ an internal library for both Prometheus and Open Telemetry,")
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
                 (delete-file-recursively "testdata")))))))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
     (propagated-inputs
-     (list go-github-com-google-go-cmp
-           go-golang-org-x-sync
+     (list go-golang-org-x-sync
            go-golang-org-x-sys))
     (synopsis "Go library for reading @file{/proc}")
     (home-page "https://github.com/prometheus/procfs")
