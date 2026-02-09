@@ -130,7 +130,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
 (define-public fish
   (package
     (name "fish")
-    (version "4.0.1")
+    (version "4.3.3")
     (source
      (origin
        (method url-fetch)
@@ -138,7 +138,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                            "releases/download/" version "/"
                            "fish-" version ".tar.xz"))
        (sha256
-        (base32 "1db2qxlls9f8n6sjcj4dz7j22113nhfz5i8zy9ff30vj41q3mmjf"))
+        (base32 "0mvfp088ws2x012nh5gbhkszgaqdgr746acxpd361m614p9yg87b"))
        ;; TODO: Unbundle corrosion.
        (patches (search-patches "corrosion-honor-CARGO_BUILD_TARGET.patch"))))
     (build-system cmake-build-system)
@@ -204,34 +204,30 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
 ;; "Found existing zombie processes. Clean up zombies before running this test."
                ;; Disabling parallel tests does not reliably prevent it.
                (delete-file "tests/checks/jobs.fish")
-               ;; This test fails.
-               (delete-file "tests/checks/pipeline-pgroup.fish")
-               ;; This one tries to open a terminal & can't simply be deleted.
-               (substitute* "cmake/Tests.cmake"
-                 ((".* interactive\\.fish.*") ""))
                ;; This one needs to chdir successfully.
                (substitute* "tests/checks/vars_as_commands.fish"
                  (("/usr/bin") "/tmp"))
-               ;; These contain absolute path references.
-               (substitute* '("src/builtins/tests/test_tests.rs"
-                              "src/tests/highlight.rs")
-                 (("/bin/echo" echo) (string-append coreutils echo))
-                 (("/bin/ca" ca) (string-append coreutils ca))
-                 (("\"(/bin/c)\"" _ c) (string-append "\"" coreutils c "\""))
-                 (("/bin/ls_not_a_path" ls-not-a-path)
-                  (string-append coreutils ls-not-a-path))
-                 (("/bin/ls" ls) (string-append coreutils ls))
-                 (("(/bin/)\"" _ bin) (string-append coreutils bin "\""))
-                 (("/bin\", \"-" bin) (string-append coreutils bin))
-                 ;; Not all mentions of /usr... need to exist, but these do.
-                 (("\"/usr(|/lib)\"" _ subdirectory)
-                  (string-append "\"/tmp" subdirectory "\"")))
-               (substitute* (find-files "tests")
+               ;; shebangless scripts don't work
+               (delete-file "tests/checks/noshebang.fish")
+               ;; This doesn't work
+               (delete-file "tests/checks/__fish_posix_shell.fish")
+               ;; __fish_migrate expects /bin/sh to work
+               (delete-file "tests/checks/__fish_migrate.fish")
+               (substitute* (cons* "src/builtins/test.rs"
+                                   "src/highlight/file_tester.rs"
+                                   "src/highlight/highlight.rs"
+                                   (find-files "tests"))
                  (("/bin/pwd" pwd) (string-append coreutils pwd))
                  (("/bin/echo" echo) (string-append coreutils echo))
                  (("/bin/sh" sh) (string-append bash sh))
                  (("/bin/ls" ls) (string-append coreutils ls))
-                 (("/test/root/bin") "")))))
+                 (("/test/root/bin") "")
+                 (("/bin/ca\"" ca) (string-append coreutils ca))
+                 (("/bin/c\"" ca) (string-append coreutils ca))
+                 (("\"/bin") "\"/tmp")
+                 (("\"/usr") "\"/tmp"))
+               (substitute* "tests/test_driver.py"
+                 (("\"cc\"") "\"gcc\"")))))
          ;; Source /etc/fish/config.fish from $__fish_sysconf_dir/config.fish.
          (add-after 'patch-tests 'patch-fish-config
            (lambda _
@@ -283,7 +279,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
          (replace 'check
            (lambda* (#:rest args)
              (apply (assoc-ref gnu:%standard-phases 'check)
-                    #:test-target "test" args)))
+                    #:test-target "fish_run_tests" args)))
          ;; Use fish-foreign-env to source /etc/profile.
          (add-before 'install 'source-etc-profile
            (lambda* (#:key inputs #:allow-other-keys)

@@ -11,16 +11,13 @@ diff --git a/cmake/FindRust.cmake b/cmake/FindRust.cmake
 index fccfac3..e888149 100644
 --- a/cmake/FindRust.cmake
 +++ b/cmake/FindRust.cmake
-@@ -734,6 +734,9 @@ if (NOT Rust_CARGO_TARGET_CACHED)
-             set(Rust_CARGO_TARGET_CACHED "${_RUST_OHOS_TARGET}" CACHE STRING "Target triple")
-         endif()
-     endif()
-+    if(DEFINED ENV{CARGO_BUILD_TARGET})
-+        set(Rust_CARGO_TARGET_CACHED "$ENV{CARGO_BUILD_TARGET}")
-+    endif()
-     # Fallback to the default host target
-     if(NOT Rust_CARGO_TARGET_CACHED)
-         if(CMAKE_CROSSCOMPILING)
--- 
-2.49.0
-
+@@ -71,6 +71,9 @@
+   endif()
+   set(Rust_CARGO_TARGET_CACHED "${Rust_DEFAULT_HOST_TARGET}" CACHE STRING "Target triple")
+ endif()
++if(DEFINED ENV{CARGO_BUILD_TARGET})
++    set(Rust_CARGO_TARGET_CACHED "$ENV{CARGO_BUILD_TARGET}")
++endif()
+ 
+ # Set the input variables as non-cache variables so that the variables are available after
+ # `find_package`, even if the values were evaluated to defaults.
