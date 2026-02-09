@@ -13,7 +13,7 @@
 ;;; Copyright © 2016, 2017 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2017-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
-;;; Copyright © 2017, 2020 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2017, 2020, 2026 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018–2022, 2024 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2018, 2020, 2022 Oleg Pykhalov <go.wigust@gmail.com>
@@ -6701,14 +6701,12 @@ X11 servers, Windows, or macOS.")
              (let ((out (assoc-ref outputs "out")))
                (emacs-substitute-variables "emacs/uim-var.el"
                  ("uim-el-agent" (string-append out "/bin/uim-el-agent"))
-                 ("uim-el-helper-agent" (string-append out "/bin/uim-el-helper-agent"))))
-             #t))
+                 ("uim-el-helper-agent" (string-append out "/bin/uim-el-helper-agent"))))))
          (add-after 'install 'make-autoloads
            (lambda* (#:key outputs #:allow-other-keys)
              (emacs-generate-autoloads
               ,name (string-append (assoc-ref outputs "out")
-                                   "/share/emacs/site-lisp/uim-el"))
-             #t)))))
+                                   "/share/emacs/site-lisp/uim-el")))))))
     (home-page "https://github.com/uim/uim")
     (synopsis "Multilingual input method framework")
     (description "Uim is a multilingual input method library and environment.
