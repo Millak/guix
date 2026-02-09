@@ -765,8 +765,8 @@ to a minimal test case.")
                        (install-file "libd_demangle.so"
                                      (string-append #$output "/lib")))))))
     (native-inputs (list dmd))
-    (synopsis "Utility to demangle D symbols")
-    (description "@command{d_demangle} is a small utility that can be used to
-demangle D symbols.  A shared library is also provided.")
+    (synopsis "D symbol demangling library")
+    (description "@code{libd_demangle.so} is a small shared library that can be used to
+demangle D symbols.  It exposes a C interface that wraps D's @code{std.demangle}.")
     (license license:gpl3+)
     (home-page "https://github.com/lievenhey/d_demangler")))
