@@ -96,6 +96,7 @@
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;; Copyright © 2025 Aiden Isik <aidenisik+git@member.fsf.org>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -11262,7 +11263,7 @@ and bring the war to your enemy.")
 (define-public harmonist
   (package
     (name "harmonist")
-    (version "0.6.1")
+    (version "1.0.2")
     (source
      (origin
        (method git-fetch)
@@ -11271,7 +11272,7 @@ and bring the war to your enemy.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03322qgy5n48cxmm57m3v4i35gbr31jvk1dvc9ah4wf4480xp0fi"))))
+        (base32 "12l0k7hcfvf675ckr3m4y3jnzh5aw5ghbzqznykxpi35vcrq8795"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -11283,7 +11284,7 @@ and bring the war to your enemy.")
            go-codeberg-org-anaseto-gruid-sdl
            go-codeberg-org-anaseto-gruid-tcell
            go-github-com-gdamore-tcell-v2))
-    (home-page "https://harmonist.tuxfamily.org/")
+    (home-page "https://anaseto.codeberg.page/games/harmonist/")
     (synopsis "Stealth coffee-break roguelike game")
     (description
      "Harmonist: Dayoriah Clan Infiltration is a stealth coffee-break
