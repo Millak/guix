@@ -6679,34 +6679,36 @@ X11 servers, Windows, or macOS.")
     (inputs
      (list anthy libedit libxft m17n-lib ncurses))
     (native-inputs
-     `(("emacs" ,emacs-minimal)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list emacs
+           intltool
+           pkg-config))
     (arguments
-     `(#:modules ((guix build gnu-build-system)
+     (list
+      #:modules '((guix build gnu-build-system)
                   (guix build utils)
                   (guix build emacs-utils))
-       #:imported-modules (,@%default-gnu-imported-modules
+      #:imported-modules `(,@%default-gnu-imported-modules
                            (guix build emacs-utils))
-       #:configure-flags
-       (list "--with-anthy-utf8"
-             ;; Set proper runpath
-             (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib")
-             "CFLAGS=-O2 -g -fcommon")
-       #:phases
-       (modify-phases %standard-phases
-         ;; Set path of uim-el-agent and uim-el-helper-agent executables
-         (add-after 'configure 'configure-uim-el
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (emacs-substitute-variables "emacs/uim-var.el"
-                 ("uim-el-agent" (string-append out "/bin/uim-el-agent"))
-                 ("uim-el-helper-agent" (string-append out "/bin/uim-el-helper-agent"))))))
-         (add-after 'install 'make-autoloads
-           (lambda* (#:key outputs #:allow-other-keys)
-             (emacs-generate-autoloads
-              ,name (string-append (assoc-ref outputs "out")
-                                   "/share/emacs/site-lisp/uim-el")))))))
+      #:configure-flags
+      #~(list "--with-anthy-utf8"
+              ;; Set proper runpath
+              (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib")
+              "CFLAGS=-O2 -g -fcommon")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Set path of uim-el-agent and uim-el-helper-agent executables
+          (add-after 'configure 'configure-uim-el
+            (lambda* (#:key outputs #:allow-other-keys)
+              (emacs-substitute-variables "emacs/uim-var.el"
+                ("uim-el-agent"
+                 (string-append #$output "/bin/uim-el-agent"))
+                ("uim-el-helper-agent"
+                 (string-append #$output "/bin/uim-el-helper-agent")))))
+          (add-after 'install 'make-autoloads
+            (lambda* (#:key outputs #:allow-other-keys)
+              (emacs-generate-autoloads
+               #$name
+               (string-append #$output "/share/emacs/site-lisp/uim-el")))))))
     (home-page "https://github.com/uim/uim")
     (synopsis "Multilingual input method framework")
     (description "Uim is a multilingual input method library and environment.
