@@ -586,7 +586,7 @@ connections from and to iOS devices by connecting to a socket provided by a
     (inputs
      (list python))
     (native-inputs
-     (list pkg-config python-cython-0))
+     (list pkg-config python-cython-0 python-setuptools))
     (home-page "https://libimobiledevice.org/")
     (synopsis "Protocol library and tools to communicate with Apple devices")
     (description "libimobiledevice is a software library that talks the
