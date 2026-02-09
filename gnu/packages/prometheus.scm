@@ -320,23 +320,16 @@ and inhibition of alerts.")
 (define-public go-github-com-prometheus-client-golang
   (package
     (name "go-github-com-prometheus-client-golang")
-    (version "1.22.0")
+    (version "1.23.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/prometheus/client_golang")
-             (commit (string-append "v" version))))
+              (url "https://github.com/prometheus/client_golang")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08japwfsl7wlw6z8dkfdrhpgxr2w6frbinn96ksn0izab2h9s5gd"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; Submodules with their own go.mod files and packaged separately:
-            ;;
-            ;; - .bingo - fake module
-            (delete-file-recursively ".bingo")))))
+        (base32 "054hdlyjkyna1xx39apl7srzvjsyirnn1ihbaqarxbygdrz3zrx1"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -347,13 +340,27 @@ and inhibition of alerts.")
       #:tests? (target-64bit?)
       #:import-path "github.com/prometheus/client_golang"
       #:test-flags
-      #~(list "-skip" (string-append
-                       ;; Test fails with Assertion error.
-                       "TestHandler"
-                       ;; Test fails on aarch64-linux system.
-                       #$@(if (not (target-x86-64?))
-                              '("|TestProcessCollector")
-                              '())))
+      #~(list "-skip"
+              (string-join
+               (list
+                ;; go_collector_latest_test.go:131: found unexpected metric
+                ;; go_godebug_non_default_behavior_httpcookiemaxnum_events_total
+                "TestGoCollector_ExposedMetrics"
+                ;; Tests fail with message: found new runtime/metrics
+                ;; metric
+                ;; /godebug/non-default-behavior/httpcookiemaxnum:events
+                ;; a new Go version may have been detected, please run go
+                ;; run gen_go_collector_metrics_set.go go1.X where X is
+                ;; the Go version you are currently using
+                "TestExpectedRuntimeMetrics"
+                ;; Assertions are not equal to compare strings.
+                "TestGoCollectorAllowList/allow_all"
+                "TestGoCollectorAllowList/allow_debug"
+                ;; Test fails on aarch64-linux system.
+                #$@(if (not (target-x86-64?))
+                       '("TestProcessCollector")
+                       '()))
+               "|"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples-and-tutorials
@@ -363,10 +370,12 @@ and inhibition of alerts.")
                           (list "api/prometheus/v1/example_test.go"
                                 "examples"
                                 "tutorials"))))))))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-go-uber-org-goleak))
     (propagated-inputs
      (list go-github-com-beorn7-perks
            go-github-com-cespare-xxhash-v2
-           go-github-com-google-go-cmp
            go-github-com-json-iterator-go
            go-github-com-klauspost-compress
            go-github-com-kylelemons-godebug
