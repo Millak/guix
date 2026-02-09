@@ -4239,7 +4239,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
 (define-public opendht
     (package
       (name "opendht")
-      (version "3.6.2.3")
+      (version "3.7.0rc8")             ;jami depends on this RC
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -4248,9 +4248,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1v8miwsslqlqlpp7p210jhxwkblqyc69cgxaq680qhg7h1sf3y2i"))
-                (patches
-                 (search-patches "opendht-meson-install-headers.patch"))))
+                  "0ysfwrqjh6mpy6zycmd3ljsd63ap8i4psgnr25vp0xqbjrfz6rf6"))))
       (outputs '("out" "python" "tools" "debug"))
       (build-system meson-build-system)
       (arguments
