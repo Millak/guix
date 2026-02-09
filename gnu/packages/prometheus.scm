@@ -385,19 +385,20 @@ Prometheus metrics.")
 (define-public go-github-com-prometheus-client-model
   (package
     (name "go-github-com-prometheus-client-model")
-    (version "0.6.1")
+    (version "0.6.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/prometheus/client_model")
-             (commit (string-append "v" version))))
+              (url "https://github.com/prometheus/client_model")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g1q2szzwp4rwkvayi2mnq2nwj6hj4ja7j43vwyi1iaz6d9z505c"))))
+        (base32 "1r0magjb44ckin8mrp6shihbl7lvsswfry4hr9yr6d12zzm638db"))))
     (build-system go-build-system)
     (arguments
      (list
+      ;; TODO: Check if need/can generare *.go from proto files, see Makefile.
       #:skip-build? #t
       #:import-path "github.com/prometheus/client_model"))
     (propagated-inputs
