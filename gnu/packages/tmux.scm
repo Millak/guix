@@ -181,7 +181,7 @@ windows.")
     (arguments
      (list
       #:test-flags
-      #~(list "-c" "/dev/null" ; Missing development dependency.
+      #~(list "-o" "addopts=''"         ; Missing development dependency.
               "-k" "not test_capture_pane_start")  ; Permission denied.
       #:phases
       #~(modify-phases %standard-phases
