@@ -26213,6 +26213,39 @@ It is a maintained fork of @url{gorilla/schema,
 https://github.com/gorilla/schema}")
     (license license:bsd-3)))
 
+(define-public go-github-com-ziutek-mymysql
+  (package
+    (name "go-github-com-ziutek-mymysql")
+    (version "1.5.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ziutek/mymysql")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "172s7sv5bgc40x81k18hypf9c4n8hn9v5w5zwyr4mi5prbavqcci"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;XXX: running MySQL server is required
+      #:skip-build? #t
+      #:import-path "github.com/ziutek/mymysql"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
+    (home-page "https://github.com/ziutek/mymysql")
+    (synopsis " MySQL Client API for Golang")
+    (description
+     "This package provides a MySQL client API written entirely in Go.  It is
+designed to work with the MySQL protocol version 4.1 or greater.  It definitely
+works well with MySQL server version 5.0 and 5.1.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-zk-org-pretty
   (package
     (name "go-github-com-zk-org-pretty")
