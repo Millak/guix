@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2014-2026 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2015, 2016, 2018, 2019, 2020 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
@@ -15077,53 +15077,52 @@ characteristic tag shift values in these assays.")
       (license license:bsd-3))))
 
 (define-public rcas-web
-  (let ((commit "71c93e3835653beb4eaa6e89b860bee3779729b8")
-        (revision "2"))
-    (package
-      (name "rcas-web")
-      (version (git-version "0.1.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/BIMSBbioinfo/rcas-web")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0232g0f7g0w5cgaib462zbfssvfq8i0iqv5b5wfmbrbn0sw99l9a"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'install 'wrap-executable
-              (lambda* (#:key inputs outputs #:allow-other-keys)
-                (let* ((json   #$(this-package-input "guile-json"))
-                       (redis  #$(this-package-input "guile-redis"))
-                       (path   (string-append
-                                json  "/share/guile/site/3.0:"
-                                redis "/share/guile/site/3.0")))
-                  (wrap-program (string-append #$output "/bin/rcas-web")
-                    `("GUILE_LOAD_PATH" ":" = (,path))
-                    `("GUILE_LOAD_COMPILED_PATH" ":" = (,path))
-                    `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE"))))))))))
-      (inputs
-       (list bash-minimal
-             r-minimal
-             r-rcas
-             guile-3.0
-             guile-json-4
-             guile-redis))
-      (native-inputs
-       (list autoconf
-             automake
-             pkg-config))
-      (home-page "https://github.com/BIMSBbioinfo/rcas-web")
-      (synopsis "Web interface for RNA-centric annotation system (RCAS)")
-      (description "This package provides a simple web interface for the
+  (package
+    (name "rcas-web")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/BIMSBbioinfo/rcas-web")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0n1mh1132dx0y0ln2rhdy02rssyzp2xa2im5ynzjpnxxw0r6fgip"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-executable
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((json   #$(this-package-input "guile-json"))
+                     (redis  #$(this-package-input "guile-redis"))
+                     (path   (string-append
+                              json  "/share/guile/site/3.0:"
+                              redis "/share/guile/site/3.0")))
+                (wrap-program (string-append #$output "/bin/rcas-web")
+                  `("GUILE_LOAD_PATH" ":" = (,path))
+                  `("GUILE_LOAD_COMPILED_PATH" ":" = (,path))
+                  `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE"))))))))))
+    (inputs
+     (list bash-minimal
+           r-minimal
+           r-rcas
+           r-biocmanager
+           guile-3.0
+           guile-json-4
+           guile-redis))
+    (native-inputs
+     (list autoconf
+           automake
+           pkg-config))
+    (home-page "https://github.com/BIMSBbioinfo/rcas-web")
+    (synopsis "Web interface for RNA-centric annotation system (RCAS)")
+    (description "This package provides a simple web interface for the
 @dfn{RNA-centric annotation system} (RCAS).")
-      (license license:agpl3+))))
+    (license license:agpl3+)))
 
 (define-public r-chipkernels
   (let ((commit "c9cfcacb626b1221094fb3490ea7bac0fd625372")
