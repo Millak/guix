@@ -678,6 +678,15 @@ and a lot more.")
        (sha256
         (base32 "1knbaygh489v5hz6fggdv09lz323zklqjb5m52pkkv6pjs2l0v9q"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+         ;; doctests require NumPy1.
+         (add-after 'unpack 'remove-doctests
+           (lambda _
+             (substitute* "setup.cfg"
+               (("addopts.*") "")))))))
     (native-inputs
      (list python-array-api-strict
            python-pytest
@@ -687,7 +696,7 @@ and a lot more.")
      (list python-array-api-compat
            python-joblib
            python-numba
-           python-numpy-1
+           python-numpy
            python-scipy))
     (home-page "https://dcor.readthedocs.io/")
     (synopsis "Distance correlation and related E-statistics in Python")
