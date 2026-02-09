@@ -152,6 +152,7 @@ Copyright @copyright{} 2026 David Elsing@*
 Copyright @copyright{} 2026 Nguyễn Gia Phong@*
 Copyright @copyright{} 2026 Yarl Baudig@*
 Copyright @copyright{} 2026 Joan Vilardaga Castro@*
+Copyright @copyright{} 2026 Nemin@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -305,6 +306,7 @@ Package Management
 Substitutes
 
 * Official Substitute Servers::  One particular source of substitutes.
+* Volunteer Run Mirrors::        Additional, regional sources of substitutes.
 * Substitute Server Authorization::  How to enable or disable substitutes.
 * Getting Substitutes from Other Servers::  Substitute diversity.
 * Substitute Authentication::   How Guix verifies substitutes.
@@ -3966,13 +3968,54 @@ could use the information gathered to determine, for instance, whether
 your system has unpatched security vulnerabilities.
 
 Substitutes from the official build farms are enabled by default when
-using Guix System (@pxref{GNU Distribution}).  However,
-they are disabled by default when using Guix on a foreign distribution,
-unless you have explicitly enabled them via one of the recommended
-installation steps (@pxref{Installation}).  The following paragraphs
-describe how to enable or disable substitutes for the official build
-farm; the same procedure can also be used to enable substitutes for any
-other substitute server.
+using Guix System (@pxref{GNU Distribution}).  However, they are
+disabled by default when using Guix on a foreign distribution, unless
+you have explicitly enabled them via one of the recommended installation
+steps (@pxref{Installation}).  Please @pxref{Substitute Server
+Authorization} on how to enable or disable substitutes for the official
+build farm; the same procedure can also be used to enable substitutes
+for any other substitute server.
+
+@node Volunteer Run Mirrors
+@subsection Volunteer Run Mirrors
+
+@cindex substitutes
+@cindex mirrors
+Beyond the two official substitute servers, there are additionally
+volunteer run mirrors.  These mirrors do not build their own
+substitutes, but rather copy them from the official build farm and
+distribute them to users.  Enabling a mirror may be beneficial in case
+the official servers are temporarily unavailable or provide inadequate
+bandwidth at the user's location.
+
+@quotation Note
+Mirrored substitutes are signed by the original builder, not the mirror.
+This means that mirror operators @strong{cannot} add or modify binaries,
+as long as you trust only the official substitute servers,
+@pxref{Substitute Server Authorization}.
+@end quotation
+
+List of volunteer run mirrors, grouped by location (with the build farm
+they mirror in parentheses):
+
+@table @asis
+@item Germany
+@itemize
+@item @code{https://hydra-guix-129.guix.gnu.org} (bordeaux.guix.gnu.org)
+@end itemize
+@item People's Republic of China
+@itemize
+@item @code{https://mirrors.sjtug.sjtu.edu.cn/guix} (ci.guix.gnu.org)
+@item @code{https://mirrors.sjtug.sjtu.edu.cn/guix-bordeaux} (bordeaux.guix.gnu.org)
+@end itemize
+@item Russia
+@itemize
+@item @code{https://mirror.yandex.ru/mirrors/guix/} (bordeaux.guix.gnu.org)
+@end itemize
+@end table
+
+To enable receiving substitutions from these mirrors, please @pxref{Getting
+Substitutes from Other Servers}.
 
 @node Substitute Server Authorization
 @subsection Substitute Server Authorization
