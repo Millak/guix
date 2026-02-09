@@ -2461,10 +2461,6 @@ analysis of financial market data.")
         (base32 "13g5338aa8vgkx8g94vz5d8ynfq3jndvyh1nz6dlhw4axwr4x8dp"))))
     (properties '(("upstream-name" #{.}# "mt-940")))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-c" "/dev/null")))       ; Remove custom --cov flags.
     (native-inputs (list python-pytest python-pyyaml python-setuptools))
     (home-page "https://mt940.readthedocs.io/")
     (synopsis "Python parser for MT940-encoded SWIFT data")
