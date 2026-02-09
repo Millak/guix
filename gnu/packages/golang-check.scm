@@ -792,6 +792,33 @@ of 2 JSON-able and convertible to @code{map[string]interface{}} objects.
 Useful for diagnostics or debugging")
     (license license:expat)))
 
+(define-public go-github-com-erikstmartin-go-testdb
+  (package
+    (name "go-github-com-erikstmartin-go-testdb")
+    (version "0.0.0-20160219214506-8d10e4a1bae5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/erikstmartin/go-testdb")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fhrqcpv8x74qwxx9gpnhgqbz5wkp2bnsq92w418l1fnrgh4ppmq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/erikstmartin/go-testdb"))
+    (home-page "https://github.com/erikstmartin/go-testdb")
+    (synopsis "Go framework for stubbing responses")
+    (description
+     "This package implements a framework for stubbing responses from Go's
+@code{driver.Driver} interface.
+
+This can be used to sit in place of your sql.Db so that you can stub responses
+for sql calls, and remove database dependencies for your test suite.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-felixge-fgprof
   (package
     (name "go-github-com-felixge-fgprof")
