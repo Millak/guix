@@ -203,13 +203,13 @@ your project into different processes.")
 (define-public python-django
   (package
     (name "python-django")
-    (version "5.2.9")
+    (version "5.2.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "django" version))
        (sha256
-        (base32 "15d45imlysz7wcm4azf6a9rjv19jxb953x8sav0fc9wcbvycrd8n"))))
+        (base32 "1lq2dynfw6jmvzrzgfrlij2qnxcksaxgnrfr0pj3bvmrv0m2jbbz"))))
     (build-system pyproject-build-system)
     (arguments
      '(#:test-flags
@@ -270,8 +270,7 @@ your project into different processes.")
            python-pyyaml
            python-setuptools
            ;; optional for tests: python-selenium
-           python-tblib
-           python-wheel))
+           python-tblib))
     (propagated-inputs
      (list python-asgiref
            python-sqlparse
