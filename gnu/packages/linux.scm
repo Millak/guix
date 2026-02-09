@@ -11588,6 +11588,21 @@ of Linux application development.")
      (native-inputs '())
      (inputs '()))))
 
+(define-public pipewire-minimal-1.4
+  (package
+    (inherit pipewire-minimal)
+    (name "pipewire")
+    (version "1.4.10")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://gitlab.freedesktop.org/pipewire/pipewire")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14rsdbcsyyhjh7hvbq3d84f6s0fllvq6vpg39cxcd7l8fn4zc2zw"))))))
+
 (define-public wireplumber
   (package
     (name "wireplumber")
