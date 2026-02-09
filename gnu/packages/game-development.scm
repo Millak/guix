@@ -326,16 +326,16 @@ DeuTex has functions such as merging wads, etc.")
 (define-public go-codeberg-org-anaseto-gruid-sdl
   (package
     (name "go-codeberg-org-anaseto-gruid-sdl")
-    (version "0.5.0")
+    (version "0.10.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://codeberg.org/anaseto/gruid-sdl.git")
+             (url "https://codeberg.org/anaseto/gruid-sdl")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q2k9ysfvqb715mrpk2f3sagkjmcsinh3s6nfgi6f3axckzj2351"))))
+        (base32 "1mm0wcxch5gyd021rfiparf0i7i9a1jwkn3pbhxh50w8x91hyn9k"))))
     (build-system go-build-system)
     (arguments
      (list
