@@ -346,8 +346,8 @@ integration tests...\n")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/dlang/dmd")
-                    (commit (string-append "v" version))))
+                     (url "https://github.com/dlang/dmd")
+                     (commit (string-append "v" version))))
               (file-name (git-file-name "dmd" version))
               (sha256
                (base32
@@ -364,14 +364,14 @@ integration tests...\n")
       #:test-target "test"
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
-              "ENABLE_RELEASE=1"
               (string-append "HOST_CXX=" #$(cxx-for-target))
               "HOST_DMD=gdmd"
               (string-append "INSTALL_DIR=" #$output)
+              (string-append "SYSCONFDIR=" #$output "/etc")
+              "ENABLE_RELEASE=1"
               ;; Do not build the shared libphobos2.so library, to avoid
               ;; retaining a reference to gcc:lib.
               "SHARED=0"
-              (string-append "SYSCONFDIR=" #$output "/etc")
               "VERBOSE=1")
       #:modules
       `(,@%default-gnu-modules
@@ -516,32 +516,32 @@ integration tests...\n")
             (replace 'install-license-files
               ;; Phobos license is identical.
               (phase-in-sub-dir 'install-license-files "dmd"))))))
-    (native-inputs (list gdmd which
-                         gdb            ; for tests
-                         (origin
-                           (method git-fetch)
-                           (uri (git-reference
-                                 (url "https://github.com/dlang/phobos")
-                                 (commit (string-append "v" version))))
-                           (file-name (git-file-name "phobos" version))
-                           (sha256
-                            (base32
-                             "1ydls3ar6d3f7ffqvidr46x3zrz3wlzjln5qa0nbz843ndjr4g7n")))))
     (inputs
      (list bash-minimal))
+    (native-inputs
+     (list gdmd which
+           gdb      ; for tests
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/dlang/phobos")
+                    (commit (string-append "v" version))))
+             (file-name (git-file-name "phobos" version))
+             (sha256
+              (base32
+               "1ydls3ar6d3f7ffqvidr46x3zrz3wlzjln5qa0nbz843ndjr4g7n")))))
     (outputs '("out" "lib" "debug"))
-    (home-page "https://github.com/dlang/dmd")
     (synopsis "Reference D Programming Language compiler")
     (description "@acronym{DMD, Digital Mars D compiler} is the reference
 compiler for the D programming language.")
+    (license license:boost1.0)
+    (home-page "https://github.com/dlang/dmd")
     ;; As reported by upstream:
     ;; https://wiki.dlang.org/Compilers#Comparison
     (supported-systems '("i686-linux" "x86_64-linux" "aarch64-linux"))
 
     ;; This variant exists only for bootstrapping purposes.
-    (properties '((hidden? . #t)))
-
-    (license license:boost1.0)))
+    (properties '((hidden? . #t)))))
 
 ;; DMD built with dmd-bootstrap as the bootstrap D compiler.
 ;; Shared libraries are built now, tests are no longer disabled.
@@ -553,7 +553,7 @@ compiler for the D programming language.")
          (strip-keyword-arguments
           '(#:tests?)                   ;reinstate tests
           (package-arguments dmd-bootstrap))
-       ((#:disallowed-references  _ ''())
+       ((#:disallowed-references _ ''())
         (list dmd-bootstrap))
        ((#:make-flags flags ''())
         #~(fold delete #$flags '("HOST_DMD=gdmd"
@@ -574,9 +574,10 @@ compiler for the D programming language.")
                   (invoke "sed" "-i"
                           (format #f "s,~a,~a,g" in-dmd-bootstrap out)
                           out-bin-dmd))))))))
-    (native-inputs (modify-inputs (package-native-inputs dmd-bootstrap)
-                     (delete "gdmd")
-                     (append dmd-bootstrap)))
+    (native-inputs
+     (modify-inputs (package-native-inputs dmd-bootstrap)
+       (delete "gdmd")
+       (append dmd-bootstrap)))
     (properties
      (alist-delete 'hidden? (package-properties dmd-bootstrap)))))
 
