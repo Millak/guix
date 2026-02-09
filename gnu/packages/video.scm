@@ -4757,23 +4757,18 @@ via a filter.")
 (define-public obs-wlrobs
   (package
     (name "obs-wlrobs")
-    (version "1.1")
+    (version "1.2")
     (source
-      (origin
-        (method hg-fetch)
-        (uri (hg-reference
-              (url "https://hg.sr.ht/~scoopta/wlrobs")
-              (changeset (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "1whdb2ykisz50qw19nv1djw5qp17rpnpkc8s8470ja8iz894mmwd"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://hg.sr.ht/~scoopta/wlrobs/archive/v"
+                           version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xn0jgkgpw3qpngr8111cdlymihqgzlf08ssz8j5mszrm1npkdq4"))))
     (build-system meson-build-system)
-    (native-inputs
-     (list pkg-config))
-    (propagated-inputs `() )
-    (inputs (list obs simde
-                  `(,libx11 "out") wayland wayland-protocols))
+    (native-inputs (list pkg-config))
+    (inputs (list libx11 obs simde wayland wayland-protocols))
     (home-page "https://hg.sr.ht/~scoopta/wlrobs")
     (synopsis "OBS plugin for Wayland (wlroots) screen capture")
     (description
