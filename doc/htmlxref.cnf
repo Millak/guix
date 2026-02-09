@@ -2,7 +2,52 @@
 # Modified by Ludovic Courtès <ludo@gnu.org> for the GNU Guix manual.
 # Further modified by Tomas Volf <~@wolfsden.cz>.
 
-htmlxrefversion=2026-01-22.12; # UTC
+htmlxrefversion=2026-02-09.17; # UTC
+
+# Override URLs of manuals provided by the Documentation Center.
+
+DOCUMENTATION_CENTER = https://doc.guix.gnu.org
+
+bash             mono ${DOCUMENTATION_CENTER}/bash/latest/en/bash.html
+bash             node ${DOCUMENTATION_CENTER}/bash/latest/en/html_node
+binutils         mono ${DOCUMENTATION_CENTER}/binutils/latest/en/binutils.html
+binutils         node ${DOCUMENTATION_CENTER}/binutils/latest/en/html_node
+cuirass          mono ${DOCUMENTATION_CENTER}/cuirass/latest/en/cuirass.html
+cuirass          node ${DOCUMENTATION_CENTER}/cuirass/latest/en/html_node
+emacs-guix       mono ${DOCUMENTATION_CENTER}/emacs-guix/latest/en/emacs-guix.html
+emacs-guix       node ${DOCUMENTATION_CENTER}/emacs-guix/latest/en/html_node
+fibers           mono ${DOCUMENTATION_CENTER}/fibers/latest/en/fibers.html
+fibers           node ${DOCUMENTATION_CENTER}/fibers/latest/en/html_node
+gash             mono ${DOCUMENTATION_CENTER}/gash/latest/en/gash.html
+gash             node ${DOCUMENTATION_CENTER}/gash/latest/en/html_node
+gcrypt           mono ${DOCUMENTATION_CENTER}/gcrypt/latest/en/gcrypt.html
+gcrypt           node ${DOCUMENTATION_CENTER}/gcrypt/latest/en/html_node
+gdb              mono ${DOCUMENTATION_CENTER}/gdb/latest/en/gdb.html
+gdb              node ${DOCUMENTATION_CENTER}/gdb/latest/en/html_node
+geiser           mono ${DOCUMENTATION_CENTER}/geiser/latest/en/geiser.html
+geiser           node ${DOCUMENTATION_CENTER}/geiser/latest/en/html_node
+guile-avahi      mono ${DOCUMENTATION_CENTER}/guile-avahi/latest/en/guile-avahi.html
+guile-avahi      node ${DOCUMENTATION_CENTER}/guile-avahi/latest/en/html_node
+guile-gcrypt     mono ${DOCUMENTATION_CENTER}/guile-gcrypt/latest/en/guile-gcrypt.html
+guile-gcrypt     node ${DOCUMENTATION_CENTER}/guile-gcrypt/latest/en/html_node
+guile-gnutls     mono ${DOCUMENTATION_CENTER}/guile-gnutls/latest/en/guile-gnutls.html
+guile-gnutls     node ${DOCUMENTATION_CENTER}/guile-gnutls/latest/en/html_node
+guile-library    mono ${DOCUMENTATION_CENTER}/guile-library/latest/en/guile-library.html
+guile-library    node ${DOCUMENTATION_CENTER}/guile-library/latest/en/html_node
+guile            mono ${DOCUMENTATION_CENTER}/guile/latest/en/guile.html
+guile-netlink    mono ${DOCUMENTATION_CENTER}/guile-netlink/latest/en/guile-netlink.html
+guile-netlink    node ${DOCUMENTATION_CENTER}/guile-netlink/latest/en/html_node
+guile            node ${DOCUMENTATION_CENTER}/guile/latest/en/html_node
+guile-ssh        mono ${DOCUMENTATION_CENTER}/guile-ssh/latest/en/guile-ssh.html
+guile-ssh        node ${DOCUMENTATION_CENTER}/guile-ssh/latest/en/html_node
+libc             mono ${DOCUMENTATION_CENTER}/libc/latest/en/libc.html
+libc             node ${DOCUMENTATION_CENTER}/libc/latest/en/html_node
+mes              mono ${DOCUMENTATION_CENTER}/mes/latest/en/mes.html
+mes              node ${DOCUMENTATION_CENTER}/mes/latest/en/html_node
+r5rs             mono ${DOCUMENTATION_CENTER}/r5rs/latest/en/r5rs.html
+r5rs             node ${DOCUMENTATION_CENTER}/r5rs/latest/en/html_node
+shepherd         mono ${DOCUMENTATION_CENTER}/shepherd/latest/en/shepherd.html
+shepherd         node ${DOCUMENTATION_CENTER}/shepherd/latest/en/html_node
 
 # Copyright 2010-2020, 2022 Free Software Foundation, Inc.
 #
