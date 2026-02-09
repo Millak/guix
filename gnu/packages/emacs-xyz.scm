@@ -15267,8 +15267,9 @@ replaced with the directory you choose.")
     (license license:gpl3+)))
 
 (define-public emacs-consult-mu
-  (let ((commit "e1dc63674b924698b30a9ecc0400a05864711c85")
-        (revision "0"))
+  ;; Last tagged version in 2023.
+  (let ((commit "8b54bbf86c2f112e3520eeeefb70d509b4590385")
+        (revision "1"))
     (package
       (name "emacs-consult-mu")
       (version (git-version "1.0" revision commit))
@@ -15280,10 +15281,11 @@ replaced with the directory you choose.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "17ad0901xbg2vrgdvpp67kia2r7gqsvbkqqb44f4pwakr7zwiz2y"))))
+          (base32 "0d2fjghzmkcdyyjs2c00gp91nri9fmxwnfrain7sishfw42as6wz"))))
       (build-system emacs-build-system)
       (arguments
-       '(#:phases (modify-phases %standard-phases
+       '(#:tests? #f                    ;no tests
+         #:phases (modify-phases %standard-phases
                     (add-after 'unpack 'move-source-files
                       (lambda _
                         (let ((el-files (find-files "./extras" ".*\\.el$")))
