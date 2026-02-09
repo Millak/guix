@@ -746,8 +746,8 @@ to a minimal test case.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/lievenhey/d_demangler")
-                    (commit (string-append "version-" version))))
+                     (url "https://github.com/lievenhey/d_demangler")
+                     (commit (string-append "version-" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
@@ -765,8 +765,8 @@ to a minimal test case.")
                        (install-file "libd_demangle.so"
                                      (string-append #$output "/lib")))))))
     (native-inputs (list dmd))
-    (home-page "https://github.com/lievenhey/d_demangler")
     (synopsis "Utility to demangle D symbols")
     (description "@command{d_demangle} is a small utility that can be used to
 demangle D symbols.  A shared library is also provided.")
-    (license license:gpl3+)))
+    (license license:gpl3+)
+    (home-page "https://github.com/lievenhey/d_demangler")))
