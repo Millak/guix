@@ -331,13 +331,13 @@
 (define-public python-anaconda-cli-base
   (package
     (name "python-anaconda-cli-base")
-    (version "0.5.4")
+    (version "0.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "anaconda_cli_base" version))
        (sha256
-        (base32 "01kspqfyqhzlb3hkxrvdlasch5ai87lizn6yz4g25ff4x7k5b4qx"))))
+        (base32 "0r2cvz99vrvcm399qsfxiak5qb3mbr0kbvdrkbnm20l9lq2g18zr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -360,6 +360,7 @@
            python-readchar
            python-rich
            python-tomli
+           python-tomlkit
            python-typer))
     (home-page "https://anaconda.github.io/anaconda-cli-base/")
     (synopsis "Base CLI entrypoint Anaconda CLI plugins")
