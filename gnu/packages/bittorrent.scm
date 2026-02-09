@@ -534,8 +534,9 @@ and will take advantage of multiple processor cores where possible.")
     (inputs (list boost-1.83 openssl))
     (native-inputs
      (list libfaketime
-           python-wrapper
-           pkg-config))
+           pkg-config
+           python-setuptools
+           python-wrapper))
     (home-page "https://www.libtorrent.org/")
     (synopsis "Feature-complete BitTorrent implementation")
     (description
