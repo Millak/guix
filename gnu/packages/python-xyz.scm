@@ -8842,37 +8842,6 @@ for Python.")
 written in pure Python.")
     (license license:bsd-3)))
 
-(define-public python-jinja2-time
-  ;; XXX: No rleases since 2016, see:
-  ;; <https://codeberg.org/guix/guix/issues/5546>.
-  (package
-    (name "python-jinja2-time")
-    (version "0.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/hackebrot/jinja2-time")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1i7qihrs7wix7wjxlpif3iirhmbyahywpy5haj8abv4r3zbfafna"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))        ;all tests are broken
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-arrow
-           python-jinja2))
-    (home-page "https://github.com/hackebrot/jinja2-time")
-    (synopsis "Jinja2 Extension for Dates and Times")
-    (description
-     "This package provides an extension for the template engine Jinja2.  It
-adds a 'now' tag providing a convenient access to the arrow.now() API from
-templates.  A format string can be provided to control the output.")
-    (license license:expat)))
-
 (define-public python-pypugjs
   (package
     (name "python-pypugjs")
