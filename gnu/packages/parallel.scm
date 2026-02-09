@@ -742,7 +742,8 @@ single-instruction multiple-data (SIMD) intrinsics.")
            perl
            flex
            python
-           python-cython-0))
+           python-cython-0
+           python-setuptools))
     (synopsis "PMIx library")
     (description
      "PMIx is an application programming interface standard that provides
