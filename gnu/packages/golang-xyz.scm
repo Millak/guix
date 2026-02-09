@@ -14683,6 +14683,31 @@ allocation.  @code{fastime} is returning the approximate time.")
 code dependencies in the form of internal and external packages.")
     (license license:expat)))
 
+(define-public go-github-com-kylelemons-go-gypsy
+  (package
+    (name "go-github-com-kylelemons-go-gypsy")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kylelemons/go-gypsy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h8fn37zqbxaby9cnxbymss2j652kvq124rinpqpbh60q1qdn6sy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/kylelemons/go-gypsy"))
+    (home-page "https://github.com/kylelemons/go-gypsy")
+    (synopsis "Go YAML Parser for Simple YAML")
+    (description
+     "This package implements a very simple parser for a YAML-like config
+language for Golang.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-kylelemons-godebug
   (package
     (name "go-github-com-kylelemons-godebug")
