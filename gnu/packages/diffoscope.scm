@@ -79,8 +79,7 @@
 (define-public diffoscope
   (package
     (name "diffoscope")
-    ;; Use git snapshot to fix tests using u-boot-tools 2026.01
-    (version "311-2-ge4ec97f7")
+    (version "312")
     (source
      (origin
        (method git-fetch)
@@ -89,12 +88,20 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nk8di19r5x5jwb2jh1m7mzj109z2a2axikysijz2hm7m30wjkq7"))))
+        (base32 "0955dgphw0ajssy1x33vlw090b37wcan0zvzqyvpnjfmzdbnwz92"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
+          ;; Switch to use 7zip, as p7zip is now a deprecated package.
+          ;; Can be dropped when updating to 313:
+          ;; https://salsa.debian.org/reproducible-builds/diffoscope/-/commit/a826a00830420b5d76cb451d0d308f35a9b3251e
+          (add-after 'unpack 'update-to-7zip
+            (lambda _
+              (substitute* "diffoscope/external_tools.py"
+                (("p7zip")
+                 "7zip"))))
           ;; These tests are broken because our `file` package has a
           ;; bug in berkeley-db and wasm file type detection.
           (add-after 'unpack 'remove-broken-file-type-detection-test
@@ -220,7 +227,7 @@
             odt2txt
             openssh
             openssl
-            p7zip
+            7zip
             perl
             pgpdump
             poppler
