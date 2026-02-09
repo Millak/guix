@@ -1652,7 +1652,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/isl-0.11.1-aarch64-support.patch		\
   %D%/packages/patches/ispell-for-linphone-cmake.patch		\
   %D%/packages/patches/jami-avutil-link.patch   		\
-  %D%/packages/patches/jami-qwindowkit.patch			\
   %D%/packages/patches/jamvm-1.5.1-aarch64-support.patch	\
   %D%/packages/patches/jamvm-1.5.1-armv7-support.patch	\
   %D%/packages/patches/jamvm-2.0.0-aarch64-support.patch	\
@@ -1698,7 +1697,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/libgeotiff-fix-tests-on-i386.patch	\
   %D%/packages/patches/libguestfs-syms.patch            	\
   %D%/packages/patches/libinfinity-renew-test-certificate.patch \
-  %D%/packages/patches/libjami-pkgconf.patch                    \
   %D%/packages/patches/libmaus2-fix-gcc-13-require-include-cstdint.patch	\
   %D%/packages/patches/libretro-dolphin-emu-data.patch		\
   %D%/packages/patches/libretro-dolphin-emu-gc-font-tool.patch  \

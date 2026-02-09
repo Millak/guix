@@ -1,7 +1,5 @@
-Upstream-status: <https://review.jami.net/c/jami-client-qt/+/32711>
-
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 80017d20..9ece96ef 100644
+index 979dae2a..21adb2fc 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -60,7 +60,6 @@ endif()
@@ -12,41 +10,43 @@ index 80017d20..9ece96ef 100644
  endif()
  
  # init some variables for includes, libs, etc.
-@@ -236,8 +235,8 @@ endif()
+@@ -226,11 +225,9 @@ submodules afterwards.  You can do so by running \"git submodule \
+ update --init\" in the repository.")
+ endif()
  list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/extras/build/cmake/modules)
- if (NOT JAMICORE_AS_SUBDIR)
-   find_package(LibJami REQUIRED)
+-if (NOT JAMICORE_AS_SUBDIR)
+-  find_package(LibJami REQUIRED)
 -  if(LIBJAMI_FOUND)
 -    include_directories(${LIBJAMI_INCLUDE_DIR})
-+  if (NOT TARGET LibJami::LibJami)
-+    message(FATAL_ERROR "libjami could not be found")
-   endif()
+-  endif()
++find_package(LibJami REQUIRED)
++if (NOT TARGET LibJami::LibJami)
++  message(FATAL_ERROR "libjami could not be found")
  endif()
  
-@@ -756,7 +755,7 @@ if(MSVC)
+ include(FindPython3)
+@@ -755,6 +752,8 @@ foreach(MODULE ${QT_MODULES})
+   list(APPEND QT_LIBS "Qt::${MODULE}")
+ endforeach()
+ 
++list(APPEND CLIENT_LIBS LibJami::LibJami)
++
+ if(MSVC)
+   # Makes it a GUI executable instead of a console application
+   set_target_properties(
+@@ -763,7 +762,6 @@ if(MSVC)
      WIN32_EXECUTABLE TRUE)
  
    list(APPEND CLIENT_LIBS
 -    ${LIBJAMI_LIB}
-+    LibJami::LibJami
      ${GNUTLS_LIB}
      ${LIBCLIENT_NAME}
      ${QT_LIBS}
-@@ -799,7 +798,8 @@ elseif (NOT APPLE)
-     ${LIBNOTIFY_LIBRARIES}
-     ${LIBGDKPIXBUF_LIBRARIES}
-     ${GLIB_LIBRARIES}
--    ${GIO_LIBRARIES})
-+    ${GIO_LIBRARIES}
-+    LibJami::LibJami)
- 
-   install(
-     TARGETS ${PROJECT_NAME}
 diff --git a/extras/build/cmake/modules/FindLibJami.cmake b/extras/build/cmake/modules/FindLibJami.cmake
-index ee2bf6d9..31ec9c02 100644
+index ee2bf6d9..92cd9e55 100644
 --- a/extras/build/cmake/modules/FindLibJami.cmake
 +++ b/extras/build/cmake/modules/FindLibJami.cmake
-@@ -14,17 +14,26 @@
+@@ -14,17 +14,38 @@
  # along with this program; if not, write to the Free Software
  # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.
  
@@ -57,11 +57,23 @@ index ee2bf6d9..31ec9c02 100644
 -#   LIBJAMI_LIB - path to libjami or libring library
 +# Once done, this find module will set the LibJami::LibJami imported
 +# target, which references all what is needed (headers, libraries,
-+# dependencies).
++# dependencies). A pure interface variant target, LibJami::Headers, is
++# also defined. It can be used if only the headers are required.
  
  set(LIBJAMI_FOUND true)
  
++# Do not use ALIAS as these are not in the global scope.
++function(create_libjami_target backend_target)
++  add_library(LibJami::LibJami INTERFACE IMPORTED GLOBAL)
++  target_link_libraries(LibJami::LibJami INTERFACE ${backend_target})
++endfunction()
++
  if(WITH_DAEMON_SUBMODULE)
++  if(JAMICORE_AS_SUBDIR)
++    create_libjami_target(jami-core)
++    message(STATUS "Using jami-core CMake project directly as libjami")
++    return()
++  endif()
    set(LIBJAMI_INCLUDE_DIR ${DAEMON_DIR}/src/jami)
  else()
 +  # Preferably find libjami via pkg-config.
@@ -69,7 +81,7 @@ index ee2bf6d9..31ec9c02 100644
 +  if(PKG_CONFIG_FOUND)
 +    pkg_check_modules(LIBJAMI QUIET IMPORTED_TARGET jami)
 +    if(LIBJAMI_FOUND)
-+      add_library(LibJami::LibJami ALIAS PkgConfig::LIBJAMI)
++      create_libjami_target(PkgConfig::LIBJAMI)
 +      message(STATUS "Found LibJami via pkg-config")
 +      return()
 +    endif()
@@ -78,36 +90,77 @@ index ee2bf6d9..31ec9c02 100644
    find_path(LIBJAMI_INCLUDE_DIR jami.h PATH_SUFFIXES jami)
    if(NOT LIBJAMI_INCLUDE_DIR)
      message(STATUS "Jami daemon headers not found!
-@@ -109,5 +118,15 @@ endif()
+@@ -109,5 +130,16 @@ endif()
  # Restore the original value of CMAKE_FIND_LIBRARY_SUFFIXES.
  set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES_orig})
  
+-message(STATUS "Jami daemon headers are in " ${LIBJAMI_INCLUDE_DIR})
+-message(STATUS "Jami daemon library is at " ${LIBJAMI_LIB})
 +# Assemble a CMake imported target with the above information gathered
 +# by other means than pkg-config.
 +if(LIBJAMI_FOUND AND LIBJAMI_LIB AND LIBJAMI_INCLUDE_DIR)
-+  add_library(LibJami::LibJami UNKNOWN IMPORTED)
++  add_library(LibJami::LibJami UNKNOWN IMPORTED GLOBAL)
 +  set_target_properties(LibJami::LibJami PROPERTIES
 +    IMPORTED_LOCATION "${LIBJAMI_LIB}"
 +    INTERFACE_INCLUDE_DIRECTORIES "${LIBJAMI_INCLUDE_DIR}"
 +  )
++  message(STATUS "Jami daemon headers are in " ${LIBJAMI_INCLUDE_DIR})
++  message(STATUS "Jami daemon library is at " ${LIBJAMI_LIB})
++else()
++  message(WARNING "Could not find Jami library")
 +endif()
-+
- message(STATUS "Jami daemon headers are in " ${LIBJAMI_INCLUDE_DIR})
- message(STATUS "Jami daemon library is at " ${LIBJAMI_LIB})
 diff --git a/src/libclient/CMakeLists.txt b/src/libclient/CMakeLists.txt
-index 04cdbc6d..0214d813 100644
+index 04cdbc6d..26744a6e 100644
 --- a/src/libclient/CMakeLists.txt
 +++ b/src/libclient/CMakeLists.txt
-@@ -47,9 +47,6 @@ endif()
+@@ -46,10 +46,6 @@ if(NOT DEFINED EXTRAS_DIR)
+ endif()
  set(CMAKE_MODULE_PATH
    ${CMAKE_MODULE_PATH} "${EXTRAS_DIR}/build/cmake/modules")
- find_package(LibJami REQUIRED)
+-find_package(LibJami REQUIRED)
 -if(LIBJAMI_FOUND)
 -  include_directories(${LIBJAMI_INCLUDE_DIR})
 -endif()
  
  string(SUBSTRING ${CMAKE_GENERATOR} 0 14 CMAKE_GENERATOR_SHORT)
  if(CMAKE_GENERATOR_SHORT MATCHES "Visual Studio ")
+@@ -202,10 +198,6 @@ Qt${QT_VERSION_MAJOR} enabled.")
+   add_subdirectory(qtwrapper)
+   include_directories(qtwrapper)
+ 
+-  if(JAMICORE_AS_SUBDIR)
+-    add_dependencies(qtwrapper jami-core)
+-  endif()
+-
+   if(${VERBOSE_IPC} MATCHES true)
+     message(STATUS "Adding more debug output")
+     add_definitions(-DVERBOSE_IPC=true)
+@@ -454,16 +446,6 @@ add_library(${LIBCLIENT_NAME} STATIC
+   ${LIBCLIENT_HEADERS_API}
+   ${LIBCLIENT_HEADERS_MOC})
+ 
+-if(JAMICORE_AS_SUBDIR)
+-  # Define the project dependencies depending on the build type.
+-  if(ENABLE_LIBWRAP)
+-    add_dependencies(qtwrapper jami-core)
+-    add_dependencies(${LIBCLIENT_NAME} qtwrapper)
+-  else()
+-    add_dependencies(${LIBCLIENT_NAME} jami-core)
+-  endif()
+-endif()
+-
+ foreach(QT_LIB ${QT_LIBS})
+   target_link_libraries(${LIBCLIENT_NAME} ${QT_LIB})
+ endforeach()
+@@ -479,6 +461,8 @@ if(ENABLE_LIBWRAP)
+   if (NOT (CMAKE_CXX_COMPILER_ID MATCHES "MSVC"))
+     target_link_libraries(${LIBCLIENT_NAME} ${AVUTIL_LIBRARY})
+   endif()
++else()
++  target_link_libraries(${LIBCLIENT_NAME} LibJami::LibJami)
+ endif()
+ if (NOT (CMAKE_CXX_COMPILER_ID MATCHES "MSVC"))
+   target_link_libraries(${LIBCLIENT_NAME} -lpthread)
 diff --git a/src/libclient/qtwrapper/CMakeLists.txt b/src/libclient/qtwrapper/CMakeLists.txt
 index c412112f..ba4bd5cb 100644
 --- a/src/libclient/qtwrapper/CMakeLists.txt
