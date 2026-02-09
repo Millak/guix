@@ -1566,19 +1566,26 @@ are included as well.")
 (define-public r-checkmate
   (package
     (name "r-checkmate")
-    (version "2.3.3")
+    (version "2.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "checkmate" version))
        (sha256
         (base32
-         "0zz5782c0n5xfby7h1dw4axm4iq305gd78wfyr0m2l453dq5rbzp"))))
+         "1jl5pm7c6601g5zafn6kmhhmh96g4bk6dzbdc5g5rn87xs6hdqcm"))))
+    ;; Avoid dependency cycle.
+    (properties '((updater-ignored-native-inputs . ("r-devtools"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-backports))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-data-table
+           r-knitr
+           r-magrittr
+           r-r6
+           r-testthat
+           r-tibble))
     (home-page "https://github.com/mllg/checkmate")
     (synopsis "Fast and versatile argument checks")
     (description
