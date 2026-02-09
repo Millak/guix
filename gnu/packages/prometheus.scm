@@ -412,16 +412,16 @@ Prometheus metrics.")
 (define-public go-github-com-prometheus-common
   (package
     (name "go-github-com-prometheus-common")
-    (version "0.63.0")
+    (version "0.67.5")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/prometheus/common")
-             (commit (string-append "v" version))))
+              (url "https://github.com/prometheus/common")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jf6wqx16zipp2dyjd6n4fdkp5i1hh4ranjcm5iph5rdvcry06m3"))
+        (base32 "0bkv73aq8ryaybvya1x5i2gvl5iffiysw5viagcrvak7ffrb09wp"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -456,18 +456,20 @@ Prometheus metrics.")
          "./route/..."
          "./server/...")))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-google-go-cmp
+           go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-alecthomas-kingpin-v2
-           go-github-com-google-go-cmp
+           go-github-com-golang-jwt-jwt-v5
+           go-github-com-google-uuid
            go-github-com-julienschmidt-httprouter
            go-github-com-munnerz-goautoneg
            go-github-com-mwitkow-go-conntrack
            go-github-com-prometheus-client-model
+           go-go-yaml-in-yaml-v2
            go-golang-org-x-net
            go-golang-org-x-oauth2
-           go-google-golang-org-protobuf
-           go-gopkg-in-yaml-v2))
+           go-google-golang-org-protobuf))
     (home-page "https://github.com/prometheus/common")
     (synopsis "Shared Prometheus Golang components")
     (description
