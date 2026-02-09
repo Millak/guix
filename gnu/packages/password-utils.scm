@@ -931,17 +931,15 @@ them out, at the source.")
                 "1209l7ba51rjsq724hi8my0s11xpslp9hhif9p89jp9hbnviikvg"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'set-LDFLAGS
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (setenv "LDFLAGS"
-                     (string-append
-                      "-Wl,-rpath="
-                      (assoc-ref outputs "out") "/lib"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-LDFLAGS
+            (lambda _
+              (setenv "LDFLAGS"
+                      (string-append "-Wl,-rpath=" #$output "/lib")))))))
     (native-inputs
-     `(("python" ,python-wrapper)))
+     (list python-setuptools python-wrapper))
     (inputs
      (list cracklib))
     (synopsis "Password quality checker")
