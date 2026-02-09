@@ -1,0 +1,33 @@
+This patch makes neovim look for tree-sitter parsers in the directories
+specified by TREE_SITTER_GRAMMAR_PATH.  Thereby, making it compatible
+with the tree-sitter setup used by other Guix packages. e.g. emacs.
+
+diff --git a/runtime/lua/vim/treesitter/language.lua b/runtime/lua/vim/treesitter/language.lua
+index f70f99421c..480e7bb77a 100644
+--- a/runtime/lua/vim/treesitter/language.lua
++++ b/runtime/lua/vim/treesitter/language.lua
+@@ -126,12 +126,19 @@ function M.add(lang, opts)
+       return nil, string.format('Invalid language name "%s"', lang)
+     end
+ 
+-    local fname = 'parser/' .. lang .. '.*'
+-    local paths = api.nvim_get_runtime_file(fname, false)
+-    if #paths == 0 then
+-      return nil, string.format('No parser for language "%s"', lang)
++    local paths = vim.split(os.getenv('TREE_SITTER_GRAMMAR_PATH') or '', ':')
++    for _, elem in ipairs(paths) do
++      local fname = elem .. '/' .. 'libtree-sitter-' .. lang .. '*'
++      local paths = vim.fn.glob(fname, false, true)
++      if #paths > 0 then
++        path = paths[1]
++        break
++      end
+     end
+-    path = paths[1]
++  end
++
++  if path == nil then
++    return nil, string.format('No parser for language "%s"', lang)
+   end
+ 
+   local res = loadparser(path, lang, symbol_name)

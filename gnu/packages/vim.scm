@@ -801,7 +801,8 @@ is based on Vim's builtin plugin support.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1b524vi44gkcsyy8w4jggvprwdsgy0gjprgxpyhh0dmqm47c0c48"))))
+                "1b524vi44gkcsyy8w4jggvprwdsgy0gjprgxpyhh0dmqm47c0c48"))
+              (patches (search-patches "neovim-tree-sitter-grammar-path.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f
@@ -852,6 +853,19 @@ is based on Vim's builtin plugin support.")
                   lua5.1-libmpack
                   tree-sitter))
     (native-inputs (list pkg-config gettext-minimal gperf))
+    (propagated-inputs
+     ;; bundled tree-sitters, neovim assumes that these are available.
+     ;; See https://neovim.io/doc/user/treesitter.html#treesitter-parsers
+     (list tree-sitter-c
+           tree-sitter-lua
+           tree-sitter-markdown
+           tree-sitter-vim
+           tree-sitter-vimdoc
+           tree-sitter-query))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "TREE_SITTER_GRAMMAR_PATH")
+            (files '("lib/tree-sitter")))))
     (home-page "https://neovim.io")
     (synopsis "Fork of vim focused on extensibility and agility")
     (description
