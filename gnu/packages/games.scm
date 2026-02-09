@@ -3444,6 +3444,63 @@ This variant includes a Vulkan renderer.
 To run, you must put your official game data, @code{Levels} and @code{Help} in
 @code{~/.local/share/Serious-Engine/{serioussam,serioussamse}/gamedata/}.}")))
 
+(define-public shamogu
+  (package
+    (name "shamogu")
+    (version "1.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/anaseto/shamogu")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xl396gfca9y0q7qrr3ifcy4sahq1h6q013asnr3qkrj22jmrbyd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "codeberg.org/anaseto/shamogu"))
+    (native-inputs (list go-codeberg-org-anaseto-gruid
+                         go-codeberg-org-anaseto-gruid-js
+                         go-codeberg-org-anaseto-gruid-sdl
+                         go-codeberg-org-anaseto-gruid-tcell
+                         go-github-com-gdamore-tcell-v2))
+    (home-page "https://anaseto.codeberg.page/games/shamogu/")
+    (synopsis "Roguelike game by Anaseto")
+    (description
+     "Shamogu is a coffee-break roguelike game with a focus on tactical
+movement and careful timing of totemic spirit invocation and comestible
+consumption.  Visibility and noise stealth mechanics also play an important
+role.
+
+@quotation
+All life in your mountain is being corrupted.  Beasts are losing their minds
+and becoming aggressive.  These disturbing events started to happen after a
+dungeon portal suddenly appeared at the top of the mountain.  As the guardian,
+you decide to explore that dungeon in order to find and destroy the source of
+corruption… You hope luck will be on your side!
+@end quotation")
+    (license license:isc)))
+
+(define-public shamogu-sdl
+  (package/inherit shamogu
+    (name "shamogu-sdl")
+    (arguments
+     (substitute-keyword-arguments (package-arguments shamogu)
+       ((#:tests? _ #t) #f)
+       ((#:build-flags _ #'()) #~(list "--tags=sdl"))
+       ((#:phases _ #~%standard-phases)
+        #~(modify-phases %standard-phases
+            (add-after 'install 'fix-name-collision
+              (lambda _
+                (rename-file (string-append #$output "/bin/shamogu")
+                             (string-append #$output "/bin/shamogu-sdl"))))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs shamogu)
+       (prepend pkg-config)))))
+
 (define-public solarus
   (package
     (name "solarus")
