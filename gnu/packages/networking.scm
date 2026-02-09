@@ -4342,8 +4342,8 @@ A very simple IM client working over the DHT.
 
 (define-public dhtnet
   ;; There is no tag nor release; use the latest available commit.
-  (let ((revision "0")
-        (commit "8a43aedd235e02b2a8503a55fd50bbe35d49114a"))
+  (let ((revision "1")
+        (commit "cff03260fa037f59d6768bac26014b01c07b3fb9"))
     (package
       (name "dhtnet")
       ;; The base version is taken from the CMakeLists.txt file (see:
@@ -4357,7 +4357,7 @@ A very simple IM client working over the DHT.
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0n8r8bhzbixz0ps5ip8fppdwrvkc3cqhxmr2agyzjdzdkcycwgmg"))))
+                  "0niwiczniffgy2ffngxj6abjcxdrhn52i0375072r03sirhj5jlb"))))
       (outputs (list "out" "debug"))
       (build-system cmake-build-system)
       (arguments
