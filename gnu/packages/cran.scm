@@ -1287,13 +1287,15 @@ Backends are modular such that any subset of backends is supported.")
 (define-public r-car
   (package
     (name "r-car")
-    (version "3.1-3")
+    (version "3.1-5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "car" version))
        (sha256
-        (base32 "1gs9prinmxn4l6w8lyig3mzm1j2zfq3yhkznm1igd5ar74jc1wjr"))))
+        (base32 "1ywrijhfzfygsmchmpldl8a88xsd7dd5nix2x3zj7hf5yz7j7ar7"))))
+    ;; Avoid dependency cycle.
+    (properties '((updater-ignored-native-inputs . ("r-effects"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-abind
