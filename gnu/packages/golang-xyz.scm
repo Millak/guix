@@ -72,6 +72,7 @@
 ;;; Copyright © 2025 Patrick Norton <patrick.147.norton@gmail.com>
 ;;; Copyright © 2025 jgart <jgart@dismail.de>
 ;;; Copyright © 2025 Aleksandr Lebedev <alex.lebedev2003@icloud.com>
+;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -402,16 +403,16 @@ a human-readable byte format.")
 (define-public go-codeberg-org-anaseto-gruid
   (package
     (name "go-codeberg-org-anaseto-gruid")
-    (version "0.23.0")
+    (version "0.25.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://codeberg.org/anaseto/gruid.git")
+             (url "https://codeberg.org/anaseto/gruid")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19751r5skzn43af1ccgk8km3b3kxzvqzvw0igxbirvw862g1il04"))))
+        (base32 "1h7lgicf11b1vlzwgmkhy6rfn2jyz5xvvnkjfikw8i8hx8ni1ffb"))))
     (build-system go-build-system)
     (arguments
      (list
