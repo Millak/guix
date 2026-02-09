@@ -282,15 +282,14 @@ used as a drop-in substitute for @code{libfec}.")
      (list pkg-config
            flex
            bison
-           python))
+           python
+           python-setuptools))
     (inputs
      (list avahi
            libaio
            libxml2
            libusb))
     (build-system cmake-build-system)
-    (license (list license:lgpl2.1
-                   license:gpl2))
     (home-page "https://github.com/analogdevicesinc/libiio")
     (synopsis "Library for interfacing with Linux IIO devices")
     (description
@@ -304,7 +303,8 @@ DDS (Direct Digital Synthesis), PLLs (Phase Locked Loops),
 Variable/Programmable Gain Amplifiers (VGA, PGA), and RF transceivers.  You can
 use libiio natively on an embedded Linux target (local mode), or use libiio to
 communicate remotely to that same target from a host Linux, Windows or MAC
-over USB or Ethernet or Serial.")))
+over USB or Ethernet or Serial.")
+    (license (list license:lgpl2.1 license:gpl2))))
 
 (define-public libad9361
   (package
