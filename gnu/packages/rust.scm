@@ -1841,7 +1841,7 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.90))
+  (let ((base-rust rust-1.93))
     (package
       (inherit base-rust)
       (properties (append
@@ -1862,20 +1862,6 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
           (cons '(srfi srfi-26) modules))
          ((#:phases phases)
           `(modify-phases ,phases
-             (add-after 'unpack 'relax-gdb-auto-load-safe-path
-               ;; Allow GDB to load binaries from any location, otherwise the
-               ;; gdbinfo tests fail.  This is only useful when testing with a
-               ;; GDB version newer than 8.2.
-               (lambda _
-                 (setenv "HOME" (getcwd))
-                 (with-output-to-file (string-append (getenv "HOME") "/.gdbinit")
-                   (lambda _
-                     (format #t "set auto-load safe-path /~%")))
-                 ;; Do not launch gdb with '-nx' which causes it to not execute
-                 ;; any init file.
-                 (substitute* "src/tools/compiletest/src/runtest.rs"
-                   (("\"-nx\".as_ref\\(\\), ")
-                    ""))))
              (add-after 'unpack 'disable-tests-requiring-git
                (lambda _
                  (substitute* "src/tools/cargo/tests/testsuite/publish_lockfile.rs"
@@ -1883,10 +1869,9 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                       '("fn note_resolve_changes")))))
              (add-after 'unpack 'disable-tests-using-cargo-publish
                (lambda _
-                 (with-directory-excursion "src/tools/cargo/tests/testsuite"
-                   (substitute* "install.rs"
-                     ,@(make-ignore-test-list
-                        '("fn failed_install_retains_temp_directory"))))))
+                 (substitute* "src/tools/cargo/tests/testsuite/install.rs"
+                   ,@(make-ignore-test-list
+                      '("fn failed_install_retains_temp_directory")))))
              ,@(if (target-riscv64?)
                    ;; Keep this phase separate so it can be adjusted without needing
                    ;; to adjust the skipped tests on other architectures.
@@ -1912,43 +1897,19 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                              ,@(make-ignore-test-list
                                 '("fn test_missing_tests")))))))
                    `())
-             (add-after 'unpack 'disable-miscellaneous-broken-tests
+             (add-after 'unpack 'skip-unupdated-clippy-tests
                (lambda _
-                 (substitute* "src/tools/cargo/tests/testsuite/check_cfg.rs"
-                   ;; These apparently get confused by the fact that
-                   ;; we're building in a directory containing the
-                   ;; string "rustc"
-                   ,@(make-ignore-test-list
-                      '("fn config_fingerprint"
-                        "fn features_fingerprint")))
+                 (with-directory-excursion "src/tools/clippy/tests/ui"
+                   (delete-file "cognitive_complexity.rs")
+                   (delete-file "cognitive_complexity.stderr"))))
+             (add-after 'unpack 'disable-tests-requiring-network-access
+               (lambda _
                  (substitute* "src/tools/cargo/tests/testsuite/git_auth.rs"
-                   ;; This checks for a specific networking error message
-                   ;; that's different from the one we see in the builder
                    ,@(make-ignore-test-list
-                      '("fn net_err_suggests_fetch_with_cli")))))
-             (add-after 'unpack 'patch-command-exec-tests
-               ;; This test suite includes some tests that the stdlib's
-               ;; `Command` execution properly handles in situations where
-               ;; the environment or PATH variable are empty, but this fails
-               ;; since we don't have `echo` available at its usual FHS
-               ;; location.
-               (lambda _
-                 (substitute* "tests/ui/command/command-exec.rs"
-                   (("Command::new\\(\"echo\"\\)")
-                    (format #f "Command::new(~s)" (which "echo"))))))
-             (add-after 'unpack 'patch-command-uid-gid-test
-               (lambda _
-                 (substitute* "tests/ui/command/command-uid-gid.rs"
-                   (("/bin/sh") (which "sh"))
-                   (("/bin/ls") (which "ls")))))
-             (add-after 'unpack 'skip-shebang-tests
-               ;; This test make sure that the parser behaves properly when a
-               ;; source file starts with a shebang. Unfortunately, the
-               ;; patch-shebangs phase changes the meaning of these edge-cases.
-               ;; We skip the test since it's drastically unlikely Guix's
-               ;; packaging will introduce a bug here.
-               (lambda _
-                 (delete-file "tests/ui/parser/shebang/sneaky-attrib.rs")))
+                      '("fn net_err_suggests_fetch_with_cli")))
+                 (substitute* "src/tools/cargo/tests/testsuite/package.rs"
+                   ,@(make-ignore-test-list
+                      '("fn publish_to_crates_io_warns")))))
              (add-after 'unpack 'patch-process-tests
                (lambda* (#:key inputs #:allow-other-keys)
                  (let ((bash (assoc-ref inputs "bash")))
@@ -2005,17 +1966,17 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
              (replace 'patch-cargo-checksums
                (lambda _
                  (substitute*
-                     (append '("Cargo.lock"
-                               "src/bootstrap/Cargo.lock")
-                             (find-files "compiler" "Cargo.lock")
-                             (find-files "library" "Cargo.lock")
-                             (find-files "src/doc" "Cargo.lock")
-                             (remove
-                              ;; Don't mess with the lock files in the Cargo
-                              ;; testsuite; it messes up the tests.
-                              (cut string-contains <>
-                                   "cargo/tests/testsuite")
-                              (find-files "src/tools" "Cargo.lock")))
+                   (append '("Cargo.lock"
+                             "src/bootstrap/Cargo.lock")
+                           (find-files "compiler" "Cargo.lock")
+                           (find-files "library" "Cargo.lock")
+                           (find-files "src/doc" "Cargo.lock")
+                           (remove
+                             ;; Don't mess with the lock files in the Cargo
+                             ;; testsuite; it messes up the tests.
+                             (cut string-contains <>
+                                  "cargo/tests/testsuite")
+                             (find-files "src/tools" "Cargo.lock")))
                    (("(checksum = )\".*\"" all name)
                     (string-append name "\"" ,%cargo-reference-hash "\"")))
                  (generate-all-checksums "vendor")))
@@ -2043,9 +2004,7 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                            "src/tools/cargo"
                            "src/tools/clippy"
                            "src/tools/rust-analyzer"
-                           "src/tools/rustfmt"
-                           ;; Needed by rust-analyzer and editor plugins
-                           "src/tools/rust-analyzer/crates/proc-macro-srv-cli"))))
+                           "src/tools/rustfmt"))))
              (replace 'check
                ;; Phase overridden to also test more tools.
                (lambda* (#:key tests? parallel-build? #:allow-other-keys)
@@ -2064,15 +2023,6 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                ;; Phase overridden to also install more tools.
                (lambda* (#:key outputs #:allow-other-keys)
                  (invoke "./x.py" "install")
-                 ;; This one doesn't have an install target so
-                 ;; we need to install manually.
-                 (install-file (string-append
-                                 "build/"
-                                 ,(platform-rust-target
-                                    (lookup-platform-by-system
-                                      (%current-system)))
-                                 "/stage1-tools-bin/rust-analyzer-proc-macro-srv")
-                               (string-append (assoc-ref outputs "out") "/libexec"))
                  (substitute* "config.toml"
                    ;; Adjust the prefix to the 'cargo' output.
                    (("prefix = \"[^\"]*\"")
@@ -2120,7 +2070,7 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                  (with-directory-excursion
                    (string-append (assoc-ref outputs "rust-src")
                                   "/lib/rustlib/src/rust/src/tools/")
-                   (substitute* (find-files "." "cargo-test-fixture\\.rs")
+                   (substitute* (find-files "." "\\.rs$")
                      (("#!.*/bin/cargo")
                       (string-append "#!" (assoc-ref outputs "cargo")
                                      "/bin/cargo"))))))
