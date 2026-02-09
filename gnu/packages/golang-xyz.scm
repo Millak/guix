@@ -431,16 +431,16 @@ and browser apps (gruid-js).")
 (define-public go-codeberg-org-anaseto-gruid-js
   (package
     (name "go-codeberg-org-anaseto-gruid-js")
-    (version "0.2.0")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://codeberg.org/anaseto/gruid-js.git")
+             (url "https://codeberg.org/anaseto/gruid-js")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m42d469djrix9gnhj6jzvq9kaj2av6ndzl9bf17iyagmqsp5d8x"))))
+        (base32 "16x8bl9vi8kjyx90m1vb2n9lr5wv4x0hif33971wm8i7zj96lp2m"))))
     (build-system go-build-system)
     (arguments
      (list
