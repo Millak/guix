@@ -14049,6 +14049,40 @@ word-splitting rules.")
       (home-page "https://github.com/kballard/go-shellquote")
       (license license:expat))))
 
+(define-public go-github-com-kellydunn-golang-geo
+  (package
+    (name "go-github-com-kellydunn-golang-geo")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kellydunn/golang-geo")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04h0i78k1abhbv6lm64cc5cmkibw6rnxxa61s79cjls889cd9qwf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Tests require runnint MySQL server: panic: dial tcp [::1]:5432:
+      ;; connect: connection refused.
+      #:tests? #f
+      #:import-path "github.com/kellydunn/golang-geo"))
+    (propagated-inputs
+     (list go-github-com-erikstmartin-go-testdb
+           go-github-com-kylelemons-go-gypsy
+           go-github-com-lib-pq
+           go-github-com-ziutek-mymysql))
+    (home-page "https://github.com/kellydunn/golang-geo")
+    (synopsis "Geographical calculations in Golang")
+    (description
+     "This library provides convenience functions for translating, geocoding,
+and calculating distances between geographical points.  It is inspired by
+ruby's @code{geokit} and @code{geokit-rails} gems, and aims to make working
+with geographical data a little bit easier in golang.")
+    (license license:expat)))
+
 (define-public go-github-com-kevinburke-ssh-config
   (package
     (name "go-github-com-kevinburke-ssh-config")
