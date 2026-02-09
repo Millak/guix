@@ -4573,44 +4573,32 @@ during scene transition.")
 (define-public obs-multi-rtmp
   (package
     (name "obs-multi-rtmp")
-    (version "0.3.0.2-OBS29.1.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/sorayuki/obs-multi-rtmp")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "192zkihn3ahh93fn3mkpbx7apa04lmcxc637hpxwkivdjbq3nbk3"))))
+    (version "0.7.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sorayuki/obs-multi-rtmp")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+          "0bsj79nmvvr76q91qr2al34in1l0p2dk177il97ylkxc9r9lkn3r"))))
     (build-system cmake-build-system)
     (arguments
      (list
-      #:modules '((guix build cmake-build-system)
-                  (guix build utils))
       #:tests? #f ;no tests
+      #:generator "Ninja"
       #:configure-flags
-      #~(list (string-append "-DLIBOBS_INCLUDE_DIR="
-                             #$(this-package-input "obs") "/lib")
-              "-DBUILD_OUT_OF_TREE=On"
-              "-Wno-dev")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'obs-plugins
-            (lambda* (#:key outputs #:allow-other-keys)
-              (mkdir-p (string-append #$output "/lib/obs-plugins"))
-              (symlink
-               (string-append #$output
-                              "/obs-plugins/64bit/obs-multi-rtmp.so")
-               (string-append #$output
-                              "/lib/obs-plugins/obs-multi-rtmp.so")))))))
-    (inputs (list obs qtbase-5 simde))
+      #~(list "-DENABLE_QT=ON" ;won't build with OFF
+              "-DENABLE_FRONTEND_API=OFF" "-Wno-dev")))
+    (inputs (list obs qtbase qtsvg simde))
     (home-page "https://github.com/sorayuki/obs-multi-rtmp")
     (synopsis "Multi-site simultaneous broadcast plugin for OBS Studio")
-    (description "This is a plugin to streaming to multiple RTMP servers
-concurrently.  It's able to share encoders with main output of OBS to save CPU
-power.  It can also use standalone encoders with basic
-configuration (bitrate).")
+    (description
+     "This is a plugin to streaming to multiple RTMP servers concurrently.
+It's able to share encoders with main output of OBS to save CPU power.
+It can also use standalone encoders with basic configuration (bitrate).")
     (license license:gpl2)))
 
 (define-public obs-pipewire-audio-capture
