@@ -183,7 +183,7 @@ module into a binary representation.")
      (list python-wrapper))
     ;; These inputs are only needed for the pywrap phase.
     (native-inputs
-     (list pkg-config swig-4.0))
+     (list pkg-config python-setuptools swig-4.0))
     (synopsis "SELinux core libraries and utilities")
     (description
      "The libselinux library provides an API for SELinux applications to get
