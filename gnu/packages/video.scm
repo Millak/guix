@@ -3044,7 +3044,7 @@ hosting sites.")
 (define-public mpv-mpris
   (package
     (name "mpv-mpris")
-    (version "1.1")
+    (version "1.2")
     (source
       (origin
         (method git-fetch)
@@ -3053,12 +3053,13 @@ hosting sites.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1384y8n3l0xk8hbad1nsj9ljzb1h02g3ln3jysd8bd6shbl0x4mx"))))
+         (base32 "1vnkiy4f1mpx1g6m9i5qivi6lxl888gd7x37qwzaa8vdfrlhssa3"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:make-flags
-      #~(list (string-append "SCRIPTS_DIR=" #$output "/lib")
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "SYS_SCRIPTS_DIR=" #$output "/etc/mpv/scripts")
               (string-append "CC=" #$(cc-for-target)))
       #:phases
       #~(modify-phases %standard-phases
@@ -3073,7 +3074,10 @@ hosting sites.")
                       (or native-inputs inputs)
                       "share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"))
                     (invoke "make" "test"))
-                  (format #t "test suite not run~%")))))))
+                  (format #t "test suite not run~%"))))
+          (replace 'install
+            (lambda* (#:key (make-flags '()) #:allow-other-keys)
+              (apply invoke "make" "install-system" make-flags))))))
     (native-inputs
      (list dbus
            jq
@@ -3084,7 +3088,7 @@ hosting sites.")
            xorg-server-for-tests
            xvfb-run))
     (inputs
-     (list ffmpeg glib libdisplay-info mpv))
+     (list ffmpeg glib mpv))
     (home-page "https://github.com/hoyon/mpv-mpris")
     (synopsis "MPRIS plugin for mpv")
     (description "This package provides an @dfn{MPRIS} (Media Player Remote
