@@ -1042,6 +1042,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/biboumi-cmake-ignore-git.patch		\
   %D%/packages/patches/brasero-fix-gcc-14-build-failure.patch	\
   %D%/packages/patches/brightnessctl-elogind-support.patch	\
+  %D%/packages/patches/bristol-c99.patch			\
   %D%/packages/patches/bsd-games-2.17-64bit.patch		\
   %D%/packages/patches/bsd-games-add-configure-config.patch	\
   %D%/packages/patches/bsd-games-add-wrapper.patch		\

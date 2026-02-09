@@ -2684,7 +2684,9 @@ Laurens Hammond and Don Leslie.")
                                   "/bristol-" version ".tar.gz"))
               (sha256
                (base32
-                "1fi2m4gmvxdi260821y09lxsimq82yv4k5bbgk3kyc3x1nyhn7vx"))))
+                "1fi2m4gmvxdi260821y09lxsimq82yv4k5bbgk3kyc3x1nyhn7vx"))
+              (patches
+               (search-patches "bristol-c99.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
