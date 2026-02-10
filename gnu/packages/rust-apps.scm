@@ -3156,7 +3156,6 @@ configuration-free.")
     (build-system cargo-build-system)
     (arguments
      (list
-      #:rust rust-1.87
       #:install-source? #f
       #:cargo-install-paths ''("vhdl_ls")
       ;; Remove this line when ‘rustdoc’ is available in #:rust.
