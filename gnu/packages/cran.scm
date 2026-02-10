@@ -52142,13 +52142,13 @@ Services (AWS) Simple Storage Service (S3) REST API.")
 (define-public r-lgr
   (package
     (name "r-lgr")
-    (version "0.5.0")
+    (version "0.5.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "lgr" version))
               (sha256
                (base32
-                "1h0bg3f7hmf9ichv5dsy16ncb1z8nihzhvg5bfz1001ix9csb1f2"))))
+                "0wr2i7lxssayk0q17nqv614afmzqwvdkm601m2ycpqdk550y6ja6"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -52164,6 +52164,7 @@ Services (AWS) Simple Storage Service (S3) REST API.")
      (list r-crayon
            r-data-table
            r-future
+           r-future-apply
            r-glue
            r-jsonlite
            r-knitr
