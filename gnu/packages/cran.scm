@@ -25190,14 +25190,14 @@ Python to R they are converted back to R types.")
 (define-public r-bibtex
   (package
     (name "r-bibtex")
-    (version "0.5.1")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bibtex" version))
        (sha256
         (base32
-         "1l9y945qmpla68rx6dnaxc83vmvkw26cw4zzfgfsvi36wsja1hgk"))))
+         "07x9lbn02c0xp4chpplihy5hkaq6hb30gqv7r84h303hhdq0kqx8"))))
     (build-system r-build-system)
     (propagated-inputs (list r-backports))
     (native-inputs (list r-testthat))
