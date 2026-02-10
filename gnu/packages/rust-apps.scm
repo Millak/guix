@@ -675,40 +675,29 @@ through tools like `gdb`.")
     (arguments
      (list
        #:install-source? #f
+       #:modules
+       '((guix build cargo-build-system)
+         (guix build utils)
+         (ice-9 match))
        #:phases
        #~(modify-phases %standard-phases
-           (add-after 'install 'install-extras
-             (lambda* (#:key native-inputs outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (share (string-append out "/share"))
-                      (bash-completions-dir
-                       (string-append out "/etc/bash_completion.d/"))
-                      (zsh-completions-dir
-                       (string-append share "/zsh/site-functions"))
-                      (fish-completions-dir
-                       (string-append share "/fish/vendor_completions.d"))
-                      (elvish-completions-dir
-                       (string-append share "/elvish/lib"))
-                      (berg (if #$(%current-target-system)
-                                (search-input-file native-inputs "/bin/berg")
-                                (string-append out "/bin/berg"))))
-                 (for-each mkdir-p
-                           (list bash-completions-dir
-                                 zsh-completions-dir
-                                 fish-completions-dir
-                                 elvish-completions-dir))
-                 (with-output-to-file
-                   (string-append bash-completions-dir "/berg")
-                   (lambda _ (invoke berg "completion" "bash")))
-                 (with-output-to-file
-                   (string-append zsh-completions-dir "/_berg")
-                   (lambda _ (invoke berg "completion" "zsh")))
-                 (with-output-to-file
-                   (string-append fish-completions-dir "/berg.fish")
-                   (lambda _ (invoke berg "completion" "fish")))
-                 (with-output-to-file
-                   (string-append elvish-completions-dir "/berg")
-                   (lambda _ (invoke berg "completion" "elvish")))))))))
+           (add-after 'install 'install-completions
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (for-each
+               (match-lambda
+                 ((shell . path)
+                  (mkdir-p (in-vicinity #$output (dirname path)))
+                  (let ((binary
+                         (if #$(%current-target-system)
+                             (search-input-file native-inputs "bin/berg")
+                             (in-vicinity #$output "bin/berg"))))
+                    (with-output-to-file (in-vicinity #$output path)
+                      (lambda _
+                        (invoke binary "completion" shell))))))
+               '(("bash"   . "share/bash-completion/completions/berg")
+                 ("elvish" . "share/elvish/lib/berg")
+                 ("fish"   . "share/fish/vendor_completions.d/berg.fish")
+                 ("zsh"    . "share/zsh/site-functions/_berg"))))))))
     (native-inputs
      (append
        (if (%current-target-system)
