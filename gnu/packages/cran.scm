@@ -8495,13 +8495,13 @@ regression.")
 (define-public r-lattice
   (package
     (name "r-lattice")
-    (version "0.22-7")
+    (version "0.22-9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "lattice" version))
               (sha256
                (base32
-                "1xzrpy30irlzf3dy6pz5jnbd8p82xgfy5kin5bai0179jlmsc3s0"))))
+                "1fm4zkgikjiicn4bkifbzpwdbndmm61nzr38yryglsaj5vnx8amp"))))
     (build-system r-build-system)
     (native-inputs (list r-mass))
     (home-page "https://lattice.r-forge.r-project.org/")
