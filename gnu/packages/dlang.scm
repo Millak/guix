@@ -426,6 +426,43 @@ integration tests...\n")
                      (format #f "return ~s;" target-bin-sh))
                     (("#!/bin/sh")
                      (string-append "#!" target-bin-sh))))))
+            (add-after 'unpack 'patch-tests
+              (lambda _
+                ;; Since the implementation of SOURCE_DATE_EPOCH support in
+                ;; Ddoc, this test fails, as it expects Ddoc timestamps to
+                ;; match the output of the `date` command.
+                ;; XXX: Report upstream.
+                (substitute* (string-append
+                              "dmd/compiler/test/compilable"
+                              "/extra-files/ddocYear-postscript.sh")
+                  (("^YEAR=.*$") "YEAR=1970\n"))
+
+                ;; This test creates a shell script and runs it.
+                (substitute* "dmd/compiler/test/dshell/test6952.d"
+                  (("/usr/bin/env bash") target-bin-sh))
+
+                ;; In the sarif json output, the compiler version string ends
+                ;; with a raw newline for some reason, causing these tests to
+                ;; fail.
+                (for-each
+                 delete-file
+                 '("dmd/compiler/test/compilable/sarif_success_test.d"
+                   "dmd/compiler/test/fail_compilation/sarif_test.d"
+                   "dmd/compiler/test/fail_compilation/sarifmultiple_test.d"))
+
+                ;; Locations in stack traces are broken for some reason,
+                ;; causing these tests to fail.
+                ;; XXX: Report upstream.
+                (for-each
+                 delete-file
+                 '("dmd/compiler/test/runnable/test17559.d"
+                   "dmd/compiler/test/runnable/test19086.d"))
+                (substitute* "dmd/druntime/test/exceptions/Makefile"
+                  (((string-append "line_trace line_trace_21656 "
+                                   "long_backtrace_trunc rt_trap_exceptions "))
+                   ""))
+                (substitute* "dmd/druntime/test/gc/Makefile"
+                  ((" invariant ") " "))))
             (delete 'bootstrap)
             (delete 'configure)
             (replace 'build
@@ -480,6 +517,7 @@ integration tests...\n")
               ;; Phobos license is identical.
               (phase-in-sub-dir 'install-license-files "dmd"))))))
     (native-inputs (list gdmd which
+                         gdb            ; for tests
                          (origin
                            (method git-fetch)
                            (uri (git-reference
@@ -506,17 +544,14 @@ compiler for the D programming language.")
     (license license:boost1.0)))
 
 ;; DMD built with dmd-bootstrap as the bootstrap D compiler.
-;; Shared libraries are built now, tests are still disabled.
+;; Shared libraries are built now, tests are no longer disabled.
 (define-public dmd
   (package
     (inherit dmd-bootstrap)
     (arguments
      (substitute-keyword-arguments
          (strip-keyword-arguments
-          '(;; XXX: running the 'check phase does nothing as we are building out
-            ;; of the phobos source directory.
-            ;;#:tests?                  ;reinstate tests
-            )
+          '(#:tests?)                   ;reinstate tests
           (package-arguments dmd-bootstrap))
        ((#:disallowed-references  _ ''())
         (list dmd-bootstrap))
