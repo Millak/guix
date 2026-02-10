@@ -84,7 +84,7 @@
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               "-k" (string-join
                     ;; XXX: Assertions fail in these tests, check why.
                     (list "not test_additional_targets_should_be_translated"
