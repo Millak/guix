@@ -798,28 +798,30 @@ ECB and OFB).")
     (license license:expat)))
 
 (define-public python-asn1crypto
-  (package
-    (name "python-asn1crypto")
-    (version "1.5.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/wbond/asn1crypto")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1qsg06qrqnzixmrm65ibg503y2gffd675h1si4jgh92s315w1jrk"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:test-backend #~'unittest))
-    (native-inputs (list python-setuptools))
-    (home-page "https://github.com/wbond/asn1crypto")
-    (synopsis "ASN.1 parser and serializer in Python")
-    (description
-     "@code{asn1crypto} is an ASN.1 parser and serializer with definitions for
+  (let ((commit "b763a757bb2bef2ab63620611ddd8006d5e9e4a2")
+        (revision "0"))
+    (package
+      (name "python-asn1crypto")
+      (version (git-version "1.5.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/wbond/asn1crypto")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0xmrms7lj87pskgirf7ff21yih76kp2688x4n24wi2pd8269lmfp"))))
+      (build-system pyproject-build-system)
+      (arguments (list #:test-backend #~'unittest))
+      (native-inputs (list python-setuptools))
+      (home-page "https://github.com/wbond/asn1crypto")
+      (synopsis "ASN.1 parser and serializer in Python")
+      (description
+       "@code{asn1crypto} is an ASN.1 parser and serializer with definitions for
 private keys, public keys, certificates, CRL, OCSP, CMS, PKCS#3, PKCS#7, PKCS#8,
 PKCS#12, PKCS#5, X.509 and TSP.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public python-pynacl
   (package
