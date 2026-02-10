@@ -4750,6 +4750,37 @@ scenes, sources and filters.")
 via a filter.")
     (license license:gpl2)))
 
+(define-public obs-stroke-glow-shadow
+  (package
+    (name "obs-stroke-glow-shadow")
+    (version "1.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url
+              "https://github.com/FiniteSingularity/obs-stroke-glow-shadow")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+          "1niiad93kh27vazqb9w95gvki1mraiyn6z6xwzg36czssrcpmcrx"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:generator "Ninja"
+      #:configure-flags
+      #~(list "-DBUILD_OUT_OF_TREE=ON" "-Wno-dev")))
+    (inputs (list obs simde))
+    (home-page "https://github.com/exeldro/obs-source-record")
+    (synopsis "This OBS plugin provides stroke, glow and shadow effects")
+    (description
+     "This OBS plugin provides a stroke, glow and shadow effect
+when applied to an OBS source.  It's often used with the Advanced Mask plugin
+to place drop shadows on sources, such as a webcam.")
+    (license license:gpl2)))
+
 ;; Functionality was merged into OBS.
 (define-deprecated-package obs-websocket
   obs)
