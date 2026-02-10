@@ -375,6 +375,36 @@ API service accounts for Go.")
 transient error handling.")
     (license license:bsd-2)))
 
+(define-public go-github-com-foxcpp-go-mockdns
+  (package
+    (name "go-github-com-foxcpp-go-mockdns")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/foxcpp/go-mockdns")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jjln1bjgvh8g6r508vygjfm6h125q8yn4ynvldcd8npg4sj5z5h"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/foxcpp/go-mockdns"
+      ;; FollowCNAMEs test is not deterministic in v1.2.0,
+      ;; commit 1de4693e67 fixes this. Consider removing this skip
+      ;; in a future update.
+      #:test-flags #~(list "-skip" "TestServer_FollowCNAMEs")))
+    (propagated-inputs (list go-github-com-miekg-dns))
+    (home-page "https://github.com/foxcpp/go-mockdns")
+    (synopsis "DNS mock for Golang")
+    (description
+     "This package provides Golang boilerplate for testing code
+involving DNS lookups, including hacks to redirect @code{net.Lookup*}
+calls.")
+    (license license:expat)))
+
 (define-public go-github-com-go-rod-rod
   (package
     (name "go-github-com-go-rod-rod")
