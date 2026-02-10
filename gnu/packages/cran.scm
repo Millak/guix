@@ -38275,14 +38275,14 @@ kernels, including: gkmSVM, kmer-SVM, mismatch kernel and wildcard kernel.")
 (define-public r-varselrf
   (package
     (name "r-varselrf")
-    (version "0.7-8")
+    (version "0.7-9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "varSelRF" version))
        (sha256
         (base32
-         "0h49rl1j13yfh97rsfsyh9s2c4wajny4rzms2qw77d0cavxqg53i"))))
+         "0v2zakm5k85wkvsn3hw2l7rfw6ascr1kq7xz71hikif7j06f18h5"))))
     (properties `((upstream-name . "varSelRF")))
     (build-system r-build-system)
     (propagated-inputs
