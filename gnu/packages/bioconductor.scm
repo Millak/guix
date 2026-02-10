@@ -25015,18 +25015,19 @@ distance measures.")
 (define-public r-pcatools
   (package
     (name "r-pcatools")
-    (version "2.22.1")
+    (version "2.22.4")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "PCAtools" version))
        (sha256
         (base32
-         "1ngm3227viafcjmq5c25ihj3lrrs98c1rs5zx2ims6xzv68dbzwz"))))
+         "1ljsllssc2japlmjhnazsfbm7py0xdyzac7jfcfvcxh9z7q3njy1"))))
     (properties `((upstream-name . "PCAtools")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-beachmat
+     (list r-assorthead
+           r-beachmat
            r-bh
            r-biocparallel
            r-biocsingular
