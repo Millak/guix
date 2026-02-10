@@ -5689,14 +5689,14 @@ pronounceable identifiers.")
 (define-public r-irlba
   (package
     (name "r-irlba")
-    (version "2.3.5.1")
+    (version "2.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "irlba" version))
        (sha256
         (base32
-         "1ky5nlmyrnwz6121wwqd8p8r1ycnjkl5r290k4x2477rzs267zic"))))
+         "16b8yrpq9zpha9435vspkbvjh68am506941fihvxyhr4hf2d7b1k"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-matrix))
