@@ -2037,13 +2037,7 @@ whereas kdmx creates pseudo-ttys.")
       ;; tests: 631 passed, 27 skipped, 1 warning
       #:test-flags
       ;; E   ModuleNotFoundError: No module named 'mbed_tools_ci_scripts'
-      #~(list "--ignore=tests/ci_scripts/test_sync_board_db.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pytest.ini"
-                (("addopts = .*") "")))))))
+      #~(list "--ignore=tests/ci_scripts/test_sync_board_db.py")))
     (native-inputs
      (list python-factory-boy
            python-pytest
