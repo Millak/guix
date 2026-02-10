@@ -6666,7 +6666,7 @@ X11 servers, Windows, or macOS.")
 (define-public uim
   (package
     (name "uim")
-    (version "1.8.8")
+    (version "1.9.6")
     (source
      (origin
        (method url-fetch)
@@ -6674,7 +6674,7 @@ X11 servers, Windows, or macOS.")
                            version "/uim-" version ".tar.bz2"))
        (sha256
         (base32
-         "1p7sl0js47ja4glmax93ci59h02ipqw3wxkh4f1qgaz5qjy9nn9l"))))
+         "10wcmc125dqs9rm37l42ry4illqcyqnq92zrqvnk79cj8bxfbw37"))))
     (build-system gnu-build-system)
     (inputs
      (list anthy libedit libxft m17n-lib ncurses))
@@ -6691,6 +6691,9 @@ X11 servers, Windows, or macOS.")
                            (guix build emacs-utils))
       #:configure-flags
       #~(list "--with-anthy-utf8"
+              ;; gettext 0.23.1 is strict about file encodings and breaks the
+              ;; build. See https://github.com/uim/uim/issues/221
+              "--disable-nls"
               ;; Set proper runpath
               (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib")
               "CFLAGS=-O2 -g -fcommon")
