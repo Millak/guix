@@ -18654,14 +18654,14 @@ included in this package.")
 (define-public r-timedate
   (package
     (name "r-timedate")
-    (version "4051.111")
+    (version "4052.112")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "timeDate" version))
        (sha256
         (base32
-         "1m91j2n2mgv8kndbb2zw6mlqmlr7dzlh8y79x53yvzwy0kv175gv"))))
+         "0ij61q798x1kfd6dn38vxrwy6r6nzjk13rr1nxy9gpwz9wlqwnvz"))))
     (properties
      '((upstream-name . "timeDate")
        (updater-extra-native-inputs . ("r-runit" "tzdata-for-tests"))))
