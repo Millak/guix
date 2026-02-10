@@ -99,6 +99,7 @@
 (define-module (gnu packages admin)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
@@ -6737,26 +6738,29 @@ file or files to several hosts.")
         (base32 "0lksdw44s4fwyfscn79f8c8s3a5ijwfbxny539lgq0fsv5nx6bid"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:install-source? #f
-           #:phases #~(modify-phases %standard-phases
-                        (add-after 'install 'install-extras
-                          (lambda* (#:key outputs #:allow-other-keys)
-                            (let* ((out (assoc-ref outputs "out"))
-                                   (share (string-append out "/share")))
-                              (install-file "man-page/dust.1"
-                                            (string-append share "/man/man1"))
-                              (mkdir-p (string-append out
-                                        "/share/bash-completion/completions"))
-                              (copy-file
-                               "completions/dust.bash"
-                               (string-append
-                                out "/share/bash-completion/completions/dust"))
-                              (install-file "completions/dust.fish"
-                                            (string-append share
-                                             "/fish/vendor_completions.d"))
-                              (install-file "completions/_dust"
-                                            (string-append share
-                                             "/zsh/site-functions"))))))))
+     (list
+       #:imported-modules (append %copy-build-system-modules
+                                  %cargo-build-system-modules)
+       #:modules '((guix build cargo-build-system)
+                   ((guix build copy-build-system) #:prefix copy:)
+                   (guix build utils))
+       #:install-source? #f
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'install 'install-extras
+             (lambda args
+               (apply (assoc-ref copy:%standard-phases 'install)
+                      #:install-plan
+                      '(("completions/dust.bash"
+                         "share/bash-completion/completions/dust")
+                        ("completions/dust.elv"
+                         "share/elvish/lib/dust")
+                        ("completions/dust.fish"
+                         "share/fish/vendor_completions.d/")
+                        ("completions/_dust"
+                         "share/zsh/site-functions/")
+                        ("man-page/dust.1" "share/man/man1/"))
+                      args))))))
     (inputs (cargo-inputs 'du-dust))
     (home-page "https://github.com/bootandy/dust")
     (synopsis "Graphical disk usage analyzer")
