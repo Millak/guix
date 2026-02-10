@@ -14066,14 +14066,14 @@ methods for semantic similarity analysis.")
 (define-public r-simplifyenrichment
   (package
     (name "r-simplifyenrichment")
-    (version "2.4.0")
+    (version "2.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "simplifyEnrichment" version))
        (sha256
         (base32
-         "1vz0pjn8j3ia6gcwdlr1c8cxvdbhf6rscag1r7h43gj3fxmsi9m0"))))
+         "0303y172gzq3xvqm6g74ppsd6bk3h735wcvlpm7xx4pqbkrmlix2"))))
     (properties
      `((upstream-name . "simplifyEnrichment")))
     (build-system r-build-system)
