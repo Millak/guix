@@ -1324,16 +1324,16 @@ terminals, as commonly found on Unix systems.")
 (define-public go-golang-org-x-text
   (package
     (name "go-golang-org-x-text")
-    (version "0.30.0")
+    (version "0.34.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://go.googlesource.com/text")
-             (commit (string-append "v" version))))
+              (url "https://go.googlesource.com/text")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pgpfzk86wqf6k2fbrxa80pz1jx6y4dfr4dr26pwsw6j7l3s5pby"))))
+        (base32 "10qhscx7zdack9b5ynjiiyk2pl2c5jfamvwgjfhpnnhxgp6jr8rc"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1356,8 +1356,7 @@ terminals, as commonly found on Unix systems.")
            go-golang-org-x-tools-bootstrap))
     (synopsis "Supplemental Go text processing libraries")
     (description
-     "This package provides supplemental Go libraries for text
-processing.")
+     "This package provides supplemental Go libraries for text processing.")
     (license license:bsd-3)))
 
 (define-public go-golang-org-x-text-bootstrap
