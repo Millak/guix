@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2020 John Soo <jsoo1@asu.edu>
-;;; Copyright © 2019-2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
@@ -3467,6 +3467,7 @@ common-sense defaults.")
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
+       #:cargo-install-paths (list ".")
        #:features (list "alsa_backend"
                         "dbus_mpris"
                         "pulseaudio_backend"
