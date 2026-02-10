@@ -233,11 +233,12 @@ force a wifi scan."
         (lambda ()
           (when (eq? exit-reason 'exit-component)
             (cond
-             ((components=? argument scan-button)
-              (run-wifi-scan-page)
-              (run-wifi-page))
              ((components=? argument exit-button)
               (abort-to-prompt 'installer-step 'abort))
+             ((or (components=? argument scan-button)
+                  (null? service-items))
+              (run-wifi-scan-page)
+              (run-wifi-page))
              ((components=? argument listbox)
               (let ((result (connect-wifi-service listbox service-items)))
                 (unless result
