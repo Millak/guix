@@ -33277,14 +33277,14 @@ and manipulating sets of ontological terms.")
 (define-public r-gargle
   (package
     (name "r-gargle")
-    (version "1.6.0")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gargle" version))
        (sha256
         (base32
-         "1rpndbdpsmshhgz6p7rqqqrw7im4y8ijx47izy17g4ddq8ikz8z4"))))
+         "0p0fhllvlzhir0iwcc9zsicx98d1mxa4c8jgdpdxk2j4bq7ccwhc"))))
     (properties
      ;; Avoid dependency cycles.
      '((updater-ignored-native-inputs
