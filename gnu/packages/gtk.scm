@@ -1672,62 +1672,6 @@ documents.")
        ("guile-cairo" ,guile2.2-cairo)
        ("guile-rsvg" ,guile2.2-rsvg)))))
 
-(define-public guile-gnome
-   (package
-    (name "guile-gnome")
-    (version "2.16.5")
-    (source (origin
-              (method url-fetch)
-              (uri
-               (string-append "mirror://gnu/" name
-                              "/guile-gnome-platform/guile-gnome-platform-"
-                              version ".tar.gz"))
-             (sha256
-              (base32
-               "1gnf3j96nip5kl99a268i0dy1hj7s1cfs66sps3zwysnkd7qr399"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config
-           at-spi2-core
-           ;;("corba" ,corba) ; not packaged yet
-           gconf
-           gobject-introspection
-           ;;("gthread" ,gthread) ; not packaged yet
-           gnome-vfs
-           gdk-pixbuf
-           gtk+-2
-           libglade
-           libgnome
-           libgnomecanvas
-           libgnomeui
-           pango
-           libffi
-           glib))
-    (inputs (list guile-2.2))
-    (propagated-inputs
-     `(("guile-cairo" ,guile2.2-cairo)
-       ("g-wrap" ,g-wrap)
-       ("guile-lib" ,guile2.2-lib)))
-    (arguments
-      `(#:tests? #f                               ;FIXME
-        #:phases (modify-phases %standard-phases
-                   (add-before 'configure 'pre-configure
-                     (lambda* (#:key outputs #:allow-other-keys)
-                       (let ((out (assoc-ref outputs "out")))
-                         (substitute* (find-files "." "^Makefile.in$")
-                           (("guilesite :=.*guile/site" all)
-                            (string-append all "/@GUILE_EFFECTIVE_VERSION@")))
-                         #t))))))
-    (outputs '("out" "debug"))
-    (synopsis "Guile interface for GTK+ programming for GNOME")
-    (description
-     "Includes guile-clutter, guile-gnome-gstreamer,
-guile-gnome-platform (GNOME developer libraries), and guile-gtksourceview.")
-    (home-page "https://www.gnu.org/software/guile-gnome/")
-    (license license:gpl2+)
-    (properties '((upstream-name . "guile-gnome-platform")
-                  (ftp-directory . "/gnu/guile-gnome/guile-gnome-platform")))))
-
 ;;;
 ;;; C++ bindings.
 ;;;
