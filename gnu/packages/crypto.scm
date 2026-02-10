@@ -1858,7 +1858,7 @@ for creation and reading of DigiDoc files.")
 (define-public osslsigncode
   (package
     (name "osslsigncode")
-    (version "2.12")
+    (version "2.13")
     (source
      (origin
        (method git-fetch)
@@ -1867,7 +1867,7 @@ for creation and reading of DigiDoc files.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "000balq0cw49jra9gvr8dk8x7ns9gd77qim3z8qci5rrkjbb8nai"))))
+        (base32 "0l58mnagv16k1sbxda6iykrd75szp7hs9k8dfjjjxmmx6758hx7b"))))
     (build-system cmake-build-system)
     (arguments
      (list
