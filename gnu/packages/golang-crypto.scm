@@ -203,6 +203,32 @@ Go, exposing the necessary APIs to build a wide array of higher-level
 primitives.")
     (license license:bsd-3)))
 
+(define-public go-filippo-io-nistec
+  (package
+    (name "go-filippo-io-nistec")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/FiloSottile/nistec")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kjykdajjv370naxvq7yjlf7slv4flpkkgdvyrl7i3s0j0dj0mkm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "filippo.io/nistec"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://filippo.io/nistec")
+    (synopsis "NIST P elliptic curves in Golang")
+    (description
+     "This package implements the elliptic curves from
+@url{https://csrc.nist.gov/pubs/sp/800/186/final, NIST SP 800-186}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-99designs-keyring
   (package
     (name "go-github-com-99designs-keyring")
