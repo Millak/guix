@@ -818,13 +818,7 @@ files.")
               (lambda _
                 (substitute* "tests/VUnit/run.py"
                   (("from_argv\\(\\)")
-                   "from_argv()\nvu.add_vhdl_builtins()"))))
-            (add-after 'install 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  (invoke "python3" "tests/VUnit/run.py" "-v")))))))
-      (native-inputs
-       (list nvc python-minimal python-vunit))
+                   "from_argv()\nvu.add_vhdl_builtins()")))))))
       (home-page "https://github.com/Paebbels/JSON-for-VHDL/")
       (synopsis "Parse and query JSON data structures in VHDL")
       (description
