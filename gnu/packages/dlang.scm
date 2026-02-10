@@ -469,7 +469,10 @@ compiler for the D programming language.")
     (arguments
      (substitute-keyword-arguments
          (strip-keyword-arguments
-          '(#:tests?)                   ;reinstate tests
+          '(;; XXX: running the 'check phase does nothing as we are building out
+            ;; of the phobos source directory.
+            ;;#:tests?                  ;reinstate tests
+            )
           (package-arguments dmd-bootstrap))
        ((#:disallowed-references  _ ''())
         (list dmd-bootstrap))
