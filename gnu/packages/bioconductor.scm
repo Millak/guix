@@ -13517,13 +13517,13 @@ with respect to the cell population of interest.")
 (define-public r-scistreer
   (package
     (name "r-scistreer")
-    (version "1.2.0")
+    (version "1.2.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "scistreer" version))
               (sha256
                (base32
-                "03nd4p7ik66v09yv18c0z1bvdnkr5m0axk78yapd2ri80ihmyi3c"))))
+                "0v8pwz0skkan9gbpr9jffkkz0y22gm063mcw516c43xy3bgrxmgk"))))
     (properties `((upstream-name . "scistreer")))
     (build-system r-build-system)
     (propagated-inputs (list r-ape
