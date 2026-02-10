@@ -52307,20 +52307,19 @@ customization by the user.")
 (define-public r-mlr3cluster
   (package
     (name "r-mlr3cluster")
-    (version "0.1.12")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3cluster" version))
        (sha256
-        (base32 "0fcjzzywzqsfcc5khcwjcb042cpbr9057f0y97schsip4xh9xakm"))))
+        (base32 "1fzr33bx2zq1f36ib125sah9d478pv26vvc0jfcbn9hvfv146n17"))))
     (properties
      '((upstream-name . "mlr3cluster")
        (updater-extra-native-inputs . ("r-vctrs"))))
     (build-system r-build-system)
     (propagated-inputs (list r-backports
                              r-checkmate
-                             r-clue
                              r-cluster
                              r-data-table
                              r-fpc
