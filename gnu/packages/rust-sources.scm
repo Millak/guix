@@ -670,10 +670,6 @@ intelligence.")
           (base32 "095yvdd4lpzfywcg5zr7pq28fm9iarx6a85mpgdc0g6d1waydp68"))
          (modules '((guix build utils)))
          (snippet (origin-snippet (package-source rust-syntect-5.2)))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments rust-syntect-5.2)
-        ((#:rust _ #f)
-         rust-1.88)))
       (inputs (cons oniguruma
                     (cargo-inputs 'rust-syntect-5.3))))))
 
