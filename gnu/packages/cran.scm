@@ -21655,14 +21655,14 @@ all return data frames.")
 (define-public r-network
   (package
     (name "r-network")
-    (version "1.19.0")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "network" version))
        (sha256
         (base32
-         "04i02ld1wq5qij2q7sx7k1kmpz1gb2xkwbqhhvriwh8nzc3s04px"))))
+         "07w5xj629zy204cs0ndqsapsmwf7cv5487yz3y9mc3sfbfz5dnam"))))
     (build-system r-build-system)
     (properties
      '((updater-ignored-native-inputs . ("r-sna"))))
