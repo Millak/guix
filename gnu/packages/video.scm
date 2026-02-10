@@ -6198,7 +6198,7 @@ create smoother and stable videos.")
 (define-public libopenshot
   (package
     (name "libopenshot")
-    (version "0.4.0")
+    (version "0.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6207,7 +6207,7 @@ create smoother and stable videos.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "190zw15wqfdvpff4b4bshnff1m2lv85qvfhnhqjqh82qjjf17fnf"))
+                "1xkhkmjwidricnzzn5scbwiyiw8zx6nl2ylncyw474gx33jihp62"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; Allow overriding of the python installation dir
