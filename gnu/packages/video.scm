@@ -6262,7 +6262,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
 (define-public openshot
   (package
     (name "openshot")
-    (version "3.3.0")
+    (version "3.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6271,7 +6271,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0x7fv1c3cr28z5nccw4lv61wnj013l8594p2fyrm1cxjpppka0pr"))
+                "1ap322f5l5bxj28nlyfwz2jshsscf03d5ir3s9jw76gshxp59m8g"))
        (modules '((guix build utils)))
        (snippet
         '(begin
