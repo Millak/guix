@@ -16192,17 +16192,17 @@ where the bound function accepts additional arguments.")
 (define-public r-bindrcpp
   (package
     (name "r-bindrcpp")
-    (version "0.2.3")
+    (version "0.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bindrcpp" version))
        (sha256
         (base32
-         "1yn9is89r76ay314s216whr0igych4r78kjz85amhwgfb9wawbb6"))))
+         "1jn3mhrc98w21kfp7wr2m9iqwzsrrzy9zgjfgkk6qrwwsz338f6j"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-bindr r-plogr r-rcpp))
+     (list r-bindr r-rcpp))
     (native-inputs (list r-testthat))
     (home-page "https://github.com/krlmlr/bindrcpp")
     (synopsis "Rcpp interface to active bindings")
