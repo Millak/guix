@@ -1288,18 +1288,20 @@ telemetry uploads: GOOS, GOARCH, Go version, and per-program counters.")
 (define-public go-golang-org-x-term
   (package
     (name "go-golang-org-x-term")
-    (version "0.36.0")
+    (version "0.40.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://go.googlesource.com/term")
-             (commit (string-append "v" version))))
+              (url "https://go.googlesource.com/term")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13xd1frw2jzqbd8743m5zhrq6asz9ar1maxd3cbk3rzybc9wx0p5"))))
+        (base32 "1x6m4cxk8h88gacxjc6vsaj585zwc8dzpgxwgbq6fwg6l1519vxn"))))
     (build-system go-build-system)
-    (arguments '(#:import-path "golang.org/x/term"))
+    (arguments
+     (list
+      #:import-path "golang.org/x/term"))
     (propagated-inputs
      (list go-golang-org-x-sys))
     (home-page "https://pkg.go.dev/golang.org/x/term")
