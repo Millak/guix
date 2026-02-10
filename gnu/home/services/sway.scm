@@ -104,7 +104,8 @@
 
 ;; Helper function.
 (define (flatmap f l)
-  (let loop ((lst (reverse l)) (acc '()))
+  (let loop ((lst (reverse l))
+             (acc '()))
     (match lst
       (() acc)
       ((head . tail)
