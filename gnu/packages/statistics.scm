@@ -1954,13 +1954,13 @@ variety of formats.")
 (define-public r-rsqlite
   (package
     (name "r-rsqlite")
-    (version "2.4.5")
+    (version "2.4.6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RSQLite" version))
               (sha256
                (base32
-                "0j96icf5qj5k2rdzbs9zqqg9zqr8rd4nyfpiryc4wwxbl4kjyc5b"))))
+                "0gnzq7ga5grfb4rs09pi3rpr8cnj7wdb6gwca5r1ksy2my3y8lbg"))))
     (properties
      '((upstream-name . "RSQLite")
        ;; These are not strictly necessary for running tests and adding them
@@ -1981,7 +1981,6 @@ variety of formats.")
            r-dbi
            r-memoise
            r-pkgconfig
-           r-plogr
            r-rlang))
     (native-inputs
      (list r-callr
