@@ -53671,6 +53671,32 @@ The list of accepted host key algorithms---e.g.,
 @item @code{accepted-key-types} (type: maybe-string-list)
 The list of accepted user public key types.
 
+@item @code{control-master} (type: maybe-symbol)
+Enables the sharing of multiple sessions over a single network
+connection.  Acceptable values are @code{'no}, @code{'yes},
+@code{'auto}, @code{'ask}, and @code{'autoask}.
+
+@item @code{control-file-name} (type: maybe-string)
+The file name of the control socket used for connection sharing, or
+@code{"none"} to disable connection sharing.
+
+@item @code{control-persist} (type: maybe-string)
+When used in conjunction with @env{control-master}, specifies that the
+master connection should remain open in the background (waiting for
+future client connections) after the initial client connection has been
+closed.
+
+@item @code{sent-environment-variables} (type: maybe-env-list)
+Specifies which variables from the local environment should be sent to
+the server.  The server must also support it, and the server must be
+configured to accept those environment variables.
+
+@item @code{environment-variables} (type: maybe-string-alist)
+List of environment variables with corresponding values to send to the
+server, as an alist of strings of the form @code{'("@var{variable}" .
+"@var{value}")}.  The server must also support it, and the server must
+be configured to accept those environment variables.
+
 @item @code{extra-content} (default: @code{""}) (type: raw-configuration-string)
 Extra content appended as-is to this @code{Host} block in
 @file{~/.ssh/config}.

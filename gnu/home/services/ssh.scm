@@ -70,6 +70,11 @@
             openssh-host-proxy-command
             openssh-host-host-key-algorithms
             openssh-host-accepted-key-types
+            openssh-host-control-master
+            openssh-host-control-file-name
+            openssh-host-control-persist
+            openssh-host-sent-environment-variables
+            openssh-host-environment-variables
             openssh-host-extra-content
             proxy-jump
             proxy-jump-host-name
@@ -84,6 +89,9 @@
 (define (serialize-field-name name)
   (match name
     ('accepted-key-types "PubkeyAcceptedKeyTypes")
+    ('sent-environment-variables "SentEnv")
+    ('environment-variables "SetEnv")
+    ('control-file-name "ControlPath")
     (_
      (let ((name (let ((str (symbol->string name)))
                    (if (string-suffix? "?" str)
@@ -130,6 +138,12 @@
 (define-maybe string)
 (define-maybe natural-number)
 
+(define (serialize-symbol field value)
+  (string-append "  " (serialize-field-name field) " "
+                 (symbol->string value) "\n"))
+
+(define-maybe symbol)
+
 (define (serialize-raw-configuration-string field value)
   (string-append value "\n"))
 (define raw-configuration-string? string?)
@@ -141,6 +155,33 @@
                  (string-join lst ",") "\n"))
 
 (define-maybe string-list)
+
+(define (env-list? lst)
+  (string-list? lst))
+
+(define (serialize-env-list field lst)
+  (string-append "  " (serialize-field-name field) " "
+                 (string-join lst " ") "\n"))
+
+(define-maybe env-list)
+
+(define (string-alist? lst)
+  (and (list? lst)
+       (every (lambda (x)
+                (and (pair? x)
+                     (string? (car x))
+                     (string? (cdr x))))
+              lst)))
+
+(define (serialize-string-alist field lst)
+  (string-append "  " (serialize-field-name field) " "
+                 (string-join
+                  (map (match-lambda
+                         ((key . value)
+                          (format #nil "~a = ~s~%" (serialize-field-name key) value)))
+                       lst) " ") "\n"))
+
+(define-maybe string-alist)
 
 (define-record-type <proxy-command>
   (proxy-command command)
@@ -275,6 +316,31 @@ through before connecting to the server.")
   (accepted-key-types
    maybe-string-list
    "The list of accepted user public key types.")
+  (control-master
+   maybe-symbol
+   "Enables the sharing of multiple sessions over a single network connection.
+Acceptable values are @code{'no}, @code{'yes}, @code{'auto}, @code{'ask}, and
+@code{'autoask}.")
+  (control-file-name
+   maybe-string
+   "The file name of the control socket used for connection sharing, or
+@code{\"none\"} to disable connection sharing.")
+  (control-persist
+   maybe-string
+   "When used in conjunction with @env{control-master}, specifies that the
+master connection should remain open in the background (waiting for future
+client connections) after the initial client connection has been closed.")
+  (sent-environment-variables
+   maybe-env-list
+   "Specifies which variables from the local environment should be sent to the
+server.  The server must also support it, and the server must be configured to
+accept those environment variables.")
+  (environment-variables
+   maybe-string-alist
+   "List of environment variables with corresponding values to send to the
+server, as an alist of strings of the form @code{'(\"@var{variable}\"
+. \"@var{value}\")}.  The server must also support it, and the server must be
+configured to accept those environment variables.")
   (extra-content
    (raw-configuration-string "")
    "Extra content appended as-is to this @code{Host} block in
