@@ -673,34 +673,6 @@ intelligence.")
       (inputs (cons oniguruma
                     (cargo-inputs 'rust-syntect-5.3))))))
 
-(define-public rust-web-view-0.7.3.82d7cbc
-  (let ((commit "82d7cbce6228b1a964673cc0f22944ad808eab42")
-        (revision "0"))
-    (hidden-package
-     (package
-       (name "rust-web-view")
-       (version (git-version "0.7.3" revision commit))
-       (source (origin
-                 (method git-fetch)
-                 (uri (git-reference
-                       (url "https://github.com/Boscop/web-view")
-                       (commit commit)))
-                 (file-name (git-file-name name version))
-                 (sha256
-                  (base32
-                   "1cl65wabbx9cd97qdmbq22d4whqrdsfykm8pbafh67srqjj1qlvr"))))
-       (build-system cargo-build-system)
-       (arguments
-        (list #:skip-build? #t
-              #:cargo-package-crates ''("webview-sys" "web-view")))
-       (inputs (cargo-inputs 'rust-web-view-0.7.3.82d7cbc))
-       (home-page "https://github.com/Boscop/web-view")
-       (synopsis "Rust bindings for webview.")
-       (description
-        "This library provides a Rust binding to the original implementation of
-webview, a tiny cross-platform library to render web-based GUIs as desktop
-applications.")
-       (license license:expat)))))
 (define-public rust-codex-0.0.0.785c0c43
   (let ((commit "785c0c43df941e6997ff3a9e8a9dd48da2661f20")
         (revision "0"))
