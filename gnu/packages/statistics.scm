@@ -2684,14 +2684,14 @@ forest of trees using random inputs, for classification and regression.")
 (define-public r-robustbase
   (package
     (name "r-robustbase")
-    (version "0.99-6")
+    (version "0.99-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "robustbase" version))
        (sha256
         (base32
-         "078syd64mqlbwgzrqmm77n7ddkjnsk8ppmazf8814lms5hnc827s"))))
+         "1zccb1y2xad65i16h2wda9k7bzzxlywsavy9qgnwks5cpk8ijpcz"))))
     (build-system r-build-system)
     (properties
      '((updater-extra-native-inputs . ("r-cluster" "r-matrix" "r-ggplot2"))
@@ -2710,6 +2710,8 @@ forest of trees using random inputs, for classification and regression.")
     (native-inputs
      (list gfortran
            r-cluster
+           r-foreach
+           r-ggplot2
            r-lattice
            r-mass
            r-matrix
