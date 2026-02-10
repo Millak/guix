@@ -135,16 +135,16 @@ can be ignored.")
 (define-public go-filippo-io-age
   (package
     (name "go-filippo-io-age")
-    (version "1.2.1")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/FiloSottile/age")
-             (commit (string-append "v" version))))
+              (url "https://github.com/FiloSottile/age")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "183iqzmdwk4b35vxrdg2gdzd4277yr5bgbgl9brqv3w1dap5v4pm"))
+        (base32 "1h4k15bdbx5dx1397xvhx2h7b5akvbzksh80j3p46mqq6kgymks2"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -166,12 +166,14 @@ can be ignored.")
       #:import-path "filippo.io/age"))
     (native-inputs
      (list go-c2sp-org-cctv-age
-           go-github-com-rogpeppe-go-internal))
+           go-github-com-rogpeppe-go-internal-1.14))
     (propagated-inputs
-     (list go-golang-org-x-sys
-           go-golang-org-x-term
+     (list go-filippo-io-edwards25519
+           go-filippo-io-hpke
+           go-filippo-io-nistec
            go-golang-org-x-crypto
-           go-filippo-io-edwards25519))
+           go-golang-org-x-sys
+           go-golang-org-x-term))
     (home-page "https://filippo.io/age")
     (synopsis "Secure file encryption tool, format, and Go library")
     (description
