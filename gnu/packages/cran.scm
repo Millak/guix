@@ -53154,13 +53154,13 @@ chunks.")
 (define-public r-highs
   (package
     (name "r-highs")
-    (version "1.12.0-1")
+    (version "1.12.0-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "highs" version))
        (sha256
-        (base32 "1vhb2wy4z56yj5sxgadnb9vxcfj100zsdbilvxq44yvy9v77hxml"))))
+        (base32 "126z6wgpg3ly4ikk4374bba5xjdv6r9alf962kvcqxn3fr96hq5x"))))
     (properties
      '((upstream-name . "highs")
        (updater-extra-native-inputs . ("cmake-minimal" "which"))
