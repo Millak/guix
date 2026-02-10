@@ -204,13 +204,13 @@ and environmental data in the framework of Euclidean exploratory methods.")
 (define-public r-aer
   (package
     (name "r-aer")
-    (version "1.2-15")
+    (version "1.2-16")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "AER" version))
               (sha256
                (base32
-                "0i8zr3nsdiyhcs055y7k6hr6ir2lkcvymnrhkmgk2hx4xsrqlk5h"))))
+                "113h1vmzm4b4ghmsvgm2ip76mq4s57hdhb1sxzapdkpnggc7b11z"))))
     (properties `((upstream-name . "AER")))
     (build-system r-build-system)
     (propagated-inputs
