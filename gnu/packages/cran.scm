@@ -4765,13 +4765,13 @@ samples) are easily visualized.")
 (define-public r-ggplot2
   (package
     (name "r-ggplot2")
-    (version "4.0.1")
+    (version "4.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggplot2" version))
        (sha256
-        (base32 "1i0fbrxwm0s5187pi4r4b650mqz4f8bl51967c2alzm1x0ji05bp"))))
+        (base32 "04j42kpndcq8vra7dhyvj10l4i7420wblmp2avm72ai2k52j85dr"))))
     (properties
      '((updater-extra-native-inputs . ("r-mapproj"))))
     (build-system r-build-system)
