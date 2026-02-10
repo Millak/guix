@@ -848,13 +848,7 @@ used in the declarative section of design units.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1c106hm0sfnzdi5j9vaacjlz7i5m1dm75j7lrgcdsa4siw5ac7k3"))))
-      (arguments
-       (list
-        #:install-plan
-        #~'(("src" "share/json-for-vhdl" #:include ("vhdl")))))
-      (native-inputs
-       '()))))
+          (base32 "1c106hm0sfnzdi5j9vaacjlz7i5m1dm75j7lrgcdsa4siw5ac7k3")))))))
 
 (define-public klayout
   (package
@@ -2954,7 +2948,7 @@ to enforce it.")
                                     "/vunit/vhdl/")))
                 (mkdir-p (string-append site-packages "JSON-for-VHDL"))
                 (symlink
-                 (search-input-directory inputs "share/json-for-vhdl")
+                 (search-input-directory inputs "share/json-for-vhdl/work/src")
                  (string-append site-packages "JSON-for-VHDL/src"))
                 (symlink
                  (search-input-directory inputs "share/osvvm/work/osvvm")
