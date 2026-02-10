@@ -18,7 +18,7 @@
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2024 Hilton Chain <hako@ultrarare.space>
-;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2025 Patrick Norton <patrick.147.norton@gmail.com>
 ;;;
@@ -1092,7 +1092,7 @@ loading algorithms.")
 (define-public go-golang-org-x-sync
   (package
     (name "go-golang-org-x-sync")
-    (version "0.17.0")
+    (version "0.19.0")
     (source
      (origin
        (method git-fetch)
@@ -1101,7 +1101,7 @@ loading algorithms.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bga9sfiwqxs7g913p7b355hg30agw58h5f5k7rzgpsai37nbkik"))))
+        (base32 "0ykjzxskvy1jbvyp2svd766jiyv3m0rqg89ifg7flllrqbx5kd25"))))
     (build-system go-build-system)
     (arguments
      (list
