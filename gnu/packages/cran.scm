@@ -33409,14 +33409,14 @@ arrows complementing the ones in the grid package, and more.")
 (define-public r-gmp
   (package
     (name "r-gmp")
-    (version "0.7-5")
+    (version "0.7-5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gmp" version))
        (sha256
         (base32
-         "0y6f2fdpydjcf1iz75xnjln3gzwpc1njls0n9y923naczfdazkgm"))))
+         "0sfv7fg7vkmrkmlg3ap5fqxh7xcnxqz5vnjamj5i996p7wvxhmkf"))))
     (properties
      '((updater-extra-inputs . ("gmp"))))
     (build-system r-build-system)
