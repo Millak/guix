@@ -26793,13 +26793,13 @@ splice site positions.")
 (define-public r-reformulas
   (package
     (name "r-reformulas")
-    (version "0.4.3.1")
+    (version "0.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "reformulas" version))
        (sha256
-        (base32 "0yiaa77kij1vl0s38znlg9w3p7jd2qafl58ppgqs1r5js0v5k82b"))))
+        (base32 "1xz255apcwzhmy4mq1x70icppkgqfl0ih43mz2p2b4z1nigdhxka"))))
     (properties
      '((upstream-name . "reformulas")))
     (build-system r-build-system)
@@ -26812,7 +26812,7 @@ splice site positions.")
              ;; These tests require r-lme4, creating a dependency cycle.
              (delete-file "inst/tinytest/test_mkReTrms.R"))))))
     (propagated-inputs (list r-matrix r-rdpack))
-    (native-inputs (list r-testthat r-tinytest))
+    (native-inputs (list r-tinytest))
     (home-page "https://github.com/bbolker/reformulas")
     (synopsis "Machinery for processing random effect formulas")
     (description
