@@ -21904,17 +21904,17 @@ Bioconductor, Posit/tidyverse, and the wider R community.")
 (define-public r-stabs
   (package
     (name "r-stabs")
-    (version "0.6-4")
+    (version "0.7-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "stabs" version))
        (sha256
         (base32
-         "1nf1yg14cgxrs4np1yghpzw1nczaslfv3rvf3918wrlzg0vp6l7q"))))
+         "0sz1y14rw5g1rpqs5y094vjiaq40z0sbzv9kdv71bfjsm48bqhw2"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr))
     (home-page "https://github.com/hofnerb/stabs")
     (synopsis "Stability selection with error control")
     (description
