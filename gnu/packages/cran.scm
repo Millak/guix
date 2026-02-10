@@ -17236,13 +17236,13 @@ multi-part to single-part geometries.")
 (define-public r-rmariadb
   (package
     (name "r-rmariadb")
-    (version "1.3.4")
+    (version "1.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RMariaDB" version))
        (sha256
-        (base32 "157qkqv3a4p3dz4l0ah4h47wdsp8z8pm6magfgm63dg6xjsrkhgp"))))
+        (base32 "1c964p32dqcw1pi0pifp2myjpgxk6qxiy24bv096lcdw0m6xw97g"))))
     (properties
      `((upstream-name . "RMariaDB")
        (updater-extra-inputs . ("mariadb"))))
@@ -17255,7 +17255,6 @@ multi-part to single-part geometries.")
                              r-dbi
                              r-hms
                              r-lubridate
-                             r-plogr
                              r-rlang))
     (home-page "https://rmariadb.r-dbi.org")
     (synopsis "Database interface and MariaDB driver")
