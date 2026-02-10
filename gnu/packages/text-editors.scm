@@ -543,7 +543,9 @@ can load dynamic libraries.")
              (commit (string-append "v" version))))
        (sha256
         (base32 "1gay4m6hd893p5m3fayfdqxncg8cg9kw60w5qm8z14p9nxyqb0i5"))
-       (file-name (git-file-name name version))))
+       (file-name (git-file-name name version))
+       (snippet
+        #~(begin (delete-file "dist/parinfer_rust.wasm")))))
     (build-system cargo-build-system)
     (arguments
      (list
