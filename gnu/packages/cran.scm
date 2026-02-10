@@ -25864,14 +25864,14 @@ provided.")
 (define-public r-rdpack
   (package
     (name "r-rdpack")
-    (version "2.6.5")
+    (version "2.6.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Rdpack" version))
        (sha256
         (base32
-         "00zb9jqrpms9x8cskmvrzw15lp3dvrkl5wxwglismzqvqkpfqcra"))))
+         "1nyba4k42inaigdygligpins2vn6g6g21fh8vffcfbjspli9vqdl"))))
     (properties `((upstream-name . "Rdpack")))
     (build-system r-build-system)
     ;; FIXME It's unclear why the tests fail.
