@@ -16019,13 +16019,13 @@ fitting of some classes of graphical Markov models.")
 (define-public r-ggtreeextra
   (package
     (name "r-ggtreeextra")
-    (version "1.20.0")
+    (version "1.20.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ggtreeExtra" version))
               (sha256
                (base32
-                "086j86xxf8xn4kqkgs6b3r2zyrngi2inhhabj47c5mcyxy7cbddz"))))
+                "03qdh2q6bd0452ygk3la825ixw54vm997r21s38qivxraam5cjd7"))))
     (properties `((upstream-name . "ggtreeExtra")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli
@@ -16034,7 +16034,8 @@ fitting of some classes of graphical Markov models.")
                              r-ggtree
                              r-magrittr
                              r-rlang
-                             r-tidytree))
+                             r-tidytree
+                             r-yulab-utils))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/YuLab-SMU/ggtreeExtra/")
     (synopsis
