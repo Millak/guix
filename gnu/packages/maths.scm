@@ -6083,16 +6083,21 @@ parts of it.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/xianyi/OpenBLAS")
+             (url "https://github.com/OpenMathLib/OpenBLAS")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
          "1ifbbk4mg4ykm92i9b09wwbcwpyzlfzn8lhds8f3p7cbcga7q530"))))
-    (build-system gnu-build-system)
+    (build-system cmake-build-system)
     (arguments
      (list
-      #:test-target "test"
+      #:build-type "Release"
+      #:configure-flags
+      #~(list "-DBUILD_SHARED_LIBS=ON"
+              "-DBUILD_STATIC_LIBS=OFF"
+              "-DCMAKE_C_FLAGS=-g"
+              "-DCMAKE_Fortran_FLAGS=-g")
       ;; No default baseline is supplied for powerpc-linux.
       #:substitutable? (not (target-ppc32?))
       #:make-flags
@@ -6146,7 +6151,6 @@ parts of it.")
       ;; no configure script
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'configure)
           (add-before 'build 'set-extralib
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Get libgfortran found when building in utest.
