@@ -283,6 +283,40 @@ well-established cryptographic hash functions, addressing size + encoding
 considerations.")
       (license (list license:expat license:cc-by-sa3.0)))))
 
+(define-public specification-qifs
+  (let ((commit "da52cd936b3e34dac7ac12aa8066fc57676af106")
+        (revision "0"))
+    (package
+      (name "specification-qifs")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/qpackers/qifs")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "08vb4j2id12hhkksn2q9b7v91jxhkhl84i947inflqmlmpzday8h"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("./encoded" "share/encoded")
+          ("./qifs" "share/qifs"))))
+    (home-page "https://opencontainers.org/")
+    (synopsis "QIF corpus for QPACK encoder and decoder development")
+    (description
+     "This this package provides
+@url{https://en.wikipedia.org/wiki/Quicken_Interchange_Format, QIF}s
+specifications used in QPACK development and interop experiments.  A QPACK
+encoder uses a QIF file as input.  QIF files are stored in @code{qifs/}
+directory. A QPACK encoder produces a file whose format is described in
+@url{https://github.com/quicwg/base-drafts/wiki/QPACK-Offline-Interop, QPACK
+Offline Interop}. Outputs produced by various encoders are stored in
+@code{encoded/} directory.")
+    (license license:expat))))
+
 (define-public specification-runtime-spec
   (package
     (name "specification-runtime-spec")
