@@ -53,7 +53,7 @@
 (define-public gpodder
   (package
     (name "gpodder")
-    (version "3.11.4")
+    (version "3.11.5")
     (source
      (origin
        (method git-fetch)
@@ -61,7 +61,7 @@
              (url "https://github.com/gpodder/gpodder")
              (commit version)))
        (sha256
-        (base32 "1zmp7kkldb59fx1y6k4mkff8ngmyb9pflcd3yqb28m9wb9bp4j4h"))
+        (base32 "05rs2np8grwl23w7853yrfv04npjj3z5r3a8g9my30ycw4jks68y"))
        (file-name (git-file-name name version))
        (patches (search-patches "gpodder-disable-updater.patch"))))
     (build-system pyproject-build-system)
@@ -74,26 +74,12 @@
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "src/gpodder/util.py"
                 (("xdg-open") (search-input-file inputs "bin/xdg-open")))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "make" "unittest"))))
           ;; 'msgmerge' introduces non-determinism by resetting the
           ;; POT-Creation-Date in .po files.
           (add-before 'install 'do-not-run-msgmerge
             (lambda _
               (substitute* "makefile"
                 (("msgmerge") "true"))))
-          (add-before 'install 'make-po-files-writable
-            (lambda _
-              (for-each
-               (lambda (f)
-                 (chmod f #o664))
-               (find-files "po"))))
-          (replace 'install
-            (lambda _
-              (setenv "PREFIX" #$output)
-              (invoke "make" "install")))
           (add-after 'install 'wrap-gpodder
             (lambda _
               (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH")))
@@ -103,21 +89,26 @@
      (list intltool
            python-minimock
            python-pytest
-           python-pytest-cov
            python-pytest-httpserver
-           python-setuptools
-           which))
+           python-setuptools))
     (inputs
      (list bash-minimal
+           eyed3
            gtk+
-           python-pygobject
-           python-pycairo
-           python-requests
-           python-dbus
+           python-dbus-python
+           python-ffmpeg-python
+           python-filelock
            python-html5lib
+           ;; python-kaa-metadata                   ;not packaged yet in Guix
            python-mutagen
            python-mygpoclient
+           python-pillow
            python-podcastparser
+           python-pycairo
+           python-pygobject
+           python-requests
+           ;; python-soco                           ;not packaged yet in Guix
+           python-urllib3
            yt-dlp
            xdg-utils))
     (home-page "https://gpodder.github.io")
