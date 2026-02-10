@@ -6634,13 +6634,13 @@ tablets.")
 (define-public r-runner
   (package
     (name "r-runner")
-    (version "0.4.5")
+    (version "0.4.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "runner" version))
        (sha256
-        (base32 "0mhw4bxb079pb0c0f5xsb6cyfda9y1c3zxg9mlww50nd996sgp0x"))))
+        (base32 "0dalansi4xjvb5pylrhvcnk9i2b0nl29s5gyxiqplpzdb1crzzzs"))))
     (properties `((upstream-name . "runner")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
