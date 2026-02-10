@@ -34836,14 +34836,14 @@ heuristics.")
 (define-public r-dorng
   (package
     (name "r-dorng")
-    (version "1.8.6.2")
+    (version "1.8.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "doRNG" version))
        (sha256
         (base32
-         "133ymnyjwjkpjbijf20h25wky2y6zq3fz58dc926m3yg23nbm0v6"))))
+         "0l8x4pzb8154l4kicc67xny7xjmvnf81g4j91zkf4a9mdy0b2pbs"))))
     (properties
      '((upstream-name . "doRNG")
        (updater-extra-native-inputs . ("r-doparallel"))))
