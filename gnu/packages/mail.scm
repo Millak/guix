@@ -3830,8 +3830,8 @@ which sends emails to HyperKitty, the official Mailman3 web archiver.")
 (define-public python-hyperkitty
   ;; 1.3.12 was released in 2024 where master provides comparability with
   ;; Django 5, use the latest commit instead of the tag for now.
-  (let ((commit "9a008473fadb95370cd54b0782df9fb956e323c0")
-        (revision "0"))
+  (let ((commit "640d66de417c7d127c8a3ff478228f2edbe9928c")
+        (revision "1"))
   (package
     (name "python-hyperkitty")
     (version (git-version "1.3.12" revision commit))
@@ -3846,14 +3846,19 @@ which sends emails to HyperKitty, the official Mailman3 web archiver.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "example_project/manage.py" "test"
-                       "--settings=hyperkitty.tests.settings_test"
-                       "--pythonpath=.")))))))
+      ;; tests: 362 passed, 3 skipped, 2 deselected, 2 xfailed, 10 warnings
+      #:test-flags
+      #~(list #$@(map (lambda (test)
+                        (string-append "--deselect=hyperkitty/tests/views/"
+                                       "test_accounts.py"
+                                       "::AccountViewsTestCase::"
+                                       test))
+                      ;; django.template.exceptions.TemplateDoesNotExist:
+                      ;; socialaccount/snippets/login_extra.html
+                      (list "test_login_page"
+                            ;; django.template.exceptions.TemplateDoesNotExist:
+                            ;; socialaccount/snippets/login_extra.html
+                            "test_redirect_to_login")))))
     (propagated-inputs
      (list python-dateutil
            python-django
@@ -3878,6 +3883,8 @@ which sends emails to HyperKitty, the official Mailman3 web archiver.")
      (list tzdata-for-tests
            python-beautifulsoup4
            python-pdm-backend
+           python-pytest
+           python-pytest-django
            python-whoosh))
     (home-page "https://gitlab.com/mailman/hyperkitty")
     (synopsis "Web interface to access GNU Mailman v3 archives")
