@@ -353,7 +353,7 @@ endpoints.")
 (define-public n2n
   (package
     (name "n2n")
-    (version "2.8")
+    (version "3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -362,7 +362,7 @@ endpoints.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ph2npvnqh1xnmkp96pdzpxm033jkb8zznd3nc59l9arhn0pq4nv"))))
+                "0kgqmqcn6s2y2rxa0i6myq3sgk2aliv1gkfhzvn32zgym9rrqy9r"))))
     (build-system gnu-build-system)
     (arguments
      (list
