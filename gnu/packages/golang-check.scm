@@ -305,8 +305,8 @@ application can use the realtime clock while tests can use the mock clock.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/bitfield/gotestdox")
-             (commit (string-append "v" version))))
+              (url "https://github.com/bitfield/gotestdox")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1kxj8igjm0wmq9nj3wns7nf95rx70xm327ra68d3ffh300rxg401"))))
@@ -314,11 +314,12 @@ application can use the realtime clock while tests can use the mock clock.")
     (arguments
      (list
       #:import-path "github.com/bitfield/gotestdox"))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-rogpeppe-go-internal-1.14))
     (propagated-inputs
      (list go-github-com-fatih-color
-           go-github-com-google-go-cmp
            go-github-com-mattn-go-isatty
-           go-github-com-rogpeppe-go-internal
            go-golang-org-x-text))
     (home-page "https://github.com/bitfield/gotestdox")
     (synopsis "Format Go test results as readable documentation")
