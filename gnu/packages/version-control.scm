@@ -1193,19 +1193,22 @@ other git-like projects such as @code{libgit2}.")
     (outputs '("out" "debug"))
     (arguments
      `(#:configure-flags
-       ;; TODO: Simplify this to just be a list.  It is only like this to
-       ;; avoid a large rebuild.
-       (map (lambda (arg)
-              (if (string= "-DUSE_HTTP_PARSER=system" arg)
-                  "-DUSE_HTTP_PARSER=http-parser"
-                  arg))
-            (list "-DUSE_NTLMCLIENT=OFF" ;TODO: package this
-                  "-DREGEX_BACKEND=pcre2"
-                  "-DUSE_HTTP_PARSER=system"
-                  "-DUSE_SSH=ON" ; cmake fails to find libssh if this is missing
-                  ,@(if (target-64bit?)
-                        '()
-                        '("-DCMAKE_C_FLAGS=-D_FILE_OFFSET_BITS=64"))))
+       (list "-DUSE_NTLMCLIENT=OFF" ;TODO: package this
+             "-DREGEX_BACKEND=pcre2"
+             "-DUSE_HTTP_PARSER=http-parser"
+             "-DUSE_SSH=ON" ; cmake fails to find libssh if this is missing
+             ,@(if (%current-target-system)
+                   `((string-append
+                       "-DPKG_CONFIG_EXECUTABLE="
+                       (search-input-file
+                         %build-inputs
+                         (string-append "/bin/" ,(%current-target-system)
+                                        "-pkg-config"))))
+                   '())
+             ;; See https://github.com/libgit2/libgit2/issues/7169
+             ,@(if (target-64bit?)
+                   '()
+                   '("-DCMAKE_C_FLAGS=-D_FILE_OFFSET_BITS=64")))
        #:phases
        (modify-phases %standard-phases
          ;; Run checks more verbosely, unless we are cross-compiling.
