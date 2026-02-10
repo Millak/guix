@@ -25368,23 +25368,21 @@ S4Vectors package itself.")
 (define-public r-wgcna
   (package
     (name "r-wgcna")
-    (version "1.73")
+    (version "1.74")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "WGCNA" version))
        (sha256
         (base32
-         "1kk3a2ll83zdwisjfvg4km5h0vl564nshy45ffgxv41im5ks7878"))))
+         "1mjmz7qpgnkd07ar02qd9ff4r0d3brf6v4xzc4dz11r2p0by2qag"))))
     (properties `((upstream-name . "WGCNA")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-annotationdbi
-           r-doparallel
+     (list r-doparallel
            r-dynamictreecut
            r-fastcluster
            r-foreach
-           r-go-db
            r-hmisc
            r-impute
            r-matrixstats
