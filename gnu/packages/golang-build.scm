@@ -1201,7 +1201,7 @@ low-level interaction with the operating system.")
     (name "go-golang-org-x-telemetry")
     ;; Beware: the updater gets this wrong.  Use the latest commit and its
     ;; matching date.
-    (version "0.0.0-20251009181524-91c411e14f39")
+    (version "0.0.0-20260209163413-e7419c687ee4")
     (source
      (origin
        (method git-fetch)
@@ -1210,7 +1210,7 @@ low-level interaction with the operating system.")
               (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v5427r8il5bj9h86d7dy1k1g9jag9c7vmbq0kmrzhfn6l0c310c"))
+        (base32 "1wr4b40lwzpac2n9ipz5lmq6p973g5mr2im38dy3816lbg84rp38"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -1222,6 +1222,7 @@ low-level interaction with the operating system.")
     (build-system go-build-system)
     (arguments
      (list
+      #:import-path "golang.org/x/telemetry"
       #:test-flags
       #~(list "-skip" (string-join
                        ;; Tests fail with error: failed to download config
@@ -1246,8 +1247,7 @@ low-level interaction with the operating system.")
                              "TestRun_ModeHandling"
                              "TestRun_DebugLog"
                              "TestRun_Concurrent")
-                       "|"))
-      #:import-path "golang.org/x/telemetry"))
+                       "|"))))
     (propagated-inputs
      (list go-golang-org-x-mod
            go-golang-org-x-sync
