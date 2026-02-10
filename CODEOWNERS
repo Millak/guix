@@ -140,6 +140,7 @@ gnu/packages/password-utils\.scm                   @guix/crypto
 gnu/packages/security-token\.scm                   @guix/crypto
 gnu/packages/ssh\.scm                              @guix/crypto
 gnu/packages/tls\.scm                              @guix/crypto
+gnu/packages/vpn\.scm                              @guix/crypto
 
 gnu/packages/debian\.scm                           @guix/debian
 

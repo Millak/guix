@@ -1024,7 +1024,8 @@ release."
                       "gnu/packages/password-utils.scm"
                       "gnu/packages/security-token.scm"
                       "gnu/packages/ssh.scm"
-                      "gnu/packages/tls.scm")))
+                      "gnu/packages/tls.scm"
+                      "gnu/packages/vpn.scm")))
 
 (define-team science
   (team 'science
