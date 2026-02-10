@@ -11350,7 +11350,7 @@ the Wolfram language.")
                              python-pympler
                              python-stopit
                              python-sympy
-                             python-numpy-1
+                             python-numpy
                              python-mathics-scanner
                              python-pillow
                              python-dateutil
