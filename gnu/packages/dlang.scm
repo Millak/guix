@@ -331,6 +331,7 @@ integration tests...\n")
 
 
 ;; Reference D compiler
+;; Note: Has limited supported-systems.
 
 ;; DMD built with GDC as the bootstrap D compiler (via the gdmd wrapper).
 ;; Shared libraries are not built, tests are disabled.
@@ -341,7 +342,7 @@ integration tests...\n")
     ;; and their names must have the same length to avoid corrupting the
     ;; binary.
     (name "dmd")
-    (version "2.106.1")
+    (version "2.111.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -350,7 +351,7 @@ integration tests...\n")
               (file-name (git-file-name "dmd" version))
               (sha256
                (base32
-                "1bq4jws1vns2jjzfz7biyngrx9y5pvvgklymhrvb5kvbzky1ldmy"))))
+                "0cz5qdd1j89w2s7nzw9ahzwsqiraidg4ajy7syy7qkk7mwcyrf6r"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -371,8 +372,7 @@ integration tests...\n")
               ;; retaining a reference to gcc:lib.
               "SHARED=0"
               (string-append "SYSCONFDIR=" #$output "/etc")
-              "VERBOSE=1"
-              "-f" "posix.mak")
+              "VERBOSE=1")
       #:modules
       `(,@%default-gnu-modules
         (srfi srfi-1)
@@ -401,12 +401,12 @@ integration tests...\n")
                               (false-if-exception (make-file-writable f)))
                             (find-files ".")))))
             (add-after 'unpack 'patch-git-ls-tree
-              ;; The druntime posix.mak tries to use git ls-tree to get all
+              ;; The druntime Makefile tries to use git ls-tree to get all
               ;; source files in dmd/druntime/. We replace the command with a
               ;; listing of those files.
               (lambda _
                 (with-directory-excursion "dmd/druntime"
-                  (substitute* "posix.mak"
+                  (substitute* "Makefile"
                     (("^MANIFEST *:*=.*$")
                      (string-append "MANIFEST := "
                                     (string-join (map (cut string-drop <> 2)
@@ -488,7 +488,7 @@ integration tests...\n")
                            (file-name (git-file-name "phobos" version))
                            (sha256
                             (base32
-                             "1yw7nb5d78cx9m7sfibv7rfc7wj3w0dw9mfk3d269qpfpnwzs4n9")))))
+                             "1ydls3ar6d3f7ffqvidr46x3zrz3wlzjln5qa0nbz843ndjr4g7n")))))
     (inputs
      (list bash-minimal))
     (outputs '("out" "lib" "debug"))
@@ -498,7 +498,7 @@ integration tests...\n")
 compiler for the D programming language.")
     ;; As reported by upstream:
     ;; https://wiki.dlang.org/Compilers#Comparison
-    (supported-systems '("i686-linux" "x86_64-linux"))
+    (supported-systems '("i686-linux" "x86_64-linux" "aarch64-linux"))
 
     ;; This variant exists only for bootstrapping purposes.
     (properties '((hidden? . #t)))
