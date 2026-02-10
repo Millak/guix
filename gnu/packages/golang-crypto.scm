@@ -203,6 +203,32 @@ Go, exposing the necessary APIs to build a wide array of higher-level
 primitives.")
     (license license:bsd-3)))
 
+(define-public go-filippo-io-hpke
+  (package
+    (name "go-filippo-io-hpke")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/FiloSottile/hpke")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13krc56z39p910qwh87i0dysclz8lz9drjnhqnvzikrk2gdd78y4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "filippo.io/hpke"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (home-page "https://filippo.io/hpke")
+    (synopsis "Hybrid Public Key Encryption (HPKE) in Golang")
+    (description
+     "This package implements Hybrid Public Key Encryption (HPKE) as defined
+in @url{https://www.rfc-editor.org/rfc/rfc9180.html RFC 9180}.")
+    (license license:bsd-3)))
+
 (define-public go-filippo-io-nistec
   (package
     (name "go-filippo-io-nistec")
