@@ -1165,7 +1165,7 @@ other git-like projects such as @code{libgit2}.")
 (define-public libgit2-1.9
   (package
     (name "libgit2")
-    (version "1.9.1")
+    (version "1.9.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1174,7 +1174,7 @@ other git-like projects such as @code{libgit2}.")
               (file-name (git-file-name "libgit2" version))
               (sha256
                (base32
-                "1k7h0phxz1i8i8qhd4dsyii62f30f33gmrpziqgri1ndnazkf4pz"))
+                "1f3wnw0s5fx4lf68i400mj6l7qyw9hf6mr7i2xlqqmp9q23q89sc"))
               (patches
                (search-patches "libgit2-uninitialized-proxy-settings.patch"
                                "libgit2-proxy-reconnection.patch"
