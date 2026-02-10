@@ -700,7 +700,7 @@ toolchain.  The parts needed in the main Go repository are copied in.")
 (define-public go-golang-org-x-crypto
   (package
     (name "go-golang-org-x-crypto")
-    (version "0.43.0")
+    (version "0.48.0")
     (source
      (origin
        (method git-fetch)
@@ -709,7 +709,7 @@ toolchain.  The parts needed in the main Go repository are copied in.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d49g86ndfzj40nrichhhsknn6lgl1gh8862dmgsx0l0885kik9i"))
+        (base32 "0ml7qabakjv3lcsv2pkc0h3092547z30pn8qwdiy7vf7hrssqa6g"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -732,7 +732,6 @@ toolchain.  The parts needed in the main Go repository are copied in.")
                             "chacha20poly1305/_asm"
                             "internal/poly1305/_asm"
                             "salsa20/salsa/_asm"
-                            "sha3/_asm"
                             "x509roots/fallback"))))))
     (build-system go-build-system)
     (arguments
