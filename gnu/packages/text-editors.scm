@@ -496,7 +496,9 @@ Rust.")
              (commit (string-append "v" version))))
        (sha256
         (base32 "0hj5in5h7pj72m4ag80ing513fh65q8xlsf341qzm3vmxm3y3jgd"))
-       (file-name (git-file-name name version))))
+       (file-name (git-file-name name version))
+       (snippet
+        #~(begin (delete-file "dist/parinfer_rust.wasm")))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
