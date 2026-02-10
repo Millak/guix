@@ -23702,14 +23702,14 @@ functions.")
 (define-public r-sqldf
   (package
     (name "r-sqldf")
-    (version "0.4-11")
+    (version "0.4-12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sqldf" version))
        (sha256
         (base32
-         "0q12vsb53p2wchgp8wfz5bk08wfnm0jxjrakclj4jyy6x3a7ksff"))))
+         "1ypvjlnf816kihwvldsyqv7kvdasq91zhgdwl874gx7579xyqk4m"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-chron r-dbi r-gsubfn r-proto r-rsqlite))
