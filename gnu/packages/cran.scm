@@ -24237,13 +24237,13 @@ Files, Fine-tunes, Moderations, and legacy Engines endpoints.")
 (define-public r-operator-tools
   (package
     (name "r-operator-tools")
-    (version "1.6.3")
+    (version "1.6.3.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "operator.tools" version))
               (sha256
                (base32
-                "1v4dg7xhz24dnp0zxn815x1405ig64ibii6y40la1gvmzcc41dz5"))))
+                "1jdyj7fx475nmmzyrhpnvzq0a4i865qa8fzi3hv2c04288xim0gg"))))
     (properties `((upstream-name . "operator.tools")))
     (build-system r-build-system)
     (arguments
@@ -24255,7 +24255,7 @@ Files, Fine-tunes, Moderations, and legacy Engines endpoints.")
            (lambda _
              (substitute* "tests/testthat/test-operators.R"
                (("is_true\\(\\)") "expect_true")))))))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-magrittr r-testthat))
     (home-page "https://github.com/decisionpatterns/operator.tools")
     (synopsis "Utilities for working with R's operators")
     (description
