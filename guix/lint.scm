@@ -606,7 +606,7 @@ of a package, and INPUT-NAMES, a list of package specifications such as
             "python-cython"
             "python-docutils"
             "python-mock"
-            "python-nose"
+            "python-pynose"
             "python-pbr"
             "python-pytest"
             "python-setuptools-scm"
