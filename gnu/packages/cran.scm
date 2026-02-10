@@ -35750,13 +35750,13 @@ several formats and MIME types.")
 (define-public r-irace
   (package
     (name "r-irace")
-    (version "4.3")
+    (version "4.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "irace" version))
        (sha256
-        (base32 "1xrfadyc4jyawlnlv2m73pbjnql8q6azm62cdmgwaqc6yp6j2n2c"))))
+        (base32 "1mf5dsrsw1jmjs86bm1flcbmxd8gh77xqc1ambrm36z9pzziw65s"))))
     (properties `((upstream-name . "irace")))
     (build-system r-build-system)
     (propagated-inputs (list r-codetools
