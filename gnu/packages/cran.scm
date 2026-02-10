@@ -1320,13 +1320,13 @@ Applied regression, Second Edition, Sage, 2011.")
 (define-public r-cardata
   (package
     (name "r-cardata")
-    (version "3.0-5")
+    (version "3.0-6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "carData" version))
        (sha256
-        (base32 "06j52rpbqi6fj7chfjwjbwbr6slrbb7i3aygv66gnfiyndcp3rq2"))))
+        (base32 "0l9526sdbmm0rhhshxv9zxh9n8za5k73rpqwxk0mjnjynd05nkdi"))))
     (properties `((upstream-name . "carData")))
     (build-system r-build-system)
     (home-page "https://r-forge.r-project.org/projects/car/")
