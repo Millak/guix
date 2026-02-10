@@ -25944,14 +25944,14 @@ to help insert or delete content at a specific location in the document.")
 (define-public r-profilemodel
   (package
     (name "r-profilemodel")
-    (version "0.6.1")
+    (version "0.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "profileModel" version))
        (sha256
         (base32
-         "01m5nb8cmq0aq555pxk2a99182si65hhmn68yn9nal2j3zl2bp4i"))))
+         "1h9arw96l4lsmasn1hkp3y1w0a8r2wzndxpi6bbrpgjyifpvkc52"))))
     (properties `((upstream-name . "profileModel")))
     (build-system r-build-system)
     (home-page "https://github.com/ikosmidis/profileModel")
