@@ -12581,25 +12581,36 @@ fork of https://github.com/igungor/go-putio.")
 (define-public go-github-com-quic-go-qpack
   (package
     (name "go-github-com-quic-go-qpack")
-    (version "0.5.1")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/quic-go/qpack")
-             (commit (string-append "v" version))))
+              (url "https://github.com/quic-go/qpack")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0aj0vv89l94y3clhsjcm1ham6mysmls4yhv7602cwlyag61hfrh3"))))
+        (base32 "0gakqzk7z1vh5vr852qwppy3f555pfswbdny3hrg3wm8cd3f3bqh"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/quic-go/qpack"
-      ;; XXX: integrationtests/interop contains git submodule of
-      ;; <https://github.com/qpackers/qifs>.
-      #:test-subdirs #~(list ".")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "example"))))
+          (add-after 'unpack 'copy-qifs-specs
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (copy-recursively
+                 (string-append
+                  #$(this-package-native-input "specification-qifs") "/share")
+                 "interop/qifs")))))))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-stretchr-testify
+           specification-qifs))
     (propagated-inputs
      (list go-golang-org-x-net))
     (home-page "https://github.com/quic-go/qpack")
