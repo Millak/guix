@@ -911,8 +911,6 @@ Cyclic Redundancy Check.")
         (sha256
          (base32 "16xcjxiya773fp7bxs9i6y1wsjx88pdvlwj6bqyy9vf3ckcffcwm"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags #~(list "-c" "/dev/null")))
     (native-inputs
      (list python-numpy python-pillow python-pytest python-setuptools))
     (home-page "https://github.com/halcy/blurhash-python")
