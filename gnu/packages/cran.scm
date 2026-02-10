@@ -44093,14 +44093,14 @@ simple, modern C++ library for image processing.")
 (define-public r-acuityview
   (package
     (name "r-acuityview")
-    (version "0.1")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "AcuityView" version))
        (sha256
         (base32
-         "0f0iclmnwdc8ixiiai4svk4x1g3pjy7dhm3cm58fv6ckx12d3d2l"))))
+         "0qa5bdfpi1fdp3r7z0gawq7h5jwf1fjg20zs9xwj4d8z6dzpka6v"))))
     (properties `((upstream-name . "AcuityView")))
     (build-system r-build-system)
     (propagated-inputs
