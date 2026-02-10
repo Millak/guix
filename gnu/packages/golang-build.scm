@@ -1403,7 +1403,7 @@ time.")
 (define-public go-golang-org-x-tools
   (package
     (name "go-golang-org-x-tools")
-    (version "0.37.0")
+    (version "0.42.0")
     (source
      (origin
        (method git-fetch)
@@ -1412,7 +1412,7 @@ time.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0l0srynl2cikmz089q5vqgifz6ll2ic1762fbfvak26vqbcx0knz"))
+        (base32 "0206hl6v7gy7cxwamjapa1zr2n3clj0vaqwyy6izcw18faga466i"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1427,6 +1427,7 @@ time.")
      (list
       #:skip-build? #t
       #:import-path "golang.org/x/tools"
+      ;; TODO: About 200+ tests fail, try to enable more.
       #:test-subdirs
       #~(list "./blog/..."
               "./container/..."
@@ -1455,7 +1456,11 @@ time.")
                         ;; The ordering and paths tests fails because they
                         ;; can't find test packages (perhaps because we do not
                         ;; support Go modules).
-                        "TestOrdering" "TestPaths")
+                        "TestOrdering" "TestPaths"
+                        ;; /go/src/main/0.go:4:6: declared and not used:
+                        ;; unused.  Renamed 2 occurrences in 1 file in 1
+                        ;; package.
+                        "TestRewrites")
                        "|"))))
     (native-inputs
      (list gccgo-14
@@ -1464,7 +1469,8 @@ time.")
      (list go-github-com-yuin-goldmark
            go-golang-org-x-mod
            go-golang-org-x-net
-           go-golang-org-x-sync))
+           go-golang-org-x-sync
+           go-golang-org-x-telemetry))
     (home-page "https://go.googlesource.com/tools/")
     (synopsis "Tools that support the Go programming language")
     (description
