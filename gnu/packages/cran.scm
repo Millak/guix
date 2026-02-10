@@ -4731,13 +4731,13 @@ samples) are easily visualized.")
 (define-public r-ggiraph
   (package
     (name "r-ggiraph")
-    (version "0.9.3")
+    (version "0.9.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggiraph" version))
        (sha256
-        (base32 "0va308sipm48ysxyaibpp8bf4zjhz8awa2p054xfygrhg6nv867m"))))
+        (base32 "1ixlqpbqdhkilsj60pw0hsr0x32wmdn97lzpsrl9xmrzyl95c34f"))))
     (properties
      '((upstream-name . "ggiraph")
        (updater-extra-native-inputs . ("r-xml2"))))
