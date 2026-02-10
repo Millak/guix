@@ -253,11 +253,18 @@ file system, and many more features.")
               "CFLAGS=-DCURL_WRITEFUNC_ERROR=0xFFFFFFFF")
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'configure)))) ; no configure
+          (delete 'configure) ; no configure
+          (add-after 'install 'wrap-newsraft
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((newsraft (search-input-file outputs "/bin/newsraft"))
+                    (libnotify (string-append (assoc-ref inputs "libnotify")
+                                              "/bin")))
+                (wrap-program newsraft
+                  `("PATH" ":" prefix (,libnotify)))))))))
     (native-inputs
      (list pkg-config scdoc))
     (inputs
-     (list curl expat gumbo-parser ncurses sqlite yajl))
+     (list curl expat gumbo-parser libnotify ncurses sqlite yajl))
     (home-page "https://codeberg.org/grisha/newsraft")
     (synopsis "Feed reader for terminal")
     (description
