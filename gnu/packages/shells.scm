@@ -16,7 +16,7 @@
 ;;; Copyright © 2019, 2020, 2023, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
-;;; Copyright © 2020, 2022, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2022, 2024, 2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
@@ -56,6 +56,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages libbsd)
@@ -151,6 +152,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
     (native-inputs
      (append
       (list doxygen
+            gettext-minimal             ;localization support
             groff                       ;for 'fish --help'
             pkg-config
             procps                      ;for the test suite
