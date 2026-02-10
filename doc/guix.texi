@@ -32136,7 +32136,7 @@ The D-Bus package to use to start the required D-Bus session.
 The nss-certs package to use to provide TLS certificates.
 
 @item @code{enable-logging?} (default: @code{#t}) (type: boolean)
-Whether to enable logging to syslog.
+Whether to enable logging to @file{/var/log/jami}.
 
 @item @code{debug?} (default: @code{#f}) (type: boolean)
 Whether to enable debug level messages.

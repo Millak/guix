@@ -235,7 +235,7 @@ SET-ACCOUNT-DETAILS."
    "The nss-certs package to use to provide TLS certificates.")
   (enable-logging?
    (boolean #t)
-   "Whether to enable logging to syslog.")
+   "Whether to enable logging to @file{/var/log/jami.log}.")
   (debug?
    (boolean #f)
    "Whether to enable debug level messages.")
@@ -269,20 +269,21 @@ CONFIG, a <jami-configuration> object."
                  "bin")
      #:mappings
      (list (file-system-mapping
-            (source "/dev/log") ;for syslog
-            (target source))
+             (source "/var/lib/jami")
+             (target source)
+             (writable? #t))
            (file-system-mapping
-            (source "/var/lib/jami")
-            (target source)
-            (writable? #t))
+             (source "/var/log/jami.log")
+             (target source)
+             (writable? #t))
            (file-system-mapping
-            (source "/var/run/jami")
-            (target source)
-            (writable? #t))
+             (source "/var/run/jami")
+             (target source)
+             (writable? #t))
            ;; Expose TLS certificates for GnuTLS.
            (file-system-mapping
-            (source (file-append nss-certs "/etc/ssl/certs"))
-            (target "/etc/ssl/certs")))
+             (source (file-append nss-certs "/etc/ssl/certs"))
+             (target "/etc/ssl/certs")))
      #:preserved-environment-variables
      '("DBUS_SESSION_BUS_ADDRESS" "SSL_CERT_DIR")
      #:user "jami"
@@ -290,12 +291,10 @@ CONFIG, a <jami-configuration> object."
      #:namespaces (fold delq %namespaces '(net user))))
 
   (match-record config <jami-configuration>
-    (libjami dbus enable-logging? debug? auto-answer?)
+                (libjami dbus debug? auto-answer?)
     `(,(wrapper libjami)
       "--persistent"                    ;stay alive after client quits
-      ,@(if enable-logging?
-            '()                         ;logs go to syslog by default
-            (list "--console"))         ;else stdout/stderr
+      "--console"                       ;ensure output goes to stdout/stderr
       ,@(if debug?
             (list "--debug")
             '())
@@ -351,6 +350,7 @@ CONFIG, a <jami-configuration> object."
                        ;; so run it in the global user namespace.
                        #:namespaces
                        (fold delq %namespaces '(net user))))
+         (enable-logging? (jami-configuration-enable-logging? config))
          (accounts (jami-configuration-accounts config))
          (declarative-mode? (maybe-value-set? accounts)))
 
@@ -641,7 +641,8 @@ argument, either a registered username or the fingerprint of the account.")
                        (list (string-append "DBUS_SESSION_BUS_ADDRESS="
                                             "unix:path=/var/run/jami/bus")
                              ;; Expose TLS certificates for OpenSSL.
-                             "SSL_CERT_DIR=/etc/ssl/certs")))
+                             "SSL_CERT_DIR=/etc/ssl/certs")
+                       #:log-file #$(and enable-logging? "/var/log/jami.log")))
 
                     (setenv "DBUS_SESSION_BUS_ADDRESS"
                             "unix:path=/var/run/jami/bus")
@@ -655,9 +656,9 @@ argument, either a registered username or the fingerprint of the account.")
                               (map (cut string-append
                                         "/var/lib/jami/accounts/" <>)
                                    (scandir "/var/lib/jami/accounts/"
-                                            (lambda (f)
-                                              (not (member f '("." "..")))))))
-                             (usernames (map-in-order (cut add-account <>)
+                                            (negate
+                                             (cut member <> '("." ".."))))))
+                             (usernames (map-in-order add-account
                                                       jami-account-archives)))
 
                         (define (archive-name->username archive)
