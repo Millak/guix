@@ -11301,7 +11301,14 @@ player adaptability for character progression.")
     (arguments
      (substitute-keyword-arguments (package-arguments harmonist)
        ((#:tests? _ #t) #f)
-       ((#:build-flags _ #'()) #~(list "--tags=sdl"))))
+       ((#:build-flags _ #'()) #~(list "--tags=sdl"))
+       ((#:phases _ #~%standard-phases)
+        #~(modify-phases %standard-phases
+            (add-after 'install 'fix-name-collision
+              (lambda _
+                (rename-file
+                 (string-append #$output "/bin/harmonist")
+                 (string-append #$output "/bin/harmonist-sdl"))))))))
     (native-inputs
      (modify-inputs (package-native-inputs harmonist)
        (prepend pkg-config)))))
