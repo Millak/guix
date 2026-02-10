@@ -18617,13 +18617,13 @@ methods.")
 (define-public r-timechange
   (package
     (name "r-timechange")
-    (version "0.3.0")
+    (version "0.4.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "timechange" version))
               (sha256
                (base32
-                "1d26mr3avw6bpx786k223bnylzqr7z1h7rrjc38pi5db2iahnp6q"))))
+                "1srzyy3y2wgrrjn7nv0z08fg951y7ww00f6zgpzlqg4x6ffzzj3d"))))
     (properties `((upstream-name . "timechange")))
     (build-system r-build-system)
     (arguments
