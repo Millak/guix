@@ -12120,13 +12120,13 @@ previously been used in XCMS.")
 (define-public r-numbat
   (package
     (name "r-numbat")
-    (version "1.5.1")
+    (version "1.5.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "numbat" version))
               (sha256
                (base32
-                "1p93jd009y0pymh08s8903pldh7c142icz7jvjbmmn5ayg9ayz39"))))
+                "0j6p15n0zmm4d8ml4j6ydcd8x3b8gba53hpxjm1qv05blr29b65y"))))
     (properties `((upstream-name . "numbat")))
     (build-system r-build-system)
     (propagated-inputs (list r-ape
@@ -12148,7 +12148,6 @@ previously been used in XCMS.")
                              r-optparse
                              r-paralleldist
                              r-patchwork
-                             r-pryr
                              r-purrr
                              r-r-utils
                              r-rcpp
