@@ -15599,13 +15599,13 @@ initiative to bring PASSTEC 2000 functionalities to R.")
 (define-public r-partykit
   (package
    (name "r-partykit")
-   (version "1.2-24")
+   (version "1.2-25")
    (source (origin
              (method url-fetch)
              (uri (cran-uri "partykit" version))
              (sha256
               (base32
-               "1zy92iwhl9979mqa5bxz50k66vxysn07zd1z40z0y44g8msnph20"))))
+               "0848vb2sp70hl40sbp6x4bmpqda5c0v59v65iqvrml65saphbgbs"))))
    (properties
     '((updater-extra-native-inputs . ("r-mlbench")))) ;for tests
    (build-system r-build-system)
@@ -15619,13 +15619,11 @@ initiative to bring PASSTEC 2000 functionalities to R.")
           r-rpart
           r-survival))
    (native-inputs (list r-coin
+                        r-knitr
                         r-mlbench
                         r-party
-                        r-pmml
                         r-psychotools
-                        r-sandwich
-                        r-strucchange
-                        r-xml))
+                        r-strucchange))
    (home-page "https://partykit.R-Forge.R-project.org/partykit")
    (synopsis "Toolkit for recursive partytioning")
    (description
