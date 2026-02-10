@@ -2611,7 +2611,7 @@ scientific data storage.")
                (for-each (lambda (f) (install-file f bindir))
                          (find-files "bin" "^nnp-"))
                (for-each (lambda (f) (install-file f libdir))
-                         (find-files "lib" "\\.so$"))
+                         (find-files "lib" "."))
                (for-each (lambda (f) (install-file f incdir))
                          (find-files "include" "\\.h$"))))))))
     (inputs
