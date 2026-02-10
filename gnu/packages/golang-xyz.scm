@@ -665,38 +665,6 @@ commands.")
      (list
       #:import-path "git.sr.ht/~rjarry/go-opt/v2"))))
 
-(define-public go-git-sr-ht-rockorager-tcell-term
-  (package
-    (name "go-git-sr-ht-rockorager-tcell-term")
-    (version "0.10.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://git.sr.ht/~rockorager/tcell-term")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1z64yzr2l5j5r5rqi89jk4madn3ak8hw95lva5ra7gnlyhh2vs05"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "git.sr.ht/~rockorager/tcell-term"
-      #:test-flags
-      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (propagated-inputs
-     (list go-github-com-creack-pty
-           go-github-com-gdamore-tcell-v2
-           go-github-com-mattn-go-runewidth))
-    (home-page "https://git.sr.ht/~rockorager/tcell-term")
-    (synopsis "Terminal widget for @code{tcell}")
-    (description
-     "This package provides a virtual terminal widget for the @code{tcell}
-Go library.")
-    (license license:expat)))
-
 (define-public go-git-sr-ht-rockorager-vaxis
   (package
     (name "go-git-sr-ht-rockorager-vaxis")
