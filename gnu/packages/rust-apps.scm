@@ -4079,8 +4079,7 @@ minimum contrast levels, and more.")
         (base32 "04czi8s6nflvp1n2p1fl2wk6jqi0gsi7j52m4dnr6hvzf1mcn91n"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:rust rust-1.88
-           #:tests? #f         ;Tests require local instance of RabbitMQ broker.
+     (list #:tests? #f         ;Tests require local instance of RabbitMQ broker.
            #:install-source? #f))
     (inputs (cons* mimalloc openssl (cargo-inputs 'rabbitmqadmin)))
     (home-page "https://www.rabbitmq.com/docs/management-cli")
