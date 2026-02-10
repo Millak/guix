@@ -8827,14 +8827,14 @@ Rcpp.  Finally, the package provides an @code{ode} function to call from R.")
 (define-public r-lubridate
   (package
     (name "r-lubridate")
-    (version "1.9.4")
+    (version "1.9.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lubridate" version))
        (sha256
         (base32
-         "1ha68ri36gcq573j7s71m284166qd1ywran62h9d88nn4gi7wjw6"))))
+         "1a40h89q09kb970ypynq2larwsrqih2jqmwwkr7msa1lb87d3i8b"))))
     (build-system r-build-system)
     (properties
      '((updater-extra-native-inputs . ("tzdata-for-tests"))))
