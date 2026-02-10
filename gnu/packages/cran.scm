@@ -56769,14 +56769,14 @@ most common form of color blindness.")
 (define-public r-viridislite
   (package
     (name "r-viridislite")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "viridisLite" version))
        (sha256
         (base32
-         "18g1rk24kr47jl01r70vvni2146fl9xxpjcvjp6d5k6y64fi2gw9"))))
+         "1x8y29g0dh1gxzc4hiagq6svlx7wr6xzzd0z61vdqd32wsyyjfs3"))))
     (properties `((upstream-name . "viridisLite")))
     (build-system r-build-system)
     (native-inputs (list r-testthat))
