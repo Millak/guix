@@ -809,7 +809,7 @@ files.")
       (arguments
        (list
         #:install-plan
-        #~'(("src" "share/json-for-vhdl"
+        #~'(("src" "share/json-for-vhdl/work/src"
              #:include ("vhdl")))
         #:phases
         #~(modify-phases %standard-phases
@@ -819,6 +819,11 @@ files.")
                 (substitute* "tests/VUnit/run.py"
                   (("from_argv\\(\\)")
                    "from_argv()\nvu.add_vhdl_builtins()")))))))
+      (native-search-paths
+       (list (search-path-specification
+               (variable "FW_JSON_VHDL")
+               (separator #f)
+               (files (list "share/json-for-vhdl")))))
       (home-page "https://github.com/Paebbels/JSON-for-VHDL/")
       (synopsis "Parse and query JSON data structures in VHDL")
       (description
