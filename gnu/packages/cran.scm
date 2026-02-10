@@ -36530,16 +36530,17 @@ illustrate point pattern analysis techniques.")
 (define-public r-learnbayes
   (package
     (name "r-learnbayes")
-    (version "2.15.1")
+    (version "2.15.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "LearnBayes" version))
        (sha256
         (base32
-         "0ch54v2zz2yyyk0lvn5rfikdmyz1qh9j1wk3585wl8v58mc0h4cv"))))
+         "14nic4l33cksd239xsnvrbfwrsvf3vf161mzafkvf9mlcj64bqvs"))))
     (properties `((upstream-name . "LearnBayes")))
     (build-system r-build-system)
+    (propagated-inputs (list r-coda r-lattice r-survival))
     (home-page "https://cran.r-project.org/web/packages/LearnBayes")
     (synopsis "Functions for learning Bayesian inference")
     (description
