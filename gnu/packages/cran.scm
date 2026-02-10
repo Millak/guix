@@ -8184,13 +8184,13 @@ several estimations with intuitive design to cluster the standard-errors.")
 (define-public r-fpeek
   (package
     (name "r-fpeek")
-    (version "0.1.2")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fpeek" version))
        (sha256
-        (base32 "0kv46g21ndxchg3q8ynq7hjjkh6i2zlc21axn5y1jjzigrw047ii"))))
+        (base32 "1lkx8sphzg68dmg8wmr5p8qq99p2q3mnaqmfpsfmjpxi86dvz86f"))))
     (properties `((upstream-name . "fpeek")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
