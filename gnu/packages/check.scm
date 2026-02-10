@@ -1526,7 +1526,7 @@ available via the @code{unittest.mock} module.")
 ;; XXX: Deprecated on <2026-01-26>.
 ;;; This package is unmaintained (see the note at the top of doc/index.rst).
 ;;; Pynose is actively maintained successor of Nose tests runner.
-(define-deprecated/public-alias python-nose python-pynose)
+(define-deprecated-package python-nose python-pynose)
 
 (define-public python-nose2
   (package
