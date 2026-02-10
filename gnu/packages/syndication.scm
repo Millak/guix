@@ -254,6 +254,10 @@ file system, and many more features.")
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure) ; no configure
+          (add-after 'install 'install-desktop-entry
+            (lambda _
+              (install-file "doc/newsraft.desktop"
+                            (string-append #$output "/share/applications"))))
           (add-after 'install 'wrap-newsraft
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let ((newsraft (search-input-file outputs "/bin/newsraft"))
