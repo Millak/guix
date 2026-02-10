@@ -449,13 +449,13 @@ package instead.")
 (define-public r-base64enc
   (package
     (name "r-base64enc")
-    (version "0.1-3")
+    (version "0.1-6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "base64enc" version))
               (sha256
                (base32
-                "13b89fhg1nx7zds82a0biz847ixphg9byf5zl2cw9kab6s56v1bd"))))
+                "05h8vfnyf2j7yan7c1mj7rly5n1x1jc6xyh8j2ca57s0ywi9sziw"))))
     (build-system r-build-system)
     (home-page "https://www.rforge.net/base64enc")
     (synopsis "Tools for Base64 encoding")
