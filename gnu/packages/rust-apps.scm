@@ -3041,7 +3041,6 @@ blanks grouped by language.")
     (build-system cargo-build-system)
     (arguments
      (list
-      #:rust rust-1.88
       #:install-source? #f
       #:modules '((guix build cargo-build-system)
                   (guix build utils)
