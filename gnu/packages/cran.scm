@@ -23278,14 +23278,14 @@ retrieve random integers, randomized sequences and random strings.")
 (define-public r-randomizr
   (package
     (name "r-randomizr")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "randomizr" version))
        (sha256
         (base32
-         "0r7yawh4dnxawinnlz09f57kgdwa08rpwxq3y35jam3x2q48qijn"))))
+         "0948pnmn2hpwk85x9hqh5fnmzrq8kn24pilsrnjd876aszyzf1ka"))))
     (properties `((upstream-name . "randomizr")))
     (build-system r-build-system)
     (native-inputs
