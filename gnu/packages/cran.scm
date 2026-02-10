@@ -7233,13 +7233,13 @@ for authoring journal articles and conference submissions.")
 (define-public r-rtk
   (package
     (name "r-rtk")
-    (version "0.2.6.1")
+    (version "0.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rtk" version))
        (sha256
-        (base32 "1xafmp5y5p8fnsh16wj8n08x69v2hawnsvsy7g4dcz1i5xkhyc0m"))))
+        (base32 "02j3r9zkm4l8zp3qy9xi00isszmlja00yh2p8rmgbc5spi21ixcq"))))
     (properties `((upstream-name . "rtk")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp zlib))
