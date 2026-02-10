@@ -3613,16 +3613,16 @@ scanners/lexers/tokenizers.")
 (define-public go-mvdan-cc-unparam
   (package
     (name "go-mvdan-cc-unparam")
-    (version "0.0.0-20240528143540-8a5130ca722f")
+    (version "0.0.0-20251027182757-5beb8c8f8f15")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mvdan/unparam")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/mvdan/unparam")
+              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qrwszcmb5slbzkq3acw57b896z22zwkv6cf6ldxwlc6p179g009"))))
+        (base32 "16gk6bb0ahm1qpsdq4ma93yqbv77n354i1gss71ada6i248pc6az"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -3634,14 +3634,15 @@ scanners/lexers/tokenizers.")
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
                 (for-each delete-file
-                          (list "testdata/script/usedas.txtar"
+                          (list "testdata/script/impl.txtar"
+                                "testdata/script/paramuses.txtar"
                                 "testdata/script/stubs.txtar"
-                                "testdata/script/impl.txtar"
-                                "testdata/script/paramuses.txtar"))))))))
+                                "testdata/script/typealias.txtar"
+                                "testdata/script/usedas.txtar"))))))))
+    (native-inputs
+     (list go-github-com-rogpeppe-go-internal-1.14))
     (propagated-inputs
-     (list go-github-com-pkg-diff
-           go-github-com-rogpeppe-go-internal
-           go-golang-org-x-tools))
+     (list go-golang-org-x-tools))
     (home-page "https://mvdan.cc/unparam/")
     (synopsis "Find unused parameters in Go")
     (description
