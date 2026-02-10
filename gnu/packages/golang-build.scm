@@ -1042,25 +1042,31 @@ loading algorithms.")
 (define-public go-golang-org-x-net
   (package
     (name "go-golang-org-x-net")
-    (version "0.46.0")
+    (version "0.50.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://go.googlesource.com/net")
-             (commit (string-append "v" version))))
+              (url "https://go.googlesource.com/net")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zb45fmiwsi8nq56wfzk83q7ksqk8jaw8rlpnxv929c419gi8h0s"))))
+        (base32 "0azrbdpydjdjg63rj51blwjlqaplwbd5yi9dy4fyxd38wm36yyq3"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
       #:import-path "golang.org/x/net"
       #:test-flags
-      ;; Golang does not support "-race" on ARM, one test fails with error:
-      ;; ThreadSanitizer: unsupported VMA range.
-      #~(list #$@(if (target-arm?) '("-skip" "TestRace") '()))))
+      #~(list "-skip" (string-join
+                       ;; gotrack_test.go:24: did not see panic from check in
+                       ;; other goroutine
+                       (list "TestGoroutineLock"
+                             ;; Golang does not support "-race" on ARM, one
+                             ;; test fails with error: ThreadSanitizer:
+                             ;; unsupported VMA range.
+                             #$@(if (target-arm?) '("TestRace") '()))
+                       "|"))))
     (propagated-inputs
      (list go-golang-org-x-crypto
            go-golang-org-x-sys
