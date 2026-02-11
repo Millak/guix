@@ -848,7 +848,7 @@ tomorrow, the rest of the week and for special occasions.")
 (define-public gnome-music
   (package
     (name "gnome-music")
-    (version "46.1")
+    (version "49.1")
     (source
      (origin
        (method url-fetch)
@@ -858,7 +858,7 @@ tomorrow, the rest of the week and for special occasions.")
                        name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1zdzafirfhaldbp8m8pmqw0ysfxc7ndbakqc7d1xrr4v51n2vghi"))))
+         "0rxw0zr7z2y7mr2qkb3vwg3mwg7sif6xzlyjkwkfcd2ynph1m25s"))))
     (build-system meson-build-system)
     (arguments
      (list
