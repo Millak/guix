@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2012-2022, 2026 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 # Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
 # Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
@@ -117,7 +117,7 @@ guix package -p "$profile" -A 'gui.*e' | grep guile
 guix package --show=guile | grep "^name: guile"
 
 # Ensure `--show' doesn't fail for packages with non-package inputs.
-guix package --show=texlive
+guix package --show=tzdata
 
 # Fail for non-existent packages or package/version pairs.
 guix package --show=does-not-exist && false
