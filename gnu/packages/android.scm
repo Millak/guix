@@ -1077,7 +1077,7 @@ script that you can put anywhere in your path.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://http.debian.net/debian/pool/main/a/abootimg/"
+       (uri (string-append "http://deb.debian.org/debian/pool/main/a/abootimg/"
                            "abootimg_" version ".orig.tar.gz"))
        (sha256
         (base32 "0sfc2k011l1ymv97821w89391gnqdh8pp0haz4sdcm5hx0axv2ba"))))
