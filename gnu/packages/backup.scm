@@ -1372,8 +1372,7 @@ borgmatic is powered by borg.")
            python-pytest-qt
            python-pytest-runner
            python-setuptools
-           python-setuptools-git
-           python-wheel))
+           python-setuptools-git))
     (inputs
      (list borg
            python-appdirs
