@@ -924,24 +924,14 @@ training, HMM clustering, HMM mixtures.")
       (arguments
        (list
         #:configure-flags
-        #~(list #$(string-append "-DGGML_BUILD_NUMBER=" tag)
-                "-DBUILD_SHARED_LIBS=ON"
-                "-DGGML_VULKAN=ON"
-                "-DGGML_BLAS=ON"
-                "-DGGML_BLAS_VENDOR=OpenBLAS"
+        #~(list "-DBUILD_SHARED_LIBS=ON"
                 (string-append "-DBLAS_INCLUDE_DIRS="
                                #$(this-package-input "openblas")
                                "/include")
                 (string-append "-DBLAS_LIBRARIES="
                                #$(this-package-input "openblas")
                                "/lib/libopenblas.so")
-
-                "-DGGML_NATIVE=OFF" ;no '-march=native'
-                "-DGGML_FMA=OFF"    ;and no '-mfma', etc.
-                "-DGGML_AVX2=OFF"
-                "-DGGML_AVX512=OFF"
-                "-DGGML_AVX512_VBMI=OFF"
-                "-DGGML_AVX512_VNNI=OFF")
+                "-DLLAMA_USE_SYSTEM_GGML=ON")
 
         #:modules '((ice-9 textual-ports)
                     (guix build utils)
@@ -1009,7 +999,7 @@ training, HMM clustering, HMM mixtures.")
                                                       "/bin")
                                        "^test-")))))))
       (inputs
-       (list curl glslang python-gguf python-minimal openblas spirv-headers
+       (list curl ggml glslang python-gguf python-minimal openblas spirv-headers
              spirv-tools vulkan-headers vulkan-loader openssl))
       (native-inputs
        (list bash-minimal pkg-config python-minimal-wrapper shaderc))
