@@ -354,7 +354,7 @@ Pascal programs.")
                                                    "libx11"
                                                    "pango"
                                                    "cairo"
-                                                   "atk")))
+                                                   "at-spi2-core")))
                                    (libs (append (map (lambda (name)
                                                         (string-append "-Fl"
                                                                        name
@@ -377,7 +377,7 @@ Pascal programs.")
                   libx11
                   pango
                   cairo
-                  atk))
+                  at-spi2-core))
     (synopsis "Integrated development environment for Pascal")
     (description "This package provides an integrated development environment
 for Pascal.")
