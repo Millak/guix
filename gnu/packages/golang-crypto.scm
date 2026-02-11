@@ -3424,6 +3424,29 @@ Congruential Generator} (PCG) algorithm.")
 is an extremely fast non-cryptographic hash algorithm.")
     (license license:bsd-2)))
 
+(define-public go-github-com-zmap-rc2
+  (package
+    (name "go-github-com-zmap-rc2")
+    (version "0.0.0-20190804163417-abaa70531248")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zmap/rc2")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ghg9k628a32iivpb5bd8xx5cjbxsbbm3rnmi3qjjbywb1y9kk68"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zmap/rc2"))
+    (home-page "https://github.com/zmap/rc2")
+    (synopsis "RC2 in Go")
+    (description "This package implements
+@url{https://en.wikipedia.org/wiki/RC2, RC2} Cipher in Golang.")
+    (license license:asl2.0)))
+
 (define-public go-gitlab-com-nyarla-go-crypt
   (package
     (name "go-gitlab-com-nyarla-go-crypt")
