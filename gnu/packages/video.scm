@@ -4364,6 +4364,36 @@ applied via a static image (.png, .jpeg, etc).
 ")
     (license license:gpl2)))
 
+(define-public obs-branch-output
+  (package
+    (name "obs-branch-output")
+    (version "1.0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+              "https://github.com/OPENSPHERE-Inc/branch-output/releases/download/"
+              version "/osi-branch-output-" version "-source.tar.xz"))
+       (sha256
+        (base32
+          "01ijh6hyp7x2gn83y2rjyaqbgcjar5p5fnaw35k7kanxdg2awzn7"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:generator "Ninja"
+      #:configure-flags
+      #~(list "-DBUILD_OUT_OF_TREE=ON" "-Wno-dev")))
+    (inputs (list obs qtbase simde))
+    (home-page "https://github.com/OPENSPHERE-Inc/branch-output")
+    (synopsis "This OBS plugin can record individual sources and scenes")
+    (description "An OBS plugin to record or stream individual OBS
+@code{sources} or @code{scenes}.  It's an alternative to the
+@command{Source Record} plugin, but more focused on streaming.  The plugin can
+be used to simultaneously stream to multiple platforms, or to record
+@code{sources} to different files providing flexibility during editing.")
+    (license license:gpl2)))
+
 (define-public obs-composite-blur
   (package
     (name "obs-composite-blur")
