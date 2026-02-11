@@ -8670,12 +8670,14 @@ known as JOSE) technologies.")
               "grpc/creds"
               "grpc/internal/leakcheck"
               "grpc/noncebalancer"
+              "iana"
               "identifier"
               "log/validator"
               "metrics/measured_http"
               "must"
               "nonce"
               "pkcs11helpers"
+              "policy"
               "precert"
               "privatekey"
               "probs"
@@ -8690,12 +8692,16 @@ known as JOSE) technologies.")
            go-github-com-aws-aws-sdk-go-v2-config
            go-github-com-aws-aws-sdk-go-v2-service-s3
            go-github-com-aws-smithy-go
+           go-github-com-eggsampler-acme-v3
            go-github-com-go-jose-go-jose-v4
            go-github-com-go-logr-stdr
            go-github-com-go-sql-driver-mysql
            go-github-com-golang-groupcache
            go-github-com-jmhodges-clock
+           go-github-com-letsencrypt-borp
            go-github-com-letsencrypt-challtestsrv
+           go-github-com-letsencrypt-pkcs11key-v4
+           go-github-com-letsencrypt-validator-v10
            go-github-com-miekg-dns
            go-github-com-miekg-pkcs11
            go-github-com-nxadm-tail
@@ -8703,6 +8709,7 @@ known as JOSE) technologies.")
            go-github-com-prometheus-client-model
            go-github-com-redis-go-redis-v9
            go-github-com-titanous-rocacheck
+           go-github-com-weppos-publicsuffix-go
            go-go-opentelemetry-io-contrib-instrumentation-google-golang-org-grpc-otelgrpc
            go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
            go-go-opentelemetry-io-otel
@@ -8719,14 +8726,9 @@ known as JOSE) technologies.")
            go-gopkg-in-yaml-v3
 
            ;; TODO: Complete packaging
-           ;; go-github-com-eggsampler-acme-v3
            ;; go-github-com-google-certificate-transparency-go
            ;; go-github-com-grpc-ecosystem-go-grpc-middleware-providers-prometheus
-           ;; go-github-com-letsencrypt-borp
-           ;; go-github-com-letsencrypt-pkcs11key-v4
-           ;; go-github-com-letsencrypt-validator-v10
            ;; go-github-com-redis-go-redis-extra-redisotel-v9
-           ;; go-github-com-weppos-publicsuffix-go
            ;; go-github-com-zmap-zcrypto
            #;go-github-com-zmap-zlint-v3))
     (home-page "https://github.com/letsencrypt/boulder")
