@@ -1255,7 +1255,7 @@ the \"texlive\" importer."
 (define-member (person "Vagrant Cascadian"
                        "vagrant@debian.org"
                        "vagrantc")
-  debian embedded)
+  debian embedded kernel)
 
 (define-member (person "Vagrant Cascadian"        ;XXX: duplicate
                        "vagrant@reproducible-builds.org"
