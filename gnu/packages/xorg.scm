@@ -6766,7 +6766,7 @@ and embedded platforms.")
      (origin
        (method url-fetch)
        (uri (string-append
-             "http://http.debian.net/debian/pool/main/k/keynav/keynav_"
+             "http://deb.debian.org/debian/pool/main/k/keynav/keynav_"
              version ".orig.tar.gz"))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
