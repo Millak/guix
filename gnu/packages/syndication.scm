@@ -269,7 +269,7 @@ file system, and many more features.")
      (list pkg-config scdoc))
     (inputs
      (list curl expat gumbo-parser libnotify ncurses sqlite yajl))
-    (home-page "https://codeberg.org/grisha/newsraft")
+    (home-page "https://newsraft.codeberg.page/")
     (synopsis "Feed reader for terminal")
     (description
      "Newsraft is a feed reader with ncurses user interface.  It is greatly
