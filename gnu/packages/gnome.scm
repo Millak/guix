@@ -84,6 +84,7 @@
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Abra K. <abra_k_332@protonmail.me>
+;;; Copyright © 2025 Ben Hansen <git@beha.pw>
 ;;; Copyright © 2026 Roman Riabenko <roman@riabenko.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -12423,7 +12424,7 @@ index files needed for Adwaita to be used outside of GNOME.")
 (define-public gnote
   (package
     (name "gnote")
-    (version "42.1")
+    (version "48.2")
     (source
      (origin
        (method url-fetch)
@@ -12431,7 +12432,7 @@ index files needed for Adwaita to be used outside of GNOME.")
                            (version-major version)  "/"
                            "gnote-" version ".tar.xz"))
        (sha256
-        (base32 "0fam3v9na4ndqdc63866bvhcxrzj478jsx34vsh0777d4ixw883c"))))
+        (base32 "10f74mkqw0la6vyswj4p3qf988r1ai29l4gfx2wryn76knhni09w"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -12439,22 +12440,22 @@ index files needed for Adwaita to be used outside of GNOME.")
                   (add-after 'unpack 'skip-gtk-update-icon-cache
                     ;; Don't create 'icon-theme.cache'.
                     (lambda _
-                      (substitute* "post-install.py"
-                        (("gtk-update-icon-cache") "true")))))))
+                      (substitute* "meson.build"
+                        (("gtk_update_icon_cache: true")
+                          "gtk_update_icon_cache: false")))))))
     (native-inputs
      (list desktop-file-utils
            gettext-minimal
            `(,glib "bin")
            gobject-introspection
            itstool
-           pkg-config
-           python))
+           pkg-config))
     (inputs
      (list glibmm
            gsettings-desktop-schemas
-           gspell
-           gtk+
-           gtkmm-3
+           gtk
+           gtkmm
+           libadwaita
            libsecret
            `(,util-linux "lib")
            libxml2
