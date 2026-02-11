@@ -139,6 +139,7 @@ Refresh}in-DRAM mitigations effectively and as such can trigger bit flips.")
      (list python-aiofiles
            python-aiosqlite
            python-argcomplete
+           python-boltons
            python-can
            python-construct
            python-exitcode
