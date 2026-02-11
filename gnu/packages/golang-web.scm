@@ -12651,7 +12651,7 @@ implementation in the Go standard library}.")
 (define-public go-github-com-quic-go-quic-go
   (package
     (name "go-github-com-quic-go-quic-go")
-    (version "0.54.1")
+    (version "0.59.0")
     (source
      (origin
        (method git-fetch)
@@ -12660,7 +12660,7 @@ implementation in the Go standard library}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "025klj0pvnz5c1gbz4i3wb8fxbnyf4q5vz08l7xa7204qzl5njlk"))
+        (base32 "0yj7l75my9nv24lv52g3mmj8bc4fhgrxkgrzvlmf79sgqlpjs51c"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -12672,28 +12672,35 @@ implementation in the Go standard library}.")
     (arguments
      (list
       #:import-path "github.com/quic-go/quic-go"
+      #:test-flags
+      ;; Error:      	Should NOT be empty, but was []
+      #~(list "-skip" "TestHandshakePacketBuffering")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
                 (delete-file-recursively "example"))))
+          (add-before 'build 'go-generate
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (invoke "go" "generate" "-v" "-n" "./..."))))
           (add-before 'check 'pre-check
             (lambda* (#:key tests? import-path #:allow-other-keys)
+              ;; See: <https://go.dev/blog/synctest>.
+              (setenv "GOEXPERIMENT" "synctest")
+              ;; See: <https://github.com/quic-go/quic-go/issues/5419>.
+              (setenv "GODEBUG" "asynctimerchan=0")
               (setenv "TIMESCALE_FACTOR" "10"))))))
     (native-inputs
      (list go-github-com-stretchr-testify
            go-go-uber-org-mock))
     (propagated-inputs
-     (list go-github-com-francoispqt-gojay
-           go-github-com-prometheus-client-golang
-           go-github-com-quic-go-qpack
+     (list go-github-com-quic-go-qpack
            go-golang-org-x-crypto
-           go-golang-org-x-exp
            go-golang-org-x-net
            go-golang-org-x-sync
-           go-golang-org-x-sys
-           go-golang-org-x-tools))
+           go-golang-org-x-sys))
     (home-page "https://github.com/quic-go/quic-go")
     (synopsis "QUIC in Go")
     (description
