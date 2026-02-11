@@ -1783,7 +1783,8 @@ vector data.")
            zstd))
     (native-inputs
      (list pkg-config
-           python))
+           python
+           python-setuptools))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://gdal.org/")
