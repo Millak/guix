@@ -1505,6 +1505,12 @@ the \"texlive\" importer."
                        "dthompson2@worcester.edu"
                        "flockofbirbs")
   guile)
+
+(define-member (person "Sergio Pastor Pérez"
+                       "sergio.pastorperez@gmail.com"
+                       "pastor")
+  guile hpc kde)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
