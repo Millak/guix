@@ -1925,54 +1925,6 @@ Python environments, similar to @code{tox}.  Unlike tox, Nox uses a standard
 Python file for configuration.")
     (license license:asl2.0)))
 
-(define-public python-nptyping
-  (package
-    (name "python-nptyping")
-    (version "2.5.0")
-    (source (origin
-              (method git-fetch)        ;pypi only contains a binary wheel
-              (uri (git-reference
-                    (url "https://github.com/ramonhagenaars/nptyping")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0m6iq98qi9pl5hcc5k99bvy5w293vrlsdnimxl020i60rfnihgl7"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list
-         ;; This one started failing with the last update of Numpy.
-         "--ignore=tests/test_beartype.py"
-         ;; Multiple failures due to undefined names (typing package must be
-         ;; too outdated, or perhaps they use a newer pandas).
-         "--ignore=tests/test_mypy.py"
-         "--ignore=tests/pandas_/test_mypy_dataframe.py"
-         "--ignore=tests/pandas_/test_fork_sync.py" ;requires connectivity
-         ;; This test requires 'python-pyright', not packaged.
-         "--ignore=tests/test_pyright.py"
-         ;; This one fails with "Unexpected argument of type <class 'tuple'>".
-         "--ignore=tests/test_typeguard.py"
-         ;; This one runs pip and fails.
-         "--ignore=tests/test_wheel.py")))
-    (native-inputs
-     (list python-beartype
-           python-feedparser
-           python-pandas
-           python-pytest
-           python-setuptools
-           python-typeguard))
-    (propagated-inputs
-     (list python-numpy-1
-           python-typing-extensions
-           python-pandas-stubs))
-    (home-page "https://github.com/ramonhagenaars/nptyping")
-    (synopsis "Type hints for Numpy")
-    (description "This package provides extensive dynamic type checks for
-dtypes and shapes of arrays for NumPy, extending @code{numpy.typing}.")
-    (license license:expat)))
-
 (define-public python-pandas-vet
   (package
     (name "python-pandas-vet")
