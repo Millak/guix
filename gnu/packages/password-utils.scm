@@ -804,7 +804,7 @@ command-line programs (@command{pwqcheck}, @command{pwqfilter}, and
        (method url-fetch)
        (uri (list
              (string-append
-              "http://http.debian.net/debian/pool/main/i/impass/"
+              "http://deb.debian.org/debian/pool/main/i/impass/"
               "impass_" version ".orig.tar.gz")))
        (sha256
         (base32
