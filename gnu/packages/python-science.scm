@@ -888,10 +888,6 @@ optimization problems in Python.")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                ((".*--cov-config=pyproject.toml.*") ""))))
           (add-before 'check 'remove-local-source
             (lambda _
               (delete-file-recursively "dask"))))))
