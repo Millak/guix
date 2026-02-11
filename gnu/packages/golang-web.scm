@@ -11947,6 +11947,27 @@ throughout the @url{https://github.com/pion, Pion} modules.")
            go-golang-org-x-net
            go-golang-org-x-sys))))
 
+(define-public go-github-com-pion-transport-v4
+  (package
+    (inherit go-github-com-pion-transport-v3)
+    (name "go-github-com-pion-transport-v4")
+    (version "4.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pion/transport")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ai5yirbgwalp3rq2ndybx9n3sd73ak3dry2ky07388ssd2v7ipr"))))
+    (arguments
+     (list
+      #:import-path "github.com/pion/transport/v4"))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs go-github-com-pion-transport-v3)
+       (prepend go-golang-org-x-time)))))
+
 (define-public go-github-com-pion-turn-v2
   (package
     (name "go-github-com-pion-turn-v2")
