@@ -136,6 +136,7 @@
   #:use-module (gnu packages bittorrent)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
+  #:use-module (gnu packages calendar)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages check)
@@ -173,6 +174,7 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages hunspell)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages kde-frameworks)
@@ -4362,6 +4364,72 @@ applied via a static image (.png, .jpeg, etc).
 @item Gradient Masks allow a fading mask using a user-specified gradient.
 @end itemize
 ")
+    (license license:gpl2)))
+
+(define-public obs-advanced-scene-switcher
+  (package
+    (name "obs-advanced-scene-switcher")
+    (version "1.32.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+              "https://github.com/WarmUpTill/SceneSwitcher/releases/download/"
+              version "/advanced-scene-switcher-" version "-source.tar.xz"))
+       (sha256
+        (base32
+          "15r4ck2agzhjzjkmczs3ag36km32axcjsz0m57yh568b3nrcxmj3"))
+       (modules '((guix build utils)))
+       ;; FIXME: libremidi@3.2 and jsoncons could be unbundled
+       ;; cpp-httplib is too old to unbundle
+       (snippet #~(begin
+                    (delete-file-recursively ".ccache")
+                    (delete-file-recursively "deps/asio")
+                    (delete-file-recursively "deps/cpp-httplib")
+                    (delete-file-recursively "deps/date")
+                    (delete-file-recursively "deps/json")
+                    (delete-file-recursively "deps/leptonica")
+                    (delete-file-recursively "deps/libusb")
+                    (delete-file-recursively "deps/exprtk")
+                    (delete-file-recursively "deps/obs-websocket")
+                    (delete-file-recursively "deps/opencv")
+                    ;;Arch package says openvr is only used on Windows
+                    (delete-file-recursively "deps/openvr")
+                    (delete-file-recursively "deps/paho.mqtt.cpp")
+                    (delete-file-recursively "deps/tesseract")
+                    (delete-file-recursively "deps/websocketpp")))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:generator "Ninja"
+      #:configure-flags
+      #~(list "-DBUILD_OUT_OF_TREE=ON" "-Wno-dev")))
+    (native-inputs (list asio-1.28
+                         date
+                         libxtst
+                         libx11
+                         nlohmann-json
+                         pkg-config))
+    (inputs (list curl
+                  cpp-httplib
+                  exprtk
+                  leptonica
+                  libxscrnsaver
+                  obs
+                  openssl ;Arch pkg says used by Twitch
+                  opencv
+                  procps
+                  qtbase
+                  simde
+                  websocketpp))
+    (home-page "https://github.com/WarmUpTill/SceneSwitcher")
+    (synopsis "This plugin automates actions in OBS")
+    (description "An OBS plugin that can automate almost anything through
+macros.  Originally, for switching between @code{Scenes} depending on a
+condition, it's capable of much more.  Macros are created with a condition,
+when the condition takes places an action runs which can be anything from
+switching to a specified @code{Scene} to changing the volume.")
     (license license:gpl2)))
 
 (define-public obs-branch-output
