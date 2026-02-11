@@ -53,6 +53,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix gexp)
+  #:use-module (guix hg-download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system pyproject)
@@ -186,10 +187,13 @@ Password Scheme\"} by Niels Provos and David Mazieres.")
     (version "1.7.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "passlib" version))
+       (method hg-fetch)
+       (uri (hg-reference
+              (url "https://foss.heptapod.net/python-libs/passlib")
+              (changeset version)))
+       (file-name (hg-file-name name version))
        (sha256
-        (base32 "015y5qaw9qnxr29lg60dml1g5rbqd4586wy5n8m41ib55gvm1zfy"))))
+        (base32 "1knbafs3ckcc6prd1ln2r0sdkawpzx7naf749cj3ljlms8v0bsca"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -203,7 +207,7 @@ Password Scheme\"} by Niels Provos and David Mazieres.")
      (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-argon2-cffi python-bcrypt python-cryptography))
-    (home-page "https://bitbucket.org/ecollins/passlib")
+    (home-page "https://foss.heptapod.net/python-libs/passlib")
     (synopsis "Comprehensive password hashing framework")
     (description
      "Passlib is a password hashing library for Python 2 & 3, which provides
