@@ -2152,7 +2152,7 @@ messaging library.")
                                               ", \"-s"))))
                           #t))))))
       (inputs
-       (list openssl guile-3.0 guile-json-3 guile-simple-zmq))
+       (list openssl guile-3.0 guile-json-4 guile-simple-zmq))
       (synopsis "Guile kernel for the Jupyter Notebook")
       (description
        "This package provides a Guile 2.x kernel for the Jupyter Notebook.  It
