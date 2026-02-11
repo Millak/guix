@@ -222,7 +222,7 @@ the commit hash, the downloaded directory and its content hash."
             (url ,(and (not (eq? url 'null)) url))
             (commit ,commit)
             ,@(if recursive?
-                  '(recursive? #t)
+                  '((recursive? #t))
                   '())))
      (file-name (git-file-name name version))
      (sha256
