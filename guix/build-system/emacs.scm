@@ -95,6 +95,7 @@
                       (modules '((guix build emacs-build-system)
                                  (guix build utils)
                                  (guix build emacs-utils)))
+                      (substitutable? #t)
                       allowed-references
                       disallowed-references)
   "Build SOURCE using EMACS, and with INPUTS."
@@ -122,6 +123,7 @@
                                                   system #:graft? #f)))
     (gexp->derivation name builder
                       #:system system
+                      #:substitutable? substitutable?
                       #:allowed-references allowed-references
                       #:disallowed-references disallowed-references
                       #:guile-for-build guile)))
