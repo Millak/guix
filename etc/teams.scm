@@ -770,6 +770,8 @@ the haskell-build-system."
                       "gnu/packages/opencl.scm"
                       "gnu/packages/parallel.scm"
                       "gnu/packages/rocm.scm"
+                      "gnu/packages/rocm-tools.scm"
+                      "gnu/packages/rocm-libs.scm"
                       "gnu/packages/sycl.scm"
                       "gnu/packages/tbb.scm"
                       "gnu/packages/vulkan.scm")))
