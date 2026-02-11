@@ -1540,7 +1540,7 @@ on your file system and offers to remove it.  @command{rmlint} can find:
 (define-public lf
   (package
     (name "lf")
-    (version "37")
+    (version "41")
     (source
      (origin
        (method git-fetch)
@@ -1549,7 +1549,7 @@ on your file system and offers to remove it.  @command{rmlint} can find:
               (commit (string-append "r" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m2h0dnxbfqsnafy9bwvis35k0197zn768r764zs53qg9f3fdc93"))))
+        (base32 "1rrc720ziaf84wz98y414kfjyh80mqb6wsb3x658g9cjhff7vmxk"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1560,7 +1560,6 @@ on your file system and offers to remove it.  @command{rmlint} can find:
            go-github-com-fsnotify-fsnotify
            go-github-com-gdamore-tcell-v2
            go-github-com-mattn-go-runewidth
-           go-github-com-xuanwo-go-locale
            go-golang-org-x-sys
            go-golang-org-x-term))
     (home-page "https://github.com/gokcehan/lf")
