@@ -11840,16 +11840,16 @@ Protocol,SCTP} as specified in
   (package
     (inherit go-github-com-pion-stun-v2)
     (name "go-github-com-pion-stun-v3")
-    (version "3.0.0")
+    (version "3.1.1")
     (source
      (origin
        (inherit (package-source go-github-com-pion-stun))
        (uri (git-reference
-             (url "https://github.com/pion/stun")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pion/stun")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yavl76y0fida9f1jfdmzdg7rm5jhp6kvdgn3smsf93jad1vbr2x"))))
+        (base32 "0k8pwwqd030blz4yby2kzzrs082mhyi9vbjmikv47jqjg9zzykqp"))))
     (arguments
      (list
       #:import-path "github.com/pion/stun/v3"
@@ -11857,7 +11857,7 @@ Protocol,SCTP} as specified in
     (propagated-inputs
      (list go-github-com-pion-dtls-v3
            go-github-com-pion-logging
-           go-github-com-pion-transport-v3))))
+           go-github-com-pion-transport-v4))))
 
 (define-public go-github-com-pion-transport
   (package
