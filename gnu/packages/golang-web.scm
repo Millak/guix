@@ -11370,26 +11370,26 @@ in Golang.")
   (package
     (inherit go-github-com-pion-dtls-v2)
     (name "go-github-com-pion-dtls-v3")
-    (version "3.0.2")
+    (version "3.1.2")
     (source
      (origin
        (inherit (package-source go-github-com-pion-dtls))
        (uri (git-reference
-             (url "https://github.com/pion/dtls")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pion/dtls")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0czn0v2i9czq6934sirbimgkn6avgzvw63ifm2b0bkh2qmmpim01"))))
+        (base32 "12wfn5jjwwydq1mz88dg6jd25j5z45fxaan9l05rhr0hhhngpgrh"))))
     (arguments
      (list
       #:import-path "github.com/pion/dtls/v3"))
     (native-inputs
-     (modify-inputs (package-native-inputs go-github-com-pion-dtls-v2)
-       (delete go-github-com-stretchr-testify)))
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs go-github-com-pion-dtls-v2)
-       (replace "go-github-com-pion-transport-v2"
-         go-github-com-pion-transport-v3)))))
+     (list go-github-com-pion-logging
+           go-github-com-pion-transport-v4
+           go-golang-org-x-crypto
+           go-golang-org-x-net))))
 
 (define-public go-github-com-pion-ice
   (package
