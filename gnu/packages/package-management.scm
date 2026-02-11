@@ -629,7 +629,7 @@ the Nix package manager.")
     (inputs
      (modify-inputs (package-inputs guix)
        (delete "boot-guile" "boot-guile/i686" "util-linux")
-       (prepend guile-gnutls guile-git guile-json-3 guile-gcrypt)))
+       (prepend guile-gnutls guile-git guile-json-4 guile-gcrypt)))
 
     (propagated-inputs '())
 
