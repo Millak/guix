@@ -24,8 +24,6 @@
 
 (define-module (gnu packages clojure)
   #:use-module (gnu packages)
-  #:use-module (gnu packages base)
-  #:use-module (gnu packages guile)
   #:use-module (gnu packages java)
   #:use-module (gnu packages maven)
   #:use-module (guix gexp)
@@ -35,7 +33,8 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system ant)
   #:use-module (guix build-system copy)
-  #:use-module (guix build-system clojure))
+  #:use-module (guix build-system clojure)
+  #:use-module (ice-9 match))
 
 (define-public clojure-spec-alpha
   (package
@@ -406,30 +405,21 @@ designs.")
                    (substitute* "clj"
                      (("BINDIR") (string-append #$output "/bin")))
                    (substitute* "clojure"
-                     (("PREFIX") (string-append #$output "/lib/clojure")))
-                   (let ((coreutils #$(this-package-input "coreutils-minimal"))
-                         (jre #$(this-package-input "openjdk")))
-                     (wrap-script "clojure"
-                       `("JAVA_HOME" = (,jre))
-                       `("PATH" = (,(string-append coreutils "/bin")))))))
+                     (("PREFIX") (string-append #$output "/lib/clojure")))))
                (add-after 'fix-paths 'copy-tools-deps-alpha-jar
                  (lambda* (#:key inputs #:allow-other-keys)
                    (substitute* "clojure"
                      (("\\$install_dir/libexec/clojure-tools-\\$version\\.jar")
-                      (let* ((selected (assq-remove! inputs "openjdk"))
-                             (input-dirs (map cdr selected))
+                      (let* ((input-dirs (map cdr inputs))
                              (jars (apply append
                                           (map (lambda (dir)
                                                  (find-files dir "\\.jar$"))
                                                input-dirs))))
                         (string-join jars ":")))))))))
-    (inputs (list coreutils-minimal
-                  clojure
+    (inputs (list clojure
                   clojure-tools-deps
-                  guile-3.0/pinned
                   java-commons-logging-minimal
-                  java-slf4j-nop
-                  openjdk))
+                  java-slf4j-nop))
     (home-page "https://clojure.org/releases/tools")
     (synopsis "CLI tools for the Clojure programming language")
     (description "This package provides the @command{clojure} and
