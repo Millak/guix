@@ -545,7 +545,7 @@ suitable as a default locate on your system.")
                           "https://web.archive.org/web/20160730145202/"
                           "http://swish-e.org/distribution/"
                           "swish-e-" version ".tar.gz")
-                         (string-append "http://http.debian.net/debian/pool/"
+                         (string-append "http://deb.debian.org/debian/pool/"
                                         "main/s/swish-e/swish-e_" version
                                         ".orig.tar.gz")))
               (file-name (string-append name "-" version ".tar.gz"))
