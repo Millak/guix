@@ -228,6 +228,55 @@ this point).  In chinese folk religions,
 and gates.")
     (license license:gpl3)))
 
+(define-public go-0xacab-org-leap-menshen-agent
+  (package
+    (name "go-0xacab-org-leap-menshen-agent")
+    (version "0.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://0xacab.org/leap/menshen-agent.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0575b7pa6wnicdy5mc4y88zgihdv4bx5h9ygzyf98lkl7ihvsayr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "0xacab.org/leap/menshen-agent"
+      #:embed-files
+      #~(list ".*\\.png" ".*\\.json" ".*\\.css" ".*\\.html"
+              ".*\\.js" ".*\\.map")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-symnlink-to-0xacab-org-leap-menshen
+            ;; XXX: For some reason "src/0xacab.org/leap/menshen" is empty
+            ;; even if the package is present in propagated inputs.
+            (lambda _
+              (symlink (string-append
+                        #$(this-package-input "go-0xacab-org-leap-menshen")
+                        "/src/0xacab.org/leap/menshen")
+                       "src/0xacab.org/leap/menshen")))
+          (add-after 'unpack 'remove-integrtion-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "tests/integration")))))))
+    (native-inputs
+     (list go-github-com-spf13-cobra
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-0xacab-org-leap-menshen
+           go-github-com-go-openapi-runtime
+           go-github-com-go-openapi-strfmt))
+    (home-page "https://0xacab.org/leap/menshen-agent")
+    (synopsis "Menshen agent for host bridge/gateway")
+    (description
+     "@code{menshen-agent} is the agent running on a host (bridge or gateway)
+which communicates with @code{menshen} in order to provide configuration
+information and allow for dynamic registration/inventory.")
+    (license license:gpl3)))
+
 (define-public go-0xacab-org-leap-obfsvpn
   (package
     (name "go-0xacab-org-leap-obfsvpn")
