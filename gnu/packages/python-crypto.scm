@@ -376,13 +376,13 @@ production use.  Include this module and use its backends at your own risk.")
 (define-public python-blake3
   (package
     (name "python-blake3")
-    (version "0.3.1")
+    (version "1.0.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "blake3" version))
        (sha256
-        (base32 "1p6z6jfk8n1lshz4cp6dgz2i8zmqdxwr8d9m86ypp3m1kp70k5xk"))))
+        (base32 "1fk5n55cl2iigrjdwwsm6h8q6in1l19cihh44s0kbh57ypqcfg2i"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -402,6 +402,7 @@ production use.  Include this module and use its backends at your own risk.")
      (list python-wrapper
            maturin))
     (inputs (cargo-inputs 'python-blake3))
+    (propagated-inputs (list python-typing-extensions))
     (home-page "https://github.com/oconnor663/blake3-py")
     (synopsis "Python bindings for the Rust blake3 crate")
     (description "This package provides Python bindings for the Rust crate of

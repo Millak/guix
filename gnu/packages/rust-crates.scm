@@ -1827,6 +1827,10 @@
   (crate-source "blake3" "1.8.2"
                 "1854x65zmjh9w9cfhyyyg0wmm2k5d87l13l4m7y40ajbkslam21q"))
 
+(define rust-blake3-1.8.3
+  (crate-source "blake3" "1.8.3"
+                "0b9ay320z90xs5hyk48l1v3208yyvdy3gs3nnlb7xyxkaxyyys14"))
+
 (define rust-blakeout-0.3.0
   (crate-source "blakeout" "0.3.0"
                 "0dxcg3sjxd82mn7mq4ammrfpidqf9zsagvhfzgblsi8g4b2fgvw1"))
@@ -3926,6 +3930,10 @@
 (define rust-constant-time-eq-0.3.1
   (crate-source "constant_time_eq" "0.3.1"
                 "19nwwczii762pwlsm7bpizgjg8hkg1kqi32b2g4rglijklsbhx3w"))
+
+(define rust-constant-time-eq-0.4.2
+  (crate-source "constant_time_eq" "0.4.2"
+                "16zamq60dq80k3rqlzh9j9cpjhishmh924lnwbplgrnmkkvfylix"))
 
 (define rust-container-of-0.5.1
   (crate-source "container_of" "0.5.1"
@@ -49539,47 +49547,41 @@
                                          rust-zerovec-derive-0.10.3))
                      (python-blake3 =>
                                     (list rust-arrayref-0.3.9
-                                     rust-arrayvec-0.7.6
-                                     rust-autocfg-1.4.0
-                                     rust-bitflags-1.3.2
-                                     rust-blake3-1.8.1
-                                     rust-cc-1.2.19
-                                     rust-cfg-if-1.0.0
-                                     rust-constant-time-eq-0.3.1
-                                     rust-crossbeam-deque-0.8.6
-                                     rust-crossbeam-epoch-0.9.18
-                                     rust-crossbeam-utils-0.8.21
-                                     rust-either-1.15.0
-                                     rust-hex-0.4.3
-                                     rust-indoc-0.3.6
-                                     rust-indoc-impl-0.3.6
-                                     rust-instant-0.1.13
-                                     rust-libc-0.2.172
-                                     rust-lock-api-0.4.12
-                                     rust-once-cell-1.21.3
-                                     rust-parking-lot-0.11.2
-                                     rust-parking-lot-core-0.8.6
-                                     rust-paste-0.1.18
-                                     rust-paste-impl-0.1.18
-                                     rust-proc-macro-hack-0.5.20+deprecated
-                                     rust-proc-macro2-1.0.95
-                                     rust-pyo3-0.15.2
-                                     rust-pyo3-build-config-0.15.2
-                                     rust-pyo3-macros-0.15.2
-                                     rust-pyo3-macros-backend-0.15.2
-                                     rust-quote-1.0.40
-                                     rust-rayon-1.10.0
-                                     rust-rayon-core-1.12.1
-                                     rust-redox-syscall-0.2.16
-                                     rust-scopeguard-1.2.0
-                                     rust-shlex-1.3.0
-                                     rust-smallvec-1.15.0
-                                     rust-syn-1.0.109
-                                     rust-unicode-ident-1.0.18
-                                     rust-unindent-0.1.11
-                                     rust-winapi-0.3.9
-                                     rust-winapi-i686-pc-windows-gnu-0.4.0
-                                     rust-winapi-x86-64-pc-windows-gnu-0.4.0))
+                                          rust-arrayvec-0.7.6
+                                          rust-autocfg-1.5.0
+                                          rust-blake3-1.8.3
+                                          rust-cc-1.2.54
+                                          rust-cfg-if-1.0.4
+                                          rust-constant-time-eq-0.4.2
+                                          rust-cpufeatures-0.2.17
+                                          rust-crossbeam-deque-0.8.6
+                                          rust-crossbeam-epoch-0.9.18
+                                          rust-crossbeam-utils-0.8.21
+                                          rust-either-1.15.0
+                                          rust-find-msvc-tools-0.1.8
+                                          rust-heck-0.5.0
+                                          rust-hex-0.4.3
+                                          rust-indoc-2.0.7
+                                          rust-libc-0.2.180
+                                          rust-memmap2-0.9.9
+                                          rust-memoffset-0.9.1
+                                          rust-once-cell-1.21.3
+                                          rust-portable-atomic-1.13.1
+                                          rust-proc-macro2-1.0.106
+                                          rust-pyo3-0.26.0
+                                          rust-pyo3-build-config-0.26.0
+                                          rust-pyo3-ffi-0.26.0
+                                          rust-pyo3-macros-0.26.0
+                                          rust-pyo3-macros-backend-0.26.0
+                                          rust-quote-1.0.44
+                                          rust-rayon-1.11.0
+                                          rust-rayon-core-1.13.0
+                                          rust-rustversion-1.0.22
+                                          rust-shlex-1.3.0
+                                          rust-syn-2.0.114
+                                          rust-target-lexicon-0.13.4
+                                          rust-unicode-ident-1.0.22
+                                          rust-unindent-0.2.4))
                      (python-clarabel =>
                                       (list rust-amd-0.2.2
                                        rust-autocfg-1.4.0
