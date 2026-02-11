@@ -12054,16 +12054,16 @@ it like any library.  The quickest way to get started is to look at the
   (package
     (inherit go-github-com-pion-turn-v3)
     (name "go-github-com-pion-turn-v4")
-    (version "4.1.1")
+    (version "4.1.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pion/turn/")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pion/turn/")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ajkd63nkif2izblf8bnvs15126bdm4y8qymy2m8vwdbl70swsfv"))))
+        (base32 "1fm7k7bjbsy421yblslnh2hmwvdmml4xawyjsaj7h9grx2h0z9p1"))))
     (arguments
      (substitute-keyword-arguments (package-arguments
                                     go-github-com-pion-turn-v3)
@@ -12072,7 +12072,7 @@ it like any library.  The quickest way to get started is to look at the
      (list go-github-com-pion-logging
            go-github-com-pion-randutil
            go-github-com-pion-stun-v3
-           go-github-com-pion-transport-v3
+           go-github-com-pion-transport-v4
            go-golang-org-x-sys))))
 
 (define-public go-github-com-pion-webrtc-v3
