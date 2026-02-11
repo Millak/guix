@@ -138,6 +138,96 @@ redirect-based (i.e.  not directly reverse proxied) services. It's an
 alternative fork of https://git.autistici.org/ale/lb.")
     (license license:gpl3+)))
 
+(define-public go-0xacab-org-leap-menshen
+  (package
+    (name "go-0xacab-org-leap-menshen")
+    (version "1.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://0xacab.org/leap/menshen.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11lvz78pgldhyysglkxgvcgvhjgjqbfb466ykq95mhdpc3xi8nmy"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; From go.mod file: replace git.autistici.org/ale/lb =>
+            ;; 0xacab.org/leap/lb v0.0.0-20210225193050-570f848edccf
+            (substitute* (find-files "." "\\.go$")
+              (("git.autistici.org/ale/lb")
+               "0xacab.org/leap/lb"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "0xacab.org/leap/menshen"
+      #:embed-files
+      #~(list ".*\\.png" ".*\\.json" ".*\\.css" ".*\\.html"
+              ".*\\.js" ".*\\.map")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-cmd-invitectl
+            ;; Remove the part which introduce the cycle with
+            ;; "0xacab.org/leap/bitmask-core", it's a stand alone program
+            ;; which may be build separately not as part of this package.
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "cmd/invitectl"))))
+          (add-after 'unpack 'fix-symnlink-to-go-0xacab-org-leap-lb
+            ;; XXX: For some reason "src/0xacab.org/leap/lb" is empty even if
+            ;; the package is present in propagated inputs.
+            (lambda _
+              (symlink (string-append
+                        #$(this-package-input "go-0xacab-org-leap-lb")
+                        "/src/0xacab.org/leap/lb")
+                       "src/0xacab.org/leap/lb"))))))
+    (native-inputs
+     (list go-github-com-jmcvetta-randutil
+           go-github-com-magiconair-properties
+           go-github-com-mroth-weightedrand-v2
+           go-github-com-stretchr-testify
+           go-github-com-tj-assert))
+    (propagated-inputs
+     (list ;; go-0xacab-org-leap-bitmask-core ; cycles
+           go-0xacab-org-leap-lb
+           go-github-com-emirpasic-gods-v2
+           go-github-com-go-openapi-errors
+           go-github-com-go-openapi-runtime
+           go-github-com-go-openapi-strfmt
+           go-github-com-go-openapi-swag
+           go-github-com-go-openapi-validate
+           go-github-com-jmoiron-sqlx
+           go-github-com-kellydunn-golang-geo
+           go-github-com-labstack-echo-v4
+           go-github-com-mattn-go-sqlite3
+           go-github-com-prometheus-client-golang
+           go-github-com-rs-zerolog
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-spf13-viper
+           go-github-com-swaggo-echo-swagger
+           go-github-com-swaggo-swag
+           go-github-com-tidwall-cities
+           go-golang-org-x-crypto
+           go-golang-org-x-exp
+           go-gonum-org-v1-gonum
+           go-google-golang-org-grpc
+           go-gopkg-in-yaml-v2))
+    (home-page "https://0xacab.org/leap/menshen")
+    (synopsis "Gateway & bridge distribution service for LEAP VPN")
+    (description
+     "@code{menshen} is a resource distributor for LEAP VPN.  Here, resource
+means information for accessing either gateways, bridges, or a combination of
+the two.  This information includes not only endpoint discovery but also
+crendentials (although the credential distribution is not fully integrated at
+this point).  In chinese folk religions,
+@url{https://en.wikipedia.org/wiki/Menshen, menshen} are guardians of doors
+and gates.")
+    (license license:gpl3)))
+
 (define-public go-0xacab-org-leap-obfsvpn
   (package
     (name "go-0xacab-org-leap-obfsvpn")
@@ -18344,6 +18434,24 @@ go-github-com-tdewolff-minify-v2 source.")))
      "TLSRouter is a TLS proxy that routes connections to backends based on
 the TLS @acronym{SNI, Server Name Indication} of the TLS handshake.  It
 carries no encryption keys and cannot decode the traffic that it proxies.")))
+
+(define-public menshen
+  (package/inherit go-0xacab-org-leap-menshen
+    (name "menshen")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-0xacab-org-leap-menshen)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:import-path _) "0xacab.org/leap/menshen/cmd/menshen")
+       ((#:unpack-path _ "") "0xacab.org/leap/menshen")
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'remove-cmd-invitectl)))))
+    (native-inputs (package-propagated-inputs go-0xacab-org-leap-menshen))
+    (propagated-inputs '())
+    (inputs '())))
 
 (define-public protoc-gen-go-drpc
   (package/inherit go-storj-io-drpc
