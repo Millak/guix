@@ -15134,6 +15134,37 @@ according to a format string.  It is optimized for scenarios where the same
 pattern is called repeatedly.")
     (license license:expat)))
 
+(define-public go-github-com-letsencrypt-borp
+  (package
+    (name "go-github-com-letsencrypt-borp")
+    (version "0.0.0-20251118150929-89c6927051ae")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/letsencrypt/borp")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kfwddc9ikxf82ysxsz9vv4972zw465w8rdhjwd1qzwgli489qw8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/letsencrypt/borp"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-sql-driver-mysql
+           go-github-com-mattn-go-sqlite3
+           go-github-com-poy-onpar))
+    (home-page "https://github.com/letsencrypt/borp")
+    (synopsis "Boulder's Object Relational Persistence")
+    (description
+     "Package @code{borp} provides a simple way to marshal Go structs to and
+from SQL databases.  It uses the @code{database/sql} package, and should work
+with any compliant @code{database/sql} driver.")
+    (license license:expat)))
+
 (define-public go-github-com-lib-pq
   (package
     (name "go-github-com-lib-pq")
