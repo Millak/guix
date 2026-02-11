@@ -637,8 +637,8 @@ The engine is designed to do true mixed-mode simulation.")
   ;; The last release is more than 2 years old, and there are improvements in
   ;; the master branch, such as GTK 4 support: pick the latest commit that
   ;; passes their CI.
-  (let ((commit "bb978d9d667d569b9153ffa34007e300302907dc")
-        (revision "0"))
+  (let ((commit "36638f96434d189a1a633ee3a32158ad8bc7cd64")
+        (revision "1"))
     (package
       (name "gtkwave")
       ;; The version string can be found in meson.build.
@@ -651,7 +651,7 @@ The engine is designed to do true mixed-mode simulation.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1nv27cpz5937cb6bkhpw8w0ji6hm9xr8f0znvfwzfl1fwwypf23y"))))
+          (base32 "0yrgdw9f1wb5bzxmijb58l0p5dxpihzq3zk228hjdm625x0swp6g"))))
       (build-system meson-build-system)
       (arguments (list #:glib-or-gtk? #t))
       (native-inputs (list desktop-file-utils
@@ -661,7 +661,7 @@ The engine is designed to do true mixed-mode simulation.")
                            gperf
                            `(,gtk "bin")
                            pkg-config))
-      (inputs (list gtk gtk+ libfst))
+      (inputs (list gtk gtk+ json-glib libfst))
       (synopsis "Waveform viewer for FPGA simulator trace files")
       (description "This package is a waveform viewer for @acronym{FST, FPGA
 Simulator Trace} files.")
