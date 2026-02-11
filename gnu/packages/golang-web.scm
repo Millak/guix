@@ -13874,6 +13874,34 @@ StatHat} account.")
 REST APIs.")
     (license license:expat)))
 
+(define-public go-github-com-swaggo-files-v2
+  (package
+    (name "go-github-com-swaggo-files-v2")
+    (version "2.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/swaggo/files")
+             (commit (string-append "v" version))
+             ;; XXX: Submodule which pulls
+             ;; <https://github.com/swagger-api/swagger-ui>, try to package
+             ;; some of it's portion.
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0p727hiqvydf0bidhr6bbdz14wpm4nxlbi2bw4dz51c9hgdsn1v2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/swaggo/files/v2"))
+    (home-page "https://github.com/swaggo/files")
+    (synopsis "Static files for Swaggo API builder")
+    (description
+     "This package provides a collection of static files to build API
+specifications with Swaggo.")
+    (license license:expat)))
+
 (define-public go-github-com-swaggo-swag
   (package
     (name "go-github-com-swaggo-swag")
