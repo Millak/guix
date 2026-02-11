@@ -13242,6 +13242,33 @@ for Go.  The project is meant as alternative to
 reflection.")
     (license license:expat)))
 
+(define-public go-github-com-jmcvetta-randutil
+  (package
+    (name "go-github-com-jmcvetta-randutil")
+    (version "0.0.0-20150817122601-2bb1b664bcff")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jmcvetta/randutil")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kjj4c8vnzqhld0aljbfczmsp49k7vqhfn0n9768hkvyg885jx74"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jmcvetta/randutil"
+      #:test-flags #~(list "-vet=off")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/jmcvetta/randutil")
+    (synopsis "Random number/string utilities for Golang")
+    (description
+     "This package provides various convenience functions for dealing with
+random numbers and strings.")
+    (license license:gpl3)))
+
 (define-public go-github-com-jmhodges-levigo
   (package
     (name "go-github-com-jmhodges-levigo")
