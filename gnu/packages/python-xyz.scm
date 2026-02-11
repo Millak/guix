@@ -23474,7 +23474,7 @@ Mustache templating language renderer.")
 (define-public python-dulwich
   (package
     (name "python-dulwich")
-    (version "0.21.7")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
@@ -23482,39 +23482,40 @@ Mustache templating language renderer.")
                                  "dulwich-" version ".tar.gz")
                   (pypi-uri "dulwich" version)))
        (sha256
-        (base32
-         "0s79c3g19m052jbxm66amxv5v60ijx5px4hjmk1q19ff6dlcdsd9"))))
+        (base32 "1g09iwy5hvjgd8qmkc5cny4qqcng2734ll9mxjzj4psj6m3i01rx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       ;; DULWICH_SWIFT_CFG is not set.
-      '(list "--ignore=dulwich/contrib/test_swift_smoke.py"
-             "-k"
-             ;; 'HTTPClient' object has no attribute 'get_base_url'
-             "not test_init_connector")
+      #~(list "--ignore=tests/contrib/test_swift.py"
+              "--ignore=tests/contrib/test_swift_smoke.py")
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* '("dulwich/tests/test_repository.py"
-                            "dulwich/tests/test_porcelain.py"
-                            "dulwich/tests/test_hooks.py")
-               (("/bin/sh") (search-input-file inputs "/bin/sh")))))
-         (add-before 'check 'pre-check
-           (lambda _ (setenv "PYTHONHASHSEED" "random"))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("tests/test_hooks.py"
+                             "tests/porcelain/test_filters.py"
+                             "tests/test_repository.py"
+                             "tests/test_worktree.py")
+                (("/bin/sh")
+                 (search-input-file inputs "/bin/sh")))))
+          (add-before 'check 'pre-check
+            (lambda _ (setenv "PYTHONHASHSEED" "random"))))))
     (propagated-inputs
      (list python-fastimport python-urllib3))
     (native-inputs
      (list gnupg
            git-minimal/pinned
+           openssh-sans-x
            python-geventhttpclient
+           python-merge3
            python-mypy
            python-paramiko
            python-pytest
            python-requests
            python-setuptools
-           python-wheel))
+           python-setuptools-rust))
     (home-page "https://www.dulwich.io/")
     (synopsis "Git implementation in Python")
     (description "Dulwich is an implementation of the Git file formats and
