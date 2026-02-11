@@ -15165,6 +15165,35 @@ from SQL databases.  It uses the @code{database/sql} package, and should work
 with any compliant @code{database/sql} driver.")
     (license license:expat)))
 
+(define-public go-github-com-letsencrypt-validator-v10
+  (package
+    (name "go-github-com-letsencrypt-validator-v10")
+    (version "10.0.0-20230304002924-2ed8f7d619ac")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/letsencrypt/validator")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sjwh635g8mf7s21f56nx99v1hica568j56b2r4bmfnnkm2ncxs2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/letsencrypt/validator/v10"))
+    (propagated-inputs
+     (list go-github-com-go-playground-assert-v2
+           go-github-com-go-playground-locales
+           go-github-com-go-playground-universal-translator))
+    (home-page "https://github.com/letsencrypt/validator")
+    (synopsis "Go Struct and Field validation")
+    (description
+     "Package validator implements value validations for structs and
+individual fields based on tags.  It's an alternative fork of
+@url{https://github.com/go-playground/validator}.")
+    (license license:expat)))
+
 (define-public go-github-com-lib-pq
   (package
     (name "go-github-com-lib-pq")
