@@ -1086,13 +1086,7 @@ interoperability offered by HDF5.")
       ;; TODO: Test suite requires networking for most of the tests or special
       ;; care, find a way to enable some unit tests, see:
       ;; <.github/workflows/tests.yaml>.
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("--cov-config.*") "")))))))
+      #:tests? #f))
     (native-inputs
      (list python-setuptools
            python-setuptools-scm-next))
