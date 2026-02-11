@@ -5054,15 +5054,7 @@ top of the PyQt bindings for Qt.  PyQt-builder is used to build PyQt itself.")
               ;; ModuleNotFoundError: No module named 'PyQt5.QtTextToSpeech'
               "-k" (string-append "not test_qttexttospeech"
                                   ;; Fatal Python error: Segmentation fault
-                                  " and not test_qtsql_members_aliases"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              ;; Drop test coverage requirements.
-              (substitute* "pytest.ini"
-                (("--cov-report=term-missing") "")
-                (("--cov-report=xml") "")))))))
+                                  " and not test_qtsql_members_aliases"))))
     ;; XXX: Do not include, even supported: Qt5, PySide2 PySide6, only test
     ;; against Qt6 to reduce closure size..
     (native-inputs
