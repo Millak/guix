@@ -17761,6 +17761,34 @@ command line flags, config files, and default struct values.")
 @url{https://github.com/judwhite/go-svc/raw/master/svc/svc_windows_test.go,here}.")
       (license license:expat))))
 
+(define-public go-github-com-mroth-weightedrand-v2
+  (package
+    (name "go-github-com-mroth-weightedrand-v2")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mroth/weightedrand")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g3d6lkdzfy041rd7v8pymjg03kdnnmcygag24x1ryx9lali5sxn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mroth/weightedrand/v2"))
+    (native-inputs
+     (list go-github-com-jmcvetta-randutil))
+    (home-page "https://github.com/mroth/weightedrand")
+    (synopsis "Weighted random selection for Go")
+    (description
+     "Package weightedrand contains a performant data structure and algorithm
+used to randomly select an element from some kind of list, where the chances
+of each element to be selected not being equal, but defined by relative
+\"weights\" (or probabilities).  This is called weighted random selection.")
+    (license license:expat)))
+
 (define-public go-github-com-mrunalp-fileutils
   (package
     (name "go-github-com-mrunalp-fileutils")
