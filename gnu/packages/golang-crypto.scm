@@ -1684,6 +1684,32 @@ cryptographic hash as specified in
 hash.")
     (license license:expat)))
 
+(define-public go-github-com-letsencrypt-pkcs11key-v4
+  (package
+    (name "go-github-com-letsencrypt-pkcs11key-v4")
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/letsencrypt/pkcs11key")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ynmw2zhsr1m880clc2hgmc53cx6b69wdcjddw9pz0sysddnpb81"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;they require local cert setup, see test.sh.
+      #:import-path "github.com/letsencrypt/pkcs11key/v4"))
+    (propagated-inputs
+     (list go-github-com-miekg-pkcs11))
+    (home-page "https://github.com/letsencrypt/pkcs11key")
+    (synopsis "Interface to PKCS#11 devices for Golang")
+    (description
+     "This package implements @code{crypto.Signer} for PKCS #11 private keys.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-libp2p-go-libp2p-crypto
   (let ((commit "7240b40a3ddc47c4d17c15baabcbe45e5219171b")
         (revision "0"))
