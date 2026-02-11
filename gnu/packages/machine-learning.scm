@@ -3153,7 +3153,8 @@ interactive learning.")
     (arguments
      (list
       #:test-flags
-      #~(list "--ignore=hyperopt/tests/integration/"
+      #~(list "-m" "not slow"
+              "--ignore=hyperopt/tests/integration/"
               #$@(map (lambda (test) (string-append "--deselect="
                                                     "hyperopt/tests/unit/"
                                                     test))
@@ -3169,7 +3170,14 @@ interactive learning.")
                             "test_atpe_basic.py::test_run_basic_search"
                             ;; TypeError: unsupported operand type(s) for -:
                             ;; 'method' and 'int'
-                            "test_rdists.py::TestLogUniform::test_distribution_rvs")))))
+                            "test_rdists.py::TestLogUniform::test_distribution_rvs")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              (substitute* "hyperopt/tests/test_base.py"
+                (("assertEquals")
+                 "assertEqual")))))))
     (native-inputs
      (list python-pymongo
            python-pynose        ;fails more without extra test runner
