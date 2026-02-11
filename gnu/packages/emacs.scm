@@ -159,7 +159,6 @@
                                        "emacs-native-comp-driver-options.patch"
                                        "emacs-native-comp-fix-filenames.patch"
                                        "emacs-native-comp-pin-packages.patch"
-                                       "emacs-pgtk-super-key-fix.patch"
                                        "emacs-zoom-image-test-fix.patch"))
               (modules '((guix build utils)))
               (snippet
@@ -687,7 +686,6 @@ editor (with wide ints)" )
                         "emacs-native-comp-driver-options.patch"
                         "emacs-next-native-comp-fix-filenames.patch"
                         "emacs-native-comp-pin-packages.patch"
-                        "emacs-pgtk-super-key-fix.patch"
                         ;; XXX This commit should already be on 31.0 but
                         ;; without this emacs-next will fail a test.
                         "emacs-zoom-image-test-fix.patch")))))))
