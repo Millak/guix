@@ -33582,7 +33582,7 @@
                                  rust-parking-lot-core-0.9.12
                                  rust-paste-1.0.15
                                  rust-pcre2-0.2.9.85b7afb
-                                 rust-pcre2-sys-0.2.9
+                                 rust-pcre2-sys-0.2.9.85b7afb
                                  rust-phf-0.11.3
                                  rust-phf-0.13.1
                                  rust-phf-codegen-0.11.3
