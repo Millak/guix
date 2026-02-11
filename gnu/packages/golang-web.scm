@@ -11928,20 +11928,24 @@ throughout the @url{https://github.com/pion, Pion} modules.")
   (package
     (inherit go-github-com-pion-transport-v2)
     (name "go-github-com-pion-transport-v3")
-    (version "3.0.7")
+    (version "3.1.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pion/transport")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pion/transport")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05qv7packvz18dfw5bc616f7hy9ad9jz10yxckg29g60y43k5nkf"))))
+        (base32 "0h9da86rpws4g9vclmb938iabcmxdxwkdaakd7x77gy719n78ymk"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments
-                                    go-github-com-pion-transport-v2)
-       ((#:import-path _) "github.com/pion/transport/v3")))))
+     (list
+      #:import-path "github.com/pion/transport/v3"))
+    (propagated-inputs
+     (list go-github-com-pion-logging
+           go-github-com-wlynxg-anet
+           go-golang-org-x-net
+           go-golang-org-x-sys))))
 
 (define-public go-github-com-pion-turn-v2
   (package
