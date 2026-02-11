@@ -8168,6 +8168,25 @@ specified in @url{https://datatracker.ietf.org/doc/html/rfc6350, RFC 6350}.")
 algorithms in Go.")
     (license license:bsd-2)))
 
+(define-public go-github-com-emirpasic-gods-v2
+  (package
+    (inherit go-github-com-emirpasic-gods)
+    (name "go-github-com-emirpasic-gods-v2")
+    (version "2.0.0-alpha")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emirpasic/gods")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qhjxv9rc1jjq57w84zz51lpx6baw3ywzj9ls491y1gkg5ycc765"))))
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/emirpasic/gods/v2"))))
+
 (define-public go-github-com-envoyproxy-protoc-gen-validate
   (package
     (name "go-github-com-envoyproxy-protoc-gen-validate")
