@@ -15014,7 +15014,7 @@ libtime-parsedate-perl_2015.103-2_copyright"))))
      (origin
        (method url-fetch)
        (uri (string-append
-             "http://http.debian.net/debian/pool/main/libt/"
+             "http://deb.debian.org/debian/pool/main/libt/"
              "libtime-period-perl/libtime-period-perl_"
              version ".orig.tar.gz"))
        (sha256
