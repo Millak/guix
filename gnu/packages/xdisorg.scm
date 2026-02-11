@@ -3011,7 +3011,7 @@ windows using Python.  The library relies on the @command{wmctrl} to do so.")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "http://http.debian.net/debian/pool/main/p/python-xdo/"
+                    "http://deb.debian.org/debian/pool/main/p/python-xdo/"
                     "python-xdo_" version ".orig.tar.gz"))
               (sha256
                (base32
