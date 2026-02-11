@@ -13874,6 +13874,40 @@ StatHat} account.")
 REST APIs.")
     (license license:expat)))
 
+(define-public go-github-com-swaggo-echo-swagger
+  (package
+    (name "go-github-com-swaggo-echo-swagger")
+    (version "1.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/swaggo/echo-swagger")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bh1rmf16f5f6qhz8308v7kz5dw04sjwvisbbwjd7hkr54hghkvl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/swaggo/echo-swagger"
+      #:embed-files
+      #~(list ".*\\.png" ".*\\.json" ".*\\.css" ".*\\.html"
+              ".*\\.js" ".*\\.map")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-ghodss-yaml
+           go-github-com-labstack-echo-v4
+           go-github-com-swaggo-files-v2
+           go-github-com-swaggo-swag))
+    (home-page "https://github.com/swaggo/echo-swagger")
+    (synopsis "Echo middleware to generate RESTful API documentation with Swagger")
+    (description
+     "This package provides echo (web framework) middleware to automatically
+generate RESTful API documentation with Swagger 2.0.")
+    (license license:expat)))
+
 (define-public go-github-com-swaggo-files-v2
   (package
     (name "go-github-com-swaggo-files-v2")
