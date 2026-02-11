@@ -3542,7 +3542,7 @@ together.")
        (method url-fetch)
        ;; Since the official link is dead,
        ;; we download the tarball from Debian or Internet Archive.
-       (uri (list (string-append "http://http.debian.net"
+       (uri (list (string-append "http://deb.debian.org"
                                  "/debian/pool/main/l/ladspa-sdk/ladspa-sdk_"
                                  version ".orig.tar.gz")
                   (string-append "https://web.archive.org/web/20140717172251/"
