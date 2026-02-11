@@ -375,6 +375,36 @@ API service accounts for Go.")
 transient error handling.")
     (license license:bsd-2)))
 
+(define-public go-github-com-eggsampler-acme-v3
+  (package
+    (name "go-github-com-eggsampler-acme-v3")
+    (version "3.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/eggsampler/acme")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ga5l4x1p16d2i4135gw97p0f3id1ip3gfg2ny0fp0p0l38lnii5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;network access is required
+      #:import-path "github.com/eggsampler/acme/v3"))
+    (home-page "https://github.com/eggsampler/acme")
+    (synopsis "Go client library implementation for ACME v2 (RFC8555)")
+    (description
+     "@code{eggsampler/acme} is a Go client library implementation for
+@url{https://tools.ietf.org/html/rfc8555, RFC8555} (previously ACME v2).  This
+library can be used with the @url{https://letsencrypt.org/, Let's Encrypt}
+Certificate Authority (CA), but also other ACME compliant CA's such as
+@url{https://zerossl.com/, ZeroSSL}, @url{https://pki.goog/, Google Trust
+Services} and others listed at
+@url{https://acmeclients.com/certificate-authorities/}.")
+    (license license:expat)))
+
 (define-public go-github-com-foxcpp-go-mockdns
   (package
     (name "go-github-com-foxcpp-go-mockdns")
