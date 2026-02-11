@@ -27775,6 +27775,40 @@ The yaml package supports most of YAML 1.2, but preserves some behavior from
 1.1 for backwards compatibility.")
     (license license:asl2.0)))
 
+(define-public go-gorm-io-gorm
+  (package
+    (name "go-gorm-io-gorm")
+    (version "1.31.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-gorm/gorm")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b9g159qpwwickbwrjgpxc17wygbfmn5pg82xfm62spxh76gywfm"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - gorm.io/gorm/tests
+            (delete-file-recursively "tests")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gorm.io/gorm"))
+    (propagated-inputs
+     (list go-github-com-jinzhu-inflection
+           go-github-com-jinzhu-now
+           go-golang-org-x-text))
+    (home-page "https://gorm.io/gorm")
+    (synopsis "ORM library for Golang")
+    (description
+     "This package provides an ORM library for Golang.")
+    (license license:expat)))
+
 ;; XXX: It's a source only variant to include in other packages as input (e.g
 ;; to build NNCP and remove vendor) dependency for Golang.  Full build depends
 ;; on Bazel <https://bazel.build/>.
