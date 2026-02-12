@@ -24,6 +24,8 @@
 
 (define-module (gnu packages clojure)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages java)
   #:use-module (gnu packages maven)
   #:use-module (guix gexp)
@@ -33,8 +35,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system ant)
   #:use-module (guix build-system copy)
-  #:use-module (guix build-system clojure)
-  #:use-module (ice-9 match))
+  #:use-module (guix build-system clojure))
 
 (define-public clojure-spec-alpha
   (package
@@ -410,16 +411,29 @@ designs.")
                  (lambda* (#:key inputs #:allow-other-keys)
                    (substitute* "clojure"
                      (("\\$install_dir/libexec/clojure-tools-\\$version\\.jar")
-                      (let* ((input-dirs (map cdr inputs))
+                      (let* ((selected (assq-remove! inputs "openjdk"))
+                             (input-dirs (map cdr selected))
                              (jars (apply append
                                           (map (lambda (dir)
                                                  (find-files dir "\\.jar$"))
                                                input-dirs))))
-                        (string-join jars ":")))))))))
+                        (string-join jars ":"))))))
+               (add-after 'install 'wrap-clojure
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((coreutils (assoc-ref inputs "coreutils-minimal"))
+                         (jdk (assoc-ref inputs "openjdk")))
+                     (wrap-script (string-append #$output "/bin/clojure")
+                       `("JAVA_HOME" = (,jdk))
+                       `("PATH" = (,(string-append coreutils "/bin"))))))))))
     (inputs (list clojure
                   clojure-tools-deps
+                  coreutils-minimal
+                  guile-3.0/pinned
                   java-commons-logging-minimal
-                  java-slf4j-nop))
+                  java-slf4j-nop
+                  ;; Depend on JDK instead of JRE since common developer tools
+                  ;; such as ‘cider-nrepl’ require it.
+                  (list openjdk "jdk")))
     (home-page "https://clojure.org/releases/tools")
     (synopsis "CLI tools for the Clojure programming language")
     (description "This package provides the @command{clojure} and
