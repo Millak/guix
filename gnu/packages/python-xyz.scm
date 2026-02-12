@@ -9706,43 +9706,6 @@ cases based on a data file that contains the test data.  DataDriver supports
 data files in the CSV, XLS or XLSX formats.")
     (license license:asl2.0)))
 
-(define-public python-robotframework-lint
-  ;; There is no properly tagged release; the commit below seems to correspond
-  ;; to the 0.9 stable release available from PyPI.  The tests are not
-  ;; included in the PyPI archive, so we fetch the sources from the upstream
-  ;; Git repo.
-  (let ((commit "b0619ac58a8b1be125f9c98856a664594614570f")
-        (revision "0"))
-    (package
-      (name "python-robotframework-lint")
-      (version (git-version "1.1"      ;version taken from 'rflint/version.py'
-                            revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/boakley/robotframework-lint")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "180npmvzqync25b2scs878gv8q4y17dsinxyjcc10bw22msfap6b"))))
-      (build-system python-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (replace 'check
-             (lambda _
-               (invoke "python" "-m" "robot" "-A"
-                       "tests/conf/default.args" "tests"))))))
-      (propagated-inputs
-       (list python-robotframework))
-      (home-page "https://github.com/boakley/robotframework-lint/")
-      (synopsis "Static analysis tool (linter) for Robot Framework")
-      (description "This package provides the @code{rflint} command-line
-utility, a static analysis tool (linter) for Robot Framework source files.")
-      (license license:asl2.0))))
-
 (define-public python-robotframework-pabot
   (package
     (name "python-robotframework-pabot")
