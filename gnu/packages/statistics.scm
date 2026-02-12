@@ -681,13 +681,8 @@ and a lot more.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-         ;; doctests require NumPy1.
-         (add-after 'unpack 'remove-doctests
-           (lambda _
-             (substitute* "setup.cfg"
-               (("addopts.*") "")))))))
+      ;; doctests require NumPy1.
+      #:test-flags #~(list "-o" "addopts=''")))
     (native-inputs
      (list python-array-api-strict
            python-pytest
