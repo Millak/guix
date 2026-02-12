@@ -15085,6 +15085,35 @@ AWS SDK.")
      (list go-github-com-aws-aws-sdk-go
            go-github-com-jpillora-backoff)))))
 
+(define-public go-github-com-tmc-grpc-websocket-proxy
+  (package
+    (name "go-github-com-tmc-grpc-websocket-proxy")
+    (version "0.0.0-20220101234140-673ab2c3ae75")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tmc/grpc-websocket-proxy")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0299q3njcs6smrac6734xfjslpvwvsc8jyh5fq5849cdlp5a8290"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/tmc/grpc-websocket-proxy"))
+    (propagated-inputs
+     (list go-github-com-gorilla-websocket
+           go-github-com-sirupsen-logrus
+           go-golang-org-x-net))
+    (home-page "https://github.com/tmc/grpc-websocket-proxy")
+    (synopsis "Grpc-gateway websockets proxy")
+    (description
+     "This package implements a websocket proxy for grpc-gateway backed
+services.")
+    (license license:expat)))
+
 (define-public go-github-com-tomasen-realip
   (package
     (name "go-github-com-tomasen-realip")
