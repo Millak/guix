@@ -13743,6 +13743,40 @@ file into a Go http.CookieJar.")
 StatHat} account.")
     (license license:expat)))
 
+(define-public go-github-com-stripe-stripe-go-v81
+  (package
+    (name "go-github-com-stripe-stripe-go-v81")
+    (version "81.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/stripe/stripe-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x6sbpw4c90p30q8hhlqwswx96ap6p50plj4sk2bl79nax647vnn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/stripe/stripe-go/v81"
+      #:test-subdirs
+      ;; XXX: The most of the tests fail with error: Couldn't reach
+      ;; stripe-mock at `localhost:12112`.
+      ;; Running with helper function from Makefile breaks on the same point,
+      ;; keep just a smal portin of tests.
+      #~(list "client" "form" "webhook")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/stripe/stripe-go")
+    (synopsis "Go library for the Stripe API")
+    (description
+     "This package provides the binding for @url{https://stripe.com/, Stripe}
+REST APIs.")
+    (license license:expat)))
+
 (define-public go-github-com-swaggo-swag
   (package
     (name "go-github-com-swaggo-swag")
