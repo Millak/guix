@@ -350,237 +350,6 @@ cloud.google.com/go/auth and golang.org/x/oauth2.")
 API service accounts for Go.")
     (license license:asl2.0)))
 
-(define-public go-github-com-cloudflare-backoff
-  (package
-    (name "go-github-com-cloudflare-backoff")
-    (version "0.0.0-20240920015135-e46b80a3a7d0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/cloudflare/backoff")
-              (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1bzcvsgakjyxgw47r2j6xxbs8v67srwzvvw60biqcqvpsvncbw42"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/cloudflare/backoff"))
-    (home-page "https://github.com/cloudflare/backoff")
-    (synopsis "Backoff strategies for retry logic for Golang")
-    (description
-     "This package provides configurable backoff algorithms (exponential,
- constant, etc.)  for Golang commonly used in retry loops for network calls or
-transient error handling.")
-    (license license:bsd-2)))
-
-(define-public go-github-com-eggsampler-acme-v3
-  (package
-    (name "go-github-com-eggsampler-acme-v3")
-    (version "3.7.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/eggsampler/acme")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1ga5l4x1p16d2i4135gw97p0f3id1ip3gfg2ny0fp0p0l38lnii5"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:tests? #f ;network access is required
-      #:import-path "github.com/eggsampler/acme/v3"))
-    (home-page "https://github.com/eggsampler/acme")
-    (synopsis "Go client library implementation for ACME v2 (RFC8555)")
-    (description
-     "@code{eggsampler/acme} is a Go client library implementation for
-@url{https://tools.ietf.org/html/rfc8555, RFC8555} (previously ACME v2).  This
-library can be used with the @url{https://letsencrypt.org/, Let's Encrypt}
-Certificate Authority (CA), but also other ACME compliant CA's such as
-@url{https://zerossl.com/, ZeroSSL}, @url{https://pki.goog/, Google Trust
-Services} and others listed at
-@url{https://acmeclients.com/certificate-authorities/}.")
-    (license license:expat)))
-
-(define-public go-github-com-foxcpp-go-mockdns
-  (package
-    (name "go-github-com-foxcpp-go-mockdns")
-    (version "1.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/foxcpp/go-mockdns")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1jjln1bjgvh8g6r508vygjfm6h125q8yn4ynvldcd8npg4sj5z5h"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/foxcpp/go-mockdns"
-      ;; FollowCNAMEs test is not deterministic in v1.2.0,
-      ;; commit 1de4693e67 fixes this. Consider removing this skip
-      ;; in a future update.
-      #:test-flags #~(list "-skip" "TestServer_FollowCNAMEs")))
-    (propagated-inputs (list go-github-com-miekg-dns))
-    (home-page "https://github.com/foxcpp/go-mockdns")
-    (synopsis "DNS mock for Golang")
-    (description
-     "This package provides Golang boilerplate for testing code
-involving DNS lookups, including hacks to redirect @code{net.Lookup*}
-calls.")
-    (license license:expat)))
-
-(define-public go-github-com-go-rod-rod
-  (package
-    (name "go-github-com-go-rod-rod")
-    (version "0.116.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/go-rod/rod")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1szq6j9ascf1qpq8d6vzq8ka7gsr297g8ywpz1p3sk8wrpf35ycb"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/go-rod/rod"
-      #:test-flags
-      ;; Browser and network access are required.
-      #~(list "-skip" (string-join
-                       (list "TestBasic"
-                             "TestCrash"
-                             "TestDownload"
-                             "TestWebSocketLargePayload"
-                             "TestDuplicatedConnectErr"
-                             "TestBrowserValid"
-                             "TestLaunch"
-                             "TestLaunchClient"
-                             "TestManaged"
-                             "TestSlowSend"
-                             "TestUseNode")
-                       "|"))
-      #:test-subdirs
-      ;; The full test suite requires acces to the browser and network, run
-      ;; portion of unittests only.
-      #~(list "lib/cdp"
-              "lib/defaults"
-              "lib/devices"
-              "lib/input"
-              "lib/launcher"
-              "lib/proto"
-              "lib/utils"
-              "lib/utils/check-issue")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-examples-and-benchmak
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (for-each delete-file-recursively
-                          (list "examples_test.go"
-                                "lib/benchmark"
-                                "setup_test.go"
-                                "lib/cdp/example_test.go"
-                                "lib/examples")))))
-          (add-before 'check 'pre-check
-            (lambda _
-              ;; Tests require GODEBUG="tracebackancestors=N" environment
-              ;; setting.
-              (setenv "GODEBUG" "tracebackancestors=1000"))))))
-    (native-inputs
-     (list go-github-com-ysmood-got
-           go-github-com-ysmood-gotrace))
-    (propagated-inputs
-     (list go-github-com-ysmood-fetchup-for-go-rod
-           go-github-com-ysmood-goob
-           go-github-com-ysmood-gson
-           go-github-com-ysmood-leakless))
-    (home-page "https://go-rod.github.io/")
-    (synopsis "Chrome DevTools Protocol driver for browser automation")
-    (description
-     "Rod is a high-level driver for Chrome DevTools Protocol.  It's designed
-for web automation and scraping, providing a simple API to control Chrome or
-Chromium browsers programmatically.")
-    (license license:expat)))
-
-(define-public go-github-com-googleapis-enterprise-certificate-proxy
-  (package
-    (name "go-github-com-googleapis-enterprise-certificate-proxy")
-    (version "0.3.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/googleapis/enterprise-certificate-proxy")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1jblnaa4hn9x5gfrsiw007wws7hy4h795xzzrw2bzf297ydrlnyg"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:tests? #f ;; TODO: Tests require additional dependencies
-      #:skip-build? #t
-      #:import-path "github.com/googleapis/enterprise-certificate-proxy"))
-    (propagated-inputs
-     (list go-golang-org-x-sys go-golang-org-x-crypto
-           ;; go-github-com-google-go-pkcs11
-           ))
-    (home-page "https://github.com/googleapis/enterprise-certificate-proxy")
-    (synopsis "Google Proxies for Enterprise Certificates (GA)")
-    (description
-     "If you use
-@url{https://cloud.google.com/beyondcorp-enterprise/docs/securing-resources-with-certificate-based-access,
-certificate-based access} to protect your Google Cloud resources, the end user
-@url{https://en.wikipedia.org/wiki/Client_certificate,device certificate} is
-one of the credentials that is verified before access to a resource is granted.
-You can configure Google Cloud to use the device certificates in your operating
-system key store when verifying access to a resource from the gcloud CLI or
-Terraform by using the enterprise certificates feature.")
-    (license license:asl2.0)))
-
-(define-public go-github-com-googleapis-gax-go-v2
-  (package
-    (name "go-github-com-googleapis-gax-go-v2")
-    (version "2.15.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/googleapis/gax-go")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0mp07716zjb7q9di6sfglscahrg053lsq3j5w68dknxn1fks5j6f"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:tests? #f ;; TODO: Tests require additional dependencies
-      #:skip-build? #t
-      #:import-path "github.com/googleapis/gax-go/v2"
-      #:unpack-path "github.com/googleapis/gax-go"))
-    (propagated-inputs
-     (list go-google-golang-org-protobuf
-           go-google-golang-org-grpc
-           go-google-golang-org-genproto-googleapis-rpc
-           go-google-golang-org-genproto-googleapis-api
-           ;; go-google-golang-org-genproto
-           ;; go-google-golang-org-api
-           go-github-com-google-go-cmp))
-    (home-page "https://github.com/googleapis/gax-go")
-    (synopsis "Google API Extensions for Go")
-    (description
-     "This package contains a set of modules which aid the development of APIs for
-clients and servers based on @code{gRPC} and Google API conventions.")
-    (license license:bsd-3)))
-
 (define-public go-code-gitea-io-sdk-gitea
   (package
     (name "go-code-gitea-io-sdk-gitea")
@@ -1035,6 +804,59 @@ variable.  The variable can contain a comma-separated list of values, for
 example @code{GOPPROF=http,block}.")
     (license license:expat)))
 
+(define-public go-github-com-anaskhan96-soup
+  (package
+    (name "go-github-com-anaskhan96-soup")
+    (version "1.2.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/anaskhan96/soup")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s19119sy4zqf05sgpdymcbdaz5bg86n7xwgd2m1vvxjmp485k5p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/anaskhan96/soup"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/anaskhan96/soup")
+    (synopsis "Web Scraper in Go, similar to BeautifulSoup")
+    (description
+     "Small web scraper package for Go, with its interface highly similar to
+that of BeautifulSoup.")
+    (license license:expat)))
+
+(define-public go-github-com-andybalholm-cascadia
+  (package
+    (name "go-github-com-andybalholm-cascadia")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/andybalholm/cascadia")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zgc9fjkn7d66cnmgnmalr9lrq4ii1spap95pf2x1hln4pflib5s"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/andybalholm/cascadia"))
+    (native-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/andybalholm/cascadia/")
+    (synopsis "CSS selectors for HTML")
+    (description
+     "The Cascadia package implements CSS selectors for use with the parse
+trees produced by the html package.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-anthropics-anthropic-sdk-go
   (package
     (name "go-github-com-anthropics-anthropic-sdk-go")
@@ -1315,58 +1137,6 @@ written to test improvements to / replace the routing logic in
 @url{https://github.com/yggdrasil-network/yggdrasil-go,Yggdrasil}, but it may
 be useful for other network applications.")
     (license license:mpl2.0)))
-
-(define-public go-github-com-anaskhan96-soup
-  (package
-    (name "go-github-com-anaskhan96-soup")
-    (version "1.2.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/anaskhan96/soup")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0s19119sy4zqf05sgpdymcbdaz5bg86n7xwgd2m1vvxjmp485k5p"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/anaskhan96/soup"))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (propagated-inputs
-     (list go-golang-org-x-net))
-    (home-page "https://github.com/anaskhan96/soup")
-    (synopsis "Web Scraper in Go, similar to BeautifulSoup")
-    (description
-     "Small web scraper package for Go, with its interface highly similar to
-that of BeautifulSoup.")
-    (license license:expat)))
-
-(define-public go-github-com-andybalholm-cascadia
-  (package
-    (name "go-github-com-andybalholm-cascadia")
-    (version "1.3.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/andybalholm/cascadia")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0zgc9fjkn7d66cnmgnmalr9lrq4ii1spap95pf2x1hln4pflib5s"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/andybalholm/cascadia"))
-    (native-inputs
-     (list go-golang-org-x-net))
-    (home-page "https://github.com/andybalholm/cascadia/")
-    (synopsis "CSS selectors for HTML")
-    (description "The Cascadia package implements CSS selectors for use with
-the parse trees produced by the html package.")
-    (license license:bsd-2)))
 
 (define-public go-github-com-armon-go-proxyproto
   (package
@@ -2110,6 +1880,47 @@ token-based authentication support across the Azure SDK.  It includes a set of
 clients supporting token authentication.")
     (license license:expat)))
 
+(define-public go-github-com-azure-azure-sdk-for-go-sdk-internal
+  (package
+    (name "go-github-com-azure-azure-sdk-for-go-sdk-internal")
+    (version "1.11.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Azure/azure-sdk-for-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "sdk/internal"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q0cbmh4vn2x1bi7bax2q6wpqndcyw7649w8lzl384k3rbn1q8yn"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-all-but "sdk" "internal")
+                    (delete-all-but "." "sdk")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;Tests require circular dependencies
+      #:import-path "github.com/Azure/azure-sdk-for-go/sdk/internal"
+      #:unpack-path "github.com/Azure/azure-sdk-for-go"))
+    (propagated-inputs
+     (list go-golang-org-x-text
+           go-golang-org-x-net
+           go-github-com-stretchr-testify))
+    (home-page "https://github.com/Azure/azure-sdk-for-go")
+    (synopsis "Azure.Core Internal Module for Go")
+    (description "This package contains content for Azure SDK developers.")
+    (license license:expat)))
+
 (define-public go-github-com-azure-azure-sdk-for-go-sdk-storage-azblob
   (package
     (name "go-github-com-azure-azure-sdk-for-go-sdk-storage-azblob")
@@ -2211,47 +2022,6 @@ concurrently by cloud or on-premises deployments of Windows, Linux, and
 @code{macOS}.  Additionally, Azure file shares can be cached on Windows
 Servers with Azure File Sync for fast access near where the data is being
 used.")
-    (license license:expat)))
-
-(define-public go-github-com-azure-azure-sdk-for-go-sdk-internal
-  (package
-    (name "go-github-com-azure-azure-sdk-for-go-sdk-internal")
-    (version "1.11.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Azure/azure-sdk-for-go")
-             (commit (go-version->git-ref version
-                                          #:subdir "sdk/internal"))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0q0cbmh4vn2x1bi7bax2q6wpqndcyw7649w8lzl384k3rbn1q8yn"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
-       (snippet #~(begin
-                    (define (delete-all-but directory . preserve)
-                      (with-directory-excursion directory
-                        (let* ((pred (negate (cut member <>
-                                                  (cons* "." ".." preserve))))
-                               (items (scandir "." pred)))
-                          (for-each (cut delete-file-recursively <>) items))))
-                    (delete-all-but "sdk" "internal")
-                    (delete-all-but "." "sdk")))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:tests? #f ;Tests require circular dependencies
-      #:import-path "github.com/Azure/azure-sdk-for-go/sdk/internal"
-      #:unpack-path "github.com/Azure/azure-sdk-for-go"))
-    (propagated-inputs
-     (list go-golang-org-x-text
-           go-golang-org-x-net
-           go-github-com-stretchr-testify))
-    (home-page "https://github.com/Azure/azure-sdk-for-go")
-    (synopsis "Azure.Core Internal Module for Go")
-    (description "This package contains content for Azure SDK developers.")
     (license license:expat)))
 
 (define-public go-github-com-azure-go-ntlmssp
@@ -2900,6 +2670,31 @@ API.  See the full Circonus API Documentation at
     (description
      "Package browser provides helpers to open files, readers, and URLs in a
 browser window.")
+    (license license:bsd-2)))
+
+(define-public go-github-com-cloudflare-backoff
+  (package
+    (name "go-github-com-cloudflare-backoff")
+    (version "0.0.0-20240920015135-e46b80a3a7d0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cloudflare/backoff")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bzcvsgakjyxgw47r2j6xxbs8v67srwzvvw60biqcqvpsvncbw42"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cloudflare/backoff"))
+    (home-page "https://github.com/cloudflare/backoff")
+    (synopsis "Backoff strategies for retry logic for Golang")
+    (description
+     "This package provides configurable backoff algorithms (exponential,
+ constant, etc.)  for Golang commonly used in retry loops for network calls or
+transient error handling.")
     (license license:bsd-2)))
 
 (define-public go-github-com-cloudinary-cloudinary-go-v2
@@ -4079,6 +3874,36 @@ authentication through Negotiate mechanism (see
 Dropbox API.")
     (license license:expat)))
 
+(define-public go-github-com-eggsampler-acme-v3
+  (package
+    (name "go-github-com-eggsampler-acme-v3")
+    (version "3.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/eggsampler/acme")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ga5l4x1p16d2i4135gw97p0f3id1ip3gfg2ny0fp0p0l38lnii5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;network access is required
+      #:import-path "github.com/eggsampler/acme/v3"))
+    (home-page "https://github.com/eggsampler/acme")
+    (synopsis "Go client library implementation for ACME v2 (RFC8555)")
+    (description
+     "@code{eggsampler/acme} is a Go client library implementation for
+@url{https://tools.ietf.org/html/rfc8555, RFC8555} (previously ACME v2).  This
+library can be used with the @url{https://letsencrypt.org/, Let's Encrypt}
+Certificate Authority (CA), but also other ACME compliant CA's such as
+@url{https://zerossl.com/, ZeroSSL}, @url{https://pki.goog/, Google Trust
+Services} and others listed at
+@url{https://acmeclients.com/certificate-authorities/}.")
+    (license license:expat)))
+
 (define-public go-github-com-elazarl-go-bindata-assetfs
   (package
     (name "go-github-com-elazarl-go-bindata-assetfs")
@@ -4583,149 +4408,6 @@ against documents, as well as for calculating & applying
        ((#:import-path "github.com/evanphx/json-patch")
         "github.com/evanphx/json-patch/v5")))))
 
-(define-public go-github-com-sigstore-sigstore
-  (package
-    (name "go-github-com-sigstore-sigstore")
-    (version "1.10.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/sigstore/sigstore")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0whcwzdmvf8xhin55112dmwflk5ipcd14mxjlgj5lpw3a8fp38af"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; Submodules with their own go.mod files and packaged separately:
-            ;;
-            ;; - github.com/sigstore/sigstore/hack/tools
-            ;; - github.com/sigstore/sigstore/pkg/signature/kms/aws
-            ;; - github.com/sigstore/sigstore/pkg/signature/kms/azure
-            ;; - github.com/sigstore/sigstore/pkg/signature/kms/gcp
-            ;; - github.com/sigstore/sigstore/pkg/signature/kms/hashivault
-            ;; - sigstore-kms-localkms
-            ;; - github.com/sigstore/sigstore/test/fuzz
-            (for-each delete-file-recursively
-                      (list "hack/tools"
-                            "pkg/signature/kms/aws"
-                            "pkg/signature/kms/azure"
-                            "pkg/signature/kms/gcp"
-                            "pkg/signature/kms/hashivault"
-                            "test/cliplugin/localkms"
-                            "test/fuzz"))))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:go go-1.25
-      #:skip-build? #t
-      #:import-path "github.com/sigstore/sigstore"
-      #:test-flags
-      #~(list "-skip" (string-join
-                       ;; Network access is required.
-                       (list "TestAltLegacyURLToCDN"
-                             "TestCache"
-                             "TestConcurrentAccessInitialize"
-                             "TestConcurrentAccessNewFromEnv"
-                             "TestCustomRoot"
-                             "TestCustomRootFileRemoteStore"
-                             "TestGetTargetsByMeta"
-                             "TestLegacyBucketToCDN"
-                             "TestProviderIsAzureBacked"
-                             "TestNewFromEnv"
-                             "TestLegacyURLToCDN"
-                             "TestAltLegacyURLToCDN"
-                             "TestNoCache"
-                             "TestUpdatedTargetNamesEmbedded"
-                             "TestUpdatedTargetNamesEmbedded")
-                       "|"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'set-home
-            (lambda _
-              (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list go-github-com-stretchr-testify
-           go-github-com-google-go-cmp))
-    (propagated-inputs
-     (list go-github-com-coreos-go-oidc-v3
-           go-github-com-go-jose-go-jose-v4
-           go-github-com-go-rod-rod
-           go-github-com-google-go-containerregistry
-           go-github-com-letsencrypt-boulder
-           go-github-com-pkg-browser
-           go-github-com-secure-systems-lab-go-securesystemslib
-           go-github-com-sigstore-protobuf-specs
-           go-github-com-theupdateframework-go-tuf
-           go-github-com-tink-crypto-tink-go-v2
-           go-golang-org-x-crypto
-           go-golang-org-x-oauth2
-           go-golang-org-x-term))
-    (home-page "https://sigstore.dev/")
-    (synopsis "Common Go library for Sigstore services")
-    (description
-     "Sigstore is a Go library providing common functionality for Sigstore
-services.  It includes cryptographic utilities, OAuth/OIDC authentication,
-certificate handling, and tools for interacting with Sigstore infrastructure
-like Fulcio and Rekor.")
-    (license license:asl2.0)))
-
-(define-public go-github-com-ysmood-fetchup
-  (package
-    (name "go-github-com-ysmood-fetchup")
-    (version "0.5.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/ysmood/fetchup")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0da4n133bnz31jpbjvd1wq2qqd1jf0fnw02yh626l0am3jmrhqz8"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/ysmood/fetchup"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; Network access is required.
-          (add-after 'unpack 'remove-examples
-            (lambda* (#:key import-path #:allow-other-keys)
-              (delete-file
-               (string-append "src/" import-path "/examples_test.go")))))))
-    (propagated-inputs
-     (list go-github-com-ysmood-got))
-    (home-page "https://github.com/ysmood/fetchup")
-    (synopsis "Go helper to download and unpack files")
-    (description
-     "Fetchup is a Go helper library for downloading and unpacking files from
-URLs.  It supports various archive formats and provides progress tracking.")
-    (license license:expat)))
-
-;; Remove when go-rod is updated
-(define-public go-github-com-ysmood-fetchup-for-go-rod
-  (hidden-package
-   (package
-     (inherit go-github-com-ysmood-fetchup)
-     (name "go-github-com-ysmood-fetchup")
-     (version "0.2.3")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/ysmood/fetchup")
-              (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "0xyqiywynidrn7fmh07vg80wscy55fch1q7rng27sg3zq824z7xh"))))
-    (arguments
-     (list
-      #:tests? #f
-      #:import-path "github.com/ysmood/fetchup")))))
-
 (define-public go-github-com-fasthttp-router
   (package
     (name "go-github-com-fasthttp-router")
@@ -4848,6 +4530,35 @@ Files.com from applications written in Go.")
     (home-page "https://github.com/flosch/pongo2")
     (synopsis "Django-syntax like template-engine for Golang")
     (description "This package provides a Django-syntax like template-engine.")
+    (license license:expat)))
+
+(define-public go-github-com-foxcpp-go-mockdns
+  (package
+    (name "go-github-com-foxcpp-go-mockdns")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/foxcpp/go-mockdns")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jjln1bjgvh8g6r508vygjfm6h125q8yn4ynvldcd8npg4sj5z5h"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/foxcpp/go-mockdns"
+      ;; FollowCNAMEs test is not deterministic in v1.2.0,
+      ;; commit 1de4693e67 fixes this. Consider removing this skip
+      ;; in a future update.
+      #:test-flags #~(list "-skip" "TestServer_FollowCNAMEs")))
+    (propagated-inputs (list go-github-com-miekg-dns))
+    (home-page "https://github.com/foxcpp/go-mockdns")
+    (synopsis "DNS mock for Golang")
+    (description
+     "This package provides Golang boilerplate for testing code involving DNS
+lookups, including hacks to redirect @code{net.Lookup*} calls.")
     (license license:expat)))
 
 ;; This project looks like dormant or abandoned, see
@@ -5710,6 +5421,81 @@ OpenAPI 2.0).")
      "Package resty provides Simple HTTP and REST client library for Go.")
     (license license:expat)))
 
+(define-public go-github-com-go-rod-rod
+  (package
+    (name "go-github-com-go-rod-rod")
+    (version "0.116.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-rod/rod")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1szq6j9ascf1qpq8d6vzq8ka7gsr297g8ywpz1p3sk8wrpf35ycb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-rod/rod"
+      #:test-flags
+      ;; Browser and network access are required.
+      #~(list "-skip" (string-join
+                       (list "TestBasic"
+                             "TestCrash"
+                             "TestDownload"
+                             "TestWebSocketLargePayload"
+                             "TestDuplicatedConnectErr"
+                             "TestBrowserValid"
+                             "TestLaunch"
+                             "TestLaunchClient"
+                             "TestManaged"
+                             "TestSlowSend"
+                             "TestUseNode")
+                       "|"))
+      #:test-subdirs
+      ;; The full test suite requires acces to the browser and network, run
+      ;; portion of unittests only.
+      #~(list "lib/cdp"
+              "lib/defaults"
+              "lib/devices"
+              "lib/input"
+              "lib/launcher"
+              "lib/proto"
+              "lib/utils"
+              "lib/utils/check-issue")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples-and-benchmak
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file-recursively
+                          (list "examples_test.go"
+                                "lib/benchmark"
+                                "setup_test.go"
+                                "lib/cdp/example_test.go"
+                                "lib/examples")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests require GODEBUG="tracebackancestors=N" environment
+              ;; setting.
+              (setenv "GODEBUG" "tracebackancestors=1000"))))))
+    (native-inputs
+     (list go-github-com-ysmood-got
+           go-github-com-ysmood-gotrace))
+    (propagated-inputs
+     (list go-github-com-ysmood-fetchup-for-go-rod
+           go-github-com-ysmood-goob
+           go-github-com-ysmood-gson
+           go-github-com-ysmood-leakless))
+    (home-page "https://go-rod.github.io/")
+    (synopsis "Chrome DevTools Protocol driver for browser automation")
+    (description
+     "Rod is a high-level driver for Chrome DevTools Protocol.  It's designed
+for web automation and scraping, providing a simple API to control Chrome or
+Chromium browsers programmatically.")
+    (license license:expat)))
+
 (define-public go-github-com-go-webauthn-webauthn
   (package
     (name "go-github-com-go-webauthn-webauthn")
@@ -6385,6 +6171,77 @@ values that are guaranteed to be safe, by construction or by escaping or
 sanitization, to use in various HTML contexts and with various DOM APIs.")
     (license license:bsd-3)))
 
+(define-public go-github-com-googleapis-enterprise-certificate-proxy
+  (package
+    (name "go-github-com-googleapis-enterprise-certificate-proxy")
+    (version "0.3.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/enterprise-certificate-proxy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jblnaa4hn9x5gfrsiw007wws7hy4h795xzzrw2bzf297ydrlnyg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;; TODO: Tests require additional dependencies
+      #:skip-build? #t
+      #:import-path "github.com/googleapis/enterprise-certificate-proxy"))
+    (propagated-inputs
+     (list go-golang-org-x-sys go-golang-org-x-crypto
+           ;; go-github-com-google-go-pkcs11
+           ))
+    (home-page "https://github.com/googleapis/enterprise-certificate-proxy")
+    (synopsis "Google Proxies for Enterprise Certificates (GA)")
+    (description
+     "If you use
+@url{https://cloud.google.com/beyondcorp-enterprise/docs/securing-resources-with-certificate-based-access,
+certificate-based access} to protect your Google Cloud resources, the end user
+@url{https://en.wikipedia.org/wiki/Client_certificate,device certificate} is
+one of the credentials that is verified before access to a resource is granted.
+You can configure Google Cloud to use the device certificates in your operating
+system key store when verifying access to a resource from the gcloud CLI or
+Terraform by using the enterprise certificates feature.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-googleapis-gax-go-v2
+  (package
+    (name "go-github-com-googleapis-gax-go-v2")
+    (version "2.15.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/gax-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mp07716zjb7q9di6sfglscahrg053lsq3j5w68dknxn1fks5j6f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;; TODO: Tests require additional dependencies
+      #:skip-build? #t
+      #:import-path "github.com/googleapis/gax-go/v2"
+      #:unpack-path "github.com/googleapis/gax-go"))
+    (propagated-inputs
+     (list go-google-golang-org-protobuf
+           go-google-golang-org-grpc
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-genproto-googleapis-api
+           ;; go-google-golang-org-genproto
+           ;; go-google-golang-org-api
+           go-github-com-google-go-cmp))
+    (home-page "https://github.com/googleapis/gax-go")
+    (synopsis "Google API Extensions for Go")
+    (description
+     "This package contains a set of modules which aid the development of APIs
+for clients and servers based on @code{gRPC} and Google API conventions.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-gopacket-gopacket
   (package
     (name "go-github-com-gopacket-gopacket")
@@ -6971,57 +6828,6 @@ standard @code{net/http} client library and exposes nearly the same public
 API.")
     (license license:mpl2.0)))
 
-(define-public go-github-com-hashicorp-serf
-  (package
-    (name "go-github-com-hashicorp-serf")
-    (version "0.10.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/hashicorp/serf")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0q9rismcpd5ci5zg6aq5b3y53x4j90fpdsvfc5jjh6hqfnxi0hzj"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:skip-build? #t
-      #:test-flags
-      #~(list "-skip"
-              (string-join
-               ;; panic: runtime error: invalid memory address or nil pointer
-               ;; dereference
-               (list "TestCommandRun_mDNS"
-                     ;; [ERR] agent: Error invoking script ...  fork/exec
-                     ;; /bin/sh: no such file or directory
-                     "TestScriptEventHandler"
-                     "TestScriptUserEventHandler"
-                     "TestScriptQueryEventHandler"
-                     "TestSnapshotter_forceCompact"
-                     ;; err: Unix syslog delivery error
-                     "TestSyslogFilter")
-               "|"))
-      #:import-path "github.com/hashicorp/serf"))
-    (propagated-inputs
-     (list go-github-com-armon-circbuf
-           go-github-com-hashicorp-go-metrics
-           go-github-com-hashicorp-go-msgpack-v2
-           go-github-com-hashicorp-go-syslog
-           go-github-com-hashicorp-logutils
-           go-github-com-hashicorp-mdns
-           go-github-com-hashicorp-memberlist
-           go-github-com-mitchellh-cli
-           go-github-com-mitchellh-mapstructure
-           go-github-com-ryanuber-columnize))
-    (home-page "https://github.com/hashicorp/serf")
-    (synopsis "Service discovery and orchestration for Golang")
-    (description
-     "Serf is a decentralized solution for service discovery and orchestration
-that is lightweight, highly available, and fault tolerant.")
-    (license license:mpl2.0)))
-
 (define-public go-github-com-hashicorp-go-sockaddr
   (package
     (name "go-github-com-hashicorp-go-sockaddr")
@@ -7146,6 +6952,57 @@ speed at which it converges can be heavily tuned via various knobs on the
 protocol.  Node failures are detected and network partitions are partially
 tolerated by attempting to communicate to potentially dead nodes through
 multiple routes.")
+    (license license:mpl2.0)))
+
+(define-public go-github-com-hashicorp-serf
+  (package
+    (name "go-github-com-hashicorp-serf")
+    (version "0.10.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hashicorp/serf")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q9rismcpd5ci5zg6aq5b3y53x4j90fpdsvfc5jjh6hqfnxi0hzj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; panic: runtime error: invalid memory address or nil pointer
+               ;; dereference
+               (list "TestCommandRun_mDNS"
+                     ;; [ERR] agent: Error invoking script ...  fork/exec
+                     ;; /bin/sh: no such file or directory
+                     "TestScriptEventHandler"
+                     "TestScriptUserEventHandler"
+                     "TestScriptQueryEventHandler"
+                     "TestSnapshotter_forceCompact"
+                     ;; err: Unix syslog delivery error
+                     "TestSyslogFilter")
+               "|"))
+      #:import-path "github.com/hashicorp/serf"))
+    (propagated-inputs
+     (list go-github-com-armon-circbuf
+           go-github-com-hashicorp-go-metrics
+           go-github-com-hashicorp-go-msgpack-v2
+           go-github-com-hashicorp-go-syslog
+           go-github-com-hashicorp-logutils
+           go-github-com-hashicorp-mdns
+           go-github-com-hashicorp-memberlist
+           go-github-com-mitchellh-cli
+           go-github-com-mitchellh-mapstructure
+           go-github-com-ryanuber-columnize))
+    (home-page "https://github.com/hashicorp/serf")
+    (synopsis "Service discovery and orchestration for Golang")
+    (description
+     "Serf is a decentralized solution for service discovery and orchestration
+that is lightweight, highly available, and fault tolerant.")
     (license license:mpl2.0)))
 
 (define-public go-github-com-hashicorp-yamux
@@ -10670,6 +10527,31 @@ multistream-select protocol.  The protocol is defined at
 2616} HTTP/1.1 standard.")
     (license license:bsd-3)))
 
+(define-public go-github-com-mvdan-xurls
+  (package
+    (name "go-github-com-mvdan-xurls")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mvdan/xurls")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05q4nqbpgfb0a35sn22rn9mlag2ks4cgwb54dx925hipp6zgj1hx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mvdan/xurls"))
+    (propagated-inputs (list go-golang-org-x-net))
+    (home-page "https://github.com/mvdan/xurls")
+    (synopsis "Extracts URLs from text")
+    (description
+     "Xurls extracts urls from plain text using regular expressions.  It can
+be used as both a binary and a library.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-ncw-swift-v2
   (package
     (name "go-github-com-ncw-swift-v2")
@@ -11234,93 +11116,6 @@ specified in @url{http://tools.ietf.org/html/rfc7047, RFC 7047}.  It's used
 mainly for managing the configuration of Open vSwitch and OVN, but it could
 also be used to manage your stamp collection.")
     (license license:asl2.0)))
-
-(define-public go-github-com-sigstore-fulcio
-  (package
-    (name "go-github-com-sigstore-fulcio")
-    (version "1.8.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/sigstore/fulcio")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1cz66fswvy50868yr13s4pvrdn3lk9kh0wp3ynrb2g6l4y7z8rw5"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; Submodules with their own go.mod files and packaged separately:
-            ;;
-            ;; - github.com/sigstore/fulcio/hack/tools
-            (delete-file-recursively "hack/tools")))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:skip-build? #t
-      #:import-path "github.com/sigstore/fulcio"
-      #:test-subdirs
-      ;; XXX: Remove when all inputs are packaged.
-      #~(list "pkg/api"
-              "pkg/certificate"
-              "pkg/oauthflow")))
-    (native-inputs
-     (list go-github-com-stretchr-testify
-           go-github-com-google-go-cmp
-           go-github-com-spf13-cobra
-           go-github-com-spf13-pflag
-           go-github-com-spf13-viper))
-    (propagated-inputs
-     (list go-github-com-asaskevich-govalidator
-           go-github-com-coreos-go-oidc-v3
-           go-github-com-fsnotify-fsnotify
-           go-github-com-go-jose-go-jose-v4
-           go-github-com-grpc-ecosystem-go-grpc-middleware
-           go-github-com-grpc-ecosystem-go-grpc-prometheus
-           go-github-com-grpc-ecosystem-grpc-gateway-v2
-           go-github-com-hashicorp-golang-lru-v2
-           go-github-com-magiconair-properties
-           go-github-com-paesslerag-jsonpath
-           go-github-com-prometheus-client-golang
-           go-github-com-prometheus-client-model
-           go-github-com-prometheus-common
-           go-github-com-rs-cors
-           go-github-com-sigstore-protobuf-specs
-           go-github-com-sigstore-sigstore
-           go-github-com-tink-crypto-tink-go-v2
-           go-go-uber-org-zap
-           go-go-yaml-in-yaml-v3
-           go-google-golang-org-api
-           go-google-golang-org-genproto-googleapis-api
-           go-google-golang-org-grpc
-           go-google-golang-org-protobuf
-
-           ;; TODO: Complete packaging
-           ;; go-chainguard-dev-go-grpc-kit
-           ;; go-chainguard-dev-sdk
-           ;; go-cloud-google-com-go-security
-           ;; go-github-com-google-certificate-transparency-go
-           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-aws
-           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-azure
-           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-gcp
-           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-hashivault
-           ;; go-github-com-spiffe-go-spiffe-v2
-           ;; go-github-com-thalesignite-crypto11
-           ;; go-github-com-tink-crypto-tink-go-awskms-v2
-           ;; go-github-com-tink-crypto-tink-go-gcpkms-v2
-           ;; go-go-step-sm-crypto
-           ;; go-goa-design-goa-v3
-           #;go-sigs-k8s-io-release-utils))
-    (home-page "https://github.com/sigstore/fulcio")
-    (synopsis "Sigstore certificate authority for code signing")
-    (description
-     "Fulcio is a free-to-use certificate authority for issuing code signing
-certificates for an OpenID Connect (OIDC) identity, such as email address.
-It is part of the Sigstore project for software supply chain security.")
-    (license license:asl2.0)
-    ;; XXX: Don't expose since it's a partial package.
-    (properties '((hidden? . #t)))))
 
 (define-public go-github-com-pascaldekloe-goe
   (package
@@ -13538,6 +13333,182 @@ use gzip compression when serving HTTP requests.")
 provided @code{http.FileSystem}.")
     (license license:expat)))
 
+(define-public go-github-com-sigstore-fulcio
+  (package
+    (name "go-github-com-sigstore-fulcio")
+    (version "1.8.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sigstore/fulcio")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cz66fswvy50868yr13s4pvrdn3lk9kh0wp3ynrb2g6l4y7z8rw5"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/sigstore/fulcio/hack/tools
+            (delete-file-recursively "hack/tools")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/sigstore/fulcio"
+      #:test-subdirs
+      ;; XXX: Remove when all inputs are packaged.
+      #~(list "pkg/api"
+              "pkg/certificate"
+              "pkg/oauthflow")))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-github-com-google-go-cmp
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-spf13-viper))
+    (propagated-inputs
+     (list go-github-com-asaskevich-govalidator
+           go-github-com-coreos-go-oidc-v3
+           go-github-com-fsnotify-fsnotify
+           go-github-com-go-jose-go-jose-v4
+           go-github-com-grpc-ecosystem-go-grpc-middleware
+           go-github-com-grpc-ecosystem-go-grpc-prometheus
+           go-github-com-grpc-ecosystem-grpc-gateway-v2
+           go-github-com-hashicorp-golang-lru-v2
+           go-github-com-magiconair-properties
+           go-github-com-paesslerag-jsonpath
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-github-com-prometheus-common
+           go-github-com-rs-cors
+           go-github-com-sigstore-protobuf-specs
+           go-github-com-sigstore-sigstore
+           go-github-com-tink-crypto-tink-go-v2
+           go-go-uber-org-zap
+           go-go-yaml-in-yaml-v3
+           go-google-golang-org-api
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+
+           ;; TODO: Complete packaging
+           ;; go-chainguard-dev-go-grpc-kit
+           ;; go-chainguard-dev-sdk
+           ;; go-cloud-google-com-go-security
+           ;; go-github-com-google-certificate-transparency-go
+           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-aws
+           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-azure
+           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-gcp
+           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-hashivault
+           ;; go-github-com-spiffe-go-spiffe-v2
+           ;; go-github-com-thalesignite-crypto11
+           ;; go-github-com-tink-crypto-tink-go-awskms-v2
+           ;; go-github-com-tink-crypto-tink-go-gcpkms-v2
+           ;; go-go-step-sm-crypto
+           ;; go-goa-design-goa-v3
+           #;go-sigs-k8s-io-release-utils))
+    (home-page "https://github.com/sigstore/fulcio")
+    (synopsis "Sigstore certificate authority for code signing")
+    (description
+     "Fulcio is a free-to-use certificate authority for issuing code signing
+certificates for an OpenID Connect (OIDC) identity, such as email address.
+It is part of the Sigstore project for software supply chain security.")
+    (license license:asl2.0)
+    ;; XXX: Don't expose since it's a partial package.
+    (properties '((hidden? . #t)))))
+
+(define-public go-github-com-sigstore-sigstore
+  (package
+    (name "go-github-com-sigstore-sigstore")
+    (version "1.10.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sigstore/sigstore")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0whcwzdmvf8xhin55112dmwflk5ipcd14mxjlgj5lpw3a8fp38af"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/sigstore/sigstore/hack/tools
+            ;; - github.com/sigstore/sigstore/pkg/signature/kms/aws
+            ;; - github.com/sigstore/sigstore/pkg/signature/kms/azure
+            ;; - github.com/sigstore/sigstore/pkg/signature/kms/gcp
+            ;; - github.com/sigstore/sigstore/pkg/signature/kms/hashivault
+            ;; - sigstore-kms-localkms
+            ;; - github.com/sigstore/sigstore/test/fuzz
+            (for-each delete-file-recursively
+                      (list "hack/tools"
+                            "pkg/signature/kms/aws"
+                            "pkg/signature/kms/azure"
+                            "pkg/signature/kms/gcp"
+                            "pkg/signature/kms/hashivault"
+                            "test/cliplugin/localkms"
+                            "test/fuzz"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.25
+      #:skip-build? #t
+      #:import-path "github.com/sigstore/sigstore"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Network access is required.
+                       (list "TestAltLegacyURLToCDN"
+                             "TestCache"
+                             "TestConcurrentAccessInitialize"
+                             "TestConcurrentAccessNewFromEnv"
+                             "TestCustomRoot"
+                             "TestCustomRootFileRemoteStore"
+                             "TestGetTargetsByMeta"
+                             "TestLegacyBucketToCDN"
+                             "TestProviderIsAzureBacked"
+                             "TestNewFromEnv"
+                             "TestLegacyURLToCDN"
+                             "TestAltLegacyURLToCDN"
+                             "TestNoCache"
+                             "TestUpdatedTargetNamesEmbedded"
+                             "TestUpdatedTargetNamesEmbedded")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-coreos-go-oidc-v3
+           go-github-com-go-jose-go-jose-v4
+           go-github-com-go-rod-rod
+           go-github-com-google-go-containerregistry
+           go-github-com-letsencrypt-boulder
+           go-github-com-pkg-browser
+           go-github-com-secure-systems-lab-go-securesystemslib
+           go-github-com-sigstore-protobuf-specs
+           go-github-com-theupdateframework-go-tuf
+           go-github-com-tink-crypto-tink-go-v2
+           go-golang-org-x-crypto
+           go-golang-org-x-oauth2
+           go-golang-org-x-term))
+    (home-page "https://sigstore.dev/")
+    (synopsis "Common Go library for Sigstore services")
+    (description
+     "Sigstore is a Go library providing common functionality for Sigstore
+services.  It includes cryptographic utilities, OAuth/OIDC authentication,
+certificate handling, and tools for interacting with Sigstore infrastructure
+like Fulcio and Rekor.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-slok-go-http-metrics
   (package
     (name "go-github-com-slok-go-http-metrics")
@@ -15187,6 +15158,60 @@ It is to used for inputs in other packages.")
      ;; which apply to the Application, with which you must still comply
      license:lgpl3)))
 
+(define-public go-github-com-ysmood-fetchup
+  (package
+    (name "go-github-com-ysmood-fetchup")
+    (version "0.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ysmood/fetchup")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0da4n133bnz31jpbjvd1wq2qqd1jf0fnw02yh626l0am3jmrhqz8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ysmood/fetchup"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Network access is required.
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file
+               (string-append "src/" import-path "/examples_test.go")))))))
+    (propagated-inputs
+     (list go-github-com-ysmood-got))
+    (home-page "https://github.com/ysmood/fetchup")
+    (synopsis "Go helper to download and unpack files")
+    (description
+     "Fetchup is a Go helper library for downloading and unpacking files from
+URLs.  It supports various archive formats and provides progress tracking.")
+    (license license:expat)))
+
+;; Remove when go-rod is updated
+(define-public go-github-com-ysmood-fetchup-for-go-rod
+  (hidden-package
+   (package
+     (inherit go-github-com-ysmood-fetchup)
+     (name "go-github-com-ysmood-fetchup")
+     (version "0.2.3")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/ysmood/fetchup")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0xyqiywynidrn7fmh07vg80wscy55fch1q7rng27sg3zq824z7xh"))))
+    (arguments
+     (list
+      #:tests? #f
+      #:import-path "github.com/ysmood/fetchup")))))
+
 (define-public go-github-com-yunify-qingstor-sdk-go-v3
   (package
     (name "go-github-com-yunify-qingstor-sdk-go-v3")
@@ -15674,50 +15699,44 @@ lists)
      "Package opencensus contains Go support for @code{OpenCensus}.")
     (license license:asl2.0)))
 
-(define-public go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
+(define-public go-go-opentelemetry-io-auto-sdk
   (package
-    (name "go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp")
-    (version "0.62.0")
+    (name "go-go-opentelemetry-io-auto-sdk")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/open-telemetry/opentelemetry-go-contrib")
-             (commit (go-version->git-ref version
-                                          #:subdir
-                                          "instrumentation/net/http/otelhttp"))))
+              (url
+               "https://github.com/open-telemetry/opentelemetry-go-instrumentation")
+              (commit (go-version->git-ref version
+                                           #:subdir "sdk"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06h5rvvji92dj25vb37s9vmvp5fignbp7zbigbdhbql16gfhp225"))))
+        (base32 "155qcbl84bwy7m9k221w75yakfv71fbxpfn9g3d7nnq6cl30fbfw"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "sdk")))))
     (build-system go-build-system)
     (arguments
      (list
-      #:test-flags #~(list "-skip" "TestWithSpanNameFormatter")
-      #:import-path
-      "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
-      #:unpack-path "go.opentelemetry.io/contrib"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-examples
-            (lambda* (#:key unpack-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" unpack-path)
-                (delete-file-recursively
-                 "instrumentation/net/http/otelhttp/example")))))))
-    (native-inputs
-     (list go-github-com-stretchr-testify
-           go-go-opentelemetry-io-otel-sdk
-           go-go-opentelemetry-io-otel-sdk-metric))
-    (propagated-inputs
-     (list go-github-com-felixge-httpsnoop
-           go-go-opentelemetry-io-otel
-           go-go-opentelemetry-io-otel-metric
-           go-go-opentelemetry-io-otel-trace))
-    (home-page "https://opentelemetry.io/")
-    (synopsis "Golang std @code{http.Handler} wrapper library")
+      #:tests? #f
+      #:skip-build? #t
+      #:import-path "go.opentelemetry.io/auto/sdk"
+      #:unpack-path "go.opentelemetry.io/auto"))
+    (home-page "https://go.opentelemetry.io/auto")
+    (synopsis "Auto-instrumentable OpenTelemetry SDK")
     (description
-     "Package otelhttp provides an http.Handler and functions that are
-intended to be used to add tracing by wrapping existing handlers (with
-Handler) and routes @code{WithRouteTag}.")
+     "Package sdk provides an auto-instrumentable @code{OpenTelemetry} SDK.")
     (license license:asl2.0)))
 
 (define-public go-go-opentelemetry-io-contrib-instrumentation-google-golang-org-grpc-otelgrpc
@@ -15758,6 +15777,52 @@ Handler) and routes @code{WithRouteTag}.")
     (description
      "Package otelgrpc is the instrumentation library for
 @url{/google.golang.org/grpc,google.golang.org/grpc}.")
+    (license license:asl2.0)))
+
+(define-public go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
+  (package
+    (name "go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp")
+    (version "0.62.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/open-telemetry/opentelemetry-go-contrib")
+              (commit (go-version->git-ref version
+                                           #:subdir
+                                           "instrumentation/net/http/otelhttp"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06h5rvvji92dj25vb37s9vmvp5fignbp7zbigbdhbql16gfhp225"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path
+      "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+      #:unpack-path "go.opentelemetry.io/contrib"
+      #:test-flags #~(list "-skip" "TestWithSpanNameFormatter")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (delete-file-recursively
+                 "instrumentation/net/http/otelhttp/example")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-metric))
+    (propagated-inputs
+     (list go-github-com-felixge-httpsnoop
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-trace))
+    (home-page "https://opentelemetry.io/")
+    (synopsis "Golang std @code{http.Handler} wrapper library")
+    (description
+     "Package otelhttp provides an http.Handler and functions that are
+intended to be used to add tracing by wrapping existing handlers (with
+Handler) and routes @code{WithRouteTag}.")
     (license license:asl2.0)))
 
 (define-public go-go-opentelemetry-io-contrib-propagators-autoprop
@@ -16543,46 +16608,6 @@ OpenTelemetry API.")))
 defined in
 @code{https://github.com/open-telemetry/opentelemetry-proto?tab=readme-ov-file#maturity-level,
 maturity level}.")
-    (license license:asl2.0)))
-
-(define-public go-go-opentelemetry-io-auto-sdk
-  (package
-    (name "go-go-opentelemetry-io-auto-sdk")
-    (version "1.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url
-              "https://github.com/open-telemetry/opentelemetry-go-instrumentation")
-             (commit (go-version->git-ref version
-                                          #:subdir "sdk"))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "155qcbl84bwy7m9k221w75yakfv71fbxpfn9g3d7nnq6cl30fbfw"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
-       (snippet
-        #~(begin
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <>
-                                          (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
-            (delete-all-but "." "sdk")))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:tests? #f
-      #:skip-build? #t
-      #:import-path "go.opentelemetry.io/auto/sdk"
-      #:unpack-path "go.opentelemetry.io/auto"))
-    (home-page "https://go.opentelemetry.io/auto")
-    (synopsis "Auto-instrumentable OpenTelemetry SDK")
-    (description
-     "Package sdk provides an auto-instrumentable @code{OpenTelemetry} SDK.")
     (license license:asl2.0)))
 
 (define-public go-go-starlark-net
@@ -17470,31 +17495,6 @@ etc)
      (list go-github-com-rogpeppe-go-internal-1.14
            go-golang-org-x-mod
            go-golang-org-x-sync))
-    (home-page "https://github.com/mvdan/xurls")
-    (synopsis "Extracts URLs from text")
-    (description
-     "Xurls extracts urls from plain text using regular expressions.  It can
-be used as both a binary and a library.")
-    (license license:bsd-3)))
-
-(define-public go-github-com-mvdan-xurls
-  (package
-    (name "go-github-com-mvdan-xurls")
-    (version "1.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/mvdan/xurls")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "05q4nqbpgfb0a35sn22rn9mlag2ks4cgwb54dx925hipp6zgj1hx"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/mvdan/xurls"))
-    (propagated-inputs (list go-golang-org-x-net))
     (home-page "https://github.com/mvdan/xurls")
     (synopsis "Extracts URLs from text")
     (description
