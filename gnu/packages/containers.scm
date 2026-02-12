@@ -572,7 +572,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
 (define-public podman
   (package
     (name "podman")
-    (version "5.7.1")
+    (version "5.8.0")
     (outputs '("out" "docker"))
     (properties
      `((output-synopsis "docker" "docker alias for podman")
@@ -585,7 +585,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
              (url "https://github.com/containers/podman")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "16lb58r8vkngics6fn1b3six8bl3nrl9awrnq6ivdv1grfgy9z61"))
+        (base32 "0vyl6d198iqrxx3c5vgbdx95fxkmn9fcb0napq44h8bzvjcl9fnj"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
