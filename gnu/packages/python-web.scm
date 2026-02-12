@@ -2649,7 +2649,7 @@ routes using HTTP Digest Authentication.")
 (define-public python-aws-sam-translator
   (package
     (name "python-aws-sam-translator")
-    (version "1.99.0")
+    (version "1.107.0")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -2658,7 +2658,7 @@ routes using HTTP Digest Authentication.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1k9a8r0kfjsrxk5z4yhipcynr2sqcl7lpc1xmdblxk76cqvsmkb3"))))
+        (base32 "0bx9ha9k6zx6gl1hsgm6cpq4xrfn604v2g1d5dh2d5zq0463gwfq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2678,10 +2678,10 @@ routes using HTTP Digest Authentication.")
               (setenv "AWS_DEFAULT_REGION" "eu-west-3"))))))
     (native-inputs
      (list python-pytest
-           python-setuptools
            python-pytest-xdist
            python-parameterized
-           python-pyyaml))
+           python-pyyaml
+           python-setuptools))
     (propagated-inputs
      (list python-boto3
            python-jsonschema
