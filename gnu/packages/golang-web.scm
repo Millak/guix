@@ -15963,6 +15963,30 @@ programming language.")
 programming language, which supports draft-04, draft-06 and draft-07.")
     (license license:asl2.0)))
 
+(define-public go-github-com-xiang90-probing
+  (package
+    (name "go-github-com-xiang90-probing")
+    (version "0.0.0-20221125231312-a49e3df8f510")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/xiang90/probing")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w0pwy8fzxfqnsjzl28jy08di58kwag48vlj4yj9hls77qgbr9ar"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xiang90/probing"))
+    (home-page "https://github.com/xiang90/probing")
+    (synopsis "HTTP prober")
+    (description
+     "This package implements a simple HTTP prober which may be used to check
+endpoint health status.")
+    (license license:expat)))
+
 (define-public go-github-com-xo-dburl
   (package
     (name "go-github-com-xo-dburl")
