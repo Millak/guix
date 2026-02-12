@@ -4467,6 +4467,7 @@ the current volume level of PulseAudio or PipeWire using libnotify.")
     (inputs
      (list alsa-lib
            jack-2
+           fmt-9
            ganv
            glibmm
            gtkmm-2
