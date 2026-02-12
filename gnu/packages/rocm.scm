@@ -27,6 +27,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
@@ -727,3 +728,29 @@ moves.")
 library for collective communication on GPUs, such as reduce, gather or
 scatter operations.")
     (license license:bsd-3)))
+
+(define-public rocm-smi-lib
+  (package
+    (name "rocm-smi-lib")
+    (version %rocm-version)
+    (source %rocm-systems-origin)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; requires GPU
+      #:build-type "Release"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "projects/rocm-smi-lib"))))))
+    (native-inputs (list pkg-config))
+    (inputs (list libdrm python))
+    (propagated-inputs (list grep coreutils))
+    (home-page %rocm-systems-url)
+    (synopsis "The ROCm System Management Interface (ROCm SMI) Library")
+    (description "The ROCm System Management Interface Library, or
+ROCm SMI library, is part of the Radeon Open Compute ROCm software
+stack.  It is a C library for Linux that provides a user space
+interface for applications to monitor and control GPU applications.")
+    (license license:expat)))
