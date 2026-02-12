@@ -3853,10 +3853,6 @@ find,download, and read the data files.")
       #~(list "-m" "not remote_data")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                ((" --cov=cdflib --cov-report=xml") ""))))
           (add-before 'check 'set-HOME
             (lambda _
               (setenv "HOME" "/tmp"))))))
