@@ -766,6 +766,30 @@ Playing bastet can be a painful experience, especially if you usually make
 canyons and wait for the long I-shaped block to clear four rows at a time.")
     (license license:gpl3+)))
 
+(define-public go-codeberg-org-anaseto-gothic
+  (package
+    (name "go-codeberg-org-anaseto-gothic")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/anaseto/gothic")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "194vjskwkz6h51spk2661khmk5nrzrrwc6iwb8n0viqa8rr8z8cd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "codeberg.org/anaseto/gothic"))
+    (propagated-inputs (list tcl tk))
+    (home-page "https://codeberg.org/anaseto/gothic")
+    (synopsis "Tcl/Tk Go bindings")
+    (description
+     "This package provides Tcl/Tk Go bindings, the API is a bit Tk-oriented.")
+    (license license:expat)))
+
 (define-public tetrinet
   (package
     (name "tetrinet")
