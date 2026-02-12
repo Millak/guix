@@ -102,18 +102,6 @@
             ;; Convenient value to inherit for extensions.
             %empty-sway-configuration))
 
-;; Helper function.
-(define (flatmap f l)
-  (let loop ((lst (reverse l))
-             (acc '()))
-    (match lst
-      (() acc)
-      ((head . tail)
-       (let* ((h (f head))
-              (acc (append h acc)))
-         (loop tail acc))))))
-
-
 ;;;
 ;;; Definition of configurations.
 ;;;
@@ -894,13 +882,13 @@
 
                ;; Outputs.
                #$@(with-heading "Outputs."
-                                (flatmap serialize-output
-                                         (sway-configuration-outputs conf)))
+                                (append-map serialize-output
+                                            (sway-configuration-outputs conf)))
 
                ;; Inputs.
                #$@(with-heading "Inputs."
-                                (flatmap serialize-input
-                                         (sway-configuration-inputs conf)))
+                                (append-map serialize-input
+                                            (sway-configuration-inputs conf)))
 
                ;; Bar configuration:
                ;; If the bar is unset, do not include anything.
@@ -920,8 +908,8 @@
 
                ;; Modes.
                #$@(with-heading "Modes."
-                                (flatmap serialize-mode
-                                         (sway-configuration-modes conf)))
+                                (append-map serialize-mode
+                                            (sway-configuration-modes conf)))
 
                ;; Startup-Programs.
                #$@(with-heading
