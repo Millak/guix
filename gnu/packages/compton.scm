@@ -115,7 +115,7 @@ performance).
 (define-public picom
   (package
     (name "picom")
-    (version "12.5")
+    (version "13")
     (source
      (origin
        (method git-fetch)
@@ -124,8 +124,8 @@ performance).
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "1skkchrlir9si9ljawg0xcgpfnd2macw7ny5vhx5f5zk7b7iphhz"))
-       (file-name (string-append "picom-" version))))
+         "0x81m06fhkgrl6vzm4a3cqxcldkq223q0jzlkkhd8kpjmrqaprw3"))
+       (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (inputs
      (list dbus
@@ -134,7 +134,6 @@ performance).
            libev
            libx11
            libxext
-           libxdg-basedir
            mesa
            pcre2
            pixman
@@ -145,7 +144,7 @@ performance).
            xprop))
     (native-inputs
      (append
-       (list pkg-config xorgproto)
+       (list pkg-config python-minimal-wrapper xorgproto)
        (if (supported-package? ruby-asciidoctor/minimal)
            (list ruby-asciidoctor/minimal)
            '())))
@@ -167,7 +166,7 @@ performance).
                    (substitute* "picom.desktop"
                      (("Exec=")
                       (string-append "Exec=" #$output "/bin/"))))))))
-    (home-page "https://github.com/yshui/picom")
+    (home-page "https://picom.app/")
     (synopsis "Compositor for X11, forked from Compton")
     (description
      "Picom is a standalone compositor for Xorg, suitable for use
