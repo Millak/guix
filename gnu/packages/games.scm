@@ -790,6 +790,61 @@ canyons and wait for the long I-shaped block to clear four rows at a time.")
      "This package provides Tcl/Tk Go bindings, the API is a bit Tk-oriented.")
     (license license:expat)))
 
+(define-public boohu
+  (package
+    (name "boohu")
+    (version "0.14.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/anaseto/boohu")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xh8b4fj2vd92ihh70rmmlq45ir0sb44g63blswfw96rb3jl3pk2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "codeberg.org/anaseto/boohu"))
+    (native-inputs (list go-codeberg-org-anaseto-gothic
+                         go-codeberg-org-anaseto-gruid
+                         go-github-com-gdamore-tcell-v2))
+    (home-page "https://anaseto.codeberg.page/games/boohu")
+    (synopsis "Break Out Of Hareka's Underground, a roguelike game")
+    (description
+     "@acronym{Boohu, Break Out Of Hareka's Underground} is a roguelike game
+mainly inspired from DCSS and its tavern, with some ideas from Brogue, but
+aiming for very short games, almost no character building, and a simplified
+inventory.
+
+@quotation
+Every year, the elders send someone to collect medicinal simella plants in the
+Underground.  This year, the honor fell upon you, and so here you
+are.  According to the elders, deep in the Underground, a magical monolith will
+lead you back to your village.  Along the way, you will collect simellas, as
+well as various items that will help you deal with monsters, which you may
+fight or flee@dots{}
+@end quotation")
+    (license license:expat)))
+
+(define-public boohu-tk
+  (package
+    (inherit boohu)
+    (name "boohu-tk")
+    (arguments
+     (substitute-keyword-arguments (package-arguments boohu)
+       ((#:tests? _ #t) #f)
+       ((#:build-flags _ #~())
+        #~(list "--tags=tk"))
+       ((#:phases _ #~%standard-phases)
+        #~(modify-phases %standard-phases
+            (add-after 'install 'fix-name-collision
+              (lambda _
+                (rename-file (string-append #$output "/bin/boohu")
+                             (string-append #$output "/bin/boohu-tk"))))))))))
+
 (define-public tetrinet
   (package
     (name "tetrinet")
