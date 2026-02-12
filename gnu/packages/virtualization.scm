@@ -2444,7 +2444,7 @@ Open Container Initiative specification.")
 (define-public umoci
   (package
     (name "umoci")
-    (version "0.5.1")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -2453,7 +2453,7 @@ Open Container Initiative specification.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0446xw8jrxgf2vgi30vlihak6z9srzbkzvm4v47nm0c87fijmigs"))
+        (base32 "0m50x2q2h34g6sh786blf8r9wh098yzgwnicdlx0cgsqqwjsn0ia"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
@@ -2476,11 +2476,13 @@ Open Container Initiative specification.")
                              "-X github.com/opencontainers/umoci.version="
                              #$version))))
     ;; TODO: build manpages from <doc/man> with 'go-md2man'.
-    (native-inputs
+    (propagated-inputs
      (list go-github-com-adalogics-go-fuzz-headers
            go-github-com-apex-log
            go-github-com-blang-semver-v4
+           go-github-com-containerd-platforms
            go-github-com-cyphar-filepath-securejoin
+           go-github-com-cyphar-go-mtree
            go-github-com-docker-go-units
            go-github-com-klauspost-compress
            go-github-com-klauspost-pgzip
@@ -2488,12 +2490,11 @@ Open Container Initiative specification.")
            go-github-com-moby-sys-userns
            go-github-com-mohae-deepcopy
            go-github-com-opencontainers-go-digest
-           go-github-com-opencontainers-image-spec-1.0.2
+           go-github-com-opencontainers-image-spec
            go-github-com-opencontainers-runtime-spec
            go-github-com-rootless-containers-proto-go-proto
            go-github-com-stretchr-testify
            go-github-com-urfave-cli
-           go-github-com-vbatts-go-mtree
            go-golang-org-x-sys
            go-google-golang-org-protobuf))
     (home-page "https://umo.ci/")
