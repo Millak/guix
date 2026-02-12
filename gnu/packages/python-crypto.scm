@@ -744,8 +744,17 @@ python-axolotl.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1v5wkmzcyiqy39db8j2dvkdrv2nlsc48556h73x4dzjwd6kg4q0a"))))
+        (base32 "1v5wkmzcyiqy39db8j2dvkdrv2nlsc48556h73x4dzjwd6kg4q0a"))
+       (patches
+        (list
+         (origin
+           (method url-fetch)
+           (uri
+            (string-append "https://github.com/wbond/oscrypto/commit/"
+                           "3865f5d528740aa1205d16ddbee84c5b48aeb078.patch"))
+           (sha256
+            (base32
+             "1lnvh5w4x5g4vnl8l078znd040zc6k4y18dzksbj7ydad3hrq73p")))))))
     (build-system pyproject-build-system)
     (arguments
      (list
