@@ -1514,7 +1514,12 @@ and rendering molecules.")
             (add-before 'check 'add-install-to-pythonpath
             (assoc-ref py:%standard-phases 'add-install-to-pythonpath)))))
     (inputs (list python))
-    (native-inputs (list doxygen python python-cython-0 python-sphinx))
+    (native-inputs
+     (list doxygen
+           python
+           python-cython-0
+           python-sphinx
+           python-setuptools))
     (home-page "https://github.com/rareylab/RingDecomposerLib")
     (synopsis "Calculate ring topology descriptions")
     (description "RingDecomposerLib is a library for the calculation of
