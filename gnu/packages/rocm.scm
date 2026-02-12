@@ -754,3 +754,5 @@ ROCm SMI library, is part of the Radeon Open Compute ROCm software
 stack.  It is a C library for Linux that provides a user space
 interface for applications to monitor and control GPU applications.")
     (license license:expat)))
+
+(define-deprecated-package rocm-smi rocm-smi-lib)

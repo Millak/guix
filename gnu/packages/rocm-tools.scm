@@ -21,7 +21,6 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
-  #:use-module (gnu packages base)
   #:use-module (gnu packages check)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages instrumentation)
@@ -170,33 +169,3 @@ translate CUDA source code into portable HIP C++.")
     (description "ROC profiler library.  Profiling with perf-counters
 and derived metrics.")
     (license license:expat)))
-
-(define-public rocm-smi
-  (package
-    (name "rocm-smi")
-    (version %rocm-version)
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url (string-append "https://github.com/ROCm/rocm_smi_lib"))
-              (commit (string-append "rocm-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "16i9ki4h6qp05g2n8pn8zakic8x581c1aavwnbyf17rrxvbnhyzz"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      #:tests? #f ; requires GPU
-      #:build-type "Release"))
-    (native-inputs (list pkg-config))
-    (inputs (list libdrm python))
-    (propagated-inputs (list grep coreutils))
-    (synopsis "The ROCm System Management Interface (ROCm SMI) Library")
-    (description "The ROCm System Management Interface Library, or
-ROCm SMI library, is part of the Radeon Open Compute ROCm software
-stack.  It is a C library for Linux that provides a user space
-interface for applications to monitor and control GPU applications.")
-    (home-page "https://github.com/ROCm/rocm_smi_lib")
-    (license license:ncsa)))
