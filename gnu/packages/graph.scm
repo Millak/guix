@@ -311,26 +311,31 @@ lines.")
       (license license:expat))))
 
 (define-public python-louvain
-  (package
-    (name "python-louvain")
-    (version "0.16")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "python-louvain" version))
-       (patches (search-patches "python-louvain-fix-test.patch"))
-       (sha256
-        (base32 "0sx53l555rwq0z7if8agirjgw4ddp8r9b949wwz8vlig03sjvfmp"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:test-backend #~'unittest))
-    (native-inputs (list python-setuptools))
-    (propagated-inputs (list python-networkx python-numpy))
-    (home-page "https://github.com/taynaud/python-louvain")
-    (synopsis "Louvain algorithm for community detection")
-    (description
-     "This package provides a pure Python implementation of the Louvain
+  ;; The latest release doesn't build with Python@3.12.
+  (let ((commit "def91793772c3e77ab4167d175903a5365c24b4b")
+        (revision "0"))
+    (package
+      (name "python-louvain")
+      (version (git-version "0.16" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/taynaud/python-louvain")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "014wzmwnbqgp1lrsc93p4mq3dqar01zv0v8cqrgm5jggvnskqn0c"))))
+      (build-system pyproject-build-system)
+      (arguments (list #:test-backend #~'unittest))
+      (native-inputs (list python-setuptools))
+      (propagated-inputs (list python-networkx python-numpy))
+      (home-page "https://github.com/taynaud/python-louvain")
+      (synopsis "Louvain algorithm for community detection")
+      (description
+       "This package provides a pure Python implementation of the Louvain
 algorithm for community detection in large networks.")
-    (license license:bsd-3)))
+      (license license:bsd-3))))
 
 (define-public python-graphtools
   (package
