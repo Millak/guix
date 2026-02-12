@@ -5342,14 +5342,6 @@ SCS (Splitting conic solver) library.")
         (base32
          "0rn3pnracv8013j3f737qal3isf1brbc3mpxqhr03vik322sapr5"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("addopts = .*") "")))))))
     (native-inputs
      (list python-pytest
            python-setuptools
