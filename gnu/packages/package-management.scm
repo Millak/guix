@@ -1613,13 +1613,19 @@ manage (install/update) them for you.")
               ;; directory, which would cause non-reproducible builds.
               (setenv "CONDA_PKGS_DIRS" "/tmp/conda-pkgs")))
           (add-after 'wrap 'wrap-executable
+            ;; Conda normally resolves envs_dirs and pkgs_dirs relative
+            ;; to sys.prefix, which on Guix points into the read-only
+            ;; store.  Redirect these to the user's home directory so
+            ;; conda can create environments and cache packages.  Use
+            ;; suffix (not prefix) so that user-supplied values (e.g.
+            ;; from "guix shell") take priority.
             (lambda _
               (wrap-program (string-append #$output "/bin/conda")
                 `("CONDA_EXE" prefix
                   (,(string-append #$output "/bin/conda")))
-                `("CONDA_ENVS_PATH" prefix
+                `("CONDA_ENVS_PATH" suffix
                   (,(string-append "$HOME/.conda/envs")))
-                `("CONDA_PKGS_DIRS" prefix
+                `("CONDA_PKGS_DIRS" suffix
                   (,(string-append "$HOME/.conda/pkgs")))))))))
     (native-inputs
      (list nss-certs-for-test
