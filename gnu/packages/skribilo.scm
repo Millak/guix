@@ -34,14 +34,14 @@
 (define-public skribilo
   (package
     (name "skribilo")
-    (version "0.11.0")
+    (version "0.11.1")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://savannah/skribilo/skribilo-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "1pbws07459aghljxqzzn8zjxwy7y13q54r5ckq7apk4kz6vw94qz"))))
+               "14nm50dd27w287raiffhmmivl66ff6f4n793y5lz62wj88f28p36"))))
     (build-system gnu-build-system)
     (arguments
      ;; Make the modules available under the usual location.
