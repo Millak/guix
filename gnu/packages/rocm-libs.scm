@@ -407,7 +407,7 @@ applications running on AMD GPUs.")
            lapack
            msgpack-cxx
            rocm-hip-runtime
-           rocm-smi
+           rocm-smi-lib
            rocm-toolchain
            roctracer))
     (native-inputs

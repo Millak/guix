@@ -713,7 +713,7 @@ moves.")
            rocm-hip-runtime
            rocprofiler-register
            (@ (gnu packages rocm-tools) hipify)
-           (@ (gnu packages rocm-tools) rocm-smi)))
+           rocm-smi-lib))
     (native-inputs
      (list fmt
            perl
