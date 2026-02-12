@@ -18323,6 +18323,33 @@ consists of a protocol buffers and @code{gRPC} API. Read more about CRI API at
 docs}.")
     (license license:asl2.0)))
 
+(define-public go-k8s-io-kms
+  (package
+    (name "go-k8s-io-kms")
+    (version "0.35.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kubernetes/kms")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03xq8scdg4qjhc4gjnl3z3b1f4lv75i07jx7klpcmzr6cdws3kk8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "k8s.io/kms"))
+    (propagated-inputs
+     (list go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/kubernetes/kms")
+    (synopsis "Kubernetes KMS implementation")
+    (description
+     "This package provides proto definitions for the @acronym{KMS, Key
+Management Services} API.")
+    (license license:asl2.0)))
+
 (define-public go-k8s-io-kube-openapi
   (package
     (name "go-k8s-io-kube-openapi")
