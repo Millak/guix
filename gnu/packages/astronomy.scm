@@ -7857,6 +7857,7 @@ Features:
       #~(list "--durations=10" ; report 10 slowest tests
               "--numprocesses" (number->string (min 8 (parallel-job-count)))
               ;; Tests require pysatSpaceWeather which is not packed yet.
+              "-o" "addopts=''"               ; Avoid -p pytest_cov.
               "--ignore=pysat/tests/test_utils_files.py"
               ;; TODO: Report upstream, probably comparability issue with
               ;; Pandas v2.3.3. Tests fail with error:
@@ -7883,9 +7884,6 @@ Features:
               (setenv "HOME" "/tmp")))
           (add-before 'check 'pre-check
             (lambda _
-              ;; Do not run test coverage.
-              (substitute* "pyproject.toml"
-                ((".*addopts.*cov.*") ""))
               (mkdir "pysatData")
               (invoke "python" "-c"
                       "import pysat; pysat.params['data_dirs'] = 'pysatData'"))))))
