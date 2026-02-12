@@ -1640,7 +1640,7 @@ manage (install/update) them for you.")
            python-pytest-xprocess
            python-responses
            python-werkzeug))
-    (propagated-inputs
+    (inputs
      (list python-archspec
            python-boltons
            python-boto3
@@ -1660,9 +1660,8 @@ manage (install/update) them for you.")
            python-setuptools
            python-tqdm
            python-truststore
+           python-wrapper            ; for the tests test_init_all, test_initialize_dev_bash, test_initialize_dev_cmd_exe
            python-zstandard))
-    (inputs
-     (list python-wrapper)) ; for the tests test_init_all, test_initialize_dev_bash, test_initialize_dev_cmd_exe
     (home-page "https://github.com/conda/conda")
     (synopsis "Cross-platform, OS-agnostic, system-level binary package manager")
     (description
