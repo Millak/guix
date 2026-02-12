@@ -3498,7 +3498,8 @@ that best match text queries.")
       #:test-flags
       #~(list "discover" "-p" "*tests.py" "mkdocs" "--top-level-directory" ".")))
     (native-inputs
-     (list python-hatchling))
+     (list python-hatchling
+           python-setuptools))
     (propagated-inputs
      (list python-click
            python-ghp-import
