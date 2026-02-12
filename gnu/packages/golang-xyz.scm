@@ -22913,6 +22913,36 @@ Singularity/Apptainer for packaging applications.")
 storage system.")
     (license license:bsd-2)))
 
+(define-public go-github-com-sytten-logrus-zap-hook
+  (package
+    (name "go-github-com-sytten-logrus-zap-hook")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Sytten/logrus-zap-hook")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05368jnjacar7i5v8i6nb1anzh7i1fbx3fkk202sw77n2bk9fcni"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Sytten/logrus-zap-hook"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-sirupsen-logrus
+           go-go-uber-org-zap))
+    (home-page "https://github.com/Sytten/logrus-zap-hook")
+    (synopsis "Lorus hook for the zap logger")
+    (description
+     "This package implements functionality to send logs from
+@url{https://github.com/sirupsen/logrus, logrus} to
+@url{https://github.com/uber-go/zap, zap}.  All levels are sent by default.")
+    (license license:expat)))
+
 (define-public go-github-com-tannerryan-ring
   (package
     (name "go-github-com-tannerryan-ring")
