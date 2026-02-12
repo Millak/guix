@@ -660,8 +660,9 @@ Its main purpose is to support the key usage by @code{docker-init}:
                    (("[$][{]ETCDIR[}]") "/etc")))
                 (invoke "make" "install.docker"
                         (string-append "PREFIX=" (assoc-ref outputs "docker"))
-                        (string-append "ETCDIR=" (string-append (assoc-ref outputs "docker")
-                                                                "/etc"))))))
+                        (string-append "ETCDIR="
+                                       (string-append (assoc-ref outputs "docker")
+                                                      "/etc"))))))
           (add-after 'install 'install-completions
             (lambda _
               (invoke "make" "install.completions"
