@@ -128,13 +128,13 @@ COMMIT.  PROC receives the temporary directory file name as an argument."
 (define %guix-git-repo-push-url-regexp
   "(git.guix.gnu.org|codeberg.org/guix|git@codeberg.org:guix)/guix(.git)? \\(push\\)")
 
-(define-syntax-rule (with-input-pipe-to-string prog arg ...)
-  (let* ((input-pipe (open-pipe* OPEN_READ prog arg ...))
+(define (with-input-pipe-to-string prog . args)
+  (let* ((input-pipe (apply open-pipe* OPEN_READ prog args))
 	 (output (get-string-all input-pipe))
 	 (exit-val (status:exit-val (close-pipe input-pipe))))
     (unless (zero? exit-val)
       (error (format #f "Command ~s exited with non-zero exit status: ~s"
-                     (string-join (list prog arg ...)) exit-val)))
+                     (string-join (cons prog args)) exit-val)))
     (string-trim-both output)))
 
 (define (find-origin-remote)
