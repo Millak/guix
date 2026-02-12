@@ -4508,6 +4508,37 @@ masks.
 @end itemize\n")
     (license license:gpl2)))
 
+(define-public obs-downstream-keyer
+  (package
+    (name "obs-downstream-keyer")
+    (version "0.4.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/exeldro/obs-downstream-keyer")
+              (commit version)))
+              (file-name (git-file-name name version))
+            (sha256
+              (base32
+                "0rm5plc9bblzlpyiwgbw68ypsr1gihgi1msxhj74k4b07qhldr2d"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:generator "Ninja"
+      #:configure-flags
+      #~(list "-DBUILD_OUT_OF_TREE=ON" "-Wno-dev")))
+    (inputs (list obs qtbase simde))
+    (home-page "https://github.com/exeldro/obs-downstream-keyer")
+    (synopsis "Plugin for OBS that adds a Downstream Keyer dock")
+    (description "The Downstream Keyer can add a @code{Scene} to all output,
+appearing as an overlay in front of all other content.  Effectively, it creates
+a global @code{Scene} which exists on all @code{Scenes}.  The Downstream Keyer
+plugin can be used for any global elements that should be in all @code{Scenes}
+such as logos, lower thirds or anything done through a Nested Scene.")
+    (license license:gpl2)))
+
 (define-public obs-gradient-source
   (package
     (name "obs-gradient-source")
