@@ -10706,12 +10706,7 @@ errors when data is invalid.")
                         '(unpack-rust-crates
                           configure
                           check-for-pregenerated-files
-                          patch-cargo-checksums))))
-          (add-after 'unpack 'patch-pyproject
-            (lambda _
-              ;; maturin failed to parce pyproject.toml.
-              (substitute* "pyproject.toml"
-                (("^license-files = .*") "")))))))
+                          patch-cargo-checksums)))))))
     (native-inputs
      (append
       (list maturin
