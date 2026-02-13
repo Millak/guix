@@ -443,7 +443,7 @@ using a mouse.  It is customizable and extensible with plugins and scripts.")
 (define-public srain
   (package
     (name "srain")
-    (version "1.5.0")
+    (version "1.8.1")
     (source
      (origin
        (method git-fetch)
@@ -452,11 +452,13 @@ using a mouse.  It is customizable and extensible with plugins and scripts.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qswvhx1s90jbsdx5znbc478v2ix3g0p6qm97cj7zzl0kx5kd780"))))
+        (base32 "105z2kbj9ar6zk6i1qrbysrp9vbz692kbl2dwdxcwly0yh4cbd0p"))))
     (build-system meson-build-system)
     (arguments
-     `(#:tests? #f ;there are no tests
-       #:glib-or-gtk? #t))
+     (list
+      #:configure-flags #~(list "-Dapp_indicator=false")
+      #:tests? #f ;there are no tests
+      #:glib-or-gtk? #t))
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")
@@ -469,9 +471,9 @@ using a mouse.  It is customizable and extensible with plugins and scripts.")
            gtk+
            libconfig
            libsecret
-           libsoup-minimal-2
+           libsoup-minimal
            openssl))
-    (home-page "https://srain.im")
+    (home-page "https://srain.silverrainz.me")
     (synopsis "Modern IRC client written in GTK")
     (description
      "Srain is an IRC client written in GTK.  It aims to be modern and easy to
