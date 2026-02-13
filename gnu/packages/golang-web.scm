@@ -12761,7 +12761,7 @@ protocol.")
 (define-public go-github-com-quic-go-webtransport-go
     (package
       (name "go-github-com-quic-go-webtransport-go")
-      (version "0.9.0")
+      (version "0.10.0")
       (source
        (origin
          (method git-fetch)
@@ -12770,18 +12770,24 @@ protocol.")
                (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "061mr55dq80kf3422vfranqlfb0416vix3wl7rb78ndmrcgvmr86"))))
+          (base32 "0np42zg6pkflp1hfnl4xbgk3bkfvhm210mbw9qzldwglxh7mql7i"))))
       (build-system go-build-system)
       (arguments
        (list
+        #:go go-1.25
         #:import-path "github.com/quic-go/webtransport-go"
-        ;; Error: "68" is not greater than "80"
-        #:test-flags #~(list "-skip" "TestDatagrams")))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'pre-check
+              (lambda* (#:key tests? import-path #:allow-other-keys)
+                ;; See: <https://go.dev/blog/synctest>.
+                (setenv "GOEXPERIMENT" "synctest")
+                (setenv "GODEBUG" "asynctimerchan=0"))))))
       (native-inputs
-       (list go-go-uber-org-mock
-             go-github-com-stretchr-testify))
+       (list go-github-com-stretchr-testify))
       (propagated-inputs
-       (list go-github-com-quic-go-quic-go
+       (list go-github-com-dunglas-httpsfv
+             go-github-com-quic-go-quic-go
              go-golang-org-x-exp))
       (home-page "https://github.com/quic-go/webtransport-go")
       (synopsis "WebTransport implementation based on quic-go")
