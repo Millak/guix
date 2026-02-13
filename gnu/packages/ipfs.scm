@@ -1344,7 +1344,7 @@ tasks distributed among peers.")
 (define-public go-github-com-ipfs-go-test
   (package
     (name "go-github-com-ipfs-go-test")
-    (version "0.0.4")
+    (version "0.2.3")
     (source
      (origin
        (method git-fetch)
@@ -1353,7 +1353,7 @@ tasks distributed among peers.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0h2lns6xl874m175l692qwsrwrv7jcx54ncqygjy9l3910ny2dg2"))))
+        (base32 "0f19bz83lnmp9qqmiz09b163sgrx5rganbv2ppxq9nrbk3b88d78"))))
     (build-system go-build-system)
     (arguments
      (list
