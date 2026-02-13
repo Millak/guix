@@ -20159,7 +20159,7 @@ alternative fork of https://github.com/pkg/errors project.")
 (define-public go-github-com-pion-logging
   (package
     (name "go-github-com-pion-logging")
-    (version "0.2.3")
+    (version "0.2.4")
     (source
      (origin
        (method git-fetch)
@@ -20168,13 +20168,15 @@ alternative fork of https://github.com/pkg/errors project.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13c8pkn6nyhayjax77bcysmv9fsyb63gllk2ns880b3hgdcl2l1a"))))
+        (base32 "1w3sgqjccxag9fkfzmrd4kf0p14qbfv02g74h72af3wqhns12xc4"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/pion/logging"
       #:test-flags
       #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (home-page "https://github.com/pion/logging/")
     (synopsis "Logging library for Golang projects")
     (description
