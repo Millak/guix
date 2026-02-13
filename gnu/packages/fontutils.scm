@@ -294,7 +294,6 @@ them as it goes.")
                           commands)))))))
     (native-inputs
      (list antlr4
-           openjdk                      ;required by antlr4
            ninja
            pkg-config
            python-pytest

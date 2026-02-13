@@ -9013,28 +9013,33 @@ Python generated sources by ANTLR.")))
              #t))
          (add-after 'install 'bin-install
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((jar (string-append (assoc-ref outputs "out") "/share/java"))
-                   (bin (string-append (assoc-ref outputs "out") "/bin")))
+             (let* ((output (assoc-ref outputs "out"))
+                    (bin (string-append output "/bin"))
+                    (bin/antlr4 (string-append bin "/antlr4")))
                (mkdir-p bin)
-               (with-output-to-file (string-append bin "/antlr4")
+               (with-output-to-file bin/antlr4
                  (lambda _
                    (display
-                     (string-append "#!" (which "sh") "\n"
-                                    "java -cp " jar "/antlr4.jar:"
-                                    (string-join
-                                      (apply
-                                        append
-                                        (map
-                                          (lambda (input)
-                                            (find-files (assoc-ref inputs input)
-                                                  ".*\\.jar"))
-                                          '("antlr3" "java-stringtemplate"
-                                            "java-antlr4-runtime" "java-treelayout"
-                                            "java-jsonp-api" "java-icu4j")))
-                                      ":")
-                                    " org.antlr.v4.Tool $*"))))
-               (chmod (string-append bin "/antlr4") #o755)
-               #t)))
+                    (string-append
+                     "#!"
+                     (search-input-file inputs "bin/sh")
+                     "\n"
+                     (string-append (assoc-ref inputs "openjdk")
+                                    "/bin/java")
+                     " -cp "
+                     (string-append output "/share/java/antlr4.jar")
+                     ":"
+                     (string-join
+                      (apply append
+                        (map (lambda (input)
+                               (find-files (assoc-ref inputs input)
+                                           "\\.jar$"))
+                             '("antlr3" "java-stringtemplate"
+                               "java-antlr4-runtime" "java-treelayout"
+                               "java-jsonp-api" "java-icu4j")))
+                      ":")
+                     " org.antlr.v4.Tool $*\n"))))
+               (chmod bin/antlr4 #o755))))
          (add-before 'build 'copy-resources
            (lambda _
              (copy-recursively "tool/resources/" "build/classes")
@@ -9079,7 +9084,8 @@ Python generated sources by ANTLR.")))
            java-icu4j
            java-jsonp-api
            java-stringtemplate
-           java-treelayout))
+           java-treelayout
+           openjdk))
     (native-inputs
      (list java-junit))
     (synopsis "Parser and lexer generator in Java")
@@ -9249,7 +9255,8 @@ the runtime library of ANTLR.")))
        ("java-icu4j" ,java-icu4j)
        ("java-jsonp-api" ,java-jsonp-api)
        ("java-stringtemplate" ,java-stringtemplate)
-       ("java-treelayout" ,java-treelayout)))))
+       ("java-treelayout" ,java-treelayout)
+       ("openjdk" ,openjdk)))))
 
 (define-public java-tunnelvisionlabs-antlr4-runtime
   (package
