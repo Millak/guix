@@ -51,6 +51,8 @@
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages oneapi)
+  #:use-module (gnu packages opencl)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages profiling)
   #:use-module (gnu packages python)
@@ -171,8 +173,12 @@ bind processes, and much more.")
                 "1aqdznqp7f18yg95vbr5n6ccxxdiywacygvn3wbhzn7bnspkdsaj"))))
 
     (native-inputs (modify-inputs (package-native-inputs hwloc-1)
+                     (append opencl-headers)
+                     (append opencl-icd-loader)
                      (append bash)))              ;for completion tests
     (inputs (modify-inputs (package-inputs hwloc-1)
+              (append level-zero)
+              (append libxml2)
               (delete "numactl")))               ;libnuma is no longer needed.
     (arguments
      (substitute-keyword-arguments (package-arguments hwloc-1)
