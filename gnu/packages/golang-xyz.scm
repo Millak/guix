@@ -25116,6 +25116,32 @@ readability, or to compact JSON for smaller payloads.")
 document.")
     (license license:expat)))
 
+(define-public go-github-com-tiendc-go-deepcopy
+  (package
+    (name "go-github-com-tiendc-go-deepcopy")
+    (version "1.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tiendc/go-deepcopy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19nf7b33rka5pcfjcbds68cr8wwsnhm9fj3awq30nvs374l58v1b"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tiendc/go-deepcopy"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/tiendc/go-deepcopy")
+    (synopsis "Fast deep-copy library for Go")
+    (description
+     "This package implements a functionality to copy one Golang type into
+another.")
+    (license license:expat)))
+
 (define-public go-github-com-timshannon-bolthold
   (package
     (name "go-github-com-timshannon-bolthold")
