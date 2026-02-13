@@ -8939,16 +8939,16 @@ capacity.")
 (define-public go-github-com-gammazero-deque
   (package
     (name "go-github-com-gammazero-deque")
-    (version "1.0.0")
+    (version "1.2.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/gammazero/deque")
-             (commit (string-append "v" version))))
+              (url "https://github.com/gammazero/deque")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "017xy7cw5yzmfjixwx5bglcxhg9gyyrqjilqzvq3mrh2760idp1a"))))
+        (base32 "1wpdw8bassk46bzgxrd1wg4il8jzvr0b1lg0nm7q8pz3xvazp164"))))
     (build-system go-build-system)
     (arguments
      (list
