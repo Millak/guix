@@ -3389,7 +3389,7 @@ desired local properties.")
            netcdf
            opencascade-occt
            openexr
-           vtk
+           vtk-9.5
            zlib))
     (home-page "https://f3d.app/")
     (synopsis "VTK-based 3D viewer")

@@ -3334,7 +3334,7 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
            qtxmlpatterns-5
            sqlite
            onetbb                       ;same version as opencascade-occt
-           vtk
+           vtk-9.5
            xerces-c
            yaml-cpp
            zlib))
