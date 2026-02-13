@@ -2261,9 +2261,62 @@ dist_patch_DATA =						\
   %D%/packages/patches/quickjs-ng-fix-atomics.pause-on-32-bit.patch	\
   %D%/packages/patches/quilt-grep-compat.patch 			\
   %D%/packages/patches/qmk-firmware-fix-hacker-dvorak.patch 	\
-  %D%/packages/patches/qtwayland-dont-recreate-callbacks.patch	\
-  %D%/packages/patches/qtwayland-cleanup-callbacks.patch	\
   %D%/packages/patches/qtwayland-update-wayland-xml.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0001-client-announce-an-output-after-receiving-more-compl.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0002-fix-issue-with-repeated-window-size-changes.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0003-client-connect-drags-being-accepted-to-updating-the-.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0004-client-disconnect-registry-listener-on-destruction.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0005-client-set-xdgshell-size-hints-before-the-first-comm.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0006-fix-build.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0007-fix-remove-listener.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0008-hook-up-querykeyboardmodifers.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0009-correctly-detect-if-image-format-is-supported-by-qim.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0010-client-don-t-always-recreate-frame-callbacks.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0011-client-always-destroy-frame-callback-in-the-actual-c.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0012-wayland-client-use-wl_keyboard-to-determine-active-s.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0013-client-do-not-empty-clipboard-when-a-new-popup-windo.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0014-client-implement-datadevicev3.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0015-client-delay-deletion-of-qdrag-object-until-after-we.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0016-client-avoid-processing-of-events-when-showing-windo.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0017-handle-registry_global-out-of-constructor.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0018-connect-flushrequest-after-forceroundtrip.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0019-move-the-wayland-socket-polling-to-a-separate-event-.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0020-client-remove-mwaitingforupdatedelivery.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0021-client-simplify-round-trip-behavior.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0022-client-fix-opaque-region-setter.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0023-use-proper-dependencies-in-compile-tests.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0024-revert-client-remove-mwaitingforupdatedelivery.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0025-fix-race-condition-on-mwaitingforupdatedelivery.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0026-use-poll-2-when-reading-from-clipboard.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0027-reduce-memory-leakage.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0028-only-close-popup-in-the-the-hierchary.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0029-check-pointer-for-null-before-use-in-assert.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0030-use-wl_surface.damage_buffer-on-the-client-side.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0031-client-clear-focus-on-touch-cancel.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0032-guard-mresizedirty-by-the-correctmutex.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0033-fix-compile-tests.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0034-call-finishdrag-in-qwaylanddatadevice-dragsourcecanc.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0035-hold-surface-read-lock-throughout-qwaylandeglwindow-.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0036-keep-toplevel-windows-in-the-top-left-corner-of-the-.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0037-client-add-f_seal_shrink-seal-to-shm-backing-file.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0038-client-call-wl_output_release-upon-qwaylandscreen-de.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0039-client-bump-wl_output-version.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0040-fix-frame-sync-related-to-unprotected-multithread-ac.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0041-client-handle-zwp_primary_selection_device_manager_v.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0042-fixes-the-build-on-centos.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0043-client-avoid-protocol-error-with-invalid-min-max-siz.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0044-client-fix-handling-of-qt-blankcursor.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0045-client-force-a-roundtrip-when-an-xdgoutput-is-not-re.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0046-destroy-frame-queue-before-display.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0047-client-fix-crash-on-dnd-updates-after-client-facing-.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0048-convert-cursor-bitmap-to-supported-format.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0049-replace-scale-with-devicepixelratio-for-non-integer-.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0050-client-fix-buffer-damage.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0051-client-commit-the-initial-surface-state-explicitly.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0052-tests-fix-tst_xdgshell-minmaxsize.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0053-client-remove-some-surface-commits.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0054-client-avoid-locking-resizing-in-qwaylandshmbackings.patch	\
+  %D%/packages/patches/qtwayland-5.15.18-0055-bradient-use-qwaylandwindow-actual-window-title.patch	\
   %D%/packages/patches/qtwebsockets-6.9-fix-tst_QWebSocket.patch\
   %D%/packages/patches/rabbitmq-defaults.patch		\
   %D%/packages/patches/radare2-fix-meson-build-to-use-sys-qjs.patch	\

@@ -2148,9 +2148,67 @@ record media, and manage a collection of media content.")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
-              (patches (search-patches "qtwayland-dont-recreate-callbacks.patch"
-                                       "qtwayland-cleanup-callbacks.patch"
-                                       "qtwayland-update-wayland-xml.patch"))
+              (patches (search-patches
+                        "qtwayland-update-wayland-xml.patch"
+                        ;; KDE Qt5 Patch Collection (kde/5.15 branch, on top
+                        ;; of v5.15.18-lts-lgpl).  Includes fix for
+                        ;; QTBUG-103391: Wayland protocol error when
+                        ;; maximumWidth < minimumWidth (patch 0043).
+                        "qtwayland-5.15.18-0001-client-announce-an-output-after-receiving-more-compl.patch"
+                        "qtwayland-5.15.18-0002-fix-issue-with-repeated-window-size-changes.patch"
+                        "qtwayland-5.15.18-0003-client-connect-drags-being-accepted-to-updating-the-.patch"
+                        "qtwayland-5.15.18-0004-client-disconnect-registry-listener-on-destruction.patch"
+                        "qtwayland-5.15.18-0005-client-set-xdgshell-size-hints-before-the-first-comm.patch"
+                        "qtwayland-5.15.18-0006-fix-build.patch"
+                        "qtwayland-5.15.18-0007-fix-remove-listener.patch"
+                        "qtwayland-5.15.18-0008-hook-up-querykeyboardmodifers.patch"
+                        "qtwayland-5.15.18-0009-correctly-detect-if-image-format-is-supported-by-qim.patch"
+                        "qtwayland-5.15.18-0010-client-don-t-always-recreate-frame-callbacks.patch"
+                        "qtwayland-5.15.18-0011-client-always-destroy-frame-callback-in-the-actual-c.patch"
+                        "qtwayland-5.15.18-0012-wayland-client-use-wl_keyboard-to-determine-active-s.patch"
+                        "qtwayland-5.15.18-0013-client-do-not-empty-clipboard-when-a-new-popup-windo.patch"
+                        "qtwayland-5.15.18-0014-client-implement-datadevicev3.patch"
+                        "qtwayland-5.15.18-0015-client-delay-deletion-of-qdrag-object-until-after-we.patch"
+                        "qtwayland-5.15.18-0016-client-avoid-processing-of-events-when-showing-windo.patch"
+                        "qtwayland-5.15.18-0017-handle-registry_global-out-of-constructor.patch"
+                        "qtwayland-5.15.18-0018-connect-flushrequest-after-forceroundtrip.patch"
+                        "qtwayland-5.15.18-0019-move-the-wayland-socket-polling-to-a-separate-event-.patch"
+                        "qtwayland-5.15.18-0020-client-remove-mwaitingforupdatedelivery.patch"
+                        "qtwayland-5.15.18-0021-client-simplify-round-trip-behavior.patch"
+                        "qtwayland-5.15.18-0022-client-fix-opaque-region-setter.patch"
+                        "qtwayland-5.15.18-0023-use-proper-dependencies-in-compile-tests.patch"
+                        "qtwayland-5.15.18-0024-revert-client-remove-mwaitingforupdatedelivery.patch"
+                        "qtwayland-5.15.18-0025-fix-race-condition-on-mwaitingforupdatedelivery.patch"
+                        "qtwayland-5.15.18-0026-use-poll-2-when-reading-from-clipboard.patch"
+                        "qtwayland-5.15.18-0027-reduce-memory-leakage.patch"
+                        "qtwayland-5.15.18-0028-only-close-popup-in-the-the-hierchary.patch"
+                        "qtwayland-5.15.18-0029-check-pointer-for-null-before-use-in-assert.patch"
+                        "qtwayland-5.15.18-0030-use-wl_surface.damage_buffer-on-the-client-side.patch"
+                        "qtwayland-5.15.18-0031-client-clear-focus-on-touch-cancel.patch"
+                        "qtwayland-5.15.18-0032-guard-mresizedirty-by-the-correctmutex.patch"
+                        "qtwayland-5.15.18-0033-fix-compile-tests.patch"
+                        "qtwayland-5.15.18-0034-call-finishdrag-in-qwaylanddatadevice-dragsourcecanc.patch"
+                        "qtwayland-5.15.18-0035-hold-surface-read-lock-throughout-qwaylandeglwindow-.patch"
+                        "qtwayland-5.15.18-0036-keep-toplevel-windows-in-the-top-left-corner-of-the-.patch"
+                        "qtwayland-5.15.18-0037-client-add-f_seal_shrink-seal-to-shm-backing-file.patch"
+                        "qtwayland-5.15.18-0038-client-call-wl_output_release-upon-qwaylandscreen-de.patch"
+                        "qtwayland-5.15.18-0039-client-bump-wl_output-version.patch"
+                        "qtwayland-5.15.18-0040-fix-frame-sync-related-to-unprotected-multithread-ac.patch"
+                        "qtwayland-5.15.18-0041-client-handle-zwp_primary_selection_device_manager_v.patch"
+                        "qtwayland-5.15.18-0042-fixes-the-build-on-centos.patch"
+                        "qtwayland-5.15.18-0043-client-avoid-protocol-error-with-invalid-min-max-siz.patch"
+                        "qtwayland-5.15.18-0044-client-fix-handling-of-qt-blankcursor.patch"
+                        "qtwayland-5.15.18-0045-client-force-a-roundtrip-when-an-xdgoutput-is-not-re.patch"
+                        "qtwayland-5.15.18-0046-destroy-frame-queue-before-display.patch"
+                        "qtwayland-5.15.18-0047-client-fix-crash-on-dnd-updates-after-client-facing-.patch"
+                        "qtwayland-5.15.18-0048-convert-cursor-bitmap-to-supported-format.patch"
+                        "qtwayland-5.15.18-0049-replace-scale-with-devicepixelratio-for-non-integer-.patch"
+                        "qtwayland-5.15.18-0050-client-fix-buffer-damage.patch"
+                        "qtwayland-5.15.18-0051-client-commit-the-initial-surface-state-explicitly.patch"
+                        "qtwayland-5.15.18-0052-tests-fix-tst_xdgshell-minmaxsize.patch"
+                        "qtwayland-5.15.18-0053-client-remove-some-surface-commits.patch"
+                        "qtwayland-5.15.18-0054-client-avoid-locking-resizing-in-qwaylandshmbackings.patch"
+                        "qtwayland-5.15.18-0055-bradient-use-qwaylandwindow-actual-window-title.patch"))
               (sha256
                (base32
                 "1pz380ndfdb78nzhwvjjwyijil2x9vr51nv4sl01q9wrfcw2ylam"))))
@@ -2168,6 +2226,20 @@ record media, and manage a collection of media content.")
                    "")
                   (("QTRY_COMPARE\\(bufferSpy\\.count\\(\\), 1\\);")
                    ""))
+                ;; KDE patch 0053 removed the wl_surface.commit call
+                ;; from propagateSizeHints() because committing the
+                ;; surface every time a size hint changed could send
+                ;; incomplete state to the compositor (e.g. the window
+                ;; geometry might not be set yet).  As a result,
+                ;; setMaximumSize() updates the xdg_toplevel min/max
+                ;; size but no longer commits the surface, so the
+                ;; compositor does not see the new values until the
+                ;; next frame.  This test calls setMaximumSize() and
+                ;; immediately checks the committed value, which is
+                ;; still the old one.
+                (substitute* "tests/auto/client/xdgshell/tst_xdgshell.cpp"
+                  (("QCOMPOSITOR_TRY_COMPARE\\(xdgToplevel\\(\\)->m_committed\\.maxSize, QSize\\(500, 400\\)\\)")
+                   "QSKIP(\"setMaximumSize no longer triggers a surface commit (patch 0053)\")"))
                 #$@(if (target-aarch64?)
                        ;; The tst_surface::createSubsurface test fails on
                        ;; aarch64 (see:

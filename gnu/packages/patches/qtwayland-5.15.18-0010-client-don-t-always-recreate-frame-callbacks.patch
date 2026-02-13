@@ -1,7 +1,7 @@
-From cbc74ba6d7186457d8d07183272e952dee5f34f9 Mon Sep 17 00:00:00 2001
+From c2b4de718762a3c1bb9971353a583001fceeec7a Mon Sep 17 00:00:00 2001
 From: Georges Basile Stavracas Neto <gbsneto@gnome.org>
 Date: Thu, 27 May 2021 19:55:04 -0300
-Subject: [PATCH] Client: Don't always recreate frame callbacks
+Subject: [PATCH 10/55] Client: Don't always recreate frame callbacks
 
 The main QWaylandWindow method that is executed when handling updates is
 QWaylandWindow::handleUpdate(). This method always, unconditionally queues
@@ -31,16 +31,17 @@ Change-Id: Ieacb05c7d5a5fcf662243d9177ebcc308cb9ca84
 Reviewed-by: Qt CI Bot <qt_ci_bot@qt-project.org>
 Reviewed-by: Georges Basile Stavracas Neto <gbsneto@gnome.org>
 Reviewed-by: Eskil Abrahamsen Blomfeldt <eskil.abrahamsen-blomfeldt@qt.io>
+(cherry picked from commit cbc74ba6d7186457d8d07183272e952dee5f34f9)
 ---
  src/client/qwaylandwindow.cpp               | 4 ++++
  tests/auto/client/xdgshell/tst_xdgshell.cpp | 2 ++
  2 files changed, 6 insertions(+)
 
 diff --git a/src/client/qwaylandwindow.cpp b/src/client/qwaylandwindow.cpp
-index a708afce..d83d5169 100644
+index d57094a7..9de284de 100644
 --- a/src/client/qwaylandwindow.cpp
 +++ b/src/client/qwaylandwindow.cpp
-@@ -1357,6 +1357,10 @@ void QWaylandWindow::requestUpdate()
+@@ -1199,6 +1199,10 @@ void QWaylandWindow::requestUpdate()
  void QWaylandWindow::handleUpdate()
  {
      qCDebug(lcWaylandBackingstore) << "handleUpdate" << QThread::currentThread();
@@ -52,7 +53,7 @@ index a708afce..d83d5169 100644
      QReadLocker lock(&mSurfaceLock);
      if (!mSurface)
 diff --git a/tests/auto/client/xdgshell/tst_xdgshell.cpp b/tests/auto/client/xdgshell/tst_xdgshell.cpp
-index 1d2a2014..962093c7 100644
+index 1423d647..46f07c0a 100644
 --- a/tests/auto/client/xdgshell/tst_xdgshell.cpp
 +++ b/tests/auto/client/xdgshell/tst_xdgshell.cpp
 @@ -138,6 +138,7 @@ void tst_xdgshell::configureSize()
@@ -72,5 +73,5 @@ index 1d2a2014..962093c7 100644
  
  void tst_xdgshell::popup()
 -- 
-2.38.1
+2.52.0
 
