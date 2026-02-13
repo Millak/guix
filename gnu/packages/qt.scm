@@ -2144,7 +2144,7 @@ record media, and manage a collection of media content.")
   (package
     (inherit qtsvg-5)
     (name "qtwayland")
-    (version "5.15.17")
+    (version "5.15.18")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -2211,7 +2211,7 @@ record media, and manage a collection of media content.")
                         "qtwayland-5.15.18-0055-bradient-use-qwaylandwindow-actual-window-title.patch"))
               (sha256
                (base32
-                "1pz380ndfdb78nzhwvjjwyijil2x9vr51nv4sl01q9wrfcw2ylam"))))
+                "07gqgd6ixqnsvc9r1c9y92vaxwj11ijrqvnxib8sv6xwhcmhvw43"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
@@ -2240,6 +2240,15 @@ record media, and manage a collection of media content.")
                 (substitute* "tests/auto/client/xdgshell/tst_xdgshell.cpp"
                   (("QCOMPOSITOR_TRY_COMPARE\\(xdgToplevel\\(\\)->m_committed\\.maxSize, QSize\\(500, 400\\)\\)")
                    "QSKIP(\"setMaximumSize no longer triggers a surface commit (patch 0053)\")"))
+                ;; Same issue: patch 0053 removed the wl_surface.commit
+                ;; from setMask(), so moving a subsurface no longer
+                ;; triggers an immediate parent surface commit.  The
+                ;; test expects the parent to commit right after
+                ;; setGeometry on the child, but the commit count
+                ;; stays at 0.
+                (substitute* "tests/auto/client/surface/tst_surface.cpp"
+                  (("window\\.setObjectName\\(\"main\"\\)")
+                   "QSKIP(\"subsurface move no longer triggers parent commit (patch 0053)\"); window.setObjectName(\"main\")"))
                 #$@(if (target-aarch64?)
                        ;; The tst_surface::createSubsurface test fails on
                        ;; aarch64 (see:
