@@ -4771,7 +4771,7 @@ in a Python @code{for} loop.")
 (define-public python-vedo
   (package
     (name "python-vedo")
-    (version "2025.5.3")
+    (version "2025.5.4")
     (source
      (origin
        (method git-fetch)
@@ -4780,7 +4780,7 @@ in a Python @code{for} loop.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hrqyvcxxbc1wz0cnafc8rvsi5mj19kck4b6pmddh25rlhdcr5qb"))))
+        (base32 "17lrx30pdag0d3d5a2cycfylsbhad4ywikza784h2fg95w77y1va"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4793,7 +4793,7 @@ in a Python @code{for} loop.")
          (add-after 'unpack 'relax-requirements
            ;; vtk does not provide Python metadata.
            ;;
-           ;; ...checking requirements: ERROR: vedo==2025.5.3
+           ;; ...checking requirements: ERROR: vedo==2025.5.4
            ;; DistributionNotFound(Requirement.parse('vtk'), {'vedo'})
            (lambda _
              (substitute* "pyproject.toml"
