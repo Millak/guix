@@ -2080,6 +2080,45 @@ operators and standard data types.")
 (define-deprecated-package python-onnx
   onnx)
 
+(define-public onnx-for-onnxruntime
+  (package
+    (inherit onnx)
+    (name "onnx-for-onnxruntime")
+    (source
+     (origin
+       (inherit (package-source onnx))
+       (patches (append (search-patches "onnx-1.17.0-for-onnxruntime.patch")
+                        (origin-patches (package-source onnx))))))
+    ;; Use cmake-build-system instead of pyproject-build-system so that
+    ;; only the C++ static library is built and installed.  The Python
+    ;; onnx package (with schemas registered) is provided by regular
+    ;; onnx; this variant has ONNX_DISABLE_STATIC_REGISTRATION=ON which
+    ;; would break onnx.shape_inference if its Python files ended up on
+    ;; PYTHONPATH.
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f  ; tests fail without schema registration
+      #:configure-flags
+      #~(list "-DBUILD_SHARED_LIBS=OFF"
+              "-DONNX_USE_PROTOBUF_SHARED_LIBS=OFF"
+              ;; Disable ONNX's schema registration so onnxruntime
+              ;; handles it.  See
+              ;; <https://onnxruntime.ai/docs/build/dependencies.html>.
+              "-DONNX_DISABLE_STATIC_REGISTRATION=ON"
+              "-DONNX_BUILD_TESTS=OFF"
+              "-DONNX_BUILD_BENCHMARKS=OFF"
+              "-DONNX_ML=ON"
+              "-DONNX_USE_LITE_PROTO=OFF"
+              "-DBUILD_ONNX_PYTHON=OFF")))
+    (inputs (list protobuf-static-for-onnxruntime))
+    (native-inputs (list python-minimal-wrapper pybind11))
+    (propagated-inputs '())
+    (description
+     "This variant of the ONNX package is built as a static C++ library
+with schema registration disabled, for linking into onnxruntime.  It
+should not be used standalone.")))
+
 (define-public onnx-optimizer
   (package
     (name "onnx-optimizer")
