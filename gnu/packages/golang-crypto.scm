@@ -2609,6 +2609,37 @@ done by Marc Stevens and Dan Shumow, and can be found at:
 @@url{https://github.com/cr-marcstevens/sha1collisiondetection,https://github.com/cr-marcstevens/sha1collisiondetection}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-pkg-sftp
+  (package
+    (name "go-github-com-pkg-sftp")
+    (version "1.13.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pkg/sftp")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hhnsl327acwlmvp8wk4x1ml2mi6gdrdwm1dh9666n2cj9d8yj24"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pkg/sftp"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-crypto
+           go-github-com-kr-fs))
+    (home-page "https://github.com/pkg/sftp")
+    (synopsis "SFTP implementation for Go")
+    (description
+     "This package provides an @acronym{SFTP, SSH File Transfer Protocol}
+implementation, as described in
+@url{https://filezilla-project.org/specs/draft-ietf-secsh-filexfer-02.txt},
+for Go.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-proglottis-gpgme
   (package
     (name "go-github-com-proglottis-gpgme")
