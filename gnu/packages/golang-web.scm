@@ -11641,16 +11641,16 @@ to @url{https://www.rfc-editor.org/rfc/rfc3550, RFC 3550},
 (define-public go-github-com-pion-rtp
   (package
     (name "go-github-com-pion-rtp")
-    (version "1.8.21")
+    (version "1.10.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pion/rtp")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pion/rtp")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hc5cdxgf0m44awvzzaby3hrlnhjbxjivl6981069xwgxspqakhm"))))
+        (base32 "0cnx8g1bhla8sxrqcp4r5lxjj8jzjk9vrz6jsrwxd1y4a96m0slj"))))
     (build-system go-build-system)
     (arguments
      (list
