@@ -10493,21 +10493,20 @@ following:
 (define-public go-github-com-multiformats-go-multiaddr-dns
   (package
     (name "go-github-com-multiformats-go-multiaddr-dns")
-    (version "0.3.1")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/multiformats/go-multiaddr-dns")
-             (commit (string-append "v" version))))
+              (url "https://github.com/multiformats/go-multiaddr-dns")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17qpcgxlmji6wdnjabl5ihc4zn69w2g0karad46zj70y5zg4y24r"))))
+        (base32 "0cnz066iijxr0xvik8ihl026frd2gwij2byjsb1372vrhwzr6g6p"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/multiformats/go-multiaddr-dns"
-      #:unpack-path "github.com/multiformats/go-multiaddr-dns"))
+      #:import-path "github.com/multiformats/go-multiaddr-dns"))
     (propagated-inputs
      (list go-github-com-miekg-dns
            go-github-com-multiformats-go-multiaddr))
