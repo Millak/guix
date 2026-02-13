@@ -27,6 +27,7 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix utils)
@@ -93,6 +94,52 @@ manner.  It also features an interactive interpreter.")
     (supported-systems (fold delete
                              %supported-systems
                              '("armhf-linux" "mips64el-linux")))))
+
+(define-public scryer-prolog
+  (package
+    (name "scryer-prolog")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "scryer-prolog" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08sn216bcwjx8y62pl3idfjpc1kxw0p0kq5zj3ydpjnnm0gmn03i"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f
+           #:cargo-build-flags ''("--no-default-features")
+           #:cargo-test-flags
+           ''("--"
+              "--skip=issues::issue_delete_directory"
+              "--skip=issues::issue_delete_file"
+              "--skip=issues::issue_directory_files"
+              "--skip=issues::issue_file_copy"
+              "--skip=issues::issue_file_exists"
+              "--skip=issues::issue_file_size"
+              "--skip=issues::issue_file_time"
+              "--skip=issues::issue_make_directory"
+              "--skip=issues::issue_make_directory_path"
+              "--skip=issues::issue_path_canonical"
+              "--skip=issues::issue_rename_file")))
+    (inputs
+     (cons* libffi
+            openssl
+            (cargo-inputs 'scryer-prolog)))
+    (native-inputs
+     (cons* pkg-config
+            (if (%current-target-system)
+                (list this-package)
+                '())))
+    (home-page "https://github.com/mthom/scryer-prolog")
+    (synopsis "Modern Prolog implementation written mostly in Rust")
+    (description
+     "Scryer Prolog aims to provide an open source industrial strength
+production environment that is also a testbed for bleeding edge research in
+logic and constraint programming, which is itself written in a high-level
+language.")
+    (license license:bsd-3)))
 
 (define-public swi-prolog
   (package
