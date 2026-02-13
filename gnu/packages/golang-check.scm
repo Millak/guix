@@ -2060,6 +2060,36 @@ testing capabilities.")
 Perl's @url{https://metacpan.org/pod/Test::Deep, Test::Deep perl}.")
     (license license:bsd-2)))
 
+(define-public go-github-com-mfridman-tparse
+  (package
+    (name "go-github-com-mfridman-tparse")
+    (version "0.18.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mfridman/tparse")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x87vn1bm1lsj7sh3m3lky8m2518vjf5xsd9kgkypwk8cwm2k450"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mfridman/tparse"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-charmbracelet-lipgloss
+           go-github-com-muesli-termenv
+           go-golang-org-x-term))
+    (home-page "https://github.com/mfridman/tparse")
+    (synopsis "Go test output summarizer library and CLI tool")
+    (description
+     "This package provides a Go library and a command line tool for analyzing
+and summarizing @code{go test} output.")
+    (license license:expat)))
+
 (define-public go-github-com-mndrix-tap-go
   (package
     (name "go-github-com-mndrix-tap-go")
