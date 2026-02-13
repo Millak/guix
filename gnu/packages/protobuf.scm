@@ -589,8 +589,8 @@ mechanism for serializing structured data.")
     (native-inputs
      (list python-setuptools))
     ;; The C++ implementation is not compatible with Python 3.11, so we cannot
-    ;; pass --cpp_implementation any more.
-    (inputs (list protobuf-3.20))
+    ;; pass --cpp_implementation any more.  Without that flag, only the pure
+    ;; Python implementation is built and the C++ protobuf library is not needed.
     (home-page "https://github.com/google/protobuf")
     (synopsis "Protocol buffers is a data interchange format")
     (description
