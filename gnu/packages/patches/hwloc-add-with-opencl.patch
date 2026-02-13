@@ -1,0 +1,90 @@
+From f30cc463a948260088b496c3609dd91c83c0ce1b Mon Sep 17 00:00:00 2001
+From: Brice Goglin <Brice.Goglin@inria.fr>
+Date: Mon, 16 Feb 2026 15:00:53 +0100
+Subject: [PATCH] configure: add --with-opencl=<dir>
+
+For non-ROCm non-CUDA installs.
+
+Thanks to Romain Garbage for the suggestion.
+
+Signed-off-by: Brice Goglin <Brice.Goglin@inria.fr>
+(cherry picked from commit 462eff5a4541dfcb3db15034490c796c4f1d8ec6)
+---
+ config/hwloc.m4          | 18 +++++++++++++++---
+ config/hwloc_internal.m4 | 13 ++++++++++++-
+ 2 files changed, 27 insertions(+), 4 deletions(-)
+
+diff --git a/config/hwloc.m4 b/config/hwloc.m4
+index e0057e8e5..4a26a7ec0 100644
+--- a/config/hwloc.m4
++++ b/config/hwloc.m4
+@@ -1,7 +1,7 @@
+ dnl -*- Autoconf -*-
+ dnl
+ dnl SPDX-License-Identifier: BSD-3-Clause
+-dnl Copyright © 2009-2025 Inria.  All rights reserved.
++dnl Copyright © 2009-2026 Inria.  All rights reserved.
+ dnl Copyright © 2009-2012, 2015-2017, 2020, 2023, 2025 Université Bordeaux
+ dnl Copyright © 2004-2005 The Trustees of Indiana University and Indiana
+ dnl                         University Research and Technology
+@@ -1365,6 +1365,18 @@ return rsmi_init(0);
+       echo "**** OpenCL configuration"
+ 
+       hwloc_opencl_happy=yes
++
++      if test "x$with_opencl" != x -a "x$with_opencl" != xyes; then
++        opencl_dir=$with_opencl
++        AC_MSG_NOTICE([using custom OpenCL install path $opencl_dir ...])
++      else
++        AC_MSG_NOTICE([assuming OpenCL is installed in standard directories ...])
++      fi
++      if test "x$opencl_dir" != x; then
++        HWLOC_OPENCL_CPPFLAGS="-I$opencl_dir/include/"
++        HWLOC_OPENCL_LDFLAGS="-L$opencl_dir/lib/"
++      fi
++
+       case ${target} in
+       *-*-darwin*)
+         # On Darwin, only use the OpenCL framework
+@@ -1387,8 +1399,8 @@ return clGetDeviceIDs(0, 0, 0, NULL, NULL);
+       ;;
+       *)
+         # On Others, look for OpenCL at normal locations
+-        HWLOC_OPENCL_CPPFLAGS="$HWLOC_CUDA_COMMON_CPPFLAGS"
+-        HWLOC_OPENCL_LDFLAGS="$HWLOC_CUDA_COMMON_LDFLAGS"
++        HWLOC_OPENCL_CPPFLAGS="$HWLOC_OPENCL_CPPFLAGS $HWLOC_CUDA_COMMON_CPPFLAGS"
++        HWLOC_OPENCL_LDFLAGS="$HWLOC_OPENCL_LDFLAGS $HWLOC_CUDA_COMMON_LDFLAGS"
+         if test "x$rocm_dir" != x; then
+ 	   if test -d "$rocm_dir/include/CL"; then
+              HWLOC_OPENCL_CPPFLAGS="$HWLOC_OPENCL_CPPFLAGS -I$rocm_dir/include/"
+diff --git a/config/hwloc_internal.m4 b/config/hwloc_internal.m4
+index da6505e91..1135a245f 100644
+--- a/config/hwloc_internal.m4
++++ b/config/hwloc_internal.m4
+@@ -1,7 +1,7 @@
+ dnl -*- Autoconf -*-
+ dnl
+ dnl SPDX-License-Identifier: BSD-3-Clause
+-dnl Copyright © 2010-2025 Inria.  All rights reserved.
++dnl Copyright © 2010-2026 Inria.  All rights reserved.
+ dnl Copyright © 2009, 2011 Université Bordeaux
+ dnl Copyright © 2004-2005 The Trustees of Indiana University and Indiana
+ dnl                         University Research and Technology
+@@ -147,6 +147,17 @@ AC_DEFUN([HWLOC_DEFINE_ARGS],[
+ 		       [AC_MSG_ERROR([--with-amdgpu=<dir> missing the installation directory])])]
+ 		)
+ 
++    # OpenCL
++    AC_ARG_ENABLE([opencl],
++                  AS_HELP_STRING([--disable-opencl],
++                                 [Disable the OpenCL device discovery]))
++    AC_ARG_WITH([opencl],
++                AS_HELP_STRING([--with-opencl=<dir>],
++		               [Specify the OpenCL installation directory]),
++		[AS_IF([test "x$withval" = xyes -o "x$withval" = x],
++		       [AC_MSG_ERROR([--with-opencl=<dir> missing the installation directory])])]
++		)
++
+     # LevelZero
+     AC_ARG_ENABLE([levelzero],
+                   AS_HELP_STRING([--disable-levelzero],

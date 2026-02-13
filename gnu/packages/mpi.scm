@@ -38,6 +38,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
@@ -171,20 +172,33 @@ bind processes, and much more.")
                                   "/hwloc-" version ".tar.bz2"))
               (sha256
                (base32
-                "1aqdznqp7f18yg95vbr5n6ccxxdiywacygvn3wbhzn7bnspkdsaj"))))
+                "1aqdznqp7f18yg95vbr5n6ccxxdiywacygvn3wbhzn7bnspkdsaj"))
+              ;; XXX: Remove after updating package from 2.13.0.
+              (patches (search-patches "hwloc-add-with-opencl.patch"))))
 
     (native-inputs (modify-inputs (package-native-inputs hwloc-1)
+                     (append autoconf)
+                     (append automake)
+                     (append libtool)
                      (append opencl-headers)
-                     (append opencl-icd-loader)
                      (append bash)))              ;for completion tests
     (inputs (modify-inputs (package-inputs hwloc-1)
               (append level-zero)
               (append libxml2)
+              (append opencl-icd-loader)
               (delete "numactl")))               ;libnuma is no longer needed.
     (arguments
      (substitute-keyword-arguments (package-arguments hwloc-1)
+       ((#:configure-flags flags '())
+        #~(cons* (string-append "--with-opencl="
+                                #$(this-package-input "opencl-icd-loader"))
+                 #$flags))
        ((#:phases phases)
         #~(modify-phases #$phases
+            (add-after 'unpack 'delete-configure
+              (lambda _
+                ;; Remove configure file to generate it with patch.
+                (delete-file "configure")))
             (replace 'skip-linux-libnuma-test
               (lambda _
                 ;; Arrange to skip 'tests/hwloc/linux-libnuma', which fails on
