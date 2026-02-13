@@ -3946,6 +3946,31 @@ authentication through Negotiate mechanism (see
 Dropbox API.")
     (license license:expat)))
 
+(define-public go-github-com-dunglas-httpsfv
+  (package
+    (name "go-github-com-dunglas-httpsfv")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dunglas/httpsfv")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jy6wmbij9fh1q72j198afxxl1d6rjj6pigk6kp4qwjp8qr08hyd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dunglas/httpsfv"))
+    (home-page "https://github.com/dunglas/httpsfv")
+    (synopsis "Structured Field Values for HTTP in Go")
+    (description
+     "Package httpsfv implements serializing and parsing of Structured Field
+Values for HTTP as defined in @url{https://rfc-editor.org/rfc/rfc9651.html,
+RFC 9651}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-eggsampler-acme-v3
   (package
     (name "go-github-com-eggsampler-acme-v3")
