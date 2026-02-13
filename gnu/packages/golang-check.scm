@@ -1858,6 +1858,31 @@ testing and improve the efficiency of unit test writing.")
 testing of time-sensitive code.")
     (license license:expat)))
 
+(define-public go-github-com-joshdk-go-junit
+  (package
+    (name "go-github-com-joshdk-go-junit")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/joshdk/go-junit")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1grk90ymwpmlvid6q2rsayvbb51mwh9b6sczqn0yk5dpgykggn1v"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/joshdk/go-junit"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/joshdk/go-junit")
+    (synopsis "Go library for ingesting JUnit XML reports")
+    (description
+     "This package implements a functionality to ingest JUnit XML reports.")
+    (license license:expat)))
+
 (define-public go-github-com-jtolds-gls
   (package
     (name "go-github-com-jtolds-gls")
