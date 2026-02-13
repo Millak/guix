@@ -6735,7 +6735,7 @@ and embedded platforms.")
     (name "uim-gtk")
     (inputs
      (modify-inputs (package-inputs uim)
-       (prepend gtk+ gtk+-2)))
+       (prepend gtk+)))
     (arguments
      (substitute-keyword-arguments (package-arguments uim)
        ((#:configure-flags configure-flags)
