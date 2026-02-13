@@ -10435,16 +10435,16 @@ function for formatting a Forwarded header.")
 (define-public go-github-com-multiformats-go-multiaddr
   (package
     (name "go-github-com-multiformats-go-multiaddr")
-    (version "0.15.0")
+    (version "0.16.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/multiformats/go-multiaddr")
-             (commit (string-append "v" version))))
+              (url "https://github.com/multiformats/go-multiaddr")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rnq4b9vn6d0d9b6m0yqwdigrgidky3smrgnp5w8sfw523nk5dkl"))))
+        (base32 "076ch502vvgn65d1bf1hkikpa518dcgxgzz8a0sd5c7a1s2d9lsf"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -10454,8 +10454,8 @@ function for formatting a Forwarded header.")
     (propagated-inputs
      (list go-github-com-ipfs-go-cid
            go-github-com-multiformats-go-multibase
-           go-github-com-multiformats-go-varint
            go-github-com-multiformats-go-multihash
+           go-github-com-multiformats-go-varint
            go-golang-org-x-exp))
     (home-page "https://github.com/multiformats/go-multiaddr")
     (synopsis "Composable and future-proof network addresses")
