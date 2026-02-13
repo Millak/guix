@@ -220,7 +220,7 @@ simulation, statistical modeling, machine learning and much more.")
      (list python-flaky
            python-hatchling
            python-ipyparallel-bootstrap
-           python-pytest
+           python-pytest-8
            python-pytest-asyncio-0.26   ;some tests fail with v1
            python-pytest-timeout))
     (inputs (list python))              ;for cross compilation
@@ -235,7 +235,7 @@ simulation, statistical modeling, machine learning and much more.")
            python-packaging
            python-psutil
            python-pyzmq
-           python-tornado-6
+           python-tornado
            python-traitlets))
     (home-page "https://ipython.org")
     (synopsis "IPython Kernel for Jupyter")
