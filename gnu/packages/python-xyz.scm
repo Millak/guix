@@ -11188,14 +11188,18 @@ numpysane has:
       #~(modify-phases %standard-phases
           (add-after 'unpack 'avoid-external-deps
             (lambda _
+              ;; XXX: Avoid search-button to avoid sphinx error
+              ;; TemplateNotFound('search-button.html')
+              (substitute* "doc/source/conf.py"
+                (("\"search-button\",") ""))
               ;; XXX: Avoid theme-switcher to avoid sphinx error
               ;; TemplateNotFound('theme-switcher.html')
+              (substitute* "doc/source/conf.py"
+                (("\"theme-switcher\",") ""))
               ;; XXX: Avoid version-switcher because it depends on the value
               ;; of external https://numpy.org/doc/_static/versions.json
               (substitute* "doc/source/conf.py"
-                (("\
-\"navbar_end\": \\[\"theme-switcher\", \"version-switcher\", ")
-                 "\"navbar_end\": ["))))
+                (("\"version-switcher\",") ""))))
           (add-before 'build 'add-gnu-freefont-to-texmf
             (lambda _
               ;; XXX: The Sphinx-generated tex output specifies the GNU
@@ -11262,6 +11266,7 @@ numpysane has:
            perl
            python-breathe
            python-ipython
+           python-jupyterlite-sphinx
            python-matplotlib
            python-numpy
            python-numpydoc
@@ -11269,6 +11274,7 @@ numpysane has:
            python-pydata-sphinx-theme
            python-scipy                 ;used by matplotlib
            python-sphinx
+           python-sphinx-copybutton
            python-sphinx-design
            texinfo
            (texlive-local-tree
