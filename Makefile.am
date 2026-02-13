@@ -1291,6 +1291,12 @@ $(GIT_HOOKS_DIR)/commit-msg: etc/git/commit-msg | $(GIT_HOOKS_DIR)
 	fi; \
 	cp etc/git/commit-msg $@
 
+# Convenience targets.
+GIT_HOOKS_SOURCE_FILES := $(shell find etc/git -type f -executable)
+.PHONY: git-config git-hooks invalidate-hooks
+git-hooks: $(addprefix $(GIT_HOOKS_DIR)/,$(notdir $(GIT_HOOKS_SOURCE_FILES)))
+git-config: $(GIT_CONFIG_FILE) git-hooks
+
 # The etc/git/ config files are not distributed and have no use when building
 # from a tarball.  Do not add dependencies on these to *_DATA when building
 # from a tarball, as that breaks the build.
