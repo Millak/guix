@@ -2203,7 +2203,14 @@ with a single function call.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0z2s79l4wdilssw9lmj319ypyyqi2y0dx0fpwr2yhq8bax3ci50n"))))
+        (base32 "0z2s79l4wdilssw9lmj319ypyyqi2y0dx0fpwr2yhq8bax3ci50n"))
+       (patches
+        (search-patches
+         ;; SplitToSequence operator was missing bool type support, despite
+         ;; the ONNX spec allowing it in models.  Fixed upstream in 1.23+,
+         ;; but we cannot upgrade because ROCm support was removed in 1.23.
+         ;; <https://github.com/microsoft/onnxruntime/pull/24929>
+         "onnxruntime-1.22.0-splittosequence-bool.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -2217,7 +2224,12 @@ with a single function call.")
               "-Donnxruntime_BUILD_SHARED_LIB=ON"
               "-Donnxruntime_ENABLE_LTO=ON"
               "-Donnxruntime_ENABLE_PYTHON=ON"
-              "-Donnxruntime_USE_FULL_PROTOBUF=OFF"
+              "-Donnxruntime_USE_FULL_PROTOBUF=ON"
+              ;; Link static protobuf, matching upstream's vcpkg approach.
+              ;; This keeps the protobuf descriptor pool inside
+              ;; onnxruntime_pybind11_state.so separate from the shared
+              ;; libprotobuf.so used by the regular onnx Python package.
+              "-DProtobuf_USE_STATIC_LIBS=ON"
               ;; XXX: Fixes build with gcc@14.
               "-DCMAKE_CXX_FLAGS=-Wl,-z,noexecstack")
       #:phases
@@ -2296,8 +2308,8 @@ with a single function call.")
            flatbuffers-23.5
            googletest
            nlohmann-json
-           onnx
-           protobuf
+           onnx-for-onnxruntime
+           protobuf-static-for-onnxruntime
            pybind11-2
            re2-next
            safeint
