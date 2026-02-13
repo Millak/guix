@@ -3298,7 +3298,7 @@ compositors that support the layer-shell protocol.")
 (define-public kanshi
   (package
     (name "kanshi")
-    (version "1.8.0")
+    (version "1.9.0")
     (source
      (origin
        (method git-fetch)
@@ -3307,7 +3307,7 @@ compositors that support the layer-shell protocol.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1aw43fdrrgywghy59ahfxwq0613ydkpl2j6p042c0iwqv1b6fhgp"))))
+        (base32 "032mca5sj3nk1dkyjrpr3w5xxm0ig7m3r0sq0s7pnlx0bhs35b0p"))))
     (build-system meson-build-system)
     (inputs (list libscfg libvarlink wayland))
     (native-inputs (append (if (%current-target-system)
