@@ -11525,16 +11525,16 @@ part of @url{https://github.com/pion, Pion} WebRTC implementation.")
 (define-public go-github-com-pion-interceptor
   (package
     (name "go-github-com-pion-interceptor")
-    (version "0.1.37")
+    (version "0.1.44")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pion/interceptor")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pion/interceptor")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dl6z8ysssq8nnkrvbi1qnhib12mdwb8psqmmdhj43yffjwb0gg6"))))
+        (base32 "1k180k2c23pbn03mx8sr31r0bi3zbgv74kkb6wnc74b4awbzj5ni"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -11545,7 +11545,8 @@ part of @url{https://github.com/pion, Pion} WebRTC implementation.")
      (list go-github-com-pion-logging
            go-github-com-pion-rtcp
            go-github-com-pion-rtp
-           go-github-com-pion-transport-v3))
+           go-github-com-pion-transport-v3
+           go-golang-org-x-time))
     (home-page "https://github.com/pion/interceptor")
     (synopsis "Pluggable RTP/RTCP processors for building real time communication")
     (description
