@@ -5489,7 +5489,7 @@ connection to each user.")
            python-setuptools))))
 
 ;; XXX: Deprecated on <2026-01-23>.
-(define-deprecated/public-alias python-tornado-6 python-tornado)
+(define-deprecated-package python-tornado-6 python-tornado)
 
 (define-public python-tornado-http-auth
   (package
