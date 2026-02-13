@@ -353,7 +353,7 @@ many popular formats.")
 (define-public vtk
   (package
     (name "vtk")
-    (version "9.4.2")
+    (version "9.5.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://vtk.org/files/release/"
@@ -361,7 +361,7 @@ many popular formats.")
                                   "/VTK-" version ".tar.gz"))
               (sha256
                (base32
-                "00kahpi53hld3ip3cfswdnvfg4llmabq0w2kzqq2mcbbm46qxj9n"))
+                "12f9cbazgxrm71r4fpdlxk0mlpgzim2i7vziv8177zvhsac4prnf"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -481,6 +481,31 @@ triangulation.  VTK has an extensive information visualization framework, has
 a suite of 3D interaction widgets, supports parallel processing, and
 integrates with various databases on GUI toolkits such as Qt and Tk.")
     (license license:bsd-3)))
+
+(define-public vtk-9.4
+  (package
+    (inherit vtk)
+    (version "9.4.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://vtk.org/files/release/"
+                                  (version-major+minor version)
+                                  "/VTK-" version ".tar.gz"))
+              (sha256
+               (base32
+                "00kahpi53hld3ip3cfswdnvfg4llmabq0w2kzqq2mcbbm46qxj9n"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (for-each
+                   (lambda (dir)
+                     (delete-file-recursively
+                      (string-append "ThirdParty/" dir "/vtk" dir)))
+                   ;; pugixml depended upon unconditionally
+                   '("doubleconversion" "eigen" "expat" "freetype" "gl2ps"
+                     "hdf5" "jpeg" "jsoncpp" "libharu" "libproj"
+                     "libxml2" "lz4" "netcdf" "ogg" "png" "sqlite" "theora"
+                     "tiff" "zlib"))))))))
 
 (define-public vtk-9.3
   (package

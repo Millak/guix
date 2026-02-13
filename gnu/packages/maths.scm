@@ -4821,7 +4821,7 @@ Mathematics (GLM) library to Python.")
            python-pytest
            python-setuptools
            unzip
-           vtk))
+           vtk-9.4))
     (inputs
      ;; [optional]
      (list python-matplotlib))
