@@ -10919,6 +10919,37 @@ datagram transport protocol, it has special support to allow long messages to
 be split over multiple datagrams.")
     (license license:expat)))
 
+(define-public go-github-com-guillaumemichel-reservedpool
+  (package
+    (name "go-github-com-guillaumemichel-reservedpool")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/guillaumemichel/reservedpool")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00103b4jdwh9jrd0dcm6hmfpb3gjm5lwfaprpqqqc8gp7ds2n1dq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/guillaumemichel/reservedpool"))
+    (home-page "https://github.com/guillaumemichel/reservedpool")
+    (synopsis "Concurrency pool with per-category reservations")
+    (description
+     "Package @code{reservedpool} implements a simple concurrency pool with
+per-category reservations.  Each category of work can claim a number of slots
+that are reserved exclusively for it while any extra capacity is shared among
+all categories.  This allows prioritizing certain categories without leaving
+the pool underutilized.
+
+Acquire blocks until a slot for the requested category is available. Release
+returns a previously acquired slot.  The pool can be closed to release waiters
+and reject future acquisitions.")
+    (license license:expat)))
+
 (define-public go-github-com-guptarohit-asciigraph
   (package
     (name "go-github-com-guptarohit-asciigraph")
