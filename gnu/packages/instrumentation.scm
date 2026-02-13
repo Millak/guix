@@ -707,7 +707,7 @@ bundled with python-3 and luajit that you can delete in a package variant.")
         #:phases
         #~(modify-phases %standard-phases
             (replace 'check (assoc-ref gnu:%standard-phases 'check)))))
-      (native-inputs (list boost python-pytest))
+      (native-inputs (list boost python-pytest-8))
       (home-page "https://github.com/eepp/yactfr")
       (synopsis "CTF reading library offering a C++14 API")
       (description "While the @acronym{CTF, Common Trace Format} reading
