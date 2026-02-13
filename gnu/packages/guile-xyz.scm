@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2017, 2022 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2025 Alex Sassmannshausen <alex@pompo.co>
@@ -7727,8 +7727,8 @@ of data.")
     (license license:gpl3+)))
 
 (define-public lokke
-  (let ((commit "92d36370dc6d218ff3bf315e56ebef93808c1b79")
-        (revision "1"))
+  (let ((commit "10dfebe0d7e601760802114abb274a3dc889305a")
+        (revision "2"))
     (package
       (name "lokke")
       (version (git-version "0.0.0" revision commit))
@@ -7739,7 +7739,7 @@ of data.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1c913md4dcfb0x4n26wbx9wdw453wxg3c5rn49k3f6j8zjqv63yv"))))
+                  "0vd90ir7ypqhzh5swqmixvnm9napk87hp53ipxla6jiqdrlzbd5q"))))
       (build-system gnu-build-system)
       (arguments
        '(#:phases
