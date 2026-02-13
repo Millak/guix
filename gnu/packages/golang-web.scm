@@ -11593,7 +11593,7 @@ interceptors are then run sequentially.")
   (package
     (inherit go-github-com-pion-mdns)
     (name "go-github-com-pion-mdns-v2")
-    (version "2.0.7")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)
@@ -11602,7 +11602,7 @@ interceptors are then run sequentially.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03675hx82lx3c8akkxdbkch1z4dbq54r05jk6jgdyd7mrdh9k4lm"))))
+        (base32 "0aiisfldvrj71icnpzkyfjcm853bvcjw93cx98d4pcl66gs0rg7n"))))
     (arguments
      (substitute-keyword-arguments (package-arguments
                                     go-github-com-pion-mdns)
