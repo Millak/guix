@@ -12143,7 +12143,7 @@ STUN, TURN mDNS candidates
   (package
     (inherit go-github-com-pion-webrtc-v3)
     (name "go-github-com-pion-webrtc-v4")
-    (version "4.0.11")
+    (version "4.2.6")
     (source
      (origin
        (method git-fetch)
@@ -12152,17 +12152,28 @@ STUN, TURN mDNS candidates
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g7bka1x6cq4a85a73lwg8bmv9dqza0z54vdy2ny0hbypyj7xb23"))))
+        (base32 "039sm8w6bmsk63zpa7dpfqz1fb5bysi6432d6by0j8s64r9dvp50"))))
     (build-system go-build-system)
     (arguments
      (substitute-keyword-arguments
          (package-arguments go-github-com-pion-webrtc-v3)
        ((#:import-path _) "github.com/pion/webrtc/v4")))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs go-github-com-pion-webrtc-v3)
-       (replace "go-github-com-pion-dtls-v2" go-github-com-pion-dtls-v3)
-       (replace "go-github-com-pion-ice-v2" go-github-com-pion-ice-v4)
-       (replace "go-github-com-pion-srtp-v2" go-github-com-pion-srtp-v3)))))
+     (list go-github-com-pion-datachannel
+           go-github-com-pion-dtls-v3
+           go-github-com-pion-ice-v4
+           go-github-com-pion-interceptor
+           go-github-com-pion-logging
+           go-github-com-pion-randutil
+           go-github-com-pion-rtcp
+           go-github-com-pion-rtp
+           go-github-com-pion-sctp
+           go-github-com-pion-sdp-v3
+           go-github-com-pion-srtp-v3
+           go-github-com-pion-stun-v3
+           go-github-com-pion-transport-v4
+           go-github-com-pion-turn-v4
+           go-golang-org-x-net))))
 
 (define-public go-github-com-pires-go-proxyproto
   (package
