@@ -38,6 +38,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages base)            ;for 'which'
   #:use-module (gnu packages bison)
   #:use-module (gnu packages compression)
@@ -244,7 +245,7 @@ efficiency through the use of a compact vector representation of n-grams.")
 (define-public speech-dispatcher
   (package
     (name "speech-dispatcher")
-    (version "0.11.5")
+    (version "0.12.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -253,14 +254,21 @@ efficiency through the use of a compact vector representation of n-grams.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0z2rb1yi06v145sr2h69rxbxzrsfrk198cw6bgpf8wj2njfh3555"))))
+                "0f1mqs80b4fbnpii5mn82xn54nbxy229hwjfqbir26zqk4pinf7q"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-static"
 
                            ;; Disable support for proprietary TTS engines.
                            "--with-voxin=no" "--with-ibmtts=no"
-                           "--with-kali=no" "--with-baratinoo=no")))
+                           "--with-kali=no" "--with-baratinoo=no")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-bin-bash
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/modules/generic.c"
+               (("/bin/bash")
+                (search-input-file inputs "/bin/bash"))))))))
     (native-inputs
      (list autoconf
            automake
@@ -269,11 +277,14 @@ efficiency through the use of a compact vector representation of n-grams.")
            pkg-config
            texinfo))
     (inputs
-     (list dotconf
+     (list bash-minimal
+           dotconf
            espeak-ng
+           flite
            glib
            libltdl
            libsndfile
+           pipewire
            pulseaudio
            python
            python-xdg))
