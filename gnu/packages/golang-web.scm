@@ -14370,6 +14370,40 @@ they can be used to access remote (HTTP accessible) ZIP archives without
 needing to download the whole archive file.")
     (license license:expat)))
 
+(define-public go-github-com-soheilhy-cmux
+  (package
+    (name "go-github-com-soheilhy-cmux")
+    (version "0.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/soheilhy/cmux")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17zpa45xvmk3jl1qqx3lkqdyxs6hdczpv7hwg4s7x0895jx3zl5y"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/soheilhy/cmux/example
+            (delete-file-recursively "example")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/soheilhy/cmux"))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/soheilhy/cmux")
+    (synopsis "Connection multiplexer for GoLang")
+    (description
+     "Package cmux is a library to multiplex network connections based on
+their payload to server gRPC, SSH, HTTPS, HTTP, Go RPC, and pretty much any
+other protocol on the same TCP listener.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-sourcegraph-jsonrpc2
   (package
     (name "go-github-com-sourcegraph-jsonrpc2")
