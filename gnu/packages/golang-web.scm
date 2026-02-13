@@ -11614,16 +11614,16 @@ interceptors are then run sequentially.")
 (define-public go-github-com-pion-rtcp
   (package
     (name "go-github-com-pion-rtcp")
-    (version "1.2.14")
+    (version "1.2.16")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pion/rtcp")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pion/rtcp")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00hfq0l17zq47slzfbrghgfc0v808hqiyaab3ni9kh1v7nmvp5ic"))))
+        (base32 "1aj2zapmah998jaaas7b599drpyw85zivfkk3kxrwbqqqpw339qp"))))
     (build-system go-build-system)
     (arguments
      (list
