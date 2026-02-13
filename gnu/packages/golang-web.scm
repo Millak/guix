@@ -11283,7 +11283,7 @@ original data and access it via a typed struct and a dynamic map.")
 (define-public go-github-com-pion-datachannel
   (package
     (name "go-github-com-pion-datachannel")
-    (version "1.5.10")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)
@@ -11292,7 +11292,7 @@ original data and access it via a typed struct and a dynamic map.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1197ix9z1qg9xf8bhcy0k4a3ppql0jv4l8szv21wwkwzpylba0jk"))))
+        (base32 "1la92n41rdsq798g49j8rbd0ryfkqy67iqn20cwwrl244k8g0gql"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -11302,7 +11302,7 @@ original data and access it via a typed struct and a dynamic map.")
     (propagated-inputs
      (list go-github-com-pion-logging
            go-github-com-pion-sctp
-           go-github-com-pion-transport-v3))
+           go-github-com-pion-transport-v4))
     (home-page "https://github.com/pion/datachannel")
     (synopsis "Implementation of WebRTC Data Channels in Golang")
     (description
