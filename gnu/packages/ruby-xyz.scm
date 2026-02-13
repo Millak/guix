@@ -13476,7 +13476,7 @@ parser for writing http servers, clients and proxies.")
 (define-public ruby-excon
   (package
     (name "ruby-excon")
-    (version "0.109.0")
+    (version "1.3.2")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -13485,7 +13485,7 @@ parser for writing http servers, clients and proxies.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "199niqbpzj70k3n6ybg4vbcw3qm76kwic4nl9747l1n0v49aaj24"))))
+                "0vcgnkvbk3accblncvs37vikmvd4dlziq9d7r4rli00wl2lj51w6"))))
     (build-system ruby-build-system)
     (arguments
      (list
