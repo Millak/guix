@@ -1973,6 +1973,33 @@ library's internal ChaCha20 package.")
 the Go standard library's TLS 1.3 implementation.")
     (license license:bsd-3)))
 
+(define-public go-github-com-melbahja-goph
+  (package
+    (name "go-github-com-melbahja-goph")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/melbahja/goph")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w6sn6m3bsh60flp0fdbv70c2d1ky12mpj09100qf64w0v1d32k0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/melbahja/goph"))
+    (propagated-inputs
+     (list go-github-com-pkg-errors
+           go-github-com-pkg-sftp
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/melbahja/goph")
+    (synopsis "Native Golang SSH client")
+    (description
+     "This package provide pure Go implementation of SSH client.")
+    (license license:expat)))
+
 (define-public go-github-com-miekg-pkcs11
   (package
     (name "go-github-com-miekg-pkcs11")
