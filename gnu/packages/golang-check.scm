@@ -2232,16 +2232,16 @@ Gomega matcher library.")
 (define-public go-github-com-onsi-gomega
   (package
     (name "go-github-com-onsi-gomega")
-    (version "1.37.0")
+    (version "1.39.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/onsi/gomega")
-             (commit (string-append "v" version))))
+              (url "https://github.com/onsi/gomega")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nkkr1kw3bbz0mmxqyxafa9h951plv7nd570lc0wrr7skmicbw9x"))))
+        (base32 "1nqi9hqk90l80w3s5alfpxb4x0jsizc470hmhkk1qh3h8n2x0mk6"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -2251,17 +2251,15 @@ Gomega matcher library.")
           (add-after 'unpack 'remove-failing-test-files
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
-              (delete-file "gexec/build_test.go")))))
+                (delete-file "gexec/build_test.go")))))
       #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-onsi-ginkgo-v2-bootstrap))
     (propagated-inputs
-     (list go-github-com-golang-protobuf
+     (list go-github-com-google-go-cmp
+           go-go-yaml-in-yaml-v3
            go-golang-org-x-net
-           go-golang-org-x-sys
-           go-golang-org-x-text
-           go-google-golang-org-protobuf
-           go-gopkg-in-yaml-v3))
+           go-google-golang-org-protobuf))
     (home-page "https://github.com/onsi/gomega")
     (synopsis "Matcher library for Ginkgo")
     (description
