@@ -2789,6 +2789,88 @@ differentiate between installs of Mozilla software in @code{installs.ini} and
 @code{profiles.ini}.")
     (license license:expat)))
 
+(define-public go-github-com-brianvoe-gofakeit-v6
+  (package
+    (name "go-github-com-brianvoe-gofakeit-v6")
+    (version "6.28.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/brianvoe/gofakeit")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yg33zl0vf54g0lhb4qvhl3ncicfcj2mij111wh5wzwydsqyqzk7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/brianvoe/gofakeit/v6"
+      #:test-flags
+      #~(list "-vet=off"
+              "-skip" (string-join
+		       ;; Some random mismatch in example tests.
+                       (list "ExampleCar"
+                             "ExampleCreditCard"
+                             "ExampleCreditCardExp"
+                             "ExampleDate"
+                             "ExampleFaker_Car"
+                             "ExampleFaker_CreditCard"
+                             "ExampleFaker_CreditCardExp"
+                             "ExampleFaker_Date"
+                             "ExampleFaker_FirefoxUserAgent"
+                             "ExampleFaker_Person"
+                             "ExampleFaker_SQL"
+                             "ExampleFaker_Year"
+                             "ExampleFirefoxUserAgent"
+                             "ExamplePerson"
+                             "ExampleSQL"
+                             "ExampleYear"
+                             "TestStructToDateTime")
+                       "|"))))
+    (home-page "https://github.com/brianvoe/gofakeit")
+    (synopsis "Random fake data generator written in Go")
+    (description
+     "This package provides a set of functions that generate random data.")
+    (license license:expat)))
+
+(define-public go-github-com-brianvoe-gofakeit-v7
+  (package
+    (inherit go-github-com-brianvoe-gofakeit-v6)
+    (name "go-github-com-brianvoe-gofakeit-v7")
+    (version "7.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/brianvoe/gofakeit")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wvp9h3wyx131y2jk48r3ymhzq3p16isxa1a6chw410ixxi497lh"))))
+    (arguments
+     (list
+      #:import-path "github.com/brianvoe/gofakeit/v7"
+      #:test-flags
+      #~(list "-skip" (string-join
+		       ;; Some random mismatch in example tests.
+                       (list "ExampleCreditCard"
+                             "ExampleCreditCardExp"
+                             "ExampleDate"
+                             "ExampleFaker_CreditCard"
+                             "ExampleFaker_CreditCardExp"
+                             "ExampleFaker_Date"
+                             "ExampleFaker_FirefoxUserAgent"
+                             "ExampleFaker_Person"
+                             "ExampleFaker_SQL"
+                             "ExampleFaker_Year"
+                             "ExampleFirefoxUserAgent"
+                             "ExamplePerson"
+                             "ExampleSQL"
+                             "ExampleYear"
+                             "TestStructToDateTime")
+                       "|"))))))
+
 (define-public go-github-com-buger-jsonparser
   (package
     (name "go-github-com-buger-jsonparser")
