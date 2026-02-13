@@ -265,6 +265,36 @@ yet extensible format.  Google uses Protocol Buffers for almost all of its
 internal RPC protocols and file formats.")
     (license license:bsd-3)))
 
+(define-public protobuf-static-for-onnxruntime
+  (package
+    (inherit protobuf)
+    (name "protobuf-static")
+    (arguments
+     (substitute-keyword-arguments (package-arguments protobuf)
+       ((#:configure-flags _)
+        #~(list "-DBUILD_SHARED_LIBS=OFF"
+                "-Dprotobuf_BUILD_SHARED_LIBS=OFF"
+                "-Dprotobuf_USE_EXTERNAL_GTEST=ON"
+                ;; -fPIC is needed because this .a will be linked into
+                ;; onnxruntime's shared .so.
+                "-DCMAKE_POSITION_INDEPENDENT_CODE=ON"
+                ;; C++17 is needed because descriptor.pb.h declares
+                ;; static constexpr members (e.g. FileOptions::SPEED)
+                ;; with out-of-line definitions in descriptor.pb.cc
+                ;; guarded by "#if (__cplusplus < 201703)".  In C++14
+                ;; both produce symbols, causing duplicate definitions
+                ;; when the .a is linked into a binary.  C++17 makes
+                ;; static constexpr implicitly inline and suppresses
+                ;; the out-of-line definitions.
+                "-DCMAKE_CXX_STANDARD=17"))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'move-static-libraries)
+            (replace 'set-c++-standard
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("CMAKE_CXX_STANDARD 11") "CMAKE_CXX_STANDARD 17"))))))))))
+
 ;; Needed for python-mysql-connector-python
 (define-public protobuf-3.20
   (package
