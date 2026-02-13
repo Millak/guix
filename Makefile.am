@@ -1269,42 +1269,36 @@ cuirass-jobs: $(GOBJECTS)
 .PHONY: clean-go make-go as-derivation
 .PHONY: update-guix-package update-NEWS cuirass-jobs release
 
+if in_git_p
 # Git auto-configuration.
-.git/hooks/:
-	$(AM_V_at)if test -d .git; then \
-	mkdir "$@"; \
-	fi
+GIT_HOOKS_DIR := $(shell git rev-parse --git-path hooks)
+GIT_CONFIG_FILE := $(shell git rev-parse --git-path config)
+$(GIT_HOOKS_DIR):
+	mkdir -p "$@"
 
-.git/hooks/%: etc/git/% | .git/hooks/
-	$(AM_V_at)if test -d .git; then \
-	cp "$<" "$@"; \
-	fi
+$(GIT_HOOKS_DIR)/%: etc/git/% | $(GIT_HOOKS_DIR)/
+	cp "$<" "$@"
 
-.git/config: etc/git/gitconfig
-	$(AM_V_at)if command -v git >/dev/null && test -d .git; then \
+$(GIT_CONFIG_FILE): etc/git/gitconfig
 	git config --fixed-value --replace-all include.path \
-	  ../etc/git/gitconfig ../etc/git/gitconfig; \
-	fi
+	  ../etc/git/gitconfig ../etc/git/gitconfig
 
 COMMIT_MSG_MAGIC = VGhpcyBpcyB0aGUgY29tbWl0LW1zZyBob29rIG9mIEd1aXg=
-.git/hooks/commit-msg: etc/git/commit-msg | .git/hooks/
-	$(AM_V_at)if test -d .git; then \
+$(GIT_HOOKS_DIR)/commit-msg: etc/git/commit-msg | $(GIT_HOOKS_DIR)
 	if test -f $@  && ! grep -qF $(COMMIT_MSG_MAGIC) $@; then \
 	  mkdir -p $@.d && mv $@ $@.d && \
 	@ echo user commit-msg hook moved to $@.d/commit-msg; \
 	fi; \
-	cp etc/git/commit-msg $@; \
-	fi
+	cp etc/git/commit-msg $@
 
 # The etc/git/ config files are not distributed and have no use when building
 # from a tarball.  Do not add dependencies on these to *_DATA when building
 # from a tarball, as that breaks the build.
-if in_git_p
 nodist_noinst_DATA =				\
-  .git/hooks/pre-push				\
-  .git/hooks/post-merge				\
-  .git/config					\
-  .git/hooks/commit-msg
+  $(GIT_HOOKS_DIR)/pre-push			\
+  $(GIT_HOOKS_DIR)/post-merge			\
+  $(GIT_CONFIG_FILE)				\
+  $(GIT_HOOKS_DIR)/commit-msg
 endif
 
 # Downloading up-to-date PO files.
