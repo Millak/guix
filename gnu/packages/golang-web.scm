@@ -10546,7 +10546,7 @@ combinations is easy.")
 (define-public go-github-com-multiformats-go-multistream
   (package
     (name "go-github-com-multiformats-go-multistream")
-    (version "0.5.0")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
@@ -10555,7 +10555,7 @@ combinations is easy.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mlcz16ii090vq6brm02dmmkj8akkafa55kyvkrrwpq6zvj1hy23"))))
+        (base32 "1lawi95ms4gqq34na69cy9ziimdig04kaq9rzgl5ramf1cp86qj8"))))
     (build-system go-build-system)
     (arguments
      (list
