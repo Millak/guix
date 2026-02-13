@@ -8881,31 +8881,23 @@ addresses for now.")
 (define-public go-github-com-libp2p-go-netroute
   (package
     (name "go-github-com-libp2p-go-netroute")
-    (version "0.2.1")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/libp2p/go-netroute")
-             (commit (string-append "v" version))))
+              (url "https://github.com/libp2p/go-netroute")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06p68j63fd5nf2gf1fz2pnksmdmv735swpbpvnhb15vrgg3r528g"))))
+        (base32 "1k292b2ka0nydp74mzxiad6dc9czf0dg4r1nr2889yqgj19l24mx"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/libp2p/go-netroute"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  ;; Test requiring network access: no route found for 8.8.8.8
-                  (("TestRoute") "OffTestRoute"))))))))
+      #:tests? #f ;network access is required
+      #:import-path "github.com/libp2p/go-netroute"))
     (propagated-inputs
-     (list go-github-com-google-gopacket
-           go-golang-org-x-net
+     (list go-golang-org-x-net
            go-golang-org-x-sys))
     (home-page "https://github.com/libp2p/go-netroute")
     (synopsis "Routing table abstraction library for Golang")
