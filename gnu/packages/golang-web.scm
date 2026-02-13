@@ -11502,16 +11502,16 @@ part of @url{https://github.com/pion, Pion} WebRTC implementation.")
   (package
     (inherit go-github-com-pion-ice-v3)
     (name "go-github-com-pion-ice-v4")
-    (version "4.0.7")
+    (version "4.2.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pion/ice/")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pion/ice/")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kcq14li99dpm927rqizmmnkx6jwp9zr4fvhhv42id9dmn8y6yqj"))))
+        (base32 "18xys90qh2i88wfsr6gsvkivbhl0fypcgf3ffcacsc5jfrk235sm"))))
     (arguments
      (list
       #:tests? #f ;Tests require network access.
