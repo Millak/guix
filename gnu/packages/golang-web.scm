@@ -11701,16 +11701,16 @@ Protocol,SCTP} as specified in
 (define-public go-github-com-pion-sdp-v3
   (package
     (name "go-github-com-pion-sdp-v3")
-    (version "3.0.10")
+    (version "3.0.17")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pion/sdp")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pion/sdp")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xpak20vwf3vmhi0lcj0xgy4snffsmyb6f2c6sq0w713drxqv2hb"))))
+        (base32 "03i8csyagyh8ybm0niwsva7h1qgg9nn68mlhdxdrzxadf2564dn9"))))
     (build-system go-build-system)
     (arguments
      (list
