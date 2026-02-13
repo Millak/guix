@@ -1943,6 +1943,38 @@ per-goroutine.")
 rules you define and fixing them according to the defined rules.")
     (license license:asl2.0)))
 
+(define-public go-github-com-marcopolo-simnet
+  (package
+    (name "go-github-com-marcopolo-simnet")
+    (version "0.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/MarcoPolo/simnet")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pq0lg2xc2pigrclzf9jagrgy6k4rij4dghpdgvciwmhfchv2480"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; FIXME: imports testing/synctest: build constraints exclude all Go
+      ;; files in <...>/go-1.24.11/lib/go/src/testing/synctest
+      #:tests? #f
+      #:import-path "github.com/marcopolo/simnet"))
+    (propagated-inputs
+     (list go-golang-org-x-time))
+    (home-page "https://github.com/marcopolo/simnet")
+    (synopsis "Simulate packet networks in process with synctest")
+    (description
+     "This package provides a small Go library for simulating packet networks
+in-process.  It provides drop-in @code{net.PacketConn} endpoints connected
+through configurable virtual links with bandwidth, latency, and MTU
+constraints.  Useful for testing networking code without sockets or root
+privileges.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-maruel-panicparse
   (package
     (name "go-github-com-maruel-panicparse")
