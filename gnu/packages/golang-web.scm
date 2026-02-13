@@ -8173,7 +8173,7 @@ protocol in Go language.")
 (define-public go-github-com-koron-go-ssdp
   (package
     (name "go-github-com-koron-go-ssdp")
-    (version "0.0.4")
+    (version "0.1.0")
     (source
      (origin
        (method git-fetch)
@@ -8182,7 +8182,7 @@ protocol in Go language.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0agzxzlwvnhgwk6sxswjq7v1ghmf0l02gr7zpdih24i3g457af4f"))))
+        (base32 "1777lrpxmrcbmqardmlcsz5zcqbvgsr4kfa5z1sqh8yx0nz9084m"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -8196,6 +8196,7 @@ protocol in Go language.")
                      "TestAnnounceAlive"
                      "TestAnnounceBye"
                      "TestInterfaces"
+                     "TestSearch_AdvetiserWithHost"
                      "TestSearch_Request"
                      "TestSearch_Response"
                      "TestSearch_ServiceRawHeader")
