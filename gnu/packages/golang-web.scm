@@ -11759,23 +11759,23 @@ Protocol,SCTP} as specified in
   (package
     (inherit go-github-com-pion-srtp-v2)
     (name "go-github-com-pion-srtp-v3")
-    (version "3.0.7")
+    (version "3.0.10")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pion/srtp")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pion/srtp")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0l8y01ci5fsx8b6ajn9cvs45hqpz838x0jnyyj1p2z714nw9jh61"))))
+        (base32 "1lmmn0x1b7g2q5lp3nkhyc5g32lrirnb9dx2x274hfdmzmcgw104"))))
     (arguments
      (list
       #:import-path "github.com/pion/srtp/v3"))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs go-github-com-pion-srtp-v2)
        (replace "go-github-com-pion-transport-v2"
-         go-github-com-pion-transport-v3)))))
+         go-github-com-pion-transport-v4)))))
 
 (define-public go-github-com-pion-stun
   (package
