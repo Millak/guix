@@ -1245,27 +1245,31 @@ encryption/decryption, and integrity verification.")
 (define-public go-github-com-flynn-noise
   (package
     (name "go-github-com-flynn-noise")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/flynn/noise")
-             (commit (string-append "v" version))))
+              (url "https://github.com/flynn/noise")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j6phxyqx06wcqxjpin696fkp85s76qcp3i2f7fv6q2fb6618f6y"))))
+        (base32 "13rbd9x2vm9yzaws0aznjjnqgx9k9c7hp5j1d6za6k09vadrsw40"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/flynn/noise"))
+     (list
+      #:import-path "github.com/flynn/noise"))
+    (native-inputs
+     (list go-gopkg-in-check-v1))
     (propagated-inputs
-     (list go-gopkg-in-check-v1 go-golang-org-x-crypto))
+     (list  go-golang-org-x-crypto))
     (home-page "https://github.com/flynn/noise")
     (synopsis "Go implementation of the Noise protocol framework")
-    (description "@code{noise} implements the Noise protocol framework.  Noise
-is a low-level framework for building crypto protocols.  Noise protocols
-support mutual and optional authentication, identity hiding, forward secrecy,
-zero round-trip encryption, and other advanced features.")
+    (description
+     "@code{noise} implements the Noise protocol framework.  Noise is a
+low-level framework for building crypto protocols.  Noise protocols support
+mutual and optional authentication, identity hiding, forward secrecy, zero
+round-trip encryption, and other advanced features.")
     (license license:bsd-3)))
 
 (define-public go-github-com-gaukas-godicttls
