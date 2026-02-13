@@ -11669,16 +11669,16 @@ packetizer and depacketizer.")
 (define-public go-github-com-pion-sctp
   (package
     (name "go-github-com-pion-sctp")
-    (version "1.8.36")
+    (version "1.9.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pion/sctp")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pion/sctp")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j9ibj7mhrnh4vmcm6dh6l7q52jq0h6788gvgsfmhh7mxrlajgy3"))))
+        (base32 "0byfznyagyq9xp20iy3rd4pnriy727csvkn7jhm60wwr47151rzs"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -11688,7 +11688,7 @@ packetizer and depacketizer.")
     (propagated-inputs
      (list go-github-com-pion-logging
            go-github-com-pion-randutil
-           go-github-com-pion-transport-v3))
+           go-github-com-pion-transport-v4))
     (home-page "https://github.com/pion/sctp")
     (synopsis "Implementation of SCTP in Golang")
     (description
