@@ -2177,6 +2177,45 @@ implementation that is simple, portable, flexible, lightweight, low level, and
 high performance.")
     (license license:bsd-3)))
 
+;; websocketpp main is not moving very fast, this version is required for later
+;; versions of Boost. https://github.com/zaphoyd/websocketpp/pull/1164
+(define-public websocketpp-next
+  (let ((commit "b9aeec6eaf3d5610503439b4fae3581d9aff08e8"))
+    (package
+      (name "websocketpp-next")
+      (version "0.8.2-next")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/zaphoyd/websocketpp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+            "1z4wm5ipchmxg709n4066fl6yq5gzg7qjx2ap18bhbsx85p403mb"))
+         (patches (search-patches
+                    "websocketpp-boost-compat.patch"))))
+      (build-system cmake-build-system)
+      (inputs (list boost-1.83 openssl))
+      (arguments '(#:parallel-tests? #f
+                   #:configure-flags '("-DBUILD_TESTS=ON")
+                   #:phases
+                   (modify-phases %standard-phases
+                     (add-after 'install 'remove-tests
+                       (lambda* (#:key outputs #:allow-other-keys)
+                         (let* ((install-dir (assoc-ref outputs "out"))
+                                (bin-dir (string-append install-dir "/bin")))
+                           (delete-file-recursively bin-dir)
+                           #t))))))
+      (home-page "https://www.zaphoyd.com/websocketpp/")
+      (synopsis "C++ library implementing the WebSocket protocol")
+      (description "WebSocket++ is a C++ library that can be used to implement
+WebSocket functionality.  The goals of the project are to provide a WebSocket
+implementation that is simple, portable, flexible, lightweight, low level, and
+high performance.")
+      (license license:bsd-3))))
+
 (define-public wslay
   (package
     (name "wslay")
