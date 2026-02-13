@@ -2242,16 +2242,16 @@ Gomega matcher library.")
   (package
     (inherit go-github-com-onsi-ginkgo)
     (name "go-github-com-onsi-ginkgo-v2")
-    (version "2.23.4")
+    (version "2.28.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/onsi/ginkgo")
-             (commit (string-append "v" version))))
+              (url "https://github.com/onsi/ginkgo")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01rmm0lx29bwl973qixx6avwa8m6yc1vkara52cbl0jxxwf1jf3d"))))
+        (base32 "0jykcpa5znvzhgyc1fdjgzc57xyfwrbxwc06k27rcljigqvxkswr"))))
     (arguments
      (list
       #:import-path "github.com/onsi/ginkgo/v2"
@@ -2263,11 +2263,14 @@ Gomega matcher library.")
     (native-inputs
      (list go-go-uber-org-automaxprocs)) ; for the CLI
     (propagated-inputs
-     (list go-github-com-go-logr-logr
+     (list go-github-com-gkampitakis-go-snaps
+           go-github-com-go-logr-logr
            go-github-com-go-task-slim-sprig-v3
            go-github-com-google-pprof
+           go-github-com-joshdk-go-junit
+           go-github-com-masterminds-semver-v3
+           go-github-com-mfridman-tparse
            go-github-com-onsi-gomega
-           go-golang-org-x-net
            go-golang-org-x-sys
            go-golang-org-x-tools))))
 
@@ -2282,7 +2285,9 @@ Gomega matcher library.")
       #~(modify-phases %standard-phases (delete 'build))))
     (native-inputs '())
     (propagated-inputs
-     (list go-github-com-go-logr-logr)))))
+     (list go-github-com-go-logr-logr
+           go-github-com-masterminds-semver-v3
+           go-golang-org-x-tools)))))
 
 (define-public go-github-com-onsi-gomega
   (package
