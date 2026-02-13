@@ -97,6 +97,7 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages ibus)
   #:use-module (gnu packages icu4c)
@@ -696,6 +697,90 @@ Rust source code.")
      "This package provides a Cargo extension to run the build artifacts
 through tools like `gdb`.")
     (license license:gpl3)))
+
+(define-public cocogitto
+  (package
+    (name "cocogitto")
+    (version "6.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cocogitto" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wpsvrws2lwy1kix0xfs5dqs8b7j5ixnaz2x25apfbnh6gf99vda"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "website")))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-test-flags
+      '(list "--"
+             ;; Disable tests that depend on being run inside of the source repository
+             "--skip=conventional::changelog::release::test::should_get_a_release"
+             "--skip=git::hook::tests::add_all"
+             "--skip=git::hook::tests::add_pre_commit_hook"
+             "--skip=git::hook::tests::overwrite_pre_commit_hook"
+             "--skip=git::rev::cache::test::init_cache_ok"
+             "--skip=git::rev::revwalk::test::all_commits"
+             "--skip=git::rev::revwalk::test::from_previous_to_tag"
+             "--skip=git::rev::revwalk::test::from_tag_to_head"
+             "--skip=git::rev::revwalk::test::from_tag_to_tag_ok"
+             "--skip=git::rev::revwalk::test::get_release_range_integration_test"
+             "--skip=git::rev::revwalk::test::recursive_from_origin_to_head"
+             "--skip=cog_tests::changelog::get_changelog_range"
+             "--skip=cog_tests::commit::should_run_git_hooks")
+      #:modules '((guix build cargo-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'prepare-for-tests
+            (lambda _
+              ;; The tests try to run git as if it were already set up.
+              (setenv "HOME" (getcwd))
+              (invoke "git" "config" "--global" "user.email" "git@example.com")
+              (invoke "git" "config" "--global" "user.name" "Guix")))
+          (add-after 'install 'install-completions
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (for-each
+                (match-lambda
+                  ((shell . path)
+                   (mkdir-p (in-vicinity #$output (dirname path)))
+                   (let ((binary
+                           (if #$(%current-target-system)
+                               (search-input-file native-inputs "bin/cog")
+                               (in-vicinity #$output "bin/cog"))))
+                     (with-output-to-file (in-vicinity #$output path)
+                       (lambda _
+                         (invoke binary "generate-completions" shell))))))
+                '(("bash" . "share/bash-completion/completions/cog")
+                  ("elvish" . "share/elvish/lib/cog")
+                  ("fish" . "share/fish/vendor_completions.d/cog.fish")
+                  ("nu" . "share/nushell/vendor/autoload/cog")
+                  ("zsh" . "share/zsh/site-functions/_cog"))))))))
+    (native-inputs
+     (append (if (%current-target-system)
+                 (list this-package)
+                 '())
+             (list git-minimal
+                   gnupg
+                   openssh
+                   pkg-config)))
+    (inputs (cons* libgit2-1.9
+                   libssh2
+                   openssl
+                   zlib
+                   (cargo-inputs 'cocogitto)))
+    (home-page "https://github.com/cocogitto/cocogitto")
+    (synopsis
+     "Set of CLI tools for the Conventional Commit and SemVer specifications")
+    (description
+     "This package provides Cocogitto, a set of CLI tools for the Conventional
+Commit and SemVer specifications.")
+    (license license:expat)))
 
 (define-public codeberg-cli
   (package
