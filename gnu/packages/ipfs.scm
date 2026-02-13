@@ -1885,7 +1885,7 @@ specified in @url{https://datatracker.ietf.org/doc/html/rfc8484, RFC 8484}.")
 (define-public go-github-com-libp2p-go-libp2p
   (package
     (name "go-github-com-libp2p-go-libp2p")
-    (version "0.43.0")
+    (version "0.47.0")
     (source
      (origin
        (method git-fetch)
@@ -1894,7 +1894,7 @@ specified in @url{https://datatracker.ietf.org/doc/html/rfc8484, RFC 8484}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02708nf651cx1ls9k4k0275w8ld4349kzp1yyv35m45phbvzd2zf"))
+        (base32 "1kz7rfmgnxcjcy0ixy6gib9ppndmhkm1zdljvlzvgxnd9jdz00x4"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -1922,6 +1922,7 @@ specified in @url{https://datatracker.ietf.org/doc/html/rfc8484, RFC 8484}.")
      (list go-github-com-libp2p-go-libp2p-testing
            go-github-com-stretchr-testify
            go-go-uber-org-mock
+           go-github-com-marcopolo-simnet
            go-go-uber-org-goleak))
     (propagated-inputs
      (list go-github-com-benbjohnson-clock
