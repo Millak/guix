@@ -2460,6 +2460,41 @@ daemon as described in
 @url{http://0pointer.de/blog/projects/socket-activation}.")
     (license license:expat)))
 
+(define-public go-github-com-probe-lab-go-libdht
+  (package
+    (name "go-github-com-probe-lab-go-libdht")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              ;; <https://github.com/probe-lab/go-libdht> redirects to
+              ;; <https://github.com/ipfs/go-libdht>.
+             (url "https://github.com/ipfs/go-libdht")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "139zzvs9c65k6agfpy412y9bb4pfxdmwvwjbvndx9gd615qhxzak"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/ipfs/go-libdht"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/ipfs/go-libdht")
+    (synopsis "Generic Go DHT toolbox")
+    (description
+     "@code{go-libdht} is a generic toolbox designed for the implementation
+and experimentation of Distributed Hash Tables (DHT) in Go.  It establishes
+foundational types and interfaces applicable across a broad spectrum of DHTs,
+especially those sharing a similar topology.  By offering reusable components
+like keys and routing tables, @code{go-libdht} streamlines the DHT
+implementation process.  Using @code{go-libdht}, developers can seamlessly
+craft their own DHTs using the provided modular components.")
+    ;; SPDX-License-Identifier: Apache-2.0 OR MIT
+    (license (list license:expat license:asl2.0))))
+
 (define-public go-github-com-whyrusleeping-cbor-gen
   (package
     (name "go-github-com-whyrusleeping-cbor-gen")
