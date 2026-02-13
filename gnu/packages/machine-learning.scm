@@ -2174,6 +2174,8 @@ should not be used standalone.")))
                  (package-transitive-supported-systems pkg)))
        (list python-nbval))))
     (inputs
+     ;; Must use the same protobuf as onnx to avoid loading two protobuf
+     ;; libraries causing duplicate schema registration.
      (list onnx protobuf pybind11-2))
     (propagated-inputs
      (list python-numpy))
