@@ -364,32 +364,33 @@ taken from the NSS package and thus ultimately from the Mozilla project.")
      (inputs '())
      (propagated-inputs '())
      (arguments
-      (list #:modules '((guix build utils))
-            #:builder
-            #~(begin
-                (use-modules (guix build utils)
-                             (rnrs io ports)
-                             (srfi srfi-26))
-                (define certs-dir (string-append #$output "/etc/ssl/certs/"))
-                (define ca-files
-                  (find-files (string-append #+(this-package-native-input
-                                                "nss-certs")
-                                             "/etc/ssl/certs")
-                              (lambda (file stat)
-                                (string-suffix? ".pem" file))))
-                (define (concatenate-files files result)
-                  "Make RESULT the concatenation of all of FILES."
-                  (define (dump file port)
-                    (display (call-with-input-file file get-string-all) port)
-                    (newline port))
-                  (call-with-output-file result
-                    (lambda (port)
-                      (for-each (cut dump <> port) files))))
+      (list
+       #:builder
+       (with-imported-modules '((guix build utils))
+         #~(begin
+             (use-modules (guix build utils)
+                          (rnrs io ports)
+                          (srfi srfi-26))
+             (define certs-dir (string-append #$output "/etc/ssl/certs/"))
+             (define ca-files
+               (find-files (string-append #+(this-package-native-input
+                                             "nss-certs")
+                                          "/etc/ssl/certs")
+                           (lambda (file stat)
+                             (string-suffix? ".pem" file))))
+             (define (concatenate-files files result)
+               "Make RESULT the concatenation of all of FILES."
+               (define (dump file port)
+                 (display (call-with-input-file file get-string-all) port)
+                 (newline port))
+               (call-with-output-file result
+                 (lambda (port)
+                   (for-each (cut dump <> port) files))))
 
-                (mkdir-p certs-dir)
-                (concatenate-files
-                 ca-files (string-append certs-dir "/ca-certificates.crt"))
-                (for-each (cut install-file <> certs-dir) ca-files))))
+             (mkdir-p certs-dir)
+             (concatenate-files
+              ca-files (string-append certs-dir "/ca-certificates.crt"))
+             (for-each (cut install-file <> certs-dir) ca-files)))))
      (native-search-paths
       (list $SSL_CERT_DIR
             $SSL_CERT_FILE)))))
