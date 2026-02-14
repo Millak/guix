@@ -8926,14 +8926,20 @@ generated sources by ANTLR.")))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f                       ; tests require antlr
+      #:test-backend #~'custom
+      #:test-flags #~'("tests/run.py" "--verbose")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir
             (lambda _
-              (chdir "runtime/Python3"))))))
-    (native-inputs (list pkg-config python-setuptools))
-    (inputs (list `(,util-linux "lib"))) ; libuuid
+              (chdir "runtime/Python3")))
+          (add-after 'chdir 'regenerate-parsers
+            (lambda _
+              (invoke "antlr4" "-no-listener" "-Dlanguage=Python3"
+                      "src/antlr4/xpath/XPathLexer.g4")
+              (invoke "antlr4" "-no-listener" "-Dlanguage=Python3"
+                      "tests/expr/Expr.g4"))))))
+    (native-inputs (list antlr4 python-setuptools))
     (synopsis "ANTLR Python runtime library")
     (description "This package contains the Python runtime library used with
 Python generated sources by ANTLR.")))
