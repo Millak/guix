@@ -13602,6 +13602,37 @@ write a wide range of image data, including animated images, video, volumetric
 data, and scientific formats.")
     (license license:bsd-2)))
 
+(define-public python-pyudorandom
+  ;; Releases are not tagged in Git:
+  ;; https://github.com/mewwts/pyudorandom/issues/3
+  (let ((commit "473b3f9c562469dd3c3ddbdfa3e9351e7709812c")
+        (revision "0"))
+    (package
+      (name "python-pyudorandom")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mewwts/pyudorandom")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0k54lxlmh56n8l60hhigi57y8dycnmfw700vq6diqn8b30xna47c"))))
+      (build-system pyproject-build-system)
+      (arguments (list #:test-backend #~'unittest))
+      (native-inputs (list python-setuptools))
+      (home-page "https://github.com/mewwts/pyudorandom")
+      (synopsis "Generate pseudorandom numbers by using algebra")
+      (description
+       "The @code{pyudorandom} module lets you iterate over a list
+in a non-succsessive, yet deterministic way based on interger modulo.
+It comes in handy when you want to mix up the items, but don't need
+any guarantees of randomness.  It might be slow on small data,
+but shall be significantly faster than @code{random.shuffle}
+for longer lists.")
+      (license license:expat))))
+
 (define-public python-pyvips
   (package
     (name "python-pyvips")
