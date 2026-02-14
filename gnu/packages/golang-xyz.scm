@@ -25445,6 +25445,37 @@ implementation.  It has @url{https://pkg.go.dev/cmd/cgo, cgo},
 on the platform.")
     (license license:expat)))
 
+(define-public go-github-com-wk8-go-ordered-map-v2
+  (package
+    (name "go-github-com-wk8-go-ordered-map-v2")
+    (version "2.1.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/wk8/go-ordered-map")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vzl2j6m9pz8ckikf9z2da9zxdbi7fwhcwq8rmzpmf34zl8cjn1g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/wk8/go-ordered-map/v2"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-bahlo-generic-list-go
+           go-github-com-buger-jsonparser
+           go-github-com-mailru-easyjson
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/wk8/go-ordered-map")
+    (synopsis "Golang Ordered Maps")
+    (description
+     "Package orderedmap implements an ordered map, i.e. a map that also keeps
+track of the order in which keys were inserted.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-workiva-go-datastructures
   (package
     (name "go-github-com-workiva-go-datastructures")
