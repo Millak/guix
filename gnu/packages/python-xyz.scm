@@ -18760,7 +18760,7 @@ files.")
              python-setuptools
              python-wheel))
       (propagated-inputs
-       (list java-antlr4-runtime-python
+       (list python-antlr4-runtime
              python-pydevd
              python-pyyaml))
       (home-page "https://github.com/omry/omegaconf")
@@ -19474,7 +19474,7 @@ for the module to work under Python 3.3.")
     (inputs
      (list bash-minimal))
     (propagated-inputs
-     (list java-antlr4-runtime-python
+     (list python-antlr4-runtime
            python-aws-xray-sdk
            python-boto3
            python-botocore

@@ -2069,7 +2069,7 @@ extension.")
     (inputs
      (list udunits))
     (propagated-inputs
-     (list java-antlr4-runtime-python
+     (list python-antlr4-runtime
            python-cftime
            python-jinja2
            python-numpy))

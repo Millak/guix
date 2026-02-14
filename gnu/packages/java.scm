@@ -8918,11 +8918,11 @@ generated sources by ANTLR.")))
 (define-deprecated-package java-antlr4-runtime-cpp
   cpp-antlr4-runtime)
 
-(define-public java-antlr4-runtime-python
+(define-public python-antlr4-runtime
   (package
     (inherit java-antlr4-runtime)
-    (name "java-antlr4-runtime-python")
-    (outputs '("out"))
+    (name "python-antlr4-runtime")
+    (properties '((upstream-name . "antlr4-python3-runtime")))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -8937,6 +8937,9 @@ generated sources by ANTLR.")))
     (synopsis "ANTLR Python runtime library")
     (description "This package contains the Python runtime library used with
 Python generated sources by ANTLR.")))
+
+(define-deprecated-package java-antlr4-runtime-python
+  python-antlr4-runtime)
 
 (define-public antlr4
   (package
