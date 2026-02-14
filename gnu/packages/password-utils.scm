@@ -44,6 +44,7 @@
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2025 Isidor Zeuner <guix@quidecco.pl>
+;;; Copyright © 2026 John Dawson <dawson.john.andrew@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -219,6 +220,37 @@ then generates temporary credentials from those to expose to your shell and
 applications.  It's designed to be complementary to the AWS CLI tools, and is
 aware of your profiles and configuration in ~/.aws/config.")
     (license license:expat)))
+
+(define-public lesspass
+  (package
+    (name "lesspass")
+    (version "10.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/lesspass/lesspass")
+                     (commit (string-append "cli-v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1isv760pqc0c3g8mljzp4zy64anvg1ify9h6nz7pzkx0610wr75a"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest
+                     #:phases #~(modify-phases %standard-phases
+                                  (add-after 'unpack 'chdir
+                                    (lambda _
+                                      (chdir "cli"))))))
+    (native-inputs (list python-mock
+                         python-pexpect
+                         python-setuptools))
+    (inputs (list python-requests))
+    (home-page "https://lesspass.com/")
+    (synopsis "Stateless password manager")
+    (description
+     "This is the command-line interface of LessPass, which computes a
+password deterministically from a site, a login, options and a master
+password, which is the only secret to keep.")
+    (license license:gpl3)))
 
 (define-public pwgen
   (package
