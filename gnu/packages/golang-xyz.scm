@@ -20784,6 +20784,31 @@ without configuration, but if desired, everything can be customized down to the
 smallest detail.")
     (license license:expat)))
 
+(define-public go-github-com-quasilyte-go-ruleguard-dsl
+  (package
+    (name "go-github-com-quasilyte-go-ruleguard-dsl")
+    (version "0.3.23")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/quasilyte/go-ruleguard")
+              (commit (go-version->git-ref version
+                                           #:subdir "dsl"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a7wbc8ihy59g3zly9x1hnsawbzn1f8avyfm7njx17idmy9waz64"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/quasilyte/go-ruleguard/dsl"
+      #:unpack-path "github.com/quasilyte/go-ruleguard"))
+    (home-page "https://github.com/quasilyte/go-ruleguard")
+    (synopsis "DSL for custom linting rules in Go")
+    (description
+     "This package provdes DSL module for Go custom linting rules.")
+    (license license:bsd-3)))
+
 ;; XXX: This repository was archived by the owner on Mar 18, 2019. It is
 ;; now read-only.
 (define-public go-github-com-racksec-srslog
