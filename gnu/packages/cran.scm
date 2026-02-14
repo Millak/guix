@@ -24819,14 +24819,14 @@ finance, conversion from and to JSON, and many other applications.")
 (define-public r-dtplyr
   (package
     (name "r-dtplyr")
-    (version "1.3.2")
+    (version "1.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dtplyr" version))
        (sha256
         (base32
-         "0vi1ha0jkx7s9zbhrvyvxjb3v0cswhjhl96zrw1mskmdrgih6q3n"))))
+         "125i6sszsy0z456dq5zqs1kwkkdn1cydi24grkm0q6jmvmqhdkyb"))))
     (properties `((upstream-name . "dtplyr")))
     (build-system r-build-system)
     (propagated-inputs
