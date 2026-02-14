@@ -24327,8 +24327,16 @@ available bioactivity data.")
          "0d4c9qqwd5zm5y9xcskfjashqkdiy0ri3gsj1kmfb5zmv8i8666s"))))
     (properties `((upstream-name . "biobroom")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'dplyr-compatibility
+           (lambda _
+             (substitute* "R/utilities.R"
+               (("dplyr::tbl_df") "tibble::as_tibble")))))))
     (propagated-inputs
-     (list r-biobase r-broom r-dplyr r-tidyr))
+     (list r-biobase r-broom r-dplyr r-tibble r-tidyr))
     (native-inputs
      (list r-deseq2 r-edger r-knitr r-magrittr r-testthat))
     (home-page "https://github.com/StoreyLab/biobroom")
