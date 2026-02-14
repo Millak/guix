@@ -3263,6 +3263,30 @@ API for consuming libraries to test against so they can be completely sure
 their usage of the array API is portable.")
     (license license:bsd-3)))
 
+(define-public python-cachedir-tag
+  (package
+    (name "python-cachedir-tag")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/moreati/python-cachedir-tag")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s78j7ppangzglcc1pwkg0i4bvv47iyx3k4dpxn209sdy2554xqj"))))
+    (build-system pyproject-build-system)
+    (arguments '(#:tests? #f))          ;no test
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/moreati/python-cachedir-tag")
+    (synopsis
+     "Handle @file{CACHEDIR.TAG} in cache directories")
+    (description
+     "This library handles @url{https://bford.info/cachedir, CACHEDIR.TAG},
+a file llowing any arbitrary directory to be marked as a cache directory.")
+    (license license:expat)))
+
 (define-public python-cachetools
   (package
     (name "python-cachetools")
