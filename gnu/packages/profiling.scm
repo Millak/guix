@@ -6,6 +6,7 @@
 ;;; Copyright © 2025 Luca Cirrottola <luca.cirro@gmail.com>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright @ 2026 Johannes Elsing <Johannes.Elsing@gmx.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)      ;for "which"
   #:use-module (gnu packages bash)      ;for "which"
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
@@ -47,11 +49,15 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
@@ -491,3 +497,115 @@ analysis tool suites such as Vampir and TAU due to the usage of the two common
 data formats CUBE4 for profiles and the Open Trace Format 2 (OTF2) for event
 trace data.")
     (license license:bsd-3)))
+
+(define-public perfetto
+  (package
+    (name "perfetto")
+    (version "53.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/google/perfetto")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1g2r90348pl173r3wp9k5546sdgan3pdw0002bqicaw028j3gq96"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(for-each (lambda (name)
+                             (unless (string-suffix? "trigger.pzc.h" name)
+                               (delete-file name)))
+                           (find-files "." "\\.pzc")))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'build-documentation
+            (lambda _
+              (invoke "pandoc" "docs/reference/perfetto-cli.md"
+                      "--standalone" "-t" "man"
+                      "-o" "perfetto.1")))
+          (add-after 'build-documentation 'remove-origin-rpath
+            (lambda _
+              (substitute* "gn/standalone/BUILD.gn"
+                ((".*-rpath=.*ORIGIN.*") ""))))
+          (replace 'configure
+            (lambda _
+              (invoke "gn" "gen"
+                      (string-append
+                       "--args="
+                       "is_debug=false"
+                       " perfetto_use_pkgconfig=true"
+                       " perfetto_use_system_protobuf=true"
+                       " perfetto_use_system_zlib=true"
+                       " use_custom_libcxx=false"
+                       " skip_buildtools_check=true"
+                       " is_hermetic_clang=false"
+                       " is_system_compiler=true"
+                       " is_clang=false"
+                       (string-append " extra_ldflags=\""
+                                      "-Wl,-rpath=" #$output "/lib\""))
+                      "out/linux")))
+          (replace 'build
+            (lambda* (#:key parallel-build? #:allow-other-keys)
+              (invoke "ninja" "-j"
+                      (number->string (if parallel-build?
+                                          (parallel-job-count)
+                                          1))
+                      "-C" "out/linux"
+                      "perfetto"
+                      "protozero_c_plugin" ; for gen_c_protos
+                      "tracebox"
+                      "traced"
+                      "traced_probes")))
+          (add-after 'build 'generate-headers
+            (lambda _
+              (substitute* "tools/gen_c_protos"
+                ((".*call.*ninja.*") "")
+                (("def protoc_path.*")
+                 "def protoc_path(_):\n  return 'protoc'\n")
+                ((".*path.*clang-format not found.*")
+                 "    'BUILD.gn')\n  path='clang-format'\n"))
+              (invoke "tools/gen_c_protos" "out/linux")))
+          (delete 'check)
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (include (string-append #$output "/include"))
+                    (lib (string-append #$output "/lib"))
+                    (doc (string-append #$output "/share/man/man1")))
+                (mkdir-p bin)
+                (mkdir-p include)
+                (mkdir-p lib)
+                (mkdir-p doc)
+                (copy-recursively "include/perfetto"
+                                  (string-append include "/perfetto"))
+                (for-each delete-file
+                          (filter (lambda (name)
+                                    (or (string=? "README.md" name)
+                                        (string=? "BUILD.gn" name)))
+                                  (find-files include)))
+                (install-file "out/linux/libperfetto.so" lib)
+                (install-file "out/linux/traced" bin)
+                (install-file "out/linux/traced_probes" bin)
+                (install-file "out/linux/perfetto" bin)
+                (install-file "out/linux/tracebox" bin)
+                (install-file "perfetto.1" doc)))))))
+    (native-inputs
+     (list clang-21 ; for clang-format used by gen_c_protos
+           gn
+           ninja
+           pandoc
+           pkg-config
+           protobuf
+           python-minimal-wrapper))
+    (inputs (list zlib))
+    (home-page "https://perfetto.dev/")
+    (synopsis "Framework for client-side tracing and profiling")
+    (description "Perfetto is a framework for performance instrumentation and
+trace analysis.  This package contains the library, the @code{traced} and
+@code{traced_probes} daemons as well as the @code{perfetto} command-line
+interface.")
+    (license license:asl2.0)))
