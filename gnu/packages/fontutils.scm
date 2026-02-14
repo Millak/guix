@@ -303,7 +303,7 @@ them as it goes.")
            python-wheel))
     (inputs
      (list bash-minimal
-           java-antlr4-runtime-cpp
+           cpp-antlr4-runtime
            libxml2
            `(,util-linux "lib")))
     (propagated-inputs

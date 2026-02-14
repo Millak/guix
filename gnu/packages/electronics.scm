@@ -2461,7 +2461,7 @@ SystemVerilog, and SystemC, with conversion between languages and to JSON.")
            ;; Yosys source for parsing tests.
            yosys-src-for-hdlconvertor-tests))
     (inputs
-     (list java-antlr4-runtime-cpp))
+     (list cpp-antlr4-runtime))
     (propagated-inputs
      (list python-hdlconvertorast))
     (home-page "https://github.com/Nic30/hdlConvertor")

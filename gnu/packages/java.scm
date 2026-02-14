@@ -8875,10 +8875,11 @@ actual rendering.")
 sources by ANTLR.")
     (license license:bsd-3)))
 
-(define-public java-antlr4-runtime-cpp
+(define-public cpp-antlr4-runtime
   (package
     (inherit java-antlr4-runtime)
-    (name "java-antlr4-runtime-cpp")
+    (name "cpp-antlr4-runtime")
+    (properties '((upstream-name . "antlr4-cpp-runtime")))
     (outputs '("out" "static"))
     (build-system cmake-build-system)
     (arguments
@@ -8905,9 +8906,12 @@ sources by ANTLR.")
                                 (basename libantlr4-runtime.a)))))))))
     (native-inputs (list pkg-config))
     (inputs (list `(,util-linux "lib"))) ;libuuid
-    (synopsis "ANTL C++ runtime library")
+    (synopsis "ANTLR C++ runtime library")
     (description "This package contains the C++ runtime library used with C++
 generated sources by ANTLR.")))
+
+(define-deprecated-package java-antlr4-runtime-cpp
+  cpp-antlr4-runtime)
 
 (define-public java-antlr4-runtime-python
   (package
