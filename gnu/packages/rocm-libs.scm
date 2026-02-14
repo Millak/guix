@@ -325,6 +325,28 @@ acts as the performance backbone for a wide variety of compute
 applications running on AMD GPUs.")
     (license license:expat)))
 
+(define-public rocm-validationsuite
+  (package
+    (name "rocm-validationsuite")
+    (version %rocm-version)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ROCm/rocmvalidationsuite/")
+              (commit (string-append "rocm-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1l577sd88f4f46am6w81n7rbswx39zy602xbqrk3zqb156k14s2s"))))
+    (build-system cmake-build-system)
+    (inputs (list rocblas))
+    (home-page "https://rocm.docs.amd.com/projects/ROCmValidationSuite/")
+    (synopsis "ROCm system validation and diagnostics")
+    (description "ROCm monitor for stress testing, detection and
+troubleshooting issues impacting AMD GPUS in HPC environments.")
+    (license license:expat)))
+
 (define hipblaslt-supported-targets
   (list "gfx1100"
         "gfx1101"
