@@ -124,7 +124,7 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
 (define-public go-github-com-ipfs-boxo
   (package
     (name "go-github-com-ipfs-boxo")
-    (version "0.33.0")
+    (version "0.35.2")
     (source
      (origin
        (method git-fetch)
@@ -133,7 +133,7 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03lr70406w95xqiin07ph0d2x8hcfdj1k1r3f1yq8lv3g5j9wapp"))
+        (base32 "02z88kv17m1mia68ac8wliiz5kzq59b1632qql21vy9c3gjqk56r"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -155,10 +155,15 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
       #~(list "-skip" (string-join
                        ;; Network access is required.
                        (list "TestAddNewDNSResolver"
-                             "TestOverrideDNSDefaults")
+                             "TestOverrideDNSDefaults"
+                             ;; failed to fetch from remote (failed to fetch
+                             ;; config: Get
+                             ;; "https://conf.ipfs-mainnet.org/autoconf.json"
+                             "TestRealAutoConfURL")
                        "|"))))
     (native-inputs
      (list go-github-com-libp2p-go-libp2p-kad-dht-bootstrap
+           go-github-com-libp2p-go-libp2p
            go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-alecthomas-units
@@ -166,7 +171,6 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
            go-github-com-crackcomm-go-gitignore
            go-github-com-cskr-pubsub
            go-github-com-dustin-go-humanize
-           go-github-com-filecoin-project-go-clock
            go-github-com-gabriel-vasile-mimetype
            go-github-com-gammazero-chanqueue
            go-github-com-gammazero-deque
@@ -180,6 +184,7 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
            go-github-com-ipfs-go-cidutil
            go-github-com-ipfs-go-datastore
            go-github-com-ipfs-go-detect-race
+           go-github-com-ipfs-go-dsqueue
            go-github-com-ipfs-go-ipfs-delay
            go-github-com-ipfs-go-ipfs-redirects-file
            go-github-com-ipfs-go-ipld-format
@@ -194,7 +199,6 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
            go-github-com-ipld-go-ipld-prime
            go-github-com-libp2p-go-buffer-pool
            go-github-com-libp2p-go-doh-resolver
-           go-github-com-libp2p-go-libp2p
            go-github-com-libp2p-go-libp2p-record
            go-github-com-libp2p-go-libp2p-routing-helpers
            go-github-com-libp2p-go-libp2p-testing
@@ -210,7 +214,7 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
            go-github-com-multiformats-go-multistream
            go-github-com-polydawn-refmt
            go-github-com-prometheus-client-golang
-           go-github-com-samber-lo
+           go-github-com-prometheus-client-model
            go-github-com-slok-go-http-metrics
            go-github-com-spaolacci-murmur3
            go-github-com-whyrusleeping-base32
@@ -225,7 +229,6 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
            go-go-opentelemetry-io-otel-exporters-zipkin
            go-go-opentelemetry-io-otel-sdk
            go-go-opentelemetry-io-otel-trace
-           go-go-uber-org-multierr
            go-go-uber-org-zap
            go-golang-org-x-exp
            go-golang-org-x-oauth2
