@@ -159,7 +159,7 @@ to @url{https://pkg.go.dev/io/fs#FS, fs.FS}, but for tar files.")
 (define-public go-github-com-datadog-zstd
   (package
     (name "go-github-com-datadog-zstd")
-    (version "1.5.6")
+    (version "1.5.7")
     (source
      (origin
        (method git-fetch)
@@ -168,19 +168,19 @@ to @url{https://pkg.go.dev/io/fs#FS, fs.FS}, but for tar files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hri68jd5yh9kxy4bj2b4rfi7jz74zl20d4hk7rwcwykpgk90qid"))))
+        (base32 "0hm1blyymf1zhgid8f65s2bdd2qz4wiicpnxrv1b18xc8q7fv8hs"))))
     (build-system go-build-system)
     (arguments
      (list
-      ;; These flags need to be applied in the final application as well to
-      ;; build with system's libzstd,
+      ;; XXX: These flags need to be applied in the final application as well
+      ;; to build with system's libzstd.  Keep all inputs as propagated as
+      ;; well.
       #:build-flags #~(list "-tags" "external_libzstd")
       #:test-flags #~(list "-tags" "external_libzstd")
       #:import-path "github.com/DataDog/zstd"))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list (list zstd "lib")))
+    (propagated-inputs
+     (list pkg-config
+           (list zstd "lib")))
     (home-page "https://github.com/DataDog/zstd")
     (synopsis "Zstd Golang wrapper")
     (description
