@@ -37415,6 +37415,39 @@ for Python inspired by modern web development.")
 be used to act both as a TFTP client or TFTP server.")
     (license license:expat)))
 
+(define-public python-thefuzz
+  (package
+    (name "python-thefuzz")
+    (version "0.22.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/seatgeek/thefuzz")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1l24masn3ilfnwdasi5bhs1vb3ll1nqzxljiasdhfly1ncfjyvca"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~'("-k" "not TestCodeFormat")
+           #:phases #~(modify-phases %standard-phases
+                        ;; pycodestyle is only used in TestCodeFormat.
+                        (add-after 'unpack 'unrequire-pycodestyle
+                          (lambda _
+                            (substitute* "test_thefuzz.py"
+                              (("import pycodestyle.*") "")))))))
+    (propagated-inputs (list python-rapidfuzz))
+    (native-inputs (list python-hypothesis
+                         python-pytest
+                         python-setuptools))
+    (home-page "https://github.com/seatgeek/thefuzz")
+    (synopsis "Fuzzy string matching in Python")
+    (description
+     "This Python package implements fuzzing string matching
+using Levenshtein distance.")
+    (license license:expat)))
+
 (define-public python-three-merge
   (package
     (name "python-three-merge")
