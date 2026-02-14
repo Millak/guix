@@ -35830,6 +35830,31 @@ instance in spelling correction, predictive typing, to help disabled people
 write text fast, and for various text generation, statistics, and modeling tasks.")
     (license license:expat)))
 
+(define-public python-speedy-antlr-tool
+  (package
+    (name "python-speedy-antlr-tool")
+    (version "1.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/amykyta3/speedy-antlr-tool")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bj67n3f6admjc7mfgnksb35s983inw2mh27d7wfp1xf697h0yp3"))))
+    (build-system pyproject-build-system)
+    (arguments '(#:tests? #f))          ;no test
+    (native-inputs (list python-setuptools python-setuptools-scm))
+    (propagated-inputs (list python-antlr4-runtime python-jinja2))
+    (home-page "https://speedy-antlr-tool.readthedocs.io")
+    (synopsis "Generate ANTLR parser as Python extension module")
+    (description
+     "This tool generates a Python extension that runs your parser
+using ANTLR's C++ target, and then translates the parsed tree
+back into Python.")
+    (license license:bsd-3)))
+
 (define-public python-speg
   (package
     (name "python-speg")
