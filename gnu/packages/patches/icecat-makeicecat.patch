@@ -6,7 +6,7 @@ diff --git a/makeicecat b/makeicecat
 index bf2b7a6..bc3b19b 100755
 --- a/makeicecat
 +++ b/makeicecat
-@@ -56,7 +56,7 @@ readonly SOURCEDIR=icecat-${FFVERSION}
+@@ -59,7 +59,7 @@ readonly SOURCEDIR=icecat-${FFVERSION}
  # debug/shell options
  readonly DEVEL=0
  set -euo pipefail
@@ -15,7 +15,7 @@ index bf2b7a6..bc3b19b 100755
  
  
  ###############################################################################
-@@ -928,12 +928,12 @@ finalize_sourceball()
+@@ -907,12 +907,12 @@ finalize_sourceball()
  # entry point
  ###############################################################################
  
@@ -34,7 +34,7 @@ index bf2b7a6..bc3b19b 100755
  apply_patches
  configure
  configure_search
-@@ -945,4 +945,4 @@ prepare_macos_packaging
+@@ -924,4 +924,4 @@ prepare_macos_packaging
  configure_extensions
  configure_onboarding
  apply_bugfixes
