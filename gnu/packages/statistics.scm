@@ -3657,7 +3657,7 @@ Neyman, 1936; cf.  Spiller et al., 2012), etc.")
 (define-public r-vpc
   (package
     (name "r-vpc")
-    (version "1.2.2")
+    (version "1.2.4")
     (source
      (origin
        (method git-fetch)
@@ -3666,10 +3666,11 @@ Neyman, 1936; cf.  Spiller et al., 2012), etc.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bkp0zy1pswrqgcsdvxvc7gyfl544k89qrjqdcj4aqkif0bfqmx8"))))
+        (base32 "15gkqmamdph9pjv8rg1n8jr1rzvca66gz5iczzsa9ms75bad2z9m"))))
+    (properties '((updater-extra-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-testit))
+     (list r-testit r-testthat))
     (propagated-inputs
      (list r-classint
            r-dplyr
