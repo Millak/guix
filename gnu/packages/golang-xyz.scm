@@ -4818,7 +4818,7 @@ queueing and rate limiting.")
 (define-public go-github-com-cockroachdb-swiss
   (package
     (name "go-github-com-cockroachdb-swiss")
-    (version "0.0.0-20250327203710-2932b022f6df")
+    (version "0.0.0-20251224182025-b0f6560f979b")
     (source
      (origin
        (method git-fetch)
@@ -4827,7 +4827,7 @@ queueing and rate limiting.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v902vdngjqabqz6brkrsa26sb5x0xwa2b3986jy8ih6z7x44ib5"))))
+        (base32 "0403mk3q3h9brdxk3x9vfq0inin4rfv92kcn98l9gxfd9wnlya0n"))))
     (build-system go-build-system)
     (arguments
      (list
