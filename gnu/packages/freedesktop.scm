@@ -3174,7 +3174,8 @@ compatible with the well-known scripts of the same name.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rbqkmvvfig98ig8gsf93waiizrminj7gywxbza15hzx3an3hwh9"))))
+                "1rbqkmvvfig98ig8gsf93waiizrminj7gywxbza15hzx3an3hwh9"))
+              (patches (search-patches "libportal-qt-6.9.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -3197,8 +3198,7 @@ compatible with the well-known scripts of the same name.")
     (inputs
      (list gtk
            gtk+
-           qtbase-5
-           qtx11extras))
+           qtbase))
     (propagated-inputs
      (list glib))
     (home-page "https://github.com/flatpak/libportal")
