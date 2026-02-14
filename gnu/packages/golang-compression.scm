@@ -461,6 +461,28 @@ Supported archive formats:
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-mikelolasagasti-xz
+  (package
+    (name "go-github-com-mikelolasagasti-xz")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mikelolasagasti/xz")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qh5cms6ggihz302dbxjb6g4z1pnkbll564zwg2838ykbh3hlny2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mikelolasagasti/xz"))
+    (home-page "https://github.com/mikelolasagasti/xz")
+    (synopsis "Native Go XZ decompression package")
+    (description "Package xz implements XZ decompression natively in Go.")
+    (license license:bsd-0)))
+
 (define-public go-github-com-minio-minlz
   (package
     (name "go-github-com-minio-minlz")
