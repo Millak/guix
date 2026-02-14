@@ -14,7 +14,7 @@
 ;;; Copyright © 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2019 Jesse Gildersleve <jessejohngildersleve@protonmail.com>
-;;; Copyright © 2019-2025 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2026 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020, 2024, 2025 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Dimakis Dimakakos <me@bendersteed.tech>
@@ -22249,6 +22249,34 @@ editor with Common Lisp.")
 
 (define-public ecl-magic-ed
   (sbcl-package->ecl-package sbcl-magic-ed))
+
+(define-public sbcl-magic-square
+  (package
+    (name "sbcl-magic-square")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/glv/cl-magic-square")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-magic-square" version))
+       (sha256
+        (base32 "1876l10gqdzjxf73h00gyn9j0li1d86pznkcczihpd0367drbpri"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-simple-matrix))
+    (synopsis "Create magic squares in Common Lisp")
+    (description "This package provides a Common Lisp library to create
+magic squares of any size.")
+    (home-page "https://codeberg.org/glv/cl-magic-square")
+    (license license:gpl3+)))
+
+(define-public cl-magic-square
+  (sbcl-package->cl-source-package sbcl-magic-square))
+
+(define-public ecl-magic-square
+  (sbcl-package->ecl-package sbcl-magic-square))
 
 (define-public sbcl-magicffi
   (let ((commit "d88f2f280c31f639e4e05be75215d8a8dce6aef2"))
