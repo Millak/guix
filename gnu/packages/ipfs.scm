@@ -2537,7 +2537,7 @@ types.")
 (define-public kubo
   (package
     (name "kubo")
-    (version "0.36.0")
+    (version "0.39.0")
     (source
      (origin
        (method git-fetch)
@@ -2546,14 +2546,24 @@ types.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "080ixpahm2hsc7vsipcjlymxagvz9s3n1dc7nn7zfl2z4fwwhdhm"))))
+        (base32 "17571bm3zp04z6y62mpdi3vsrmx7xrhsyzzz5nssfc4rymp0y4sn"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Module name has been changed upstream.
+            (substitute* (find-files "." "\\.go$")
+              (("github.com/probe-lab/go-libdht")
+               "github.com/ipfs/go-libdht"))))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.25
       #:install-source? #f
       #:embed-files #~(list "sorted-network-list.bin" ".*\\.css" ".*\\.html")
       #:unpack-path "github.com/ipfs/kubo"
       #:import-path "github.com/ipfs/kubo/cmd/ipfs"
+      #:build-flags #~(list "-tags" "external_libzstd")
+      #:test-flags #~(list "-tags" "external_libzstd")
       #:phases
       #~(modify-phases %standard-phases
           ;; https://github.com/ipfs/kubo/blob/master/docs/command-completion.md
@@ -2614,7 +2624,6 @@ types.")
                   go-github-com-ipld-go-ipld-prime
                   go-github-com-ipshipyard-p2p-forge
                   go-github-com-jbenet-go-temp-err-catcher
-                  go-github-com-jbenet-goprocess
                   go-github-com-julienschmidt-httprouter
                   go-github-com-libp2p-go-doh-resolver
                   go-github-com-libp2p-go-libp2p
@@ -2627,6 +2636,7 @@ types.")
                   go-github-com-libp2p-go-libp2p-routing-helpers
                   go-github-com-libp2p-go-libp2p-testing
                   go-github-com-libp2p-go-socket-activation
+                  go-github-com-miekg-dns
                   go-github-com-multiformats-go-multiaddr
                   go-github-com-multiformats-go-multiaddr-dns
                   go-github-com-multiformats-go-multibase
@@ -2634,6 +2644,7 @@ types.")
                   go-github-com-multiformats-go-multihash
                   go-github-com-opentracing-opentracing-go
                   go-github-com-pbnjay-memory
+                  go-github-com-probe-lab-go-libdht
                   go-github-com-prometheus-client-golang
                   go-github-com-stretchr-testify
                   go-github-com-syndtr-goleveldb
@@ -2645,11 +2656,12 @@ types.")
                   go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
                   go-go-opentelemetry-io-contrib-propagators-autoprop
                   go-go-opentelemetry-io-otel
+                  go-go-opentelemetry-io-otel-exporters-prometheus
                   go-go-opentelemetry-io-otel-sdk
+                  go-go-opentelemetry-io-otel-sdk-metric
                   go-go-opentelemetry-io-otel-trace
                   go-go-uber-org-dig
                   go-go-uber-org-fx
-                  go-go-uber-org-multierr
                   go-go-uber-org-zap
                   go-golang-org-x-crypto
                   go-golang-org-x-exp
