@@ -633,7 +633,7 @@ problems for efficient solution on parallel systems.")
   (package
     (inherit openfoam-org)
     (name "openfoam-com")
-    (version "2506")
+    (version "2512")
     (source
      (origin
        (method git-fetch)
@@ -642,7 +642,7 @@ problems for efficient solution on parallel systems.")
              (commit (string-append "OpenFOAM-v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g8cjiqkk4yp5kmxyv8z43aaalr5459i54yaqmkn6qr38cjrhnd2"))))
+        (base32 "0v2dy7zcr1s6jc0z8gx726ljai3jnihzydiisszab8vcq79c19dr"))))
     (arguments
      ;; Since 'arguments' is a function of the package's version, define
      ;; 'parent' such that the 'arguments' thunk gets to see the right
