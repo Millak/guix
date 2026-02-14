@@ -1155,7 +1155,7 @@ the \"texlive\" importer."
 (define-member (person "Andreas Enge"
                        "andreas@enge.fr"
                        "enge")
-  bootstrap core-packages crypto lxqt science tex)
+  bootstrap c++ core-packages crypto lxqt science tex)
 
 (define-member (person "Tanguy Le Carrour"
                        "tanguy@bioneland.org"
