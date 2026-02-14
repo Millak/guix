@@ -418,6 +418,32 @@ Supported archive formats:
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-minio-minlz
+  (package
+    (name "go-github-com-minio-minlz")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/minio/minlz")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m493zr2810p0zscpwnl0yp8nh8y9rkgahhgpz9k6aqi9nwwvmyz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/minio/minlz"))
+    (propagated-inputs
+     (list go-github-com-klauspost-compress))
+    (home-page "https://github.com/minio/minlz")
+    (synopsis "LZ77 compressor")
+    (description
+     "@code{MinLZ} is a LZ77-type compressor with a fixed byte-aligned
+encoding, in the similar class to Snappy and LZ4.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-moby-go-archive
   (package
     (name "go-github-com-moby-go-archive")
