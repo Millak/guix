@@ -20589,6 +20589,41 @@ https://en.wikipedia.org/wiki/Extended_file_attributes}.")
 and bash completion for the go command line.")
     (license license:expat)))
 
+(define-public go-github-com-pquerna-otp
+  (package
+    (name "go-github-com-pquerna-otp")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pquerna/otp")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0krrardi923jc39lar4vpbvdg3382x1wzk1ip3hwjc8f4jydqgai"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/pquerna/otp/interop
+            (delete-file-recursively "interop")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pquerna/otp"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-boombuler-barcode))
+    (home-page "https://github.com/pquerna/otp")
+    (synopsis "One Time Password utilities in Go")
+    (description
+     "Package otp implements both HOTP and TOTP based one time passcodes in a
+Google Authenticator compatible manner.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-prometheus-community-go-runit
   (package
     (name "go-github-com-prometheus-community-go-runit")
