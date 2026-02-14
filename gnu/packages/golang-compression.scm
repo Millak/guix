@@ -111,6 +111,45 @@ the @code{c2go} tool at
 @url{https://github.com/andybalholm/c2go,https://github.com/andybalholm/c2go}.")
     (license license:expat)))
 
+(define-public go-github-com-bodgit-sevenzip
+  (package
+    (name "go-github-com-bodgit-sevenzip")
+    (version "1.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bodgit/sevenzip")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hjams64h6i3in3w35ip5d4n0diza5ara58k82y4cb59micv4qqd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bodgit/sevenzip"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-andybalholm-brotli
+           go-github-com-bodgit-plumbing
+           go-github-com-bodgit-windows               ;fails to build without
+           go-github-com-hashicorp-golang-lru-v2
+           go-github-com-klauspost-compress
+           go-github-com-pierrec-lz4-v4
+           go-github-com-spf13-afero
+           go-github-com-ulikunitz-xz
+           go-go4-org
+           go-golang-org-x-sync
+           go-golang-org-x-text))
+    (home-page "https://github.com/bodgit/sevenzip")
+    (synopsis "Golang library for dealing with 7-zip archives")
+    (description
+     "Package sevenzip provides read access to 7-zip archives inspired by std
+@code{archive/zip}.  It is implemented in pure Go without external libraries
+or binaries needed.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-buengese-sgzip
   (package
     (name "go-github-com-buengese-sgzip")
