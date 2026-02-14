@@ -564,7 +564,7 @@ address of one of the participants.")
 (define-public mumble
   (package
     (name "mumble")
-    (version "1.5.634")
+    (version "1.5.857")
     (source (origin
               (method url-fetch)
               (uri
@@ -573,7 +573,7 @@ address of one of the participants.")
                 version "/" name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0aar5if80w8ay9i03lpnznz6ln1gh1jjrzxfbj9fdc4as8rkckwh"))
+                "0irvkhz8189kqn0n670l55grk4kvb126n9p944yji69gn86fwqp0"))
               (modules '((guix build utils)
                          (ice-9 ftw)
                          (srfi srfi-1)))
