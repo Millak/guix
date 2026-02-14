@@ -3005,6 +3005,30 @@ quantiles over an unbounded data stream within low memory and CPU bounds.")
     (description "Package plumbing is a collection of assorted I/O helpers.")
     (license license:bsd-3)))
 
+(define-public go-github-com-bodgit-windows
+  (package
+    (name "go-github-com-bodgit-windows")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bodgit/windows")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1iklb2w7yj1icwfwyrimkbkj2dk43lqs9k00ww09x2r5p8cl0ahr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bodgit/windows"))
+    (home-page "https://github.com/bodgit/windows")
+    (synopsis "Golang library for working with Windows primitives")
+    (description
+     "Package windows is a collection of types native to Windows platforms but
+are useful on non-Windows platforms.")
+    (license license:bsd-3)))
+
 ;; XXX: This repository has been archived by the owner on Mar 9, 2019. It is
 ;; now read-only.
 (define-public go-github-com-boltdb-bolt
