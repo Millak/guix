@@ -738,7 +738,7 @@ keys used by @code{go-ipfs} (Kubo).")
 (define-public go-github-com-ipfs-go-datastore
   (package
     (name "go-github-com-ipfs-go-datastore")
-    (version "0.8.2")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -754,7 +754,7 @@ keys used by @code{go-ipfs} (Kubo).")
             (delete-file-recursively "fuzz")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02n38i09f8ffr894fzlsl80ahf32mpap5q004acz9cdg9a67pdz3"))))
+        (base32 "0di34lwvp4smzm6xwg26bz8f4hsyqhbq5n4cs8ppf2k8vaazb1ip"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -767,14 +767,13 @@ keys used by @code{go-ipfs} (Kubo).")
                 (for-each delete-file-recursively
                           (list "examples"))))))))
     (native-inputs
-     (list go-gopkg-in-check-v1))
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-google-uuid
            go-github-com-ipfs-go-detect-race
            go-github-com-ipfs-go-ipfs-delay
            go-go-opentelemetry-io-otel
-           go-go-opentelemetry-io-otel-trace
-           go-go-uber-org-multierr))
+           go-go-opentelemetry-io-otel-trace))
     (home-page "https://github.com/ipfs/go-datastore")
     (synopsis "Key-value datastore interfaces")
     (description
