@@ -9984,7 +9984,7 @@ RFC 8737} (tls-alpn-01 challenge), @url{https://tools.ietf.org/html/rfc8823, RFC
 (define-public go-github-com-miekg-dns
   (package
     (name "go-github-com-miekg-dns")
-    (version "1.1.62")
+    (version "1.1.72")
     (source
      (origin
        (method git-fetch)
@@ -9993,19 +9993,14 @@ RFC 8737} (tls-alpn-01 challenge), @url{https://tools.ietf.org/html/rfc8823, RFC
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wdsacp4ay6ji72vnszq6ksn5n060z2hv94wgjsn0pr7gpa3nk6c"))))
+        (base32 "05b9r955fdyak4l6azzv3z2yccmr2srp73b42yjkx3wha41g154b"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/miekg/dns"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* (find-files "." "\\_test.go$")
-                  ;; Unable to run test server.
-                  (("TestIsPacketConn") "OffTestIsPacketConn"))))))))
+      #:test-flags
+      ;; client_test.go:102: unable to run test server: listen unix
+      #~(list "-skip" "TestIsPacketConn")))
     (propagated-inputs
      (list go-golang-org-x-tools
            go-golang-org-x-sys
