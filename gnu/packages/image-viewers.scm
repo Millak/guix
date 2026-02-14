@@ -1156,7 +1156,7 @@ synchronization of multiple instances.")
 (define-public hydrus-network
   (package
     (name "hydrus-network")
-    (version "630") ;upstream has a weekly release cycle
+    (version "659") ;upstream has a weekly release cycle
     (source
      (origin
        (method git-fetch)
@@ -1166,94 +1166,58 @@ synchronization of multiple instances.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0x133m93nx2rphs0zymmhfknp1274r2fh2jc91rrv9vmdqfh9yyc"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Remove pre-built binaries from bin/.
-        #~(for-each delete-file (find-files "bin" "^swfrender")))))
+         "0wvrq747hxdjyfz3nqxf5qyhx7fqz21l94az0f8vvshcqaf51dls"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
-      #~(let ((static-dir "/share/hydrus/static"))
-          (modify-phases %standard-phases
-            ;; Hydrus is a python program but does not use setup.py or any
-            ;; other build system to build itself - it's delivered ready to
-            ;; run from the source.
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  (setenv "DISPLAY" ":0")
-                  (setenv "XDG_CACHE_HOME" (getcwd))
-                  (setenv "HOME" (getcwd))
-                  (invoke "xvfb-run" "python" "hydrus_test.py"))))
-            ;; XXX: program help files are not built.  Updating
-            ;; python-pymdown-extensions to its latest version might be the
-            ;; solution, but this would require also packaging its new build
-            ;; system that is not present in guix yet.
-            (delete 'build)
-            (add-before 'install 'patch-variables
-              (lambda* (#:key outputs inputs #:allow-other-keys)
-                (let ((ffmpeg    (search-input-file inputs "/bin/ffmpeg"))
-                      (swfrender (search-input-file inputs "/bin/swfrender"))
-                      (upnpc     (search-input-file inputs "/bin/upnpc"))
-                      (out       (assoc-ref outputs "out")))
-                  (with-directory-excursion "hydrus"
-                    ;; Without this the program would incorrectly assume
-                    ;; that it uses user's ffmpeg binary when it isn't.
-                    (substitute* "client/ClientController.py"
-                      (("if (HydrusVideoHandling\\.FFMPEG_PATH).*" _ var)
-                       (string-append "if " var " == \"" ffmpeg "\":\n")))
-                    (with-directory-excursion "core"
-                      (substitute* "HydrusConstants.py"
-                        (("STATIC_DIR = .*")
-                         (string-append "STATIC_DIR = \"" out static-dir "\"\n")))
-                      (with-directory-excursion "files"
-                        (substitute* "HydrusFlashHandling.py"
-                          (("SWFRENDER_PATH = .*\n")
-                           (string-append "SWFRENDER_PATH = \"" swfrender "\"\n")))
-                        (substitute* "HydrusVideoHandling.py"
-                          (("FFMPEG_PATH = .*\n")
-                           (string-append "FFMPEG_PATH = \"" ffmpeg "\"\n"))))
-                      (with-directory-excursion "networking"
-                        (substitute* "HydrusNATPunch.py"
-                          (("UPNPC_PATH = .*\n")
-                           (string-append "UPNPC_PATH = \"" upnpc "\"\n")))))))))
-            ;; Since everything lives in hydrus's root directory, it needs to
-            ;; be spread out to comply with guix's expectations.
-            (replace 'install
-              (lambda* (#:key outputs #:allow-other-keys)
-                (let* ((out (assoc-ref outputs "out"))
-                       (client (string-append out "/bin/hydrus"))
-                       (server (string-append out "/bin/hydrus-server")))
-                  (copy-recursively "static"
-                                    (string-append out static-dir))
-                  (copy-recursively "hydrus"
-                                    (string-append out
-                                                   "/lib/python"
-                                                   (python-version
-                                                    #$(this-package-input "python"))
-                                                   "/site-packages/hydrus"))
-                  (mkdir (string-append out "/bin"))
-                  (copy-file "hydrus_client.py" client)
-                  (chmod client #o0555)
-                  (copy-file "hydrus_server.py" server)
-                  (chmod server #o0555))))))))
+      #~(modify-phases %standard-phases
+      ;; Hydrus is a python program but does not use setup.py or any
+      ;; other build system to build itself - it's delivered ready to
+      ;; run from the source.
+      (replace 'check
+       (lambda _
+        (setenv "DISPLAY" ":0")
+        (setenv "XDG_CACHE_HOME" (getcwd))
+        (setenv "HOME" (getcwd))
+        (invoke "xvfb-run" "python" "hydrus_test.py")))
+        ;; XXX: program help files are not built. Updating
+        ;; python-pymdown-extensions to its latest version might be the
+        ;; solution, but this would require also packaging its new build
+        ;; system that is not present in guix yet.
+      (delete 'build)
+      (replace 'install
+        (lambda _
+         (let*
+          ((bin (string-append #$output "/bin"))
+           (lib (string-append
+                  #$output "/lib/python"
+                  (python-version #$(this-package-input "python"))
+                  "/site-packages"))
+           (client (string-append bin "/hydrus"))
+           (server (string-append bin "/hydrus-server")))
+          (copy-recursively "static" (string-append lib "/static"))
+          (copy-recursively "hydrus" (string-append lib "/hydrus"))
+          (mkdir bin)
+          (copy-file "hydrus_client.py" client)
+          (chmod client #o555)
+          (copy-file "hydrus_server.py" server)
+          (chmod server #o555)))))))
     ;; All native-inputs are only needed for the the check phase
-    (native-inputs
-     (list xvfb-run python-mock python-httmock python-setuptools))
+    (native-inputs (list xvfb-run python-mock python-httmock python-pynose))
     ;; All python packages were taken from static/build_files/linux/requirements.txt
     (propagated-inputs
      (list python-beautifulsoup4
            python-cbor2
            python-chardet
-           python-cloudscraper
            python-dateparser
            python-html5lib
            python-lxml
            python-lz4
            python-numpy
-           opencv ; its python bindings are a drop-in replacement for opencv-python-headless
+           ;; its python bindings are a drop-in replacement
+           ;; for opencv-python-headless
+           opencv
            python-pillow
            python-psutil
            python-pyopenssl
@@ -1265,10 +1229,8 @@ synchronization of multiple instances.")
            python-requests
            python-send2trash
            python-service-identity
-           python-six
            python-twisted))
-    (inputs
-     (list swftools ffmpeg miniupnpc python))
+    (inputs (list ffmpeg miniupnpc python))
     (synopsis "Organize your media with tags like a dektop booru")
     (description
      "The hydrus network client is an application written for
