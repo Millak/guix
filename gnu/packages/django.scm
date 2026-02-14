@@ -2045,23 +2045,19 @@ image files already supported by it.")
 (define-public python-django-environ
   (package
     (name "python-django-environ")
-    (version "0.12.0")
+    (version "0.12.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "django_environ" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/joke2k/django-environ")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "06h4g50qy1h77b4n28xbyzl2wvsblzs9qi63d7kvvm9x8n8whz92"))))
+        (base32 "0alm1ir5fsiq26dnm0pam1rdyiwnpqmnqy537xx3jicjdz2ajy7y"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; Skip test that fails on later Python versions; code itself seems fine.
-      ;; See: <https://github.com/joke2k/django-environ/issues/574>.
-      #:test-flags
-      #~(list "-k" "not test_db_parsing")))
     (native-inputs (list python-pytest
-                         python-setuptools
-                         python-wheel))
+                         python-setuptools))
     (home-page "https://django-environ.readthedocs.io/")
     (synopsis "Configure Django project using environment variables")
     (description
