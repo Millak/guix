@@ -500,6 +500,59 @@ Supported archive formats:
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-mholt-archives
+  (package
+    (name "go-github-com-mholt-archives")
+    (version "0.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mholt/archives")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bir5v306nxkxgr7kdpbnknaw03iqnpgbw26qzs2d2jmy0ahf8jq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mholt/archives"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               (list "TestBrotli_Fuzzy_Both/ascii_107"
+                     "TestBrotli_Fuzzy_Both/ascii_231"
+                     "TestBrotli_Fuzzy_Both/ascii_25"
+                     "TestBrotli_Fuzzy_Both/ascii_284"
+                     "TestBrotli_Fuzzy_Both/ascii_310"
+                     "TestBrotli_Fuzzy_Both/ascii_341"
+                     "TestBrotli_Fuzzy_Both/ascii_351"
+                     "TestBrotli_Match_SmallStreams/empty_stream_uncompressed"
+                     "TestBrotli_Match_Stream/uncompressed_yaml"
+                     "TestIdentifyCanAssessSmallOrNoContent/should_.*_stream")
+               "|"))))
+    (propagated-inputs
+     (list go-github-com-andybalholm-brotli
+           go-github-com-bodgit-sevenzip
+           go-github-com-dsnet-compress
+           go-github-com-klauspost-compress
+           go-github-com-klauspost-pgzip
+           go-github-com-mikelolasagasti-xz
+           go-github-com-minio-minlz
+           go-github-com-nwaples-rardecode-v2
+           go-github-com-pierrec-lz4-v4
+           go-github-com-sorairolake-lzip-go
+           go-github-com-starry-s-zip
+           go-github-com-ulikunitz-xz
+           go-golang-org-x-text))
+    (home-page "https://github.com/mholt/archives")
+    (synopsis "Multi type library to work with archives for Go")
+    (description
+     "This package provides a multi-format Go library for working with
+archives and compression formats with a unified API and as virtual file
+systems compatible with @url{https://pkg.go.dev/io/fs, @code{ io/fs}}.")
+    (license license:expat)))
+
 (define-public go-github-com-mikelolasagasti-xz
   (package
     (name "go-github-com-mikelolasagasti-xz")
