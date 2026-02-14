@@ -3,7 +3,7 @@
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2022-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2025 Patrick Norton <patrick.147.norton@gmail.com>
 ;;;
@@ -42,6 +42,49 @@
 ;;;
 ;;; Code:
 
+(define-public go-github-com-anchore-go-lzo
+  (package
+    (name "go-github-com-anchore-go-lzo")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/anchore/go-lzo")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d8vi92s4h9spi3jsh6d4gri4g8qjpaa51f2b2sir6r32imymi68"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/anchore/go-lzo"
+      #:test-flags
+      ;; XXX: reader_utils_test.go:119: using native LZO
+      ;; validator...
+      ;; reader_test.go:95: compressed file
+      ;; testdata/cache/short-repeated.cpp.lzo using method cpp: 400 -> 39
+      ;; bytes reader_utils_test.go:147: lzo-wrapper decompression failed:
+      ;; signal: aborted Stderr: malloc(): invalid size (unsorted)
+      #~(list "-skip" (string-join
+                       (list "Test_Decompression_Fixed/short-repeated"
+                             "Test_Decompression_Fixed/long-repeated"
+                             "Test_Decompression_Fixed/zeros")
+                       "|"))))
+    (propagated-inputs
+     (list lzo))
+    (home-page "https://github.com/anchore/go-lzo")
+    (synopsis "LZO1X decompression library written in Go")
+    (description
+     "This package provides an implementation of the LZO1X decompression
+algorithm in Go.  The implementation is derived from the
+@url{https://docs.kernel.org/staging/lzo.html, Linux kernel documentation for
+the LZO stream format} and the @url{https://github.com/AxioDL/lzokay,
+implementation from lzokay project} (MIT licensed).  It includes a
+@code{Reader} for streaming decompressed data and a standalone
+@code{Decompress} function for use with byte slices.")
+    (license license:expat)))
+
 (define-public go-github-com-andybalholm-brotli
   (package
     (name "go-github-com-andybalholm-brotli")
