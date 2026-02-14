@@ -1171,6 +1171,30 @@ dicts.")
 Rust's @url{https://docs.rs/exitcode, exitcode}.")
     (license license:expat)))
 
+(define-public python-exrex
+  (package
+    (name "python-exrex")
+    (version "0.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/asciimoo/exrex")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lvhkxfrpgi7g6lzp97m1hqzkn5aa9yr544jff2ya2w49c5flg81"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'custom
+                     #:test-flags #~'("tests.py")))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/asciimoo/exrex")
+    (synopsis "Irregular methods for regular expressions")
+    (description
+     "Exrex is a command line tool and Python module that generates all,
+or random, matching strings to a given regular expression.")
+    (license license:agpl3+)))
+
 (define-public python-ezdxf
   (package
     (name "python-ezdxf")
