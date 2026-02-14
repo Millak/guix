@@ -62,6 +62,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages nss)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages cpio)
   #:use-module (gnu packages cups)
   #:use-module (gnu packages compression)
@@ -8886,14 +8887,18 @@ sources by ANTLR.")
      (list
       ;; TODO: try to run the tests under
       ;; runtime-testsuite/test/org/antlr/v4/test/runtime/cpp with antlr4.
-      #:tests? #f                       ;no CMake test target
-      ;; TODO: Building the tests wants to download googletest.
-      #:configure-flags #~'("-DANTLR_BUILD_CPP_TESTS=OFF")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir
             (lambda _
               (chdir "runtime/Cpp")))
+          (add-after 'chdir 'unbundle-googletest
+            (lambda _
+              (substitute* "runtime/CMakeLists.txt"
+                (("^  FetchContent_MakeAvailable.*")
+                 "")
+                (("gtest_main" all)
+                 (string-append "gtest " all)))))
           (add-after 'install 'move-static-library
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((static (assoc-ref outputs "static"))
@@ -8904,7 +8909,7 @@ sources by ANTLR.")
                  libantlr4-runtime.a
                  (string-append static "/lib/"
                                 (basename libantlr4-runtime.a)))))))))
-    (native-inputs (list pkg-config))
+    (native-inputs (list googletest pkg-config))
     (inputs (list `(,util-linux "lib"))) ;libuuid
     (synopsis "ANTLR C++ runtime library")
     (description "This package contains the C++ runtime library used with C++
