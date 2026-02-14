@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2019, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2019, 2023, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014-2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016-2019, 2021-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -364,9 +364,7 @@ taken from the NSS package and thus ultimately from the Mozilla project.")
      (inputs '())
      (propagated-inputs '())
      (arguments
-      (list #:modules '((guix build utils)
-                        (rnrs io ports)
-                        (srfi srfi-26))
+      (list #:modules '((guix build utils))
             #:builder
             #~(begin
                 (use-modules (guix build utils)
