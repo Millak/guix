@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -918,7 +918,9 @@ false, meaning that GEXP is a plain Scheme object, return the empty list."
     ;; user and may thus be a source of non-reproducibility.  This includes
     ;; (guix config) as well as modules that come with Guile.
     (match (filter (match-lambda
-                     ((or ('guix 'config) ('ice-9 . _)) #t)
+                     ((or ('guix 'config) ('ice-9 . _)
+                          ('srfi . _) ('rnrs . _) ('scheme . _))
+                      #t)
                      (_ #f))
                    modules)
       (() #t)
