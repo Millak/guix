@@ -33,6 +33,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages pkg-config))
 
@@ -42,6 +43,44 @@
 ;;;
 ;;; Code:
 
+(define-public go-github-com-a1ex3-zstd-seekable-format-go-pkg
+  (let ((commit "eb2f95f46725437a64063e005a54e20c95b774c6")
+        (revision "0"))
+    (package
+      (name "go-github-com-a1ex3-zstd-seekable-format-go-pkg")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/a1ex3/zstd-seekable-format-go")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "13bads7hxqf3c5rszhyib6km4bq6zslayzg2787czn3avbnh8g6f"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:skip-build? #t
+        #:import-path "github.com/a1ex3/zstd-seekable-format-go"))
+      (native-inputs
+       (list go-github-com-klauspost-compress
+             go-github-com-stretchr-testify))
+      (propagated-inputs
+       (list go-github-com-cespare-xxhash-v2
+             go-github-com-google-btree
+             go-golang-org-x-sync))
+      (home-page "https://github.com/a1ex3/zstd-seekable-format-go")
+      (synopsis "Seekable ZSTD compression format implemented in Golang")
+      (description
+       "This packages provides a seekable ZSTD compression format implemented in
+Golang.  It is a random access reader (using uncompressed file offsets) for
+ZSTD-compressed streams.  This can be used for creating transparent
+compression layers.  Coupled with Content Defined Chunking (CDC) it can also
+be used as a robust de-duplication layer.  It is an alternative fork of
+@url{https://github.com/SaveTheRbtz/zstd-seekable-format-go}.")
+      (license license:expat))))
+
 (define-public go-github-com-anchore-go-lzo
   (package
     (name "go-github-com-anchore-go-lzo")
