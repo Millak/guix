@@ -83,6 +83,7 @@
 ;;; Copyright © 2025 Noé Lopez <noelopez@free.fr>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2026 Roman Riabenko <roman@riabenko.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6943,6 +6944,12 @@ supports image conversion, rotation, and slideshows.")
                (base32
                 "0prymlrfh66p03va5aj30wazshp7bn80gzcsj9dgsmss2k512wlb"))))
     (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      ;; Otherwise, building fails because Meson strips libeog from RUNPATH.
+      #~(list (string-append "-Dc_link_args=-Wl,-rpath="
+                             #$(this-package-input "eog") "/lib/eog"))))
     (home-page "https://wiki.gnome.org/Apps/EyeOfGnome/Plugins")
     (synopsis "Extensions for the Eye of GNOME image viewer")
     (native-inputs
