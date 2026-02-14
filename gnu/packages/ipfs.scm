@@ -2140,7 +2140,7 @@ kab-dht}.  This DHT is modeled after Kademlia with S/Kademlia modifications.")
 (define-public go-github-com-libp2p-go-libp2p-kbucket
   (package
     (name "go-github-com-libp2p-go-libp2p-kbucket")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
@@ -2149,7 +2149,7 @@ kab-dht}.  This DHT is modeled after Kademlia with S/Kademlia modifications.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1p764b38xm0v5w3h8df14480j6y0fxxlsxwqizqchf0ivr3fr634"))))
+        (base32 "0imhamd18v5q4c7r92janx8pc51gbcdbxgbq3cl0n0j27ddc7f19"))))
     (build-system go-build-system)
     (arguments
      (list
