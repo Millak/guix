@@ -20486,6 +20486,30 @@ smallest detail.")
 @code{log/syslog}, but with support for TLS.")
     (license license:bsd-3)))
 
+(define-public go-github-com-raduberinde-btreemap
+  (package
+    (name "go-github-com-raduberinde-btreemap")
+    (version "0.0.0-20260105202824-d3184786f603")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/RaduBerinde/btreemap")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ggdpq8vky1bp2gyvqsmmfk4gcyw5nvzzgnbynndjfl5z8b4rbdy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/RaduBerinde/btreemap"))
+    (home-page "https://github.com/RaduBerinde/btreemap")
+    (synopsis "BTree map based on github.com/google/btree")
+    (description
+     "Package btreemap implements an ordered key-value map using an in-memory
+B-Tree of arbitrary degree.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-rakyll-statik
   (package
     (name "go-github-com-rakyll-statik")
