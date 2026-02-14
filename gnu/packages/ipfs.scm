@@ -557,6 +557,48 @@ anywhere that accepts a @url{https://github.com/ipfs/go-datastore,
 go-datastore}.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public go-github-com-ipfs-go-dsqueue
+  (package
+    (name "go-github-com-ipfs-go-dsqueue")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ipfs/go-dsqueue")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bz6b0541i0aisfjj45gw044yi78523ma98cnj1hbrx028480chb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.25
+      #:import-path "github.com/ipfs/go-dsqueue"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              ;; See: <https://go.dev/blog/synctest>.
+              (setenv "GOEXPERIMENT" "synctest")
+              (setenv "GODEBUG" "asynctimerchan=0"))))))
+    (native-inputs
+     (list go-github-com-ipfs-go-test))
+    (propagated-inputs
+     (list go-github-com-gammazero-deque
+           go-github-com-hashicorp-golang-lru-v2
+           go-github-com-ipfs-go-cid
+           go-github-com-ipfs-go-datastore
+           go-github-com-ipfs-go-ds-leveldb
+           go-github-com-ipfs-go-log-v2))
+    (home-page "https://github.com/ipfs/go-dsqueue")
+    (synopsis "Buffered FIFO interface to datastore")
+    (description
+     "Package dsqueue provides a buffered FIFO interface to the datastore for
+storing and retrieving items.  Queued items are persisted across restarts.")
+    ;; SPDX-License-Identifier: Apache-2.0 OR MIT
+    (license (list license:expat license:asl2.0))))
+
 (define-public go-github-com-ipfs-go-fs-lock
   (package
     (name "go-github-com-ipfs-go-fs-lock")
