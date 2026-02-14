@@ -20486,6 +20486,34 @@ smallest detail.")
 @code{log/syslog}, but with support for TLS.")
     (license license:bsd-3)))
 
+(define-public go-github-com-raduberinde-axisds
+  (package
+    (name "go-github-com-raduberinde-axisds")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/RaduBerinde/axisds")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1933wkk4h62yfz2xqhf1a4swcwimx1dpfv9s3d85izrv95myp7i8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/RaduBerinde/axisds"))
+    (propagated-inputs
+     (list go-github-com-cockroachdb-datadriven
+           go-github-com-raduberinde-btreemap))
+    (home-page "https://github.com/RaduBerinde/axisds")
+    (synopsis "One-dimensional data structures")
+    (description
+     "This project contains data structures for entities ordered across a
+single dimension, which can conceptually be embedded into the real number
+axis.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-raduberinde-btreemap
   (package
     (name "go-github-com-raduberinde-btreemap")
