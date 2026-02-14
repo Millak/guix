@@ -73,7 +73,8 @@
 (define-public wxwidgets
   (package
     (name "wxwidgets")
-    (version "3.2.8.1")
+    ;; There is a newer versions 3.3, but this is tagged "development".
+    (version "3.2.9")
     (source
      (origin
        (method url-fetch)
@@ -81,7 +82,7 @@
                            "releases/download/v" version
                            "/wxWidgets-" version ".tar.bz2"))
        (sha256
-        (base32 "0mnpnwndkw9f6xvjyq4sv6sxfv1h3b9c7lwsm2kg3p0mi30zc35d"))
+        (base32 "0aqi3wrf99djdbvwislza2gsyascq6h3f07qvcpa1mpzid9zk47v"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
