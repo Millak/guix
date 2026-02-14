@@ -25709,20 +25709,27 @@ from the comfort of your editor.")
     (license license:gpl3+)))
 
 (define-public emacs-engrave-faces
-  (package
-    (name "emacs-engrave-faces")
-    (version "0.3.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://elpa.gnu.org/packages/engrave-faces-"
-                                  version ".tar"))
-              (sha256
-               (base32
-                "1q4sjl2rvcfwcirm32nmi53258ln71yhh1dgszlxwknm38a14v3i"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/tecosaur/engrave-faces")
-    (synopsis "Convert font-lock faces to other formats")
-    (description "There are some great packages for exporting buffers to
+  ;; Last release is from 2022.
+  (let ((commit "0cc5d0b9801944d5678a7908885f9dea8de05753")
+        (revision "0"))
+    (package
+      (name "emacs-engrave-faces")
+      (version (git-version "0.3.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://code.tecosaur.net/tec/engrave-faces/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "11ib4bkmzajvaz7jva4yjj1wfv69iaiwflffprzzbfl2f39fv3if"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ;no tests
+      (home-page "https://code.tecosaur.net/tec/engrave-faces/")
+      (synopsis "Convert font-lock faces to other formats")
+      (description "There are some great packages for exporting buffers to
 particular formats, but each one seems to reinvent the core mechanism of
 processing the font-lock in a buffer such that it can be exported to
 a particular format.
@@ -25730,7 +25737,7 @@ a particular format.
 This package aims to produce a versatile generic core which can process
 a fontified buffer and pass the data to any number of backends which can deal
 with specific output formats.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-enh-ruby-mode
   ;; The latest tag is from 2019.
