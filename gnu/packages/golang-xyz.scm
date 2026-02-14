@@ -8080,6 +8080,34 @@ O(1) for @code{Set}, @code{Get}, @code{Delete} and @code{Len}.")
         #~(modify-phases %standard-phases
             (delete 'remove-submodule)))))))
 
+(define-public go-github-com-elliotwutingfeng-asciiset
+  (package
+    (name "go-github-com-elliotwutingfeng-asciiset")
+    (version "0.0.0-20260129054604-cfde2086bc57")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/elliotwutingfeng/asciiset")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ww73wc7zfqay3wqqglxq2g7qbm00kbmx14ffc9gcp5yx9mzcm3r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/elliotwutingfeng/asciiset"))
+    (home-page "https://github.com/elliotwutingfeng/asciiset")
+    (synopsis "Asciiset is an ASCII character bitset for Golang")
+    (description
+     "Package asciiset is an ASCII character bitset.  Bitsets are fast and
+memory-efficient data structures for storing and retrieving information using
+bitwise operations.  @code{asciiset} is an extension of the @code{asciiSet}
+data structure from the Go Standard library
+@url{https://cs.opensource.google/go/go/+/master:src/bytes/bytes.go, source
+code}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-emersion-go-autostart
   (package
     (name "go-github-com-emersion-go-autostart")
