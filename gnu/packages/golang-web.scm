@@ -8983,7 +8983,7 @@ It is inspired by SPDY but is not interoperable with it.")
   (package
     (inherit go-github-com-libp2p-go-yamux-v4)
     (name "go-github-com-libp2p-go-yamux-v5")
-    (version "5.0.0")
+    (version "5.1.0")
     (source
      (origin
        (method git-fetch)
@@ -8992,7 +8992,7 @@ It is inspired by SPDY but is not interoperable with it.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "019jj3qwzrbqcgwzri5iwi1vh2cn0ms6k8fx14jlmy856b25yl3y"))))
+        (base32 "0m9cvbkm90ba7wmyy5kfrb26wba1pbbp1miyvd0s15cjzs2gw2mf"))))
     (build-system go-build-system)
     (arguments
      (substitute-keyword-arguments
