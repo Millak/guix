@@ -2235,6 +2235,51 @@ cache directory, to avoid modifying the host's environment, and further
 activated using a set of environment variables.")
     (license (list license:expat license:asl2.0))))
 
+(define-public python-py010parser
+  (package
+    (name "python-py010parser")
+    (version "0.1.18")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/d0c-s4vage/py010parser")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "0yiyal9vxrni2yy3f6fwpndxz4kih6pwm9ikgrmhx4nq0fkb68m3"))
+       (modules '((guix build utils)))
+       (snippet #~(begin
+                    ;; Unbundle ply.
+                    (substitute* "requirements.txt"
+                      (("^six\\>.*") ""))
+                    (substitute* "setup.py"
+                      (("(packages += \\['py010parser').*\\]" all first)
+                       (string-append first "]")))
+                    (delete-file-recursively "py010parser/ply")
+                    (substitute* (find-files "py010parser" "\\.py$")
+                      ((" .*\\.ply\\>") " ply"))
+                    ;; Avoid regenerating the lex table.
+                    (substitute* '("py010parser/__init__.py"
+                                   "py010parser/c_parser.py")
+                      (("(lex_optimize=)[A-Za-z]+(,)" all open close)
+                       (string-append open "False" close)))
+                    (substitute* '("py010parser/__init__.py"
+                                   "setup.py")
+                      (("\\{\\{VERSION\\}\\}") #$version))
+                    (substitute* "setup.cfg"
+                      (("description-file") "description_file"))))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest
+                     #:test-flags #~'("discover" "tests")))
+    (propagated-inputs (list python-regex python-ply))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/d0c-s4vage/py010parser")
+    (synopsis "Parser of 010 editor's template")
+    (description
+     "@code{py010parser} is a Python library for parsing templates
+for the Sweetscape 010 binary-format editor.")
+    (license license:bsd-3)))
+
 (define-public python-pygls
   (package
     (name "python-pygls")
