@@ -528,7 +528,7 @@ hierarchy of the keys.")
 (define-public go-github-com-ipfs-go-ds-pebble
   (package
     (name "go-github-com-ipfs-go-ds-pebble")
-    (version "0.5.0")
+    (version "0.5.9")
     (source
      (origin
        (method git-fetch)
@@ -537,11 +537,13 @@ hierarchy of the keys.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0l0abcknray9hvk5j3vdiybgjk7yn6j3awznpy46j08g97z88ljw"))))
+        (base32 "0s1r3d4msxcbfm1ii39882vpka6ncq5bknp3al3gbs6wg3sa70bk"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/ipfs/go-ds-pebble"))
+      #:import-path "github.com/ipfs/go-ds-pebble"
+      #:build-flags #~(list "-tags" "external_libzstd")
+      #:test-flags #~(list "-tags" "external_libzstd")))
     (propagated-inputs
      (list go-github-com-cockroachdb-pebble-v2
            go-github-com-ipfs-go-datastore
