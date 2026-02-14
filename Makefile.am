@@ -14,7 +14,7 @@
 # Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 # Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 # Copyright © 2019, 2023 Efraim Flashner <efraim@flashner.co.il>
-# Copyright © 2020, 2021, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
+# Copyright © 2020, 2021, 2023, 2025, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 # Copyright © 2021 Andrew Tropin <andrew@trop.in>
 # Copyright © 2023 Clément Lassieur <clement@lassieur.org>
@@ -1271,25 +1271,32 @@ cuirass-jobs: $(GOBJECTS)
 
 if in_git_p
 # Git auto-configuration.
-GIT_HOOKS_DIR := $(shell git rev-parse --git-path hooks)
-GIT_CONFIG_FILE := $(shell git rev-parse --git-path config)
+
+# Note: the following git commands may fail and produce empty variables,
+# e.g. when working on a work tree in a container.
+GIT_HOOKS_DIR := $(shell git rev-parse --git-path hooks 2>/dev/null)
+GIT_CONFIG_FILE := $(shell git rev-parse --git-path config 2>/dev/null)
 $(GIT_HOOKS_DIR):
-	mkdir -p "$@"
+	if [ -n "$(GIT_HOOKS_DIR)" ]; then mkdir -p "$@"; fi
 
 $(GIT_HOOKS_DIR)/%: etc/git/% | $(GIT_HOOKS_DIR)/
-	cp "$<" "$@"
+	if [ -n "$(GIT_HOOKS_DIR)" ]; then cp "$<" "$@"; fi
 
 $(GIT_CONFIG_FILE): etc/git/gitconfig
-	git config --fixed-value --replace-all include.path \
-	  ../etc/git/gitconfig ../etc/git/gitconfig
+	if [ -n "$(GIT_CONFIG_FILE)" ]; then \
+	  git config --fixed-value --replace-all include.path \
+	    ../etc/git/gitconfig ../etc/git/gitconfig; \
+	fi
 
 COMMIT_MSG_MAGIC = VGhpcyBpcyB0aGUgY29tbWl0LW1zZyBob29rIG9mIEd1aXg=
 $(GIT_HOOKS_DIR)/commit-msg: etc/git/commit-msg | $(GIT_HOOKS_DIR)
-	if test -f $@  && ! grep -qF $(COMMIT_MSG_MAGIC) $@; then \
-	  mkdir -p $@.d && mv $@ $@.d && \
-	@ echo user commit-msg hook moved to $@.d/commit-msg; \
-	fi; \
-	cp etc/git/commit-msg $@
+	if [ -n "$(GIT_HOOKS_DIR)" ]; then \
+	  if test -f $@  && ! grep -qF $(COMMIT_MSG_MAGIC) $@; then \
+	    mkdir -p $@.d && mv $@ $@.d && \
+	    echo user commit-msg hook moved to $@.d/commit-msg; \
+	  fi && \
+	  cp etc/git/commit-msg $@; \
+	fi
 
 # Convenience targets.
 GIT_HOOKS_SOURCE_FILES := $(shell find etc/git -type f -executable)
