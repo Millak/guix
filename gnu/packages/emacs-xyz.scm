@@ -378,8 +378,9 @@ buffer, a file on your disk, or a string from the kill ring.")
       (license license:gpl3+))))
 
 (define-public emacs-elisp-autofmt
-  (let ((commit "c2765641a9bd2b4c979e7055030fb7a145b6c118")
-        (revision "1"))
+  ;; No tags, nor releases upstream.
+  (let ((commit "8aa1ac5db6bfcd23dd73f988b5f15ab7b4d0e102")
+        (revision "2"))
     (package
       (name "emacs-elisp-autofmt")
       (version (git-version "0.1" revision commit))
@@ -391,7 +392,7 @@ buffer, a file on your disk, or a string from the kill ring.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0hgmlbxabzhwc1kw59hxvi9xgk6fh0jar4k82sb8yn1zznzhr0lk"))
+          (base32 "1v5mxq8dqj7hvm5hgxi85jj38jmbxn6yfsy0qd91phc3n1lr3kgp"))
          (patches
           (search-patches "emacs-elisp-autofmt-fix-region-send.patch"))))
       (build-system emacs-build-system)
@@ -404,6 +405,11 @@ buffer, a file on your disk, or a string from the kill ring.")
                            %default-include)
         #:phases
         #~(modify-phases %standard-phases
+            (add-after 'unpack 'use-appropriate-python
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-variables "elisp-autofmt.el"
+                  ("elisp-autofmt-python-bin"
+                   (search-input-file inputs "/bin/python3")))))
             ;; TODO Remove when fixed upstream. See:
             ;; <https://codeberg.org/ideasman42/emacs-elisp-autofmt/issues/36>.
             (add-before 'check 'fix-tests
