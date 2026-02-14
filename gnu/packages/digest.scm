@@ -2,6 +2,7 @@
 ;;; Copyright © 2017, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,8 +30,40 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (guix utils)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-xyz)
   #:use-module (ice-9 match))
+
+(define-public python-tdigest
+  (package
+    (name "python-tdigest")
+    (version "0.6.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/CamDavidsonPilon/tdigest")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fqpjw27fc1xfx72c2rjbnmi290f4c262rwm0c2fifsxpwyy54w7"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-accumulation-tree python-pyudorandom))
+    (native-inputs (list python-numpy
+                         python-pytest
+                         python-pytest-timeout
+                         python-setuptools))
+    (home-page "https://github.com/CamDavidsonPilon/tdigest")
+    (synopsis "Python implementation of the t-digest data structure")
+    (description
+     "This Python package implements @url{https://github.com/tdunning/t-digest,
+Ted Dunning's t-digest data structure}, which is designed around computing
+accurate estimates such as percentiles, quantiles and trimmed means
+from streaming or distributed data.  Two t-digests can be added,
+making the data structure ideal for map-reduce settings, and can be serialized
+into much less than 10 kB, instead of storing the entire list of data.")
+    (license license:expat)))
 
 (define-public wyhash
   (package
