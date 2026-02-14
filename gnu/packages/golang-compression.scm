@@ -656,6 +656,32 @@ format's \"Extra Fields\".  The intention is to eventually support and provide
 a low-level API for the majority of PKWARE's and Info-ZIP's extra fields.")
     (license license:expat)))
 
+(define-public go-github-com-starry-s-zip
+  (package
+    (name "go-github-com-starry-s-zip")
+    (version "0.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/STARRY-S/zip")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n3ynxx6dmwvgfwfv0il3s8m40wdssip400rp20rb23vq6kk4fsr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/STARRY-S/zip"
+      ;; updater_test.go:260: open /var/tmp/test-0-846075180.iso: no such file
+      ;; or directory
+      #:test-flags #~(list "-skip" "TestUpdaterOverwriteZip64")))
+    (home-page "https://github.com/STARRY-S/zip")
+    (synopsis "Go zip library")
+    (description
+     "Package zip provides support for reading and writing ZIP archives.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-ulikunitz-xz
   (package
     (name "go-github-com-ulikunitz-xz")
