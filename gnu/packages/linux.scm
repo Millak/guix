@@ -63,7 +63,7 @@
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Ryan Sundberg <ryan@arctype.co>
-;;; Copyright © 2022-2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022-2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022, 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
@@ -6288,7 +6288,7 @@ dm-thin, dm-cache and dm-era device-mapper targets.")
 (define-public watchdogd
   (package
     (name "watchdogd")
-    (version "4.0")
+    (version "4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6297,7 +6297,7 @@ dm-thin, dm-cache and dm-era device-mapper targets.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "112mdhqykl78qk8l7nx7h19nnd58v0axj6ws8s47n9a64b867li4"))))
+                "1n5xq5gxrj8b8j2g323k0jpxabjnq9piw8v2fqcyphj33kmgay23"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake libtool pkg-config))
     (inputs (list libconfuse libite libuev))
