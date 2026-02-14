@@ -330,6 +330,50 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
 
+(define-public python-accumulation-tree
+  ;; Only minor releases (0.x) are tagged, not patch versions.
+  (let ((commit "3617051f952ce12385c015be8e3d052d1883f17a")
+        (revision "0"))
+    (package
+      (name "python-accumulation-tree")
+      (version (git-version "0.6.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tkluck/accumulation_tree")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0bgqy07rpiyz60y8nfh8mha38l650x25l4bbbv6fx42czw7kzhbx"))
+         (modules '((guix build utils)))
+         (snippet                       ;use src layout for isolated tests
+          #~(let* ((src "src/")
+                   (old "accumulation_tree/")
+                   (new (string-append src old)))
+              (mkdir src)
+              (rename-file old new)
+              (substitute* "setup.py"
+                (("packages=" all)
+                 (string-append "package_dir={'': '" src "'}, " all))
+                ((old)
+                 new))))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list #:test-backend #~'custom
+             #:test-flags #~'("-m" "doctest" "README.md" "tests.md")))
+      (native-inputs (list python-cloudpickle python-cython python-setuptools))
+      (home-page "https://github.com/tkluck/accumulation_tree")
+      (synopsis "Red-black tree with fast value accumulation in a key range")
+      (description
+       "This Python package implements a red-black tree which also stores
+partial aggregations at each node, making getting aggregations
+of key range slices an O(log(N)) operation.
+
+This data structure is very similar to a binary indexed tree,
+with heap allocation instead of a flat array to represent a tree.")
+      (license license:expat))))
+
 (define-public python-anaconda-cli-base
   (package
     (name "python-anaconda-cli-base")
