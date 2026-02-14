@@ -95,6 +95,10 @@ PulseAudio clients to use PipeWire transparently.")
              (list (home-pipewire-pulseaudio-shepherd-service config))
              '())))
 
+(define (home-pipewire-profile-service config)
+  (list (home-pipewire-configuration-pipewire config)
+        (home-pipewire-configuration-wireplumber config)))
+
 (define (home-pipewire-asoundrc config)
   (match-record config <home-pipewire-configuration>
                 (pipewire extra-content)
@@ -126,6 +130,8 @@ PulseAudio clients to use PipeWire transparently.")
    (extensions
     (list (service-extension home-shepherd-service-type
                              home-pipewire-shepherd-services)
+          (service-extension home-profile-service-type
+                             home-pipewire-profile-service)
           (service-extension home-xdg-configuration-files-service-type
                              home-pipewire-xdg-configuration)))
    (description
