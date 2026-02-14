@@ -721,6 +721,36 @@ format's \"Extra Fields\".  The intention is to eventually support and provide
 a low-level API for the majority of PKWARE's and Info-ZIP's extra fields.")
     (license license:expat)))
 
+(define-public go-github-com-sorairolake-lzip-go
+  (package
+    (name "go-github-com-sorairolake-lzip-go")
+    (version "0.3.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sorairolake/lzip-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d5lxwfg3diij77892bl07n2530263703kps6rirfyjx27z9dzcr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sorairolake/lzip-go"))
+    (native-inputs
+     (list go-github-com-google-go-cmdtest))
+    (propagated-inputs
+     (list go-github-com-ulikunitz-xz))
+    (home-page "https://github.com/sorairolake/lzip-go")
+    (synopsis "Pure Go implementation for reading and writing lzip")
+    (description
+     "Package lzip implements the
+@url{https://www.nongnu.org/lzip/manual/lzip_manual.html#File-format, lzip
+compressed format} and supports reading and writing of lzip compressed
+streams.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public go-github-com-starry-s-zip
   (package
     (name "go-github-com-starry-s-zip")
