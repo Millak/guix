@@ -2112,7 +2112,7 @@ through @url{https://github.com/libp2p/libp2p, LibP2P} using Go's standard
 (define-public go-github-com-libp2p-go-libp2p-kad-dht
   (package
     (name "go-github-com-libp2p-go-libp2p-kad-dht")
-    (version "0.33.1")
+    (version "0.37.1")
     (source
      (origin
        (method git-fetch)
@@ -2121,7 +2121,14 @@ through @url{https://github.com/libp2p/libp2p, LibP2P} using Go's standard
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m263kjax7zyn3k3xgiamh6fcfl4724hm64z6mvmlslcx5zvmmzz"))))
+        (base32 "07p5vy43kszcqzyy9piagyakgikg5afihd478q2zsviimqhl9ngb"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Module name has been changed upstream.
+            (substitute* (find-files "." "\\.go$")
+              (("github.com/probe-lab/go-libdht")
+               "github.com/ipfs/go-libdht"))))))
     (build-system go-build-system)
     (arguments
      (list
@@ -2131,17 +2138,22 @@ through @url{https://github.com/libp2p/libp2p, LibP2P} using Go's standard
       #:test-flags #~(list "-skip" "TestIPDiversityFilter/Different_IPv6_blocks")))
     (native-inputs
      (list go-github-com-ipfs-go-test
+           go-github-com-ipfs-go-detect-race
+           go-github-com-libp2p-go-libp2p
+           go-github-com-multiformats-go-multistream
+           go-github-com-ipfs-go-ds-pebble
            go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-github-com-google-gopacket
+     (list go-github-com-gammazero-deque
+           go-github-com-google-gopacket
            go-github-com-google-uuid
+           go-github-com-guillaumemichel-reservedpool
            go-github-com-hashicorp-golang-lru
            go-github-com-ipfs-boxo
            go-github-com-ipfs-go-cid
            go-github-com-ipfs-go-datastore
-           go-github-com-ipfs-go-detect-race
+           go-github-com-ipfs-go-dsqueue
            go-github-com-ipfs-go-log-v2
-           go-github-com-libp2p-go-libp2p
            go-github-com-libp2p-go-libp2p-kbucket
            go-github-com-libp2p-go-libp2p-record
            go-github-com-libp2p-go-libp2p-routing-helpers
@@ -2153,12 +2165,11 @@ through @url{https://github.com/libp2p/libp2p, LibP2P} using Go's standard
            go-github-com-multiformats-go-multiaddr
            go-github-com-multiformats-go-multibase
            go-github-com-multiformats-go-multihash
-           go-github-com-multiformats-go-multistream
+           go-github-com-probe-lab-go-libdht
            go-github-com-whyrusleeping-go-keyspace
            go-go-opentelemetry-io-otel
            go-go-opentelemetry-io-otel-metric
            go-go-opentelemetry-io-otel-trace
-           go-go-uber-org-multierr
            go-go-uber-org-zap
            go-gonum-org-v1-gonum
            go-google-golang-org-protobuf))
