@@ -7351,6 +7351,57 @@ Mark} detection.")
 (resize, rotate, crop, brightness/contrast adjustments, etc.).")
     (license license:expat)))
 
+(define-public go-github-com-diskfs-go-diskfs
+  (package
+    (name "go-github-com-diskfs-go-diskfs")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/diskfs/go-diskfs")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dgdlj5va8jcjah23vzy9cmhz45fk5iw1lpzyq9s7s2vbrzw9ivr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/diskfs/go-diskfs"
+      ;; disk_test.go:543: error generating fat32 test artifact for disk test:
+      ;; exit status 127
+      #:test-flags #~(list "-skip" "TestGetFilesystem/whole_disk")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-example
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                ;; buildimg.sh: line 4: docker: command not found
+                (for-each delete-file
+                          (append
+                           (find-files "filesystem/ext4" ".*_test\\.go$")
+                           (find-files "filesystem/fat32" ".*_test\\.go$")))))))))
+    (native-inputs
+     (list go-github-com-go-test-deep
+           go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-anchore-go-lzo
+           go-github-com-djherbis-times
+           go-github-com-elliotwutingfeng-asciiset
+           go-github-com-google-uuid
+           go-github-com-klauspost-compress
+           go-github-com-pierrec-lz4-v4
+           go-github-com-pkg-xattr
+           go-github-com-sirupsen-logrus
+           go-github-com-ulikunitz-xz
+           go-golang-org-x-sys))
+    (home-page "https://github.com/diskfs/go-diskfs")
+    (synopsis "Disks, disk images and filesystems manipulation utilities for Go")
+    (description
+     "Package diskfs implements methods for creating and manipulating disks
+and filesystems.")
+    (license license:expat)))
+
 (define-public go-github-com-distribution-reference
   (package
     (name "go-github-com-distribution-reference")
