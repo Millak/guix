@@ -2981,6 +2981,30 @@ matching and globbing with support for \"doublestar\" patterns.")
 quantiles over an unbounded data stream within low memory and CPU bounds.")
     (license license:bsd-2)))
 
+(define-public go-github-com-bodgit-plumbing
+  (package
+    (name "go-github-com-bodgit-plumbing")
+    (version "1.3.0")
+    (source
+     (origin 
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bodgit/plumbing")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vbyc6pxirnkvcx5acqcxg57ii3h2fv1d9dx3mq6mcbn00jdsqly"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bodgit/plumbing"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/bodgit/plumbing")
+    (synopsis "I/O helpers utils for Golang")
+    (description "Package plumbing is a collection of assorted I/O helpers.")
+    (license license:bsd-3)))
+
 ;; XXX: This repository has been archived by the owner on Mar 9, 2019. It is
 ;; now read-only.
 (define-public go-github-com-boltdb-bolt
