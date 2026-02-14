@@ -34097,6 +34097,32 @@ Psycopg 2 is both Unicode and Python 3 friendly.")
 async I/O support.")
     (license license:gpl2+)))
 
+(define-public python-ansi-styles
+  ;; Releases are not tagged in Git:
+  ;; https://github.com/shawwn/ansi-styles-python/issues/2
+  (let ((commit "c1d79c1defaf68c4f1bfe3f9b3fa49667404f5f4")
+        (revision "0"))
+    (package
+      (name "python-ansi-styles")
+      (version (git-version "0.2.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/shawwn/ansi-styles-python")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0595v5nxh1j3yv4k668x6yjvabjfpckgjzz6s89cfmwkd70sdkn0"))))
+      (build-system pyproject-build-system)
+      (native-inputs (list python-poetry-core python-pytest))
+      (home-page "https://github.com/shawwn/ansi-styles-python")
+      (synopsis "ANSI escape codes for styling strings in the terminal")
+      (description
+       "This Python package provide ANSI escape codes
+for styling strings in the terminal.")
+      (license license:expat))))
+
 (define-public python-ansicolors
   ;; XXX: Not maintained fork since 2017, consider to remove when there is no
   ;; any users.
