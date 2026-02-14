@@ -43271,15 +43271,16 @@ classes into dummy/indicator variables.")
 (define-public r-dunn-test
   (package
     (name "r-dunn-test")
-    (version "1.3.6")
+    (version "1.3.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "dunn.test" version))
               (sha256
                (base32
-                "0z3qyq0lnflmsx41dbkr5lwgiqf3z8rn5wy54c93fwmahva0lqs9"))))
+                "11clwqd6a2p9qc3xd61fylaif5x8w3vnz06z0s4vai50nfxqzxzd"))))
     (properties `((upstream-name . "dunn.test")))
     (build-system r-build-system)
+    (propagated-inputs (list r-rlang))
     (home-page "https://cran.r-project.org/package=dunn.test")
     (synopsis "Dunn's test of multiple comparisons using rank sums")
     (description
