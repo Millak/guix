@@ -14,7 +14,7 @@
 ;;; Copyright © 2023 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
-;;; Copyright © 2025 Nguyễn Gia Phong <cnx@loang.net>
+;;; Copyright © 2025-2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2025 Robin Templeton <robin@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -54,8 +54,10 @@
   #:use-module (gnu packages c)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages code)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
@@ -67,10 +69,12 @@
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages java)
   #:use-module (gnu packages lesstif)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages mail)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages ninja)
@@ -80,13 +84,16 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages time)
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages xdisorg)
+  #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
@@ -1076,6 +1083,112 @@ to aid in debugging.")
     (synopsis "Debugger for the Go programming language")
     (description "Delve is a debugger for the Go programming language.")
     (license license:expat)))
+
+(define-public fandango
+  (package
+    (name "fandango")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fandango-fuzzer/fandango")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "0ppx8r9isc772y0ahpgl8g5b3yxka7ffqzlcsa920aib5nj39lrg"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (substitute* "pyproject.toml"
+              ;; Python is linked with GNU readline on all Guix targets.
+              ((".*gnureadline.*") "")
+              ;; TODO: update antlr4.
+              (("antlr4-python3-runtime>=4.13") "antlr4-python3-runtime")
+              ;; PYTHONHASHSEED is set by the build system.
+              ((" --pythonhashseed=1") ""))
+            (delete-all-but "src/fandango/language/cpp_parser"
+              "FandangoLexerBase.cpp"
+              "FandangoLexerBase.h")
+            (delete-all-but "src/fandango/language/parser"
+              "FandangoLexerBase.py")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              ;; Skip expensive tests.
+              "-k" "not test_cli_max_2 and not test_soft_value")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'generate-parser
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "CMakeLists.txt"
+                (("(target_link_libraries\\(.*)(\\))" all left right)
+                 (simple-format #f "~a ~a ~a"
+                   left
+                   (search-input-file inputs "lib/libantlr4-runtime.so")
+                   right))
+                (("\\$\\{CPP_PARSER_DIR\\}/antlr4-cpp-runtime")
+                 (search-input-directory inputs "include/antlr4-runtime")))
+              (substitute* "Makefile"
+                ;; Avoid running black.
+                ((".*\\$\\(BLACK\\).*") ""))
+              (invoke "make" "parser")))
+          (add-before 'check 'set-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "evaluation/scriptsizec/scriptsizec_evaluation.py"
+                (("from tccbox import .*")
+                 "")
+                (("tcc_bin_path\\(\\)")
+                 (simple-format #f "~s"
+                   (search-input-file inputs "bin/tcc")))))))))
+    (native-inputs (list antlr4
+                         cmake-minimal
+                         clang           ;for tests
+                         python-aiosmtpd ;for tests
+                         python-dateutil ;for tests
+                         python-docutils ;for tests
+                         python-faker    ;for tests
+                         python-pytest
+                         python-pytest-benchmark
+                         python-pytest-timeout
+                         python-pytest-xdist
+                         python-scikit-build-core
+                         python-speedy-antlr-tool
+                         python-setuptools
+                         tcc))           ;for tests
+    (inputs (list cpp-antlr4-runtime
+                  python-antlr4-runtime
+                  python-astar
+                  python-ansi-styles
+                  python-beartype
+                  python-cachedir-tag
+                  python-dill
+                  python-exrex
+                  python-lxml
+                  python-py010parser
+                  python-regex
+                  python-tdigest
+                  python-thefuzz
+                  python-xdg-base-dirs))
+    (home-page "https://fandango-fuzzer.github.io")
+    (synopsis "Language-based fuzzer")
+    (description
+     "Fandango is a generator of inputs and interactions for software testing.
+Given the specification of a program's input or interaction language,
+Fandango generates myriads of valid sample inputs for testing.
+The specification language combines a grammar with constraints
+written in Python.  Minimization or maximization soft constraints
+and input distributions can also be expressed in Fandango.")
+    (license license:eupl1.2)))
 
 (define-public fiu
   (package
