@@ -523,16 +523,16 @@ table-level bloom filters, and updates to the MANIFEST format.")
   (package
     (inherit go-github-com-cockroachdb-pebble)
     (name "go-github-com-cockroachdb-pebble-v2")
-    (version "2.0.3")
+    (version "2.1.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/cockroachdb/pebble")
-             (commit (string-append "v" version))))
+              (url "https://github.com/cockroachdb/pebble")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jglnsabg7y0y5agazvvmsa0r0ddn0j3c204cdpv7qsvi90pnr0d"))))
+        (base32 "1ca58sy1q3c8czqb69nkygk0hvz8b92xkb2fpj87hnncg0zh9a9p"))))
     (arguments
      (substitute-keyword-arguments
          (package-arguments go-github-com-cockroachdb-pebble)
@@ -541,7 +541,9 @@ table-level bloom filters, and updates to the MANIFEST format.")
     (propagated-inputs
      (modify-inputs (package-propagated-inputs go-github-com-cockroachdb-pebble)
        (append go-github-com-cockroachdb-crlib
-               go-github-com-cockroachdb-swiss)))))
+               go-github-com-cockroachdb-swiss
+               go-github-com-minio-minlz
+               go-github-com-raduberinde-axisds)))))
 
 ;; XXX: This repository has been archived by the owner on Sep 21, 2022. It is
 ;; now read-only.  It's only used by go-github-com-golang-gddo, consider to
