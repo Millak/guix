@@ -493,6 +493,33 @@ These aspects include CPU, network fabrics, etc.  In addition, it offers
 APIs to detect, query, and compare them.")
     (license license:expat)))
 
+(define-public python-astar
+  ;; The Git repository has no tag.
+  (let ((commit "b48388f5fa7dc1e5069ff85b05f0ad72ea8d5e93")
+        (revision "0"))
+    (package
+      (name "python-astar")
+      (version (git-version "0.99" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jrialland/python-astar")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1gc4r3xmvw7hgqfadr2cz024ywbzmfak319cdkahd3dzpvyh404q"))))
+      (build-system pyproject-build-system)
+      ;; Despite pytest being listed in tool.poetry.group.dev.dependencies,
+      ;; the test suite has been written for unittest.
+      (native-inputs (list python-poetry-core))
+      (home-page "https://github.com/jrialland/python-astar")
+      (synopsis "Implementation of the A* search algorithm")
+      (description
+       "The @code{astar} Python package provide a generic implementation
+of the A* graph traversal and pathfinding algorithm.")
+      (license license:bsd-3))))
+
 (define-public python-asyncclick
   (package
     (name "python-asyncclick")
