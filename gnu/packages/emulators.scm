@@ -737,7 +737,7 @@ turbo speed, networked multiplayer, and graphical enhancements.")
              curl
              enet
              eudev
-             fmt
+             fmt-9
              font-wqy-microhei
              freetype
              glew
