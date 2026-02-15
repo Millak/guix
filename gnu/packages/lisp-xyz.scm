@@ -15086,8 +15086,8 @@ Django with a syntax similar to Python Jinja2.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://codeberg.org/shinmera/dns-client")
-               (commit commit)))
+                (url "https://codeberg.org/shinmera/dns-client")
+                (commit commit)))
          (file-name (git-file-name "cl-dns-client" version))
          (sha256
           (base32 "1k3w52k9j9sbj4vh76lxk5944lpljs4ir1765inrd3fdspvxl0fl"))))
@@ -15097,7 +15097,7 @@ Django with a syntax similar to Python Jinja2.")
        `(#:tests? #f))
       (inputs
        (list sbcl-punycode sbcl-documentation-utils sbcl-usocket))
-      (home-page "https://shinmera.codeberg.page/dns-client")
+      (home-page "https://shinmera.com/docs/dns-client/")
       (synopsis "DNS protocol client for Common Lisp")
       (description
        "This package provides a pure-lisp implementation of a DNS client.  It can be
