@@ -2604,27 +2604,36 @@ algorithm.  It is a fork of github.com/jameskeane/bcrypt.")
 
 (define-public go-github-com-protonmail-go-crypto
   (package
+    ;; XXX: 1.3.0 was released in 2025 which is no longer compatible with
+    ;; current golang.org/x/crypto; master branch provides comparability but
+    ;; it's not tagged yet, switch back to tag when released.
+    ;; See: <https://github.com/ProtonMail/go-crypto/issues/180>.
     (name "go-github-com-protonmail-go-crypto")
-    (version "1.3.0")
+    (properties '((commit . "a8cc4f09f6cb247ab2180b45029ddaa736674f87")
+                  (revision . "0")))
+    (version (git-version "1.3.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/ProtonMail/go-crypto")
-             (commit (string-append "v" version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0h4zhdxpg5qh5li4r2nsjya757d9kghqjxg3cch4pm3wqvkpjg1h"))))
+        (base32 "19g0vhg83yaa81l0qhlq4pbkid7nv57p7s5kbmysbaf60jmv7887"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
       #:import-path "github.com/ProtonMail/go-crypto"
       #:test-flags
-      (if (target-riscv64?)
-          ;; This test times out on riscv64-linux.
-          #~(list "-skip" "TestEndToEnd")
-          #~'())))
+      #~(list "-short"                               ;tests may timeout in CI
+              #$@(if (target-riscv64?)
+                    ;; This test times out on riscv64-linux.
+                    '(list "-skip" "TestEndToEnd")
+                    '()))))
     (propagated-inputs
      (list go-github-com-cloudflare-circl
            go-golang-org-x-crypto))
