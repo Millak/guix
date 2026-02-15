@@ -591,7 +591,7 @@ Feature:
 (define-public rclone
   (package
     (name "rclone")
-    (version "1.71.2")
+    (version "1.72.0")
     (source
      (origin
        (method git-fetch)
@@ -600,7 +600,7 @@ Feature:
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kplhspd2jjb4hfm928ybxl8l8blgnh3zkhgfcp3ynm10n7qhsky"))
+        (base32 "1866kzdhv1by5qpr2j2mz85bllicdiasv4clc86lcbjh9hd674fd"))
        (snippet
         #~(begin
             ;; XXX: This test fails to compile: `undefined: testscript.Main'
@@ -676,13 +676,16 @@ Feature:
                        "|"))))
     (native-inputs
      (list go-bazil-org-fuse
+           go-github-com-a1ex3-zstd-seekable-format-go-pkg
            go-github-com-a8m-tree
            go-github-com-aalpar-deheap
            go-github-com-abbot-go-http-auth
            go-github-com-anacrolix-dms
+           go-github-com-anacrolix-log
            go-github-com-atotto-clipboard
            go-github-com-aws-aws-sdk-go-v2
            go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-credentials
            go-github-com-aws-aws-sdk-go-v2-feature-s3-manager
            go-github-com-aws-aws-sdk-go-v2-service-s3
            go-github-com-aws-smithy-go
@@ -697,30 +700,34 @@ Feature:
            go-github-com-colinmarc-hdfs-v2
            go-github-com-coreos-go-semver
            go-github-com-coreos-go-systemd-v22
+           go-github-com-diskfs-go-diskfs
            go-github-com-dop251-scsu
            go-github-com-dropbox-dropbox-sdk-go-unofficial-v6
            go-github-com-files-com-files-sdk-go-v3
            go-github-com-gabriel-vasile-mimetype
            go-github-com-gdamore-tcell-v2
            go-github-com-go-chi-chi-v5
-           go-github-com-go-chi-chi-v5
+           ;; go-github-com-go-darwin-apfs                        ;macOS only
            go-github-com-go-git-go-billy-v5
            go-github-com-golang-jwt-jwt-v4
            go-github-com-google-uuid
-           go-github-com-googleapis-enterprise-certificate-proxy
            go-github-com-hanwen-go-fuse-v2
            go-github-com-henrybear327-go-proton-api
            go-github-com-henrybear327-proton-api-bridge
            go-github-com-ibm-go-sdk-core-v5
            go-github-com-jcmturner-gokrb5-v8
            go-github-com-jlaffaye-ftp
+           ;; go-github-com-josephspurrier-goversioninfo        ;Windows only
            go-github-com-jzelinskie-whirlpool
+           go-github-com-klauspost-compress
            go-github-com-koofr-go-httpclient
            go-github-com-koofr-go-koofrclient
            go-github-com-lanrat-extsort
            go-github-com-mattn-go-colorable
            go-github-com-mattn-go-runewidth
            go-github-com-max-sum-base32768
+           go-github-com-mholt-archives
+           go-github-com-minio-minio-go-v7
            go-github-com-mitchellh-go-homedir
            go-github-com-moby-sys-mountinfo
            go-github-com-ncw-swift-v2
@@ -728,20 +735,26 @@ Feature:
            go-github-com-patrickmn-go-cache
            go-github-com-peterh-liner
            go-github-com-pkg-sftp
-           go-github-com-pkg-xattr
+           go-github-com-pmezard-go-difflib
+           go-github-com-pquerna-otp
            go-github-com-prometheus-client-golang
            go-github-com-protonmail-go-crypto
            go-github-com-putdotio-go-putio-for-rclone
+           go-github-com-quasilyte-go-ruleguard-dsl
            go-github-com-rclone-gofakes3
            go-github-com-rfjakob-eme
            go-github-com-rivo-uniseg
+           go-github-com-rogpeppe-go-internal
            go-github-com-shirou-gopsutil-v4
            go-github-com-skratchdot-open-golang
            go-github-com-spf13-cobra
            go-github-com-spf13-pflag
+           go-github-com-stretchr-testify
            go-github-com-t3rm1n4l-go-mega
            go-github-com-unknwon-goconfig
            go-github-com-willscott-go-nfs
+           go-github-com-winfsp-cgofuse
+           go-github-com-wk8-go-ordered-map-v2
            go-github-com-xanzy-ssh-agent
            go-github-com-youmark-pkcs8
            go-github-com-yunify-qingstor-sdk-go-v3
@@ -761,6 +774,7 @@ Feature:
            go-google-golang-org-api
            go-gopkg-in-natefinch-lumberjack-v2
            go-gopkg-in-validator-v2
+           go-gopkg-in-yaml-v3
            go-storj-io-uplink))
     (synopsis "@code{rsync} for cloud storage")
     (description "@code{Rclone} is a command line program to sync files and
