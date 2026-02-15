@@ -59,6 +59,7 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages image)
   #:use-module (gnu packages javascript)
+  #:use-module (gnu packages kde-education)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages ncurses)
@@ -162,66 +163,8 @@
 @end itemize")
     (license license:expat)))
 
-(define-public gcompris
-  (package
-    (name "gcompris")
-    (version "17.05")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://gcompris.net/download/gtk/src/gcompris-"
-                                  version ".tar.bz2"))
-              (sha256
-               (base32
-                "18y483alb4r4vfmh80nnl0pah5gv0b8frcm6l1drb9njn5xlcpgc"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags
-       ;; Use SDL mixer because otherwise GCompris would need an old version
-       ;; of Gstreamer.
-       (list "--enable-sdlmixer"
-             "LDFLAGS=-lgmodule-2.0")
-       #:make-flags
-       (list "CFLAGS=-fcommon")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'set-paths 'set-sdl-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "CPATH"
-                     (string-append
-                      (search-input-directory inputs "include/SDL")
-                      ":" (or (getenv "CPATH") ""))))))))
-    (inputs
-     `(("gtk+" ,gtk+-2)
-       ("librsvg" ,(librsvg-for-system))
-       ("libxml2" ,libxml2)
-       ("sdl-mixer" ,sdl-mixer)
-       ("sqlite" ,sqlite)
-       ("glib:bin" ,glib)
-       ("python" ,python)))
-    (native-inputs
-     `(("intltool" ,intltool)
-       ("texinfo" ,texinfo)
-       ("texi2html" ,texi2html)
-       ("glib:bin" ,glib "bin")
-       ("pkg-config" ,pkg-config)))
-    (home-page "https://gcompris.net")
-    (synopsis "Educational software suite")
-    (description "GCompris is an educational software suite comprising of
-numerous activities for children aged 2 to 10.  Some of the activities are
-game orientated, but nonetheless still educational.  Below you can find a list
-of categories with some of the activities available in that category.
-
-@enumerate
-@item computer discovery: keyboard, mouse, different mouse gestures, ...
-@item arithmetic: table memory, enumeration, double entry table, mirror image, ...
-@item science: the canal lock, the water cycle, the submarine, electric simulation ...
-@item geography: place the country on the map
-@item games: chess, memory, connect 4, oware, sudoku ...
-@item reading: reading practice
-@item other: learn to tell time, puzzle of famous paintings, vector drawing, cartoon making, ...
-@end enumerate
-")
-    (license license:gpl3+)))
+;; 2026-02-15
+(define-deprecated-package gcompris gcompris-qt)
 
 (define-public gotypist
   (let ((revision "0")
