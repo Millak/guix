@@ -53148,15 +53148,16 @@ unit tests of graphics).")
 (define-public r-vdiffr
   (package
     (name "r-vdiffr")
-    (version "1.0.8")
+    (version "1.0.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "vdiffr" version))
        (sha256
         (base32
-         "16zdb910dc40s79f336mdpr0zymxbjh84vx41051hq4gfx54y342"))))
-    (properties `((upstream-name . "vdiffr")))
+         "063i8v5lknlwfpjvf3hm3yj5dsmdrgg6q2r941vj02nfr0zh2kcc"))))
+    (properties `((upstream-name . "vdiffr")
+                  (updater-ignored-native-inputs . ("r-ggplot2"))))
     (build-system r-build-system)
     ;; Tests require r-ggplot2, which creates a dependency cycle in pillar.
     (arguments (list #:tests? #false))
@@ -53170,7 +53171,7 @@ unit tests of graphics).")
            r-rlang
            r-testthat
            r-xml2))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-withr))
     (home-page "https://github.com/r-lib/vdiffr")
     (synopsis "Visual regression testing and graphical diffing")
     (description
