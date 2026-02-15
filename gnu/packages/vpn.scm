@@ -130,7 +130,7 @@
            (call-with-output-file "pkg/config/version/version.go"
              (lambda (port)
                (format port "package version~%~% var VERSION = ~s"
-                       version)))))))
+                       "0.21.11")))))))
     (build-system go-build-system)
     (arguments
      `(#:imported-modules
