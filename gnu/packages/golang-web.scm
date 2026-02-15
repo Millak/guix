@@ -1737,7 +1737,7 @@ parameter types for AWS Secrets Manager.")
 (define-public go-github-com-aws-aws-sdk-go-v2-service-sqs
   (package
     (name "go-github-com-aws-aws-sdk-go-v2-service-sqs")
-    (version "1.38.7")
+    (version "1.42.21")
     (source
      (origin
        (method git-fetch)
@@ -1747,7 +1747,7 @@ parameter types for AWS Secrets Manager.")
                                           #:subdir "service/sqs"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07g7vgpkq8cqirc2s64d9yswnpzdb7jzqr5kwrpblya2nq27inml"))
+        (base32 "04cv6g96hhmjl6snql6a909grq4yxyjk95a3dzk6mpihvg79q47p"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
