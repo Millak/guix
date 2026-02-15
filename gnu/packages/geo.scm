@@ -2125,6 +2125,7 @@ Unidata/UCAR UDUNITS-2 library, and the cftime calendar functionality.")
            go-github-com-burntsushi-toml
            go-github-com-gofrs-uuid
            go-github-com-golang-protobuf
+           go-github-com-google-go-cmp
            go-github-com-google-uuid
            go-github-com-go-test-deep
            go-github-com-jmespath-go-jmespath
