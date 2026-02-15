@@ -1312,3 +1312,23 @@ user-configured power thresholds.  This can be used to force powering off a
 laptop when the battery gets below critical levels, instead of damaging the
 battery.")
     (license license:isc)))
+
+(define-public battop
+  (package
+    (name "battop")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "battop" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1f5d3y9f179aljp94bl3al45g6n2bfnhw5mdmffm2rr6hraa31kn"))))
+    (build-system cargo-build-system)
+    (inputs (cargo-inputs 'battop))
+    (home-page "https://github.com/svartalf/rust-battop")
+    (synopsis "Interactive battery viewer")
+    (description "@command{battop} is an interactive viewer, similar to
+@command{top}, @command{htop} and other *top utilities, but showing the
+(potentially multiple) batteries installed in a notebook.")
+    (license (list license:asl2.0 license:expat))))
