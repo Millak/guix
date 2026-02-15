@@ -2723,21 +2723,10 @@ memoized as a function of '%current-system'."
    (package
      (inherit gnumach-headers)
      (name "gnumach-headers-boot0")
-     (version "1.8+git20250731")
      (source
       (origin
         (inherit (package-source gnumach-headers))
-        (patches '())
-        (method
-         (git-fetch-from-tarball
-          (origin
-            (method url-fetch)
-            (uri (string-append
-                  "https://git.savannah.gnu.org/cgit/hurd/gnumach.git/snapshot/"
-                  "gnumach-" version ".tar.gz"))
-            (sha256
-             (base32
-              "1dc40cf2s8jr6xhhbmy6khmig5zz1gpb4vc9c40aagccxf72jkpv")))))))
+        (patches '())))
      (native-inputs (list autoconf-boot0 automake-boot0 texinfo-boot0))
      (arguments
       (substitute-keyword-arguments (package-arguments gnumach-headers)
