@@ -44,6 +44,7 @@
 (define-module (gnu packages bootloaders)
   #:use-module (gnu packages)
   #:use-module (gnu packages assembly)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages disk)
   #:use-module (gnu packages bison)
@@ -114,13 +115,13 @@
 (define*-public (make-grub platform)
   (package
     (name (string-append "grub-" platform))
-    (version "2.12")
+    (version "2.14")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/grub/grub-" version ".tar.xz"))
               (sha256
                (base32
-                "1ahgzvvvwdxx7rl08pv5dyqlgp76jxz0q2cflxvsdsn4yy8p7jgk"))
+                "0hvd8i3ib6nwymfmvd6dia6axrn4xmrlsrg2r3c3i22vadrkr3dw"))
               (patches (search-patches
                         "grub-efi-fat-serial-number.patch"
                         "grub-setup-root.patch"))
@@ -148,12 +149,20 @@
                     ;; This needs to be compiled with clang for powerpc64le.
                     (if #$(and=> (%current-target-system)
                                  target-ppc64le?)
-                        (list "TARGET_CC=powerpc64le-linux-gnu-clang")
+                        (list "TARGET_CC=powerpc64le-linux-gnu-clang"
+                              "CFLAGS=-Wno-error")
                         '())
                     (if #$(and (target-ppc64le? (%current-system))
                                (not (%current-target-system)))
-                        (list "CC=clang")
+                        (list "CC=clang" "CFLAGS=-Wno-error")
                         '()))
+
+           ;; The 'configure' script detects --image-base support and uses it,
+           ;; but that shifts the i386-pc kernel.img start address from 0x9000
+           ;; to 0x9074, breaking grub-install.  Override with -Ttext.
+           ;; See <https://lists.gnu.org/archive/html/grub-devel/2026-01/msg00041.html>.
+           #:make-flags
+           #~(list "TARGET_IMG_BASE_LDOPT=-Wl,-Ttext")
 
            ;; GRUB fails to load modules stripped with --strip-unneeded.
            #:strip-flags
@@ -229,7 +238,7 @@
                      (("test_unset grub_func_test")
                       "test_unset")))))))
     (inputs
-     (append (list gettext-minimal freetype ncurses
+     (append (list gettext-minimal freetype ncurses libtasn1
 
                    ;; Console-setup's ckbcomp is invoked by grub-kbdcomp.  It
                    ;; is required for generating alternative keyboard layouts.
@@ -389,7 +398,8 @@ menu to select one of the installed operating systems.")
                                "test_sha512sum"
                                "grub_cmd_tr"
                                "test_unset"
-                               "file_filter_test")
+                               "file_filter_test"
+                               "asn1_test")
                          " "))))))))
     (supported-systems '("i686-linux" "x86_64-linux")))))
 
@@ -441,22 +451,27 @@ menu to select one of the installed operating systems.")
                                               ((target-arm32?) "arm")
                                               (else ""))))
                             (substitute* "tests/util/grub-shell.in"
-                              (("OVMF-ia32\\.fd")
+                              (("\\$\\{srcdir\\}/OVMF(32)?\\.fd")
                                (search-input-file
                                  (or native-inputs inputs)
                                  (string-append
                                    "/share/firmware/ovmf_" arch ".bin")))
-                              (("OVMF\\.fd")
+                              (("/usr/share/qemu/OVMF(32)?\\.fd")
                                (search-input-file
                                  (or native-inputs inputs)
                                  (string-append
                                    "/share/firmware/ovmf_" arch ".bin")))
-                              (("/usr/share/qemu-efi/QEMU_EFI\\.fd")
+                              (("\\$\\{srcdir\\}/AAVMF(32)?\\.fd")
                                (search-input-file
                                  (or native-inputs inputs)
                                  (string-append
                                    "/share/firmware/ovmf_" arch ".bin")))
-                              (("/usr/share/ovmf-arm/QEMU_EFI\\.fd")
+                              (("/usr/share/qemu-efi-aarch64/QEMU_EFI\\.fd")
+                               (search-input-file
+                                 (or native-inputs inputs)
+                                 (string-append
+                                   "/share/firmware/ovmf_" arch ".bin")))
+                              (("/usr/share/AAVMF/AAVMF(32)?\\.fd")
                                (search-input-file
                                  (or native-inputs inputs)
                                  (string-append
@@ -513,7 +528,23 @@ menu to select one of the installed operating systems.")
                                               ((target-arm?) "arm")
                                               (else ""))))
                             (substitute* "tests/util/grub-shell.in"
-                              (("OVMF-ia32\\.fd")
+                              (("\\$\\{srcdir\\}/OVMF(32)?\\.fd")
+                               (search-input-file
+                                 inputs (string-append
+                                          "/share/firmware/ovmf_" arch ".bin")))
+                              (("/usr/share/qemu/OVMF(32)?\\.fd")
+                               (search-input-file
+                                 inputs (string-append
+                                          "/share/firmware/ovmf_" arch ".bin")))
+                              (("\\$\\{srcdir\\}/AAVMF(32)?\\.fd")
+                               (search-input-file
+                                 inputs (string-append
+                                          "/share/firmware/ovmf_" arch ".bin")))
+                              (("/usr/share/qemu-efi-aarch64/QEMU_EFI\\.fd")
+                               (search-input-file
+                                 inputs (string-append
+                                          "/share/firmware/ovmf_" arch ".bin")))
+                              (("/usr/share/AAVMF/AAVMF(32)?\\.fd")
                                (search-input-file
                                  inputs (string-append
                                           "/share/firmware/ovmf_" arch ".bin")))
