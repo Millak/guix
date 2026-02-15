@@ -6109,13 +6109,13 @@ data behind them) can be viewed and modified in a web browser.")
 (define-public r-plotrix
   (package
     (name "r-plotrix")
-    (version "3.8-13")
+    (version "3.8-14")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "plotrix" version))
               (sha256
                (base32
-                "13dwzxpb0s5ac2fbl66cbq4872ga33sxp2hc1mknbvmcaglvr3qs"))))
+                "0wkjgm99b170i9fmp4xj6xx6ksjhqks111crlp1wnqi9j71b62w8"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/plotrix")
     (synopsis "Various plotting functions")
