@@ -1507,7 +1507,7 @@ functions.")
 (define-public go-github-com-aws-aws-sdk-go-v2
   (package
     (name "go-github-com-aws-aws-sdk-go-v2")
-    (version "1.36.4")
+    (version "1.41.1")
     (source
      (origin
        (method git-fetch)
@@ -1516,7 +1516,7 @@ functions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07g7vgpkq8cqirc2s64d9yswnpzdb7jzqr5kwrpblya2nq27inml"))
+        (base32 "04cv6g96hhmjl6snql6a909grq4yxyjk95a3dzk6mpihvg79q47p"))
        ;; XXX: It contains a lot of sub packages defined with go.mod, consider
        ;; to pack them separately.
        (modules '((guix build utils)))
@@ -1525,12 +1525,24 @@ functions.")
             ;; Submodules with their own go.mod files and packaged separately:
             ;;
             ;; - github.com/aws/aws-sdk-go-v2/config
+            ;; - github.com/aws/aws-sdk-go-v2/credentials
+            ;; - github.com/aws/aws-sdk-go-v2/feature/s3/manager
+            ;; - github.com/aws/aws-sdk-go-v2/service/iam
             ;; - github.com/aws/aws-sdk-go-v2/service/s3
             ;; - github.com/aws/aws-sdk-go-v2/service/sqs
+            ;; - github.com/aws/aws-sdk-go-v2/service/sso
+            ;; - github.com/aws/aws-sdk-go-v2/service/ssoidc
+            ;; - github.com/aws/aws-sdk-go-v2/service/sts
             (for-each delete-file-recursively
                       (list "config"
+                            "credentials"
+                            "feature/s3/manager"
+                            "service/iam"
                             "service/s3"
-                            "service/sqs"))))))
+                            "service/sqs"
+                            "service/sso"
+                            "service/ssooidc"
+                            "service/sts"))))))
     (build-system go-build-system)
     (arguments
      (list
