@@ -19994,13 +19994,13 @@ packages are automatically available for truncation.")
 (define-public r-trust
   (package
     (name "r-trust")
-    (version "0.1-8")
+    (version "0.1-9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "trust" version))
        (sha256
-        (base32 "1b6wsx4vybr5952ii3ska6jbcb3654iibz83n645khxfca5k8blm"))))
+        (base32 "1pd135ljibkrqdbzpryn1zgsywi2hgl29d3jm5hr9mxbss817m38"))))
     (properties `((upstream-name . "trust")))
     (build-system r-build-system)
     (home-page "https://www.stat.umn.edu/geyer/trust/")
