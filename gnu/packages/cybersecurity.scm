@@ -111,7 +111,7 @@ Refresh}in-DRAM mitigations effectively and as such can trigger bit flips.")
 (define-public gallia
   (package
     (name "gallia")
-    (version "2.0.0b2")
+    (version "2.0.2")
     (source
      (origin
        (method git-fetch)
@@ -120,7 +120,7 @@ Refresh}in-DRAM mitigations effectively and as such can trigger bit flips.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bf9zq89dcnnm8ir322l69assrhxrspa97m7yk153q0vv9vib6q9"))))
+        (base32 "1yvjpwpqq6r6glfm4qzb8j91d2gsfy4lvygd9z9pg2j6jvcq6f6s"))))
     (build-system pyproject-build-system)
     (arguments
      (list
