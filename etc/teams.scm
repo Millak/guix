@@ -1021,6 +1021,7 @@ release."
         "Secrets, passwords, cryptography and security related packages."
         #:scope (list (make-regexp* "^gnu/packages/(.*-|)crypto\\.scm$")
                       "gnu/packages/cryptsetup.scm"
+                      "gnu/packages/cybersecurity.scm"
                       "gnu/packages/gnupg.scm"
                       "gnu/packages/nettle.scm"
                       "gnu/packages/password-utils.scm"
