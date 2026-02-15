@@ -1570,14 +1570,34 @@ functions.")
                                           #:subdir "config"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04cv6g96hhmjl6snql6a909grq4yxyjk95a3dzk6mpihvg79q47p"))))
+        (base32 "04cv6g96hhmjl6snql6a909grq4yxyjk95a3dzk6mpihvg79q47p"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            ;; Consider to implement it as re-usable procedure in
+            ;; guix/build/utils or guix/build-system/go.
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "config")))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/aws/aws-sdk-go-v2/config"
       #:unpack-path "github.com/aws/aws-sdk-go-v2"))
     (propagated-inputs
-     (list go-github-com-aws-smithy-go))
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-credentials
+           go-github-com-aws-aws-sdk-go-v2-service-sso
+           go-github-com-aws-aws-sdk-go-v2-service-ssooidc
+           go-github-com-aws-aws-sdk-go-v2-service-sts
+           go-github-com-aws-smithy-go))
     (home-page "https://github.com/aws/aws-sdk-go-v2")
     (synopsis "AWS SDK for Go v2 - config module")
     (description
