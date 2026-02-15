@@ -26406,14 +26406,14 @@ functions.")
 (define-public r-flextable
   (package
     (name "r-flextable")
-    (version "0.9.10")
+    (version "0.9.11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "flextable" version))
        (sha256
         (base32
-         "0l7qx0pgvj33hp43n1d1zqxg7p8wkxq47fzrfqm8jd968b7dmfhl"))))
+         "0q20dyk60kjq1cz77sgiw32sszz5a1mxwfn379qffq73p3kq294x"))))
     (properties
      '((updater-extra-native-inputs . ("r-broom"))))
     (build-system r-build-system)
