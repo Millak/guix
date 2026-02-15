@@ -35,6 +35,7 @@
   #:use-module (gnu packages elf)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gl)
+  #:use-module (gnu packages instrumentation)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages logging)
@@ -46,7 +47,10 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages vim)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages profiling)
   #:use-module (gnu packages xdisorg)
+  #:use-module (gnu packages xml)
+  #:use-module (gnu packages xorg)
   #:use-module (gnu packages libffi)
   #:use-module (ice-9 match)
   #:export (%default-amd-gpu-targets
@@ -540,6 +544,74 @@ applications to control GPU operations, monitor performance, and retrieve
 information about the system's drivers and GPUs.  It also provides a
 command-line tool, @command{amd-smi}, which can be used to do the same.")
     (license (list license:expat license:ncsa))))
+
+(define-public rocprofiler
+  (package
+    (name "rocprofiler")
+    (version %rocm-version)
+    (home-page %rocm-systems-url)
+    (source %rocm-systems-origin)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; requires GPU
+      #:build-type "Release"
+      #:configure-flags
+      #~(list
+         "-DROCPROFILER_BUILD_PLUGIN_PERFETTO=OFF"
+         (string-append "-DCMAKE_CXX_COMPILER=clang++")
+         (string-append "-DCMAKE_C_COMPILER=clang")
+         "-DROCPROFILER_LD_AQLPROFILE=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "projects/rocprofiler")))
+          (add-after 'chdir 'disable-tests
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*ROCPROFILER_BUILD_(TESTS|CI).*") ""))))
+          (add-after 'chdir 'disable-git
+            (lambda _
+              (substitute* "plugin/perfetto/CMakeLists.txt"
+                (("rocprofiler_checkout_git_submodule") "message"))))
+          (add-after 'chdir 'fix-experimental
+            (lambda _
+              (substitute* (find-files "." "\\.(h|cpp)$")
+                (("experimental(/|::)") ""))))
+          (add-after 'chdir 'fix-script-path
+            (lambda _
+              (substitute* "bin/rocprofv2"
+                (("ROCM_DIR=.*")
+                 (string-append "ROCM_DIR=" #$output "\n"))
+                (("LD_LIBRARY_PATH=.*")
+                 (string-append
+                  "LD_LIBRARY_PATH=" #$(this-package-input "aqlprofile") "/lib"
+                  ":$LD_LIBRARY_PATH\n")))))
+          (add-after 'install 'remove-rocprof
+            (lambda _
+              (delete-file (string-append #$output "/bin/rocprof")))))))
+    (propagated-inputs (list roctracer))
+    (inputs
+     (list aqlprofile
+           barectf
+           elfutils
+           libffi
+           libpciaccess
+           numactl
+           rocm-hip-runtime))
+    (native-inputs
+     (list perfetto
+           python
+           python-cppheaderparser
+           python-lxml
+           python-pyyaml
+           rocm-cmake
+           rocm-toolchain))
+    (synopsis "ROC profiler library")
+    (description "ROC profiler library.  Profiling with perf-counters
+and derived metrics.")
+    (license license:expat)))
 
 (define-public rocprofiler-register
   (package
