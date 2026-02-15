@@ -179,6 +179,35 @@ checks for divisors known only at runtime based on paper:
 Applications to Compilers and Software Libraries}.")
     (license license:expat)))
 
+(define-public go-github-com-clarkduvall-hyperloglog
+  (package
+    (name "go-github-com-clarkduvall-hyperloglog")
+    (version "0.0.0-20171127014514-a0107a5d8004")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/clarkduvall/hyperloglog")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1aglrb6m2lqkmqv7p44xcfmpmplnymlvwc0p4g6y7pxx4n1jipzm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/clarkduvall/hyperloglog"
+      #:test-flags #~(list "-vet=off")))
+    (home-page "https://github.com/clarkduvall/hyperloglog")
+    (synopsis "HyperLogLog and HyperLogLog++ implementation in Golang")
+    (description
+     "Package hyperloglog implements the
+@url{https://en.wikipedia.org/wiki/HyperLogLog, @code{HyperLogLog}} and
+@code{HyperLogLog++} cardinality estimation algorithms.  These algorithms are
+used for accurately estimating the cardinality of a multiset using constant
+memory.  @code{HyperLogLog++} has multiple improvements over
+@code{HyperLogLog}, with a much lower error rate for smaller cardinalities.")
+    (license license:expat)))
+
 (define-public go-github-com-cockroachdb-apd
   (package
     (name "go-github-com-cockroachdb-apd")
