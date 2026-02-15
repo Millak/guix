@@ -4143,14 +4143,14 @@ tools, XML authoring components, and an extensible plug-in based API.")
 (define-public v4l-utils
   (package
     (name "v4l-utils")
-    (version "1.22.1")
+    (version "1.24.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://linuxtv.org/downloads/v4l-utils"
                                   "/v4l-utils-" version ".tar.bz2"))
               (sha256
                (base32
-                "0cafp64b7ylxhjnp47hxm59r0b0v5hc2gc23qh2s2k5463lgpik5"))))
+                "0nszh1fvflzb0z8bdfas743bmhwkpdqfvk85799wxx87cf5gxdyb"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
