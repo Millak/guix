@@ -2714,7 +2714,7 @@ support, watch support (like @command{top}) and a tree view.")
         (base32 "0jdbxmn5h5nlr4bifx85gny309djv5djs9q78fa1d7sj0wdw2sys"))))
     (inputs (cargo-inputs 'rust-cbindgen-0.26))))
 
-(define-public rust-cbindgen rust-cbindgen-0.27)
+(define-public rust-cbindgen rust-cbindgen-0.29)
 
 (define-public rust-bindgen-cli
   (package
