@@ -1669,14 +1669,31 @@ S3 concurrently.  Helpful for when working with large objects.")
 
 (define-public go-github-com-aws-aws-sdk-go-v2-service-iam
   (package
-    (inherit go-github-com-aws-aws-sdk-go-v2)
     (name "go-github-com-aws-aws-sdk-go-v2-service-iam")
-    (version "1.44.161")
+    (version "1.53.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aws/aws-sdk-go-v2")
+              (commit (go-version->git-ref version
+                                           #:subdir "service/iam"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04cv6g96hhmjl6snql6a909grq4yxyjk95a3dzk6mpihvg79q47p"))))
+    (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/aws/aws-sdk-go-v2/service/iam"
-       #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/service/iam"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
     (propagated-inputs
-     (list go-github-com-aws-smithy-go))))
+     (list go-github-com-aws-smithy-go))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS SDK for Go v2 - IAM module")
+    (description
+     "Package iam provides the API client, operations, and parameter types for
+AWS Identity and Access Management.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-aws-aws-sdk-go-v2-service-s3
   (package
