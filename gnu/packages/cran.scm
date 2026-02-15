@@ -49627,13 +49627,13 @@ Environmental Data}.")
 (define-public r-nanoarrow
   (package
     (name "r-nanoarrow")
-    (version "0.7.0-3")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nanoarrow" version))
        (sha256
-        (base32 "0v63c6nfayawa910fgdnxwhccgh9yxyp21rl7i9ppm4ckwfnjjpd"))))
+        (base32 "1rabnp5p155swhsqgg2h9qdw8q5sr2vg23iylgsiviqjbx5xpvqz"))))
     (properties `((upstream-name . "nanoarrow")))
     (build-system r-build-system)
     (native-inputs (list pkg-config
@@ -49642,6 +49642,7 @@ Environmental Data}.")
                          r-blob
                          r-hms
                          r-jsonlite
+                         r-reticulate
                          r-testthat
                          r-tibble
                          r-vctrs
