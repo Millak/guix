@@ -681,9 +681,7 @@ from software emulation to complete hardware acceleration for modern GPUs.")
                                                 (string-trim-both old-path))))
                   (if (file-exists? new-path)
                       (call-with-output-file rusticl.icd
-                        (lambda (port) (format port "~a\n" new-path)))))))))))
-    (native-inputs (modify-inputs (package-native-inputs mesa)
-                     (replace "rust-bindgen-cli" rust-bindgen-cli-next)))))
+                        (lambda (port) (format port "~a\n" new-path)))))))))))))
 
 ;;; ICD was part of the Gallium (Clover) OpenCL driver, which was replaced
 ;;; with Rusticl.

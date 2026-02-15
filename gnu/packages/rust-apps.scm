@@ -2763,18 +2763,14 @@ support, watch support (like @command{top}) and a tree view.")
                  (string-append share "/elvish/lib/bindgen")
                  (lambda _
                    (invoke bindgen "--generate-shell-completions" "elvish")))))))))
-    (inputs (cons* bash-minimal clang (cargo-inputs 'rust-bindgen-cli)))
+    ;; Ensure the same version for clang here, mesa's clang and llvm-for-mesa.
+    (inputs (cons* bash-minimal clang-18 (cargo-inputs 'rust-bindgen-cli)))
     (home-page "https://rust-lang.github.io/rust-bindgen/")
     (synopsis "Generate Rust FFI bindings to C and C++ libraries")
     (description "This package can be used to automatically generate Rust FFI
 bindings to C and C++ libraries.  This package provides the @command{bindgen}
 command.")
     (license license:bsd-3)))
-
-(define-public rust-bindgen-cli-next
-  (package/inherit rust-bindgen-cli
-    (inputs (modify-inputs (package-inputs rust-bindgen-cli)
-              (replace "clang" clang-18)))))
 
 (define-public sniffglue
   (package
