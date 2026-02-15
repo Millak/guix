@@ -28852,13 +28852,13 @@ were influenced by the drake R package by Will Landau (2018)
 (define-public r-targets
   (package
     (name "r-targets")
-    (version "1.11.4")
+    (version "1.12.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "targets" version))
               (sha256
                (base32
-                "0ds9i5yjykm12xw67j04li5m986p2d5458xwxz2m96hciz5mdlmy"))))
+                "0vm0ldgqg0j8jrd4fhwbjsyyinrz0xs6wmkzp57g7xavsbny1qls"))))
     (properties
      '((upstream-name . "targets")
        (updater-extra-native-inputs . ("r-crew"))))
