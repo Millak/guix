@@ -11499,7 +11499,7 @@ expressing configuration which is easy for both humans and machines to read.")
 (define-public go-github-com-hashicorp-hcl-v2
   (package
     (name "go-github-com-hashicorp-hcl-v2")
-    (version "2.23.0")
+    (version "2.24.0")
     (source
      (origin
        (method git-fetch)
@@ -11508,7 +11508,7 @@ expressing configuration which is easy for both humans and machines to read.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y457prckv5pdglxxc61fcslmswm35c6swwgcrdvfmjgw286y56i"))))
+        (base32 "05j6fgf9x47jqslx1bc7jwy7bvx7bn2cjhbqy8bq09qpnkd9sqb1"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -11517,10 +11517,10 @@ expressing configuration which is easy for both humans and machines to read.")
       #~(list "-skip"
               (string-join
                (list "TestExpressionParseAndValue/.*unk.*"
+                     "TestGetTypeDefaults"
                      "TestFunctionCallExprValue/valid_call_with_unknown_arg.*"
                      "TestFunctionCallExprValue/valid_call_with_dynamic_arg")
-               "|")
-              "-vet=off")))
+               "|"))))
     (native-inputs
      (list go-github-com-davecgh-go-spew
            go-github-com-go-test-deep
@@ -11529,6 +11529,7 @@ expressing configuration which is easy for both humans and machines to read.")
     (propagated-inputs
      (list go-github-com-agext-levenshtein
            go-github-com-apparentlymart-go-textseg-v13
+           go-github-com-google-go-cmp
            go-github-com-mitchellh-go-wordwrap
            go-github-com-zclconf-go-cty
            go-golang-org-x-tools))
