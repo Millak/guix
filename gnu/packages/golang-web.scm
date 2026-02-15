@@ -1643,7 +1643,7 @@ credentials sources.")
 (define-public go-github-com-aws-aws-sdk-go-v2-feature-s3-manager
   (package
     (name "go-github-com-aws-aws-sdk-go-v2-feature-s3-manager")
-    (version "1.17.78")
+    (version "1.22.0")
     (source
      (origin
        (method git-fetch)
@@ -1653,7 +1653,7 @@ credentials sources.")
                                           #:subdir "feature/s3/manager"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g6pmb6i7l88d2k4i2jz2mfxjb8snq8lhl419yvblgm96zgp5qbi"))))
+        (base32 "138v5i53mm1ibbqidij2dzpwjr0z6rr3rqpri5iw6wxyfapxng9r"))))
     (build-system go-build-system)
     (arguments
      (list
