@@ -36835,13 +36835,13 @@ or raster data cubes) are handled by package stars'.")
 (define-public r-spdep
   (package
     (name "r-spdep")
-    (version "1.4-1")
+    (version "1.4-2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "spdep" version))
               (sha256
                (base32
-                "122m9xviaa0p5zk3nbq0gplwnxryr9n923v7fhx3g5mnp2iyq2sd"))
+                "121n14251c1x2lk30qblf6hf2bmizz4j1s15gx1pwvmjj8iqkl4c"))
               (snippet
                '(for-each delete-file '("inst/doc/CO69.html"
                                         "inst/doc/CO69.R"
