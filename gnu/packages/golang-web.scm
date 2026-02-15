@@ -1785,7 +1785,7 @@ Amazon Simple Queue Service.")
 (define-public go-github-com-aws-smithy-go
   (package
     (name "go-github-com-aws-smithy-go")
-    (version "1.22.2")
+    (version "1.24.0")
     (source
      (origin
        (method git-fetch)
@@ -1794,7 +1794,7 @@ Amazon Simple Queue Service.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jm5d8ampysimhnm3ginfv0fh8cmp4f2fghisk5lk0zsc0anahrm"))
+        (base32 "1agg4krriqxrb6wf20a6rcgvxkiyaxbba2bmilpps97k3bcwrdld"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
