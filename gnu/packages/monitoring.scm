@@ -873,7 +873,7 @@ WSGI and the node exporter textfile collector.")
 (define-public prometheus-node-exporter
   (package
     (name "prometheus-node-exporter")
-    (version "1.9.0")
+    (version "1.10.2")
     (source
      (origin
        (method git-fetch)
@@ -882,7 +882,7 @@ WSGI and the node exporter textfile collector.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xs57jlmjj1vqac6xlkygg3xb08g356nlnc852ds1ia87911jvls"))))
+        (base32 "10dqb97bv7v2xc31qjr7g8k7v0r1wq75xk846zbjgglw35nrpb2i"))))
     (build-system go-build-system)
     (arguments
      (list
