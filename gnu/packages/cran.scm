@@ -12291,23 +12291,26 @@ enables creativity when plotting and experimenting with data.")
 (define-public r-model4you
   (package
     (name "r-model4you")
-    (version "0.9-8")
+    (version "0.9-9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "model4you" version))
               (sha256
                (base32
-                "17xa2lvbsbwsyy54nna99xxwjv04p7xgqa61jz1ivggq0fgrd9fg"))))
+                "0fwhcbc137hccg1xyvh9kjbzwd598h0b1q1ycdqrfd95bc6yxqhd"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-psychotools" "r-th-data"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-formula
            r-ggplot2
            r-gridextra
            r-partykit
+           r-rlang
            r-sandwich
            r-survival))
     (native-inputs
-     (list r-plyr r-psychotools r-strucchange r-th-data))
+     (list r-mvtnorm r-plyr r-psychotools r-strucchange r-th-data))
     (home-page "https://cran.r-project.org/web/packages/model4you/")
     (synopsis "Stratified and personalised models based on trees and forests")
     (description
