@@ -27125,6 +27125,9 @@ specified in RFC 3492 and used for unicode characters in domain names.")
 (define-public ecl-punycode
   (sbcl-package->ecl-package sbcl-punycode))
 
+(define-public clasp-punycode
+  (sbcl-package->clasp-package sbcl-punycode))
+
 (define-public sbcl-purgatory
   (let ((commit "3afd8f6bb4093ffb2f39ffdedf11278b3617fff9")
         (revision "1"))
