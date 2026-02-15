@@ -42866,13 +42866,13 @@ example is a function to remove spaces from all file names in a directory.")
 (define-public r-fillpattern
   (package
     (name "r-fillpattern")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fillpattern" version))
        (sha256
-        (base32 "0qwrzxjw4br9sbh0zxry72j6rgvb1s8cwvwqigf7dg1zi4hk4i74"))))
+        (base32 "1080lk6gqdwxn27qqmxm0lk05ghsaj5iggqv480mwh3ih06w00iw"))))
     (properties `((upstream-name . "fillpattern")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2))
