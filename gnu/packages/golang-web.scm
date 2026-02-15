@@ -1791,14 +1791,31 @@ AWS Single Sign-On.")
 
 (define-public go-github-com-aws-aws-sdk-go-v2-service-ssooidc
   (package
-    (inherit go-github-com-aws-aws-sdk-go-v2)
     (name "go-github-com-aws-aws-sdk-go-v2-service-ssooidc")
-    (version "1.13.10")
+    (version "1.35.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aws/aws-sdk-go-v2")
+              (commit (go-version->git-ref version
+                                           #:subdir "service/ssooidc"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04cv6g96hhmjl6snql6a909grq4yxyjk95a3dzk6mpihvg79q47p"))))
+    (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/aws/aws-sdk-go-v2/service/ssooidc"
-       #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/service/ssooidc"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
     (propagated-inputs
-     (list go-github-com-aws-smithy-go))))
+     (list go-github-com-aws-smithy-go))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS SDK for Go v2 - SSO OIDC service module")
+    (description
+     "Package ssooidc provides the API client, operations, and parameter types
+for AWS SSO OIDC.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-aws-aws-sdk-go-v2-service-sts
   (package
