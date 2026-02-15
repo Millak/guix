@@ -323,6 +323,53 @@ conversions (for example, from PPM to Doom picture format).  In addition,
 DeuTex has functions such as merging wads, etc.")
    (license license:gpl2+)))
 
+(define-public dialogc
+  (let ((commit "68476f9f3b1ca2db15615e508837ca721e0759ab")
+        (revision "0"))
+    (package
+      (name "dialogc")
+      (version (git-version "1a-01" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/Dialog-IF/dialog")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1gm6fb86chq74fh2llmmgji6fwylk0xd53fmij6l9x348nvw1bkn"))))
+      (build-system gnu-build-system)
+      (native-inputs (list frotz-dumb-terminal perl python))
+      (arguments
+       (list
+        #:test-target "test"
+        #:parallel-tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (add-before 'build 'set-install-prefix
+              (lambda _
+                (setenv "PREFIX" #$output)))
+            (replace 'build
+              (lambda _
+                (with-directory-excursion "src"
+                  (substitute* "Makefile"
+                    (("cp dialogc" all)
+                     (string-append "install -d ${PREFIX}/bin\n\t" all))
+                    (("/usr/local") "${PREFIX}"))
+                  (invoke "make"))))
+            (replace 'install
+              (lambda _
+                (let ((bin (string-append #$output "/bin")))
+                  (install-file "src/dialogc" bin)
+                  (install-file "src/dgdebug" bin)))))))
+      (synopsis "Dialog interactive fiction compiler")
+      (description
+       "Dialog is a domain-specific language for creating works
+of interactive fiction.  It is heavily inspired by Inform 7 and Prolog.")
+      (home-page "https://github.com/Dialog-IF/dialog")
+      (license license:bsd-2))))
+
 (define-public go-codeberg-org-anaseto-gruid-sdl
   (package
     (name "go-codeberg-org-anaseto-gruid-sdl")
