@@ -45425,14 +45425,14 @@ Raftery, Appl.Statistics, 1989); it includes inference and basic methods.")
 (define-public r-forecast
   (package
     (name "r-forecast")
-    (version "9.0.0")
+    (version "9.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "forecast" version))
        (sha256
         (base32
-         "05w6ac5g88w11knjsl19gja1ib9yylp4in1snnfrxpcxla2yv1yd"))))
+         "1ajasnf686scg3jrk73pa56asr130bi0060xxpmslslc4aji6hfi"))))
     (properties
      '((upstream-name . "forecast")
        (updater-ignored-native-inputs . ("r-seasonal"))))
@@ -45448,7 +45448,6 @@ Raftery, Appl.Statistics, 1989); it includes inference and basic methods.")
            r-rcpp
            r-rcpparmadillo
            r-timedate
-           r-tseries
            r-urca
            r-withr
            r-zoo))
