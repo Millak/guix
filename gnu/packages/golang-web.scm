@@ -1681,7 +1681,7 @@ S3 concurrently.  Helpful for when working with large objects.")
 (define-public go-github-com-aws-aws-sdk-go-v2-service-s3
   (package
     (name "go-github-com-aws-aws-sdk-go-v2-service-s3")
-    (version "1.80.2")
+    (version "1.96.0")
     (source
      (origin
        (method git-fetch)
@@ -1691,7 +1691,7 @@ S3 concurrently.  Helpful for when working with large objects.")
                                           #:subdir "service/s3"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07g7vgpkq8cqirc2s64d9yswnpzdb7jzqr5kwrpblya2nq27inml"))))
+        (base32 "01zc9wccmx2kf2n88rv4wgxv59nai5w0qc6csyzpdw8ahvwk0bmh"))))
     (build-system go-build-system)
     (arguments
      (list
