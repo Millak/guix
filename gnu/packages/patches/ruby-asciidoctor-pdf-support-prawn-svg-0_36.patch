@@ -5,7 +5,6 @@ Subject: [PATCH] Update prawn-svg to 0.36.0
 https://github.com/asciidoctor/asciidoctor-pdf/pull/2553
 
 ---
- asciidoctor-pdf.gemspec      | 4 ++--
  spec/admonition_spec.rb      | 4 ++--
  spec/cover_page_spec.rb      | 2 +-
  spec/image_spec.rb           | 2 +-
@@ -13,21 +12,6 @@ https://github.com/asciidoctor/asciidoctor-pdf/pull/2553
  spec/running_content_spec.rb | 2 +-
  6 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/asciidoctor-pdf.gemspec b/asciidoctor-pdf.gemspec
-index 997e260e..c09a110d 100644
---- a/asciidoctor-pdf.gemspec
-+++ b/asciidoctor-pdf.gemspec
-@@ -39,8 +39,8 @@ Gem::Specification.new do |s|
-   s.add_runtime_dependency 'matrix', '~> 0.4' # required until prawn >= 2.5.0 is released
-   s.add_runtime_dependency 'prawn-table', '~> 0.2.0'
-   s.add_runtime_dependency 'prawn-templates', '~> 0.1.0'
--  s.add_runtime_dependency 'prawn-svg', '~> 0.34.0'
--  s.add_runtime_dependency 'prawn-icon', '~> 3.0.0'
-+  s.add_runtime_dependency 'prawn-svg', '~> 0.36.0'
-+  s.add_runtime_dependency 'prawn-icon', '~> 3.1.0'
-   s.add_runtime_dependency 'concurrent-ruby', '~> 1.1'
-   s.add_runtime_dependency 'treetop', '~> 1.6.0'
- 
 diff --git a/spec/admonition_spec.rb b/spec/admonition_spec.rb
 index 0131a097..ca3eb74a 100644
 --- a/spec/admonition_spec.rb
