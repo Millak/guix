@@ -2407,24 +2407,33 @@ map, geocoding with Nominatim, or general analysis.")
 (define-public tippecanoe
   (package
     (name "tippecanoe")
-    (version "2.17.0")
+    (version "2.79.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/felt/tippecanoe")
-             (commit version)))
+              (url "https://github.com/felt/tippecanoe")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q2snvsbs10l9pjydid3zxkidlha5hav8gvb0p731m2pwg3xw0qr"))))
+        (base32 "0jfzk9sy79hf6nw0xvz6l34g3fxdpqqag8x17gcmwfanw9wa6hd0"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases (delete 'configure))
-       #:test-target "test"
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))))
+     (list
+      ;; XXX: Tests are not stable, see:
+      ;; <https://github.com/felt/tippecanoe/issues/148>.
+      #:tests? #f
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)                            ;no configure script
+          (add-after 'unpack 'patch-bash
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (substitute* "Makefile"
+                (("/bin/bash")
+                 (search-input-file %build-inputs "/bin/bash"))))))))
     (inputs
      (list perl sqlite zlib))
     (home-page "https://github.com/mapbox/tippecanoe")
