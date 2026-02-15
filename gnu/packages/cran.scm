@@ -38390,14 +38390,14 @@ discriminant analysis for the purpose of classifying high dimensional data.")
 (define-public r-ggvis
   (package
     (name "r-ggvis")
-    (version "0.4.9")
+    (version "0.4.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggvis" version))
        (sha256
         (base32
-         "0bx1bg19l8nfwzwhnn2jn0b0lwcb781l6v9k5zfsx44wg22d3fb9"))
+         "12bk6j2qqrq1wwgmanz08yh56656xls9b0yyvyl9zazkgy63gh12"))
        (snippet
         '(for-each delete-file
                    '("inst/www/lib/d3/d3.min.js"
