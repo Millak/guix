@@ -48,7 +48,7 @@
   ;; Build-side modules imported by default.
   `((guix build pyproject-build-system)
     (guix build toml)
-    ,@%python-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define (default-python)
   "Return the default Python package, resolved lazily."
