@@ -1589,7 +1589,7 @@ utilities.")
 (define-public go-github-com-aws-aws-sdk-go-v2-credentials
   (package
     (name "go-github-com-aws-aws-sdk-go-v2-credentials")
-    (version "1.17.69")
+    (version "1.19.7")
     (source
      (origin
        (method git-fetch)
@@ -1599,7 +1599,22 @@ utilities.")
                                           #:subdir "credentials"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07g7vgpkq8cqirc2s64d9yswnpzdb7jzqr5kwrpblya2nq27inml"))))
+        (base32 "04cv6g96hhmjl6snql6a909grq4yxyjk95a3dzk6mpihvg79q47p"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            ;; Consider to implement it as re-usable procedure in
+            ;; guix/build/utils or guix/build-system/go.
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "credentials")))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1613,7 +1628,10 @@ utilities.")
                 (substitute* (find-files "." "test\\.go")
                   (("/bin/sleep") (which "sleep")))))))))
     (propagated-inputs
-     (list go-github-com-google-go-cmp
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-service-sso
+           go-github-com-aws-aws-sdk-go-v2-service-ssooidc
+           go-github-com-aws-aws-sdk-go-v2-service-sts
            go-github-com-aws-smithy-go))
     (home-page "https://pkg.go.dev/github.com/aws/aws-sdk-go-v2/credentials")
     (synopsis "AWS SDK for Go v2 - credentials module")
