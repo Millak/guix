@@ -3276,18 +3276,6 @@
   (crate-source "clap" "4.5.57"
                 "06p3x91f3yq4lz80lc0z56mmz314sbizdsymcmd31f9zkr4ym6b8"))
 
-(define rust-clap-4.5.58
-  (crate-source "clap" "4.5.58"
-                "01k8bsz52dy3zbmi35dfdcz34zmgl7khpkljjh197qyd3ab9ggk3"))
-
-(define rust-clap-4.5.56
-  (crate-source "clap" "4.5.56"
-                "03mynk7b90qcl6rv9cji84vpsgjhgc3wa96cgaai8fp361jacp57"))
-
-(define rust-clap-4.5.57
-  (crate-source "clap" "4.5.57"
-                "06p3x91f3yq4lz80lc0z56mmz314sbizdsymcmd31f9zkr4ym6b8"))
-
 (define rust-clap-builder-4.3.21
   (crate-source "clap_builder" "4.3.21"
                 "1am4bavjhp26pv0ymsprmdqdw44sxdi8abi03ywaj0czbsmz3a88"))
@@ -3379,14 +3367,6 @@
 (define rust-clap-builder-4.5.58
   (crate-source "clap_builder" "4.5.58"
                 "1qi11wancym0zc92ks9y995gkwmhyid7x0j7x7bnkzaxv95if4vz"))
-
-(define rust-clap-builder-4.5.56
-  (crate-source "clap_builder" "4.5.56"
-                "1w1xwq9qlzbp2zxvk38wvhy73gpxwmcbi00himha0033zb3hfckr"))
-
-(define rust-clap-builder-4.5.57
-  (crate-source "clap_builder" "4.5.57"
-                "0f728m14vqrvcpp8pxmaz74c5dh1gd2bh5jd6sl64nhrh2vch4kv"))
 
 (define rust-clap-cargo-0.15.2
   (crate-source "clap-cargo" "0.15.2"
@@ -27355,6 +27335,10 @@
   (crate-source "zmij" "1.0.16"
                 "0r8swld9cwnyvdfamq4063ngwxdzckg4922ayk7likma4mc19kfz"))
 
+(define rust-zmij-1.0.17
+  (crate-source "zmij" "1.0.17"
+                "0fc4x3gh0pjcq6vgpiz2zz5pw7bpx5ir71vffyagrak97zwf1ah2"))
+
 (define rust-zmij-1.0.18
   (crate-source "zmij" "1.0.18"
                 "0522yrc7zzvhpvik8r0kg07c2hcjj87hwkd7d5yrhxhz5jnghrhr"))
@@ -27366,14 +27350,6 @@
 (define rust-zmij-1.0.21
   (crate-source "zmij" "1.0.21"
                 "1amb5i6gz7yjb0dnmz5y669674pqmwbj44p4yfxfv2ncgvk8x15q"))
-
-(define rust-zmij-1.0.17
-  (crate-source "zmij" "1.0.17"
-                "0fc4x3gh0pjcq6vgpiz2zz5pw7bpx5ir71vffyagrak97zwf1ah2"))
-
-(define rust-zmij-1.0.19
-  (crate-source "zmij" "1.0.19"
-                "0i9lpsfa4sgq52dnrli9z3sc2rllwawyc6jp6x38jf4hma65zw1z"))
 
 (define rust-zoneinfo-compiled-0.5.1
   (crate-source "zoneinfo_compiled" "0.5.1"
