@@ -92,45 +92,47 @@
       (license gpl2+))))
 
 (define-public mig
-  (package
-    (name "mig")
-    (version "1.8+git20231217")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://git.savannah.gnu.org/git/hurd/mig.git")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1mx7w5vzw5ws0zplm1y6s679jb1g2hjkiwl3dlk5lxys0dxs5g4g"))))
-    (build-system gnu-build-system)
-    ;; Flex is needed both at build and run time.
-    (inputs (list gnumach-headers flex))
-    (native-inputs (list autoconf automake flex bison))
-    (arguments
-     (list #:tests? #f
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'install 'avoid-perl-dependency
-                 (lambda* (#:key build inputs outputs #:allow-other-keys)
-                   (let* ((out (assoc-ref outputs "out"))
-                          (bin (string-append out "/bin")))
-                     ;; By default 'mig' (or 'TARGET-mig') uses Perl to
-                     ;; compute 'libexecdir_rel'.  Avoid it.
-                     (substitute* (find-files bin "mig$")
-                       (("^libexecdir_rel=.*")
-                        "libexecdir_rel=../libexec\n"))))))))
-    (home-page "https://www.gnu.org/software/hurd/microkernel/mach/mig/gnu_mig.html")
-    (synopsis "Mach 3.0 interface generator for the Hurd")
-    (description
-     "GNU MIG is the GNU distribution of the Mach 3.0 interface generator
+  (let ((revision "1")
+        (commit "3f4b0062963fca5d90fc65c1d7912ecdc21a8fed"))
+    (package
+      (name "mig")
+      (version (git-version "1.8+git20231217" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://git.savannah.gnu.org/git/hurd/mig.git")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0fj5vwl93z0wmy20x6cs2av2c956w0k8glqsc8dzb3s8km7j7akq"))))
+      (build-system gnu-build-system)
+      ;; Flex is needed both at build and run time.
+      (inputs (list gnumach-headers flex))
+      (native-inputs (list autoconf automake flex bison))
+      (arguments
+       (list #:tests? #f
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'install 'avoid-perl-dependency
+                   (lambda* (#:key build inputs outputs #:allow-other-keys)
+                     (let* ((out (assoc-ref outputs "out"))
+                            (bin (string-append out "/bin")))
+                       ;; By default 'mig' (or 'TARGET-mig') uses Perl to
+                       ;; compute 'libexecdir_rel'.  Avoid it.
+                       (substitute* (find-files bin "mig$")
+                         (("^libexecdir_rel=.*")
+                          "libexecdir_rel=../libexec\n"))))))))
+      (home-page "https://www.gnu.org/software/hurd/microkernel/mach/mig/gnu_mig.html")
+      (synopsis "Mach 3.0 interface generator for the Hurd")
+      (description
+       "GNU MIG is the GNU distribution of the Mach 3.0 interface generator
 MIG, as maintained by the GNU Hurd developers for the GNU project.
 You need this tool to compile the GNU Mach and GNU Hurd distributions,
 and to compile the GNU C library for the Hurd.  Also, you will need it
 for other software in the GNU system that uses Mach-based inter-process
 communication.")
-    (license gpl2+)))
+      (license gpl2+))))
 
 (define-public hurd-headers
   (let ((revision "5")

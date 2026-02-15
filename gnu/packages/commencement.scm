@@ -65,7 +65,7 @@
   #:use-module (guix monads)
   #:use-module (guix download)
   #:use-module ((guix git-download)
-                #:select (git-fetch git-reference git-file-name))
+                #:select (git-fetch git-reference git-file-name git-version))
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module ((guix licenses) #:prefix license:)
@@ -2758,20 +2758,6 @@ memoized as a function of '%current-system'."
    (package
      (inherit mig)
      (name "mig-boot0")
-     (version "1.8+git20231217")
-     (source
-      (origin
-        (inherit (package-source mig))
-        (method
-         (git-fetch-from-tarball
-          (origin
-            (method url-fetch)
-            (uri (string-append
-                  "https://git.savannah.gnu.org/cgit/hurd/mig.git/snapshot/"
-                  "mig-" version ".tar.gz"))
-            (sha256
-             (base32
-              "18vz3ifrhhlvrdmlv70h63wl0kh5w8jcpsjx9yscsw9yazm1lzs7")))))))
      (native-inputs (list autoconf-boot0 automake-boot0 bison-boot0 flex-boot0
                           gnumach-headers-boot0))
      (inputs (list flex-boot0 gnumach-headers-boot0))
