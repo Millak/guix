@@ -4152,40 +4152,12 @@ tools, XML authoring components, and an extensible plug-in based API.")
                (base32
                 "0cafp64b7ylxhjnp47hxm59r0b0v5hc2gc23qh2s2k5463lgpik5"))))
     (build-system gnu-build-system)
-    ;; Separate graphical tools in order to save almost 1 GiB on the closure
-    ;; for the common case.
-    (outputs '("out" "gui"))
     (arguments
      '(#:configure-flags
        (list "--disable-static"
              (string-append "--with-udevdir="
                             (assoc-ref %outputs "out")
-                            "/lib/udev"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'split
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (gui (assoc-ref outputs "gui")))
-               (mkdir-p (string-append gui "/bin"))
-               (mkdir-p (string-append gui "/share/man/man1"))
-               (mkdir-p (string-append gui "/share/applications"))
-               (for-each
-                (lambda (prog)
-                  (for-each
-                   (lambda (file)
-                     (rename-file (string-append out file)
-                                  (string-append gui file)))
-                   (list
-                    (string-append "/bin/" prog)
-                    (string-append "/share/man/man1/" prog ".1")
-                    (string-append "/share/applications/" prog ".desktop"))))
-                '("qv4l2" "qvidcap"))
-               (copy-recursively (string-append out "/share/icons")
-                                 (string-append gui "/share/icons"))
-               (delete-file-recursively (string-append out "/share/icons"))
-               (rmdir (string-append out "/share/applications"))
-               #t))))))
+                            "/lib/udev"))))
     (native-inputs
      (list perl pkg-config))
     (inputs
@@ -4205,15 +4177,7 @@ be used for realtime video capture via Linux-specific APIs.")
 (define-public v4l-utils-minimal
   (package/inherit v4l-utils
     (name "v4l-utils-minimal")
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (delete 'split)))
-       ((#:disallowed-references _ '())
-        (list qtbase qtbase-5))))                 ;FIXME: most likely useless
-    (outputs '("out"))
-    (inputs (modify-inputs inputs
+    (inputs (modify-inputs (package-inputs v4l-utils)
               (delete "qtbase")))))
 
 (define-public obs
