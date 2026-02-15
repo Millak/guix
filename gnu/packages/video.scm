@@ -4178,7 +4178,7 @@ be used for realtime video capture via Linux-specific APIs.")
   (package/inherit v4l-utils
     (name "v4l-utils-minimal")
     (inputs (modify-inputs (package-inputs v4l-utils)
-              (delete "qtbase")))))
+              (delete "qtbase" "glu" "libx11")))))
 
 (define-public obs
   (package
