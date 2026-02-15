@@ -54528,14 +54528,14 @@ Kogalur and Eiran Z. Gorodeski and Andy J. Minn and Michael S. Lauer (2010)
 (define-public r-randomforestsrc
   (package
     (name "r-randomforestsrc")
-    (version "3.5.0")
+    (version "3.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "randomForestSRC" version))
        (sha256
         (base32
-         "1kjpjkjm81pqm4j185nv66qwlqc9f94s2s5dsgn5mkp7az377d1k"))))
+         "1gn21wmzbzcrlfk205ly5agbvmw8jcrsvy7rqvws1izk6sssqbh8"))))
     (properties
      `((upstream-name . "randomForestSRC")))
     (build-system r-build-system)
