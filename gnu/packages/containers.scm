@@ -5,7 +5,7 @@
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2023 Zongyuan Li <zongyuan.li@c0x0o.me>
 ;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2024, 2025 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2024, 2025, 2026 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;; Copyright © 2024 Jean-Pierre De Jesus DIAZ <jean@foundation.xyz>
 ;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
@@ -197,42 +197,55 @@ Container Runtime fully written in C.")
 (define-public conmon
   (package
     (name "conmon")
-    (version "2.1.13")
+    (version "2.2.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/containers/conmon")
-             (commit (string-append "v" version))))
+              (url "https://github.com/containers/conmon")
+              (commit (string-append "v" version))))
        (sha256
-        (base32 "0fiixv9h5dycrixs7s3bq81d06p7qs8491mskxj42wqlkdq5diay"))
+        (base32 "0n9l6030ibhk7pmsq85rarcf9b0kzglxibd1xnb6vzmkz3ywg1il"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
            #~(list (string-append "CC=" #$(cc-for-target))
                    (string-append "PREFIX=" #$output))
-           ;; XXX: uses `go get` to download 50 packages, runs a ginkgo test suite
-           ;; then tries to download busybox and use a systemd logging library
-           ;; see also https://github.com/containers/conmon/blob/main/nix/derivation.nix
-           #:tests? #f
            #:test-target "test"
            #:phases
            #~(modify-phases %standard-phases
                (delete 'configure)
-               (add-after 'unpack 'set-env
-                 (lambda _
-                   ;; when running go, things fail because
-                   ;; HOME=/homeless-shelter.
-                   (setenv "HOME" "/tmp"))))))
+               (add-before 'check 'prepare-tests
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (setenv "RUNTIME_BINARY"
+                           (search-input-file inputs "sbin/runc"))
+
+                   ;; We need to skip all tests requiring journald.
+                   (for-each
+                    (lambda (test file)
+                      (substitute* file
+                        (((string-append "@test \"" test "\" \\{\n$") all)
+                         (string-append all "skip 'no journald in Guix';"))))
+                    '("log driver as journald should pass"
+                      "log driver as journald with short cid should fail"
+                      "multiple log drivers should pass"
+                      "log management: should work with multiple log drivers")
+                    '("test/01-basic.bats"
+                      "test/01-basic.bats"
+                      "test/01-basic.bats"
+                      "test/06-log-management.bats")))))))
     (inputs
      (list crun
            glib
            libseccomp))
     (native-inputs
-     (list git
-           go
-           pkg-config))
+     (list bats
+           git
+           go-md2man
+           pkg-config
+           socat
+           runc))
     (home-page "https://github.com/containers/conmon")
     (synopsis "Monitoring tool for Open Container Initiative (OCI) runtime")
     (description
