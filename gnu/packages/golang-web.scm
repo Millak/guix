@@ -1726,7 +1726,7 @@ Amazon Simple Storage Service.")
 (define-public go-github-com-aws-aws-sdk-go-v2-service-secretsmanager
   (package
     (name "go-github-com-aws-aws-sdk-go-v2-service-secretsmanager")
-    (version "1.34.8")
+    (version "1.41.1")
     (source
      (origin
        (method git-fetch)
@@ -1736,7 +1736,7 @@ Amazon Simple Storage Service.")
                                           #:subdir "service/secretsmanager"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n3spqncpw6w11pwkqaiq7jyv6dv0229jsbshibg24l2g3accdqi"))))
+        (base32 "04cv6g96hhmjl6snql6a909grq4yxyjk95a3dzk6mpihvg79q47p"))))
     (build-system go-build-system)
     (arguments
      (list
