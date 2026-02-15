@@ -12824,13 +12824,13 @@ particularly easy to create complete web applications using httpuv alone.")
 (define-public r-httr
   (package
     (name "r-httr")
-    (version "1.4.7")
+    (version "1.4.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "httr" version))
               (sha256
                (base32
-                "0fisvq3zydmqagn7lj6x98zxkcl7l95gfydl27zkigb7zg1fcm8m"))))
+                "1y097vy168f0v8bbikhrfhadc0bfw5qlk40q7n9a5w0lk1szdb32"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-curl r-jsonlite r-mime r-openssl r-r6))
