@@ -909,6 +909,39 @@ logs to GNU ChangeLog format.")
 to GitHub contributions calendar.")
     (license license:expat)))
 
+(define-public git-cliff
+  (package
+    (name "git-cliff")
+    (version "2.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "git-cliff" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vz1qix1yi6j5lb95q39pdxn4b6nrq8m235kjjh605m2mf0r8wyd"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f))
+    (native-inputs (list pkg-config))
+    (inputs (cons* libgit2-1.9
+                   zlib
+                   `(,zstd "lib")
+                   (cargo-inputs 'git-cliff)))
+    (home-page "https://github.com/orhun/git-cliff")
+    (synopsis "Highly customizable changelog generator")
+    (description "@command{git-cliff} can generate
+@url{https://en.wikipedia.org/wiki/Changelog, changelog} files from the
+@url{https://git-scm.com/, Git} history by utilizing
+@url{https://git-cliff.org/docs/configuration/git#conventional_commits,
+conventional commits} as well as regex-powered
+@url{https://git-cliff.org/docs/configuration/git#commit_parsers,
+custom parsers}.  The @url{https://git-cliff.org/docs/category/templating,
+changelog template} can be customized with a
+@url{https://git-cliff.org/docs/configuration, configuration file} to match the
+desired format.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public git-tools
   (package
     (name "git-tools")
