@@ -46400,14 +46400,14 @@ model estimation.  See Epskamp et al. (2012)
 (define-public r-semplot
   (package
     (name "r-semplot")
-    (version "1.1.7")
+    (version "1.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "semPlot" version))
        (sha256
         (base32
-         "18jcmfmmsk76k5iwi0p5pzqzx2vys5zkfsdgyd7qhrzr83kip4jn"))))
+         "0ygvdjvasb7yg7c4v64inkrfi3qgc3gcscxm1hy988lnqnshngka"))))
     (properties `((upstream-name . "semPlot")))
     (build-system r-build-system)
     (propagated-inputs
