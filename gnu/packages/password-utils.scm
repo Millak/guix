@@ -144,21 +144,26 @@
 (define-public aws-vault
   (package
     (name "aws-vault")
-    (version "7.2.0")
+    (version "7.3.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/99designs/aws-vault")
+              ;; This is a maintained fork of
+              ;; <https://github.com/99designs/aws-vault> which seems to be an
+              ;; abandoned project.
+              ;; See: <https://github.com/99designs/aws-vault/issues/1269>
+              ;;      <https://github.com/99designs/aws-vault/issues/1253>
+             (url "https://github.com/ByteNess/aws-vault")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dqg6d2k8r80ww70afghf823z0pijha1i0a0c0c6918yb322zkj2"))))
+        (base32 "09wa18xzvmz98dy873n2lssfpipqmdrnngyq606zyvb109ji87hs"))))
     (build-system go-build-system)
     (arguments
      (list
       #:install-source? #f
-      #:import-path "github.com/99designs/aws-vault"
+      #:import-path "github.com/byteness/aws-vault"
       #:build-flags
       #~(list (string-append "-ldflags=-X main.Version=" #$version))
       #:phases
@@ -186,8 +191,7 @@
           ;; denied.
           (add-before 'check 'set-home
             (lambda _
-              (setenv "HOME" "/tmp"))))
-      #:test-flags #~(list "-vet=off")))
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list go-github-com-99designs-keyring
            go-github-com-alecthomas-kingpin-v2
