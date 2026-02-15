@@ -1819,14 +1819,30 @@ for AWS SSO OIDC.")
 
 (define-public go-github-com-aws-aws-sdk-go-v2-service-sts
   (package
-    (inherit go-github-com-aws-aws-sdk-go-v2)
     (name "go-github-com-aws-aws-sdk-go-v2-service-sts")
-    (version "1.17.7")
+    (version "1.41.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aws/aws-sdk-go-v2")
+              (commit (go-version->git-ref version
+                                           #:subdir "service/sts"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04cv6g96hhmjl6snql6a909grq4yxyjk95a3dzk6mpihvg79q47p"))))
+    (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/aws/aws-sdk-go-v2/service/sts"
-       #:unpack-path "github.com/aws/aws-sdk-go-v2"))
-    (propagated-inputs
-     (list go-github-com-aws-smithy-go))))
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/service/sts"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs (list go-github-com-aws-smithy-go))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS SDK for Go v2 - STS service module")
+    (description
+     "Package sts provides the API client, operations, and parameter types for AWS
+Security Token Service.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-aws-smithy-go
   (package
