@@ -139,6 +139,73 @@
      "tab-bar-tests-quit-restore-window"
      "tramp-test48-remote-load-path")))
 
+(define %emacs-next-selector
+  (emacs-ert-selector
+   '("benchmark-tests"
+     "esh-util-test/path/get-remote"
+     "esh-var-test/path-var/preserve-across-hosts"
+     "grep-tests--rgrep-abbreviate-properties-darwin"
+     "grep-tests--rgrep-abbreviate-properties-gnu-linux"
+     "grep-tests--rgrep-abbreviate-properties-windows-nt-dos-semantics"
+     "grep-tests--rgrep-abbreviate-properties-windows-nt-sh-semantics"
+     "info-xref-test-makeinfo"
+     "tramp-test50-remote-load-path"
+
+     ;; These two tests look for header files.  We patch them to check
+     ;; "/run/current-system/profile/include" but that doesn't help us in the
+     ;; test suite
+     "man-tests-find-header-file"
+     "ffap-tests--c-path"
+
+     "diary-icalendar-test-import-bug-22092"
+     "diary-icalendar-test-import-bug-33277"
+     "diary-icalendar-test-import-with-timezone"
+
+     ;; The following can be removed once upstream closes this bug report:
+     ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=80421
+     "python-shell--convert-file-name-to-send-1"
+     "package-vc-tests-install-post-conditions/test-package-eight"
+     "package-vc-tests-install-post-conditions/test-package-five"
+     "package-vc-tests-install-post-conditions/test-package-four"
+     "package-vc-tests-install-post-conditions/test-package-nine"
+     "package-vc-tests-install-post-conditions/test-package-one"
+     "package-vc-tests-install-post-conditions/test-package-seven"
+     "package-vc-tests-install-post-conditions/test-package-six"
+     "package-vc-tests-install-post-conditions/test-package-three"
+     "package-vc-tests-install-post-conditions/test-package-two"
+     "package-vc-tests-pkg-spec-make-shell-command/test-package-five"
+     "package-vc-tests-pkg-spec-make-shell-command/test-package-nine"
+     "package-vc-tests-pkg-spec-make-shell-command/test-package-one"
+     "package-vc-tests-pkg-spec-make-shell-command/test-package-seven"
+     "package-vc-tests-pkg-spec-make-shell-command/test-package-two"
+     "package-vc-tests-rebuild-after-require/test-package-eight"
+     "package-vc-tests-rebuild-after-require/test-package-five"
+     "package-vc-tests-rebuild-after-require/test-package-four"
+     "package-vc-tests-rebuild-after-require/test-package-nine"
+     "package-vc-tests-rebuild-after-require/test-package-one"
+     "package-vc-tests-rebuild-after-require/test-package-seven"
+     "package-vc-tests-rebuild-after-require/test-package-six"
+     "package-vc-tests-rebuild-after-require/test-package-three"
+     "package-vc-tests-rebuild-after-require/test-package-two"
+     "package-vc-tests-require/test-package-eight"
+     "package-vc-tests-require/test-package-five"
+     "package-vc-tests-require/test-package-four"
+     "package-vc-tests-require/test-package-nine"
+     "package-vc-tests-require/test-package-one"
+     "package-vc-tests-require/test-package-seven"
+     "package-vc-tests-require/test-package-six"
+     "package-vc-tests-require/test-package-three"
+     "package-vc-tests-require/test-package-two"
+     "package-vc-tests-upgrade-after-require/test-package-eight"
+     "package-vc-tests-upgrade-after-require/test-package-five"
+     "package-vc-tests-upgrade-after-require/test-package-four"
+     "package-vc-tests-upgrade-after-require/test-package-nine"
+     "package-vc-tests-upgrade-after-require/test-package-one"
+     "package-vc-tests-upgrade-after-require/test-package-seven"
+     "package-vc-tests-upgrade-after-require/test-package-six"
+     "package-vc-tests-upgrade-after-require/test-package-three"
+     "package-vc-tests-upgrade-after-require/test-package-two")))
+
 (define-public emacs-minimal
   (package
     (name "emacs-minimal")
@@ -664,8 +731,8 @@ editor (with wide ints)" )
         #~(cons "--with-wide-int" #$flags))))))
 
 (define-public emacs-next-minimal
-  (let ((commit "9663c959c73d6cca0c56f833d80ff1d9e9708b70")
-        (revision "1"))
+  (let ((commit "509228fc6c026921c67459f21164e0325efc583b")
+        (revision "2"))
   (package
     (inherit emacs-minimal)
     (name "emacs-next-minimal")
@@ -679,17 +746,18 @@ editor (with wide ints)" )
              (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a03j9zdn1fl181xcqsw4vg3v8a3sbv1r3d49ld6ysldvfkwiz39"))
+        (base32 "04aalyrx5jysk5fhlka98fhfx23sy99zp8j16i0ils20sflyig6n"))
        (patches
         (search-patches "emacs-next-disable-jit-compilation.patch"
                         "emacs-next-exec-path.patch"
                         "emacs-fix-scheme-indent-function.patch"
                         "emacs-native-comp-driver-options.patch"
                         "emacs-next-native-comp-fix-filenames.patch"
-                        "emacs-native-comp-pin-packages.patch"
-                        ;; XXX This commit should already be on 31.0 but
-                        ;; without this emacs-next will fail a test.
-                        "emacs-zoom-image-test-fix.patch")))))))
+                        "emacs-native-comp-pin-packages.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments emacs-minimal)
+       ((#:make-flags flags #~'())
+        #~(append #$flags (list (string-append "SELECTOR=" #$%emacs-next-selector)))))))))
 
 (define* (emacs->emacs-next emacs #:optional name
                             #:key (version (package-version emacs-next-minimal))
@@ -702,7 +770,11 @@ editor (with wide ints)" )
                                   (string-drop (package-name emacs)
                                                (string-length "emacs"))))))
     (version version)
-    (source source)))
+    (source source)
+    (arguments
+     (substitute-keyword-arguments (package-arguments emacs)
+       ((#:make-flags flags #~'())
+        #~(append #$flags (list (string-append "SELECTOR=" #$%emacs-next-selector))))))))
 
 (define-public emacs-next (emacs->emacs-next emacs))
 (define-public emacs-next-pgtk (emacs->emacs-next emacs-pgtk))
