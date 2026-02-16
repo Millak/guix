@@ -1681,35 +1681,6 @@ of the points.")
     ;; Any GPL version
     (license (list license:gpl2+ license:gpl3+))))
 
-(define-public r-tmvnsim
-  (package
-    (name "r-tmvnsim")
-    (version "1.0-2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "tmvnsim" version))
-       (sha256
-        (base32
-         "03xsvsg9bqvgl98ywid3h91mmlhax5s6wvmypp3hq91vmc5kvxlp"))))
-    (properties `((upstream-name . "tmvnsim")))
-    (build-system r-build-system)
-    (native-inputs (list gfortran))
-    (home-page "https://www.r-project.org")
-    (synopsis "Truncated multivariate normal simulation")
-    (description
-     "This package implements importance sampling from the truncated
-multivariate normal using the @dfn{Geweke-Hajivassiliou-Keane} (GHK)
-simulator.  Unlike Gibbs sampling which can get stuck in one truncation
-sub-region depending on initial values, this package allows truncation based
-on disjoint regions that are created by truncation of absolute values.  The
-GHK algorithm uses simple Cholesky transformation followed by recursive
-simulation of univariate truncated normals hence there are also no convergence
-issues.  Importance sample is returned along with sampling weights, based on
-which, one can calculate integrals over truncated regions for multivariate
-normals.")
-    (license license:gpl2)))
-
 (define-public r-tsne
   (package
     (name "r-tsne")
