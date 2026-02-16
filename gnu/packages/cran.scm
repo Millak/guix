@@ -7399,6 +7399,34 @@ interactive analytic queries against data sources of all sizes ranging from
 gigabytes to petabytes.")
     (license license:bsd-3)))
 
+(define-public r-rprojroot
+  (package
+    (name "r-rprojroot")
+    (version "2.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rprojroot" version))
+       (sha256
+        (base32
+         "1s8p0mgg44chpbb5zdd4rvjjvx692ixk3p38izb9rza5xyxqjfa7"))))
+    (properties
+     '( ;; Avoid a dependency cycles.
+       (updater-ignored-native-inputs . ("r-testthat"))))
+    (build-system r-build-system)
+    ;; Tests require r-testthat, which uses this package.
+    (arguments (list #:tests? #false))
+    (native-inputs
+     (list r-knitr r-rlang r-withr))
+    (home-page "https://github.com/krlmlr/rprojroot")
+    (synopsis "Finding files in project subdirectories")
+    (description
+     "This package helps accessing files relative to a project root.  It
+provides helpers for robust, reliable and flexible paths to files below a
+project root.  The root of a project is defined as a directory that matches a
+certain criterion, e.g., it contains a certain regular file.")
+    (license license:gpl3)))
+
 (define-public r-rpushbullet
   (package
     (name "r-rpushbullet")
