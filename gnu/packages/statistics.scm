@@ -1905,26 +1905,6 @@ following problems:
 @end enumerate\n")
     (license license:gpl3+)))
 
-(define-public r-runit
-  (package
-    (name "r-runit")
-    (version "0.4.33.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "RUnit" version))
-       (sha256
-        (base32
-         "01bz34hf4j93mldwharwdc691db324zbl09zg1qnwjnhm0xzla45"))))
-    (properties `((upstream-name . "RUnit")))
-    (build-system r-build-system)
-    (home-page "https://cran.r-project.org/web/packages/RUnit")
-    (synopsis "R unit test framework")
-    (description
-     "This package provides R functions implementing a standard unit testing
-framework, with additional code inspection and report generation tools.")
-    (license license:gpl2+)))
-
 (define-public r-sfsmisc
   (package
     (name "r-sfsmisc")
