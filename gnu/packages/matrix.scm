@@ -10,6 +10,7 @@
 ;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2025 Arjan Adriaanse <arjan@adriaan.se>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2026 Zheng Junjie <z572@z572.online>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -411,6 +412,42 @@ from nio.crypto.sessions import OlmAccount")))))))
 layer doesn't do any network IO on its own, but on top of that is a full
 fledged batteries-included asyncio layer using aiohttp.")
     (license license:isc)))
+
+(define-public python-synapse-s3-storage-provider
+  (package
+    (name "python-synapse-s3-storage-provider")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/matrix-org/synapse-s3-storage-provider")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03y72439z718wjapdgqcw1qajpc917djsf4jhp2qrgv9l71rrrk9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "-m" "twisted.trial" "test_s3")))
+    (native-inputs
+     (list python-setuptools
+           python-mock synapse))
+    (propagated-inputs
+     (list python-boto3
+           python-botocore
+           python-humanize
+           python-psycopg2
+           python-pyyaml
+           python-tqdm
+           python-twisted))
+    (home-page "https://github.com/matrix-org/synapse-s3-storage-provider")
+    (synopsis "Synapse storage provider to fetch and store media in Amazon S3")
+    (description
+     "This package implements a storage provider for Synapse, enabling it to
+fetch and store media in Amazon S3.")
+    (license license:asl2.0)))
 
 (define-public pantalaimon
   (package
