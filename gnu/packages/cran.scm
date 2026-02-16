@@ -6473,6 +6473,29 @@ private members, and they support inheritance, even when the classes are
 defined in different packages.")
     (license license:expat)))
 
+(define-public r-randomforest
+  (package
+    (name "r-randomforest")
+    (version "4.7-1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "randomForest" version))
+       (sha256
+        (base32
+         "04aan0wzkfdl2nh4z8fls7qhgz80xl7px7c4282dbfj8nqkk5lxa"))))
+    (properties `((upstream-name . "randomForest")))
+    (build-system r-build-system)
+    (home-page "https://www.stat.berkeley.edu/~breiman/RandomForests/")
+    (native-inputs (list gfortran))
+    (synopsis
+     "Breiman and Cutler's random forests for classification and regression")
+    (description
+"This package provides the Breiman and Cutler's random forests algorithm,
+based on a forest of trees using random inputs, for classification and
+regression.")
+    (license license:gpl2+)))
+
 (define-public r-rcolorbrewer
   (package
     (name "r-rcolorbrewer")
