@@ -10432,6 +10432,30 @@ individual SNP score statistics in a SNP set and efficiently compute SNP-set
 level p-values.")
     (license license:gpl2+)))
 
+(define-public r-sn
+  (package
+    (name "r-sn")
+    (version "2.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "sn" version))
+       (sha256
+        (base32
+         "0riyb3r38cy582c0ppd72s07jlzf375v1b9bqs2dsw6rfhzix01f"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-mnormt r-numderiv r-quantreg))
+    (native-inputs (list r-r-rsp))
+    (home-page "http://azzalini.stat.unipd.it/SN")
+    (synopsis "The skew-normal and skew-t distributions")
+    (description
+     "This package provides functionalities to build and manipulate
+probability distributions of the skew-normal family and some related ones,
+notably the skew-t family, and provides related statistical methods for data
+fitting and diagnostics, in the univariate and the multivariate case.")
+    (license license:gpl2+)))
+
 (define-public r-snowflakeauth
   (package
     (name "r-snowflakeauth")
