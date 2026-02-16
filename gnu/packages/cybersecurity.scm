@@ -198,7 +198,7 @@ chains of gadgets to execute system calls.")
 (define-public pwntools
   (package
     (name "pwntools")
-    (version "4.15.0beta1")
+    (version "4.15.0")
     (source
      (origin
        (method git-fetch)
@@ -207,7 +207,7 @@ chains of gadgets to execute system calls.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "048b8szybf3f69xdp258a783nl5dcgj316a5156i8ajhyfw6aaw0"))))
+        (base32 "0phi7gks9w9rim9rzs8cgwznc3xximdpxyj5vrafivziill51qnl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -241,7 +241,7 @@ chains of gadgets to execute system calls.")
            python-zstandard
            unicorn))
     (native-inputs
-     (list python-setuptools python-toml python-wheel))
+     (list python-setuptools python-toml))
     (home-page "https://github.com/Gallopsled/pwntools")
     (synopsis
      "Capture-the-flag (CTF) framework and exploit development library")
