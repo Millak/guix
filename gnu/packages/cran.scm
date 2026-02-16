@@ -6829,6 +6829,63 @@ supporting FTP/FTPS/TFTP (uploads and downloads), SSL/HTTPS, telnet, dict,
 ldap, and also supports cookies, redirects, authentication, etc.")
     (license license:bsd-3)))
 
+(define-public r-readr
+  (package
+    (name "r-readr")
+    (version "2.1.6")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "readr" version))
+              (sha256
+               (base32
+                "1na60ma6aa37yz7h939hi42fz8p5szaq41gabnp4hd25n2iknx4x"))))
+    (build-system r-build-system)
+    (properties
+     '((updater-extra-native-inputs . ("r-stringi"))))
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; XXX This fails with the latest update to vroom.
+             (substitute* "tests/testthat/test-write.R"
+               ((".*Can change the escape behavior for quotes.*" m)
+                (string-append m "skip('skip');\n")))))
+         (add-before 'check 'set-timezone
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Two tests would fail without this.
+             (setenv "TZ" "UTC+1")
+             (setenv "TZDIR"
+                     (search-input-directory inputs
+                                             "share/zoneinfo")))))))
+    (propagated-inputs
+     (list r-cli
+           r-clipr
+           r-cpp11
+           r-crayon
+           r-hms
+           r-lifecycle
+           r-r6
+           r-rlang
+           r-tibble
+           r-tzdb
+           r-vroom))
+    (native-inputs
+     (list r-dplyr
+           r-knitr
+           r-spelling
+           r-stringi
+           r-testthat
+           r-withr
+           tzdata-for-tests))
+    (home-page "https://github.com/hadley/readr")
+    (synopsis "Read tabular data")
+    (description
+     "This package provides functions to read flat or tabular text files from
+disk (or a connection).")
+    (license license:gpl2+)))
+
 (define-public r-reshape2
   (package
     (name "r-reshape2")
