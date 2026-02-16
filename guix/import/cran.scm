@@ -750,17 +750,20 @@ REPOSITORY."
 (define (cran-package-propagated-inputs meta)
   "Return the list of <upstream-input> derived from dependency information in
 META."
-  (filter-map (lambda (name)
-                (and (not (member name
-                                  (append default-r-packages invalid-packages)))
-                     (upstream-input
-                      (name name)
-                      (downstream-name (cran-guix-name name))
-                      (type 'propagated))))
-              (lset-union equal?
-                          (listify meta "Imports")
-                          (listify meta "LinkingTo")
-                          (delete "R" (listify meta "Depends")))))
+  (let* ((skip (append default-r-packages invalid-packages))
+         (packages (fold (lambda (current result)
+                           (if (member current skip) result
+                               (set-insert current result)))
+                         (set)
+                         (append (listify meta "Imports")
+                                 (listify meta "LinkingTo")
+                                 (delete "R" (listify meta "Depends"))))))
+    (map (lambda (name)
+           (upstream-input
+             (name name)
+             (downstream-name (cran-guix-name name))
+             (type 'propagated)))
+         (set->list packages))))
 
 (define* (cran-package-inputs meta repository
                               #:key (download-source download))
