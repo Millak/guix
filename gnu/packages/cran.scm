@@ -19453,13 +19453,13 @@ color labels, layout, etc.")
 (define-public r-stable
   (package
     (name "r-stable")
-    (version "1.1.6")
+    (version "1.1.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "stable" version))
               (sha256
                (base32
-                "194xsa291v5f0jya1c3aigbclg8cci427ffpb8brxamm6n57hf12"))))
+                "1sabzja8ksda5k8fkhq4paqapcjgw8v17xfrkq310pzg4dajcb9d"))))
     (properties `((upstream-name . "stable")))
     (build-system r-build-system)
     (propagated-inputs (list r-rmutil))
