@@ -2087,27 +2087,6 @@ that reshape did.  In particular, built-in methods only work for data frames,
 and tidyr provides no margins or aggregation.")
     (license license:expat)))
 
-(define-public r-rematch
-  (package
-    (name "r-rematch")
-    (version "2.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "rematch" version))
-       (sha256
-        (base32
-         "09jwg3glp32q4ml4khhzi8j7bzg9zhqqdg1m6r8gibh756zzgnhm"))))
-    (build-system r-build-system)
-    (native-inputs (list r-testthat))
-    (home-page "https://github.com/MangoTheCat/rematch")
-    (synopsis "Match regular expressions with a nicer API")
-    (description
-     "This package provides a small wrapper on @code{regexpr} to extract the
-matches and captured groups from the match of a regular expression to a
-character vector.")
-    (license license:expat)))
-
 (define-public r-spams
   (package
     (name "r-spams")
