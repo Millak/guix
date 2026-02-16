@@ -2098,29 +2098,6 @@ dispersion modeling and Tweedie power-law families.")
     ;; Statmod is distributed under either license
     (license (list license:gpl2 license:gpl3))))
 
-(define-public r-rrcov
-  (package
-    (name "r-rrcov")
-    (version "1.7-7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "rrcov" version))
-       (sha256
-        (base32
-         "1xbhrpmb3bn4h83kr214jmhr0rx5mgjrf396iz70mnq3g425lbqb"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-lattice r-mvtnorm r-pcapp r-robustbase))
-    (native-inputs
-     (list gfortran r-mass))
-    (home-page "https://cran.r-project.org/web/packages/rrcov")
-    (synopsis "Scalable robust estimators with high breakdown Point")
-    (description
-     "This package provides an implementation of robust location and scatter
-estimation and robust multivariate analysis with high breakdown point.")
-    (license license:gpl2+)))
-
 (define-public r-trimcluster
   (package
     (name "r-trimcluster")

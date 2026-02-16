@@ -7448,6 +7448,29 @@ and efficient notifications (and file transfer) between computers, phones and
 tablets.")
     (license license:gpl2+)))
 
+(define-public r-rrcov
+  (package
+    (name "r-rrcov")
+    (version "1.7-7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rrcov" version))
+       (sha256
+        (base32
+         "1xbhrpmb3bn4h83kr214jmhr0rx5mgjrf396iz70mnq3g425lbqb"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-lattice r-mvtnorm r-pcapp r-robustbase))
+    (native-inputs
+     (list gfortran r-mass))
+    (home-page "https://cran.r-project.org/web/packages/rrcov")
+    (synopsis "Scalable robust estimators with high breakdown point")
+    (description
+     "This package provides an implementation of robust location and scatter
+estimation and robust multivariate analysis with high breakdown point.")
+    (license license:gpl2+)))
+
 (define-public r-runner
   (package
     (name "r-runner")
