@@ -1819,32 +1819,6 @@ following problems:
 @end enumerate\n")
     (license license:gpl3+)))
 
-(define-public r-statmod
-  (package
-    (name "r-statmod")
-    (version "1.5.1")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "statmod" version))
-              (sha256
-               (base32
-                "15qk57r8sdzzbs41c0k49m4clay32b521wvjbpjpaaim2y0kh14g"))))
-    (build-system r-build-system)
-    (home-page "https://cran.r-project.org/web/packages/statmod")
-    (native-inputs
-     (list gfortran))
-    (synopsis "Statistical modeling")
-    (description
-     "This package provides a collection of algorithms and functions to aid
-statistical modeling.  It includes growth curve comparisons, limiting dilution
-analysis (aka ELDA), mixed linear models, heteroscedastic regression,
-inverse-Gaussian probability calculations, Gauss quadrature and a secure
-convergence algorithm for nonlinear models.  It also includes advanced
-generalized linear model functions that implement secure convergence,
-dispersion modeling and Tweedie power-law families.")
-    ;; Statmod is distributed under either license
-    (license (list license:gpl2 license:gpl3))))
-
 (define-public r-trimcluster
   (package
     (name "r-trimcluster")
