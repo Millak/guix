@@ -2609,28 +2609,6 @@ dispersion modeling and Tweedie power-law families.")
     ;; Statmod is distributed under either license
     (license (list license:gpl2 license:gpl3))))
 
-(define-public r-rann
-  (package
-    (name "r-rann")
-    (version "2.6.2")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "RANN" version))
-              (sha256
-               (base32
-                "0wlpkf6vilw871ac2bxy5nr790cfs6sax5k8m0fhasxbansxbxvf"))))
-    (properties
-     `((upstream-name . "RANN")))
-    (build-system r-build-system)
-    (native-inputs (list r-testthat))
-    (home-page "https://github.com/jefferis/RANN")
-    (synopsis "Fast nearest neighbour search")
-    (description
-     "This package finds the k nearest neighbours for every point in a given
-dataset in O(N log N) time using Arya and Mount's ANN library.  Provides
-approximate, exact searches, fixed radius searches, bd and kb trees.")
-    (license license:gpl3+)))
-
 (define-public r-robustbase
   (package
     (name "r-robustbase")
