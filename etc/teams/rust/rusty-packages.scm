@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2024, 2026 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -17,10 +17,9 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; This file returns a manifest of packages built using the cargo-build-system
-;;; which are NOT prefixed with 'rust-' and the packages which use rust itself
-;;; as an input.  This is a short list of packages which can be checked to see
-;;; if a rust update has gone smoothly.  It is used to assist continuous
-;;; integration of the rust-team branch.
+;;; and the packages which use rust itself as an input.  This is a short list of
+;;; packages which can be checked to see if a rust update has gone smoothly.  It
+;;; is used to assist continuous integration of the rust-team branch.
 
 (use-modules (guix packages)
              (guix profiles)
@@ -31,15 +30,15 @@
   (map package->manifest-entry
        (fold-packages
          (lambda (package lst)
-           (if (or
-                 (eq? (build-system-name (package-build-system package))
-                      (quote cargo))
-                 (any
-                   (lambda (pkg)
-                     (member (specification->package "rust") pkg))
-                   (append (package-native-inputs package)
-                           (package-propagated-inputs package)
-                           (package-inputs package))))
-             (cons package lst)
-             lst))
+           (if (and (supported-package? package)
+                    (or (eq? (build-system-name (package-build-system package))
+                             (quote cargo))
+                        (any
+                          (lambda (pkg)
+                            (member (specification->package "rust") pkg))
+                          (append (package-native-inputs package)
+                                  (package-propagated-inputs package)
+                                  (package-inputs package)))))
+               (cons package lst)
+               lst))
          (list))))

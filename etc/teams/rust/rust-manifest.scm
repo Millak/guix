@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2024, 2026 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,8 +27,9 @@
   (map package->manifest-entry
        (fold-packages
          (lambda (package lst)
-           (if (eq? (build-system-name (package-build-system package))
-                    (quote cargo))
-             (cons package lst)
-             lst))
+           (if (and (eq? (build-system-name (package-build-system package))
+                         (quote cargo))
+                    (supported-package? package))
+               (cons package lst)
+               lst))
          (list))))
