@@ -14485,6 +14485,37 @@ runtime.  It has zero dependencies, and doesn't rely on CGO.  This means you
 can run applications in other languages and still keep cross compilation.")
     (license license:asl2.0)))
 
+(define-public go-github-com-theodorsm-covert-dtls
+  (package
+    (name "go-github-com-theodorsm-covert-dtls")
+    (version "1.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/theodorsm/covert-dtls")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sv239ij3938mw55i2a3nnj8h4sy18rbkxn3vz4mypli5v6rai28"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t ;XXX: libpcap
+      #:tests? #f
+      #:import-path "github.com/theodorsm/covert-dtls"))
+    (propagated-inputs
+     (list go-github-com-google-gopacket
+           go-github-com-pion-dtls-v3))
+    (home-page "https://github.com/theodorsm/covert-dtls")
+    (synopsis "Fingerprint-resistance module for pion/dtls")
+    (description
+     "@code{covertDTLS} is a library inspired by
+@@url{https://github.com/refraction-networking/utls, @code{uTLS}} for offering
+fingerprint-resistance features to @url{https://github.com/pion/dtls,
+pion/dtls}.")
+    (license license:expat)))
+
 (define-public go-github-com-things-go-go-socks5
   (package
     (name "go-github-com-things-go-go-socks5")
