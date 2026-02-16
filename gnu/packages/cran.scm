@@ -13034,6 +13034,33 @@ that reshape did.  In particular, built-in methods only work for data frames,
 and tidyr provides no margins or aggregation.")
     (license license:expat)))
 
+(define-public r-tidyselect
+  (package
+    (name "r-tidyselect")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "tidyselect" version))
+       (sha256
+        (base32
+         "0g4h8mfm5ima0izy4h0c65q478473xsj4hskh15dzg5z1fx9g7hn"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-stringr"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-cli r-glue r-lifecycle r-rlang r-vctrs r-withr))
+    (native-inputs
+     (list r-knitr r-stringr r-testthat))
+    (home-page "https://cran.r-project.org/web/packages/tidyselect")
+    (synopsis "Select from a set of strings")
+    (description
+     "This package provides a backend for the selecting functions of the
+tidyverse.  It makes it easy to implement select-like functions in your own
+packages in a way that is consistent with other tidyverse interfaces for
+selection.")
+    (license license:gpl3)))
+
 (define-public r-tidyverse
   (package
     (name "r-tidyverse")
