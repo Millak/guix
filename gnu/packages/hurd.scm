@@ -134,67 +134,65 @@ communication.")
       (license gpl2+))))
 
 (define-public hurd-headers
-  (let ((revision "5")
-        (commit "v0.9.git20251029"))
-    (package
-      (name "hurd-headers")
-      (version (string-drop commit 1))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.savannah.gnu.org/git/hurd/hurd.git")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "09pi6ci375ivbjvxlgdqp6vpm47arfvlh325sr2a5dmwxhs9pnp9"))
-                (file-name (git-file-name name version))))
-      (build-system gnu-build-system)
-      (native-inputs
-       (list autoconf
-             automake
-             (if (%current-target-system)
-                 (cross-mig (%current-target-system))
-                 mig)))
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (replace 'install
-             (lambda _
-               (invoke "make" "install-headers" "no_deps=t")))
-           (delete 'build))
+  (package
+    (name "hurd-headers")
+    (version "0.9.git20251029")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://git.savannah.gnu.org/git/hurd/hurd.git")
+                     (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "09pi6ci375ivbjvxlgdqp6vpm47arfvlh325sr2a5dmwxhs9pnp9"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf
+           automake
+           (if (%current-target-system)
+               (cross-mig (%current-target-system))
+               mig)))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'install
+           (lambda _
+             (invoke "make" "install-headers" "no_deps=t")))
+         (delete 'build))
 
-         #:configure-flags '( ;; Reduce set of dependencies.
-                             "--without-parted"
-                             "--disable-ncursesw"
-                             "--disable-test"
-                             "--without-libbz2"
-                             "--without-libcrypt"
-                             "--without-libz"
-                             "--without-rump"
-                             ;; Skip the clnt_create check because it expects
-                             ;; a working glibc causing a circular dependency.
-                             "ac_cv_search_clnt_create=no"
+       #:configure-flags '( ;; Reduce set of dependencies.
+                           "--without-parted"
+                           "--disable-ncursesw"
+                           "--disable-test"
+                           "--without-libbz2"
+                           "--without-libcrypt"
+                           "--without-libz"
+                           "--without-rump"
+                           ;; Skip the clnt_create check because it expects
+                           ;; a working glibc causing a circular dependency.
+                           "ac_cv_search_clnt_create=no"
 
-                             ;; Annihilate the checks for the 'file_exec_paths'
-                             ;; & co. libc functions to avoid "link tests are
-                             ;; not allowed after AC_NO_EXECUTABLES" error.
-                             "ac_cv_func_file_exec_paths=no"
-                             "ac_cv_func_exec_exec_paths=no"
-                             "ac_cv_func__hurd_exec_paths=no"
-                             "ac_cv_func__hurd_libc_proc_init=no"
-                             "ac_cv_func_mach_port_set_ktype=no"
-                             "ac_cv_func_file_futimens=no"
-                             "ac_cv_func_file_utimens=no"
-                             "ac_cv_lib_acpica_acpi_init=no")
+                           ;; Annihilate the checks for the 'file_exec_paths'
+                           ;; & co. libc functions to avoid "link tests are
+                           ;; not allowed after AC_NO_EXECUTABLES" error.
+                           "ac_cv_func_file_exec_paths=no"
+                           "ac_cv_func_exec_exec_paths=no"
+                           "ac_cv_func__hurd_exec_paths=no"
+                           "ac_cv_func__hurd_libc_proc_init=no"
+                           "ac_cv_func_mach_port_set_ktype=no"
+                           "ac_cv_func_file_futimens=no"
+                           "ac_cv_func_file_utimens=no"
+                           "ac_cv_lib_acpica_acpi_init=no")
 
-         #:tests? #f))
-      (supported-systems %hurd-systems)
-      (home-page "https://www.gnu.org/software/hurd/hurd.html")
-      (synopsis "GNU Hurd headers")
-      (description
-       "This package provides C headers of the GNU Hurd, used to build the GNU C
+       #:tests? #f))
+    (supported-systems %hurd-systems)
+    (home-page "https://www.gnu.org/software/hurd/hurd.html")
+    (synopsis "GNU Hurd headers")
+    (description
+     "This package provides C headers of the GNU Hurd, used to build the GNU C
 Library and other user programs.")
-      (license gpl2+))))
+    (license gpl2+)))
 
 (define-public hurd-minimal
   (package (inherit hurd-headers)
