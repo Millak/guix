@@ -36402,17 +36402,17 @@ utilities for sequence data management under the ACNUC system.")
 (define-public r-unigd
   (package
     (name "r-unigd")
-    (version "0.1.3")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "unigd" version))
        (sha256
-        (base32 "1cqa7gvxmf78hwwqbxk1p2jkksajnfzal9wf3jzlrax35ys6mxqx"))))
+        (base32 "0inic1d7jqrn5c388dml50xs267v4c1wm53g3aafhfi0iy011h03"))))
     (properties
      '((upstream-name . "unigd")))
     (build-system r-build-system)
-    (inputs (list cairo fontconfig freetype libpng zlib))
+    (inputs (list cairo libpng libtiff zlib))
     (propagated-inputs (list r-cpp11 r-systemfonts))
     (native-inputs (list pkg-config
                          r-fontquiver
