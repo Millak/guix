@@ -901,7 +901,9 @@ OpenGeoSys")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wflgkbcsa4sr8g63img0ld6h4jm1b7hjzsa2m4gsbzc6j7kd41w"))))
+        (base32 "1wflgkbcsa4sr8g63img0ld6h4jm1b7hjzsa2m4gsbzc6j7kd41w"))
+       ;; Remove patch on next release, likely 6.5.8
+       (patches (search-patches "ogs-6.5.7-netcdfconverter.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -955,7 +957,7 @@ OpenGeoSys")
            spdlog
            tclap
            tfel
-           vtk-9.3
+           vtk
            xmlpatch
            zlib))
     (propagated-inputs

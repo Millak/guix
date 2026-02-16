@@ -1996,6 +1996,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ocaml-4.07-dynamically-allocate-signal-stack.patch	\
   %D%/packages/patches/ocaml-4.09-dynamically-allocate-signal-stack.patch	\
   %D%/packages/patches/ocaml-4.09-multiple-definitions.patch	\
+  %D%/packages/patches/ogs-6.5.7-netcdfconverter.patch \
   %D%/packages/patches/omake-fix-non-determinism.patch	\
   %D%/packages/patches/oneko-remove-nonfree-characters.patch	\
   %D%/packages/patches/onetbb-other-arches.patch	\
