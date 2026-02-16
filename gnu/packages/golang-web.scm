@@ -18560,7 +18560,7 @@ feature set and features are added on as the need arises.")
 (define-public lyrebird
   (package
     (name "lyrebird")
-    (version "0.6.1")
+    (version "0.8.1")
     (source
      (origin
        (method git-fetch)
@@ -18569,7 +18569,7 @@ feature set and features are added on as the need arises.")
              (commit (string-append "lyrebird-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wmcr2ywzp38z7p8gqb0r4wpsz1f67fn3dln9pswcjscvgm251pj"))))
+        (base32 "175g1d8n2ss1szsn6knmnbmhpz5cyq7cbbf8bgi2da9618cnv3r8"))))
     (build-system go-build-system)
     (arguments
      (list
