@@ -7471,6 +7471,52 @@ tablets.")
 estimation and robust multivariate analysis with high breakdown point.")
     (license license:gpl2+)))
 
+(define-public r-rsqlite
+  (package
+    (name "r-rsqlite")
+    (version "2.4.6")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "RSQLite" version))
+              (sha256
+               (base32
+                "0gnzq7ga5grfb4rs09pi3rpr8cnj7wdb6gwca5r1ksy2my3y8lbg"))))
+    (properties
+     '((upstream-name . "RSQLite")
+       ;; These are not strictly necessary for running tests and adding them
+       ;; would cause dependency cycles.
+       (updater-ignored-native-inputs . ("r-dbitest" "r-ndbi"))))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Needed for one failing test
+         (add-before 'check 'set-locale
+           (lambda _ (setenv "LC_ALL" "en_US.UTF-8"))))))
+    (propagated-inputs
+     (list r-bit64
+           r-blob
+           r-cpp11
+           r-dbi
+           r-memoise
+           r-pkgconfig
+           r-rlang))
+    (native-inputs
+     (list r-callr
+           r-hms
+           r-knitr
+           r-magrittr
+           r-testthat
+           r-withr))
+    (home-page "https://github.com/rstats-db/RSQLite")
+    (synopsis "SQLite interface for R")
+    (description
+     "This package embeds the SQLite database engine in R and provides an
+interface compliant with the DBI package.  The source for the SQLite engine is
+included.")
+    (license license:lgpl2.0+)))
+
 (define-public r-runner
   (package
     (name "r-runner")
