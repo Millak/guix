@@ -18684,15 +18684,15 @@ go-git-sr-ht-emersion-gqlclient package.")))
 tool."))))
 
 (define-public go-madns
-  (package
-    (inherit go-github-com-multiformats-go-multiaddr-dns)
+  (package/inherit go-github-com-multiformats-go-multiaddr-dns
     (name "go-madns")
     (arguments
      (substitute-keyword-arguments
          (package-arguments go-github-com-multiformats-go-multiaddr-dns)
+       ((#:tests? _ #t) #f)
        ((#:install-source? _ #t) #f)
-       ((#:import-path _ "github.com/multiformats/go-multiaddr-dns")
-        "github.com/multiformats/go-multiaddr-dns/madns")))
+       ((#:import-path _) "github.com/multiformats/go-multiaddr-dns/madns")
+       ((#:unpack-path _ "") "github.com/multiformats/go-multiaddr-dns")))
     (description
      "This package provides a CLI binary executable built from
 go-github-com-multiformats-go-multiaddr-dns.")))
