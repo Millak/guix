@@ -30601,16 +30601,16 @@ clusters, number of variables, number of noisy variables.")
 (define-public r-tweedie
   (package
     (name "r-tweedie")
-    (version "3.0.12")
+    (version "3.0.14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tweedie" version))
        (sha256
         (base32
-         "1p945mw8q9ika9205xjjdcjy6ki0a6iw7d5cgmx707g5b2nj93zk"))))
+         "1ppv73442gwacsqqvk8d16sznwcnhlqs5zvm8zqg2pd6f9bfqa7a"))))
     (build-system r-build-system)
-    (propagated-inputs (list r-statmod))
+    (propagated-inputs (list r-lifecycle r-statmod))
     (native-inputs (list gfortran r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/tweedie/")
     (synopsis "Evaluation of Tweedie exponential family models")
