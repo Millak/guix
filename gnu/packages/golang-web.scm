@@ -16117,16 +16117,16 @@ library code
 (define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-webtunnel
   (package
     (name "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-webtunnel")
-    (version "0.0.0-20240711104640-e64b1b3562f3")
+    (version "0.0.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/webtunnel")
-             (commit (go-version->git-ref version))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nvd0qp1mdy7w32arnkhghxm5k2g6gy33cxlarxc6vdm4yh6v5nv"))))
+        (base32 "092r0f42cgb2ksplszkxvirmvmmlxd8xvdj555gywy0948c7j7qw"))))
     (build-system go-build-system)
     (arguments
      (list
