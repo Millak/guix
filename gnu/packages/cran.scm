@@ -7111,6 +7111,30 @@ F. (2022) <@code{arXiv:2202.08060>}.  All algorithms run in quasilinear
 time.")
     (license license:gpl2+)))
 
+(define-public r-robust
+  (package
+    (name "r-robust")
+    (version "0.7-5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "robust" version))
+       (sha256
+        (base32
+         "1k0s5i9r0lyz3qsw76dd514qclggqj9k2axmgj86df81j6f2mh53"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-fit-models r-lattice r-mass r-robustbase r-rrcov))
+    (native-inputs
+     (list gfortran))
+    (home-page "https://cran.r-project.org/web/packages/robust")
+    (synopsis "Port of the S+ \"Robust Library\"")
+    (description
+     "This package is a port of the S+ \"Robust Library\".  It provides
+methods for robust statistics, notably for robust regression and robust
+multivariate analysis.")
+    (license license:gpl2)))
+
 (define-public r-robustrankaggreg
   (package
     (name "r-robustrankaggreg")
