@@ -1613,44 +1613,6 @@ packages in a way that is consistent with other tidyverse interfaces for
 selection.")
     (license license:gpl3)))
 
-(define-public r-tidyr
-  (package
-    (name "r-tidyr")
-    (version "1.3.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "tidyr" version))
-       (sha256
-        (base32
-         "0nk67ls23r50fxxgzyfvvcf7cwbigl12r9336zvjls5gy3dfdh04"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-cli
-           r-cpp11
-           r-dplyr
-           r-glue
-           r-lifecycle
-           r-magrittr
-           r-purrr
-           r-rlang
-           r-stringr
-           r-tibble
-           r-tidyselect
-           r-vctrs))
-    (native-inputs
-     (list r-data-table r-knitr r-testthat))
-    (home-page "https://github.com/hadley/tidyr")
-    (synopsis "Tidy data with `spread()` and `gather()` functions")
-    (description
-     "tidyr is a reframing of the reshape2 package designed to accompany the
-tidy data framework, and to work hand-in-hand with magrittr and dplyr to build
-a solid pipeline for data analysis.  It is designed specifically for tidying
-data, not the general reshaping that reshape2 does, or the general aggregation
-that reshape did.  In particular, built-in methods only work for data frames,
-and tidyr provides no margins or aggregation.")
-    (license license:expat)))
-
 (define-public r-spams
   (package
     (name "r-spams")
