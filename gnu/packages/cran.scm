@@ -10715,6 +10715,28 @@ definition of Surv objects, Kaplan-Meier and Aalen-Johansen (multi-state)
 curves, Cox models, and parametric accelerated failure time models.")
     (license license:lgpl2.0+)))
 
+(define-public r-synchronicity
+  (package
+    (name "r-synchronicity")
+    (version "1.3.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "synchronicity" version))
+       (sha256
+        (base32
+         "12svf4xzb9s3m1h2ddqgl6q2v57ifsj2p80j8cg2k0543a43pww2"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-bh r-bigmemory-sri r-rcpp r-uuid))
+    (home-page "http://www.bigmemory.org")
+    (synopsis "Boost mutex functionality in R")
+    (description "This package provides support for synchronization via
+mutexes and may eventually support interprocess communication and message
+passing.")
+    ;; Users can choose either LGPLv3 or ASL2.0.
+    (license (list license:lgpl3 license:asl2.0))))
+
 (define-public r-svglite
   (package
     (name "r-svglite")
