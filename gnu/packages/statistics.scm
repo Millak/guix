@@ -1681,47 +1681,6 @@ the versions that @code{r-release} and @code{r-oldrel} refer to, and also all
 previous R versions and their release dates.")
     (license license:expat)))
 
-(define-public r-roxygen2
-  (package
-    (name "r-roxygen2")
-    (version "7.3.3")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "roxygen2" version))
-              (sha256
-               (base32
-                "0jk1b71j7r61kmfa7028yybfyw3wjjka2hidlh6n3vdbw8z6whfs"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-brew
-           r-cli
-           r-commonmark
-           r-cpp11
-           r-desc
-           r-knitr
-           r-pkgload
-           r-purrr
-           r-r6
-           r-rlang
-           r-stringi
-           r-stringr
-           r-withr
-           r-xml2))
-    (native-inputs
-     (list r-digest
-           r-knitr
-           r-magrittr
-           r-r-methodss3
-           r-r-oo
-           r-rmarkdown
-           r-testthat))
-    (home-page "https://github.com/klutometis/roxygen")
-    (synopsis "In-source documentation system for R")
-    (description
-     "Roxygen2 is a Doxygen-like in-source documentation system for Rd,
-collation, and NAMESPACE files.")
-    (license license:gpl2+)))
-
 (define-public r-rstudioapi
   (package
     (name "r-rstudioapi")
