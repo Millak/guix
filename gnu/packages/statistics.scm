@@ -2170,39 +2170,6 @@ message passing.")
     ;; Users can choose either LGPLv3 or ASL2.0.
     (license (list license:lgpl3 license:asl2.0))))
 
-(define-public r-r-utils
-  (package
-    (name "r-r-utils")
-    (version "2.13.0")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "R.utils" version))
-              (sha256
-               (base32
-                "09fg7f0z0zdxjndfwmcsyi2z54bp7xxcwdx0hpzji68j9v1l685b"))))
-    (properties `((upstream-name . "R.utils")))
-    (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-references
-           (lambda _
-             (substitute* '("R/System.R"
-                            "R/GString-class.R")
-               (("/usr/bin/env uname") (which "uname"))
-               (("/usr/bin/env whoami") (which "whoami"))))))))
-    (propagated-inputs
-     (list r-r-methodss3 r-r-oo))
-    (native-inputs
-     (list r-digest))
-    (home-page "https://github.com/HenrikBengtsson/R.utils")
-    (synopsis "Various programming utilities")
-    (description
-     "This package provides utility functions useful when programming and
-developing R packages.")
-    (license license:lgpl2.1+)))
-
 (define-public r-tidyselect
   (package
     (name "r-tidyselect")
