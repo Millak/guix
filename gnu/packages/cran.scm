@@ -6473,6 +6473,30 @@ where the key can be an arbitrary set of R objects.  The cache memory is
 persistent (on the file system).")
     (license license:lgpl2.1+)))
 
+(define-public r-r-methodss3
+  (package
+    (name "r-r-methodss3")
+    (version "1.8.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "R.methodsS3" version))
+              (sha256
+               (base32
+                "0bkwj9c2cpgb0ibk9znh8qh4k1wzp3bkhaxyhf41xjflv9hmwbc2"))))
+    (properties `((upstream-name . "R.methodsS3")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/web/packages/R.methodsS3")
+    (synopsis "S3 methods simplified")
+    (description
+     "This package provides methods that simplify the setup of S3 generic
+functions and S3 methods.  Major effort has been made in making definition of
+methods as simple as possible with a minimum of maintenance for package
+developers.  For example, generic functions are created automatically, if
+missing, and naming conflict are automatically solved, if possible.  The
+method @code{setMethodS3()} is a good start for those who in the future may
+want to migrate to S4.")
+    (license license:lgpl2.1+)))
+
 (define-public r-r-oo
   (package
     (name "r-r-oo")
