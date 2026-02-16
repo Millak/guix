@@ -279,10 +279,10 @@
                   "/run/current-system/profile/bin"
                   "/run/current-system/profile/sbin")))
 
-              ;; Make sure Man looks for C header files in the right
+              ;; Make sure Man and ffap looks for C header files in the right
               ;; places.
-              (substitute* "lisp/man.el"
-                (("\"/usr/local/include\"" line)
+              (substitute* '("lisp/man.el" "lisp/ffap.el")
+                (("\"/usr/include\" \"/usr/local/include\"" line)
                  (string-join
                   (list line
                         "\"~/.guix-profile/include\""
