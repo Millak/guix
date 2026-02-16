@@ -2199,52 +2199,6 @@ dispersion modeling and Tweedie power-law families.")
     ;; Statmod is distributed under either license
     (license (list license:gpl2 license:gpl3))))
 
-(define-public r-robustbase
-  (package
-    (name "r-robustbase")
-    (version "0.99-7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "robustbase" version))
-       (sha256
-        (base32
-         "1zccb1y2xad65i16h2wda9k7bzzxlywsavy9qgnwks5cpk8ijpcz"))))
-    (build-system r-build-system)
-    (properties
-     '((updater-extra-native-inputs . ("r-cluster" "r-matrix" "r-ggplot2"))
-       ;; Avoid dependency cycle.
-       (updater-ignored-native-inputs . ("r-ggally"))))
-    (arguments
-     (list
-      ;; Vignettes require r-ggally.
-      #:test-types '(list "tests")
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; These tests require r-rrcov, leading to a dependency cycle.
-             (delete-file "tests/tmcd.R"))))))
-    (native-inputs
-     (list gfortran
-           r-cluster
-           r-foreach
-           r-ggplot2
-           r-lattice
-           r-mass
-           r-matrix
-           r-reshape2
-           r-sfsmisc
-           r-xtable))
-    (propagated-inputs
-     (list r-deoptimr))
-    (home-page "https://robustbase.r-forge.r-project.org/")
-    (synopsis "Basic robust statistics")
-    (description
-     "This package analyzes data with robust methods such as
-regression methodology including model selections and multivariate statistics.")
-    (license license:gpl2+)))
-
 (define-public r-rrcov
   (package
     (name "r-rrcov")
