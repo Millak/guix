@@ -922,34 +922,6 @@ posteriors and evidences.")
 flexible and easy to set up.")
     (license license:expat)))
 
-(define-public r-r6
-  (package
-    (name "r-r6")
-    (version "2.6.1")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "R6" version))
-              (sha256
-               (base32
-                "1d3k40gnms6458aprrjy899yhjv06lr0arag21zfn4mrn6lfpijr"))))
-    (properties
-     ;; We can't have r-testthat among the inputs here to avoid a dependency
-     ;; cycle.
-     '((updater-ignored-native-inputs . ("r-testthat"))))
-    (build-system r-build-system)
-    ;; Tests require r-testthat, which indirectly depends on this package.
-    (arguments (list #:tests? #false))
-    (home-page "https://github.com/wch/R6/")
-    (synopsis "Classes with reference semantics in R")
-    (description
-     "The R6 package allows the creation of classes with reference semantics,
-similar to R's built-in reference classes.  Compared to reference classes, R6
-classes are simpler and lighter-weight, and they are not built on S4 classes
-so they do not require the methods package.  These classes allow public and
-private members, and they support inheritance, even when the classes are
-defined in different packages.")
-    (license license:expat)))
-
 (define-public r-rlang
   (package
     (name "r-rlang")
