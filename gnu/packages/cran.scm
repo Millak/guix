@@ -6886,6 +6886,29 @@ ldap, and also supports cookies, redirects, authentication, etc.")
 disk (or a connection).")
     (license license:gpl2+)))
 
+(define-public r-reghelper
+  (package
+    (name "r-reghelper")
+    (version "1.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "reghelper" version))
+              (sha256
+               (base32
+                "1vd8kd719kyjp65zym6zx3vax1q2kbhpl6la71d5aa59s54ylri3"))))
+    (properties `((upstream-name . "reghelper")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2 r-lme4 r-mass r-nlme r-rlang))
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/jeff-hughes/reghelper")
+    (synopsis "Helper functions for regression analysis")
+    (description
+     "This package provides a set of functions used to automate commonly used
+methods in regression analysis.  This includes plotting interactions, and
+calculating simple slopes, standardized coefficients, regions of
+significance (Johnson & Neyman, 1936; cf.  Spiller et al., 2012), etc.")
+    (license license:gpl3)))
+
 (define-public r-reshape2
   (package
     (name "r-reshape2")
