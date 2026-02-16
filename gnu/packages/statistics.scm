@@ -1660,27 +1660,6 @@ Features:
 @end itemize")
     (license license:asl2.0)))
 
-(define-public r-segmented
-  (package
-    (name "r-segmented")
-    (version "2.2-1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "segmented" version))
-       (sha256
-        (base32
-         "0zn9sdjp1xdcqs9vh8nh6hb8wpjlm771q36ga01r9a1r8x2wm7za"))))
-    (build-system r-build-system)
-    (propagated-inputs (list r-mass r-nlme))
-    (home-page "https://cran.r-project.org/web/packages/segmented")
-    (synopsis "Regression models with breakpoints estimation")
-    (description
-     "Given a regression model, segmented updates the model by adding one or
-more segmented (i.e., piecewise-linear) relationships.  Several variables with
-multiple breakpoints are allowed.")
-    (license (list license:gpl2+ license:gpl3+))))
-
 (define-public r-snow
   (package
     (name "r-snow")
