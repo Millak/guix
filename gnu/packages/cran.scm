@@ -12847,6 +12847,41 @@ algorithm described in MetaCell analysis of single-cell RNA-seq
 data using K-nn graph partitions.")
     (license license:gpl2)))
 
+(define-public r-tibble
+  (package
+    (name "r-tibble")
+    (version "3.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "tibble" version))
+       (sha256
+        (base32
+         "13xjjas9882518i0s8x6az6mmzz8srxgz1byghiin0ir3659yc7v"))))
+    ;; r-diagrammer contains massive amounts of minified JavaScript.
+    (properties
+     '((updater-ignored-native-inputs . ("r-diagrammer"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-cli
+           r-lifecycle
+           r-magrittr
+           r-pillar
+           r-pkgconfig
+           r-rlang
+           r-vctrs))
+    ;; The importer adds a lot more packages, but we don't need any of them.
+    (native-inputs
+     (list r-knitr
+           r-testthat
+           r-withr))
+    (home-page "https://github.com/hadley/tibble")
+    (synopsis "Simple data frames")
+    (description
+     "This package provides a @code{tbl_df} class that offers better checking
+and printing capabilities than traditional data frames.")
+    (license license:expat)))
+
 (define-public r-tictoc
   (package
     (name "r-tictoc")
