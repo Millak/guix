@@ -21,7 +21,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
-;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022, 2026 John Kehayias <john@guixotic.coop>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;; Copyright © 2024, 2025 Zheng Junjie <z572@z572.online>
 ;;;
@@ -957,6 +957,7 @@ the store.")
    (properties `((lint-hidden-cve . ("CVE-2024-2961"
                                      "CVE-2024-33601" "CVE-2024-33602"
                                      "CVE-2024-33600" "CVE-2024-33599"))))
+   (replacement glibc/fixed)
    (build-system gnu-build-system)
 
    ;; Glibc's <limits.h> refers to <linux/limit.h>, for instance, so glibc
@@ -1233,6 +1234,17 @@ The GNU C library is used as the C library in the GNU system and most systems
 with the Linux kernel.")
    (license lgpl2.0+)
    (home-page "https://www.gnu.org/software/libc/")))
+
+(define glibc/fixed
+  (package
+    (inherit glibc)
+    (name "glibc")
+    (source (origin
+              (inherit (package-source glibc))
+              ;; XXX: When ungrafting, add the included patch to
+              ;; %glibc-patches.
+              (patches (cons (search-patch "glibc-guix-locpath.patch")
+                             (origin-patches (package-source glibc))))))))
 
 ;; Define a variation of glibc which uses the default /etc/ld.so.cache, useful
 ;; in FHS containers.

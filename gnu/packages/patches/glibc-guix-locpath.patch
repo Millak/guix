@@ -1,0 +1,13 @@
+Patch to add the GUIX_LOCPATH environment variable to ones that should
+be unset for SUID programs, same as LOCPATH.
+
+--- glibc-2.41-old/sysdeps/generic/unsecvars.h
++++ glibc-2.41/sysdeps/generic/unsecvars.h
+@@ -5,6 +5,7 @@
+   "GCONV_PATH\0"							      \
+   "GETCONF_DIR\0"							      \
+   "GLIBC_TUNABLES\0"							      \
++  "GUIX_LOCPATH\0"							      \
+   "HOSTALIASES\0"							      \
+   "LD_AUDIT\0"								      \
+   "LD_BIND_NOT\0"							      \
