@@ -11464,14 +11464,6 @@
   (crate-source "jiff" "0.2.20"
                 "0hv59kcqj5sc0jgk4q7yrq5dp8yb3qlan98qk3s36sq9ribc6ry8"))
 
-(define rust-jiff-0.2.18
-  (crate-source "jiff" "0.2.18"
-                "0l6g3vkqa7imd3nsvizmb648jn0gcadiydh3zq4rjvcxqjj8szp6"))
-
-(define rust-jiff-0.2.20
-  (crate-source "jiff" "0.2.20"
-                "0hv59kcqj5sc0jgk4q7yrq5dp8yb3qlan98qk3s36sq9ribc6ry8"))
-
 (define rust-jiff-0.2.5
   (crate-source "jiff" "0.2.5"
                 "0q3jpq3scznmviiajldyf5xby38zgyvkxbrmgb9hf78r6416f0n1"))
@@ -11515,14 +11507,6 @@
 (define rust-jiff-static-0.2.19
   (crate-source "jiff-static" "0.2.19"
                 "1gsd0cbxc6rmy1cl6w44cizqqnfl5pqsiw6c2n93dh9ghv43jypz"))
-
-(define rust-jiff-static-0.2.20
-  (crate-source "jiff-static" "0.2.20"
-                "1rcvbp9aj8ll4ljxcgzq4l2h9idmkb0v6mdvf3r3i5r64m1np57p"))
-
-(define rust-jiff-static-0.2.18
-  (crate-source "jiff-static" "0.2.18"
-                "0y3fks93ij3frb1jnpzi68b9kssm3rvwpmkgdjlakv4py7klxj70"))
 
 (define rust-jiff-static-0.2.20
   (crate-source "jiff-static" "0.2.20"
@@ -20482,10 +20466,6 @@
 (define rust-serde-test-1.0.177
   (crate-source "serde_test" "1.0.177"
                 "1vgisk4dgwdmz4prc2iwq8lddrp4pbqdbljk0h3b7dnafgjix43z"))
-
-(define rust-serde-spanned-1.0.4
-  (crate-source "serde_spanned" "1.0.4"
-                "0xkp0qdzams5sqwndbw3xrhf4c0bb5r46w2ywkp1aqsdb8ggkfzq"))
 
 (define rust-serde-untagged-0.1.7
   (crate-source "serde-untagged" "0.1.7"
