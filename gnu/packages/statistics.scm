@@ -1746,33 +1746,6 @@ matrices.  It includes Cholesky decomposition and backsolving as well as
 standard R subsetting and Kronecker products.")
     (license license:gpl2+)))
 
-(define-public r-rtsne
-  (package
-    (name "r-rtsne")
-    (version "0.17")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "Rtsne" version))
-       (sha256
-        (base32
-         "02srqmfkdj7v9gyhssaqdarg4ljn2ds77w25a5w0dm66sqa6ibis"))))
-    (properties
-     `((upstream-name . "Rtsne")
-       (updater-extra-native-inputs . ("r-irlba"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-rcpp))
-    (native-inputs (list r-irlba r-testthat))
-    (home-page "https://github.com/jkrijthe/Rtsne")
-    (synopsis "T-distributed stochastic neighbor embedding")
-    (description
-     "This package provides an R wrapper around the fast T-distributed
-Stochastic Neighbor Embedding using a Barnes-Hut implementation.")
-    ;; The declared license for this package is BSD-3, but it also includes
-    ;; code licensed under BSD-4.
-    (license (list license:bsd-3 license:bsd-4))))
-
 (define-public r-synchronicity
   (package
     (name "r-synchronicity")
