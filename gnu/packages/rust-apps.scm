@@ -2895,6 +2895,7 @@ diagnostics, autocompletion, documentation, and formatting.")
     (arguments
      (list
        #:install-source? #f
+       #:cargo-install-paths ''(".")
        #:features '(list "external-harfbuzz")
        #:cargo-test-flags '(list "--features" "external-harfbuzz")
        #:phases
