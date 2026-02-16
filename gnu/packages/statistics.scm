@@ -1849,37 +1849,6 @@ which, one can calculate integrals over truncated regions for multivariate
 normals.")
     (license license:gpl2)))
 
-(define-public r-tclust
-  (package
-    (name "r-tclust")
-    (version "2.1-2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "tclust" version))
-       (sha256
-        (base32
-         "0x5rgxjlll9552bb59jf59mv7040rb0l14j3sh8vylwv6wpbnc85"))))
-    (properties
-     '((updater-extra-native-inputs . ("r-cluster" "r-mclust" "r-sn"))))
-    (build-system r-build-system)
-    ;; These are all suggested packages, not build dependencies.
-    (propagated-inputs
-     (list r-doparallel
-           r-foreach
-           r-mass
-           r-rcpp
-           r-rcpparmadillo
-           r-rlang))
-    (native-inputs (list r-cluster r-mclust r-sn))
-    (home-page "https://cran.r-project.org/web/packages/tclust")
-    (synopsis "Robust trimmed clustering")
-    (description
-     "This package implements different robust clustering
-algorithms (@code{tclust}) based on trimming and including some graphical
-diagnostic tools (@code{ctlcurves} and @code{DiscrFact}).")
-    (license license:gpl3)))
-
 (define-public r-tsne
   (package
     (name "r-tsne")
