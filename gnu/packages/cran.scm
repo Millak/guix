@@ -18881,14 +18881,14 @@ to access PostgreSQL database systems.")
 (define-public r-rpostgres
   (package
     (name "r-rpostgres")
-    (version "1.4.9")
+    (version "1.4.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RPostgres" version))
        (sha256
         (base32
-         "1zl3a6svgw1fwgacyn85qianf46wm07g3ywc4bkgp6n6hh6db1zn"))))
+         "1s83znhz0wcwgfq9kb0c0i9ds9bx5vb341svwyafpdxsim1j8d7p"))))
     (properties
      '((upstream-name . "RPostgres")
        (updater-extra-inputs . ("postgresql"))))
