@@ -1369,12 +1369,7 @@ interface standards, such as:
                    license:bsd-2)))) ; libfdt
 
 (define-public arm-trusted-firmware-sun50i-a64
-  (let ((base (make-arm-trusted-firmware "sun50i_a64")))
-    (package
-      (inherit base)
-      (native-inputs (modify-inputs (package-native-inputs base)
-                       ;; Needs at least gcc-13.
-                       (prepend gcc-14))))))
+  (make-arm-trusted-firmware "sun50i_a64"))
 
 (define-public arm-trusted-firmware-sun50i-h616
   (make-arm-trusted-firmware "sun50i_h616"))
