@@ -22513,7 +22513,7 @@ sequential way to mimic the manual gating strategy.")
     (properties
      `((upstream-name . "CytoML")
        (updater-extra-native-inputs . ("r-flowworkspacedata"))
-       (updater-ignored-native-inputs . ("r-old" "r-table"))))
+       (updater-ignored-native-inputs . ("r-cytoml-old"))))
     (build-system r-build-system)
     (inputs
      (list libxml2 zlib))
