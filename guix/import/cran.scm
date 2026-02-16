@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2026 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015-2017, 2019-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
@@ -570,7 +570,7 @@ referenced in build system files."
     ;; Quiet imports
     "(suppressPackageStartupMessages\\()?"
     ;; the actual import statement.
-    "(require|library|check_installed)\\(\"?([^, \")]+)"
+    "(require|library|check_installed)\\([\"']?([^, \"')]+)"
     ;; Or perhaps...
     "|"
     ;; ...direct namespace access.
@@ -654,16 +654,10 @@ in vignette files in the directory DIR."
                            (cond
                             ((eof-object? line) packages)
                             (else
-                             (loop
-                              (fold (lambda (match acc)
-                                      (let ((imported (match:substring match 4)))
-                                        (if (or (not imported)
-                                                (string=? imported package-directory-name)
-                                                (member imported default-r-packages))
-                                            acc
-                                            (set-insert imported acc))))
-                                    packages
-                                    (list-matches import-pattern line))))))))))
+                             (loop (extract-imports line
+                                                    #:initial-set packages
+                                                    #:ignored-names (cons package-directory-name
+                                                                          default-r-packages))))))))))
                  (set)
                  (append-map (lambda (directory)
                                (find-files directory "\\.Rnw"))

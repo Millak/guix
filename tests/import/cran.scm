@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2025-2026 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -97,6 +97,11 @@ Date/Publication: 2015-07-14 14:15:16
   (list)
   (set->list ((@ (guix import cran) extract-imports)
               "\"hello::world\", \"this is not data.table::some_procedure(), actually\"")))
+
+(test-equal "extract-imports: extracts text inside single quotes"
+  (list "FDb.InfiniumMethylation.hg19")
+  (set->list ((@ (guix import cran) extract-imports)
+              "suppressPackageStartupMessages(require('FDb.InfiniumMethylation.hg19'))")))
 
 (test-equal "extract-imports: ignores other colon separated things"
   (list)
