@@ -7640,6 +7640,27 @@ through a Redis database.  Key features include task queues, local caching,
 and sophisticated error handling.")
     (license license:expat)))
 
+(define-public r-rversions
+  (package
+    (name "r-rversions")
+    (version "3.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "rversions" version))
+              (sha256
+               (base32
+                "1q9k169vd31pvigf8q5lwc0zvacbycv7nl584kdh2mzbbyfjb06s"))))
+    (build-system r-build-system)
+    (propagated-inputs (list r-curl))
+    (native-inputs (list r-testthat r-webfakes r-withr))
+    (home-page "https://github.com/metacran/rversions")
+    (synopsis "Query R versions, including 'r-release' and 'r-oldrel'")
+    (description
+     "This package provides functions to query the main R repository to find
+the versions that @code{r-release} and @code{r-oldrel} refer to, and also all
+previous R versions and their release dates.")
+    (license license:expat)))
+
 (define-public r-prettydoc
   (package
     (name "r-prettydoc")
