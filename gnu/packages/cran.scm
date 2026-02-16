@@ -8606,6 +8606,42 @@ display Venn diagrams up to 7 sets, and any Boolean union of set
 intersections.")
     (license license:gpl3+)))
 
+(define-public r-vpc
+  (package
+    (name "r-vpc")
+    (version "1.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ronkeizer/vpc")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15gkqmamdph9pjv8rg1n8jr1rzvca66gz5iczzsa9ms75bad2z9m"))))
+    (properties '((updater-extra-native-inputs . ("r-testthat"))))
+    (build-system r-build-system)
+    (native-inputs
+     (list r-testit r-testthat))
+    (propagated-inputs
+     (list r-classint
+           r-dplyr
+           r-ggplot2
+           r-mass
+           r-readr
+           r-stringr
+           r-survival
+           r-tidyr))
+    (home-page "https://vpc.ronkeizer.com/")
+    (synopsis "Create visual predictive checks")
+    (description
+     "Visual predictive checks are a commonly used diagnostic plot in
+pharmacometrics, showing how certain statistics (percentiles) for observed
+data compare to those same statistics for data simulated from a model.  The
+package can generate VPCs for continuous, categorical, censored, and
+(repeated) time-to-event data.")
+    (license license:expat)))
+
 (define-public r-rvenn
   (package
     (name "r-rvenn")
