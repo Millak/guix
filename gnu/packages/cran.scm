@@ -26,7 +26,7 @@
 ;;; Copyright © 2020 Eric Brown <ecbrown@ericcbrown.com>
 ;;; Copyright © 2020 Peter Lo <peterloleungyau@gmail.com>
 ;;; Copyright © 2020 Rafael Luque Leiva <rafael.luque@osoco.es>
-;;; Copyright © 2020, 2021 Lars-Dominik Braun <ldb@leibniz-psychology.org>
+;;; Copyright © 2020, 2021, 2022 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2020, 2026 Arun Isaac <arunisaac@systemreboot.net>
@@ -6993,6 +6993,30 @@ using just two functions: melt and dcast (or acast).")
 core R features like the condition system, and core @code{Tidyverse} features
 like tidy evaluation.")
     (license license:gpl3)))
+
+(define-public r-rlrsim
+  (package
+    (name "r-rlrsim")
+    (version "3.1-9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RLRsim" version))
+       (sha256
+        (base32 "1xb353f2bfm27rkgc008n0vf8y6ggy2ql7lx0z2azc4k13mn0szp"))))
+    (properties `((upstream-name . "RLRsim")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-lme4 r-mgcv r-nlme r-rcpp))
+    (home-page "https://github.com/fabian-s/RLRsim")
+    (synopsis
+     "Exact (restricted) likelihood ratio tests for mixed and additive Models")
+    (description
+     "This is a package for rapid, simulation-based exact (restricted)
+likelihood ratio tests for testing the presence of variance
+components/nonparametric terms for models fit with @code{nlme::lme()},
+@code{lme4::lmer()}, @code{lmeTest::lmer()}, @code{gamm4::gamm4()},
+@code{mgcv::gamm()} and @code{SemiPar::spm()}.")
+    (license (list license:gpl2+ license:gpl3+))))
 
 (define-public r-robslopes
   (package

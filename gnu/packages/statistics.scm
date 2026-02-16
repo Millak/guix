@@ -3032,29 +3032,6 @@ files into/from Pandas DataFrames.  It is a wrapper around the C library
 @code{readstat}.")
     (license license:asl2.0)))
 
-(define-public r-rlrsim
-  (package
-    (name "r-rlrsim")
-    (version "3.1-9")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (cran-uri "RLRsim" version))
-        (sha256
-          (base32 "1xb353f2bfm27rkgc008n0vf8y6ggy2ql7lx0z2azc4k13mn0szp"))))
-    (properties `((upstream-name . "RLRsim")))
-    (build-system r-build-system)
-    (propagated-inputs (list r-lme4 r-mgcv r-nlme r-rcpp))
-    (home-page "https://github.com/fabian-s/RLRsim")
-    (synopsis
-      "Exact (Restricted) Likelihood Ratio Tests for Mixed and Additive Models")
-    (description
-      "Rapid, simulation-based exact (restricted) likelihood ratio tests for testing
-the presence of variance components/nonparametric terms for models fit with
-@code{nlme::lme()}, @code{lme4::lmer()}, @code{lmeTest::lmer()},
-@code{gamm4::gamm4()}, @code{mgcv::gamm()} and @code{SemiPar::spm()}.")
-    (license (list license:gpl2+ license:gpl3+))))
-
 (define-public r-simr
   (package
     (name "r-simr")
