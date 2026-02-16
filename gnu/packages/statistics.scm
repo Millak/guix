@@ -1863,39 +1863,6 @@ following problems:
 @end enumerate\n")
     (license license:gpl3+)))
 
-(define-public r-sfsmisc
-  (package
-    (name "r-sfsmisc")
-    (version "1.1-23")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "sfsmisc" version))
-       (sha256
-        (base32
-         "0pnj3lwyypvdb0rv4mx81vs2cg16kx4mlsv2fxf5cmns221zl7xq"))))
-    (properties
-     '((updater-extra-propagated-inputs . ("procps"))))
-    (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-reference-to-procps
-           (lambda _
-             (substitute* "R/u.goodies.R"
-               (("if\\(rel >= 2006\\)" m)
-                (let ((ps (which "ps")))
-                  (string-append
-                   "if(file.exists(\"" ps "\")) \"" ps " w\" else " m)))))))))
-    (propagated-inputs (list procps))
-    (home-page "https://cran.r-project.org/web/packages/sfsmisc")
-    (synopsis "Utilities from \"Seminar fuer Statistik\" ETH Zurich")
-    (description
-     "This package provides useful utilities from Seminar fuer Statistik ETH
-Zurich, including many that are related to graphics.")
-    (license license:gpl2+)))
-
 (define-public r-sourcetools
   (package
     (name "r-sourcetools")
