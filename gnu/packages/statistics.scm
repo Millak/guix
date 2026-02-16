@@ -1681,26 +1681,6 @@ the versions that @code{r-release} and @code{r-oldrel} refer to, and also all
 previous R versions and their release dates.")
     (license license:expat)))
 
-(define-public r-rstudioapi
-  (package
-    (name "r-rstudioapi")
-    (version "0.18.0")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "rstudioapi" version))
-              (sha256
-               (base32
-                "1ggxhrc4zd984y1qx5m2w2dqpmwjhwp7ha39v7ivvlw10gqfwjcn"))))
-    (build-system r-build-system)
-    (native-inputs
-     (list r-knitr))
-    (home-page "https://cran.r-project.org/web/packages/rstudioapi")
-    (synopsis "Safely access the RStudio API")
-    (description
-     "This package provides functions to access the RStudio API and provide
-informative error messages when it's not available.")
-    (license license:expat)))
-
 (define-public r-segmented
   (package
     (name "r-segmented")
