@@ -12723,6 +12723,45 @@ algorithms (@code{tclust}) based on trimming and including some graphical
 diagnostic tools (@code{ctlcurves} and @code{DiscrFact}).")
     (license license:gpl3)))
 
+(define-public r-testthat
+  (package
+    (name "r-testthat")
+    (version "3.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "testthat" version))
+              (sha256
+               (base32
+                "024q8257dvvg8ff19287gqf4rhj4jnz05349nspj7dfwqfi2ybjx"))))
+    (properties
+     '((updater-ignored-native-inputs . ("r-testthat" "r-s7" "r-xml2"))
+       (updater-extra-native-inputs . ("r-digest"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-brio
+           r-callr
+           r-cli
+           r-desc
+           r-evaluate
+           r-jsonlite
+           r-lifecycle
+           r-magrittr
+           r-pkgload
+           r-praise
+           r-processx
+           r-ps
+           r-r6
+           r-rlang
+           r-waldo
+           r-withr))
+    (native-inputs (list r-digest r-knitr))
+    (home-page "https://github.com/hadley/testthat")
+    (synopsis "Unit testing for R")
+    (description
+     "This package provides a unit testing system for R designed to be fun,
+flexible and easy to set up.")
+    (license license:expat)))
+
 (define-public r-tglkmeans
   (package
     (name "r-tglkmeans")
