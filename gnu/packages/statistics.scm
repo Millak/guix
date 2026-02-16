@@ -1842,27 +1842,6 @@ following problems:
 @end enumerate\n")
     (license license:gpl3+)))
 
-(define-public r-sourcetools
-  (package
-    (name "r-sourcetools")
-    (version "0.1.7-1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "sourcetools" version))
-       (sha256
-        (base32
-         "1l9i9ram12pjks8h2gzmj119wf4ixwyhljsfv289dn8dgbdjp0cn"))))
-    (build-system r-build-system)
-    (native-inputs (list r-testthat))
-    (home-page "https://cran.r-project.org/web/packages/sourcetools")
-    (synopsis "Tools for reading, tokenizing and parsing R code")
-    (description
-     "The sourcetools package provides both an R and C++ interface for the
-tokenization of R code, and helpers for interacting with the tokenized
-representation of R code.")
-    (license license:expat)))
-
 (define-public r-statmod
   (package
     (name "r-statmod")
