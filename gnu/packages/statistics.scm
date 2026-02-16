@@ -1881,31 +1881,6 @@ matrices.  It includes Cholesky decomposition and backsolving as well as
 standard R subsetting and Kronecker products.")
     (license license:gpl2+)))
 
-(define-public r-rngtools
-  (package
-    (name "r-rngtools")
-    (version "1.5.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "rngtools" version))
-       (sha256
-        (base32
-         "0kd7x214cqw7hzpmk1iqy1bn7j6x0ady0yz2hsdbclbq9k57d33z"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-digest))
-    (native-inputs (list r-testthat))
-    (home-page "https://renozao.github.io/rngtools")
-    (synopsis "Utility functions for working with random number generators")
-    (description
-     "This package contains a set of functions for working with Random Number
-Generators (RNGs).  In particular, it defines a generic S4 framework for
-getting/setting the current RNG, or RNG data that are embedded into objects
-for reproducibility.  Notably, convenient default methods greatly facilitate
-the way current RNG settings can be changed.")
-    (license license:gpl3+)))
-
 (define-public r-rtsne
   (package
     (name "r-rtsne")
