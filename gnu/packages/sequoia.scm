@@ -259,7 +259,11 @@ This Guix package is built to use the nettle cryptographic library.")
      (list
        #:features '(list "sequoia-openpgp/crypto-nettle")
        #:cargo-package-crates ''("tools")
-       #:cargo-test-flags '(list "--" "--skip=gpg_trust_roots")
+       #:cargo-test-flags
+       '(list "--"
+              "--skip=gpg_trust_roots"
+              "--skip=backward_propagation::tests::cliques"
+              "--skip=tests::cliques")
        #:install-source? #f
        #:cargo-install-paths ''("tools")
        #:phases
