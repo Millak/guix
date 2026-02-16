@@ -1,15 +1,27 @@
-This patch adds bindings to Linux syscalls for which glibc has symbols.
+Upstream status: Not presented upstream.
+
+From 0cca01b3700b7fb427ac2e9b7a612e8b703cc185 Mon Sep 17 00:00:00 2001
+From: Janneke Nieuwenhuizen <janneke@gnu.org>
+Date: Mon, 16 Feb 2026 18:18:27 +0100
+Subject: [PATCH] Add bindings to syscalls for which glibc has symbols.
 
 Using the FFI would have been nice, but that's not an option when using
 a statically-linked Guile in an initrd that doesn't have libc.so around.
+---
+ libguile/posix.c | 362 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 362 insertions(+)
 
 diff --git a/libguile/posix.c b/libguile/posix.c
+index 78ce03e68..bcc538b9f 100644
 --- a/libguile/posix.c
 +++ b/libguile/posix.c
-@@ -2375,6 +2375,368 @@ scm_init_popen (void)
+@@ -2595,6 +2595,368 @@ scm_init_popen (void)
  }
- #endif /* HAVE_START_CHILD */
  
+ 
++#include "libguile/bytevectors.h"
++#include "libguile/foreign.h"
++#include <libguile/variable.h>
 +
 +/* Linux! */
 +#ifdef __linux__
@@ -17,9 +29,6 @@ diff --git a/libguile/posix.c b/libguile/posix.c
 +#include <sys/mount.h>
 +#include <sys/syscall.h>
 +
-+#include "libguile/foreign.h"
-+#include "libguile/bytevectors.h"
-+#include <libguile/variable.h>
 +
 +SCM_DEFINE (scm_mount, "mount", 3, 2, 0,
 +	    (SCM source, SCM target, SCM type, SCM flags, SCM data),
@@ -375,3 +384,6 @@ diff --git a/libguile/posix.c b/libguile/posix.c
  void
  scm_init_posix ()
  {
+-- 
+2.52.0
+
