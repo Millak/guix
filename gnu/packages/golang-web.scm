@@ -16013,18 +16013,30 @@ Go.")
   (package
     (name
      "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-snowflake-v2")
-    (version "2.11.0")
+    ;; XXX: For compatibility with github.com/pion/transport/v4, switch back
+    ;; to tag when released.
+    (properties '((commit . "18dacf41dca88974be1d568d0bfd75b3f805f13b")
+                  (revision . "0")))
+    (version (git-version "2.11.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url (string-append
-                   "https://gitlab.torproject.org/tpo/anti-censorship"
-                   "/pluggable-transports/snowflake"))
-             (commit (string-append "v" version))))
+              (url (string-append
+                    "https://gitlab.torproject.org/tpo/anti-censorship"
+                    "/pluggable-transports/snowflake"))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cy0q88bw14fwbyk0nrdc1g73g7623k337w4b9n7hln2jmis5wjm"))))
+        (base32 "1xvzvd4ddmvhbscqkc1jsvky2hlvxb8vckcwlng145l7dnq1wl57"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (substitute* (find-files "." "\\.go$")
+              (("github.com/pion/transport/v3")
+               "github.com/pion/transport/v4"))))))
     (build-system go-build-system)
     (arguments
      (list
@@ -16038,24 +16050,26 @@ Go.")
               ;; panic: empty transcript [recovered]
               "-skip" "TestQueuePacketConnWriteToKCP")))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-smartystreets-goconvey
+           go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-aws-aws-sdk-go-v2
            go-github-com-aws-aws-sdk-go-v2-config
            go-github-com-aws-aws-sdk-go-v2-credentials
            go-github-com-aws-aws-sdk-go-v2-service-sqs
+           go-github-com-clarkduvall-hyperloglog
            go-github-com-golang-mock
            go-github-com-gorilla-websocket
            go-github-com-miekg-dns
            go-github-com-pion-ice-v4
            go-github-com-pion-sdp-v3
            go-github-com-pion-stun-v3
-           go-github-com-pion-transport-v3
+           go-github-com-pion-transport-v4
            go-github-com-pion-webrtc-v4
            go-github-com-prometheus-client-golang
            go-github-com-realclientip-realclientip-go
            go-github-com-refraction-networking-utls
-           go-github-com-smartystreets-goconvey
+           go-github-com-theodorsm-covert-dtls
            go-github-com-txthinking-socks5
            go-github-com-xtaci-kcp-go-v5
            go-github-com-xtaci-smux
