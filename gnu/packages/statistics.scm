@@ -1823,35 +1823,6 @@ informative error messages when it's not available.")
 disk (or a connection).")
     (license license:gpl2+)))
 
-(define-public r-rcpparmadillo
-  (package
-    (name "r-rcpparmadillo")
-    (version "15.2.3-1")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "RcppArmadillo" version))
-              (sha256
-               (base32
-                "1wsnhraadhf3lna9ry21mad2802s1czgznhf179f8f8l00r4rfsv"))))
-    (properties `((upstream-name . "RcppArmadillo")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-rcpp))
-    (native-inputs (list r-tinytest))
-    (home-page "https://github.com/RcppCore/RcppArmadillo")
-    (synopsis "Rcpp integration for the Armadillo linear algebra library")
-    (description
-     "Armadillo is a templated C++ linear algebra library that aims towards a
-good balance between speed and ease of use.  Integer, floating point and
-complex numbers are supported, as well as a subset of trigonometric and
-statistics functions.  Various matrix decompositions are provided through
-optional integration with LAPACK and ATLAS libraries.  This package includes
-the header files from the templated Armadillo library.")
-    ;; Armadillo is licensed under the MPL 2.0, while RcppArmadillo (the Rcpp
-    ;; bindings to Armadillo) is licensed under the GNU GPL version 2 or
-    ;; later, as is the rest of 'Rcpp'.
-    (license license:gpl2+)))
-
 (define-public r-rprojroot
   (package
     (name "r-rprojroot")
