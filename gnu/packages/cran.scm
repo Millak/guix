@@ -10376,6 +10376,40 @@ multiple breakpoints are allowed.")
 Zurich, including many that are related to graphics.")
     (license license:gpl2+)))
 
+(define-public r-simr
+  (package
+    (name "r-simr")
+    (version "1.0.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "simr" version))
+       (sha256
+        (base32 "14vzyncs9p10n0n9bqx1p4bxr0l3zanmvf6dppi4rjpfl1q22kzy"))))
+    (properties `((upstream-name . "simr")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-binom
+           r-car
+           r-iterators
+           r-lme4
+           r-lmertest
+           r-pbkrtest
+           r-plotrix
+           r-plyr
+           r-rlrsim
+           r-stringr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/pitakakariki/simr")
+    (synopsis
+     "Power analysis for generalized linear mixed models by simulation")
+    (description
+     "This package lets you calculate power for generalized linear mixed
+models, using simulation.  It was designed to work with models fit using the
+@code{lme4} package.  The package is described in
+@url{doi:10.1111/2041-210X.12504, Green and MacLeod (2016)}.")
+    (license license:gpl2+)))
+
 (define-public r-skat
   (package
     (name "r-skat")
