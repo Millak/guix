@@ -6909,6 +6909,25 @@ calculating simple slopes, standardized coefficients, regions of
 significance (Johnson & Neyman, 1936; cf.  Spiller et al., 2012), etc.")
     (license license:gpl3)))
 
+ (define-public r-registry
+   (package
+     (name "r-registry")
+     (version "0.5-1")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (cran-uri "registry" version))
+        (sha256
+         (base32
+          "1k3j6dx350awamr0dwwgkhfs46vsnj4nf08iw5byq0x7n3nkdsnz"))))
+     (build-system r-build-system)
+     (home-page "https://cran.r-project.org/web/packages/registry")
+     (synopsis "Infrastructure for R package registries")
+     (description
+      "This package provides a generic infrastructure for creating and using R
+package registries.")
+     (license license:gpl2+)))
+
 (define-public r-reshape2
   (package
     (name "r-reshape2")

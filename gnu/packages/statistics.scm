@@ -1948,25 +1948,6 @@ matrices.  It includes Cholesky decomposition and backsolving as well as
 standard R subsetting and Kronecker products.")
     (license license:gpl2+)))
 
- (define-public r-registry
-   (package
-     (name "r-registry")
-     (version "0.5-1")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (cran-uri "registry" version))
-        (sha256
-         (base32
-          "1k3j6dx350awamr0dwwgkhfs46vsnj4nf08iw5byq0x7n3nkdsnz"))))
-     (build-system r-build-system)
-     (home-page "https://cran.r-project.org/web/packages/registry")
-     (synopsis "Infrastructure for R package registries")
-     (description
-      "This package provides a generic infrastructure for creating and using R
-package registries.")
-     (license license:gpl2+)))
-
 (define-public r-rngtools
   (package
     (name "r-rngtools")
