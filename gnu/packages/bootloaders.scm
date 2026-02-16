@@ -523,35 +523,41 @@ menu to select one of the installed operating systems.")
             #$@(if (or (target-x86?)
                        (target-arm?))
                    #~((replace 'patch-ovmf-path
-                        (lambda* (#:key inputs #:allow-other-keys)
+                        (lambda* (#:key native-inputs inputs #:allow-other-keys)
                           (let ((arch #$(cond ((target-x86?) "ia32")
                                               ((target-arm?) "arm")
                                               (else ""))))
                             (substitute* "tests/util/grub-shell.in"
                               (("\\$\\{srcdir\\}/OVMF(32)?\\.fd")
                                (search-input-file
-                                 inputs (string-append
-                                          "/share/firmware/ovmf_" arch ".bin")))
+                                 (or native-inputs inputs)
+                                 (string-append
+                                   "/share/firmware/ovmf_" arch ".bin")))
                               (("/usr/share/qemu/OVMF(32)?\\.fd")
                                (search-input-file
-                                 inputs (string-append
-                                          "/share/firmware/ovmf_" arch ".bin")))
+                                 (or native-inputs inputs)
+                                 (string-append
+                                   "/share/firmware/ovmf_" arch ".bin")))
                               (("\\$\\{srcdir\\}/AAVMF(32)?\\.fd")
                                (search-input-file
-                                 inputs (string-append
-                                          "/share/firmware/ovmf_" arch ".bin")))
+                                 (or native-inputs inputs)
+                                 (string-append
+                                   "/share/firmware/ovmf_" arch ".bin")))
                               (("/usr/share/qemu-efi-aarch64/QEMU_EFI\\.fd")
                                (search-input-file
-                                 inputs (string-append
-                                          "/share/firmware/ovmf_" arch ".bin")))
+                                 (or native-inputs inputs)
+                                 (string-append
+                                   "/share/firmware/ovmf_" arch ".bin")))
                               (("/usr/share/AAVMF/AAVMF(32)?\\.fd")
                                (search-input-file
-                                 inputs (string-append
-                                          "/share/firmware/ovmf_" arch ".bin")))
+                                 (or native-inputs inputs)
+                                 (string-append
+                                   "/share/firmware/ovmf_" arch ".bin")))
                               (("/usr/share/ovmf-arm/QEMU_EFI\\.fd")
                                (search-input-file
-                                 inputs (string-append
-                                          "/share/firmware/ovmf_" arch ".bin"))))))))
+                                 (or native-inputs inputs)
+                                 (string-append
+                                   "/share/firmware/ovmf_" arch ".bin"))))))))
                    #~())))))
     (native-inputs
      (cond
