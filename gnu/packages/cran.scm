@@ -13236,6 +13236,24 @@ of the points.")
     ;; Any GPL version
     (license (list license:gpl2+ license:gpl3+))))
 
+(define-public r-tsne
+  (package
+    (name "r-tsne")
+    (version "0.1-3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "tsne" version))
+       (sha256
+        (base32
+         "126q6ha25wx9mdsfngzkyp8j2fj81ri1knjdq1iyvwx3q1dwdaql"))))
+    (build-system r-build-system)
+    (home-page "https://github.com/jdonaldson/rtsne/")
+    (synopsis "t-Distributed Stochastic Neighbor Embedding for R")
+    (description
+     "This package provides a pure R implementation of the t-SNE algorithm.")
+    (license license:gpl2+)))
+
 (define-public r-rvest
   (package
     (name "r-rvest")
