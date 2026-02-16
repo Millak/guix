@@ -29334,13 +29334,13 @@ Hothorn, Westfall, 2010, CRC Press).")
 (define-public r-multcompview
   (package
     (name "r-multcompview")
-    (version "0.1-10")
+    (version "0.1-11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "multcompView" version))
        (sha256
-        (base32 "12mdk12xciq1d3zn94rixahhcah2qq41lvb5n4kzgjaq4yr4kwiq"))))
+        (base32 "1vd8841bfkqx4xxwmvi8rk3yc1ai5gwfp5irsywzvf6q28k6m6zx"))))
     (properties `((upstream-name . "multcompView")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/package=multcompView")
