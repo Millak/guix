@@ -2203,47 +2203,6 @@ message passing.")
 developing R packages.")
     (license license:lgpl2.1+)))
 
-(define-public r-r-rsp
-  (package
-    (name "r-r-rsp")
-    (version "0.46.0")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "R.rsp" version))
-              (sha256
-               (base32
-                "1frkgjc2mzvjnay8g5nky1bvxv60wvsypmmdj6mbsfjnzq7ni7qs"))))
-    (properties `((upstream-name . "R.rsp")))
-    (build-system r-build-system)
-    (arguments
-     (list
-      ;; Vignettes require r-r-devices, which uses r-r-rsp.
-      #:test-types '(list "tests")
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp")))
-         (add-after 'unpack 'delete-broken-test
-           (lambda _
-             ;; The multi,selfcontained.R tests fail because r-r-devices is
-             ;; missing.  It depends on r-r-rsp, so we can't add it.
-             (delete-file "tests/multi,selfcontained.R"))))))
-    (propagated-inputs
-     (list r-digest r-r-cache r-r-methodss3 r-r-oo r-r-utils))
-    (home-page "https://github.com/HenrikBengtsson/R.rsp")
-    (synopsis "Dynamic generation of scientific reports")
-    (description
-     "The RSP markup language provides a powerful markup for controlling the
-content and output of LaTeX, HTML, Markdown, AsciiDoc, Sweave and knitr
-documents (and more), e.g. @code{Today's date is <%=Sys.Date()%>}.  Contrary
-to many other literate programming languages, with RSP it is straightforward
-to loop over mixtures of code and text sections, e.g.  in month-by-month
-summaries.  RSP has also several preprocessing directives for incorporating
-static and dynamic contents of external files (local or online) among other
-things.  RSP is ideal for self-contained scientific reports and R package
-vignettes.")
-    (license license:lgpl2.1+)))
-
 (define-public r-tidyselect
   (package
     (name "r-tidyselect")
