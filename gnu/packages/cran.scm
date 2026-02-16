@@ -6970,6 +6970,30 @@ character vector.")
 using just two functions: melt and dcast (or acast).")
     (license license:expat)))
 
+(define-public r-rlang
+  (package
+    (name "r-rlang")
+    (version "1.1.7")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "rlang" version))
+              (sha256
+               (base32
+                "0wz3kd0d3iy0mkywmxipxx6qfsnk2w3c6cca6r553lxcxbkr2g0j"))))
+    (properties
+     ;; We can't have r-testthat among the inputs here to avoid a dependency
+     ;; cycle.
+     '((updater-ignored-native-inputs . ("r-testthat"))))
+    (build-system r-build-system)
+    ;; Tests require r-testthat, which indirectly depends on this package.
+    (arguments (list #:tests? #false))
+    (home-page "http://rlang.tidyverse.org")
+    (synopsis "Functions for base types, core R and Tidyverse features")
+    (description "This package provides a toolbox for working with base types,
+core R features like the condition system, and core @code{Tidyverse} features
+like tidy evaluation.")
+    (license license:gpl3)))
+
 (define-public r-robslopes
   (package
     (name "r-robslopes")
