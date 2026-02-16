@@ -10456,6 +10456,27 @@ notably the skew-t family, and provides related statistical methods for data
 fitting and diagnostics, in the univariate and the multivariate case.")
     (license license:gpl2+)))
 
+(define-public r-snow
+  (package
+    (name "r-snow")
+    (version "0.4-4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "snow" version))
+              (sha256
+               (base32
+                "1j8kvf3imxijsqkdjz4i9s7qggfxqrpas46y5wz6za92y937yn44"))))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/web/packages/snow")
+    (synopsis "Support for simple parallel computing in R")
+    (description
+     "The snow package provides support for simple parallel computing on a
+network of workstations using R.  A master R process calls @code{makeCluster}
+to start a cluster of worker processes; the master process then uses functions
+such as @code{clusterCall} and @code{clusterApply} to execute R code on the
+worker processes and collect and return the results on the master.")
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public r-snowflakeauth
   (package
     (name "r-snowflakeauth")
