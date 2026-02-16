@@ -6786,6 +6786,49 @@ computations taking place in C++ code, and support for interrupting those
 computations even in multithreaded code, typically using OpenMP.")
     (license license:gpl3+)))
 
+(define-public r-rcurl
+  (package
+    (name "r-rcurl")
+    (version "1.98-1.17")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "RCurl" version))
+              (sha256
+               (base32
+                "0c30pkjhpdihif2y6ymafwhyjqwxnzyj7w0jpwc9w5hnq6k78667"))))
+    (properties `((upstream-name . "RCurl")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      ;; Tests require internet connection.
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'respect-CURL_CA_BUNDLE
+           (lambda _
+             (substitute* "R/options.S"
+               (("\\.els = rev\\(merge\\(list\\(\\.\\.\\.\\), \\.opts\\)\\)" m)
+                (string-append "\
+certs = Sys.getenv(\"CURL_CA_BUNDLE\")
+if (certs != \"\") { .opts = merge.list(.opts, list(cainfo=certs)) }
+" m))))))))
+    (inputs
+     (list curl libxml2))
+    (propagated-inputs
+     (list r-bitops))
+    (home-page "https://www.omegahat.net/RCurl")
+    (synopsis "General network client interface for R")
+    (description
+     "The package allows one to compose general HTTP requests and provides
+convenient functions to fetch URIs, GET and POST forms, etc. and process the
+results returned by the Web server.  This provides a great deal of control
+over the HTTP/FTP/... connection and the form of the request while providing a
+higher-level interface than is available just using R socket connections.
+Additionally, the underlying implementation is robust and extensive,
+supporting FTP/FTPS/TFTP (uploads and downloads), SSL/HTTPS, telnet, dict,
+ldap, and also supports cookies, redirects, authentication, etc.")
+    (license license:bsd-3)))
+
 (define-public r-reshape2
   (package
     (name "r-reshape2")
