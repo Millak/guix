@@ -26849,7 +26849,7 @@ environments.")
               (substitute* "setup.py"
                 (("RUNTIME_PACKAGES \\+ SETUP_PACKAGES")
                  "RUNTIME_PACKAGES"))))
-          (add-before 'check 'start-xserver
+          (add-before 'sanity-check 'start-xserver
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((Xvfb (search-input-file inputs "/bin/Xvfb")))
                 (system (format #f "~a :1 -screen 0 640x480x24 &"
