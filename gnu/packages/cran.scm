@@ -53471,14 +53471,14 @@ preregistration documents for scientific studies in PDF format.")
 (define-public r-ez
   (package
     (name "r-ez")
-    (version "4.4-0")
+    (version "4.5-0")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "ez" version))
         (sha256
           (base32
-            "0a58s94x576dfz7wcbivrr2hmdh5x1vy16zwkqp9fmdzqx38pagq"))))
+            "1hqvc5py21qz862p2v3a1mycysc18h3lakr654qk8qm4addz3c6d"))))
     (properties `((upstream-name . "ez")))
     (build-system r-build-system)
     (propagated-inputs
@@ -53490,6 +53490,7 @@ preregistration documents for scientific studies in PDF format.")
             r-mgcv
             r-plyr
             r-reshape2
+            r-rlang
             r-scales
             r-stringr))
     (home-page "https://github.com/mike-lawrence/ez")
