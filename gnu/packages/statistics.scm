@@ -2120,38 +2120,6 @@ framework, with additional code inspection and report generation tools.")
 Zurich, including many that are related to graphics.")
     (license license:gpl2+)))
 
-(define-public r-rocr
-  (package
-    (name "r-rocr")
-    (version "1.0-12")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "ROCR" version))
-       (sha256
-        (base32
-         "1ywmij9pcspjn10j1p6hp42p79xm2hyyzfqny2167kz2fzckp411"))))
-    (properties `((upstream-name . "ROCR")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-gplots))
-    (native-inputs
-     (list r-knitr r-testthat))
-    (home-page "https://rocr.bioinf.mpi-sb.mpg.de/")
-    (synopsis "Visualizing the performance of scoring classifiers")
-    (description
-     "ROCR is a flexible tool for creating cutoff-parameterized 2D performance
-curves by freely combining two from over 25 performance measures (new
-performance measures can be added using a standard interface).  Curves from
-different cross-validation or bootstrapping runs can be averaged by different
-methods, and standard deviations, standard errors or box plots can be used to
-visualize the variability across the runs.  The parameterization can be
-visualized by printing cutoff values at the corresponding curve positions, or
-by coloring the curve according to cutoff.  All components of a performance
-plot can be quickly adjusted using a flexible parameter dispatching
-mechanism.")
-    (license license:gpl2+)))
-
 (define-public r-sourcetools
   (package
     (name "r-sourcetools")
