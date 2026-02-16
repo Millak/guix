@@ -1658,29 +1658,6 @@ following problems:
 @end enumerate\n")
     (license license:gpl3+)))
 
-(define-public r-trimcluster
-  (package
-    (name "r-trimcluster")
-    (version "0.2-0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "trimcluster" version))
-       (sha256
-        (base32
-         "0vmj3hrwm3rcd4sf7a6jq3ay7qgr39x3zpzmgi67gd8d8cr2hnfh"))))
-    (build-system r-build-system)
-    (propagated-inputs (list r-tclust))
-    (native-inputs (list r-fpc))
-    (home-page "https://cran.r-project.org/web/packages/trimcluster")
-    (synopsis "Cluster analysis with trimming")
-    (description
-     "The trimmed k-means clustering method by Cuesta-Albertos, Gordaliza and
-Matran (1997).  This optimizes the k-means criterion under trimming a portion
-of the points.")
-    ;; Any GPL version
-    (license (list license:gpl2+ license:gpl3+))))
-
 (define-public r-tsne
   (package
     (name "r-tsne")
