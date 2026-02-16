@@ -2547,30 +2547,6 @@ of the points.")
     ;; Any GPL version
     (license (list license:gpl2+ license:gpl3+))))
 
-(define-public r-rcppeigen
-  (package
-    (name "r-rcppeigen")
-    (version "0.3.4.0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "RcppEigen" version))
-       (sha256
-        (base32
-         "1fs2wmsq2s6nzhkrx59li4x1zvcjhk9mhmc2pdz8pm4z2ai7pbgc"))))
-    (properties `((upstream-name . "RcppEigen")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-rcpp))
-    (home-page "http://eigen.tuxfamily.org")
-    (synopsis "Rcpp integration for the Eigen templated linear algebra library")
-    (description
-      "This package provides an integration of Eigen in R using a C++ template
-library for linear algebra: matrices, vectors, numerical solvers and related algorithms.
-It supports dense and sparse matrices on integer, floating point and complex numbers,
-decompositions of such matrices, and solutions of linear systems.")
-    (license license:gpl2+)))
-
 (define-public r-rcppprogress
   (package
     (name "r-rcppprogress")
