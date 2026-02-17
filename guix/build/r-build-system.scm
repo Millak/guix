@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2017, 2018, 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2024, 2026 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,6 +23,7 @@
   #:use-module (ice-9 format)
   #:use-module (ice-9 ftw)
   #:use-module (ice-9 popen)
+  #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
@@ -62,6 +63,36 @@
                                (string-prefix? "r-" name)))
                             inputs))
                ":"))
+
+(define* (patch-tests #:key
+                      (skipped-tests #false)
+                      (test-directory "tests/testthat")
+                      #:allow-other-keys)
+  "Patch sources to skip tests according to SKIPPED-TESTS, a list of pairs
+each consisting of a file name under TEST-DIRECTORY and one or more names of
+tests to be skipped.  If the entry is just a file name, delete the test file."
+  (when skipped-tests
+    (with-directory-excursion "tests/testthat/"
+      (for-each (match-lambda
+                  ((file test-names ...)
+                   (substitute file
+                               (map (lambda (test-name)
+                                      (let ((pattern (make-regexp
+                                                      (string-append "^ *(testthat::)?test_that\\([\"']"
+                                                                     test-name "[\"'].*")
+                                                      regexp/extended)))
+                                        (cons pattern
+                                              (lambda (line matches)
+                                                (match matches
+                                                  ((fst . rest)
+                                                   (string-append (match:string fst) "skip('Guix');\n"))
+                                                  (else
+                                                   (error (format #false
+                                                                  "no matching test `~a' in file `~a'" test-name file))))))))
+                                    test-names)))
+                  ((? string? file)
+                   (delete-file file)))
+                skipped-tests))))
 
 (define* (check #:key test-target test-types inputs outputs tests? #:allow-other-keys)
   "Run the test suite of a given R package."
@@ -124,6 +155,7 @@
 (define %standard-phases
   (modify-phases gnu:%standard-phases
     (delete 'bootstrap)
+    (add-after 'unpack 'patch-tests patch-tests)
     (delete 'configure)
     (delete 'build)
     (delete 'check) ; tests must be run after installation

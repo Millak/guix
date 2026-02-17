@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2026 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -110,6 +110,8 @@ release corresponding to NAME and VERSION."
                   (tests? #t)
                   (test-target "tests")
                   (test-types #f)
+                  test-directory
+                  skipped-tests
                   (configure-flags ''())
                   (phases '%standard-phases)
                   (outputs '("out"))
@@ -132,6 +134,8 @@ release corresponding to NAME and VERSION."
                    #:tests? #$tests?
                    #:test-target #$test-target
                    #:test-types #$test-types
+                   #:test-directory #$test-directory
+                   #:skipped-tests '#$skipped-tests
                    #:phases #$phases
                    #:outputs #$(outputs->gexp outputs)
                    #:search-paths '#$(sexp->gexp
