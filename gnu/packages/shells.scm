@@ -164,6 +164,8 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
     (arguments
      (list
       #:out-of-source? #f
+      #:configure-flags
+      #~(list (string-append "-DRust_CARGO_TARGET=" #$(cargo-triplet)))
       #:imported-modules
       (append %cargo-build-system-modules
               %cmake-build-system-modules)
