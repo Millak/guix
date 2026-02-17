@@ -2,7 +2,7 @@
 ;;; Copyright © 2012-2017, 2019-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
-;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2013, 2015, 2026 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2019, 2021-2024 Efraim Flashner <efraim@flashner.co.il>
@@ -430,7 +430,7 @@ OpenSSL for TARGET."
 (define-public openssl-1.1
   (package
     (name "openssl")
-    (version "1.1.1u")
+    (version "1.1.1w")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://www.openssl.org/source/openssl-"
@@ -443,7 +443,7 @@ OpenSSL for TARGET."
               (patches (search-patches "openssl-1.1-c-rehash-in.patch"))
               (sha256
                (base32
-                "1ipbcdlqyxbj5lagasrq2p6gn0036wq6hqp7gdnd1v1ya95xiy72"))))
+                "1j3anw4554lk3m9cvjngvh1c2gbdkhgiz160jnnm7n5l1jarhc6g"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"        ;6.8 MiB of man3 pages and full HTML documentation
