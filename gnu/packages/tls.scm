@@ -547,7 +547,134 @@ OpenSSL for TARGET."
     (license license:openssl)
     (home-page "https://www.openssl.org/")))
 
+(define-public openssl-3.5
+  ;; LTS series with EOL 2030-04-08
+  (package
+    (name "openssl")
+    (version "3.5.5")
+    (source (origin
+              (method url-fetch)
+              (uri (list (string-append "https://www.openssl.org/source/openssl-"
+                                        version ".tar.gz")
+                         (string-append "ftp://ftp.openssl.org/source/"
+                                        "openssl-" version ".tar.gz")
+                         (string-append "ftp://ftp.openssl.org/source/old/"
+                                        (string-trim-right version char-set:letter)
+                                        "/openssl-" version ".tar.gz")))
+              (patches (search-patches "openssl-3.0-c-rehash-in.patch"))
+              (sha256
+               (base32
+                "129aphl9yy5xd67cwacf000llkhpi1s8phmlhgws2rcb599r335j"))))
+    (build-system gnu-build-system)
+    (outputs '("out"
+               "doc"
+               "static"))
+    (arguments
+     (list
+      #:parallel-tests? #f
+      #:make-flags
+      (if (or (target-arm?) (target-riscv64?))
+          ;; 'test_afalg' seems to be dependent on kernel features:
+          ;; <https://github.com/openssl/openssl/issues/12242>.
+           #~(list "TESTS=-test_afalg")
+           #~(list))
+      #:test-target "test"
+      #:configure-flags
+        (if (system-hurd?)
+            (if (target-hurd64?)
+                #~(list "hurd-x86_64")
+                #~(list "hurd-x86"))
+            #~(list))
+      ;; Changes to OpenSSL sometimes cause Perl to "sneak in" to the closure,
+      ;; so we explicitly disallow it here.
+      #:disallowed-references (list (this-package-native-input "perl"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key configure-flags native-inputs inputs target #:allow-other-keys)
+              ;; It's not a shebang so patch-source-shebangs misses it.
+              (substitute* "config"
+                (("/usr/bin/env")
+                 (which "env")))
+              #$@(if (%current-target-system)
+                     #~((setenv "CROSS_COMPILE" (string-append target "-"))
+                        (setenv "CONFIGURE_TARGET_ARCH"
+                                #$(target->openssl-target
+                                   this-package
+                                   (%current-target-system))))
+                     #~())
+              ;; Configure PERL.
+              (setenv "HASHBANGPERL"
+                      (search-input-file (or native-inputs inputs)
+                                         "/bin/perl"))
+              (apply
+               invoke #$@(if (%current-target-system)
+                             #~("./Configure")
+                             #~("./config"))
+               "shared"                 ;build shared libraries
+               "--libdir=lib"
+
+               ;; The default for this catch-all directory is
+               ;; PREFIX/ssl.  Change that to something more
+               ;; conventional.
+               (string-append "--openssldir=" #$output
+                              "/share/openssl-"
+                              #$(package-version this-package))
+
+               (string-append "--prefix=" #$output)
+               (string-append "-Wl,-rpath," (string-append #$output "/lib"))
+               #$@(if (%current-target-system)
+                      #~((getenv "CONFIGURE_TARGET_ARCH"))
+                      #~())
+               configure-flags)
+              ;; Output the configure variables.
+              (invoke "perl" "configdata.pm" "--dump")))
+          (add-after 'install 'move-static-libraries
+            (lambda _
+              ;; Move static libraries to the "static" output.
+              (let* ((lib    (string-append #$output "/lib"))
+                     (slib   (string-append #$output:static "/lib")))
+                (for-each (lambda (file)
+                            (install-file file slib)
+                            (delete-file file))
+                          (find-files
+                           lib
+                           #$(if (target-mingw?)
+                                 '(lambda (filename _)
+                                    (and (string-suffix? ".a" filename)
+                                         (not (string-suffix? ".dll.a"
+                                                              filename))))
+                                 "\\.a$"))))))
+          (add-after 'install 'move-extra-documentation
+            (lambda _
+              ;; Move man pages and full HTML documentation to "doc".
+              (let* ((man    (string-append #$output "/share/man"))
+                     (html   (string-append #$output "/share/doc/openssl"))
+                     (man-target (string-append #$output:doc "/share/man"))
+                     (html-target (string-append
+                                   #$output:doc "/share/doc/openssl")))
+                (mkdir-p (dirname man-target))
+                (mkdir-p (dirname html-target))
+                (rename-file man man-target)
+                (rename-file html html-target))))
+          (add-after 'install 'remove-miscellany
+            (lambda _
+              ;; The 'misc' directory contains random undocumented shell and
+              ;; Perl scripts.  Remove them to avoid retaining a reference on
+              ;; Perl.
+              (delete-file-recursively
+               (string-append #$output "/share/openssl-"
+                              #$(package-version this-package) "/misc")))))))
+    (native-inputs (list perl))
+    (native-search-paths
+     (list $SSL_CERT_DIR $SSL_CERT_FILE))
+    (home-page "https://www.openssl.org/")
+    (synopsis "SSL/TLS implementation")
+    (description "OpenSSL is an implementation of SSL/TLS.")
+    (license license:asl2.0)))
+
 (define-public openssl-3.0
+  ;; LTS series with EOL 2026-09-07
   (package
     (inherit openssl-1.1)
     (version "3.0.19")
