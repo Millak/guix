@@ -18212,6 +18212,38 @@ time.")
      "This package provides a prototype Python implementation for SAT-based
 problems.")
     (license license:bsd-3)))
+
+(define-public python-haas
+  ;; A recent revision is required to avoid obsoleted dependencies.
+  (let ((commit "e9c45e88b682c9129ea0971ba31671429495de2c")
+        (revision "0"))
+    (package
+      (name "python-haas")
+      (version (git-version "0.9.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/scalative/haas")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0hxfinnyc2jb5sgq8zwyn6zn63jb18p92pdz65fvhgf8w2r4ci13"))))
+      (build-system pyproject-build-system)
+      (propagated-inputs
+       (list python-stevedore))
+      (native-inputs
+       (list python-coverage
+             python-pytest
+             python-setuptools
+             python-testfixtures))
+      (home-page "https://github.com/scalative/haas")
+      (synopsis "Extensible Python test runner")
+      (description "Haas is a python test runner that is backward-compatible
+with Python's built-in unittest test-cases, but supports more advanced
+features, such  as project-specific plugins.")
+      (license license:bsd-3))))
+
 (define-public python-nbconvert
   (package
     (name "python-nbconvert")
