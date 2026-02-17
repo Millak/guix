@@ -1066,6 +1066,49 @@ from the database are used as entries (heading terms).")
     ;; triple-licensed (at the user’s choice)
     (license (list license:gpl2+ license:lgpl2.1 license:bsd-3))))
 
+(define-public python-lexilang
+  (package
+    (name "python-lexilang")
+    (version "1.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/LibreTranslate/LexiLang")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "0myrim1m9zq65y5c77wq4f9ix024lyw8dvjxws33qkfsd6xzvwz7"))
+       (modules '((guix build utils)))
+       (snippet                         ;use src layout for isolated tests
+        #~(begin
+            (mkdir "src")
+            (rename-file "dictionaries" "src/dictionaries")
+            (rename-file "lexilang" "src/lexilang")
+            (substitute* "setup.py"
+              (("packages=" all)
+               (string-append "package_dir={'': 'src'}, " all)))))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'compile-data
+                     (lambda _
+                       (with-directory-excursion "src"
+                         (invoke "python" "-c"
+                          "from lexilang.utils import compile_data
+compile_data()")))))
+      #:test-backend #~'custom
+      #:test-flags #~'("test.py")))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/LibreTranslate/LexiLang")
+    (synopsis "Dictionary-based language detector for short texts")
+    (description
+     "LexiLang is a natural language detector, designed for handling small text
+(under 20 characters).  It will probably not work reliably
+for longer text sequences.  As it relies on dictionaries,
+if a word is missing or mispelled, the detection will fail.")
+    (license license:agpl3)))
+
 (define-public python-sacremoses
   (package
     (name "python-sacremoses")
