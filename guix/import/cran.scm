@@ -798,18 +798,21 @@ of META, a package in REPOSITORY."
           (filter-map (lambda (name)
                         (and (not (member name invalid-packages))
                              (upstream-input
-                              (name name)
-                              (downstream-name
-                               (transform-sysname name)))))
+                               (name name)
+                               (downstream-name
+                                (transform-sysname name)))))
                       (map string-downcase
-                           (listify meta "SystemRequirements")))))
+                           (listify meta "SystemRequirements"))))
+         (unique-inputs
+          (set->list (fold set-insert (set)
+                           (append source-derived-inputs
+                                   system-inputs
+                                   r-inputs))) ))
     (sort (filter
            ;; Prevent tight cycles.
            (lambda (input)
              ((negate string=?) name (upstream-input-name input)))
-           (append source-derived-inputs
-                   system-inputs
-                   r-inputs))
+           unique-inputs)
           compare-upstream-inputs)))
 
 (define (phases-for-inputs input-names)
