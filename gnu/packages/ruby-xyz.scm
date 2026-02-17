@@ -8286,7 +8286,7 @@ into a single method call.")
   (package
     (inherit ruby-rack)
     (name "ruby-rack")
-    (version "3.0.7")
+    (version "3.2.5")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -8295,7 +8295,7 @@ into a single method call.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0msf14655nfcq1kgmib6932lgzm9nw3nb0m3c7nh6nj4sx30yxfr"))))
+                "1l1q3x9k56kwa81r1fpm0z9r92c4r4dryblw5jzcawx1pbvvsh6z"))))
     (arguments '())))
 
 (define-public ruby-rackup
