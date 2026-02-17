@@ -11452,25 +11452,6 @@ parser that can be used to decode raw NTLM/SPNEGO/Kerberos tokens into a human
 readable format.")
     (license license:expat)))
 
-(define-public python-pygit2-1.11
-  (package
-    (name "python-pygit2")
-    (version "1.11.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pygit2" version))
-       (sha256
-        (base32 "1v34xdvh6i5cn5srwicvp0i2kvv8fzsv0v9p72ng081nsczmhgvr"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-cffi libgit2-1.5))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
-    (home-page "https://github.com/libgit2/pygit2")
-    (synopsis "Python bindings for libgit2")
-    (description "Pygit2 is a set of Python bindings to the libgit2 shared library.")
-    ;; GPL2.0 only, with linking exception.
-    (license license:gpl2)))
-
 (define-public python-pygit2
   (package
     (name "python-pygit2")
