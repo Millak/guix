@@ -7824,6 +7824,31 @@ advanced features like returning a default value if some variable is not
 defined.")
     (license license:expat)))
 
+(define-public python-expiringdict
+  (package
+    (name "python-expiringdict")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mailgun/expiringdict")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hkzh62cmsm8i6sh9pcn4bh3ilq0bzdrvw6gz949swraf944j65x"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-dill python-mock python-pynose python-setuptools))
+    (home-page "https://github.com/mailgun/expiringdict")
+    (synopsis "Dictionary with auto-expiring values for caching purposes")
+    (description
+     "This Python library provides an ordered dictionary
+with a maximum capacity and auto-expiring values for caching purposes.
+Expiration happens on any access, object is locked during cleanup
+from expired values.")
+    (license license:asl2.0)))
+
 (define-public python-extension-helpers
   (package
     (name "python-extension-helpers")
