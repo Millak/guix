@@ -607,97 +607,141 @@ server and embedded PowerPC, and S390 guests.")
        (synopsis "QEMU for AFL++")))))
 
 (define-public aflplusplus
-  (package
-    (inherit american-fuzzy-lop)
-    (name "aflplusplus")
-    (version "4.35c")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/AFLplusplus/AFLplusplus")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0mwamvyv2ckfxrrns4cnhx9gf2dn9jjgi9dc1qp3cwjasbghg5lg"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments american-fuzzy-lop)
-       ((#:make-flags _ ''())
-        #~(list (string-append "PREFIX=" #$output)
-                (string-append "DOC_PATH=" #$output "/share/doc/"
-                               #$(package-name this-package) "-"
-                               #$(package-version this-package))
-                (string-append "CC=" #$(cc-for-target))
-                (string-append "CXX=" #$(cxx-for-target))
-                (string-append "LLVM_CONFIG="
-                               (search-input-file %build-inputs "/bin/llvm-config"))
-                ;; Need to use LLD with the llvm_mode, because LTO in
-                ;; combination with binutils gold is currently broken.
-                ;;
-                ;; See: https://codeberg.org/guix/guix/issues/3307
-                (string-append "AFL_REAL_LD="
-                               (search-input-file %build-inputs "/bin/ld.lld"))
-                (string-append "CLANG_BIN="
-                               (search-input-file %build-inputs "/bin/clang"))
-                (string-append "CLANGPP_BIN="
-                               (search-input-file %build-inputs "/bin/clang++"))
-                "LLVM_LTO=1"
-                "AFL_CLANG_FLTO=-flto=full"))
-       ((#:phases phases '%standard-phases)
-        #~(modify-phases #$phases
-            ;; Ensure that the build fails early if LLVM support fails to
-            ;; compile, makes the build log much easier to understand.
-            (add-after 'unpack 'fatal-llvm-failure
-              (lambda* (#:key inputs #:allow-other-keys)
-                (substitute* "GNUmakefile"
-                  (("-\\$\\(MAKE\\) ..* -f GNUmakefile.llvm$" all)
-                   (substring all 1))))) ; remove the leading '-'
-            ;; GNUmakefile.llvm tries to find clang/clang++ relative to the
-            ;; --bindir reported by llvm-config, but since llvm and clang
-            ;; have different store paths on Guix, this doesn't work here.
-            (add-after 'unpack 'patch-clang-path
-              (lambda* (#:key inputs #:allow-other-keys)
-                (substitute* "GNUmakefile.llvm"
-                  (("^CC *= .*$")
-                   (string-append
-                     "override CC = "
-                     (search-input-file inputs "/bin/clang")
-                     "\n"))
-                  (("^CXX *= .*$")
-                   (string-append
-                     "override CXX = "
-                     (search-input-file inputs "/bin/clang++")
-                     "\n")))))
-            ;; For GCC plugins.
-            (add-after 'unpack 'patch-gcc-path
-              (lambda* (#:key inputs #:allow-other-keys)
-                (substitute* "src/afl-cc.c"
-                  (("alt_cc = \"gcc\";")
-                   (format #f "alt_cc = \"~a\";"
-                           (search-input-file inputs "bin/gcc")))
-                  (("alt_cxx = \"g\\+\\+\";")
-                   (format #f "alt_cxx = \"~a\";"
-                           (search-input-file inputs "bin/g++"))))))
-            (add-after 'build 'build-qasan
-              (lambda* (#:key parallel-build? make-flags #:allow-other-keys)
-                (apply invoke "make" "-C" "qemu_mode/libqasan"
-                       "-j" (number->string (if parallel-build?
-                                                (parallel-job-count)
-                                                "1"))
-                       make-flags)))
-            ;; afl-qemu-trace is a symbolic link to QEMU's binary.
-            ;; Substituting its source code with AFL++'s output path
-            ;; would result in a dependency cycle.
-            (add-after 'install-qemu 'wrap-qemu
-              (lambda _
-                (wrap-program (string-append #$output "/bin/afl-qemu-trace")
-                  `("AFL_PATH" = (,(string-append #$output "/lib/afl"))))))))))
-    ;; According to the Dockerfile, GCC 12 is producing compile errors for some
-    ;; targets, so explicitly use GCC 11 here.
-    (inputs (list llvm-20 clang-20 lld-20 gcc gmp python qemu-for-aflplusplus))
-    (native-inputs (list gcc))
-    (home-page "https://aflplus.plus/")
-    (description
+  ;; TODO: Merge the duplicate application of modify-phases,
+  ;; due to the previous inheritance from american-fuzzy-lop.
+  (let* ((machine (match (or (%current-target-system)
+                            (%current-system))
+                   ("x86_64-linux"   "x86_64")
+                   ("i686-linux"     "i386")
+                   ("aarch64-linux"  "aarch64")
+                   ("armhf-linux"    "arm")
+                   ("mips64el-linux" "mips64el")
+                   ("powerpc-linux"  "ppc")
+                   ;; Prevent errors when querying this package on unsupported
+                   ;; platforms, e.g. when running "guix package --search="
+                   (_                "UNSUPPORTED")))
+         (arguments-american-fuzzy-lop
+          `(#:make-flags '()
+            #:phases (modify-phases %standard-phases
+                       (add-after 'unpack 'make-git-checkout-writable
+                         (lambda _
+                           (for-each make-file-writable (find-files "."))
+                           #t))
+                       (delete 'configure)
+                       ,@(if (string=? (%current-system) (or "x86_64-linux"
+                                                             "i686-linux"))
+                           '()
+                           '((add-before 'build 'set-afl-flag
+                               (lambda _ (setenv "AFL_NO_X86" "1") #t))
+                             (add-after 'install 'remove-x86-programs
+                               (lambda* (#:key outputs #:allow-other-keys)
+                                 (let* ((out (assoc-ref outputs "out"))
+                                        (bin (string-append out "/bin/")))
+                                   (delete-file (string-append bin "afl-gcc"))
+                                   (delete-file (string-append bin "afl-g++"))
+                                   (delete-file (string-append bin "afl-clang"))
+                                   (delete-file (string-append bin "afl-clang++")))
+                                 #t))))
+                       (add-after
+                        ;; TODO: Build and install the afl-llvm tool.
+                        'install 'install-qemu
+                        (lambda* (#:key inputs outputs #:allow-other-keys)
+                          (let ((qemu (assoc-ref inputs "qemu"))
+                                (out  (assoc-ref outputs "out")))
+                            (symlink (string-append qemu "/bin/qemu-" ,machine)
+                                     (string-append out "/bin/afl-qemu-trace"))
+                            #t)))
+                       (delete 'check))))) ; tests are run during 'install phase
+    (package
+      (name "aflplusplus")
+      (version "4.35c")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/AFLplusplus/AFLplusplus")
+                      (commit (string-append "v" version))))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0mwamvyv2ckfxrrns4cnhx9gf2dn9jjgi9dc1qp3cwjasbghg5lg"))))
+      (build-system gnu-build-system)
+      (arguments
+       (substitute-keyword-arguments arguments-american-fuzzy-lop
+         ((#:make-flags _ ''())
+          #~(list (string-append "PREFIX=" #$output)
+                  (string-append "DOC_PATH=" #$output "/share/doc/"
+                                 #$(package-name this-package) "-"
+                                 #$(package-version this-package))
+                  (string-append "CC=" #$(cc-for-target))
+                  (string-append "CXX=" #$(cxx-for-target))
+                  (string-append "LLVM_CONFIG="
+                                 (search-input-file %build-inputs "/bin/llvm-config"))
+                  ;; Need to use LLD with the llvm_mode, because LTO in
+                  ;; combination with binutils gold is currently broken.
+                  ;;
+                  ;; See: https://codeberg.org/guix/guix/issues/3307
+                  (string-append "AFL_REAL_LD="
+                                 (search-input-file %build-inputs "/bin/ld.lld"))
+                  (string-append "CLANG_BIN="
+                                 (search-input-file %build-inputs "/bin/clang"))
+                  (string-append "CLANGPP_BIN="
+                                 (search-input-file %build-inputs "/bin/clang++"))
+                  "LLVM_LTO=1"
+                  "AFL_CLANG_FLTO=-flto=full"))
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              ;; Ensure that the build fails early if LLVM support fails to
+              ;; compile, makes the build log much easier to understand.
+              (add-after 'unpack 'fatal-llvm-failure
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (substitute* "GNUmakefile"
+                    (("-\\$\\(MAKE\\) ..* -f GNUmakefile.llvm$" all)
+                     (substring all 1))))) ; remove the leading '-'
+              ;; GNUmakefile.llvm tries to find clang/clang++ relative to the
+              ;; --bindir reported by llvm-config, but since llvm and clang
+              ;; have different store paths on Guix, this doesn't work here.
+              (add-after 'unpack 'patch-clang-path
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (substitute* "GNUmakefile.llvm"
+                    (("^CC *= .*$")
+                     (string-append
+                       "override CC = "
+                       (search-input-file inputs "/bin/clang")
+                       "\n"))
+                    (("^CXX *= .*$")
+                     (string-append
+                       "override CXX = "
+                       (search-input-file inputs "/bin/clang++")
+                       "\n")))))
+              ;; For GCC plugins.
+              (add-after 'unpack 'patch-gcc-path
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (substitute* "src/afl-cc.c"
+                    (("alt_cc = \"gcc\";")
+                     (format #f "alt_cc = \"~a\";"
+                             (search-input-file inputs "bin/gcc")))
+                    (("alt_cxx = \"g\\+\\+\";")
+                     (format #f "alt_cxx = \"~a\";"
+                             (search-input-file inputs "bin/g++"))))))
+              (add-after 'build 'build-qasan
+                (lambda* (#:key parallel-build? make-flags #:allow-other-keys)
+                  (apply invoke "make" "-C" "qemu_mode/libqasan"
+                         "-j" (number->string (if parallel-build?
+                                                  (parallel-job-count)
+                                                  "1"))
+                         make-flags)))
+              ;; afl-qemu-trace is a symbolic link to QEMU's binary.
+              ;; Substituting its source code with AFL++'s output path
+              ;; would result in a dependency cycle.
+              (add-after 'install-qemu 'wrap-qemu
+                (lambda _
+                  (wrap-program (string-append #$output "/bin/afl-qemu-trace")
+                    `("AFL_PATH" = (,(string-append #$output "/lib/afl"))))))))))
+      (inputs (list llvm-20 clang-20 lld-20 gcc gmp python qemu-for-aflplusplus))
+      (native-inputs (list gcc))
+      (home-page "https://aflplus.plus/")
+      (synopsis "Security-oriented fuzzer")
+      (description
      "AFLplusplus is a security-oriented fuzzer that employs a novel type of
 compile-time instrumentation and genetic algorithms to automatically discover
 clean, interesting test cases that trigger new internal states in the targeted
@@ -709,7 +753,8 @@ It is a fork of American Fuzzy Lop fuzzer and features:
 @item A more recent qemu version.
 @item More algorithms like collision-free coverage, enhanced laf-intel &
 redqueen, AFLfast++ power schedules, MOpt mutators, unicorn_mode, etc.
-@end itemize")))
+@end itemize")
+      (license license:asl2.0))))
 
 (define-public backward-cpp
   (package
