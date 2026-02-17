@@ -452,14 +452,11 @@ OpenSSL for TARGET."
     (arguments
      (list
       #:make-flags
-      ;; 'test_ssl_new.t' in 1.1.1n and 3.0.3 fails due to an expired
-      ;; certificate: <https://github.com/openssl/openssl/issues/18441>.  Skip
-      ;; it.
-      #~(list #$@(if (or (target-arm?) (target-riscv64?))
-                     ;; 'test_afalg' seems to be dependent on kernel features:
-                     ;; <https://github.com/openssl/openssl/issues/12242>.
-                     #~("TESTS=-test_afalg -tls_ssl_new")
-                     #~("TESTS=-test_ssl_new")))
+      (if (or (target-arm?) (target-riscv64?))
+          ;; 'test_afalg' seems to be dependent on kernel features:
+          ;; <https://github.com/openssl/openssl/issues/12242>.
+           #~(list "TESTS=-test_afalg")
+           #~(list))
       #:test-target "test"
       ;; Changes to OpenSSL sometimes cause Perl to "sneak in" to the closure,
       ;; so we explicitly disallow it here.
