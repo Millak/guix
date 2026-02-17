@@ -9,6 +9,7 @@
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
+;;; Copyright © 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -493,10 +494,21 @@ avoid potential infinite waits blocking libvirt."))
   (list (user-group (name "libvirt") (system? #t))))
 
 (define (%libvirt-activation config)
-  (let ((sock-dir (libvirt-configuration-unix-sock-dir config)))
+  (let ((package (libvirt-configuration-libvirt config))
+        (sock-dir (libvirt-configuration-unix-sock-dir config)))
     #~(begin
         (use-modules (guix build utils))
-        (mkdir-p #$sock-dir))))
+        (mkdir-p #$sock-dir)
+        (mkdir-p "/etc/libvirt/qemu/networks")
+        ;; special-files-service-type could be used but it creates a file union
+        ;; and libvirtd needs to write in /etc/libvirt. This makes /etc/libvirt
+        ;; read-only and libvirt crashes at startup. activate-special-files
+        ;; creates a single symlink to the store for
+        ;; /etc/libvirt/qemu/networks/default.xml so libvirt doesn't notice and
+        ;; starts successfully.
+        (activate-special-files
+         '(("/etc/libvirt/qemu/networks/default.xml"
+            #$(file-append package "/etc/libvirt/qemu/networks/default.xml")))))))
 
 (define (libvirt-shepherd-service config)
   (let* ((config-file (libvirt-conf-file config))

@@ -119,15 +119,23 @@
                          "-c" "qemu:///system" "connect"))
              marionette))
 
-          (test-eq "create default network"
-            0
+          (test-equal "default network is inactive"
+            "no"
             (marionette-eval
              '(begin
+                (use-modules (ice-9 popen)
+                             (ice-9 textual-ports))
                 (chdir "/tmp")
-                (system* #$(file-append libvirt "/bin/virsh")
-                         "-c" "qemu:///system" "net-define"
-                         #$(file-append libvirt
-                                        "/etc/libvirt/qemu/networks/default.xml")))
+                (define port
+                  (open-input-pipe
+                   (string-join '(#$(file-append libvirt "/bin/virsh")
+                                  "-c" "qemu:///system" "net-info"
+                                  "default" "|" "grep" "Active:" "|"
+                                  "awk" "'{ print $2; }'")
+                                " ")))
+                (define answer (get-string-all port))
+                (close-port port)
+                (string-trim-both answer))
              marionette))
 
           (test-eq "start default network"
