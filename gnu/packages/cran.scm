@@ -14291,19 +14291,13 @@ functions make it easy to control additional request components.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; These tests need Internet access.
-             (with-directory-excursion "tests/testthat/"
-               (delete-file "test-oauth.R")
-               (substitute* "test-req-auth-aws.R"
-                 ((".*can correctly sign a request with dummy credentials.*" m)
-                  (string-append m "skip('skip');\n")))
-               (substitute* "test-req-body.R"
-                 ((".*can send file.*" m)
-                  (string-append m "skip('skip');\n")))))))))
+      ;; These tests need Internet access.
+      #:skipped-tests
+      '(("test-req-auth-aws.R"
+         "can correctly sign a request with dummy credentials")
+        ("test-req-body.R"
+         "can send file")
+        "test-oauth.R")))
     (propagated-inputs
      (list r-cli
            r-curl
