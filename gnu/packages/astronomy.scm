@@ -406,18 +406,6 @@ rendering of the atmosphere model and examine its properties.
     (license (list license:gpl2
                    license:gpl3))))
 
-(define-public calcmysky-qt5
-  (package/inherit calcmysky
-    (name "calcmysky-qt5")
-    (arguments
-     (list #:configure-flags
-           #~(list "-DQT_VERSION=5"
-                   "-DCMAKE_CXX_FLAGS=-fPIC")))
-    (inputs
-     (modify-inputs (package-inputs calcmysky)
-       (replace "qtbase" qtbase-5)))
-    (synopsis "Qt5 build for the CalcMySky library")))
-
 (define-public casacore
   (package
     (name "casacore")
