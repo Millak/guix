@@ -2909,6 +2909,14 @@ memoized as a function of '%current-system'."
                        (substitute* "Lib/plat-generic/regen"
                          (("/usr/include/")
                           (string-append libc "/include/")))))))
+               '())
+         ,@(if (system-hurd64?)
+               `((add-before 'configure 'resolve-libm-name-conflict
+                   (lambda* _
+                     ;; with glibc 2.41 libm headers conflict with
+                     ;; mathmodule.c for sinpi
+                     (substitute* "Modules/mathmodule.c"
+                       (("sinpi") "m_sinpi")))))
                '()))))
     (native-search-paths
      (list (search-path-specification
