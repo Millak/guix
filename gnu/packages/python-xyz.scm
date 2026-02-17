@@ -18244,6 +18244,27 @@ with Python's built-in unittest test-cases, but supports more advanced
 features, such  as project-specific plugins.")
       (license license:bsd-3))))
 
+(define-public python-zipfile2
+  (package
+    (name "python-zipfile2")
+    (version "0.0.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/itziakos/zipfile2/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hmq33r3ffrrvm5nggsp69cjdbgjbwn6zbcrs2rhmb8pds0h81q7"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-pytest))
+    (home-page "https://github.com/itziakos/zipfile2/")
+    (synopsis "Improved @code{ZipFile} Python class")
+    (description "Zipfile2 is a backward compatible replacement to
+@code{ZipFile}.  It provides handling of symlinks, and exception management.")
+    (license license:psfl)))
+
 (define-public python-nbconvert
   (package
     (name "python-nbconvert")
