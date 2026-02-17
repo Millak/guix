@@ -40797,17 +40797,23 @@ associated with file system objects (files, directories, symlinks, etc).")
 (define-public python-xdg-base-dirs
   (package
     (name "python-xdg-base-dirs")
-    (version "6.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "xdg-base-dirs" version))
-              (sha256
-               (base32
-                "14hwk9j5zjc8rvirw95mrb07zdnpjaxjx2mj3rnq8pnlyaa809r4"))))
+    (version "6.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/srstevenson/xdg-base-dirs")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "0ipqrgmxzbn061m02halpsnizp56yk24cyzpwrjnlzjk8icvswl9"))
+       (modules '((guix build utils)))
+       ;; All pytest options are for coverage; remove snippet in next release:
+       ;; https://github.com/srstevenson/xdg-base-dirs/commit/28b6a6beaeb5
+       (snippet #~(substitute* "pyproject.toml"
+                    (("^addopts = .*") "")))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f)) ; No tests in PyPi tarball.
     (native-inputs
-     (list python-poetry-core))
+     (list python-poetry-core python-pytest))
     (home-page "https://github.com/srstevenson/xdg-base-dirs")
     (synopsis "Variables defined by the XDG Base Directory Specification")
     (description "xdg-base-dirs is a Python module that provides functions to
