@@ -41,7 +41,6 @@
             u-boot-cubietruck-bootloader
             u-boot-firefly-rk3399-bootloader
             u-boot-mx6cuboxi-bootloader
-            u-boot-nintendo-nes-classic-edition-bootloader
             u-boot-novena-bootloader
             u-boot-orangepi-r1-plus-lts-rk3328-bootloader
             u-boot-orangepi-zero2w-bootloader
@@ -254,11 +253,6 @@ is BLOCK-SIZE * COUNT, or FILE size if COUNT is not given."
   (bootloader
    (inherit u-boot-bootloader)
    (disk-image-installer install-rockchip-u-boot)))
-
-(define u-boot-nintendo-nes-classic-edition-bootloader
-  (bootloader
-    (inherit u-boot-allwinner-bootloader)
-    (package u-boot-nintendo-nes-classic-edition)))
 
 (define u-boot-a20-olinuxino-lime-bootloader
   (bootloader

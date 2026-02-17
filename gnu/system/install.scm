@@ -75,7 +75,6 @@
             am335x-evm-installation-os
             beaglebone-black-installation-os
             mx6cuboxi-installation-os
-            nintendo-nes-classic-edition-installation-os
             novena-installation-os
             orangepi-r1-plus-lts-rk3328-installation-os
             firefly-rk3399-installation-os
@@ -847,11 +846,6 @@ The bootloader BOOTLOADER is installed to BOOTLOADER-TARGET."
   (embedded-installation-os u-boot-novena-bootloader
                             "/dev/mmcblk1" ; SD card storage
                             "ttymxc1"))
-
-(define nintendo-nes-classic-edition-installation-os
-  (embedded-installation-os u-boot-nintendo-nes-classic-edition-bootloader
-                            "/dev/mmcblk0" ; SD card (solder it yourself)
-                            "ttyS0"))
 
 (define orangepi-r1-plus-lts-rk3328-installation-os
   (embedded-installation-os u-boot-orangepi-r1-plus-lts-rk3328-bootloader
