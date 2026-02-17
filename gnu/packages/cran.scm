@@ -4475,13 +4475,9 @@ and to generate base64 encoded string from raster matrix.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; These tests require Internet access
-             (for-each delete-file '("tests/testthat/test-api.R"
-                                     "tests/testthat/test-css.R")))))))
+      #:skipped-tests
+      ;; These tests require Internet access
+      '("test-api.R" "test-css.R")))
     (propagated-inputs
      (list r-crayon
            r-crul
