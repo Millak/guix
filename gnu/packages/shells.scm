@@ -194,12 +194,19 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
          (add-after 'unpack 'set-env
            (lambda _
              ;; some tests write to $HOME
-             (setenv "HOME" (getcwd))
-             #t))
+             (setenv "HOME" (getcwd))))
          (add-after 'unpack 'patch-tests
            (lambda* (#:key inputs native-inputs #:allow-other-keys)
-             (let ((coreutils (assoc-ref (or native-inputs inputs) "coreutils"))
-                   (bash (assoc-ref (or native-inputs inputs) "bash")))
+             (let* ((coreutils
+                     (dirname
+                      (dirname
+                       (search-input-file
+                        (or native-inputs inputs) "bin/pwd"))))
+                    (bash
+                     (dirname
+                      (dirname
+                       (search-input-file
+                        (or native-inputs inputs) "bin/bash")))))
                ;; This test sporadically fails in the build container
                ;; because of leftover zombie processes, which are not
                ;; reaped automatically:
@@ -242,8 +249,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                          "    source /etc/fish/config.fish\n"
                          "end\n")
                         port)
-               (close-port port))
-             #t))
+               (close-port port))))
          ;; Embed absolute paths.
          (add-before 'install 'embed-absolute-paths
            (lambda* (#:key inputs #:allow-other-keys)
@@ -276,8 +282,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                  " $__guix_profile_paths\"/share/fish/vendor_conf.d\""
                  " $__extra_confdir\n")
                 port)
-               (close-port port))
-             #t))
+               (close-port port))))
          (replace 'check
            (lambda* (#:rest args)
              (apply (assoc-ref gnu:%standard-phases 'check)
@@ -293,7 +298,8 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                  "# Use fish-foreign-env to source /etc/profile.\n"
                  "if status is-login\n"
                  "    set fish_function_path "
-                 (assoc-ref inputs "fish-foreign-env") "/share/fish/functions"
+                 (dirname
+                  (search-input-file inputs "share/fish/functions/fenv.fish"))
                  " $__fish_datadir/functions\n"
                  "    fenv source /etc/profile\n"
                  "    set -e fish_function_path\n"
