@@ -1941,48 +1941,6 @@ presentation.  The input files processed by pdfpc are PDF documents.")
 rendering of the file through the Pango Cairo back end.")
     (license license:lgpl2.0+)))
 
-(define-public stapler
-  (package
-    (name "stapler")
-    (version "1.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "stapler" version))
-       (sha256
-        (base32
-         "0b2lbm3f79cdxcsagwhzihbzwahjabxqmbws0c8ki25gpdnygdd7"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags #~(list "staplelib/tests.py") ; from tox.ini
-      #:build-backend "poetry.core.masonry.api"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-more-itertools-version-requirement
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; Tests require an version of the more-itertools module older
-                ;; than the one we have packaged.
-                (("more-itertools = \">=2.2,<6.0.0\"")
-                 "more-itertools = \">=2.2\"")))))))
-    (native-inputs (list python-poetry-core python-pytest python-setuptools))
-    (propagated-inputs
-     (list python-more-itertools python-pypdf2))
-    (home-page "https://github.com/hellerbarde/stapler")
-    (synopsis "PDF manipulation tool")
-    (description "Stapler is a pure Python alternative to PDFtk, a tool for
-manipulating PDF documents from the command line.  It supports
-
-@itemize
-@item cherry-picking pages and concatenating them into a new file
-@item splitting a PDF document into single pages each in its own file
-@item merging PDF documents with their pages interleaved
-@item displaying metadata in a PDF document
-@item displaying the mapping between logical and physical page numbers
-@end itemize")
-    (license license:bsd-3)))
-
 (define-public weasyprint
   (package
     (name "weasyprint")
