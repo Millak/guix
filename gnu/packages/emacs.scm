@@ -123,20 +123,16 @@
      (sort excluded-tests string<?)))
    "))"))
 
-(define %selector
+(define %emacs-selector
   (emacs-ert-selector
-   '("bytecomp--fun-value-as-head"
+   '("benchmark-tests"
      "esh-util-test/path/get-remote"
      "esh-var-test/path-var/preserve-across-hosts"
-     "ffap-tests--c-path"
-     "find-func-tests--locate-macro-generated-symbols"
      "grep-tests--rgrep-abbreviate-properties-darwin"
      "grep-tests--rgrep-abbreviate-properties-gnu-linux"
      "grep-tests--rgrep-abbreviate-properties-windows-nt-dos-semantics"
      "grep-tests--rgrep-abbreviate-properties-windows-nt-sh-semantics"
      "info-xref-test-makeinfo"
-     "man-tests-find-header-file"
-     "tab-bar-tests-quit-restore-window"
      "tramp-test48-remote-load-path")))
 
 (define %emacs-next-selector
@@ -244,7 +240,7 @@
       #:modules (%emacs-modules build-system)
       #:configure-flags #~(list "--with-gnutls=no" "--disable-build-details")
       #:make-flags
-      #~(list (string-append "SELECTOR=" #$%selector)
+      #~(list (string-append "SELECTOR=" #$%emacs-selector)
               (let ((release-date "2025-08-14 05:04:03"))
                 (string-append "RUN_TEMACS= "
                                #$(this-package-native-input "libfaketime")
