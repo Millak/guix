@@ -2913,7 +2913,7 @@ to enforce it.")
 (define-public python-vunit
   (package
     (name "python-vunit")
-    (version "5.0.0-dev.7") ;v4.7.0 dates back from 2 years ago.
+    (version "5.0.0-dev.8") ;v4.7.0 dates back from 2 years ago.
     (source
      (origin
        (method git-fetch)
@@ -2922,7 +2922,7 @@ to enforce it.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12xkjc98913zyb271k9qfl86wdj2fsbcjl0lv1lb4492j5iqfcgj"))))
+        (base32 "0a1bz5jh28i59x63fkgqf333jb68bm2hjicg2zlahzyydr4y1wji"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2965,8 +2965,7 @@ to enforce it.")
                    (scandir "."
                             (negate
                              (cut member <>
-                                  '("coverage"  ;unsupported feature in nvc
-                                    "data_types"  ;no run.py
+                                  '("data_types"  ;no run.py
                                     "docker_runall.sh"  ;not a test
                                     "vivado" ;requires external tool
                                     ;; Fails with nvc
