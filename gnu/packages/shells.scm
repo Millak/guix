@@ -254,9 +254,9 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                (close-port port))))
          ;; Enable completions, functions and configurations in user's and
          ;; system's guix profiles by adding them to __extra_* variables.
-         (add-before 'install 'patch-fish-extra-paths
+         (add-before 'build 'patch-fish-extra-paths
            (lambda _
-             (let ((port (open-file "share/__fish_build_paths.fish" "a")))
+             (let ((port (open-file "share/__fish_build_paths.fish.in" "a")))
                (display
                 (string-append
                  "\n\n"
@@ -285,9 +285,9 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
              (apply (assoc-ref gnu:%standard-phases 'check)
                     #:test-target "fish_run_tests" args)))
          ;; Use fish-foreign-env to source /etc/profile.
-         (add-before 'install 'source-etc-profile
+         (add-before 'build 'source-etc-profile
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((port (open-file "share/__fish_build_paths.fish" "a")))
+             (let ((port (open-file "share/__fish_build_paths.fish.in" "a")))
                (display
                 (string-append
                  "\n\n"
@@ -298,7 +298,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                  (dirname
                   (search-input-file inputs "share/fish/functions/fenv.fish"))
                  " $__fish_datadir/functions\n"
-                 "    fenv source /etc/profile\n"
+                 "    [ -f /etc/profile ] && fenv source /etc/profile\n"
                  "    set -e fish_function_path\n"
                  "end\n")
                 port)
