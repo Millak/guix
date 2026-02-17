@@ -2650,7 +2650,7 @@ form of AXI, AXI lite, and AXI stream modules.")
 (define-public python-edalize
   (package
     (name "python-edalize")
-    (version "0.6.3")
+    (version "0.6.4")
     (source
      (origin
        (method git-fetch)
@@ -2659,7 +2659,7 @@ form of AXI, AXI lite, and AXI stream modules.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ml6b17jp4vwjaw16v0agajzksig92q5qmk2psm51ck4q076lm3m"))))
+        (base32 "0q3whwbc73qv7csr3rq9a2fbcnzprzd4d0jjpzxxyh578sgzzjwi"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2674,7 +2674,7 @@ form of AXI, AXI lite, and AXI stream modules.")
                           "test_xcelium")
                     " and not "))))
     (native-inputs
-     (list python-pytest python-setuptools))
+     (list python-pytest python-setuptools python-setuptools-scm))
     (propagated-inputs
      (list python-jinja2))
     (home-page "https://github.com/olofk/edalize/")
