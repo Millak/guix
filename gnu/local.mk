@@ -2502,7 +2502,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/tvm_fix_cpptest_build.patch              \
   %D%/packages/patches/twinkle-bcg729.patch			\
   %D%/packages/patches/u-boot-allow-disabling-openssl.patch	\
-  %D%/packages/patches/u-boot-nintendo-nes-serial.patch		\
   %D%/packages/patches/ucx-tcp-iface-ioctl.patch		\
   %D%/packages/patches/uftrace-fix-tests.patch			\
   %D%/packages/patches/ultrastar-deluxe-no-freesans.patch		\

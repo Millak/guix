@@ -1366,34 +1366,6 @@ removed so that it fits within common partitioning schemes.")))
 (define-public u-boot-a20-olinuxino-micro
   (make-u-boot-package "A20-OLinuXino_MICRO" "arm-linux-gnueabihf"))
 
-(define-public u-boot-nintendo-nes-classic-edition
-  (let ((base (make-u-boot-package "Nintendo_NES_Classic_Edition"
-                                   "arm-linux-gnueabihf"
-                                   #:append-description "This version is for
-the Nintendo NES Classic Edition.  It is assumed that you have added a serial
-port to pins PB0 and PB1 as described on
-@url{https://linux-sunxi.org/Nintendo_NES_Classic_Edition}.
-
-In order to use FEL mode on the device, hold the Reset button on the
-device while it's being turned on (and a while longer).")))
-    (package
-      (inherit base)
-      ;; Starting with 2019.01, FEL doesn't work anymore on A33.
-      (version "2018.11")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append
-                      "https://ftp.denx.de/pub/u-boot/"
-                      "u-boot-" version ".tar.bz2"))
-                (sha256
-                 (base32
-                  "0znkwljfwwn4y7j20pzz4ilqw8znphrfxns0x1lwdzh3xbr96z3k"))
-                (patches (search-patches
-                          "u-boot-nintendo-nes-serial.patch"))))
-      (native-inputs
-       `(("python" ,python-2)
-         ,@(package-native-inputs base))))))
-
 (define-public u-boot-wandboard
   (make-u-boot-package "wandboard" "arm-linux-gnueabihf"))
 
