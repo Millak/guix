@@ -276,24 +276,28 @@ HTTP.Agent instances from a function.")
   (package
     (name "node-balanced-match")
     (version "1.0.2")
-    (source (origin
-      (method git-fetch)
-      (uri (git-reference
-        (url "https://github.com/juliangruber/balanced-match")
-        (commit (string-append "v" version))))
-      (file-name (git-file-name name version))
-      (sha256 (base32 "0977r6hv9fyv6f8wvn31vcncxwhffnn05y0h4hmpkg8p2vs9ip0b"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/juliangruber/balanced-match")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0977r6hv9fyv6f8wvn31vcncxwhffnn05y0h4hmpkg8p2vs9ip0b"))))
     (build-system node-build-system)
-    (arguments (list
-      #:tests? #f ; FIXME Tests require 'tape'.
-      #:phases #~(modify-phases %standard-phases
-        (add-before 'patch-dependencies 'modify-package
-          (lambda _
-            (modify-json
-              (delete-dev-dependencies)))))))
+    (arguments
+     (list
+      #:tests? #f ;FIXME Tests require 'tape'.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'patch-dependencies 'modify-package
+            (lambda _
+              (modify-json (delete-dev-dependencies)))))))
     (synopsis "Match balanced character pairs, like { and }")
-    (description "Match balanced string pairs, like { and } or <b> and </b>. Supports\
- regular expressions as well!")
+    (description
+     "Match balanced string pairs, like { and } or <b> and </b>.  Supports
+regular expressions as well!")
     (home-page (git-reference-url (origin-uri source)))
     (license license:expat)))
 
@@ -344,7 +348,7 @@ addons in a wide array of potential locations.")
            (lambda _
              (modify-json (delete-dev-dependencies)))))))
     (inputs
-     (list node-balanced-match-1 node-concat-map))
+     (list node-balanced-match node-concat-map))
     (home-page "https://github.com/juliangruber/brace-expansion")
     (synopsis "Brace expansion for JavaScript")
     (description "This package provides brace expansion as known from
@@ -374,32 +378,6 @@ sh/bash, for JavaScript.")
     (description "Return an array of all possible and valid expansions of str. If none\
  are found, [str] is returned.")
     (home-page (git-reference-url (origin-uri source)))
-    (license license:expat)))
-
-(define-public node-balanced-match-1
-  (package
-    (name "node-balanced-match")
-    (version "1.0.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/juliangruber/balanced-match")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0977r6hv9fyv6f8wvn31vcncxwhffnn05y0h4hmpkg8p2vs9ip0b"))))
-    (build-system node-build-system)
-    (arguments
-     '(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-dependencies 'delete-dev-dependencies
-           (lambda _
-             (modify-json (delete-dev-dependencies)))))))
-    (home-page "https://github.com/juliangruber/balanced-match")
-    (synopsis "Match balanced string pairs in JavaScript")
-    (description "This package provides a way to match balanced string pairs.")
     (license license:expat)))
 
 (define-public node-buffer-crc32
