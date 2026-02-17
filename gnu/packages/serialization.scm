@@ -15,7 +15,7 @@
 ;;; Copyright © 2023 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2023, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2023-2024, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
@@ -528,35 +528,31 @@ character limit for implicit keys.")
     (license license:expat)))
 
 (define-public yaml-cpp
-  ;; The last release is from 2023.
-  (let ((commit "c7aa78d294bbe499c1ebc0abfa1e103490c8525f")
-        (revision "1"))
-    (package
-      (name "yaml-cpp")
-      (version (git-version "0.8.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/jbeder/yaml-cpp")
-               (commit commit)))
-         (modules '((guix build utils)))
-         (snippet #~(delete-file-recursively "test/googletest-1.13.0"))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1ivjnp3hh746csc66x5ycrbv9psb09idfi5g4rsi7h0ljlag6whr"))))
-      (build-system cmake-build-system)
-      (arguments
-       '(#:configure-flags '("-DYAML_BUILD_SHARED_LIBS=ON"
-                             "-DYAML_CPP_BUILD_TESTS=ON"
-                             "-DYAML_USE_SYSTEM_GTEST=ON")))
-      (native-inputs
-       (list python))
-      (inputs (list googletest-1.8))
-      (home-page "https://github.com/jbeder/yaml-cpp")
-      (synopsis "YAML parser and emitter in C++")
-      (description "YAML parser and emitter in C++ matching the YAML 1.2 spec.")
-      (license license:bsd-3))))
+  (package
+    (name "yaml-cpp")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jbeder/yaml-cpp")
+              (commit (string-append name "-" version))))
+       (modules '((guix build utils)))
+       (snippet #~(delete-file-recursively "test/googletest-1.13.0"))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0v44chsa2gmc2kknhnyxlmh25fflpknxqc6iyrh1vqiq0qysqlzq"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DYAML_BUILD_SHARED_LIBS=ON"
+                                     "-DYAML_CPP_BUILD_TESTS=ON"
+                                     "-DYAML_USE_SYSTEM_GTEST=ON")))
+    (native-inputs (list python))
+    (inputs (list googletest-1.8))
+    (home-page "https://github.com/jbeder/yaml-cpp")
+    (synopsis "YAML parser and emitter in C++")
+    (description "YAML parser and emitter in C++ matching the YAML 1.2 spec.")
+    (license license:bsd-3)))
 
 (define-public jsoncpp
   (package
