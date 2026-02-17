@@ -29143,6 +29143,37 @@ little slower than it could be.")
 (define-public clasp-sha1
   (sbcl-package->clasp-package sbcl-sha1))
 
+(define-public sbcl-sha3
+  (package
+    (name "sbcl-sha3")
+    (version "1.1.2")
+    (home-page "https://github.com/pmai/sha3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pmai/sha3")
+              (commit (string-append "release-" version))))
+       (file-name (git-file-name "cl-sha3" version))
+       (sha256
+        (base32 "0jl59js4n1gc08j2bcwf0d1gy82lf7g53b639dwh6b0milbqh7gz"))))
+    (build-system asdf-build-system/sbcl)
+    (synopsis "SHA-3 implementation for Common Lisp")
+    (description
+     "This library is an implementation of the Secure Hash Algorithm 3 (SHA-3),
+also known as Keccak.  The implementation is constrained to messages with an integral
+number of octets,i.e. sub-byte length messages are not supported.")
+    (license license:expat)))
+
+(define-public cl-sha3
+  (sbcl-package->cl-source-package sbcl-sha3))
+
+(define-public ecl-sha3
+  (sbcl-package->ecl-package sbcl-sha3))
+
+(define-public clasp-sha3
+  (sbcl-package->clasp-package sbcl-sha3))
+
 (define-public sbcl-shadow
   (let ((commit "b2031adbfba3579b48c9d39ad997e19b79b6852f")
         (revision "1"))
