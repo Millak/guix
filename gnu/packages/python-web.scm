@@ -1234,6 +1234,70 @@ fort ok https://github.com/thadeusb/flask-cache.")
 inspired by Ruby's will_paginate library.  It supports several CSS frameworks.")
     (license license:bsd-3)))
 
+(define-public python-flask-limiter
+  (package
+    (name "python-flask-limiter")
+    (version "4.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alisaifee/flask-limiter")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18n12iayzw6qqys26824j5lfbphfcammpmyrvys1k0rn4xcbifln"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 155 passed, 620 deselected
+      #:test-flags
+      #~(list "-k" (simple-format #f "not (~a)"
+                     (string-join
+                      (append
+                       ;; The test suite spawns storages in Docker.
+                       '("memcache" "reset_unsupported")
+                       '("mongo")
+                       '("redis" "clear_limits"
+                         "constructor_arguments_over_config"
+                         "custom_key_prefix" "fallback_to_memory"))
+                      " or ")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'adjust-tests
+            (lambda _
+              (substitute* "pytest.ini"
+                ((".*--cov=.*") ""))
+              (substitute* (find-files "tests" "\\.py$")
+                (("import pymemcache.*") "")
+                (("import pymongo.*") "")
+                (("import redis.*") "")))))))
+    (native-inputs (list python-flask-restful
+                         python-hatch-vcs
+                         python-hatchling
+                         python-hiro
+                         python-pytest
+                         python-pytest-check
+                         python-pytest-mock))
+    (propagated-inputs (list python-flask
+                             python-limits
+                             python-ordered-set
+                             python-rich))
+    (home-page "https://flask-limiter.readthedocs.org/")
+    (synopsis "Rate limiting for Flask applications")
+    (description
+     "Flask-Limiter adds rate limiting to Flask applications.
+Rate limits can be configured at different levels such as:
+
+@itemize
+@item Application wide global limits per user
+@item Default limits per route
+@item By blueprints
+@item By class-based views
+@item By individual routes
+@end itemize")
+    (license license:expat)))
+
 (define-public python-gdown
   (package
     (name "python-gdown")
