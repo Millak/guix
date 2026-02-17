@@ -5811,16 +5811,21 @@ scheme and builds with the HEALPix C++ library.")
 (define-public python-hierarc
   (package
     (name "python-hierarc")
-    (version "1.2.0")
+    ;; Latest commit works with AstroPy 7 and NumPy 2.
+    (properties '((commit . "6c33217a49c69b9c132280e83b9c6be185a3b94c")
+                  (revision . "0")))
+    (version (git-version "1.2.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method git-fetch)       ;no tests data in the PyPI archive
+       (method git-fetch)
        (uri (git-reference
               (url "https://github.com/sibirrer/hierArc")
-              (commit (string-append "v" version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02078a745hrb3m8fj739rwzk4wwxrfk40sr4yvs722aj5xk8j00w"))))
+        (base32 "0lz3w8san0n3p0hkid4g6jfr5703wcmzvd08h76z15k0w9qpf1wn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5846,10 +5851,9 @@ scheme and builds with the HEALPix C++ library.")
               (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
-     (list python-astropy-6
+     (list python-astropy
            python-emcee
            python-h5py
            python-lenstronomy
@@ -5862,9 +5866,9 @@ scheme and builds with the HEALPix C++ library.")
     (home-page "https://github.com/sibirrer/hierarc")
     (synopsis "Hierarchical analysis of strong lensing systems")
     (description
-     "This package implements a funtionality for hierarchical analysis of
+     "This package implements functionality for hierarchical analysis of
 strong lensing systems to infer lens properties and cosmological parameters
-simultaneously.  It allows to fit lenses with measured time delays, imaging
+simultaneously.  It allows fitting lenses with measured time delays, imaging
 information, kinematics constraints and standardizable magnifications with
 parameters described on the ensemble level.")
     (license license:bsd-3)))
