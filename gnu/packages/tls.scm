@@ -676,7 +676,7 @@ OpenSSL for TARGET."
 (define-public openssl-3.0
   ;; LTS series with EOL 2026-09-07
   (package
-    (inherit openssl-1.1)
+    (inherit openssl-3.5)
     (version "3.0.19")
     (source (origin
               (method url-fetch)
@@ -687,39 +687,11 @@ OpenSSL for TARGET."
                          (string-append "ftp://ftp.openssl.org/source/old/"
                                         (string-trim-right version char-set:letter)
                                         "/openssl-" version ".tar.gz")))
-              (patches (search-patches "openssl-3.0-c-rehash-in.patch"))
+              (patches (search-patches "openssl-3.0-c-rehash-in.patch"
+                                       "openssl-hurd64.patch"))
               (sha256
                (base32
-                "0wihnr5bjdc3v0r4viwb1d1lf1rfkbrcmwzj7vjqpqdap11l2nps"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments openssl-1.1)
-       ((#:phases phases '%standard-phases)
-        #~(modify-phases #$phases
-            (add-before 'configure 'configure-perl
-              (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                (setenv "HASHBANGPERL"
-                        (search-input-file (or native-inputs inputs)
-                                           "/bin/perl"))))
-            #$@(if (target-hurd?)
-                   #~((delete 'patch-configure))
-                   #~())
-            #$@(if (target-hurd64?)
-                   #~((add-after 'unpack 'apply-hurd-patch
-                        (lambda _
-                          (let ((patch-file
-                                 #$(local-file
-                                    (search-patch "openssl-hurd64.patch"))))
-                            (invoke "patch" "--force" "-p1" "-i"
-                                    patch-file)))))
-                   #~())))
-       ((#:configure-flags flags #~'())
-        (if (system-hurd?)              ;must not be used when
-            #~(append #$flags           ;cross-compiling!
-                      #$(if (target-hurd64?)
-                            #~'("hurd-x86_64")
-                            #~'("hurd-x86")))
-            flags))))
-    (license license:asl2.0)))
+                "0wihnr5bjdc3v0r4viwb1d1lf1rfkbrcmwzj7vjqpqdap11l2nps"))))))
 
 (define-public openssl openssl-3.0)
 
