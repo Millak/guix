@@ -11472,7 +11472,7 @@ readable format.")
     (license license:gpl2)))
 
 (define-public python-pygit2
-  (package/inherit python-pygit2-1.11
+  (package
     (name "python-pygit2")
     (version "1.18.2")
     (source
@@ -11481,7 +11481,14 @@ readable format.")
        (uri (pypi-uri "pygit2" version))
        (sha256
         (base32 "0m8g8s72c0xwwayykpj1hf8c1wldhmg1sj8kgxdp2rf9c837xa7c"))))
-    (propagated-inputs (list python-cffi libgit2))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-cffi libgit2))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/libgit2/pygit2")
+    (synopsis "Python bindings for libgit2")
+    (description "Pygit2 is a set of Python bindings to the libgit2 shared library.")
+    ;; GPL2.0 only, with linking exception.
+    (license license:gpl2)))
 
 (define-public python-patiencediff
   (package
