@@ -111,6 +111,7 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages logging)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages monitoring)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages ocaml)
@@ -6342,6 +6343,64 @@ a Qt interface for Argos Translate.")
     (synopsis "Translate files with Argos Translate")
     (description "This package provides a Python library
 for translating plain- and rich-text documents with Argos Translate.")
+    (license license:agpl3)))
+
+(define-public libretranslate
+  (package
+    (name "libretranslate")
+    (version "1.9.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/LibreTranslate/LibreTranslate")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "14zdcknv7bra41ananqz6b9dmyq46cmbd8a8s00grzli4qkv5xn1"))
+       (patches (search-patches "libretranslate-use-flasgger.patch"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;all tests depend on Argos models
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpin-dependencies
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; Unpin numpy for transitive dependencies.
+                (("^    \"numpy .+") "")
+                ;; Unpin dependencies.
+                (("^(    \"[[:alnum:]-]+) ==.+((;.+)?\",)" all left right)
+                 (string-append left right))
+                (("argos-translate-lt") "argostranslate"))))
+          (add-before 'build 'set-home-env
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (inputs (list python-apscheduler
+                  python-argostranslate
+                  python-argos-translate-files
+                  python-expiringdict
+                  python-flasgger
+                  python-flask
+                  python-flask-babel
+                  python-flask-limiter
+                  python-flask-session
+                  python-itsdangerous
+                  python-langdetect
+                  python-lexilang
+                  python-packaging
+                  python-polib
+                  python-prometheus-client
+                  python-redis
+                  python-requests
+                  python-waitress
+                  python-werkzeug))
+    (native-inputs (list python-hatchling))
+    (home-page "https://docs.libretranslate.com")
+    (synopsis "Machine translation API and web interface")
+    (description
+     "LibreTranslate is a machine translation API and web interface,
+powered by the Argos Translate library.")
     (license license:agpl3)))
 
 (define-public python-hmmlearn

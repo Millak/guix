@@ -1707,6 +1707,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libretro-dolphin-emu-gc-font-tool.patch  \
   %D%/packages/patches/libretro-dolphin-emu-libusb-assert.patch \
   %D%/packages/patches/libretro-dolphin-emu-vulkan-headers.patch        \
+  %D%/packages/patches/libretranslate-use-flasgger.patch	\
   %D%/packages/patches/librewolf-add-store-to-rdd-allowlist.patch       \
   %D%/packages/patches/librewolf-compare-paths.patch		\
   %D%/packages/patches/librewolf-neuter-locale-download.patch	\
