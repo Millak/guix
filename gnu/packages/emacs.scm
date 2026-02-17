@@ -118,8 +118,9 @@
    (string-join
     (map
      (lambda (test)
-       (string-append "\\\"" test "\\\""))
-     excluded-tests))
+       ;; This is a regex
+       (string-append "\\\"^" test "\\$\\\""))
+     (sort excluded-tests string<?)))
    "))"))
 
 (define %selector
