@@ -118,6 +118,7 @@
   #:use-module (gnu packages oneapi)
   #:use-module (gnu packages opencl)
   #:use-module (gnu packages parallel)
+  #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
@@ -6307,6 +6308,41 @@ It supports installing language model packages which are ZIP archives
 with a @code{.argosmodel} extension.  This package provides
 a Qt interface for Argos Translate.")
       (license license:expat))))
+
+(define-public python-argos-translate-files
+  (package
+    (name "python-argos-translate-files")
+    (version "1.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/LibreTranslate/argos-translate-files")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vz5v2gnd5wxwq6cjnhrvhflndl55c7ffy21w05m8sy3ll8iaiij"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:phases #~(modify-phases %standard-phases
+                                  (add-after 'unpack 'unpin-dependencies
+                                    (lambda _
+                                      (substitute* "requirements.txt"
+                                        (("argos-translate-lt.*")
+                                         "argostranslate\n"))))
+                                  (add-before 'build 'set-home-env
+                                    (lambda _
+                                      (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list python-argostranslate
+                             python-beautifulsoup4
+                             python-lxml
+                             python-pymupdf
+                             python-pysrt))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/LibreTranslate/argos-translate-files")
+    (synopsis "Translate files with Argos Translate")
+    (description "This package provides a Python library
+for translating plain- and rich-text documents with Argos Translate.")
+    (license license:agpl3)))
 
 (define-public python-hmmlearn
   (package
