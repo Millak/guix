@@ -2207,19 +2207,14 @@ from account statements and other documents and for managing documents.")
 (define-public fava
   (package
     (name "fava")
-    (version "1.30.7")
+    (version "1.30.12")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fava" version))
        (sha256
-        (base32 "1d2p5dbj6a855qq3jkl6k01prlhvazlm7ws33a7323a6r6amiykk"))))
+        (base32 "0ic1vvirxqspamnidbrra9b9qgv8ilcpga7ympf0arn36mb191vw"))))
     (build-system pyproject-build-system)
-    (arguments (list #:test-flags
-                     ;; There are some small differences in the expected
-                     ;; output for this test (see:
-                     ;; <https://github.com/beancount/fava/issues/2153>).
-                     #~(list "-k" "not options-/long-example/api/options")))
     (propagated-inputs
      (list beancount
            beanquery
@@ -2233,13 +2228,13 @@ from account statements and other documents and for managing documents.")
            python-markdown2
            python-ply
            python-simplejson
+           python-typing-extensions
            python-watchfiles
            python-werkzeug))
     (native-inputs
      (list python-babel
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://beancount.github.io/fava/")
     (synopsis "Web interface for the accounting tool Beancount")
     (description "Fava is a web interface for the double-entry bookkeeping
