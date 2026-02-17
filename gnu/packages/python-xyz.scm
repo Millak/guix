@@ -18265,6 +18265,46 @@ features, such  as project-specific plugins.")
 @code{ZipFile}.  It provides handling of symlinks, and exception management.")
     (license license:psfl)))
 
+(define-public python-okonomiyaki
+  (package
+    (name "python-okonomiyaki")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/enthought/okonomiyaki/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dx8smrairxcjqjisvvgwmj4nch12v03b779agjws87yv96ps0f4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Unknown platform.
+          (add-before 'check 'delete-fail-tests
+            (lambda _
+              (delete-file-recursively
+               "okonomiyaki/runtimes/tests/test_runtime.py"))))))
+    (native-inputs
+     (list python-distro
+           python-haas
+           python-jsonschema
+           python-packaging
+           python-parameterized
+           python-pytest
+           python-setuptools
+           python-testfixtures
+           python-zipfile2))
+    (home-page "https://github.com/enthought/okonomiyaki/")
+    (synopsis "Python library to deal with Enthought-specific metadata")
+    (description
+     "Okonomiyaki is a self-contained library aiming at consolidating
+low-level code used in Enthought-specific egg and runtime archives.")
+    (license license:bsd-3)))
+
 (define-public python-nbconvert
   (package
     (name "python-nbconvert")
