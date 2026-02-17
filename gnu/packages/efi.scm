@@ -173,6 +173,7 @@ information.")
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f  ; No tests exist.
+       #:parallel-build? #f ; Makefile contains a race condition.
        #:make-flags
        '("CC=gcc -g -O2 -Wno-error=implicit-function-declaration")
        #:phases
