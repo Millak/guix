@@ -74,6 +74,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages scheme)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xdisorg)
@@ -151,11 +152,10 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
             (cargo-inputs 'fish)))
     (native-inputs
      (append
-      (list doxygen
-            gettext-minimal             ;localization support
-            groff                       ;for 'fish --help'
+      (list gettext-minimal             ;localization support
             pkg-config
             procps                      ;for the test suite
+            ;; python-sphinx            ;for documentation TODO: cargo-xtask
             rust
             `(,rust "cargo"))
       (or (and=> (%current-target-system)
@@ -252,11 +252,6 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                          "end\n")
                         port)
                (close-port port))))
-         ;; Embed absolute paths.
-         (add-before 'install 'embed-absolute-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "share/functions/__fish_print_help.fish"
-               (("nroff") (search-input-file inputs "bin/nroff")))))
          ;; Enable completions, functions and configurations in user's and
          ;; system's guix profiles by adding them to __extra_* variables.
          (add-before 'install 'patch-fish-extra-paths
