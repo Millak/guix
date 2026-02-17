@@ -69,7 +69,7 @@ Zig, V, and Nim programming language standard libraries.")
 (define-public xxhash
   (package
     (name "xxhash")
-    (version "0.8.2")
+    (version "0.8.3")
     (source
      (origin
        (method git-fetch)
@@ -78,16 +78,11 @@ Zig, V, and Nim programming language standard libraries.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ljsmxcxfyxzxzk435qnjiyy441bgrxirn285lymyvv39nrwz1wj"))))
+        (base32 "017py6m7rs7pr2f8j1xfyg0bc4b0biv12k8zylyg9ildry22iac7"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
            #~(list #$(string-append "CC=" (cc-for-target))
-                   #$(match (or (%current-target-system)
-                                (%current-system))
-                       ;; Detect vector instruction set at run time.
-                       ((or "i686-linux" "x86_64-linux") "DISPATCH=1")
-                       (_ "DISPATCH=0"))
                    "XXH_FORCE_MEMORY_ACCESS=1" ; improved performance with GCC
                    (string-append "prefix=" (assoc-ref %outputs "out")))
            #:phases
