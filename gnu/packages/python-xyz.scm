@@ -9098,6 +9098,31 @@ any @file{.pug} source into different template languages: Django, Jinja2,
 Mako, and Tornado.")
     (license license:expat))) ;; MIT
 
+(define-public python-pysrt
+  (package
+    (name "python-pysrt")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/byroot/pysrt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f5hxyzlh5mdvvi52qapys9qcinffr6ghgivb6k4jxa92cbs3mfg"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (propagated-inputs (list python-chardet))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/byroot/pysrt")
+    (synopsis "SubRip Text subtitle parser and writer")
+    (description
+     "This package provides a Python library to edit or create
+SubRip Text files, and additionally a command-line program @command{srt}
+to shift, split or rescale them.")
+    (license license:gpl3+)))
+
 (define-public python-pystache
   (package
     (name "python-pystache")
