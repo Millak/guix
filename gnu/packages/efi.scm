@@ -161,57 +161,49 @@ information.")
     (source
      (origin
        (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://git.kernel.org/pub/scm/linux/kernel/git/jejb/efitools.git")
-         (commit (string-append "v" version))))
+       (uri (git-reference
+             (url "https://git.kernel.org/pub/scm/linux/kernel/git/jejb/efitools.git")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0jabgl2pxvfl780yvghq131ylpf82k7banjz0ksjhlm66ik8gb1i"))
+        (base32 "0jabgl2pxvfl780yvghq131ylpf82k7banjz0ksjhlm66ik8gb1i"))
        (patches (search-patches "efitools-riscv64-support.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f  ; No tests exist.
+     (list
+       #:tests? #f          ; No tests exist.
        #:parallel-build? #f ; Makefile contains a race condition.
        #:make-flags
-       '("CC=gcc -g -O2 -Wno-error=implicit-function-declaration")
+       #~(list "CC=gcc -g -O2 -Wno-error=implicit-function-declaration")
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "Make.rules"
-              (("/usr/include/efi")
-               (string-append (assoc-ref inputs "gnu-efi")
-                              "/include/efi"))
-              (("\\$\\(DESTDIR\\)/usr")
-               (string-append (assoc-ref outputs "out")))
-              (("/usr/lib/gnuefi")
-               (string-append (assoc-ref inputs "gnu-efi")
-                              "/lib")))
-             #t))
-         (add-after 'unpack 'patch-more-shebangs
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "xxdi.pl"
-              (("#!.*")
-               (string-append "#!"
-                              (assoc-ref inputs "perl")
-                              "/bin/perl\n")))
-             #t))
-         (delete 'configure))))
-    (native-inputs
-     (list help2man perl perl-file-slurp sbsigntools))
-    (inputs
-     (list gnu-efi openssl))
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'patch
+             (lambda _
+               (let ((gnu-efi (assoc-ref %build-inputs "gnu-efi")))
+                 (substitute* "Make.rules"
+                   (("/usr/include/efi")
+                    (string-append gnu-efi "/include/efi"))
+                   (("\\$\\(DESTDIR\\)/usr")
+                    #$output)
+                   (("/usr/lib/gnuefi")
+                    (string-append gnu-efi "/lib"))))))
+           (add-after 'unpack 'patch-more-shebangs
+             (lambda _
+               (substitute* "xxdi.pl"
+                 (("/usr/bin/env perl")
+                  (search-input-file %build-inputs "/bin/perl")))))
+           (delete 'configure))))
+    (native-inputs (list help2man perl perl-file-slurp sbsigntools))
+    (inputs (list gnu-efi openssl))
     (synopsis "EFI tools (key management, variable management)")
     (description "This package provides EFI tools for EFI key management
 and EFI variable management.")
-    (home-page "https://blog.hansenpartnership.com/efitools-1-4-with-linux-key-manipulation-utilities-released/")
+    (home-page
+     "https://blog.hansenpartnership.com/efitools-1-4-with-linux-key-manipulation-utilities-released/")
     ;; Programs are under GPL 2.
     ;; Library routines (in lib/) are under LGPL 2.1.
     ;; Compiling/linking/using OpenSSL is permitted.
-    (license (list license:gpl2
-                   license:lgpl2.1))))
+    (license (list license:gpl2 license:lgpl2.1))))
 
 (define-public efilinux
   (package
