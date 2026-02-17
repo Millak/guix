@@ -2689,6 +2689,65 @@ perhaps a couple of Verilog `defines, some top-level parameters/generics or
 some tool-specific options are set.")
     (license license:bsd-2)))
 
+(define-public fusesoc
+  (package
+    (name "fusesoc")
+    (version "2.4.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/olofk/fusesoc/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sw0zl6hjlzp1a0agdl9yp901pih70ppzzss18l8f3jxs6q7jm1n"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These tests require network access.
+      #~(list
+         "--deselect=tests/test_coremanager.py::test_export"
+         "--deselect=tests/test_libraries.py::test_library_add"
+         (string-append
+          "--deselect=tests/test_libraries.py::"
+          "test_library_update_with_initialize")
+         "--deselect=tests/test_libraries.py::test_library_update"
+         "--deselect=tests/test_provider.py::test_git_provider"
+         "--deselect=tests/test_provider.py::test_github_provider"
+         "--deselect=tests/test_signatures.py::test_signature_single_standalone"
+         (string-append
+          "--deselect=tests/test_usecases.py::"
+          "test_git_library_with_default_branch_is_added_and_updated")
+         (string-append
+          "--deselect=tests/test_usecases.py::"
+          "test_update_git_library_with_fixed_version")
+         "--deselect=tests/test_provider.py::test_url_provider")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home-env
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (inputs
+     (list python-argcomplete
+           python-edalize
+           python-fastjsonschema
+           python-pyparsing
+           python-pyyaml
+           python-simplesat))
+    (native-inputs
+     (list python-pytest python-setuptools python-setuptools-scm))
+    (home-page "https://fusesoc.net/")
+    (synopsis
+     "Package manager and build abstraction tool for HDL code")
+    (description
+     "Fusesoc allows management and reuse of @acronym{IP, Intellectual
+Property} cores.  It also aids for creating, building and simulating
+@acronym{Soc, System on Chip} solutions in @acronym{EDA, Electronic Design
+Automation}.")
+    (license license:bsd-3)))
+
 (define-public python-hdlmake
   (package
     (name "python-hdlmake")
