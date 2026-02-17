@@ -311,7 +311,7 @@ a set of curses widgets, such as dialog boxes.")
 (define-public perl-curses
   (package
     (name "perl-curses")
-    (version "1.36")
+    (version "1.45")
     (source
      (origin
        (method url-fetch)
@@ -319,7 +319,7 @@ a set of curses widgets, such as dialog boxes.")
                            "Curses-" version ".tar.gz"))
        (sha256
         (base32
-         "0r6xd9wr0c25rr28zixhqipak575zqsfb7r7f2693i9il1dpj554"))))
+         "1cmf0mpbsfiymy4znr84rg938mxfn52bnckamq5lmmm22c01w8l4"))))
     (build-system perl-build-system)
     (inputs
      (list ncurses))
