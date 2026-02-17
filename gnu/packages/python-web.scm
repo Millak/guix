@@ -13088,6 +13088,32 @@ SendGrid Web API v3 endpoints, including the new v3 /mail/send.")
      "This package provides SSE plugin for Starlette.")
     (license license:bsd-3)))
 
+(define-public python-sseclient-py
+  (package
+    (name "python-sseclient-py")
+    (version "1.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mpetazzoni/sseclient")
+              (commit (string-append "sseclient-py-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yi2v8z89mygsr1vzyc4r3j7flr3jrh6a6kzqfdh86i5a5j5v280"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-hatchling python-pytest))
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:test-flags #~'("discover" "--verbose" "tests")))
+    (home-page "https://github.com/mpetazzoni/sseclient")
+    (synopsis "Pure-Python Server Side Events (SSE) client")
+    (description
+     "This package provides a Python client for SSE event sources that
+seamlessly integrates with @code{urllib3} and @code{requests}.")
+    (license license:asl2.0)))
+
 (define-public python-starlette
   (package
     (name "python-starlette")
