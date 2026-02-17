@@ -296,7 +296,7 @@ efficiency through the use of a compact vector representation of n-grams.")
            pipewire
            pulseaudio
            python
-           python-xdg))
+           python-xdg-base-dirs))
     (synopsis "Common interface to speech synthesizers")
     (description "The Speech Dispatcher project provides a high-level
 device independent layer for access to speech synthesis through a simple,

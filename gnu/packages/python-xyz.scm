@@ -40794,13 +40794,13 @@ and directories in the file system.  They are stored as name:data pairs
 associated with file system objects (files, directories, symlinks, etc).")
     (license license:expat)))
 
-(define-public python-xdg
+(define-public python-xdg-base-dirs
   (package
-    (name "python-xdg")
+    (name "python-xdg-base-dirs")
     (version "6.0.0")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "xdg" version))
+              (uri (pypi-uri "xdg-base-dirs" version))
               (sha256
                (base32
                 "14hwk9j5zjc8rvirw95mrb07zdnpjaxjx2mj3rnq8pnlyaa809r4"))))
@@ -40816,6 +40816,10 @@ Specification, to save you from duplicating the same snippet of logic in every
 Python utility you write that deals with user cache, configuration, or data
 files.")
     (license license:isc)))
+
+;; XXX: Deprecated on <2026-02-19>.
+(define-deprecated-package python-xdg
+  python-xdg-base-dirs)
 
 (define-public python-xlib
   (package

@@ -159,7 +159,7 @@ cross-DE solutions.")
            python-setproctitle
            python-setuptools
            python-unidecode
-           python-xdg
+           python-xdg-base-dirs
            python-xlib))
     (home-page "https://github.com/linuxmint/python3-xapp")
     (synopsis "Python 3 XApp library")
