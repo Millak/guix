@@ -6172,7 +6172,7 @@ C.  It is developed as part of the NetSurf project.")
            pkg-config
            doxygen
            gperf
-           json-c-0.12 ; check whether json-c-0.12 can be removed
+           json-c
            perl))
     (propagated-inputs
      (list libparserutils)) ;for libhubbub.pc
