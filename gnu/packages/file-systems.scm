@@ -1243,69 +1243,6 @@ in which directory entries are read.  This is useful for detecting
 non-determinism in the build process.")
     (license license:gpl3+)))
 
-(define-public glusterfs
-  (package
-    (name "glusterfs")
-    (version "7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://download.gluster.org/pub/gluster/glusterfs/"
-                           (version-major version) "/"
-                           (version-major+minor version) "/"
-                           "glusterfs-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0yzhx710ypj0j3m5dcgmmgvkp7p0rmmp2p7ld0axrm4vpwc2b1wa"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags
-       (let ((out (assoc-ref %outputs "out"))
-             (p2 (assoc-ref %build-inputs "python-2")))
-         (list (string-append "PYTHON=" p2 "/bin/python")
-               (string-append "--with-initdir=" out "/etc/init.d")
-               (string-append "--with-mountutildir=" out "/sbin")
-               "--enable-cmocka"  ; unit tests
-               ;; "--enable-debug"  ; debug build options
-               ;; "--enable-asan"  ; Address Sanitizer
-               ;; "--enable-tsan"  ; ThreadSanitizer
-               ))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'autogen
-           (lambda _ (invoke "./autogen.sh"))))))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("libtirpc" ,libtirpc)
-       ("rpcsvc-proto" ,rpcsvc-proto)
-       ("python-2" ,python-2) ; must be version 2
-       ("flex" ,flex)
-       ("bison" ,bison)
-       ("libtool" ,libtool)
-       ("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("cmocka" ,cmocka)))
-    (inputs
-     `(("acl" ,acl)
-       ("fuse" ,fuse-2)
-       ("openssl" ,openssl)
-       ("liburcu" ,liburcu)
-       ("libuuid" ,util-linux "lib")
-       ("libxml2" ,libxml2)
-       ("readline" ,readline)
-       ("zlib" ,zlib)
-       ("libaio" ,libaio)
-       ("rdma-core" ,rdma-core)))
-    (home-page "https://www.gluster.org")
-    (synopsis "Distributed file system")
-    (description "GlusterFS is a distributed scalable network file system
-suitable for data-intensive tasks such as cloud storage and media streaming.
-It allows rapid provisioning of additional storage based on your storage
-consumption needs.  It incorporates automatic failover as a primary feature.
-All of this is accomplished without a centralized metadata server.")
-    ;; The user may choose either LGPLv3+ or GPLv2 only.
-    (license (list license:lgpl3+ license:gpl2+))))
-
 (define-public curlftpfs
   (package
     (name "curlftpfs")
