@@ -48009,14 +48009,10 @@ and reproducible way.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-test
-           (lambda _
-             ;; This test fails for unknown reasons.
-             (substitute* "tests/testthat/test-linters.R"
-               ((".*linter warns about absolute paths and relative paths.*" m)
-                (string-append m "skip('skip')\n"))))))))
+      #:skipped-tests
+      '(("test-linters.R"
+         ;; This test fails for unknown reasons.
+         "linter warns about absolute paths and relative paths"))))
     (propagated-inputs
      (list r-cli
            r-curl
