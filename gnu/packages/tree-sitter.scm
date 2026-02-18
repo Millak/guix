@@ -1866,6 +1866,13 @@ which will be used as a snippet in origin."
            (delete-file-recursively "test/outline")
            #$(tree-sitter-delete-generated-files grammar-directories))))))
 
+(define-public tree-sitter-systemverilog
+  (tree-sitter-grammar
+   "systemverilog" "SystemVerilog"
+   "12sis5yaa23jnagzqcpaq57z0964mcdh37sv7agx2rgs74f26fy3"
+   "0.3.1"
+   #:repository-url "https://github.com/gmlarumbe/tree-sitter-systemverilog"))
+
 (define-public tree-sitter-tablegen
   (let ((version "1.0.0")
         (commit "3e9c4822ab5cdcccf4f8aa9dcd42117f736d51d9")
