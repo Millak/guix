@@ -2879,29 +2879,6 @@ a Pytest test execution.")
 mypy plugins.")
     (license license:expat)))
 
-(define-public python-pytest-mypy-testing
-  (package
-    (name "python-pytest-mypy-testing")
-    (version "0.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/davidfritzsche/pytest-mypy-testing")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "09m7cpk47hvpxylv5mwdlyhyafzikbkl70pvxgcb6ss24778w3l0"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-flit-core))
-    (propagated-inputs (list python-mypy python-pytest))
-    (home-page "https://github.com/davidfritzsche/pytest-mypy-testing")
-    (synopsis "Pytest plugin to check mypy output")
-    (description "This package provides a pytest plugin to test that mypy
-produces a given output.  As mypy can be told to display the type of an
-expression this allows you to check mypys type interference.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public python-pytest-perf
   (package
     (name "python-pytest-perf")
