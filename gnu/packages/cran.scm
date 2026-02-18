@@ -40510,17 +40510,15 @@ colored by the number of neighboring points.  This is useful to visualize the
     (build-system r-build-system)
     (arguments
      (list
+      #:skipped-tests
+      '(;; Two tests fail with "Cannot locate timezone"
+        "test-dataset-dplyr.R"
+        ;; Error: NotImplemented: Function 'greater' has no kernel
+        ;; matching input types (timestamp[us, tz=UTC], string)
+        ("test-dplyr-query.R"
+         "Scalars in expressions match the type of the field, if possible"))
       #:phases
       '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; Two tests fail with "Cannot locate timezone"
-             (delete-file "tests/testthat/test-dataset-dplyr.R")
-             ;; Error: NotImplemented: Function 'greater' has no kernel
-             ;; matching input types (timestamp[us, tz=UTC], string)
-             (substitute* "tests/testthat/test-dplyr-query.R"
-               ((".*Scalars in expressions match the type of the field, if possible.*" m)
-                (string-append m "skip('skip');\n")))))
          ;; Some test fail when the current locale is the C locale.
          (add-before 'check 'set-test-locale
            (lambda _ (setenv "LC_ALL" "en_US.UTF-8")))
