@@ -27784,30 +27784,21 @@ functions.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; These all fail with: 'write_xml.xml_document(private$doc, file
-             ;; = private$filename)`: Error closing file
-             (substitute* "tests/testthat/test-as_flextable.R"
-               ((".*grouped data structure.*" m)
-                (string-append m "skip('skip');\n")))
-             (substitute* "tests/testthat/test-link.R"
-               ((".*URL are preserved in pptx.*" m)
-                (string-append m "skip('skip');\n")))
-             (substitute* "tests/testthat/test-pptx-tables.R"
-               ((".*(row height is valid|location is correct).*" m)
-                (string-append m "skip('skip');\n")))
-             (substitute* "tests/testthat/test-rotations.R"
-               ((".*pptx rotations.*" m)
-                (string-append m "skip('skip');\n")))
-             (substitute* "tests/testthat/test-styles.R"
-               ((".*borders with office docs are sanitized.*" m)
-                (string-append m "skip('skip');\n")))
-             (substitute* "tests/testthat/test-text.R"
-               ((".*pptx - string are html encoded.*" m)
-                (string-append m "skip('skip');\n"))))))))
+      #:skipped-tests
+      ;; These all fail with: 'write_xml.xml_document(private$doc, file
+      ;; = private$filename)`: Error closing file
+      '(("test-as_flextable.R"
+         "grouped data structure")
+        ("test-link.R"
+         "URL are preserved in pptx")
+        ("test-pptx-tables.R"
+         "(row height is valid|location is correct)")
+        ("test-rotations.R"
+         "pptx rotations")
+        ("test-styles.R"
+         "borders with office docs are sanitized")
+        ("test-text.R"
+         "pptx - string are html encoded"))))
     (propagated-inputs
      (list r-data-table
            r-gdtools
