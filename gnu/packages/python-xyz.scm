@@ -11500,7 +11500,7 @@ humans, and implementation simplicity.")
 (define-public python-merge3
   (package
     (name "python-merge3")
-    (version "0.0.15")
+    (version "0.0.16")
     (source
      (origin
        (method git-fetch)
@@ -11509,7 +11509,7 @@ humans, and implementation simplicity.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0p52fdzra86d03p5gwz7wmb2pgzkv0frgdhhg9wfld8qr0611wp4"))))
+        (base32 "18z0ya92qlrm1imwi6lws4b0y9a66gknlcpylyb9h6m733bf5slb"))))
     (build-system pyproject-build-system)
     (arguments (list #:test-backend #~'unittest))
     (native-inputs (list python-setuptools))
