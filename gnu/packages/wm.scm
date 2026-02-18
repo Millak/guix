@@ -93,6 +93,7 @@
 ;;; Copyright © 2026 Igorj Gorjaĉev <igor@goryachev.org>
 ;;; Copyright © 2026 Nikita Mitasov <me@ch4og.com>
 ;;; Copyright © 2026 Alissa Istleyeva <awth13@sdf.org>
+;;; Copyright © 2026 VnPower <vnpower@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -400,6 +401,32 @@ floating window manager built primarily using Xlib and can be configured to
 be from a small sleek window manager to a full-featured desktop
 environment.")
     (license license:gpl2+)))
+
+(define-public gtklock
+  (package
+    (name "gtklock")
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jovanlanik/gtklock")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i6gjzk5ybvl006dvn30kzczbxr37fv4jqdyhk88pj00shk53wkv"))))
+    (build-system meson-build-system)
+    (inputs
+     (list gtk+ gtk-session-lock linux-pam))
+    (native-inputs
+     (list pkg-config scdoc
+	   `(,glib "bin")))
+    (home-page "https://github.com/jovanlanik/gtklock")
+    (synopsis "GTK-based lockscreen for Wayland")
+    (description
+     "gtklock is a lockscreen based on gtkgreet.  It uses the ext-session-lock
+Wayland protocol.  Works on sway and other wlroots-based compositors.")
+    (license license:gpl3)))
 
 (define-public herbstluftwm
   (package
