@@ -4683,14 +4683,10 @@ cluster diagrams.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'skip-bad-tests
-           (lambda _
-             ;; Fetching the R releases requires internet access.
-             (substitute* "tests/testthat/test.scale_.R"
-               ((".*mapping custom aesthetics works.*" m)
-                (string-append m "skip('skip');\n"))))))))
+      #:skipped-tests
+      ;; Fetching the R releases requires internet access.
+      '(("test.scale_.R"
+         "mapping custom aesthetics works"))))
     (propagated-inputs (list r-cli
                              r-distributional
                              r-ggplot2
