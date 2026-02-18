@@ -10568,6 +10568,41 @@ snippets for yasnippet.")
 formatting, and code folding.")
     (license license:gpl3+)))
 
+(define-public emacs-verilog-ext
+  (package
+    (name "emacs-verilog-ext")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gmlarumbe/verilog-ext/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hgplmd9zzikp6wklx4y8svzd7n2i0rmfhphpms0f2zl74ana6c6"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f         ;the testing framework, test-hdl, requires network
+      #:test-command #~(list "make")))
+    (propagated-inputs
+     (list emacs-ag
+           emacs-apheleia
+           emacs-async
+           emacs-flycheck
+           emacs-hydra
+           emacs-lsp-mode
+           emacs-ripgrep
+           emacs-verilog-ts-mode
+           emacs-yasnippet))
+    (home-page "https://github.com/gmlarumbe/verilog-ext/")
+    (synopsis "Extensions to Emacs @code{verilog-mode}")
+    (description "This package provides additional features and utilities for
+@code{verilog-mode}, such as snippet selection via @code{hydra}, code
+navigation, code formatting, and code folding.")
+    (license license:gpl3+)))
+
 (define-public emacs-vhdl-mode
   (package
     (name "emacs-vhdl-mode")
