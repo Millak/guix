@@ -36943,6 +36943,25 @@ debug server.  It is similar to the LSP but provides integration with
 Debug server.")
     (license license:gpl3+)))
 
+(define-public emacs-forth-mode
+  (package
+    (name "emacs-forth-mode")
+    (version "0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://elpa.nongnu.org/nongnu/forth-mode-"
+                                  version ".tar"))
+              (sha256
+               (base32
+                "04xcvjzvl4pgx48l2pzil7s2iqqbf86z57wv76ahp4sd1xigpfqc"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f)) ; There is no test suite in this release.
+    (home-page "http://github.com/larsbrinkhoff/forth-mode")
+    (synopsis "Programming language mode for Forth")
+    (description "Programming language mode for Forth.")
+    (license license:gpl3)))
+
 (define-public emacs-fortran-tags
   (package
     (name "emacs-fortran-tags")
