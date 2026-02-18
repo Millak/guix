@@ -5035,13 +5035,13 @@ implementing them.")
        (method git-fetch)
        (uri
         (git-reference
-         (url "https://github.com/yggdrasil-network/yggdrasil-go")
-         (commit (string-append "v" version))
-         (recursive? #t)))
+          (url "https://github.com/yggdrasil-network/yggdrasil-go")
+          (commit (string-append "v" version))
+          (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "072r52b6bkpc7bhn0v1z6dm6q5g9qf4k1xlqwrvzmzwai6fm0lrn"))
-      (patches (search-patches "yggdrasil-extra-config.patch"))))
+       (patches (search-patches "yggdrasil-extra-config.patch"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/yggdrasil-network/yggdrasil-go"
@@ -5063,13 +5063,8 @@ implementing them.")
                          #:import-path directory))
                       (list "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasil"
                             "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasilctl"
-                            "github.com/yggdrasil-network/yggdrasil-go/cmd/genkeys")))))
-               (replace 'check
-                 (lambda* (#:key tests? import-path #:allow-other-keys)
-                   (when tests?
-                     (with-directory-excursion (string-append "src/" import-path)
-                       (invoke "go" "test" "-v" "./cmd/..." "./src/..."))))))))
-    (propagated-inputs
+                            "github.com/yggdrasil-network/yggdrasil-go/cmd/genkeys"))))))))
+    (native-inputs
      (list ;; go-golang-org-x-mobile ; Not packed yet, for contrib.
            ;; go-golang-zx2c4-com-wireguard-windows ; Not packed yet, for tun.
            go-github-com-arceliar-ironwood
