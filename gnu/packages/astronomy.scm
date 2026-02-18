@@ -3563,7 +3563,7 @@ software system for the operations and analysis of the ESA satelite Herschel.")
      (list boost-with-numpy
            cmake-minimal
            gfortran
-           python-meson-python
+           python-meson
            python-pytest
            python-scikit-build
            python-setuptools
