@@ -51703,19 +51703,13 @@ more.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'skip-bad-tests
-           (lambda _
-             ;; These tests require the r-probably package, which we can't add
-             ;; to avoid a depedency cycle.
-             (substitute* "tests/testthat/test-generics.R"
-               ((".*can compute required packages of a workflow - tailor.*" m)
-                (string-append m "skip('skip');\n"))
-               ((".*extract tuning from workflow with tunable postprocessor.*" m)
-                (string-append m "skip('skip');\n"))
-               ((".*extract tuning from workflow with tunable recipe, model, and tailor.*" m)
-                (string-append m "skip('skip');\n"))))))))
+      #:skipped-tests
+      ;; These tests require the r-probably package, which we can't add
+      ;; to avoid a depedency cycle.
+      '(("test-generics.R"
+         "can compute required packages of a workflow - tailor"
+         "extract tuning from workflow with tunable postprocessor"
+         "extract tuning from workflow with tunable recipe, model, and tailor"))))
     (propagated-inputs
      (list r-cli
            r-generics
