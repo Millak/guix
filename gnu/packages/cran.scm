@@ -8540,13 +8540,10 @@ WebAssembly engine.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'skip-bad-tests
-           (lambda _
-             ;; These tests need Internet access.
-             (delete-file "tests/testthat/test-request_handler-crul.R")
-             (delete-file "tests/testthat/test-ause_cassette_re_record.R"))))))
+      #:skipped-tests
+      ;; These tests need Internet access.
+      '("test-request_handler-crul.R"
+        "test-ause_cassette_re_record.R")))
     (propagated-inputs (list r-cli
                              r-curl
                              r-jsonlite
