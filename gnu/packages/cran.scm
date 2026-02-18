@@ -29332,17 +29332,13 @@ Processing of very large files is supported.")
         . ("r-broom" "r-ggdendro" "r-ggrepel" "r-latticeextra"))))
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; This file contains tests that attempt to download data files
-             ;; off the internet
-             (substitute* "tests/testthat/test-read.file.R"
-               ((".*read.file works.*" m)
-                (string-append m "skip('skip');\n")))
-             ;; Code run outside of test_that().
-             (delete-file "tests/testthat/test-ladd.R"))))))
+      #:skipped-tests
+      '(;; Code run outside of test_that().
+        "test-ladd.R"
+        ;; This file contains tests that attempt to download data files
+        ;; off the internet
+        ("test-read.file.R"
+         "read.file works"))))
     (propagated-inputs
      (list r-dplyr
            r-ggformula
