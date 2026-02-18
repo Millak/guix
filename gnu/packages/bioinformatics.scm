@@ -5538,7 +5538,8 @@ package provides command line tools using the Bio++ library.")
            zlib
            pcre
            perl
-           python-wrapper))
+           python-wrapper
+           sqlite))
     (native-inputs
      (list cpio))
     (home-page "https://blast.ncbi.nlm.nih.gov")
