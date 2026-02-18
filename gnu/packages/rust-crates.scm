@@ -21004,6 +21004,10 @@
   (crate-source "syn" "2.0.115"
                 "04iw4irs1kp4lcs0rl6zmkg8kg2x5lkc8wj9lqzi2a5c439lwqbf"))
 
+(define rust-syn-2.0.116
+  (crate-source "syn" "2.0.116"
+                "1jv9pk48qmhn6yrdfl3lngy5i74wg7gcx13gfhvm4s8q0p3j9x1x"))
+
 (define rust-syn-2.0.28
   (crate-source "syn" "2.0.28"
                 "0rqm6lnxdgg5blva19l2sjr7iwj2r5dwb3cx32r4iqzmndsijdh4"))
@@ -21240,6 +21244,10 @@
 (define rust-target-lexicon-0.13.4
   (crate-source "target-lexicon" "0.13.4"
                 "1fnh3md1p3bsxviyydvg9qk5q9i9x5a5s5f7ygi6f84ahpmhgpdi"))
+
+(define rust-target-lexicon-0.13.5
+  (crate-source "target-lexicon" "0.13.5"
+                "1jm6lmf9hsn7ri2d6v9gg6fy24lylhskh6pbxh71f82wdxd97dmd"))
 
 (define rust-target-spec-3.4.2
   (crate-source "target-spec" "3.4.2"
@@ -23159,6 +23167,10 @@
 (define rust-unicode-ident-1.0.23
   (crate-source "unicode-ident" "1.0.23"
                 "17m0v64a09qyp1b4jy2d9ywinp1ic2rd2jyxcjdvwy4qm0wd0zak"))
+
+(define rust-unicode-ident-1.0.24
+  (crate-source "unicode-ident" "1.0.24"
+                "0xfs8y1g7syl2iykji8zk5hgfi5jw819f5zsrbaxmlzwsly33r76"))
 
 (define rust-unicode-joining-type-0.7.0
   (crate-source "unicode-joining-type" "0.7.0"
@@ -30062,30 +30074,30 @@
                                    rust-zerocopy-0.7.35
                                    rust-zerocopy-derive-0.7.35))
                      (breezy =>
-                             (list rust-aho-corasick-1.1.3
-                                   rust-autocfg-1.4.0
-                                   rust-cfg-if-1.0.0
+                             (list rust-aho-corasick-1.1.4
+                                   rust-autocfg-1.5.0
                                    rust-heck-0.5.0
-                                   rust-indoc-2.0.6
+                                   rust-indoc-2.0.7
                                    rust-lazy-static-1.5.0
-                                   rust-libc-0.2.171
-                                   rust-memchr-2.7.4
+                                   rust-libc-0.2.182
+                                   rust-memchr-2.8.0
                                    rust-memoffset-0.9.1
                                    rust-once-cell-1.21.3
-                                   rust-portable-atomic-1.11.0
-                                   rust-proc-macro2-1.0.94
-                                   rust-pyo3-0.23.5
-                                   rust-pyo3-build-config-0.23.5
-                                   rust-pyo3-ffi-0.23.5
-                                   rust-pyo3-macros-0.23.5
-                                   rust-pyo3-macros-backend-0.23.5
-                                   rust-quote-1.0.40
-                                   rust-regex-1.11.1
-                                   rust-regex-automata-0.4.9
-                                   rust-regex-syntax-0.8.5
-                                   rust-syn-2.0.100
-                                   rust-target-lexicon-0.12.16
-                                   rust-unicode-ident-1.0.18
+                                   rust-portable-atomic-1.13.1
+                                   rust-proc-macro2-1.0.106
+                                   rust-pyo3-0.26.0
+                                   rust-pyo3-build-config-0.26.0
+                                   rust-pyo3-ffi-0.26.0
+                                   rust-pyo3-macros-0.26.0
+                                   rust-pyo3-macros-backend-0.26.0
+                                   rust-quote-1.0.44
+                                   rust-regex-1.12.3
+                                   rust-regex-automata-0.4.14
+                                   rust-regex-syntax-0.8.9
+                                   rust-rustversion-1.0.22
+                                   rust-syn-2.0.116
+                                   rust-target-lexicon-0.13.5
+                                   rust-unicode-ident-1.0.24
                                    rust-unindent-0.2.4))
                      (bwt =>
                           (list rust-aho-corasick-1.1.4

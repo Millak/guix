@@ -188,7 +188,7 @@
 (define-public breezy
   (package
     (name "breezy")
-    (version "3.3.11")
+    (version "3.3.15")
     (source
      (origin
        (method url-fetch)
@@ -200,7 +200,7 @@
        (snippet '(for-each delete-file (find-files "." "\\pyx.c$")))
        (sha256
         (base32
-         "0fxv7ca6qbrj6bvrbfgjrd9ldppa8zq8hc461rikh85c5xg9rjqi"))))
+         "0manyzwi04xcdr6swnja1z3087am0axzymr2ggqd8ni5jfkpdvbj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -231,10 +231,6 @@
                                    (find-files "breezy/tests"))
                 (("#!/bin/sh")
                  (format #f "#!~a" (which "sh"))))))
-          (add-after 'unpack 'relax-gcc-14-strictness
-            (lambda _
-              (setenv "CFLAGS"
-                      (string-append "-g -O2 -Wno-error=implicit-function-declaration"))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
@@ -259,7 +255,7 @@
     (native-inputs
      (append
       (list gettext-minimal
-            python-cython-0
+            python-cython
             python-setuptools
             python-setuptools-gettext
             python-setuptools-rust
@@ -276,7 +272,7 @@
                  (compose list make-rust-sysroot))
           '())))
     (inputs (cons* python-configobj
-                   python-dulwich
+                   python-dulwich-0.24
                    python-fastbencode
                    python-fastimport
                    python-launchpadlib
