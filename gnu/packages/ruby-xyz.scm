@@ -4244,16 +4244,17 @@ It is a low-dependency variant of ruby-hydra.")
 (define-public ruby-rubygems-tasks
   (package
     (name "ruby-rubygems-tasks")
-    (version "0.2.5")
-    (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "rubygems-tasks" version))
-              (sha256
-               (base32
-                "1x3sz3n2dlknd3v7w1mrq6f0ag6pwzhjvg7z29p75w3p42ma1gbx"))))
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "rubygems-tasks" version))
+       (sha256
+        (base32 "06g10wg5nbca1lj9m9i5qyslp7cwdm00fhy3n1q0qxcbxpkwmpzx"))))
     (build-system ruby-build-system)
     ;; Tests need Internet access.
-    (arguments `(#:tests? #f))
+    (arguments
+     `(#:tests? #f))
     (synopsis "Rake tasks for managing and releasing Ruby Gems")
     (description "Rubygems-task provides Rake tasks for managing and releasing
 Ruby Gems.")
