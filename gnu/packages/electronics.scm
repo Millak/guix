@@ -2729,12 +2729,13 @@ some tool-specific options are set.")
           (add-before 'check 'set-home-env
             (lambda _
               (setenv "HOME" "/tmp"))))))
-    (inputs
+    (propagated-inputs
      (list python-argcomplete
            python-edalize
            python-fastjsonschema
            python-pyparsing
            python-pyyaml
+           python-pyaml
            python-simplesat))
     (native-inputs
      (list python-pytest python-setuptools python-setuptools-scm))
