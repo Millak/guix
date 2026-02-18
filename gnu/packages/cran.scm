@@ -53202,14 +53202,10 @@ distributed as independent packages.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-test
-           (lambda _
-             ;; This tests insists on r-ggseqlogo being absent.
-             (substitute* "tests/testthat/test_plot_ancestral.R"
-               (("test_that\\(\"plotSeqLogo works\".*" m)
-                (string-append m "skip('skip')\n"))))))))
+      #:skipped-tests
+      '(("test_plot_ancestral.R"
+         ;; This tests insists on r-ggseqlogo being absent.
+         "plotSeqLogo works"))))
     (propagated-inputs
      (list r-ape
            r-digest
