@@ -15081,6 +15081,26 @@ Markdown documents.  More generally, icons can be inserted in any
                   (ice-9 match))
       #:imported-modules `(,@%r-build-system-modules
                            (guix build minify-build-system))
+      #:skipped-tests
+      ;; Some tests require shiny, leading to a dependency cycle.
+      '(("test-layout.R"
+         "layout_columns\\(\\) with col_widths")
+        ("test-navs-legacy.R"
+         "navset_bar\\(\\) warns if using deprecated args"
+         "navset_bar\\(\\) warns if `navbar_options\\(\\)` collide with direct deprecated options"
+         "shiny:navbarPage\\(\\) is unaffected"
+         "navbar markup snapshots")
+        ("test-page.R"
+         "page_sidebar\\(\\)"
+         "save_html\\(\\) works on components and pages with a custom theme"
+         "page_\\*\\(\\) functions can handle trailing commas")
+        ("test-sidebar.R"
+         "sidebar\\(\\) - assigns a random `id` if collapsible and `id` not provided"
+         "sidebar\\(\\) - sets `aria-expanded` correctly on collapse toggle"
+         "sidebar\\(\\) - warns if `max_height_mobile` used with `open != 'always'")
+        ;; This test requires r-shiny.
+        ("test-input-submit.R"
+         "input_submit_textarea\\(\\) markup snapshots"))
       #:phases
       #~(modify-phases (@ (guix build r-build-system) %standard-phases)
           ;; When using themes, bslib copies theme dependencies, such as
@@ -15113,41 +15133,7 @@ Markdown documents.  More generally, icons can be inserted in any
                             (,(assoc-ref inputs "js-bootstrap4-bundle")
                              . "lib/bs4/dist/js/bootstrap.bundle.min.js")
                             (,(assoc-ref inputs "js-bootstrap5-bundle")
-                             . "lib/bs5/dist/js/bootstrap.bundle.min.js"))))))
-          ;; Some tests require shiny, leading to a dependency cycle.
-          (add-after 'unpack 'disable-bad-tests
-            (lambda _
-              (with-directory-excursion "tests/testthat/"
-                (substitute* "test-layout.R"
-                  ((".*layout_columns\\(\\) with col_widths.*" m)
-                   (string-append m "skip('skip');\n")))
-                (substitute* "test-navs-legacy.R"
-                  ((".*navset_bar\\(\\) warns if using deprecated args.*" m)
-                   (string-append m "skip('skip');\n"))
-                  ((".*navset_bar\\(\\) warns if `navbar_options\\(\\)` collide with direct deprecated options.*" m)
-                   (string-append m "skip('skip');\n"))
-                  ((".*shiny:navbarPage\\(\\) is unaffected.*" m)
-                   (string-append m "skip('skip');\n"))
-                  ((".*navbar markup snapshots.*" m)
-                   (string-append m "skip('skip');\n")))
-                (substitute* "test-page.R"
-                  ((".*page_sidebar\\(\\).*" m)
-                   (string-append m "skip('skip');\n"))
-                  ((".*save_html\\(\\) works on components and pages with a custom theme.*" m)
-                   (string-append m "skip('skip');\n"))
-                  ((".*functions can handle trailing commas.*" m)
-                   (string-append m "skip('skip');\n")))
-                (substitute* "test-sidebar.R"
-                  ((".*sidebar\\(\\) - assigns a random `id` if collapsible and `id` not provided.*" m)
-                   (string-append m "skip('skip');\n"))
-                  ((".*sidebar\\(\\) - sets `aria-expanded` correctly on collapse toggle.*" m)
-                   (string-append m "skip('skip');\n"))
-                  ((".*sidebar\\(\\) - warns if `max_height_mobile` used with `open != 'always'.*" m)
-                   (string-append m "skip('skip');\n")))
-                ;; This test requires r-shiny.
-                (substitute* "test-input-submit.R"
-                  ((".*input_submit_textarea\\(\\) markup snapshots.*" m)
-                   (string-append m "skip('skip');\n")))))))))
+                             . "lib/bs5/dist/js/bootstrap.bundle.min.js")))))))))
     (propagated-inputs
      (list r-base64enc
            r-cachem
