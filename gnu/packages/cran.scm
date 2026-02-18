@@ -12641,20 +12641,17 @@ data types as well.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'skip-bad-tests
-           (lambda _
-             ;; These tests require the r-probably package, which we can't add
-             ;; to avoid a depedency cycle.
-             (substitute* "tests/testthat/test-utils.R"
-               ((".*tailor_fully_trained works.*" m)
-                (string-append m "skip('skip');\n")))
-             (substitute* "tests/testthat/test-extract.R"
-               ((".*extract single parameter from tailor.*" m)
-                (string-append m "skip('skip');\n"))
-               ((".*extract parameter set from tailor.*" m)
-                (string-append m "skip('skip');\n"))))))))
+      #:skipped-tests
+      ;; These tests require the r-probably package, which we can't add to
+      ;; avoid a dependency cycle.
+      '(("test-utils.R"
+         "tailor_fully_trained works")
+        ("test-extract.R"
+         "extract single parameter from tailor"
+         "extract parameter set from tailor with a tunable parameter"
+         "extract parameter set from tailor with multiple tunable parameters"
+         "extract single parameter from tailor with no tunable parameters"
+         "extract single parameter from tailor with tunable parameters"))))
     (propagated-inputs (list r-cli
                              r-dplyr
                              r-generics
