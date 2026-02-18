@@ -3694,44 +3694,42 @@ displays the results in real time.")
     (package
       (name "amule")
       (version (git-version "2.3.3" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/amule-project/amule")
-                       (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1mwc7cgijbb5l4bvvsvjm0qqnyi9hpp1qaj6si86q4q935qp5qx6"))))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/amule-project/amule")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1mwc7cgijbb5l4bvvsvjm0qqnyi9hpp1qaj6si86q4q935qp5qx6"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (delete 'bootstrap)            ; bootstrap phase runs too early.
-           (add-after 'patch-source-shebangs 'autogen
-             (lambda _
-               (invoke "sh" "autogen.sh")
-               #t)))
-         #:configure-flags
-         '("--disable-rpath"
-           "--enable-wxcas"
-           "--enable-cas"
-           "--enable-alc"
-           "--enable-alcc"
-           "--enable-xas"
-           "--enable-amulecmd"
-           "--enable-geoip"
-           "--enable-ccache"
-           "--enable-nls"
-           "--enable-optimize"
-           "--enable-amule-gui"
-           "--enable-amule-daemon"
-           "--enable-webserver"
-           "--with-denoise-level=0")))
-      (native-inputs
-       (list autoconf automake gettext-minimal perl))
-      (inputs
-       (list zlib crypto++ libpng wxwidgets))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'bootstrap) ;bootstrap phase runs too early.
+            (add-after 'patch-source-shebangs 'autogen
+              (lambda _
+                (invoke "sh" "autogen.sh"))))
+        #:configure-flags
+        #~(list "--disable-rpath"
+                "--enable-wxcas"
+                "--enable-cas"
+                "--enable-alc"
+                "--enable-alcc"
+                "--enable-xas"
+                "--enable-amulecmd"
+                "--enable-geoip"
+                "--enable-ccache"
+                "--enable-nls"
+                "--enable-optimize"
+                "--enable-amule-gui"
+                "--enable-amule-daemon"
+                "--enable-webserver"
+                "--with-denoise-level=0")))
+      (native-inputs (list autoconf automake gettext-minimal perl))
+      (inputs (list zlib crypto++ libpng wxwidgets))
       (home-page "https://amule.org/")
       (synopsis "Peer-to-peer client for the eD2K and Kademlia networks")
       (description
