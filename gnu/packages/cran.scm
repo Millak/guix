@@ -45542,13 +45542,10 @@ classification and regression models.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             (substitute* "tests/testthat/test-caretList.R"
-               ((".*caretList supports models that return an array.*" m)
-                (string-append m "skip('skip');\n"))))))))
+      #:skipped-tests
+      '(("test-caretList.R"
+         ;; Required packages are missing: mgcv
+         "caretList supports models that return an array or matrix"))))
     (propagated-inputs (list r-caret
                              r-data-table
                              r-ggplot2
