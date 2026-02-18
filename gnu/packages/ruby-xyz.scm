@@ -15176,22 +15176,18 @@ defined in @file{.travis.yml} on your local machine, using @code{rvm},
     (license license:expat)))
 
 (define-public ruby-rugged
-  ;; The last release is old and doesn't build anymore (see:
-  ;; https://github.com/libgit2/rugged/issues/951).
-  (let ((commit "6379f23cedd5f527cf6a5c229627e366b590a22d")
-        (revision "0"))
     (package
       (name "ruby-rugged")
-      (version (git-version "1.6.2" revision commit))
+      (version "1.9.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/libgit2/rugged")
-                      (commit commit)))
+                      (commit (string-append "v" version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0yac7vm0l2jsdsxf2k7xbny4iyzsy8fhiy2g5sphhffp7xgynny8"))))
+                  "0ixylc4hv4iqrkhzacq8nar70da8pml26nf9vmgys1kp2j7zc35g"))))
       (build-system ruby-build-system)
       (arguments
        (list #:gem-flags
@@ -15200,10 +15196,12 @@ defined in @file{.travis.yml} on your local machine, using @code{rvm},
              #~(modify-phases %standard-phases
                  (add-after 'unpack 'adjust-extconf.rb
                    (lambda _
+		     (delete-file-recursively "vendor")
                      ;; Neither using --with-git2-dir=$prefix nor providing
                      ;; pkg-config allows locating the libgit2 prefix (see:
                      ;; https://github.com/libgit2/rugged/issues/955).
                      (substitute* "ext/rugged/extconf.rb"
+                       (("LIBGIT2_VER") "LIBGIT2_VERSION")
                        (("LIBGIT2_DIR = File.join.*'vendor', 'libgit2'.*")
                         (format #f "LIBGIT2_DIR = ~s~%"
                                 #$(this-package-input "libgit2"))))))
@@ -15224,8 +15222,8 @@ defined in @file{.travis.yml} on your local machine, using @code{rvm},
                                  '("blame_test.rb"
                                    "blob_test.rb"
                                    "cherrypick_test.rb"
-                                   "config_test.rb"
                                    "commit_test.rb"
+                                   "config_test.rb"
                                    "diff_test.rb"
                                    "index_test.rb"
                                    "merge_test.rb"
@@ -15249,13 +15247,13 @@ defined in @file{.travis.yml} on your local machine, using @code{rvm},
                                    "walker_test.rb"))
                        (delete-file-recursively "online")))))))
       (native-inputs (list git-minimal/pinned ruby-rake-compiler))
-      (inputs (list libgit2-1.6))
+      (inputs (list libgit2))
       (synopsis "Ruby bindings to the libgit2 linkable C Git library")
       (description "Rugged is a library for accessing libgit2 in Ruby.  It gives
 you the speed and portability of libgit2 with the beauty of the Ruby
 language.")
       (home-page "https://www.rubydoc.info/gems/rugged")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public ruby-yell
   (package
