@@ -232,7 +232,7 @@ runtime (like runc or crun) for a single container.")
      (list guile-3.0 ; for wrap-script
            podman
            wget))
-    (home-page "https://distrobox.privatedns.org/")
+    (home-page "https://distrobox.it")
     (synopsis "Create and start containers highly integrated with the hosts")
     (description
      "Distrobox is a fancy wrapper around Podman or Docker to create and start
