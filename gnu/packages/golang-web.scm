@@ -18829,6 +18829,41 @@ carries no encryption keys and cannot decode the traffic that it proxies.")))
     (propagated-inputs '())
     (inputs '())))
 
+(define-public snowflake-proxy
+  (package/inherit
+      go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-snowflake-v2
+    (name "snowflake-proxy")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments
+          go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-snowflake-v2)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:import-path _)
+        (string-append "gitlab.torproject.org/tpo/anti-censorship/"
+                       "pluggable-transports/snowflake/proxy"))
+       ((#:unpack-path _ "")
+        (string-append "gitlab.torproject.org/tpo/anti-censorship/"
+                       "pluggable-transports/snowflake"))
+       ((#:phases _ #~%standard-phases)
+        #~(modify-phases %standard-phases
+            (add-after 'install 'fix-name-collision
+              (lambda _
+                (rename-file (string-append #$output "/bin/proxy")
+                             (string-append #$output "/bin/" #$name))))))))
+    (native-inputs
+     (package-propagated-inputs
+      go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-snowflake-v2))
+    (propagated-inputs '())
+    (inputs '())
+    (description
+     "This package provides a standalone (not browser-based) version
+of the Snowflake proxy.  For browser-based versions of the Snowflake proxy,
+see
+@url{https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake-webext,
+snowflake-webext}.")))
+
 (define-public swag
   (package/inherit go-github-com-swaggo-swag
     (name "swag")
