@@ -2676,7 +2676,7 @@ form of AXI, AXI lite, and AXI stream modules.")
     (native-inputs
      (list python-pytest python-setuptools python-setuptools-scm))
     (propagated-inputs
-     (list python-jinja2))
+     (list python-importlib-metadata python-jinja2))
     (home-page "https://github.com/olofk/edalize/")
     (synopsis "Python Library for interacting with EDA tools")
     (description
