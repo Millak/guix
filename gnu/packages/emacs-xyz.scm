@@ -10589,6 +10589,43 @@ It tracks the latest version of the same @code{vhdl-mode} package included
 with Emacs.")
     (license license:gpl3+)))
 
+(define-public emacs-verilog-mode
+  ;; No releases, nor tags.
+  (let ((commit "54a0c9b5025aa73f585fc18560d724a60ca2e86c")
+        (revision "0"))
+    (package
+      (name "emacs-verilog-mode")
+      (version (git-version "2026.02.18" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/veripool/verilog-mode/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1zaf8b41nc3kfh6021lfpsfdpi3yki8sxgz1fpi5yafhb39y7bh6"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;requires XEmacs
+        #:test-command #~(list "make" "test")
+        #:exclude #~(list "^batch_prof.el$" "^0test.el$" "^batch_test.el$")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'install 'install-doc
+              (lambda _
+                (invoke "make" "verilog.info"))))))
+      (native-inputs
+       (list perl texinfo))
+      (home-page "https://github.com/veripool/verilog-mode/")
+      (synopsis "Major mode for Verilog programming language")
+      (description
+       "This Emacs package provides a mode for the Verilog programming
+language.  It tracks the latest version of the same @code{verilog-mode}
+package included with Emacs.")
+      (license license:gpl3+))))
+
 (define-public emacs-vhdl-ts-mode
   (package
     (name "emacs-vhdl-ts-mode")
