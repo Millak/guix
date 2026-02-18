@@ -49823,14 +49823,10 @@ input.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-test
-           (lambda _
-             ;; This test produces warnings.
-             (substitute* "tests/testthat/test_parameters.R"
-               ((".*training should warn if you use.*" m)
-                (string-append m "skip('skip')\n"))))))))
+      #:skipped-tests
+      ;; This test produces warnings.
+      '(("test_parameters.R"
+         "training should warn if you use 'dart"))))
     (propagated-inputs
      (list r-data-table r-jsonlite r-matrix r-r6))
     (native-inputs
