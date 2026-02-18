@@ -38857,39 +38857,6 @@ bindings for Python 3.")
 distance (Ukkonen).")
     (license license:expat)))
 
-(define-deprecated/public python-ukpostcodeparser #f
-  (package
-    (name "python-ukpostcodeparser")
-    (version "1.1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "UkPostcodeParser" version))
-              (sha256
-               (base32
-                "03jkf1ygbwq3akzbcjyjk1akc1hv2sfgx90306pq1nwklbpn80lk"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list
-         ;; Tests for lowercase postcodes fail.
-         "-k" (string-join
-               (list "not test_091 "
-                     "test_097 "
-                     "test_098 "
-                     "test_125 "
-                     "test_131")
-               " and not ")
-         "ukpostcodeparser/test/parser.py")))
-    (native-inputs
-     (list python-pytest python-setuptools))
-    (home-page "https://github.com/hamstah/ukpostcodeparser")
-    (synopsis "UK Postcode parser for Python")
-    (description
-     "This library provides the @code{parse_uk_postcode} function for
-parsing UK postcodes.")
-    (license license:expat)))
-
 (define-public python-ulid
   (package
     (name "python-ulid")
