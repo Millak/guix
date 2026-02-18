@@ -6835,14 +6835,12 @@ ldap, and also supports cookies, redirects, authentication, etc.")
      '((updater-extra-native-inputs . ("r-stringi"))))
     (arguments
      (list
+      #:skipped-tests
+      ;; XXX This fails with the latest update to vroom.
+      '(("test-write.R"
+         "Can change the escape behavior for quotes"))
       #:phases
       '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; XXX This fails with the latest update to vroom.
-             (substitute* "tests/testthat/test-write.R"
-               ((".*Can change the escape behavior for quotes.*" m)
-                (string-append m "skip('skip');\n")))))
          (add-before 'check 'set-timezone
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Two tests would fail without this.
