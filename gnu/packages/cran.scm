@@ -46913,15 +46913,11 @@ well as extracting and replacing names and symbols from these objects.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-bad-tests
-           (lambda _
-             ;; Two tests produce harmless warnings.
-             (substitute* '("tests/testthat/test-dist.R"
-                            "tests/testthat/test-simil.R")
-               ((".*use_nan is working.*" m)
-                (string-append m "skip('skip');\n"))))))))
+      #:skipped-tests
+      '(("test-dist.R"
+         "use_nan is working")
+        ("test-simil.R"
+         "use_nan is working"))))
     (native-inputs (list r-entropy r-knitr r-proxy r-testthat))
     (inputs (list onetbb))
     (propagated-inputs
