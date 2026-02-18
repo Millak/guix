@@ -1,6 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
+;;; Copyright © 2021-2023 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2024-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2024-2026 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +35,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
   #:export (%standard-phases
             add-installed-pythonpath
             ensure-no-mtimes-pre-1980
@@ -154,38 +158,70 @@ by Cython."
     (find-files "." "\\.pyx$")))
 
 (define* (set-version #:key name inputs #:allow-other-keys)
-  "Set the expect package version environment variable in Semantic Versioning
-format when python-setuptools-scm or python-pbr is present."
+  "Provide the package version to Python build backend
+that expects it to be derived from the version control information
+that is not present in the source."
 
-  (define (extract-version name)
-    "Extract version from a name-version string."
-    ;; Note: This fails if the package-name contains a dot.
-    (and-let* ((first-dot (or (string-index name #\.)
-                              (string-length name)))
-               (prev-hyphen (string-rindex name #\- 0 first-dot)))
-      (substring name (+ prev-hyphen 1))))
+  ;; The version scheme for public version identifiers of Python packages
+  ;; is defined by PEP 440 and maintained by the Python Packaging Authority at
+  ;; https://packaging.python.org/en/latest/specifications/version-specifiers
+  (define (public-version-identifier name)
+    "Extract the public version identifier from a name-version string."
+    (let ((_ version (package-name->name+version name)))
+      ;; git-version et al suffix version with revision and commit.
+      (first (string-split version #\-))))
 
-  (let ((package (and=> (any (cute assoc <> inputs)
-                             (list "python-setuptools-scm"
-                                   "python-setuptools-scm-bootstrap"
-                                   "python-pbr"))
-                        car)))
-    ;; Both git and hg use -checkout suffixes.
-    (if (and package (string-suffix? "-checkout" (assoc-ref inputs "source")))
-        (and-let* ((version (extract-version name))
-                   ;; version here can be semver-revision-commit.
-                   (version (first (string-split version #\-))))
-          (match package
-            ((or "python-setuptools-scm" "python-setuptools-scm-bootstrap")
-             (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" version))
-            ("python-pbr"
-             (setenv "PBR_VERSION" version))
-            (_                          ;should never happen.
-             #f)))
-        ;; Otherwise, it is probably from a wheel and doesn't require
-        ;; the phase in the first place.
-        (format #t "The source doesn't seem to use version control, \
-python-setuptools-scm is likely unnecessary as a native-input.~%"))))
+  (let ((version-backends (map (compose string->symbol car)
+                               (filter-map
+                                (cute assoc <> inputs)
+                                '("python-hatch-vcs"
+                                  "python-hatch-vcs-bootstrap"
+                                  "python-pbr"
+                                  "python-poetry-dynamic-versioning"
+                                  "python-setuptools-scm"
+                                  "python-setuptools-scm-bootstrap"
+                                  "python-versioneer"))))
+        ;; Both git and hg use -checkout suffixes.
+        (version (and (string-suffix? "-checkout" (assoc-ref inputs "source"))
+                      (public-version-identifier name))))
+    (cond ((null? version-backends)
+           (format #t "Detected no Python build backend that expects")
+           (format #t " version control information, nothing to do.~%"))
+          (version
+           (for-each
+             (lambda (backend)
+               (case backend
+                 ((python-hatch-vcs python-hatch-vcs-bootstrap
+                   python-setuptools-scm python-setuptools-scm-bootstrap)
+                  (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" version))
+                 ((python-pbr)
+                  (setenv "PBR_VERSION" version))
+                 ((python-poetry-dynamic-versioning)
+                  (setenv "POETRY_DYNAMIC_VERSIONING_BYPASS" version))
+                 ((python-versioneer)
+                  (let ((bundled "versioneer.py"))
+                    (when (file-exists? bundled)
+                      (delete-file bundled)))
+                  (setenv "GUIX_VERSIONEER_VERSION" version))
+                 (else #f)))            ;should never happen.
+             version-backends))
+          (else
+           (format #t "The source seems to be a Python package sdist")
+           (for-each
+             (lambda (backend)
+               (format #t (case backend
+                            ((python-hatch-vcs
+                              python-hatch-vcs-bootstrap
+                              python-poetry-dynamic-versioning
+                              python-setuptools-scm
+                              python-setuptools-scm-bootstrap)
+                             ", ~a is likely unnecessary as a native-input")
+                            ((python-pbr python-versioneer)
+                             ", nothing to do for ~a")
+                            (else #f))  ;should never happen.
+                 backend))
+             version-backends)
+           (format #t ".~%")))))
 
 (define* (build #:key outputs build-backend backend-path configure-flags #:allow-other-keys)
   "Build a given Python package."
