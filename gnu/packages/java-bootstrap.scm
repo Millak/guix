@@ -9,7 +9,6 @@
 ;;; Copyright © 2019 Andrius Štikonas <andrius@stikonas.eu>
 ;;; Copyright © 2020 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -589,8 +588,7 @@ machine.")))
              jamvm-1-bootstrap)))))
 
 (define jamvm
-  (package
-    (inherit jamvm-1-bootstrap)
+  (package (inherit jamvm-1-bootstrap)
     (version "2.0.0")
     (source (origin
               (method url-fetch)
@@ -610,16 +608,14 @@ machine.")))
     (build-system gnu-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments jamvm-1-bootstrap)
-       ((#:modules modules %default-gnu-modules)
-        (append '((srfi srfi-1)
-                  (srfi srfi-26))
-                modules))
-       ((#:configure-flags flags)
-        #~(cons (string-append "--with-classpath-install-dir="
-                               (assoc-ref %build-inputs "classpath"))
-                (remove (cut string-prefix? "--with-classpath-install-dir" <>)
-                        #$flags)))))
-    (inputs (list classpath-devel ecj-javac-wrapper libffi zip zlib))))
+       ((#:configure-flags _)
+        '(list (string-append "--with-classpath-install-dir="
+                              (assoc-ref %build-inputs "classpath"))))))
+    (inputs
+     `(("classpath" ,classpath-devel)
+       ("ecj-javac-wrapper" ,ecj-javac-wrapper)
+       ("zip" ,zip)
+       ("zlib" ,zlib)))))
 
 (define ecj-javac-wrapper-final
   (package (inherit ecj-javac-wrapper)
