@@ -71,6 +71,7 @@
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Jared Klingenberger <jkling@noreply.codeberg.org>
+;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3688,56 +3689,58 @@ displays the results in real time.")
     (license license:gpl2+)))
 
 (define-public amule
-  (package
-    (name "amule")
-    (version "2.3.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/amule-project/amule")
-                     (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1nm4vxgmisn1b6l3drmz0q04x067j2i8lw5rnf0acaapwlp8qwvi"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'bootstrap) ; bootstrap phase runs too early.
-         (add-after 'patch-source-shebangs 'autogen
-           (lambda _
-             (invoke "sh" "autogen.sh")
-             #t)))
-       #:configure-flags
-       '("--disable-rpath"
-         "--enable-wxcas"
-         "--enable-cas"
-         "--enable-alc"
-         "--enable-alcc"
-         "--enable-xas"
-         "--enable-amulecmd"
-         "--enable-geoip"
-         "--enable-ccache"
-         "--enable-nls"
-         "--enable-optimize"
-         "--enable-amule-gui"
-         "--enable-amule-daemon"
-         "--enable-webserver"
-         "--with-denoise-level=0")))
-    (native-inputs
-     (list autoconf automake gettext-minimal perl))
-    (inputs
-     (list zlib crypto++ libpng wxwidgets-gtk2))
-    (home-page "https://amule.org/")
-    (synopsis "Peer-to-peer client for the eD2K and Kademlia networks")
-    (description
-     "aMule is an eMule-like client for the eD2k and Kademlia peer-to-peer
+  (let ((commit "9ceeaa68b9727fa38efd9ddcf774b20d39d5a200")
+        (revision "0"))
+    (package
+      (name "amule")
+      (version (git-version "2.3.3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/amule-project/amule")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1mwc7cgijbb5l4bvvsvjm0qqnyi9hpp1qaj6si86q4q935qp5qx6"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (delete 'bootstrap)            ; bootstrap phase runs too early.
+           (add-after 'patch-source-shebangs 'autogen
+             (lambda _
+               (invoke "sh" "autogen.sh")
+               #t)))
+         #:configure-flags
+         '("--disable-rpath"
+           "--enable-wxcas"
+           "--enable-cas"
+           "--enable-alc"
+           "--enable-alcc"
+           "--enable-xas"
+           "--enable-amulecmd"
+           "--enable-geoip"
+           "--enable-ccache"
+           "--enable-nls"
+           "--enable-optimize"
+           "--enable-amule-gui"
+           "--enable-amule-daemon"
+           "--enable-webserver"
+           "--with-denoise-level=0")))
+      (native-inputs
+       (list autoconf automake gettext-minimal perl))
+      (inputs
+       (list zlib crypto++ libpng wxwidgets))
+      (home-page "https://amule.org/")
+      (synopsis "Peer-to-peer client for the eD2K and Kademlia networks")
+      (description
+       "aMule is an eMule-like client for the eD2k and Kademlia peer-to-peer
 file sharing networks.  It includes a graphical user interface (GUI), a daemon
 allowing you to run a client with no graphical interface, and a Web GUI for
 remote access.  The @command{amulecmd} command allows you to control aMule
 remotely.")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public zyre
   (package
