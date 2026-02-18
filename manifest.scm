@@ -45,14 +45,9 @@
 
        ;; Useful extras for patches submission.
        (specifications->manifest
-        (list "b4"
-              "codeberg-cli"
+        (list "codeberg-cli"
               "git"
-              "git:send-email"
-              "mumi"
-              "nss-certs"
-              "openssl"              ;required if using 'smtpEncryption = tls'
-              "patman"))
+              "nss-certs"))
        ;; For installer
        (specifications->manifest
         (list "guile-newt"
