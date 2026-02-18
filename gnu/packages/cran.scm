@@ -47283,15 +47283,6 @@ Models.")
             "133dvhigvqs6qadpf47zxxpgh1j0h2cgch8h88qh9viiw2s0klh6"))))
     (properties `((upstream-name . "mi")))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'skip-bad-tests
-           (lambda _
-             ;; Fails with: binary variables must have exactly two response categories
-             (substitute* "tests/missing_variable.R"
-               (("y <- missing_variable\\(x, type = \"binary\"\\)") "")))))))
     (propagated-inputs
      (list r-arm r-matrix))
     (native-inputs
