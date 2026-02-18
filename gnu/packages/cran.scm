@@ -30991,14 +30991,10 @@ data, fixed and random effects with bootstrapping.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; One test fails with accuracy problems.
-             (substitute* "tests/testthat/test-predict.R"
-               ((".*predvars with different ns\\(\\) in fixed an.*" m)
-                (string-append m "skip('skip');\n"))))))))
+      #:skipped-tests
+      ;; One test fails with accuracy problems.
+      '(("test-predict.R"
+         "predvars with different ns\\(\\) in fixed an"))))
     (propagated-inputs
      (list r-lme4
            r-matrix
