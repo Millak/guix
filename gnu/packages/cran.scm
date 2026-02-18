@@ -8635,16 +8635,11 @@ package can generate VPCs for continuous, categorical, censored, and
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'skip-bad-tests
-           (lambda _
-             ;; These tests fail because "class" returns 5 instead of 2 elements.
-             (substitute* "tests/testthat/test_ggvenn.R"
-               ((".*ggvenn: slices.*" m)
-                (string-append m "skip('skip');\n"))
-               ((".*ggvenn: plot for 2 and 3 sets.*" m)
-                (string-append m "skip('skip');\n"))))))))
+      #:skipped-tests
+      '(("test_ggvenn.R"
+         ;; These tests fail because "class" returns 5 instead of 2 elements.
+         "ggvenn: plot for 2 and 3 sets"
+         "ggvenn: slices"))))
     (propagated-inputs
      (list r-ggforce
            r-ggplot2
