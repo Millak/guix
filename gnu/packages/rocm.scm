@@ -680,7 +680,19 @@ moves.")
   (package
     (name "rccl")
     (version %rocm-version)
-    (source %rocm-systems-origin)
+    ;; TODO: Switch to
+    ;; (source %rocm-systems-origin)
+    ;; with %rocm-version 7.1.3
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ROCm/rccl")
+              (commit (string-append "rocm-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0k1k181az3hifripd99srvshq9bw9kj2p77z5nw7zmnydbfc7vny"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -695,15 +707,12 @@ moves.")
          #$(string-append "-DGPU_TARGETS=" (current-amd-gpu-targets-string)))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
-            (lambda _
-              (chdir "projects/rccl")))
-          (add-after 'chdir 'patch-rocm-version
+          (add-after 'unpack 'patch-rocm-version
             (lambda _
               (substitute* "CMakeLists.txt"
                 (("cat \\$\\{ROCM_PATH\\}/\\.info/version")
                  (string-append "echo " #$%rocm-version)))))
-          (add-after 'chdir 'fix-cmake
+          (add-after 'unpack 'fix-cmake
             (lambda _
               (substitute* "CMakeLists.txt"
                 (("bash.*/etc/os-release.*")
