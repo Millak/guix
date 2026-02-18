@@ -26192,15 +26192,11 @@ JavaScript library) and interact with the igraph package.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; This test requires DiagrammeR, which we cannot add to Guix
-             ;; because of massive amounts of minified JavaScript.
-             (substitute* "tests/testthat/test-draw.R"
-               ((".*grViz names with quotes.*" m)
-                (string-append m "skip('skip');\n"))))))))
+      #:skipped-tests
+      ;; This test requires DiagrammeR, which we cannot add to Guix
+      ;; because of massive amounts of minified JavaScript.
+      '(("test-draw.R"
+         "grViz names with quotes"))))
     (propagated-inputs
      (list r-r6 r-stringi))
     (native-inputs
