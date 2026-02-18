@@ -38780,14 +38780,10 @@ which has the same usage and output as @code{optim()}.  Using
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; One test produces an unexpected warning.
-             (substitute* "tests/testthat/test-rcmdcheck.R"
-               ((".*Packages that use options pass R CMD check.*" m)
-                (string-append m "skip('skip');\n"))))))))
+      #:skipped-tests
+      ;; One test produces an unexpected warning.
+      '(("test-rcmdcheck.R"
+         "Packages that use options pass R CMD check"))))
     (native-inputs (list r-knitr r-pkgload r-rcmdcheck r-testthat r-withr))
     (home-page "https://dgkf.github.io/options/")
     (synopsis "Simple, consistent package options")
