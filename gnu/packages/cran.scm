@@ -2594,14 +2594,10 @@ and fast file reading.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; Fails with "NA in coercion to boolean"
-             (substitute* "tests/testthat/test-data_rename.R"
-               ((".*data_rename: multiple selection types.*" m)
-                (string-append m "skip('skip');\n"))))))))
+      #:skipped-tests
+      ;; Fails with "NA in coercion to boolean"
+      '(("test-data_rename.R"
+         "data_rename: multiple selection types"))))
     (propagated-inputs
      (list r-insight))
     (native-inputs
