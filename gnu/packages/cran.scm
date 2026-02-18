@@ -52926,6 +52926,9 @@ designs.  Broman et al. (2018) <doi:10.1534/genetics.118.301595>.")
        (sha256
         (base32
          "15dkh4wfszfrpfpwyhnwj3bnkjfxm17bp0grr1wf4h6zxj0jbkp5"))))
+    ;; If these inputs are not found at configure time they will be built from
+    ;; bundled sources.
+    (properties '((updater-extra-inputs . ("bzip2" "sqlite" "zstd"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -52940,8 +52943,7 @@ designs.  Broman et al. (2018) <doi:10.1534/genetics.118.301595>.")
                 (string-append m "skip('skip')\n"))
                ((".*createSingleChromosomeVCFIndex.*" m)
                 (string-append m "skip('skip')\n"))))))))
-    (inputs
-     (list zlib))
+    (inputs (list bzip2 sqlite (list zstd "lib") zlib))
     (native-inputs (list r-testthat))
     (home-page "http://seqminer.genomic.codes")
     (synopsis "Read nucleotide sequence data (VCF, BCF, and METAL formats)")
