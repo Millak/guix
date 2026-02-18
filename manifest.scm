@@ -44,10 +44,12 @@
               "perl"))
 
        ;; Useful extras for patches submission.
-       (specifications->manifest
-        (list "codeberg-cli"
-              "git"
-              "nss-certs"))
+       (packages->manifest
+        (filter supported-package?       ;rust is not yet available everywhere
+                (map specification->package
+                     (list "codeberg-cli"
+                           "git"
+                           "nss-certs"))))
        ;; For installer
        (specifications->manifest
         (list "guile-newt"
