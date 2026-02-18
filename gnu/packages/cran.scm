@@ -48731,14 +48731,10 @@ appropriate dog and cat images for many status codes.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-test
-           (lambda _
-             ;; This test produces warnings.
-             (substitute* "tests/testthat/test_simple.R"
-               ((".*Escaped symbols renders correctly.*" m)
-                (string-append m "skip('skip')\n"))))))))
+      #:skipped-tests
+      '(("test_simple.R"
+         ;; This test produces warnings.
+         "Escaped symbols renders correctly"))))
     (native-inputs
      (list r-knitr r-rlang r-testthat r-waldo))
     (home-page "https://github.com/stefano-meschiari/latex2exp/")
