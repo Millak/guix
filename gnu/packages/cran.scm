@@ -14805,17 +14805,6 @@ rules and utility functions for adaptive GH quadrature.")
      '((upstream-name . "rstpm2")
        (updater-extra-native-inputs . ("r-desolve"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; XXX: This one fails with the wrong result:
-             ;; length(beta) == length(args$init) is not TRUE
-             (substitute* "tests/testthat/test_delayed.R"
-               ((".*All values zero or one.*" m)
-                (string-append m "skip('skip');\n"))))))))
     (propagated-inputs
      (list r-bbmle
            r-fastghquad
