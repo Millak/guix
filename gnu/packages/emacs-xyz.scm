@@ -10654,6 +10654,33 @@ which-func, navigation and basic beautify and completion features to navigate
 and edit VHDL files.")
     (license license:gpl3+)))
 
+(define-public emacs-verilog-ts-mode
+  (package
+    (name "emacs-verilog-ts-mode")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gmlarumbe/verilog-ts-mode/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19jzdi4n8qj65wxgfr0simnsy2r90rpac5bgkc5bz7w2vfy7rhk3"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f         ;the testing framework, test-hdl, requires network
+      #:test-command #~(list "make")))
+    (propagated-inputs (list tree-sitter-systemverilog))
+    (home-page "https://github.com/gmlarumbe/verilog-ts-mode/")
+    (synopsis "Verilog Tree-sitter mode")
+    (description
+     "Verilog-ts-mode provides syntax highlighting, indentation, imenu,
+which-func, navigation and basic beautify and completion features to navigate
+and edit Verilog files.")
+    (license license:gpl3+)))
+
 (define-public emacs-typst-ts-mode
   (let ((commit "972dc69d6b8a3f8983f6b8000654f59c8a8d05ba")
         (revision "0"))
