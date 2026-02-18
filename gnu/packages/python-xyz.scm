@@ -17041,49 +17041,6 @@ printing of sub-tables by specifying a row range.")
     (description "This package is a simple RTF tokenizer.")
     (license license:gpl2+)))
 
-;; XXX: The package is not maintained anymore, and fails to build
-;; with the current python and pytest versions.
-(define-deprecated/public python-curio #f
-  (package
-    (name "python-curio")
-    (version "1.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "curio" version))
-       (sha256
-        (base32 "0isj3jl5mx6m25nr1f7r91hfaydhkvmks9p85dyvl5h2n9nmhajn"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list ;; AttributeError: 'NoneType' object has no attribute
-              ;; 'terminate'
-              "--deselect=tests/test_workers.py::test_exception"
-              ;; Tries to open an outgoing connection.
-              "--deselect=tests/test_network.py::test_ssl_outgoing"
-              ;; This test fails since Python 3.9.9, see
-              ;; <https://github.com/dabeaz/curio/issues/347>.
-              ;; AttributeError: 'NoneType' object has no attribute
-              ;; 'terminate'
-              "--deselect=tests/test_workers.py::test_worker_timeout"
-              ;; AttributeError: 'NoneType' object has no attribute
-              ;; 'terminate'
-              "--deselect=tests/test_workers.py::test_bad_cpu"
-              "--deselect=tests/test_workers.py::test_cpu"
-              "--deselect=tests/test_workers.py::test_worker_cancel")))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
-    (home-page "https://github.com/dabeaz/curio")
-    (synopsis "Coroutine-based library for concurrent Python")
-    (description
-     "Curio is a coroutine-based library for concurrent Python systems
-programming.  It provides standard programming abstractions such as as
-tasks, sockets, files, locks, and queues.")
-    (license license:bsd-3)))
-
 (define-public python-sniffio
   (package
     (name "python-sniffio")
