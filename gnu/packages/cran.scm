@@ -37463,15 +37463,11 @@ whole genome approach to detecting significant QTL in linkage maps.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'skip-bad-tests
-           (lambda _
-             ;; FIXME This test fails with: object 'a.b.overlap.sorted' not
-             ;; found.
-             (substitute* "tests/testthat/test-in.region.R"
-               ((".*check in.region.*" m)
-                (string-append m "skip('skip');\n"))))))))
+      #:skipped-tests
+      ;; FIXME This test fails with: object 'a.b.overlap.sorted' not
+      ;; found.
+      '(("test-in.region.R"
+         "check in.region"))))
     (propagated-inputs
      (list r-data-table
            r-r-utils
