@@ -155,6 +155,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/appimage.scm			\
   %D%/packages/apr.scm				\
   %D%/packages/arcan.scm			\
+  %D%/packages/array-languages.scm		\
   %D%/packages/aspell.scm			\
   %D%/packages/assembly.scm			\
   %D%/packages/astronomy.scm			\
