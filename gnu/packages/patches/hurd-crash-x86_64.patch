@@ -1,0 +1,30 @@
+From c809367cb503830346bfb1d1fd927c09d3f3cb16 Mon Sep 17 00:00:00 2001
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Date: Mon, 16 Feb 2026 00:32:00 +0100
+Subject: crash: Fix hang on x86_64 core generation
+
+The produced core file still make gdb crash, but at least crash doen't
+hang.
+---
+ exec/elfcore.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/exec/elfcore.c b/exec/elfcore.c
+index 8c85b13b..a2360965 100644
+--- a/exec/elfcore.c
++++ b/exec/elfcore.c
+@@ -97,6 +97,11 @@ fetch_thread_fpregset (thread_t thread, prfpregset_t *fpregs)
+   struct i386_float_state st;
+   mach_msg_type_number_t count = i386_FLOAT_STATE_COUNT;
+ 
++  if (!*fpregs)
++    /* FIXME: having a pointer here is bogus actually, prfpregset_t should be a
++       struct, not a pointer, like on i386.  This needs to be fixed in glibc
++       etc.  */
++    return;
+   memset (*fpregs, 0, sizeof (**fpregs));
+ 
+   err = thread_get_state (thread, i386_FLOAT_STATE,
+-- 
+cgit v1.2.3
+
