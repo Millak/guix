@@ -646,6 +646,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
                    ,(string-append #$crun           "/bin")
                    ,(string-append #$gcc            "/bin") ; cpp
                    ,(string-append #$iptables       "/sbin")
+                   ,(string-append #$nftables       "/sbin")
                    ,(string-append #$passt          "/bin")
                    ,(string-append #$procps         "/bin") ; ps
                    "/run/privileged/bin")))))
