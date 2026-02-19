@@ -77,7 +77,7 @@ files in the destination.")
 (define-public librsync
   (package
     (name "librsync")
-    (version "2.3.2")
+    (version "2.3.4")
        (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -86,7 +86,7 @@ files in the destination.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "0bn29npmbw26akc6y54661irpdh6qcivcs6q48cgp3llklhhxp0q"))))
+              "07yd45r9fkgw55m47xh2aqgflagzw5kh2w764w5gv1jfrg5rn8vy"))))
    (build-system cmake-build-system)
    (inputs
     (list popt))
