@@ -11576,8 +11576,8 @@ and above.")
                                 "-C" "tools/bpf/bpftool"
                                 "install")))))))
     (inputs (list elfutils                        ;provides libelf
-                  readline libcap zlib))
-    (native-inputs (list bison python-3))
+                  libcap openssl readline zlib))
+    (native-inputs (list bison python))
     ;; This tool does not have a proper web page.
     (home-page
      "https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/bpf/bpftool")
