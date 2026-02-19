@@ -6002,7 +6002,7 @@ conventions and aliases in the same expression.")
 (define-public python-limits
   (package
     (name "python-limits")
-    (version "5.5.0")
+    (version "5.8.0")
     (source
      (origin
        (method git-fetch)
@@ -6011,35 +6011,47 @@ conventions and aliases in the same expression.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ykld43q1pbvds4wsb18wagh852byzjpcjqg1xwa5cldigmkc2x0"))))
+        (base32 "1b1p6vpdwkzf89jl03xm56f3jp4dhkz89r63gx51b89ph1lcpi85"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: Despite running only unit tests, pytest exits with an error code.
-      #:tests? #f
-      #:test-flags #~(list "-m" "unit")
+      ;; tests: 155 passed, 620 deselected
+      #:test-flags
+      #~(list
+         ;; The test suite spawns storages in Docker.
+         "-k" (simple-format #f "not (~a)"
+                (string-join
+                 '("lazy_dependency"    ;importing redis
+                   "memcache"
+                   "mongo"
+                   "redis"
+                   "valkey")
+                 " or "))
+         "--ignore=tests/benchmarks")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'ignore-K-pytest-option
+          (add-before 'check 'adjust-tests
             (lambda _
               (substitute* "pytest.ini"
-                (("-K") "")))))))
+                ((".*--cov=.*") "")
+                ((".*-K.*") ""))
+              (substitute* (find-files "tests" "\\.py$")
+                (("import pymemcache.*") "")
+                (("import pymongo.*") "")
+                (("import redis.*") "")
+                (("import valkey.*") "")
+                ;; Lazy fixtures are only used for storages.
+                (("from pytest_lazy_fixtures import lf.*") "")
+                (("lf\\((.+)\\)" all fixture) fixture))
+              (substitute* "tests/test_storage.py"
+                (("\\<redis\\>\\..*\\(.*\\)") "")))))))
     (propagated-inputs (list python-deprecated python-packaging))
     (native-inputs
-     (list ; python-etcd3
-           python-flaky
+     (list python-flaky
+           python-hatch-vcs
+           python-hatchling
            python-pytest
-           python-pytest-asyncio
-           python-pytest-benchmark
-           python-pytest-cov
-           python-pytest-lazy-fixtures
-           python-pytest-xdist
-           ;; python-pymemcache
-           ;; python-pymongo
-           ;; python-redis
-           python-setuptools
-           ;; python-valkey
-           ))
+           python-pytest-asyncio))
     (home-page "https://limits.readthedocs.io/")
     (synopsis "Rate limiting utilities")
     (description
