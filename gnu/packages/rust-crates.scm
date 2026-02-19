@@ -8692,10 +8692,6 @@
   (crate-source "gix-quote" "0.6.0"
                 "1zc3gnc8z7z94sijyn0k9ij5adx230599x1vzsxfhqynnismldsa"))
 
-(define rust-gix-quote-0.6.2
-  (crate-source "gix-quote" "0.6.2"
-                "0mv7qgy955378bf163c1qagn20pb00gsnbph0wlckh4cxkr2zz4n"))
-
 (define rust-gix-quote-0.6.1
   (crate-source "gix-quote" "0.6.1"
                 "0nsc12pv6ajl6jkw7lxw68z5x5drnv5b0va8mn2nlmminw2fq4p9"))
@@ -8987,10 +8983,6 @@
 (define rust-gix-trace-0.1.13
   (crate-source "gix-trace" "0.1.13"
                 "0n76pqvz7zijlg8ybchhim6p80vnknms0b28bdlklx5in1aazk72"))
-
-(define rust-gix-trace-0.1.18
-  (crate-source "gix-trace" "0.1.18"
-                "1q32n7l0lpa70crx3vh356l6r8s7x11q3q25d35d8dw47dj176pn"))
 
 (define rust-gix-trace-0.1.17
   (crate-source "gix-trace" "0.1.17"
@@ -27382,17 +27374,13 @@
   (crate-source "zerocopy" "0.8.33"
                 "1z9d6z8p1ndf0yrvw99jr5zcjnd4270kv4rivqqyi7hbs5l533v6"))
 
-(define rust-zerocopy-0.8.37
-  (crate-source "zerocopy" "0.8.37"
-                "1b4n76hghgg0qhphh7clbqsay3k538lkysdiqlcx6nk8y00cymkl"))
-
-(define rust-zerocopy-0.8.39
-  (crate-source "zerocopy" "0.8.39"
-                "0jmf1iqns5sq07k3dscsgyc706pycar67rrq4j9nrnzacgb3avfv"))
-
 (define rust-zerocopy-0.8.35
   (crate-source "zerocopy" "0.8.35"
                 "0wi5kbqjyiyfrgp6q17yywlcwkz20k7y31w1kf3ik1anspfqdspx"))
+
+(define rust-zerocopy-0.8.37
+  (crate-source "zerocopy" "0.8.37"
+                "1b4n76hghgg0qhphh7clbqsay3k538lkysdiqlcx6nk8y00cymkl"))
 
 (define rust-zerocopy-0.8.39
   (crate-source "zerocopy" "0.8.39"
@@ -27426,17 +27414,13 @@
   (crate-source "zerocopy-derive" "0.8.33"
                 "1wbh4bil3kqfmiwxlpzhxba6fyh09nsy87k7idk8b1hadfr64y9c"))
 
-(define rust-zerocopy-derive-0.8.37
-  (crate-source "zerocopy-derive" "0.8.37"
-                "181pbqv1g8b9d9y84q3bsvi1jmvrbv0vr7nn35zdn591pwmp4a0k"))
-
-(define rust-zerocopy-derive-0.8.39
-  (crate-source "zerocopy-derive" "0.8.39"
-                "05z5yfq0mx3xdqadrgq5sd4d03nl82d9r0vp1qchaip9d4qws8j1"))
-
 (define rust-zerocopy-derive-0.8.35
   (crate-source "zerocopy-derive" "0.8.35"
                 "08nz2mgpv5bnag1fgv6dj7il1w4fxppf0ljp368nqz7zdssf258c"))
+
+(define rust-zerocopy-derive-0.8.37
+  (crate-source "zerocopy-derive" "0.8.37"
+                "181pbqv1g8b9d9y84q3bsvi1jmvrbv0vr7nn35zdn591pwmp4a0k"))
 
 (define rust-zerocopy-derive-0.8.39
   (crate-source "zerocopy-derive" "0.8.39"
