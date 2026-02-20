@@ -806,7 +806,7 @@ ngx_http_accept_language_module~%")
                                          (_                "UNSUPPORTED"))))
                           (string-append "--crossbuild="
                                          system ":" release ":" machine))
-                       ;; The following are the args decribed on
+                       ;; The following are the args described on
                        ;; <https://www.nginx.com/blog/compiling-dynamic-modules-nginx-plus>.
                        ;; Enabling --with-compat here and in the nginx package
                        ;; would ensure binary compatibility even when using

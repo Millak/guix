@@ -521,7 +521,7 @@ NAT-T and more.")
            ;; src/libcharon/plugins/vici/ruby/*
            ;; src/libcharon/plugins/xauth_pam/xauth_pam_listener.[ch]
            license:expat
-           ;; src/inclue/sys/*
+           ;; src/include/sys/*
            license:bsd-3
            ;; src/libstrongswan/plugins/sha3/sha3_keccak.c
            license:public-domain

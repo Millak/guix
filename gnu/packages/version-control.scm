@@ -814,7 +814,7 @@ everything from small to very large projects with speed and efficiency.")
               (sha256
                (base32
                 "0if0vqn3fj22p95a0125zpgwz3mqfqxqnvwa7fkf7b00wh0c1wyz"))))
-    ;; Temporary measure to prevent unneccessary package rebuilds.
+    ;; Temporary measure to prevent unnecessary package rebuilds.
     (arguments
       (substitute-keyword-arguments (package-arguments git-minimal)
         ((#:configure-flags flags #~'())

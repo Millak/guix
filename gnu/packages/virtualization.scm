@@ -1380,7 +1380,7 @@ of one or more RISC-V harts.")
     (arguments
      (list
       #:install-source? #f
-      #:tests? #f ;TODO: tests requrie some set up.
+      #:tests? #f ;TODO: tests require some set up.
       #:import-path "github.com/lxc/incus/v6"
       #:embed-files
       #~(list "children"
@@ -1516,7 +1516,7 @@ using simplestreams index files as the publishing mechanism
 @item lxd-to-incus -   LXD to Incus migration tool
 @item mini-oidc
 @item sysinfo - basic system stats tool
-@item tls2jwt - TLS to JWT certificate convertor, reference/testing tool
+@item tls2jwt - TLS to JWT certificate converter, reference/testing tool
 @end itemize")
     (license license:asl2.0)))
 
@@ -2470,7 +2470,7 @@ Open Container Initiative specification.")
       ;; directory
       #~(list "-skip" (string-append "TestUnpackManifestCustomLayer"
                                      "|TestUnpackStartFromDescriptor"))
-      #:test-subdirs #~(list "../../...")       ;test the whole libary
+      #:test-subdirs #~(list "../../...")       ;test the whole library
       #:build-flags
       #~(list (string-append "-ldflags="
                              "-X github.com/opencontainers/umoci.version="
@@ -3000,7 +3000,7 @@ virtual machines.")
                  (lambda* (#:key outputs #:allow-other-keys)
                    ;; Tests try to access /var/tmp, which is not possible in our build
                    ;; environment.  Let's give them another directory.
-                   ;; /tmp gets overriden in some tests, so we need another directory.
+                   ;; /tmp gets overridden in some tests, so we need another directory.
                    ;; the only possibility is the output directory.
                    (let ((tmp-dir (string-append (assoc-ref outputs "out") "/tmp")))
                      (mkdir-p tmp-dir)

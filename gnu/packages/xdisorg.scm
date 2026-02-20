@@ -2317,7 +2317,7 @@ connectivity of the X server running on a particular @code{DISPLAY}.")
                        (fixed-path (string-append #$output hard-path)))
                   ;; Make it relative
                   ;; Update hardcoded path to something
-                  ;; within the build enviroment.
+                  ;; within the build environment.
                   (substitute* "ulauncher/utils/environment.py"
                     ((hard-path)
                      fixed-path))
@@ -4142,7 +4142,7 @@ recording / screenshots.
 
 hyprsunset also provides a gamma filter, which can be used to adjust perceived
 display brightness on monitors that do not support software control, or to
-reduce percieved brightness below the monitor's minimum.")
+reduce perceived brightness below the monitor's minimum.")
     (license license:bsd-3)))
 
 (define-public hyprlock

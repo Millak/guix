@@ -2603,7 +2603,7 @@ Wayland compositor")
 modules for building a Wayland compositor.")
     (license license:expat)))  ; MIT license
 
-;; Allow packages refering to stable wlroots version, because
+;; Allow packages referring to stable wlroots version, because
 ;; wlroots updates are backward incompatible.
 (define-public wlroots-0.19 wlroots)
 

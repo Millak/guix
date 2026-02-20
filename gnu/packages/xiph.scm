@@ -407,7 +407,7 @@ incorporated technology from Skype's SILK codec and Xiph.Org's CELT codec.")
     (build-system gnu-build-system)
     (arguments
      ;; The package developers misuse pkg-config such that it doesn't work
-     ;; when cross compiling.  Therefore we avoid it completly and set the
+     ;; when cross compiling.  Therefore we avoid it completely and set the
      ;; necessary flags ourselves.
      `(#:configure-flags (list (string-append "CFLAGS=-I"
                                               (assoc-ref %build-inputs "libogg")

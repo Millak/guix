@@ -156,6 +156,6 @@ export WEATHER_CLI_API=@var{your OpenWeatherMap API key}
     (synopsis "Weather application for the system tray")
     (description
      "meteo-qt is an application to display weather information in desktop
-panels, desktop notifictions and its own window.  Weather information is
+panels, desktop notifications and its own window.  Weather information is
 retrieved from OpenWeatherMap.")
     (license license:gpl3)))

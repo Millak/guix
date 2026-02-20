@@ -2681,7 +2681,7 @@ streaming protocols.")
               (setenv "CONFIG_SHELL" (which "bash"))
               (apply invoke "./configure" configure-flags)
               ;; Adding CFLAGS to #:configure-flags, or setting it in the
-              ;; enviroment does not work.  Adding CFLAGS to #:make-flags
+              ;; environment does not work.  Adding CFLAGS to #:make-flags
               ;; breaks the build.
               (substitute* "config.mak"
                 (("CFLAGS *=" all)
@@ -6957,7 +6957,7 @@ downloader.  It does not require a Youtube API key.")
     ;; https://github.com/alexmercerind/youtube-search-python/issues/189
     ;; The most promising fork (in the sense that it works) is
     ;; https://github.com/ahmedayyad-dev/youtube-search-python-fork,
-    ;; which is therefor packaged in Guix.
+    ;; which is therefore packaged in Guix.
     (properties '((commit . "6d7e16ebcdc90032392749c2f30f8e29ea0956ae")
                   (revision . "0")))
     (version (git-version "1.6.6"

@@ -6870,7 +6870,7 @@ user set the transparency on a window.")
                     (("char\t\\*malloc\\(\\);")
                      ""))
 
-                  ;; Remove old configury that doesn't support modern
+                  ;; Remove old configuration that doesn't support modern
                   ;; command-line options, new architectures, etc.
                   (for-each delete-file
                             '("configure" "install-sh"

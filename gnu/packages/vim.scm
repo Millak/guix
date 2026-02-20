@@ -1679,7 +1679,7 @@ Guile's special forms.")
         #:plugin-name "dhall-vim"))
       (synopsis "Vim configuration for Dhall")
       (description
-       "A vim plugin to provide support and syntax hightlighting for the Dhall
+       "A vim plugin to provide support and syntax highlighting for the Dhall
 programming language")
       (home-page "https://github.com/vmchale/dhall-vim")
       (license license:bsd-3))))
