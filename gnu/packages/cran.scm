@@ -11391,16 +11391,16 @@ sets.")
 (define-public r-ecosolver
   (package
     (name "r-ecosolver")
-    (version "0.5.5")
+    (version "0.6.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ECOSolveR" version))
               (sha256
                (base32
-                "1izc8dwj438wpkmdmhwnnhkijz5skig4gwxgr6f1bzmj08bfv515"))))
+                "0zfn05lnmpnjnqp5scfdd9m2lbnff79y4a7xjkzr88bkdxbhyq93"))))
     (properties `((upstream-name . "ECOSolveR")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr r-matrix r-testthat))
+    (native-inputs (list r-cli r-knitr r-matrix r-testthat))
     (home-page "https://bnaras.github.io/ECOSolveR/")
     (synopsis "Embedded conic solver in R")
     (description
