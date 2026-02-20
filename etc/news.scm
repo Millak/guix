@@ -42,6 +42,16 @@
 (channel-news
  (version 0)
 
+ (entry (commit "d659fe8666c4bc38fcbdbe7b7a35101f2d7cc41b")
+        (title
+         (en "Potential security vulnerability in glibc"))
+        (body
+         (en "Guix adds the environment variable @code{GUIX_LOCPATH} to glibc,
+however it was not added to potentially unsafe variables to be unset in
+privileged environments.  A CVE number is pending for this issue.  This has
+been fixed with a graft to glibc and users should update all profiles,
+reconfigure their system, and reboot.")))
+
  (entry (commit "6d4cb99a15da7f4fd55f956c55f4f4aacfcc7742")
         (title
          (en "@code{%desktop-services} now includes GDM on AArch64")
