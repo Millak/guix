@@ -17551,14 +17551,16 @@ components.")
 (define-public r-bb
   (package
     (name "r-bb")
-    (version "2019.10-1")
+    (version "2026.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "BB" version))
        (sha256
-        (base32 "0kf9sfsm3n036a8a8gjfpc9qdryvadb019kqjh80n1szdv7bdl04"))))
-    (properties `((upstream-name . "BB")))
+        (base32 "1apvzypndzf1bix93pnhh9x9lkd8qgs1g9v1s0mkxh85abp5xggd"))))
+    (properties
+     '((upstream-name . "BB")
+       (updater-extra-native-inputs . ("r-numderiv" "r-setrng"))))
     (build-system r-build-system)
     ;; could not find function "latex"
     (arguments (list #:test-types '(list "tests")))
