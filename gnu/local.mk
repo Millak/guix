@@ -42,7 +42,7 @@
 # Copyright © 2021 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 # Copyright © 2021 Greg Hogan <code@greghogan.com>
 # Copyright © 2021-2024 Philip McGrath <philip@philipmcgrath.com>
-# Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
+# Copyright © 2021, 2026 Arun Isaac <arunisaac@systemreboot.net>
 # Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 # Copyright © 2021 Dmitry Polyakov <polyakov@liltechdude.xyz>
 # Copyright © 2021 Andrew Tropin <andrew@trop.in>
@@ -1721,6 +1721,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/linphone-desktop-cmake-belcard.patch	\
   %D%/packages/patches/linphone-desktop-cmake-find-modules.patch	\
   %D%/packages/patches/localed-xorg-keyboard.patch		\
+  %D%/packages/patches/lufa-fix-incompatible-cast.patch		\
   %D%/packages/patches/kaldi-ignore-failing-test.patch		\
   %D%/packages/patches/kaldi-openblas-0.3.29-compatibility.patch	\
   %D%/packages/patches/kcontacts-incorrect-country-name.patch	\

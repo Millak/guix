@@ -4,6 +4,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2026 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -123,7 +124,8 @@ multipart HEX files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ylr7qsiikcy827k18zj1vdzf0kb8hb0gjmifd75y8krkhhar49g"))))
+                "0ylr7qsiikcy827k18zj1vdzf0kb8hb0gjmifd75y8krkhhar49g"))
+              (patches (search-patches "lufa-fix-incompatible-cast.patch"))))
     (outputs '("bootloaders" "demos" "projects" "doc"))
     (build-system gnu-build-system)
     (arguments

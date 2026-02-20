@@ -1,0 +1,40 @@
+From a13ca118d3987890b749a2a96a92f74771821f8a Mon Sep 17 00:00:00 2001
+From: Dean Camera <dean@fourwalledcubicle.com>
+Date: Sun, 30 Jun 2024 13:44:17 +1000
+Subject: [PATCH] Webserver: Fix incompatible cast warning.
+
+---
+ Projects/Webserver/Lib/DHCPServerApp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/Projects/Webserver/Lib/DHCPServerApp.c b/Projects/Webserver/Lib/DHCPServerApp.c
+index 610d9bb6a..dfc579059 100644
+--- a/Projects/Webserver/Lib/DHCPServerApp.c
++++ b/Projects/Webserver/Lib/DHCPServerApp.c
+@@ -39,7 +39,7 @@
+ 
+ #if defined(ENABLE_DHCP_SERVER) || defined(__DOXYGEN__)
+ 
+-struct uip_conn* BroadcastConnection;
++struct uip_udp_conn* BroadcastConnection;
+ 
+ uint8_t LeasedIPs[255 / 8];
+ 
+@@ -107,7 +107,7 @@ void DHCPServerApp_Callback(void)
+ 					                                sizeof(uip_ipaddr_t), &GatewayIPAddress);
+ 
+ 				/* Send the DHCP OFFER packet */
+-				uip_poll_conn(BroadcastConnection);
++				uip_udp_periodic_conn(BroadcastConnection);
+ 				memcpy(&uip_udp_conn->ripaddr, &uip_broadcast_addr, sizeof(uip_ipaddr_t));
+ 				uip_udp_send(AppDataSize);
+ 
+@@ -135,7 +135,7 @@ void DHCPServerApp_Callback(void)
+ 				}
+ 
+ 				/* Send the DHCP ACK or NAK packet */
+-				uip_poll_conn(BroadcastConnection);
++				uip_udp_periodic_conn(BroadcastConnection);
+ 				memcpy(&uip_udp_conn->ripaddr, &uip_broadcast_addr, sizeof(uip_ipaddr_t));
+ 				uip_udp_send(AppDataSize);
+ 
