@@ -18432,12 +18432,6 @@ and other @acronym{IDEs, Integrated Development Environments}.")
               (substitute* "tests/debugpy/test_run.py"
                 (("#!/bin/sh")
                  (string-append "#!" (which "sh"))))))
-          (add-after 'unpack 'fix-version
-            ;; Versioneer is useless when there is no git metadata.
-            (lambda _
-              (substitute* "setup.py"
-                (("version=versioneer.get_version\\(),")
-                 (format #f "version=~s," #$version)))))
           (add-before 'build 'configure
             (lambda _
               ;; This adjusts the behavior of debugpy to load pydevd from
@@ -19583,13 +19577,6 @@ for atomic file system operations.")
        (sha256
         (base32 "0413msw23kv87fgs14ajp9wb2qxkcw6ydvwjzabz7xcp8iif9kr2"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-pbr-version
-            (lambda _
-              (setenv "PBR_VERSION" "3.0.1"))))))
     (native-inputs
      (list python-pbr
            python-pytest
@@ -32247,13 +32234,6 @@ implementations.")
        (sha256
         (base32 "1a35ihsn082626592bkjc41fywylzp603j0cxpkbm2f7l1k332xv"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "PBR_VERSION" #$version))))))
     (native-inputs (list python-pbr python-pytest))
     (propagated-inputs (list python-decorator python-py))
     (home-page "https://github.com/invl/retry")
@@ -33418,16 +33398,6 @@ needed and registers the function with its annotations.")
        (sha256
         (base32 "1pciaw3vd7awcnszkqda7l17y3gdzb8ca2cr4p5j0x3b8r28izx8"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'versioneer
-            (lambda _
-              (invoke "versioneer" "install")
-              (substitute* "setup.py"
-                (("version=versioneer.get_version\\(),")
-                 (format #f "version=~s," #$version))))))))
     (native-inputs
      (list python-pytest
            python-pytest-benchmark
@@ -36934,12 +36904,6 @@ in Rust, with a nice Python API provided on top.")
       #~(list "--ignore=doc/")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-version
-            ;; Versioneer is useless when there is no git metadata.
-            (lambda _
-              (substitute* "setup.py"
-                (("version=versioneer.get_version\\(),")
-                 (format #f "version=~s," #$version)))))
           (add-after 'unpack 'fix-pytest-config
             (lambda _
               (substitute* "pytest.ini"

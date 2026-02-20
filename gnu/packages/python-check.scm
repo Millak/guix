@@ -154,12 +154,7 @@ other external or custom tools for further processing.")
          (string-append
           ;; These tests require network access.
           "not test_address_as_instance_of_url_combined_with_pass_through "
-          "and not test_pass_through_with_origin_params"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-pbr-version
-            (lambda _
-              (setenv "PBR_VERSION" #$version))))))
+          "and not test_pass_through_with_origin_params"))))
     (native-inputs (list python-pbr python-ddt python-pytest python-setuptools))
     (propagated-inputs (list python-aiohttp))
     (home-page "https://github.com/pnuckowski/aioresponses")

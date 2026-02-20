@@ -1927,9 +1927,6 @@ enabling fast package management functionality in Python applications.")
               "--ignore=tests/test_workarounds.py")   ; network: workarounds
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
           (add-before 'check 'set-home
             (lambda _
               (setenv "HOME" "/tmp"))))))

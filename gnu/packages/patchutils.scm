@@ -672,9 +672,6 @@ patches do not match perfectly.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'set-PBR_VERSION
-            (lambda _
-              (setenv "PBR_VERSION" #$version)))
           (add-after 'install 'install-man-page
             (lambda _
               (install-file "man/pwclient.1"

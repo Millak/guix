@@ -1760,12 +1760,6 @@ spheres, cubes, etc.")
               "modin/tests/numpy")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'versioneer
-            (lambda _
-              (invoke "versioneer" "install")
-              (substitute* "setup.py"
-                (("version=versioneer.get_version\\(),")
-                 (string-append "version='" #$version "',")))))
           (add-after 'unpack 'fix-pytest-config
             (lambda _
               (substitute* "setup.cfg"
@@ -5266,14 +5260,6 @@ objects.")
                             "test_destroyhandler.py::test_misc")))
       #:phases
       #~(modify-phases %standard-phases
-          ;; Replace version manually because pytensor uses
-          ;; versioneer, which requires git metadata.
-          (add-after 'unpack 'versioneer
-            (lambda _
-              (invoke "versioneer" "install")
-              (substitute* "setup.py"
-                (("version=versioneer.get_version\\(),")
-                 (format #f "version=~s," #$version)))))
           (add-before 'check 'pre-check
             (lambda _
               ;; It is required for most tests.
@@ -5527,18 +5513,7 @@ and more
             ;; npm is not packaged so build without it
             (lambda _
               (setenv "SKIP_NPM" "T")))
-          (add-after 'unpack 'fix-version
-            ;; TODO: Versioneer in Guix gets its release version from the
-            ;; parent directory, but the plotly package is located inside a
-            ;; depth 3 subdirectory.  Try to use versioneer if possible.
-            (lambda _
-              (substitute* "packages/python/plotly/setup.py"
-                (("version=versioneer.get_version\\(),")
-                 (format #f "version=~s," #$version)))
-              (substitute* "packages/python/plotly/plotly/version.py"
-                (("__version__ = get_versions\\(\\)\\[\"version\"\\]")
-                 (format #f "__version__ = ~s" #$version)))))
-          (add-after 'fix-version 'chdir
+          (add-after 'unpack 'chdir
             (lambda _
               (chdir "packages/python/plotly"))))))
     ;; XXX: Plotly requires a long list of test only packages, do not
@@ -6531,14 +6506,6 @@ are source structure, project manager, interactive help, workspace...")
                  (string-append
                   "tibanna_args.command = command.replace('"
                   #$output "/bin/snakemake', 'python3 -m snakemake')")))))
-          (add-after 'unpack 'patch-version
-            (lambda _
-              (substitute* "setup.py"
-                (("version=versioneer.get_version\\(\\)")
-                 (format #f "version=~s" #$version)))
-              (substitute* '("snakemake/_version.py"
-                             "versioneer.py")
-                (("0\\+unknown") #$version))))
           (add-before 'check 'pre-check
             (lambda* (#:key tests?  #:allow-other-keys)
               (when tests?
@@ -6619,14 +6586,6 @@ Python style, together with a fast and comfortable execution environment.")
               (substitute* "snakemake/dag.py"
                 (("\"job\": rule,")
                  "\"job\": rule.name,"))))
-          (add-after 'unpack 'patch-version
-            (lambda _
-              (substitute* "setup.py"
-                (("version=versioneer.get_version\\(\\)")
-                 (format #f "version=~s" #$version)))
-              (substitute* '("snakemake/_version.py"
-                             "versioneer.py")
-                (("0\\+unknown") #$version))))
           ;; For cluster execution Snakemake will call Python.  Since there is
           ;; no suitable PYTHONPATH set, cluster execution will fail.  We fix
           ;; this by calling the snakemake wrapper instead.
@@ -6714,14 +6673,6 @@ Python style, together with a fast and comfortable execution environment.")
               (substitute* "snakemake/dag.py"
                 (("\"job\": rule,")
                  "\"job\": rule.name,"))))
-          (add-after 'unpack 'patch-version
-            (lambda _
-              (substitute* "setup.py"
-                (("version=versioneer.get_version\\(\\)")
-                 (format #f "version=~s" #$version)))
-              (substitute* '("snakemake/_version.py"
-                             "versioneer.py")
-                (("0\\+unknown") #$version))))
           (add-before 'check 'pre-check
             (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
@@ -6811,14 +6762,6 @@ Python style, together with a fast and comfortable execution environment.")
                  (string-append
                   "tibanna_args.command = command.replace('"
                   #$output "/bin/snakemake', 'python3 -m snakemake')")))))
-          (add-after 'unpack 'patch-version
-            (lambda _
-              (substitute* "setup.py"
-                (("version=versioneer.get_version\\(\\)")
-                 (format #f "version=~s" #$version)))
-              (substitute* '("snakemake/_version.py"
-                             "versioneer.py")
-                (("0\\+unknown") #$version))))
           (add-before 'check 'pre-check
             (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs

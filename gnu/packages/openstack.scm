@@ -282,10 +282,7 @@ is for some reason not possible and local caching of the fetched data.")
               (lambda _
                 (substitute* "test-requirements.txt"
                   (("(coverage|hacking).*")
-                   ""))))
-            (add-after 'unpack 'set-version
-              (lambda _
-                (setenv "PBR_VERSION" "3.0.0"))))))
+                   "")))))))
       (propagated-inputs (list python-stestr))
       (native-inputs
        (list python-babel
@@ -1168,10 +1165,7 @@ Gerrit for review, or fetching existing ones.")
             (lambda _
               (substitute* "test-requirements.txt"
                 (("hacking.*")
-                 ""))))
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "PBR_VERSION" #$version))))))
+                 "")))))))
     (native-inputs (list python-os-testr python-pbr python-setuptools))
     (home-page "https://github.com/openstack/requestsexceptions")
     (synopsis

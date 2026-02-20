@@ -6796,14 +6796,7 @@ linear algebra routines needed for structured matrices (or operators).")
                    ;; PyTorch 2.10 rejects passing a torch.Size plus extra args to `view'.
                    (substitute* "botorch/utils/multi_objective/hypervolume.py"
                      (("self\\._batch_sample_shape, *\\*obj\\.shape\\[-2:\\]")
-                      "self._batch_sample_shape"))))
-               (add-before 'build 'pretend-version
-                 ;; The version string is usually derived via setuptools-scm,
-                 ;; but without the git metadata available, the version string
-                 ;; is set to '0.0.0'.
-                 (lambda _
-                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                           #$(package-version this-package)))))))
+                      "self._batch_sample_shape")))))))
     (propagated-inputs (list python-gpytorch
                              python-linear-operator
                              python-multipledispatch

@@ -6625,19 +6625,6 @@ files.")
                  (string-append
                   "from astropy.units.core import Unit, UnitBase\n"
                   "from astropy.units.errors import UnitTypeError\n")))))
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; RuntimeError: Unable to detect version control
-                ;; system. Checked: Git. Not installed: Mercurial, Darcs,
-                ;; Subversion, Bazaar, Fossil, Pijul.  See
-                ;; <https://github.com/blacklanternsecurity/bbot/issues/1257>.
-                (("enable = true") "enable = false"))))
-          (add-before 'build 'set-version
-            (lambda _
-              ;; TODO: Include in pyproject-build-system.
-              (setenv "POETRY_DYNAMIC_VERSIONING_BYPASS"
-                      #$(version-major+minor+point version))))
           (add-before 'check 'prepare-test-environment
             (lambda _
               (setenv "HOME" "/tmp"))))))

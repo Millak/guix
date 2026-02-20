@@ -274,14 +274,6 @@ writing applications that talk to network enabled embedded
        (sha256
         (base32 "0majn27r2s2z5nbqvkpmw04kswhj9xkmvmm0rkvb3fga9lwwivlb"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "POETRY_DYNAMIC_VERSIONING_BYPASS"
-                      #$(version-major+minor+point version)))))))
     (native-inputs
      (list python-poetry-core
            python-poetry-dynamic-versioning
