@@ -22747,6 +22747,12 @@ patterns.")
     (build-system r-build-system)
     (arguments
      (list
+      #:skipped-tests
+      '(("test_conversion.R"
+         ;; These fail to raise an error because of our patch in the
+         ;; 'do-not-use-conda phase, which falls back to Python from Guix.
+         "as.AnnData, python path"
+         "as.ometiff, python path"))
       #:phases
       #~(modify-phases %standard-phases
           ;; By default VoltRon will use Basilisk, which uses Conda to set
@@ -22760,14 +22766,6 @@ patterns.")
                  (string-append
                   "source(paste0(system.file(package=\"VoltRon\"), \"/guix-refs.R\"));\n"
                   "return(guix_python);")))))
-          (add-after 'unpack 'skip-bad-tests
-            (lambda _
-              (with-directory-excursion "tests/testthat"
-                (substitute* "test_conversion.R"
-                  ((".*as.AnnData, python path.*" m)
-                   (string-append m "skip('skip');\n"))
-                  ((".*as.ometiff, python path.*" m)
-                   (string-append m "skip('skip');\n"))))))
           ;; We do this outside of the source code to ensure that
           ;; references are accessible to Guix.
           (add-after 'install 'record-python-reference
