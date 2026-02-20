@@ -293,7 +293,7 @@ available to ROCm and show their properties.")
                 "19jyymisxiikphzmq6h8vy5cg0r5dz3lxr5wvdf44frb8wxr8vla"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f))          ; Tests try to use git commit
-    (native-inputs (list git))
+    (native-inputs (list git-minimal/pinned))
     (home-page "https://rocm.docs.amd.com/projects/ROCmCMakeBuildTools/")
     (synopsis "ROCm cmake modules")
     (description "ROCm cmake modules provides cmake modules for common build
