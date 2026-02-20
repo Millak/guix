@@ -15087,32 +15087,35 @@ them easier to distinguish from other, less important buffers.")
     (license license:expat)))
 
 (define-public emacs-embark
-  (package
-    (name "emacs-embark")
-    (version "1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/oantolin/embark")
-             (commit version)))
-       (sha256
-        (base32 "1361jvwr3wjbpmq6dfkrhhhv9vrmqpkp1j18syp311g6h8hzi3hg"))
-       (file-name (git-file-name name version))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'install 'makeinfo
-            (lambda _ (emacs-makeinfo))))))
-    (native-inputs (list texinfo))
-    (propagated-inputs
-     (list emacs-avy emacs-consult))
-    (home-page "https://github.com/oantolin/embark")
-    (synopsis "Emacs mini-buffer actions rooted in keymaps")
-    (description
-     "This package provides a sort of right-click contextual menu for Emacs
+  (let ((commit "0bdfd38d281d6375e6e675ce6f1bd597a9e3b136")
+        (revision "1"))
+    (package
+      (name "emacs-embark")
+      (version (git-version "1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/oantolin/embark")
+                (commit commit)))
+         (sha256
+          (base32 "0m9y2wraapi744fg7y6cgz6y2gx0xzaglnxqalynz44ca9z6m6y4"))
+         (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #false                 ;no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'install 'makeinfo
+              (lambda _ (emacs-makeinfo))))))
+      (native-inputs (list texinfo))
+      (propagated-inputs
+       (list emacs-avy emacs-consult))
+      (home-page "https://github.com/oantolin/embark")
+      (synopsis "Emacs mini-buffer actions rooted in keymaps")
+      (description
+       "This package provides a sort of right-click contextual menu for Emacs
 offering you relevant @emph{actions} to use on a @emph{target} determined by
 the context.
 
@@ -15126,7 +15129,7 @@ get offered actions like deleting, copying, renaming, visiting in another
 window, running a shell command on the file, etc.  For buffers the actions
 include switching to or killing the buffer.  For package names the actions
 include installing, removing or visiting the homepage.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-prescient
   (package
