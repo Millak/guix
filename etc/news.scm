@@ -5,7 +5,7 @@
 ;; Copyright © 2019, 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
 ;; Copyright © 2019, 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;; Copyright © 2019, 2020, 2021, 2023 Julien Lepiller <julien@lepiller.eu>
-;; Copyright © 2019–2025 Florian Pelz <pelzflorian@pelzflorian.de>
+;; Copyright © 2019–2026 Florian Pelz <pelzflorian@pelzflorian.de>
 ;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;; Copyright © 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -44,13 +44,20 @@
 
  (entry (commit "d659fe8666c4bc38fcbdbe7b7a35101f2d7cc41b")
         (title
-         (en "Potential security vulnerability in glibc"))
+         (en "Potential security vulnerability in glibc")
+         (de "Mögliche Sicherheitslücke in glibc"))
         (body
          (en "Guix adds the environment variable @code{GUIX_LOCPATH} to glibc,
 however it was not added to potentially unsafe variables to be unset in
 privileged environments.  A CVE number is pending for this issue.  This has
 been fixed with a graft to glibc and users should update all profiles,
-reconfigure their system, and reboot.")))
+reconfigure their system, and reboot.")
+         (de "Guix fügt die Umgebungsvariable @code{GUIX_LOCPATH} zu glibc
+hinzu, aber sie wurde nicht zu den möglicherweise unsicheren Variablen
+hinzugefügt, die in privilegierten Umgebungen zurückgesetzt werden.  Eine
+CVE-Nummer hierfür wird noch zugewiesen.  Um den Fehler zu beheben, stellen
+wir eine Veredelung für glibc bereit; Nutzerinnen und Nutzer sollten all ihre
+Profile aktualisieren, ihr System rekonfigurieren und neustarten.")))
 
  (entry (commit "6d4cb99a15da7f4fd55f956c55f4f4aacfcc7742")
         (title
