@@ -33838,17 +33838,18 @@ diagnostics for controlling type-1 errors are also provided.")
 (define-public r-flare
   (package
     (name "r-flare")
-    (version "1.7.0.2")
+    (version "1.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "flare" version))
        (sha256
         (base32
-         "1i3nyvi8av74v1jy85gqai73vf0hzlkk5rdpfnmvi8d7q4fa7xvg"))))
+         "1ggi2vjrd97rdhcz0k3xkvjsmivjlfb3y4rqwjgm17jg93g4sfwq"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-igraph r-lattice r-mass r-matrix))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/flare")
     (synopsis "Family of Lasso regression implementations")
     (description
