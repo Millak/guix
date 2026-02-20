@@ -41,6 +41,7 @@
   #:use-module (gnu packages elf)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages libusb)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages version-control)
@@ -194,6 +195,31 @@ package contains the user-submitted projects and bootloaders for use with
 compatible microcontroller models, as well as the demos and the
 documentation.")
     (license license:expat)))           ;see LUFA/License.txt
+
+(define-public lufa-hid-bootloader-cli
+  (package
+    (inherit lufa)
+    (name "lufa-hid-bootloader-cli")
+    (build-system gnu-build-system)
+    (outputs '("out"))
+    (arguments
+     (list #:tests? #f ;; no tests
+           #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                "-C" "Bootloaders/HID/HostLoaderApp")
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (replace 'install
+                 (lambda _
+                   (install-file "Bootloaders/HID/HostLoaderApp/hid_bootloader_cli"
+                                 (string-append #$output "/bin")))))))
+    (inputs
+     (list libusb-compat))
+    (synopsis "Firmware uploader for the LUFA HID bootloader")
+    (description
+     "The LUFA HID loader program communicates with the LUFA HID bootloader to
+upload new firmware.")
+    (license license:gpl3)))
 
 (define-public microscheme
   (package
