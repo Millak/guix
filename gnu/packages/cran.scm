@@ -41148,14 +41148,14 @@ experiments in a well-organized and reproducible way.")
 (define-public r-clue
   (package
     (name "r-clue")
-    (version "0.3-66")
+    (version "0.3-67")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "clue" version))
        (sha256
         (base32
-         "1yy26zvw15bqphdlb6gj2m4ay92gbb8hvply9hwyndanq1cdv1ma"))))
+         "0ql3a8jy0ra22zb4bhhb3p14n9rr2b7qnnkzfrxzi97gw3zckc4v"))))
     (build-system r-build-system)
     (propagated-inputs (list r-cluster))
     (home-page "https://cran.r-project.org/web/packages/clue/")
