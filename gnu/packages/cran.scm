@@ -44520,14 +44520,14 @@ model (ACP(p,q)) proposed by Heinen (2003).")
 (define-public r-ada
   (package
     (name "r-ada")
-    (version "2.0-5")
+    (version "2.0-5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ada" version))
        (sha256
         (base32
-         "1h3a07czp0w3hrhjcg1fz721y8vsfclzqi3rq8qfzgpfb4h1f06r"))))
+         "1393qbcdwwswsil00v6sxgrym4jq1gq6l52xvcpfplxyvf0l327q"))))
     (properties `((upstream-name . "ada")))
     (build-system r-build-system)
     (propagated-inputs (list r-rpart))
