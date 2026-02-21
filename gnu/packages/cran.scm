@@ -50006,14 +50006,14 @@ and to manage processes involving them.")
 (define-public r-rselenium
   (package
     (name "r-rselenium")
-    (version "1.7.9")
+    (version "1.7.10")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "RSelenium" version))
         (sha256
           (base32
-            "18hd0gfpblg9ij99ik7ccc60q9dxha89n5rrwrrzx498c5sscjg2"))))
+            "126vqcn45zrc38vjnknh9a2b0i2d5p3w5pzk90nlzrp68n188qrg"))))
     (properties `((upstream-name . "RSelenium")))
     (build-system r-build-system)
     (propagated-inputs
