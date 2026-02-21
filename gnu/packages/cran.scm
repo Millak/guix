@@ -40068,14 +40068,14 @@ each of the legends).")
 (define-public r-gridtext
   (package
     (name "r-gridtext")
-    (version "0.1.5")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gridtext" version))
        (sha256
         (base32
-         "0f7i2qb8fawi8agy2iz2c173kfwj7cbb5ikjix64nmzqc5j7363d"))))
+         "1pl1xrcdi3fk83dd7sfpg9fdj2dhw2q591xnrcvjwn0r6w9hwf1b"))))
     (properties `((upstream-name . "gridtext")))
     (build-system r-build-system)
     (propagated-inputs
@@ -40087,7 +40087,7 @@ each of the legends).")
            r-rlang
            r-stringr
            r-xml2))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-testthat r-vdiffr))
     (home-page "https://wilkelab.org/gridtext/")
     (synopsis "Improved text rendering support for Grid graphics")
     (description
