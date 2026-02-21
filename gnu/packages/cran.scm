@@ -18585,13 +18585,13 @@ installing the entire GSL.")
 (define-public r-laplacesdemon
   (package
     (name "r-laplacesdemon")
-    (version "16.1.6")
+    (version "16.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "LaplacesDemon" version))
        (sha256
-        (base32 "1dsfp65cg06f25zjzd5ib4qyn1alfhbhpgyvpcw5n6bszn13idap"))))
+        (base32 "0527wm9frwfpvxxr9p10i4yspqq89wcdy87pkkaxqhnji5amdk34"))))
     (properties `((upstream-name . "LaplacesDemon")))
     (build-system r-build-system)
     (home-page "https://github.com/LaplacesDemonR/LaplacesDemon")
