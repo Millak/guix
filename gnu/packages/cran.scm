@@ -3731,14 +3731,14 @@ thus not used in the name of the package.")
 (define-public r-effects
   (package
     (name "r-effects")
-    (version "4.2-4")
+    (version "4.2-5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "effects" version))
        (sha256
         (base32
-         "0lh8yabk6z2j84yn0386ggz01gxl946xcpcawgqklw8cs55cwzs9"))))
+         "1cgbn11kin35h87ahb0awm0dz3d3ggbkz11jhbax5rc79gs1hlq6"))))
     (properties `((upstream-name . "effects")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3751,7 +3751,13 @@ thus not used in the name of the package.")
            r-nnet
            r-survey))
     (native-inputs
-     (list r-car r-knitr r-mass))
+     (list r-betareg
+           r-car
+           r-glmmtmb
+           r-knitr
+           r-mass
+           r-nlme
+           r-ordinal))
     (home-page "https://www.r-project.org")
     (synopsis
      "Effect displays for linear, generalized linear, and other models")
