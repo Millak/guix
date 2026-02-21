@@ -86,7 +86,7 @@
             (propagated-inputs (list perl-test-script))
             (home-page "https://metacpan.org/release/Foo-Bar")
             (synopsis "Fizzle Fuzz")
-            (description fill-in-yourself!)
+            (description "Fizzle Fuzz.")
             (license perl-license))
          (string=? (bytevector->nix-base32-string
                     (call-with-input-string test-source port-sha256))

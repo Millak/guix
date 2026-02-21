@@ -287,6 +287,7 @@ in RELEASE, a <cpan-release> record."
   (let* ((tarball (with-store store
                    (download-to-store store source-url)))
          (inputs (cpan-module-inputs release))
+         (synopsis-text (cpan-release-abstract release))
          (sexp
            `(package
               (name ,(cpan-name->downstream-name name))
@@ -305,8 +306,8 @@ in RELEASE, a <cpan-release> record."
                               (filter (upstream-input-type-predicate 'propagated)
                                       inputs))
               (home-page ,(cpan-home name))
-              (synopsis ,(cpan-release-abstract release))
-              (description fill-in-yourself!)
+              (synopsis ,synopsis-text)
+              (description ,(string-append synopsis-text "."))
               (license ,(string->license (cpan-release-license release))))))
     (values sexp (map upstream-input-name inputs))))
 
