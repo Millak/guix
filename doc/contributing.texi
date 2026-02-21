@@ -25,7 +25,6 @@ choice.
 * Running the Test Suite::      Testing Guix.
 * Running Guix Before It Is Installed::  Hacker tricks.
 * The Perfect Setup::           The right tools.
-* Alternative Setups::          Other possible tools that do the job.
 * Source Tree Structure::       Source code guided tour.
 * Packaging Guidelines::        Growing the distribution.
 * Coding Style::                Hygiene of the contributor.
@@ -536,11 +535,61 @@ to build again each time you update a package file, run
 @node The Perfect Setup
 @section The Perfect Setup
 
-The Perfect Setup to hack on Guix is basically the perfect setup used
-for Guile hacking (@pxref{Using Guile in Emacs,,, guile, Guile Reference
-Manual}).  First, you need more than an editor, you need
-@url{https://www.gnu.org/software/emacs, Emacs}, empowered by the
-wonderful @url{https://nongnu.org/geiser/, Geiser}.  To set that up, run:
+@cindex editor setup, for Scheme
+@cindex Scheme code editing
+All configuration and development in Guix is done in the Scheme
+language.  Like all languages of the Lisp family, Scheme has a simple
+syntax.  The perfect setup is one where the editor you choose makes
+working with that syntax seamless and pleasant; for that it must
+absolutely support a few things for Scheme:
+
+@itemize
+@item
+automatic indentation, such that hitting the ``Enter'' key (or
+@kbd{RET}) places cursor ``at the right place'' on the next line;
+@item
+``parentheses matching'', allowing you to jump from a closing
+parenthesis to the corresponding opening parenthesis and vice-versa;
+@item
+syntax highlighting, so that keywords are visually distinguishable.
+@end itemize
+
+The following optional features can make your life easier:
+
+@itemize
+@item
+structural editing of Scheme syntax;
+@item
+Guile integration so you can easily evaluate code, jump to procedure
+definitions, view documentation, and so on.
+@end itemize
+
+The following sections look at editor setups that are known to work
+well.  Do share your setup for these and other editors for inclusion in
+this manual!  @xref{Submitting Patches}.
+
+@menu
+* Emacs::                       Best-of-breed editor for Scheme code.
+* Guile Studio::                First step in your transition to Emacs.
+* Vim and NeoVim::              Classical Unix editors.
+@end menu
+
+@node Emacs
+@subsection Emacs
+
+@url{https://www.gnu.org/software/emacs, Emacs} is probably the most
+widely used editor in the community; it is also the one that,
+historically, has always had excellent support for Lisp languages, being
+itself a Lisp implementation!
+
+@quotation Note
+If you are just getting started with Emacs, @pxref{Guile Studio} for a
+smooth way to start your transition.
+@end quotation
+
+Just like for Guile hacking (@pxref{Using Guile in Emacs,,, guile, Guile
+Reference Manual}), Emacs works best when empowered by the wonderful
+@url{https://nongnu.org/geiser/, Geiser}.  To set that up, run:
 
 @example
 guix install emacs guile emacs-geiser emacs-geiser-guile
@@ -629,24 +678,6 @@ copyright-update}.  If you want to do it automatically after each buffer
 save then add @code{(add-hook 'after-save-hook 'copyright-update)} in
 Emacs.
 
-@node Alternative Setups
-@section Alternative Setups
-
-Alternative setups than Emacs may let you work on Guix with a
-similar development experience and they might work better with the
-tools you currently use or help you make the transition to Emacs.
-
-The options listed below only provide the alternatives to the Emacs
-based setup, which is the most widely used in the Guix community.  If
-you want to really understand how the perfect setup for Guix development
-is supposed to work, we encourage you to read the section before this
-regardless of the editor you choose to use.
-
-@menu
-* Guile Studio::                First step in your transition to Emacs.
-* Vim and NeoVim::              When you are evil to the root.
-@end menu
-
 @node Guile Studio
 @subsection Guile Studio
 
@@ -663,9 +694,9 @@ Guile Studio comes with Geiser preinstalled and prepared for action.
 @node Vim and NeoVim
 @subsection Vim and NeoVim
 
-
-Vim (and NeoVim) are also packaged in Guix, just in case you decided
-to go for the evil path.
+@cindex Vim, for Scheme code editing
+Vim (and NeoVim) are also packaged in Guix, in case these popular modal
+editors are more to your taste.
 
 @example
 guix install vim
