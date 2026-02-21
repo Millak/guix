@@ -56747,14 +56747,14 @@ of known occurrences of a species.")
 (define-public r-paws-common
   (package
     (name "r-paws-common")
-    (version "0.8.8")
+    (version "0.8.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.common" version))
        (sha256
         (base32
-         "19p8zk126x1fc4zhn8a0f27n365xm1jqdink4sf4ysbkb5xzkd7f"))))
+         "1ya18wrfzp9k0gw52j75skj4vy9zgmyycd6zvllcszzg6gjgmc22"))))
     (properties
      '((upstream-name . "paws.common")
        (updater-ignored-native-inputs . ("r-iam"))))
