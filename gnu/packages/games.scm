@@ -97,6 +97,7 @@
 ;;; Copyright © 2025 Aiden Isik <aidenisik+git@member.fsf.org>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
+;;; Copyright © 2026 Nikita Alkhovik <forgoty13@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4609,6 +4610,105 @@ management, character animation, particle and other special effects, support
 for common mesh file formats, and collision detection.")
     (home-page "https://irrlicht.sourceforge.io/")
     (license license:zlib)))
+
+(define-public pegasus-frontend
+  (let ((commit "c3462e68bf3a178420b44f356998255f8d82a113")
+        (revision "weekly_2024w38"))
+    (package
+      (name "pegasus-frontend")
+      (version (git-version "0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mmatyas/pegasus-frontend")
+               (commit commit)))
+         (sha256
+          (base32 "1p350nlbif33mw5cbqxwli5yf47dxpransxlj2wp8xvh4w1rb3jx"))
+         (file-name (git-file-name name version))))
+      (build-system qt-build-system)
+      (arguments
+       (list
+        #:qtbase qtbase-5
+        #:make-flags
+        #~(list (string-append "INSTALL_DESKTOPDIR="
+                               #$output "/share/applications")
+                (string-append "INSTALL_ICONDIR="
+                               #$output "/share/icons/hicolor"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'copy-modules
+              (lambda* (#:key inputs #:allow-other-keys)
+                (copy-recursively #$(this-package-native-input
+                                     "SortFilterProxyModel")
+                                  "./thirdparty/SortFilterProxyModel")
+                (copy-recursively #$(this-package-native-input
+                                     "pegasus-theme-grid")
+                                  "./src/themes/pegasus-theme-grid")
+                (copy-recursively #$(this-package-native-input
+                                     "pegasus-frontend-translations") "./lang")))
+            (add-before 'check 'prepare-test-env
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (setenv "QT_QPA_PLATFORM" "offscreen")
+                  (setenv "QT_QUICK_BACKEND" "software"))))
+            (add-after 'qt-wrap 'gst-wrap
+              (lambda* (#:key inputs #:allow-other-keys)
+                (wrap-program (string-append #$output "/bin/pegasus-fe")
+                  `("GST_PLUGIN_PATH" suffix
+                    ,(search-path-as-list '("lib/gstreamer-1.0")
+                                          (map cdr inputs)))))))))
+      (inputs (list sdl2
+                    bash-minimal
+                    qtbase-5
+                    qtsvg-5
+                    qtdeclarative-5
+                    qtgraphicaleffects
+                    qtmultimedia-5
+                    qtgamepad-5
+                    gst-plugins-base
+                    gst-plugins-bad
+                    gst-plugins-good))
+      (native-inputs (list qttools-5
+                           (origin
+                             (method git-fetch)
+                             (uri (git-reference
+                                   (url
+                                    "https://github.com/mmatyas/pegasus-frontend-translations")
+                                   (commit
+                                    "46c7cecec745bdd4c61bfc7ecb967156ad208642")))
+                             (file-name "pegasus-frontend-translations")
+                             (sha256 (base32
+                                      "0rvlx199wdrjxr8pgibga556zf4njq4w2n31fdirqgb631rgyqxd")))
+                           (origin
+                             (method git-fetch)
+                             (uri (git-reference
+                                   (url
+                                    "https://github.com/mmatyas/pegasus-theme-grid")
+                                   (commit
+                                    "5951db6f2a4fe0db6a4fd6f00da1f280cadfa536")))
+                             (file-name "pegasus-theme-grid")
+                             (sha256 (base32
+                                      "1nfnq6lppdm9ni6jk48l1i7hk90m8w2p13swl5nr4zwczln8dbz1")))
+                           (origin
+                             (method git-fetch)
+                             (uri (git-reference
+                                   (url
+                                    "https://github.com/mmatyas/SortFilterProxyModel")
+                                   (commit
+                                    "2061f8136ba372fd06c1928a610258b7d88cb144")))
+                             (file-name "SortFilterProxyModel")
+                             (sha256 (base32
+                                      "16va8fcf7v6kfm8r9zym0516qrk4vlsy5wmpd3r3002wpz8q39h2")))))
+      (synopsis
+       "Graphical frontend for launching and managing game collection")
+      (description
+       "Pegasus is a graphical frontend for browsing your game library and
+  launching all kinds of games from the same place. It's focusing on
+  customizability, cross platform support (including embedded)
+  and high performance.")
+      (home-page "https://pegasus-frontend.org")
+      (license license:gpl3+))))
 
 (define-public mars
   ;; No official release since 2013: use the latest commit.
