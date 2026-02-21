@@ -32417,13 +32417,13 @@ netCDF files.")
 (define-public r-ncmisc
   (package
     (name "r-ncmisc")
-    (version "1.2.0")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "NCmisc" version))
        (sha256
-        (base32 "10wzznqa26fxyj6bl979qmq29p3dkr8yap4s70l3mwhhk33zpz16"))))
+        (base32 "1h4mcrvp4iipl71g8bi5ca8gzkzbyxw9zg8yncavf7hch2lawpqj"))))
     (properties `((upstream-name . "NCmisc")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/package=NCmisc")
