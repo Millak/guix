@@ -6827,13 +6827,13 @@ ldap, and also supports cookies, redirects, authentication, etc.")
 (define-public r-readr
   (package
     (name "r-readr")
-    (version "2.1.6")
+    (version "2.2.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "readr" version))
               (sha256
                (base32
-                "1na60ma6aa37yz7h939hi42fz8p5szaq41gabnp4hd25n2iknx4x"))))
+                "0wzlm7whfnmjdq06aixaafyyka5mphfqkbz4xgajmqc3q6bxf9c0"))))
     (build-system r-build-system)
     (properties
      '((updater-extra-native-inputs . ("r-stringi"))))
@@ -6857,20 +6857,17 @@ ldap, and also supports cookies, redirects, authentication, etc.")
            r-clipr
            r-cpp11
            r-crayon
+           r-glue
            r-hms
            r-lifecycle
            r-r6
            r-rlang
            r-tibble
            r-tzdb
-           r-vroom))
+           r-vroom
+           r-withr))
     (native-inputs
-     (list r-dplyr
-           r-knitr
-           r-spelling
-           r-stringi
-           r-testthat
-           r-withr
+     (list r-dplyr r-knitr r-spelling r-stringi r-testthat
            tzdata-for-tests))
     (home-page "https://github.com/hadley/readr")
     (synopsis "Read tabular data")
