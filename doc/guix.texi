@@ -8048,6 +8048,9 @@ Intimidated by the Scheme language or curious about it?  The Cookbook
 has a short section to get started that recaps some of the things shown
 above and explains the fundamentals.  @xref{A Scheme Crash Course,,,
 guix-cookbook, GNU Guix Cookbook}, for more information.
+
+@xref{The Perfect Setup}, on how to set up your editor for Scheme
+hacking.
 @end quotation
 
 Once a package definition is in place, the
@@ -18033,6 +18036,9 @@ misplaced parentheses can often be identified by reformatting your file:
 @example
 guix style -f config.scm
 @end example
+
+@xref{The Perfect Setup}, on how to set up your editor for Scheme
+hacking.
 
 The Cookbook has a short section to get started with the Scheme
 programming language that explains the fundamentals, which you will find

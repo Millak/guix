@@ -523,6 +523,9 @@ info sicp
 
 You'll find more books, tutorials and other resources at
 @url{https://schemers.org/}.
+
+@xref{The Perfect Setup,,, guix, GNU Guix Reference Manual}, on how to
+set up your editor for Scheme hacking.
 @end quotation
 
 
