@@ -22,6 +22,7 @@
 ;;; Copyright © 2024, 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
+;;; Copyright © 2026 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -52,7 +53,9 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages docker)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages monitoring)
   #:use-module (gnu packages networking)
@@ -1763,6 +1766,67 @@ analyzing Jupyter Notebooks.")
      "This package provides a Qt-based console for Jupyter with support for
 rich media output.")
     (license license:bsd-3)))
+
+(define-public python-spyder-kernels
+  (package
+    (name "python-spyder-kernels")
+    (version "3.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/spyder-ide/spyder-kernels")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yhrifh148g93qkwx9ggsh2kr9789apzlw91ais4dyas5yf1xj8w"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; Avoid pulling Django for a single test.
+                    "not test_django_settings"
+                    ;; AssertionError.
+                    " and not test_umr_reload_modules"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'redirect-HOME
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list python-cloudpickle
+                             python-ipykernel
+                             python-ipython
+                             python-jupyter-client
+                             python-packaging
+                             python-pyxdg
+                             python-pyzmq
+                             python-traitlets
+                             python-wurlitzer))
+    (native-inputs (list python-anyio
+                         python-cython
+                         python-dask
+                         python-h5py
+                         python-matplotlib
+                         python-numpy
+                         python-pandas
+                         python-pillow
+                         python-polars
+                         python-pyarrow
+                         python-pydicom
+                         python-pytest
+                         python-scipy
+                         python-setuptools
+                         python-xarray))
+    (home-page "https://github.com/spyder-ide/spyder-kernels")
+    (synopsis "Jupyter kernels for Spyder's console")
+    (description "This package provides Jupyter kernels for use with the
+consoles of Spyder, the Scientific Python Development Environment.
+
+These kernels can be launched either through Spyder itself or in an
+independent Python session, and allow for interactive or file-based execution
+of Python code inside Spyder.")
+    (license license:expat)))
 
 (define-public python-voila
   (package
