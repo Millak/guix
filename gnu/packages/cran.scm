@@ -4737,17 +4737,23 @@ samples) are easily visualized.")
 (define-public r-ggiraph
   (package
     (name "r-ggiraph")
-    (version "0.9.4")
+    (version "0.9.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggiraph" version))
        (sha256
-        (base32 "1ixlqpbqdhkilsj60pw0hsr0x32wmdn97lzpsrl9xmrzyl95c34f"))))
+        (base32 "04w9qg07y26f8s8jc3xdmqxv5kgz5z5kwals5ls68dikd8dhlffq"))))
     (properties
      '((upstream-name . "ggiraph")
        (updater-extra-native-inputs . ("r-xml2"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (inputs (list libpng zlib))
     (propagated-inputs (list r-cli
                              r-dplyr
@@ -4760,9 +4766,9 @@ samples) are easily visualized.")
                              r-rlang
                              r-s7
                              r-systemfonts
-                             r-vctrs
-                             r-xml2))
-    (native-inputs (list pkg-config r-knitr r-tinytest))
+                             r-vctrs))
+    (native-inputs
+     (list pkg-config r-knitr r-tinytest r-xml2))
     (home-page "https://davidgohel.github.io/ggiraph/")
     (synopsis "Make ggplot2 graphics interactive")
     (description "Create interactive ggplot2 graphics using htmlwidgets.")
