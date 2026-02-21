@@ -57674,13 +57674,13 @@ tests or outside of a testing context.")
 (define-public r-iotools
   (package
     (name "r-iotools")
-    (version "0.3-5")
+    (version "0.4-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "iotools" version))
        (sha256
-        (base32 "12xlf31aawj5sxanb2m63r665a9x5v87q4ig8qkvaygpdg51gycw"))))
+        (base32 "04grzs57lcxaig4fdyxs7bwhsj34j6ahms7dahsilqyp4gd2dbmp"))))
     (properties `((upstream-name . "iotools")))
     (build-system r-build-system)
     (home-page "https://www.rforge.net/iotools")
