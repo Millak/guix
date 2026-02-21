@@ -4368,13 +4368,13 @@ options defined in other packages.")
 (define-public r-fuzzyjoin
   (package
     (name "r-fuzzyjoin")
-    (version "0.1.6.1")
+    (version "0.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fuzzyjoin" version))
        (sha256
-        (base32 "0zf7jnr8zbb736j2v6z4ri8ig20lrf17j9jylf4vdf7kdwd9irxr"))))
+        (base32 "0d3sk6dswdxq6jrnhg7prv13kqxj22a6jjcqxkjdm38sckwykw1a"))))
     (properties `((upstream-name . "fuzzyjoin")))
     (build-system r-build-system)
     (propagated-inputs (list r-dplyr
