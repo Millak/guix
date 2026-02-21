@@ -29081,14 +29081,14 @@ both to consistency and asymptotic normality.")
 (define-public r-dofuture
   (package
     (name "r-dofuture")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "doFuture" version))
        (sha256
         (base32
-         "0cx1fb8r2zx8in20lxhflamxf65lckk65j5fn9gcj7cbzwdnkhh0"))))
+         "0b2zl42g3yj8nbbyqxijn21hn1mf8q74inzd1ijl27sv03yvb1rf"))))
     (properties `((upstream-name . "doFuture")))
     (build-system r-build-system)
     (arguments
