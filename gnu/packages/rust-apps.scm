@@ -48,6 +48,7 @@
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2025 dan <i@dan.games>
 ;;; Copyright © 2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
+;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2446,6 +2447,42 @@ choice.  Supported launchers are: dmenu, fuzzel, rofi, walker and custom.")
     (description
      "This package provides a sampling profiler for Python programs.")
     (license license:expat)))
+
+(define-public rheo
+  (package
+    (name "rheo")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/freecomputinglab/rheo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17i7zsymjqp745476rdgq6w8hi40n4zca23xxp6s2hwpyjhgdkp4"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-test-flags
+        ''("--all-targets"
+           "--"
+           ;; The following tests require internet
+           "--skip=run_test_case_examples_slashcover_minusletter_full_stoptyp"
+           "--skip=run_test_case_examples_slashfcl_site"
+           "--skip=run_test_case_examples_slashrheo_docs"
+           "--skip=run_test_case_tests_slashcases_slashtarget_function_in_package")))
+    (inputs (cons* openssl (cargo-inputs 'rheo)))
+    (native-inputs (list pkg-config))
+    (synopsis "Typesetting and static site engine based on Typst")
+    (description
+     "Rheo is a typesetting and static site engine based on Typst.
+You can use it to compile folders containing Typst to PDF, HTML, and EPUB
+simultaneously.  Rheo is a standalone CLI tool that includes a development
+server for rapid website iteration.")
+    (home-page "https://rheo.ohrg.org")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public ripgrep
   (package
