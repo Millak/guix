@@ -57604,20 +57604,20 @@ backed by the @url{https://bokeh.pydata.org/, Bokeh visualization library}.")
 (define-public r-fauxpas
   (package
     (name "r-fauxpas")
-    (version "0.5.2")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fauxpas" version))
        (sha256
         (base32
-         "1xhyws6nr9ayir4sykvhyaf1aprx9rjm2xyb3p5ikd26l5hp7l44"))))
+         "0iz93ma94wbj9ankkycwcgks5r4rhx6f5z03bch8wm21gn6v47vl"))))
     (properties `((upstream-name . "fauxpas")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-httpcode r-r6 r-whisker))
     (native-inputs
-     (list r-crul r-knitr r-testthat))
+     (list r-crul r-curl r-knitr r-testthat))
     (home-page "https://docs.ropensci.org/fauxpas")
     (synopsis "HTTP error helpers")
     (description
