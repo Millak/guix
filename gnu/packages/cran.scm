@@ -23969,14 +23969,14 @@ to a variety of output formats using Quarto.")
 (define-public r-tseries
   (package
     (name "r-tseries")
-    (version "0.10-59")
+    (version "0.10-60")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tseries" version))
        (sha256
         (base32
-         "1gvk1wnivs428in5k94w8w55div69hd3slzpz5gk6fpkja7n6hzl"))))
+         "0p4pry8ljrzxm9rfl4swchkqmvls6w26dqwns5rc92ac67r3mx9f"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-jsonlite r-quadprog r-quantmod r-zoo))
