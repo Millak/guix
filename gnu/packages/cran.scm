@@ -51705,14 +51705,14 @@ workflow.  The advantages are:
 (define-public r-lobstr
   (package
     (name "r-lobstr")
-    (version "1.1.3")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lobstr" version))
        (sha256
         (base32
-         "1nm0cazjrrklmff771j9w64f0sds6h28kzpyjp0dhs6ymljgy8yz"))))
+         "0jyy6xi6c1qbqnk05m0i372njfyij6qvwl7z5927x1xq1i1dznjw"))))
     (properties `((upstream-name . "lobstr")))
     (build-system r-build-system)
     (propagated-inputs
