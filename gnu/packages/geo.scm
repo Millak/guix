@@ -2932,7 +2932,7 @@ to the OSM opening hours specification.")
 (define-public josm
   (package
     (name "josm")
-    (version "19412")
+    (version "19539")
     (source (origin
               (method svn-fetch)
               (uri (svn-reference
@@ -2941,7 +2941,7 @@ to the OSM opening hours specification.")
                      (recursive? #f)))
               (sha256
                (base32
-                "152pf0ww16jj5cv94ywlv5nb8pvnyqmvmnwsy3w0lf094faqkv5d"))
+                "05kslpvdwl4fldjzl6m2kmqvbmjv5yvipfavg01l30ywhw2c7v7v"))
               (file-name (string-append name "-" version "-checkout"))
               (modules '((guix build utils)))
             (snippet
@@ -2960,7 +2960,6 @@ to the OSM opening hours specification.")
            java-jsr305
            java-metadata-extractor
            java-opening-hours-parser
-           java-openjfx-media
            java-parsson ; runtime dependency
            java-signpost-core
            java-svg-salamander
@@ -3067,6 +3066,7 @@ to the OSM opening hours specification.")
                  (lambda _
                    (display
                      (string-append "#!/bin/sh\n"
+                                    "_JAVA_AWT_WM_NONREPARENTING=1 "
                                     (assoc-ref inputs "openjdk") "/bin/java"
                                     " -cp " out "/share/java/josm.jar:"
                                     ;; CLASSPATH, but remove native inputs
