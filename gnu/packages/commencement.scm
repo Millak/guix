@@ -2727,20 +2727,7 @@ memoized as a function of '%current-system'."
       (origin
         (inherit (package-source gnumach-headers))
         (patches '())))
-     (native-inputs (list autoconf-boot0 automake-boot0 texinfo-boot0))
-     (arguments
-      (substitute-keyword-arguments (package-arguments gnumach-headers)
-        ((#:phases phases)
-         #~(modify-phases #$phases
-             (add-after 'unpack 'patch-compat
-               (lambda _
-                 (substitute* '("include/device/device_types.h"
-                                "include/mach_debug/slab_info.h"
-                                "include/mach_debug/vm_info.h")
-                   (("rpc_vm_size_t") "unsigned int")
-                   (("rpc_vm_offset_t") "unsigned int")
-                   (("rpc_long_natural_t") "unsigned long")
-                   (("long_natural_t") "unsigned long")))))))))))
+     (native-inputs (list autoconf-boot0 automake-boot0 texinfo-boot0)))))
 
 (define mig-boot0
   (with-boot0

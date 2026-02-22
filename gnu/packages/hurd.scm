@@ -61,7 +61,7 @@
 (define-public gnumach-headers
   (package
     (name "gnumach-headers")
-    (version "1.8+git20251228")
+    (version "1.8+git20260129")
     (source
      (origin
        (method git-fetch)
@@ -71,7 +71,7 @@
        (patches (search-patches "gnumach-version.patch"))
        (file-name (git-file-name "gnumach" version))
        (sha256
-        (base32 "0690mv9m228xlhz27pdsvqr7nm1i3f19l177kxz4nadh0fvi6fby"))))
+        (base32 "1p7k5cnal2flasncjvhwwb8klh2m96np1q7hwq4dd423ydjm4bnf"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
