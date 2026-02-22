@@ -3506,7 +3506,7 @@ corruption… You hope luck will be on your side!
     (name "solarus")
     ;; XXX: When updating this package, please also update hash in
     ;; `solarus-quest-editor' below.
-    (version "1.6.5")
+    (version "2.0.3")
     (source
      (origin
        (method git-fetch)
@@ -3515,7 +3515,7 @@ corruption… You hope luck will be on your side!
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ny9dgqphjv2l39rff2621hnrzpf8qin8vmnv7jdz20azjk4m8id"))))
+        (base32 "05a7mlb6xl7d93d34d3bdphb9xgbyp7h1358z6hdsrax8kh9zwl1"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3536,15 +3536,15 @@ corruption… You hope luck will be on your side!
             (lambda _
               (setenv "HOME" (getcwd))
               (setenv "XDG_RUNTIME_DIR" (getcwd)))))))
-    (native-inputs (list pkg-config qttools-5))
+    (native-inputs (list pkg-config))
     (inputs (list glm
                   libmodplug
                   libogg
                   libvorbis
                   luajit
+                  mesa
                   openal
                   physfs
-                  qtbase-5
                   sdl2
                   sdl2-image
                   sdl2-ttf))
