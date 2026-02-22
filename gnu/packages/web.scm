@@ -7617,14 +7617,13 @@ exploit attempts.")
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-brotlicffi
            python-decorator
            python-flasgger
            python-flask
-           python-greenlet-2
+           python-greenlet
            python-itsdangerous
            python-markupsafe
            python-six
