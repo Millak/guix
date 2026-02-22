@@ -6238,7 +6238,7 @@ included:
        (modify-phases %standard-phases
          (replace 'install (install-from-pom "pom.xml")))))
     (propagated-inputs
-     (list apache-commons-parent-pom-48))
+     (list apache-commons-parent-pom-92))
     (home-page "https://commons.apache.org/lang/")
     (synopsis "Extension of the java.lang package")
     (description "The Commons Lang components contains a set of Java classes
