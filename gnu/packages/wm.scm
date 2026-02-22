@@ -1191,13 +1191,14 @@ to events.")
 (define-public qtile
   (package
     (name "qtile")
-    (version "0.34.1")
+    ;; TODO: Update when Python is upgraded to >=3.12.
+    (version "0.33.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "qtile" version))
        (sha256
-        (base32 "061bghddw47k86qf7xp7c3rmwp7f71grk1q969nwq22rsafs4040"))))
+        (base32 "1kqpf6kc98c7ck5w8xvzlzawnmsckpnwdd3xkv08k81zmai71d44"))))
     (build-system pyproject-build-system)
     (arguments
      (list
