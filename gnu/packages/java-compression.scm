@@ -326,7 +326,7 @@ algorithms in Java.")
 (define-public java-zstd
   (package
     (name "java-zstd")
-    (version "1.5.2-3")
+    (version "1.5.7-7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -335,7 +335,7 @@ algorithms in Java.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0z26z04sc4j6k0g4gvq4xc86mc4wiyp1j7z5hh6wpqgmy9b6h2zb"))))
+                "0wl8bk57flc5jlmkgqzr4jkp75nsisxlfrigfvyal825bm32czjc"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "java-zstd.jar"
