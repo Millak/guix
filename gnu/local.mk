@@ -2132,6 +2132,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/smalltalk-multiplication-overflow.patch	\
   %D%/packages/patches/soci-mysql-ddl-types.patch		\
   %D%/packages/patches/solarus-quest-editor-qlementine-reference.patch	\
+  %D%/packages/patches/solarus-launcher-qlementine-and-qtappinstancemanager-reference.patch	\
   %D%/packages/patches/sqlite-hurd.patch			\
   %D%/packages/patches/squeak-vm-gcc-14-fix.patch		\
   %D%/packages/patches/stepmania-ffmpeg-compat.patch			\

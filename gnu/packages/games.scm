@@ -3586,6 +3586,36 @@ in mind.")
      "Solarus Quest Editor is a graphical user interface to create and modify
 quests for the Solarus engine.")))
 
+(define-public solarus-launcher
+  (package
+    (inherit solarus)
+    (name "solarus-launcher")
+    (source
+     (origin
+       (inherit (package-source solarus))
+       (patches (search-patches
+                 "solarus-launcher-qlementine-and-qtappinstancemanager-reference.patch"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'chdir
+            (lambda _
+              (chdir "launcher"))))))
+    (native-inputs (modify-inputs (package-inputs solarus)
+                     (prepend qlementine qlementine-icons qtappinstancemanager
+                              qttools)))
+    (inputs (modify-inputs (package-inputs solarus)
+              (prepend solarus)
+              (append qtbase qtsvg qtwayland)))
+    (synopsis "Game launcher and browser for Solarus")
+    (description
+     "Solarus Launcher is a game launcher and browser for Solarus.  It is
+written in C++ with QtWidgets.")))
+
 (define-public superfluous-returnz-data
   (package
     (name "superfluous-returnz-data")

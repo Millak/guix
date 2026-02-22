@@ -1,0 +1,199 @@
+From 9f6078375ed0bbd459d5d77c54957abf3ba781dc Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Carlos=20Dur=C3=A1n=20Dom=C3=ADnguez?= <wurt@wurt.eu>
+Date: Mon, 23 Feb 2026 23:49:27 +0100
+Subject: [PATCH] Change Qlementine, Qlementine Icons, and QtAppInstanceManager
+ references.
+
+---
+ launcher/cmake/addDependencies.cmake          | 49 ++-----------------
+ launcher/cmake/addTarget.cmake                |  9 ++--
+ launcher/cmake/modules/FindQlementine.cmake   | 23 +++++++++
+ .../cmake/modules/FindQlementineIcons.cmake   | 23 +++++++++
+ .../modules/FindQtAppInstanceManager.cmake    | 23 +++++++++
+ 5 files changed, 78 insertions(+), 49 deletions(-)
+ create mode 100644 launcher/cmake/modules/FindQlementine.cmake
+ create mode 100644 launcher/cmake/modules/FindQlementineIcons.cmake
+ create mode 100644 launcher/cmake/modules/FindQtAppInstanceManager.cmake
+
+diff --git a/launcher/cmake/addDependencies.cmake b/launcher/cmake/addDependencies.cmake
+index 2a688266d..74903023d 100644
+--- a/launcher/cmake/addDependencies.cmake
++++ b/launcher/cmake/addDependencies.cmake
+@@ -12,52 +12,9 @@ if (Qt6_VERSION VERSION_LESS 6.4)
+   message(FATAL_ERROR "At least Qt 6.4 is needed for this project.")
+ endif()
+ 
+-# ------------------------------------------------------------------------------
+-
+-include(FetchContent)
+-
+-# ------------------------------------------------------------------------------
+-
+-# Qlementine-Icons: an SVG icon library made for Qt.
+-FetchContent_Declare(qlementine-icons
+-  GIT_REPOSITORY "https://github.com/oclero/qlementine-icons.git"
+-  GIT_TAG v1.13.0
+-  EXCLUDE_FROM_ALL
+-)
+-FetchContent_MakeAvailable(qlementine-icons)
+-set_target_properties(qlementine-icons
+-  PROPERTIES
+-    FOLDER dependencies
+-)
+-
+-# ------------------------------------------------------------------------------
+-
+-# Qlementine: the QStyle library to have a modern look n' feel.
+-FetchContent_Declare(qlementine
+-  GIT_REPOSITORY "https://github.com/oclero/qlementine.git"
+-  GIT_TAG v1.4.1
+-  EXCLUDE_FROM_ALL
+-)
+-FetchContent_MakeAvailable(qlementine)
+-set_target_properties(qlementine
+-  PROPERTIES
+-    FOLDER dependencies
+-)
+-
+-# ------------------------------------------------------------------------------
+-
+-# QtAppInstanceManager: a library to manage multiple instances of a Qt application.
+-FetchContent_Declare(QtAppInstanceManager
+- GIT_REPOSITORY "https://github.com/oclero/qtappinstancemanager.git"
+- GIT_TAG v1.3.1
+- EXCLUDE_FROM_ALL
+-)
+-FetchContent_MakeAvailable(QtAppInstanceManager)
+-set_target_properties(QtAppInstanceManager
+-  PROPERTIES
+-    FOLDER dependencies
+-)
+-
++find_package(QtAppInstanceManager REQUIRED)
++find_package(Qlementine REQUIRED)
++find_package(QlementineIcons REQUIRED)
+ # ------------------------------------------------------------------------------
+ 
+ # Solarus: the engine.
+diff --git a/launcher/cmake/addTarget.cmake b/launcher/cmake/addTarget.cmake
+index 9c1581033..34ef321b7 100644
+--- a/launcher/cmake/addTarget.cmake
++++ b/launcher/cmake/addTarget.cmake
+@@ -25,6 +25,9 @@ target_include_directories(${PROJECT_NAME}
+     ${CMAKE_CURRENT_SOURCE_DIR}/../build/include
+     ${CMAKE_CURRENT_BINARY_DIR}/sources
+     "${OPENAL_INCLUDE_DIR}"
++    "${QLEMENTINE_INCLUDE_DIR}"
++    "${QLEMENTINE_ICONS_INCLUDE_DIR}"
++    "${QTAPPINSTANCEMANAGER_INCLUDE_DIR}"
+ )
+ 
+ qt_add_resources(${PROJECT_NAME} "resources"
+@@ -79,10 +82,10 @@ target_link_libraries(${PROJECT_NAME}
+     Qt6::Widgets
+     Qt6::Svg
+     Qt6::Network
+-    qlementine
+-    qlementine-icons
++    "${QLEMENTINE_LIBRARY}"
++    "${QLEMENTINE_ICONS_LIBRARY}"
+     solarus
+-    oclero::QtAppInstanceManager
++    "${QTAPPINSTANCEMANAGER_LIBRARY}"
+ )
+ 
+ set(COMPONENT_NAME "${PROJECT_NAME}")
+diff --git a/launcher/cmake/modules/FindQlementine.cmake b/launcher/cmake/modules/FindQlementine.cmake
+new file mode 100644
+index 000000000..002515855
+--- /dev/null
++++ b/launcher/cmake/modules/FindQlementine.cmake
+@@ -0,0 +1,23 @@
++find_path(QLEMENTINE_INCLUDE_DIR
++    NAMES oclero/qlementine.hpp
++    PATHS ${CMAKE_INCLUDE_PATH}
++    PATH_SUFFIXES qlementine
++)
++
++# Find the static library
++find_library(QLEMENTINE_LIBRARY
++    NAMES qlementine
++    PATHS ${CMAKE_LIBRARY_PATH}
++    PATH_SUFFIXES lib
++)
++
++# Handle standard args
++include(FindPackageHandleStandardArgs)
++find_package_handle_standard_args(Qlementine DEFAULT_MSG QLEMENTINE_LIBRARY QLEMENTINE_INCLUDE_DIR)
++
++# Set the results if found
++if(QLEMENTINE_FOUND)
++    set(Qlementine_INCLUDE_DIRS ${QLEMENTINE_INCLUDE_DIR} CACHE PATH "Qlementine include directory")
++    set(Qlementine_LIBRARIES ${QLEMENTINE_LIBRARY} CACHE PATH "Qlementine library")
++    mark_as_advanced(Qlementine_INCLUDE_DIRS Qlementine_LIBRARIES)
++endif()
+\ No newline at end of file
+diff --git a/launcher/cmake/modules/FindQlementineIcons.cmake b/launcher/cmake/modules/FindQlementineIcons.cmake
+new file mode 100644
+index 000000000..e7e21516d
+--- /dev/null
++++ b/launcher/cmake/modules/FindQlementineIcons.cmake
+@@ -0,0 +1,23 @@
++find_path(QLEMENTINE_ICONS_INCLUDE_DIR
++    NAMES oclero/qlementine/icons/QlementineIcons.hpp
++    PATHS ${CMAKE_INCLUDE_PATH}
++    PATH_SUFFIXES qlementine-icons
++)
++
++# Find the static library
++find_library(QLEMENTINE_ICONS_LIBRARY
++    NAMES qlementine-icons
++    PATHS ${CMAKE_LIBRARY_PATH}
++    PATH_SUFFIXES lib
++)
++
++# Handle standard args
++include(FindPackageHandleStandardArgs)
++find_package_handle_standard_args(QlementineIcons DEFAULT_MSG QLEMENTINE_ICONS_LIBRARY QLEMENTINE_ICONS_INCLUDE_DIR)
++
++# Set the results if found
++if(QLEMENTINE_ICONS_FOUND)
++    set(QlementineIcons_INCLUDE_DIRS ${QLEMENTINE_ICONS_INCLUDE_DIR} CACHE PATH "Qlementine icons include directory")
++    set(QlementineIcons_LIBRARIES ${QLEMENTINE_ICONS_LIBRARY} CACHE PATH "Qlementine icons library")
++    mark_as_advanced(QlementineIcons_INCLUDE_DIRS QlementineIcons_LIBRARIES)
++endif()
+\ No newline at end of file
+diff --git a/launcher/cmake/modules/FindQtAppInstanceManager.cmake b/launcher/cmake/modules/FindQtAppInstanceManager.cmake
+new file mode 100644
+index 000000000..ec624854d
+--- /dev/null
++++ b/launcher/cmake/modules/FindQtAppInstanceManager.cmake
+@@ -0,0 +1,23 @@
++find_path(QTAPPINSTANCEMANAGER_INCLUDE_DIR
++    NAMES oclero/QtAppInstanceManager.hpp
++    PATHS ${CMAKE_INCLUDE_PATH}
++    PATH_SUFFIXES qtappinstancemanager
++)
++
++# Find the static library
++find_library(QTAPPINSTANCEMANAGER_LIBRARY
++    NAMES QtAppInstanceManager
++    PATHS ${CMAKE_LIBRARY_PATH}
++    PATH_SUFFIXES lib
++)
++
++# Handle standard args
++include(FindPackageHandleStandardArgs)
++find_package_handle_standard_args(QtAppInstanceManager DEFAULT_MSG QTAPPINSTANCEMANAGER_LIBRARY QTAPPINSTANCEMANAGER_INCLUDE_DIR)
++
++# Set the results if found
++if(QTAPPINSTANCEMANAGER_FOUND)
++    set(QtAppInstanceManager_INCLUDE_DIRS ${QTAPPINSTANCEMANAGER_INCLUDE_DIR} CACHE PATH "QtAppInstanceManager include directory")
++    set(QtAppInstanceManager_LIBRARIES ${QTAPPINSTANCEMANAGER_LIBRARY} CACHE PATH "QtAppInstanceManager library")
++    mark_as_advanced(QtAppInstanceManager_INCLUDE_DIRS QtAppInstanceManager_LIBRARIES)
++endif()
+\ No newline at end of file
+
+base-commit: 706f85299aecb5e8f15ff1b05280cddefc7338b4
+-- 
+Carlos Durán Domínguez
