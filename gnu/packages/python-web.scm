@@ -13755,24 +13755,25 @@ Amazon S3 or any other external service.")
 (define-public python-fastapi
   (package
     (name "python-fastapi")
-    (version "0.128.0")
+    (version "0.131.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fastapi" version))
        (sha256
-        (base32 "0nk4ybvzv3bcgv5plbg3infykp19p1wryhpy1zk6n2pirvhpkh8w"))))
+        (base32 "1zs80pz8p04akxxmyfihqgii1wjhhad6qx1cjfd8kqmya9g1acb5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; tests: 1126 passed, 12 skipped, 2 deselected
+      #:test-backend #~'custom
       #:test-flags
       #~(list
-         ;; cannot import name 'StaticPool' from 'sqlalchemy'
+         ;; Cannot import 'scripts' with just 'pytest'.
+         "-m" "pytest"
+         ;; Needs strawberry and sqlmodel.
          "--ignore=tests/test_tutorial/"
-         ;; Some snapshots have incorrect values.
-         "--deselect=tests/test_schema_compat_pydantic_v2.py::test_openapi_schema"
-         ;; Argument() missing 1 required positional argument: 'default'
+         ;; Fails due to failure to capture stdout.
          "--ignore=tests/test_fastapi_cli.py")))
     (native-inputs
      (list python-anyio
@@ -13783,7 +13784,7 @@ Amazon S3 or any other external service.")
            ;; python-pwdlib
            python-pyjwt
            python-pytest
-           python-sqlalchemy
+           python-sqlalchemy-2
            ;; python-sqlmodel
            python-types-orjson
            python-types-ujson))
@@ -13805,7 +13806,7 @@ Amazon S3 or any other external service.")
            python-pyyaml
            python-ujson
            python-uvicorn))
-    (home-page "https://github.com/tiangolo/fastapi")
+    (home-page "https://github.com/fastapi/fastapi")
     (synopsis "Web framework based on type hints")
     (description "FastAPI provides a web API framework based on pydantic and
 starlette.")
