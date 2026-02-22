@@ -592,7 +592,7 @@ Reference Manual}), Emacs works best when empowered by the wonderful
 @url{https://nongnu.org/geiser/, Geiser}.  To set that up, run:
 
 @example
-guix install emacs guile emacs-geiser emacs-geiser-guile
+guix install emacs guile emacs-geiser emacs-geiser-guile emacs-guix
 @end example
 
 Geiser allows for interactive and incremental development from within
@@ -610,6 +610,13 @@ addition to that, you must not miss
 facilities to directly operate on the syntax tree, such as raising an
 s-expression or wrapping it, swallowing or rejecting the following
 s-expression, etc.
+
+Cherry on the cake: the Emacs-Guix package provides a convenient
+interface to many commands---e.g., it lets you browse packages, install
+or remove packages, and so on---as well as development helpers that
+enhance @code{scheme-mode} and Geiser.  @xref{Introduction,,,
+emacs-guix, Emacs-Guix Reference Manual}, to make sure you don't miss
+out!
 
 @cindex code snippets
 @cindex templates
