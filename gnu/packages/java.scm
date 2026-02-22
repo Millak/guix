@@ -4036,7 +4036,7 @@ reusing it in maven.")
          (replace 'install (install-from-pom "pom.xml")))))
     (propagated-inputs
      (list java-plexus-utils java-plexus-io java-iq80-snappy
-           java-commons-compress plexus-parent-pom-6.1))
+           java-commons-compress-1.21 plexus-parent-pom-6.1))
     (inputs
      `(("java-jsr305" ,java-jsr305)
        ("java-plexus-container-default"
@@ -7010,14 +7010,14 @@ programs.")
 (define-public java-commons-compress
   (package
     (name "java-commons-compress")
-    (version "1.21")
+    (version "1.28.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://apache/commons/compress/source/"
                                   "commons-compress-" version "-src.tar.gz"))
               (sha256
                (base32
-                "1rkpb6xcyly1wnbx4q6iq6p5hrr0h1d0ppb5r07psc75cbmizjry"))))
+                "0qkn70dfb1f9xihc34mbpbr5ag8qm4qq18hh3p4286r2ajj0z1sw"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "commons-compress.jar"
@@ -7027,18 +7027,39 @@ programs.")
        (modify-phases %standard-phases
          (replace 'install (install-from-pom "pom.xml")))))
     (propagated-inputs
-     (list java-asm-3
+     (list java-commons-lang3
+           java-commons-io-latest
+           java-commons-codec
+           java-asm-9
            java-brotli
-           java-osgi-core
            java-xz
            java-zstd
-           apache-commons-parent-pom-52))
+           apache-commons-parent-pom-85))
     (home-page "https://commons.apache.org/proper/commons-compress/")
     (synopsis "Java library for working with compressed files")
     (description "The Apache Commons Compress library defines an API for
 working with compressed files such as ar, cpio, Unix dump, tar, zip, gzip, XZ,
 Pack200, bzip2, 7z, arj, lzma, snappy, DEFLATE, lz4 and Z files.")
     (license license:asl2.0)))
+
+(define-public java-commons-compress-1.21
+  (package
+    (inherit java-commons-compress)
+    (version "1.21")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://apache/commons/compress/source/"
+                                  "commons-compress-" version "-src.tar.gz"))
+              (sha256
+               (base32
+                "1rkpb6xcyly1wnbx4q6iq6p5hrr0h1d0ppb5r07psc75cbmizjry"))))
+    (propagated-inputs
+     (list java-asm-3
+           java-brotli
+           java-osgi-core
+           java-xz
+           java-zstd
+           apache-commons-parent-pom-52))))
 
 (define-public java-commons-csv
   (package
