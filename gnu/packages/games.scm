@@ -3574,14 +3574,14 @@ in mind.")
        (sha256
         (base32 "1pvjgd4faxii5sskw1h55lw90hlbazhwni8nxyywzrmkjbq7irm0"))))
     (arguments
-     `(#:tests? #false))                ; no test suite
-    (inputs
-     (modify-inputs (package-inputs solarus)
-       (prepend solarus)))
+     (list
+      #:tests? #f)) ;no test suite
+    (inputs (modify-inputs (package-inputs solarus)
+              (prepend solarus)))
     (synopsis "Create and modify quests for the Solarus engine")
     (description
-     "Solarus Quest Editor is a graphical user interface to create and
-modify quests for the Solarus engine.")))
+     "Solarus Quest Editor is a graphical user interface to create and modify
+quests for the Solarus engine.")))
 
 (define-public superfluous-returnz-data
   (package
