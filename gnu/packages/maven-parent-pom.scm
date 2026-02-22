@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020, 2021, 2022 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2020-2022, 2026 Julien Lepiller <julien@lepiller.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -103,6 +103,10 @@
 (define-public apache-parent-pom-33
   (make-apache-parent-pom
     "33" "06qpsnrqf8459aficmbdhad7ldv8k48dqwxivd7r7knlssmlqsww"))
+
+(define-public apache-parent-pom-35
+  (make-apache-parent-pom
+    "35" "0rj04bw9sdqv239gz2ihgqvrv0mpv7h58lbym1kyfh1rqa44m7x4"))
 
 (define* (make-apache-commons-parent-pom version hash parent
                                          #:key (tag-prefix "commons-parent-"))
