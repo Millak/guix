@@ -1,0 +1,126 @@
+From 706f85299aecb5e8f15ff1b05280cddefc7338b4 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Carlos=20Dur=C3=A1n=20Dom=C3=ADnguez?= <wurt@wurt.eu>
+Date: Mon, 23 Feb 2026 17:48:34 +0100
+Subject: [PATCH] Change Qlementine reference.
+
+---
+ editor/cmake/AddDependencies.cmake        | 28 ++---------------------
+ editor/cmake/AddEditorExecutable.cmake    |  3 ++-
+ editor/cmake/AddIncludeDirectories.cmake  |  1 +
+ editor/cmake/modules/FindQlementine.cmake | 23 +++++++++++++++++++
+ 4 files changed, 28 insertions(+), 27 deletions(-)
+ create mode 100644 editor/cmake/modules/FindQlementine.cmake
+
+diff --git a/editor/cmake/AddDependencies.cmake b/editor/cmake/AddDependencies.cmake
+index e70cd167c..31e80b1fe 100644
+--- a/editor/cmake/AddDependencies.cmake
++++ b/editor/cmake/AddDependencies.cmake
+@@ -8,6 +8,7 @@ find_package(Qt6Core "6.8" REQUIRED)
+ find_package(Qt6Widgets REQUIRED)
+ find_package(Qt6OpenGL REQUIRED)
+ find_package(Qt6OpenGLWidgets REQUIRED)
++find_package(Qt6Svg REQUIRED)
+ 
+ # Find Qt6LinguistTools within the host path when set.
+ # This is required for cross compilation with Qt6 as the module is
+@@ -31,6 +32,7 @@ find_package(Ogg REQUIRED)
+ find_package(ModPlug REQUIRED)
+ find_package(PhysFS REQUIRED)
+ find_package(OpenAL REQUIRED)
++find_package(Qlementine REQUIRED)
+ if(SOLARUS_USE_LUAJIT)
+   find_package(LuaJit REQUIRED)
+ else()
+@@ -44,29 +46,3 @@ if("${DL_LIBRARY}" MATCHES DL_LIBRARY-NOTFOUND)
+   set(DL_LIBRARY "")
+ endif()
+ 
+-# Control whether to use a local Qlementine build.
+-include(FetchContent)
+-option(SOLARUS_USE_LOCAL_QLEMENTINE "Use a local build of Qlementine instead of FetchContent download" OFF)
+-if(SOLARUS_USE_LOCAL_QLEMENTINE)
+-  set(SOLARUS_QLEMENTINE_LOCAL_PATH "" CACHE PATH "Path to the local Qlementine source directory")
+-  # Check if the provided path is valid.
+-  if(NOT IS_DIRECTORY "${SOLARUS_QLEMENTINE_LOCAL_PATH}")
+-    message(FATAL_ERROR "SOLARUS_QLEMENTINE_LOCAL_PATH is set to '${SOLARUS_QLEMENTINE_LOCAL_PATH}' but it's not a valid directory. Please provide the correct path to your local qlementine clone.")
+-  else()
+-    set(Qlementine_SOURCE_DIR ${QSOLARUS_LEMENTINE_LOCAL_PATH})
+-    message(STATUS "Using local Qlementine source from: ${SOLARUS_QLEMENTINE_LOCAL_PATH}")
+-  endif()
+-  FetchContent_Declare(
+-    qlementine
+-    SOURCE_DIR "${SOLARUS_QLEMENTINE_LOCAL_PATH}"
+-    EXCLUDE_FROM_ALL
+-  )
+-else()
+-  FetchContent_Declare(
+-    qlementine
+-    GIT_REPOSITORY https://github.com/oclero/qlementine.git
+-    GIT_TAG        v1.4.0
+-    EXCLUDE_FROM_ALL
+-  )
+-endif()
+-FetchContent_MakeAvailable(qlementine)
+diff --git a/editor/cmake/AddEditorExecutable.cmake b/editor/cmake/AddEditorExecutable.cmake
+index 4bd5f8e73..5ce62fd92 100644
+--- a/editor/cmake/AddEditorExecutable.cmake
++++ b/editor/cmake/AddEditorExecutable.cmake
+@@ -10,6 +10,7 @@ target_link_libraries(solarus-editor
+   Qt6::Widgets
+   Qt6::OpenGL
+   Qt6::OpenGLWidgets
++  Qt6::Svg
+   "${SOLARUS_LIBRARIES}"
+   "${SDL2_LIBRARY}"
+   "${SDL2_IMAGE_LIBRARY}"
+@@ -21,5 +22,5 @@ target_link_libraries(solarus-editor
+   "${VORBISFILE_LIBRARY}"
+   "${OGG_LIBRARY}"
+   "${MODPLUG_LIBRARY}"
+-  qlementine
++  "${QLEMENTINE_LIBRARY}"
+ )
+diff --git a/editor/cmake/AddIncludeDirectories.cmake b/editor/cmake/AddIncludeDirectories.cmake
+index af3ff418c..5b8f8e8c0 100644
+--- a/editor/cmake/AddIncludeDirectories.cmake
++++ b/editor/cmake/AddIncludeDirectories.cmake
+@@ -17,4 +17,5 @@ include_directories(SYSTEM
+   "${OGG_INCLUDE_DIR}"
+   "${LUA_INCLUDE_DIR}"
+   "${PHYSFS_INCLUDE_DIR}"
++  "${QLEMENTINE_INCLUDE_DIR}"
+ )
+diff --git a/editor/cmake/modules/FindQlementine.cmake b/editor/cmake/modules/FindQlementine.cmake
+new file mode 100644
+index 000000000..002515855
+--- /dev/null
++++ b/editor/cmake/modules/FindQlementine.cmake
+@@ -0,0 +1,23 @@
++find_path(QLEMENTINE_INCLUDE_DIR
++    NAMES oclero/qlementine.hpp
++    PATHS ${CMAKE_INCLUDE_PATH}
++    PATH_SUFFIXES qlementine
++)
++
++# Find the static library
++find_library(QLEMENTINE_LIBRARY
++    NAMES qlementine
++    PATHS ${CMAKE_LIBRARY_PATH}
++    PATH_SUFFIXES lib
++)
++
++# Handle standard args
++include(FindPackageHandleStandardArgs)
++find_package_handle_standard_args(Qlementine DEFAULT_MSG QLEMENTINE_LIBRARY QLEMENTINE_INCLUDE_DIR)
++
++# Set the results if found
++if(QLEMENTINE_FOUND)
++    set(Qlementine_INCLUDE_DIRS ${QLEMENTINE_INCLUDE_DIR} CACHE PATH "Qlementine include directory")
++    set(Qlementine_LIBRARIES ${QLEMENTINE_LIBRARY} CACHE PATH "Qlementine library")
++    mark_as_advanced(Qlementine_INCLUDE_DIRS Qlementine_LIBRARIES)
++endif()
+\ No newline at end of file
+
+base-commit: d5e170be67a0119d73a502988e91bffcf04c3e06
+-- 
+Carlos Durán Domínguez

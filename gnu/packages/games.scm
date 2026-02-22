@@ -3504,8 +3504,6 @@ corruption… You hope luck will be on your side!
 (define-public solarus
   (package
     (name "solarus")
-    ;; XXX: When updating this package, please also update hash in
-    ;; `solarus-quest-editor' below.
     (version "2.0.3")
     (source
      (origin
@@ -3563,21 +3561,26 @@ in mind.")
   (package
     (inherit solarus)
     (name "solarus-quest-editor")
-    (version (package-version solarus))
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/solarus-games/solarus-quest-editor")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1pvjgd4faxii5sskw1h55lw90hlbazhwni8nxyywzrmkjbq7irm0"))))
+       (inherit (package-source solarus))
+       (patches (search-patches
+                 "solarus-quest-editor-qlementine-reference.patch"))))
+    (build-system qt-build-system)
     (arguments
      (list
-      #:tests? #f)) ;no test suite
+      #:tests? #f ;no test suite
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'chdir
+            (lambda _
+              (chdir "editor"))))))
+    (native-inputs (modify-inputs (package-inputs solarus)
+                     (prepend qttools qlementine)))
     (inputs (modify-inputs (package-inputs solarus)
-              (prepend solarus)))
+              (prepend solarus)
+              (append qtbase qtsvg qtwayland)))
     (synopsis "Create and modify quests for the Solarus engine")
     (description
      "Solarus Quest Editor is a graphical user interface to create and modify
