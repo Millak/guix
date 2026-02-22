@@ -195,6 +195,25 @@
                   (substitute* "pom.xml"
                     (("<scope>import</scope>") "<scope>test</scope>")))))))))))
 
+(define-public apache-commons-parent-pom-92
+  (let ((base
+          (make-apache-commons-parent-pom
+            "92" "1p6j6jnjd65wkcscgmj1hq2n9blp46k2f2aqjkykp37cq4z0niq9"
+            apache-parent-pom-35
+            #:tag-prefix "rel/commons-parent-")))
+    (package
+      (inherit base)
+      (arguments
+        (substitute-keyword-arguments (package-arguments base)
+          ((#:phases phases)
+           `(modify-phases ,phases
+              (add-before 'install 'fix-pom
+                (lambda _
+                  ;; prevent junit-bom from leaking from the parent pom, since
+                  ;; we don't package it yet.
+                  (substitute* "pom.xml"
+                    (("<scope>import</scope>") "<scope>test</scope>")))))))))))
+
 (define-public java-weld-parent-pom
   (hidden-package
     (package
