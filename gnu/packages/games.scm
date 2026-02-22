@@ -3518,37 +3518,36 @@ corruption… You hope luck will be on your side!
         (base32 "0ny9dgqphjv2l39rff2621hnrzpf8qin8vmnv7jdz20azjk4m8id"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-failing-tests
-           ;; The following tests fail reporting a missing "/dev/dri"
-           ;; file.
-           (lambda _
-             (substitute* "tests/cmake/AddTestMaps.cmake"
-               ((".*1200_create_shader_from_source.*" all)
-                (string-append "#" all))
-               ((".*1210_shader_scaling_factor.*" all)
-                (string-append "#" all)))
-             #t))
-         (add-before 'check 'set-home
-           ;; Tests fail without setting the following environment
-           ;; variables.
-           (lambda _
-             (setenv "HOME" (getcwd))
-             (setenv "XDG_RUNTIME_DIR" (getcwd))
-             #t)))))
-    (native-inputs
-     (list pkg-config qttools-5))
-    (inputs
-     `(("glm" ,glm)
-       ("libmodplug" ,libmodplug)
-       ("libogg" ,libogg)
-       ("libvorbis" ,libvorbis)
-       ("luajit" ,luajit)
-       ("openal" ,openal)
-       ("physfs" ,physfs)
-       ("qtbase" ,qtbase-5)
-       ("sdl2" ,(sdl-union (list sdl2 sdl2-image sdl2-ttf)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            ;; The following tests fail reporting a missing "/dev/dri"
+            ;; file.
+            (lambda _
+              (substitute* "tests/cmake/AddTestMaps.cmake"
+                ((".*1200_create_shader_from_source.*" all)
+                 (string-append "#" all))
+                ((".*1210_shader_scaling_factor.*" all)
+                 (string-append "#" all)))))
+          (add-before 'check 'set-home
+            ;; Tests fail without setting the following environment
+            ;; variables.
+            (lambda _
+              (setenv "HOME" (getcwd))
+              (setenv "XDG_RUNTIME_DIR" (getcwd)))))))
+    (native-inputs (list pkg-config qttools-5))
+    (inputs (list glm
+                  libmodplug
+                  libogg
+                  libvorbis
+                  luajit
+                  openal
+                  physfs
+                  qtbase-5
+                  sdl2
+                  sdl2-image
+                  sdl2-ttf))
     (home-page "https://www.solarus-games.org/")
     (synopsis "Lightweight game engine for Action-RPGs")
     (description
