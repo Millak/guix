@@ -147,6 +147,37 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
+(define-public qtappinstancemanager
+  (package
+    (name "qtappinstancemanager")
+    (version "1.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oclero/qtappinstancemanager")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12vfhjvxlnnm3wszv5qs7c1925gywgm00583ppnx0ab3k8iswqwd"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ;no tests
+    (inputs (list qtbase))
+    (synopsis "Single application instance manager for Qt6")
+    (description
+     "QtAppInstanceManager is a tool to control how many instances of your Qt
+application are running at the same time, and to send messages between
+instances. It uses a local socket under the hood. You may then build upon this
+foundation any messaging system or protocol, such as JSON-RPC for
+instance (NB: not provided because out of the scope of this library).
+
+It is intended to be a replacement for QtSingleApplication, the deprecated Qt4
+official project.")
+    (home-page "https://github.com/oclero/qtappinstancemanager")
+    (license license:expat)))
+
 (define-public qcoro-qt5
   (package
     (name "qcoro-qt5")
