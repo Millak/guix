@@ -28,6 +28,7 @@
 ;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2024 Luís Henriques <henrix@camandro.org>
 ;;; Copyright © 2024 Giacomo Leidi <therewasa@fishinthecalculator.me>
+;;; Copyright © 2026 Untrusem <mysticmoksh@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -984,24 +985,23 @@ Shell (pdksh).")
 (define-public oils-for-unix
   (package
     (name "oils-for-unix")
-    (version "0.22.0")
+    (version "0.37.0")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://www.oilshell.org/download/oils-for-unix-"
+       (uri (string-append "https://oils.pub/download/oils-for-unix-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0pylgbxbnp683g51lcbmmd0y149jm7q7vh8g67yviagsa7clmmks"))))
+        (base32 "001hfkb6crmmziqvqraxjva0hnzjxn11y8xsskxvqgajl0h1vm7l"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
                (replace 'configure
                  (lambda _
-                   (setenv "CC" #$(cc-for-target))
-                   (substitute* "configure"
-                     ((" cc ") " $CC "))
-                   (invoke "./configure" (string-append "--prefix=" #$output)
+                   (invoke "./configure"
+                           (string-append "--cxx-for-configure=" #$(cc-for-target))
+                           (string-append "--prefix=" #$output)
                            "--with-readline")))
                (replace 'build
                  (lambda _
@@ -1013,7 +1013,7 @@ Shell (pdksh).")
                (replace 'check
                  ;; The tests are not distributed in the tarballs but upstream
                  ;; recommends running this smoke test.
-                 ;; https://github.com/oilshell/oil/blob/release/0.22.0/INSTALL.txt#L30-L50
+                 ;; https://oils.pub/release/latest/doc/INSTALL.html#:~:text=Smoke%20Test
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
                      (let ((osh "_bin/cxx-opt-sh/osh")
@@ -1025,7 +1025,7 @@ Shell (pdksh).")
                                      "json write ({x: 42})"))))))))
     (inputs
      (list readline))
-    (home-page "https://www.oilshell.org")
+    (home-page "https://oils.pub")
     (synopsis "Programming language and Bash-compatible Unix shell")
     (description "Oils is a programming language with automatic translation for
 Bash.  It includes OSH, a Unix/POSIX shell that runs unmodified Bash
