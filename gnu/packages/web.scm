@@ -525,7 +525,7 @@ replacing them with data URIs.")
 (define-public monolith
   (package
     (name "monolith")
-    (version "2.8.3")
+    (version "2.10.1")
     (source
      (origin
        (method git-fetch)
@@ -534,18 +534,19 @@ replacing them with data URIs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "082xh0zmmy9abz7y3zjybbwffq7d0j1jl78ggzbwwanvam65v0dp"))
+        (base32 "1p3qbsa8cnqhzwd45h808pk0yzsfjm0ka7x8hh99gm4qzgvyngzc"))
        (modules '((guix build utils)))
        ;; Don't default to vendored openssl.
        (snippet '(substitute* "Cargo.toml"
-                   ((".*\"vendored-openssl\".*") "")))))
+                   ((", \"vendored-openssl\"") "")))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f))
+     (list
+      #:install-source? #f))
     (native-inputs
      (list pkg-config))
     (inputs
-     (cons openssl (cargo-inputs 'monolith)))
+     (cons* openssl (cargo-inputs 'monolith)))
     (home-page "https://github.com/Y2Z/monolith")
     (synopsis "Command line tool for saving web pages as a single HTML file")
     (description
