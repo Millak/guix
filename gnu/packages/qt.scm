@@ -187,6 +187,29 @@ of C++20 coroutines in connection with certain asynchronous Qt actions.")
               (replace "qtwebsockets" qtwebsockets)
               (append libxkbcommon)))))
 
+(define-public qlementine
+  (package
+    (name "qlementine")
+    (version "1.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oclero/qlementine")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cjch1jhlb67hcfgzf2vv5f9zlawr8ngl0gc43scplxdfpv3wda0"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ;no tests
+    (inputs (list qtbase qtsvg))
+    (synopsis "Modern QStyle for desktop Qt6 applications")
+    (description "Qlementine is a modern QStyle for desktop Qt6 applications.")
+    (home-page "https://github.com/oclero/qlementine")
+    (license license:expat)))
+
 (define-public qmdnsengine
   ;; Used as submodule in https://github.com/moonlight-stream/moonlight-qt
   (let ((commit "b7a5a9f225d5e14b39f9fd1f905c4f505cf2ee99")
