@@ -1,0 +1,31 @@
+windres currently looks for gcc in this order:
+
+* target-prefixed gcc in same directory as windres
+* gcc in same directory as windres
+* gcc in PATH
+
+In case of cross compiling the unprefixed gcc is a native compiler
+and probably the wrong choice.
+
+This adds another option to look for a target-prefixed gcc in PATH
+in case binutils and gcc are installed in different prefixes.
+
+Index: binutils-2.44/binutils/resrc.c
+===================================================================
+--- binutils-2.44.orig/binutils/resrc.c
++++ binutils-2.44/binutils/resrc.c
+@@ -535,6 +535,14 @@ read_rc_file (const char *filename, cons
+ 				       preprocargs, filename);
+ 	}
+ 
++      if (slash && dash && (dash > slash) && ! cpp_pipe)
++	{
++	  /* Try prefixed gcc with the same prefix as windres */
++
++	  cpp_pipe = look_for_default (cmd, slash + 1, dash - (slash + 1) + 1,
++				       preprocargs, filename);
++	}
++
+       if (! cpp_pipe)
+ 	{
+ 	  /* Sigh, try the default */

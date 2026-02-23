@@ -146,7 +146,9 @@
                     ;; TODO: This seems like a deeper problem that warrants
                     ;; deeper investigation.
                     binutils "--enable-compressed-debug-sections" "no")
-                   (search-patches "binutils-mingw-w64-deterministic.patch")))
+                   (search-patches
+                    "binutils-cross-windres.patch"
+                    "binutils-mingw-w64-deterministic.patch")))
                  (else binutils))
            target)))
 
