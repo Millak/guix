@@ -186,71 +186,69 @@ engine with a Lua scripting interface.")
     (synopsis "Combined display server, multimedia framework and game engine (SDL)")))
 
 (define-public durden
-  (let ((commit "43211acd7994836d5c4ba039d7ecc939dcf8a5aa")
-        (revision "2"))
-    (package
-      (name "durden")
-      (version (git-version "0.6.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (file-name (git-file-name name version))
-         (uri (git-reference
-               (url "https://github.com/letoram/durden")
-               (commit commit)))
-         (sha256
-          (base32 "1jns4lq959s8ydykm0yg9sddzh74k7fdvjrnbz3z91idb7abl92d"))
-         (patches (search-patches "durden-shadow-arcan.patch"))))
-      (build-system copy-build-system)
-      (arguments
-       (list
-        #:install-plan #~'(("durden/" "share/arcan/appl/durden/")
-                           ("util/" "share/arcan/appl/durden/util/")
-                           ("distr/durden" "bin/durden"))
-        #:phases #~(modify-phases %standard-phases
-                     (add-after 'unpack 'patch-paths
-                       (lambda* (#:key inputs outputs #:allow-other-keys)
-                         (substitute* "distr/durden"
-                           (("/usr/share/\\$applname")
-                            (string-append (assoc-ref outputs "out")
-                                           "/share/arcan/appl"))
-                           (("@ARCAN_STORE_PATH@")
-                            (string-append (assoc-ref inputs "arcan")
-                                           "/bin/arcan"))
-                           (("([\\([:blank:]]+)basename " _ separator)
-                            (string-append separator
-                                           (assoc-ref inputs "coreutils")
-                                           "/bin/basename "))
-                           (("([\\([:blank:]]+)date " _ separator)
-                            (string-append separator
-                                           (assoc-ref inputs "coreutils")
-                                           "/bin/date "))
-                           (("([\\([:blank:]]+)ln " _ separator)
-                            (string-append separator
-                                           (assoc-ref inputs "coreutils")
-                                           "/bin/ln "))
-                           (("([\\([:blank:]]+)mkdir " _ separator)
-                            (string-append separator
-                                           (assoc-ref inputs "coreutils")
-                                           "/bin/mkdir "))
-                           (("([\\([:blank:]]+)true; " _ separator)
-                            (string-append separator
-                                           (assoc-ref inputs "coreutils")
-                                           "/bin/true; "))
-                           (("([\\([:blank:]]+)\\[ " _ separator)
-                            (string-append separator
-                                           (assoc-ref inputs "coreutils")
-                                           "/bin/[ "))))))))
-      (inputs (list arcan coreutils))
-      (home-page "https://durden.arcan-fe.com/")
-      (synopsis "Desktop Environment for Arcan")
-      (description
-       "Durden is a desktop environment for the Arcan Display Server.
+  (package
+    (name "durden")
+    (version "0.6.3")
+    (source
+     (origin
+       (method git-fetch)
+       (file-name (git-file-name name version))
+       (uri (git-reference
+             (url "https://codeberg.org/letoram/durden")
+             (commit version)))
+       (sha256
+        (base32 "1w12mdjdbhw13134fj4kv43n1z6vrh1jhg1wc7m5hw82w8ncwqkm"))
+       (patches (search-patches "durden-shadow-arcan.patch"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan #~'(("durden/" "share/arcan/appl/durden/")
+                         ("util/" "share/arcan/appl/durden/util/")
+                         ("distr/durden" "bin/durden"))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-paths
+                     (lambda* (#:key inputs outputs #:allow-other-keys)
+                       (substitute* "distr/durden"
+                         (("/usr/share/\\$applname")
+                          (string-append (assoc-ref outputs "out")
+                                         "/share/arcan/appl"))
+                         (("@ARCAN_STORE_PATH@")
+                          (string-append (assoc-ref inputs "arcan")
+                                         "/bin/arcan"))
+                         (("([\\([:blank:]]+)basename " _ separator)
+                          (string-append separator
+                                         (assoc-ref inputs "coreutils")
+                                         "/bin/basename "))
+                         (("([\\([:blank:]]+)date " _ separator)
+                          (string-append separator
+                                         (assoc-ref inputs "coreutils")
+                                         "/bin/date "))
+                         (("([\\([:blank:]]+)ln " _ separator)
+                          (string-append separator
+                                         (assoc-ref inputs "coreutils")
+                                         "/bin/ln "))
+                         (("([\\([:blank:]]+)mkdir " _ separator)
+                          (string-append separator
+                                         (assoc-ref inputs "coreutils")
+                                         "/bin/mkdir "))
+                         (("([\\([:blank:]]+)true; " _ separator)
+                          (string-append separator
+                                         (assoc-ref inputs "coreutils")
+                                         "/bin/true; "))
+                         (("([\\([:blank:]]+)\\[ " _ separator)
+                          (string-append separator
+                                         (assoc-ref inputs "coreutils")
+                                         "/bin/[ "))))))))
+    (inputs (list arcan coreutils))
+    (home-page "https://durden.arcan-fe.com/")
+    (synopsis "Desktop Environment for Arcan")
+    (description
+     "Durden is a desktop environment for the Arcan Display Server.
 It serves both as a reference showcase on how to take advantage of some of the
 features in Arcan, and as an entry to the advanced-user side of the desktop
 environment spectrum.")
-      (license (list license:bsd-3 license:expat license:cc-by3.0
-                     license:cc-by4.0 license:asl2.0)))))
+    (license (list license:bsd-3 license:expat license:cc-by3.0
+                   license:cc-by4.0 license:asl2.0))))
 
 (define-public xarcan
   (package
