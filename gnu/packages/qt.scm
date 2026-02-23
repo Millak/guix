@@ -210,6 +210,32 @@ of C++20 coroutines in connection with certain asynchronous Qt actions.")
     (home-page "https://github.com/oclero/qlementine")
     (license license:expat)))
 
+(define-public qlementine-icons
+  (package
+    (name "qlementine-icons")
+    (version "1.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oclero/qlementine-icons")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "187h8yvykah7xangbds9a0860p9p2fyf8v54y0ga2a3ygc7y5mfv"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ;no tests
+    (inputs (list qtbase qtsvg))
+    (synopsis "Modern icon set for desktop Qt applications")
+    (description
+     "Qlementine Icons is a modern, vector, elegant, free, and open-source icon
+library designed for use with a C++ library that enhances the appearance of
+your QtWidgets application.")
+    (home-page "https://oclero.github.io/qlementine-icons/")
+    (license license:expat)))
+
 (define-public qmdnsengine
   ;; Used as submodule in https://github.com/moonlight-stream/moonlight-qt
   (let ((commit "b7a5a9f225d5e14b39f9fd1f905c4f505cf2ee99")
