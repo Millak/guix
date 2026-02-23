@@ -981,9 +981,9 @@ Shell (pdksh).")
     (license (list license:miros
                    license:isc))))              ; strlcpy.c
 
-(define-public oils
+(define-public oils-for-unix
   (package
-    (name "oils")
+    (name "oils-for-unix")
     (version "0.22.0")
     (source
      (origin
@@ -1033,10 +1033,12 @@ scripts and YSH is a legacy-free shell, with structured data for Python and
 JavaScript users who avoid shell.")
     (license (list license:asl2.0))))
 
+;; This is renamed to maintain naming consistency with the Project Guidelines.
+(define-deprecated-package oils oils-for-unix)
+
 ;; Since release 0.16.0 the former Oil project has been renamed to Oils:
 ;; <https://www.oilshell.org/blog/2023/03/rename.html>.
-(define-deprecated-package oil
-  oils)
+(define-deprecated-package oil oils-for-unix)
 
 (define-public gash
   (package
