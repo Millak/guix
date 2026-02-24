@@ -221,14 +221,14 @@
                      "modules/zlib"))))))
 
 (define librewolf-bsys6
-  (let ((commit "e0397b2b95aa14e1a83be460681ffbeb0b41ca3f"))
+  (let ((commit "274e39ee40592f8bc6ca5d4ee699ec74aeeab983"))
     (origin
       (method git-fetch)
       (uri (git-reference
              (url "https://codeberg.org/librewolf/bsys6.git")
              (commit commit)))
       (file-name (git-file-name "librewolf-bsys6" commit))
-      (sha256 (base32 "16b2z1b89y0lm9b9xrvvfa5j0av4ibmcgkksnnqxmn2qrz04awzw")))))
+      (sha256 (base32 "15a2j1r5xrxvb9vr55138canwaj44nswzsfjsvsjspwnirgrn91z")))))
 
 ;;; Define the versions of rust needed to build firefox, trying to match
 ;;; upstream.  See table at [0], `Uses' column for the specific version.
