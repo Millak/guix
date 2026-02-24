@@ -2815,6 +2815,53 @@ bindings to C and C++ libraries.  This package provides the @command{bindgen}
 command.")
     (license license:bsd-3)))
 
+(define-public wasm-bindgen-cli
+  (package
+    (name "wasm-bindgen-cli")
+    (version "0.2.111")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wasm-bindgen/wasm-bindgen")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19r30f0gz56180qm8spanwb1pkg0x1k8f6mgvsjil4q4qqhfary8"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "crates/webidl/Cargo.toml"
+             (("weedle = \\{ git = \"https://github.com/wasm-bindgen/weedle.git\", rev = \"e9e131229ba0477c34f09e136ed0a89a9fb1e448\" \\}")
+              "weedle = \"0.13.0\""))
+           ;; Remove examples and benchmarks from workspace; they have
+           ;; unneeded git dependencies (e.g. raytracer) or bundled blobs.
+           (substitute* "Cargo.toml"
+             ((".*\"examples/[^\"]*\",?") "")
+             ((".*\"benchmarks[^\"]*\",?") ""))
+           (delete-file-recursively "examples")
+           (delete-file-recursively "benchmarks")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f
+       #:cargo-build-flags '("--release" "-p" "wasm-bindgen-cli")
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
+               (install-file "target/release/wasm-bindgen" bin)
+               (install-file "target/release/wasm-bindgen-test-runner" bin)
+               (install-file "target/release/wasm2es6js" bin)))))))
+    (inputs (cargo-inputs 'wasm-bindgen-cli))
+    (home-page "https://github.com/wasm-bindgen/wasm-bindgen/")
+    (synopsis "Generate JavaScript bindings for Rust WASM modules")
+    (description "This package provides the @command{wasm-bindgen} command,
+which generates JavaScript glue code for communicating between WebAssembly
+modules and JavaScript.")
+    ;; Choose either license at your option.
+    (license (list license:expat license:asl2.0))))
+
 (define-public sniffglue
   (package
     (name "sniffglue")
