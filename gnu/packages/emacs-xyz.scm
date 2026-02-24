@@ -162,7 +162,7 @@
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;; Copyright @ 2025 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright @ 2025 Nik Gaffney <nik@fo.am>
-;;; Copyright © 2025 Untrusem <mysticmoksh@riseup.net>
+;;; Copyright © 2025, 2026 Untrusem <mysticmoksh@riseup.net>
 ;;; Copyright © 2025 case_lambda <case_lambda@disroot.org>
 ;;; Copyright © 2026 Kenny Ballou <kb@devnulllabs.io>
 ;;;
@@ -2775,6 +2775,33 @@ versions of a topic branch.")
 @code{emacs-magit} to use @code{delta} for syntax highlighting when displaying
 diffs.")
       (license license:expat))))
+
+(define-public emacs-conflict-buttons
+  ;; No releases
+  (let ((commit "22af851d6a0cdd226ef7ba0db54fa096c8ddf235")
+        (revision "0"))
+  (package
+    (name "emacs-conflict-buttons")
+    (version (git-version "0.1.0" revision commit))
+    (source
+     (origin
+      (method git-fetch)
+       (uri (git-reference
+             (url "https://git.andros.dev/andros/conflict-buttons.el/")
+             (commit commit)))
+       (sha256
+        (base32 "04lhpl1fb6ncg2li07szk4yw7ix9xp657q5f72gcm1yxa1fynvnx"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ;; no tests
+    (home-page "https://git.andros.dev/andros/conflict-buttons.el/")
+    (synopsis "Clickable inline buttons for merge conflict resolution in Emacs")
+    (description
+     "This package displays clickable buttons directly above conflict markers
+while editing files with git merge conflicts, allowing you to resolve conflicts
+with a single click instead of remembering keyboard shortcuts.")
+    (license license:gpl3+))))
 
 (define-public emacs-malyon
   (package
