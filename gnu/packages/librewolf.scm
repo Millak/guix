@@ -24,6 +24,7 @@
 ;;; Copyright © 2023, 2024, 2025 Ian Eure <ian@retrospec.tv>
 ;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
+;;; Copyright © 2025, 2026 Untrusem <mysticmoksh@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -220,6 +221,7 @@
                      "media/libwebp"
                      "modules/zlib"))))))
 
+;; Needed for the .desktop.in file used in librewolf's 'install-desktop-entry
 (define librewolf-bsys6
   (let ((commit "274e39ee40592f8bc6ca5d4ee699ec74aeeab983"))
     (origin
@@ -230,29 +232,29 @@
       (file-name (git-file-name "librewolf-bsys6" commit))
       (sha256 (base32 "15a2j1r5xrxvb9vr55138canwaj44nswzsfjsvsjspwnirgrn91z")))))
 
-;;; Define the versions of rust needed to build firefox, trying to match
+;;; Define the versions of rust needed to build Firefox, trying to match
 ;;; upstream.  See table at [0], `Uses' column for the specific version.
 ;;; Using `rust' will likely lead to a newer version then listed in the table,
 ;;; but since in Guix only the latest packaged Rust is officially supported,
 ;;; it is a tradeoff worth making.
 ;;; 0: https://firefox-source-docs.mozilla.org/writing-rust-code/update-policy.html
-(define rust-librewolf rust)
+(define rust-librewolf rust-1.92)
 
 ;; Update this id with every update to its release date.
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
 ;; or: (format-time-string "%Y%m%d%H%M%S")
-(define %librewolf-build-id "20260217231334")
+(define %librewolf-build-id "20260228165433")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "147.0.4-1")
+    (version "148.0-1")
     (source
      (make-librewolf-source
       #:version version
-      #:firefox-hash "1xwl5vc7504gx15yj0kvrxn3k250sja22d8j6dyrhxxican441xw"
-      #:librewolf-hash "079i6xhsyimvrp302zy0h2phfykg881nvwri0wwi9hkk7p49imy5"
+      #:firefox-hash "0vybaiiknrzk2zvg46w5sxb0i0m9rmy4msvpxklxpdr3182fb4zc"
+      #:librewolf-hash "02sraza4xy4cp559nlc51m1vwhi52l58i3zz2h95lwymyvc5hv17"
       #:l10n firefox-l10n))
     (build-system gnu-build-system)
     (arguments
@@ -675,18 +677,18 @@
      (list
       alsa-lib
       autoconf-2.13
-      `(,rust-librewolf "cargo")
-      clang-18
+      clang-21
       librewolf-bsys6
-      llvm-18
+      llvm-21
       m4
       nasm
       node-lts
       perl
       pkg-config
       python
-      rust-librewolf
       rust-cbindgen-0.29
+      rust-librewolf
+      `(,rust-librewolf "cargo")
       which
       yasm))
     (native-search-paths
