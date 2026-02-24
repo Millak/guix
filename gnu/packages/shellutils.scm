@@ -298,7 +298,7 @@ press chosen keys, such as the UP and DOWN arrows, to cycle through matches.")
 (define-public zsh-syntax-highlighting
   (package
     (name "zsh-syntax-highlighting")
-    (version "0.7.1")
+    (version "0.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -307,36 +307,36 @@ press chosen keys, such as the UP and DOWN arrows, to cycle through matches.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "039g3n59drk818ylcyvkciv8k9mf739cv6v4vis1h9fv9whbcmwl"))))
+                "0f482llznpkdg3kv92mjq53djpi4023bdmq06lk1qh05gnp2qg46"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list zsh))
+     (list zsh coreutils grep))
     (arguments
-     ;; FIXME: Tests fail when running test regexp
-     ;; there is no pcre module in the Guix zsh package
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "Makefile"
-                 (("/usr/local") out)
-                 (("share/\\$\\(NAME\\)") "share/zsh/plugins/$(NAME)")))))
-         (add-after 'patch-paths 'make-writable
-           (lambda _
-             (for-each make-file-writable
-                       '("docs/highlighters.md"
-                         "README.md"))))
-         (add-before 'build 'add-all-md
-           (lambda _
-             (invoke "make" "all")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "make" "test")
-               (invoke "make" "perf")))))))
+     ;; FIXME: Tests have expected failures (easy way to skip just those tests?)
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'patch-paths
+            (lambda _
+              (substitute* "Makefile"
+                (("/usr/local") #$output)
+                (("share/\\$\\(NAME\\)") "share/zsh/plugins/$(NAME)")
+                (("env -i") "env -i PATH=$$PATH"))))
+          (add-after 'patch-paths 'make-writable
+            (lambda _
+              (for-each make-file-writable
+                        '("docs/highlighters.md"
+                          "README.md"))))
+          (add-before 'build 'add-all-md
+            (lambda _
+              (invoke "make" "all")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "test" (string-append "ZSH=" #$zsh "/bin/zsh"))
+                (invoke "make" "perf" (string-append "ZSH=" #$zsh "/bin/zsh"))))))))
     (home-page "https://github.com/zsh-users/zsh-syntax-highlighting")
     (synopsis "Fish shell-like syntax highlighting for Zsh")
     (description
