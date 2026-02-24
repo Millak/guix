@@ -436,13 +436,13 @@ implemented and invoked on any platform.")
 (define-public ruby-diff-lcs
   (package
     (name "ruby-diff-lcs")
-    (version "1.3")
+    (version "1.6.2") ; v2.0.0 has many internal breaking changes
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "diff-lcs" version))
               (sha256
                (base32
-                "18w22bjz424gzafv6nzv98h0aqkwz3d9xhm7cbr1wfbyas8zayza"))))
+                "0qlrj2qyysc9avzlr4zs1py3x684hqm61n4czrsk1pyllz5x5q4s"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; avoid dependency cycles
