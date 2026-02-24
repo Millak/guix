@@ -56,7 +56,6 @@
             %test-basic-os
             %test-linux-libre-5.15
             %test-linux-libre-5.10
-            %test-linux-libre-5.4
             %test-halt
             %test-root-unmount
             %test-cleanup
@@ -678,9 +677,6 @@ test \"$BASHRC_D_OK\" = yes"))
 
 (define %test-linux-libre-5.10
   (test-basic-os linux-libre-5.10))
-
-(define %test-linux-libre-5.4
-  (test-basic-os linux-libre-5.4))
 
 
 ;;;

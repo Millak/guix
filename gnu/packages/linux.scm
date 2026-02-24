@@ -639,21 +639,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.302")
-(define-public linux-libre-5.4-gnu-revision "gnu1")
-(define deblob-scripts-5.4
-  (linux-libre-deblob-scripts
-   linux-libre-5.4-version
-   linux-libre-5.4-gnu-revision
-   (base32 "168ysrpcbfhm6s71l9w8ibjq2frjmiaixc2wbsq86gx2zw6zyb5p")
-   (base32 "0l7pwhgw9laxfypcpqlz411x3hybcw2269abh3lpcw96bgv5m1k2")))
-(define-public linux-libre-5.4-pristine-source
-  (let ((version linux-libre-5.4-version)
-        (hash (base32 "0ga2q6lf6xvb7pb6kn2prgywsvsavb4kwygsn37xd91ay43k4smf")))
-   (make-linux-libre-source version
-                            (%upstream-linux-source version hash)
-                            deblob-scripts-5.4)))
-
 (define %boot-logo-patch
   ;; Linux-Libre boot logo featuring Freedo and a gnu.
   (origin
@@ -719,15 +704,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
   (source-with-patches linux-libre-5.10-pristine-source
                        (list %boot-logo-patch
                              %linux-libre-arm-export-__sync_icache_dcache-patch)))
-
-(define-public linux-libre-5.4-source
-  (source-with-patches linux-libre-5.4-pristine-source
-                       (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch
-                             ;; Pinebook Pro patch from linux-next,
-                             ;; can be dropped for linux-libre 5.7
-                             (search-patch
-                              "linux-libre-support-for-Pinebook-Pro.patch"))))
 
 
 ;;;
@@ -847,11 +823,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
   (make-linux-libre-headers* linux-libre-5.10-version
                              linux-libre-5.10-gnu-revision
                              linux-libre-5.10-source))
-
-(define-public linux-libre-headers-5.4
-  (make-linux-libre-headers* linux-libre-5.4-version
-                             linux-libre-5.4-gnu-revision
-                             linux-libre-5.4-source))
 
 ;; The following package is used in the early bootstrap, and thus must be kept
 ;; stable and with minimal build requirements.
@@ -1252,14 +1223,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                        "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
-(define-public linux-libre-5.4
-  (make-linux-libre* linux-libre-5.4-version
-                     linux-libre-5.4-gnu-revision
-                     linux-libre-5.4-source
-                     '("x86_64-linux" "i686-linux" "armhf-linux"
-                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
-                     #:configuration-file kernel-config))
-
 ;; Linux-Libre-LTS points to the *newest* released long-term support version of
 ;; Linux-Libre.
 ;; Reference: <https://www.kernel.org/category/releases.html>
@@ -1319,19 +1282,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                       `(;; needed to fix the RTC on rockchip platforms
                         ("CONFIG_RTC_DRV_RK808" . #t))
                       (default-extra-linux-options linux-libre-5.10-version))))
-
-(define-public linux-libre-arm-generic-5.4
-  (make-linux-libre* linux-libre-5.4-version
-                     linux-libre-5.4-gnu-revision
-                     linux-libre-5.4-source
-                     '("armhf-linux")
-                     #:defconfig "multi_v7_defconfig"
-                     #:extra-version "arm-generic"
-                     #:extra-options
-                     (append
-                      `(;; needed to fix the RTC on rockchip platforms
-                        ("CONFIG_RTC_DRV_RK808" . #t))
-                      (default-extra-linux-options linux-libre-5.4-version))))
 
 (define-public linux-libre-arm-omap2plus
   (make-linux-libre* linux-libre-version
@@ -1432,19 +1382,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                         ("CONFIG_CHARGER_GPIO" . m)
                         ("CONFIG_SND_SOC_ES8316" . m))
                       (default-extra-linux-options linux-libre-5.10-version))))
-
-(define-public linux-libre-arm64-generic-5.4
-  (make-linux-libre* linux-libre-5.4-version
-                     linux-libre-5.4-gnu-revision
-                     linux-libre-5.4-source
-                     '("aarch64-linux")
-                     #:defconfig "defconfig"
-                     #:extra-version "arm64-generic"
-                     #:extra-options
-                     (append
-                      `(;; needed to fix the RTC on rockchip platforms
-                        ("CONFIG_RTC_DRV_RK808" . #t))
-                      (default-extra-linux-options linux-libre-5.4-version))))
 
 (define-public linux-libre-arm64-honeycomb
   ;; Kernel for use on the HoneyComb LX2 boards:

@@ -1842,7 +1842,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/linphone-desktop-ispell.patch	\
   %D%/packages/patches/linphone-desktop-qtkeychain.patch	\
   %D%/packages/patches/linux-libre-infodocs-target.patch	\
-  %D%/packages/patches/linux-libre-support-for-Pinebook-Pro.patch \
   %D%/packages/patches/linux-libre-arm64-mnt-reform-revert-phy-rockchip-samsung.patch	\
   %D%/packages/patches/linux-libre-arm64-mnt-reform-revert-rk-samsung-hdptx.patch	\
   %D%/packages/patches/linux-libre-arm64-mnt-reform-revert-vop2-display-modes.patch	\

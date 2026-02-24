@@ -481,10 +481,6 @@ AUX_FILES =						\
   gnu/packages/aux-files/linux-libre/5.10-arm64.conf	\
   gnu/packages/aux-files/linux-libre/5.10-i686.conf	\
   gnu/packages/aux-files/linux-libre/5.10-x86_64.conf	\
-  gnu/packages/aux-files/linux-libre/5.4-arm.conf	\
-  gnu/packages/aux-files/linux-libre/5.4-arm64.conf	\
-  gnu/packages/aux-files/linux-libre/5.4-i686.conf	\
-  gnu/packages/aux-files/linux-libre/5.4-x86_64.conf	\
   gnu/packages/aux-files/ovmf/51-edk2-ovmf-2m-raw-x64-nosb.json	\
   gnu/packages/aux-files/pack-audit.c			\
   gnu/packages/aux-files/python/sanity-check.py		\

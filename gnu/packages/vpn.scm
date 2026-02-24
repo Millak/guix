@@ -1320,61 +1320,6 @@ The peer-to-peer VPN implements a Layer 2 (Ethernet) network between the peers
     ;; 3-clause BSD license.
     (license license:bsd-3)))
 
-(define-public wireguard-linux-compat
-  (package
-    (name "wireguard-linux-compat")
-    (version "1.0.20201221")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://git.zx2c4.com/wireguard-linux-compat/"
-                                  "snapshot/wireguard-linux-compat-" version
-                                  ".tar.xz"))
-              (sha256
-               (base32
-                "0ci13in0fqq32n5qamch4qhjgbdq86ygrgmfhc9szsh2nsl8jlkf"))))
-    (build-system linux-module-build-system)
-    (outputs '("out"
-               "kernel-patch"))
-    (arguments
-     `(#:linux ,linux-libre-5.4         ; mustn't have WG built-in
-       #:tests? #f                      ; no test suite
-       #:modules ((guix build linux-module-build-system)
-                  (guix build utils)
-                  (ice-9 popen)
-                  (ice-9 textual-ports))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'change-directory
-           (lambda _
-             (chdir "./src")
-             #t))
-         (add-after 'build 'build-patch
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((patch-builder "../kernel-tree-scripts/create-patch.sh")
-                    (port (open-input-pipe patch-builder))
-                    (str (get-string-all port)))
-               (close-pipe port)
-               (call-with-output-file "wireguard.patch"
-                 (lambda (port)
-                   (format port "~a" str))))
-             #t))
-         (add-after 'install 'install-patch
-           (lambda* (#:key outputs #:allow-other-keys)
-             (install-file "wireguard.patch"
-                           (assoc-ref %outputs "kernel-patch"))
-             #t))
-         ;; So that 'install-license-files' works...
-         (add-before 'install-license-files 'reset-cwd
-           (lambda _
-             (chdir "..")
-             #t)))))
-    (home-page "https://git.zx2c4.com/wireguard-linux-compat/")
-    (synopsis "WireGuard kernel module for Linux 3.10 through 5.5")
-    (description "This package contains an out-of-tree kernel patch and
-a loadable module adding WireGuard to Linux kernel versions 3.10 through 5.5.
-WireGuard was added to Linux 5.6.")
-    (license license:gpl2)))
-
 (define-public wireguard-tools
   (package
     (name "wireguard-tools")
