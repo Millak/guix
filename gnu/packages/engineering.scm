@@ -1945,27 +1945,11 @@ language, ADMS transforms Verilog-AMS code into other target languages.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:tests? #false                   ;there are none
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'prepare-csv.h
-           (lambda* (#:key inputs #:allow-other-keys)
-             (mkdir "libfccp")
-             (install-file (search-input-file inputs "csv.h") "libfccp"))))))
+      #:tests? #f)) ;there are none
     (inputs
      (list alsa-lib pulseaudio wxwidgets))
     (native-inputs
-     (list unzip
-           (let ((commit "4ade42d5f8c454c6c57b3dce9c51c6dd02182a66"))
-             (origin
-               (method git-fetch)
-               (uri (git-reference
-                     (url "https://github.com/ben-strasser/fast-cpp-csv-parser")
-                     (commit commit)))
-               (file-name (git-file-name "csv.h" (git-version "0" "0" commit)))
-               (sha256
-                (base32
-                 "1y7ads97gkrjg1jc532n8gmjry0qhqxginw1gq7b4lk9s0pyl540"))))))
+     (list unzip libfccp))
     (home-page "https://sourceforge.net/projects/audmes/")
     (synopsis "Oscilloscope and spectrum analyzer using sound card")
     (description
