@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2013, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2016 Alex Kost <alezost@gmail.com>
@@ -529,7 +529,7 @@ Install, remove, or upgrade packages in a single transaction.\n"))
                                        (let ((file (or (and (string-suffix? ".json" arg)
                                                             (json->scheme-file arg))
                                                        arg)))
-                                         (load* file (make-user-module '())))
+                                         (load* file '()))
                                        result)
                            #f)))
          (option '(#\r "remove") #f #t
@@ -972,8 +972,8 @@ processed, #f otherwise."
 
 (define (load-manifest file)
   "Load the user-profile manifest (Scheme code) from FILE and return it."
-  (let ((user-module (make-user-module '((guix profiles) (gnu)))))
-    (load* file user-module)))
+  (let ((modules '((guix profiles) (gnu))))
+    (load* file modules)))
 
 (define %actions
   ;; List of actions that may be processed.  The car of each pair is the

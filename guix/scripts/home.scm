@@ -3,7 +3,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2022-2023, 2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022-2023, 2025-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
@@ -88,8 +88,9 @@
 ;;; Options.
 ;;;
 
-(define %user-module
-  (make-user-module '((gnu home))))
+(define %user-modules
+  ;; List of modules visible when loading Home environments.
+  '((gnu home)))
 
 (define %guix-home
   (string-append %profile-directory "/guix-home"))
@@ -534,7 +535,7 @@ resulting from command-line parsing."
              (expr
               (read/eval expr))
              (file
-              (load* file %user-module
+              (load* file %user-modules
                      #:on-error (assoc-ref opts 'on-error)))
              (else
               (leave (G_ "no configuration specified~%")))))))

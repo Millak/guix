@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2015, 2017-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2015, 2017-2024, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
@@ -724,7 +724,7 @@ transformations specified in OPTS (resulting from '--url', '--commit', or
     (string-append %sysconfdir "/guix/channels.scm"))
 
   (define (load-channels file)
-    (let ((result (load* file (make-user-module '((guix channels))))))
+    (let ((result (load* file '((guix channels)))))
       (if (and (list? result) (every channel? result))
           result
           (leave (G_ "'~a' did not return a list of channels~%") file))))

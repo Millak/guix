@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 David Thompson <davet@gnu.org>
 ;;; Copyright © 2019 Jakob L. Kreuze <zerodaysfordays@sdf.org>
-;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2022, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2024 Richard Sent <richard@freakingpenguin.com>
 ;;; Copyright © 2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
@@ -120,9 +120,9 @@ Perform the deployment specified by FILE.\n"))
   "Load FILE as a user module."
   (let* ((guix-path (dirname (search-path %load-path "guix.scm")))
          (environment-modules (scheme-modules* guix-path "gnu/machine"))
-         (module (make-user-module (append '((gnu) (gnu machine))
-                                           environment-modules))))
-    (load* file module)))
+         (modules (append '((gnu) (gnu machine))
+                          environment-modules)))
+    (load* file modules)))
 
 (define* (show-what-to-deploy machines #:key (dry-run? #f) (roll-back? #f))
   "Show the list of machines in MACHINES to deploy or roll back."

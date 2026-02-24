@@ -222,7 +222,7 @@ symlink to a non-existent file like 'pipe:[1234]', as in this example:
       (canonicalize-path file))
     (const file)))
 
-(define* (load* file user-module
+(define* (load* file imports
                 #:key (on-error 'nothing-special))
   "Load the user provided Scheme source code FILE."
   (define (error-string frame args)
@@ -232,6 +232,13 @@ symlink to a non-existent file like 'pipe:[1234]', as in this example:
 
   (define tag
     (make-prompt-tag "user-code"))
+
+  (define user-module
+    (if (module? imports)
+        (begin
+          (warning (G_ "using deprecated calling convention of 'load*'~%"))
+          imports)
+        (make-user-module imports)))
 
   (catch #t
     (lambda ()

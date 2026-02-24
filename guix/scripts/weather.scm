@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2024, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
@@ -431,8 +431,8 @@ Report the availability of substitutes.\n"))
 
 (define (load-manifest file)
   "Load the manifest from FILE and return the list of packages it refers to."
-  (let* ((user-module (make-user-module '((guix profiles) (gnu))))
-         (manifest    (load* file user-module)))
+  (let* ((modules  '((guix profiles) (gnu)))
+         (manifest (load* file modules)))
     (delete-duplicates (map manifest-entry-item
                             (manifest-transitive-entries manifest))
                        eq?)))

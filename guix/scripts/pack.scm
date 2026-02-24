@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2017-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2017-2024, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
@@ -1720,7 +1720,7 @@ Create a bundle of PACKAGE.\n"))
          (let ((file (or (and (string-suffix? ".json" file)
                               (json->scheme-file file))
                          file)))
-           (load* file (make-user-module '()))))
+           (load* file '())))
         (x #f)))
 
     (define (manifest-from-args store opts)
@@ -1756,9 +1756,7 @@ Create a bundle of PACKAGE.\n"))
           ((not (null? manifests))
            (concatenate-manifests
             (map (lambda (file)
-                   (let ((user-module (make-user-module
-                                       '((guix profiles) (gnu)))))
-                     (load* file user-module)))
+                   (load* file '((guix profiles) (gnu))))
                  manifests)))
           (else
            (packages->manifest packages

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021-2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2026 David Elsing <david.elsing@posteo.net>
 ;;;
@@ -281,11 +281,10 @@
                                 (basename file) "\" \"t.scm\"))")
                  port)))
 
-    (let* ((interned (add-to-store %store "t.scm" #f "sha256" file))
-           (module   (make-fresh-user-module)))
+    (let* ((interned (add-to-store %store "t.scm" #f "sha256" file)))
       (module-use! module (resolve-interface '(guix gexp)))
       (equal? `(this file is ,interned)
-              (gexp->sexp* (load* file module))))))
+              (gexp->sexp* (load* file '()))))))
 
 (test-assertm "local-file, #:select?"
   (mlet* %store-monad ((select? -> (lambda (file stat)

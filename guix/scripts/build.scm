@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2024, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
@@ -703,7 +703,7 @@ values.")))))))))
             (loop tail 'regular
                   (append (append-map
                            for-type
-                           (ensure-list (load* file (make-user-module '()))))
+                           (ensure-list (load* file '())))
                           result))))
          (('manifest . manifest)
           ;; Otherwise '--system' is ignored.
@@ -715,8 +715,8 @@ values.")))))))))
                                (manifest-entries
                                 (ensure-manifest
                                  (load* manifest
-                                        (make-user-module '((guix profiles)
-                                                            (gnu))))
+                                        '((guix profiles)
+                                          (gnu)))
                                  manifest)))
                           result))))
          (('expression . str)

@@ -103,16 +103,16 @@
 ;;; Operating system declaration.
 ;;;
 
-(define %user-module
+(define %user-modules
   ;; Module in which the machine description file is loaded.
-  (make-user-module '((gnu system)
-                      (gnu services)
-                      (gnu system shadow))))
+  '((gnu system)
+    (gnu services)
+    (gnu system shadow)))
 
 ;; Note: The procedure below is used in external projects such as Emacs-Guix.
 (define (read-operating-system file)
   "Read the operating-system declaration from FILE and return it."
-  (load* file %user-module))
+  (load* file %user-modules))
 
 
 ;;;
@@ -1301,7 +1301,7 @@ resulting from command-line parsing."
                           (expr
                            (read/eval expr))
                           (file
-                           (load* file %user-module
+                           (load* file %user-modules
                                   #:on-error (assoc-ref opts 'on-error)))
                           (else
                            (leave (G_ "no configuration specified~%")))))))

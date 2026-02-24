@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2023, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
@@ -546,8 +546,8 @@ all are dependent packages: ~{~a~^ ~}~%")
 
 (define (packages-from-manifest manifest)
   "Return the list of packages in loaded MANIFEST."
-  (let* ((user-module (make-user-module '((guix profiles) (gnu))))
-         (manifest    (load* manifest user-module)))
+  (let* ((modules  '((guix profiles) (gnu)))
+         (manifest (load* manifest modules)))
     (manifest->packages manifest)))
 
 

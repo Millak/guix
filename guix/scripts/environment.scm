@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2018 David Thompson <davet@gnu.org>
-;;; Copyright © 2015-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mike Gerwitz <mtg@gnu.org>
 ;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;;
@@ -319,8 +319,8 @@ use '--preserve' instead~%"))
 
 (define (load-manifest file)                      ;TODO: factorize
   "Load the user-profile manifest (Scheme code) from FILE and return it."
-  (let ((user-module (make-user-module '((guix profiles) (gnu)))))
-    (load* file user-module)))
+  (let ((modules '((guix profiles) (gnu))))
+    (load* file modules)))
 
 (define (options/resolve-packages store opts)
   "Return OPTS with package specification strings replaced by manifest entries
@@ -369,8 +369,7 @@ for the corresponding packages."
                    (packages->outputs (read/eval str) mode))
                   (('load mode file)
                    ;; Add all the outputs of the package defined in FILE.
-                   (let ((module (make-user-module '())))
-                     (packages->outputs (load* file module) mode)))
+                   (packages->outputs (load* file '()) mode))
                   (('manifest . file)
                    (manifest-entries (load-manifest file)))
                   (('nesting? . #t)
