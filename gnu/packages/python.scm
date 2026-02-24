@@ -1588,24 +1588,6 @@ and the unversioned commands available.")))
 (define-public python-sans-pip-wrapper
   (wrap-python3 python-sans-pip))
 
-(define-public python-toolchain
-  (let ((base (package/inherit python-sans-pip-wrapper)))
-    (package
-      (inherit base)
-      (properties '())
-      (name "python-toolchain")
-      (propagated-inputs
-       (modify-inputs (package-propagated-inputs base)
-         (append python-pip
-                 python-pypa-build
-                 python-setuptools
-                 python-wheel)))
-      (synopsis "Python toolchain")
-      (description
-       "Python toolchain including Python itself, setuptools and pip.
-Use this package if you need a minimal Python toolchain instead of just
-the interpreter."))))
-
 (define-public pythoncapi-compat
   ;; No release nor tags: use the latest commit.
   (let ((commit "ab72af8b1a9adfccb3578eea8e9b6d5c6449f409")
