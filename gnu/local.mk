@@ -208,6 +208,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/commencement.scm			\
   %D%/packages/compression.scm			\
   %D%/packages/compton.scm 			\
+  %D%/packages/computer-architecture.scm	\
   %D%/packages/configuration-management.scm	\
   %D%/packages/connman.scm			\
   %D%/packages/containers.scm			\

@@ -72,6 +72,7 @@ gnu/packages/code.scm
 gnu/packages/commencement.scm
 gnu/packages/compression.scm
 gnu/packages/compton.scm
+gnu/packages/computer-architecture.scm
 gnu/packages/configuration-management.scm
 gnu/packages/connman.scm
 gnu/packages/containers.scm
