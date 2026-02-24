@@ -9,7 +9,7 @@
 ;;; Copyright © 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2016, 2017, 2018, 2019 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Mekeor Melire <mekeor.melire@gmail.com>
-;;; Copyright © 2017, 2018, 2020, 2021, 2022, 2023 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2017–2018, 2020–2023, 2026 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
@@ -158,6 +158,7 @@
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system go)
@@ -2441,6 +2442,39 @@ messaging protocol.  It uses libqmatrixclient and is its reference client
 implementation.")
     (license (list license:gpl3+        ; all source code
                    license:lgpl3+))))   ; icons/breeze
+
+(define-public iamb
+  (package
+    (name "iamb")
+    (version "0.0.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "iamb" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+          "0mspdrzaljgbkx5yvphf6i4c0xs42yxlfrycxsl29b4qr5h41xyg"))))
+    (build-system cargo-build-system)
+    (inputs (cons sqlite (cargo-inputs 'iamb)))
+    (home-page "https://iamb.chat")
+    (synopsis "Terminal-based Matrix client with Vim keybindings")
+    (description
+     "iamb is a terminal-based client for Matrix that uses Vim keybindings.
+Features include:
+
+@itemize
+@item Creating, joining and leaving rooms
+@item Sending and accepting room invitations
+@item Editing, redacting and reacting to messages
+@item Threads, spaces, E2E encryption and read receipts
+@item Notifications via terminal bell or desktop environment
+@item Image previews in terminals that support it, or using pixelated blocks
+for those that don't
+@item Custom keybindings
+@item Multiple profiles
+@end itemize")
+    (license license:asl2.0)))
 
 (define-public telegram-purple
   (package
