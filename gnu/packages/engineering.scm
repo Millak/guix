@@ -1934,14 +1934,16 @@ language, ADMS transforms Verilog-AMS code into other target languages.")
 (define-public audmes
   (package
     (name "audmes")
-    (version "20220420")
+    (version "2025.04.05")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/audmes/audmes%20sources/"
-                           "audmes-source-" version ".zip"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.code.sf.net/p/audmes/git")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0yxjq2p1ca2wy2idwrlxr3b4vbp0d9268jll90y7l55fbid8vkp2"))))
+        (base32 "0jndc6bx94k229rc98jbqzgk42bxx0dxa7h80wxzbkrl507qnhc3"))))
     (build-system cmake-build-system)
     (arguments
      (list
