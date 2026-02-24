@@ -2734,6 +2734,34 @@ provides a number of utilities to make coding with expected cleaner.")
     (home-page "https://tl.tartanllama.xyz/")
     (license license:cc0)))
 
+(define-public libfccp
+  ;; Header-only library without any official release versions available.
+  (let ((commit "4ade42d5f8c454c6c57b3dce9c51c6dd02182a66")
+        (revision "0"))
+    (package
+      (name "libfccp")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ben-strasser/fast-cpp-csv-parser")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1y7ads97gkrjg1jc532n8gmjry0qhqxginw1gq7b4lk9s0pyl540"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan
+        #~`(("csv.h" "include/libfccp/"))))
+      (synopsis "Fast header-only library for reading CSV files")
+      (description
+       "This is a small, easy-to-use and fast header-only library for reading
+comma separated value (CSV) files.")
+      (home-page "https://github.com/ben-strasser/fast-cpp-csv-parser")
+      (license license:bsd-3))))
+
 (define-public immer
   ;; Use latest commit to fix build with gcc 14.
   (let ((commit "df6ef46d97e1fe81f397015b9aeb32505cef653b")
