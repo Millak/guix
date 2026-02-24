@@ -2063,6 +2063,7 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                            "library/std" ;rustc
                            "src/tools/cargo"
                            "src/tools/clippy"
+                           "src/tools/llvm-bitcode-linker"
                            "src/tools/rust-analyzer"
                            "src/tools/rustfmt"))))
              (replace 'check
@@ -2082,7 +2083,10 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
              (replace 'install
                ;; Phase overridden to also install more tools.
                (lambda* (#:key outputs #:allow-other-keys)
-                 (invoke "./x.py" "install")
+                 ;; Install rustc, std, and llvm-bitcode-linker.
+                 ;; rust-src is handled separately in 'install-rust-src'.
+                 (invoke "./x.py" "install" "compiler/rustc" "library/std"
+                         "llvm-bitcode-linker")
                  (substitute* "config.toml"
                    ;; Adjust the prefix to the 'cargo' output.
                    (("prefix = \"[^\"]*\"")
