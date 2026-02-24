@@ -56,7 +56,6 @@
   ;; setuptools. This allows us to skip the dependency on setuptools for
   ;; packages which don’t need it. And it allows us to more easily swap
   ;; out setuptools if a different version is required.
-  ;; Using python-toolchain here might cause dependency cycles.
   (@* (gnu packages python) python-sans-pip-wrapper))
 
 (define (pyproject-guile-json)

@@ -1559,8 +1559,7 @@ check list to determine which dependency goes where.
 
 @item
 Python is packaged @emph{without} @code{setuptools} and @code{pip}
-installed per default.  @code{python-toolchain} provides a build
-environment for Python.
+installed per default.
 
 @command{guix lint} will warn if @code{pip} or other unneeded
 native-inputs are added.
