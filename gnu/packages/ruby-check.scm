@@ -146,29 +146,6 @@ using Bundler.")
     (home-page "https://github.com/thoughtbot/appraisal")
     (license license:expat)))
 
-(define-public ruby-asciidoctor/minimal
-  (hidden-package
-   (package
-     (name "ruby-asciidoctor")
-     (version "2.0.20")
-     (source
-      (origin
-        (method git-fetch)               ;the gem release lacks a Rakefile
-        (uri (git-reference
-              (url "https://github.com/asciidoctor/asciidoctor")
-              (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "19qvilhwa9plg80ppspn5ys0ybl8qfyaicqbl9w316hk5ldwi1jq"))))
-     (build-system ruby-build-system)
-     (arguments (list #:tests? #f))
-     (synopsis "Converter from AsciiDoc content to other formats")
-     (description "Asciidoctor is a text processor and publishing toolchain for
-converting AsciiDoc content to HTML5, DocBook 5, PDF, and other formats.")
-     (home-page "https://asciidoctor.org")
-     (license license:expat))))
-
 (define-public ruby-builder
   (package
     (name "ruby-builder")

@@ -30,7 +30,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages perl)
-  #:use-module (gnu packages ruby-check))
+  #:use-module (gnu packages ruby-xyz))
 
 (define-public ccache
   (package

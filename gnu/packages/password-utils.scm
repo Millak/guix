@@ -128,7 +128,7 @@
   #:use-module (gnu packages rdesktop)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
-  #:use-module (gnu packages ruby-check)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages security-token)
   #:use-module (gnu packages suckless)
   #:use-module (gnu packages tcl)

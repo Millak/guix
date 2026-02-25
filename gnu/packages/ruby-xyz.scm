@@ -1232,6 +1232,13 @@ converting AsciiDoc content to HTML5, DocBook 5, PDF, and other formats.")
     (home-page "https://asciidoctor.org")
     (license license:expat)))
 
+ (define-public ruby-asciidoctor/minimal
+   (hidden-package
+     (package
+       (inherit ruby-asciidoctor)
+       (arguments (list #:tests? #f))
+       (native-inputs (list ))))); clear out for minimal build
+
 (define-public ruby-asciidoctor-diagram
   (package
     (name "ruby-asciidoctor-diagram")

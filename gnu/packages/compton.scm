@@ -43,7 +43,7 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
-  #:use-module (gnu packages ruby-check))
+  #:use-module (gnu packages ruby-xyz))
 
 (define-public compton
   (let ((upstream-version "0.1_beta2"))

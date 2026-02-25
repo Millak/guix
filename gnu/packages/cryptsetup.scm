@@ -35,7 +35,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages linux)
-  #:use-module (gnu packages ruby-check)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages web))
 
 (define-public cryptsetup-minimal

@@ -46,7 +46,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
-  #:use-module (gnu packages ruby-check)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)

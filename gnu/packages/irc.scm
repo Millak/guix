@@ -105,7 +105,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages ruby)
-  #:use-module (gnu packages ruby-check)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages qt)

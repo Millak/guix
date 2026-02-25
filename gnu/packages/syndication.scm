@@ -63,7 +63,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages qt)
-  #:use-module (gnu packages ruby-check)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages time)

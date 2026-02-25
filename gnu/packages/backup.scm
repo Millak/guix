@@ -103,7 +103,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rsync)
-  #:use-module (gnu packages ruby-check)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages time)

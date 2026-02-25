@@ -37,7 +37,7 @@
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages ruby-check)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)

@@ -106,7 +106,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
-  #:use-module (gnu packages ruby-check)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
