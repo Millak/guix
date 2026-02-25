@@ -500,6 +500,61 @@ Motion graphics has a wide variety of uses, including:
 ")
     (license license:gpl3+)))
 
+(define-public godsvg
+  (package
+    (name "godsvg")
+    (version "1.0-alpha13")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/MewPurPur/GodSVG")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+                (base32
+                  "0p9vhvvgmydhpy7yl8hlzrjif2246ais8cv3ji093m4ggc5hnsxa"))))
+    (build-system gnu-build-system)
+    (arguments
+      (list #:tests? #f ; No tests exist.
+            #:phases
+            #~(modify-phases %standard-phases
+                ;; FPS is uncapped by default, resulting in the editor consuming
+                ;; all available resources while idling. Set a more reasonable
+                ;; default.
+                (add-after 'unpack 'cap-fps
+                  (lambda _
+                    (substitute* "src/config_classes/SaveData.gd"
+                      (("(\"max_fps\": return |var max_fps := )0" _ pre)
+                       (string-append pre "30")))))
+                (delete 'configure)
+                (replace 'build
+                  (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                    (let ((native (or native-inputs inputs)))
+                      (invoke (search-input-file native "bin/godot")
+                              "--headless" "--export-pack" "Linux"
+                              "godsvg.pck" "project.godot"))))
+                (replace 'install
+                  (lambda* (#:key inputs #:allow-other-keys)
+                    (let ((bin (string-append #$output "/bin"))
+                          (share (string-append #$output "/share/godot")))
+                      (mkdir-p bin)
+                      (install-file "godsvg.pck" share)
+                      (call-with-output-file (string-append bin "/godsvg")
+                        (lambda (port)
+                          (format port "#!~a~%exec ~a --main-pack ~a~%"
+                            (search-input-file inputs "bin/bash")
+                            (search-input-file inputs "bin/godot")
+                            (string-append share "/godsvg.pck"))))
+                      (chmod (string-append bin "/godsvg") #o755)))))))
+    (supported-systems (filter target-linux? %supported-systems))
+    (inputs (list bash godot))
+    (native-inputs (list godot))
+    (home-page "https://www.godsvg.com/")
+    (synopsis "Real-time SVG design tool")
+    (description "GodSVG is a structured WYSIWYG SVG editor allowing image
+editing and source editing simultaneously.")
+    (license license:expat)))
+
 (define-public autotrace
   (package
     (name "autotrace")
