@@ -834,7 +834,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; linux-libre-headers-latest points to the latest headers package
 ;; and should be used as a dependency for packages that depend on
 ;; the headers.
-(define-public linux-libre-headers-latest linux-libre-headers-6.18)
+(define-public linux-libre-headers-latest linux-libre-headers-6.19)
 
 
 ;;;
@@ -1227,11 +1227,11 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 ;; Linux-Libre.
 ;; Reference: <https://www.kernel.org/category/releases.html>
 
-(define-public linux-libre-lts-version         linux-libre-6.12-version)
-(define-public linux-libre-lts-gnu-revision    linux-libre-6.12-gnu-revision)
-(define-public linux-libre-lts-pristine-source linux-libre-6.12-pristine-source)
-(define-public linux-libre-lts-source          linux-libre-6.12-source)
-(define-public linux-libre-lts                 linux-libre-6.12)
+(define-public linux-libre-lts-version         linux-libre-6.18-version)
+(define-public linux-libre-lts-gnu-revision    linux-libre-6.18-gnu-revision)
+(define-public linux-libre-lts-pristine-source linux-libre-6.18-pristine-source)
+(define-public linux-libre-lts-source          linux-libre-6.18-source)
+(define-public linux-libre-lts                 linux-libre-6.18)
 
 
 ;;;
