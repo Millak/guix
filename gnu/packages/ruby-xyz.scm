@@ -1232,6 +1232,36 @@ converting AsciiDoc content to HTML5, DocBook 5, PDF, and other formats.")
     (home-page "https://asciidoctor.org")
     (license license:expat)))
 
+(define-public ruby-asciidoctor-diagram
+  (package
+    (name "ruby-asciidoctor-diagram")
+    (version "3.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "asciidoctor-diagram" version))
+       (sha256
+        (base32 "15sc6yb4qyxy4v3bki26xn0j4k8rgjjiz3nwrxsprn6f0y6ysbp3"))))
+    (arguments (list #:tests? #f)) ;tests not bundled in gem
+    (native-inputs (list ruby-rspec))
+    (propagated-inputs (list ruby-asciidoctor ruby-rexml))
+    (build-system ruby-build-system)
+    (synopsis "Asciidoctor diagram extension")
+    (description "Asciidoctor Diagram is a set of Asciidoctor extensions that
+enable you to add diagrams, which you describe using plain text, to your
+AsciiDoc document.  The extension will run the appropriate diagram processor to
+generate an image from the input text.  The generated image is then inserted
+into your converted document.
+
+Detailed usage instructions can be found on the
+@url{https://docs.asciidoctor.org/diagram-extension/latest/,
+Asciidoctor documentation site}.
+
+Asciidoctor Diagram was inspired by the
+@url{https://code.google.com/p/asciidoc-plantuml/, AsciiDoc PlantUML filter}.")
+    (home-page "https://github.com/asciidoctor/asciidoctor-diagram")
+    (license license:expat)))
+
 (define-public ruby-asciidoctor-multipage
   (package
     (name "ruby-asciidoctor-multipage")
