@@ -1294,6 +1294,84 @@ configurable levels.")
     (license license:expat)
     (home-page "https://github.com/owenh000/asciidoctor-multipage")))
 
+(define-public ruby-asciidoctor-pdf
+  (package
+    (name "ruby-asciidoctor-pdf")
+    (version "2.3.19")
+    (source
+     (origin
+       (method git-fetch)               ;no test suite in the distributed gem
+       (uri (git-reference
+             (url "https://github.com/asciidoctor/asciidoctor-pdf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1l8my8jj4aww2yad80n6f7hs76lq5gicld8dy014pw90pk3x43mp"))
+       (patches
+        (search-patches
+         "ruby-asciidoctor-pdf-support-prawn-svg-0_36.patch"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The tests rely on the Gem being installed, so move the check
+          ;; phase after the install phase.
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (setenv "GEM_PATH" (string-append
+                                  (getenv "GEM_PATH") ":"
+                                  #$output "/lib/ruby/vendor_ruby"))
+              (when tests?
+                (invoke "rspec" "-t" "~visual" "-t" "~cli"
+                        "-t" "~network")))))))
+    (native-inputs
+     (list ruby-chunky-png
+           ruby-coderay
+           ruby-pdf-inspector
+           ruby-rouge
+           ruby-rspec))
+    (propagated-inputs
+     (list ruby-asciidoctor
+           ruby-concurrent-ruby
+           ruby-prawn
+           ruby-prawn-icon
+           ruby-prawn-svg
+           ruby-prawn-table
+           ruby-prawn-templates
+           ruby-text-hyphen
+           ruby-treetop
+           ruby-ttfunk))
+    (synopsis"AsciiDoc to Portable Document Format (PDF)} converter")
+    (description "Asciidoctor PDF is an extension for Asciidoctor that
+converts AsciiDoc documents to Portable Document Format (PDF) using the Prawn
+PDF library.  It has features such as:
+@itemize
+@item Direct AsciiDoc to PDF conversion
+@item Configuration-driven theme (style and layout)
+@item Scalable Vector Graphics (SVG) support
+@item PDF document outline (i.e., bookmarks)
+@item Table of contents page(s)
+@item Document metadata (title, authors, subject, keywords, etc.)
+@item Internal cross reference links
+@item Syntax highlighting with Rouge, Pygments, or CodeRay
+@item Page numbering
+@item Customizable running content (header and footer)
+@item
+“Keep together” blocks (i.e., page breaks avoided in certain block content)
+@item Orphaned section titles avoided
+@item Autofit verbatim blocks (as permitted by base_font_size_min setting)
+@item Table border settings honored
+@item Font-based icons
+@item Custom TrueType (TTF) fonts
+@item Double-sided printing mode (margins alternate on recto and verso pages)
+@end itemize")
+    (home-page "https://asciidoctor.org/docs/asciidoctor-pdf")
+    (license license:expat)))
+
 (define-public ruby-prawn-icon
   (package
     (name "ruby-prawn-icon")
@@ -2014,105 +2092,6 @@ system by Donald E.  Knuth.")
 useful to avoid making excessive queries, for example when scraping
 web pages.")
     (home-page "https://github.com/tigris/open-uri-cached")
-    (license license:expat)))
-
-(define-public ruby-asciidoctor-pdf
-  (package
-    (name "ruby-asciidoctor-pdf")
-    (version "2.3.24")
-    (source
-     (origin
-       (method git-fetch)               ;no test suite in the distributed gem
-       (uri (git-reference
-             (url "https://github.com/asciidoctor/asciidoctor-pdf")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0njpbgfdwzw7rbjj5vg5xjmykm55x588fk437nvaqg6bq7pv66mw"))
-       (patches
-        (search-patches
-         "ruby-asciidoctor-pdf-support-prawn-svg-0_36.patch"))))
-    (build-system ruby-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'extract-gemspec 'relax-dependencies
-            (lambda _
-              (substitute* "asciidoctor-pdf.gemspec"
-                (("~>") ">="))))
-          ;; The tests rely on the Gem being installed, so move the check
-          ;; phase after the install phase.
-          (delete 'check)
-          (add-after 'install 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (setenv "GEM_PATH" (string-append
-                                  (getenv "GEM_PATH") ":"
-                                  #$output "/lib/ruby/vendor_ruby"))
-              (when tests?
-                (let ((skippedtests
-                        (list ;; Disable tests requiring write access
-                              "should render linear gradient in SVG"
-                              ;; Disable visual+cli tests requiring network access
-                              "should allow remote image in SVG to be read if allow"
-                              "should warn if remote image is missing and allow"
-                              "should replace video with poster image if allow"
-                              "should read remote image over"
-                              "should embed remote image")))
-                     (setenv "SPEC_OPTS"
-                       (string-append
-                         "--warnings" " "
-                         ;; Disable tests failing in the guix environment:
-                         "--example-matches "
-                         "'(^(?!.*(" (string-join skippedtests "|") ")).*)'")))
-                ;; The Fontconfig error: No writable cache directories errors
-                ;; are caused by our read-only test environment and are
-                ;; non-failing
-                (invoke "rspec" "-t" "~network")))))))
-    (native-inputs
-     (list poppler
-           ruby-chunky-png
-           ruby-coderay
-           ruby-pdf-inspector
-           ruby-rouge
-           ruby-rspec))
-    (propagated-inputs
-     (list ruby-asciidoctor
-           ruby-concurrent-ruby
-           ruby-prawn
-           ruby-prawn-icon
-           ruby-prawn-svg
-           ruby-prawn-table
-           ruby-prawn-templates
-           ruby-text-hyphen
-           ruby-treetop
-           ruby-ttfunk))
-    (synopsis"AsciiDoc to Portable Document Format (PDF)} converter")
-    (description "Asciidoctor PDF is an extension for Asciidoctor that
-converts AsciiDoc documents to Portable Document Format (PDF) using the Prawn
-PDF library.  It has features such as:
-@itemize
-@item Direct AsciiDoc to PDF conversion
-@item Configuration-driven theme (style and layout)
-@item Scalable Vector Graphics (SVG) support
-@item PDF document outline (i.e., bookmarks)
-@item Table of contents page(s)
-@item Document metadata (title, authors, subject, keywords, etc.)
-@item Internal cross reference links
-@item Syntax highlighting with Rouge, Pygments, or CodeRay
-@item Page numbering
-@item Customizable running content (header and footer)
-@item
-“Keep together” blocks (i.e., page breaks avoided in certain block content)
-@item Orphaned section titles avoided
-@item Autofit verbatim blocks (as permitted by base_font_size_min setting)
-@item Table border settings honored
-@item Font-based icons
-@item Custom TrueType (TTF) fonts
-@item Double-sided printing mode (margins alternate on recto and verso pages)
-@end itemize")
-    (home-page "https://asciidoctor.org/docs/asciidoctor-pdf")
     (license license:expat)))
 
 (define-public ruby-ast
