@@ -57,7 +57,9 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
-  #:use-module (gnu packages ruby))
+  #:use-module (gnu packages rails)
+  #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ruby-xyz))
 
 ;;; Commentary:
 ;;;
@@ -85,6 +87,63 @@
     (description "Bundler automatically downloads and installs a list of gems
 specified in a \"Gemfile\", as well as their dependencies.")
     (home-page "https://bundler.io/")
+    (license license:expat)))
+
+(define-public ruby-appraisal
+ (package
+  (name "ruby-appraisal")
+  (version "2.5.0")
+  (source
+   (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://github.com/thoughtbot/appraisal")
+           (commit (string-append "v" version))))
+     (file-name (git-file-name name version))
+     (sha256
+      (base32 "19lv42j1a5slixldpfyz2id999aqkmg2kiibd7700ysiv4x70ayw"))))
+  (build-system ruby-build-system)
+  (arguments
+   (list
+    #:test-target "spec"
+    #:phases
+    #~(modify-phases %standard-phases
+      (add-before 'build 'loosen-requirements
+       (lambda _
+        (substitute* "Gemfile"
+         ((".*gem \"thor\",.*")
+           "gem \"thor\", \">= 0.14\""))))
+      (add-before 'check 'delete-broken-tests
+       ;; These tests make various bundler calls that don't respect
+       ;; the build environment
+       (lambda _
+        (for-each delete-file
+         (list
+          "./spec/acceptance/appraisals_file_bundler_dsl_compatibility_spec.rb"
+          "./spec/appraisal/appraisal_file_spec.rb"
+          "./spec/acceptance/bundle_without_spec.rb"
+          "./spec/acceptance/bundle_with_custom_path_spec.rb"
+          "./spec/acceptance/cli/clean_spec.rb"
+          "./spec/acceptance/cli/generate_spec.rb"
+          "./spec/acceptance/cli/help_spec.rb"
+          "./spec/acceptance/cli/install_spec.rb"
+          "./spec/acceptance/cli/list_spec.rb"
+          "./spec/acceptance/cli/run_spec.rb"
+          "./spec/acceptance/cli/update_spec.rb"
+          "./spec/acceptance/cli/version_spec.rb"
+          "./spec/acceptance/cli/with_no_arguments_spec.rb"
+          "./spec/acceptance/gemfile_dsl_compatibility_spec.rb"
+          "./spec/acceptance/gemspec_spec.rb")))))))
+    (native-inputs (list bundler ruby-activesupport ruby-rspec))
+    (propagated-inputs (list ruby-rake ruby-thor))
+    (synopsis "Tests your library against different versions of dependencies")
+    (description
+     "Appraisal integrates with bundler and rake to test your
+library against different versions of dependencies in repeatable scenarios
+called \"appraisals.\"  Appraisal is designed to make it easy to check for
+regressions in your library without interfering with day-to-day development
+using Bundler.")
+    (home-page "https://github.com/thoughtbot/appraisal")
     (license license:expat)))
 
 (define-public ruby-asciidoctor/minimal
