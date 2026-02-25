@@ -25,6 +25,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages dav)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
@@ -43,6 +44,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
@@ -74,6 +76,52 @@ supports a variety of WebDAV features and provides an interactive
 command-line environment with support for file manipulation on remote WebDAV
 servers.")
     (license license:gpl2+)))
+
+;; This package isn't reproducible due to non-deterministic behaviour in a
+;; procedural macros that's provided by a crate used by pimsync.
+;; See https://github.com/stalwartlabs/hashify/issues/4
+(define-public pimsync
+  (package
+    (name "pimsync")
+    (version "0.5.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~whynothugo/pimsync")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01qxg0mk7if96rmb0q88wgjpnv1fb8iw2dbzwlm0ars1mi3xpmr3"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'setup-environment
+            (lambda _
+              (setenv "PIMSYNC_VERSION"
+                      #$version)))
+          (add-after 'install 'install-man-pages
+            (lambda _
+              (let ((man (string-append #$output "/share/man/man")))
+                (install-file "pimsync.1"
+                              (string-append man "1"))
+                (install-file "pimsync.conf.5"
+                              (string-append man "5"))
+                (install-file "pimsync-migration.7"
+                              (string-append man "7"))))))))
+    (inputs (cons* sqlite
+                   (cargo-inputs 'pimsync)))
+    (synopsis
+     "Synchronize calendars and contacts using CalDAV, CardDAV and others")
+    (description
+     "Pimsync synchronizes your calendars and contacts between two
+storage locations.  The most popular purpose is to synchronize a CalDAV or
+CardDAV server with a local folder or file.")
+    (home-page "https://pimsync.whynothugo.nl/")
+    (license license:eupl1.2)))
 
 (define-public radicale
   (package
