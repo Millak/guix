@@ -13500,16 +13500,17 @@ same time tries to group instances from the same class together.")
 (define-public r-caliberrfimpute
   (package
     (name "r-caliberrfimpute")
-    (version "1.0-7")
+    (version "1.0-8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "CALIBERrfimpute" version))
        (sha256
-        (base32 "1fspn6wgr0kc7j4ixx24c706kzrgjhi1b1w28izpfxm4r89zk08s"))))
+        (base32 "18yk4xw7q8q93pwgs92n1nsdbspxc598bxpyxg84m891pkx207g6"))))
     (properties `((upstream-name . "CALIBERrfimpute")))
     (build-system r-build-system)
     (propagated-inputs (list r-mice r-mvtnorm r-randomforest))
+    (native-inputs (list r-missforest r-ranger r-rpart r-survival r-xtable))
     (home-page "https://cran.r-project.org/package=CALIBERrfimpute")
     (synopsis "Multiple imputation using MICE and random forest")
     (description
