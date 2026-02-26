@@ -21137,24 +21137,25 @@ distances.")
 (define-public r-useful
   (package
    (name "r-useful")
-   (version "1.2.6.1")
+   (version "1.2.7")
    (source (origin
             (method url-fetch)
             (uri (cran-uri "useful" version))
             (sha256
              (base32
-              "1gb9hqvbm6pr56dfqlsgz26lan7xargfsm8jpdja18mpgli2gyvc"))))
+              "1ksmk0yk5qgvpd4382lr6sxby0lf10gbzks4mhna2wnmjqbn7y6c"))))
    (properties `((upstream-name . "useful")))
    (build-system r-build-system)
    (propagated-inputs
     (list r-assertthat
           r-dplyr
           r-ggplot2
-          r-magrittr
           r-matrix
           r-plyr
           r-purrr
-          r-scales))
+          r-rlang
+          r-scales
+          r-tibble))
    (native-inputs (list r-testthat))
    (home-page "https://github.com/jaredlander/useful")
    (synopsis "Collection of handy, useful functions")
