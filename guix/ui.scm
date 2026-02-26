@@ -79,6 +79,9 @@
   #:use-module (ice-9 format)
   #:use-module (ice-9 regex)
   #:autoload   (ice-9 popen) (open-pipe* close-pipe)
+  #:autoload   (ice-9 sandbox) (all-pure-bindings
+                                make-sandbox-module
+                                call-with-time-and-allocation-limits)
   #:autoload   (system repl repl)  (start-repl)
   #:autoload   (system repl debug) (make-debug stack->vector)
   #:use-module (texinfo)
@@ -222,9 +225,83 @@ symlink to a non-existent file like 'pipe:[1234]', as in this example:
       (canonicalize-path file))
     (const file)))
 
-(define* (load* file imports
-                #:key (on-error 'nothing-special))
-  "Load the user provided Scheme source code FILE."
+(define (read/safe port)
+  "Read code (one or more sexps) from PORT, wrapping the sexps in a 'begin'
+form if needed, ensuring that reader extensions are all disabled to prevent
+arbitrary code execution."
+  (with-fluids ((read-eval? #f))
+    (parameterize ((read-hash-procedures '()))
+      (let loop ((result '()))
+        (match (read port)
+          ((? eof-object?)
+           (match result
+             ((exp) exp)                          ;a single expression
+             (_ `(begin ,@(reverse result)))))    ;multiple expressions
+          (exp
+           (loop (cons exp result))))))))
+
+(define (sever-module! m)                         ;copied from (ice-9 sandbox)
+  "Remove @var{m} from its container module."
+  (match (module-name m)
+    ((head ... tail)
+     (let ((parent (resolve-module head #f)))
+       (unless (eq? m (module-ref-submodule parent tail))
+         (error "can't sever module?"))
+       (hashq-remove! (module-submodules parent) tail)))))
+
+(define* (load/isolated file bindings
+                        #:key
+                        (time-limit 30)
+                        (allocation-limit #e1e6))
+  "Read and evaluate code from FILE in a isolated evaluation environment that
+only contains the given BINDINGS.  Evaluation may not take more than
+TIME-LIMIT seconds and may not allocate more than ALLOCATION-LIMIT bytes."
+  ;; This is similar to 'eval-in-sandbox' except that the time and allocation
+  ;; limits apply to both reading and evaluating.
+  (let ((module (make-sandbox-module bindings)))
+    (dynamic-wind
+      (const #t)
+      (lambda ()
+        (call-with-time-and-allocation-limits time-limit allocation-limit
+          (lambda ()
+            (eval (call-with-input-file file read/safe) module))))
+      (lambda ()
+        (sever-module! module)))))
+
+(define pure-bindings-sans-allocators
+  ;; Work around <https://codeberg.org/guile/guile/issues/181> by filtering
+  ;; out procedures that can allocate large amounts of memory without being
+  ;; interrupted by 'call-with-allocation-limit'.
+  (delay (let ((banned (setq 'make-list
+                             'make-array
+                             'make-typed-array
+                             'make-shared-array
+                             'make-vector
+                             'make-bitvector
+                             'make-string
+                             'make-f32vector
+                             'make-f64vector
+                             'make-s16vector
+                             'make-s32vector
+                             'make-s64vector
+                             'make-s8vector
+                             'make-u16vector
+                             'make-u32vector
+                             'make-u64vector
+                             'make-u8vector)))
+           (map (match-lambda
+                  ((module . bindings)
+                   (cons module
+                         (remove (cut set-contains? banned <>) bindings))))
+                all-pure-bindings))))
+
+(define* (load* file-or-port imports
+                #:key
+                (on-error 'nothing-special)
+                (isolated? #f))
+  "Load the user provided Scheme source code FILE.  When ISOLATED? is true,
+load FILE in an isolated \"sandbox\" where only IMPORTS are available--see the
+documentation for (ice-9 sandbox) for what goes into IMPORTS."
   (define (error-string frame args)
     (call-with-output-string
       (lambda (port)
@@ -238,29 +315,43 @@ symlink to a non-existent file like 'pipe:[1234]', as in this example:
         (begin
           (warning (G_ "using deprecated calling convention of 'load*'~%"))
           imports)
-        (make-user-module imports)))
+        (and (not isolated?)
+             (make-user-module (map (match-lambda
+                                      (((module ...) bindings ...)
+                                       module)
+                                      ((module ...)
+                                       module))
+                                    imports)))))
 
   (catch #t
     (lambda ()
-      ;; XXX: Force a recompilation to avoid ABI issues.
-      (set! %fresh-auto-compile #t)
-      (set! %load-should-auto-compile #t)
+      (if isolated?
+          (call-with-prompt tag
+            (lambda ()
+              (load/isolated (try-canonicalize-path file)
+                             (append imports
+                                     (force pure-bindings-sans-allocators))))
+            (const #f))
+          (save-module-excursion
+           (lambda ()
+             ;; XXX: Force a recompilation to avoid ABI issues.
+             (set! %fresh-auto-compile #t)
+             (set! %load-should-auto-compile #t)
 
-      (save-module-excursion
-       (lambda ()
-         (set-current-module user-module)
+             (set-current-module user-module)
 
-         ;; Hide the "auto-compiling" messages.
-         (parameterize ((current-warning-port (%make-void-port "w")))
-           (call-with-prompt tag
-             (lambda ()
-               ;; Give 'load' an absolute file name so that it doesn't try to
-               ;; search for FILE in %LOAD-PATH.  Note: use 'load', not
-               ;; 'primitive-load', so that FILE is compiled, which then allows
-               ;; us to provide better error reporting with source line numbers.
-               (without-compiler-optimizations
-                (load (try-canonicalize-path file))))
-             (const #f))))))
+             ;; Hide the "auto-compiling" messages.
+             (parameterize ((current-warning-port (%make-void-port "w")))
+               (call-with-prompt tag
+                 (lambda ()
+                   ;; Give 'load' an absolute file name so that it doesn't
+                   ;; try to search for FILE in %LOAD-PATH.  Note: use
+                   ;; 'load', not 'primitive-load', so that FILE is
+                   ;; compiled, which then allows us to provide better error
+                   ;; reporting with source line numbers.
+                   (without-compiler-optimizations
+                    (load (try-canonicalize-path file))))
+                 (const #f)))))))
     (lambda _
       ;; XXX: Errors are reported from the pre-unwind handler below, but
       ;; calling 'exit' from there has no effect, so we call it here.
@@ -2416,6 +2507,7 @@ and signal handling have already been set up."
 
 ;;; Local Variables:
 ;;; eval: (put 'guard* 'scheme-indent-function 2)
+;;; eval: (put 'call-with-time-and-allocation-limits 'scheme-indent-function 2)
 ;;; End:
 
 ;;; ui.scm ends here
