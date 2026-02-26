@@ -10469,13 +10469,13 @@ worker processes and collect and return the results on the master.")
 (define-public r-snowflakeauth
   (package
     (name "r-snowflakeauth")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "snowflakeauth" version))
        (sha256
-        (base32 "1hcbhdvlpc81xyb4vfka9il33schhpr9lzg16wmvmbn2v527sjzk"))))
+        (base32 "1qj0w3d5pzv6ynd9sxrldrrqjaj8lrrk602a98j7f95cn90wbihd"))))
     (properties `((upstream-name . "snowflakeauth")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli
