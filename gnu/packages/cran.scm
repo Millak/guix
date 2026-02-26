@@ -54086,13 +54086,13 @@ installation and loading of the core mlr3 packages.")
 (define-public r-mlr3viz
   (package
     (name "r-mlr3viz")
-    (version "0.10.1")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3viz" version))
        (sha256
-        (base32 "0d0vqg1jlg86fspmfx120jm1fkcjr3f5s93chbgcxb1gpz46pf7f"))))
+        (base32 "1v0hyqdk8lyflg450k36x7simgmwxnf6np776c25bhkwlwhdj2q4"))))
     (properties
      '((upstream-name . "mlr3viz")
        (updater-extra-native-inputs . ("r-rpart"))))
@@ -54100,12 +54100,12 @@ installation and loading of the core mlr3 packages.")
     (propagated-inputs (list r-checkmate
                              r-data-table
                              r-ggplot2
+                             r-mlr3
                              r-mlr3misc
                              r-scales
                              r-viridis))
     (native-inputs (list r-bbotk
                          r-lgr
-                         r-mlr3
                          r-mlr3filters
                          r-mlr3fselect
                          r-mlr3tuning
