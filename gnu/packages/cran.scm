@@ -42548,14 +42548,14 @@ be used further by e.g. graphic devices.")
 (define-public r-graphlayouts
   (package
     (name "r-graphlayouts")
-    (version "1.2.2")
+    (version "1.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "graphlayouts" version))
        (sha256
         (base32
-         "0bz8q6pnjzvvy1ks883hz4h5dmr6sql47wnc2y18kfjkzq4g2j28"))))
+         "01bkfvdp6apy7jgdj23c4bxm90b5603hvy8cpjjlir7906135dcn"))))
     (properties `((upstream-name . "graphlayouts")))
     (build-system r-build-system)
     (propagated-inputs
