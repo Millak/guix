@@ -1108,14 +1108,14 @@ binary, but none of the actual plugins.")))
 (define-public gst-rtsp-server
   (package
     (name "gst-rtsp-server")
-    (version "1.26.3")
+    (version "1.28.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://gstreamer.freedesktop.org/src/" name "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "1ibg83sa0nswqan5fg378bg36jis5sn1dwfl1mvqjiw4m59qlpj1"))))
+        (base32 "0cpqvdxr7falww14xblqs7la6q2f1z1zbli4vjdp9yqcy9mfil3c"))))
     (build-system meson-build-system)
     (arguments
      (list #:phases
