@@ -745,14 +745,14 @@ model to base your own plug-in on, here it is.")
 (define-public gst-plugins-bad
   (package
     (name "gst-plugins-bad")
-    (version "1.26.3")
+    (version "1.28.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gstreamer.freedesktop.org/src/"
                                   name "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0qbmblksgl2nmbi6brw54b1bzziw9flvqk2zb576y9qlmyn8vi4m"))
+                "18hk8gh97r2cwdazl5ikjwsczk3bkvr4z7nmjc45bdgqhwvmkhan"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1094,7 +1094,7 @@ given, also pass them to the build system instead of the ones used by PKG."
            #~(modify-phases #$phases
                (add-after 'unpack 'disable-auto-plugins
                  (lambda _
-                   (substitute* "meson_options.txt"
+                   (substitute* "meson.options"
                      (("'auto'") "'disabled'")))))))))))
 
 (define-public gst-plugins-bad-minimal
