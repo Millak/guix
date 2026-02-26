@@ -1143,7 +1143,7 @@ RTSP connections and messages.")
 (define-public python-gst
   (package
     (name "python-gst")
-    (version "1.26.3")
+    (version "1.28.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1151,7 +1151,7 @@ RTSP connections and messages.")
                     "gst-python-" version ".tar.xz"))
               (sha256
                (base32
-                "04hv5pj8br56knvw1nsx74j1lpxskbm6znsdqac28iszqjkvjhwk"))))
+                "11bhdylgkfcgdlfcv61vyjp0f27sqp3i4y7d8c2a2nxrmnaylz6l"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -1163,7 +1163,22 @@ RTSP connections and messages.")
       #:configure-flags
       #~(list (string-append
                "-Dpygi-overrides-dir="
-               (py:site-packages %build-inputs %outputs) "/gi/overrides"))))
+               (py:site-packages %build-inputs %outputs) "/gi/overrides"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              ;; The 'fundamentals' test fails with a segmentation fault since
+              ;; 1.28.1 (see:
+              ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/4937>).
+              (substitute* "testsuite/meson.build"
+                ((".*'fundamentals',.*") ""))))
+          (delete 'check)               ;moved after install
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check))
+          (add-before 'check 'add-install-to-pythonpath
+            ;; Required for the 'plugins' test.
+            (assoc-ref py:%standard-phases 'add-install-to-pythonpath)))))
     (native-inputs
      (list pkg-config python))
     ;; XXX: Move back to propagated-inputs once we no longer need to use
