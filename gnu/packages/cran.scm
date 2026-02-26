@@ -51411,14 +51411,14 @@ p-value approximations.")
 (define-public r-survminer
   (package
     (name "r-survminer")
-    (version "0.5.1")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "survminer" version))
        (sha256
         (base32
-         "0n2j8drmhx34l1aiz81l912hj6b4l8zhmsqqa6rvfrc516mpxci3"))))
+         "1h881pfgq6iqm36c5qkf54pkfjv8n8hjgck1kjpa4hmqbxj5ij8p"))))
     (properties `((upstream-name . "survminer")))
     (build-system r-build-system)
     (propagated-inputs
@@ -51434,7 +51434,6 @@ p-value approximations.")
            r-rlang
            r-scales
            r-survival
-           r-survmisc
            r-tibble
            r-tidyr))
     (native-inputs
