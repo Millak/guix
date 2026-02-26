@@ -30060,14 +30060,14 @@ console, resulting in an interactive editing environment.")
 (define-public r-survey
   (package
     (name "r-survey")
-    (version "4.4-8")
+    (version "4.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "survey" version))
        (sha256
         (base32
-         "10krf2qmyamjclx4r3kj4azbxkddmwkii6afcgdwfjhgsxi3g2br"))))
+         "06dmcb9f9515sivgnf8a6azxyhp303gmw9bl080gdb7rb4bv0ala"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -30085,7 +30085,11 @@ console, resulting in an interactive editing environment.")
            r-rcpp
            r-rcpparmadillo
            r-survival))
-    (native-inputs (list r-aer r-r-rsp r-rsqlite))
+    (native-inputs (list r-aer
+                         r-knitr
+                         r-r-rsp
+                         r-rsqlite
+                         r-testthat))
     (home-page "https://r-survey.r-forge.r-project.org/survey/")
     (synopsis "Analysis of complex survey samples")
     (description
