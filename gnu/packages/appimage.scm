@@ -86,7 +86,7 @@
               (gexp-input (this-package-input "zlib") "static"))))
       ;; Only needed at build time.
       (inputs (list squashfuse-for-appimage
-                    fuse-for-appimage
+                    `(,fuse "static")
                     `(,zstd "static")
                     `(,zlib "static")))
       (synopsis "Runtime for executing AppImages")

@@ -2249,7 +2249,8 @@ memory-efficient.")
                  (install-file "fuseprivate.h"
                                (string-append #$output
                                               "/include/squashfuse/")))))))))
-    (inputs (list fuse-for-appimage
+    (inputs (list `(,fuse "out")
+                  `(,fuse "static")
                   `(,zstd "lib")
                   `(,zstd "static")
                   `(,zlib "out")
