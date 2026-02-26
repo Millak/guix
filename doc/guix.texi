@@ -4788,6 +4788,31 @@ Read the list of channels from @var{file} instead of
 evaluates to a list of channel objects.  @xref{Channels}, for more
 information.
 
+@anchor{unsafe-channel-evaluation}
+@item --unsafe-channel-evaluation
+Allow arbitrary code execution from channel files, both the default
+@file{channels.scm} files and those passed with @option{--channels} as
+mentioned above.
+
+@cindex sandboxing, of channel evaluation
+By default, channel files are evaluated in an isolated ``sandbox''
+where only trivial declarative code returning a list of channels is
+allowed---calls to procedures such as @code{list}, @code{cons},
+@code{string-append}, as well as the @code{channel} constructor.
+Attempts from a channel file to access unauthorized bindings such as
+@code{system} (to run shell code) or to use additional modules with
+@code{use-modules} are impossible.
+
+The @option{--unsafe-channel-evaluation} option disables these
+safeguards.
+
+@quotation Warning
+When using @code{--unsafe-channel-evaluation}, channel files can
+@emph{run arbitrary code on your machine}.  While this is useful in some
+cases, only use @code{--unsafe-channel-evaluation} when you fully
+understand the code of the channel files you use!
+@end quotation
+
 @item --no-channel-files
 @itemx -q
 Inhibit loading of the user and system channel files,
@@ -5034,6 +5059,19 @@ string or the name of a tag), or @var{branch}.
 Read the list of channels from @var{file}.  @var{file} must contain
 Scheme code that evaluates to a list of channel objects.
 @xref{Channels} for more information.
+
+@item --unsafe-channel-evaluation
+Allow arbitrary code execution from channels files.
+
+@quotation Warning
+When using @code{--unsafe-channel-evaluation}, channel files can
+@emph{run arbitrary code on your machine}.  Only use
+@code{--unsafe-channel-evaluation} when you fully understand the code of
+the channel files you use!
+
+@xref{unsafe-channel-evaluation, @option{--unsafe-channel-evaluation} in
+@command{guix pull}}, for background information.
+@end quotation
 
 @item --no-channel-files
 @itemx -q
@@ -5763,6 +5801,7 @@ pull} uses the latest commit with available substitutes for the package
 definitions: this is done by querying the continuous integration
 server at @url{https://ci.guix.gnu.org}.
 
+@findex channel-with-substitutes-available
 @lisp
 (use-modules (guix ci))
 
@@ -5776,6 +5815,14 @@ install after running @command{guix pull} will have available
 substitutes.  It only ensures that @command{guix pull} will not try to
 compile package definitions.  This is particularly useful when using
 machines with limited resources.
+
+@quotation Warning
+Use of this functionality in your channel file requires it to be
+evaluated in ``unsafe'' mode, with the
+@option{--unsafe-channel-evaluation} option.
+@xref{unsafe-channel-evaluation, the @command{guix pull} documentation},
+for more info.
+@end quotation
 
 @node Creating a Channel
 @section Creating a Channel

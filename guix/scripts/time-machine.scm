@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Konrad Hinsen <konrad.hinsen@fastmail.net>
-;;; Copyright © 2019-2021, 2023-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2021, 2023-2024, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
@@ -71,6 +71,9 @@ If COMMAND is not provided, print path to the time-machine profile.\n"))
       --disable-authentication
                          disable channel authentication"))
   (display (G_ "
+      --unsafe-channel-evaluation
+                         evaluate channels file with the full user authority"))
+  (display (G_ "
       --no-check-certificate
                          do not validate the certificate of HTTPS servers"))
   (newline)
@@ -101,6 +104,9 @@ If COMMAND is not provided, print path to the time-machine profile.\n"))
          (option '("branch") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'ref `(branch . ,arg) result)))
+         (option '("unsafe-channel-evaluation") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'isolated-channel-evaluation? #f result)))
          (option '("disable-authentication") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'authenticate-channels? #f result)))
@@ -125,6 +131,7 @@ If COMMAND is not provided, print path to the time-machine profile.\n"))
     (print-build-trace? . #t)
     (print-extended-build-trace? . #t)
     (multiplexed-build-output? . #t)
+    (isolated-channel-evaluation? . #t)
     (authenticate-channels? . #t)
     (verify-certificate? . #t)
     (graft? . #t)

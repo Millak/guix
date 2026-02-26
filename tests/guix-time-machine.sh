@@ -1,6 +1,6 @@
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
-# Copyright © 2023-2024 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2023-2024, 2026 Ludovic Courtès <ludo@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -20,6 +20,26 @@
 #
 # Test the 'guix time-machine' command-line utility.
 #
+
+channels_file="channels-test-$$.scm"
+trap "rm -f $channels_file" EXIT
+
+cat > "$channels_file" <<EOF
+(system "echo rm -rf /")
+%default-channels
+EOF
+
+# This must fail: 'system' is not among the available bindings in the
+# evaluation sandbox.
+guix time-machine -C "$channels_file" && echo false
+
+cat > "$channels_file" <<EOF
+(use-modules (system foreign))
+%default-channels
+EOF
+
+# Likewise, 'use-modules' is not available.
+guix time-machine -C "$channels_file" && echo false
 
 if [ -d "$abs_top_srcdir/.git" ] \
    || guile -c '(getaddrinfo "www.gnu.org" "80" AI_NUMERICSERV)' 2> /dev/null

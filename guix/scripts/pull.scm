@@ -76,6 +76,7 @@
     (graft? . #t)
     (debug . 0)
     (verbosity . 1)
+    (isolated-channel-evaluation? . #t)
     (authenticate-channels? . #t)
     (verify-certificate? . #t)
     (validate-pull . ,ensure-forward-channel-update)))
@@ -99,6 +100,9 @@ Download and deploy the latest version of Guix.\n"))
   (display (G_ "
       --disable-authentication
                          disable channel authentication"))
+  (display (G_ "
+      --unsafe-channel-evaluation
+                         evaluate channels file with the full user authority"))
   (display (G_ "
       --no-check-certificate
                          do not validate the certificate of HTTPS servers"))
@@ -187,6 +191,9 @@ Download and deploy the latest version of Guix.\n"))
          (option '("disable-authentication") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'authenticate-channels? #f result)))
+         (option '("unsafe-channel-evaluation") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'isolated-channel-evaluation? #f result)))
          (option '("no-check-certificate") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'verify-certificate? #f result)))
@@ -705,6 +712,21 @@ Return true when there is more package info to display."
        (with-store store
          (delete-matching-generations store profile pattern))))))
 
+(define %safe-channel-bindings
+  ;; Bindings provided available to channel files.
+  '(((guix channels)
+     channel?
+     channel channel-branch channel-commit
+     channel-name channel-location
+     channel-introduction
+     channel-introduction?
+     make-channel-introduction
+     channel-introduction-first-commit-signer
+     channel-introduction-first-signed-commit
+     openpgp-fingerprint
+     %default-channels
+     %default-guix-channel)))
+
 (define (channel-list opts)
   "Return the list of channels to use.  If OPTS specify a channel file,
 channels are read from there; otherwise, if ~/.config/guix/channels.scm
@@ -723,8 +745,12 @@ transformations specified in OPTS (resulting from '--url', '--commit', or
   (define global-file
     (string-append %sysconfdir "/guix/channels.scm"))
 
+  (define isolated?
+    (assoc-ref opts 'isolated-channel-evaluation?))
+
   (define (load-channels file)
-    (let ((result (load* file '((guix channels)))))
+    (let ((result (load* file %safe-channel-bindings
+                         #:isolated? isolated?)))
       (if (and (list? result) (every channel? result))
           result
           (leave (G_ "'~a' did not return a list of channels~%") file))))
