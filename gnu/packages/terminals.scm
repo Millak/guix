@@ -241,14 +241,14 @@ managers.")
 (define-public asciinema
   (package
     (name "asciinema")
-    (version "3.0.1")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "asciinema" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1w64inic9z2fb0vwi0a2q8i31d4jsr6n71dg1ixhmmvkdpv7gb1j"))))
+        (base32 "19pszccw536g0ryd4z33ni1lx9a20hi47g9x4xwmg1v4plpr5szr"))))
     (build-system cargo-build-system)
     (native-inputs (list python-minimal)) ;needed for tests
     (inputs (cargo-inputs 'asciinema))
