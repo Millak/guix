@@ -21888,13 +21888,13 @@ of Eigenmatrices} (JADE).")
 (define-public r-ips
   (package
     (name "r-ips")
-    (version "0.0.12")
+    (version "0.0.13")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ips" version))
               (sha256
                (base32
-                "0vnsalm94vzagksqv4ph6x7vdwhd1lq278sak30pr4m9bc9xxchw"))))
+                "1haa9a59arh9ffnx50j02ss23yx74zis5vbg45nvkn0ddgdnx1a6"))))
     (properties `((upstream-name . "ips")))
     (build-system r-build-system)
     (propagated-inputs (list r-ape r-data-table r-phangorn r-plyr r-xml))
