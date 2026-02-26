@@ -20756,19 +20756,24 @@ for certain use cases.")
 (define-public r-ggrepel
   (package
     (name "r-ggrepel")
-    (version "0.9.6")
+    (version "0.9.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggrepel" version))
        (sha256
         (base32
-         "04kj9qzcws6wfw9pf3s6w4phpqywyv6j617l7907plkpcgd6x2i6"))))
+         "0dy228x6qqr5rs0z69l9k3lz0s9if08yf6rkmsn3sn3szybyalbd"))))
     (build-system r-build-system)
     (properties
-     '((updater-extra-native-inputs . ("v-diffr"))))
+     '((updater-extra-native-inputs . ("r-vdiffr"))))
     (propagated-inputs
-     (list r-ggplot2 r-rcpp r-rlang r-scales r-withr))
+     (list r-ggplot2
+           r-rcpp
+           r-rlang
+           r-s7
+           r-scales
+           r-withr))
     (native-inputs
      (list r-knitr r-testthat r-vdiffr))
     (home-page "https://github.com/slowkow/ggrepel")
