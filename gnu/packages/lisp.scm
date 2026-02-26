@@ -34,6 +34,7 @@
 ;;; Copyright © 2024 David Pflug <david@pflug.io>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2026 Igorj Gorjaĉev <igor@goryachev.org>
+;;; Copyright © 2026 Simen Endsjø <contact@simendsjo.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1371,16 +1372,14 @@ be built as a stand-alone REPL interpreter.")
 (define-public sbcl
   (package
     (name "sbcl")
-    (version "2.5.8")
+    (version "2.6.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/sbcl/sbcl/" version "/sbcl-"
                            version "-source.tar.bz2"))
        (sha256
-        (base32 "1bm9hvsrg21mzqhcayiyghz0nkfp43ks840p0bg3bxlma22kwq57"))
-       ;; TODO: Remove this patch when upgrading to SBCL > 2.5.8.
-       (patches (search-patches "sbcl-fix-arm64-shared-lib.patch"))
+        (base32 "0yym01a6a2vp9cns46vi3ikg4q2jdnfijrh4yp2bgzk09djkx99v"))
        (modules '((guix build utils)))
        (snippet
         '(begin

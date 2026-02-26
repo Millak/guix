@@ -76,6 +76,7 @@
 # Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 # Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 # Copyright © 2025 bdunahu <bdunahu@operationnull.com>
+# Copyright © 2026 Simen Endsjø <contact@simendsjo.me>
 #
 # This file is part of GNU Guix.
 #
@@ -2431,7 +2432,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/sajson-build-with-gcc10.patch		\
   %D%/packages/patches/sane-look-for-plugins-in-SANE_BACKEND_LIB_PATH.patch	\
   %D%/packages/patches/sbc-fix-build-non-x86.patch		\
-  %D%/packages/patches/sbcl-fix-arm64-shared-lib.patch		\
   %D%/packages/patches/sbcl-aserve-add-HTML-5-elements.patch	\
   %D%/packages/patches/sbcl-aserve-fix-rfe12668.patch	\
   %D%/packages/patches/sbcl-burgled-batteries3-fix-signals.patch	\
