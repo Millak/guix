@@ -52913,14 +52913,14 @@ designs.  Broman et al. (2018) <doi:10.1534/genetics.118.301595>.")
 (define-public r-seqminer
   (package
     (name "r-seqminer")
-    (version "9.7")
+    (version "9.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "seqminer" version))
        (sha256
         (base32
-         "15dkh4wfszfrpfpwyhnwj3bnkjfxm17bp0grr1wf4h6zxj0jbkp5"))))
+         "1s5iag46qkhfcwfzlwshr8p6bg5krs3pl272r6lg82c1k92knxwf"))))
     ;; If these inputs are not found at configure time they will be built from
     ;; bundled sources.
     (properties '((updater-extra-inputs . ("bzip2" "sqlite" "zstd"))))
