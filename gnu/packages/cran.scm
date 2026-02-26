@@ -2625,16 +2625,22 @@ wrangling backend for the packages in the @code{easystats} ecosystem.")
 (define-public r-dbi
   (package
     (name "r-dbi")
-    (version "1.2.3")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "DBI" version))
               (sha256
                (base32
-                "1gid1mfzq1j3n5fsnpzdb50p2m73z92s6njp0sgr503aaskhhryg"))))
+                "067vspipqg31hag7hsarsh8cwygalyk8bxgw1md20hdy1klziphk"))))
+    (properties
+     ;; Avoid dependency cycles.
+     '((updater-ignored-native-inputs . ("r-dbitest" "r-nanoarrow" "r-rsqlite"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-blob
+           r-callr
+           r-knitr
+           r-testthat))
     (home-page "https://github.com/rstats-db/DBI")
     (synopsis "R database interface")
     (description
