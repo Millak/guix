@@ -2065,6 +2065,20 @@ Verilog and routed layout.  It includes tools for floorplanning, placement,
 clock tree synthesis, routing, parasitic extraction, and timing analysis.")
     (license license:bsd-3)))
 
+(define-public openroad-cli
+  (package
+    (inherit openroad)
+    (name "openroad-cli")
+    (arguments
+     (substitute-keyword-arguments (package-arguments openroad)
+       ((#:configure-flags flags '())
+        #~(delete! "-DBUILD_GUI=ON" #$flags))))
+    (inputs
+     (modify-inputs (package-inputs openroad)
+       (delete "qtbase-5" "qtcharts-5" )))
+    (synopsis
+     "Collection of tools for semiconductor digital design, cli version.")))
+
 (define-public pulseview
   (package
     (name "pulseview")
