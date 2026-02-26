@@ -21519,13 +21519,13 @@ intervals for multiple data types based on Yang, D., & Dalton, J. E. (2012)
 (define-public r-smoof
   (package
     (name "r-smoof")
-    (version "1.6.0.3")
+    (version "1.7.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "smoof" version))
               (sha256
                (base32
-                "1cazhnd0m5jjzixaqgqh2h3rsa2sw3k8slj5cmgm8v47aaqn91mg"))))
+                "0098rfpq9rii3h8aqahxpnh9f2yyn3g4bw4qxsinmc93xmlnz8n5"))))
     (properties `((upstream-name . "smoof")))
     (build-system r-build-system)
     (propagated-inputs (list r-bbmisc
@@ -21534,7 +21534,6 @@ intervals for multiple data types based on Yang, D., & Dalton, J. E. (2012)
                              r-paramhelpers
                              r-rcpp
                              r-rcpparmadillo))
-    (native-inputs (list r-testthat))
     (home-page "https://jakobbossek.github.io/smoof/")
     (synopsis "Single and multi-objective optimization test functions")
     (description
