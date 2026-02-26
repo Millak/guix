@@ -21799,16 +21799,16 @@ Analysis with R\" by Michael Friendly and David Meyer (2015).")
 (define-public r-vcfr
   (package
    (name "r-vcfr")
-   (version "1.15.0")
+   (version "1.16.0")
    (source (origin
             (method url-fetch)
             (uri (cran-uri "vcfR" version))
             (sha256
              (base32
-              "1yj91cphin232m09wrpj8l27vxblyryh658siakz55hxjs5y85yz"))))
+              "0gk6p2i1slj93pmzgj5kb2s8bcq871qiarw83whjfcbghfbgr246"))))
    (build-system r-build-system)
    (native-inputs
-    (list r-adegenet r-knitr r-testthat))
+    (list r-adegenet r-devtools r-knitr r-testthat))
    (inputs
     (list zlib))
    (propagated-inputs
