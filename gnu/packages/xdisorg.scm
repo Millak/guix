@@ -1672,6 +1672,23 @@ client/daemon pair that lets you open any number of terminal windows from
 within a single process.")
     (license license:gpl3+)))
 
+(define-public rxvt-unicode-terminfo
+  (package
+    (name "rxvt-unicode-terminfo")
+    (version (package-version rxvt-unicode))
+    (source rxvt-unicode)
+    (build-system copy-build-system)
+    (arguments (list #:install-plan #~'(("share/terminfo" "share/terminfo"))))
+    (native-search-paths
+     (list (search-path-specification
+             (variable "TERMINFO_DIRS")
+             (files '("share/terminfo")))))
+    (home-page (package-home-page rxvt-unicode))
+    (synopsis "Terminfo for rxvt-unicode")
+    (description "This package provides terminfo files for the
+@command{rxvt-unicode} terminal.")
+    (license (package-license rxvt-unicode))))
+
 (define-public xcape
   (package
     (name "xcape")
