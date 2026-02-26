@@ -9206,13 +9206,13 @@ in good performances with large files.")
 (define-public r-ggalluvial
   (package
    (name "r-ggalluvial")
-   (version "0.12.5")
+   (version "0.12.6")
    (source (origin
             (method url-fetch)
             (uri (cran-uri "ggalluvial" version))
             (sha256
              (base32
-              "0wax853pi3ghqv5alfkx9rgfb3sm3sqh3miklwvn22bh1s44q14h"))))
+              "0lcxjj1r0wh3x4ssc87lydgh0ihvp2rvl6xwqy2y1l9yqhc7nfgh"))))
    (properties
     '((upstream-name . "ggalluvial")
       (updater-extra-native-inputs . ("r-alluvial"))))
