@@ -999,7 +999,7 @@ added to the pack."
       (warning (G_ "AppImages should be built with the --relocatable flag~%"))))
 
   (define runtime-package appimage-type2-runtime)
-  (define runtime-path "bin/runtime-fuse3")
+  (define runtime-path "bin/runtime")
   (define %valid-compressors '("gzip" "zstd"))
 
   (let ((compressor-name (compressor-name compressor)))

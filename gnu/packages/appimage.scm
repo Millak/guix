@@ -19,9 +19,11 @@
 (define-module (gnu packages appimage)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages file-systems)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages)
   #:use-module (guix build-system gnu)
   #:use-module (guix gexp)
@@ -30,9 +32,9 @@
   #:use-module (guix utils))
 
 (define-public appimage-type2-runtime
-  (let ((revision "0")
+  (let ((revision "1")
         ;; No releases, just the latest commit.
-        (commit "47b665594856b4e8928f8932adcf6d13061d8c30"))
+        (commit "caf24f9f712084686bfc24a70b75e50df0aefb9c"))
     (package
       (name "appimage-type2-runtime")
       (version (git-version "continuous" revision commit))
@@ -44,16 +46,16 @@
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0954crhlbapxis96g1s0vfpf78ybr64zvjalak387ksxj560g44x"))))
+          (base32 "17z0byws3dp375wcyq5xwy5npqy7hslqw21n677dp38z4f940nzv"))))
       (build-system gnu-build-system)
       (arguments
        (list
         #:tests? #f                     ; No tests
         #:make-flags
-        #~(list "-Csrc/runtime" "runtime-fuse3"
+        #~(list "-Csrc/runtime" "runtime"
                 (string-append "CC=" #$(cc-for-target))
                 (string-append
-                 "CFLAGS=" "-I" #$(this-package-input "fuse") "/include/fuse/"
+                 "CFLAGS=" "-I" #$(this-package-input "fuse") "/include/fuse3/"
                  " -DGIT_COMMIT='\"" "guix-" #$version "\"'"
                  " -D_FILE_OFFSET_BITS=64"
                  " -static"
@@ -64,17 +66,22 @@
           (ice-9 binary-ports))
         #:phases
         #~(modify-phases %standard-phases
+            (add-after 'unpack 'use-pkgconfig-flags
+              (lambda _
+                (substitute* "src/runtime/Makefile"
+                  (("-lmimalloc")
+                   "$(pkg-config --cflags mimalloc)"))))
             (delete 'configure)
             (replace 'install
               (lambda _
-                (install-file "src/runtime/runtime-fuse3"
+                (install-file "src/runtime/runtime"
                               (string-append #$output "/bin"))))
             ;; Must be after all elf reliant phases.  Used to identify the
             ;; executable as an AppImage as per the specification.
             (add-after 'make-dynamic-linker-cache 'set-magic-bytes
               (lambda _
                 (let ((port (open (string-append #$output
-                                                 "/bin/runtime-fuse3")
+                                                 "/bin/runtime")
                                   (logior O_WRONLY))))
                   (seek port 8 SEEK_SET)
                   (put-bytevector port #vu8(#x41 #x49 #x02))
@@ -84,9 +91,12 @@
               (this-package-input "fuse")
               (gexp-input (this-package-input "zstd") "static")
               (gexp-input (this-package-input "zlib") "static"))))
+      (native-inputs (list pkg-config))
       ;; Only needed at build time.
-      (inputs (list squashfuse-for-appimage
+      (inputs (list `(,fuse "out")
                     `(,fuse "static")
+                    mimalloc
+                    squashfuse-for-appimage
                     `(,zstd "static")
                     `(,zlib "static")))
       (synopsis "Runtime for executing AppImages")
