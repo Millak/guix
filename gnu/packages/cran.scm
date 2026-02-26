@@ -22145,16 +22145,15 @@ rules, boxes, trees, and Unicode symbols with ASCII alternatives.")
 (define-public r-argparser
   (package
     (name "r-argparser")
-    (version "0.7.2")
+    (version "0.7.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "argparser" version))
        (sha256
         (base32
-         "0j9hnbyzbyzclgm4qwyqqkrqcrblxfm190489sgcvr5i7vg2smr8"))))
+         "0hafh15g1qpw0h1fsyd0cc1myfi7jahks7dkf0k25qh73f12lnng"))))
     (build-system r-build-system)
-    (native-inputs (list r-testthat))
     (home-page "https://bitbucket.org/djhshih/argparser")
     (synopsis "Command-line argument parser")
     (description
