@@ -50078,16 +50078,16 @@ coefficients are constructed using multiplier bootstrap.")
 (define-public r-consrank
   (package
     (name "r-consrank")
-    (version "2.1.5")
+    (version "3.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ConsRank" version))
               (sha256
                (base32
-                "06jcf832282irk11vxsynmaa28wjydrh9va7jwnq4l4znbv6ix32"))))
+                "0f2k3dda1pi2sxmn12gw9az4mc3hybpvh7d48afry525r66gy7c1"))))
     (properties `((upstream-name . "ConsRank")))
     (build-system r-build-system)
-    (propagated-inputs (list r-gtools r-proxy r-rgl r-rlist r-tidyr))
+    (propagated-inputs (list r-gtools r-proxy r-rcpp r-rlist r-tidyr))
     (home-page "https://www.r-project.org/")
     (synopsis
      "Compute median rankings according to Kemeny's axiomatic approach")
