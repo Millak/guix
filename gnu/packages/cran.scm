@@ -24992,13 +24992,13 @@ It also includes interpolation functions.")
 (define-public r-simdesign
   (package
     (name "r-simdesign")
-    (version "2.23")
+    (version "2.24")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "SimDesign" version))
        (sha256
-        (base32 "194dxxh5fhkz10sjldr8pqf3if1mkw94x6phkrqs0p16d473dfb0"))))
+        (base32 "1r4js8n4kmfrbqcvbdcm41cljyqp5kbyk5m2g3yf2mz5ci121npx"))))
     (properties
      '((upstream-name . "SimDesign")
        ;; Not packaged, but also not required.
