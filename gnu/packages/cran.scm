@@ -26813,14 +26813,14 @@ matrix.")
 (define-public r-ggpubr
   (package
     (name "r-ggpubr")
-    (version "0.6.2")
+    (version "0.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggpubr" version))
        (sha256
         (base32
-         "0xagn1kk2zm3zp1kln05kwvvarg6ja2q7i53978br893acmpgs69"))))
+         "1j178dbcr3a54drmzsly32y6jckmdkl79mk771agadsd0zfl878f"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cowplot
