@@ -4749,13 +4749,13 @@ samples) are easily visualized.")
 (define-public r-ggiraph
   (package
     (name "r-ggiraph")
-    (version "0.9.5")
+    (version "0.9.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggiraph" version))
        (sha256
-        (base32 "04w9qg07y26f8s8jc3xdmqxv5kgz5z5kwals5ls68dikd8dhlffq"))))
+        (base32 "0idnnz0yl80axc9kf452ladp781ajgl4qs4hbivvffhfgzr1wpvi"))))
     (properties
      '((upstream-name . "ggiraph")
        (updater-extra-native-inputs . ("r-xml2"))))
@@ -4773,6 +4773,7 @@ samples) are easily visualized.")
                              r-ggplot2
                              r-htmltools
                              r-htmlwidgets
+                             r-mass
                              r-purrr
                              r-rcpp
                              r-rlang
