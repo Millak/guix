@@ -33,6 +33,7 @@
 ;;; Code:
 
 (define-module (gnu packages gnome-circle)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages aidc)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages bash)
@@ -839,6 +840,86 @@ integrate seamlessly with the GNOME desktop.")
      "Raider is a simple shredding program built for GNOME.  Also known as
 File Shredder, it uses the GNU Core Utility called shred to securely delete
 files.")
+    (license license:gpl3+)))
+
+(define-public resources
+  (package
+    (name "resources")
+    (version "1.10.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/nokyan/resources")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0472532a9cr83841g220lpylh7a9bddq2z72pw12428gkngk72dn"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:imported-modules `(,@%meson-build-system-modules
+                           ,@%cargo-build-system-modules)
+      #:modules `(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build meson-build-system)
+                  (guix build utils))
+      #:configure-flags #~(list "-Dprofile=default")
+      #:phases
+      (with-extensions (list (cargo-guile-json))
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'replace-commands
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((PATH (search-path-as-list '("bin" "sbin")
+                                                 (map cdr inputs))))
+                  (substitute* '("src/utils/cpu.rs"
+                                 "src/utils/memory.rs")
+                    (("Command::new\\(\"(.*)\"\\)" all command)
+                     (format #f "Command::new(\"~a\")"
+                             (search-path PATH command)))))))
+            (add-after 'unpack 'prepare-for-build
+              (lambda _
+                (substitute* "meson.build"
+                  (("gtk_update_icon_cache: true")
+                   "gtk_update_icon_cache: false")
+                  (("update_desktop_database: true")
+                   "update_desktop_database: false")
+                  (("glib_compile_schemas: true")
+                   "glib_compile_schemas: false"))
+                (delete-file "Cargo.lock")
+                (delete-file "lib/process_data/Cargo.lock")))
+            (add-after 'configure 'prepare-cargo-build-system
+              (lambda args
+                (for-each
+                 (lambda (phase)
+                   (format #t "Running cargo phase: ~a~%" phase)
+                   (apply (assoc-ref cargo:%standard-phases phase)
+                          #:vendor-dir "vendor"
+                          #:cargo-target #$(cargo-triplet)
+                          args))
+                 '(unpack-rust-crates
+                   configure
+                   check-for-pregenerated-files
+                   patch-cargo-checksums))))))))
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")
+           pkg-config
+           rust
+           `(,rust "cargo")))
+    (inputs
+     (cons* dmidecode                   ;for dmidecode
+            eudev                       ;for udevadm
+            gtk
+            libadwaita
+            util-linux                  ;for lscpu
+            (cargo-inputs 'resources)))
+    (home-page "https://apps.gnome.org/Resources/")
+    (synopsis "System resource and process monitor")
+    (description "Resources is a monitor for system resources and processes for
+GNOME.  It can display usage and details of your CPU, memory, GPUs, NPUs,
+network interfaces and block devices.  It can also list and terminate running
+graphical applications and processes.")
     (license license:gpl3+)))
 
 (define-public secrets
