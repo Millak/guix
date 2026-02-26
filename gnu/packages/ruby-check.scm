@@ -796,6 +796,30 @@ MiniTest @code{Object#stub} with a global @code{stub} method.")
     (home-page "https://github.com/dockyard/minitest-moar")
     (license license:expat)))
 
+(define-public ruby-minitest-mock
+  (package
+    (name "ruby-minitest-mock")
+    (version "5.27.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "minitest-mock" version))
+       (sha256
+        (base32
+         "1c2m99b9hgvhyhzv0nxjqlgymr0vmxpalzlq41lrcyj1hmqysh3h"))))
+    (build-system ruby-build-system)
+    (arguments (list #:tests? #f)) ; tests not bundled in gem
+    (native-inputs (list ruby-hoe ruby-hoe-git2))
+    (synopsis "Tiny mock (and stub) object framework")
+    (description "@code{Minitest Mock} implements a mock and stub framework
+for Minitest.  This gem provides:
+@enumerate
+@item Stubs for returning canned responses
+@item Mocks for defining function expectations
+@end enumerate")
+    (home-page "https://minite.st/")
+    (license license:expat)))
+
 (define-public ruby-multi-test
   (package
     (name "ruby-multi-test")
