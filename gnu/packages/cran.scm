@@ -17086,15 +17086,15 @@ error stream.")
 (define-public r-pls
   (package
     (name "r-pls")
-    (version "2.8-5")
+    (version "2.9-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pls" version))
        (sha256
-        (base32 "1krkl11b90w4hbdj168x4x9mvifwmx8ia265gr6gl8c99j6h2ac0"))))
+        (base32 "07wfwzxdsr6dvhwkii8a5aac0z8q7hpasmpyvfkvv2difnkcp6gx"))))
     (build-system r-build-system)
-    (native-inputs (list r-runit r-testthat))
+    (native-inputs (list r-knitr r-runit r-testthat))
     (home-page "https://mevik.net/work/software/pls.html")
     (synopsis "Partial Least Squares and Principal Component Regression")
     (description
