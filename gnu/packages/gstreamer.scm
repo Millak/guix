@@ -516,7 +516,7 @@ This package provides the core library and elements.")
 (define-public gst-plugins-base
   (package
     (name "gst-plugins-base")
-    (version "1.26.3")
+    (version "1.28.1")
     (source
      (origin
       (method url-fetch)
@@ -524,11 +524,13 @@ This package provides the core library and elements.")
                           name "-" version ".tar.xz"))
       (sha256
        (base32
-        "0cvrq9767w0aqzinifbirbc95jg4i4md4b8f4b70hlq217pzkyaf"))))
+        "15r42ff1mwkj5p3z0dij6d9isi1q02gmjnp8i26xgx9gm71a8ihl"))
+      (patches (search-patches "gst-plugins-base-null-pointer.patch"))))
     (build-system meson-build-system)
     (propagated-inputs
      (list glib                     ;required by gstreamer-sdp-1.0.pc
            gstreamer                ;required by gstreamer-plugins-base-1.0.pc
+           libdrm                   ;required by gstreamer-allocators-1.0.pc
            libgudev                 ;required by gstreamer-gl-1.0.pc
            ;; wayland-client.h is referred to in
            ;; include/gstreamer-1.0/gst/gl/wayland/gstgldisplay_wayland.h
@@ -570,9 +572,8 @@ This package provides the core library and elements.")
             (lambda _
               (substitute* "tests/check/meson.build"
                 ;; This test causes nondeterministic failures (see:
-                ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/-/issues/950).
-                ((".*'elements/appsrc.c'.*")
-                 ""))
+                ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/895>).
+                ((".*'elements/appsrc.c'.*") ""))
               ;; Some other tests fail on other architectures.
               #$@(cond
                    ((target-x86-32?)
