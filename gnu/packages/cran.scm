@@ -41711,17 +41711,17 @@ with the asymptotic curve.")
 (define-public r-xtable
   (package
     (name "r-xtable")
-    (version "1.8-4")
+    (version "1.8-8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "xtable" version))
        (sha256
         (base32
-         "077xfm0gphvhsay75amd9v90zk57kjgrrlgih04fyrbqqblc1gjs"))))
+         "0415dfpll2lx7cwih19c67lhjmjcz3jp03jb2f9gnm8jp4qw16dr"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr)) ; for vignettes
+     (list r-glue r-knitr r-survival r-zoo)) ; for vignettes
     (home-page "https://xtable.r-forge.r-project.org/")
     (synopsis "Export R tables to LaTeX or HTML")
     (description
