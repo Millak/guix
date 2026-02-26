@@ -45658,14 +45658,14 @@ functions.")
 (define-public r-univoutl
   (package
     (name "r-univoutl")
-    (version "0.4")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "univOutl" version))
        (sha256
         (base32
-         "1kp014bhs8v02fp7misrj4fpfp2na9lg45p5zqvlfaypnm5imsr9"))))
+         "1hk35z8dkn1wamgam7ls031s3x9ir1x8sz2p8cjsi8w6d5zkarrn"))))
     (properties `((upstream-name . "univOutl")))
     (build-system r-build-system)
     (propagated-inputs
