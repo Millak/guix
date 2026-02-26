@@ -5241,14 +5241,20 @@ or kill them altogether.")
                (base32
                 "0b1jp5gp2gv40gv6cvmv86rcr4l0mdh050qbvnxl0xcwya45qffx"))))
     (build-system meson-build-system)
+    (outputs (list "out" "debug" "static"))
     (inputs
      (list bash-minimal util-linux))
     (arguments
      `(#:configure-flags
        ,#~(list
            (string-append "-Dudevrulesdir=" #$output "/udev/rules.d")
-           "-Duseroot=false")
+           "-Duseroot=false"
+           ;; Build static libraries.
+           "--default-library=both")
        #:tests? #f
+       #:modules ((guix build meson-build-system)
+                  (guix build utils)
+                  (ice-9 ftw))
        #:phases
        ,#~(modify-phases %standard-phases
             (add-after 'unpack 'set-file-names
@@ -5286,7 +5292,20 @@ or kill them altogether.")
                           (string-append #$output "/sbin"))
                   (setenv "UDEV_RULES_PATH"
                           (string-append #$output
-                                         "/lib/udev/rules.d"))))))))
+                                         "/lib/udev/rules.d")))))
+            (add-after 'install 'install-static-libraries
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let ((out (assoc-ref outputs "out"))
+                      (static (assoc-ref outputs "static")))
+                  (mkdir-p (string-append static "/lib"))
+                  (for-each
+                   (lambda (static-library)
+                     (rename-file
+                      (string-append out "/lib/" static-library)
+                      (string-append static "/lib/" static-library)))
+                   (scandir (string-append out "/lib")
+                            (lambda (file-name)
+                              (string-suffix? ".a" file-name))))))))))
     (supported-systems (remove target-hurd? %supported-systems))
     (home-page "https://github.com/libfuse/libfuse")
     (synopsis "Support file systems implemented in user space")
