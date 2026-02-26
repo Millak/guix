@@ -10424,14 +10424,14 @@ level p-values.")
 (define-public r-sn
   (package
     (name "r-sn")
-    (version "2.1.2")
+    (version "2.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sn" version))
        (sha256
         (base32
-         "0riyb3r38cy582c0ppd72s07jlzf375v1b9bqs2dsw6rfhzix01f"))))
+         "0632h7p8xw5hnn0a661880qbk3b3m7pxc793y43cv2nj0fnz2k8l"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-mnormt r-numderiv r-quantreg))
