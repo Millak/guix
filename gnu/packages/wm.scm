@@ -3070,51 +3070,49 @@ works on Wayland compositors supporting the wlr-layer-shell protocol.")
 (define-public swww
   (package
     (name "swww")
-    (version "0.10.3")
+    (version "0.11.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/LGFae/swww")
+             (url "https://codeberg.org/LGFae/awww")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i02m8ccc40vm9yg2037yzampvv79wwhfjjd5wnvkbxxgmk9fyhr"))))
+        (base32 "0vshfdmhp7d4zmq16v41d8fxmx59pcafbphh8wwrpsk8fjjnssjz"))))
     (build-system cargo-build-system)
     (arguments
      (list
       #:install-source? #f
+      #:cargo-install-paths ''("daemon" "client")
+      #:imported-modules (append %copy-build-system-modules
+                                 %cargo-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build copy-build-system) #:prefix copy:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'build-documentation
             (lambda* (#:key inputs #:allow-other-keys)
               (invoke "doc/gen.sh")))
-          (replace 'install
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (bin (string-append out "/bin"))
-                     (share (string-append out "/share"))
-                     (man1 (string-append share "/man/man1"))
-                     (swww (car (find-files "target" "^swww$")))
-                     (swww-daemon (car (find-files "target" "^swww-daemon$")))
-                     (bash-completions-dir
-                      (string-append share "/bash-completion/completions"))
-                     (zsh-completions-dir
-                      (string-append share "/zsh/site-functions"))
-                     (fish-completions-dir
-                      (string-append share "/fish/vendor_completions.d"))
-                     (elvish-completions-dir
-                      (string-append share "/elvish/lib")))
-                (install-file swww bin)
-                (install-file swww-daemon bin)
-                (copy-recursively "doc/generated" man1)
-                (install-file "completions/swww.bash" bash-completions-dir)
-                (install-file "completions/_swww" zsh-completions-dir)
-                (install-file "completions/swww.fish" fish-completions-dir)
-                (install-file "completions/swww.elv" elvish-completions-dir)))))))
+          (add-after 'install 'install-completions-and-documentation
+             (lambda args
+               (apply (assoc-ref copy:%standard-phases 'install)
+                      #:install-plan
+                      '(("completions/swww.bash"
+                         "share/bash-completion/completions/swww")
+                        ("completions/swww.elv"
+                         "share/elvish/lib/swww.elv")
+                        ("completions/swww.fish"
+                         "/share/fish/completions/swww.fish")
+                        ("completions/_swww"
+                         "share/zsh/site-functions/_swww")
+                        ("doc/generated"
+                         "share/man/man1"))
+                      args))))))
     (native-inputs (list pkg-config scdoc))
     (inputs (cons* lz4 wayland wayland-protocols (cargo-inputs 'swww)))
-    (home-page "https://github.com/LGFae/swww")
+    (home-page "https://codeberg.org/LGFae/awww")
     (synopsis
      "Efficient animated wallpaper daemon for wayland controlled at runtime")
     (description
