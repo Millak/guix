@@ -30383,10 +30383,11 @@ particular game.")
 
 (define-public sbcl-spinneret
   ;; No release since 2019, no tags.
-  (let ((commit "d4398b5a344b5c59e497c9ee78fdbae7cc434f74"))
+  (let ((commit "fa70fca10d63f7e30bfd10cdeb3f70ab22841120")
+        (revision "7"))
     (package
       (name "sbcl-spinneret")
-      (version (git-version "3.0" "6" commit))
+      (version (git-version "3.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -30395,7 +30396,7 @@ particular game.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1mdd92gfxfdsd81fcd8fgz8z7dwsb0kcv7zyzdgnw8lavkib5zly"))))
+          (base32 "1dvd1v3ngqizh1zwgi2y0jbzvqhsfqyd53s3wcnz6np3wzkcx2lw"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
@@ -30404,6 +30405,7 @@ particular game.")
              sbcl-cl-markdown
              sbcl-cl-ppcre
              sbcl-serapeum
+             sbcl-in-nomine
              sbcl-trivial-gray-streams))
       (native-inputs
        (list sbcl-fiveam))
