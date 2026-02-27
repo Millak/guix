@@ -233,21 +233,19 @@ features including, tables, builtin image display, bookmarks, SSL and more.")
     (license license:gpl1+)))
 
 (define-public elinks
-  (let ((commit "9b8ae3ebb7ca73fbb364262b3a5ff5377b0dfa26")
-        (revision "2"))
     (package
       (name "elinks")
-      (version (git-version "0.18.0" revision commit))
+      (version "0.19.1")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/rkd77/elinks")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0klvgnvii8pzpf5c0m11caz22in3yy631n480pp0mwpj0mvpnpa7"))))
+           "1802lh9zsmwmsd4b4kzxzgv3y8f6fmi6i0cjjbwmnkdfivcal3v9"))))
       (build-system meson-build-system)
       (arguments
        (list
@@ -301,7 +299,7 @@ features including, tables, builtin image display, bookmarks, SSL and more.")
        "ELinks is a feature-rich program for browsing the web in text mode.
 It can render both frames and tables, is highly customisable and can be
 extended via Lua scripts.  It is like an enhanced Lynx and Links.")
-      (license license:gpl2+))))
+      (license license:gpl2+)))
 
 (define-public luakit
   (package
