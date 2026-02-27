@@ -19498,6 +19498,46 @@ streams, output streams and io streams for any type of elements.")
       (home-page "https://codeberg.org/glv/cl-in-memory-streams")
       (license license:gpl3+))))
 
+(define-public sbcl-in-nomine
+  (let ((commit "24bb48d9397344ca9cc66180f828a4e805bfd9f2")
+        (revision "0"))
+    (package
+      (name "sbcl-in-nomine")
+      (version (git-version "0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/phoe/in-nomine")
+               (commit commit)))
+         (file-name (git-file-name "cl-nomine" version))
+         (sha256
+          (base32 "09gksd6vf1k1mqzh30m2jkb70j53hclidyvy5nqx5838amhxqns4"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-alexandria
+             sbcl-closer-mop
+             sbcl-fiveam
+             sbcl-introspect-environment
+             sbcl-lisp-namespace))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-trivial-arguments))
+      (synopsis "Utility for creating, accessing, and managing custom namespaces
+in Common Lisp")
+      (description "Utility for creating, accessing, and managing custom
+namespaces in Common Lisp.  Originally started as a fork of LISP-NAMESPACE, it
+became its own piece of software that is somewhat backwards compatible with
+it.")
+      (home-page "https://github.com/phoe/in-nomine")
+      (license license:llgpl))))
+
+(define-public cl-in-nomine
+  (sbcl-package->cl-source-package sbcl-in-nomine))
+
+(define-public ecl-in-nomine
+  (sbcl-package->ecl-package sbcl-in-nomine))
+
 (define-public cl-in-memory-streams
   (sbcl-package->cl-source-package sbcl-in-memory-streams))
 
