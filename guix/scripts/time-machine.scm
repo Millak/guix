@@ -71,6 +71,9 @@ If COMMAND is not provided, print path to the time-machine profile.\n"))
       --disable-authentication
                          disable channel authentication"))
   (display (G_ "
+      --allow-untrusted-channels
+                         when downloading channels, allow untrusted channels"))
+  (display (G_ "
       --unsafe-channel-evaluation
                          evaluate channels file with the full user authority"))
   (display (G_ "
@@ -110,6 +113,9 @@ If COMMAND is not provided, print path to the time-machine profile.\n"))
          (option '("disable-authentication") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'authenticate-channels? #f result)))
+         (option '("allow-untrusted-channels") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'require-trusted-channels? #f result)))
          (option '("no-check-certificate") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'verify-certificate? #f result)))
@@ -131,6 +137,7 @@ If COMMAND is not provided, print path to the time-machine profile.\n"))
     (print-build-trace? . #t)
     (print-extended-build-trace? . #t)
     (multiplexed-build-output? . #t)
+    (require-trusted-channels? . #t)
     (isolated-channel-evaluation? . #t)
     (authenticate-channels? . #t)
     (verify-certificate? . #t)

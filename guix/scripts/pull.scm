@@ -40,6 +40,8 @@
   #:use-module (guix scripts describe)
   #:autoload   (guix build utils) (which mkdir-p)
   #:use-module (guix git)
+  #:autoload   (guix describe) (current-channels)
+  #:autoload   (guix http-client) (http-fetch)
   #:use-module (git)
   #:autoload   (gnu packages) (fold-available-packages)
   #:autoload   (guix scripts package) (build-and-use-profile
@@ -76,6 +78,7 @@
     (graft? . #t)
     (debug . 0)
     (verbosity . 1)
+    (require-trusted-channels? . #t)
     (isolated-channel-evaluation? . #t)
     (authenticate-channels? . #t)
     (verify-certificate? . #t)
@@ -100,6 +103,9 @@ Download and deploy the latest version of Guix.\n"))
   (display (G_ "
       --disable-authentication
                          disable channel authentication"))
+  (display (G_ "
+      --allow-untrusted-channels
+                         when downloading channels, allow untrusted channels"))
   (display (G_ "
       --unsafe-channel-evaluation
                          evaluate channels file with the full user authority"))
@@ -191,6 +197,9 @@ Download and deploy the latest version of Guix.\n"))
          (option '("disable-authentication") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'authenticate-channels? #f result)))
+         (option '("allow-untrusted-channels") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'require-trusted-channels? #f result)))
          (option '("unsafe-channel-evaluation") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'isolated-channel-evaluation? #f result)))
@@ -727,6 +736,62 @@ Return true when there is more package info to display."
      %default-channels
      %default-guix-channel)))
 
+(define (trusted-channels)
+  "Return the user's trusted channels, either those in
+~/.config/guix/trusted-channels.scm or those currently used."
+  (define file
+    (string-append (config-directory) "/trusted-channels.scm"))
+
+  (if (file-exists? file)
+      (load* file %safe-channel-bindings #:isolated? #t)
+      (current-channels)))
+
+(define (equivalent-channels? channel1 channel2)
+  "Return true if CHANNEL1 and CHANNEL2 designate the same channel (but not
+necessarily with the same branch/commit/URL or even the same name)."
+  (and (channel-introduction channel1)
+       (equal? (channel-introduction channel1)
+               (channel-introduction channel2))))
+
+(define* (check-trusted-channels channels #:optional (handling 'error))
+  "Report if one of CHANNELS lacks an introduction (and thus cannot be
+authenticated) or is not among the user's trusted channels.  If HANDLING is
+'error, report it as an error and exit; if HANDLING is 'warning, warn and keep
+going."
+  (define-syntax-rule (report location message arguments ...)
+    ;; Report MESSAGE as an error or as a warning, depending on HANDLING.
+    (match handling
+      ('error
+       (report-error location message arguments ...)
+       #f)
+      ('warning
+       (warning location message arguments ...)
+       #t)))
+
+  (unless (fold (let ((trusted (trusted-channels)))
+                  (lambda (channel good?)
+                    (if (channel-introduction channel)
+                        (if (find (cut equivalent-channels? <> channel)
+                                  trusted)
+                            good?
+                            (report (source-properties->location
+                                     (channel-location channel))
+                                    (G_ "channel '~a' is not trusted~%")
+                                    (channel-name channel)))
+                        (report (source-properties->location
+                                 (channel-location channel))
+                                (G_ "\
+channel '~a' lacks an introduction and cannot be authenticated~%")
+                                (channel-name channel)))))
+                #t
+                channels)
+    (display-hint (G_ "You can list channels that you trust in
+@file{~~/.config/guix/trusted-channels.scm} in the same format as that
+produced by @command{guix describe -f channels}.  Only channels that can be
+authenticated---i.e., have a @code{introduction} field---may be listed in that
+file."))
+    (exit EXIT_FAILURE)))
+
 (define (channel-list opts)
   "Return the list of channels to use.  If OPTS specify a channel file,
 channels are read from there; otherwise, if ~/.config/guix/channels.scm
@@ -748,11 +813,26 @@ transformations specified in OPTS (resulting from '--url', '--commit', or
   (define isolated?
     (assoc-ref opts 'isolated-channel-evaluation?))
 
+  (define require-trusted-channels?
+    (assoc-ref opts 'require-trusted-channels?))
+
   (define (load-channels file)
-    (let ((result (load* file %safe-channel-bindings
-                         #:isolated? isolated?)))
+    (let* ((url? (or (string-prefix? "https://" file)
+                     (string-prefix? "http://" file)))
+           (result (load* (if url?
+                              (http-fetch file #:timeout 10)
+                              file)
+                          %safe-channel-bindings
+                          #:isolated? isolated?)))
       (if (and (list? result) (every channel? result))
-          result
+          (begin
+            ;; When downloading channels, keep going if and only if these are
+            ;; channels the user trusts.
+            (check-trusted-channels result
+                                    (if (and url? require-trusted-channels?)
+                                        'error
+                                        'warning))
+            result)
           (leave (G_ "'~a' did not return a list of channels~%") file))))
 
   (define channels

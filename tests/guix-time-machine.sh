@@ -41,6 +41,38 @@ EOF
 # Likewise, 'use-modules' is not available.
 guix time-machine -C "$channels_file" && echo false
 
+# Get 'time-machine' to download a channel file with an untrusted channel.
+# Check that this fails with a "'guix' is not trusted" message.
+cat > "$channels_file" <<EOF
+(use-modules (guix tests http)
+             (guix diagnostics)
+             (guix scripts time-machine))
+
+(define channels
+  '(list (channel
+           (name 'guix)
+           (url "https://example.org/evil/guix.git")
+           (branch "devel")
+           (commit "cabba9e900d2350aef42e65643de78500b2aad06")
+           (introduction
+            (make-channel-introduction
+             "badcafef1d5c170db68aa4bbfb77024fdc468ed3"
+             (openpgp-fingerprint
+              "CABB A9EE 8A84 FDC6 9DB4  0CFB 090B 1199 3D9A EBB5"))))))
+
+(with-http-server (list (list 200 (object->string channels)))
+  (let ((error (open-output-string)))
+    (catch 'quit
+      (lambda ()
+        (parameterize ((guix-warning-port error))
+          (guix-time-machine "-C" (%local-url) "--" "describe")
+          (primitive-exit 1)))
+      (lambda _
+        (exit (->bool (string-contains (get-output-string error)
+                                       "'guix' is not trusted")))))))
+EOF
+guix repl -- "$channels_file"
+
 if [ -d "$abs_top_srcdir/.git" ] \
    || guile -c '(getaddrinfo "www.gnu.org" "80" AI_NUMERICSERV)' 2> /dev/null
 then

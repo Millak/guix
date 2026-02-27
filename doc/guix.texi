@@ -4780,13 +4780,48 @@ These options are provided for convenience, but you can also specify your
 configuration in the @file{~/.config/guix/channels.scm} file or using the
 @option{--channels} option (see below).
 
-@item --channels=@var{file}
-@itemx -C @var{file}
-Read the list of channels from @var{file} instead of
+@item --channels=@var{file-or-url}
+@itemx -C @var{file-or-url}
+Read the list of channels from @var{file-or-url} instead of
 @file{~/.config/guix/channels.scm} or @file{/etc/guix/channels.scm}.
-@var{file} must contain Scheme code that
+@var{file-or-url} must contain Scheme code that
 evaluates to a list of channel objects.  @xref{Channels}, for more
 information.
+
+As you can guess, @var{file-or-url} can be a URL, in which case the
+given channels file is transparently downloaded.  In the example below,
+we pull from the latest revision of Guix that was successfully
+evaluated:
+
+@example
+guix pull \
+  -C https://ci.guix.gnu.org/eval/latest/channels.scm?spec=master
+@end example
+
+@anchor{trusted-channels}
+@cindex trusted channels, for downloaded channel files
+This command errors out if the returned channels are not among the
+user's @dfn{trusted channels}, defined as:
+
+@itemize
+@item
+the channels returned by @file{~/.config/guix/trusted-channels.scm},
+which has the same format as any channel file;
+
+@item
+or, if the above file doesn't exist, the currently-used channels as
+returned by @command{guix describe}.
+@end itemize
+
+@item --allow-untrusted-channels
+When @option{--channels} is passed a URL, this option causes
+@command{guix pull} to pull the channels returned from that URL, even if
+they are not trusted.
+
+@quotation Warning
+Using this option can effectively lead to arbitrary code execution on
+your system.
+@end quotation
 
 @anchor{unsafe-channel-evaluation}
 @item --unsafe-channel-evaluation
@@ -5054,11 +5089,41 @@ Use the @code{guix} channel from the specified @var{url}, at the
 given @var{commit} (a valid Git commit ID represented as a hexadecimal
 string or the name of a tag), or @var{branch}.
 
-@item --channels=@var{file}
-@itemx -C @var{file}
-Read the list of channels from @var{file}.  @var{file} must contain
-Scheme code that evaluates to a list of channel objects.
+@item --channels=@var{file-or-url}
+@itemx -C @var{file-or-url}
+Read the list of channels from @var{file-or-url}.  @var{file-or-url}
+must contain Scheme code that evaluates to a list of channel objects.
 @xref{Channels} for more information.
+
+When @var{file-or-url} is a URL, channels are transparently downloaded.
+In the example below, we pull from the latest revision of Guix that was
+successfully evaluated:
+
+@example
+guix time-machine \
+  -C https://ci.guix.gnu.org/eval/latest/channels.scm?spec=master \
+  -- describe
+@end example
+
+Note that downloading a channel file potentially harms reproducibility:
+the file might vanish or be modified on the server behind your back.
+From a reproducibility viewpoint the safe approach is to keep channel
+files under version control.
+
+@xref{Invoking guix pull}, for more information.
+
+@item --allow-untrusted-channels
+When @option{--channels} is passed a URL, this option causes
+@command{guix time-machine} to pull the channels returned from that URL,
+even if they are not trusted.
+
+@quotation Warning
+Using this option can effectively lead to arbitrary code execution on
+your system.
+@end quotation
+
+@xref{trusted-channels, @command{guix pull} documentation}, for more
+info.
 
 @item --unsafe-channel-evaluation
 Allow arbitrary code execution from channels files.
@@ -5822,6 +5887,13 @@ evaluated in ``unsafe'' mode, with the
 @option{--unsafe-channel-evaluation} option.
 @xref{unsafe-channel-evaluation, the @command{guix pull} documentation},
 for more info.
+
+However, a similar result can be achieved by running, say:
+
+@example
+guix pull \
+  -C https://ci.guix.gnu.org/eval/latest/channels.scm?spec=master
+@end example
 @end quotation
 
 @node Creating a Channel
