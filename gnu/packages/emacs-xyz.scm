@@ -44235,29 +44235,45 @@ across all Org export back-ends.")
       (license license:gpl3+))))
 
 (define-public emacs-org-gnosis
-  (let ((commit "7db80112f08547ae4526f4ca645dbe6e224d27c6")) ;version bump
-    (package
-      (name "emacs-org-gnosis")
-      (version "0.1.1")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://git.thanosapollo.org/org-gnosis")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0y4qna0m5pdf2m53sac792rzsyp8lm7lfcl92981zwx3sqfy25gv"))))
-      (build-system emacs-build-system)
-      (arguments (list #:tests? #f))    ; no tests
-      (propagated-inputs (list emacs-compat emacs-emacsql))
-      (home-page "https://thanosapollo.org/projects/org-gnosis/")
-      (synopsis "Roam-like note taking system")
-      (description
-       "Org Gnosis is a knowledge management tool that leverages Org mode for
-storing notes and journal entries, integrating them with an SQLite database
-for efficient retrieval and relationship mapping.")
-      (license license:gpl3+))))
+  (package
+    (name "emacs-org-gnosis")
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.thanosapollo.org/org-gnosis")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01v0dbzwncmfzs12j1vlsqxv2s9bcib6pb18cgyn8xqrpmkw4vfm"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:test-command #~(list "make" "test")
+           #:emacs emacs-no-x   ; tests require built-in SQLite support
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-makefile
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("guix shell -m manifest.scm -- ") ""))))
+               (add-before 'check 'set-home
+                 (lambda _
+                   (setenv "HOME" (getenv "TMPDIR"))))
+               (add-before 'install 'make-info
+                 (lambda _ (invoke "make" "doc"))))))
+    (native-inputs (list texinfo))
+    (propagated-inputs (list emacs-compat emacs-emacsql))
+    (home-page "https://thanosapollo.org/projects/org-gnosis/")
+    (synopsis "Zettelkasten-style note-taking system for Emacs")
+    (description
+     "Org Gnosis is a note-taking system that implements Zettelkasten-style
+linked notes with an SQLite database for indexing.  It functions as an
+independent module, designed to integrate with Gnosis (a knowledge management
+system with spaced repetition) but usable standalone.  Features include
+backlinks, tag-based organization, daily journaling, and optional
+@code{.gpg} encryption.")
+    (license license:gpl3+)))
 
 (define-public emacs-uml-mode
   ;; Package has no release.  Version is extracted from "Version:" keyword in
