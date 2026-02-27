@@ -46,7 +46,7 @@
 ;;; Copyright © 2024 Nik Gaffney <nik@fo.am>
 ;;; Copyright © 2024 Grigory Shepelev <shegeley@gmail.com>
 ;;; Copyright © 2025 Junker <dk@junkeria.club>
-;;; Copyright © 2025 Simen Endsjø <contact@simendsjo.me>
+;;; Copyright © 2025,2026 Simen Endsjø <contact@simendsjo.me>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 vga <v@vgz.li>
 ;;;
@@ -29070,8 +29070,8 @@ data-frames.")
   (sbcl-package->ecl-package sbcl-select))
 
 (define-public sbcl-serapeum
-  (let ((commit "c08442a9757b7fa30ac345cb040e1642f97f6b78")
-        (revision "12"))
+  (let ((commit "71f35c994b6d84c83157e15365156271b2213ad7")
+        (revision "13"))
     (package
       (name "sbcl-serapeum")
       (version (git-version "0.0.0" revision commit))
@@ -29084,7 +29084,7 @@ data-frames.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1sabd048agvgv7bhbw126rci9hf45fk08zhghcv6an2h6xwmc3qv"))))
+          (base32 "1rmvl3ipw9dz0gxj5k86911fjpin7n6k8k1r6g1z94nd9rw4cgzy"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
