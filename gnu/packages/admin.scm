@@ -82,6 +82,7 @@
 ;;; Copyright © 2026 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;; Copyright © 2026 Andy Tai <atai@atai.org>
+;;; Copyright © 2026 marderbot <marderbot@tredecimal.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5252,6 +5253,34 @@ support forum.  It runs with the @code{/exec} command in most IRC clients.")
     (synopsis "Python udev binding")
     (description "This package provides @code{udev} bindings for Python.")
     (license license:lgpl2.1)))
+
+(define-public undervolt
+  (package
+    (name "undervolt")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/georgewhewell/undervolt")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "136j8rqqra84yg57vn3nqwk1b36y9y7sjkynr0fl8pnrb7z8mq0v"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/georgewhewell/undervolt")
+    (synopsis "Undervolt Intel CPUs under Linux")
+    (description
+     "Undervolt is a program for undervolting Intel CPUs under Linux.  It
+works in a similar manner to the Windows program ThrottleStop (i.e, MSR
+0x150).  A fixed voltage offset may be applied to one of 5 voltage planes,
+which overrides systems' temperature target (CPU will throttle when this
+temperature is reached).")
+    (license license:gpl2+)))
 
 (define-public vmtouch
   (package
