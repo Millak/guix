@@ -231,6 +231,28 @@
                                    (find-files "breezy/tests"))
                 (("#!/bin/sh")
                  (format #f "#!~a" (which "sh"))))))
+          (add-after 'build 'build-man
+            (lambda _
+              (invoke "python3" "tools/generate_docs.py" "man")))
+          (add-after 'install 'install-man
+            (lambda _
+              (let ((man1 (string-append #$output "/share/man/man1")))
+                (install-file "brz.1" man1)
+                (install-file "breezy/git/git-remote-bzr.1" man1))))
+          (add-after 'install 'install-completion
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let* ((bash (string-append #$output
+                                            "/share/bash-completion/completions")))
+                  (install-file "contrib/bash/brz" bash))))
+          (add-after 'install-man 'bzr-compat
+            (lambda _
+              (let ((bin  (string-append #$output "/bin"))
+                    (man1 (string-append #$output "/share/man/man1")))
+                (symlink (in-vicinity bin "brz")
+                         (in-vicinity bin "bzr"))
+                (call-with-output-file (string-append man1 "/bzr.1")
+                  (lambda (port)
+                    (format port ".so man1/brz.1"))))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
