@@ -78,11 +78,6 @@
 (define %sandbox-module
   (make-sandbox-module %safe-bindings))
 
-(define* (read/safe #:optional (port (current-input-port)))
-  (with-fluids ((read-eval? #f))
-    (parameterize ((read-hash-procedures '()))
-      (read port))))
-
 (define (eval-content-addressed-mirrors content-addressed-mirrors file algo hash)
   "Evaluate the expression CONTENT-ADDRESSED-MIRRORS in a sandbox, and produce
 a list of wrapper procedures for safely calling the list of procedures that

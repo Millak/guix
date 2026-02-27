@@ -96,6 +96,7 @@
                guix-warning-port program-name)
   #:export (display-hint
             make-user-module
+            read/safe
             load*
             warn-about-load-error
             show-version-and-exit
