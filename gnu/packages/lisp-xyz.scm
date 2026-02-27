@@ -24085,8 +24085,8 @@ closures but adds conveniences such as introspectability.")
   (sbcl-package->ecl-package sbcl-named-closure))
 
 (define-public sbcl-named-readtables
-  (let ((commit "d5ff162ce02035ec7de1acc9721385f325e928c0")
-        (revision "4"))
+  (let ((commit "aa6dab55abff3cca26b976d9a105c2006ca0c3b6")
+        (revision "5"))
     (package
       (name "sbcl-named-readtables")
       (version (git-version "0.9" revision commit))
@@ -24097,14 +24097,24 @@ closures but adds conveniences such as introspectability.")
                (url "https://github.com/melisgl/named-readtables")
                (commit commit)))
          (sha256
-          (base32 "0gfgxywzbmavy0kpnxav11vz10qfzxwwrpgqaak9sgzg17g8x5yv"))
+          (base32 "0d9fp11ghpkjzc6ja89xm2lnh8xxxyb4w0z9k7ww1shnqvdy3jba"))
          (file-name (git-file-name "cl-named-readtables" version))))
       (build-system asdf-build-system/sbcl)
       ;; (native-inputs (list sbcl-try))
       ;; Tests disabled because of a circular dependency issue:
       ;;   try -> named-readtables -> mgl-pax -> try
       (arguments
-       (list #:tests? #f))
+       '(#:tests? #f
+         #:phases
+         (modify-phases %standard-phases
+           ;; We disable the documentations embedded in the core library to
+           ;; avoid adding additional dependencies.
+           (add-after 'unpack 'remove-doc
+             (lambda _
+               (substitute* "named-readtables.asd"
+                 (("\\:depends-on \\(\"mgl-pax-bootstrap\"\\)") "")
+                 (("\\(:file \"doc\"\\)") ""))
+               #t)))))
       (home-page "https://github.com/melisgl/named-readtables/")
       (synopsis "Library that creates a namespace for named readtables")
       (description
