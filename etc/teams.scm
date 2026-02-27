@@ -530,6 +530,13 @@ of Rebar and Mix build systems and Hex.pm importer."
                       "gnu/packages/ninja.scm"
                       "gnu/packages/valgrind.scm")))
 
+(define-team community
+  (team 'community
+        #:name "Community"
+        #:description
+        "We focus on collaboration, project growth and future (social)
+challenges"))
+
 (define-team core
   (team 'core
         #:name "Core / Tools / Internals"
