@@ -370,27 +370,24 @@ retrieval of all your quantified self data.")
         (base32 "1g712cw2nzd2qvgdmyvazyda0znyqzg6yckg98ss203fggwp93vj"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-DRELEASE=true"
-             "-DBUILD_PULSEAUDIO=ON"
-             "-DBUILD_WLAN=ON"
-             "-DBUILD_TESTS=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'add-freetype-to-search-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "cmake/ConkyPlatformChecks.cmake"
-               (("set\\(INCLUDE_SEARCH_PATH")
-                (string-append
-                 "set(INCLUDE_SEARCH_PATH "
-                 (assoc-ref inputs "freetype") "/include/freetype2 ")))
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (install-file "src/conky" bin))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list "-DRELEASE=true"
+              "-DBUILD_PULSEAUDIO=ON"
+              "-DBUILD_WLAN=ON"
+              "-DBUILD_TESTS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'add-freetype-to-search-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "cmake/ConkyPlatformChecks.cmake"
+                (("set\\(INCLUDE_SEARCH_PATH")
+                 (string-append
+                  "set(INCLUDE_SEARCH_PATH "
+                  (assoc-ref inputs "freetype") "/include/freetype2 ")))))
+          (replace 'install
+            (lambda _
+              (install-file "src/conky" (string-append #$output "/bin")))))))
     (inputs
      (list freetype
            imlib2
