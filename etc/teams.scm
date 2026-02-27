@@ -1383,7 +1383,7 @@ the \"texlive\" importer."
 (define-member (person "Gabriel Wicki"
                        "gabriel@erlikon.ch"
                        "gabber")
-  audio documentation electronics embedded)
+  audio community documentation electronics embedded)
 
 (define-member (person "Ekaitz Zarraga"
                        "ekaitz@elenq.tech"
@@ -1602,7 +1602,7 @@ the \"texlive\" importer."
 (define-member (person "Untrusem"
                        "mysticmoksh@riseup.net"
                        "untrusem")
-  mozilla)
+  community mozilla)
 
 (define-member (person "David Thompson"
                        "dthompson2@worcester.edu"
