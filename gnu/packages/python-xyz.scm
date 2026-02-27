@@ -16172,7 +16172,7 @@ file (e.g. @file{PKG-INFO}).")
     (build-system pyproject-build-system)
     ;; tests: 124 passed, 16 skipped
     (native-inputs
-     (list git-minimal
+     (list git-minimal/pinned
            patchelf
            python-pytest
            python-pytest-mock))
