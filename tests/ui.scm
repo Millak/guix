@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2017, 2019-2020, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2017, 2019-2020, 2022, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -26,11 +26,19 @@
   #:use-module ((gnu packages) #:select (specification->package))
   #:use-module (guix tests)
   #:use-module (guix utils)
+  #:use-module ((guix channels)
+                #:select (channel->code
+                          %default-guix-channel
+                          guix-channel?
+                          channel-introduction))
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-64)
+  #:use-module (rnrs bytevectors)
+  #:use-module (ice-9 binary-ports)
+  #:use-module (ice-9 match)
   #:use-module (ice-9 regex))
 
 ;; Test the (guix ui) module.
@@ -368,5 +376,85 @@ Second line" 24))
                                    ("GUIX_PAGER" #false)
                                    ("PAGER" #false))
        (assert-equals-find-available-pager "")))))
+
+(test-equal "load/isolated, reading exceeds limits"
+  'quit           ;'limit-exceeded is raised, caught, and then 'quit is raised
+  (let ((port (make-custom-binary-input-port
+               "infinite-paren-stream"
+               (lambda (bv start count)
+                 (bytevector-u8-set! bv start (char->integer #\())
+                 1)
+               #f #f #f)))
+    (catch #t
+      (lambda ()
+        (load* port '() #:isolated? #t)
+        #f)
+      (lambda (key . args)
+        key))))
+
+(test-equal "load/isolated, attempt to import module"
+  'quit
+  (call-with-input-string (object->string
+                           '(begin
+                              (use-modules (system foreign))
+                              (dereference-pointer (make-pointer 123))))
+    (lambda (port)
+      (catch #t
+        (lambda ()
+          (load* port '() #:isolated? #t)
+          #f)
+        (lambda (key . args)
+          key)))))
+
+(test-equal "load/isolated, attempt to allocate with 'cons'"
+  'quit
+  ;; 'make-list' is not available in the environment so try to allocate memory
+  ;; via macro expansion or repeated calls to 'cons'.
+  (call-with-input-string
+      (object->string
+       '(letrec-syntax ((make-list
+                         (lambda (s)
+                           (syntax-case s ()
+                             ((_ 0) #''())
+                             ((_ n)
+                              #`(cons #f
+                                      (make-list
+                                       #,(- (syntax->datum #'n) 1))))))))
+          (make-list 100000)))
+    (lambda (port)
+      (catch #t
+        (lambda ()
+          (load* port '() #:isolated? #t)
+          #f)
+        (lambda (key . args)
+          key)))))
+
+(test-equal "load/isolated, attempt to allocate with 'make-vector'"
+  'quit
+  ;; 'make-vector' is not available in the environment.
+  (call-with-input-string (object->string '(make-vector 123123123))
+    (lambda (port)
+      (catch #t
+        (lambda ()
+          (load* port '() #:isolated? #t)
+          #f)
+        (lambda (key . args)
+          key)))))
+
+(test-assert "load/isolated, use of allowed bindings"
+  (call-with-input-string
+      (object->string
+       `(list ,(channel->code %default-guix-channel)))
+    (lambda (port)
+      (match (load* port
+                    '(((guix channels)
+                       channel make-channel-introduction openpgp-fingerprint))
+                    #:isolated? #t)
+        ((channel)
+         ;; The channels have a different 'location' field value hence this
+         ;; limited comparison.
+         (and (guix-channel? channel)
+              (equal? (channel-introduction channel)
+                      (channel-introduction %default-guix-channel))))))))
 
 (test-end "ui")

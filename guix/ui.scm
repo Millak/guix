@@ -250,11 +250,11 @@ arbitrary code execution."
          (error "can't sever module?"))
        (hashq-remove! (module-submodules parent) tail)))))
 
-(define* (load/isolated file bindings
+(define* (load/isolated port bindings
                         #:key
                         (time-limit 30)
                         (allocation-limit #e1e6))
-  "Read and evaluate code from FILE in a isolated evaluation environment that
+  "Read and evaluate code from PORT in a isolated evaluation environment that
 only contains the given BINDINGS.  Evaluation may not take more than
 TIME-LIMIT seconds and may not allocate more than ALLOCATION-LIMIT bytes."
   ;; This is similar to 'eval-in-sandbox' except that the time and allocation
@@ -265,7 +265,7 @@ TIME-LIMIT seconds and may not allocate more than ALLOCATION-LIMIT bytes."
       (lambda ()
         (call-with-time-and-allocation-limits time-limit allocation-limit
           (lambda ()
-            (eval (call-with-input-file file read/safe) module))))
+            (eval (read/safe port) module))))
       (lambda ()
         (sever-module! module)))))
 
@@ -300,9 +300,10 @@ TIME-LIMIT seconds and may not allocate more than ALLOCATION-LIMIT bytes."
                 #:key
                 (on-error 'nothing-special)
                 (isolated? #f))
-  "Load the user provided Scheme source code FILE.  When ISOLATED? is true,
-load FILE in an isolated \"sandbox\" where only IMPORTS are available--see the
-documentation for (ice-9 sandbox) for what goes into IMPORTS."
+  "Load the user provided Scheme source code FILE-OR-PORT.  When ISOLATED? is true,
+load FILE-OR-PORT in an isolated \"sandbox\" where only IMPORTS are
+available--see the documentation for (ice-9 sandbox) for what goes into
+IMPORTS."
   (define (error-string frame args)
     (call-with-output-string
       (lambda (port)
@@ -324,14 +325,23 @@ documentation for (ice-9 sandbox) for what goes into IMPORTS."
                                        module))
                                     imports)))))
 
+  (when (and (port? file-or-port) (not isolated?))
+    ;; XXX: This case is not implemented because it's hard to defend and hard
+    ;; to implement due to the use of the compiler instead of the interpreter.
+    (leave (G_ "code coming from a port must be isolated~%")))
+
   (catch #t
     (lambda ()
       (if isolated?
           (call-with-prompt tag
             (lambda ()
-              (load/isolated (try-canonicalize-path file)
-                             (append imports
-                                     (force pure-bindings-sans-allocators))))
+              (let loop ((port file-or-port))
+                (if (port? port)
+                    (load/isolated port
+                                   (append
+                                    imports
+                                    (force pure-bindings-sans-allocators)))
+                    (call-with-input-file file-or-port loop))))
             (const #f))
           (save-module-excursion
            (lambda ()
@@ -351,7 +361,7 @@ documentation for (ice-9 sandbox) for what goes into IMPORTS."
                    ;; compiled, which then allows us to provide better error
                    ;; reporting with source line numbers.
                    (without-compiler-optimizations
-                    (load (try-canonicalize-path file))))
+                    (load (try-canonicalize-path file-or-port))))
                  (const #f)))))))
     (lambda _
       ;; XXX: Errors are reported from the pre-unwind handler below, but
@@ -363,7 +373,7 @@ documentation for (ice-9 sandbox) for what goes into IMPORTS."
          (let* ((stack (make-stack #t handle-error tag))
                 (frame (last-frame-with-source stack)))
 
-           (report-load-error file args frame)
+           (report-load-error file-or-port args frame)
 
            (case on-error
              ((debug)
