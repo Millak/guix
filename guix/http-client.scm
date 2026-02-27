@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2018, 2020-2022, 2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2018, 2020-2022, 2025-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2012, 2015 Free Software Foundation, Inc.
 ;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -149,6 +149,7 @@ Raise an '&http-get-error' condition if downloading fails."
                      (response-code resp)))
         (case code
           ((200)
+           (set-port-filename! data (uri->string uri))
            (values data resp))
           ((301                                   ; moved permanently
             302                                   ; found (redirection)
