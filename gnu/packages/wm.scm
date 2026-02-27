@@ -3071,15 +3071,15 @@ works on Wayland compositors supporting the wlr-layer-shell protocol.")
   (package
     (name "swww")
     (version "0.10.3")
-    (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/LGFae/swww")
-                      (commit (string-append "v" version))))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1i02m8ccc40vm9yg2037yzampvv79wwhfjjd5wnvkbxxgmk9fyhr"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/LGFae/swww")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i02m8ccc40vm9yg2037yzampvv79wwhfjjd5wnvkbxxgmk9fyhr"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -3118,8 +3118,8 @@ works on Wayland compositors supporting the wlr-layer-shell protocol.")
     (synopsis
      "Efficient animated wallpaper daemon for wayland controlled at runtime")
     (description
-     "A Solution to your Wayland Wallpaper Woes (swww).  It uses minimal resources
-and provides animations for switching between backgrounds.")
+     "A Solution to your Wayland Wallpaper Woes (swww).  It uses minimal
+resources and provides animations for switching between backgrounds.")
     (license license:gpl3+)))
 
 (define-public swaynotificationcenter
