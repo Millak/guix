@@ -3,7 +3,7 @@
 ;;; Copyright © 2016, 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2017, 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018-2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018, 2019, 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Alex ter Weele <alex.ter.weele@gmail.com>
@@ -19,6 +19,9 @@
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2025 Christian Birk Sørensen <chrbirks@gmail.com>
+;;; Copyright © 2015 Siniša Biđin <sinisa@bidin.eu>
+;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
+;;; Copyright © 2019, 2023 Vasile Dumitrascu <va511e@yahoo.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -42,6 +45,7 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cargo)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system gnu)
@@ -57,6 +61,7 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages django)
   #:use-module (gnu packages freedesktop) ; libatasmart
+  #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnome)               ;libnotify
@@ -66,6 +71,7 @@
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
@@ -76,6 +82,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages prometheus)
   #:use-module (gnu packages protobuf)
+  #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-science)
@@ -346,6 +353,66 @@ retrieval of all your quantified self data.")
        "This package provides a wayland window watcher for
 @code{ActivityWatch}.")
       (license license:mpl2.0))))
+
+(define-public conky
+  (package
+    (name "conky")
+    (home-page "https://github.com/brndnmtthws/conky")
+    (version "1.19.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g712cw2nzd2qvgdmyvazyda0znyqzg6yckg98ss203fggwp93vj"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags
+       (list "-DRELEASE=true"
+             "-DBUILD_PULSEAUDIO=ON"
+             "-DBUILD_WLAN=ON"
+             "-DBUILD_TESTS=ON")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'add-freetype-to-search-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "cmake/ConkyPlatformChecks.cmake"
+               (("set\\(INCLUDE_SEARCH_PATH")
+                (string-append
+                 "set(INCLUDE_SEARCH_PATH "
+                 (assoc-ref inputs "freetype") "/include/freetype2 ")))
+             #t))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin")))
+               (install-file "src/conky" bin))
+             #t)))))
+    (inputs
+     (list freetype
+           imlib2
+           libx11
+           libxdamage
+           libxext
+           libxft
+           libxi
+           libxinerama
+           pulseaudio
+           lua
+           ncurses
+           curl
+           wireless-tools))
+    (native-inputs
+     (list pkg-config))
+    (synopsis "Lightweight system monitor for X")
+    (description
+     "Conky is a lightweight system monitor for X that displays operating
+system statistics (CPU, disk, and memory usage, etc.) and more on the
+desktop.")
+    (license license:gpl3+)))
 
 (define-public glances
   (package

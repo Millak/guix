@@ -73,7 +73,6 @@ gnu/packages/commencement.scm
 gnu/packages/compression.scm
 gnu/packages/compton.scm
 gnu/packages/configuration-management.scm
-gnu/packages/conky.scm
 gnu/packages/connman.scm
 gnu/packages/containers.scm
 gnu/packages/convmv.scm
