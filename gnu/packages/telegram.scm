@@ -609,7 +609,7 @@ support for high performance Telegram Bot creation.")
            `(,gtk+ "bin")
            pkg-config
            python-wrapper
-           xdg-desktop-portal-next))
+           xdg-desktop-portal))
     (inputs
      (list abseil-cpp-cxxstd17
            alsa-lib

@@ -3204,7 +3204,7 @@ compatible with the well-known scripts of the same name.")
 (define-public xdg-desktop-portal
   (package
     (name "xdg-desktop-portal")
-    (version "1.18.4")
+    (version "1.20.3")
     (source
      (origin
        (method url-fetch)
@@ -3213,15 +3213,19 @@ compatible with the well-known scripts of the same name.")
              version "/xdg-desktop-portal-" version ".tar.xz"))
        (sha256
         (base32
-         "0r8y8qmzcfj7b7brqcxr9lg8pavfds815ffvj0kqc378fhgaln5q"))
+         "1p4yvbhqr8yf231gm69vdz3h7na8m6x1mhiw3bmhg4gm6x4idysb"))
        (patches (search-patches
-                 ;; Disable portal tests since they try to use fuse.
-                 "xdg-desktop-portal-disable-portal-tests.patch"
-                 "xdg-desktop-portal-disable-configuration-search-exit.patch"))))
+                 "xdg-desktop-portal-1.20.3-disable-configuration-search-exit.patch"))
+       (modules '((guix build utils)))
+       ;; Disable failing tests.
+       (snippet #~(substitute* "tests/meson.build"
+                    ((".*test_dynamiclauncher.*") "")
+                    ((".*test_notification.*") "")
+                    ((".*test_usb.*") "")))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
-       (list "-Dsystemd=disabled")
+       (list "-Dsystemd=disabled" "-Ddocumentation=disabled")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'po-chmod
@@ -3253,9 +3257,13 @@ compatible with the well-known scripts of the same name.")
            gdk-pixbuf
            geoclue
            glib
+           gstreamer
+           gst-plugins-base
+           gst-plugins-good
            json-glib
            libportal
-           pipewire))
+           pipewire
+           umockdev))
     (native-search-paths
      (list (search-path-specification
             (variable "XDG_DESKTOP_PORTAL_DIR")
@@ -3274,41 +3282,10 @@ The portal interfaces include APIs for file access, opening URIs, printing
 and others.")
     (license license:lgpl2.1+)))
 
-(define-public xdg-desktop-portal-next
-  (let ((base xdg-desktop-portal))
-    (package
-      (inherit base)
-      (version "1.20.3")
-      (source
-       (origin
-         (method url-fetch)
-         (uri (string-append
-               "https://github.com/flatpak/xdg-desktop-portal/releases/download/"
-               version "/xdg-desktop-portal-" version ".tar.xz"))
-         (sha256
-          (base32
-           "1p4yvbhqr8yf231gm69vdz3h7na8m6x1mhiw3bmhg4gm6x4idysb"))
-         (patches (search-patches
-                   "xdg-desktop-portal-1.20.3-disable-configuration-search-exit.patch"))
-         (modules '((guix build utils)))
-         ;; Disable failing tests.
-         (snippet #~(substitute* "tests/meson.build"
-                      ((".*test_dynamiclauncher.*") "")
-                      ((".*test_notification.*") "")
-                      ((".*test_usb.*") "")))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:configure-flags flags #~'())
-          ;; Requires python-furo, which isn't packaged for guix, and depends
-          ;; on node.js.
-          #~(append '("-Ddocumentation=disabled")
-                    #$flags))))
-      (inputs (modify-inputs (package-inputs base)
-                (append gstreamer
-                        gst-plugins-base
-                        gst-plugins-good
-                        umockdev))))))
-
+;; Deprecation added on 2026-03-01.
+(define-deprecated-package xdg-desktop-portal-next
+  xdg-desktop-portal)
+  
 (define-public xdg-desktop-portal-gtk
   (package
     (name "xdg-desktop-portal-gtk")
@@ -3354,7 +3331,7 @@ and others.")
        ("gnome-desktop" ,gnome-desktop)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)))
     (propagated-inputs
-     (list xdg-desktop-portal-next))
+     (list xdg-desktop-portal))
     (home-page "https://github.com/flatpak/xdg-desktop-portal-gtk")
     (synopsis "GTK implementation of xdg-desktop-portal")
     (description
