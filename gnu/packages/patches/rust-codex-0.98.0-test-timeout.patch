@@ -1,0 +1,20 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-03-05
+License: ASL2.0
+Subject: Increase per-event test timeout from 10 to 30 seconds.
+
+In resource-constrained build environments, image processing (resize,
+base64-encode, JSON serialization) can exceed 10 seconds under CPU
+contention, causing intermittent test failures.
+
+diff -ruN a/codex-rs/core/tests/common/lib.rs b/codex-rs/core/tests/common/lib.rs
+--- a/codex-rs/core/tests/common/lib.rs
++++ b/codex-rs/core/tests/common/lib.rs
+@@ -174,7 +174,7 @@
+     loop {
+         // Allow a bit more time to accommodate async startup work (e.g. config IO, tool discovery)
+-        let ev = timeout(wait_time.max(Duration::from_secs(10)), codex.next_event())
++        let ev = timeout(wait_time.max(Duration::from_secs(30)), codex.next_event())
+             .await
+             .expect("timeout waiting for event")
+             .expect("stream ended unexpectedly");

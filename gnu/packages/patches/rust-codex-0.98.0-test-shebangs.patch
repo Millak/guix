@@ -1,0 +1,56 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-02-27
+License: ASL2.0
+Subject: Use @SHELL@ placeholder for shebangs in embedded test scripts.
+
+Tests that create and execute temporary shell scripts at runtime use
+a hardcoded "#!/bin/sh" shebang.  Replace with @SHELL@ so the build
+phase can substitute the actual store path.
+
+Also change assertions to print the actual error on failure.
+
+diff -ruN a/codex-rs/rmcp-client/src/program_resolver.rs b/codex-rs/rmcp-client/src/program_resolver.rs
+--- a/codex-rs/rmcp-client/src/program_resolver.rs
++++ b/codex-rs/rmcp-client/src/program_resolver.rs
+@@ -82,7 +82,7 @@
+         cmd.envs(&env.mcp_env);
+
+         let output = cmd.output().await;
+-        assert!(output.is_ok(), "Unix should execute scripts directly");
++        output.expect("Unix should execute scripts directly");
+         Ok(())
+     }
+
+@@ -134,10 +134,7 @@
+         cmd.envs(&env.mcp_env);
+         let output = cmd.output().await;
+
+-        assert!(
+-            output.is_ok(),
+-            "Resolved program should execute successfully"
+-        );
++        output.expect("Resolved program should execute successfully");
+         Ok(())
+     }
+
+@@ -185,7 +182,7 @@
+             #[cfg(unix)]
+             {
+                 let file = dir.join(Self::TEST_PROGRAM);
+-                fs::write(&file, "#!/bin/sh\nexit 0")?;
++                fs::write(&file, "#!@SHELL@\nexit 0")?;
+                 Self::set_executable(&file)?;
+             }
+
+diff -ruN a/codex-rs/tui/src/external_editor.rs b/codex-rs/tui/src/external_editor.rs
+--- a/codex-rs/tui/src/external_editor.rs
++++ b/codex-rs/tui/src/external_editor.rs
+@@ -159,7 +159,7 @@
+
+         let dir = tempdir().unwrap();
+         let script_path = dir.path().join("edit.sh");
+-        fs::write(&script_path, "#!/bin/sh\nprintf \"edited\" > \"$1\"\n").unwrap();
++        fs::write(&script_path, "#!@SHELL@\nprintf \"edited\" > \"$1\"\n").unwrap();
+         let mut perms = fs::metadata(&script_path).unwrap().permissions();
+         perms.set_mode(0o755);
+         fs::set_permissions(&script_path, perms).unwrap();

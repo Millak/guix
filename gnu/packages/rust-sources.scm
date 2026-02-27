@@ -818,6 +818,114 @@ intelligence.")
 and runtime for AI-assisted coding.")
        (license license:asl2.0)))))
 
+(define-public rust-codex-0.98.0
+  (hidden-package
+   (package
+     (name "rust-codex")
+     (version "0.98.0")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/openai/codex")
+              (commit "82464689ce0ba8a3b2065e73a8aa0cfdf2ad0625")))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1mn322gbir4gn4y5jihdqg0wprjlnx771chyfmmm7ri7pnim1zmc"))
+        ;; TODO: Remove patches when Rust provides stable file locking API.
+        ;; The file_lock feature is tracked at
+        ;; <https://github.com/rust-lang/rust/issues/130994>.
+        (snippet '(begin
+                    ;;; These are JSON manifests with a dotslash
+                    ;;; shebang that download and run pre-built
+                    ;;; binaries (ripgrep, bash) at runtime.
+                    (delete-file "codex-cli/bin/rg")
+                    (delete-file "codex-rs/exec-server/tests/suite/bash")
+                    ;; Bundled bubblewrap source tree; includes a
+                    ;; compiled BPF blob (demos/flatpak.bpf).
+                    (delete-file-recursively "codex-rs/vendor/bubblewrap")))
+        (patches (search-patches "rust-codex-0.98.0-execpolicy-file-lock.patch"
+                                 "rust-codex-0.98.0-core-file-lock.patch"
+                                 "rust-codex-0.98.0-arg0-file-lock.patch"
+                                 "rust-codex-0.98.0-core-remove-self-dep.patch"
+                                 "rust-codex-0.98.0-windows-sandbox-protocol-version.patch"
+                                 "rust-codex-0.98.0-test-shebangs.patch"))))
+     (build-system cargo-build-system)
+     (arguments
+      (list
+       #:skip-build? #t
+       #:cargo-package-crates
+       ;; Order matters: dependencies must come before packages that need them
+       ''("codex-async-utils"        ; No internal deps
+          "codex-client"             ; No internal deps
+          "codex-execpolicy"         ; No internal deps
+          "codex-file-search"        ; No internal deps
+          "codex-git"                ; No internal deps
+          "codex-keyring-store"      ; No internal deps
+          "codex-utils-absolute-path" ; No internal deps
+          "codex-utils-cache"        ; No internal deps
+          "codex-utils-cargo-bin"    ; No internal deps
+          "codex-utils-home-dir"     ; No internal deps
+          "codex-utils-json-to-toml" ; No internal deps
+          "codex-utils-pty"          ; No internal deps
+          "codex-utils-readiness"    ; No internal deps
+          "codex-utils-string"       ; No internal deps
+          "codex-utils-image"        ; Depends on codex-utils-cache
+          "codex-apply-patch"        ; Depends on codex-utils-cargo-bin
+          "codex-protocol"           ; Depends on codex-git, codex-utils-*
+          "codex-windows-sandbox"    ; Depends on codex-utils-absolute-path, codex-protocol
+          "codex-api"                ; Depends on codex-client, codex-protocol
+          "codex-experimental-api-macros" ; Macro crate (must come before app-server-protocol)
+          "codex-app-server-protocol" ; Depends on codex-protocol, codex-experimental-api-macros
+          "codex-rmcp-client"        ; Depends on codex-keyring-store, codex-protocol
+          "codex-otel"               ; Depends on codex-app-server-protocol, codex-api
+          "codex-state"              ; Depends on codex-protocol, codex-otel
+          "codex-core"               ; Depends on many packages above
+          "codex-linux-sandbox"      ; Depends on codex-core, codex-utils-absolute-path
+          "codex-arg0"               ; Depends on codex-apply-patch, codex-core, codex-linux-sandbox
+          "codex-lmstudio"           ; Depends on codex-core
+          "codex-login"              ; Depends on codex-core
+          "codex-ollama"             ; Depends on codex-core
+          "codex-common"             ; Depends on codex-core, codex-lmstudio, codex-ollama
+          "codex-mcp-server")         ; Depends on codex-core, codex-common
+       #:phases
+       #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir-to-workspace
+            (lambda _
+              (chdir "codex-rs")))
+          (add-after 'chdir-to-workspace 'patch-git-deps-to-vendor
+            (lambda _
+              (substitute* "Cargo.toml"
+                (("crossterm = \\{ git = [^}]+\\}")
+                 "crossterm = { version = \"0.28.1\" }")
+                (("ratatui = \\{ git = [^}]+\\}")
+                 "ratatui = { version = \"0.29.0\" }")
+                (("tokio-tungstenite = \\{ git = [^}]+\\}")
+                 "tokio-tungstenite = { version = \"0.28.0\" }")
+                (("nucleo = \\{ git = [^}]+\\}")
+                 "nucleo = { version = \"0.5.0\" }")
+                (("runfiles = \\{ git = [^}]+\\}")
+                 "runfiles = { version = \"0.1.0\" }"))))
+          (add-after 'chdir-to-workspace 'add-version-to-workspace-deps
+            (lambda _
+              ;; cargo package requires all dependencies to have versions.
+              ;; Add version = "0.98.0" to internal path dependencies.
+              (let ((cargo-files (find-files "." "^Cargo\\.toml$")))
+                (substitute* cargo-files
+                  (("(codex-[a-z0-9-]+) = \\{ path = " all name)
+                   (string-append name " = { version = \"0.98.0\", path = "))
+                  (("(codex-[a-z0-9-]+) = \\{ package = " all name)
+                   (string-append name " = { version = \"0.98.0\", package = "))
+                  (("(mcp-types) = \\{ path = " all name)
+                   (string-append name " = { version = \"0.98.0\", path = ")))))))))
+     (inputs (cargo-inputs 'rust-codex-0.0.0.785c0c43))
+     (home-page "https://github.com/openai/codex")
+     (synopsis "OpenAI Codex workspace crates")
+     (description
+      "This package provides the workspace crates for the OpenAI Codex CLI
+and runtime for AI-assisted coding.")
+     (license license:asl2.0))))
+
 ;; Also update (@ (gnu packages gnome) glycin-loaders) when updating this.
 (define-public rust-glycin-3
   (package

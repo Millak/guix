@@ -1,0 +1,23 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-02-25
+License: ASL2.0
+Subject: Add version to codex-protocol dependency in windows-sandbox-rs.
+
+The codex-protocol dependency in windows-sandbox-rs uses the TOML table
+format with an explicit path, rather than workspace inheritance
+(workspace = true).  Because it is not an intra-workspace dependency,
+cargo cannot resolve its version from the workspace root Cargo.toml
+and cargo package fails with "dependency `codex-protocol` does not
+specify a version".
+
+diff -u a/codex-rs/windows-sandbox-rs/Cargo.toml b/codex-rs/windows-sandbox-rs/Cargo.toml
+--- a/codex-rs/windows-sandbox-rs/Cargo.toml
++++ b/codex-rs/windows-sandbox-rs/Cargo.toml
+@@ -38,6 +38,7 @@
+ [dependencies.codex-protocol]
+ package = "codex-protocol"
+ path = "../protocol"
++version = "0.0.0"
+
+ [dependencies.rand]
+ default-features = false
