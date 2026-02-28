@@ -224,7 +224,7 @@ installed as well as Yelp, the Gnome help browser.")
 
 ;; This package is not public, since we use it to build the "doc" output of
 ;; the gnucash package (see above).  It would be confusing if it were public.
-(define gnucash-docs
+(define-public gnucash-docs
   (let ((revision ""))               ;set to the empty string when no revision
     (package
       (name "gnucash-docs")
@@ -256,6 +256,7 @@ installed as well as Yelp, the Gnome help browser.")
 This package exists because the GnuCash project maintains its documentation in
 an entirely separate package from the actual GnuCash program.  It is intended
 to be read using the GNOME Yelp program.")
+      (properties '((hidden? . #t)))        ;meant to be an input to 'gnucash'
       (license (list license:fdl1.1+ license:gpl3+)))))
 
 (define-public gwenhywfar

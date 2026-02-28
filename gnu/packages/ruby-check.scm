@@ -20,7 +20,7 @@
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2021 Giacomo Leidi <therewasa@fishinthecalculator.me>
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022, 2024 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
@@ -211,12 +211,13 @@ Cucumber implementation's support for the Cucumber Messages protocol.")
     (license license:expat)))
 
 ;;; Variant package to break a cycle with ruby-cucumber-messages.
-(define ruby-cucumber-compatibility-kit-bootstrap
+(define-public ruby-cucumber-compatibility-kit-bootstrap
   (package/inherit ruby-cucumber-compatibility-kit
     (arguments (list #:tests? #f))
     (propagated-inputs (modify-inputs (package-propagated-inputs
                                        ruby-cucumber-compatibility-kit)
-                         (delete "ruby-cucumber-messages")))))
+                         (delete "ruby-cucumber-messages")))
+    (properties '((hidden? . #t)))))
 
 (define-public ruby-cucumber-core
   (package

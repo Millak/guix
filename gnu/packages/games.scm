@@ -5,7 +5,7 @@
 ;;; Copyright © 2014-2025 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Cyrill Schenkel <cyrill.schenkel@gmail.com>
 ;;; Copyright © 2014 Sylvain Beucler <beuc@beuc.net>
-;;; Copyright © 2014, 2015, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2015, 2018-2019, 2021, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2024 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2014, 2015, 2019 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016 Andreas Enge <andreas@enge.fr>
@@ -4659,7 +4659,7 @@ game.  Your mission in the game is simple: stop the invasion of the aliens by
 blasting them.  Simultaneous two-player mode is available.")
     (license license:gpl2)))
 
-(define glkterm
+(define-public glkterm
   (package
    (name "glkterm")
    (version "1.0.4")
@@ -5056,7 +5056,7 @@ This package expects the game(s) to be placed in subdirectories of
                        "lib/mojoal"
                        "lib/wiiuse"))))))
 
-(define supertuxkart-data
+(define-public supertuxkart-data
   ;; There are no tags or releases for the stk-assets data, nor indication of
   ;; which revision is bundled into the released SuperTuxKart-*-src tarball;
   ;; use the latest SVN revision available.
@@ -5158,7 +5158,7 @@ against each other or just trying to beat the computer; single-player mode is
 also available.")
     (license license:gpl3+)))
 
-(define ring-racers-data
+(define-public ring-racers-data
   (hidden-package
    (package
      (name "ring-racers-data")
@@ -5577,7 +5577,7 @@ world}, @uref{http://evolonline.org, Evol Online} and
     ;; The rest is under GPL2+.
     (license (list license:gpl2+ license:zlib license:cc-by-sa4.0))))
 
-(define openttd-engine
+(define-public openttd-engine
   (package
     (name "openttd-engine")
     (version "15.2")
@@ -5614,7 +5614,7 @@ engine.  When you start it you will be prompted to download a graphics set.")
     ;; different terms.
     (license (list license:bsd-3 license:gpl2 license:lgpl2.1+ license:zlib))))
 
-(define openttd-opengfx
+(define-public openttd-opengfx
   (package
     (name "openttd-opengfx")
     (version "8.0")
@@ -5688,7 +5688,7 @@ OpenGFX provides you with...
 @end enumerate")
     (license license:gpl2)))
 
-(define openttd-opensfx
+(define-public openttd-opensfx
   (package
     (name "openttd-opensfx")
     (version "1.0.3")
@@ -5737,7 +5737,7 @@ it possible to play OpenTTD without requiring the proprietary sound files from
 the original Transport Tycoon Deluxe.")
     (license license:cc-by-sa3.0)))
 
-(define openttd-openmsx
+(define-public openttd-openmsx
   (package
     (name "openttd-openmsx")
     (version "0.4.2")
@@ -5868,7 +5868,7 @@ standard game and how to play it.  It is not aimed at beginner/novice players.
 Some features and settings are there for very experienced players and so may
 have a steep learning curve.")))
 
-(define openrct2-title-sequences
+(define-public openrct2-title-sequences
   (package
    (name "openrct2-title-sequences")
    (version "0.1.2")
@@ -5907,9 +5907,10 @@ have a steep learning curve.")))
    (synopsis "Title sequences for OpenRCT2")
    (description
     "openrct2-title-sequences is a set of title sequences for OpenRCT2.")
+   (properties '((hidden? . #t)))             ;data package useless on its own
    (license license:gpl3+)))
 
-(define openrct2-objects
+(define-public openrct2-objects
   (package
    (name "openrct2-objects")
    (version "1.0.20")
@@ -5947,6 +5948,7 @@ have a steep learning curve.")))
    (synopsis "Objects for OpenRCT2")
    (description
     "openrct2-objects is a set of objects for OpenRCT2.")
+   (properties '((hidden? . #t)))             ;data package useless on its own
    (license license:gpl3+)))
 
 (define-public openquest
@@ -9514,7 +9516,7 @@ UMAPINFO, DEHEXTRA, and DSDHacked specifictions.")
            license:public-domain
            license:gpl2+))))
 
-(define xonotic-data
+(define-public xonotic-data
   (package
     (name "xonotic-data")
     (version "0.8.6")
@@ -9548,6 +9550,7 @@ UMAPINFO, DEHEXTRA, and DSDHacked specifictions.")
     (synopsis "Data files for Xonotic")
     (description
      "Xonotic-data provides the data files required by the game Xonotic.")
+    (properties '((hidden? . #t)))            ;data package useless on its own
     (license (list license:gpl2+
                    (license:x11-style "file://server/rcon.pl")))))
 
@@ -11078,7 +11081,7 @@ levels to unlock.")
                      license:cc-by-sa3.0)))))
 
 ;; This must be updated together with flightgear.
-(define simgear
+(define-public simgear
   (package
     (name "simgear")
     (version "2024.1.4")

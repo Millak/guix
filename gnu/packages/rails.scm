@@ -37,7 +37,8 @@
   #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages version-control)
-  #:use-module (guix build-system ruby))
+  #:use-module (guix build-system ruby)
+  #:use-module ((srfi srfi-1) #:select (alist-delete)))
 
 (define %ruby-rails-version "7.2.2.1")
 
@@ -856,7 +857,7 @@ pattern.  Including support for multipart email and attachments.")
 
 ;; A variant where the ruby-rspec-rails dependency purposefully omitted to
 ;; avoid a dependency cycle with that same package.
-(define ruby-ammeter-bootstrap
+(define-public ruby-ammeter-bootstrap
   (package
     (name "ruby-ammeter-bootstrap")
     (version "1.1.7")
@@ -884,6 +885,7 @@ pattern.  Including support for multipart email and attachments.")
 Rails generators.  An existing user is @code{rspec-rails}, which uses
 @code{ammeter} to spec its own generators.")
     (home-page "https://github.com/alexrothenberg/ammeter")
+    (properties '((hidden? . #t)))
     (license license:expat)))
 
 (define-public ruby-ammeter
@@ -894,7 +896,9 @@ Rails generators.  An existing user is @code{rspec-rails}, which uses
     (arguments (list #:tests? #f))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs ruby-ammeter-bootstrap)
-       (append ruby-rspec-rails)))))
+       (append ruby-rspec-rails)))
+    (properties
+     (alist-delete 'hidden? (package-properties ruby-ammeter-bootstrap)))))
 
 (define-public ruby-bootsnap
   (package

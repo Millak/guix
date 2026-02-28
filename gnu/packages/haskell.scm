@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Siniša Biđin <sinisa@bidin.eu>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2015, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2016, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2018, 2019, 2021, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2022, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
@@ -1639,7 +1639,7 @@ SRC_HC_OPTS += -optc-mno-outline-atomics
 ;; We need two extra dependencies built with ghc-bootstrap-for-9.4,
 ;; which are duplicated here from haskell-xyz to make sure the
 ;; bootstraping process always works.
-(define ghc-alex-bootstrap-for-9.4
+(define-public ghc-alex-bootstrap-for-9.4
   (hidden-package
     (package
      (name "ghc-alex")
@@ -1667,7 +1667,7 @@ SRC_HC_OPTS += -optc-mno-outline-atomics
  tool lex or flex for C/C++.")
      (license license:bsd-3))))
 
-(define ghc-happy-bootstrap-for-9.4
+(define-public ghc-happy-bootstrap-for-9.4
   (hidden-package
     (package
      (name "ghc-happy")

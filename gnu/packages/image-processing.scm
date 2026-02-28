@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2017, 2019, 2022, 2024 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2014, 2021-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2021-2023, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -1608,7 +1608,7 @@ combine the information contained in both.")
 ;; ITK-SNAP version 4.2.2 and 4.4.0-alpha3 require ITK >= 5.4 and for ITK to
 ;; be built this way.  Note that enabling Python wrapping forces this option
 ;; to ON, so Python wrapping is not enabled for this build.
-(define insight-toolkit-legacy
+(define-public insight-toolkit-legacy
   (hidden-package
    (package/inherit insight-toolkit
      ;; Unfortunately we cannot remove the 'python output because it is

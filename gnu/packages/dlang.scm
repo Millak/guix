@@ -145,7 +145,7 @@ to a minimal test case.")
 
 ;; We use GDC, the D frontend for GCC, to bootstrap ldc.  We then use
 ;; ldc to bootstrap itself so that no reference remains to GDC.
-(define ldc-bootstrap
+(define-public ldc-bootstrap
   (package
     (name "ldc")
     (version "1.38.0")
@@ -207,7 +207,10 @@ bootstrapping more recent compilers written in D.")
     (properties
      ;; Some of the tests take a very long time on ARMv7.  See
      ;; <https://lists.gnu.org/archive/html/guix-devel/2018-02/msg00312.html>.
-     `((max-silent-time . ,(* 3600 3))))
+     `((max-silent-time . ,(* 3600 3))
+
+       ;; This variant exists solely for bootstrapping purposes.
+       (hidden? . #t)))
     ;; Most of the code is released under BSD-3, except for code originally
     ;; written for GDC, which is released under GPLv2+, and the DMD frontend,
     ;; which is released under the "Boost Software License version 1.0".
@@ -402,11 +405,13 @@ integration tests...\n")
                      (alist-replace "ldc" (list ldc-bootstrap)
                                     (package-native-inputs ldc-bootstrap)))
          `(("clang" ,clang-17)          ;propagates llvm and clang-runtime
-           ("python-lit" ,python-lit))))))
+           ("python-lit" ,python-lit))))
+    (properties
+     (alist-delete 'hidden? (package-properties ldc-bootstrap)))))
 
 ;;; Bootstrap version of phobos that is built with GDC, using GDC's standard
 ;;; library.
-(define dmd-bootstrap
+(define-public dmd-bootstrap
   (package
     ;; This package is purposefully named just "dmd" and not "dmd-bootstrap",
     ;; as the final dmd package rewrites references from this one to itself,
@@ -528,6 +533,10 @@ compiler for the D programming language.")
     ;; As reported by upstream:
     ;; https://wiki.dlang.org/Compilers#Comparison
     (supported-systems '("i686-linux" "x86_64-linux"))
+
+    ;; This variant exists only for bootstrapping purposes.
+    (properties '((hidden? . #t)))
+
     (license license:boost1.0)))
 
 ;;; Second bootstrap of DMD, built using dmd-bootstrap, with its shared
@@ -571,7 +580,9 @@ compiler for the D programming language.")
                           (format #f "s,~a,~a,g" dmd-bootstrap #$output)
                           dmd))))))))
     (native-inputs (modify-inputs (package-native-inputs dmd-bootstrap)
-                     (replace "gdmd" dmd-bootstrap)))))
+                     (replace "gdmd" dmd-bootstrap)))
+    (properties
+     (alist-delete 'hidden? (package-properties dmd-bootstrap)))))
 
 (define-public dub
   (package

@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2017, 2018, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2015-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2022, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2015 Cyrill Schenkel <cyrill.schenkel@gmail.com>
@@ -1703,7 +1703,7 @@ mechanism than copying the contents of the source pixmap.")
 network-transparent printing system.")
     (license license:x11)))
 
-(define xcffibgen
+(define-public xcffibgen
   (package
     (name "xcffibgen")
     (version "1.4.0")
@@ -1734,6 +1734,7 @@ network-transparent printing system.")
     (description
      "This is an internal package that provides a build tool to
 generate code for the @code{python-xcbffib} package.")
+    (properties '((hidden? . #t)))                ;it's an internal package
     (license license:expat)))
 
 (define-public python-xcffib

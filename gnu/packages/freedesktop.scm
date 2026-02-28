@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2017 Andy Wingo <wingo@pobox.com>
-;;; Copyright © 2015-2017, 2019, 2021-2022, 2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2017, 2019, 2021-2022, 2025-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
 ;;; Copyright © 2016, 2017, 2019, 2021-2025 Efraim Flashner <efraim@flashner.co.il>
@@ -424,8 +424,8 @@ inappropriate content.")
       license:gpl2+
       license:lgpl2.1+))))
 
-;; Private package used by shared-mime-info.
-(define xdgmime
+;; Hidden package used by shared-mime-info.
+(define-public xdgmime
   ;; No public release, match commit to the one used in the
   ;; shared-mime-info release.
   (let ((commit "179296748e92bd91bf531656632a1056307fb7b7")
@@ -468,6 +468,7 @@ inappropriate content.")
       (home-page "https://gitlab.freedesktop.org/xdg/xdgmime/")
       (synopsis "Module that parses the freedesktop.org MIME spec")
       (description "This module is used for shared-mime-info package tests.")
+      (properties '((hidden? . #t)))
       (license (list license:lgpl2.1+ license:artistic2.0)))))
 
 ;; Note: when updating shared-mime-info, don't forget to update xdgmime's commit

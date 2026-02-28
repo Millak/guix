@@ -3884,7 +3884,7 @@ mechanism of Java.  It is especially useful for dynamic loading of application
 components.")
     (license license:asl2.0)))
 
-(define java-plexus-container-default-bootstrap
+(define-public java-plexus-container-default-bootstrap
   (package
     (name "java-plexus-container-default-bootstrap")
     (version "2.1.0")
@@ -3932,6 +3932,7 @@ components.")
     (description "Plexus-default-container is Plexus' inversion-of-control
 (@dfn{IoC}) container.  It is composed of its public API and its default
 implementation.")
+    (properties '((hidden? . #t)))            ;for bootstrapping purposes only
     (license license:asl2.0)))
 
 (define java-plexus-containers-parent-pom
@@ -4102,7 +4103,11 @@ archives (jar).")
        ("guava" ,java-guava)))
     (native-inputs
      `(("archiver" ,java-plexus-archiver)
-       ("hamcrest" ,java-hamcrest-core)))))
+       ("hamcrest" ,java-hamcrest-core)))
+    (properties
+     (alist-delete
+      'hidden?
+      (package-properties java-plexus-container-default-bootstrap)))))
 
 (define-public java-plexus-component-annotations
   (package
@@ -8489,7 +8494,7 @@ StringTemplate also powers ANTLR.")
        ("java-stringtemplate" ,java-stringtemplate-3)
        ("java-junit" ,java-junit)))))
 
-(define java-stringtemplate-4.0.6
+(define-public java-stringtemplate-4.0.6
   (package (inherit java-stringtemplate)
     (name "java-stringtemplate")
     (version "4.0.6")
@@ -8610,7 +8615,7 @@ C++, or Python actions.  ANTLR provides excellent support for tree construction,
 tree walking, and translation.")
     (license license:bsd-3)))
 
-(define antlr3-bootstrap
+(define-public antlr3-bootstrap
   (package
     (inherit antlr3)
     (name "antlr3-bootstrap")
@@ -8618,7 +8623,8 @@ tree walking, and translation.")
      `(("antlr" ,antlr2)
        ("antlr3" ,antlr3-3.3)))
     (inputs
-     `(("junit" ,java-junit)))))
+     `(("junit" ,java-junit)))
+    (properties '((hidden? . #t)))))          ;for bootstrapping purposes only
 
 (define-public antlr3-3.3
   (package
@@ -8712,7 +8718,8 @@ import org.antlr.grammar.v2.ANTLRTreePrinter;"))
      `(("junit" ,java-junit)))
     (propagated-inputs
      `(("java-stringtemplate" ,java-stringtemplate-3)
-       ("antlr" ,antlr2)))))
+       ("antlr" ,antlr2)))
+    (properties (alist-delete 'hidden? (package-properties antlr3)))))
 
 (define-public antlr3-3.1
   (package
@@ -9193,7 +9200,7 @@ the runtime library of ANTLR.")))
 ;; So, we build the runtime with antlr 4.1, with a broken xml lexer, that we
 ;; use to build antlr4.  We then re-use this antlr4 to build the runtime, and
 ;; the proper, working, runtime to build antlr4 again.
-(define java-tunnelvisionlabs-antlr4-runtime-bootstrap
+(define-public java-tunnelvisionlabs-antlr4-runtime-bootstrap
   (package
     (inherit java-antlr4-runtime)
     (name "java-tunnelvisionlabs-antlr4-runtime")
@@ -9224,9 +9231,10 @@ the runtime library of ANTLR.")))
     (native-inputs
      `(("antlr4" ,antlr4-4.1)
        ("java-tunnelvisionlabs-antlr4-runtime-annotations"
-        ,java-tunnelvisionlabs-antlr4-runtime-annotations)))))
+        ,java-tunnelvisionlabs-antlr4-runtime-annotations)))
+    (properties '((hidden? . #t)))))          ;for bootstrapping purposes only
 
-(define java-tunnelvisionlabs-antlr4-bootstrap
+(define-public java-tunnelvisionlabs-antlr4-bootstrap
   (package
     (inherit antlr4)
     (name "java-tunnelvisionlabs-antlr4")
@@ -9252,7 +9260,8 @@ the runtime library of ANTLR.")))
        ("java-jsonp-api" ,java-jsonp-api)
        ("java-stringtemplate" ,java-stringtemplate)
        ("java-treelayout" ,java-treelayout)
-       ("openjdk" ,openjdk)))))
+       ("openjdk" ,openjdk)))
+    (properties '((hidden? . #t)))))          ;for bootstrapping purposes only
 
 (define-public java-tunnelvisionlabs-antlr4-runtime
   (package
@@ -9260,7 +9269,12 @@ the runtime library of ANTLR.")))
     (native-inputs
       (alist-replace
         "antlr4" (list java-tunnelvisionlabs-antlr4-bootstrap)
-        (package-native-inputs java-tunnelvisionlabs-antlr4-runtime-bootstrap)))))
+        (package-native-inputs
+         java-tunnelvisionlabs-antlr4-runtime-bootstrap)))
+    (properties
+     (alist-delete
+      'hidden?
+      (package-properties java-tunnelvisionlabs-antlr4-runtime-bootstrap)))))
 
 (define-public java-tunnelvisionlabs-antlr4
   (package
@@ -9268,7 +9282,11 @@ the runtime library of ANTLR.")))
     (inputs
       (alist-replace
         "java-antlr4-runtime" (list java-tunnelvisionlabs-antlr4-runtime)
-        (package-inputs java-tunnelvisionlabs-antlr4-bootstrap)))))
+        (package-inputs java-tunnelvisionlabs-antlr4-bootstrap)))
+    (properties
+     (alist-delete
+      'hidden?
+      (package-properties java-tunnelvisionlabs-antlr4-bootstrap)))))
 
 (define-public java-commons-cli-1.2
   ;; This is a bootstrap dependency for Maven2.
@@ -12169,7 +12187,7 @@ outputting XML data from Java code.")
 and graphs of objects for dependency injection frameworks")
     (license license:asl2.0)))
 
-(define java-geronimo-genesis-2.1
+(define-public java-geronimo-genesis-2.1
   (package
     (name "java-geronimo-genesis")
     (version "2.1")

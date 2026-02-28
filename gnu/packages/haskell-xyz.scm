@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Siniša Biđin <sinisa@bidin.eu>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2015, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2016, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2018, 2019, 2021, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2019, 2023, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
@@ -1922,7 +1922,7 @@ testing strategies.")
     (description "More complex tests for @code{chell}.")
     (license license:expat)))
 
-(define ghc-chell-quickcheck-bootstrap
+(define-public ghc-chell-quickcheck-bootstrap
   (package
     (name "ghc-chell-quickcheck-bootstrap")
     (version "0.2.5.2")
@@ -1952,6 +1952,7 @@ testing strategies.")
     (home-page "https://john-millikin.com/software/chell/")
     (synopsis "QuickCheck support for the Chell testing library")
     (description "More complex tests for @code{chell}.")
+    (properties '((hidden? . #t)))
     (license license:expat)))
 
 (define-public ghc-chunked-data
@@ -8383,7 +8384,7 @@ easily work with command-line options.")
     (license license:expat)))
 
 ;; See ghc-system-filepath-bootstrap, chell and chell-quickcheck are required for tests.
-(define ghc-options-bootstrap
+(define-public ghc-options-bootstrap
   (package
     (name "ghc-options-bootstrap")
     (version "1.2.1.1")
@@ -8406,6 +8407,7 @@ easily work with command-line options.")
     (description
      "The @code{options} package lets library and application developers
 easily work with command-line options.")
+    (properties '((hidden? . #t)))            ;for bootstrapping purposes only
     (license license:expat)))
 
 
@@ -12197,37 +12199,6 @@ In particular, this library supports working with POSIX files that have paths
 which can't be decoded in the current locale encoding.")
     (license license:expat)))
 
-;; See ghc-system-filepath-bootstrap. In addition this package depends on
-;; ghc-system-filepath.
-(define ghc-system-fileio-bootstrap
-  (package
-    (name "ghc-system-fileio-bootstrap")
-    (version "0.3.16.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/system-fileio/system-fileio-"
-             version ".tar.gz"))
-       (sha256
-        (base32
-         "1484hcl27s2qcby8ws5djj11q9bz68bspcifz9h5gii2ndy70x9i"))))
-    (build-system haskell-build-system)
-    (arguments
-     `(#:tests? #f))
-    (inputs
-     `(("ghc-system-filepath-bootstrap" ,ghc-system-filepath-bootstrap)
-       ("ghc-temporary" ,ghc-temporary)))
-    (home-page "https://github.com/fpco/haskell-filesystem")
-    (synopsis "Consistent file system interaction across GHC versions")
-    (description
-     "This is a small wrapper around the directory, unix, and Win32 packages,
-for use with system-filepath.  It provides a consistent API to the various
-versions of these packages distributed with different versions of GHC.
-In particular, this library supports working with POSIX files that have paths
-which can't be decoded in the current locale encoding.")
-    (license license:expat)))
-
 (define-public ghc-system-filepath
   (package
     (name "ghc-system-filepath")
@@ -12247,36 +12218,6 @@ which can't be decoded in the current locale encoding.")
        ("1" "18llfvisghrn9w9yfgacqn51gs50a0lngah3bmg852h0swj7vkp8")))
     (native-inputs
      (list ghc-chell ghc-chell-quickcheck ghc-quickcheck))
-    (home-page "https://github.com/fpco/haskell-filesystem")
-    (synopsis "High-level, byte-based file and directory path manipulations")
-    (description
-     "Provides a FilePath datatype and utility functions for operating on it.
-Unlike the filepath package, this package does not simply reuse String,
-increasing type safety.")
-    (license license:expat)))
-
-;; Ghc-shelly depends on ghc-system-filepath and ghc-system-fileio, who in turn depend on
-;; ghc-chell and ghc-chell-quickcheck for the test phase. Ghc-chell depends on ghc-options
-;; which depends on ghc-chell and ghc-chell-quickcheck.
-;; Therefore we bootstrap it with tests disabled.
-(define ghc-system-filepath-bootstrap
-  (package
-    (name "ghc-system-filepath-bootstrap")
-    (version "0.4.14")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/system-filepath/system-filepath-"
-             version ".tar.gz"))
-       (sha256
-        (base32
-         "14yras4pz2dh55xpwmazcgxijvi8913pjgzb9iw50mjq1lycwmhn"))))
-    (build-system haskell-build-system)
-    (arguments
-     `(#:tests? #f))
-    (inputs
-     `(("ghc-quickcheck" ,ghc-quickcheck)))
     (home-page "https://github.com/fpco/haskell-filesystem")
     (synopsis "High-level, byte-based file and directory path manipulations")
     (description

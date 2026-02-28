@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2020, 2024 Efraim Flashner <efraim@flashner.co.il>
@@ -44,10 +44,7 @@
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages texinfo)
-  #:export (classpath-devel
-            ecj4-javac-wrapper
-            jamvm-with-ecj4
-            ant-bootstrap))
+  #:use-module ((srfi srfi-1) #:select (alist-delete)))
 
 
 ;;;
@@ -75,7 +72,7 @@
 ;; build framework.  We then build the more recent JDK Icedtea 3.x, and all
 ;; other versions of OpenJDK.
 
-(define jikes
+(define-public jikes
   (package
     (name "jikes")
     (version "1.22")
@@ -95,7 +92,7 @@ and binary format defined in The Java Virtual Machine Specification.")
     (license license:ibmpl1.0)))
 
 ;; This is the last version of GNU Classpath that can be built without ECJ.
-(define classpath-bootstrap
+(define-public classpath-bootstrap
   (package
     (name "classpath")
     (version "0.93")
@@ -133,12 +130,13 @@ and binary format defined in The Java Virtual Machine Specification.")
     (description "GNU Classpath is a project to create core class libraries
 for use with runtimes, compilers and tools for the Java programming
 language.")
+    (properties '((hidden? . #t)))
     ;; GPLv2 or later, with special linking exception.
     (license license:gpl2+)))
 
 ;; This is the last version of JamVM that works with a version of GNU
 ;; classpath that does not require ECJ.
-(define jamvm-1-bootstrap
+(define-public jamvm-1-bootstrap
   (package
     (name "jamvm")
     (version "1.5.1")
@@ -193,9 +191,10 @@ language.")
 specification edition 2 (blue book).  It is extremely small.  However, unlike
 other small VMs it supports the full spec, including object finalisation and
 JNI.")
+    (properties '((hidden? . #t)))
     (license license:gpl2+)))
 
-(define ant-bootstrap
+(define-public ant-bootstrap
   (package
     (name "ant-bootstrap")
     ;; The 1.10.x series requires Java 8.  1.9.0 and later use generics, which
@@ -295,11 +294,12 @@ JNI.")
 make but is implemented using the Java language, requires the Java platform,
 and is best suited to building Java projects.  Ant uses XML to describe the
 build process and its dependencies, whereas Make uses Makefile format.")
+    (properties '((hidden? . #t)))                ;for bootstrapping only
     (license license:asl2.0)))
 
 ;; Version 3.2.2 is the last version without a dependency on a full-fledged
 ;; compiler for Java 1.5.
-(define ecj-bootstrap
+(define-public ecj-bootstrap
   (package
     (name "ecj-bootstrap")
     (version "3.2.2")
@@ -362,9 +362,10 @@ Main-Class: org.eclipse.jdt.internal.compiler.batch.Main\n")))
     (description "This package provides the Eclipse Java core batch compiler
 for bootstrapping purposes.  The @dfn{Eclipse compiler for Java} (ecj) is a
 requirement for all GNU Classpath releases after version 0.93.")
+    (properties '((hidden? . #t)))                ;for bootstrapping only
     (license license:epl1.0)))
 
-(define ecj-javac-wrapper
+(define-public ecj-javac-wrapper
   (package (inherit ecj-bootstrap)
     (name "ecj-javac-wrapper")
     (source #f)
@@ -435,7 +436,7 @@ the standard javac executable.")))
 ;; The classpath-bootstrap was built without a virtual machine, so it does not
 ;; provide a wrapper for javah.  We cannot build the development version of
 ;; Classpath without javah.
-(define classpath-0.99
+(define-public classpath-0.99
   (package (inherit classpath-bootstrap)
     (version "0.99")
     (source (origin
@@ -479,7 +480,7 @@ the standard javac executable.")))
 
 ;; We need this because classpath-bootstrap does not provide all of the tools
 ;; we need to build classpath-devel.
-(define classpath-jamvm-wrappers
+(define-public classpath-jamvm-wrappers
   (package (inherit classpath-0.99)
     (name "classpath-jamvm-wrappers")
     (source #f)
@@ -528,7 +529,7 @@ machine.")))
 
 ;; The last release of GNU Classpath is 0.99 and it happened in 2012.  Since
 ;; then Classpath has gained much more support for Java 1.6.
-(define classpath-devel
+(define-public classpath-devel
   (let ((commit "e7c13ee0cf2005206fbec0eca677f8cf66d5a103")
         (revision "1"))
     (package (inherit classpath-bootstrap)
@@ -586,9 +587,11 @@ machine.")))
              pkg-config
              classpath-jamvm-wrappers  ;for javah
              ecj-bootstrap ecj-javac-wrapper fastjar
-             jamvm-1-bootstrap)))))
+             jamvm-1-bootstrap))
+      (properties
+       (alist-delete 'hidden? (package-properties classpath-bootstrap))))))
 
-(define jamvm
+(define-public jamvm
   (package
     (inherit jamvm-1-bootstrap)
     (version "2.0.0")
@@ -621,15 +624,17 @@ machine.")))
                         #$flags)))))
     (inputs (list classpath-devel ecj-javac-wrapper libffi zip zlib))))
 
-(define ecj-javac-wrapper-final
+(define-public ecj-javac-wrapper-final
   (package (inherit ecj-javac-wrapper)
     (native-inputs
-     (list guile-3.0 ecj-bootstrap jamvm classpath-devel))))
+     (list guile-3.0 ecj-bootstrap jamvm classpath-devel))
+    (properties
+     (alist-delete 'hidden? (package-properties ecj-javac-wrapper)))))
 
 ;; We jump ahead by patching the sources of ECJ 4.2.1 so that our bootstrap
 ;; JDK can build it.  ECJ 4 allows us to skip the build of the first version
 ;; of icedtea and build icedtea 2.x directly.
-(define ecj4-bootstrap
+(define-public ecj4-bootstrap
   (package
     (name "ecj-bootstrap")
     (version "4.2.1")
@@ -715,18 +720,21 @@ Main-Class: org.eclipse.jdt.internal.compiler.batch.Main\n")))
 for bootstrapping purposes.  The @dfn{Eclipse compiler for Java} (ecj) is a
 requirement for all GNU Classpath releases after version 0.93.  This version
 supports sufficient parts of Java 7 to build Icedtea 2.x.")
+    (properties '((hidden? . #t)))            ;for bootstrapping purposes only
     (license license:epl1.0)))
 
-(define ecj4-javac-wrapper
+(define-public ecj4-javac-wrapper
   (package
     (inherit ecj-javac-wrapper)
     (native-inputs
      (list guile-3.0 ecj4-bootstrap jamvm classpath-devel))))
 
-(define jamvm-with-ecj4
+(define-public jamvm-with-ecj4
   (package
     (inherit jamvm)
     (inputs
      (modify-inputs (package-inputs jamvm)
-       (replace "ecj-javac-wrapper" ecj4-javac-wrapper)))))
+       (replace "ecj-javac-wrapper" ecj4-javac-wrapper)))
+    (properties
+     (alist-delete 'hidden? (package-properties jamvm)))))
 

@@ -38,7 +38,8 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system ant)
-  #:use-module (guix utils))
+  #:use-module (guix utils)
+  #:use-module ((srfi srfi-1) #:select (alist-delete)))
 
 (define-public java-jericho-html
   (package
@@ -203,7 +204,7 @@ in a number of formats:
 
 ;; Jaxen requires java-dom4j and java-xom that in turn require jaxen.
 ;; This package is a bootstrap version without dependencies on dom4j and xom.
-(define java-jaxen-bootstrap
+(define-public java-jaxen-bootstrap
   (package
     (name "java-jaxen-bootstrap")
     (version "1.1.6")
@@ -236,6 +237,7 @@ to many different object models, including DOM, XOM, dom4j, and JDOM.  It is
 also possible to write adapters that treat non-XML trees such as compiled
 Java byte code or Java beans as XML, thus enabling you to query these trees
 with XPath too.")
+    (properties '((hidden? . #t)))            ;for bootstrapping purposes only
     (license license:bsd-3)))
 
 (define-public java-jaxen
@@ -247,7 +249,9 @@ with XPath too.")
       '(#:phases)  ;; remove any phases added by java-jaxen-bootstrap
       (package-arguments java-jaxen-bootstrap)))
     (inputs
-     (list java-jdom java-xom java-dom4j))))
+     (list java-jdom java-xom java-dom4j))
+    (properties
+     (alist-delete 'hidden? (package-properties java-jaxen-bootstrap)))))
 
 (define-public java-xom
   (package

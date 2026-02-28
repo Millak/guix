@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015 Pjotr Prins <pjotr.guix@thebird.nl>
-;;; Copyright © 2014-2017, 2021-2022, 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2017, 2021-2022, 2024, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015, 2019 Ricardo Wurmus <rekado@elephly.net>
@@ -110,7 +110,8 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages web)
   #:use-module (gnu packages ruby)
-  #:use-module (gnu packages ruby-check))
+  #:use-module (gnu packages ruby-check)
+  #:use-module ((srfi srfi-1) #:select (alist-delete)))
 
 (define %prawn-project-licenses
   ;; This set of licenses applies to most (all?) components of the Prawn
@@ -596,14 +597,15 @@ subject.")
     (home-page "https://github.com/pboling/rspec-block_is_expected")
     (license license:expat)))
 
-(define ruby-rspec-block-is-expected-bootstrap
+(define-public ruby-rspec-block-is-expected-bootstrap
   (package/inherit ruby-rspec-block-is-expected
     (arguments
      (substitute-keyword-arguments
          (package-arguments ruby-rspec-block-is-expected)
        ((#:tests? tests? #t)
         #f)))
-    (native-inputs '())))
+    (native-inputs '())
+    (properties '((hidden? . #t)))))
 
 (define-public ruby-rspec-pending-for
   (package
@@ -1600,7 +1602,7 @@ logic.")
     (license license:expat)))
 
 ;;; A minimal variant used to build ruby-rubocop itself.
-(define ruby-rubocop-capybara-minimal
+(define-public ruby-rubocop-capybara-minimal
   (package
     (name "ruby-rubocop-capybara")
     (version "2.21.0")
@@ -1619,6 +1621,7 @@ logic.")
     (description "This package provides a RuboCop plugin that can be used for
 code style checking of Capybara test files (RSpec, Cucumber, Minitest).")
     (home-page "https://github.com/rubocop/rubocop-capybara")
+    (properties '((hidden? . #t)))
     (license license:expat)))
 
 (define-public ruby-rubocop-capybara
@@ -1643,7 +1646,10 @@ code style checking of Capybara test files (RSpec, Cucumber, Minitest).")
            ruby-rubocop-rake-minimal
            ruby-rubocop-rspec-minimal
            ruby-simplecov
-           ruby-yard))))
+           ruby-yard))
+    (properties
+     (alist-delete 'hidden?
+                   (package-properties ruby-rubocop-capybara-minimal)))))
 
 (define-public ruby-rubocop-factory-bot
   (package
@@ -1665,7 +1671,7 @@ enforcing & linting tool for @code{factory_bot} files.")
     (license license:expat)))
 
 ;;; A minimal variant used to build ruby-rubocop itself.
-(define ruby-rubocop-rake-minimal
+(define-public ruby-rubocop-rake-minimal
   (package
     (name "ruby-rubocop-rake")
     (version "0.6.0")
@@ -1683,6 +1689,7 @@ enforcing & linting tool for @code{factory_bot} files.")
     (synopsis "RuboCop plugin for Rake")
     (description "This package provides a RuboCop plugin for Rake.")
     (home-page "https://github.com/rubocop/rubocop-rake")
+    (properties '((hidden? . #t)))
     (license license:expat)))
 
 (define-public ruby-rubocop-rake
@@ -1696,10 +1703,12 @@ enforcing & linting tool for @code{factory_bot} files.")
            ruby-rubocop
            ruby-rubocop-rspec))
     (propagated-inputs
-     (list ruby-rubocop))))
+     (list ruby-rubocop))
+    (properties
+     (alist-delete 'hidden? (package-properties ruby-rubocop-rake-minimal)))))
 
 ;;; A minimal variant used to build ruby-rubocop itself.
-(define ruby-rubocop-rspec-minimal
+(define-public ruby-rubocop-rspec-minimal
   (package
     (name "ruby-rubocop-rspec")
     (version "2.26.0")
@@ -1727,6 +1736,7 @@ enforcing & linting tool for @code{factory_bot} files.")
     (description "This package provides a plugin for the RuboCop code style
 enforcing & linting tool.")
     (home-page "https://github.com/rubocop/rubocop-rspec")
+    (properties '((hidden? . #t)))
     (license license:expat)))
 
 (define-public ruby-rubocop-rspec
@@ -1749,7 +1759,9 @@ enforcing & linting tool.")
      (list ruby-rubocop
            ruby-rubocop-ast
            ruby-rubocop-capybara
-           ruby-rubocop-factory-bot))))
+           ruby-rubocop-factory-bot))
+    (properties
+     (alist-delete 'hidden? (package-properties ruby-rubocop-rspec-minimal)))))
 
 (define-public ruby-rubocop-packaging
   (package
@@ -9811,12 +9823,13 @@ software development workflow.")
     (home-page "https://cucumber.io/")
     (license license:expat)))
 
-(define ruby-cucumber-without-tests
+(define-public ruby-cucumber-without-tests
   (package (inherit ruby-cucumber)
     (arguments
      '(#:tests? #f))
     (native-inputs
-     '())))
+     '())
+    (properties '((hidden? . #t)))))
 
 (define-public ruby-covered
   (package
@@ -13847,7 +13860,7 @@ to load dynamic content on storefronts.")
 
 ;;; This variant is purposefully incomplete, lacking ruby-liquid so that it
 ;;; can be used for ruby-liquid's test suite.
-(define ruby-liquid-c-bootstrap
+(define-public ruby-liquid-c-bootstrap
   (package
     (name "ruby-liquid-c-bootstrap")
     (version "4.2.0")
@@ -13864,6 +13877,7 @@ to load dynamic content on storefronts.")
     (description "This package provides a Partial native implementation of the
 liquid ruby gem in C that makes it operate about three times faster.")
     (home-page "https://github.com/shopify/liquid-c")
+    (properties '((hidden? . #t)))
     (license license:expat)))
 
 (define-public ruby-liquid-c
@@ -13906,7 +13920,9 @@ RubyMemcheck.config(binary_name: \"liquid_c.so\")"))))))))
            ruby-spy
            ruby-stackprof))
     (propagated-inputs
-     (list ruby-liquid))))
+     (list ruby-liquid))
+    (properties
+     (alist-delete 'hidden? (package-properties ruby-liquid-c-bootstrap)))))
 
 (define-public ruby-localhost
   (package
