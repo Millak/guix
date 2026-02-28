@@ -9728,16 +9728,14 @@ event loop.  It is implemented in Cython and uses libuv under the hood.")
 (define-public gunicorn
   (package
     (name "gunicorn")
-    (version "22.0.0")
+    (version "25.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "gunicorn" version))
        (sha256
         (base32
-         "0qzc3ghayc137hlwrqqwkkhaf8f5h9ja21qwy4rznxpz75i462sa"))))
-    ;; CVE-2024-1135 is fixed in version 22.0.0.
-    (properties `((lint-hidden-cve . ("CVE-2024-1135"))))
+         "12g85w735s4dszjfidi4vh786rfxsa5rd60il0fcvxknkwpinkpp"))))
     (outputs '("out" "doc"))
     (build-system pyproject-build-system)
     (arguments
@@ -9746,35 +9744,6 @@ event loop.  It is implemented in Cython and uses libuv under the hood.")
        ;; does not work in the build container due to lack of /etc/resolv.conf
        '("--ignore=tests/workers/test_geventlet.py")
        #:phases (modify-phases %standard-phases
-                  (add-after 'build 'build-doc
-                    (lambda _
-                      (invoke "make"
-                              "-C"
-                              "docs"
-                              "PAPER=a4"
-                              "html"
-                              "info")
-                      (delete-file "docs/build/texinfo/Makefile")
-                      (delete-file "docs/build/texinfo/Gunicorn.texi")))
-                  (add-after 'install 'install-doc
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((doc (string-append (assoc-ref outputs "doc")
-                                                 "/share/doc/"
-                                                 ,name "-"
-                                                 ,version))
-                             (html (string-append doc "/html"))
-                             (info (string-append doc "/info"))
-                             (examples (string-append doc "/examples")))
-                        (mkdir-p html)
-                        (mkdir-p info)
-                        (mkdir-p examples)
-                        (copy-recursively "docs/build/html" html)
-                        (copy-recursively "docs/build/texinfo" info)
-                        (copy-recursively "examples" examples)
-                        (for-each (lambda (file)
-                                    (copy-file file
-                                               (string-append doc "/" file)))
-                                  '("README.rst" "NOTICE" "LICENSE" "THANKS")))))
                   ;; XXX: The wrap phase includes native inputs on PYTHONPATH, (see
                   ;; <https://bugs.gnu.org/25235>), leading to an inflated closure
                   ;; size.  Override it to only add the essential entries.
@@ -9793,14 +9762,21 @@ event loop.  It is implemented in Cython and uses libuv under the hood.")
                                     (string-append output sitedir))
                                   (list python out))))))))))
     (inputs (list bash-minimal))
-    (native-inputs (list binutils ;for ctypes.util.find_library()
-                         python-aiohttp
-                         python-gevent
-                         python-pytest
-                         python-pytest-cov
-                         python-sphinx
-                         texinfo))
-    (propagated-inputs (list python-packaging python-setuptools python-wheel))
+    (native-inputs
+     (list binutils ;for ctypes.util.find_library()
+           python-eventlet
+           python-gevent
+           python-h2
+           python-httpx
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-cov
+           python-setuptools
+           python-uvloop))
+    (propagated-inputs
+     (list python-packaging
+           python-setuptools
+           python-wheel))
     (home-page "https://gunicorn.org/")
     (synopsis "Python WSGI HTTP Server for UNIX")
     (description
