@@ -765,7 +765,7 @@ require Coincurve.")
 (define-public electrum
   (package
     (name "electrum")
-    (version "4.7.0")
+    (version "4.7.1")
     (source
      (origin
        (method git-fetch)
@@ -774,7 +774,7 @@ require Coincurve.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15rkinaknaw199wrqcknnjy8989z1hwdcb3b4pdfd24fzkppa1kv"))))
+        (base32 "171jbap3khzwkyxg730sasfj01qiip396sgyiwr1i6yq5fxd23pi"))))
     (build-system pyproject-build-system)
     (arguments
      (list
