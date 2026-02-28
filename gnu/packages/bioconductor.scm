@@ -1852,14 +1852,14 @@ annotations.")
 (define-public r-illuminahumanmethylationepicv2manifest
   (package
     (name "r-illuminahumanmethylationepicv2manifest")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "IlluminaHumanMethylationEPICv2manifest"
                               version 'annotation))
        (sha256
-        (base32 "1z4b15x8cai27cqhl2lhl02nx0lv8q5c1774vdvvdajx2hivn77l"))))
+        (base32 "0dwynwhjf3dnbw6975fxvncrqk5si22vrcyf6wivvgak1zim9bjl"))))
     (properties `((upstream-name . "IlluminaHumanMethylationEPICv2manifest")))
     (build-system r-build-system)
     (propagated-inputs (list r-minfi))
