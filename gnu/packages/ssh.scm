@@ -143,7 +143,7 @@ file names.
 (define-public libssh
   (package
     (name "libssh")
-    (version "0.11.3")
+    (version "0.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.libssh.org/files/"
@@ -151,7 +151,7 @@ file names.
                                   "/libssh-" version ".tar.xz"))
               (sha256
                (base32
-                "1hr5c5n0skagpvx2l4bfk2sqk9nvljjphkln27sw6kh9pdhi72kx"))))
+                "08bidaiq4z911zl3v7xc2zb6s8i4p7syfpsfxznmwzijv0jg8shs"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -190,7 +190,7 @@ file names.
                           (("torture_threads_pki_rsa") "")))))
                  #~()))))
     (native-inputs (list cmocka))
-    (inputs (list bash-minimal mit-krb5 openssl zlib))
+    (inputs (list bash-minimal libsodium mit-krb5 openssl zlib))
     (synopsis "SSH client library")
     (description
      "libssh is a C library implementing the SSHv2 and SSHv1 protocol for client
