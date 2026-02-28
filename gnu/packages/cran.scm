@@ -55278,14 +55278,14 @@ or into raw bitmap vectors for further processing in R.")
 (define-public r-antiword
   (package
     (name "r-antiword")
-    (version "1.3.4")
+    (version "1.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "antiword" version))
        (sha256
         (base32
-         "0750zh9jzxfk2r2n8gc4l2vlkvr6x9w0wziswbb5s1nipqcnx8ab"))
+         "0a13vfigncdwwjbcrbmk2279jqanl8cbyq9gjzbjh0wc49i43ybv"))
        (modules '((guix build utils)))
        ;; unvendor libantiword
        (snippet
