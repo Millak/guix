@@ -10117,14 +10117,14 @@ t-tests.  Finally, it provides new colorschemes.")
 (define-public r-openssl
   (package
     (name "r-openssl")
-    (version "2.3.4")
+    (version "2.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "openssl" version))
        (sha256
         (base32
-         "11fkf45242swhf252j3pvbm56a7cghh4rwg7j2hmah5wdbi04jm2"))))
+         "0iypq3j0z9n5p4j2klwzjs3kxbpd9wvdbl72x4q462gqfdm3kqmq"))))
     (properties
      `((upstream-name . "openssl")
        (updater-extra-inputs . ("openssl"))))
