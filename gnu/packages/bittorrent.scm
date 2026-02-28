@@ -546,7 +546,7 @@ desktops.")
 (define-public qbittorrent
   (package
     (name "qbittorrent")
-    (version "5.1.2")
+    (version "5.1.4")
     (source
      (origin
        (method git-fetch)
@@ -555,7 +555,7 @@ desktops.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "087l8fnr83bvvinsp1m27rsskc9wx9si3hh8alqrr8rhngd0c5ys"))))
+        (base32 "1zja55b97cnij3vffmfa5p65dasybbm1gd3xjspw5yyypy5cl5zm"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
