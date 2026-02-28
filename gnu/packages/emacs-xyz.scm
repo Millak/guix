@@ -34104,8 +34104,20 @@ docstring of the thing at point.")
         (base32 "14al12fh707flb9aqz8b70mbb3b7ah5anal4ch60q68m0zzas56i"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:tests? #false                  ;FIXME: phase fail with status 127
-       #:test-command '("make test")))
+     (list
+      #:test-command #~(list "make" "test")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The Makefile uses 'eask' (a Node.js CLI wrapper) to run
+          ;; ERT tests.  Replace with direct Emacs invocations to avoid
+          ;; the heavyweight dependency.
+          (add-after 'unpack 'patch-makefile
+            (lambda _
+              (substitute* "Makefile"
+                (("\\$\\(EASK\\) test ert ([^ \t\n]+)" all test-file)
+                 (string-append
+                  "emacs --batch -L . -l ert -l " test-file
+                  " -f ert-run-tests-batch-and-exit"))))))))
     (home-page "https://github.com/rust-lang/rust-mode")
     (synopsis "Major Emacs mode for editing Rust source code")
     (description "This package provides a major Emacs mode for editing Rust
