@@ -10,6 +10,7 @@
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 jgart <jgart@dismail.de>
+;;; Copyright © 2026 Yarl Baudig <yarl-baudig@mailoo.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,6 +31,8 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 regex)
+  #:use-module ((sxml simple) #:select (xml->sxml))
+  #:use-module ((sxml xpath) #:select (sxpath))
   #:use-module (web uri)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
@@ -153,14 +156,44 @@ REPO."
                                       (elpa-package-name package)
                                       (elpa-package-version package))))
 
-(define (elpa-version->string elpa-version)
+
+(define (version-from-elpa-devel-feed name)
+  (define rgx
+    (make-regexp
+     (string-append "tag:elpa[.]gnu[.]org/?,"
+                    "[0-9]{4}-[0-9]{2}-[0-9]{2}:((nongnu-)?(devel|packages))/"
+                    (regexp-quote name)
+                    "[.]xml#v(.*)")))
+  (define url (string-append (elpa-url 'gnu-devel) "/" name ".xml"))
+  (info (G_ "Trying to figure out version using ~s.~%") url)
+  (match
+      (call-with-downloaded-file
+       url
+       (lambda (port)
+         (false-if-exception
+          (let ((sxml (xml->sxml port
+                                 #:namespaces '((atom . "http://www.w3.org/2005/Atom"))
+                                 #:trim-whitespace? #t)))
+            (match:substring
+             (regexp-exec rgx (last ((sxpath '(// atom:entry atom:id *text*)) sxml)))
+             4)))))
+    (#f (leave (G_ "Failed to get version for ~s.~%") name))
+    (v v)))
+
+(define (elpa-version->string elpa-version repo name)
   "Convert the package version as used in Emacs package files into a string."
   (if (pair? elpa-version)
-      (let-values (((ms rest) (match elpa-version
-                                ((ms . rest)
-                                 (values ms rest)))))
-        (fold (lambda (n s) (string-append s "." (number->string n)))
-              (number->string ms) rest))
+      (if (every positive? elpa-version)
+          (let-values (((ms rest) (match elpa-version
+                                    ((ms . rest)
+                                     (values ms rest)))))
+            (fold (lambda (n s) (string-append s "." (number->string n)))
+                  (number->string ms) rest))
+          (begin
+            (info (G_ "Package version for ~s contains non numeric part.~%") name)
+            (if (eq? 'gnu-devel repo)
+                (version-from-elpa-devel-feed name)
+                #f)))
       #f))
 
 (define (package-home-page alist)
@@ -201,7 +234,7 @@ include VERSION."
     (match pkg
       ((name version reqs synopsis kind . rest)
        (let* ((name (symbol->string name))
-             (ver (elpa-version->string version))
+             (ver (elpa-version->string version repo name))
              (url (package-source-url kind name ver repo)))
          (make-elpa-package name ver
                             (ensure-list reqs) synopsis kind
@@ -424,7 +457,7 @@ type '<elpa-package>'."
     (info
      (let* ((version (match info
                        ((name raw-version . _)
-                        (elpa-version->string raw-version))))
+                        (elpa-version->string raw-version repo name))))
             (url     (match info
                        ((_ raw-version reqs synopsis kind . rest)
                         (package-source-url kind name version repo))))
