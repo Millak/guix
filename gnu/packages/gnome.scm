@@ -6783,7 +6783,7 @@ which can read a large number of file formats.")
 (define-public rhythmbox
   (package
     (name "rhythmbox")
-    (version "3.4.7")
+    (version "3.4.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/rhythmbox/"
@@ -6791,7 +6791,7 @@ which can read a large number of file formats.")
                                   "rhythmbox-" version ".tar.xz"))
               (sha256
                (base32
-                "0zps1k72n7yycw6djgilgdacwdi993xqh1sh9x9lr9n17z0mcv9g"))))
+                "1w888kp8rvlqgybfbg059sxriqnp0lzzfarmdgz1z8ppinhr28p4"))))
     (build-system meson-build-system)
     (arguments
      (list
