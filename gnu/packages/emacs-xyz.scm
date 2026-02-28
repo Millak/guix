@@ -35412,7 +35412,27 @@ files are easily readable and they work nicely with version control systems.")
       (build-system emacs-build-system)
       (arguments
        (list #:include #~(cons "^data\\/" %default-include)
-             #:tests? #f))              ; no tests
+             #:tests? #f              ; no tests
+             #:phases
+             #~(modify-phases %standard-phases
+                 ;; The nerd-icons-install-fonts function would otherwise
+                 ;; download fonts from the network.  Replace it with a stub
+                 ;; that instructs the user to install the font via Guix.
+                 (add-after 'unpack 'disable-font-installer
+                   (lambda _
+                     (emacs-batch-edit-file "nerd-icons.el"
+                       '(progn
+                         (search-forward "(defun nerd-icons-install-fonts")
+                         (beginning-of-line)
+                         (kill-sexp)
+                         (insert "\
+(defun nerd-icons-install-fonts (&optional pfx)
+  (interactive \"P\")
+  (message \"To use nerd-icons fonts, install `font-nerd-symbols' using
+`guix package -i font-nerd-symbols' or add it to your manifest or home config.
+Remember, that you may have to run `fc-cache -rv' to refresh the font cache.\
+\"))")
+                         (basic-save-buffer))))))))
       (synopsis "Library for easily using nerd font icons inside Emacs")
       (description "Nerd-icons an alternative to all-the-icons.  It works on both
 GUI and terminal, and requires a nerd font installed on your system.")
