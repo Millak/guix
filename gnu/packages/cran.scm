@@ -43433,20 +43433,20 @@ multiobjective optimization algorithms.")
 (define-public r-emojifont
   (package
     (name "r-emojifont")
-    (version "0.5.5")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "emojifont" version))
        (sha256
         (base32
-         "1hhrwilv36hd9gs1kcl2zsi6519md0h9aixjrm6lfclxvz8r6k1i"))))
+         "0jqgzi5bys3jz7fgs5axq3hj8r4ms3750ja2llag2k0rll6si1vp"))))
     (properties `((upstream-name . "emojifont")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ggplot2 r-proto r-showtext r-sysfonts))
+     (list r-ggplot2 r-proto r-rlang r-showtext r-sysfonts))
     (native-inputs
-     (list r-knitr))
+     (list r-quarto))
     (home-page "https://guangchuangyu.github.io/emojifont")
     (synopsis "Emoji and Font Awesome in R graphics")
     (description
