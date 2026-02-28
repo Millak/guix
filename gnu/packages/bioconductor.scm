@@ -1301,7 +1301,7 @@ data.")
 (define-public r-illuminahumanmethylationepicv2anno-20a1-hg38
   (package
     (name "r-illuminahumanmethylationepicv2anno-20a1-hg38")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
@@ -1309,7 +1309,7 @@ data.")
                               version
                               'annotation))
        (sha256
-        (base32 "0vp4m3a7qal4d8qc9xaj7z3x484i33ix4c67qlbw0kskdir7rq5a"))))
+        (base32 "18y92h02dh3pcc27dn1m9jr4m6srwv7w25a4wg3c6jlrggnm5210"))))
     (properties `((upstream-name . "IlluminaHumanMethylationEPICv2anno.20a1.hg38")))
     (build-system r-build-system)
     (propagated-inputs (list r-minfi))
