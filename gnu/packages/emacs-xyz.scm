@@ -3198,6 +3198,33 @@ different color palettes, such as @samp{frappe}, @samp{macchiato}, or
 @samp{latte}.")
       (license license:expat))))
 
+(define-public emacs-modus-catppuccin-themes
+  ;; No tagged release.  No "Version" keyword either.
+  (let ((commit "2f412c2ff9dee7a37fdb8921be4fcb3b84a8a577")
+        (revision "0"))
+    (package
+      (name "emacs-modus-catppuccin-themes")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/xuchengpeng/catppuccin-themes")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0m01rdcmwk15nxvmcb82srj37hw6pmpgmfld798makga1mwkqlyx"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ;no tests
+      (propagated-inputs
+       (list emacs-modus-themes))
+      (home-page "https://github.com/xuchengpeng/catppuccin-themes")
+      (synopsis "Catppuccin themes for Emacs built on top of Modus themes")
+      (description "A set of pastel color schemes for Emacs based on the
+Catppuccin theme and built on top of the Modus themes, with palettes like
+@samp{frappe}, @samp{macchiato}, or @samp{latte}.")
+      (license license:expat))))
+
 (define-public emacs-theme-magic
   ;; No tagged release upstream, but the commit below correspond to the 0.2.3
   ;; release.
