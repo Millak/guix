@@ -13588,7 +13588,7 @@ the parsed command-line options.
 @node Package Transformation Options
 @subsection Package Transformation Options
 
-@cindex package tranformation
+@cindex package transformation
 @cindex package variants, transformation
 Another set of command-line options supported by @command{guix build}
 and also @command{guix package} are @dfn{package transformation
