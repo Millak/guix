@@ -14855,13 +14855,13 @@ samples.")
 (define-public r-survcomp
   (package
     (name "r-survcomp")
-    (version "1.60.0")
+    (version "1.60.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "survcomp" version))
               (sha256
                (base32
-                "0fhi7kjcd26shx0qh1j8akcbiwyaxb5b7jzk1hyzmdqf4ffs98kw"))))
+                "0in0wlhjkqfc18rp6r73q4672ks7xzdjmkc6fcjl998rcn4n70dz"))))
     (properties `((upstream-name . "survcomp")))
     (build-system r-build-system)
     (propagated-inputs (list r-bootstrap
@@ -14872,6 +14872,7 @@ samples.")
                              r-suppdists
                              r-survival
                              r-survivalroc))
+    (native-inputs (list r-biobase r-biocmanager r-xtable))
     (home-page "https://www.pmgenomics.ca/bhklab/")
     (synopsis "Performance assessment and comparison for survival analysis")
     (description
