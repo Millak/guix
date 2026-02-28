@@ -52183,14 +52183,14 @@ models without involving a test set.")
 (define-public r-tidypredict
   (package
     (name "r-tidypredict")
-    (version "1.0.1")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidypredict" version))
        (sha256
         (base32
-         "0y7q2hi52mw0rsj6m86jydvxdrqpdg716hy3vi2i5v30s201pgai"))))
+         "1an9d0jxpa66pvc0242yw98zny3lsgw25g6pcyiznw0pw1mlyz0g"))))
     (properties
      '((upstream-name . "tidypredict")
        (updater-extra-native-inputs . ("r-mlbench"))))
@@ -52207,17 +52207,23 @@ models without involving a test set.")
            r-tidyr))
     (native-inputs
      (list r-cubist
+           r-dbi
            r-dbplyr
            r-earth
            r-glmnet
            r-knitr
+           r-lightgbm
            r-mlbench
            r-modeldata
            r-parsnip
            r-partykit
            r-randomforest
            r-ranger
+           r-rpart
+           r-rsqlite
+           r-survival
            r-testthat
+           r-withr
            r-xgboost
            r-yaml))
     (home-page "https://tidypredict.tidymodels.org")
