@@ -1081,14 +1081,14 @@ files.")
 (define-public python-eventlet
   (package
     (name "python-eventlet")
-    (version "0.40.2")
+    (version "0.40.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "eventlet" version))
        (sha256
         (base32
-         "1c6qr1cnam79wxm1sh5y04061iyy3shs02yd0mlh47bngwknqqs2"))))
+         "0vzjrb7n3x7gdrxiw4dacdxvz0m8saaw9w7n1n9v865yn49gggk9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1116,9 +1116,8 @@ files.")
                 (("os\\.environ\\.get\\(\"EVENTLET_NO_GREENDNS\", ''\\)")
                  "os.environ.get(\"EVENTLET_NO_GREENDNS\", \"yes\")")))))))
     (native-inputs
-     (list python-pypa-build
+     (list python-hatchling
            python-hatch-vcs
-           python-hatchling
            python-pytest))
     (propagated-inputs
      (list python-dnspython python-greenlet))
