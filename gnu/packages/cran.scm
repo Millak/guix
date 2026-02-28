@@ -350,6 +350,8 @@ wrong.")
      '((upstream-name . "aster")
        (updater-extra-native-inputs . ("r-knitr"))))
     (build-system r-build-system)
+    ;; Vignettes time out.
+    (arguments (list #:test-types '(list "tests")))
     (propagated-inputs (list r-trust))
     (native-inputs (list r-knitr r-numderiv))
     (home-page "http://www.stat.umn.edu/geyer/aster/")
