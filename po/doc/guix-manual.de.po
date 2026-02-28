@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-01-06 03:18+0000\n"
-"PO-Revision-Date: 2026-01-15 02:39+0000\n"
+"POT-Creation-Date: 2026-02-04 03:18+0000\n"
+"PO-Revision-Date: 2026-02-19 20:58+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/documentation-manual/de/>\n"
 "Language: de\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 5.15.2\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -185,8 +185,8 @@ msgstr "GNU Guix hat folgende Pakete als Abhängigkeiten:"
 msgid "@url{https://gnu.org/software/guile/, GNU Guile}, version 3.0.x,"
 msgstr "@url{https://gnu.org/software/guile/, GNU Guile}, Version 3.0.x,"
 
-msgid "version 3.0.3 or later;"
-msgstr "Version 3.0.3 oder neuer,"
+msgid "version 3.0.9 or later;"
+msgstr "Version 3.0.9 oder neuer,"
 
 msgid "@url{https://notabug.org/cwebber/guile-gcrypt, Guile-Gcrypt}, version"
 msgstr "@url{https://notabug.org/cwebber/guile-gcrypt, Guile-Gcrypt}, Version"
@@ -1950,20 +1950,8 @@ msgstr "Wir fordern von allen Prozeduren auf oberster Ebene, dass sie über eine
 msgid "Procedures should not have more than four positional parameters.  Use keyword parameters for procedures that take more than four parameters."
 msgstr "Prozeduren sollten nicht mehr als vier positionsbestimmte Parameter haben. Benutzen Sie Schlüsselwort-Parameter für Prozeduren, die mehr als vier Parameter entgegennehmen."
 
-msgid "Development is done using the Git distributed version control system.  Thus, access to the repository is not strictly necessary.  We welcome contributions in one of the following forms:"
-msgstr "Als Entwickler benutzen wir das verteilte Versionskontrollsystem Git. Daher ist es nicht zwingend, dass Sie Zugriff auf das Repository bekommen. Wir freuen uns über Beiträge auf eine der folgenden Arten:"
-
-msgid "pull request, for contributions"
-msgstr "Pull-Requests, für Beiträge"
-
-msgid "As a @dfn{pull request} (PR) at @url{https://codeberg.org/guix/guix/pulls/}.  This is now the preferred form."
-msgstr "Als ein @dfn{Pull-Request} (PR) bei @url{https://codeberg.org/guix/guix/pulls/}. Diese Art bevorzugen wir jetzt."
-
-msgid "Until December 31st, 2025@footnote{This date is the result of a decision made collectively in @uref{https://codeberg.org/guix/guix-consensus-documents/src/branch/main/002-codeberg.md, Guix Consensus Document 002} in May 2025.}, you may also send patches as produced by @code{git format-patch} to the @email{guix-patches@@gnu.org} mailing list (@pxref{Submitting patches to a project,,, git, Git User Manual})."
-msgstr "Bis zum 31. Dezember 2025@footnote{Für dieses Datum haben wir uns in @uref{https://codeberg.org/guix/guix-consensus-documents/src/branch/main/002-codeberg.md, Guix Consensus Document 002} im Mai 2025 gemeinsam entschieden.} dürfen Sie Patches, die mittels @code{git format-patch} erstellt werden, an die Mailingliste @email{guix-patches@@gnu.org} schicken (siehe @ref{Submitting patches to a project,,, git, Git-Benutzerhandbuch})."
-
-msgid "This mailing list is backed by a Debbugs instance, which allows us to keep track of submissions (@pxref{Tracking Bugs and Changes}).  Each message sent to that mailing list gets a new tracking number assigned; people can then follow up on the submission by sending email to @code{@var{ISSUE_NUMBER}@@debbugs.gnu.org}, where @var{ISSUE_NUMBER} is the tracking number (@pxref{Sending a Patch Series})."
-msgstr "Diese Mailing-Liste setzt auf einer Debbugs-Instanz auf, wodurch wir den Überblick über Eingereichtes behalten können (siehe @ref{Tracking Bugs and Changes}). Jede an diese Mailing-Liste gesendete Nachricht bekommt eine neue Folgenummer zugewiesen, so dass man eine Folge-E-Mail zur Einreichung an @code{@var{FEHLERNUMMER}@@debbugs.gnu.org} senden kann, wobei @var{FEHLERNUMMER} für die Folgenummer steht (siehe @ref{Sending a Patch Series})."
+msgid "Contributors are encouraged to take a moment to set some Git repository options (@pxref{Configuring Git}) first, which can improve the readability of patches.  Seasoned Guix developers may also want to look at the section on commit access (@pxref{Commit Access})."
+msgstr "Wir möchten Mitwirkenden nahelegen, zunächst einige Git-Repository-Optionen festzulegen (siehe @ref{Configuring Git}), damit Ihr Patch leichter lesbar wird. Erfahrene Guix-Entwickler möchten vielleicht auch einen Blick auf den Abschnitt über Commit-Zugriff werfen (siehe @ref{Commit Access})."
 
 msgid "Please write commit logs in the ChangeLog format (@pxref{Change Logs,,, standards, GNU Coding Standards}); you can check the commit history for examples."
 msgstr "Bitte schreiben Sie Commit-Logs im ChangeLog-Format (siehe @ref{Change Logs,,, standards, GNU Coding Standards}); dazu finden Sie Beispiele unter den bisherigen Commits."
@@ -2074,32 +2062,11 @@ msgstr "Stellen Sie sicher, dass Ihre Änderungen Guix nicht beeinträchtigen, u
 msgid "guix pull --url=/path/to/your/checkout --profile=/tmp/guix.master --disable-authentication\n"
 msgstr "guix pull --url=/pfad/zu/ihrem/checkout --profile=/tmp/guix.master --disable-authentication\n"
 
-msgid "When posting a patch to the mailing list, use @samp{[PATCH] @dots{}} as a subject, if your patch is to be applied on a branch other than @code{master}, say @code{core-updates}, specify it in the subject like @samp{[PATCH core-updates] @dots{}}."
-msgstr "Bitte benutzen Sie @samp{[PATCH] …} als Betreff, wenn Sie einen Patch an die Mailing-Liste schicken. Soll Ihr Patch auf einen anderen Branch als @code{master} angewandt werden, z.B.@: @code{core-updates}, geben Sie dies im Betreff an als @samp{[PATCH core-updates] …}."
-
-msgid "You may use your email client, the @command{git send-email} command (@pxref{Sending a Patch Series}) or the @command{mumi send-email} command (@pxref{Debbugs User Interfaces}).  We prefer to get patches in plain text messages, either inline or as MIME attachments.  You are advised to pay attention if your email client changes anything like line breaks or indentation which could potentially break the patches."
-msgstr "Sie können dazu Ihr E-Mail-Programm, den Befehl @command{git send-email} (siehe @ref{Sending a Patch Series}) oder den Befehl @command{mumi send-email} benutzen (siehe @ref{Debbugs User Interfaces}). Wir bevorzugen es, Patches als reine Textnachrichten zu erhalten, entweder eingebettet (inline) oder als MIME-Anhänge. Sie sind dazu angehalten, zu überprüfen, ob Ihr Mail-Programm solche Dinge wie Zeilenumbrüche oder die Einrückung verändert, wodurch die Patches womöglich nicht mehr funktionieren."
-
-msgid "Expect some delay when you submit your very first patch to @email{guix-patches@@gnu.org}. You have to wait until you get an acknowledgement with the assigned tracking number. Future acknowledgements should not be delayed."
-msgstr "Rechnen Sie damit, dass es etwas dauert, bis Ihr erster Patch an @email{guix-patches@@gnu.org} zu sehen ist. Sie werden warten müssen, bis Sie eine Bestätigung mit der zugewiesenen Folgenummer bekommen. Spätere Bestätigungen sollten sofort kommen."
-
-msgid "When a bug is resolved, please close the thread by sending an email to @email{@var{ISSUE_NUMBER}-done@@debbugs.gnu.org}."
-msgstr "Wenn dadurch ein Fehler behoben wurde, schließen Sie bitte den Thread, indem Sie eine E-Mail an @email{@var{FEHLERNUMMER}-done@@debbugs.gnu.org} senden."
-
 msgid "Configuring Git"
 msgstr "Git einrichten"
 
-msgid "Sending a Patch Series"
-msgstr "Senden einer Patch-Reihe"
-
 msgid "git configuration"
 msgstr "Git-Konfiguration"
-
-msgid "git format-patch"
-msgstr "git format-patch"
-
-msgid "git send-email"
-msgstr "git send-email"
 
 msgid "If you have not done so already, you may wish to set a name and email that will be associated with your commits (@pxref{telling git your name, , Telling Git your name, git, Git User Manual}).  If you wish to use a different name or email just for commits in this repository, you can use @command{git config --local}, or edit @file{.git/config} in the repository instead of @file{~/.gitconfig}."
 msgstr "Wenn es noch nicht geschehen ist, wollen Sie vielleicht den Namen und die E-Mail-Adresse festlegen, mit der Ihre Commits ausgestellt werden (siehe @ref{telling git your name, , Telling Git your name, git, Git-Benutzerhandbuch}). Wenn Sie einen anderen Namen oder eine andere E-Mail-Adresse nur für Commits in diesem Repository verwenden möchten, können Sie @command{git config --local} benutzen oder Änderungen in der Datei @file{.git/config} im Repository statt in @file{~/.gitconfig} durchführen."
@@ -2109,131 +2076,6 @@ msgstr "commit-msg, Hook"
 
 msgid "Other important Git configuration will automatically be configured when building the project (@pxref{Building from Git}).  A @file{.git/hooks/commit-msg} hook will be installed that embeds @samp{Change-Id} Git @emph{trailers} in your commit messages for traceability purposes.  It is important to preserve these when editing your commit messages, particularly if a first version of your proposed changes was already submitted for review.  If you have a @file{commit-msg} hook of your own you would like to use with Guix, you can place it under the @file{.git/hooks/commit-msg.d/} directory."
 msgstr "Weitere wichtige Git-Einstellungen werden automatisch vorgenommen, wenn Sie das Projekt kompilieren (siehe @ref{Building from Git}). Ein Hook @file{.git/hooks/commit-msg} wird installiert, durch den die Git-Anhangszeile @samp{Change-Id} in Ihre Commit-Nachrichten eingefügt wird, um den Zusammenhang nachvollziehen zu können. Bitte behalten Sie diese bei, wenn Sie Ihre Commit-Nachrichten nachbearbeiten, vor allem, wenn Sie bereits eine erste Fassung der von Ihnen vorgeschlagenen Änderungen zur Überprüfung eingereicht haben. Wenn Sie einen eigenen @file{commit-msg}-Hook mit Guix verwenden möchten, können Sie ihn im Verzeichnis @file{.git/hooks/commit-msg.d/} unterbringen."
-
-msgid "patch series"
-msgstr "Patch-Reihe"
-
-msgid "Warning"
-msgstr "Warnung"
-
-msgid "Single Patches"
-msgstr "Einzelne Patches"
-
-msgid "The @command{git send-email} command is the best way to send both single patches and patch series (@pxref{Multiple Patches}) to the Guix mailing list.  Sending patches as email attachments may make them difficult to review in some mail clients, and @command{git diff} does not store commit metadata."
-msgstr "Der Befehl @command{git send-email} ist die beste Art, wie Sie sowohl einzelne Patches als auch Patch-Reihen (siehe @ref{Multiple Patches}) an die Guix-Mailing-Liste schicken können. Würden Sie Patches als E-Mail-Anhänge schicken, wäre es in manchen Mailprogrammen umständlich, diese zu überprüfen. Und wenn Sie aus @command{git diff} kopierten, würden die Metadaten des Commits fehlen."
-
-msgid "The @command{git send-email} command is provided by the @code{send-email} output of the @code{git} package, i.e. @code{git:send-email}."
-msgstr "Der Befehl @command{git send-email} ist in der Ausgabe namens @code{send-email} des @code{git}-Pakets enthalten, also @code{git:send-email}."
-
-msgid "The following command will create a patch email from the latest commit, open it in your @var{EDITOR} or @var{VISUAL} for editing, and send it to the Guix mailing list to be reviewed and merged.  Assuming you have already configured Git according to @xref{Configuring Git}, you can simply use:"
-msgstr "Mit dem folgenden Befehl erzeugen Sie eine E-Mail mit dem Patch aus dem neuesten Commit, öffnen diese in Ihrem gewählten @var{EDITOR} oder @var{VISUAL}, um sie zu bearbeiten, und schicken sie an die Guix-Mailing-Liste, damit jemand sie überprüft und merget. Vorausgesetzt Sie haben Git bereits so eingerichtet wie in Abschnitt @ref{Configuring Git} beschrieben, können Sie einfach dies benutzen:"
-
-msgid "$ git send-email --annotate -1\n"
-msgstr "$ git send-email --annotate -1\n"
-
-msgid "Tip"
-msgstr "Tipp"
-
-msgid "To add a prefix to the subject of your patch, you may use the @option{--subject-prefix} option.  The Guix project uses this to specify that the patch is intended for a branch or repository other than the @code{master} branch of @url{https://codeberg.org/guix/guix.git}."
-msgstr "Wenn Sie in der Betreffzeile zu Ihrem Patch ein zusätzliches Präfix mitgeben möchten, können Sie die Befehlszeilenoption @option{--subject-prefix} benutzen. Beim Guix-Projekt wird so angegeben, dass der Patch für einen bestimmten Branch oder ein anderes Repository bestimmt ist, statt für den @code{master}-Branch von @url{https://codeberg.org/guix/guix.git}."
-
-msgid "git send-email --annotate --subject-prefix='PATCH core-updates' -1\n"
-msgstr "git send-email --annotate --subject-prefix='PATCH core-updates' -1\n"
-
-msgid "The patch email contains a three-dash separator line after the commit message.  You may ``annotate'' the patch with explanatory text by adding it under this line.  If you do not wish to annotate the email, you may drop the @option{--annotate} option."
-msgstr "In der Patch-E-Mail finden Sie eine Trennlinie aus drei Bindestrichen unter der Commit-Nachricht. Sie dürfen erklärende Bemerkungen zum Patch unterhalb dieser Linie anbringen. Wenn Sie keine solchen Annotationen in der E-Mail schreiben möchten, können Sie oben auf die Befehlszeilenoption @option{--annotate} verzichten."
-
-msgid "If you need to send a revised patch, don't resend it like this or send a ``fix'' patch to be applied on top of the last one; instead, use @command{git commit --amend} or @url{https://git-rebase.io, @command{git rebase}} to modify the commit, and use the @email{@var{ISSUE_NUMBER}@@debbugs.gnu.org} address and the @option{-v} flag with @command{git send-email}."
-msgstr "Wenn Sie einen überarbeiteten Patch schicken müssen, geht das anders. Machen Sie es @emph{nicht} so und schicken Sie @emph{keinen} Patch mit einem „Fix“, der als Nächstes angewandt werden müsste, sondern verwenden Sie stattdessen @command{git commit --amend} oder @url{https://git-rebase.io, @command{git rebase}}, um den alten Commit zu verändern, und schicken den an die Adresse @email{@var{FEHLERNUMMER}@@debbugs.gnu.org}, wobei Sie außerdem die Befehlszeilenoption @option{-v} von @command{git send-email} angeben."
-
-msgid ""
-"$ git commit --amend\n"
-"$ git send-email --annotate -v@var{REVISION} \\\n"
-"      --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org -1\n"
-msgstr ""
-"$ git commit --amend\n"
-"$ git send-email --annotate -v@var{REVISION} \\\n"
-"      --to=@var{FEHLERNUMMER}@@debbugs.gnu.org -1\n"
-
-msgid "Due to an apparent bug in @command{git send-email}, @option{-v @var{REVISION}} (with the space) will not work; you @emph{must} use @option{-v@var{REVISION}}."
-msgstr "Offenbar gibt es einen Fehler in @command{git send-email}, wodurch Sie @emph{nicht} @option{-v @var{REVISION}} (mit einem Leerzeichen) schreiben dürfen; lediglich @option{-v@var{REVISION}} funktioniert."
-
-msgid "You can find out @var{ISSUE_NUMBER} either by searching on the mumi interface at @url{https://issues.guix.gnu.org} for the name of your patch or reading the acknowledgement email sent automatically by Debbugs in reply to incoming bugs and patches, which contains the bug number."
-msgstr "Die @var{FEHLERNUMMER} finden Sie heraus, indem Sie entweder auf der Mumi-Oberfläche auf @url{https://issues.guix.gnu.org} nach dem Namen Ihres Patches suchen oder indem Sie in Ihren E-Mails auf die Eingangsbestätigung schauen, die Debbugs Ihnen automatisch als Antwort auf eingehende Fehlerberichte (Bugs) und Patches hat zukommen lassen. Darin finden Sie die Fehlernummer."
-
-msgid "Notifying Teams"
-msgstr "Teams ansprechen"
-
-msgid "teams"
-msgstr "Teams"
-
-msgid "If your git checkout has been correctly configured (@pxref{Configuring Git}), the @command{git send-email} command will automatically notify the appropriate team members, based on the scope of your changes.  This relies on the @file{etc/teams.scm} script, which can also be invoked manually if you do not use the preferred @command{git send-email} command to submit patches.  To list the available actions of the script, you can invoke it via the @command{etc/teams.scm help} command.  For more information regarding teams, @pxref{Teams}."
-msgstr "Wenn Ihr Git-Ckeckout richtig eingerichtet ist (siehe @ref{Configuring Git}), wird der Befehl @command{git send-email} automatisch die Mitglieder des zuständigen Teams benachrichtigen. Dazu analysiert das Skript @file{etc/teams.scm} Ihre Änderungen. Sie können es auch selbst aufrufen, wenn Sie den zum Einreichen von Patches bevorzugten Befehl @command{git send-email} meiden. Um die verfügbaren Aktionen für dieses Skript zu lesen, können Sie es mit dem Befehl @command{etc/teams.scm help} aufrufen. Für weitere Informationen über Teams siehe den Abschnitt @ref{Teams}."
-
-msgid "On foreign distros, you might have to use @command{./pre-inst-env git send-email} for @file{etc/teams.scm} to work."
-msgstr "Auf Fremddistributionen müssen Sie vielleicht stattdessen @command{./pre-inst-env git send-email} aufrufen, damit Sie @file{etc/teams.scm} benutzen können."
-
-msgid "Multiple Patches"
-msgstr "Mehrere Patches"
-
-msgid "cover letter"
-msgstr "Deckblatt (Cover Letter)"
-
-msgid "While @command{git send-email} alone will suffice for a single patch, an unfortunate flaw in Debbugs means you need to be more careful when sending multiple patches: if you send them all to the @email{guix-patches@@gnu.org} address, a new issue will be created for each patch!"
-msgstr "Obwohl @command{git send-email} allein für einen einzelnen Patch genügt, führt eine Unzulänglichkeit in Debbugs dazu, dass Sie beim Versenden mehrerer Patches achtgeben müssen: Wenn Sie alle auf einmal an die Adresse @email{guix-patches@@gnu.org} schicken würden, würde für jeden Patch jeweils ein Fehlerbericht eröffnet!"
-
-msgid "When sending a series of patches, it's best to send a Git ``cover letter'' first, to give reviewers an overview of the patch series.  We can create a directory called @file{outgoing} containing both our patch series and a cover letter called @file{0000-cover-letter.patch} with @command{git format-patch}."
-msgstr "Wenn Sie die Patches aber als Patch-Reihe abschicken wollen, sollten Sie als Erstes mit Git ein „Deckblatt“ schicken, das den Gutachtern einen Überblick über die Patch-Reihe gibt. Zum Beispiel können Sie ein Verzeichnis namens @file{ausgehend} anlegen und darin sowohl Ihre Patch-Reihe als auch ein Deckblatt namens @file{0000-cover-letter.patch} platzieren, indem Sie @command{git format-patch} aufrufen."
-
-msgid ""
-"$ git format-patch -@var{NUMBER_COMMITS} -o outgoing \\\n"
-"      --cover-letter\n"
-msgstr ""
-"$ git format-patch -@var{ANZAHL_COMMITS} -o ausgehend \\\n"
-"      --cover-letter\n"
-
-msgid ""
-"$ git format-patch master..@var{MY_BRANCH} -o outgoing \\\n"
-"      --cover-letter\n"
-msgstr ""
-"$ git format-patch master..@var{MEIN_BRANCH} -o ausgehend \\\n"
-"      --cover-letter\n"
-
-msgid "We can now send @emph{just} the cover letter to the @email{guix-patches@@gnu.org} address, which will create an issue that we can send the rest of the patches to."
-msgstr "Jetzt schicken Sie @emph{nur} das Deckblatt an die Adresse @email{guix-patches@@gnu.org}, so dass ein Fehlerbericht aufgemacht wird, an den wir dann die restlichen Patches schicken können."
-
-msgid ""
-"$ git send-email outgoing/0000-cover-letter.patch --annotate\n"
-"$ rm outgoing/0000-cover-letter.patch # we don't want to resend it!\n"
-msgstr ""
-"$ git send-email ausgehend/0000-cover-letter.patch --annotate\n"
-"$ rm ausgehend/0000-cover-letter.patch # nicht nochmal schicken!\n"
-
-msgid "Ensure you edit the email to add an appropriate subject line and blurb before sending it.  Note the automatically generated shortlog and diffstat below the blurb."
-msgstr "Passen Sie auf und bearbeiten die E-Mail nochmal, um ihr vor dem Abschicken eine angemessene Betreffzeile (Subject) und anstelle von Blurb Ihren Text mitzugeben. Sie werden bemerken, dass unterhalb des Textes automatisch ein Shortlog und Diffstat aufgelistet wurden."
-
-msgid "Once the Debbugs mailer has replied to your cover letter email, you can send the actual patches to the newly-created issue address."
-msgstr "Sobald Sie vom Debbugs-Mailer eine Antwort auf Ihre Deckblatt-E-Mail erhalten haben, können Sie die eigentlichen Patches an die neu erzeugte Adresse für diesen Fehlerbericht senden."
-
-msgid ""
-"$ git send-email outgoing/*.patch --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org\n"
-"$ rm -rf outgoing # we don't need these anymore\n"
-msgstr ""
-"$ git send-email ausgehend/*.patch --to=@var{FEHLERNUMMER}@@debbugs.gnu.org\n"
-"$ rm -rf ausgehend # wir sind damit fertig\n"
-
-msgid "Thankfully, this @command{git format-patch} dance is not necessary to send an amended patch series, since an issue already exists for the patchset."
-msgstr "Zum Glück können wir uns diesen Tanz mit @command{git format-patch} danach sparen, wenn wir eine überarbeitete Patch-Reihe schicken, weil wir die Fehlernummer dann bereits haben."
-
-msgid ""
-"$ git send-email -@var{NUMBER_COMMITS} -v@var{REVISION} \\\n"
-"      --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org\n"
-msgstr ""
-"$ git send-email -@var{ANZAHL_COMMITS} -v@var{REVISION} \\\n"
-"      --to=@var{FEHLERNUMMER}@@debbugs.gnu.org\n"
-
-msgid "If need be, you may use @option{--cover-letter --annotate} to send another cover letter, e.g. for explaining what's changed since the last revision, and why these changes are necessary."
-msgstr "Wenn nötig, können Sie mit @option{--cover-letter --annotate} auch dann ein weiteres Deckblatt mitschicken, z.B.@: um zu erklären, was die Änderungen seit der letzten Revision sind und warum sie nötig waren."
 
 msgid "This section describes how the Guix project tracks its bug reports, patch submissions and topic branches."
 msgstr "Dieser Abschnitt beschreibt, wie das Guix-Projekt Fehlerberichte, eingereichte Patches und Topic-Branches verwaltet."
@@ -2256,26 +2098,11 @@ msgstr "Debbugs-Benutzerschnittstellen"
 msgid "Ways to interact with Debbugs."
 msgstr "Möglichkeiten, mit Debbugs umzugehen."
 
-msgid "Debbugs Usertags"
-msgstr "Debbugs-Usertags"
-
-msgid "Tag reports with custom labels."
-msgstr "Meldungen mit eigenen Kennzeichen versehen."
-
 msgid "Cuirass Build Notifications"
 msgstr "Cuirass-Benachrichtigungen"
 
 msgid "Be alerted of any breakage via RSS feeds."
 msgstr "Alarm per RSS-Feed, wenn Erstellungen fehlschlagen."
-
-msgid "bug reports, tracking"
-msgstr "Bug-Meldungen, Überblick"
-
-msgid "patch submissions, tracking"
-msgstr "Patch-Einreichungen, Überblick"
-
-msgid "issue tracking"
-msgstr "gemeldete Fehler überblicken"
 
 msgid "Debbugs, issue tracking system"
 msgstr "Debbugs, System zum Überblicken gemeldeter Fehler"
@@ -2312,6 +2139,9 @@ msgstr "Normalerweise verfährt man nach dem Prinzip: „Was zuerst kommt, merge
 
 msgid "Once a branch is at the front of the queue, wait until sufficient time has passed for the build farms to have processed the changes, and for the necessary testing to have happened.  For example, you can check @indicateurl{https://qa.guix.gnu.org/branch/@var{branch}} to see information on some builds and substitute availability."
 msgstr "Sobald ein Branch in der Reihenfolge vorne steht, warten Sie darauf, dass genügend Zeit verstrichen ist, damit die Erstellungfarm die Änderungen verarbeitet hat und die notwendige Überprüfung stattfinden konnte. Sie können zum Beispiel auf @indicateurl{https://qa.guix.gnu.org/branch/@var{Branch}} Informationen zu neuen Erstellungen und zur Substitutverfügbarkeit sehen."
+
+msgid "Warning"
+msgstr "Warnung"
 
 msgid "Web interface"
 msgstr "Weboberfläche"
@@ -2440,45 +2270,6 @@ msgstr "Zur Suche nach Bugs können Sie @samp{@kbd{M-x} debbugs-gnu-guix-search}
 msgid "@xref{Top,,, debbugs-ug, Debbugs User Guide}, for more information on this nifty tool!"
 msgstr "Siehe @ref{Top,,, debbugs-ug, Debbugs User Guide} für weitere Informationen zu diesem raffinierten Werkzeug."
 
-msgid "usertags, for debbugs"
-msgstr "Usertags, für Debbugs"
-
-msgid "Debbugs usertags"
-msgstr "Debbugs-Usertags"
-
-msgid "Debbugs provides a feature called @dfn{usertags} that allows any user to tag any bug with an arbitrary label.  Bugs can be searched by usertag, so this is a handy way to organize bugs@footnote{The list of usertags is public information, and anyone can modify any user's list of usertags, so keep that in mind if you choose to use this feature.}.  If you use Emacs Debbugs, the entry-point to consult existing usertags is the @samp{C-u M-x debbugs-gnu-usertags} procedure.  To set a usertag, press @samp{C} while consulting a bug within the *Guix-Patches* buffer opened with @samp{C-u M-x debbugs-gnu-bugs} buffer, then select @code{usertag} and follow the instructions."
-msgstr "Debbugs bietet die Möglichkeit, sogenannte @dfn{Usertags} zu vergeben, d.h.@: jeder Benutzer kann jedem Fehlerbericht beliebige Kennzeichnungen zuweisen. Die gemeldeten Fehler können anhand der Usertags gesucht werden, deshalb lassen sich die Meldungen so gut organisieren@footnote{Die Liste der Usertags ist öffentlich zugänglich und jeder kann die Usertag-Liste jedes anderen Nutzers ändern. Sie sollten daran denken, wenn Sie diese Funktionalität gebrauchen möchten.}. Wenn Sie Emacs Debbugs verwenden, ist Ihr Einsprungpunkt, wenn Sie bestehende Usertags einsehen möchten, die Prozedur @samp{C-u M-x debbugs-gnu-usertags} aufzurufen. Um einen Usertag zu setzen, drücken Sie @samp{C}, während Sie einen Fehlerbericht im Buffer *Guix-Patches* anvisiert haben; den Buffer sehen Sie mit @samp{C-u M-x debbugs-gnu-bugs}. Geben Sie dann @code{usertag} ein und folgen Sie den Anweisungen."
-
-msgid "For example, to view all the bug reports (or patches, in the case of @code{guix-patches}) tagged with the usertag @code{powerpc64le-linux} for the user @code{guix}, open a URL like the following in a web browser: @url{https://debbugs.gnu.org/cgi-bin/pkgreport.cgi?tag=powerpc64le-linux;users=guix}."
-msgstr "Wenn Sie sich zum Beispiel alle Fehlerberichte (oder Patches, wenn Sie @code{guix-patches} betrachten) mit dem Usertag @code{powerpc64le-linux} für Benutzer @code{guix} ansehen möchten, öffnen Sie eine URL wie die folgende in einem Webbrowser: @url{https://debbugs.gnu.org/cgi-bin/pkgreport.cgi?tag=powerpc64le-linux;users=guix}."
-
-msgid "For more information on how to use usertags, please refer to the documentation for Debbugs or the documentation for whatever tool you use to interact with Debbugs."
-msgstr "Mehr Informationen, wie Sie Usertags benutzen können, finden Sie in der Dokumentation von Debbugs bzw.@: wenn Sie ein externes Programm benutzen, um mit Debbugs zu interagieren, in der Dokumentation dieses Programms."
-
-msgid "In Guix, we are experimenting with usertags to keep track of architecture-specific issues, as well as reviewed ones.  To facilitate collaboration, all our usertags are associated with the single user @code{guix}.  The following usertags currently exist for that user:"
-msgstr "In Guix experimentieren wir damit, Usertags zum Beobachten von Fehlern zu verwenden, die nur bestimmte Architekturen betreffen oder die jemand bereits begutachtet hat (Überprüfung/Review). Zur leichteren Zusammenarbeit verbinden wir all unsere Usertags einzig mit dem Benutzer @code{guix}. Für diesen Benutzer gibt es zurzeit folgende Usertags:"
-
-msgid "powerpc64le-linux"
-msgstr "powerpc64le-linux"
-
-msgid "The purpose of this usertag is to make it easy to find the issues that matter most for the @code{powerpc64le-linux} system type.  Please assign this usertag to bugs or patches that affect @code{powerpc64le-linux} but not other system types.  In addition, you may use it to identify issues that for some reason are particularly important for the @code{powerpc64le-linux} system type, even if the issue affects other system types, too."
-msgstr "Mit diesem Usertag wollen wir es leichter machen, die Fehler zu finden, die für den Systemtyp @code{powerpc64le-linux} am wichtigsten sind. Bitte weisen Sie ihn solchen Bugs oder Patches zu, die nur @code{powerpc64le-linux} und keine anderen Systemtypen betreffen. Des Weiteren können Sie damit Probleme kennzeichnen, die für den Systemtyp @code{powerpc64le-linux} besonders bedeutsam sind, selbst wenn das Problem sich auch bei anderen Systemtypen zeigt."
-
-msgid "reproducibility"
-msgstr "reproducibility"
-
-msgid "For issues related to reproducibility.  For example, it would be appropriate to assign this usertag to a bug report for a package that fails to build reproducibly."
-msgstr "Verwenden Sie den Usertag @code{reproducibility} für Fehler in der Reproduzierbarkeit einer Erstellung. Es wäre zum Beispiel angemessen, den Usertag für einen Fehlerbericht zu einem Paket zuzuweisen, das nicht reproduzierbar erstellt wird."
-
-msgid "reviewed-looks-good"
-msgstr "reviewed-looks-good"
-
-msgid "You have reviewed the series and it looks good to you (LGTM)."
-msgstr "Sie haben die Patchserie überprüft und für gut befunden („looks good to me“, LGTM)."
-
-msgid "If you're a committer and you want to add a usertag, just start using it with the @code{guix} user.  If the usertag proves useful to you, consider updating this section of the manual so that others will know what your usertag means."
-msgstr "Wenn Sie Commit-Zugriff haben und einen neuen Usertag verwenden möchten, dann fangen Sie einfach an, ihn mit dem Benutzer @code{guix} zu benutzen. Erweist sich der Usertag für Sie als nützlich, sollten Sie vielleicht diesen Handbuchabschnitt ergänzen, um andere in Kenntnis zu setzen, was Ihr Usertag bedeutet."
-
 msgid "build event notifications, RSS feed"
 msgstr "Erstellungsereignisse, Benachrichtigung per RSS-Feed"
 
@@ -2515,6 +2306,9 @@ msgstr ""
 
 msgid "where each RSS entry contains a link to the Cuirass build details page of the associated build."
 msgstr "Jeder dieser RSS-Einträge verweist dabei auf die Details-Seite der entsprechenden Erstellung auf Cuirass."
+
+msgid "teams"
+msgstr "Teams"
 
 msgid ""
 "$ git send-email --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org \\\n"
@@ -4573,6 +4367,9 @@ msgstr "powerpc-linux (eingeschränkte Unterstützung)"
 msgid "big-endian 32-bit PowerPC processors, specifically the PowerPC G4 with AltiVec support, and Linux-Libre kernel.  This configuration is not fully supported and there is no ongoing work to ensure this architecture works."
 msgstr "32-Bit-PowerPC-Prozessoren, big-endian, speziell der PowerPC G4 mit AltiVec, mit Linux-Libre als Kernel. Diese Konfiguration wird @emph{nicht} in vollem Umfang unterstützt und es gibt @emph{keine} laufenden Bemühungen, die Funktionsfähigkeit dieser Architektur sicherzustellen."
 
+msgid "powerpc64le-linux"
+msgstr "powerpc64le-linux"
+
 msgid "little-endian 64-bit Power ISA processors, Linux-Libre kernel.  This includes POWER9 systems such as the @uref{https://www.fsf.org/news/talos-ii-mainboard-and-talos-ii-lite-mainboard-now-fsf-certified-to-respect-your-freedom, RYF Talos II mainboard}. This platform is available as a \"technology preview\": although it is supported, substitutes are not yet available from the build farm (@pxref{Substitutes}), and some packages may fail to build (@pxref{Tracking Bugs and Changes}).  That said, the Guix community is actively working on improving this support, and now is a great time to try it and get involved!"
 msgstr "64-Bit-Prozessoren mit Power-Befehlssatz, little-endian, mit Linux-Libre als Kernel. Dazu gehören POWER9-Systeme wie die @uref{https://www.fsf.org/news/talos-ii-mainboard-and-talos-ii-lite-mainboard-now-fsf-certified-to-respect-your-freedom, RYF-zertifizierte Talos-II-Hauptplatine}. Bei der Plattform handelt es sich um eine „Technologievorschau“; obwohl sie unterstützt wird, gibt es noch keine Substitute von der Erstellungsfarm (siehe @ref{Substitutes}) und bei manchen Paketen könnte die Erstellung fehlschlagen (siehe @ref{Tracking Bugs and Changes}). Dennoch arbeitet die Guix-Gemeinde aktiv daran, diese Unterstützung auszubauen, und jetzt ist eine gute Gelegenheit, sie auszuprobieren und mitzumachen!"
 
@@ -4624,62 +4421,40 @@ msgstr "Installations-Skript"
 msgid "This section describes how to install Guix from a self-contained tarball providing binaries for Guix and for all its dependencies.  This is often quicker than installing from source, described later (@pxref{Building from Git})."
 msgstr "Dieser Abschnitt beschreibt, wie Sie Guix aus einem alle Komponenten umfassenden Tarball installieren, der Binärdateien für Guix und all seine Abhängigkeiten liefert. Dies geht in der Regel schneller, als Guix aus seinen Quelldateien zu installieren, was später beschrieben wird."
 
-msgid "Some GNU/Linux distributions, such as openSUSE, Alpine and NixOS provide Guix through their own package managers.  The version of Guix may be older than @value{VERSION} but you can update it afterwards by running @samp{guix pull}."
-msgstr "Auf einigen GNU/Linux-Distributionen, wie openSUSE, Alpine und NixOS, wird Guix über deren Paketverwaltung angeboten. Vielleicht bringen sie eine ältere Version als @value{VERSION} mit, aber Sie können Guix anschließend über den Befehl @samp{guix pull} aktualisieren."
+msgid "The @uref{https://guix.gnu.org/guix-install.sh, @file{guix-install.sh}} shell script automates the binary installation process.  Use of @file{guix-install.sh} requires Bash, GnuPG, GNU@tie{}tar, wget, and Xz.  On systems where systemd is detected, the tool @command{newgidmap} from the @code{uidmap} package is also required."
+msgstr "Das Shell-Skript @uref{https://guix.gnu.org/guix-install.sh, @file{guix-install.sh}} automatisiert den Installationsvorgang aus Binärdateien. Um @file{guix-install.sh} benutzen zu können, werden Bash, GnuPG, GNU@tie{}tar, wget und Xz vorausgesetzt. Auf Systemen, wo systemd gefunden wird, brauchen Sie außerdem das Programm @command{newgidmap} aus dem Paket @code{uidmap} als Voraussetzung."
 
-msgid "We advise system administrators who install Guix, both from the installation script or @i{via} the native package manager of their foreign distribution, to also regularly read and follow security notices, as shown by @command{guix pull}."
-msgstr "Wir empfehlen Systemadministratoren, die Guix installieren, egal ob über das Installations-Skript oder über die Paketverwaltung ihrer Fremddistribution, regelmäßig die Sicherheitshinweise zu lesen und zu befolgen, die @command{guix pull} anzeigt."
-
-msgid "If you are running Parabola, after enabling the pcr (Parabola Community Repo) repository, you can install Guix with:"
-msgstr "Wenn bei Ihnen Parabola läuft, können Sie, nachdem Sie das Repository pcr (Parabola Community Repo) aktiviert haben, mit diesem Befehl Guix installieren:"
-
-msgid "sudo pacman -S guix\n"
-msgstr "sudo pacman -S guix\n"
-
-msgid "For other package managers with a @var{guix} package, you should be able to install it like any other package."
-msgstr "Bei anderen Paketverwaltungen mit einem @var{guix}-Paket können Sie es vermutlich wie jedes andere Paket installieren."
-
-msgid "The Guix project also provides a shell script, @file{guix-install.sh}, which automates the binary installation process without use of a foreign distro package manager@footnote{@uref{https://guix.gnu.org/guix-install.sh}}.  Use of @file{guix-install.sh} requires Bash, GnuPG, GNU@tie{}tar, wget, and Xz.  On systems where @code{systemd} is detected, the tool @code{newgidmap} from the @code{uidmap} package is also required."
-msgstr "Das Guix-Projekt stellt außerdem ein Shell-Skript bereit, @file{guix-install.sh}, mit dem der Installationsvorgang aus Binärdateien ohne ein Paketverwaltungsprogramm der Fremddistribution automatisiert wird@footnote{@uref{https://guix.gnu.org/guix-install.sh}}. Um @file{guix-install.sh} benutzen zu können, werden Bash, GnuPG, GNU@tie{}tar, wget und Xz vorausgesetzt. Auf Systemen, wo @code{systemd} gefunden wird, brauchen Sie außerdem das Programm @code{newgidmap} aus dem Paket @code{uidmap} als Voraussetzung."
-
-msgid "The script guides you through the following:"
-msgstr "Das Skript führt Sie durch Folgendes:"
-
-msgid "Downloading and extracting the binary tarball"
-msgstr "Herunterladen und Entpacken des Tarballs mit Binärdateien"
-
-msgid "Setting up the build daemon"
-msgstr "Einrichten des Erstellungs-Daemons"
-
-msgid "Making the ‘guix’ command available to non-root users"
-msgstr "Bereitstellen des Befehls ‚guix‘ an Benutzer außer root"
-
-msgid "Configuring substitute servers"
-msgstr "Substitut-Server einrichten"
-
-msgid "As root, run:"
-msgstr "Führen Sie als Administratornutzer „root“ aus:"
+msgid "To install Guix on top of your GNU/Linux system, run the following commands as root:"
+msgstr "Um Guix auf Ihrem GNU/Linux-System zu installieren, führen Sie folgende Befehle mit Administratorrechten aus:"
 
 msgid ""
-"# cd /tmp\n"
-"# wget https://guix.gnu.org/guix-install.sh\n"
-"# chmod +x guix-install.sh\n"
-"# ./guix-install.sh\n"
+"cd /tmp\n"
+"wget https://guix.gnu.org/guix-install.sh\n"
+"chmod +x guix-install.sh\n"
+"./guix-install.sh\n"
 msgstr ""
-"# cd /tmp\n"
-"# wget https://guix.gnu.org/guix-install.sh\n"
-"# chmod +x guix-install.sh\n"
-"# ./guix-install.sh\n"
+"cd /tmp\n"
+"wget https://guix.gnu.org/guix-install.sh\n"
+"chmod +x guix-install.sh\n"
+"./guix-install.sh\n"
 
-msgid "The script to install Guix is also packaged in Parabola (in the pcr repository). You can install and run it with:"
-msgstr "Das Skript, um Guix zu installieren, können Sie auf Parabola auch als Paket bekommen (im Repository pcr). So können Sie es installieren und ausführen:"
+msgid "When you're done installing Guix, @pxref{Application Setup} for extra configuration you might need, and @ref{Getting Started} for your first steps!"
+msgstr "Wenn Sie die Installation von Guix erledigt haben, werfen Sie einen Blick auf @ref{Application Setup} für weitere Einstellungen, die Sie vielleicht vornehmen möchten, und lesen Sie die ersten Schritte im @ref{Getting Started}, um loszulegen!"
 
-msgid ""
-"sudo pacman -S guix-installer\n"
-"sudo guix-install.sh\n"
-msgstr ""
-"sudo pacman -S guix-installer\n"
-"sudo guix-install.sh\n"
+msgid "The script goes through the following steps:"
+msgstr "Das Skript durchläuft die folgenden Schritte:"
+
+msgid "Downloading the binary tarball from @indicateurl{@value{BASE-URL}/guix-binary-@value{VERSION}.x86_64-linux.tar.xz} (where @code{x86_64-linux} can be replaced with @code{i686-linux} for an @code{i686} (32-bits) machine already running the kernel Linux, and so on---@pxref{GNU Distribution}) and extracting it."
+msgstr "Es lädt den binären Tarball von @indicateurl{@value{BASE-URL}/guix-binary-@value{VERSION}.x86_64-linux.tar.xz} herunter (dabei kann @code{x86_64-linux} durch @code{i686-linux} ersetzt werden, wenn Sie GNU@tie{}Guix auf einer Maschine mit @code{i686}-Architektur (32@tie{}Bit) einrichten, auf der bereits der Linux-Kernel läuft, oder entsprechend für andere Maschinen@tie{}– siehe @ref{GNU Distribution}) und entpackt ihn."
+
+msgid "Setting up the build daemon (@pxref{Setting Up the Daemon})."
+msgstr "Einrichten des Erstellungs-Daemons (siehe @ref{Setting Up the Daemon})."
+
+msgid "Making the @command{guix} command available to non-root users."
+msgstr "Bereitstellen des Befehls @command{guix} an Benutzer außer root."
+
+msgid "Configuring substitute servers (@pxref{Official Substitute Servers})."
+msgstr "Substitut-Server einrichten (siehe @ref{Official Substitute Servers})."
 
 msgid "By default, @file{guix-install.sh} will configure Guix to download pre-built package binaries, called @dfn{substitutes} (@pxref{Substitutes}), from the project's build farms.  If you choose not to permit this, Guix will build @emph{everything} from source, making each installation and upgrade very expensive.  @xref{On Trusting Binaries} for a discussion of why you may want to build packages from source."
 msgstr "Nach Voreinstellung richtet @file{guix-install.sh} Guix so ein, dass vorerstellte Binärdateien, die wir als @dfn{Substitute} bezeichnen, von den Erstellungsfarmen des Projekts heruntergeladen werden (siehe @ref{Substitutes}). Wenn Sie keine Zustimmung zu Substituten geben, muss Guix @emph{alles} auf Ihrem Rechner aus dem Quellcode heraus erstellen, wodurch jede Installation und jede Aktualisierung sehr aufwendig wird. Siehe @ref{On Trusting Binaries} für eine Erörterung, aus welchen Gründen man Pakete aus dem Quellcode heraus erstellen wollen könnte."
@@ -4691,18 +4466,15 @@ msgid "To use substitutes from @code{@value{SUBSTITUTE-SERVER-1}}, @code{@value{
 msgstr "Um Substitute von @code{@value{SUBSTITUTE-SERVER-1}}, @code{@value{SUBSTITUTE-SERVER-2}} oder einem Spiegelserver davon zu benutzen (siehe @ref{Substitutes}), müssen Sie sie erst autorisieren. Zum Beispiel:"
 
 msgid ""
-"# guix archive --authorize < \\\n"
-"     ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-1}.pub\n"
-"# guix archive --authorize < \\\n"
-"     ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-2}.pub\n"
+"guix archive --authorize < \\\n"
+"   ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-1}.pub\n"
+"guix archive --authorize < \\\n"
+"   ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-2}.pub\n"
 msgstr ""
-"# guix archive --authorize < \\\n"
-"     ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-1}.pub\n"
-"# guix archive --authorize < \\\n"
-"     ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-2}.pub\n"
-
-msgid "When you're done installing Guix, @pxref{Application Setup} for extra configuration you might need, and @ref{Getting Started} for your first steps!"
-msgstr "Wenn Sie die Installation von Guix erledigt haben, werfen Sie einen Blick auf @ref{Application Setup} für weitere Einstellungen, die Sie vielleicht vornehmen möchten, und lesen Sie die ersten Schritte im @ref{Getting Started}, um loszulegen!"
+"guix archive --authorize < \\\n"
+"   ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-1}.pub\n"
+"guix archive --authorize < \\\n"
+"   ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-2}.pub\n"
 
 msgid "The binary installation tarball can be (re)produced and verified simply by running the following command in the Guix source tree:"
 msgstr "Der Tarball zur Installation aus einer Binärdatei kann einfach durch Ausführung des folgenden Befehls im Guix-Quellbaum (re-)produziert und verifiziert werden:"
@@ -4737,6 +4509,12 @@ msgstr "./guix-install.sh --uninstall\n"
 
 msgid "With @option{--uninstall}, the script irreversibly deletes all the Guix files, configuration, and services."
 msgstr "Durch @option{--uninstall} wird das Skript alle Dateien, Konfigurationen und Dienste von Guix unwiederbringlich löschen."
+
+msgid "Some GNU/Linux distributions, such as openSUSE, Alpine and NixOS provide Guix through their own package managers.  The version of Guix may be older than @value{VERSION} but you can update it afterwards by running @command{guix pull}."
+msgstr "Auf einigen GNU/Linux-Distributionen, wie openSUSE, Alpine und NixOS, wird Guix über deren Paketverwaltung angeboten. Vielleicht bringen sie eine ältere Version als @value{VERSION} mit, aber Sie können Guix anschließend über den Befehl @command{guix pull} aktualisieren."
+
+msgid "We advise system administrators who install Guix, both from the installation script or @i{via} the native package manager of their foreign distribution, to also regularly read and follow security notices, as shown by @command{guix pull}."
+msgstr "Wir empfehlen Systemadministratoren, die Guix installieren, egal ob über das Installations-Skript oder über die Paketverwaltung ihrer Fremddistribution, regelmäßig die Sicherheitshinweise zu lesen und zu befolgen, die @command{guix pull} anzeigt."
 
 msgid "daemon"
 msgstr "Daemon"
@@ -5902,8 +5680,8 @@ msgstr "gefolgt von diesem  ausführen (unter der Annahme, dass Ihre Distributio
 msgid "systemctl restart guix-daemon.service\n"
 msgstr "systemctl restart guix-daemon.service\n"
 
-msgid "While this works for @file{guix-install.sh}, it will most likely not work if you installed Guix through the package manager of another distribution (for instance with sudo apt install guix, pacman -S guix, etc) because on many distributions @file{guix-daemon.service} will only run the Guix daemon provided by the distribution."
-msgstr "So funktioniert es, wenn @file{guix-install.sh} benutzt wurde. Andernfalls genügt es jedoch @emph{nicht}, wenn Sie Guix mit der Paketverwaltung einer anderen Distribution installiert haben (etwa mit sudo apt install guix, pacman -S guix etc), weil auf vielen Distributionen @file{guix-daemon.service} nur den von der Distribution mitgelieferten Guix-Daemon ausführen wird."
+msgid "While this works for @file{guix-install.sh}, it will most likely not work if you installed Guix through the package manager of another distribution (for instance with @command{sudo apt install guix}, @command{pacman -S guix}, or similar commands)  because on many distributions @file{guix-daemon.service} will only run the Guix daemon provided by the distribution."
+msgstr "So funktioniert es, wenn @file{guix-install.sh} benutzt wurde. Andernfalls genügt es jedoch @emph{nicht}, wenn Sie Guix mit der Paketverwaltung einer anderen Distribution installiert haben (etwa mit @command{sudo apt install guix}, @command{pacman -S guix} oder ähnliche Befehle), weil auf vielen Distributionen @file{guix-daemon.service} nur den von der Distribution mitgelieferten Guix-Daemon ausführen wird."
 
 msgid "Waiting for your distribution to provide security fixes sometimes work, but fixing security issues in the Guix package takes times for distributions because Guix doesn't backport the security fixes to the releases used by the distributions. On some distribution versions, the Guix package is never fixed."
 msgstr "Auf Sicherheitsaktualisierungen in Ihrer Distribution zu warten, ist manchmal in Ordnung, aber Sicherheitslücken im Guix-Paket zu beheben, kostet Distributionen viel Zeit, weil Guix Sicherheitslücken nicht nachträglich in den Veröffentlichungen behebt, die die Distributionen benutzen. Im Guix-Paket in den Versionen mancher Distributionen werden Lücken niemals geschlossen."
@@ -6710,6 +6488,9 @@ msgstr "Zudem kann jede Pakettransaktion @emph{zurückgesetzt} werden (Rollback)
 
 msgid "All packages in the package store may be @emph{garbage-collected}.  Guix can determine which packages are still referenced by user profiles, and remove those that are provably no longer referenced (@pxref{Invoking guix gc}).  Users may also explicitly remove old generations of their profile so that the packages they refer to can be collected."
 msgstr "Alle Pakete im Paket-Store können vom @emph{Müllsammler} (Garbage Collector) gelöscht werden. Guix ist in der Lage, festzustellen, welche Pakete noch durch Benutzerprofile referenziert werden, und entfernt nur diese, die nachweislich nicht mehr referenziert werden (siehe @ref{Invoking guix gc}). Benutzer können auch ausdrücklich alte Generationen ihres Profils löschen, damit die zugehörigen Pakete vom Müllsammler gelöscht werden können."
+
+msgid "reproducibility"
+msgstr "reproducibility"
 
 msgid "Guix takes a @dfn{purely functional} approach to package management, as described in the introduction (@pxref{Introduction}).  Each @file{/gnu/store} package directory name contains a hash of all the inputs that were used to build that package---compiler, libraries, build scripts, etc.  This direct correspondence allows users to make sure a given package installation matches the current state of their distribution.  It also helps maximize @dfn{build reproducibility}: thanks to the isolated build environments that are used, a given build is likely to yield bit-identical files when performed on different machines (@pxref{Invoking guix-daemon, container})."
 msgstr "Guix verfolgt einen @dfn{rein funktionalen} Ansatz bei der Paketverwaltung, wie er in der Einleitung beschrieben wurde (siehe @ref{Introduction}). Jedes Paketverzeichnis im @file{/gnu/store} hat einen Hash all seiner bei der Erstellung benutzten Eingaben im Namen@tie{}– Compiler, Bibliotheken, Erstellungs-Skripts etc. Diese direkte Entsprechung ermöglicht es Benutzern, eine Paketinstallation zu benutzen, die sicher dem aktuellen Stand ihrer Distribution entspricht. Sie hilft auch dabei, die @dfn{Reproduzierbarkeit der Erstellungen} zu maximieren: Dank den isolierten Erstellungsumgebungen, die benutzt werden, resultiert eine Erstellung wahrscheinlich in bitweise identischen Dateien, auch wenn sie auf unterschiedlichen Maschinen durchgeführt wird (siehe @ref{Invoking guix-daemon, Container})."
@@ -10757,23 +10538,6 @@ msgid "The high-level interface to package definitions is implemented in the @co
 msgstr "Mit den Modulen @code{(guix packages)} und @code{(guix build-system)} können Paketdefinitionen auf einer hohen Abstraktionsebene geschrieben werden. Zum Beispiel sieht die Paketdefinition bzw. das @dfn{Rezept} für das Paket von GNU Hello so aus:"
 
 msgid ""
-"(define-module (gnu packages hello)\n"
-"  #:use-module (guix packages)\n"
-"  #:use-module (guix download)\n"
-"  #:use-module (guix build-system gnu)\n"
-"  #:use-module (guix licenses)\n"
-"  #:use-module (gnu packages gawk))\n"
-"\n"
-msgstr ""
-"(define-module (gnu packages hello)\n"
-"  #:use-module (guix packages)\n"
-"  #:use-module (guix download)\n"
-"  #:use-module (guix build-system gnu)\n"
-"  #:use-module (guix licenses)\n"
-"  #:use-module (gnu packages gawk))\n"
-"\n"
-
-msgid ""
 "(define-public hello\n"
 "  (package\n"
 "    (name \"hello\")\n"
@@ -11598,6 +11362,9 @@ msgstr "module"
 
 msgid "customizing packages"
 msgstr "Pakete anpassen"
+
+msgid "package variants"
+msgstr "Paketvarianten"
 
 msgid "variants, of packages"
 msgstr "Varianten, von Paketen"
@@ -13445,6 +13212,9 @@ msgstr ""
 
 msgid "The new phase that is inserted is written as an anonymous procedure, introduced with @code{lambda*}; it looks for the @file{xmllint} executable under a @file{/bin} directory among the package's inputs (@pxref{package Reference}).  It also honors the @code{outputs} parameter we have seen before.  @xref{Build Utilities}, for more about the helpers used by this phase, and for more examples of @code{modify-phases}."
 msgstr "Die neu eingefügte Phase wurde als anonyme Prozedur geschrieben. Solche namenlosen Prozeduren schreibt man mit @code{lambda*}. Durch sie wird nach der ausführbaren Datei @file{xmllint} in jedem Verzeichnis @file{/bin} aller Paketeingaben gesucht (siehe @ref{package Reference}). Oben berücksichtigt sie den @code{outputs}-Parameter, den wir zuvor gesehen haben. Siehe @ref{Build Utilities} für mehr Informationen über die in dieser Phase benutzten Hilfsmittel und für mehr Beispiele zu @code{modify-phases}."
+
+msgid "Tip"
+msgstr "Tipp"
 
 msgid "You can inspect the code associated with a package's @code{#:phases} argument interactively, at the REPL (@pxref{Using Guix Interactively})."
 msgstr "Sie können den Code, der sich für das @code{#:phases}-Argument ergibt, interaktiv auf der REPL untersuchen (siehe @ref{Using Guix Interactively})."
@@ -16050,8 +15820,11 @@ msgstr "$ export GUIX_BUILD_OPTIONS=\"--no-substitutes -c 2 -L /foo/bar\"\n"
 msgid "These options are parsed independently, and the result is appended to the parsed command-line options."
 msgstr "Diese Befehlszeilenoptionen werden unabhängig von den auf der Befehlszeile übergebenen Befehlszeilenoptionen grammatikalisch analysiert und das Ergebnis an die bereits analysierten auf der Befehlszeile übergebenen Befehlszeilenoptionen angehängt."
 
-msgid "package variants"
-msgstr "Paketvarianten"
+msgid "package transformation"
+msgstr "Paketumwandlung"
+
+msgid "package variants, transformation"
+msgstr "Paketvarianten, Umwandlung"
 
 msgid "Another set of command-line options supported by @command{guix build} and also @command{guix package} are @dfn{package transformation options}.  These are options that make it possible to define @dfn{package variants}---for instance, packages built from different source code.  This is a convenient way to create customized packages on the fly without having to type in the definitions of package variants (@pxref{Defining Packages})."
 msgstr "Eine weitere Gruppe von Befehlszeilenoptionen, die @command{guix build} und auch @command{guix package} unterstützen, sind @dfn{Paketumwandlungsoptionen}. Diese Optionen ermöglichen es, @dfn{Paketvarianten} zu definieren@tie{}– zum Beispiel können Pakete aus einem anderen Quellcode als normalerweise erstellt werden. Damit ist es leicht, angepasste Pakete schnell zu erstellen, ohne die vollständigen Definitionen von Paketvarianten einzutippen (siehe @ref{Defining Packages})."
@@ -17052,6 +16825,45 @@ msgstr "guix import gem rails\n"
 msgid "guix import gem rails@@7.0.4\n"
 msgstr "guix import gem rails@@7.0.4\n"
 
+msgid "nuget"
+msgstr "nuget"
+
+msgid ".NET"
+msgstr ".NET"
+
+msgid "Import metadata from @uref{https://www.nuget.org/, NuGet}, the package manager for .NET.  Information is taken from the JSON-formatted metadata provided through NuGet's v3 API at @code{api.nuget.org} and includes most relevant information, including package dependencies.  There are some caveats, however.  The metadata does not always include repository information, in which case the importer attempts to extract it from the symbol package (@file{.snupkg}) if available.  Additionally, dependencies are grouped by target framework in NuGet, but the importer flattens all dependency groups into a single list."
+msgstr "Metadaten von @uref{https://www.nuget.org/, NuGet}, der Paketverwaltung für .NET, importieren. Informationen kommen aus den JSON-formatierten Metadaten, die über NuGets v3 API unter @code{api.nuget.org} verfügbar sind, und enthalten die relevantesten Informationen einschließlich der Paketabhängigkeiten. Dies hat aber auch Schattenseiten@tie{}– die Metadaten enthalten nicht immer Repository-Informationen. In dem Fall wird mit dem Importer versucht, sie aus dem Symbolpaket (@file{.snupkg}) abzuleiten, wenn eines vorliegt. Außerdem sind in NuGet die Abhängigkeiten nach jeweiligem Zielframework gruppiert, während der Importer alle Abhängigkeitengruppen in eine einzelne flache Liste schreibt."
+
+msgid "The command below imports metadata for the @code{Avalonia} .NET package:"
+msgstr "Der folgende Befehl importiert Metadaten für das .NET-Paket @code{Avalonia}:"
+
+msgid "guix import nuget Avalonia\n"
+msgstr "guix import nuget Avalonia\n"
+
+msgid "You can also recursively import all dependencies:"
+msgstr "Sie können auch alle Paketabhängigkeiten rekursiv importieren:"
+
+msgid "guix import nuget -r Avalonia\n"
+msgstr "guix import nuget -r Avalonia\n"
+
+msgid "--archive=@var{repo}"
+msgstr "--archive=@var{Repo}"
+
+msgid "-a @var{repo}"
+msgstr "-a @var{Repo}"
+
+msgid "Specify the archive repository.  Currently only @code{nuget} is supported, which uses the official NuGet package repository at @code{nuget.org}."
+msgstr "Gibt das Repository des Archivs an. Derzeit wird nur @code{nuget} unterstützt. Es verwendet das offizielle NuGet-Paket-Repository unter @code{nuget.org}."
+
+msgid "--license-prefix=@var{prefix}"
+msgstr "--license-prefix=@var{Präfix}"
+
+msgid "-p @var{prefix}"
+msgstr "-p @var{Präfix}"
+
+msgid "Add a custom prefix to license identifiers in the generated package definitions.  This can be useful when license identifiers need to be qualified with a module name."
+msgstr "Schreibt vor Lizenzbezeichnungen ein selbstgewähltes Präfix innerhalb der erzeugten Paketdefinitionen. Das kann nützlich sein, wenn Lizenzbezeichnern ein Modulname vorangestellt werden muss."
+
 msgid "minetest"
 msgstr "minetest"
 
@@ -17299,12 +17111,6 @@ msgstr "elpa"
 
 msgid "Import metadata from an Emacs Lisp Package Archive (ELPA) package repository (@pxref{Packages,,, emacs, The GNU Emacs Manual})."
 msgstr "Metadaten aus der Paketsammlung „Emacs Lisp Package Archive“ (ELPA) importieren (siehe @ref{Packages,,, emacs, The GNU Emacs Manual})."
-
-msgid "--archive=@var{repo}"
-msgstr "--archive=@var{Repo}"
-
-msgid "-a @var{repo}"
-msgstr "-a @var{Repo}"
 
 msgid "@var{repo} identifies the archive repository from which to retrieve the information.  Currently the supported repositories and their identifiers are:"
 msgstr "Mit @var{Repo} wird die Archiv-Sammlung (ein „Repository“) bezeichnet, von dem die Informationen bezogen werden sollen. Derzeit sind die unterstützten Repositorys und ihre Bezeichnungen folgende:"
@@ -21003,9 +20809,6 @@ msgstr "zugeordnete Geräte"
 msgid "The Linux kernel has a notion of @dfn{device mapping}: a block device, such as a hard disk partition, can be @dfn{mapped} into another device, usually in @code{/dev/mapper/}, with additional processing over the data that flows through it@footnote{Note that the GNU@tie{}Hurd makes no difference between the concept of a ``mapped device'' and that of a file system: both boil down to @emph{translating} input/output operations made on a file to operations on its backing store.  Thus, the Hurd implements mapped devices, like file systems, using the generic @dfn{translator} mechanism (@pxref{Translators,,, hurd, The GNU Hurd Reference Manual}).}.  A typical example is encryption device mapping: all writes to the mapped device are encrypted, and all reads are deciphered, transparently.  Guix extends this notion by considering any device or set of devices that are @dfn{transformed} in some way to create a new device; for instance, RAID devices are obtained by @dfn{assembling} several other devices, such as hard disks or partitions, into a new one that behaves as one partition."
 msgstr "Der Linux-Kernel unterstützt das Konzept der @dfn{Gerätezuordnung}: Ein blockorientiertes Gerät wie eine Festplattenpartition kann einem neuen Gerät @dfn{zugeordnet} werden, gewöhnlich unter @code{/dev/mapper/}, wobei das neue Gerät durchlaufende Daten zusätzlicher Verarbeitung unterzogen werden@footnote{Beachten Sie, dass mit GNU@tie{}Hurd kein Unterschied zwischen dem Konzept eines „zugeordneten Geräts“ und dem eines Dateisystems besteht: Dort werden bei beiden Ein- und Ausgabeoperationen auf eine Datei in Operationen auf dessen Hintergrundspeicher @emph{übersetzt}. Hurd implementiert zugeordnete Geräte genau wie Dateisysteme mit dem generischen @dfn{Übersetzer}-Mechanismus (siehe @ref{Translators,,, hurd, Referenzhandbuch von GNU Hurd}).}. Ein typisches Beispiel ist eine Gerätezuordnung zur Verschlüsselung: Jeder Schreibzugriff auf das zugeordnete Gerät wird transparent verschlüsselt und jeder Lesezugriff ebenso entschlüsselt. Guix erweitert dieses Konzept, indem es darunter jedes Gerät und jede Menge von Geräten versteht, die auf irgendeine Weise @dfn{umgewandelt} wird, um ein neues Gerät zu bilden; zum Beispiel entstehen auch RAID-Geräte aus einem @dfn{Verbund} mehrerer anderer Geräte, wie etwa Festplatten oder Partition zu einem einzelnen Gerät, das sich wie eine Partition verhält."
 
-msgid "Mapped devices are declared using the @code{mapped-device} form, defined as follows; for examples, see below."
-msgstr "Zugeordnete Geräte werden mittels einer @code{mapped-device}-Form deklariert, die wie folgt definiert ist; Beispiele folgen weiter unten."
-
 msgid "{Data Type} mapped-device"
 msgstr "{Datentyp} mapped-device"
 
@@ -21059,21 +20862,6 @@ msgstr ""
 msgid "@code{allow-discards?} allows the use of discard (TRIM) requests for the underlying device.  This is useful for solid state drives.  However, this option can have a negative security impact because it can make file system level operations visible on the physical device.  For more information, refer to the description of the @code{--allow-discards} option in the @code{cryptsetup-open(8)} man page."
 msgstr "Mit @code{allow-discards?} wird die Nutzung von TRIM-Steuerbefehlen auf dem zugrunde liegenden Gerät ermöglicht. Das ist nützlich auf @abbr{SSD-Laufwerken, Solid-State-Drives}. Der Nachteil ist aber, dass die Informationssicherheit beeinträchtigt werden kann, weil Operationen auf dem Dateisystem so das physische Gerät beeinflussen. Sie können weitergehende Informationen in der Beschreibung der Befehlszeilenoption @code{--allow-discards} auf der Handbuchseite @code{cryptsetup-open(8)} erfahren."
 
-msgid "raid-device-mapping"
-msgstr "raid-device-mapping"
-
-msgid "This defines a RAID device, which is assembled using the @code{mdadm} command from the package with the same name.  It requires a Linux kernel module for the appropriate RAID level to be loaded, such as @code{raid456} for RAID-4, RAID-5 or RAID-6, or @code{raid10} for RAID-10."
-msgstr "Dies definiert ein RAID-Gerät, das mit dem Befehl @code{mdadm} aus dem gleichnamigen Paket als Verbund zusammengestellt wird. Es setzt voraus, dass das Linux-Kernel-Modul für das entsprechende RAID-Level geladen ist, z.B.@: @code{raid456} für RAID-4, RAID-5 oder RAID-6, oder @code{raid10} für RAID-10."
-
-msgid "LVM, logical volume manager"
-msgstr "LVM, Logical Volume Manager (Verwaltung logischer Datenträger)"
-
-msgid "lvm-device-mapping"
-msgstr "lvm-device-mapping"
-
-msgid "This defines one or more logical volumes for the Linux @uref{https://www.sourceware.org/lvm2/, Logical Volume Manager (LVM)}.  The volume group is activated by the @command{vgchange} command from the @code{lvm2} package."
-msgstr "Hiermit wird ein oder mehrere logische Datenträger („Logical Volumes“) für den @uref{https://www.sourceware.org/lvm2/, Logical Volume Manager (LVM)} für Linux definiert. Die Datenträgergruppe („Volume Group“) wird durch den Befehl @command{vgchange} aus dem @code{lvm2}-Paket aktiviert."
-
 msgid "disk encryption"
 msgstr "Laufwerksverschlüsselung"
 
@@ -21120,6 +20908,9 @@ msgstr "Swap-Verschlüsselung"
 msgid "It is also desirable to encrypt swap space, since swap space may contain sensitive data.  One way to accomplish that is to use a swap file in a file system on a device mapped via LUKS encryption.  In this way, the swap file is encrypted because the entire device is encrypted.  @xref{Swap Space}, or @xref{Preparing for Installation,,Disk Partitioning}, for an example."
 msgstr "Es ist auch wünschenswert, Swap-Speicher zu verschlüsseln, da in den Swap-Speicher sensible Daten ausgelagert werden können. Eine Möglichkeit ist, eine Swap-Datei auf einem mit LUKS-Verschlüsselung zugeordneten Dateisystem zu verwenden. Dann wird die Swap-Datei verschlüsselt, weil das ganze Gerät verschlüsselt wird. Ein Beispiel finden Sie im Abschnitt @ref{Swap Space} oder im Abschnitt @ref{Preparing for Installation,,Disk Partitioning}."
 
+msgid "raid-device-mapping"
+msgstr "raid-device-mapping"
+
 msgid "A RAID device formed of the partitions @file{/dev/sda1} and @file{/dev/sdb1} may be declared as follows:"
 msgstr "Ein RAID-Gerät als Verbund der Partitionen @file{/dev/sda1} und @file{/dev/sdb1} kann wie folgt deklariert werden:"
 
@@ -21134,8 +20925,14 @@ msgstr ""
 "  (target \"/dev/md0\")\n"
 "  (type raid-device-mapping))\n"
 
-msgid "The @file{/dev/md0} device can then be used as the @code{device} of a @code{file-system} declaration (@pxref{File Systems}).  Note that the RAID level need not be given; it is chosen during the initial creation and formatting of the RAID device and is determined automatically later."
-msgstr "Das Gerät @file{/dev/md0} kann als @code{device} in einer @code{file-system}-Deklaration dienen (siehe @ref{File Systems}). Beachten Sie, dass das RAID-Level dabei nicht angegeben werden muss; es wird während der initialen Erstellung und Formatierung des RAID-Geräts festgelegt und später automatisch bestimmt."
+msgid "LVM, logical volume manager"
+msgstr "LVM, Logical Volume Manager (Verwaltung logischer Datenträger)"
+
+msgid "lvm-device-mapping"
+msgstr "lvm-device-mapping"
+
+msgid "This defines one or more logical volumes for the Linux @uref{https://www.sourceware.org/lvm2/, Logical Volume Manager (LVM)}.  The volume group is activated by the @command{vgchange} command from the @code{lvm2} package."
+msgstr "Hiermit wird ein oder mehrere logische Datenträger („Logical Volumes“) für den @uref{https://www.sourceware.org/lvm2/, Logical Volume Manager (LVM)} für Linux definiert. Die Datenträgergruppe („Volume Group“) wird durch den Befehl @command{vgchange} aus dem @code{lvm2}-Paket aktiviert."
 
 msgid "LVM logical volumes ``alpha'' and ``beta'' from volume group ``vg0'' can be declared as follows:"
 msgstr "Logische Datenträger von LVM namens „alpha“ und „beta“ aus der Datenträgergruppe (Volume Group) „vg0“ können wie folgt deklariert werden:"
@@ -24067,6 +23864,9 @@ msgstr "Sie können außerdem mit @command{herd files log-rotation} Dateien aufl
 
 msgid "This service is part of @code{%base-services}, and thus enabled by default, with the default settings."
 msgstr "Dieser Dienst gehört zu den @code{%base-services} und ist somit als aktiv vorgegeben, mit den vorgegebenen Einstellungen."
+
+msgid "This is the type of the log rotation service.  Its associated value must be a @code{log-rotation-configuration} record, as discussed below."
+msgstr "Der Diensttyp des Dienstes, um Protokolldateien zu rotieren. Sein Wert muss ein @code{log-rotation-configuration}-Verbundsobjekt sein, wie im Folgenden beschrieben."
 
 msgid "Some log files just need to be deleted periodically once they are old, without any other criterion and without any archival step.  This is the case of build logs stored by @command{guix-daemon} under @file{/var/log/guix/drvs} (@pxref{Invoking guix-daemon}).  The @code{log-cleanup} service addresses this use case.  For example, @code{%base-services} (@pxref{Base Services}) includes the following:"
 msgstr "Manche Protokolldateien müssen einfach nur regelmäßig gelöscht werden, wenn sie alt geworden sind, ohne Sonderfälle und ohne Archivierung. Das trifft auf Erstellungsprotokolle zu, die @command{guix-daemon} unter @file{/var/log/guix/drvs} vorhält (siehe @ref{Invoking guix-daemon}). Der Dienst @code{log-cleanup} kann diesen Anwendungsfall übernehmen. Zum Beispiel ist Folgendes Teil der @code{%base-services} (siehe @ref{Base Services}):"
@@ -28697,7 +28497,7 @@ msgstr "Das Plasma-Paket, das benutzt werden soll."
 msgid "xfce-desktop-service-type"
 msgstr "xfce-desktop-service-type"
 
-msgid "This is the type of a service to run the @uref{Xfce, https://xfce.org/} desktop environment.  Its value is an @code{xfce-desktop-configuration} object (see below)."
+msgid "This is the type of a service to run the @uref{https://xfce.org/, Xfce} desktop environment.  Its value is an @code{xfce-desktop-configuration} object (see below)."
 msgstr "Der Typ des Dienstes, um die @uref{https://xfce.org/, Xfce-Arbeitsumgebung} auszuführen. Sein Wert ist ein @code{xfce-desktop-configuration}-Objekt (siehe unten)."
 
 msgid "This service adds the @code{xfce} package to the system profile, and extends polkit with the ability for @code{thunar} to manipulate the file system as root from within a user session, after the user has authenticated with the administrator's password."
@@ -33030,9 +32830,6 @@ msgstr "Jami"
 msgid "jami-service-type"
 msgstr "jami-service-type"
 
-msgid "The service type for running Jami as a service.  It takes a @code{jami-configuration} object as a value, documented below.  This section describes how to configure a Jami server that can be used to host video (or audio) conferences, among other uses.  The following example demonstrates how to specify Jami account archives (backups) to be provisioned automatically:"
-msgstr "Der Diensttyp, um Jami als Dienst auszuführen. Als sein Wert muss ein @code{jami-configuration}-Objekt angegeben werden, wie unten beschrieben. In diesem Abschnitt wird erklärt, wie Sie einen Server für Jami einrichten, mit dem Video- oder Audiokonferenzen bereitgestellt werden können, neben anderen Nutzungsmöglichkeiten. Das folgende Beispiel zeigt, wie Jami-Kontenarchive (Sicherungskopien) automatisch eingerichtet werden:"
-
 msgid ""
 "(service jami-service-type\n"
 "         (jami-configuration\n"
@@ -33226,9 +33023,6 @@ msgstr "Das nss-certs-Paket, was die TLS-Zertifikate bereitstellt."
 
 msgid "@code{enable-logging?} (default: @code{#t}) (type: boolean)"
 msgstr "@code{enable-logging?} (Vorgabe: @code{#t}) (Typ: Boolescher-Ausdruck)"
-
-msgid "Whether to enable logging to syslog."
-msgstr "Ob Protokollierung in Syslog aktiviert sein soll."
 
 msgid "Whether to enable debug level messages."
 msgstr "Ob Meldungen der Fehlersuch-Ausführlichkeitsstufe aktiviert sein sollen."
@@ -39015,6 +38809,12 @@ msgstr "@code{keep-alive} (Vorgabe: @code{#f})"
 msgid "An optional time interval in seconds.  A packet will be sent to the server endpoint once per time interval.  This helps receiving incoming connections from this peer when you are behind a NAT or a firewall."
 msgstr "Optional ein Zeitintervall in Sekunden. Einmal pro Zeitintervall wird ein Paket an den Serverendpunkt geschickt. Das hilft beim Empfangen eingehender Verbindungen von diesem Netzwerkteilnehmer, wenn Sie nur über eine Netzwerkadressübersetzung („NAT“) oder hinter einer Firewall erreichbar sind."
 
+msgid "It has the following parameters:"
+msgstr "Er hat folgende Parameter:"
+
+msgid "@code{port} (default: @code{8080})"
+msgstr "@code{port} (Vorgabe: @code{8080})"
+
 msgid "NFS"
 msgstr "NFS"
 
@@ -39044,9 +38844,6 @@ msgstr "{Datentyp} nfs-configuration"
 
 msgid "This data type represents the configuration of the NFS service and all of its subsystems."
 msgstr "Dieser Datentyp repräsentiert die Konfiguration des NFS-Dienstes und all seiner Subsysteme."
-
-msgid "It has the following parameters:"
-msgstr "Er hat folgende Parameter:"
 
 msgid "@code{nfs-utils} (default: @code{nfs-utils})"
 msgstr "@code{nfs-utils} (Vorgabe: @code{nfs-utils})"
@@ -39594,9 +39391,6 @@ msgstr "Dies ist der voreingestellte Erstellungsmechanismus. Sobald Erstellungsa
 
 msgid "Using the remote build mechanism."
 msgstr "Den Mechanismus für entfernte Erstellungen benutzen."
-
-msgid "The build jobs are not submitted to the local Guix daemon.  Instead, a remote server dispatches build requests to the connect remote workers, according to the build priorities."
-msgstr "Die Erstellungsaufträge werden @emph{nicht} beim lokalen Guix-Daemon eingereicht. Stattdessen teilt ein entfernter Server die Erstellungsanfragen den verbundenen entfernten Arbeitermaschinen zu, entsprechend ihren Erstellungsprioritäten."
 
 msgid "To enable this build mode a @code{cuirass-remote-server-configuration} record must be passed as @code{remote-server} argument of the @code{cuirass-configuration} record.  The @code{cuirass-remote-server-configuration} record is described below."
 msgstr "Um diesen Erstellungsmodus zu aktivieren, übergeben Sie ein @code{cuirass-remote-server-configuration}-Verbundsobjekt für das Argument @code{remote-server} des @code{cuirass-configuration}-Verbundsobjektes. Der @code{cuirass-remote-server-configuration}-Verbund wird im Folgenden beschrieben."
@@ -43731,9 +43525,6 @@ msgstr "Welches Gitile-Paket benutzt werden soll."
 msgid "The host on which gitile is listening."
 msgstr "Der Rechnername, auf den Gitile lauscht."
 
-msgid "@code{port} (default: @code{8080})"
-msgstr "@code{port} (Vorgabe: @code{8080})"
-
 msgid "The port on which gitile is listening."
 msgstr "Der Port, auf dem Gitile lauscht."
 
@@ -45598,12 +45389,6 @@ msgstr "@code{command} (Vorgabe: @code{'()}) (Typ: Liste-von-Zeichenketten)"
 
 msgid "Overwrite the default command (@code{CMD}) of the image."
 msgstr "Den voreingestellten Befehl (@code{CMD}) im Image ändern."
-
-msgid "@code{entrypoint} (default: @code{\"\"}) (type: string)"
-msgstr "@code{entrypoint} (Vorgabe: @code{\"\"}) (Typ: Zeichenkette)"
-
-msgid "Overwrite the default entrypoint (@code{ENTRYPOINT}) of the image."
-msgstr "Den voreingestellten Einsprungpunkt (@code{ENTRYPOINT}) im Image ändern."
 
 msgid "@code{host-environment} (default: @code{'()}) (type: list)"
 msgstr "@code{host-environment} (Vorgabe: @code{'()}) (Typ: Liste)"
@@ -50132,9 +49917,6 @@ msgstr "@code{packages} (Typ: Vielleicht-Liste-von-Zeichenketten)"
 msgid "The names of a subset of the GNU Stow package layer directories.  When provided the @code{home-dotfiles-service-type} will only provision dotfiles from this subset of applications.  This field will be ignored if @code{layout} is set to @code{'plain}."
 msgstr "Die Namen eines Teils der Verzeichnisse im Paketlayout von GNU Stow. Wenn Sie welche angeben, wird @code{home-dotfiles-service-type} nur die Dotfiles aus dieser Teilmenge von Anwendungen einspielen. Dieses Feld wird beim Layout @code{'plain} ignoriert."
 
-msgid "@code{excluded} (default: @code{'(\".*~\" \".*\\\\.swp\" \"\\\\.git\" \"\\\\.gitignore\")}) (type: list-of-strings)"
-msgstr "@code{excluded} (Vorgabe: @code{'(\".*~\" \".*\\\\.swp\" \"\\\\.git\" \"\\\\.gitignore\")}) (Typ: Liste-von-Zeichenketten)"
-
 msgid "The list of file patterns @code{home-dotfiles-service-type} will exclude while visiting each one of the @code{directories}."
 msgstr "Die Liste von Mustern, welche Dateien @code{home-dotfiles-service-type} auf der Suche nach Dotfiles beim Besuchen jedes in @code{directories} aufgeführten Verzeichnisses ausschließen soll."
 
@@ -53615,21 +53397,6 @@ msgstr "@TeX{}-Pakete"
 msgid "@LaTeX{} packages"
 msgstr "@LaTeX{}-Pakete"
 
-msgid "Guix provides packages for the @TeX{}, @LaTeX{}, ConTeXt, LuaTeX, and related typesetting systems, taken from the @uref{https://www.tug.org/texlive/, @TeX{} Live distribution}.  Because @TeX{} Live is so huge and because finding one's way in this maze is tricky, this section provides some guidance on how to deploy the relevant packages to compile @TeX{} and @LaTeX{} documents."
-msgstr "Guix stellt Pakete für @TeX{}, @LaTeX{}, ConTeXt, LuaTeX und verwandte Textsatzsysteme bereit, die aus der @uref{https://www.tug.org/texlive/, @TeX{}-Live-Distribution} stammen. Weil @TeX{} Live außergewöhnlich groß ist und sich in diesem Irrgarten zurechtzufinden schwierig ist, enthält dieser Abschnitt eine Anleitung, wie man die nötigen Pakete aufspielt und damit @TeX{}- und @LaTeX{}-Dokumente kompiliert."
-
-msgid "@TeX{} Live currently comes in two mutually exclusive flavors in Guix:"
-msgstr "@TeX{} Live gibt es in zwei @emph{nicht} mischbaren Geschmacksrichtungen in Guix:"
-
-msgid "The ``monolithic'' @code{texlive} package: it comes with @emph{every single @TeX{} Live package} (roughly 4,200), but it is huge---more than 4@tie{}GiB for a single package!"
-msgstr "Einmal das „monolithische“ @code{texlive}-Paket: Da ist @emph{absolut jedes @TeX{}-Live-Paket} drinnen (es sind um die 4.200 Stück), es ist aber auch gewaltig groß@tie{}– über 4@tie{}GiB für nur ein Paket!"
-
-msgid "A ``modular'' @TeX{} Live distribution, in which you only install the packages you need, whose name is always prefixed with @samp{texlive-}."
-msgstr "Dann eine „modulare“ @TeX{}-Live-Distribution, wo Sie nur die Pakete, die Sie brauchen, installieren. Der Name der Pakete beginnt immer mit @samp{texlive-}."
-
-msgid "To insist, these two flavors cannot be combined@footnote{No rule without exception! As the monolithic @TeX{} Live does not contain the @command{biber} executable, it is okay to combine it with @code{texlive-biber}, which does.}.  If in the modular setting your document does not compile, the solution is not to add the monolithic @code{texlive} package, but to add the set of missing packages from the modular distribution."
-msgstr "Es funktioniert nicht, die beiden Geschmacksrichtungen zu vermischen@footnote{Keine Regel ohne Ausnahme! Weil im monolithischen @TeX{} Live das @command{biber}-Programm fehlt, ist es möglich, das Paket @code{texlive-biber} dazuzunehmen, was es enthält.}. Wenn Ihr Dokument beim modularen Paketsatz nicht kompiliert werden kann, liegt die Lösung @emph{nicht} darin, das monolithische @code{texlive}-Paket hinzuzufügen, sondern Sie sollten die Pakete aus der modularen Distribution hinzufügen."
-
 msgid "Building a coherent system that provides all the essential tools and, at the same time, satisfies all of its internal dependencies can be a difficult task.  It is therefore recommended to start with sets of packages, called @dfn{collections}, and @dfn{schemes}, the name for collections of collections.  The following command lists available schemes and collections (@pxref{guix-search,, Invoking guix package}):"
 msgstr "Ein zusammenpassendes System mit allen notwendigen Werkzeugen, das auch noch alle nötigen Abhängigkeiten enthält, zusammenzustellen, ist mühevoll. Greifen Sie fürs Erste einfach auf „Meta-Pakete“ bzw.@: Paketsammlungen zurück („Collections“) und auf „Schemes“, damit sind Collections von Collections gemeint. Folgender Befehl listet die verfügbaren Schemes und Collections auf (siehe @ref{guix-search,, Invoking guix package}):"
 
@@ -54058,18 +53825,3 @@ msgstr "Lizenz, GNU-Lizenz für freie Dokumentation"
 
 msgid "fdl-1.3.texi"
 msgstr "fdl-1.3.texi"
-
-#. type: Plain text
-#: doc/guix.texi:2156
-msgid "While this works for @file{guix-install.sh}, it will most likely not work if you installed Guix through the package manager of another distribution (for instance with @command{sudo apt install guix}, @command{pacman -S guix}, or similar commands) because on many distributions @file{guix-daemon.service} will only run the Guix daemon provided by the distribution."
-msgstr "So funktioniert es, wenn @file{guix-install.sh} benutzt wurde. Andernfalls genügt es jedoch @emph{nicht}, wenn Sie Guix mit der Paketverwaltung einer anderen Distribution installiert haben (etwa mit @command{sudo apt install guix}, @command{pacman -S guix} oder ähnliche Befehle), weil auf vielen Distributionen @file{guix-daemon.service} nur den von der Distribution mitgelieferten Guix-Daemon ausführen wird."
-
-#. type: Plain text
-#: doc/guix.texi:2156
-msgid "While this works for @file{guix-install.sh}, it will most likely not work if you installed Guix through the package manager of another distribution (for instance with @command{sudo apt install guix}, @command{pacman -S guix}, or similar commands)  because on many distributions @file{guix-daemon.service} will only run the Guix daemon provided by the distribution."
-msgstr "So funktioniert es, wenn @file{guix-install.sh} benutzt wurde. Andernfalls genügt es jedoch @emph{nicht}, wenn Sie Guix mit der Paketverwaltung einer anderen Distribution installiert haben (etwa mit @command{sudo apt install guix}, @command{pacman -S guix} oder ähnliche Befehle), weil auf vielen Distributionen @file{guix-daemon.service} nur den von der Distribution mitgelieferten Guix-Daemon ausführen wird."
-
-#. type: Plain text
-#: doc/guix.texi:779
-msgid "The @uref{https://guix.gnu.org/guix-install.sh, @file{guix-install.sh}} shell script automates the binary installation process.  Use of @file{guix-install.sh} requires Bash, GnuPG, GNU@tie{}tar, wget, and Xz.  On systems where systemd is detected, the tool @command{newgidmap} from the @code{uidmap} package is also required."
-msgstr "Das Shell-Skript @uref{https://guix.gnu.org/guix-install.sh, @file{guix-install.sh}} automatisiert den Installationsvorgang aus Binärdateien. Um @file{guix-install.sh} benutzen zu können, werden Bash, GnuPG, GNU@tie{}tar, wget und Xz vorausgesetzt. Auf Systemen, wo systemd gefunden wird, brauchen Sie außerdem das Programm @code{newgidmap} aus dem Paket @code{uidmap} als Voraussetzung."

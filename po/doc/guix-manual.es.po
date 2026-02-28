@@ -60,8 +60,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-01-06 03:18+0000\n"
-"PO-Revision-Date: 2026-01-01 14:27+0000\n"
+"POT-Creation-Date: 2026-02-04 03:18+0000\n"
+"PO-Revision-Date: 2026-01-30 15:33+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Spanish <https://translate.codeberg.org/projects/guix/documentation-manual/es/>\n"
 "Language: es\n"
@@ -69,7 +69,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 5.15.2\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -230,9 +230,6 @@ msgstr "GNU Guix depende de los siguientes paquetes:"
 
 msgid "@url{https://gnu.org/software/guile/, GNU Guile}, version 3.0.x,"
 msgstr "@url{https://gnu.org/software/guile/, GNU Guile}, versión 3.0.x,"
-
-msgid "version 3.0.3 or later;"
-msgstr "versión 3.0.3 o posterior;"
 
 msgid "@url{https://notabug.org/cwebber/guile-gcrypt, Guile-Gcrypt}, version"
 msgstr "@url{https://notabug.org/cwebber/guile-gcrypt, Guile-Gcrypt}, versión"
@@ -2032,35 +2029,8 @@ msgstr "Asegúrese de que sus cambios no rompen Guix y simule @command{guix pull
 msgid "guix pull --url=/path/to/your/checkout --profile=/tmp/guix.master --disable-authentication\n"
 msgstr "guix pull --url=/ruta/a/su/copia --profile=/tmp/guix.master --disable-authentication\n"
 
-msgid "Expect some delay when you submit your very first patch to @email{guix-patches@@gnu.org}. You have to wait until you get an acknowledgement with the assigned tracking number. Future acknowledgements should not be delayed."
-msgstr "Espere algún retraso cuando envíe su primer parche a @email{guix-patches@@gnu.org}. Debe esperar hasta recibir un acuse de recibo con el número de seguimiento asignado. Los próximos acuses de recibo no deben retrasarse."
-
-msgid "When a bug is resolved, please close the thread by sending an email to @email{@var{ISSUE_NUMBER}-done@@debbugs.gnu.org}."
-msgstr "Cuando un error es resuelto, por favor cierre el hilo enviando un correo a @email{@var{ISSUE_NUMBER}-done@@debbugs.gnu.org}."
-
 msgid "Configuring Git"
 msgstr "Configuración de Git"
-
-msgid "Sending a Patch Series"
-msgstr "Envío de una serie de parches"
-
-msgid "git send-email"
-msgstr "git send-email"
-
-msgid "patch series"
-msgstr "series de parches"
-
-msgid "Warning"
-msgstr "Aviso"
-
-msgid "bug reports, tracking"
-msgstr "informes de errores, seguimiento"
-
-msgid "patch submissions, tracking"
-msgstr "envíos de parches, seguimiento"
-
-msgid "issue tracking"
-msgstr "seguimiento de incidencias"
 
 msgid "Debbugs, issue tracking system"
 msgstr "Debbugs, sistema de seguimiento de incidencias"
@@ -2070,6 +2040,9 @@ msgstr "estrategia de ramas"
 
 msgid "rebuild scheduling strategy"
 msgstr "estrategia de planificación de reconstrucciones"
+
+msgid "Warning"
+msgstr "Aviso"
 
 msgid "A web interface (actually @emph{two} web interfaces!) are available to browse issues:"
 msgstr "Hay disponible una interfaz web (¡en realidad @emph{dos} interfaces web!) para la navegación por las incidencias:"
@@ -2097,9 +2070,6 @@ msgstr "@kbd{C-u} @kbd{M-x} debbugs-gnu @kbd{RET} @kbd{RET} guix-patches @kbd{RE
 
 msgid "@xref{Top,,, debbugs-ug, Debbugs User Guide}, for more information on this nifty tool!"
 msgstr "@xref{Top,,, debbugs-ug, Guía de usuario Debbugs}, para más información sobre esta útil herramienta."
-
-msgid "reproducibility"
-msgstr "reproducibilidad"
 
 msgid "commit access, for developers"
 msgstr "acceso al repositorio, para desarrolladoras"
@@ -3499,19 +3469,11 @@ msgstr "instalar Guix desde binarios"
 msgid "installer script"
 msgstr "guión del instalador"
 
-msgid "Configuring substitute servers"
-msgstr "Configurar servidores de sustituciones"
+msgid "Setting up the build daemon (@pxref{Setting Up the Daemon})."
+msgstr "Preparación del daemon (@pxref{Setting Up the Daemon})."
 
-msgid ""
-"# cd /tmp\n"
-"# wget https://guix.gnu.org/guix-install.sh\n"
-"# chmod +x guix-install.sh\n"
-"# ./guix-install.sh\n"
-msgstr ""
-"# cd /tmp\n"
-"# wget https://guix.gnu.org/guix-install.sh\n"
-"# chmod +x guix-install.sh\n"
-"# ./guix-install.sh\n"
+msgid "Configuring substitute servers (@pxref{Official Substitute Servers})."
+msgstr "Configurar servidores de sustituciones (@pxref{Official Substitute Servers})."
 
 msgid "substitutes, authorization thereof"
 msgstr "sustituciones, autorización de las mismas"
@@ -4924,6 +4886,9 @@ msgstr "La orden proporciona las operaciones obvias de instalación, borrado y a
 
 msgid "All packages in the package store may be @emph{garbage-collected}.  Guix can determine which packages are still referenced by user profiles, and remove those that are provably no longer referenced (@pxref{Invoking guix gc}).  Users may also explicitly remove old generations of their profile so that the packages they refer to can be collected."
 msgstr "Todos los paquetes en el almacén de paquetes pueden ser @emph{eliminados por el recolector de basura}. Guix puede determinar a qué paquetes hacen referencia todavía los perfiles de usuarias, y eliminar aquellos que, de forma demostrable, no se haga referencia en ningún perfil (@pxref{Invoking guix gc}). Las usuarias pueden también borrar explícitamente generaciones antiguas de su perfil para que los paquetes a los que hacen referencia puedan ser recolectados."
+
+msgid "reproducibility"
+msgstr "reproducibilidad"
 
 msgid "Guix takes a @dfn{purely functional} approach to package management, as described in the introduction (@pxref{Introduction}).  Each @file{/gnu/store} package directory name contains a hash of all the inputs that were used to build that package---compiler, libraries, build scripts, etc.  This direct correspondence allows users to make sure a given package installation matches the current state of their distribution.  It also helps maximize @dfn{build reproducibility}: thanks to the isolated build environments that are used, a given build is likely to yield bit-identical files when performed on different machines (@pxref{Invoking guix-daemon, container})."
 msgstr "Guix toma una aproximación @dfn{puramente funcional} en la gestión de paquetes, como se describe en la introducción (@pxref{Introduction}). Cada nombre de directorio de paquete en @file{/gnu/store} contiene un hash de todas las entradas que fueron usadas para construir el paquete---compilador, bibliotecas, guiones de construcción, etc. Esta correspondencia directa permite a las usuarias asegurarse que una instalación dada de un paquete corresponde al estado actual de su distribución. Esto también ayuda a maximizar la @dfn{reproducibilidad de la construcción}: gracias al uso de entornos aislados de construcción, una construcción dada probablemente generará archivos idénticos bit-a-bit cuando se realice en máquinas diferentes (@pxref{Invoking guix-daemon, container})."
@@ -7619,23 +7584,6 @@ msgstr "La distribución es @dfn{auto-contenida} y completamente @dfn{basada en 
 msgid "The high-level interface to package definitions is implemented in the @code{(guix packages)} and @code{(guix build-system)} modules.  As an example, the package definition, or @dfn{recipe}, for the GNU Hello package looks like this:"
 msgstr "La interfaz de alto nivel de las definiciones de paquetes está implementada en los módulos @code{(guix packages)} y @code{(guix build-system)}. Como un ejemplo, la definición de paquete, o @dfn{receta}, para el paquete GNU Hello es como sigue:"
 
-msgid ""
-"(define-module (gnu packages hello)\n"
-"  #:use-module (guix packages)\n"
-"  #:use-module (guix download)\n"
-"  #:use-module (guix build-system gnu)\n"
-"  #:use-module (guix licenses)\n"
-"  #:use-module (gnu packages gawk))\n"
-"\n"
-msgstr ""
-"(define-module (gnu packages hello)\n"
-"  #:use-module (guix packages)\n"
-"  #:use-module (guix download)\n"
-"  #:use-module (guix build-system gnu)\n"
-"  #:use-module (guix licenses)\n"
-"  #:use-module (gnu packages gawk))\n"
-"\n"
-
 msgid "Without being a Scheme expert, the reader may have guessed the meaning of the various fields here.  This expression binds the variable @code{hello} to a @code{<package>} record (@pxref{SRFI-9, Scheme records,, guile, GNU Guile Reference Manual}).  This package object can be inspected using procedures found in the @code{(guix packages)} module; for instance, @code{(package-name hello)} returns---surprise!---@code{\"hello\"}."
 msgstr "Sin ser una experta en Scheme---pero conociendo un poco de inglés---, la lectora puede haber supuesto el significado de varios campos aquí. Esta expresión asocia la variable @code{hello} al registro @code{<package>} (@pxref{SRFI-9, Scheme records,, guile, GNU Guile Reference Manual}). Este objeto de paquete puede ser inspeccionado usando los procedimientos encontrados en el módulo @code{(guix packages)}; por ejemplo, @code{(package-name hello)} devuelve---¡sorpresa!---@code{\"hello\"}."
 
@@ -8109,6 +8057,9 @@ msgstr "module"
 
 msgid "customizing packages"
 msgstr "personalización de paquetes"
+
+msgid "package variants"
+msgstr "variaciones de paquetes"
 
 msgid "variants, of packages"
 msgstr "variantes de paquetes"
@@ -10880,8 +10831,11 @@ msgstr "$ export GUIX_BUILD_OPTIONS=\"--no-substitutes -c 2 -L /foo/bar\"\n"
 msgid "These options are parsed independently, and the result is appended to the parsed command-line options."
 msgstr "Estas opciones se analizan independientemente, y el resultado se añade a continuación de las opciones de línea de órdenes."
 
-msgid "package variants"
-msgstr "variaciones de paquetes"
+msgid "package transformation"
+msgstr "transformación de paquetes"
+
+msgid "package variants, transformation"
+msgstr "variantes de paquetes, transformación"
 
 msgid "Another set of command-line options supported by @command{guix build} and also @command{guix package} are @dfn{package transformation options}.  These are options that make it possible to define @dfn{package variants}---for instance, packages built from different source code.  This is a convenient way to create customized packages on the fly without having to type in the definitions of package variants (@pxref{Defining Packages})."
 msgstr "Otro conjunto de opciones de línea de órdenes permitidas por @command{guix build} y también @command{guix package} son las @dfn{opciones de transformación de paquetes}. Son opciones que hacen posible la definición de @dfn{variaciones de paquetes}---por ejemplo, paquetes construidos con un código fuente diferente. Es una forma conveniente de crear paquetes personalizados al vuelo sin tener que escribir las definiciones de las variaciones del paquete (@pxref{Defining Packages})."
@@ -11525,6 +11479,12 @@ msgstr "La siguiente orden importa los meta-datos para el paquete de Ruby @code{
 msgid "guix import gem rails\n"
 msgstr "guix import gem rails\n"
 
+msgid "--archive=@var{repo}"
+msgstr "--archive=@var{repo}"
+
+msgid "-a @var{repo}"
+msgstr "-a @var{repo}"
+
 msgid "cpan"
 msgstr "cpan"
 
@@ -11736,12 +11696,6 @@ msgstr "elpa"
 
 msgid "Import metadata from an Emacs Lisp Package Archive (ELPA) package repository (@pxref{Packages,,, emacs, The GNU Emacs Manual})."
 msgstr "Importa metadatos desde el repositorio de archivos de paquetes Emacs Lisp (ELPA) (@pxref{Packages,,, emacs, The GNU Emacs Manual})."
-
-msgid "--archive=@var{repo}"
-msgstr "--archive=@var{repo}"
-
-msgid "-a @var{repo}"
-msgstr "-a @var{repo}"
 
 msgid "@var{repo} identifies the archive repository from which to retrieve the information.  Currently the supported repositories and their identifiers are:"
 msgstr "@var{repo} identifica el repositorio de archivos del que obtener la información. Actualmente los repositorios disponibles y sus identificadores son:"
@@ -13957,9 +13911,6 @@ msgstr "dispositivos traducidos"
 msgid "The Linux kernel has a notion of @dfn{device mapping}: a block device, such as a hard disk partition, can be @dfn{mapped} into another device, usually in @code{/dev/mapper/}, with additional processing over the data that flows through it@footnote{Note that the GNU@tie{}Hurd makes no difference between the concept of a ``mapped device'' and that of a file system: both boil down to @emph{translating} input/output operations made on a file to operations on its backing store.  Thus, the Hurd implements mapped devices, like file systems, using the generic @dfn{translator} mechanism (@pxref{Translators,,, hurd, The GNU Hurd Reference Manual}).}.  A typical example is encryption device mapping: all writes to the mapped device are encrypted, and all reads are deciphered, transparently.  Guix extends this notion by considering any device or set of devices that are @dfn{transformed} in some way to create a new device; for instance, RAID devices are obtained by @dfn{assembling} several other devices, such as hard disks or partitions, into a new one that behaves as one partition."
 msgstr "El núcleo Linux tiene una noción de @dfn{traducción de dispositivos}: un dispositivo de bloques, como una partición de disco duro, puede @dfn{traducirse} en otro dispositivo, habitualmente en @code{/dev/mapper/}, con un procesamiento adicional sobre los datos que fluyen a través de ella@footnote{Fíjese que GNU@tie{}Hurd no diferencia entre el concepto de un ``dispositivo traducido'' y el de un sistema de archivos: ambos se reducen a @emph{traducir} operaciones de entrada/salida realizadas en un archivo a operaciones en su almacenamiento subyacente. Por tanto, Hurd implementa dispositivos traducidos, como sistemas de archivos, usando el mecanismo genérico de @dfn{traducción} (@pxref{Translators,,, hurd, The GNU Hurd Reference Manual}).}. Un ejemplo típico es la traducción de dispositivos para el cifrado: todas las escrituras en el dispositivo traducido se cifran, y todas las lecturas se descifran, de forma transparente. Guix extiende esta noción considerando cualquier dispositivo o conjunto de dispositivos que son @dfn{transformados} de alguna manera para crear un nuevo dispositivo; por ejemplo, los dispositivos RAID se obtienen @dfn{ensamblando} otros dispositivos, como discos duros o particiones, en uno nuevo que se comporta como una partición."
 
-msgid "Mapped devices are declared using the @code{mapped-device} form, defined as follows; for examples, see below."
-msgstr "Los dispositivos traducidos se declaran mediante el uso de la forma @code{mapped-device}, definida a continuación; ejemplos más adelante."
-
 msgid "{Data Type} mapped-device"
 msgstr "{Tipo de datos} mapped-device"
 
@@ -13980,12 +13931,6 @@ msgstr "luks-device-mapping"
 
 msgid "This defines LUKS block device encryption using the @command{cryptsetup} command from the package with the same name.  It relies on the @code{dm-crypt} Linux kernel module."
 msgstr "Define el cifrado de bloques LUKS mediante el uso de la orden @command{cryptsetup} del paquete del mismo nombre. Depende del módulo @code{dm-crypt} del núcleo Linux."
-
-msgid "raid-device-mapping"
-msgstr "raid-device-mapping"
-
-msgid "This defines a RAID device, which is assembled using the @code{mdadm} command from the package with the same name.  It requires a Linux kernel module for the appropriate RAID level to be loaded, such as @code{raid456} for RAID-4, RAID-5 or RAID-6, or @code{raid10} for RAID-10."
-msgstr "Define un dispositivo RAID, el cual se ensambla mediante el uso de la orden @code{mdadm} del paquete del mismo nombre. Requiere la carga del módulo del núcleo Linux para el nivel RAID apropiado, como @code{raid456} para RAID-4, RAID-5 o RAID-6, o @code{raid10} para RAID-10."
 
 msgid "disk encryption"
 msgstr "cifrado de disco"
@@ -14033,6 +13978,9 @@ msgstr "cifrado del intercambio"
 msgid "It is also desirable to encrypt swap space, since swap space may contain sensitive data.  One way to accomplish that is to use a swap file in a file system on a device mapped via LUKS encryption.  In this way, the swap file is encrypted because the entire device is encrypted.  @xref{Swap Space}, or @xref{Preparing for Installation,,Disk Partitioning}, for an example."
 msgstr "También es deseable cifrar el espacio de intercambio, puesto que el espacio de intercambio puede contener información sensible. Una forma de conseguirlo es usar un archivo de intercambio en un sistema de archivos en un dispositivo traducido a través del cifrado LUKS. @xref{Swap Space} o @pxref{Preparing for Installation,,Particionado del disco}, para un ejemplo."
 
+msgid "raid-device-mapping"
+msgstr "raid-device-mapping"
+
 msgid "A RAID device formed of the partitions @file{/dev/sda1} and @file{/dev/sdb1} may be declared as follows:"
 msgstr "Un dispositivo RAID formado por las particiones @file{/dev/sda1} y @file{/dev/sdb1} puede declararse como se muestra a continuación:"
 
@@ -14046,9 +13994,6 @@ msgstr ""
 "  (source (list \"/dev/sda1\" \"/dev/sdb1\"))\n"
 "  (target \"/dev/md0\")\n"
 "  (type raid-device-mapping))\n"
-
-msgid "The @file{/dev/md0} device can then be used as the @code{device} of a @code{file-system} declaration (@pxref{File Systems}).  Note that the RAID level need not be given; it is chosen during the initial creation and formatting of the RAID device and is determined automatically later."
-msgstr "El dispositivo @file{/dev/md0} puede usarse entonces como el campo @code{device} de una declaración @code{file-system} (@pxref{File Systems}). Fíjese que no necesita proporcionar el nivel RAID; se selecciona durante la creación inicial y formato del dispositivo RAID y después se determina automáticamente."
 
 msgid "swap space"
 msgstr "memoria de intercambio"
@@ -18306,8 +18251,8 @@ msgstr "{Tipo de datos} gnome-desktop-configuration"
 msgid "Configuration record for the GNOME desktop environment.  Available @code{gnome-desktop-configuration} fields are:"
 msgstr "Registro de configuración para el entorno de escritorio GNOME.  Campos disponible de @code{gnome-desktop-configuration} son:"
 
-msgid "This is the type of a service to run the @uref{Xfce, https://xfce.org/} desktop environment.  Its value is an @code{xfce-desktop-configuration} object (see below)."
-msgstr "Este es el tipo de un servicio para ejecutar el entorno de escritorio @uref{Xfce, https://xfce.org}. Su valor es un objeto @code{xfce-desktop-configuration} (véase a continuación)."
+msgid "This is the type of a service to run the @uref{https://xfce.org/, Xfce} desktop environment.  Its value is an @code{xfce-desktop-configuration} object (see below)."
+msgstr "Este es el tipo de un servicio para ejecutar el entorno de escritorio @uref{https://xfce.org, Xfce}. Su valor es un objeto @code{xfce-desktop-configuration} (véase a continuación)."
 
 msgid "This service adds the @code{xfce} package to the system profile, and extends polkit with the ability for @code{thunar} to manipulate the file system as root from within a user session, after the user has authenticated with the administrator's password."
 msgstr "Este servicio añade el paquete @code{xfce} al perfil del sistema, y extiende polkit con la capacidad de @code{thunar} para manipular el sistema de archivos como root dentro de una sesión de usuaria, tras la identificación de la usuaria con la contraseña de administración."
@@ -24728,6 +24673,9 @@ msgstr "Lista de configuración para algunos clientes."
 msgid "public-key"
 msgstr "public-key"
 
+msgid "It has the following parameters:"
+msgstr "Tiene los siguientes parámetros:"
+
 msgid "NFS"
 msgstr "NFS"
 
@@ -24754,9 +24702,6 @@ msgstr "{Tipo de datos} nfs-configuration"
 
 msgid "This data type represents the configuration of the NFS service and all of its subsystems."
 msgstr "Este tipo de datos representa la configuración del servicio NFS y todos sus subsistemas."
-
-msgid "It has the following parameters:"
-msgstr "Tiene los siguientes parámetros:"
 
 msgid "@code{nfs-utils} (default: @code{nfs-utils})"
 msgstr "@code{nfs-utils} (predeterminado: @code{nfs-utils})"

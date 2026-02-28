@@ -30,8 +30,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.0.1-pre1\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-01-06 03:18+0000\n"
-"PO-Revision-Date: 2026-01-01 14:27+0000\n"
+"POT-Creation-Date: 2026-02-04 03:18+0000\n"
+"PO-Revision-Date: 2026-02-28 14:23+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://translate.codeberg.org/projects/guix/documentation-manual/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -39,7 +39,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 5.15.2\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -201,8 +201,8 @@ msgstr "GNU Guix 依赖以下软件包："
 msgid "@url{https://gnu.org/software/guile/, GNU Guile}, version 3.0.x,"
 msgstr "@url{https://gnu.org/software/guile/, GNU Guile}，版本 3.0.x，"
 
-msgid "version 3.0.3 or later;"
-msgstr "版本 3.0.3 或更新；"
+msgid "version 3.0.9 or later;"
+msgstr "版本 3.0.9 或更新；"
 
 msgid "@url{https://notabug.org/cwebber/guile-gcrypt, Guile-Gcrypt}, version"
 msgstr "@url{https://notabug.org/cwebber/guile-gcrypt, Guile-Gcrypt}，版本"
@@ -276,6 +276,13 @@ msgstr "@url{https://gcc.gnu.org, GCC's g++}，带有支持对于"
 msgid "C++11 standard."
 msgstr "C++11 标准。"
 
+msgid ""
+"git clone https://git.guix.gnu.org/guix.git\n"
+"cd guix\n"
+msgstr ""
+"git clone https://git.guix.gnu.org/guix.git\n"
+"cd guix\n"
+
 msgid "authentication, of a Guix checkout"
 msgstr "Guix 签出的身份认证"
 
@@ -306,6 +313,13 @@ msgstr "guix shell -D guix -CPW\n"
 msgid "or even, from within a Git worktree for Guix:"
 msgstr "或者，从一个 Git worktree 内部使用 Guix："
 
+msgid ""
+"echo $(pwd) >> ~/.config/guix/shell-authorized-directories\n"
+"guix shell -CPW\n"
+msgstr ""
+"echo $(pwd) >> ~/.config/guix/shell-authorized-directories\n"
+"guix shell -CPW\n"
+
 msgid "If @option{-C} (short for @option{--container}) is not supported on your system, try @command{--pure} instead of @option{-CPW}.  @xref{Invoking guix shell}, for more information on that command."
 msgstr "如果 @option{-C}（@option{--container} 的缩写）在你的系统上不被支持，请尝试使用 @command{--pure} 来代替 @option{-CPW}。有关该命令的更多信息见 @xref{Invoking guix shell}."
 
@@ -329,6 +343,12 @@ msgstr "@url{https://www.graphviz.org/, Graphviz};"
 
 msgid "@url{https://www.gnu.org/software/help2man/, GNU Help2man (optional)}."
 msgstr "@url{https://www.gnu.org/software/help2man/, GNU Help2man（可选）}。"
+
+msgid "On Guix, other development tools, like @code{strace}, can be included by giving them as extra arguments to @command{guix shell}:"
+msgstr "在 Guix 上，其它的开发工具，如 @code{strace}， 可以将它们作为额外的参数包含到 @command{guix shell} 中。"
+
+msgid "guix shell -D guix -CPW strace\n"
+msgstr "guix shell -D guix -CPW strace\n"
 
 msgid "From there you can generate the build system infrastructure using Autoconf and Automake:"
 msgstr "在这里你可以使用 Autoconf 和 Automake 生成构建系统的基础设施："
@@ -924,6 +944,9 @@ msgstr "创建衍生物（@pxref{Derivations}）。"
 
 msgid "(guix gexps)"
 msgstr "(guix gexps)"
+
+msgid "Writing G-expressions (@pxref{G-Expressions})."
+msgstr "编写 G-表达式 (@pxref{G-Expressions})."
 
 msgid "(guix packages)"
 msgstr "(guix packages)"
@@ -1771,71 +1794,6 @@ msgstr "guix pull --url=/path/to/your/checkout --profile=/tmp/guix.master --disa
 msgid "Configuring Git"
 msgstr "配置 Git"
 
-msgid "Sending a Patch Series"
-msgstr "发送补丁系列"
-
-msgid "git send-email"
-msgstr "git send-email"
-
-msgid "patch series"
-msgstr "补丁系列"
-
-msgid "Warning"
-msgstr "警告"
-
-msgid "$ git send-email --annotate -1\n"
-msgstr "$ git send-email --annotate -1\n"
-
-msgid "To add a prefix to the subject of your patch, you may use the @option{--subject-prefix} option.  The Guix project uses this to specify that the patch is intended for a branch or repository other than the @code{master} branch of @url{https://codeberg.org/guix/guix.git}."
-msgstr "要在补丁的主题前添加前缀，可以使用 @option{--subject-prefix} 选项。Guix 项目使用此选项来指定补丁是针对 @url{https://codeberg.org/guix/guix.git} 的 @code{master} 分支以外的分支或仓库。"
-
-msgid "git send-email --annotate --subject-prefix='PATCH core-updates' -1\n"
-msgstr "git send-email --annotate --subject-prefix='PATCH core-updates' -1\n"
-
-msgid ""
-"$ git commit --amend\n"
-"$ git send-email --annotate -v@var{REVISION} \\\n"
-"      --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org -1\n"
-msgstr ""
-"$ git commit --amend\n"
-"$ git send-email --annotate -v@var{REVISION} \\\n"
-"      --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org -1\n"
-
-msgid ""
-"$ git format-patch -@var{NUMBER_COMMITS} -o outgoing \\\n"
-"      --cover-letter\n"
-msgstr ""
-"$ git format-patch -@var{NUMBER_COMMITS} -o outgoing \\\n"
-"      --cover-letter\n"
-
-msgid ""
-"$ git format-patch master..@var{MY_BRANCH} -o outgoing \\\n"
-"      --cover-letter\n"
-msgstr ""
-"$ git format-patch master..@var{MY_BRANCH} -o outgoing \\\n"
-"      --cover-letter\n"
-
-msgid ""
-"$ git send-email outgoing/0000-cover-letter.patch --annotate\n"
-"$ rm outgoing/0000-cover-letter.patch # we don't want to resend it!\n"
-msgstr ""
-"$ git send-email outgoing/0000-cover-letter.patch --annotate\n"
-"$ rm outgoing/0000-cover-letter.patch # we don't want to resend it!\n"
-
-msgid ""
-"$ git send-email outgoing/*.patch --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org\n"
-"$ rm -rf outgoing # we don't need these anymore\n"
-msgstr ""
-"$ git send-email outgoing/*.patch --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org\n"
-"$ rm -rf outgoing # 我们不再需要这些了\n"
-
-msgid ""
-"$ git send-email -@var{NUMBER_COMMITS} -v@var{REVISION} \\\n"
-"      --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org\n"
-msgstr ""
-"$ git send-email -@var{NUMBER_COMMITS} -v@var{REVISION} \\\n"
-"      --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org\n"
-
 msgid "branching strategy"
 msgstr "分支策略"
 
@@ -1844,6 +1802,9 @@ msgstr "重新构建的调度策略"
 
 msgid "Request for merging \"@var{name}\" branch\n"
 msgstr "Request for merging \"@var{name}\" branch\n"
+
+msgid "Warning"
+msgstr "警告"
 
 msgid ""
 "$ cd guix\n"
@@ -2593,7 +2554,7 @@ msgid "Purely functional interface to the store."
 msgstr "仓库的纯函数式接口。"
 
 msgid "G-Expressions"
-msgstr "G 表达式"
+msgstr "G-表达式"
 
 msgid "Manipulating build expressions."
 msgstr "操纵构建表达式。"
@@ -3163,7 +3124,7 @@ msgid "installing Guix"
 msgstr "安装 Guix"
 
 msgid "foreign distro"
-msgstr "别的发行版"
+msgstr "外部发行版"
 
 msgid "You can install the package management tool Guix on top of an existing GNU/Linux or GNU/Hurd system@footnote{Hurd support is currently limited.}, referred to as a @dfn{foreign distro}.  If, instead, you want to install the complete, standalone GNU system distribution, @dfn{Guix@tie{}System}, @pxref{System Installation}.  This section is concerned only with the installation of Guix on a foreign distro."
 msgstr "您可以在现有的 GNU/Linux 或 GNU/Hurd 系统上安装包管理工具 Guix@footnote{Hurd 支持目前有限。}，称为@dfn{外部发行版}。如果您想安装完整的独立 GNU 系统发行版@dfn{Guix@tie{}System}，请参见@ref{System Installation}。本节仅涉及在外部发行版上安装 Guix。"
@@ -3186,43 +3147,11 @@ msgstr "用二进制文件安装 Guix"
 msgid "installer script"
 msgstr "安装脚本"
 
-msgid "We advise system administrators who install Guix, both from the installation script or @i{via} the native package manager of their foreign distribution, to also regularly read and follow security notices, as shown by @command{guix pull}."
-msgstr "我们建议安装 Guix 的系统管理员，无论是通过安装脚本还是通过其外部发行版的本地包管理器，定期阅读和遵循安全通知，如@command{guix pull}所示。"
-
-msgid "sudo pacman -S guix\n"
-msgstr "sudo pacman -S guix\n"
-
-msgid ""
-"# cd /tmp\n"
-"# wget https://guix.gnu.org/guix-install.sh\n"
-"# chmod +x guix-install.sh\n"
-"# ./guix-install.sh\n"
-msgstr ""
-"# cd /tmp\n"
-"# wget https://guix.gnu.org/guix-install.sh\n"
-"# chmod +x guix-install.sh\n"
-"# ./guix-install.sh\n"
-
-msgid ""
-"sudo pacman -S guix-installer\n"
-"sudo guix-install.sh\n"
-msgstr ""
-"sudo pacman -S guix-installer\n"
-"sudo guix-install.sh\n"
+msgid "Setting up the build daemon (@pxref{Setting Up the Daemon})."
+msgstr "设置后台进程（@pxref{Setting Up the Daemon}）。"
 
 msgid "substitutes, authorization thereof"
 msgstr "substitutes，对其授权"
-
-msgid ""
-"# guix archive --authorize < \\\n"
-"     ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-1}.pub\n"
-"# guix archive --authorize < \\\n"
-"     ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-2}.pub\n"
-msgstr ""
-"# guix archive --authorize < \\\n"
-"     ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-1}.pub\n"
-"# guix archive --authorize < \\\n"
-"     ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-2}.pub\n"
 
 msgid "The binary installation tarball can be (re)produced and verified simply by running the following command in the Guix source tree:"
 msgstr "二进制安装包可以通过在 Guix 源代码树里运行下面这些命令来重现和验证："
@@ -3245,6 +3174,9 @@ msgstr "@xref{Invoking guix pack}，了解这个方便的工具。"
 
 msgid "./guix-install.sh --uninstall\n"
 msgstr "./guix-install.sh --uninstall\n"
+
+msgid "We advise system administrators who install Guix, both from the installation script or @i{via} the native package manager of their foreign distribution, to also regularly read and follow security notices, as shown by @command{guix pull}."
+msgstr "我们建议安装 Guix 的系统管理员，无论是通过安装脚本还是通过其外部发行版的本地包管理器，定期阅读和遵循安全通知，如@command{guix pull}所示。"
 
 msgid "daemon"
 msgstr "后台进程"
@@ -4849,6 +4781,9 @@ msgstr "guix time-machine @var{options}@dots{} -- @var{command} @var {arg}@dots{
 msgid "guix time-machine -C <(echo %default-channels) @dots{}\n"
 msgstr "guix time-machine -C <(echo %default-channels) @dots{}\n"
 
+msgid "Inferior packages can be used transparently like any other package or file-like object in G-expressions (@pxref{G-Expressions}).  They are also transparently handled by the @code{packages->manifest} procedure, which is commonly used in manifests (@pxref{Invoking guix package, the @option{--manifest} option of @command{guix package}}).  Thus you can insert an inferior package pretty much anywhere you would insert a regular package: in manifests, in the @code{packages} field of your @code{operating-system} declaration, and so on."
+msgstr "下层包可以像 G-表达式中的任何其他包或文件对象一样透明地使用（@pxref{G-Expressions}）。它们也被 @code{packages->manifest} 程序透明地处理，该程序通常在清单中使用（@pxref{Invoking guix package, the @option{--manifest} option of @command{guix package}}）。因此，您几乎可以在任何您插入常规包的地方插入下层包：在清单中，在您的 @code{operating-system} 声明的 @code{packages} 字段中，等等。"
+
 msgid "Invoking @command{guix describe}"
 msgstr "调用 @command{guix describe}"
 
@@ -5551,7 +5486,7 @@ msgstr ""
 "scheme@@(guile-user)>\n"
 
 msgid "G-expression"
-msgstr "G 表达式"
+msgstr "G-表达式"
 
 msgid ""
 "(@var{file-name} @var{obj})\n"
@@ -5718,6 +5653,12 @@ msgstr ""
 
 msgid "$ export GUIX_BUILD_OPTIONS=\"--no-substitutes -c 2 -L /foo/bar\"\n"
 msgstr "$ export GUIX_BUILD_OPTIONS=\"--no-substitutes -c 2 -L /foo/bar\"\n"
+
+msgid "package transformation"
+msgstr "包转换"
+
+msgid "package variants, transformation"
+msgstr "软件包变体, 转换"
 
 msgid "guix build ed --with-source=mirror://gnu/ed/ed-1.4.tar.gz\n"
 msgstr "guix build ed --with-source=mirror://gnu/ed/ed-1.4.tar.gz\n"
@@ -7338,6 +7279,9 @@ msgstr "这是 Xorg 服务器加载的 @dfn{模块包} 列表——例如 @code{
 
 msgid "log"
 msgstr "log"
+
+msgid "This is the type of a service to run the @uref{https://xfce.org/, Xfce} desktop environment.  Its value is an @code{xfce-desktop-configuration} object (see below)."
+msgstr "这是运行@uref{https://xfce.org/, Xfce}桌面环境的服务类型。其值是一个@code{xfce-desktop-configuration}对象（见下文）。"
 
 msgid "@code{xfce} (default: @code{xfce})"
 msgstr "@code{xfce}（默认值：@code{xfce}）"

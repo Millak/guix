@@ -14,16 +14,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-12-10 03:18+0000\n"
-"PO-Revision-Date: 2026-01-15 02:39+0000\n"
-"Last-Translator: arthurhdrodrigues <arthurhdrodrigues@noreply.codeberg.org>\n"
+"POT-Creation-Date: 2026-01-27 03:18+0000\n"
+"PO-Revision-Date: 2026-02-27 08:47+0000\n"
+"Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.codeberg.org/projects/guix/documentation-cookbook/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 5.15.2\n"
 
 msgid "@documentencoding UTF-8"
 msgstr ""
@@ -34,7 +34,7 @@ msgstr ""
 msgid "GNU Guix Cookbook"
 msgstr "Livro de receitas do GNU Guix"
 
-msgid "Copyright @copyright{} 2019, 2022 Ricardo Wurmus@* Copyright @copyright{} 2019 Efraim Flashner@* Copyright @copyright{} 2019 Pierre Neidhardt@* Copyright @copyright{} 2020 Oleg Pykhalov@* Copyright @copyright{} 2020 Matthew Brooks@* Copyright @copyright{} 2020 Marcin Karpezo@* Copyright @copyright{} 2020 Brice Waegeneire@* Copyright @copyright{} 2020 André Batista@* Copyright @copyright{} 2020 Christine Lemmer-Webber@* Copyright @copyright{} 2021 Joshua Branson@* Copyright @copyright{} 2022, 2023 Maxim Cournoyer@* Copyright @copyright{} 2023-2025 Ludovic Courtès@* Copyright @copyright{} 2023 Thomas Ieong@* Copyright @copyright{} 2024 Florian Pelz@* Copyright @copyright{} 2025 45mg@* Copyright @copyright{} 2023 Marek Felšöci@* Copyright @copyright{} 2023 Konrad Hinsen@* Copyright @copyright{} 2023 Philippe Swartvagher@*"
+msgid "Copyright @copyright{} 2019, 2022 Ricardo Wurmus@* Copyright @copyright{} 2019 Efraim Flashner@* Copyright @copyright{} 2019 Pierre Neidhardt@* Copyright @copyright{} 2020 Oleg Pykhalov@* Copyright @copyright{} 2020 Matthew Brooks@* Copyright @copyright{} 2020 Marcin Karpezo@* Copyright @copyright{} 2020 Brice Waegeneire@* Copyright @copyright{} 2020 André Batista@* Copyright @copyright{} 2020 Christine Lemmer-Webber@* Copyright @copyright{} 2021 Joshua Branson@* Copyright @copyright{} 2022, 2023 Maxim Cournoyer@* Copyright @copyright{} 2023--2026 Ludovic Courtès@* Copyright @copyright{} 2023 Thomas Ieong@* Copyright @copyright{} 2024 Florian Pelz@* Copyright @copyright{} 2025 45mg@* Copyright @copyright{} 2023 Marek Felšöci@* Copyright @copyright{} 2023 Konrad Hinsen@* Copyright @copyright{} 2023 Philippe Swartvagher@*"
 msgstr "Direitos autorais @copyright{} 2019, 2022 Ricardo Wurmus@* Direitos autorais @copyright{} 2019 Efraim Flashner@* Direitos autorais @copyright{} 2019 Pierre Neidhardt@* Direitos autorais @copyright{} 2020 Oleg Pykhalov@* Direitos autorais @copyright{} 2020 Matthew Brooks@* Direitos autorais @copyright{} 2020 Marcin Karpezo@* Direitos autorais @copyright{} 2020 Brice Waegeneire@* Direitos autorais @copyright{} 2020 André Batista@* Direitos autorais @copyright{} 2020 Christine Lemmer-Webber@* Direitos autorais @copyright{} 2021 Joshua Branson@* Direitos autorais @copyright{} 2022, 2023 Maxim Cournoyer@* Direitos autorais @copyright{} 2023-2024 Ludovic Courtès@* Direitos autorais @copyright{} 2023 Thomas Ieong@* Direitos autorais @copyright{} 2024 Florian Pelz@* Direitos autorais @copyright{} 2025 45mg@* Direitos autoriais @copyright{} 2023 Marek Felšöci@* Direitos autorais @copyright{} 2023 Konrad Hinsen@* Direitos autorais @copyright{} 2023 Philippe Swartvagher@*"
 
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A copy of the license is included in the section entitled ``GNU Free Documentation License''."
@@ -2227,8 +2227,8 @@ msgstr "Aqui @code{cargo-audit} deve ser consistente com o identificador usado p
 msgid "At this stage, the package @code{cargo-audit} is buildable."
 msgstr "Agora o pacote @code{cargo-audit} pode ser compilado."
 
-msgid "Finally we'll unbundle the vendored dependencies.  The lockfile importer inserts @code{TODO:} comments for libraries with high probability of bundled dependencies.  @code{cargo-build-system} also performs additional check for binary files in its @code{check-for-pregenerated-files} phase, which usually indicates bundling:"
-msgstr "Por fim, desmembraremos as dependências fornecidas. O importador de lockfile insere comentários @code{TODO:} para bibliotecas com alta probabilidade de dependências inclusas. O @code{cargo-build-system} também realiza uma verificação adicional de arquivos binários na fase @code{check-for-pregenerated-files}, o que geralmente indica inclusões:"
+msgid "Finally we'll unbundle the vendored dependencies.  The lockfile importer inserts @code{TODO REVIEW:} comments for libraries with high probability of bundled dependencies.  @code{cargo-build-system} also performs additional check for binary files in its @code{check-for-pregenerated-files} phase, which usually indicates bundling:"
+msgstr "Por fim, desmembraremos as dependências fornecidas. O importador de lockfile insere comentários @code{TODO REVIEW:} para bibliotecas com alta probabilidade de dependências inclusas. O @code{cargo-build-system} também realiza uma verificação adicional de arquivos binários na fase @code{check-for-pregenerated-files}, o que geralmente indica inclusões:"
 
 msgid ""
 "$ ./pre-inst-env guix build cargo-audit\n"
@@ -2430,6 +2430,9 @@ msgstr ""
 "functions expected of a Wayland compositor.\")\n"
 "   (license license:gpl3+)))\n"
 
+msgid "@code{niri} has Cargo workspace dependencies.  When packaging a Cargo workspace dependency, parameter @code{#:cargo-package-crates} is required."
+msgstr "@code{niri} possui dependências de espaço de trabalho Cargo.  Ao empacotar uma dependência de espaço de trabalho Cargo, o parâmetro @code{#:cargo-package-crates} é obrigatório."
+
 msgid ""
 "(define-public rust-pipewire-0.8.0.fd3d8f7\n"
 "  (let ((commit \"fd3d8f7861a29c2eeaa4c393402e013578bb36d9\")\n"
@@ -2487,17 +2490,17 @@ msgid "Don't forget to modify all workspace members in @code{(gnu packages rust-
 msgstr "Não se esqueça de alterar todos os membros da workspace em @code{(gnu packages rust-crates)}:"
 
 msgid ""
-"(define rust-pipewire-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)\n"
-"(define rust-pipewire-sys-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)\n"
+"(define rust-pipewire-0.8.0.fd3d8f7 package:rust-pipewire-0.8.0.fd3d8f7)\n"
+"(define rust-pipewire-sys-0.8.0.fd3d8f7 package:rust-pipewire-0.8.0.fd3d8f7)\n"
 "@dots{}\n"
-"(define rust-libspa-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)\n"
-"(define rust-libspa-sys-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)\n"
+"(define rust-libspa-0.8.0.fd3d8f7 package:rust-pipewire-0.8.0.fd3d8f7)\n"
+"(define rust-libspa-sys-0.8.0.fd3d8f7 package:rust-pipewire-0.8.0.fd3d8f7)\n"
 msgstr ""
-"(define rust-pipewire-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)\n"
-"(define rust-pipewire-sys-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)\n"
+"(define rust-pipewire-0.8.0.fd3d8f7 package:rust-pipewire-0.8.0.fd3d8f7)\n"
+"(define rust-pipewire-sys-0.8.0.fd3d8f7 package:rust-pipewire-0.8.0.fd3d8f7)\n"
 "@dots{}\n"
-"(define rust-libspa-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)\n"
-"(define rust-libspa-sys-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)\n"
+"(define rust-libspa-0.8.0.fd3d8f7 package:rust-pipewire-0.8.0.fd3d8f7)\n"
+"(define rust-libspa-sys-0.8.0.fd3d8f7 package:rust-pipewire-0.8.0.fd3d8f7)\n"
 
 msgid "In this example, we'll package @code{libchewing}, which combines two build systems."
 msgstr "Neste exemplo, iremos empacotar @code{libchewing}, que combina duas ferramentas de compilação."
@@ -7401,6 +7404,121 @@ msgstr "E se tiver um pacote faltando?"
 msgid "Guix and the main scientific channels provide about @uref{https://hpc.guix.info/browse, tens of thousands of packages}.  Yet, there's always the possibility that the one package you need is missing."
 msgstr "Guix e os canais científicos principais fornecem aproximadamente @uref{https://hpc.guix.info/browse, dezenas de milhares de pacotes}.  Mesmo assim, ainda existe uma possibilidade que aquele único pacote que você precisa está faltando."
 
+msgid "In that case, you will need to provide a definition for it (@pxref{Defining Packages,,, guix, GNU Guix Reference Manual}) in a dedicated channel of yours (@pxref{Creating a Channel,,, guix, GNU Guix Reference Manual}).  For software in Python, R, and other high-level languages, most of the work can usually be automated by using @command{guix import} (@pxref{Invoking guix import,,, guix, GNU Guix Reference Manual})."
+msgstr "Neste caso, você precisará fornecer uma definição para ele (@pxref{Definindo pacotes,,, guix.pt_BR, Manual de referência do GNU Guix}) em um canal dedicado seu (@pxref{Criando um canal,,, guix.pt_BR, Manual de Referência do GNU Guix}). Para softwares em Python, R e outras linguagens de alto nível, a maior parte do trabalho geralmente pode ser automatizada usando @command{guix import} (@pxref{Invoking guix import,,, guix.pt_BR, Manual de Referência do GNU Guix})."
+
+msgid "Join @uref{https://guix.gnu.org/contact/,the friendly Guix community} to get help!"
+msgstr "Junte-se à @uref{https://guix.gnu.org/contact/,a amigável comunidade Guix} para obter ajuda!"
+
+msgid "Step 2: Recording the Environment"
+msgstr "Passo 2: Registro do Ambiente"
+
+msgid "Now that you have that @code{guix shell} command line with a list of packages, the best course of action is to save it in a @emph{manifest} file---essentially a software bill of materials---that Guix can then ingest (@pxref{Writing Manifests,,, guix, GNU Guix Reference Manual}).  The easiest way to get started is by ``translating'' your command line into a manifest:"
+msgstr "Agora que você tem o comando `@code{guix shell}` com uma lista de pacotes, a melhor ação a ser tomada é salvá-la em um arquivo `@emph{manifesto}` — que essencialmente é uma lista de materiais de software — que o Guix pode então importar (@pxref{Escrevendo manifestos,,, guix.pt_BR, Manual de referência do GNU Guix}). A maneira mais fácil de começar é ``traduzindo'' seu comando em um manifesto:"
+
+msgid ""
+"guix shell python python-numpy python-pandas \\\n"
+"  --export-manifest > manifest.scm\n"
+msgstr ""
+"guix shell python python-numpy python-pandas \\\n"
+"  --export-manifest > manifesto.scm\n"
+
+msgid "Put that manifest under version control! From there anyone can redeploy the software environment described by the manifest and run code in that environment:"
+msgstr "Coloque esse manifesto sob controle de versão! A partir daí, qualquer pessoa poderá reimplantar o ambiente de software descrito pelo manifesto e executar código nesse ambiente:"
+
+msgid "guix shell -C -m manifest.scm -- python3 ./myscript.py\n"
+msgstr "guix shell -C -m manifesto.scm -- python3 ./myscript.py\n"
+
+msgid "Here's what @file{manifest.scm} reads:"
+msgstr "Eis o que o arquivo @file{manifesto.scm} contém:"
+
+msgid ""
+";; What follows is a \"manifest\" equivalent to the command line you gave.\n"
+";; You can store it in a file that you may then pass to any 'guix' command\n"
+";; that accepts a '--manifest' (or '-m') option.\n"
+"\n"
+msgstr ""
+";; O que se segue é um \"manifesto\" equivalente ao comando dado.\n"
+";; Você pode armazená-lo em um arquivo e depois passá-lo para qualquer comando 'guix'\n"
+";; que aceite a opção '--manifest' (or '-m').\n"
+"\n"
+
+msgid ""
+"(specifications->manifest\n"
+"  (list \"python\" \"python-numpy\" \"python-pandas\"))\n"
+msgstr ""
+"(specifications->manifest\n"
+"  (list \"python\" \"python-numpy\" \"python-pandas\"))\n"
+
+msgid "It's a code snippet that lists packages.  Notice that there are no version numbers! Indeed, these version numbers are specified in package definitions, located in Guix channels.  To allow others to reproduce the exact same environment as the one you're running, you need to @emph{pin Guix itself} , by capturing the current Guix channel commits with @command{guix describe} (@pxref{Replicating Guix,,, guix, GNU Guix Reference Manual}):"
+msgstr "É um trecho de código que lista pacotes. Observe que não há números de versão! Na verdade, esses números de versão são especificados nas definições de pacotes, localizadas nos canais do Guix. Para permitir que outros reproduzam o mesmo ambiente que você está executando, você precisa @emph{fixar o próprio Guix} , capturando os commits atuais do canal do Guix com @command{guix describe} (@pxref{Replicando Guix,,, guix.pt_BR, Manual de Referência do GNU Guix}):"
+
+msgid "guix describe -f channels > channels.scm\n"
+msgstr "guix describe -f channels > canais.scm\n"
+
+msgid "lock files, for reproducibility"
+msgstr "Arquivos de trava, para reprodução"
+
+msgid "This @code{channels.scm} file is similar in spirit to ``lock files'' that some deployment tools employ to pin package revisions. You should also keep it under version control in your code, and possibly update it once in a while when you feel like running your code against newer versions of its dependencies. With this file, anyone, @emph{at any time and on any machine}, can now reproduce the exact same environment by running:"
+msgstr "Este arquivo @code{canais.scm} é semelhante em essência aos \"arquivos de trava\" (lock files) que algumas ferramentas de implantação utilizam para fixar revisões de pacotes. Você também deve mantê-lo sob controle de versão em seu código e, possivelmente, atualizá-lo de tempos em tempos quando desejar executar seu código com versões mais recentes de suas dependências. Com este arquivo, qualquer pessoa, @emph{a qualquer momento e em qualquer máquina}, agora pode reproduzir exatamente o mesmo ambiente executando:"
+
+msgid ""
+"guix time-machine -C channels.scm -- \\\n"
+"  shell -C -m manifest.scm -- \\\n"
+"  python3 ./myscript.py\n"
+msgstr ""
+"guix time-machine -C canais.scm -- \\\n"
+"  shell -C -m manifesto.scm -- \\\n"
+"  python3 ./myscript.py\n"
+
+msgid "In this example we rely solely on the @code{guix} channel, which provides the Python packages we need. Perhaps some of the packages you need live @uref{https://hpc.guix.info/channels,in other channels}---maybe @code{guix-cran} if you use R, maybe @code{guix-science}.  That's fine: @code{guix describe} also captures that."
+msgstr "Neste exemplo, dependemos exclusivamente do canal @code{guix}, que fornece os pacotes Python de que precisamos. Talvez alguns dos pacotes que você precisa estejam em @uref{https://hpc.guix.info/channels,outros canais}, como @code{guix-cran} se você usa R, ou @code{guix-science}. Não há problema: o comando @code{guix describe} também captura esses outros canais."
+
+msgid "Of course do include a @file{README} file giving the exact command to run the code. Not everyone uses Guix so it can be helpful to also provide minimal non-Guix setup instructions: which package versions are used, how software is built, etc. As we have seen, such instructions would likely be inaccurate and inconvenient to follow at best. Yet, it can be a useful starting point to someone trying to recreate a @emph{similar} environment using different tools. It should probably be presented as such, with the understanding that the only way to get the @emph{same} environment is to use Guix."
+msgstr "É claro, inclua um arquivo @file{README} com o comando exato para executar o código. Nem todos usam o Guix, então pode ser útil fornecer também instruções mínimas de configuração que não use o Guix: quais versões de pacotes são usadas, como o software é compilado, etc. Como vimos, essas instruções provavelmente seriam imprecisas e, na melhor das hipóteses, inconvenientes de seguir. No entanto, podem ser um ponto de partida útil para alguém que esteja tentando recriar um ambiente @emph{similar} usando ferramentas diferentes. Provavelmente, deve ser apresentado dessa forma, deixando claro que a única maneira de obter o @emph{mesmo} ambiente é usando o Guix."
+
+msgid "Step 3: Ensuring Long-Term Source Code Archiving"
+msgstr "Passo 3: Garantindo Arquivamento de Longo Prazo de Código-fonte"
+
+msgid "We insisted on version control before: for the @file{manifest.scm} and @file{channels.scm} files, but of course also for your own code. Our recommendation is to have these two @file{.scm} files in the same repository as the code they're about."
+msgstr "Já havíamos insistido no controle de versão antes: para os arquivos @file{manifesto.scm} e @file{canais.scm}, mas também, é claro, para o seu próprio código. Nossa recomendação é que esses dois arquivos @file{.scm} estejam no mesmo repositório que o código ao qual se referem."
+
+msgid "Since the goal is enabling reproducibility, source code availability is a prime concern.  Source code hosting services come and go and we don't want our code to vanish in a whim and render our published research work unverifiable. @uref{https://www.softwareheritage.org/,Software Heritage} (SWH for short) is @emph{the} solution for this: SWH archives public source code and provides unique intrinsic identifiers to refer to it---@uref{https://swhid.org, @dfn{SWHIDs}}.  Guix itself is @uref{https://doi.org/10.1145/3641525.3663622,connected to SWH} to (1)@ ensure that the source code of its packages is archived, and (2)@ to fall back to downloading from the SWH archive should code vanish from its original site."
+msgstr "Como o objetivo é permitir a reprodutibilidade, a disponibilidade do código-fonte é uma preocupação primordial. Serviços de hospedagem de código-fonte surgem e desaparecem, e não queremos que nosso código desapareça repentinamente, tornando nosso trabalho de pesquisa publicado inverificável. O Software Heritage (SWH) é @emph{a} solução para isso: o SWH arquiva código-fonte público e fornece identificadores intrínsecos únicos para referenciá-lo --- chamados de @uref{https://swhid.org, @dfn{SWHIDs}}. O próprio Guix está @uref{https://doi.org/10.1145/3641525.3663622,conectado ao SWH} para (1)@ garantir que o código-fonte de seus pacotes seja arquivado e (2)@ recorrer ao download do arquivo do SWH caso o código desapareça de seu site original."
+
+msgid "Once your own code is available in a public version-control repository, such as a Git repository on your lab's hosting service, you can ask SWH to archive it by going to its @uref{https://archive.softwareheritage.org/save/,Save Code Now} interface.  SWH will process the request asynchronously and eventually you'll find your code has made it into @uref{https://archive.softwareheritage.org/,the archive}."
+msgstr "Assim que seu código estiver disponível em um repositório público de controle de versão, como um repositório Git no serviço de hospedagem do seu laboratório, você pode solicitar ao SWH que o arquive acessando a interface @uref{https://archive.softwareheritage.org/save/,Save code now}. O SWH processará a solicitação de forma assíncrona e, eventualmente, você encontrará seu código no @uref{https://archive.softwareheritage.org/,arquivo}."
+
+msgid "Step 4: Referencing the Software Environment"
+msgstr "Passo 4: Referenciando o Ambiente de Software"
+
+msgid "This brings us to the last step: referring to our code @emph{and} software environment in our beloved paper.  We already have all our code and Guix files in the same repository, which is archived on SWH.  Thanks to SWH, we now have a SWHID, which uniquely identifies the relevant revision of our code."
+msgstr "Isso nos leva ao último passo: referenciar nosso código @emph{e} ambiente de software em nosso estimado artigo. Já temos todo o nosso código e arquivos Guix no mesmo repositório, que está arquivado no SWH. Graças ao SWH, agora temos um SWHID, que identifica unicamente a revisão relevante do nosso código."
+
+msgid "Following @uref{https://www.softwareheritage.org/howto-archive-and-reference-your-code/,SWH's own guide}, we'll pick an @code{swh:dir} kind of identifier, which refers to the directory of the relevant revision/commit of our repository, and we'll keep @emph{contextual info} for clarity---that includes the original URL. Putting it all together, we'll conclude our paper with a sentence along these lines:"
+msgstr "Seguindo @uref{https://www.softwareheritage.org/howto-archive-and-reference-your-code/,o guia do SWH}, escolheremos um identificador do tipo @code{swh:dir}, que se refere ao diretório da revisão/commit relevante do nosso repositório, e manteremos as @emph{informações contextuais} para maior clareza --- incluindo a URL original. Resumindo, concluiremos nosso artigo com uma frase como esta:"
+
+msgid "Example"
+msgstr "Exemplo"
+
+msgid "The source code used to produce this study, as well as instructions to run it in the right software environment using GNU@ Guix, is archived on Software Heritage as @uref{https://archive.softwareheritage.org/swh:1:dir:cc8919d7705fbaa31efa677ce00bef7eb374fb80;origin=https://gitlab.inria.fr/lcourtes-phd/edcc-2006-redone;visit=swh:1:snp:71a4d08ef4a2e8455b67ef0c6b82349e82870b46;anchor=swh:1:rev:36fde7e5ba289c4c3e30d9afccebbe0cfe83853a,@code{swh:1:dir:cc8919d7705fbaa31efa677ce00bef7eb374fb80;origin=https://gitlab.inria.fr/lcourtes-phd/edcc-2006-redone;visit=swh:1:snp:71a4d08ef4a2e8455b67ef0c6b82349e82870b46;anchor=swh:1:rev:36fde7e5ba289c4c3e30d9afccebbe0cfe83853a}}."
+msgstr "O código-fonte usado para produzir este estudo, bem como as instruções para executá-lo no ambiente de software correto usando o GNU@ Guix, está arquivado no Software Heritage como @uref{https://archive.softwareheritage.org/swh:1:dir:cc8919d7705fbaa31efa677ce00bef7eb374fb80;origin=https://gitlab.inria.fr/lcourtes-phd/edcc-2006-redone;visit=swh:1:snp:71a4d08ef4a2e8455b67ef0c6b82349e82870b46;anchor=swh:1:rev:36fde7e5ba289c4c3e30d9a fccebbe0cfe83853a,@code{swh:1:dir:cc8919d7705fbaa31efa677ce00bef7eb374fb80;origin=https://gitlab.inria.fr/lcourtes-phd/edcc-2006-redone;visit=swh:1:snp:71a4d08ef4a2e8455b67ef0c6b82349e82870b46;anchor=swh:1:rev:36fde7e5ba289c4c3e30d9afccebbe0cfe83853a}}."
+
+msgid "With this information, the reader can:"
+msgstr "Com essa informação, o leitor pode:"
+
+msgid "get the source code;"
+msgstr "obter o código-fonte;"
+
+msgid "reproduce its software environment with @code{guix time-machine} and run the code;"
+msgstr "reproduzir o ambiente de software com @code{guix time-machine} e executar o código;"
+
+msgid "inspect and possibly modify both the code and its environment."
+msgstr "inspecionar e possivelmente modificar ambos o código e seu ambiente."
+
+msgid "Mission accomplished!"
+msgstr "Missão cumprida!"
+
 msgid "cluster installation"
 msgstr "instalação de cluster"
 
@@ -7428,20 +7546,21 @@ msgstr "Lembre-se de que @command{guix-daemon} é responsável por gerar process
 msgid "To begin with, the head node can be installed following the usual binary installation instructions (@pxref{Binary Installation,,, guix, GNU Guix Reference Manual}).  Thanks to the installation script, this should be quick.  Once installation is complete, we need to make some adjustments."
 msgstr "Para começar, o nó principal pode ser instalado seguindo as instruções usuais de instalação binária (@pxref{Instalação de binários,,, guix.pt_BR, Manual de Referência do GNU Guix}). Graças ao script de instalação, isso deve ser rápido. Assim que a instalação for concluída, precisamos fazer alguns ajustes."
 
+msgid "Starting from Guix version 1.5.0, @command{guix-daemon} runs without root privileges by default; previously installed systems can also be migrated to this ``rootless'' mode (@pxref{Build Environment Setup,,, guix, GNU Guix Reference Manual}).  Learn more about this change in a @uref{https://hpc.guix.info/blog/2025/03/build-daemon-drops-its-privileges/, 2025 blog post}."
+msgstr "A partir da versão 1.5.0 do Guix, o comando `guix-daemon` é executado sem privilégios de root por padrão; sistemas previamente instalados também podem ser migrados para este modo \"sem root\" (@pxref{Configuração do ambiente de compilação,,, guix.pt_BR, Manual de referência do GNU Guix}). Saiba mais sobre essa mudança nessa @uref{https://hpc.guix.info/blog/2025/03/build-daemon-drops-its-privileges/, postagem de blog de 2025}."
+
 msgid "Since we want @code{guix-daemon} to be reachable not just from the head node but also from the compute nodes, we need to arrange so that it listens for connections over TCP/IP.  To do that, we'll edit the systemd startup file for @command{guix-daemon}, @file{/etc/systemd/system/guix-daemon.service}, and add a @code{--listen} argument to the @code{ExecStart} line so that it looks something like this:"
 msgstr "Como queremos que o @code{guix-daemon} seja acessível não apenas do nó principal, mas também dos nós de computação, precisamos organizar para que ele escute conexões por TCP/IP. Para fazer isso, editaremos o arquivo de inicialização do systemd para @command{guix-daemon}, @file{/etc/systemd/system/guix-daemon.service} e adicionaremos um argumento @code{--listen} à linha @code{ExecStart} para que fique parecido com isto:"
 
 msgid ""
 "ExecStart=/var/guix/profiles/per-user/root/current-guix/bin/guix-daemon \\\n"
-"    --build-users-group=guixbuild \\\n"
 "    --listen=/var/guix/daemon-socket/socket --listen=0.0.0.0\n"
 msgstr ""
 "ExecStart=/var/guix/profiles/per-user/root/current-guix/bin/guix-daemon \\\n"
-"    --build-users-group=guixbuild \\\n"
 "    --listen=/var/guix/daemon-socket/socket --listen=0.0.0.0\n"
 
-msgid "ExecStart=/var/guix/profiles/per-user/root/current-guix/bin/guix-daemon --build-users-group=guixbuild --listen=/var/guix/daemon-socket/socket --listen=0.0.0.0\n"
-msgstr "ExecStart=/var/guix/profiles/per-user/root/current-guix/bin/guix-daemon --build-users-group=guixbuild --listen=/var/guix/daemon-socket/socket --listen=0.0.0.0\n"
+msgid "ExecStart=/var/guix/profiles/per-user/root/current-guix/bin/guix-daemon --listen=/var/guix/daemon-socket/socket --listen=0.0.0.0\n"
+msgstr "ExecStart=/var/guix/profiles/per-user/root/current-guix/bin/guix-daemon --listen=/var/guix/daemon-socket/socket --listen=0.0.0.0\n"
 
 msgid "For these changes to take effect, the service needs to be restarted:"
 msgstr "Para que essas alterações entrem em vigor, o serviço precisa ser reiniciado:"
@@ -7471,26 +7590,36 @@ msgstr ""
 msgid "The @file{/gnu/store} directory can be exported read-only since only @command{guix-daemon} on the master node will ever modify it.  @file{/var/guix} contains @emph{user profiles} as managed by @code{guix package}; thus, to allow users to install packages with @code{guix package}, this must be read-write."
 msgstr "O diretório @file{/gnu/store} pode ser exportado somente para leitura, pois somente @command{guix-daemon} no nó mestre poderá modificá-lo. @file{/var/guix} contém @emph{perfis de usuário} conforme gerenciados por @code{guix package}; portanto, para permitir que os usuários instalem pacotes com @code{guix package}, isso deve ser de leitura e gravação."
 
-msgid "Users can create as many profiles as they like in addition to the default profile, @file{~/.guix-profile}.  For instance, @code{guix package -p ~/dev/python-dev -i python} installs Python in a profile reachable from the @code{~/dev/python-dev} symlink.  To make sure that this profile is protected from garbage collection---i.e., that Python will not be removed from @file{/gnu/store} while this profile exists---, @emph{home directories should be mounted on the head node} as well so that @code{guix-daemon} knows about these non-standard profiles and avoids collecting software they refer to."
-msgstr "Os usuários podem criar quantos perfis quiserem, além do perfil padrão, @file{~/.guix-profile}. Por exemplo, @code{guix package -p ~/dev/python-dev -i python} instala o Python em um perfil acessível pelo link simbólico @code{~/dev/python-dev}. Para garantir que esse perfil esteja protegido contra coleta de lixo --- ou seja, que o Python não será removido de @file{/gnu/store} enquanto esse perfil existir ---, @emph{diretórios home devem ser montados no nó principal} também para que @code{guix-daemon} saiba sobre esses perfis não padrão e evite coletar softwares aos quais eles se referem."
+msgid "Although it is rarely used, Guix allows for the creation of profiles in non-default locations.  For instance, @code{guix package -p ~/dev/python-dev -i python} installs Python in a profile reachable from the @code{~/dev/python-dev} symlink instead of the default @file{~/.guix-profile}."
+msgstr "Embora raramente utilizado, o Guix permite a criação de perfis em locais não padrão. Por exemplo, @code{guix package -p ~/dev/python-dev -i python} instala o Python em um perfil acessível a partir do link simbólico @code{~/dev/python-dev} em vez do padrão @file{~/.guix-profile}."
 
-msgid "It may be a good idea to periodically remove unused bits from @file{/gnu/store} by running @command{guix gc} (@pxref{Invoking guix gc,,, guix, GNU Guix Reference Manual}).  This can be done by adding a crontab entry on the head node:"
-msgstr "Pode ser uma boa ideia remover periodicamente bits não utilizados de @file{/gnu/store} executando @command{guix gc} (@pxref{Invocando guix gc,,, guix.pt_BR, Manual de Referência do GNU Guix}). Isso pode ser feito adicionando uma entrada crontab no nó principal:"
+msgid "To make sure that this profile is protected from garbage collection---i.e., that Python will not be removed from @file{/gnu/store} while this profile exists---, @emph{home directories should be mounted on the head node} as well so that @code{guix-daemon} knows about these non-standard profiles and avoids collecting software they refer to."
+msgstr "Para garantir que esse perfil esteja protegido contra coleta de lixo --- ou seja, que o Python não será removido de @file{/gnu/store} enquanto esse perfil existir ---, @emph{diretórios home devem ser montados no nó principal} também para que @code{guix-daemon} saiba sobre esses perfis não padrão e evite coletar softwares aos quais eles se referem."
 
-msgid "root@@master# crontab -e\n"
-msgstr "root@@master# crontab -e\n"
+msgid "Doing so is optional though: profiles created by default by @command{guix package}, @command{guix pull}, and @command{guix shell} are all stored under @file{/var/guix} and thus protected from garbage collection."
+msgstr "Fazer isso é opcional: os perfis criados por padrão por @command{guix package}, @command{guix pull} e @command{guix shell} são todos armazenados em @file{/var/guix} e, portanto, protegidos da coleta de lixo."
 
-msgid "... with something like this:"
-msgstr "... com algo assim:"
+msgid "It may be a good idea to periodically remove unused bits from @file{/gnu/store} by running @command{guix gc} (@pxref{Invoking guix gc,,, guix, GNU Guix Reference Manual}).  This can be done by adding a systemd timer based on the one shipped with Guix:"
+msgstr "Pode ser uma boa ideia remover periodicamente bits não utilizados de @file{/gnu/store} executando @command{guix gc} (@pxref{Invocando guix gc,,, guix.pt_BR, Manual de Referência do GNU Guix}). Isso pode ser feito adicionando um temporizador systemd baseado no que vem com o Guix:"
 
 msgid ""
-"# Every day at 5AM, run the garbage collector to make sure\n"
-"# at least 10 GB are free on /gnu/store.\n"
-"0 5 * * 1  /usr/local/bin/guix gc -F10G\n"
+"cp \\\n"
+" /var/guix/profiles/per-user/root/current-guix/lib/systemd/system/guix-gc.* \\\n"
+" /etc/systemd/system\n"
 msgstr ""
-"# Todos os dias às 5h da manhã, execute o coletor de lixo para garantir\n"
-"# pelo menos 10 GB estão livres em /gnu/store.\n"
-"0 5 * * 1 /usr/local/bin/guix gc -F10G\n"
+"cp \\\n"
+" /var/guix/profiles/per-user/root/current-guix/lib/systemd/system/guix-gc.* \\\n"
+" /etc/systemd/system\n"
+
+msgid "Make sure to edit @file{guix-gc.service} and @file{guix-gc.timer} under @file{/etc/systemd/system} to adjust the parameters to your need: timer frequency, amount of free space, and whether to delete user's old generations.  We recommend executing @command{guix gc -F50G} every night, which will ensure that at least 50@tie{}GiB are available, without deleting user generations.  Once you're satisfied, you can start the timer:"
+msgstr "Certifique-se de editar os arquivos @file{guix-gc.service} e @file{guix-gc.timer} em @file{etc/systemd/system} para ajustar os parâmetros de acordo com suas necessidades: frequência do temporizador, quantidade de espaço livre e se as gerações antigas do usuário devem ser excluídas. Recomendamos executar o comando @command{guix gc -F50G} todas as noites, o que garantirá que pelo menos 50@tie{}GiB estejam disponíveis, sem excluir as gerações do usuário. Quando estiver satisfeito, você pode iniciar o temporizador:"
+
+msgid ""
+"systemctl daemon-reload\n"
+"systemctl start guix-gc.timer\n"
+msgstr ""
+"systemctl daemon-reload\n"
+"systemctl start guix-gc.timer\n"
 
 msgid "We're done with the head node! Let's look at compute nodes now."
 msgstr "Terminamos com o nó principal! Vamos dar uma olhada nos nós de computação agora."
@@ -7807,7 +7936,7 @@ msgid "Reconfigure your system."
 msgstr "Reconfigure seu sistema."
 
 msgid "sudo guix system reconfigure path/to/your/altered/config.scm"
-msgstr "sudo guix system reconfigure path/to/your/altered/config.scm"
+msgstr "sudo guix system reconfigure caminho/para/sua/config/modificada.scm"
 
 msgid "Restore database contents."
 msgstr "Restaure o conteúdo do banco de dados."
