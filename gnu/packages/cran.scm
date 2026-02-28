@@ -21672,14 +21672,14 @@ training models for classification or ranking.")
 (define-public r-xts
   (package
     (name "r-xts")
-    (version "0.14.1")
+    (version "0.14.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "xts" version))
        (sha256
         (base32
-         "0kvz75dygr1riyijxsz8vx86fk6yyghilgc9l74lqx405yrnpaax"))
+         "0vyw284fwb17ih25swpvbd419gxr6swnrbsh70b68imnna28bdnl"))
        (modules '((guix build utils)))
        (snippet
         '(with-directory-excursion "inst/doc"
@@ -21692,7 +21692,17 @@ training models for classification or ranking.")
                            "xts.Rnw"
                            "xts.pdf"))))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'set-timezone
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "TZ" "UTC")
+             (setenv "TZDIR"
+                     (search-input-directory inputs "share/zoneinfo")))))))
     (propagated-inputs (list r-zoo))
+    (native-inputs (list r-tinytest tzdata-for-tests))
     (home-page "https://github.com/joshuaulrich/xts")
     (synopsis "Extensible time series")
     (description
