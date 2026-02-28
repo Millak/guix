@@ -3232,7 +3232,7 @@ MIDI files, based on libsmf.")
 (define-public frescobaldi
   (package
     (name "frescobaldi")
-    (version "4.0.4")
+    (version "4.0.5")
     (source
      (origin
        (method git-fetch)
@@ -3241,7 +3241,7 @@ MIDI files, based on libsmf.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03ygnq7x37hnw68nkw0175m0b4ngkhgigf85pjw0sx0dbkwh4i17"))))
+        (base32 "01pkj0drz2cmn907m15871f5rvgkp30ajy6cydxpisyklpq2qlm7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
