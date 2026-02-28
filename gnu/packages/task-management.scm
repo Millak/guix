@@ -38,6 +38,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -64,6 +65,8 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby-xyz)
+  #:use-module (gnu packages rust)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
@@ -72,6 +75,7 @@
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
   #:use-module (guix utils)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
@@ -313,24 +317,55 @@ to finish tasks, not organize them.")
 (define-public taskwarrior
   (package
     (name "taskwarrior")
-    (version "2.6.2")
+    (version "3.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://taskwarrior.org/download/task-" version ".tar.gz"))
-       (sha256 (base32
-                "1v6gca4cfrlh7adjn95j3jg3qq81w3h68037803dc3yd03qaglxi"))))
+             "https://github.com/GothenburgBitFactory/taskwarrior"
+             "/releases/download/v" version
+             "/task-" version ".tar.gz"))
+       (sha256
+        (base32 "05p70bfjimv87qxxxamwq18bs6n6d0mklqa5lnjy8s0jrlgpc0nk"))
+       (patches (search-patches
+                 "taskwarrior-link-taskchampion-cpp-with-sqlite3.patch"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "doc/ref")
+                 (substitute* "doc/CMakeLists.txt"
+                   ((".*task-ref.*") ""))))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ;No tests implemented.
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%cmake-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build cmake-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+                (lambda (phase)
+                  (format #t "Running cargo phase: ~a~%" phase)
+                  (apply (assoc-ref cargo:%standard-phases phase)
+                         #:cargo-target #$(cargo-triplet) args))
+                '(unpack-rust-crates
+                  configure
+                  check-for-pregenerated-files
+                  patch-cargo-checksums)))))))
     (inputs
      (list gnutls
+           ;; needs sqlite3_is_interrupted, not present on 3.39.3
+           sqlite-next
            `(,util-linux "lib")))
-    (arguments
-     `(#:tests? #f ; No tests implemented.
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'install-license-files)))) ; Already installed by package
-     (home-page "https://taskwarrior.org")
+    (native-inputs
+     (cons* corrosion
+            rust
+            (cargo-inputs 'taskwarrior)))
+    (home-page "https://taskwarrior.org")
     (synopsis "Command line task manager")
     (description
      "Taskwarrior is a command-line task manager following the Getting Things

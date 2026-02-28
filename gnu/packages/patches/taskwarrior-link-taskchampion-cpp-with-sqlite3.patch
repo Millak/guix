@@ -1,0 +1,19 @@
+From: Gordon Ball <gordon@chronitis.net>
+Date: Fri, 19 Dec 2025 20:59:08 +0100
+Subject: link taskchampion-cpp with sqlite3
+
+Since the rusqlite dependency has been rewritten not to use bundled sqlite, we need to explicitly link sqlite3 at build time.
+---
+ src/taskchampion-cpp/CMakeLists.txt | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/taskchampion-cpp/CMakeLists.txt b/src/taskchampion-cpp/CMakeLists.txt
+index 9584670..22bcfa0 100644
+--- a/src/taskchampion-cpp/CMakeLists.txt
++++ b/src/taskchampion-cpp/CMakeLists.txt
+@@ -69,3 +69,5 @@ corrosion_add_cxxbridge(taskchampion-cpp
+   CRATE taskchampion_lib
+   FILES lib.rs
+ )
++
++corrosion_link_libraries(taskchampion_lib sqlite3)
