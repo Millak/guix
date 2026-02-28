@@ -356,11 +356,13 @@ non-blocking."
                                     (errno (system-error-errno args)))))
                  (loop rest)))))))))
 
+(define %default-buffer-size 8192)
+
 (define* (connect-to-daemon uri-or-filename #:key non-blocking?
-                            (buffer-size 8192))
+                            (buffer-size %default-buffer-size))
   "Connect to the daemon at URI-OR-FILENAME and return an input/output port.
 If NON-BLOCKING?, use a non-blocking socket when using the file, unix or guix
-URI schemes.  A default BUFFER-SIZE of 8192 is used.
+URI schemes.  Use BUFFER-SIZE defaulting to 8192.
 
 This is a low-level procedure that does not perform the initial handshake with
 the daemon.  Use 'open-connection' for that."
@@ -403,7 +405,8 @@ the daemon.  Use 'open-connection' for that."
 
 (define* (open-connection #:optional (uri (%daemon-socket-uri))
                           #:key port (reserve-space? #t) cpu-affinity
-                          non-blocking? built-in-builders)
+                          non-blocking? built-in-builders
+                          (buffer-size %default-buffer-size))
   "Connect to the daemon at URI (a string), or, if PORT is not #f, use it as
 the I/O port over which to communicate to a build daemon.
 
@@ -415,7 +418,7 @@ for this connection will be pinned.  If NON-BLOCKING?, use a non-blocking
 socket when using the file, unix or guix URI schemes.  If
 BUILT-IN-BUILDERS is provided, it should be a list of strings
 and this will be used instead of the builtin builders provided by the build
-daemon.  Return a server object."
+daemon.  A default BUFFER-SIZE of 8192 is used.  Return a server object."
   (define (handshake-error)
     (raise (condition
             (&store-connection-error (file (or port uri))
@@ -428,7 +431,8 @@ daemon.  Return a server object."
              (handshake-error)))
     (let ((port
            (or port (connect-to-daemon
-                     uri #:non-blocking? non-blocking?))))
+                     uri #:non-blocking? non-blocking?
+                     #:buffer-size buffer-size))))
       (write-value integer %worker-magic-1 port)
       (force-output port)
       (let ((r (read-value integer port)))
