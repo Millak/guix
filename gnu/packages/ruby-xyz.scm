@@ -14531,39 +14531,38 @@ Pathname.")
 (define-public ruby-terminal-table
   (package
     (name "ruby-terminal-table")
-    (version "3.0.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/tj/terminal-table")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1c3f7ng3lxq962n8sbmlsvjx6srh5i801wzsyhxmfz2g880f5jps"))))
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tj/terminal-table")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17s0zvbix72d5ivv1mqi9hyzqrippn01spglj6zg3g18v4vkg0lk"))))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'remove-unnecessary-dependencies
-           (lambda _
-             (substitute* "terminal-table.gemspec"
-               (("s.add_runtime_dependency.*") "\n")
-               (("s.add_development_dependency.*") "\n"))
-             (substitute* "Gemfile"
-               ((".*tins.*") "\n"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "rspec")))))))
+     '(#:phases (modify-phases %standard-phases
+                  (add-before 'check 'remove-unnecessary-dependencies
+                    (lambda _
+                      (substitute* "terminal-table.gemspec"
+                        (("s.add_runtime_dependency.*")
+                         "\n")
+                        (("s.add_development_dependency.*")
+                         "\n"))
+                      (substitute* "Gemfile"
+                        ((".*tins.*")
+                         "\n"))))
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "rspec")))))))
     (build-system ruby-build-system)
-    (propagated-inputs
-     (list ruby-unicode-display-width))
-    (native-inputs
-     (list ruby-rspec ruby-term-ansicolor))
+    (propagated-inputs (list ruby-unicode-display-width))
+    (native-inputs (list ruby-rspec))
     (home-page "https://github.com/tj/terminal-table")
     (synopsis "Simple, feature rich ASCII table generation library")
-    (description
-     "Terminal Table is a fast and simple, yet feature rich
+    (description "Terminal Table is a fast and simple, yet feature rich
 table generator written in Ruby.  It supports ASCII and
 Unicode formatted tables.")
     (license license:expat)))
