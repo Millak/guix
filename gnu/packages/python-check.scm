@@ -43,6 +43,7 @@
 ;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;; Copyright © 2025 Zheng Junjie <z572@z572.online> 
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
+;;; Copyright © 2026 bdunahu <bdunahu@operationnull.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,6 +63,7 @@
 (define-module (gnu packages python-check)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages cmake)
@@ -93,6 +95,7 @@
   #:use-module (gnu packages xorg)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cargo)
+  #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix deprecation)
@@ -102,6 +105,32 @@
   #:use-module (guix hg-download)
   #:use-module (guix packages)
   #:use-module (guix utils))
+
+(define-public austin
+  (package
+    (name "austin")
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/P403n1x87/austin")
+              (commit (string-append "v" version))))
+       (sha256
+        (base32 "0h52z214w1xbx96i222c3syf2g2j9q762v39wcncaxhk2sa07xhn"))
+       (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake))
+    (home-page "https://github.com/P403n1x87/austin")
+    (synopsis "Python frame stack sampler for CPython")
+    (description
+     "Austin is a Python frame stack sampler for CPython.  Samples are
+collected by reading the CPython interpreter virtual memory space to retrieve
+information about the currently running threads along with the stack of the
+frames that are being executed.  Austin's binary output can be piped into any
+other external or custom tools for further processing.")
+    (license (list license:gpl3+
+                   license:unlicense)))) ;src/ansi.h
 
 (define-public python-aioresponses
   (package
