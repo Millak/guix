@@ -54165,13 +54165,13 @@ implemented as @code{R6} classes.")
 (define-public r-mlr3
   (package
     (name "r-mlr3")
-    (version "1.4.0")
+    (version "1.5.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3" version))
               (sha256
                (base32
-                "08sk1hznr9yb5lp88br5nrd5736dp3f3xscr15q6rmiccpr54g5l"))))
+                "1288rj4w8hfrhnkgqkl77zkybm2y8jhm59yr3gigsyly8na47fgf"))))
     (properties
      '((updater-ignored-native-inputs . ("r-distr6"))))
     (build-system r-build-system)
