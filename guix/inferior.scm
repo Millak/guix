@@ -628,11 +628,6 @@ STORE is closed or INFERIOR has data available for input (a REPL response)."
   (define response-port
     (inferior-socket inferior))
 
-  ;; Use buffered ports so that 'get-bytevector-some' returns up to the
-  ;; whole buffer like read(2) would--see <https://bugs.gnu.org/30066>.
-  (setvbuf client 'block 65536)
-  (setvbuf backend 'block 65536)
-
   ;; RESPONSE-PORT may typically contain a leftover newline that 'read' didn't
   ;; consume.  Drain it so that 'select' doesn't immediately stop.
   (drain-input response-port)
@@ -656,10 +651,10 @@ STORE is closed or INFERIOR has data available for input (a REPL response)."
                    (memq response-port reads))
          (loop))))))
 
-(define (open-store-bridge! inferior)
+(define* (open-store-bridge! inferior #:key buffer-size)
   "Open a \"store bridge\" for INFERIOR--a named socket in /tmp that will be
 used to proxy store RPCs from the inferior to the store of the calling
-process."
+process.  Use BUFFER-SIZE for the bridge."
   ;; Create a named socket in /tmp to let INFERIOR connect to it and use it as
   ;; its store.  This ensures the inferior uses the same store, with the same
   ;; options, the same per-session GC roots, etc.
@@ -681,14 +676,16 @@ process."
        (match (accept socket)
          ((client . address)
           (close-port socket)
+          (setvbuf client 'block buffer-size)
           (set-inferior-bridge-socket! inferior client)))
        (read-inferior-response inferior)))))
 
-(define (ensure-store-bridge! inferior)
-  "Ensure INFERIOR has a connected bridge."
+(define* (ensure-store-bridge! inferior #:key buffer-size)
+  "Ensure INFERIOR has a connected bridge, using a BUFFER-SIZE when this is
+first established."
   (or (inferior-bridge-socket inferior)
       (begin
-        (open-store-bridge! inferior)
+        (open-store-bridge! inferior #:buffer-size buffer-size)
         (inferior-bridge-socket inferior))))
 
 (define (inferior-eval-with-store inferior store code)
@@ -703,7 +700,11 @@ thus be the code of a one-argument procedure that accepts a store."
          ;; address of its socket port makes more sense.
          (store-id (object-address (store-connection-socket store)))
          (store-built-in-builders (built-in-builders store)))
-    (ensure-store-bridge! inferior)
+    (ensure-store-bridge! inferior
+                          ;; Use buffered ports so that 'get-bytevector-some'
+                          ;; returns up to the whole buffer like read(2)
+                          ;; would--see <https://bugs.gnu.org/30066>.
+                          #:buffer-size 65536)
     (send-inferior-request
      `(let ((proc  ,code)
             (store (cached-store-connection ,store-id ,proto
