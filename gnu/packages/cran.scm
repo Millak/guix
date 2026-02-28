@@ -53891,13 +53891,13 @@ the comparison of different learning algorithms.")
 (define-public r-mlr3mbo
   (package
     (name "r-mlr3mbo")
-    (version "0.3.3")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3mbo" version))
        (sha256
-        (base32 "121g35j6rab75mpgjnvaw8jcg7da7lvsn48912cy4zsmx3r0pcz3"))))
+        (base32 "0s6k85w0v29g91pcrf5zbwpflcfhlh02dapil19xcbc7zar6lwka"))))
     (properties
      '((upstream-name . "mlr3mbo")
        (updater-extra-native-inputs
@@ -53918,7 +53918,7 @@ the comparison of different learning algorithms.")
                          r-fastghquad
                          r-mirai
                          r-mlr3learners
-                         r-mlr3pipelines
+                         r-nloptr
                          r-ranger
                          r-redux
                          r-rgenoud
