@@ -14592,6 +14592,11 @@ Unicode formatted tables.")
            #:test-target "spec"
            #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'loosen-dependencies
+                 (lambda _
+                   (substitute* "jekyll.gemspec"
+                     (("(.*terminal-table.*,.*),.*" _ m)
+                       (string-append m ")\n")))))
                (add-before 'check 'disable-problematic-tests
                  ;; TODO: Package the missing test inputs.
                  (lambda _
