@@ -1595,19 +1595,21 @@ coverage.")
     (arguments
      (list
       #:tests? #f ; no tests
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           (string-append "PREFIX=" #$output))
       #:configure-flags
-      #~(list (string-append
-               "--with-tcl=" #$(this-package-input "tcl"))
-              (string-append
-               "--with-tk=" #$(this-package-input "tk")))))
-    (inputs (list tcl tk))
+      #~(list (string-append "--with-tcl=" #$(this-package-input "tcl"))
+              (string-append "--with-tk=" #$(this-package-input "tk")))))
+    (inputs (list libx11 libxt readline tcl tk))
     (native-inputs (list python-minimal-wrapper))
     (home-page "http://opencircuitdesign.com/netgen/")
-    (synopsis "@acronym{LVS, layout versus schematic} tool for comparing SPICE or verilog netlists")
-    (description "@code{netgen} compares netlists of circuits. This is commonly used as a part of
-@acronym{EDA, electronic design automation} toolchains in a
-process called @acronym{LVS, layout versus schematic} with the intent to verify
-that the layout of a circuit corresponds to the desired netlists.")
+    (synopsis "Netlist system for @acronym{EDA, electronic design automation}")
+    (description
+     "@code{netgen} is a general purpose @acronym{LVS, layout versus
+schematic} management tool.  It compares netlists of SPICE or verilog netlists
+circuits. This is commonly used as a part of toolchains in a process called
+@acronym{LVS, layout versus schematic} with the intent to verify that the
+layout of a circuit corresponds to the desired netlists.")
     (license license:gpl1)))
     
 (define-public nextpnr
