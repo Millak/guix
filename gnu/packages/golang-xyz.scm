@@ -6695,7 +6695,7 @@ parse and compare two semantic version strings.")
 (define-public go-github-com-coreos-go-systemd-v22
   (package
     (name "go-github-com-coreos-go-systemd-v22")
-    (version "22.5.0")
+    (version "22.7.0")
     (source
      (origin
        (method git-fetch)
@@ -6704,12 +6704,15 @@ parse and compare two semantic version strings.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vhb4cw8nw9nx8mprx829xv8w4jnwhc2lcyjljzlfafsn8nx5nyf"))))
+        (base32 "1hx7zms9q6gdd889cv7llw00h8q6kk3rjznx8hyfzzymq07bxqwg"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
+      #:skip-build? #t
       #:import-path "github.com/coreos/go-systemd/v22"
+      #:test-flags
+      ;; TestSdNotify998914551/001/notify-socket.sock: bind: invalid argument
+      #~(list "-skip" "TestSdNotify")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-sdjournal-header
@@ -6718,8 +6721,6 @@ parse and compare two semantic version strings.")
                 (substitute* "sdjournal/journal.go"
                   (("systemd/sd-journal.h") "elogind/sd-journal.h")
                   (("systemd/sd-id128.h") "elogind/sd-id128.h")))))
-          ;; XXX: Activate when go-build-system supports submodules.
-          (delete 'build)
           (add-before 'check 'remove-failing-test-files
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
@@ -6744,17 +6745,12 @@ parse and compare two semantic version strings.")
                            "sdjournal/journal_test.go"
                            ;; Error getting an existing function: unable to
                            ;; open a handle to the library
-                           "sdjournal/functions_test.go")))))
-          ;; XXX: Replace when go-build-system supports nested path.
-          (replace 'check
-            (lambda* (#:key import-path tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+                           "sdjournal/functions_test.go"))))))))
     (inputs
      (list elogind))
     (propagated-inputs
-     (list go-github-com-godbus-dbus-v5))
+     (list go-github-com-godbus-dbus-v5
+           go-golang-org-x-sys))
     (home-page "https://github.com/coreos/go-systemd")
     (synopsis "Go bindings to systemd")
     (description
