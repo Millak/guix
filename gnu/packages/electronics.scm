@@ -143,6 +143,8 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xml))
 
+(define delkw (@@ (guix utils) delkw))
+
 (define-public aacircuit
   ;; No release in PyPI or version tag on Git, use the latest commit.
   (let ((commit "18635c846754b6219da1a2ceb8977714f70004d0")
@@ -1651,6 +1653,7 @@ that the layout of a circuit corresponds to the desired netlists.")
       (build-system qt-build-system)
       (arguments
        (list
+        #:qtbase qtbase                   ;for Qt 6
         #:configure-flags
         #~(list "-DARCH=generic;ice40;ecp5;himbaechel"
                 "-DBUILD_GUI=ON"
@@ -1733,11 +1736,9 @@ that the layout of a circuit corresponds to the desired netlists.")
              sanitizers-cmake
              yosys))
       (inputs
-       (list boost-1.88
+       (list boost
              eigen
              pybind11
-             qtbase-5
-             qtwayland-5
              qtimgui))
       (synopsis
        "Place-and-Route tool for @acronym{FPGA, Field Programmable Gate Array}")
@@ -1752,12 +1753,14 @@ Automation}, portable and vendor neutral FPGA place and route tool.")
     (name "nextpnr-cli")
     (build-system cmake-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments nextpnr)
-       ((#:configure-flags flags '())
-        #~(delete! "-DBUILD_GUI=ON" #$flags))))
+     (delkw
+      #:qtbase
+      (substitute-keyword-arguments (package-arguments nextpnr)
+        ((#:configure-flags flags '())
+         #~(delete! "-DBUILD_GUI=ON" #$flags)))))
     (inputs
      (modify-inputs (package-inputs nextpnr)
-       (delete "qtbase-5" "qtwayland-5" "qtimgui")))
+       (delete "qtimgui")))
     (synopsis
      (string-append (package-synopsis nextpnr) " Cli only version."))))
 
