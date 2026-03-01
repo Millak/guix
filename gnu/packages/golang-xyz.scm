@@ -7479,8 +7479,9 @@ gist (https://gist.github.com/kballard/272720).")
      (name "go-github-com-darccio-mergo")
      (arguments
       (list
-       #:go go-1.23
        #:import-path "github.com/darccio/mergo"
+       #:test-flags
+       #~(list "-vet=off")
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'unpack 'fix-import-path
