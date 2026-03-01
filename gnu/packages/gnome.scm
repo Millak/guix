@@ -13350,57 +13350,6 @@ profiler via Sysprof, debugging support, and more.")
 (define-deprecated/public-alias komikku-servers
   (@ (gnu packages gnome-circle) komikku-servers))
 
-(define-public libgda
-  (package
-    (name "libgda")
-    (version "6.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://gnome/sources/" name "/"
-                           (version-major+minor version) "/"
-                           name "-" version ".tar.xz"))
-       (sha256
-        (base32 "0w564z7krgjk19r39mi5qn4kggpdg9ggbyn9pb4aavb61r14npwr"))
-       (patches (search-patches "libgda-CVE-2021-39359.patch"
-                                "libgda-disable-data-proxy-test.patch"
-                                "libgda-fix-build.patch"
-                                "libgda-fix-missing-initialization.patch"
-                                "libgda-skip-postgresql-tests.patch"))))
-    (build-system meson-build-system)
-    (native-inputs
-     (list intltool
-           iso-codes/pinned
-           `(,glib "bin")
-           gnome-common
-           gettext-minimal
-           gobject-introspection
-           gtk-doc/stable
-           pkg-config
-           python
-           vala
-           yelp-tools))
-    (inputs
-     (list json-glib
-           glib
-           glade3
-           gtk+
-           libsecret
-           libxslt
-           openssl
-           sqlite
-           vala))
-    (propagated-inputs
-     (list libxml2))  ; required by libgda-5.0.pc
-    (home-page "https://gitlab.gnome.org/GNOME/libgda")
-    (synopsis "Uniform data access")
-    (description
-     "GNU Data Access (GDA) is an attempt to provide uniform access to
-different kinds of data sources (databases, information servers, mail spools,
-etc).  It is a complete architecture that provides all you need to access
-your data.")
-    (license license:lgpl2.1+)))
-
 (define-public gtranslator
   (package
     (name "gtranslator")
