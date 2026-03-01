@@ -12131,6 +12131,13 @@ toolkits.")
                 ;; symlink to it, saving about 11 MiB.
                 (symlink (string-append html "/_images")
                          (string-append info "/matplotlib-figures"))))))))
+    ;; Move all propagated inputs to inputs. *-documentation packages are
+    ;; expected to be installed as standalone leaf packages, and not as
+    ;; libraries with propagated inputs.
+    (propagated-inputs '())
+    (inputs (append
+             (package-inputs python-matplotlib)
+             (package-propagated-inputs python-matplotlib)))
     (native-inputs
      (list ffmpeg                       ;for matplotlib animation support
            graphviz
@@ -12144,7 +12151,8 @@ toolkits.")
            python-numpydoc
            python-pyyaml
            python-scipy
-           python-sphinx
+           ;; XXX: investigate how to build using a newer version of sphinx.
+           python-sphinx-6
            python-sphinx-copybutton
            python-sphinx-design
            python-sphinx-gallery
