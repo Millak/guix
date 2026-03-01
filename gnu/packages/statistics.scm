@@ -1641,13 +1641,13 @@ functionalities needed to treat uncertainties in studies.")
 (define-public python-resample
   (package
     (name "python-resample")
-    (version "1.10.1")
+    (version "1.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "resample" version))
        (sha256
-        (base32 "0p8valf472y5nx45ddk7w5nsmph1725zb0k3a2zs6zyacqczrpb2"))))
+        (base32 "0c9ccygxqjvlklfcngk30myzqbvis8szj5nzj9c305v58pcj2656"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-numpy python-scipy))
     (native-inputs (list python-pytest python-setuptools python-wheel))
