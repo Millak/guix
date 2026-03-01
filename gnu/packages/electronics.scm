@@ -2164,7 +2164,7 @@ formats.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "13x4kqi4j489k4sz56ws4aqhp60nff1i18z6hjd6xx8y7flaik0c"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list
       #:configure-flags
@@ -2204,8 +2204,6 @@ formats.")
            eigen
            glpk
            gmp
-           qtbase-5
-           qtcharts-5
            lemon-graph
            libomp
            mpfr
@@ -2233,14 +2231,14 @@ clock tree synthesis, routing, parasitic extraction, and timing analysis.")
   (package
     (inherit openroad)
     (name "openroad-cli")
+    (build-system cmake-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments openroad)
-       ((#:configure-flags flags '())
-        #~(cons* "-DBUILD_GUI=OFF"
-                 (delete! "-DBUILD_GUI=ON" #$flags)))))
-    (inputs
-     (modify-inputs (package-inputs openroad)
-       (delete "qtbase-5" "qtcharts-5" )))
+     (delkw
+      #:qtbase
+      (substitute-keyword-arguments (package-arguments openroad)
+        ((#:configure-flags flags '())
+         #~(cons* "-DBUILD_GUI=OFF"
+                  (delete! "-DBUILD_GUI=ON" #$flags))))))
     (synopsis
      "Collection of tools for semiconductor digital design, cli version.")))
 
