@@ -3,7 +3,7 @@
 ;;; Copyright © 2018, 2020-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2020, 2022, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2022, 2023, 2024, 2026 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Rene Saavedra <pacoon@protonmail.com>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
@@ -61,7 +61,7 @@
 (define-public gnumach-headers
   (package
     (name "gnumach-headers")
-    (version "1.8+git20260129")
+    (version "1.8+git20260224")
     (source
      (origin
        (method git-fetch)
@@ -71,7 +71,7 @@
        (patches (search-patches "gnumach-version.patch"))
        (file-name (git-file-name "gnumach" version))
        (sha256
-        (base32 "1p7k5cnal2flasncjvhwwb8klh2m96np1q7hwq4dd423ydjm4bnf"))))
+        (base32 "08s3a8fr4pax66n3v2darjzi2vgab30k1siqq9djdaa0r0ssnai8"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
