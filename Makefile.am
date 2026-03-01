@@ -802,17 +802,17 @@ EXTRA_DIST +=						\
   etc/manifests/upgrade.scm				\
   scripts/guix.in					\
   tests/cve-sample.json					\
-  tests/keys/civodul.pub				\
-  tests/keys/dsa.pub					\
-  tests/keys/ed25519-2.pub				\
-  tests/keys/ed25519-2.sec				\
-  tests/keys/ed25519-3.pub				\
-  tests/keys/ed25519-3.sec				\
-  tests/keys/ed25519.pub				\
-  tests/keys/ed25519.sec				\
-  tests/keys/rsa.pub					\
-  tests/keys/signing-key.pub				\
-  tests/keys/signing-key.sec				\
+  tests/keys/openpgp/civodul.pub			\
+  tests/keys/openpgp/dsa.pub				\
+  tests/keys/openpgp/ed25519-2.pub			\
+  tests/keys/openpgp/ed25519-2.sec			\
+  tests/keys/openpgp/ed25519-3.pub			\
+  tests/keys/openpgp/ed25519-3.sec			\
+  tests/keys/openpgp/ed25519.pub			\
+  tests/keys/openpgp/ed25519.sec			\
+  tests/keys/openpgp/rsa.pub				\
+  tests/keys/openpgp/signing-key.pub			\
+  tests/keys/openpgp/signing-key.sec			\
   tests/test.drv					\
   $(TESTS)
 

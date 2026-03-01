@@ -172,7 +172,7 @@ Pz7oopeN72xgggYUNT37ezqN3MeCqw0=
   (not (port-ascii-armored? (open-bytevector-input-port %binary-sample))))
 
 (test-assert "get-openpgp-keyring"
-  (let* ((key (search-path %load-path "tests/keys/civodul.pub"))
+  (let* ((key (search-path %load-path "tests/keys/openpgp/civodul.pub"))
          (keyring (get-openpgp-keyring
                    (open-bytevector-input-port
                     (call-with-input-file key read-radix-64)))))
@@ -232,10 +232,11 @@ Pz7oopeN72xgggYUNT37ezqN3MeCqw0=
                          (verify-openpgp-signature signature keyring
                                                    (open-input-string "Hello!\n"))))
              (list status (openpgp-public-key-id key)))))
-       (list "tests/keys/rsa.pub" "tests/keys/dsa.pub"
-             "tests/keys/ed25519.pub"
-             "tests/keys/ed25519.pub"
-             "tests/keys/ed25519.pub")
+       (list "tests/keys/openpgp/rsa.pub"
+             "tests/keys/openpgp/dsa.pub"
+             "tests/keys/openpgp/ed25519.pub"
+             "tests/keys/openpgp/ed25519.pub"
+             "tests/keys/openpgp/ed25519.pub")
        (list %hello-signature/rsa %hello-signature/dsa
              %hello-signature/ed25519/sha256
              %hello-signature/ed25519/sha512
@@ -254,9 +255,11 @@ Pz7oopeN72xgggYUNT37ezqN3MeCqw0=
                              (call-with-input-file key read-radix-64))
                             keyring)))
                        %empty-keyring
-                       '("tests/keys/rsa.pub" "tests/keys/dsa.pub"
-                         "tests/keys/ed25519.pub" "tests/keys/ed25519.pub"
-                         "tests/keys/ed25519.pub"))))
+                       '("tests/keys/openpgp/rsa.pub"
+                         "tests/keys/openpgp/dsa.pub"
+                         "tests/keys/openpgp/ed25519.pub"
+                         "tests/keys/openpgp/ed25519.pub"
+                         "tests/keys/openpgp/ed25519.pub"))))
     (map (lambda (signature)
            (let ((signature (string->openpgp-packet signature)))
              (let-values (((status key)
