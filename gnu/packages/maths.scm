@@ -3488,6 +3488,7 @@ script files.")
     (inputs
      `(("qscintilla" ,qscintilla)
        ("qt" ,qtbase-5)
+       ("qtwayland" ,qtwayland-5)
        ,@(package-inputs octave-cli)))
     (native-inputs
      `(("qttools-5" , qttools-5) ;for lrelease
@@ -3495,6 +3496,10 @@ script files.")
        ,@(package-native-inputs octave-cli)))
     (arguments
      (substitute-keyword-arguments (package-arguments octave-cli)
+       ((#:modules modules %default-gnu-modules)
+        `((guix build qt-utils) ,@modules))
+       ((#:imported-modules imported-modules %default-gnu-imported-modules)
+        `((guix build qt-utils) ,@imported-modules))
        ((#:phases phases)
         `(modify-phases ,phases
            (add-before 'configure 'patch-qscintilla-library-name
@@ -3506,7 +3511,17 @@ script files.")
                (substitute* "configure"
                  (("qscintilla2-qt5")
                   "qscintilla2_qt5"))
-               #t))))))
+               #t))
+           (add-after 'install 'wrap-qt
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (with-directory-excursion out
+                   (for-each
+                    (lambda (x)
+                      (wrap-qt-program (string-append "../" x)
+                                       #:output out
+                                       #:inputs inputs))
+                    (find-files "libexec" "^octave-gui$"))))))))))
     (synopsis "High-level language for numerical computation (with GUI)")))
 
 (define-public opencascade-occt
