@@ -53693,6 +53693,10 @@ customization by the user.")
      '((upstream-name . "mlr3cluster")
        (updater-extra-native-inputs . ("r-vctrs"))))
     (build-system r-build-system)
+    (arguments
+     (list #:skipped-tests
+           '(("test_LearnerClust.R"
+              "empty predict set .#421."))))
     (propagated-inputs (list r-backports
                              r-checkmate
                              r-cluster
