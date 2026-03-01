@@ -826,6 +826,7 @@ UnifiedPush} client library and distributor daemon.")
            qtkeychain-qt6
            qtlocation
            qtmultimedia
+           qtpositioning
            qtspeech
            qtsvg
            qtwayland
