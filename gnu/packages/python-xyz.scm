@@ -40044,19 +40044,16 @@ across Python versions 3.7+.")
 (define-public python-wand
   (package
     (name "python-wand")
-    (version "0.6.13")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "Wand" version))
+       (uri (pypi-uri "wand" version))
        (sha256
-        (base32 "1jpwm956vm35hmgjndr2jwrcql0bwvpsl88q5nr0x8ppxa2380gm"))))
+        (base32 "1ya00xn57x3lfk6d498lv23hqdq93fmada2v5rskzhj8q8y9i3z4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      ;; These two tests fail even though the signatures are identical.
-      '(list "-k" "not fourier_transform")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'hardcode-lib-path
