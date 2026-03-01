@@ -4782,13 +4782,13 @@ tabular datasets.  This package provides the core modules of Vaex.")
 (define-public python-vector
   (package
     (name "python-vector")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "vector" version))
        (sha256
-        (base32 "0hnnld7yqxb1i6miqfac7nmd0fn7xbvq1w9akp278b1jaclyl1cb"))))
+        (base32 "19jc889z6jxfyyqya5c6sx0hps6j5zgj0shp6k552f264jg5xyaq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
