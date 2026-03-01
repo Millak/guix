@@ -23,9 +23,9 @@
   #:use-module (guix ui)
   #:use-module (guix scripts)
   #:use-module (guix git-authenticate)
-  #:autoload   (guix openpgp) (openpgp-format-fingerprint
+  #:autoload   (guix openpgp) (openpgp-fingerprint->bytevector
+                               openpgp-format-fingerprint
                                openpgp-public-key-fingerprint)
-  #:use-module ((guix channels) #:select (openpgp-fingerprint))
   #:use-module ((guix git) #:select (with-git-error-handling))
   #:use-module (guix progress)
   #:autoload   (guix base16) (base16-string->bytevector)
@@ -310,7 +310,7 @@ Authenticate the given Git checkout using COMMIT/SIGNER as its introduction.\n")
                                           char-set:whitespace)
                           str)
       (leave (G_ "~a: invalid OpenPGP fingerprint~%") str))
-    (let ((fingerprint (openpgp-fingerprint str)))
+    (let ((fingerprint (openpgp-fingerprint->bytevector str)))
       (unless (= 20 (bytevector-length fingerprint))
         (leave (G_ "~a: wrong length for OpenPGP fingerprint~%") str))
       fingerprint))

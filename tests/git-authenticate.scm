@@ -20,7 +20,6 @@
   #:use-module (git)
   #:use-module (guix git)
   #:use-module (guix git-authenticate)
-  #:use-module ((guix channels) #:select (openpgp-fingerprint))
   #:use-module ((guix diagnostics)
                 #:select (formatted-message? formatted-message-arguments))
   #:use-module (guix openpgp)
@@ -354,7 +353,7 @@
             ;; COMMIT0 is signed with the right key, and COMMIT1 is fine.
             (authenticate-repository repository
                                      (commit-id commit0)
-                                     (openpgp-fingerprint fingerprint)
+                                     (openpgp-fingerprint->bytevector fingerprint)
                                      #:keyring-reference "master"
                                      #:cache-key (random-text))))))))
 
@@ -386,7 +385,7 @@
                             'intro-lacks-signature)))
               (authenticate-repository repository
                                        (commit-id commit0)
-                                       (openpgp-fingerprint fingerprint)
+                                       (openpgp-fingerprint->bytevector fingerprint)
                                        #:keyring-reference "master"
                                        #:cache-key (random-text)))))))))
 
@@ -426,7 +425,7 @@
                             'wrong-intro-signing-key)))
              (authenticate-repository repository
                                       (commit-id commit0)
-                                      (openpgp-fingerprint fingerprint)
+                                      (openpgp-fingerprint->bytevector fingerprint)
                                       #:keyring-reference "master"
                                       #:cache-key (random-text)))))))))
 
@@ -469,7 +468,7 @@
                             'target-commit-not-a-descendant-of-intro)))
               (authenticate-repository repository
                                        (commit-id commit1)
-                                       (openpgp-fingerprint fingerprint)
+                                       (openpgp-fingerprint->bytevector fingerprint)
                                        #:end (commit-id commit-alt)
                                        #:keyring-reference "master"
                                        #:cache-key (random-text)))))))))

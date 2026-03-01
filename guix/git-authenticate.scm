@@ -169,10 +169,7 @@ return a list of authorized fingerprints."
     (('authorizations ('version 0)
                       (((? string? fingerprints) _ ...) ...)
                       _ ...)
-     (map (lambda (fingerprint)
-            (base16-string->bytevector
-             (string-downcase (string-filter char-set:graphic fingerprint))))
-          fingerprints))))
+     (map openpgp-fingerprint->bytevector fingerprints))))
 
 (define* (commit-authorized-keys repository commit
                                  #:optional (default-authorizations '()))

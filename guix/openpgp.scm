@@ -56,6 +56,8 @@
             openpgp-public-key-fingerprint openpgp-format-fingerprint
             openpgp-public-key-id
 
+            openpgp-fingerprint->bytevector
+
             openpgp-keyring?
             %empty-keyring
             lookup-key-by-id
@@ -249,6 +251,12 @@ writes to PORT the value 42 as an 8-bit integer and the value #x7777 as a
                  (cons (car names) bits)
                  bits)))
       ((null? names) (reverse bits))))
+
+(define (openpgp-fingerprint->bytevector fingerprint)
+  "Convert an OpenPGP FINGERPRINT (hexadecimal string with whitespace),
+to the corresponding bytevector."
+  (base16-string->bytevector
+   (string-downcase (string-filter char-set:hex-digit fingerprint))))
 
 (define (openpgp-format-fingerprint bv)
   "Return a string representing BV, a bytevector, in the conventional OpenPGP

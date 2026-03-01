@@ -37,7 +37,7 @@
                            tag->commit
                            with-repository)
   #:autoload   (guix git-authenticate) (authenticate-repository)
-  #:autoload   (guix openpgp) (openpgp-public-key-fingerprint
+  #:autoload   (guix openpgp) (openpgp-fingerprint->bytevector
                                openpgp-format-fingerprint)
   #:use-module (guix base16)
   #:use-module (guix records)
@@ -80,7 +80,6 @@
             channel-introduction-first-signed-commit
             channel-introduction-first-commit-signer
 
-            openpgp-fingerprint->bytevector
             openpgp-fingerprint
 
             %default-guix-channel
@@ -157,16 +156,10 @@ authentication starts, and SIGNER is the OpenPGP fingerprint (a bytevector) of
 the signer of that commit."
   (%make-channel-introduction commit signer))
 
-(define (openpgp-fingerprint->bytevector str)
-  "Convert STR, an OpenPGP fingerprint (hexadecimal string with whitespace),
-to the corresponding bytevector."
-  (base16-string->bytevector
-   (string-downcase (string-filter char-set:hex-digit str))))
-
 (define-syntax openpgp-fingerprint
   (lambda (s)
     "Convert STR, an OpenPGP fingerprint (hexadecimal string with whitespace),
-to the corresponding bytevector."
+to the corresponding bytevector, doing it at compile time when possible."
     (syntax-case s ()
       ((_ str)
        (string? (syntax->datum #'str))
