@@ -207,7 +207,8 @@ package."
      ((string-prefix? "python-" name) name)
      ((string-suffix? "-python" name)
       (string-append "python-" (string-drop-right name 7)))
-     ((or (string=? "trytond" name)
+     ((or (string=? "maturin" name)
+          (string=? "trytond" name)
           (string-prefix? "trytond-" name)) name)
      (else (string-append "python-" name)))))
 
