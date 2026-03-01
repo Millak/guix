@@ -969,13 +969,13 @@ Features:
 (define-public python-decaylanguage
   (package
     (name "python-decaylanguage")
-    (version "0.18.6")
+    (version "0.20.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "decaylanguage" version))
        (sha256
-        (base32 "0kc9i9k51kg2zv8dwywpigiipxzmyxpzb101imjsvv1licip7b8v"))))
+        (base32 "1l867w7srvx0hwfys56469lzdkcs2awbwjpj573bjqv2ngdycmwb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
