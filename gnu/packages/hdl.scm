@@ -24,6 +24,7 @@
   #:use-module (guix packages)
   #:use-module (gnu packages electronics)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz))
 
 (define-public ieee-p1076
@@ -129,7 +130,7 @@ chip written in platform-independent VHDL.")
 (define-public open-logic
   (package
     (name "open-logic")
-    (version "4.3.0")
+    (version "4.4.0")
     (source
      (origin
        (method git-fetch)
@@ -141,7 +142,7 @@ chip written in platform-independent VHDL.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0hgdic67s5lxpkg9cn212zrvxqal7l11r9v7513534vf2402cnzj"))))
+         "01kxrglbq50v73796iq9a1vi68i8k2wykk7gga9847smfznqwjwr"))))
     (outputs
      '("out" "olo"))
     (properties
@@ -155,6 +156,7 @@ chip written in platform-independent VHDL.")
           (add-after 'install 'check
             (lambda* (#:key tests? inputs #:allow-other-keys)
               (when tests?
+                (setenv "HOME" "/tmp")
                 (with-directory-excursion "3rdParty/en_cl_fix/sim"
                   (invoke "python3" "run.py" "--simulator" "nvc"
                           "--simulator-path"
@@ -178,7 +180,12 @@ chip written in platform-independent VHDL.")
           ("3rdParty" "share/open-logic/olo/3rdParty"
            #:include ("vhd") #:output "olo"))))
     (native-inputs
-     (list nvc python-matplotlib python-minimal python-vunit))
+     (list nvc
+           python-jinja2
+           python-matplotlib
+           python-minimal
+           python-scipy
+           python-vunit))
     (native-search-paths
      (list (search-path-specification
              (variable "FW_OPEN_LOGIC")
