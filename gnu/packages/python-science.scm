@@ -1345,13 +1345,13 @@ originally defined by the CLHEP project.")
 (define-public python-hist
   (package
     (name "python-hist")
-    (version "2.8.1")
+    (version "2.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "hist" version))
        (sha256
-        (base32 "17cd46c0ixq18fr2kgzam09w1sr4qkd9l6nsjdbl4vggw80ck9vx"))))
+        (base32 "0bhv8bf7zizxf7nsps5hyfppjk1ry0z6pwrwhz44xmm6g6nfdj6y"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-boost-histogram
                              python-histoprint
