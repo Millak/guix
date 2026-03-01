@@ -2750,7 +2750,7 @@ form of AXI, AXI lite, and AXI stream modules.")
 (define-public python-edalize
   (package
     (name "python-edalize")
-    (version "0.6.4")
+    (version "0.6.5")
     (source
      (origin
        (method git-fetch)
@@ -2759,7 +2759,7 @@ form of AXI, AXI lite, and AXI stream modules.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q3whwbc73qv7csr3rq9a2fbcnzprzd4d0jjpzxxyh578sgzzjwi"))))
+        (base32 "1drmc126a12zlynx8ps9iwghaqs058pqj2xpdysxnrj26hg3sp15"))))
     (build-system pyproject-build-system)
     (arguments
      (list
