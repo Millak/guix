@@ -25,7 +25,6 @@
   #:use-module (ice-9 match)
   #:use-module (rnrs bytevectors)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-64)
   #:use-module (srfi srfi-71))
 
@@ -153,8 +152,7 @@ Pz7oopeN72xgggYUNT37ezqN3MeCqw0=
 
 (test-equal "read-radix-64"
   '(#t "PGP MESSAGE")
-  (let-values (((data type)
-                (call-with-input-string %radix-64-sample read-radix-64)))
+  (let ((data type (call-with-input-string %radix-64-sample read-radix-64)))
     (list (bytevector? data) type)))
 
 (test-equal "read-radix-64, CRC mismatch"
@@ -175,18 +173,16 @@ Pz7oopeN72xgggYUNT37ezqN3MeCqw0=
   (let* ((key (search-path %load-path "tests/keys/openpgp/civodul.pub"))
          (keyring (get-openpgp-keyring
                    (open-bytevector-input-port
-                    (call-with-input-file key read-radix-64)))))
-    (let-values (((primary packets)
-                  (lookup-key-by-id keyring %civodul-key-id)))
-      (let ((fingerprint (openpgp-public-key-fingerprint primary)))
-        (and (= (openpgp-public-key-id primary) %civodul-key-id)
-             (not (openpgp-public-key-subkey? primary))
-             (string=? (openpgp-format-fingerprint fingerprint)
-                       %civodul-fingerprint)
-             (string=? (openpgp-user-id-value (find openpgp-user-id? packets))
-                       "Ludovic Courtès <ludo@gnu.org>")
-             (eq? (lookup-key-by-fingerprint keyring fingerprint)
-                  primary))))))
+                    (call-with-input-file key read-radix-64))))
+         (primary packets (lookup-key-by-id keyring %civodul-key-id))
+         (fingerprint (openpgp-public-key-fingerprint primary)))
+    (and (= (openpgp-public-key-id primary) %civodul-key-id)
+         (not (openpgp-public-key-subkey? primary))
+         (string=? (openpgp-format-fingerprint fingerprint)
+                   %civodul-fingerprint)
+         (string=? (openpgp-user-id-value (find openpgp-user-id? packets))
+                   "Ludovic Courtès <ludo@gnu.org>")
+         (eq? primary (lookup-key-by-fingerprint keyring fingerprint)))))
 
 (test-equal "get-openpgp-detached-signature/ascii"
   (list `(,%dsa-key-id ,%dsa-key-fingerprint dsa sha256)
@@ -209,12 +205,11 @@ Pz7oopeN72xgggYUNT37ezqN3MeCqw0=
 
 (test-equal "verify-openpgp-signature, missing key"
   `(missing-key ,%rsa-key-fingerprint)
-  (let* ((keyring   (get-openpgp-keyring (%make-void-port "r")))
-         (signature (string->openpgp-packet %hello-signature/rsa)))
-    (let-values (((status key)
-                  (verify-openpgp-signature signature keyring
-                                            (open-input-string "Hello!\n"))))
-      (list status key))))
+  (let* ((keyring    (get-openpgp-keyring (%make-void-port "r")))
+         (signature  (string->openpgp-packet %hello-signature/rsa))
+         (port       (open-input-string "Hello!\n"))
+         (status key (verify-openpgp-signature signature keyring port)))
+    (list status key)))
 
 (test-equal "verify-openpgp-signature, good signatures"
   `((good-signature ,%rsa-key-id)
@@ -223,21 +218,21 @@ Pz7oopeN72xgggYUNT37ezqN3MeCqw0=
     (good-signature ,%ed25519-key-id)
     (good-signature ,%ed25519-key-id))
   (map (lambda (key signature)
-         (let* ((key       (search-path %load-path key))
-                (keyring   (get-openpgp-keyring
-                            (open-bytevector-input-port
-                             (call-with-input-file key read-radix-64))))
-                (signature (string->openpgp-packet signature)))
-           (let-values (((status key)
-                         (verify-openpgp-signature signature keyring
-                                                   (open-input-string "Hello!\n"))))
-             (list status (openpgp-public-key-id key)))))
+         (let* ((key        (search-path %load-path key))
+                (keyring    (get-openpgp-keyring
+                             (open-bytevector-input-port
+                              (call-with-input-file key read-radix-64))))
+                (signature  (string->openpgp-packet signature))
+                (port       (open-input-string "Hello!\n"))
+                (status key (verify-openpgp-signature signature keyring port)))
+           (list status (openpgp-public-key-id key))))
        (list "tests/keys/openpgp/rsa.pub"
              "tests/keys/openpgp/dsa.pub"
              "tests/keys/openpgp/ed25519.pub"
              "tests/keys/openpgp/ed25519.pub"
              "tests/keys/openpgp/ed25519.pub")
-       (list %hello-signature/rsa %hello-signature/dsa
+       (list %hello-signature/rsa
+             %hello-signature/dsa
              %hello-signature/ed25519/sha256
              %hello-signature/ed25519/sha512
              %hello-signature/ed25519/sha1)))
@@ -260,15 +255,16 @@ Pz7oopeN72xgggYUNT37ezqN3MeCqw0=
                          "tests/keys/openpgp/ed25519.pub"
                          "tests/keys/openpgp/ed25519.pub"
                          "tests/keys/openpgp/ed25519.pub"))))
-    (map (lambda (signature)
-           (let ((signature (string->openpgp-packet signature)))
-             (let-values (((status key)
-                           (verify-openpgp-signature signature keyring
-                                                     (open-input-string "What?!"))))
-               (list status (openpgp-public-key-id key)))))
-         (list %hello-signature/rsa %hello-signature/dsa
-               %hello-signature/ed25519/sha256
-               %hello-signature/ed25519/sha512
-               %hello-signature/ed25519/sha1))))
+    (map
+     (lambda (signature)
+       (let* ((signature  (string->openpgp-packet signature))
+              (port       (open-input-string "What?!"))
+              (status key (verify-openpgp-signature signature keyring port)))
+         (list status (openpgp-public-key-id key))))
+     (list %hello-signature/rsa
+           %hello-signature/dsa
+           %hello-signature/ed25519/sha256
+           %hello-signature/ed25519/sha512
+           %hello-signature/ed25519/sha1))))
 
 (test-end "openpgp")
