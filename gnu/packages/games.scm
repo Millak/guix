@@ -12968,7 +12968,7 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
 (define-public vcmi
   (package
     (name "vcmi")
-    (version "1.7.1")
+    (version "1.7.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -12977,19 +12977,21 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02i6y7idiigg3hl55fhl6pficx4849zvj5wwi29vsvwkwsx06hw7"))
+                "18rvq99kpnlncw2ndjgbwv5ria1ag3vvwmgmkwn4w3yj5dzp4z5k"))
               (patches (search-patches "vcmi-disable-privacy-breach.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DFORCE_BUNDLED_FL=OFF"
                                      "-DENABLE_INNOEXTRACT=OFF"
-                                     "-DENABLE_MMAI=OFF")
+                                     "-DENABLE_MMAI=OFF"
+                                     "-DENABLE_DISCORD=OFF")
            ;; Test suites do not seem well supported upstream and are disabled by default.
            ;; Pass -DENABLE_TEST to configure to enable.
            #:tests? #f))
     (native-inputs
      (list boost-1.83
            ffmpeg
+           fmt
            fuzzylite
            ;; googletest ; needed for tests, but tests are disabled
            libxkbcommon
