@@ -11,7 +11,7 @@
 ;;; Copyright © 2019 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2020-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2020-2025 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020-2026 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2021 Roel Janssen <roel@gnu.org>
@@ -562,13 +562,13 @@ higher scores.")
 (define-public python-boost-histogram
   (package
     (name "python-boost-histogram")
-    (version "1.5.2")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "boost_histogram" version))
        (sha256
-        (base32 "0p2f90p5jwlwrjz3hq2fzaifkmny33g2mpi89nnhi3w41f1jxr2i"))))
+        (base32 "06av8lxvvfafn4xbqakx2fbdcq0djbs7w6j4vn4ji8wgd39dglvf"))))
     (build-system pyproject-build-system)
     ;; This package bundles files from Boost::Histogram and doesn't provide
     ;; a way to use a system library.
