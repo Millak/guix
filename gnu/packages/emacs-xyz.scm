@@ -3921,7 +3921,7 @@ on the Flexoki colour scheme by Steph Ango.")
 (define-public emacs-flycheck
   (package
     (name "emacs-flycheck")
-    (version "35.0")
+    (version "36.0")
     (source
      (origin
        (method git-fetch)
@@ -3929,30 +3929,32 @@ on the Flexoki colour scheme by Steph Ango.")
               (url "https://github.com/flycheck/flycheck/")
               (commit (string-append "v" version))))
        (sha256
-        (base32 "1jj9w1j1qgpj3cdihwkgaj7nd714a0sgsydh413j9rsv6a3d4cgg"))
+        (base32 "0gndi96ijxqj6k9qy5d4l0cwqh0ky7w1p27z90ipkn05xz4j3zp5"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-dash))
     (native-inputs
-     (list emacs-shut-up))
+     (list emacs-buttercup emacs-shut-up python-minimal-wrapper))
     (arguments
      (list
+      #:test-command #~(list "buttercup" "-L" "." "-L" "test/specs"
+                             "test/specs")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'change-flycheck-version
+          (add-after 'unpack 'fix-version-constant
             (lambda _
               (substitute* "flycheck.el"
-                (("\\(pkg-info-version-info 'flycheck\\)")
-                 (string-append "\"" #$version "\""))))))
-      ;; TODO: many failing tests
-      #:tests? #f
-      #:test-command
-      #~(list "emacs" "-Q" "--batch"
-              "-L" "."
-              "--load" "test/flycheck-test"
-              "--load" "test/run.el"
-              "-f" "flycheck-run-tests-main")))
+                (("\\(defconst flycheck-version \"[^\"]*\"")
+                 (string-append
+                  "(defconst flycheck-version \""
+                  #$version "\"")))))
+          (add-after 'unpack 'remove-unsuitable-tests
+            (lambda _
+              ;; Requires network access.
+              (delete-file "test/specs/test-melpa-package.el")
+              ;; Expects an autoloads file not present in Guix.
+              (substitute* "test/specs/test-util.el"
+                (("\\(it \"returns true for autoloads with backing file\"" all)
+                 (string-append "(xit " (substring all 4)))))))))
     (home-page "https://www.flycheck.org")
     (synopsis "On-the-fly syntax checking")
     (description
