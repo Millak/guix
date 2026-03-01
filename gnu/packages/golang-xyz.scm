@@ -13022,8 +13022,9 @@ ABI}.")
      (name "go-github-com-imdario-mergo")
      (arguments
       (list
-       #:go go-1.23
        #:import-path "github.com/imdario/mergo"
+       #:test-flags
+       #~(list "-vet=off")
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'unpack 'fix-import-path
