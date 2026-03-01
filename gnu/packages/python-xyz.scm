@@ -8930,7 +8930,8 @@ cutting and pasting that code over and over.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-backend #~'unittest))
+      #:test-backend #~'unittest
+      #:test-flags #~(list "discover" "-s" "src")))
     (native-inputs (list python-setuptools))
     (home-page "https://github.com/zopefoundation/roman")
     (synopsis "Integer to Roman numerals converter")
