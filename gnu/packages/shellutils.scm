@@ -84,14 +84,14 @@
 (define-public ascii
   (package
     (name "ascii")
-    (version "3.30")
+    (version "3.31")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.catb.org/~esr/ascii/"
                                   "ascii-" version ".tar.gz"))
               (sha256
                (base32
-                "0hr4k4mvnq4zpjxdjkvbbyzz7c1iwxhfal1hz0mdm1qv7sbxqbzd"))))
+                "0g0159sbw9a6arclhnza56ah8hz3wr16famvq4x1p4j6rigsg6ih"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
