@@ -810,7 +810,14 @@ it can be used for displaying many qualitatively different samples.")
                             ;; cvxpy.error.SolverError: Solver 'CVXOPT'
                             ;; failed. Try another solver, or solve with
                             ;; verbose=True for more information.
-                            "TestOpRelConeQuad::test_oprelcone_2")))))
+                            "TestOpRelConeQuad::test_oprelcone_2")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-ci-environment
+            (lambda _
+              ;; Activate hypothesis CI profile to suppress
+              ;; HealthCheck.too_slow which fails on slow build machines.
+              (setenv "CI" "1"))))))
     (native-inputs
      (list pybind11-2
            python-pytest
