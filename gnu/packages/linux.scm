@@ -945,7 +945,11 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
     ;; Disable the EFI pstore storage backend to avoid causing
     ;; unrecoverable failures on some EFI systems:
     ;; https://lists.gnu.org/archive/html/help-guix/2025-01/msg00173.html
-    ("CONFIG_EFI_VARS_PSTORE_DEFAULT_DISABLE" . #t)))
+    ("CONFIG_EFI_VARS_PSTORE_DEFAULT_DISABLE" . #t)
+    ;; Provide modules for wireguard and netfilter support
+    ("CONFIG_WIREGUARD" . m)
+    ("CONFIG_IP_NF_FILTER" . m)
+    ("CONFIG_NETFILTER_XT_MATCH_ADDRTYPE" . m)))
 
 (define (config->string options)
   (string-join (map (match-lambda
@@ -1453,9 +1457,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                         ;; Fixes https://codeberg.org/guix/guix/issues/101
                         ("CONFIG_KEY_DH_OPERATIONS" . #true)
 
-                        ;; For connecting to ci.guix.gnu.org over VPN.
-                        ("CONFIG_WIREGUARD" . m)
-
                         ;; restool support
                         ("CONFIG_FSL_MC_UAPI_SUPPORT" . #t)
                         ("CONFIG_FSL_MC_BUS" . #t)
@@ -1774,8 +1775,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                                            ("CONFIG_USB_ETH_RNDIS" . m)
                                            ("CONFIG_USB_ETH_EEM" . m)
                                            ("CONFIG_USB_G_NCM" . m)
-                                           ;; Provide support for wireguard
-                                           ("CONFIG_WIREGUARD" . m)
                                            ;; Provide support for ath9k wireless
                                            ("CONFIG_ATH9K" . m)
                                            ("CONFIG_ATH9K_HTC" . m))
@@ -2088,8 +2087,6 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-pocket-reform.dtb")))))))))))
                                            ("CONFIG_USB_ETH_RNDIS" . m)
                                            ("CONFIG_USB_ETH_EEM" . m)
                                            ("CONFIG_USB_G_NCM" . m)
-                                           ;; Provide support for wireguard
-                                           ("CONFIG_WIREGUARD" . m)
                                            ;; Provide support for ath9k wireless
                                            ("CONFIG_ATH9K" . m)
                                            ("CONFIG_ATH9K_HTC" . m))
@@ -2423,8 +2420,6 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-pocket-reform.dtb")))))))))))
                                            ("CONFIG_USB_ETH_RNDIS" . m)
                                            ("CONFIG_USB_ETH_EEM" . m)
                                            ("CONFIG_USB_G_NCM" . m)
-                                           ;; Provide support for wireguard
-                                           ("CONFIG_WIREGUARD" . m)
                                            ;; Provide support for ath9k wireless
                                            ("CONFIG_ATH9K" . m)
                                            ("CONFIG_ATH9K_HTC" . m))
