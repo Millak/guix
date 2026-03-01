@@ -322,17 +322,22 @@ by NTP.  The same NTP daemon is also used to provide NTP service to other hosts.
 (define-public openntpd
   (package
     (name "openntpd")
-    (version "6.8p1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://openbsd/OpenNTPD/openntpd-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0ijsylc7a4jlpxsqa0jq1w1c7333id8pcakzl7a5749ria1xp0l5"))))
+    (version "7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/openntpd-portable/openntpd-portable")
+              (commit "cf202d14cb46d1b37638a13e7ed5c1d4143878fe")))
+       (file-name (git-file-name name version))
+       (sha256
+         (base32 "1l7xp5yscdwc4llnb55z2k0vcw197qd9zcwb4gm2vi1m7an3aygx"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
+     `(#:modules ((srfi srfi-1)
+                  (guix build utils)
+                  (guix build gnu-build-system))
+       #:configure-flags
        (let* ((libressl (assoc-ref %build-inputs "libressl"))
               (libressl-version ,(package-version
                                   (car (assoc-ref (package-inputs this-package)
@@ -344,21 +349,67 @@ by NTP.  The same NTP daemon is also used to provide NTP service to other hosts.
                               "/cert.pem")))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'copy-openbsd
+           (lambda* (#:key inputs #:allow-other-keys)
+             (mkdir-p "openbsd")
+             (for-each
+               (lambda (subdir)
+                 (copy-recursively ;; copy required to invoke patch(1).
+                   (in-vicinity (assoc-ref inputs "openbsd") subdir)
+                   (in-vicinity "openbsd/src" subdir)))
+               ;; refer to update.sh for the required files.
+               '("etc" "include" "lib/libc" "lib/libcrypto/arc4random"
+                 "lib/libutil" "usr.sbin/ntpd"))))
+         ;; the update.sh script is invoked from the 'bootstrap phase which is
+         ;; run before 'patch-source-shebangs.  Hence, fix it manually here.
+         (add-after 'unpack 'fix-update-script
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "update.sh"
+               ;; fix shebang
+               (("#!/bin/sh")
+                (string-append
+                  "#!"
+                  (search-input-file inputs "/bin/sh")))
+               ;; do not invoke git.
+               (("git") "true"))))
          (add-after 'unpack 'modify-install-locations
            (lambda _
              ;; Don't try to create /var/run or /var/db
-             (substitute* "src/Makefile.in"
-               (("DESTDIR\\)\\$\\(localstatedir") "TMPDIR"))
-             #t)))))
+             (substitute* "src/Makefile.am"
+               (("DESTDIR\\)\\$\\(localstatedir") "TMPDIR"))))
+         ;; Remove the OpenBSD source from the C_INCLUDE_PATH.
+         (add-after 'set-paths 'adjust-C_INCLUDE_PATH
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let ((openbsd (assoc-ref inputs "openbsd")))
+                       (setenv "C_INCLUDE_PATH"
+                               (string-join
+                                 (delete
+                                   (string-append openbsd "/include")
+                                   (string-split (getenv "C_INCLUDE_PATH") #\:))
+                                 ":"))
+                       (format #t
+                               "environment variable `C_INCLUDE_PATH' changed to ~a~%"
+                               (getenv "C_INCLUDE_PATH"))))))))
     (inputs
-     (list libressl)) ; enable TLS time constraints. See ntpd.conf(5).
+      `(("openbsd"
+         ,(origin
+            (method git-fetch)
+            (uri (git-reference
+                   (url "https://github.com/openbsd/src")
+                   ;; the commit hash for the 7.2 release in OpenBSD.
+                   (commit "b3121f2f06d5822c63d53f93b0df3f0c846d8fce")))
+            (file-name (git-file-name name version))
+            (sha256
+              (base32 "0dif6vcli9i7gx0aw93an9vk164729gayyfbm1z1w9hqvwq4r4dm"))))
+        ;; enable TLS time constraints. See ntpd.conf(5).
+        ("libressl" ,libressl)))
+    (native-inputs
+     (list autoconf automake bison libtool))
     (home-page "https://www.openntpd.org/")
     (synopsis "NTP client and server by the OpenBSD Project")
     (description "OpenNTPD is the OpenBSD Project's implementation of a client
 and server for the Network Time Protocol.  Its design goals include being
 secure, easy to configure, and accurate enough for most purposes, so it's more
 minimalist than ntpd.")
-    (properties
-     '((release-monitoring-url . "https://cdn.openbsd.org/pub/OpenBSD/OpenNTPD")))
     ;; A few of the source files are under bsd-3.
     (license (list l:isc l:bsd-3))))
