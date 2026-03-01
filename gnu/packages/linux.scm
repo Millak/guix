@@ -1294,8 +1294,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                      #:extra-version "arm-generic"
                      #:extra-options
                      (append
-                      `(;; needed to fix the RTC on rockchip platforms
-                        ("CONFIG_RTC_DRV_RK808" . #t))
                       (default-extra-linux-options linux-libre-5.10-version))))
 
 (define-public linux-libre-arm-omap2plus
@@ -1306,6 +1304,31 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                      #:defconfig "omap2plus_defconfig"
                      #:extra-version "arm-omap2plus"))
 
+(define pinebook-extra-modules
+  `(;; Pinebook display, battery, charger and usb
+    ("CONFIG_DRM_ANALOGIX_ANX6345" . m)
+    ("CONFIG_CHARGER_AXP20X" . m)
+    ("CONFIG_INPUT_AXP20X_PEK" . m)
+    ("CONFIG_CHARGER_AXP20X" . m)
+    ("CONFIG_BATTERY_AXP20X" . m)
+    ("CONFIG_PINCTRL_AXP209" . m)
+    ("CONFIG_AXP20X_POWER" . m)
+    ("CONFIG_AXP20X_ADC" . m)
+    ;; Pinebook PRO battery and sound support
+    ("CONFIG_BATTERY_CW2015" . m)
+    ("CONFIG_CHARGER_GPIO" . m)
+    ("CONFIG_SND_SOC_ES8316" . m)))
+
+(define arm64-generic-extra-modules
+  (append
+   pinebook-extra-modules
+   `(;; Provide support for ath9k wireless
+     ("CONFIG_ATH9K_HTC" . m)
+     ;; Support Orange Pi R1 Plus LTS ethernet PHY.
+     ("CONFIG_MOTORCOMM_PHY" . m)
+     ;; needed to fix the RTC on rockchip platforms
+     ("CONFIG_RTC_DRV_RK808" . #t))))
+
 (define-public linux-libre-arm64-generic
   (make-linux-libre* linux-libre-version
                      linux-libre-gnu-revision
@@ -1315,25 +1338,7 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                      #:extra-version "arm64-generic"
                      #:extra-options
                      (append
-                      `(;; Provide support for ath9k wireless
-                        ("CONFIG_ATH9K_HTC" . m)
-                        ;; Support Orange Pi R1 Plus LTS ethernet PHY.
-                        ("CONFIG_MOTORCOMM_PHY" . m)
-                        ;; needed to fix the RTC on rockchip platforms
-                        ("CONFIG_RTC_DRV_RK808" . #t)
-                        ;; Pinebook display, battery, charger and usb
-                        ("CONFIG_DRM_ANALOGIX_ANX6345" . m)
-                        ("CONFIG_CHARGER_AXP20X" . m)
-                        ("CONFIG_INPUT_AXP20X_PEK" . m)
-                        ("CONFIG_CHARGER_AXP20X" . m)
-                        ("CONFIG_BATTERY_AXP20X" . m)
-                        ("CONFIG_PINCTRL_AXP209" . m)
-                        ("CONFIG_AXP20X_POWER" . m)
-                        ("CONFIG_AXP20X_ADC" . m)
-                        ;; Pinebook PRO battery and sound support
-                        ("CONFIG_BATTERY_CW2015" . m)
-                        ("CONFIG_CHARGER_GPIO" . m)
-                        ("CONFIG_SND_SOC_ES8316" . m))
+                      arm64-generic-extra-modules
                       (default-extra-linux-options linux-libre-version))))
 
 (define-public linux-libre-lts-arm64-generic
@@ -1351,25 +1356,7 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                          #:extra-version "arm64-generic"
                          #:extra-options
                          (append
-                          `( ;; Provide support for ath9k wireless
-                            ("CONFIG_ATH9K_HTC" . m)
-                            ;; Support Orange Pi R1 Plus LTS ethernet PHY.
-                            ("CONFIG_MOTORCOMM_PHY" . m)
-                            ;; needed to fix the RTC on rockchip platforms
-                            ("CONFIG_RTC_DRV_RK808" . #t)
-                            ;; Pinebook display, battery, charger and usb
-                            ("CONFIG_DRM_ANALOGIX_ANX6345" . m)
-                            ("CONFIG_CHARGER_AXP20X" . m)
-                            ("CONFIG_INPUT_AXP20X_PEK" . m)
-                            ("CONFIG_CHARGER_AXP20X" . m)
-                            ("CONFIG_BATTERY_AXP20X" . m)
-                            ("CONFIG_PINCTRL_AXP209" . m)
-                            ("CONFIG_AXP20X_POWER" . m)
-                            ("CONFIG_AXP20X_ADC" . m)
-                            ;; Pinebook PRO battery and sound support
-                            ("CONFIG_BATTERY_CW2015" . m)
-                            ("CONFIG_CHARGER_GPIO" . m)
-                            ("CONFIG_SND_SOC_ES8316" . m))
+                          arm64-generic-extra-modules
                           (default-extra-linux-options linux-libre-lts-version)))))
 
 (define-public linux-libre-arm64-generic-5.10
@@ -1381,21 +1368,7 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                      #:extra-version "arm64-generic"
                      #:extra-options
                      (append
-                      `(;; needed to fix the RTC on rockchip platforms
-                        ("CONFIG_RTC_DRV_RK808" . #t)
-                        ;; Pinebook display, battery, charger and usb
-                        ("CONFIG_DRM_ANALOGIX_ANX6345" . m)
-                        ("CONFIG_CHARGER_AXP20X" . m)
-                        ("CONFIG_INPUT_AXP20X_PEK" . m)
-                        ("CONFIG_CHARGER_AXP20X" . m)
-                        ("CONFIG_BATTERY_AXP20X" . m)
-                        ("CONFIG_PINCTRL_AXP209" . m)
-                        ("CONFIG_AXP20X_POWER" . m)
-                        ("CONFIG_AXP20X_ADC" . m)
-                        ;; Pinebook PRO battery and sound support
-                        ("CONFIG_BATTERY_CW2015" . m)
-                        ("CONFIG_CHARGER_GPIO" . m)
-                        ("CONFIG_SND_SOC_ES8316" . m))
+                      arm64-generic-extra-modules
                       (default-extra-linux-options linux-libre-5.10-version))))
 
 (define-public linux-libre-arm64-honeycomb
