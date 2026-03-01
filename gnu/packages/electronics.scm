@@ -2071,7 +2071,8 @@ clock tree synthesis, routing, parasitic extraction, and timing analysis.")
     (arguments
      (substitute-keyword-arguments (package-arguments openroad)
        ((#:configure-flags flags '())
-        #~(delete! "-DBUILD_GUI=ON" #$flags))))
+        #~(cons* "-DBUILD_GUI=OFF"
+                 (delete! "-DBUILD_GUI=ON" #$flags)))))
     (inputs
      (modify-inputs (package-inputs openroad)
        (delete "qtbase-5" "qtcharts-5" )))
