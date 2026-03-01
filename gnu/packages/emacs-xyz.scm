@@ -232,6 +232,7 @@
   #:use-module (gnu packages haskell)
   #:use-module (gnu packages haskell-apps)
   #:use-module (gnu packages ibus)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages java)
   #:use-module (gnu packages julia-xyz)
   #:use-module (gnu packages ncurses)
@@ -25271,7 +25272,31 @@ or @code{treemacs}, but leveraging @code{Dired} to do the job of display.")
               (let ((el-files (find-files "./extensions" ".*\\.el$")))
                 (for-each (lambda (f)
                             (rename-file f (basename f)))
-                          el-files)))))))
+                          el-files))))
+          (add-after 'unpack 'set-external-programs
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "dirvish-widgets.el"
+                ("dirvish-7z-program"
+                 (search-input-file inputs "/bin/7z"))
+                ("dirvish-fc-query-program"
+                 (search-input-file inputs "/bin/fc-query"))
+                ("dirvish-ffmpegthumbnailer-program"
+                 (search-input-file inputs "/bin/ffmpegthumbnailer"))
+                ("dirvish-mediainfo-program"
+                 (search-input-file inputs "/bin/mediainfo"))
+                ("dirvish-pdfinfo-program"
+                 (search-input-file inputs "/bin/pdfinfo"))
+                ("dirvish-pdftoppm-program"
+                 (search-input-file inputs "/bin/pdftoppm"))
+                ("dirvish-vipsthumbnail-program"
+                 (search-input-file inputs "/bin/vipsthumbnail"))))))))
+    (inputs
+     (list 7zip
+           ffmpegthumbnailer
+           fontconfig
+           mediainfo
+           poppler
+           vips))
     (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/alexluigit/dirvish")
     (synopsis "Improved version of the Emacs package Dired")
