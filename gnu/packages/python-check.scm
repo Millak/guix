@@ -833,6 +833,33 @@ intuitive syntax.")
 @command{behave}.")
     (license license:expat)))
 
+(define-public python-ddt
+  (package
+    (name "python-ddt")
+    (version "1.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ddt" version))
+       (sha256
+        (base32 "0jz0lglz5z5clsbralbpmd1hxs4ndb6ls7lvl7216c4nhfqdc5fj"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-aiounittest
+           python-pytest
+           python-setuptools
+           python-six
+           python-wheel))
+    (propagated-inputs
+     (list python-pyyaml))
+    (home-page "https://github.com/datadriventests/ddt")
+    (synopsis "Data-Driven Tests")
+    (description
+     "Data-Driven Tests (@dfn{DDT}) allow you to multiply one test case by
+running it with different test data, and make it appear as multiple test
+cases.")
+    (license license:expat)))
+
 (define-public python-deal
   (package
     (name "python-deal")
@@ -962,33 +989,6 @@ much more.")
     (description
      "This package provides a @url{https://github.com/Z3Prover/z3, z3}-powered
 solver (theorem prover) for Deal.")
-    (license license:expat)))
-
-(define-public python-ddt
-  (package
-    (name "python-ddt")
-    (version "1.7.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "ddt" version))
-       (sha256
-        (base32 "0jz0lglz5z5clsbralbpmd1hxs4ndb6ls7lvl7216c4nhfqdc5fj"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-aiounittest
-           python-pytest
-           python-setuptools
-           python-six
-           python-wheel))
-    (propagated-inputs
-     (list python-pyyaml))
-    (home-page "https://github.com/datadriventests/ddt")
-    (synopsis "Data-Driven Tests")
-    (description
-     "Data-Driven Tests (@dfn{DDT}) allow you to multiply one test case by
-running it with different test data, and make it appear as multiple test
-cases.")
     (license license:expat)))
 
 (define-public python-doc8
@@ -5163,30 +5163,6 @@ unused.")
 @acronym{REGEXPs, regular expressions}.")
     (license license:asl2.0)))
 
-(define-public tms
-  (package
-    (name "tms")
-    (version "0.1.2")
-    (source
-     (origin
-       (method hg-fetch)
-       (uri (hg-reference
-              (url "https://hg.sr.ht/~olly/tms")
-              (changeset (string-append "v" version))))
-       (file-name (string-append name "-" version "-checkout"))
-       (sha256
-        (base32 "1k8v8vx0klz3zfj81g9d1rancn819sv51lgs5j94x69kqzgn3fsw"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-backend #~'custom
-           #:test-flags #~(list "tests.py")))
-    (native-inputs (list python-setuptools))
-    (home-page "https://hg.sr.ht/~olly/tms")
-    (synopsis "Test Match Special for test assertions")
-    (description
-     "This package provides match data structures and types in test code.")
-    (license license:bsd-2)))
-
 (define-public ruff
   (package
     (name "ruff")
@@ -5271,3 +5247,27 @@ Ruff can be used to replace Flake8 (plus dozens of plugins), Black, isort,
 pydocstyle, pyupgrade, autoflake, and more, all while executing tens or
 hundreds of times faster than any individual tool.")
     (license license:expat)))
+
+(define-public tms
+  (package
+    (name "tms")
+    (version "0.1.2")
+    (source
+     (origin
+       (method hg-fetch)
+       (uri (hg-reference
+              (url "https://hg.sr.ht/~olly/tms")
+              (changeset (string-append "v" version))))
+       (file-name (string-append name "-" version "-checkout"))
+       (sha256
+        (base32 "1k8v8vx0klz3zfj81g9d1rancn819sv51lgs5j94x69kqzgn3fsw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "tests.py")))
+    (native-inputs (list python-setuptools))
+    (home-page "https://hg.sr.ht/~olly/tms")
+    (synopsis "Test Match Special for test assertions")
+    (description
+     "This package provides match data structures and types in test code.")
+    (license license:bsd-2)))
