@@ -1,0 +1,113 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Subject: Exclude libwebrtc dependency from audio crate on Linux.
+Date: 2026-03-01
+
+The audio crate conditionally depends on libwebrtc for echo cancellation
+on platforms that have it.  It already cfg-guards the libwebrtc usage for
+Windows-GNU and FreeBSD.  Add target_os = "linux" to those cfg conditions
+so libwebrtc is not required on Linux either.  The rest of the audio crate
+(sound playback, output streams, end_call) continues to work without it.
+
+--- a/crates/audio/Cargo.toml	2026-03-01 21:21:38.652107544 +0000
++++ b/crates/audio/Cargo.toml	2026-03-01 21:22:20.494478427 +0000
+@@ -29,5 +29,5 @@
+ thiserror.workspace = true
+ util.workspace = true
+ 
+-[target.'cfg(not(any(all(target_os = "windows", target_env = "gnu"), target_os = "freebsd")))'.dependencies]
++[target.'cfg(not(any(all(target_os = "windows", target_env = "gnu"), target_os = "freebsd", target_os = "linux")))'.dependencies]
+ libwebrtc = { rev = "5f04705ac3f356350ae31534ffbc476abc9ea83d", git = "https://github.com/zed-industries/livekit-rust-sdks" }
+--- a/crates/audio/src/audio.rs	2026-03-01 21:21:38.656793329 +0000
++++ b/crates/audio/src/audio.rs	2026-03-01 21:40:18.939230433 +0000
+@@ -6,7 +6,7 @@
+ };
+ use gpui::{App, AsyncApp, BackgroundExecutor, BorrowAppContext, Global};
+ 
+-#[cfg(not(any(all(target_os = "windows", target_env = "gnu"), target_os = "freebsd")))]
++#[cfg(not(any(all(target_os = "windows", target_env = "gnu"), target_os = "freebsd", target_os = "linux")))]
+ mod non_windows_and_freebsd_deps {
+     pub(super) use cpal::Sample;
+     pub(super) use libwebrtc::native::apm;
+@@ -15,7 +15,7 @@
+     pub(super) use std::sync::Arc;
+ }
+ 
+-#[cfg(not(any(all(target_os = "windows", target_env = "gnu"), target_os = "freebsd")))]
++#[cfg(not(any(all(target_os = "windows", target_env = "gnu"), target_os = "freebsd", target_os = "linux")))]
+ use non_windows_and_freebsd_deps::*;
+ 
+ use rodio::{
+@@ -102,7 +102,7 @@
+ 
+ pub struct Audio {
+     output_handle: Option<MixerDeviceSink>,
+-    #[cfg(not(any(all(target_os = "windows", target_env = "gnu"), target_os = "freebsd")))]
++    #[cfg(not(any(all(target_os = "windows", target_env = "gnu"), target_os = "freebsd", target_os = "linux")))]
+     pub echo_canceller: Arc<Mutex<apm::AudioProcessingModule>>,
+     source_cache: HashMap<Sound, Buffered<Decoder<Cursor<Vec<u8>>>>>,
+     replays: replays::Replays,
+@@ -114,7 +114,7 @@
+             output_handle: Default::default(),
+             #[cfg(not(any(
+                 all(target_os = "windows", target_env = "gnu"),
+-                target_os = "freebsd"
++                target_os = "freebsd", target_os = "linux"
+             )))]
+             echo_canceller: Arc::new(Mutex::new(apm::AudioProcessingModule::new(
+                 true, false, false, false,
+@@ -140,13 +140,13 @@
+             // The webrtc apm is not yet compiling for windows & freebsd
+             #[cfg(not(any(
+                 any(all(target_os = "windows", target_env = "gnu")),
+-                target_os = "freebsd"
++                target_os = "freebsd", target_os = "linux"
+             )))]
+             let echo_canceller = Arc::clone(&self.echo_canceller);
+ 
+             #[cfg(not(any(
+                 any(all(target_os = "windows", target_env = "gnu")),
+-                target_os = "freebsd"
++                target_os = "freebsd", target_os = "linux"
+             )))]
+             {
+                 let source = rodio::source::Zero::new(CHANNEL_COUNT, SAMPLE_RATE)
+@@ -166,10 +166,10 @@
+ 
+             #[cfg(any(
+                 any(all(target_os = "windows", target_env = "gnu")),
+-                target_os = "freebsd"
++                target_os = "freebsd", target_os = "linux"
+             ))]
+             {
+-                let source = rodio::source::Zero::<f32>::new(CHANNEL_COUNT, SAMPLE_RATE);
++                let source = rodio::source::Zero::new(CHANNEL_COUNT, SAMPLE_RATE);
+                 output_handle.mixer().add(source);
+             }
+ 
+@@ -190,7 +190,7 @@
+         self.replays.replays_to_tar(executor)
+     }
+ 
+-    #[cfg(not(any(all(target_os = "windows", target_env = "gnu"), target_os = "freebsd")))]
++    #[cfg(not(any(all(target_os = "windows", target_env = "gnu"), target_os = "freebsd", target_os = "linux")))]
+     pub fn open_microphone(voip_parts: VoipParts) -> anyhow::Result<impl Source> {
+         let stream = open_input_stream(voip_parts.input_audio_device)?;
+         let stream = stream
+@@ -319,7 +319,7 @@
+     }
+ }
+ 
+-#[cfg(not(any(all(target_os = "windows", target_env = "gnu"), target_os = "freebsd")))]
++#[cfg(not(any(all(target_os = "windows", target_env = "gnu"), target_os = "freebsd", target_os = "linux")))]
+ pub struct VoipParts {
+     echo_canceller: Arc<Mutex<apm::AudioProcessingModule>>,
+     replays: replays::Replays,
+@@ -327,7 +327,7 @@
+     input_audio_device: Option<DeviceId>,
+ }
+ 
+-#[cfg(not(any(all(target_os = "windows", target_env = "gnu"), target_os = "freebsd")))]
++#[cfg(not(any(all(target_os = "windows", target_env = "gnu"), target_os = "freebsd", target_os = "linux")))]
+ impl VoipParts {
+     pub fn new(cx: &AsyncApp) -> anyhow::Result<Self> {
+         let (apm, replays) = cx.read_default_global::<Audio, _>(|audio, _| {

@@ -1,0 +1,3070 @@
+From: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-03-07
+Subject: [PATCH] Add Guix container support.
+License: agpl3+
+
+diff --git a/Cargo.lock b/Cargo.lock
+index ca2c53a028..06eea2fcad 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -13644,6 +13644,7 @@ dependencies = [
+  "fs",
+  "futures 0.3.31",
+  "gpui",
++ "libc",
+  "log",
+  "parking_lot",
+  "paths",
+diff --git a/crates/agent/src/tests/mod.rs b/crates/agent/src/tests/mod.rs
+index 25bdcea4d8..7d351dbf1d 100644
+--- a/crates/agent/src/tests/mod.rs
++++ b/crates/agent/src/tests/mod.rs
+@@ -3734,6 +3734,7 @@ fn setup_context_server(
+                     path: "somebinary".into(),
+                     args: Vec::new(),
+                     env: None,
++                    working_directory: None,
+                     timeout: None,
+                 },
+             },
+diff --git a/crates/project/src/context_server_store.rs b/crates/project/src/context_server_store.rs
+index e4cac4768d..598701f2b1 100644
+--- a/crates/project/src/context_server_store.rs
++++ b/crates/project/src/context_server_store.rs
+@@ -349,6 +349,7 @@ impl ContextServerStore {
+                 path: "test".into(),
+                 args: vec![],
+                 env: None,
++                working_directory: None,
+                 timeout: None,
+             },
+             remote: false,
+@@ -688,12 +689,13 @@ impl ContextServerStore {
+                 })
+                 .await?;
+ 
++            let working_directory = response.working_directory.or(root_dir);
+             let remote_command = upstream_client.update(cx, |client, _| {
+                 client.build_command(
+                     Some(response.path),
+                     &response.args,
+                     &response.env.into_iter().collect(),
+-                    root_dir,
++                    working_directory,
+                     None,
+                 )
+             })?;
+@@ -702,6 +704,7 @@ impl ContextServerStore {
+                 path: remote_command.program.into(),
+                 args: remote_command.args,
+                 env: Some(remote_command.env.into_iter().collect()),
++                working_directory: remote_command.cwd,
+                 timeout: None,
+             };
+ 
+@@ -745,8 +748,17 @@ impl ContextServerStore {
+                             .min(MAX_TIMEOUT_SECS),
+                     );
+ 
+-                    // Don't pass remote paths as working directory for locally-spawned processes
+-                    let working_directory = if is_remote_project { None } else { root_path };
++                    let working_directory = command
++                        .working_directory
++                        .clone()
++                        .map(Arc::from)
++                        .or_else(|| {
++                            if is_remote_project {
++                                None
++                            } else {
++                                root_path.clone()
++                            }
++                        });
+                     anyhow::Ok(Arc::new(ContextServer::stdio(
+                         id,
+                         command,
+@@ -811,6 +823,10 @@ impl ContextServerStore {
+                 .clone()
+                 .map(|env| env.into_iter().collect())
+                 .unwrap_or_default(),
++            working_directory: command
++                .working_directory
++                .as_ref()
++                .map(|path| path.display().to_string()),
+         })
+     }
+ 
+diff --git a/crates/project/src/context_server_store/extension.rs b/crates/project/src/context_server_store/extension.rs
+index 6ad8bd806c..865904aaad 100644
+--- a/crates/project/src/context_server_store/extension.rs
++++ b/crates/project/src/context_server_store/extension.rs
+@@ -69,6 +69,7 @@ impl registry::ContextServerDescriptor for ContextServerDescriptor {
+                 path: command.command,
+                 args: command.args,
+                 env: Some(command.env.into_iter().collect()),
++                working_directory: None,
+                 timeout: None,
+             })
+         })
+diff --git a/crates/project/src/debugger/dap_store.rs b/crates/project/src/debugger/dap_store.rs
+index 6d320bc06e..846d1e7c29 100644
+--- a/crates/project/src/debugger/dap_store.rs
++++ b/crates/project/src/debugger/dap_store.rs
+@@ -357,7 +357,7 @@ impl DapStore {
+                         command: Some(command.program),
+                         arguments: command.args,
+                         envs: command.env,
+-                        cwd: None,
++                        cwd: command.cwd,
+                         connection,
+                         request_args: binary.request_args,
+                     })
+diff --git a/crates/project/src/debugger/session.rs b/crates/project/src/debugger/session.rs
+index 2430d6c102..76d2fa81f9 100644
+--- a/crates/project/src/debugger/session.rs
++++ b/crates/project/src/debugger/session.rs
+@@ -2883,9 +2883,13 @@ impl Session {
+ 
+                 let child = remote_client.update(cx, |client, _| {
+                     let command = client.build_forward_ports_command(port_forwards)?;
+-                    let child = new_command(command.program)
+-                        .args(command.args)
+-                        .envs(command.env)
++                    let mut child = new_command(command.program);
++                    child.args(command.args);
++                    child.envs(command.env);
++                    if let Some(path) = command.cwd {
++                        child.current_dir(path);
++                    }
++                    let child = child
+                         .spawn()
+                         .context("spawning port forwarding process")?;
+                     anyhow::Ok(child)
+diff --git a/crates/project/src/terminals.rs b/crates/project/src/terminals.rs
+index 6efddcdf77..1e7f840ab2 100644
+--- a/crates/project/src/terminals.rs
++++ b/crates/project/src/terminals.rs
+@@ -170,7 +170,7 @@ impl Project {
+                         }
+                     };
+ 
+-                    let (shell, env) = {
++                    let (shell, env, remote_working_directory) = {
+                         env.extend(spawn_task.env);
+                         match remote_client {
+                             Some(remote_client) => match activation_script.clone() {
+@@ -223,6 +223,7 @@ impl Project {
+                                             title_override: None,
+                                         },
+                                         env,
++                                        None,
+                                     )
+                                 }
+                                 _ => (
+@@ -236,12 +237,17 @@ impl Project {
+                                         Shell::System
+                                     },
+                                     env,
++                                    None,
+                                 ),
+                             },
+                         }
+                     };
+                     anyhow::Ok(TerminalBuilder::new(
+-                        local_path.map(|path| path.to_path_buf()),
++                        if is_via_remote {
++                            remote_working_directory
++                        } else {
++                            local_path.map(|path| path.to_path_buf())
++                        },
+                         task_state,
+                         shell,
+                         env,
+@@ -397,16 +403,20 @@ impl Project {
+ 
+             let builder = project
+                 .update(cx, move |_, cx| {
+-                    let (shell, env) = {
++                    let (shell, env, remote_working_directory) = {
+                         match remote_client {
+                             Some(remote_client) => {
+                                 create_remote_shell(None, env, path, remote_client, cx)?
+                             }
+-                            None => (settings.shell, env),
++                            None => (settings.shell, env, None),
+                         }
+                     };
+                     anyhow::Ok(TerminalBuilder::new(
+-                        local_path.map(|path| path.to_path_buf()),
++                        if is_via_remote {
++                            remote_working_directory
++                        } else {
++                            local_path.map(|path| path.to_path_buf())
++                        },
+                         None,
+                         shell,
+                         env,
+@@ -555,6 +565,9 @@ impl Project {
+                         let mut command = new_std_command(command_template.program);
+                         command.args(command_template.args);
+                         command.envs(command_template.env);
++                        if let Some(path) = command_template.cwd {
++                            command.current_dir(path);
++                        }
+                         Ok(command)
+                     }
+                     None => {
+@@ -610,7 +623,7 @@ fn create_remote_shell(
+     working_directory: Option<Arc<Path>>,
+     remote_client: Entity<RemoteClient>,
+     cx: &mut App,
+-) -> Result<(Shell, HashMap<String, String>)> {
++) -> Result<(Shell, HashMap<String, String>, Option<PathBuf>)> {
+     insert_zed_terminal_env(&mut env, &release_channel::AppVersion::global(cx));
+ 
+     let (program, args) = match spawn_command {
+@@ -636,5 +649,6 @@ fn create_remote_shell(
+             title_override: Some(format!("{} — Terminal", host)),
+         },
+         command.env,
++        command.cwd,
+     ))
+ }
+diff --git a/crates/project/src/trusted_worktrees.rs b/crates/project/src/trusted_worktrees.rs
+index 69d410adc6..d5ece7aa0b 100644
+--- a/crates/project/src/trusted_worktrees.rs
++++ b/crates/project/src/trusted_worktrees.rs
+@@ -160,6 +160,9 @@ impl From<RemoteConnectionOptions> for RemoteHostLocation {
+                 Some(SharedString::new(docker_connection_options.name)),
+                 SharedString::new(docker_connection_options.container_id),
+             ),
++            RemoteConnectionOptions::GuixContainer(guix) => {
++                (None, SharedString::new(guix.project_root))
++            }
+             #[cfg(feature = "test-support")]
+             RemoteConnectionOptions::Mock(mock) => {
+                 (None, SharedString::new(format!("mock-{}", mock.id)))
+diff --git a/crates/project/tests/integration/context_server_store.rs b/crates/project/tests/integration/context_server_store.rs
+index 56bdaed41c..a77f1149a9 100644
+--- a/crates/project/tests/integration/context_server_store.rs
++++ b/crates/project/tests/integration/context_server_store.rs
+@@ -335,6 +335,7 @@ async fn test_context_server_maintain_servers_loop(cx: &mut TestAppContext) {
+                             path: "somebinary".into(),
+                             args: vec!["arg".to_string()],
+                             env: None,
++                            working_directory: None,
+                             timeout: None,
+                         },
+                     },
+@@ -378,6 +379,7 @@ async fn test_context_server_maintain_servers_loop(cx: &mut TestAppContext) {
+                             path: "somebinary".into(),
+                             args: vec!["anotherArg".to_string()],
+                             env: None,
++                            working_directory: None,
+                             timeout: None,
+                         },
+                     },
+@@ -475,6 +477,7 @@ async fn test_context_server_enabled_disabled(cx: &mut TestAppContext) {
+                     path: "somebinary".into(),
+                     args: vec!["arg".to_string()],
+                     env: None,
++                    working_directory: None,
+                     timeout: None,
+                 },
+             },
+@@ -512,6 +515,7 @@ async fn test_context_server_enabled_disabled(cx: &mut TestAppContext) {
+                         path: "somebinary".into(),
+                         args: vec!["arg".to_string()],
+                         env: None,
++                        working_directory: None,
+                         timeout: None,
+                     },
+                 },
+@@ -541,6 +545,7 @@ async fn test_context_server_enabled_disabled(cx: &mut TestAppContext) {
+                     command: ContextServerCommand {
+                         path: "somebinary".into(),
+                         args: vec!["arg".to_string()],
++                        working_directory: None,
+                         timeout: None,
+                         env: None,
+                     },
+@@ -586,6 +591,7 @@ async fn test_server_ids_includes_disabled_servers(cx: &mut TestAppContext) {
+                         path: "somebinary".into(),
+                         args: vec![],
+                         env: None,
++                        working_directory: None,
+                         timeout: None,
+                     },
+                 },
+@@ -599,6 +605,7 @@ async fn test_server_ids_includes_disabled_servers(cx: &mut TestAppContext) {
+                         path: "somebinary".into(),
+                         args: vec![],
+                         env: None,
++                        working_directory: None,
+                         timeout: None,
+                     },
+                 },
+@@ -857,6 +864,7 @@ async fn test_context_server_stdio_timeout(cx: &mut TestAppContext) {
+                 path: "/usr/bin/node".into(),
+                 args: vec!["server.js".into()],
+                 env: None,
++                working_directory: None,
+                 timeout: Some(180000),
+             },
+             remote: false,
+@@ -953,6 +961,7 @@ impl ContextServerDescriptor for FakeContextServerDescriptor {
+             path: self.path.clone(),
+             args: vec!["arg1".to_string(), "arg2".to_string()],
+             env: None,
++            working_directory: None,
+             timeout: None,
+         }))
+     }
+diff --git a/crates/proto/proto/ai.proto b/crates/proto/proto/ai.proto
+index b2a8a371c4..e124617c6c 100644
+--- a/crates/proto/proto/ai.proto
++++ b/crates/proto/proto/ai.proto
+@@ -182,6 +182,7 @@ message ContextServerCommand {
+     string path = 1;
+     repeated string args = 2;
+     map<string, string> env = 3;
++    optional string working_directory = 4;
+ }
+ 
+ message AgentServerCommand {
+diff --git a/crates/recent_projects/src/guix_suggest.rs b/crates/recent_projects/src/guix_suggest.rs
+new file mode 100644
+index 0000000000..3b02c4549f
+--- /dev/null
++++ b/crates/recent_projects/src/guix_suggest.rs
+@@ -0,0 +1,127 @@
++use db::kvp::KEY_VALUE_STORE;
++use gpui::{SharedString, WeakEntity, Window};
++use project::{Project, WorktreeId};
++use std::sync::LazyLock;
++use ui::prelude::*;
++use util::rel_path::RelPath;
++use workspace::Workspace;
++use workspace::notifications::NotificationId;
++use workspace::notifications::simple_message_notification::MessageNotification;
++use worktree::UpdatedEntriesSet;
++
++const GUIX_CONTAINER_SUGGEST_KEY: &str = "guix_container_suggest_dismissed";
++
++fn manifest_path() -> &'static RelPath {
++    static PATH: LazyLock<&'static RelPath> =
++        LazyLock::new(|| RelPath::unix("manifest.scm").expect("valid path"));
++    *PATH
++}
++
++fn project_guix_key(project_path: &str) -> String {
++    format!("{}_{}", GUIX_CONTAINER_SUGGEST_KEY, project_path)
++}
++
++pub fn suggest_on_worktree_updated(
++    worktree_id: WorktreeId,
++    updated_entries: &UpdatedEntriesSet,
++    project: &gpui::Entity<Project>,
++    window: &mut Window,
++    cx: &mut Context<Workspace>,
++) {
++    let manifest_updated = updated_entries
++        .iter()
++        .any(|(path, _, _)| path.as_ref() == manifest_path());
++
++    if !manifest_updated {
++        return;
++    }
++
++    let Some(worktree) = project.read(cx).worktree_for_id(worktree_id, cx) else {
++        return;
++    };
++
++    let worktree = worktree.read(cx);
++
++    if !worktree.is_local() {
++        return;
++    }
++
++    let abs_path = worktree.abs_path();
++    let project_path = abs_path.to_string_lossy().to_string();
++    let manifest_path = abs_path.join("manifest.scm");
++    let key_for_dismiss = project_guix_key(&project_path);
++
++    let already_dismissed = KEY_VALUE_STORE
++        .read_kvp(&key_for_dismiss)
++        .ok()
++        .flatten()
++        .is_some();
++
++    if already_dismissed {
++        return;
++    }
++
++    cx.on_next_frame(window, move |workspace, _window, cx| {
++        let workspace_weak: WeakEntity<Workspace> = workspace.weak_handle();
++        struct GuixContainerSuggestionNotification;
++
++        let notification_id = NotificationId::composite::<GuixContainerSuggestionNotification>(
++            SharedString::from(project_path.clone()),
++        );
++
++        workspace.show_notification(notification_id, cx, |cx| {
++            cx.new(move |cx| {
++                MessageNotification::new(
++                    "This project contains a Guix manifest. Would you like to re-open it in a container?",
++                    cx,
++                )
++                .primary_message("Yes, Open in Container")
++                .primary_icon(IconName::Check)
++                .primary_icon_color(Color::Success)
++                .primary_on_click({
++                    move |window, cx| {
++                        window.dispatch_action(Box::new(zed_actions::OpenGuixContainer), cx);
++                    }
++                })
++                .more_info_message("Open manifest.scm")
++                .more_info_on_click({
++                    let workspace_weak = workspace_weak.clone();
++                    let manifest_path = manifest_path.clone();
++                    move |window, cx| {
++                        let Some(workspace) = workspace_weak.upgrade() else {
++                            return;
++                        };
++
++                        workspace.update(cx, |_workspace, cx| {
++                            let manifest_path = manifest_path.clone();
++                            cx.spawn_in(window, async move |workspace, cx| {
++                                workspace
++                                    .update_in(cx, |workspace, window, cx| {
++                                        workspace.open_abs_path(
++                                            manifest_path.clone(),
++                                            Default::default(),
++                                            window,
++                                            cx,
++                                        )
++                                    })?
++                                    .await
++                            })
++                            .detach();
++                        });
++                    }
++                })
++                .secondary_message("Don't Show Again")
++                .secondary_icon(IconName::Close)
++                .secondary_icon_color(Color::Error)
++                .secondary_on_click({
++                    move |_window, cx| {
++                        let key = key_for_dismiss.clone();
++                        db::write_and_log(cx, move || {
++                            KEY_VALUE_STORE.write_kvp(key, "dismissed".to_string())
++                        });
++                    }
++                })
++            })
++        });
++    });
++}
+diff --git a/crates/recent_projects/src/recent_projects.rs b/crates/recent_projects/src/recent_projects.rs
+index 110a702437..90fe82912d 100644
+--- a/crates/recent_projects/src/recent_projects.rs
++++ b/crates/recent_projects/src/recent_projects.rs
+@@ -1,4 +1,5 @@
+ mod dev_container_suggest;
++mod guix_suggest;
+ pub mod disconnected_overlay;
+ mod remote_connections;
+ mod remote_servers;
+@@ -48,7 +49,7 @@ use workspace::{
+     SerializedWorkspaceLocation, WORKSPACE_DB, Workspace, WorkspaceId,
+     notifications::DetachAndPromptErr, with_active_or_new_workspace,
+ };
+-use zed_actions::{OpenDevContainer, OpenRecent, OpenRemote};
++use zed_actions::{OpenDevContainer, OpenGuixContainer, OpenRecent, OpenRemote};
+ 
+ actions!(recent_projects, [ToggleActionsMenu]);
+ 
+@@ -405,6 +406,65 @@ pub fn init(cx: &mut App) {
+         });
+     });
+ 
++    cx.on_action(|_: &OpenGuixContainer, cx| {
++        with_active_or_new_workspace(cx, move |workspace, window, cx| {
++            if !workspace.project().read(cx).is_local() {
++                cx.spawn_in(window, async move |_, cx| {
++                    cx.prompt(
++                        gpui::PromptLevel::Critical,
++                        "Cannot open Guix container from remote project",
++                        None,
++                        &["Ok"],
++                    )
++                    .await
++                    .ok();
++                })
++                .detach();
++                return;
++            }
++
++            let app_state = workspace.app_state().clone();
++            let fs = workspace.project().read(cx).fs().clone();
++            let paths = workspace
++                .root_paths(cx)
++                .into_iter()
++                .map(|path| path.as_ref().to_path_buf())
++                .collect::<Vec<_>>();
++            let handle = cx.entity().downgrade();
++
++            cx.spawn_in(window, async move |workspace, cx| {
++                let Some(remote::RemoteConnectionOptions::GuixContainer(connection)) =
++                    workspace::guix_connection_options_for_paths(&paths, &app_state, cx).await
++                else {
++                    let _ = cx
++                        .prompt(
++                            gpui::PromptLevel::Critical,
++                            "No Guix manifest found",
++                            Some("This project no longer contains a detectable manifest.scm."),
++                            &["Ok"],
++                        )
++                        .await;
++                    return;
++                };
++
++                workspace
++                    .update_in(cx, |workspace, window, cx| {
++                        workspace.toggle_modal(window, cx, |window, cx| {
++                            RemoteServerProjects::new_guix(
++                                connection,
++                                fs.clone(),
++                                window,
++                                handle.clone(),
++                                cx,
++                            )
++                        });
++                    })
++                    .log_err();
++            })
++            .detach();
++        });
++    });
++
+     // Subscribe to worktree additions to suggest opening the project in a dev container
+     cx.observe_new(
+         |workspace: &mut Workspace, window: Option<&mut Window>, cx: &mut Context<Workspace>| {
+@@ -425,6 +485,13 @@ pub fn init(cx: &mut App) {
+                             window,
+                             cx,
+                         );
++                        guix_suggest::suggest_on_worktree_updated(
++                            *worktree_id,
++                            updated_entries,
++                            project,
++                            window,
++                            cx,
++                        );
+                     }
+                 },
+             )
+@@ -1394,6 +1461,7 @@ fn icon_for_remote_connection(options: Option<&RemoteConnectionOptions>) -> Icon
+             RemoteConnectionOptions::Ssh(_) => IconName::Server,
+             RemoteConnectionOptions::Wsl(_) => IconName::Linux,
+             RemoteConnectionOptions::Docker(_) => IconName::Box,
++            RemoteConnectionOptions::GuixContainer(_) => IconName::Box,
+             #[cfg(any(test, feature = "test-support"))]
+             RemoteConnectionOptions::Mock(_) => IconName::Server,
+         },
+@@ -1868,6 +1936,106 @@ mod tests {
+             .unwrap();
+     }
+ 
++    #[gpui::test]
++    async fn test_open_guix_container_action_opens_modal(cx: &mut TestAppContext) {
++        let app_state = init_test(cx);
++
++        app_state
++            .fs
++            .as_fake()
++            .insert_tree(
++                path!("/project"),
++                json!({
++                    "manifest.scm": "specifications->manifest '()",
++                    "src": {
++                        "main.rs": "fn main() {}"
++                    }
++                }),
++            )
++            .await;
++
++        cx.update(|cx| {
++            open_paths(
++                &[PathBuf::from(path!("/project"))],
++                app_state,
++                workspace::OpenOptions::default(),
++                cx,
++            )
++        })
++        .await
++        .unwrap();
++
++        assert_eq!(cx.update(|cx| cx.windows().len()), 1);
++        let multi_workspace = cx.update(|cx| cx.windows()[0].downcast::<MultiWorkspace>().unwrap());
++
++        cx.run_until_parked();
++
++        cx.dispatch_action(*multi_workspace, OpenGuixContainer);
++
++        multi_workspace
++            .update(cx, |multi_workspace, _, cx| {
++                let modal = multi_workspace
++                    .workspace()
++                    .read(cx)
++                    .active_modal::<RemoteServerProjects>(cx);
++                assert!(
++                    modal.is_some(),
++                    "Guix container modal should be open after dispatching OpenGuixContainer"
++                );
++            })
++            .unwrap();
++    }
++
++    #[gpui::test]
++    async fn test_open_guix_container_action_without_manifest_does_not_open_modal(
++        cx: &mut TestAppContext,
++    ) {
++        let app_state = init_test(cx);
++
++        app_state
++            .fs
++            .as_fake()
++            .insert_tree(
++                path!("/project"),
++                json!({
++                    "src": {
++                        "main.rs": "fn main() {}"
++                    }
++                }),
++            )
++            .await;
++
++        cx.update(|cx| {
++            open_paths(
++                &[PathBuf::from(path!("/project"))],
++                app_state,
++                workspace::OpenOptions::default(),
++                cx,
++            )
++        })
++        .await
++        .unwrap();
++
++        let multi_workspace = cx.update(|cx| cx.windows()[0].downcast::<MultiWorkspace>().unwrap());
++
++        cx.run_until_parked();
++        cx.dispatch_action(*multi_workspace, OpenGuixContainer);
++        cx.run_until_parked();
++
++        multi_workspace
++            .update(cx, |multi_workspace, _, cx| {
++                let modal = multi_workspace
++                    .workspace()
++                    .read(cx)
++                    .active_modal::<RemoteServerProjects>(cx);
++                assert!(
++                    modal.is_none(),
++                    "Guix container modal should not open without manifest.scm"
++                );
++            })
++            .unwrap();
++    }
++
+     fn init_test(cx: &mut TestAppContext) -> Arc<AppState> {
+         cx.update(|cx| {
+             let state = AppState::test(cx);
+diff --git a/crates/recent_projects/src/remote_connections.rs b/crates/recent_projects/src/remote_connections.rs
+index 5e901facba..73272d9be0 100644
+--- a/crates/recent_projects/src/remote_connections.rs
++++ b/crates/recent_projects/src/remote_connections.rs
+@@ -320,6 +320,9 @@ pub async fn open_remote_project(
+                                 RemoteConnectionOptions::Docker(_) => {
+                                     "Failed to connect to Dev Container"
+                                 }
++                                RemoteConnectionOptions::GuixContainer(_) => {
++                                    "Failed to connect to Guix container"
++                                }
+                                 #[cfg(any(test, feature = "test-support"))]
+                                 RemoteConnectionOptions::Mock(_) => {
+                                     "Failed to connect to mock server"
+@@ -381,6 +384,9 @@ pub async fn open_remote_project(
+                                 RemoteConnectionOptions::Docker(_) => {
+                                     "Failed to connect to Dev Container"
+                                 }
++                                RemoteConnectionOptions::GuixContainer(_) => {
++                                    "Failed to connect to Guix container"
++                                }
+                                 #[cfg(any(test, feature = "test-support"))]
+                                 RemoteConnectionOptions::Mock(_) => {
+                                     "Failed to connect to mock server"
+@@ -498,11 +504,13 @@ async fn path_exists(connection: &Arc<dyn RemoteConnection>, path: &Path) -> boo
+     ) else {
+         return false;
+     };
+-    let Ok(mut child) = util::command::new_command(command.program)
+-        .args(command.args)
+-        .envs(command.env)
+-        .spawn()
+-    else {
++    let mut child = util::command::new_command(command.program);
++    child.args(command.args);
++    child.envs(command.env);
++    if let Some(path) = command.cwd {
++        child.current_dir(path);
++    }
++    let Ok(mut child) = child.spawn() else {
+         return false;
+     };
+     child.status().await.is_ok_and(|status| status.success())
+diff --git a/crates/recent_projects/src/remote_servers.rs b/crates/recent_projects/src/remote_servers.rs
+index 8bddcf3727..bc4a020c0e 100644
+--- a/crates/recent_projects/src/remote_servers.rs
++++ b/crates/recent_projects/src/remote_servers.rs
+@@ -24,12 +24,13 @@ use paths::{global_ssh_config_file, user_ssh_config_file};
+ use picker::{Picker, PickerDelegate};
+ use project::{Fs, Project};
+ use remote::{
+-    RemoteClient, RemoteConnectionOptions, SshConnectionOptions, WslConnectionOptions,
++    GuixContainerConnectionOptions, GuixMount, GuixSettings, GuixShellOptions, RemoteClient,
++    RemoteConnectionOptions, SshConnectionOptions, WslConnectionOptions,
+     remote_client::ConnectionIdentifier,
+ };
+ use settings::{
+-    RemoteProject, RemoteSettingsContent, Settings as _, SettingsStore, update_settings_file,
+-    watch_config_file,
++    GuixConnection, RemoteProject, RemoteSettingsContent, Settings as _, SettingsStore,
++    update_settings_file, watch_config_file,
+ };
+ use smol::stream::StreamExt as _;
+ use std::{
+@@ -43,9 +44,9 @@ use std::{
+     },
+ };
+ use ui::{
+-    CommonAnimationExt, IconButtonShape, KeyBinding, List, ListItem, ListSeparator, Modal,
+-    ModalFooter, ModalHeader, Navigable, NavigableEntry, Section, Tooltip, WithScrollbar,
+-    prelude::*,
++    Checkbox, CommonAnimationExt, IconButtonShape, KeyBinding, List, ListItem, ListSeparator,
++    Modal, ModalFooter, ModalHeader, Navigable, NavigableEntry, Section, ToggleState, Tooltip,
++    WithScrollbar, prelude::*,
+ };
+ use util::{
+     ResultExt,
+@@ -180,6 +181,17 @@ struct EditNicknameState {
+     editor: Entity<Editor>,
+ }
+ 
++#[derive(Clone)]
++struct EditGuixConnectionState {
++    connection: GuixContainerConnectionOptions,
++    allow_network: bool,
++    nesting: bool,
++    expose_editor: Entity<Editor>,
++    share_editor: Entity<Editor>,
++    extra_args_editor: Entity<Editor>,
++    error: Option<SharedString>,
++}
++
+ struct DevContainerPickerDelegate {
+     selected_index: usize,
+     candidates: Vec<DevContainerConfig>,
+@@ -371,6 +383,123 @@ impl EditNicknameState {
+     }
+ }
+ 
++impl EditGuixConnectionState {
++    fn new(
++        connection: GuixContainerConnectionOptions,
++        window: &mut Window,
++        cx: &mut App,
++    ) -> Self {
++        let shell_options = GuixSettings::get_global(cx)
++            .shell_options_for(
++                PathBuf::from(&connection.manifest_path).as_path(),
++                PathBuf::from(&connection.project_root).as_path(),
++            );
++        let shell_options = if shell_options == GuixShellOptions::default() {
++            connection.shell_options.clone()
++        } else {
++            shell_options
++        };
++
++        let expose_editor = cx.new(|cx| Editor::auto_height(2, 6, window, cx));
++        let share_editor = cx.new(|cx| Editor::auto_height(2, 6, window, cx));
++        let extra_args_editor = cx.new(|cx| Editor::auto_height(2, 6, window, cx));
++        let expose_text = Self::format_mounts(&shell_options.expose);
++        let share_text = Self::format_mounts(&shell_options.share);
++        let extra_args_text = shell_options.extra_args.join("\n");
++
++        expose_editor.update(cx, |editor, cx| {
++            editor.set_placeholder_text("source or source=target, one per line", window, cx);
++            editor.set_text(expose_text, window, cx);
++        });
++        share_editor.update(cx, |editor, cx| {
++            editor.set_placeholder_text("source or source=target, one per line", window, cx);
++            editor.set_text(share_text, window, cx);
++        });
++        extra_args_editor.update(cx, |editor, cx| {
++            editor.set_placeholder_text("one argument per line", window, cx);
++            editor.set_text(extra_args_text, window, cx);
++        });
++        expose_editor.focus_handle(cx).focus(window, cx);
++
++        Self {
++            connection,
++            allow_network: shell_options.allow_network,
++            nesting: shell_options.nesting,
++            expose_editor,
++            share_editor,
++            extra_args_editor,
++            error: None,
++        }
++    }
++
++    fn format_mounts(mounts: &[GuixMount]) -> String {
++        mounts
++            .iter()
++            .map(|mount| match &mount.target {
++                Some(target) => format!("{}={target}", mount.source),
++                None => mount.source.clone(),
++            })
++            .collect::<Vec<_>>()
++            .join("\n")
++    }
++
++    fn parse_mounts(text: &str) -> anyhow::Result<Vec<GuixMount>> {
++        text.lines()
++            .enumerate()
++            .filter_map(|(ix, line)| {
++                let trimmed = line.trim();
++                if trimmed.is_empty() {
++                    None
++                } else {
++                    Some((ix + 1, trimmed))
++                }
++            })
++            .map(|(line_no, spec)| {
++                let (source, target) = match spec.split_once('=') {
++                    Some((source, target)) => (source.trim(), Some(target.trim())),
++                    None => (spec, None),
++                };
++                if source.is_empty() {
++                    anyhow::bail!("line {line_no}: missing source path")
++                }
++                if let Some(target) = target && target.is_empty() {
++                    anyhow::bail!("line {line_no}: missing target path")
++                }
++                Ok(GuixMount {
++                    source: source.to_string(),
++                    target: target.map(ToOwned::to_owned),
++                })
++            })
++            .collect()
++    }
++
++    fn shell_options(&self, cx: &App) -> anyhow::Result<GuixShellOptions> {
++        Ok(GuixShellOptions {
++            allow_network: self.allow_network,
++            nesting: self.nesting,
++            expose: Self::parse_mounts(&self.expose_editor.read(cx).text(cx))?,
++            share: Self::parse_mounts(&self.share_editor.read(cx).text(cx))?,
++            extra_args: self
++                .extra_args_editor
++                .read(cx)
++                .text(cx)
++                .lines()
++                .map(str::trim)
++                .filter(|line| !line.is_empty())
++                .map(ToOwned::to_owned)
++                .collect(),
++        })
++    }
++}
++
++fn guix_secondary_action_label(is_local_workspace: bool) -> &'static str {
++    if is_local_workspace {
++        "Save & Open in Container"
++    } else {
++        "Save & Reconnect"
++    }
++}
++
+ impl Focusable for ProjectPicker {
+     fn focus_handle(&self, cx: &App) -> FocusHandle {
+         self.picker.focus_handle(cx)
+@@ -413,6 +542,10 @@ impl ProjectPicker {
+                 connection_string: "".into(),
+                 nickname: None,
+             },
++            RemoteConnectionOptions::GuixContainer(connection) => ProjectPickerData::Ssh {
++                connection_string: connection.project_root.clone().into(),
++                nickname: Some("Guix container".into()),
++            },
+             #[cfg(any(test, feature = "test-support"))]
+             RemoteConnectionOptions::Mock(options) => ProjectPickerData::Ssh {
+                 connection_string: format!("mock-{}", options.id).into(),
+@@ -653,6 +786,7 @@ struct DefaultState {
+     scroll_handle: ScrollHandle,
+     add_new_server: NavigableEntry,
+     add_new_devcontainer: NavigableEntry,
++    add_new_guix: NavigableEntry,
+     add_new_wsl: NavigableEntry,
+     servers: Vec<RemoteEntry>,
+ }
+@@ -662,6 +796,7 @@ impl DefaultState {
+         let handle = ScrollHandle::new();
+         let add_new_server = NavigableEntry::new(&handle, cx);
+         let add_new_devcontainer = NavigableEntry::new(&handle, cx);
++        let add_new_guix = NavigableEntry::new(&handle, cx);
+         let add_new_wsl = NavigableEntry::new(&handle, cx);
+ 
+         let ssh_settings = RemoteSettings::get_global(cx);
+@@ -732,6 +867,7 @@ impl DefaultState {
+             scroll_handle: handle,
+             add_new_server,
+             add_new_devcontainer,
++            add_new_guix,
+             add_new_wsl,
+             servers,
+         }
+@@ -765,6 +901,7 @@ enum Mode {
+     Default(DefaultState),
+     ViewServerOptions(ViewServerOptionsState),
+     EditNickname(EditNicknameState),
++    EditGuixConnection(EditGuixConnectionState),
+     ProjectPicker(Entity<ProjectPicker>),
+     CreateRemoteServer(CreateRemoteServer),
+     CreateRemoteDevContainer(CreateRemoteDevContainer),
+@@ -855,6 +992,23 @@ impl RemoteServerProjects {
+         this
+     }
+ 
++    pub fn new_guix(
++        connection: GuixContainerConnectionOptions,
++        fs: Arc<dyn Fs>,
++        window: &mut Window,
++        workspace: WeakEntity<Workspace>,
++        cx: &mut Context<Self>,
++    ) -> Self {
++        Self::new_inner(
++            Mode::EditGuixConnection(EditGuixConnectionState::new(connection, window, cx)),
++            false,
++            fs,
++            window,
++            workspace,
++            cx,
++        )
++    }
++
+     pub fn popover(
+         fs: Arc<dyn Fs>,
+         workspace: WeakEntity<Workspace>,
+@@ -863,7 +1017,17 @@ impl RemoteServerProjects {
+         cx: &mut App,
+     ) -> Entity<Self> {
+         cx.new(|cx| {
+-            let server = Self::new(create_new_window, fs, window, workspace, cx);
++            let mut server = Self::new(create_new_window, fs, window, workspace.clone(), cx);
++            if let Some(workspace) = workspace.upgrade()
++                && let Some(RemoteConnectionOptions::GuixContainer(connection)) = workspace
++                    .read(cx)
++                    .project()
++                    .read(cx)
++                    .remote_connection_options(cx)
++            {
++                server.mode =
++                    Mode::EditGuixConnection(EditGuixConnectionState::new(connection, window, cx));
++            }
+             server.focus_handle(cx).focus(window, cx);
+             server
+         })
+@@ -1276,6 +1440,10 @@ impl RemoteServerProjects {
+                 self.mode = Mode::default_mode(&self.ssh_config_servers, cx);
+                 self.focus_handle.focus(window, cx);
+             }
++            Mode::EditGuixConnection(state) => {
++                let state = state.clone();
++                self.save_guix_connection_options(&state, false, window, cx);
++            }
+             #[cfg(target_os = "windows")]
+             Mode::AddWslDistro(state) => {
+                 let delegate = &state.picker.read(cx).delegate;
+@@ -1285,6 +1453,56 @@ impl RemoteServerProjects {
+         }
+     }
+ 
++    fn secondary_confirm(
++        &mut self,
++        _: &menu::SecondaryConfirm,
++        window: &mut Window,
++        cx: &mut Context<Self>,
++    ) {
++        if let Mode::EditGuixConnection(state) = &self.mode {
++            let state = state.clone();
++            self.save_guix_connection_options(&state, true, window, cx);
++        }
++    }
++
++    fn open_guix_manifest(
++        &mut self,
++        state: &EditGuixConnectionState,
++        window: &mut Window,
++        cx: &mut Context<Self>,
++    ) {
++        let Some(workspace) = self.workspace.upgrade() else {
++            cx.emit(DismissEvent);
++            cx.notify();
++            return;
++        };
++
++        let manifest_path = {
++            let path = PathBuf::from(&state.connection.manifest_path);
++            if path.is_absolute() {
++                path
++            } else {
++                PathBuf::from(&state.connection.project_root).join(path)
++            }
++        };
++
++        workspace.update(cx, |_workspace, cx| {
++            cx.spawn_in(window, async move |workspace, cx| {
++                workspace
++                    .update_in(cx, |workspace, window, cx| {
++                        workspace.open_abs_path(
++                            manifest_path.clone(),
++                            Default::default(),
++                            window,
++                            cx,
++                        )
++                    })?
++                    .await
++            })
++            .detach();
++        });
++    }
++
+     fn cancel(&mut self, _: &menu::Cancel, window: &mut Window, cx: &mut Context<Self>) {
+         match &self.mode {
+             Mode::Default(_) => cx.emit(DismissEvent),
+@@ -1298,6 +1516,9 @@ impl RemoteServerProjects {
+                 self.mode = Mode::CreateRemoteServer(new_state);
+                 cx.notify();
+             }
++            Mode::EditGuixConnection(_) => {
++                cx.emit(DismissEvent);
++            }
+             Mode::CreateRemoteDevContainer(CreateRemoteDevContainer {
+                 progress: DevContainerCreationProgress::Error(_),
+                 ..
+@@ -1746,6 +1967,160 @@ impl RemoteServerProjects {
+         });
+     }
+ 
++    fn save_guix_connection_options(
++        &mut self,
++        state: &EditGuixConnectionState,
++        reconnect: bool,
++        window: &mut Window,
++        cx: &mut Context<Self>,
++    ) {
++        let shell_options = match state.shell_options(cx) {
++            Ok(shell_options) => shell_options,
++            Err(error) => {
++                if let Mode::EditGuixConnection(current_state) = &mut self.mode {
++                    current_state.error = Some(error.to_string().into());
++                }
++                cx.notify();
++                return;
++            }
++        };
++
++        let manifest_path = state.connection.manifest_path.clone();
++        let project_root = state.connection.project_root.clone();
++        let remove_entry = shell_options == GuixShellOptions::default();
++        let stored_options = shell_options.clone();
++
++        self.update_settings_file(cx, move |setting, _| {
++            let connections = setting.guix_connections.get_or_insert_default();
++            if let Some(index) = connections.iter().position(|connection| {
++                connection.manifest_path == manifest_path || connection.project_root == project_root
++            }) {
++                if remove_entry {
++                    connections.remove(index);
++                } else {
++                    connections[index] = GuixConnection {
++                        manifest_path,
++                        project_root,
++                        options: settings::GuixShellOptions {
++                            allow_network: stored_options.allow_network,
++                            nesting: stored_options.nesting,
++                            expose: stored_options
++                                .expose
++                                .iter()
++                                .cloned()
++                                .map(|mount| settings::GuixMount {
++                                    source: mount.source,
++                                    target: mount.target,
++                                })
++                                .collect(),
++                            share: stored_options
++                                .share
++                                .iter()
++                                .cloned()
++                                .map(|mount| settings::GuixMount {
++                                    source: mount.source,
++                                    target: mount.target,
++                                })
++                                .collect(),
++                            extra_args: stored_options.extra_args.clone(),
++                        },
++                    };
++                }
++            } else if !remove_entry {
++                connections.push(GuixConnection {
++                    manifest_path,
++                    project_root,
++                    options: settings::GuixShellOptions {
++                        allow_network: stored_options.allow_network,
++                        nesting: stored_options.nesting,
++                        expose: stored_options
++                            .expose
++                            .iter()
++                            .cloned()
++                            .map(|mount| settings::GuixMount {
++                                source: mount.source,
++                                target: mount.target,
++                            })
++                            .collect(),
++                        share: stored_options
++                            .share
++                            .iter()
++                            .cloned()
++                            .map(|mount| settings::GuixMount {
++                                source: mount.source,
++                                target: mount.target,
++                            })
++                            .collect(),
++                        extra_args: stored_options.extra_args.clone(),
++                    },
++                });
++            }
++        });
++
++        let updated_connection = RemoteConnectionOptions::GuixContainer(
++            GuixContainerConnectionOptions {
++                shell_options,
++                ..state.connection.clone()
++            },
++        );
++
++        if reconnect {
++            self.open_current_project_with_connection_options(updated_connection, window, cx);
++        } else {
++            if let Some(workspace) = self.workspace.upgrade() {
++                workspace.update(cx, |workspace, cx| {
++                    struct GuixOptionsSaved;
++                    workspace.show_toast(
++                        Toast::new(
++                            NotificationId::composite::<GuixOptionsSaved>("guix-options-saved"),
++                            "Saved Guix container options",
++                        ),
++                        cx,
++                    );
++                });
++            }
++            cx.emit(DismissEvent);
++        }
++    }
++
++    fn open_current_project_with_connection_options(
++        &mut self,
++        connection_options: RemoteConnectionOptions,
++        window: &mut Window,
++        cx: &mut Context<Self>,
++    ) {
++        let Some(workspace) = self.workspace.upgrade() else {
++            return;
++        };
++        let Some(window_handle) = window.window_handle().downcast::<MultiWorkspace>() else {
++            return;
++        };
++
++        let app_state = workspace.read(cx).app_state().clone();
++        let paths = workspace
++            .read(cx)
++            .root_paths(cx)
++            .iter()
++            .map(|path| path.to_path_buf())
++            .collect::<Vec<_>>();
++
++        cx.emit(DismissEvent);
++        cx.spawn_in(window, async move |_, cx| {
++            open_remote_project(
++                connection_options,
++                paths,
++                app_state,
++                OpenOptions {
++                    replace_window: Some(window_handle),
++                    ..Default::default()
++                },
++                cx,
++            )
++            .await
++        })
++        .detach_and_prompt_err("Failed to open remote project", window, cx, |_, _, _| None);
++    }
++
+     fn edit_in_dev_container_json(
+         &mut self,
+         config: Option<DevContainerConfig>,
+@@ -1839,6 +2214,47 @@ impl RemoteServerProjects {
+         }
+     }
+ 
++    fn init_guix_mode(&mut self, window: &mut Window, cx: &mut Context<Self>) {
++        let Some(workspace) = self.workspace.upgrade() else {
++            return;
++        };
++
++        let app_state = workspace.read(cx).app_state().clone();
++        let paths = workspace
++            .read(cx)
++            .root_paths(cx)
++            .iter()
++            .map(|path| path.to_path_buf())
++            .collect::<Vec<_>>();
++        let entity = cx.entity().downgrade();
++
++        cx.spawn_in(window, async move |_, cx| {
++            let Some(remote::RemoteConnectionOptions::GuixContainer(connection)) =
++                workspace::guix_connection_options_for_paths(&paths, &app_state, cx).await
++            else {
++                let _ = cx
++                    .prompt(
++                        gpui::PromptLevel::Critical,
++                        "No Guix manifest found",
++                        Some("This project no longer contains a detectable manifest.scm."),
++                        &["Ok"],
++                    )
++                    .await;
++                return;
++            };
++
++            entity
++                .update_in(cx, |this, window, cx| {
++                    this.mode =
++                        Mode::EditGuixConnection(EditGuixConnectionState::new(connection, window, cx));
++                    this.focus_handle(cx).focus(window, cx);
++                    cx.notify();
++                })
++                .ok();
++        })
++        .detach();
++    }
++
+     fn open_dev_container(
+         &self,
+         config: Option<DevContainerConfig>,
+@@ -2524,6 +2940,168 @@ impl RemoteServerProjects {
+             )
+     }
+ 
++    fn render_edit_guix_connection(
++        &self,
++        state: &EditGuixConnectionState,
++        window: &mut Window,
++        cx: &mut Context<Self>,
++    ) -> impl IntoElement {
++        let is_local_workspace = self
++            .workspace
++            .upgrade()
++            .is_some_and(|workspace| workspace.read(cx).project().read(cx).is_local());
++        let secondary_label = guix_secondary_action_label(is_local_workspace);
++
++        let entity = cx.entity();
++        let allow_network_entity = entity.clone();
++        let nesting_entity = entity.clone();
++        let section = |title: &'static str,
++                       detail: &'static str,
++                       editor: Entity<Editor>,
++                       _window: &mut Window,
++                       cx: &mut Context<Self>| {
++            v_flex()
++                .gap_1()
++                .child(Label::new(title))
++                .child(Label::new(detail).size(LabelSize::Small).color(Color::Muted))
++                .child(
++                    div()
++                        .rounded_md()
++                        .border_1()
++                        .border_color(cx.theme().colors().border_variant)
++                        .bg(cx.theme().colors().editor_background)
++                        .p_2()
++                        .child(editor.clone()),
++                )
++        };
++
++        Modal::new("guix-connection-options", None)
++            .header(ModalHeader::new().headline("Guix Container Options"))
++            .section(
++                Section::new().child(
++                    v_flex()
++                        .gap_3()
++                        .child(
++                            v_flex()
++                                .gap_1()
++                                .child(Label::new("Project Root"))
++                                .child(
++                                    Label::new(state.connection.project_root.clone())
++                                        .size(LabelSize::Small)
++                                        .color(Color::Muted),
++                                )
++                                .child(Label::new("Manifest"))
++                                .child(
++                                    Label::new(state.connection.manifest_path.clone())
++                                        .size(LabelSize::Small)
++                                        .color(Color::Muted),
++                                ),
++                        )
++                        .child(
++                            Checkbox::new(
++                                "guix-allow-network",
++                                ToggleState::from(state.allow_network),
++                            )
++                            .label("Allow network access (-N)")
++                            .on_click(move |_, _, app| {
++                                let _ = allow_network_entity.update(app, |this, cx| {
++                                    if let Mode::EditGuixConnection(state) = &mut this.mode {
++                                        state.allow_network = !state.allow_network;
++                                        state.error = None;
++                                        cx.notify();
++                                    }
++                                });
++                            }),
++                        )
++                        .child(
++                            Checkbox::new("guix-nesting", ToggleState::from(state.nesting))
++                                .label("Allow nested Guix invocations (--nesting)")
++                                .on_click(move |_, _, app| {
++                                    let _ = nesting_entity.update(app, |this, cx| {
++                                        if let Mode::EditGuixConnection(state) = &mut this.mode {
++                                            state.nesting = !state.nesting;
++                                            state.error = None;
++                                            cx.notify();
++                                        }
++                                    });
++                                }),
++                        )
++                        .child(section(
++                            "Extra --expose mounts",
++                            "One entry per line. Format: source or source=target",
++                            state.expose_editor.clone(),
++                            window,
++                            cx,
++                        ))
++                        .child(section(
++                            "Extra --share mounts",
++                            "One entry per line. Format: source or source=target",
++                            state.share_editor.clone(),
++                            window,
++                            cx,
++                        ))
++                        .child(section(
++                            "Extra guix shell arguments",
++                            "One argument per line. These are appended before `--`.",
++                            state.extra_args_editor.clone(),
++                            window,
++                            cx,
++                        ))
++                        .when_some(state.error.clone(), |this, error| {
++                            this.child(Label::new(error).size(LabelSize::Small).color(Color::Error))
++                        }),
++                ),
++            )
++            .footer(
++                ModalFooter::new().end_slot(
++                    h_flex()
++                        .gap_2()
++                        .child(
++                            Button::new("guix-cancel", "Cancel")
++                                .color(Color::Muted)
++                                .on_click(cx.listener(|this, _, _, cx| {
++                                    cx.emit(DismissEvent);
++                                    this.mode = Mode::default_mode(&this.ssh_config_servers, cx);
++                                })),
++                        )
++                        .child(
++                            Button::new("guix-save", "Save")
++                                .key_binding(KeyBinding::for_action(&menu::Confirm, cx))
++                                .on_click(cx.listener(|this, _, window, cx| {
++                                    if let Mode::EditGuixConnection(state) = &this.mode {
++                                        let state = state.clone();
++                                        this.save_guix_connection_options(
++                                            &state, false, window, cx,
++                                        );
++                                    }
++                                })),
++                        )
++                        .child(
++                            Button::new("guix-open-manifest", "Open manifest.scm").on_click(
++                                cx.listener(|this, _, window, cx| {
++                                    if let Mode::EditGuixConnection(state) = &this.mode {
++                                        let state = state.clone();
++                                        this.open_guix_manifest(&state, window, cx);
++                                    }
++                                }),
++                            ),
++                        )
++                        .child(
++                            Button::new("guix-save-reconnect", secondary_label)
++                                .key_binding(KeyBinding::for_action(&menu::SecondaryConfirm, cx))
++                                .on_click(cx.listener(|this, _, window, cx| {
++                                    if let Mode::EditGuixConnection(state) = &this.mode {
++                                        let state = state.clone();
++                                        this.save_guix_connection_options(
++                                            &state, true, window, cx,
++                                        );
++                                    }
++                                })),
++                        ),
++                ),
++            )
++    }
++
+     fn render_default(
+         &mut self,
+         mut state: DefaultState,
+@@ -2642,6 +3220,30 @@ impl RemoteServerProjects {
+                 this.init_dev_container_mode(window, cx);
+             }));
+ 
++        let connect_guix_container_button = div()
++            .id("connect-new-guix-container")
++            .track_focus(&state.add_new_guix.focus_handle)
++            .anchor_scroll(state.add_new_guix.scroll_anchor.clone())
++            .child(
++                ListItem::new("register-guix-container-button")
++                    .toggle_state(
++                        state
++                            .add_new_guix
++                            .focus_handle
++                            .contains_focused(window, cx),
++                    )
++                    .inset(true)
++                    .spacing(ui::ListItemSpacing::Sparse)
++                    .start_slot(Icon::new(IconName::Plus).color(Color::Muted))
++                    .child(Label::new("Connect Guix Container"))
++                    .on_click(cx.listener(|this, _, window, cx| {
++                        this.init_guix_mode(window, cx);
++                    })),
++            )
++            .on_action(cx.listener(|this, _: &menu::Confirm, window, cx| {
++                this.init_guix_mode(window, cx);
++            }));
++
+         #[cfg(target_os = "windows")]
+         let wsl_connect_button = div()
+             .id("wsl-connect-new-server")
+@@ -2698,6 +3300,7 @@ impl RemoteServerProjects {
+             .child(connect_button)
+             .when(has_open_project && is_local, |this| {
+                 this.child(connect_dev_container_button)
++                    .child(connect_guix_container_button)
+             });
+ 
+         #[cfg(target_os = "windows")]
+@@ -2855,6 +3458,113 @@ impl RemoteServerProjects {
+     }
+ }
+ 
++#[cfg(test)]
++mod tests {
++    use super::{Mode, RemoteServerProjects, guix_secondary_action_label};
++    use crate::init;
++    use editor;
++    use serde_json::json;
++    use std::path::PathBuf;
++    use util::path;
++    use workspace::{AppState, MultiWorkspace, open_paths};
++
++    #[test]
++    fn test_guix_secondary_action_label_for_local_workspace() {
++        assert_eq!(
++            guix_secondary_action_label(true),
++            "Save & Open in Container"
++        );
++    }
++
++    #[test]
++    fn test_guix_secondary_action_label_for_remote_workspace() {
++        assert_eq!(guix_secondary_action_label(false), "Save & Reconnect");
++    }
++
++    #[gpui::test]
++    async fn test_init_guix_mode_switches_remote_projects_modal_to_guix_editor(
++        cx: &mut gpui::TestAppContext,
++    ) {
++        let app_state = cx.update(|cx| {
++            let state = AppState::test(cx);
++            init(cx);
++            editor::init(cx);
++            state
++        });
++
++        app_state
++            .fs
++            .as_fake()
++            .insert_tree(
++                path!("/project"),
++                json!({
++                    "manifest.scm": "specifications->manifest '()",
++                    "src": {
++                        "main.rs": "fn main() {}"
++                    }
++                }),
++            )
++            .await;
++
++        cx.update(|cx| {
++            open_paths(
++                &[PathBuf::from(path!("/project"))],
++                app_state,
++                workspace::OpenOptions::default(),
++                cx,
++            )
++        })
++        .await
++        .unwrap();
++
++        let multi_workspace = cx.update(|cx| cx.windows()[0].downcast::<MultiWorkspace>().unwrap());
++
++        multi_workspace
++            .update(cx, |multi_workspace, window, cx| {
++                let workspace = multi_workspace.workspace().clone();
++                let weak = workspace.downgrade();
++                let fs = workspace.read(cx).project().read(cx).fs().clone();
++                workspace.update(cx, |workspace, cx| {
++                    workspace.toggle_modal(window, cx, |window, cx| {
++                        RemoteServerProjects::new(false, fs.clone(), window, weak.clone(), cx)
++                    });
++                });
++            })
++            .unwrap();
++
++        cx.run_until_parked();
++
++        multi_workspace
++            .update(cx, |multi_workspace, window, cx| {
++                let modal = multi_workspace
++                    .workspace()
++                    .read(cx)
++                    .active_modal::<RemoteServerProjects>(cx)
++                    .expect("remote projects modal should be open");
++                modal.update(cx, |modal, cx| {
++                    modal.init_guix_mode(window, cx);
++                });
++            })
++            .unwrap();
++
++        cx.run_until_parked();
++
++        multi_workspace
++            .update(cx, |multi_workspace, _, cx| {
++                let modal = multi_workspace
++                    .workspace()
++                    .read(cx)
++                    .active_modal::<RemoteServerProjects>(cx)
++                    .expect("remote projects modal should still be open");
++                assert!(
++                    matches!(&modal.read(cx).mode, Mode::EditGuixConnection(_)),
++                    "top-level Guix entry should switch the modal into Guix edit mode"
++                );
++            })
++            .unwrap();
++    }
++}
++
+ fn spawn_ssh_config_watch(fs: Arc<dyn Fs>, cx: &Context<RemoteServerProjects>) -> Task<()> {
+     enum ConfigSource {
+         User(String),
+@@ -2945,6 +3655,7 @@ impl Render for RemoteServerProjects {
+             .key_context("RemoteServerModal")
+             .on_action(cx.listener(Self::cancel))
+             .on_action(cx.listener(Self::confirm))
++            .on_action(cx.listener(Self::secondary_confirm))
+             .capture_any_mouse_down(cx.listener(|this, _, window, cx| {
+                 this.focus_handle(cx).focus(window, cx);
+             }))
+@@ -2970,6 +3681,9 @@ impl Render for RemoteServerProjects {
+                 Mode::EditNickname(state) => self
+                     .render_edit_nickname(state, window, cx)
+                     .into_any_element(),
++                Mode::EditGuixConnection(state) => self
++                    .render_edit_guix_connection(state, window, cx)
++                    .into_any_element(),
+                 #[cfg(target_os = "windows")]
+                 Mode::AddWslDistro(state) => self
+                     .render_add_wsl_distro(state, window, cx)
+diff --git a/crates/remote/Cargo.toml b/crates/remote/Cargo.toml
+index 50026904a8..5ece3b26d5 100644
+--- a/crates/remote/Cargo.toml
++++ b/crates/remote/Cargo.toml
+@@ -27,6 +27,7 @@ collections.workspace = true
+ fs.workspace = true
+ futures.workspace = true
+ gpui.workspace = true
++libc.workspace = true
+ log.workspace = true
+ parking_lot.workspace = true
+ paths.workspace = true
+diff --git a/crates/remote/src/guix_settings.rs b/crates/remote/src/guix_settings.rs
+new file mode 100644
+index 0000000000..045f4520bb
+--- /dev/null
++++ b/crates/remote/src/guix_settings.rs
+@@ -0,0 +1,37 @@
++use std::path::Path;
++
++use settings::{
++    ExtendingVec, GuixConnection, RegisterSetting, Settings,
++};
++
++use crate::transport::guix::GuixShellOptions;
++
++#[derive(RegisterSetting)]
++pub struct GuixSettings {
++    pub guix_connections: ExtendingVec<GuixConnection>,
++}
++
++impl GuixSettings {
++    pub fn shell_options_for(&self, manifest_path: &Path, project_root: &Path) -> GuixShellOptions {
++        let manifest_path = manifest_path.to_string_lossy();
++        let project_root = project_root.to_string_lossy();
++
++        self.guix_connections
++            .0
++            .iter()
++            .find(|connection| {
++                connection.manifest_path == manifest_path || connection.project_root == project_root
++            })
++            .map(|connection| connection.options.clone().into())
++            .unwrap_or_default()
++    }
++}
++
++impl Settings for GuixSettings {
++    fn from_settings(content: &settings::SettingsContent) -> Self {
++        let remote = &content.remote;
++        Self {
++            guix_connections: remote.guix_connections.clone().unwrap_or_default().into(),
++        }
++    }
++}
+diff --git a/crates/remote/src/remote.rs b/crates/remote/src/remote.rs
+index d3b093cdb8..857aedcf22 100644
+--- a/crates/remote/src/remote.rs
++++ b/crates/remote/src/remote.rs
+@@ -2,6 +2,7 @@ pub mod json_log;
+ pub mod protocol;
+ pub mod proxy;
+ pub mod remote_client;
++mod guix_settings;
+ mod transport;
+ 
+ #[cfg(target_os = "windows")]
+@@ -11,7 +12,11 @@ pub use remote_client::{
+     RemoteClientDelegate, RemoteClientEvent, RemoteConnection, RemoteConnectionOptions, RemoteOs,
+     RemotePlatform, connect,
+ };
++pub use guix_settings::GuixSettings;
+ pub use transport::docker::DockerConnectionOptions;
++pub use transport::guix::{
++    GuixContainerConnectionOptions, GuixMount, GuixShellOptions,
++};
+ pub use transport::ssh::{SshConnectionOptions, SshPortForwardOption};
+ pub use transport::wsl::WslConnectionOptions;
+ #[cfg(target_os = "windows")]
+diff --git a/crates/remote/src/remote_client.rs b/crates/remote/src/remote_client.rs
+index f31fc9ebec..daafce1614 100644
+--- a/crates/remote/src/remote_client.rs
++++ b/crates/remote/src/remote_client.rs
+@@ -6,6 +6,7 @@ use crate::{
+     proxy::ProxyLaunchError,
+     transport::{
+         docker::{DockerConnectionOptions, DockerExecConnection},
++        guix::{GuixContainerConnection, GuixContainerConnectionOptions},
+         ssh::SshRemoteConnection,
+         wsl::{WslConnectionOptions, WslRemoteConnection},
+     },
+@@ -110,6 +111,7 @@ pub struct CommandTemplate {
+     pub program: String,
+     pub args: Vec<String>,
+     pub env: HashMap<String, String>,
++    pub cwd: Option<PathBuf>,
+ }
+ 
+ /// Whether a command should be run with TTY allocation for interactive use.
+@@ -1231,6 +1233,11 @@ impl ConnectionPool {
+                                 .await
+                                 .map(|connection| Arc::new(connection) as Arc<dyn RemoteConnection>)
+                         }
++                        RemoteConnectionOptions::GuixContainer(opts) => {
++                            GuixContainerConnection::new(opts, delegate, cx)
++                                .await
++                                .map(|connection| Arc::new(connection) as Arc<dyn RemoteConnection>)
++                        }
+                         #[cfg(any(test, feature = "test-support"))]
+                         RemoteConnectionOptions::Mock(opts) => match cx.update(|cx| {
+                             cx.default_global::<crate::transport::mock::MockConnectionRegistry>()
+@@ -1278,6 +1285,7 @@ pub enum RemoteConnectionOptions {
+     Ssh(SshConnectionOptions),
+     Wsl(WslConnectionOptions),
+     Docker(DockerConnectionOptions),
++    GuixContainer(GuixContainerConnectionOptions),
+     #[cfg(any(test, feature = "test-support"))]
+     Mock(crate::transport::mock::MockConnectionOptions),
+ }
+@@ -1294,6 +1302,7 @@ impl RemoteConnectionOptions {
+                     opts.name.clone()
+                 }
+             }
++            RemoteConnectionOptions::GuixContainer(opts) => opts.project_root.clone(),
+             #[cfg(any(test, feature = "test-support"))]
+             RemoteConnectionOptions::Mock(opts) => format!("mock-{}", opts.id),
+         }
+@@ -1312,6 +1321,12 @@ impl From<WslConnectionOptions> for RemoteConnectionOptions {
+     }
+ }
+ 
++impl From<GuixContainerConnectionOptions> for RemoteConnectionOptions {
++    fn from(opts: GuixContainerConnectionOptions) -> Self {
++        RemoteConnectionOptions::GuixContainer(opts)
++    }
++}
++
+ #[cfg(any(test, feature = "test-support"))]
+ impl From<crate::transport::mock::MockConnectionOptions> for RemoteConnectionOptions {
+     fn from(opts: crate::transport::mock::MockConnectionOptions) -> Self {
+diff --git a/crates/remote/src/transport.rs b/crates/remote/src/transport.rs
+index 09bb22ddbe..ee57223ad7 100644
+--- a/crates/remote/src/transport.rs
++++ b/crates/remote/src/transport.rs
+@@ -13,6 +13,7 @@ use rpc::proto::Envelope;
+ use util::command::Child;
+ 
+ pub mod docker;
++pub mod guix;
+ #[cfg(any(test, feature = "test-support"))]
+ pub mod mock;
+ pub mod ssh;
+diff --git a/crates/remote/src/transport/docker.rs b/crates/remote/src/transport/docker.rs
+index 1bcf80880a..ab26466431 100644
+--- a/crates/remote/src/transport/docker.rs
++++ b/crates/remote/src/transport/docker.rs
+@@ -786,6 +786,7 @@ impl RemoteConnection for DockerExecConnection {
+             args: docker_args,
+             // Docker-exec pipes in environment via the "-e" argument
+             env: Default::default(),
++            cwd: None,
+         })
+     }
+ 
+diff --git a/crates/remote/src/transport/guix.rs b/crates/remote/src/transport/guix.rs
+new file mode 100644
+index 0000000000..9e4e7919ec
+--- /dev/null
++++ b/crates/remote/src/transport/guix.rs
+@@ -0,0 +1,566 @@
++use std::{
++    env,
++    path::{Path, PathBuf},
++    sync::Arc,
++};
++
++use anyhow::{Context as _, Result, anyhow};
++use async_trait::async_trait;
++use collections::HashMap;
++use fs::{CopyOptions, RealFs, copy_recursive};
++use futures::channel::mpsc::{Sender, UnboundedReceiver, UnboundedSender};
++use gpui::{App, AppContext, AsyncApp, Task};
++use libc::SIGTERM;
++use rpc::proto::Envelope;
++use schemars::JsonSchema;
++use serde::{Deserialize, Serialize};
++use util::{
++    command::{Stdio, new_command},
++    paths::{PathStyle, RemotePathBuf},
++};
++
++use crate::remote_client::CommandTemplate;
++use crate::{
++Interactive, RemoteClientDelegate, RemoteConnection, RemoteConnectionOptions,
++};
++
++#[derive(Debug, Default, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, JsonSchema)]
++pub struct GuixMount {
++    pub source: String,
++    pub target: Option<String>,
++}
++
++impl From<settings::GuixMount> for GuixMount {
++    fn from(value: settings::GuixMount) -> Self {
++        Self {
++            source: value.source,
++            target: value.target,
++        }
++    }
++}
++
++#[derive(Debug, Default, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, JsonSchema)]
++pub struct GuixShellOptions {
++    pub allow_network: bool,
++    pub nesting: bool,
++    pub expose: Vec<GuixMount>,
++    pub share: Vec<GuixMount>,
++    pub extra_args: Vec<String>,
++}
++
++impl From<settings::GuixShellOptions> for GuixShellOptions {
++    fn from(value: settings::GuixShellOptions) -> Self {
++        Self {
++            allow_network: value.allow_network,
++            nesting: value.nesting,
++            expose: value.expose.into_iter().map(Into::into).collect(),
++            share: value.share.into_iter().map(Into::into).collect(),
++            extra_args: value.extra_args,
++        }
++    }
++}
++
++#[derive(Debug, Default, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, JsonSchema)]
++pub struct GuixContainerConnectionOptions {
++    pub manifest_path: String,
++    pub project_root: String,
++    #[serde(default)]
++    pub shell_options: GuixShellOptions,
++}
++
++pub(crate) struct GuixContainerConnection {
++    proxy_process: parking_lot::Mutex<Option<u32>>,
++    connection_options: GuixContainerConnectionOptions,
++}
++
++impl GuixContainerConnection {
++    fn remote_server_exit_error(status: i32) -> anyhow::Error {
++        match status {
++            127 => anyhow!(
++                "The Guix container command chain exited with status 127. This often means \
++                 a required command was not available inside the container environment, \
++                 for example zed-remote-server."
++            ),
++            126 => anyhow!(
++                "zed-remote-server could not be executed inside the Guix container \
++                 environment (exit status 126). Check that it is executable and available \
++                 inside the container."
++            ),
++            _ => anyhow!("Remote server exited with status {status}"),
++        }
++    }
++
++    pub async fn new(
++        connection_options: GuixContainerConnectionOptions,
++        delegate: Arc<dyn RemoteClientDelegate>,
++        cx: &mut AsyncApp,
++    ) -> Result<Self> {
++        delegate.set_status(Some("Detecting Guix container environment"), cx);
++
++        Ok(Self {
++            proxy_process: parking_lot::Mutex::new(None),
++            connection_options,
++        })
++    }
++
++    fn manifest_path(&self) -> &Path {
++        Path::new(&self.connection_options.manifest_path)
++    }
++
++    fn project_root(&self) -> PathBuf {
++        PathBuf::from(&self.connection_options.project_root)
++    }
++
++    fn project_user_data_dir(&self) -> PathBuf {
++        self.project_root().join(".zed").join("guix")
++    }
++
++    fn mount_arg(flag: &str, mount: &GuixMount) -> String {
++        match &mount.target {
++            Some(target) => format!("{flag}={}={}", mount.source, target),
++            None => format!("{flag}={}", mount.source),
++        }
++    }
++
++    fn required_mounts(&self) -> (Vec<String>, Vec<String>) {
++        let mut expose = Vec::new();
++        let mut share = vec![format!("--share={}", self.connection_options.project_root)];
++
++        for mount in &self.connection_options.shell_options.expose {
++            expose.push(Self::mount_arg("--expose", mount));
++        }
++        for mount in &self.connection_options.shell_options.share {
++            share.push(Self::mount_arg("--share", mount));
++        }
++
++        (expose, share)
++    }
++
++    fn base_guix_args(&self) -> Vec<String> {
++        let mut args = vec![
++            "shell".to_string(),
++            "--container".to_string(),
++            "--no-cwd".to_string(),
++            "-m".to_string(),
++            self.manifest_path().display().to_string(),
++        ];
++
++        if self.connection_options.shell_options.allow_network {
++            args.push("-N".to_string());
++        }
++        if self.connection_options.shell_options.nesting {
++            args.push("--nesting".to_string());
++        }
++
++        let (expose, share) = self.required_mounts();
++        args.extend(expose);
++        args.extend(share);
++        args.extend(self.connection_options.shell_options.extra_args.iter().cloned());
++        args.push("--".to_string());
++
++        args
++    }
++
++    fn current_dir_for_command(&self, working_dir: Option<String>) -> PathBuf {
++        match working_dir {
++            Some(path) => {
++                let path = PathBuf::from(path);
++                if path.is_absolute() {
++                    path
++                } else {
++                    self.project_root().join(path)
++                }
++            }
++            None => self.project_root(),
++        }
++    }
++
++    fn command_inside_container(
++        &self,
++        program: Option<String>,
++        args: &[String],
++        env: &HashMap<String, String>,
++    ) -> Vec<String> {
++        let mut command = self.base_guix_args();
++
++        if env.is_empty() {
++            match program {
++                Some(program) => {
++                    command.push(program);
++                    command.extend(args.iter().cloned());
++                }
++                None => {
++                    command.push("bash".to_string());
++                    command.push("-l".to_string());
++                }
++            }
++        } else {
++            command.push("env".to_string());
++            for (key, value) in env {
++                command.push(format!("{key}={value}"));
++            }
++            match program {
++                Some(program) => {
++                    command.push(program);
++                    command.extend(args.iter().cloned());
++                }
++                None => {
++                    command.push("bash".to_string());
++                    command.push("-l".to_string());
++                }
++            }
++        }
++
++        command
++    }
++
++    fn kill_inner(&self) -> Result<()> {
++        if let Some(pid) = self.proxy_process.lock().take() {
++            let pid = i32::try_from(pid).context("proxy process id does not fit in i32")?;
++            let result = unsafe { libc::kill(pid, SIGTERM) };
++            if result == 0 {
++                Ok(())
++            } else {
++                let error = std::io::Error::last_os_error();
++                if error.raw_os_error() == Some(libc::ESRCH) {
++                    Ok(())
++                } else {
++                    Err(anyhow!("failed to kill proxy process: {error}"))
++                }
++            }
++        } else {
++            Ok(())
++        }
++    }
++}
++
++#[async_trait(?Send)]
++impl RemoteConnection for GuixContainerConnection {
++    fn start_proxy(
++        &self,
++        unique_identifier: String,
++        reconnect: bool,
++        incoming_tx: UnboundedSender<Envelope>,
++        outgoing_rx: UnboundedReceiver<Envelope>,
++        connection_activity_tx: Sender<()>,
++        delegate: Arc<dyn RemoteClientDelegate>,
++        cx: &mut AsyncApp,
++    ) -> Task<Result<i32>> {
++        if !self.has_been_killed() {
++            if let Err(error) = self.kill_inner() {
++                return Task::ready(Err(error));
++            }
++        }
++
++        delegate.set_status(Some("Starting Guix container proxy"), cx);
++
++        let mut env = HashMap::default();
++        for env_var in ["RUST_LOG", "RUST_BACKTRACE", "ZED_GENERATE_MINIDUMPS"] {
++            if let Ok(value) = env::var(env_var) {
++                env.insert(env_var.to_string(), value);
++            }
++        }
++
++        let user_data_dir = self.project_user_data_dir();
++        if let Err(error) = std::fs::create_dir_all(&user_data_dir) {
++            return Task::ready(Err(anyhow!(
++                "failed to create Guix remote user data directory {}: {error}",
++                user_data_dir.display()
++            )));
++        }
++
++        let mut args = vec![
++            "--user-data-dir".to_string(),
++            user_data_dir.display().to_string(),
++            "proxy".to_string(),
++            "--identifier".to_string(),
++            unique_identifier,
++        ];
++        if reconnect {
++            args.push("--reconnect".to_string());
++        }
++
++        let command_template = match self.build_command(
++            Some("zed-remote-server".to_string()),
++            &args,
++            &env,
++            Some(self.connection_options.project_root.clone()),
++            None,
++            Interactive::No,
++        ) {
++            Ok(command) => command,
++            Err(error) => return Task::ready(Err(error)),
++        };
++
++        let mut command = new_command(&command_template.program);
++        command
++            .kill_on_drop(true)
++            .stdin(Stdio::piped())
++            .stdout(Stdio::piped())
++            .stderr(Stdio::piped())
++            .args(&command_template.args)
++            .envs(&command_template.env);
++        if let Some(path) = &command_template.cwd {
++            command.current_dir(path);
++        }
++
++        let Ok(child) = command.spawn() else {
++            return Task::ready(Err(anyhow!("failed to start guix remote server process")));
++        };
++
++        *self.proxy_process.lock() = Some(child.id());
++
++        cx.spawn(async move |cx| {
++            super::handle_rpc_messages_over_child_process_stdio(
++                child,
++                incoming_tx,
++                outgoing_rx,
++                connection_activity_tx,
++                cx,
++            )
++            .await
++            .and_then(|status| {
++                if status != 0 {
++                    return Err(Self::remote_server_exit_error(status));
++                }
++                Ok(0)
++            })
++        })
++    }
++
++    fn upload_directory(
++        &self,
++        src_path: PathBuf,
++        dest_path: RemotePathBuf,
++        cx: &App,
++    ) -> Task<Result<()>> {
++        let dest_path = PathBuf::from(dest_path.to_string());
++        let fs = RealFs::new(None, cx.background_executor().clone());
++        cx.background_spawn(async move {
++            copy_recursive(&fs, &src_path, &dest_path, CopyOptions::default())
++                .await
++                .with_context(|| {
++                    format!(
++                        "failed to copy uploaded directory {} to {}",
++                        src_path.display(),
++                        dest_path.display()
++                    )
++                })
++        })
++    }
++
++    async fn kill(&self) -> Result<()> {
++        self.kill_inner()
++    }
++
++    fn has_been_killed(&self) -> bool {
++        self.proxy_process.lock().is_none()
++    }
++
++    fn build_command(
++        &self,
++        program: Option<String>,
++        args: &[String],
++        env: &HashMap<String, String>,
++        working_dir: Option<String>,
++        port_forward: Option<(u16, String, u16)>,
++        _interactive: Interactive,
++    ) -> Result<CommandTemplate> {
++        if port_forward.is_some() {
++            anyhow::bail!("Guix container transport does not support port forwarding commands");
++        }
++
++        Ok(CommandTemplate {
++            program: "guix".to_string(),
++            args: self.command_inside_container(program, args, env),
++            env: HashMap::default(),
++            cwd: Some(self.current_dir_for_command(working_dir)),
++        })
++    }
++
++    fn build_forward_ports_command(
++        &self,
++        _forwards: Vec<(u16, String, u16)>,
++    ) -> Result<CommandTemplate> {
++        Err(anyhow!("Guix container transport does not support port forwarding"))
++    }
++
++    fn connection_options(&self) -> RemoteConnectionOptions {
++        RemoteConnectionOptions::GuixContainer(self.connection_options.clone())
++    }
++
++    fn path_style(&self) -> PathStyle {
++        PathStyle::Posix
++    }
++
++    fn shell(&self) -> String {
++        "bash".to_string()
++    }
++
++    fn default_system_shell(&self) -> String {
++        "bash".to_string()
++    }
++
++    fn has_wsl_interop(&self) -> bool {
++        false
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    use crate::Interactive;
++
++    fn test_connection(shell_options: GuixShellOptions) -> GuixContainerConnection {
++        GuixContainerConnection {
++            proxy_process: parking_lot::Mutex::new(None),
++            connection_options: GuixContainerConnectionOptions {
++                manifest_path: "/project/manifest.scm".to_string(),
++                project_root: "/project".to_string(),
++                shell_options,
++            },
++        }
++    }
++
++    #[test]
++    fn test_build_command_uses_guix_shell_with_required_mounts() {
++        let connection = test_connection(GuixShellOptions::default());
++        let command = connection
++            .build_command(
++                Some("zed-remote-server".to_string()),
++                &["proxy".to_string()],
++                &HashMap::default(),
++                Some("/project".to_string()),
++                None,
++                Interactive::No,
++            )
++            .unwrap();
++
++        assert_eq!(command.program, "guix");
++        assert_eq!(command.cwd, Some(PathBuf::from("/project")));
++        assert_eq!(
++            command.args,
++            vec![
++                "shell",
++                "--container",
++                "--nesting",
++                "--no-cwd",
++                "-m",
++                "/project/manifest.scm",
++                "--share=/project",
++                "--",
++                "zed-remote-server",
++                "proxy",
++            ]
++        );
++    }
++
++    #[test]
++    fn test_build_command_merges_network_mounts_and_env() {
++        let connection = test_connection(GuixShellOptions {
++            allow_network: true,
++            nesting: true,
++            expose: vec![GuixMount {
++                source: "/nix/store".to_string(),
++                target: Some("/gnu/store-alt".to_string()),
++            }],
++            share: vec![GuixMount {
++                source: "/tmp/cache".to_string(),
++                target: Some("/cache".to_string()),
++            }],
++            extra_args: vec!["--pure".to_string()],
++        });
++        let mut env = HashMap::default();
++        env.insert("FOO".to_string(), "BAR".to_string());
++
++        let command = connection
++            .build_command(
++                Some("env".to_string()),
++                &["true".to_string()],
++                &env,
++                Some("src".to_string()),
++                None,
++                Interactive::No,
++            )
++            .unwrap();
++
++        assert_eq!(command.program, "guix");
++        assert_eq!(command.cwd, Some(PathBuf::from("/project/src")));
++        assert_eq!(
++            command.args,
++            vec![
++                "shell",
++                "--container",
++                "--no-cwd",
++                "-m",
++                "/project/manifest.scm",
++                "-N",
++                "--nesting",
++                "--expose=/nix/store=/gnu/store-alt",
++                "--share=/project",
++                "--share=/tmp/cache=/cache",
++                "--pure",
++                "--",
++                "env",
++                "FOO=BAR",
++                "env",
++                "true",
++            ]
++        );
++    }
++
++    #[test]
++    fn test_build_command_preserves_absolute_working_directory() {
++        let connection = test_connection(GuixShellOptions::default());
++        let command = connection
++            .build_command(
++                Some("pwd".to_string()),
++                &[],
++                &HashMap::default(),
++                Some("/elsewhere".to_string()),
++                None,
++                Interactive::No,
++            )
++            .unwrap();
++
++        assert_eq!(command.cwd, Some(PathBuf::from("/elsewhere")));
++    }
++
++    #[test]
++    fn test_build_command_without_program_opens_bash_login_shell() {
++        let connection = test_connection(GuixShellOptions::default());
++        let command = connection
++            .build_command(
++                None,
++                &[],
++                &HashMap::default(),
++                None,
++                None,
++                Interactive::No,
++            )
++            .unwrap();
++
++        assert_eq!(
++            command.args,
++            vec![
++                "shell",
++                "--container",
++                "--no-cwd",
++                "-m",
++                "/project/manifest.scm",
++                "--share=/project",
++                "--",
++                "bash",
++                "-l",
++            ]
++        );
++    }
++
++    #[test]
++    fn test_remote_server_exit_error_for_missing_binary() {
++        let error = GuixContainerConnection::remote_server_exit_error(127);
++        let message = error.to_string();
++        assert!(message.contains("command chain exited with status 127"));
++        assert!(message.contains("for example zed-remote-server"));
++    }
++}
+diff --git a/crates/remote/src/transport/mock.rs b/crates/remote/src/transport/mock.rs
+index 06e1319658..d320b1a83b 100644
+--- a/crates/remote/src/transport/mock.rs
++++ b/crates/remote/src/transport/mock.rs
+@@ -206,24 +206,26 @@ impl RemoteConnection for MockRemoteConnection {
+         let mut shell_args = Vec::new();
+         shell_args.push(shell_program);
+         shell_args.extend(args.iter().cloned());
+-        Ok(CommandTemplate {
+-            program: "mock".into(),
+-            args: shell_args,
+-            env: env.clone(),
+-        })
+-    }
++        Ok(CommandTemplate {
++            program: "mock".into(),
++            args: shell_args,
++            env: env.clone(),
++            cwd: None,
++        })
++    }
+ 
+     fn build_forward_ports_command(
+         &self,
+         forwards: Vec<(u16, String, u16)>,
+     ) -> Result<CommandTemplate> {
+-        Ok(CommandTemplate {
+-            program: "mock".into(),
+-            args: std::iter::once("-N".to_owned())
+-                .chain(forwards.into_iter().map(|(local_port, host, remote_port)| {
+-                    format!("{local_port}:{host}:{remote_port}")
+-                }))
+-                .collect(),
++        Ok(CommandTemplate {
++            program: "mock".into(),
++            args: std::iter::once("-N".to_owned())
++                .chain(forwards.into_iter().map(|(local_port, host, remote_port)| {
++                    format!("{local_port}:{host}:{remote_port}")
++                }))
++                .collect(),
++            cwd: None,
+             env: Default::default(),
+         })
+     }
+diff --git a/crates/remote/src/transport/ssh.rs b/crates/remote/src/transport/ssh.rs
+index 83733306e7..59a1fdb4a1 100644
+--- a/crates/remote/src/transport/ssh.rs
++++ b/crates/remote/src/transport/ssh.rs
+@@ -351,6 +351,7 @@ impl RemoteConnection for SshRemoteConnection {
+             program: "ssh".into(),
+             args,
+             env: Default::default(),
++            cwd: None,
+         })
+     }
+ 
+@@ -1661,6 +1662,7 @@ fn build_command_posix(
+         program: "ssh".into(),
+         args,
+         env: ssh_env,
++        cwd: None,
+     })
+ }
+ 
+@@ -1759,6 +1761,7 @@ fn build_command_windows(
+         program: "ssh".into(),
+         args,
+         env: ssh_env,
++        cwd: None,
+     })
+ }
+ 
+diff --git a/crates/remote/src/transport/wsl.rs b/crates/remote/src/transport/wsl.rs
+index 69619f13c2..ce03f3395d 100644
+--- a/crates/remote/src/transport/wsl.rs
++++ b/crates/remote/src/transport/wsl.rs
+@@ -498,6 +498,7 @@ impl RemoteConnection for WslRemoteConnection {
+             program: "wsl.exe".to_string(),
+             args: wsl_args,
+             env: HashMap::default(),
++            cwd: None,
+         })
+     }
+ 
+diff --git a/crates/remote_connection/src/remote_connection.rs b/crates/remote_connection/src/remote_connection.rs
+index d4df85d7b9..7f6b1cf2ab 100644
+--- a/crates/remote_connection/src/remote_connection.rs
++++ b/crates/remote_connection/src/remote_connection.rs
+@@ -188,6 +188,9 @@ impl RemoteConnectionModal {
+                 (options.distro_name.clone(), None, true, false)
+             }
+             RemoteConnectionOptions::Docker(options) => (options.name.clone(), None, false, true),
++            RemoteConnectionOptions::GuixContainer(options) => {
++                (options.project_root.clone(), None, false, true)
++            }
+             #[cfg(any(test, feature = "test-support"))]
+             RemoteConnectionOptions::Mock(options) => {
+                 (format!("mock-{}", options.id), None, false, false)
+diff --git a/crates/remote_server/src/main.rs b/crates/remote_server/src/main.rs
+index 66ffcc1631..adefc5a122 100644
+--- a/crates/remote_server/src/main.rs
++++ b/crates/remote_server/src/main.rs
+@@ -3,6 +3,8 @@ use remote_server::Commands;
+ use std::io::Write as _;
+ use std::path::PathBuf;
+ 
++use paths;
++
+ #[derive(Parser)]
+ #[command(disable_version_flag = true)]
+ struct Cli {
+@@ -19,11 +21,18 @@ struct Cli {
+     /// Used for loading the environment from the project.
+     #[arg(long, hide = true)]
+     printenv: bool,
++    /// Sets a custom directory for user data such as databases, extensions, and logs.
++    #[arg(long, value_name = "DIR")]
++    user_data_dir: Option<String>,
+ }
+ 
+ fn main() -> anyhow::Result<()> {
+     let cli = Cli::parse();
+ 
++    if let Some(dir) = &cli.user_data_dir {
++        paths::set_custom_data_dir(dir);
++    }
++
+     if let Some(socket_path) = &cli.askpass {
+         askpass::main(socket_path);
+         return Ok(());
+diff --git a/crates/settings/src/vscode_import.rs b/crates/settings/src/vscode_import.rs
+index d0643be3bb..d5c08077b8 100644
+--- a/crates/settings/src/vscode_import.rs
++++ b/crates/settings/src/vscode_import.rs
+@@ -697,6 +697,7 @@ impl VsCodeSettings {
+                                 path: cmd.command,
+                                 args: cmd.args.unwrap_or_default(),
+                                 env: cmd.env,
++                                working_directory: None,
+                                 timeout: None,
+                             })?,
+                     },
+diff --git a/crates/settings_content/src/project.rs b/crates/settings_content/src/project.rs
+index 59576651de..23bdfc4f2a 100644
+--- a/crates/settings_content/src/project.rs
++++ b/crates/settings_content/src/project.rs
+@@ -409,6 +409,7 @@ pub struct ContextServerCommand {
+     pub path: PathBuf,
+     pub args: Vec<String>,
+     pub env: Option<HashMap<String, String>>,
++    pub working_directory: Option<PathBuf>,
+     /// Timeout for tool calls in seconds. Defaults to 60 if not specified.
+     pub timeout: Option<u64>,
+ }
+@@ -434,6 +435,7 @@ impl std::fmt::Debug for ContextServerCommand {
+             .field("path", &self.path)
+             .field("args", &self.args)
+             .field("env", &filtered_env)
++            .field("working_directory", &self.working_directory)
+             .finish()
+     }
+ }
+diff --git a/crates/settings_content/src/settings_content.rs b/crates/settings_content/src/settings_content.rs
+index 788917b5eb..b6153216be 100644
+--- a/crates/settings_content/src/settings_content.rs
++++ b/crates/settings_content/src/settings_content.rs
+@@ -1055,6 +1055,7 @@ pub struct RemoteSettingsContent {
+     pub ssh_connections: Option<Vec<SshConnection>>,
+     pub wsl_connections: Option<Vec<WslConnection>>,
+     pub dev_container_connections: Option<Vec<DevContainerConnection>>,
++    pub guix_connections: Option<Vec<GuixConnection>>,
+     pub read_ssh_config: Option<bool>,
+     pub use_podman: Option<bool>,
+ }
+@@ -1070,6 +1071,43 @@ pub struct DevContainerConnection {
+     pub use_podman: bool,
+ }
+ 
++#[with_fallible_options]
++#[derive(
++    Clone, Debug, Default, Serialize, Deserialize, PartialEq, Eq, JsonSchema, MergeFrom, Hash,
++)]
++pub struct GuixConnection {
++    pub manifest_path: String,
++    pub project_root: String,
++    #[serde(default)]
++    pub options: GuixShellOptions,
++}
++
++#[with_fallible_options]
++#[derive(
++    Clone, Debug, Default, Serialize, Deserialize, PartialEq, Eq, JsonSchema, MergeFrom, Hash,
++)]
++pub struct GuixShellOptions {
++    #[serde(default)]
++    pub allow_network: bool,
++    #[serde(default)]
++    pub nesting: bool,
++    #[serde(default)]
++    pub expose: Vec<GuixMount>,
++    #[serde(default)]
++    pub share: Vec<GuixMount>,
++    #[serde(default)]
++    pub extra_args: Vec<String>,
++}
++
++#[with_fallible_options]
++#[derive(
++    Clone, Debug, Default, Serialize, Deserialize, PartialEq, Eq, JsonSchema, MergeFrom, Hash,
++)]
++pub struct GuixMount {
++    pub source: String,
++    pub target: Option<String>,
++}
++
+ #[with_fallible_options]
+ #[derive(Clone, Debug, Default, Serialize, Deserialize, PartialEq, JsonSchema, MergeFrom)]
+ pub struct SshConnection {
+diff --git a/crates/title_bar/src/title_bar.rs b/crates/title_bar/src/title_bar.rs
+index 08ef3e7634..58f86da117 100644
+--- a/crates/title_bar/src/title_bar.rs
++++ b/crates/title_bar/src/title_bar.rs
+@@ -502,6 +502,9 @@ impl TitleBar {
+             RemoteConnectionOptions::Docker(_dev_container_connection) => {
+                 (None, "Dev Container", IconName::Box)
+             }
++            RemoteConnectionOptions::GuixContainer(_) => {
++                (None, "Guix Container", IconName::Box)
++            }
+             #[cfg(any(test, feature = "test-support"))]
+             RemoteConnectionOptions::Mock(_) => (None, "Mock Remote Project", IconName::Server),
+         };
+diff --git a/crates/workspace/src/persistence.rs b/crates/workspace/src/persistence.rs
+index e0ad046e8d..c928415260 100644
+--- a/crates/workspace/src/persistence.rs
++++ b/crates/workspace/src/persistence.rs
+@@ -27,7 +27,8 @@ use project::{
+ 
+ use language::{LanguageName, Toolchain, ToolchainScope};
+ use remote::{
+-    DockerConnectionOptions, RemoteConnectionOptions, SshConnectionOptions, WslConnectionOptions,
++    DockerConnectionOptions, GuixContainerConnectionOptions, GuixShellOptions,
++    RemoteConnectionOptions, SshConnectionOptions, WslConnectionOptions,
+ };
+ use serde::{Deserialize, Serialize};
+ use sqlez::{
+@@ -1518,6 +1519,13 @@ impl WorkspaceDb {
+                 use_podman = Some(options.use_podman);
+                 user = Some(options.remote_user);
+             }
++            RemoteConnectionOptions::GuixContainer(options) => {
++                kind = RemoteConnectionKind::GuixContainer;
++                host = Some(options.manifest_path);
++                name = Some(options.project_root);
++                distro = Some(serde_json::to_string(&options.shell_options)?);
++                user = None;
++            }
+             #[cfg(any(test, feature = "test-support"))]
+             RemoteConnectionOptions::Mock(options) => {
+                 kind = RemoteConnectionKind::Ssh;
+@@ -1559,7 +1567,8 @@ impl WorkspaceDb {
+                 user IS ? AND
+                 distro IS ? AND
+                 name IS ? AND
+-                container_id IS ?
++                container_id IS ? AND
++                ifnull(use_podman, 0) IS ifnull(?, 0)
+             LIMIT 1
+         ))?((
+             kind.serialize(),
+@@ -1569,6 +1578,7 @@ impl WorkspaceDb {
+             distro.clone(),
+             name.clone(),
+             container_id.clone(),
++            use_podman,
+         ))? {
+             Ok(RemoteConnectionId(id))
+         } else {
+@@ -1773,6 +1783,18 @@ impl WorkspaceDb {
+                     use_podman: use_podman?,
+                 }))
+             }
++            RemoteConnectionKind::GuixContainer => {
++                let shell_options = distro
++                    .and_then(|value| serde_json::from_str::<GuixShellOptions>(&value).ok())
++                    .unwrap_or_default();
++                Some(RemoteConnectionOptions::GuixContainer(
++                    GuixContainerConnectionOptions {
++                        manifest_path: host?,
++                        project_root: name?,
++                        shell_options,
++                    },
++                ))
++            }
+         }
+     }
+ 
+diff --git a/crates/workspace/src/persistence/model.rs b/crates/workspace/src/persistence/model.rs
+index cdb646ec3b..463c086dfe 100644
+--- a/crates/workspace/src/persistence/model.rs
++++ b/crates/workspace/src/persistence/model.rs
+@@ -34,6 +34,7 @@ pub(crate) enum RemoteConnectionKind {
+     Ssh,
+     Wsl,
+     Docker,
++    GuixContainer,
+ }
+ 
+ #[derive(Debug, PartialEq, Clone)]
+@@ -104,6 +105,7 @@ impl RemoteConnectionKind {
+             RemoteConnectionKind::Ssh => "ssh",
+             RemoteConnectionKind::Wsl => "wsl",
+             RemoteConnectionKind::Docker => "docker",
++            RemoteConnectionKind::GuixContainer => "guix_container",
+         }
+     }
+ 
+@@ -112,6 +114,7 @@ impl RemoteConnectionKind {
+             "ssh" => Some(Self::Ssh),
+             "wsl" => Some(Self::Wsl),
+             "docker" => Some(Self::Docker),
++            "guix_container" => Some(Self::GuixContainer),
+             _ => None,
+         }
+     }
+diff --git a/crates/workspace/src/workspace.rs b/crates/workspace/src/workspace.rs
+index 4141952cc7..93737b5cd5 100644
+--- a/crates/workspace/src/workspace.rs
++++ b/crates/workspace/src/workspace.rs
+@@ -38,6 +38,7 @@ use client::{
+ };
+ use collections::{HashMap, HashSet, hash_map};
+ use dock::{Dock, DockPosition, PanelButtons, PanelHandle, RESIZE_HANDLE_SIZE};
++use fs::Fs;
+ use futures::{
+     Future, FutureExt, StreamExt,
+     channel::{
+@@ -88,7 +89,8 @@ use project::{
+     trusted_worktrees::{RemoteHostLocation, TrustedWorktrees, TrustedWorktreesEvent},
+ };
+ use remote::{
+-    RemoteClientDelegate, RemoteConnection, RemoteConnectionOptions,
++    GuixContainerConnectionOptions, GuixSettings, RemoteClientDelegate, RemoteConnection,
++    RemoteConnectionOptions,
+     remote_client::ConnectionIdentifier,
+ };
+ use schemars::JsonSchema;
+@@ -8584,6 +8586,77 @@ pub fn open_workspace_by_id(
+     })
+ }
+ 
++#[derive(Clone, Debug, PartialEq, Eq)]
++struct GuixWorkspaceDescriptor {
++    manifest_path: PathBuf,
++    project_root: PathBuf,
++}
++
++async fn find_guix_workspace_for_path(
++    path: &Path,
++    fs: &Arc<dyn Fs>,
++) -> Option<GuixWorkspaceDescriptor> {
++    let mut current = if fs.is_dir(path).await {
++        path.to_path_buf()
++    } else {
++        path.parent()?.to_path_buf()
++    };
++
++    if let Ok(canonical) = fs.canonicalize(&current).await {
++        current = canonical;
++    }
++
++    loop {
++        let manifest_path = current.join("manifest.scm");
++        if fs.is_file(&manifest_path).await {
++            return Some(GuixWorkspaceDescriptor {
++                manifest_path,
++                project_root: current,
++            });
++        }
++        if !current.pop() {
++            return None;
++        }
++    }
++}
++
++async fn detect_guix_workspace(
++    abs_paths: &[PathBuf],
++    fs: Arc<dyn Fs>,
++) -> Option<GuixWorkspaceDescriptor> {
++    let mut descriptor = None;
++    for path in abs_paths {
++        let candidate = find_guix_workspace_for_path(path, &fs).await?;
++        if descriptor
++            .as_ref()
++            .is_some_and(|existing: &GuixWorkspaceDescriptor| existing.project_root != candidate.project_root)
++        {
++            return None;
++        }
++        descriptor = Some(candidate);
++    }
++    descriptor
++}
++
++pub async fn guix_connection_options_for_paths(
++    abs_paths: &[PathBuf],
++    app_state: &Arc<AppState>,
++    cx: &AsyncApp,
++) -> Option<RemoteConnectionOptions> {
++    let descriptor = detect_guix_workspace(abs_paths, app_state.fs.clone()).await?;
++    let shell_options = cx.update(|cx| {
++        GuixSettings::get_global(cx)
++            .shell_options_for(&descriptor.manifest_path, &descriptor.project_root)
++    });
++    Some(RemoteConnectionOptions::GuixContainer(
++        GuixContainerConnectionOptions {
++            manifest_path: descriptor.manifest_path.display().to_string(),
++            project_root: descriptor.project_root.display().to_string(),
++            shell_options,
++        },
++    ))
++}
++
+ #[allow(clippy::type_complexity)]
+ pub fn open_paths(
+     abs_paths: &[PathBuf],
+@@ -9701,7 +9774,7 @@ pub fn with_active_or_new_workspace(
+ 
+ #[cfg(test)]
+ mod tests {
+-    use std::{cell::RefCell, rc::Rc};
++    use std::{cell::RefCell, rc::Rc, sync::Arc};
+ 
+     use super::*;
+     use crate::{
+@@ -9717,8 +9790,10 @@ mod tests {
+         UpdateGlobal, VisualTestContext, px,
+     };
+     use project::{Project, ProjectEntryId};
++    use remote::GuixShellOptions;
+     use serde_json::json;
+     use settings::SettingsStore;
++    use tempfile::tempdir;
+     use util::rel_path::rel_path;
+ 
+     #[gpui::test]
+@@ -13060,6 +13135,135 @@ mod tests {
+         });
+     }
+ 
++    #[gpui::test]
++    async fn test_manifest_workspace_detects_guix_connection_options(cx: &mut TestAppContext) {
++        init_test(cx);
++
++        let mut app_state = cx.update(AppState::test);
++        let real_fs: Arc<dyn fs::Fs> = Arc::new(fs::RealFs::new(None, cx.executor()));
++        cx.update(|cx| <dyn fs::Fs>::set_global(real_fs.clone(), cx));
++        Arc::get_mut(&mut app_state).unwrap().fs = real_fs;
++
++        let dir = tempdir().unwrap();
++        let project_root = dir.path().join("project");
++        let src_dir = project_root.join("src");
++        let manifest_path = project_root.join("manifest.scm");
++        let source_path = src_dir.join("main.rs");
++
++        std::fs::create_dir_all(&src_dir).unwrap();
++        std::fs::write(&manifest_path, "(specifications->manifest '())\n").unwrap();
++        std::fs::write(&source_path, "fn main() {}\n").unwrap();
++
++        let async_cx = cx.to_async();
++        let options =
++            guix_connection_options_for_paths(&[source_path.clone()], &app_state, &async_cx)
++                .await
++                .expect("manifest.scm should select the Guix transport");
++
++        let RemoteConnectionOptions::GuixContainer(options) = options else {
++            panic!("expected GuixContainer options");
++        };
++
++        assert_eq!(PathBuf::from(options.project_root), project_root);
++        assert_eq!(PathBuf::from(options.manifest_path), manifest_path);
++        assert_eq!(options.shell_options, GuixShellOptions::default());
++    }
++
++    #[gpui::test]
++    async fn test_manifest_workspace_detects_same_root_for_multiple_paths(
++        cx: &mut TestAppContext,
++    ) {
++        init_test(cx);
++
++        let mut app_state = cx.update(AppState::test);
++        let real_fs: Arc<dyn fs::Fs> = Arc::new(fs::RealFs::new(None, cx.executor()));
++        cx.update(|cx| <dyn fs::Fs>::set_global(real_fs.clone(), cx));
++        Arc::get_mut(&mut app_state).unwrap().fs = real_fs;
++
++        let dir = tempdir().unwrap();
++        let project_root = dir.path().join("project");
++        let src_dir = project_root.join("src");
++        let nested_dir = project_root.join("tests");
++        let manifest_path = project_root.join("manifest.scm");
++        let source_path = src_dir.join("main.rs");
++        let test_path = nested_dir.join("integration.rs");
++
++        std::fs::create_dir_all(&src_dir).unwrap();
++        std::fs::create_dir_all(&nested_dir).unwrap();
++        std::fs::write(&manifest_path, "(specifications->manifest '())\n").unwrap();
++        std::fs::write(&source_path, "fn main() {}\n").unwrap();
++        std::fs::write(&test_path, "#[test] fn it_works() {}\n").unwrap();
++
++        let async_cx = cx.to_async();
++        let options =
++            guix_connection_options_for_paths(&[source_path.clone(), test_path], &app_state, &async_cx)
++                .await
++                .expect("paths under one manifest should select the Guix transport");
++
++        let RemoteConnectionOptions::GuixContainer(options) = options else {
++            panic!("expected GuixContainer options");
++        };
++
++        assert_eq!(PathBuf::from(options.project_root), project_root);
++        assert_eq!(PathBuf::from(options.manifest_path), manifest_path);
++    }
++
++    #[gpui::test]
++    async fn test_manifest_workspace_rejects_paths_from_different_manifests(
++        cx: &mut TestAppContext,
++    ) {
++        init_test(cx);
++
++        let mut app_state = cx.update(AppState::test);
++        let real_fs: Arc<dyn fs::Fs> = Arc::new(fs::RealFs::new(None, cx.executor()));
++        cx.update(|cx| <dyn fs::Fs>::set_global(real_fs.clone(), cx));
++        Arc::get_mut(&mut app_state).unwrap().fs = real_fs;
++
++        let dir = tempdir().unwrap();
++        let project_a = dir.path().join("project-a");
++        let project_b = dir.path().join("project-b");
++        let source_a = project_a.join("src/main.rs");
++        let source_b = project_b.join("src/main.rs");
++
++        std::fs::create_dir_all(source_a.parent().unwrap()).unwrap();
++        std::fs::create_dir_all(source_b.parent().unwrap()).unwrap();
++        std::fs::write(project_a.join("manifest.scm"), "(specifications->manifest '())\n").unwrap();
++        std::fs::write(project_b.join("manifest.scm"), "(specifications->manifest '())\n").unwrap();
++        std::fs::write(&source_a, "fn main() {}\n").unwrap();
++        std::fs::write(&source_b, "fn main() {}\n").unwrap();
++
++        let async_cx = cx.to_async();
++        let options =
++            guix_connection_options_for_paths(&[source_a, source_b], &app_state, &async_cx).await;
++
++        assert!(
++            options.is_none(),
++            "paths under different manifests should not collapse into one Guix connection"
++        );
++    }
++
++    #[gpui::test]
++    async fn test_manifest_workspace_returns_none_without_manifest(cx: &mut TestAppContext) {
++        init_test(cx);
++
++        let mut app_state = cx.update(AppState::test);
++        let real_fs: Arc<dyn fs::Fs> = Arc::new(fs::RealFs::new(None, cx.executor()));
++        cx.update(|cx| <dyn fs::Fs>::set_global(real_fs.clone(), cx));
++        Arc::get_mut(&mut app_state).unwrap().fs = real_fs;
++
++        let dir = tempdir().unwrap();
++        let project_root = dir.path().join("project");
++        let source_path = project_root.join("src/main.rs");
++
++        std::fs::create_dir_all(source_path.parent().unwrap()).unwrap();
++        std::fs::write(&source_path, "fn main() {}\n").unwrap();
++
++        let async_cx = cx.to_async();
++        let options = guix_connection_options_for_paths(&[source_path], &app_state, &async_cx).await;
++
++        assert!(options.is_none(), "workspace without manifest.scm should stay local");
++    }
++
+     fn dirty_project_item(id: u64, path: &str, cx: &mut App) -> Entity<TestProjectItem> {
+         let item = TestProjectItem::new(id, path, cx);
+         item.update(cx, |item, _| {
+diff --git a/crates/zed_actions/src/lib.rs b/crates/zed_actions/src/lib.rs
+index 356011e4da..2fad6a34a6 100644
+--- a/crates/zed_actions/src/lib.rs
++++ b/crates/zed_actions/src/lib.rs
+@@ -526,6 +526,12 @@ pub struct OpenRemote {
+ #[serde(deny_unknown_fields)]
+ pub struct OpenDevContainer;
+ 
++/// Opens the Guix container options modal for the current local project.
++#[derive(PartialEq, Clone, Deserialize, Default, JsonSchema, Action)]
++#[action(namespace = projects)]
++#[serde(deny_unknown_fields)]
++pub struct OpenGuixContainer;
++
+ /// Where to spawn the task in the UI.
+ #[derive(Default, Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+ #[serde(rename_all = "snake_case")]
+diff --git a/docs/src/SUMMARY.md b/docs/src/SUMMARY.md
+index 2b45c58168..6ce1df517f 100644
+--- a/docs/src/SUMMARY.md
++++ b/docs/src/SUMMARY.md
+@@ -57,6 +57,7 @@
+ - [Overview](./remote-development.md)
+ - [Environment Variables](./environment.md)
+ - [Dev Containers](./dev-containers.md)
++- [Guix Containers](./guix-containers.md)
+ 
+ # Platform Support
+ 
+diff --git a/docs/src/guix-containers.md b/docs/src/guix-containers.md
+new file mode 100644
+index 0000000000..0de40bf1f8
+--- /dev/null
++++ b/docs/src/guix-containers.md
+@@ -0,0 +1,106 @@
++---
++title: Guix Containers - Zed
++description: Open projects in Guix containers with Zed. Use manifest.scm to run language servers, tasks, and terminals inside guix shell --container.
++---
++
++# Guix Containers
++
++Guix Containers let you reopen a project inside a `guix shell --container` environment while keeping the Zed UI local.
++
++If your project contains a `manifest.scm`, Zed can reopen that project in a Guix container so project-side commands run inside the container environment instead of on the host.
++
++## Requirements
++
++- `guix` must be installed and available in your `PATH`.
++- Your project must contain a `manifest.scm`.
++- The paths you want to open in one Guix workspace must resolve to the same `manifest.scm`.
++
++## Using Guix Containers in Zed
++
++### Automatic prompt
++
++When you open a local project that contains `manifest.scm`, Zed will display a prompt asking whether to re-open the project in a container.
++
++Choosing "Open in Container" opens the Guix container options modal for the current project. From there you can save options and reopen the project in the container.
++
++### Manual open
++
++If you dismiss the prompt or want to reopen the project in a container later, you can:
++
++- run `projects: open guix container` from the command palette while the local project is open
++- open the Remote Projects modal with {#kb projects::OpenRemote} and choose `Connect Guix Container`
++
++Both paths open the same Guix container options modal used by the automatic prompt flow.
++
++## Guix Container Options
++
++The Guix container options modal lets you configure:
++
++- `Allow network access (-N)`
++- `Allow nested Guix invocations (--nesting)`
++- extra `--expose` mounts
++- extra `--share` mounts
++- extra `guix shell` arguments
++
++For `--expose` and `--share`, enter one mount per line using either:
++
++- `source`
++- `source=target`
++
++Saving writes per-project settings for the detected `manifest.scm` and project root.
++
++## Settings
++
++Guix container settings are stored under `remote.guix_connections` in your settings file.
++
++```json [settings]
++{
++  "remote": {
++    "guix_connections": [
++      {
++        "manifest_path": "/home/me/code/project/manifest.scm",
++        "project_root": "/home/me/code/project",
++        "options": {
++          "allow_network": true,
++          "nesting": false,
++          "expose": [
++            { "source": "/var/cache/guix" }
++          ],
++          "share": [
++            { "source": "/tmp/project-cache", "target": "/cache" }
++          ],
++          "extra_args": ["--pure"]
++        }
++      }
++    ]
++  }
++}
++```
++
++In most cases it is simpler to edit these options through the Guix container modal rather than by hand.
++
++## Working in a Guix Container
++
++Once connected, Zed runs project-side commands inside the Guix container environment, including:
++
++- language servers
++- tasks
++- terminals
++- other remote-project command execution
++
++Zed keeps its UI local while the project host runs inside the container.
++
++## Known Limitations
++
++> **Note:** This feature is still in development.
++
++- Guix containers are opened from an existing local project. There is not a separate standalone Guix project picker.
++- If opened paths resolve to different `manifest.scm` roots, Zed will not combine them into one Guix container workspace.
++- If you change `manifest.scm` or Guix container options, reopen the project in the container to apply the new environment.
++- Port forwarding is not currently supported by the Guix transport.
++
++## See also
++
++- [Remote Development](./remote-development.md) for SSH- and WSL-based remote projects.
++- [Dev Containers](./dev-containers.md) for `devcontainer.json`-based container workflows.
++- [Tasks](./tasks.md) for running commands in project environments.

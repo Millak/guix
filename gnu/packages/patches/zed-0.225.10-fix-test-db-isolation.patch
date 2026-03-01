@@ -1,0 +1,328 @@
+From: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: Fri, 6 Mar 2026 21:22:41 +0000
+Subject: [PATCH] db: Scope default test databases to the current test
+License: expat
+
+In test builds, the default database statics use fixed names such as
+`DB` and `KEY_VALUE_STORE`. That makes unrelated tests in the same test
+binary share the same named in-memory databases, which leaks state
+across tests and makes failures depend on execution order and
+concurrency.
+
+A first attempt at isolating those statics by thread is not sufficient:
+one test can legitimately use multiple threads, and splitting the test's
+workspace state across separate databases breaks parent-child foreign key
+relationships.
+
+Fix this by scoping the default test databases by the current test name
+instead. The `gpui::test` harness now installs the current test name on
+the executing thread, the test dispatcher propagates that scope to its
+realtime worker threads, and the default test statics resolve one shared
+database wrapper per test scope rather than per thread.
+
+That keeps sharing within a single test where it is intentional, while
+stopping hidden cross-test state leakage.
+
+diff --git a/crates/db/src/db.rs b/crates/db/src/db.rs
+index 36f0365af9..3ff8499c1d 100644
+--- a/crates/db/src/db.rs
++++ b/crates/db/src/db.rs
+@@ -19,6 +19,12 @@ use std::future::Future;
+ use std::path::Path;
+ use std::sync::atomic::AtomicBool;
+ use std::sync::{LazyLock, atomic::Ordering};
++#[cfg(any(test, feature = "test-support"))]
++use std::collections::HashMap;
++#[cfg(any(test, feature = "test-support"))]
++use std::sync::Mutex;
++#[cfg(any(test, feature = "test-support"))]
++use std::{borrow::Cow, ops::Deref};
+ use util::{ResultExt, maybe};
+ use zed_env_vars::ZED_STATELESS;
+ 
+@@ -97,7 +103,8 @@ async fn open_fallback_db<M: Migrator>() -> ThreadSafeConnection {
+ pub async fn open_test_db<M: Migrator>(db_name: &str) -> ThreadSafeConnection {
+     use sqlez::thread_safe_connection::locking_queue;
+ 
+-    ThreadSafeConnection::builder::<M>(db_name, false)
++    let db_name = scoped_test_db_name(db_name);
++    ThreadSafeConnection::builder::<M>(&db_name, false)
+         .with_db_initialization_query(DB_INITIALIZE_QUERY)
+         .with_connection_initialize_query(CONNECTION_INITIALIZE_QUERY)
+         // Serialize queued writes via a mutex and run them synchronously
+@@ -107,6 +114,69 @@ pub async fn open_test_db<M: Migrator>(db_name: &str) -> ThreadSafeConnection {
+         .unwrap()
+ }
+ 
++#[cfg(any(test, feature = "test-support"))]
++fn scoped_test_db_name(db_name: &str) -> Cow<'_, str> {
++    let Some(test_name) = current_test_scope_name() else {
++        return Cow::Borrowed(db_name);
++    };
++
++    let mut scoped_name = String::with_capacity(db_name.len() + test_name.len() + 2);
++    scoped_name.push_str(db_name);
++    scoped_name.push('@');
++    for ch in test_name.chars() {
++        if ch.is_ascii_alphanumeric() || matches!(ch, '-' | '_' | '.') {
++            scoped_name.push(ch);
++        } else {
++            scoped_name.push('_');
++        }
++    }
++
++    Cow::Owned(scoped_name)
++}
++
++#[cfg(any(test, feature = "test-support"))]
++fn current_test_scope_name() -> Option<String> {
++    if let Some(test_name) = gpui::current_test_name() {
++        return Some(test_name.to_string());
++    }
++
++    let current_thread = std::thread::current();
++    if let Some(test_name) = current_thread.name() {
++        return Some(test_name.to_string());
++    }
++
++    Some(format!("thread_{:?}", current_thread.id()))
++}
++
++#[cfg(any(test, feature = "test-support"))]
++pub struct TestScopedStatic<T: Send + Sync + 'static> {
++    initializer: fn() -> T,
++    values: Mutex<HashMap<String, &'static T>>,
++}
++
++#[cfg(any(test, feature = "test-support"))]
++impl<T: Send + Sync + 'static> TestScopedStatic<T> {
++    pub fn new(initializer: fn() -> T) -> Self {
++        Self {
++            initializer,
++            values: Mutex::new(HashMap::new()),
++        }
++    }
++}
++
++#[cfg(any(test, feature = "test-support"))]
++impl<T: Send + Sync + 'static> Deref for TestScopedStatic<T> {
++    type Target = T;
++
++    fn deref(&self) -> &Self::Target {
++        let scope_name = current_test_scope_name().unwrap_or_else(|| "default".to_string());
++        let mut values = self.values.lock().unwrap();
++        *values
++            .entry(scope_name)
++            .or_insert_with(|| Box::leak(Box::new((self.initializer)())))
++    }
++}
++
+ /// Implements a basic DB wrapper for a given domain
+ ///
+ /// Arguments:
+@@ -126,16 +196,23 @@ macro_rules! static_connection {
+ 
+         impl $t {
+             #[cfg(any(test, feature = "test-support"))]
+-            pub async fn open_test_db(name: &'static str) -> Self {
++            pub async fn open_test_db(name: &str) -> Self {
+                 $t($crate::open_test_db::<$t>(name).await)
+             }
+         }
+ 
+         #[cfg(any(test, feature = "test-support"))]
+-        pub static $id: std::sync::LazyLock<$t> = std::sync::LazyLock::new(|| {
+-            #[allow(unused_parens)]
+-            $t($crate::smol::block_on($crate::open_test_db::<($($d,)* $t)>(stringify!($id))))
+-        });
++        pub static $id: std::sync::LazyLock<$crate::TestScopedStatic<$t>> =
++            std::sync::LazyLock::new(|| {
++                fn initializer() -> $t {
++                    #[allow(unused_parens)]
++                    $t($crate::smol::block_on(
++                        $crate::open_test_db::<($($d,)* $t)>(stringify!($id))
++                    ))
++                }
++
++                $crate::TestScopedStatic::new(initializer)
++            });
+ 
+         #[cfg(not(any(test, feature = "test-support")))]
+         pub static $id: std::sync::LazyLock<$t> = std::sync::LazyLock::new(|| {
+@@ -161,9 +238,10 @@ where
+ 
+ #[cfg(test)]
+ mod tests {
++    use anyhow::Result;
+     use std::thread;
+ 
+-    use sqlez::domain::Domain;
++    use sqlez::{domain::Domain, thread_safe_connection::ThreadSafeConnection};
+     use sqlez_macros::sql;
+ 
+     use crate::open_db;
+@@ -295,4 +373,64 @@ mod tests {
+             assert!(guard.join().is_ok());
+         }
+     }
++
++    pub struct ScopedStaticDb(ThreadSafeConnection);
++
++    impl Domain for ScopedStaticDb {
++        const NAME: &str = "test_scoped_static_db";
++        const MIGRATIONS: &[&str] = &[sql!(
++            CREATE TABLE IF NOT EXISTS scoped_values(
++                value INTEGER NOT NULL
++            ) STRICT;
++        )];
++    }
++
++    crate::static_connection!(SCOPED_STATIC_DB, ScopedStaticDb, []);
++
++    impl ScopedStaticDb {
++        fn replace_value(&self, value: i64) -> Result<()> {
++            smol::block_on(self.write(move |connection| {
++                connection.exec("DELETE FROM scoped_values")?()?;
++                connection
++                    .exec_bound("INSERT INTO scoped_values(value) VALUES (?)")
++                    ?(value)?;
++                anyhow::Ok(())
++            }))
++        }
++
++        fn read_value(&self) -> Result<Option<i64>> {
++            self.select_row::<i64>("SELECT value FROM scoped_values").unwrap()()
++        }
++    }
++
++    #[test]
++    fn static_test_connections_are_scoped_by_test_name() {
++        gpui::with_test_name(Some("static_test_connections_are_scoped_by_test_name_a"), || {
++            assert_eq!(SCOPED_STATIC_DB.read_value().unwrap(), None);
++            SCOPED_STATIC_DB.replace_value(7).unwrap();
++            assert_eq!(SCOPED_STATIC_DB.read_value().unwrap(), Some(7));
++        });
++
++        gpui::with_test_name(Some("static_test_connections_are_scoped_by_test_name_b"), || {
++            assert_eq!(SCOPED_STATIC_DB.read_value().unwrap(), None);
++            SCOPED_STATIC_DB.replace_value(11).unwrap();
++            assert_eq!(SCOPED_STATIC_DB.read_value().unwrap(), Some(11));
++        });
++    }
++
++    #[test]
++    fn static_test_connections_share_state_across_threads_with_same_test_name() {
++        gpui::with_test_name(
++            Some("static_test_connections_share_state_across_threads_with_same_test_name"),
++            || {
++                SCOPED_STATIC_DB.replace_value(13).unwrap();
++
++                let test_name = gpui::current_test_name();
++                let thread = std::thread::spawn(move || {
++                    gpui::with_test_name(test_name, || SCOPED_STATIC_DB.read_value().unwrap())
++                });
++                assert_eq!(thread.join().unwrap(), Some(13));
++            },
++        );
++    }
+ }
+diff --git a/crates/gpui/src/platform/test/dispatcher.rs b/crates/gpui/src/platform/test/dispatcher.rs
+index fc3f7f253a..0d98b082ca 100644
+--- a/crates/gpui/src/platform/test/dispatcher.rs
++++ b/crates/gpui/src/platform/test/dispatcher.rs
+@@ -136,8 +136,9 @@ impl PlatformDispatcher for TestDispatcher {
+     }
+ 
+     fn spawn_realtime(&self, f: Box<dyn FnOnce() + Send>) {
++        let test_name = crate::current_test_name();
+         std::thread::spawn(move || {
+-            f();
++            crate::with_test_name(test_name, f);
+         });
+     }
+ }
+diff --git a/crates/gpui/src/test.rs b/crates/gpui/src/test.rs
+index 9f8fd8b198..469affdc1c 100644
+--- a/crates/gpui/src/test.rs
++++ b/crates/gpui/src/test.rs
+@@ -29,11 +29,44 @@ use crate::{Entity, Subscription, TestAppContext, TestDispatcher};
+ use futures::StreamExt as _;
+ use smol::channel;
+ use std::{
++    cell::Cell,
+     env,
+     panic::{self, RefUnwindSafe},
+     pin::Pin,
+ };
+ 
++thread_local! {
++    static CURRENT_TEST_NAME: Cell<Option<&'static str>> = const { Cell::new(None) };
++}
++
++/// Returns the test name currently associated with this thread, if any.
++pub fn current_test_name() -> Option<&'static str> {
++    CURRENT_TEST_NAME.with(Cell::get)
++}
++
++/// Runs the closure with the given test name installed for the current thread.
++pub fn with_test_name<R>(name: Option<&'static str>, f: impl FnOnce() -> R) -> R {
++    CURRENT_TEST_NAME.with(|current_name| {
++        struct RestoreTestName<'a> {
++            current_name: &'a Cell<Option<&'static str>>,
++            previous_name: Option<&'static str>,
++        }
++
++        impl Drop for RestoreTestName<'_> {
++            fn drop(&mut self) {
++                self.current_name.set(self.previous_name);
++            }
++        }
++
++        let previous_name = current_name.replace(name);
++        let _restore = RestoreTestName {
++            current_name,
++            previous_name,
++        };
++        f()
++    })
++}
++
+ /// Run the given test function with the configured parameters.
+ /// This is intended for use with the `gpui::test` macro
+ /// and generally should not be used directly.
+diff --git a/crates/gpui_macros/src/test.rs b/crates/gpui_macros/src/test.rs
+index 490ea07fee..3abcaad3ae 100644
+--- a/crates/gpui_macros/src/test.rs
++++ b/crates/gpui_macros/src/test.rs
+@@ -191,10 +191,12 @@ fn generate_test_function(
+                     &[#seeds],
+                     #max_retries,
+                     &mut |dispatcher, _seed| {
+-                        let foreground_executor = gpui::ForegroundExecutor::new(std::sync::Arc::new(dispatcher.clone()));
+-                        #cx_vars
+-                        foreground_executor.block_test(#inner_fn_name(#inner_fn_args));
+-                        #cx_teardowns
++                        gpui::with_test_name(Some(stringify!(#outer_fn_name)), || {
++                            let foreground_executor = gpui::ForegroundExecutor::new(std::sync::Arc::new(dispatcher.clone()));
++                            #cx_vars
++                            foreground_executor.block_test(#inner_fn_name(#inner_fn_args));
++                            #cx_teardowns
++                        })
+                     },
+                     #on_failure_fn_name
+                 );
+@@ -274,9 +276,11 @@ fn generate_test_function(
+                     &[#seeds],
+                     #max_retries,
+                     &mut |dispatcher, _seed| {
+-                        #cx_vars
+-                        #inner_fn_name(#inner_fn_args);
+-                        #cx_teardowns
++                        gpui::with_test_name(Some(stringify!(#outer_fn_name)), || {
++                            #cx_vars
++                            #inner_fn_name(#inner_fn_args);
++                            #cx_teardowns
++                        })
+                     },
+                     #on_failure_fn_name,
+                 );

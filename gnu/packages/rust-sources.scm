@@ -59,6 +59,128 @@
        (base32
         "1yhs9lj9gnzbvimv0y5f1a4my0slbvygkcjjkaxd4wkkyfvfbkxy")))))
 
+;; Workspace dependency of zed.
+;;
+;; Cargo side: Cargo unifies dependency versions across zed's
+;; workspace, including this package's transitive dependencies,
+;; and records them in zed's Cargo.lock.
+;;
+;; Guix side: zed's cargo-inputs entry (generated from zed's
+;; Cargo.lock) already contains all of this package's transitive
+;; dependencies, so this package reuses zed's cargo-inputs.
+(define-public rust-alacritty-0.25.1.9d9640d
+  (hidden-package
+   (package
+     (name "rust-alacritty")
+     (version "0.25.1")
+     (source
+      (origin
+        (method git-fetch)
+        (uri
+         (git-reference
+          (url "https://github.com/zed-industries/alacritty")
+          (commit "9d9640d4e56d67a09d049f9c0a300aae08d4f61e")))
+        (file-name
+         (git-file-name "rust-alacritty" "0.25.1.9d9640d"))
+        (sha256
+         (base32 "16g4jdbwdhqihc2x403fdaxf6m9gcj44cm53dyk68b3wl7chh29s"))))
+     (build-system cargo-build-system)
+     (arguments
+      (list #:skip-build? #t
+            #:install-source? #t
+            #:cargo-package-crates ''("alacritty_terminal")
+            #:cargo-package-flags ''("--no-metadata" "--no-verify"
+                                     "--exclude-lockfile")))
+     (inputs (cargo-inputs 'rust-alacritty-0.25.1.9d9640d))
+     (home-page "https://github.com/zed-industries/alacritty")
+     (synopsis "Terminal emulator library")
+     (description
+      "This package provides a terminal emulator library.")
+     (license license:asl2.0))))
+
+;; Workspace dependency of zed.
+;;
+;; Cargo side: Cargo unifies dependency versions across zed's
+;; workspace, including this package's transitive dependencies,
+;; and records them in zed's Cargo.lock.
+;;
+;; Guix side: zed's cargo-inputs entry (generated from zed's
+;; Cargo.lock) already contains all of this package's transitive
+;; dependencies, so this package reuses zed's cargo-inputs.
+(define-public rust-candle-0.9.1.724d75e
+  (hidden-package
+   (package
+     (name "rust-candle")
+     (version "0.9.1")
+     (source
+      (origin
+        (method git-fetch)
+        (uri
+         (git-reference
+          (url "https://github.com/zed-industries/candle")
+          (commit "724d75eb3deebefe83f2a7381a45d4fac6eda383")))
+        (file-name
+         (git-file-name "rust-candle" "0.9.1.724d75e"))
+        (sha256
+         (base32 "1n9g84g0ikldw42f0j3ad975vjvx6ildwqh8dw3zi3rps518hx14"))
+        (patches
+         (search-patches
+          "rust-candle-0.9.1-add-candle-onnx-to-workspace.patch"))))
+     (build-system cargo-build-system)
+     (arguments
+      (list #:skip-build? #t
+            #:install-source? #t
+            #:cargo-package-crates ''("candle-core"
+                                      "candle-nn"
+                                      "candle-onnx")
+            #:cargo-package-flags ''("--no-metadata" "--no-verify"
+                                     "--exclude-lockfile")))
+     (inputs (cargo-inputs 'rust-candle-0.9.1.724d75e))
+     (home-page "https://github.com/huggingface/candle")
+     (synopsis "Minimalist ML framework for Rust")
+     (description
+      "This package provides a minimalist ML framework for Rust.")
+     (license (list license:asl2.0 license:expat)))))
+
+;; Workspace dependency of zed.
+;;
+;; Cargo side: Cargo unifies dependency versions across zed's
+;; workspace, including this package's transitive dependencies,
+;; and records them in zed's Cargo.lock.
+;;
+;; Guix side: zed's cargo-inputs entry (generated from zed's
+;; Cargo.lock) already contains all of this package's transitive
+;; dependencies, so this package reuses zed's cargo-inputs.
+(define-public rust-dap-types-0.0.1.1b461b3
+  (hidden-package
+   (package
+     (name "rust-dap-types")
+     (version "0.0.1")
+     (source
+      (origin
+        (method git-fetch)
+        (uri
+         (git-reference
+          (url "https://github.com/zed-industries/dap-types")
+          (commit "1b461b310481d01e02b2603c16d7144b926339f8")))
+        (file-name
+         (git-file-name "rust-dap-types" "0.0.1.1b461b3"))
+        (sha256
+         (base32 "0snc05ia4jvykajavsvyxcyn24s2jxbw7k9wmby23r1aqxf31i0z"))))
+     (build-system cargo-build-system)
+     (arguments
+      (list #:skip-build? #t
+            #:install-source? #t
+            #:cargo-package-crates ''("dap-types")
+            #:cargo-package-flags ''("--no-metadata" "--no-verify"
+                                     "--exclude-lockfile")))
+     (inputs (cargo-inputs 'rust-dap-types-0.0.1.1b461b3))
+     (home-page "https://github.com/zed-industries/dap-types")
+     (synopsis "Rust types for the Debug Adapter Protocol")
+     (description
+      "This package provides Rust types for the Debug Adapter Protocol.")
+     (license (list license:asl2.0 license:expat)))))
+
 (define-public rust-deunicode-1
   (hidden-package
    (package
@@ -102,6 +224,46 @@
 transliterating them.  It supports Emoji and Chinese.")
      (license license:bsd-3))))
 
+;; Workspace dependency of zed.
+;;
+;; Cargo side: Cargo unifies dependency versions across zed's
+;; workspace, including this package's transitive dependencies,
+;; and records them in zed's Cargo.lock.
+;;
+;; Guix side: zed's cargo-inputs entry (generated from zed's
+;; Cargo.lock) already contains all of this package's transitive
+;; dependencies, so this package reuses zed's cargo-inputs.
+(define-public rust-gh-workflow-0.8.0.c9eac0e
+  (hidden-package
+   (package
+     (name "rust-gh-workflow")
+     (version "0.8.0")
+     (source
+      (origin
+        (method git-fetch)
+        (uri
+         (git-reference
+          (url "https://github.com/zed-industries/gh-workflow")
+          (commit "c9eac0ed361583e1072860d96776fa52775b82ac")))
+        (file-name
+         (git-file-name "rust-gh-workflow" "0.8.0.c9eac0e"))
+        (sha256
+         (base32 "172bn9b16f7qj3mn0h8r8bwiiiw2awgqlzj5n6f2gjcgk5nmh1hp"))))
+     (build-system cargo-build-system)
+     (arguments
+      (list #:skip-build? #t
+            #:install-source? #t
+            #:cargo-package-crates ''("gh-workflow-macros"
+                                      "gh-workflow")
+            #:cargo-package-flags ''("--no-metadata" "--no-verify"
+                                     "--exclude-lockfile")))
+     (inputs (cargo-inputs 'rust-gh-workflow-0.8.0.c9eac0e))
+     (home-page "https://github.com/tailcallhq/gh-workflow")
+     (synopsis "Type-safe GitHub Actions workflow generation")
+     (description
+      "This package provides type-safe GitHub Actions workflow generation.")
+     (license license:expat))))
+
 (define-public rust-hypher-0.1
   (hidden-package
    (package
@@ -144,6 +306,191 @@ transliterating them.  It supports Emoji and Chinese.")
      (synopsis "Separate words into syllables")
      (description "@code{hypher} is a Rust library for syllabification.")
      (license (list license:expat license:asl2.0)))))
+
+;; Workspace dependency of zed.
+;;
+;; Cargo side: Cargo unifies dependency versions across zed's
+;; workspace, including this package's transitive dependencies,
+;; and records them in zed's Cargo.lock.
+;;
+;; Guix side: zed's cargo-inputs entry (generated from zed's
+;; Cargo.lock) already contains all of this package's transitive
+;; dependencies, so this package reuses zed's cargo-inputs.
+;;
+;; Only livekit-protocol, livekit-runtime, and livekit-api are
+;; packaged.  The libwebrtc, webrtc-sys, and livekit crates are
+;; disabled on Linux by our zed-use-mock-livekit-on-linux patch
+;; (which adds target_os = "linux" to the cfg gate), but their
+;; Cargo.toml files must remain for workspace resolution; their
+;; source is replaced with empty stubs.  The snippet also deletes
+;; unused workspace members (livekit-ffi, soxr-sys, yuv-sys,
+;; imgproc, examples) and the 1.6 MiB generated livekit.serde.rs
+;; (guarded by a nonexistent "serde" feature, so never compiled).
+;;
+;; TODO: Regenerate livekit-protocol/src/livekit.rs (5650 lines)
+;; from the .proto source in the livekit-protocol/protocol
+;; submodule (github.com/livekit/protocol) using prost-build and
+;; pbjson-build as native-inputs, then delete the shipped copy.
+(define-public rust-livekit-0.7.8.5f04705
+  (hidden-package
+   (package
+     (name "rust-livekit")
+     (version "0.7.8")
+     (source
+      (origin
+        (method git-fetch)
+        (uri
+         (git-reference
+          (url "https://github.com/zed-industries/livekit-rust-sdks")
+          (commit "5f04705ac3f356350ae31534ffbc476abc9ea83d")))
+        (file-name
+         (git-file-name "rust-livekit" "0.7.8.5f04705"))
+        (sha256
+         (base32 "1irnw9dax0nl8rl7jxdxs5vw6hg166jj4gf1s5cza6igvmrkl6y9"))
+        (modules '((guix build utils)))
+        (snippet
+         '(begin
+            (for-each delete-file-recursively
+                      '(".github" "examples" "imgproc"
+                        "livekit-ffi" "soxr-sys" "yuv-sys"
+                        ;; Keep Cargo.toml for workspace resolution
+                        ;; but replace source with stubs.
+                        "libwebrtc/src"
+                        "livekit/src"
+                        "webrtc-sys/src"
+                        "webrtc-sys/include"
+                        "webrtc-sys/libwebrtc"))
+            (for-each (lambda (f)
+                        (mkdir-p (dirname f))
+                        (call-with-output-file f (const #t)))
+                      '("libwebrtc/src/lib.rs"
+                        "livekit/src/lib.rs"
+                        "webrtc-sys/src/lib.rs"))
+            (delete-file
+             "livekit-protocol/src/livekit.serde.rs")
+            (substitute* "Cargo.toml"
+              (("\"livekit-ffi\",") "")
+              (("\"soxr-sys\",") "")
+              (("\"yuv-sys\",") "")
+              (("\"imgproc\",") ""))))))
+     (build-system cargo-build-system)
+     (arguments
+      (list #:skip-build? #t
+            #:install-source? #t
+            #:cargo-package-crates ''("livekit-protocol"
+                                      "livekit-runtime"
+                                      "livekit-api"
+                                      "webrtc-sys-build"
+                                      "webrtc-sys"
+                                      "libwebrtc"
+                                      "livekit")
+            #:cargo-package-flags ''("--no-metadata" "--no-verify"
+                                     "--exclude-lockfile")
+            #:phases
+            #~(modify-phases %standard-phases
+               (replace 'package
+                 (lambda* (#:key source (cargo-package-crates '())
+                           (cargo-package-flags '("--no-metadata" "--no-verify"))
+                           (vendor-dir "guix-vendor")
+                           #:allow-other-keys)
+                   (use-modules (ice-9 ftw))
+                   ;; Same as the standard package phase, but deletes
+                   ;; cargo's target/package/tmp-crate/ scratch directory
+                   ;; between the packaging loop and the repacking step.
+                   ;; Cargo copies .crate files there during packaging and
+                   ;; does not clean up.  The repacking step's recursive
+                   ;; find-files picks them up, and scandir confuses the
+                   ;; tmp-crate directory with an extracted crate when
+                   ;; names sort after "tmp-crate" alphabetically.
+                   (when (file-exists? "Cargo.toml.orig")
+                     (delete-file "Cargo.toml.orig"))
+                   (for-each
+                    (lambda (pkg)
+                      (apply invoke "cargo" "package" "--offline"
+                             "--package" pkg cargo-package-flags)
+                      (for-each
+                       (lambda (crate)
+                         (invoke "tar" "xzf" crate "-C" vendor-dir))
+                       (find-files "target/package" "\\.crate$"))
+                      ((assoc-ref %standard-phases 'patch-cargo-checksums)
+                       #:vendor-dir vendor-dir))
+                    cargo-package-crates)
+                   ;; Delete cargo's scratch directory.
+                   (when (file-exists? "target/package/tmp-crate")
+                     (delete-file-recursively "target/package/tmp-crate"))
+                   ;; Repack crates with deterministic timestamps.
+                   (with-directory-excursion "target/package"
+                     (for-each
+                      (lambda (crate)
+                        (invoke "tar" "xf" crate)
+                        (delete-file crate)
+                        (let ((dir
+                               (car (scandir
+                                     "."
+                                     (lambda (file)
+                                       (and (not (member file '("." "..")))
+                                            (not (string-suffix?
+                                                  ".crate" file))))))))
+                          (for-each
+                           (lambda (file)
+                             (let ((s (lstat file)))
+                               (unless (eq? (stat:type s) 'symlink)
+                                 (utime file 0 0 0 0))))
+                           (find-files dir #:directories? #t))
+                          (apply invoke "tar" "czf"
+                                 (string-append dir ".crate")
+                                 "--sort=name" "--mtime=@0"
+                                 "--owner=root:0" "--group=root:0"
+                                 (find-files dir #:directories? #t))
+                          (delete-file-recursively dir)))
+                      (find-files "." "\\.crate$"))))))))
+     (inputs (cargo-inputs 'rust-livekit-0.7.8.5f04705))
+     (home-page "https://github.com/livekit/rust-sdks")
+     (synopsis "LiveKit real-time communication SDK for Rust")
+     (description
+      "This package provides a LiveKit real-time communication SDK for Rust.")
+     (license license:asl2.0))))
+
+;; Workspace dependency of zed.
+;;
+;; Cargo side: Cargo unifies dependency versions across zed's
+;; workspace, including this package's transitive dependencies,
+;; and records them in zed's Cargo.lock.
+;;
+;; Guix side: zed's cargo-inputs entry (generated from zed's
+;; Cargo.lock) already contains all of this package's transitive
+;; dependencies, so this package reuses zed's cargo-inputs.
+(define-public rust-notify-8.2.0.ce58c24
+  (hidden-package
+   (package
+     (name "rust-notify")
+     (version "8.2.0")
+     (source
+      (origin
+        (method git-fetch)
+        (uri
+         (git-reference
+          (url "https://github.com/zed-industries/notify.git")
+          (commit "ce58c24cad542c28e04ced02e20325a4ec28a31d")))
+        (file-name
+         (git-file-name "rust-notify" "8.2.0.ce58c24"))
+        (sha256
+         (base32 "09zn3ll1vlsblgrdacyw3zx58xzdxlab8ba7h22bbb57n76dmkl0"))))
+     (build-system cargo-build-system)
+     (arguments
+      (list #:skip-build? #t
+            #:install-source? #t
+            #:cargo-package-crates ''("notify-types"
+                                      "notify")
+            #:cargo-package-flags ''("--no-metadata" "--no-verify"
+                                     "--exclude-lockfile")))
+     (inputs (cargo-inputs 'rust-notify-8.2.0.ce58c24))
+     (home-page "https://github.com/notify-rs/notify")
+     (synopsis "Cross-platform filesystem notification library")
+     (description
+      "This package provides a cross-platform filesystem notification library
+for Rust.")
+     (license (list license:asl2.0 license:expat)))))
 
 (define-public rust-pcre2-utf32-0.2
   (hidden-package
@@ -226,6 +573,77 @@ UTF-32 support.")
            (base32
             "0zgqklzmyk893n82zq8d0is57npvy9lsfpqb83h1bbx9c42fl35p"))))
        (inputs (cargo-inputs 'rust-pipewire-0.8.0.93138d0))))))
+
+;; Workspace dependency of zed.
+;;
+;; Cargo side: Cargo unifies dependency versions across zed's
+;; workspace, including this package's transitive dependencies,
+;; and records them in zed's Cargo.lock.
+;;
+;; Guix side: zed's cargo-inputs entry (generated from zed's
+;; Cargo.lock) already contains all of this package's transitive
+;; dependencies, so this package reuses zed's cargo-inputs.
+(define-public rust-pet-0.1.0.d5b5bb0
+  (hidden-package
+   (package
+     (name "rust-pet")
+     (version "0.1.0")
+     (source
+      (origin
+        (method git-fetch)
+        (uri
+         (git-reference
+          (url "https://github.com/microsoft/python-environment-tools.git")
+          (commit "d5b5bb0c4558a51d8cc76b514bc870fd1c042f16")))
+        (file-name
+         (git-file-name "rust-pet" "0.1.0.d5b5bb0"))
+        (sha256
+         (base32 "01djr1761l7c889v9lng7igjqxiz208r2vrwij661cn2fy5xcm5f"))))
+     (build-system cargo-build-system)
+     (arguments
+      (list #:skip-build? #t
+            #:install-source? #t
+            #:cargo-package-crates ''("pet-fs"
+                                      "pet-core"
+                                      "pet-python-utils"
+                                      "pet-jsonrpc"
+                                      "pet-reporter"
+                                      "pet-conda"
+                                      "pet-virtualenv"
+                                      "pet-virtualenvwrapper"
+                                      "pet-env-var-path"
+                                      "pet-global-virtualenvs"
+                                      "pet-homebrew"
+                                      "pet-linux-global-python"
+                                      "pet-mac-commandlinetools"
+                                      "pet-mac-python-org"
+                                      "pet-mac-xcode"
+                                      "pet-pipenv"
+                                      "pet-pixi"
+                                      "pet-poetry"
+                                      "pet-pyenv"
+                                      "pet-telemetry"
+                                      "pet-uv"
+                                      "pet-venv"
+                                      "pet-windows-store"
+                                      "pet-windows-registry"
+                                      "pet")
+            #:cargo-package-flags ''("--no-metadata" "--no-verify"
+                                     "--exclude-lockfile")
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'unpack 'fix-versions
+                  (lambda _
+                    (let ((version #$(package-version this-package)))
+                      (substitute* (find-files "." "^Cargo[.]toml$")
+                        (("^(pet-[a-z-]*) = [{] path = \"([^\"]*)\" [}]" x pkg path)
+                         (string-append pkg " = { version = \"" version "\", path = \"" path "\" }")))))))))
+     (inputs (cargo-inputs 'rust-pet-0.1.0.d5b5bb0))
+     (home-page "https://github.com/microsoft/python-environment-tools")
+     (synopsis "Python environment tools")
+     (description
+      "This package provides Python environment tools.")
+     (license license:expat))))
 
 (define-public rust-pubgrub-0.3.0.b70cf70
   (let ((commit "b70cf707aa43f21b32f3a61b8a0889b15032d5c4")
@@ -677,6 +1095,47 @@ intelligence.")
       (inputs (cons oniguruma
                     (cargo-inputs 'rust-syntect-5.3))))))
 
+;; Workspace dependency of zed.
+;;
+;; Cargo side: Cargo unifies dependency versions across zed's
+;; workspace, including this package's transitive dependencies,
+;; and records them in zed's Cargo.lock.
+;;
+;; Guix side: zed's cargo-inputs entry (generated from zed's
+;; Cargo.lock) already contains all of this package's transitive
+;; dependencies, so this package reuses zed's cargo-inputs.
+(define-public rust-tiktoken-rs-0.9.1.2570c43
+  (hidden-package
+   (package
+     (name "rust-tiktoken-rs")
+     (version "0.9.1")
+     (source
+      (origin
+        (method git-fetch)
+        (uri
+         (git-reference
+          (url "https://github.com/zed-industries/tiktoken-rs")
+          (commit "2570c4387a8505fb8f1d3f3557454b474f1e8271")))
+        (file-name
+         (git-file-name "rust-tiktoken-rs" "0.9.1.2570c43"))
+        (sha256
+         (base32 "0yki1whx16xqgsrnr6gjsxakj6qzyvz958g6c9h15xp154kw6573"))))
+     (build-system cargo-build-system)
+     (arguments
+      (list #:skip-build? #t
+            #:install-source? #t
+            #:cargo-package-crates ''("tiktoken-rs")
+            #:cargo-package-flags ''("--no-metadata" "--no-verify"
+                                     "--exclude-lockfile")))
+     (inputs (cargo-inputs 'rust-tiktoken-rs-0.9.1.2570c43))
+     (home-page "https://github.com/zurawiki/tiktoken-rs")
+     (synopsis "Rust library for OpenAI's BPE tokenizer")
+     (description
+      "This package provides Rust bindings for OpenAI's @acronym{BPE, byte
+pair encoding} tokenizer, used to count and manage tokens for OpenAI
+language models.")
+     (license license:expat))))
+
 (define-public rust-tikv-jemallocator-for-polars
   (let ((commit "c7991e5bb6b3e9f79db6b0f48dcda67c5c3d2936")
         (revision "0"))
@@ -960,3 +1419,95 @@ and runtime for AI-assisted coding.")
     (description "Glycin is a sandbox image decoder for image viewers and
 thumbnails to display untrusted content safely.")
     (license (list license:mpl2.0 license:lgpl2.1+))))
+
+;; Workspace dependency of zed.
+;;
+;; Cargo side: Cargo unifies dependency versions across zed's
+;; workspace, including this package's transitive dependencies,
+;; and records them in zed's Cargo.lock.
+;;
+;; Guix side: zed's cargo-inputs entry (generated from zed's
+;; Cargo.lock) already contains all of this package's transitive
+;; dependencies, so this package reuses zed's cargo-inputs.
+(define-public rust-zed-xim-0.4.0-zed.16f35a2
+  (hidden-package
+   (package
+     (name "rust-zed-xim")
+     (version "0.4.0-zed")
+     (source
+      (origin
+        (method git-fetch)
+        (uri
+         (git-reference
+          (url "https://github.com/zed-industries/xim-rs.git")
+          (commit "16f35a2c881b815a2b6cdfd6687988e84f8447d8")))
+        (file-name
+         (git-file-name "rust-zed-xim" "0.4.0-zed.16f35a2"))
+        (sha256
+         (base32 "14cyxxdgjpbkf8ny4c46cfqjinavi2cyxzwfngldlls97m5zh555"))))
+     (build-system cargo-build-system)
+     (arguments
+      (list #:skip-build? #t
+            #:install-source? #t
+            #:cargo-package-crates ''("xim-ctext"
+                                      "xim-parser"
+                                      "zed-xim")
+            #:cargo-package-flags ''("--no-metadata" "--no-verify"
+                                     "--exclude-lockfile")
+            #:phases
+            #~(modify-phases %standard-phases
+               (replace 'package
+                 (lambda* (#:key source (cargo-package-crates '())
+                           (cargo-package-flags '("--no-metadata" "--no-verify"))
+                           (vendor-dir "guix-vendor")
+                           #:allow-other-keys)
+                   (use-modules (ice-9 ftw))
+                   ;; Same as the standard package phase, but deletes
+                   ;; cargo's target/package/tmp-crate/ scratch directory
+                   ;; between the packaging loop and the repacking step.
+                   (when (file-exists? "Cargo.toml.orig")
+                     (delete-file "Cargo.toml.orig"))
+                   (for-each
+                    (lambda (pkg)
+                      (apply invoke "cargo" "package" "--offline"
+                             "--package" pkg cargo-package-flags)
+                      (for-each
+                       (lambda (crate)
+                         (invoke "tar" "xzf" crate "-C" vendor-dir))
+                       (find-files "target/package" "\\.crate$"))
+                      ((assoc-ref %standard-phases 'patch-cargo-checksums)
+                       #:vendor-dir vendor-dir))
+                    cargo-package-crates)
+                   (when (file-exists? "target/package/tmp-crate")
+                     (delete-file-recursively "target/package/tmp-crate"))
+                   (with-directory-excursion "target/package"
+                     (for-each
+                      (lambda (crate)
+                        (invoke "tar" "xf" crate)
+                        (delete-file crate)
+                        (let ((dir
+                               (car (scandir
+                                     "."
+                                     (lambda (file)
+                                       (and (not (member file '("." "..")))
+                                            (not (string-suffix?
+                                                  ".crate" file))))))))
+                          (for-each
+                           (lambda (file)
+                             (let ((s (lstat file)))
+                               (unless (eq? (stat:type s) 'symlink)
+                                 (utime file 0 0 0 0))))
+                           (find-files dir #:directories? #t))
+                          (apply invoke "tar" "czf"
+                                 (string-append dir ".crate")
+                                 "--sort=name" "--mtime=@0"
+                                 "--owner=root:0" "--group=root:0"
+                                 (find-files dir #:directories? #t))
+                          (delete-file-recursively dir)))
+                      (find-files "." "\\.crate$"))))))))
+     (inputs (cargo-inputs 'rust-zed-xim-0.4.0-zed.16f35a2))
+     (home-page "https://github.com/XDeme1/xim-rs")
+     (synopsis "X input method client and server")
+     (description
+      "This package provides a library for @code{xim}, the X input method.")
+     (license license:expat))))

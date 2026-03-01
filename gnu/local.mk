@@ -2386,6 +2386,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rust-1.70-fix-rustix-build.patch	\
   %D%/packages/patches/rust-1.78-unwinding-fix.patch		\
   %D%/packages/patches/rust-1.81-fix-riscv64-bootstrap.patch	\
+  %D%/packages/patches/rust-candle-0.9.1-add-candle-onnx-to-workspace.patch	\
   %D%/packages/patches/rust-codex-0.98.0-core-remove-self-dep.patch	\
   %D%/packages/patches/rust-codex-0.98.0-test-shebangs.patch	\
   %D%/packages/patches/rust-codex-0.98.0-test-timeout.patch	\
@@ -2624,6 +2625,17 @@ dist_patch_DATA =						\
   %D%/packages/patches/yggdrasil-extra-config.patch	\
   %D%/packages/patches/ypsilon-Use-GNU-toolchain-as-default.patch	\
   %D%/packages/patches/zabbix-agent2-test-timezone-fix.patch	\
+  %D%/packages/patches/zed-0.225.10-add-message-notification-action.patch \
+  %D%/packages/patches/zed-0.225.10-add-guix-container-support.patch	\
+  %D%/packages/patches/zed-0.225.10-collapse-multiline-git-deps.patch	\
+  %D%/packages/patches/zed-0.225.10-exclude-libwebrtc-from-audio.patch		\
+  %D%/packages/patches/zed-0.225.10-disable-dlopen.patch	\
+  %D%/packages/patches/zed-0.225.10-fix-sqlite-memory-mode.patch	\
+  %D%/packages/patches/zed-0.225.10-fix-test-db-isolation.patch	\
+  %D%/packages/patches/zed-0.225.10-fix-workspace-race.patch	\
+  %D%/packages/patches/zed-0.225.10-keep-regular-file-workspaces.patch	\
+  %D%/packages/patches/zed-0.225.10-remove-patch-crates-io.patch	\
+  %D%/packages/patches/zed-0.225.10-use-mock-livekit-on-linux.patch	\
   %D%/packages/patches/zig-0.9-build-respect-PKG_CONFIG-env-var.patch	\
   %D%/packages/patches/zig-0.9-fix-runpath.patch		\
   %D%/packages/patches/zig-0.9-riscv-support.patch		\

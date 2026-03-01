@@ -121,6 +121,7 @@
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
@@ -133,7 +134,10 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages vulkan)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
@@ -2018,3 +2022,171 @@ with full unicode support and antialiased text rendering.")
 syntax highlighting, customizable color scheme (including support for 24-bit true
 colours), kitty keyboard protocol, editorconfig support, amongst other features.")
     (license license:gpl2)))
+
+(define-public zed
+  (package
+    (name "zed")
+    (version "0.225.10")
+    (outputs '("out"            ; editor, cli, icons, desktop file
+               "remote"         ; zed-remote-server for remote development
+               "server"         ; collab server daemon
+               "tools"))        ; extension_cli
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zed-industries/zed")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d6zr88s4nj4fw01gw908aw2mqgjj25baj4gx7qnm6rsbxqrp500"))
+       (patches
+        (search-patches "zed-0.225.10-add-message-notification-action.patch"
+                        "zed-0.225.10-add-guix-container-support.patch"
+                        "zed-0.225.10-collapse-multiline-git-deps.patch"
+                        "zed-0.225.10-disable-dlopen.patch"
+                        "zed-0.225.10-exclude-libwebrtc-from-audio.patch"
+                        "zed-0.225.10-fix-sqlite-memory-mode.patch"
+                        "zed-0.225.10-fix-test-db-isolation.patch"
+                        "zed-0.225.10-fix-workspace-race.patch"
+                        "zed-0.225.10-keep-regular-file-workspaces.patch"
+                        "zed-0.225.10-remove-patch-crates-io.patch"
+                        "zed-0.225.10-use-mock-livekit-on-linux.patch"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f
+           #:cargo-build-flags ''("--release" "-p" "zed")
+           ;; Not installed:
+           ;; auto_update_helper - Windows-only (empty main on Linux)
+           ;; eval - internal AI agent benchmarking tool
+           ;; edit_prediction_cli - internal edit prediction training pipeline
+           ;; storybook - GPUI component viewer for Zed UI development
+           ;; docs_preprocessor - mdbook preprocessor for Zed's docs website
+           ;; zed_visual_test_runner - visual regression tests, macOS-only
+           #:cargo-install-paths ''("crates/zed"
+                                    "crates/cli" ; opens files in running Zed
+                                    ;;; Install remote_server via its own cargo invocation
+                                    ;;; to avoid feature unification with the zed build.
+                                    "crates/remote_server" ; installs as zed-remote-server
+                                    "crates/collab" ; self-hostable collaboration server
+                                    "crates/extension_cli") ; builds extensions from source
+           #:phases
+           #~(modify-phases %standard-phases
+              (add-after 'install 'install-extras
+                (lambda* (#:key outputs #:allow-other-keys)
+                  (let* ((out (assoc-ref outputs "out"))
+                         (bin (string-append out "/bin"))
+                         (libexec (string-append out "/libexec"))
+                         (icons512 (string-append out "/share/icons/hicolor/512x512/apps"))
+                         (icons1024 (string-append out "/share/icons/hicolor/1024x1024/apps"))
+                         (apps (string-append out "/share/applications"))
+                         (remote-bin (string-append (assoc-ref outputs "remote") "/bin"))
+                         (server-bin (string-append (assoc-ref outputs "server") "/bin"))
+                         (tools-bin (string-append (assoc-ref outputs "tools") "/bin")))
+                    ;;; The cli binary is the user-facing launcher that finds
+                    ;;; and delegates to zed-editor via ../libexec/zed-editor.
+                    (mkdir-p libexec)
+                    (rename-file (string-append bin "/zed")
+                                 (string-append libexec "/zed-editor"))
+                    (rename-file (string-append bin "/cli")
+                                 (string-append bin "/zed"))
+                    ;;; Move remote_server to "remote" output as zed-remote-server.
+                    (mkdir-p remote-bin)
+                    (rename-file (string-append bin "/remote_server")
+                                 (string-append remote-bin "/zed-remote-server"))
+                    ;;; Move collab to "server" output.
+                    (mkdir-p server-bin)
+                    (rename-file (string-append bin "/collab")
+                                 (string-append server-bin "/collab"))
+                    (rename-file (string-append bin "/dotenv")
+                                 (string-append server-bin "/dotenv"))
+                    ;;; Move zed-extension to "tools" output.
+                    (mkdir-p tools-bin)
+                    (rename-file (string-append bin "/zed-extension")
+                                 (string-append tools-bin "/zed-extension"))
+                    ;;; Icons.
+                    (mkdir-p icons512)
+                    (mkdir-p icons1024)
+                    (copy-file "crates/zed/resources/app-icon.png"
+                               (string-append icons512 "/zed.png"))
+                    (copy-file "crates/zed/resources/app-icon@2x.png"
+                               (string-append icons1024 "/zed.png"))
+                    ;;; Desktop file.
+                    (mkdir-p apps)
+                    (copy-file "crates/zed/resources/zed.desktop.in"
+                               (string-append apps "/dev.zed.Zed.desktop"))
+                    (substitute* (string-append apps "/dev.zed.Zed.desktop")
+                      (("\\$APP_NAME") "Zed")
+                      (("\\$APP_CLI") "zed")
+                      (("\\$APP_ARGS") "%U")
+                      (("\\$APP_ICON") "zed")
+                      (("\\$DO_STARTUP_NOTIFY") "true")))))
+              (add-after 'unpack 'set-env
+                (lambda _
+                  (setenv "LIBGIT2_NO_VENDOR" "1")
+                  (setenv "LIBSQLITE3_SYS_USE_PKG_CONFIG" "1")))
+              (add-after 'set-env 'patch-git-deps
+                (lambda _
+                  ;; All multi-line entries are collapsed to single
+                  ;; lines by the patch.  reqwest and scap already
+                  ;; carry version fields; just strip the git source.
+                  (substitute* "Cargo.toml"
+                    (("(reqwest = \\{) git = \"[^\"]+\", rev = \"[^\"]+\", " _ prefix)
+                     (string-append prefix " "))
+                    (("(scap = \\{) git = \"[^\"]+\", rev = \"[^\"]+\", " _ prefix)
+                     (string-append prefix " ")))
+                  ;; Replace all remaining git fields with version = "*"
+                  ;; and strip rev/branch.
+                  (substitute* "Cargo.toml"
+                    (("git = \"https://[^\"]+\"")
+                     "version = \"*\"")
+                    ((", rev = \"[^\"]+\"") "")
+                    ((", branch = \"[^\"]+\"") ""))
+                  ;; Sub-crate Cargo.toml files also have git deps.
+                  (for-each
+                   (lambda (file)
+                     ;; rev-before-git deps: replace pair with version = "*".
+                     (substitute* file
+                       (("rev = \"[^\"]+\", git = \"[^\"]+\"")
+                        "version = \"*\""))
+                     ;; git-before-rev deps that already carry a version
+                     ;; field: strip git+rev, keep everything else.
+                     (substitute* file
+                       (("git = \"[^\"]+\" *, rev = \"[^\"]+\" *, ") "")
+                       ((", git *= *\"[^\"]+\"") "")
+                       ((", branch = \"[^\"]+\"") "")))
+                   (find-files "crates" "^Cargo\\.toml$"))
+                  ;; nvim-rs has no version field; add one.
+                  (substitute* "crates/vim/Cargo.toml"
+                    (("(nvim-rs = \\{) " _ prefix)
+                     (string-append prefix " version = \"*\", "))))))))
+    (native-inputs (list cmake-minimal pkg-config protobuf))
+    (inputs
+     (cons* alsa-lib
+            bzip2
+            dbus
+            fontconfig
+            freetype
+            libgit2-1.9
+            libx11
+            libxcb
+            libxkbcommon
+            openssl
+            sqlite
+            vulkan-loader
+            wayland
+            wayland-protocols
+            xcb-util-cursor
+            zlib
+            (list zstd "lib")
+            (cargo-inputs 'zed)))
+    (home-page "https://zed.dev")
+    (synopsis "High-performance, multiplayer code editor")
+    (description
+     "Zed is a high-performance, multiplayer code editor written in Rust.
+
+Note: This build disables WebRTC (libwebrtc) support because libwebrtc is
+not yet packaged in Guix.  As a result, voice and video calls in collaborative
+sessions are not available.  Text-based collaboration, editing, and all other
+features work normally.")
+    (license license:gpl3+)))

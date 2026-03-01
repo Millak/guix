@@ -1,0 +1,21 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Subject: Move candle-onnx from exclude to members so cargo package can build it.
+Date: 2026-03-01
+
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -4,6 +4,7 @@
+     "candle-datasets",
+     "candle-examples",
+     "candle-nn",
++    "candle-onnx",
+     "candle-pyo3",
+     "candle-transformers",
+     "candle-wasm-examples/*",
+@@ -15,7 +16,6 @@
+     "candle-flash-attn",
+     "candle-kernels",
+     "candle-metal-kernels",
+-    "candle-onnx",
+ ]
+ resolver = "2"

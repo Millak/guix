@@ -1,0 +1,75 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Subject: Use mock livekit client on Linux to avoid libwebrtc dependency.
+Date: 2026-03-01
+License: GPL3+
+
+libwebrtc is not packaged in Guix and is difficult to build from source.
+Zed already has a mock_client fallback for FreeBSD and Windows-GNU which
+lack libwebrtc.  Add target_os = "linux" to those cfg conditions so Linux
+also uses mock_client, and exclude the libwebrtc/livekit dependencies from
+Cargo.toml on Linux.  This disables voice/video calls but allows the rest
+of Zed to build.
+
+--- a/crates/livekit_client/Cargo.toml	2026-03-01 21:21:38.647599342 +0000
++++ b/crates/livekit_client/Cargo.toml	2026-03-01 21:22:19.846482866 +0000
+@@ -44,7 +44,7 @@
+ ui.workspace = true
+ util.workspace = true
+ 
+-[target.'cfg(not(any(all(target_os = "windows", target_env = "gnu"), target_os = "freebsd")))'.dependencies]
++[target.'cfg(not(any(all(target_os = "windows", target_env = "gnu"), target_os = "freebsd", target_os = "linux")))'.dependencies]
+ libwebrtc = { rev = "5f04705ac3f356350ae31534ffbc476abc9ea83d", git = "https://github.com/zed-industries/livekit-rust-sdks" }
+ livekit = { rev = "5f04705ac3f356350ae31534ffbc476abc9ea83d", git = "https://github.com/zed-industries/livekit-rust-sdks", features = ["__rustls-tls"] }
+ 
+--- a/crates/livekit_client/src/lib.rs	2026-03-01 21:21:44.752291052 +0000
++++ b/crates/livekit_client/src/lib.rs	2026-03-01 21:22:37.234363786 +0000
+@@ -15,7 +15,8 @@
+         test,
+         feature = "test-support",
+         all(target_os = "windows", target_env = "gnu"),
+-        target_os = "freebsd"
++        target_os = "freebsd",
++        target_os = "linux"
+     ))
+ ))]
+ mod livekit_client;
+@@ -25,7 +26,8 @@
+         test,
+         feature = "test-support",
+         all(target_os = "windows", target_env = "gnu"),
+-        target_os = "freebsd"
++        target_os = "freebsd",
++        target_os = "linux"
+     ))
+ ))]
+ pub use livekit_client::*;
+@@ -36,7 +38,8 @@
+         test,
+         feature = "test-support",
+         all(target_os = "windows", target_env = "gnu"),
+-        target_os = "freebsd"
++        target_os = "freebsd",
++        target_os = "linux"
+     )
+ ))]
+ mod mock_client;
+@@ -46,7 +49,8 @@
+         test,
+         feature = "test-support",
+         all(target_os = "windows", target_env = "gnu"),
+-        target_os = "freebsd"
++        target_os = "freebsd",
++        target_os = "linux"
+     )
+ ))]
+ pub mod test;
+@@ -56,7 +60,8 @@
+         test,
+         feature = "test-support",
+         all(target_os = "windows", target_env = "gnu"),
+-        target_os = "freebsd"
++        target_os = "freebsd",
++        target_os = "linux"
+     )
+ ))]
+ pub use mock_client::*;

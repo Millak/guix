@@ -1,0 +1,24 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Subject: Remove the [patch.crates-io] section from Cargo.toml.
+Date: 2026-03-01
+License: expat
+
+These overrides redirect crates-io dependencies to git sources, which cannot be
+fetched in an offline build.  With vendored sources the overrides are unnecessary.
+
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -804,13 +804,6 @@
+     "Win32_Media",
+ ]
+
+-[patch.crates-io]
+-async-task = { git = "https://github.com/smol-rs/async-task.git", rev = "b4486cd71e4e94fbda54ce6302444de14f4d190e" }
+-notify = { git = "https://github.com/zed-industries/notify.git", rev = "ce58c24cad542c28e04ced02e20325a4ec28a31d" }
+-notify-types = { git = "https://github.com/zed-industries/notify.git", rev = "ce58c24cad542c28e04ced02e20325a4ec28a31d" }
+-windows-capture = { git = "https://github.com/zed-industries/windows-capture.git", rev = "f0d6c1b6691db75461b732f6d5ff56eed002eeb9" }
+-calloop = { git = "https://github.com/zed-industries/calloop" }
+-
+ [profile.dev]
+ split-debuginfo = "unpacked"
+ incremental = true
