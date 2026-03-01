@@ -12618,25 +12618,25 @@ it like any library.  The quickest way to get started is to look at the
            go-golang-org-x-sys
            go-golang-org-x-time))))
 
-(define-public go-github-com-pion-webrtc-v3
+(define-public go-github-com-pion-webrtc-v4
   (package
-    (name "go-github-com-pion-webrtc-v3")
-    (version "3.3.0")
+    (name "go-github-com-pion-webrtc-v4")
+    (version "4.2.6")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pion/webrtc")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pion/webrtc")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1f421a2s00mj5l9bj96xlignwfdfkp6kwk9qjs3vhazpmvqxzsgi"))))
+        (base32 "039sm8w6bmsk63zpa7dpfqz1fb5bysi6432d6by0j8s64r9dvp50"))))
     (build-system go-build-system)
     (arguments
      (list
       ;; XXX: Figure out why tests timeout and fail eventually.
       #:tests? #f
-      #:import-path "github.com/pion/webrtc/v3"
+      #:import-path "github.com/pion/webrtc/v4"
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples-and-benchmarks
@@ -12648,8 +12648,8 @@ it like any library.  The quickest way to get started is to look at the
      (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-pion-datachannel
-           go-github-com-pion-dtls-v2
-           go-github-com-pion-ice-v2
+           go-github-com-pion-dtls-v3
+           go-github-com-pion-ice-v4
            go-github-com-pion-interceptor
            go-github-com-pion-logging
            go-github-com-pion-randutil
@@ -12657,9 +12657,10 @@ it like any library.  The quickest way to get started is to look at the
            go-github-com-pion-rtp
            go-github-com-pion-sctp
            go-github-com-pion-sdp-v3
-           go-github-com-pion-srtp-v2
-           go-github-com-pion-stun
-           go-github-com-pion-transport-v2
+           go-github-com-pion-srtp-v3
+           go-github-com-pion-stun-v3
+           go-github-com-pion-transport-v4
+           go-github-com-pion-turn-v4
            go-golang-org-x-net))
     (home-page "https://github.com/pion/webrtc")
     (synopsis "Implementation of the WebRTC API in Golang")
@@ -12680,42 +12681,6 @@ Features:
 STUN, TURN mDNS candidates
 @end itemize")
     (license license:expat)))
-
-(define-public go-github-com-pion-webrtc-v4
-  (package
-    (inherit go-github-com-pion-webrtc-v3)
-    (name "go-github-com-pion-webrtc-v4")
-    (version "4.2.6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/pion/webrtc")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "039sm8w6bmsk63zpa7dpfqz1fb5bysi6432d6by0j8s64r9dvp50"))))
-    (build-system go-build-system)
-    (arguments
-     (substitute-keyword-arguments
-         (package-arguments go-github-com-pion-webrtc-v3)
-       ((#:import-path _) "github.com/pion/webrtc/v4")))
-    (propagated-inputs
-     (list go-github-com-pion-datachannel
-           go-github-com-pion-dtls-v3
-           go-github-com-pion-ice-v4
-           go-github-com-pion-interceptor
-           go-github-com-pion-logging
-           go-github-com-pion-randutil
-           go-github-com-pion-rtcp
-           go-github-com-pion-rtp
-           go-github-com-pion-sctp
-           go-github-com-pion-sdp-v3
-           go-github-com-pion-srtp-v3
-           go-github-com-pion-stun-v3
-           go-github-com-pion-transport-v4
-           go-github-com-pion-turn-v4
-           go-golang-org-x-net))))
 
 (define-public go-github-com-pires-go-proxyproto
   (package
