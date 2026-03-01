@@ -129,7 +129,7 @@ region
     (synopsis "Free IP address to ASN database")
     (description
      "This package provides a collection of IPv6 addresses to
-@acronym{Autonomous system, ASN}, a self-hosted API is availalbe from
+@acronym{Autonomous system, ASN}, a self-hosted API is available from
 @url{https://github.com/jedisct1/iptoasn-webservice}.")
     ;; It's a TSV plain text file, distributed under Public Domain
     ;; Dedication license
@@ -458,5 +458,5 @@ B1950 positions, proper motions, magnitudes, and, usually, spectral types.")
     (synopsis "Comprehensive, language independent Test Suite for YAML")
     (description
      "This package provides data for testing the correctness of YAML processors
-devloped by @url{https://yaml.org/}.")
+developed by @url{https://yaml.org/}.")
     (license license:expat)))

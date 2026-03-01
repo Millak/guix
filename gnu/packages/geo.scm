@@ -350,7 +350,7 @@ subdivisions.")
        (sha256
         (base32 "1k1n256hhlh05gjcj64pqh08zlaz6962jkb6nk1aazsgg8p41zs0"))
        (modules '((guix build utils)))
-       ;; Remove bundeled H3 lib.
+       ;; Remove bundled H3 lib.
        (snippet #~(begin (delete-file-recursively "src/h3lib")))))
     (build-system pyproject-build-system)
     (arguments
@@ -2165,7 +2165,7 @@ Unidata/UCAR UDUNITS-2 library, and the cftime calendar functionality.")
            go-go-uber-org-zap
            ;; go-gopkg-in-go-playground-colors-v1
 
-           ;; XXX: Inderect dependencies, remove when all direct ones are
+           ;; XXX: Indirect dependencies, remove when all direct ones are
            ;; packaged.
            go-github-com-golang-groupcache ;go.opencensus.io/trace
            go-github-com-spf13-pflag       ;github.com/go-spatial/cobra
@@ -2228,7 +2228,7 @@ delivered to any client.")
               ;; no such file or directory
               "-skip" "TestStateFromTimestamp|TestFromPBF")
       #:test-subdirs
-      #~(list "../../...")  ;test the whole libary
+      #~(list "../../...")  ;test the whole library
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-integration-tests

@@ -1603,7 +1603,7 @@ inference for statistical models.")
            swig-4.0))
     (inputs
      (list openblas                ; the only required dependency
-           ;; The dependecies below are all optional.
+           ;; The dependencies below are all optional.
            bonmin
            boost
            cbc ;; Maybe this should be propagated by Bonmin?
@@ -2994,7 +2994,7 @@ genome-wide association studies can be analyzed efficiently.")
       (description
        "This is a package to provide infrastructure for managing package parameters.
 Parameters are easy to get in relevant functions within a package,
-and rrror is thrown if a parameter is missing.  Developers are able
+and error is thrown if a parameter is missing.  Developers are able
 to register parameters and set their default value in a config file
 that is part of the package in YAML format, and users are able to
 override parameters using their own YAML.  Users get an exception

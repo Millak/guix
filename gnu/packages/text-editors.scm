@@ -1448,7 +1448,7 @@ The basic features of Text Pieces are:
 @item Base64 encoding and decoding
 @item SHA-1, SHA-2 and MD5 checksums
 @item Prettify and minify JSON
-@item Covert JSON to YAML and vice versa
+@item Convert JSON to YAML and vice versa
 @item Count lines, symbols and words
 @item Escape and unescape string, URL and HTML
 @item Remove leading and trailing whitespaces

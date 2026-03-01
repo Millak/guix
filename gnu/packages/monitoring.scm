@@ -184,7 +184,7 @@
            python-typing-extensions))
     (synopsis "Client library for ActivityWatch")
     (description
-     "This package provides the c]lient library for @code{ActivityWatch}.")))
+     "This package provides the client library for @code{ActivityWatch}.")))
 
 (define-public aw-notify
   (package/inherit aw-core
@@ -781,7 +781,7 @@ HTTP.  Features:
       #:import-path "github.com/AvengeMedia/dgop/cmd/cli"
       #:unpack-path "github.com/AvengeMedia/dgop"
       #:test-subdirs
-      #~(list "../../...") ;test the whole libary
+      #~(list "../../...") ;test the whole library
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'rename-cli

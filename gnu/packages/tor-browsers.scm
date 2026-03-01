@@ -713,7 +713,7 @@ Browser.")
                     ;; Default is 5.
                     (format #t "pref(~s, ~a);~%"
                             "extensions.enabledScopes" "13")
-                    ;; Add-ons pannel (see settings.js in Icecat source).
+                    ;; Add-ons panel (see settings.js in Icecat source).
                     (format #t "pref(~s, ~s);~%"
                             "extensions.getAddons.search.browseURL"
                             "https://gnuzilla.gnu.org/mozzarella")

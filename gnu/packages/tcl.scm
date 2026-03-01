@@ -292,7 +292,7 @@ interfaces (GUIs) in the Tcl language.")
     ;; From the package README: "... you can redistribute it and/or modify it
     ;; under the same terms as Perl itself, with the exception of all the
     ;; files in the pTk sub-directory which have separate terms derived from
-    ;; those of the orignal Tix4.1.3 or Tk8.4.* sources. See the files
+    ;; those of the original Tix4.1.3 or Tk8.4.* sources. See the files
     ;; pTk/license.terms, pTk/license.html_lib, and pTk/Tix.license for
     ;; details of this license."
     (license license:perl-license)))

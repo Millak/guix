@@ -626,7 +626,7 @@ configure network interfaces in Linux containers.")
       ;; network connection
       #~(list "-skip" "TestSuite")
       #:test-subdirs
-      #~(list "../../...")       ;test the whole libary
+      #~(list "../../...")       ;test the whole library
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'prune-tests
@@ -712,7 +712,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
     (outputs '("out" "docker"))
     (properties
      `((output-synopsis "docker" "docker alias for podman")
-       ;; XXX: Adressed already.
+       ;; XXX: Addressed already.
        (lint-hidden-cve . ("CVE-2022-2989"))))
     (source
      (origin

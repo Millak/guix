@@ -311,7 +311,7 @@ fundamental object types for C.")
            pkg-config
            po4a
            softhsm ; for tests
-           `(,util-linux "lib"))) ; for uuid.h, reqired for KCM
+           `(,util-linux "lib"))) ; for uuid.h, required for KCM
     (home-page "https://pagure.io/SSSD/sssd/")
     (synopsis "System security services daemon")
     (description "SSSD is a system daemon.  Its primary function is to provide

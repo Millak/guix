@@ -730,7 +730,7 @@ Mumble consists of two applications for separate usage:
            ucommon))
     (synopsis "Softphone for voice over IP and instant messaging")
     (description "Twinkle is a softphone for your voice over IP and instant
-messaging communcations using the SIP protocol.  You can use it for direct
+messaging communications using the SIP protocol.  You can use it for direct
 IP phone to IP phone communication or in a network using a SIP proxy to route
 your calls and messages.")
     (home-page "http://twinkle.dolezel.info/")

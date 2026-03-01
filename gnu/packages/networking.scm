@@ -5463,7 +5463,7 @@ recording packets that are dropped by the kernel.  It provides the commands
       #:install-source? #f
       #:import-path "github.com/openrdap/rdap/cmd/rdap"
       #:unpack-path "github.com/openrdap/rdap"
-      #:test-subdirs #~(list "../../...")))     ;test whole libary, starting from import-path
+      #:test-subdirs #~(list "../../...")))     ;test whole library, starting from import-path
     (native-inputs
      (list go-github-com-alecthomas-kingpin-v2
            go-github-com-davecgh-go-spew

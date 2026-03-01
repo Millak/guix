@@ -960,7 +960,7 @@ categories.")
     ;; - sample2.txt, sample4.txt are in the public domain, by Aristotle.
     ;; - sample6.txt is a forwarded email, copyright unknown.
     ;;   Guix does exclude sample6.txt.
-    ;; - japanese.txt is a Japanese unoffical translation of the
+    ;; - japanese.txt is a Japanese unofficial translation of the
     ;;   GNU General Public License, (c) by the Free Software Foundation.
     ;;   Guix excludes this file.
     (license (list license:gpl3+ license:public-domain))))
@@ -1736,7 +1736,7 @@ of a Unix terminal to HTML code.")
       #:embed-files #~(list ".*\\.gob")
       #:import-path "github.com/errata-ai/vale/cmd/vale"
       #:unpack-path "github.com/errata-ai/vale"
-      ;; Disable tests requring network access: Get
+      ;; Disable tests requiring network access: Get
       ;; "https://raw.githubusercontent.com/errata-ai/styles/master/library.json":
       ;; dial tcp: lookup raw.githubusercontent.com on [::1]:53: read udp
       ;; [::1]:52621->[::1]:53: read: connection refused.
@@ -1747,7 +1747,7 @@ of a Unix terminal to HTML code.")
                              "TestSymlinkFixture")
                        "|"))
       #:test-subdirs
-      #~(list "../../...") ; test whole libary, starting from import-path
+      #~(list "../../...") ; test whole library, starting from import-path
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check

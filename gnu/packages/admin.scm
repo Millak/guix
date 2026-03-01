@@ -352,7 +352,7 @@ characters can be replaced as well, as can UTF-8 characters.")
       #:install-source? #f
       #:import-path "github.com/hetznercloud/cli/cmd/hcloud"
       #:unpack-path "github.com/hetznercloud/cli"
-      #:test-subdirs #~(list "../../...")))       ;test the whole libary
+      #:test-subdirs #~(list "../../...")))       ;test the whole library
     (native-inputs
      (list go-github-com-burntsushi-toml
            go-github-com-cheggaaa-pb-v3
@@ -7207,5 +7207,5 @@ stored in an SQL database.")
     (home-page "https://github.com/void-linux/void-runit")
     (synopsis "Simple script to suspend or hibernate your computer")
     (description "Simple script to suspend or hibernate your computer.  It
-suports hooks before and after suspending.")
+supports hooks before and after suspending.")
     (license license:cc0)))

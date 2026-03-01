@@ -117,7 +117,7 @@
      (list libx11
            libcap ; 'libSDL.la' contain `-lcap'.
            ;; TODO: Since building Mesa with Meson it is now necessary that Mesa is
-           ;; a propogated input. We still need to figure out why, possibly due to a
+           ;; a propagated input. We still need to figure out why, possibly due to a
            ;; change in pkg-config.
            mesa))
     (native-inputs (list pkg-config))

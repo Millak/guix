@@ -475,7 +475,7 @@ all of the regexes given on the command line in order.")
                              "TestRunnerRun"
                              "TestRunnerRunConfirm")
                        "|"))
-      #:test-subdirs #~(list "../../...")       ;test the whole libary
+      #:test-subdirs #~(list "../../...")       ;test the whole library
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-version
