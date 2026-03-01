@@ -233,73 +233,73 @@ features including, tables, builtin image display, bookmarks, SSL and more.")
     (license license:gpl1+)))
 
 (define-public elinks
-    (package
-      (name "elinks")
-      (version "0.19.1")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/rkd77/elinks")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1802lh9zsmwmsd4b4kzxzgv3y8f6fmi6i0cjjbwmnkdfivcal3v9"))))
-      (build-system meson-build-system)
-      (arguments
-       (list
-        #:configure-flags
-        #~(list "-D256-colors=true"
-                "-Dbrotli=true"
-                "-Dcgi=true"
-                "-Dfinger=true"
-                "-Dgemini=true"
-                "-Dgopher=true"
-                ;; FIXME: gpm is disabled because Meson cannot find its shared
-                ;; library even though "gpm" is given as an input.
-                "-Dgpm=false"
-                "-Dhtml-highlight=true"
-                "-Dlibev=true"
-                "-Dlzma=true"
-                "-Dnntp=true"
-                "-Dreproducible=true"
-                "-Dsource-date-epoch=1"
-                "-Dtest=true"
-                "-Dtrue-color=true"
-                ;; Fix GCC 14 build
-                "-Dc_args=-Wno-implicit-function-declaration")))
-      (native-inputs
-       (list autoconf
-             automake
-             gettext-minimal
-             perl
-             pkg-config
-             python-minimal))
-      (inputs
-       (list brotli
-             bzip2
-             curl
-             expat
-             gnutls
-             gpm
-             libcss
-             libdom
-             libev
-             libgcrypt
-             libidn
-             lua
-             openssl
-             tre
-             xz
-             zlib))
-      (home-page "http://elinks.cz/")
-      (synopsis "Advanced text mode web browser")
-      (description
-       "ELinks is a feature-rich program for browsing the web in text mode.
+  (package
+    (name "elinks")
+    (version "0.19.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rkd77/elinks")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1802lh9zsmwmsd4b4kzxzgv3y8f6fmi6i0cjjbwmnkdfivcal3v9"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-D256-colors=true"
+              "-Dbrotli=true"
+              "-Dcgi=true"
+              "-Dfinger=true"
+              "-Dgemini=true"
+              "-Dgopher=true"
+              ;; FIXME: gpm is disabled because Meson cannot find its shared
+              ;; library even though "gpm" is given as an input.
+              "-Dgpm=false"
+              "-Dhtml-highlight=true"
+              "-Dlibev=true"
+              "-Dlzma=true"
+              "-Dnntp=true"
+              "-Dreproducible=true"
+              "-Dsource-date-epoch=1"
+              "-Dtest=true"
+              "-Dtrue-color=true"
+              ;; Fix GCC 14 build
+              "-Dc_args=-Wno-implicit-function-declaration")))
+    (native-inputs
+     (list autoconf
+           automake
+           gettext-minimal
+           perl
+           pkg-config
+           python-minimal))
+    (inputs
+     (list brotli
+           bzip2
+           curl
+           expat
+           gnutls
+           gpm
+           libcss
+           libdom
+           libev
+           libgcrypt
+           libidn
+           lua
+           openssl
+           tre
+           xz
+           zlib))
+    (home-page "http://elinks.cz/")
+    (synopsis "Advanced text mode web browser")
+    (description
+     "ELinks is a feature-rich program for browsing the web in text mode.
 It can render both frames and tables, is highly customisable and can be
 extended via Lua scripts.  It is like an enhanced Lynx and Links.")
-      (license license:gpl2+)))
+    (license license:gpl2+)))
 
 (define-public luakit
   (package
