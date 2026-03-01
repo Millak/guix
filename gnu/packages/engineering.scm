@@ -1058,6 +1058,10 @@ user-level language.")
       (arguments
        (list
         #:tests? #f ;no tests
+        #:modules '((guix build gnu-build-system) (guix build qt-utils)
+                    (guix build utils))
+        #:imported-modules `((guix build qt-utils)
+                             ,@%default-gnu-imported-modules)
         #:phases
         #~(modify-phases %standard-phases
             ;; The build system assumes the sdb lib is installed alongside
@@ -1068,7 +1072,12 @@ user-level language.")
               (lambda _
                 (substitute* '("./src/lib_radare2.pri")
                   (("pkg-config --libs r_core" all)
-                   (string-append all " sdb"))))))))
+                   (string-append all " sdb")))))
+            (add-after 'install 'wrap-qt
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (wrap-all-qt-programs #:outputs outputs
+                                      #:inputs inputs
+                                      #:qtbase (assoc-ref inputs "qtbase")))))))
       (inputs
        (list capstone
              libuv
@@ -1077,6 +1086,7 @@ user-level language.")
              openssl
              qtbase
              qtsvg
+             qtwayland
              radare2
              sdb))
       (native-inputs
