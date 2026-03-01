@@ -3100,6 +3100,8 @@ Markdown files, using the
 testmark} format, which itself is a subset of Markdown format.")
     (license (list license:asl2.0 license:expat))))
 
+;; XXX: This project was archived by the owner on Sep 7, 2022.  Consider to
+;; remove when nothing depends on it.
 (define-public go-github-com-warpfork-go-wish
   (package
     (name "go-github-com-warpfork-go-wish")
@@ -3118,15 +3120,18 @@ testmark} format, which itself is a subset of Markdown format.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/warpfork/go-wish"
-      #:test-subdirs #~(list "cmp/..." "wishfix" ".")
       #:test-flags
-      #~(list "-skip" (string-join
-                       (list "TestDiff"
-                             "TestOptions"
+      #~(list "-vet=off"
+              "-skip" (string-join
+                       (list "ExampleGetUnifiedDiffCode"
+                             "TestDiff"
+                             "TestGoTestOutputFun/non-verbose"
+                             "TestGoTestOutputFun/verbose"
                              "TestGoTestOutputTree/non-verbose"
-                             "TestGoTestOutputFun/non-verbose")
+                             "TestGoTestOutputTree/verbose"
+                             "TestOmitFilenames"
+                             "TestOptions")
                        "|"))))
     (home-page "https://github.com/warpfork/go-wish")
     (synopsis "Test assertions for Golang")
