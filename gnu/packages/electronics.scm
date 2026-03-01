@@ -2,7 +2,7 @@
 ;;; Copyright © 2016, 2017, 2018 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2019 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2018-2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
@@ -26,9 +26,9 @@
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2025, 2026 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2026 Thomas Kramer <thomas@f-si.org>
+;;; Copyright © 2023 pinoaffe <pinoaffe@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -104,6 +104,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages markup)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages m4)
@@ -1055,6 +1056,135 @@ an embedded event driven algorithm.")
                    (license:non-copyleft "file:///COPYING") ;spice3 bsd-style
                    license:bsd-3 ;ciderlib
                    license:public-domain)))) ;xspice
+
+(define-public librepcb
+  (package
+    (name "librepcb")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/LibrePCB/LibrePCB")
+              (commit version)
+              (recursive? #t)))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "libs"
+                            "delaunay-triangulation"
+                            "dxflib"
+                            ;; "fontobene-qt"
+                            ;; "googletest"
+                            ;; "hoedown"
+                            "librepcb"
+                            ;; "muparser"
+                            "optional"
+                            "parseagle"
+                            ;; "polyclipping"
+                            ;; "quazip"
+                            "type_safe")))
+       (sha256
+        (base32 "1g3k2g2p5yy7zk971bg7qh4k38p30aydp27c5bfb02gn7djknz7w"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DUNBUNDLE_FONTOBENE_QT=ON"
+              "-DUNBUNDLE_GTEST=ON"
+              "-DUNBUNDLE_HOEDOWN=ON"
+              "-DUNBUNDLE_MUPARSER=ON"
+              "-DUNBUNDLE_POLYCLIPPING=ON"
+              "-DUNBUNDLE_QUAZIP=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (let ((test-include (list "*"))
+                      (test-exclude
+                       (list
+                        "ApplicationTest.testGetCacheDir"
+                        ;; These tests all fail when run by the build
+                        ;; process even though they pass when manually
+                        ;; run as a normal user.
+
+                        ;; TODO: verify that the failing tests don't
+                        ;; point to any actual underlying issues
+                        "SystemInfoTest.testGetUsername"
+                        "OrderPcbDialogTest.testAutoOpenBrowser"
+                        "DxfImportDialogTest.testLayerName"
+                        "DxfImportDialogTest.testCirclesAsDrills"
+                        "DxfImportDialogTest.testJoinTangentPolylines"
+                        "DxfImportDialogTest.testLineWidth"
+                        "DxfImportDialogTest.testScaleFactor"
+                        "DxfImportDialogTest.testPlacementPosition"
+                        "GraphicsExportDialogTest.testPageSize"
+                        "GraphicsExportDialogTest.testOrientation"
+                        "GraphicsExportDialogTest.testMargins"
+                        "GraphicsExportDialogTest.testShowPinNumbers"
+                        "GraphicsExportDialogTest.testRotate"
+                        "GraphicsExportDialogTest.testMirror"
+                        "GraphicsExportDialogTest.testScale"
+                        "GraphicsExportDialogTest.testPixmapDpi"
+                        "GraphicsExportDialogTest.testBlackWhite"
+                        "GraphicsExportDialogTest.testBackgroundColor"
+                        "GraphicsExportDialogTest.testMinLineWidth"
+                        "GraphicsExportDialogTest.testLayerColors"
+                        "GraphicsExportDialogTest.testOpenExportedFiles"
+                        "AddComponentDialogTest.testAddMore")))
+                  (setenv "QT_QPA_PLATFORM" "offscreen")
+                  (setenv "QT_QUICK_BACKEND" "software")
+                  (display "Running unittests...\n")
+                  (invoke "./tests/unittests/librepcb-unittests"
+                          (string-append
+                           "--gtest_filter="
+                           (string-join test-include ":")
+                           "-"
+                           (string-join test-exclude ":"))))))))))
+    (inputs
+     (list clipper
+           fontconfig
+           fontobene-qt
+           glu
+           hoedown
+           muparser
+           opencascade-occt
+           qtbase-5
+           qtdeclarative-5
+           qtquickcontrols2-5
+           qtsvg-5
+           quazip-5
+           zlib))
+    (native-inputs
+     (list googletest
+           pkg-config
+           python-minimal-wrapper
+           qttools-5
+           unzip))
+    (home-page "https://librepcb.org/")
+    (synopsis
+     "@acronym{EDA, Electronic Design Automation} suite for PCB development")
+    (description "LibrePCB is software to develop @acronym{PCB, Printed
+Circuit Boards}.  It features human readable file formats and complete project
+management with library, schematic and board editors.")
+    (license (list license:gpl3+
+                   license:boost1.0 ; libs/optional/tests/catch.hpp,
+                   license:expat ; libs/delaunay-triangulation,
+                                        ; libs/parseagle, libs/type_safe
+                   license:asl2.0 ; libs/parseagle
+                   license:cc0 ; libs/optional
+                   license:bsd-2)))) ; libs/optional/tests/catch.hpp
 
 (define librnd
   (package
