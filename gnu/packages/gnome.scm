@@ -13404,7 +13404,7 @@ your data.")
 (define-public gtranslator
   (package
     (name "gtranslator")
-    (version "42.0")
+    (version "49.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -13412,7 +13412,7 @@ your data.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0fzi48s3wz9mf6c1ndpkby83bgshgn2116nqjq31n1j3wszvqrra"))))
+                "1rn1vkf71vkfp2sifdza3v1rs8hv522c37r18b0jfp4xjhh5da7a"))))
     (build-system meson-build-system)
     (arguments
      (list #:build-type "release"   ;otherwise it tries to fetch stuff via git
@@ -13421,8 +13421,11 @@ your data.")
            #~(modify-phases %standard-phases
                (add-after 'unpack 'skip-gtk-update-icon-cache
                  (lambda _
-                   (substitute* "build-aux/meson/meson_post_install.py"
-                     (("gtk-update-icon-cache") (which "true"))))))))
+                   (substitute* "meson.build"
+                     (("gtk_update_icon_cache: true")
+                      "gtk_update_icon_cache: false")
+                     (("update_desktop_database: true")
+                      "update_desktop_database: false")))))))
     (native-inputs
      (list `(,glib "bin")
            gettext-minimal
@@ -13435,21 +13438,18 @@ your data.")
            glib
            gsettings-desktop-schemas
            gspell
-           libgda
-           libhandy
+           libadwaita
            libsoup
            pango))
     (propagated-inputs
-     (list gtksourceview-4))              ; required for source view
+     (list gtksourceview))              ; required for source view
     (home-page "https://wiki.gnome.org/Apps/Gtranslator")
     (synopsis "Translation making program")
     (description
-     "gtranslator is a quite comfortable gettext po/po.gz/(g)mo files editor
-for the GNOME 3.x platform with many features.  It aims to be a very complete
-editing environment for translation issues within the GNU gettext/GNOME desktop
-world.")
+     "Gtranslator is a translation file editor for the GNOME desktop
+environment.  It handles various formats used by gettext and includes
+useful to navigate and edit translation messages and comments.")
     (license license:gpl3+)))
-
 
 (define-public ocrfeeder
   (package
