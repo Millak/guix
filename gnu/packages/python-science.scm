@@ -1456,13 +1456,13 @@ Features:
 (define-public python-iminuit
   (package
     (name "python-iminuit")
-    (version "2.31.1")
+    (version "2.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "iminuit" version))
        (sha256
-        (base32 "066y0khk5bv56jv0p5bkkmya3rwijskz9yq9ch3jlgfqzzqh9q6m"))))
+        (base32 "1lpprnn6h1f065b4aay6cr2bk6s5h3fv3gfnbbkrp5b5hv8k8ax3"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags #~(list "-k" "not test_interactive_pyside6")))
