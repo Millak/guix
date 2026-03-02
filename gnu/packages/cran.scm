@@ -53838,21 +53838,17 @@ customization by the user.")
 (define-public r-mlr3cluster
   (package
     (name "r-mlr3cluster")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3cluster" version))
        (sha256
-        (base32 "1fzr33bx2zq1f36ib125sah9d478pv26vvc0jfcbn9hvfv146n17"))))
+        (base32 "1gwspyjvdwn4811jjvhlfy28rh7v5afbakbcwk01fzykmf20g4jw"))))
     (properties
      '((upstream-name . "mlr3cluster")
        (updater-extra-native-inputs . ("r-vctrs"))))
     (build-system r-build-system)
-    (arguments
-     (list #:skipped-tests
-           '(("test_LearnerClust.R"
-              "empty predict set .#421."))))
     (propagated-inputs (list r-backports
                              r-checkmate
                              r-cluster
@@ -53862,7 +53858,7 @@ customization by the user.")
                              r-mlr3misc
                              r-paradox
                              r-r6))
-    (native-inputs (list r-apcluster r-mlbench r-testthat r-vctrs))
+    (native-inputs (list r-apcluster r-mirai r-mlbench r-testthat r-vctrs))
     (home-page "https://mlr3cluster.mlr-org.com")
     (synopsis "Cluster extension for mlr3")
     (description
