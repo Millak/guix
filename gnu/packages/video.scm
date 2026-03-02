@@ -1008,8 +1008,8 @@ shared library and encoder and decoder command-line executables.")
 (define-public libx264
   ;; There are no tags in the repository, so we take the version number from
   ;; the X264_BUILD variable defined in x264.h.
-  (let ((version "164")
-        (commit "b093bbe7d9bc642c8f24067cbdcc73bb43562eab")
+  (let ((version "165")
+        (commit "0480cb05fa188d37ae87e8f4fd8f1aea3711f7ee")
         (revision "0"))
     (package
       (name "libx264")
@@ -1022,7 +1022,7 @@ shared library and encoder and decoder command-line executables.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "095pv8y6fqjg8mdvsfk12d0jqgyhip536a6vxhzm7qz8hfp96qhq"))))
+                  "136vma04rfzn8kcass8psnxygmn3ykrsyrv0q2dy3iv080vywpy9"))))
       (build-system gnu-build-system)
       (native-inputs
        (list pkg-config nasm))
