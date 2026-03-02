@@ -379,10 +379,10 @@ database.")
     (build-system pyproject-build-system)
     (native-inputs
       (list autoconf automake m4 pkg-config ; for ./bootstrap
-            meson-python
             python-cython
             python-cysignals
             python-memory-allocator
+            python-meson
             python-pkgconfig
             python-jinja2
             python-sphinx
