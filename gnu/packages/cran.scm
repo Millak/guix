@@ -1755,6 +1755,25 @@ interpolating in a certain color space.  The functions were part of the
 circlize package.")
     (license license:expat)))
 
+(define-public r-conf-design
+  (package
+    (name "r-conf-design")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "conf.design" version))
+       (sha256
+        (base32 "06vdxljkjq1x56xkg041l271an1xv9wq79swxvzzk64dqqnmay51"))))
+    (properties `((upstream-name . "conf.design")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=conf.design")
+    (synopsis "Construction of factorial designs")
+    (description
+     "This small library contains a series of simple tools for constructing
+and manipulating confounded and fractional factorial designs.")
+    (license license:gpl2)))
+
 (define-public r-celestial
   (package
     (name "r-celestial")
