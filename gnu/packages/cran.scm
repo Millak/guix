@@ -39006,19 +39006,19 @@ that accept short and long options.")
 (define-public r-osqp
   (package
     (name "r-osqp")
-    (version "0.6.3.3")
+    (version "1.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "osqp" version))
               (sha256
                (base32
-                "1fzmw813iab07vnc714zyaszbnsagbmba7j69la36hvnqx78wggz"))))
+                "1j28ll1mzzkwwm2lmb7l0ngnwn31s4fydhz9k19wsjllnjj381cc"))))
     (properties
      '((upstream-name . "osqp")
        (updater-extra-native-inputs . ("r-slam"))))
     (build-system r-build-system)
-    (propagated-inputs (list r-matrix r-r6 r-rcpp))
-    (native-inputs (list r-slam r-testthat))
+    (propagated-inputs (list r-cli r-matrix r-rcpp r-s7))
+    (native-inputs (list r-knitr r-slam r-testthat))
     (home-page "https://osqp.org")
     (synopsis "Quadratic Programming Solver using the OSQP Library")
     (description
