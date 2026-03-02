@@ -1341,7 +1341,7 @@ the \"texlive\" importer."
 (define-member (person "Munyoki Kilyungi"
                        "me@bonfacemunyoki.com"
                        "BonfaceKilz")
-  python lisp)
+  python guile)
 
 (define-member (person "Gabriel Wicki"
                        "gabriel@erlikon.ch"
