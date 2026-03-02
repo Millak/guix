@@ -28426,13 +28426,13 @@ procedures to speed up calculations in R.")
 (define-public r-blackbox
   (package
     (name "r-blackbox")
-    (version "1.1.46")
+    (version "1.1.54")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "blackbox" version))
        (sha256
-        (base32 "03m93v5nk5zg039axkf02drdj2q165k73xk6waaiyi0b8w0sbl8l"))))
+        (base32 "0l35mp2qvsf2ym5wk6x0ld2ri2lwfvk13jdj1x2jmna4lh8yskjz"))))
     (properties
      '((upstream-name . "blackbox")
        (updater-ignored-native-inputs . ("r-pkg"))))
