@@ -51,29 +51,6 @@
     (license license:lgpl2.1+)
     (home-page "https://www.nongnu.org/libntlm/")))
 
-(define-public gss
-  (package
-   (name "gss")
-   (version "1.0.4")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://gnu/gss/gss-" version
-                                ".tar.gz"))
-            (sha256 (base32
-                     "0www841ax21f5f61pdjk9fjdn9s2xf1wnblb47kzrqyaykgapkpc"))))
-   (build-system gnu-build-system)
-   (inputs (list nettle shishi zlib))
-   (synopsis "Generic Security Service library")
-   (description
-    "The GNU Generic Security Service provides a free implementation of the
-GSS-API specification.  It provides a generic application programming
-interface for programs to access security services.  Security services present
-a generic, GSS interface, with which the calling application interacts via
-this library, freeing the application developer from needing to know about
-the underlying security implementation.")
-   (license license:gpl3+)
-   (home-page "https://www.gnu.org/software/gss/")))
-
 (define-public gsasl
   (package
    (name "gsasl")
