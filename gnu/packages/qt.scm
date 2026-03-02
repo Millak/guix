@@ -6588,7 +6588,7 @@ including @i{fix-its} for automatic refactoring.")
 (define-public qt-creator
   (package
     (name "qt-creator")
-    (version "17.0.1")
+    (version "18.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -6612,7 +6612,7 @@ including @i{fix-its} for automatic refactoring.")
                               (const #t)))))
               (sha256
                (base32
-                "1w4jh49v2qax6wxc2d415znkgwfkib08agj205v53ldfp4j7yr1v"))))
+                "13v9ysaaiyccz6anjva7mlifgls013c3s0n5gm443w6v4ssrjdz7"))))
     (outputs '("out" "debug"))
     (build-system qt-build-system)
     (arguments
@@ -6621,6 +6621,7 @@ including @i{fix-its} for automatic refactoring.")
       #:configure-flags
       #~(list "-DWITH_DOCS=ON"
               "-DBUILD_DEVELOPER_DOCS=ON"
+              "-DBUILD_EXECUTABLE_CMDBRIDGE=OFF" ;requires Go libraries
               "-DCMAKE_VERBOSE_MAKEFILE=ON"
               "-DCLANGTOOLING_LINK_CLANG_DYLIB=ON"
               "-DWITH_TESTS=ON"
@@ -6702,12 +6703,7 @@ including @i{fix-its} for automatic refactoring.")
                           (list
                            ;; The performance data tests require external
                            ;; data.
-                           "tst_perfdata"
-                           ;; This test relies on counting processes, counts
-                           ;; only 0 of them instead of 5 for unknown reasons
-                           ;; (see:
-                           ;; https://bugreports.qt.io/browse/QTCREATORBUG-29495).
-                           "tst_process") "|")
+                           "tst_perfdata") "|")
                          ")")))))
           (add-after 'qt-wrap 'wrap-bin
             ;; Make a few well-integrated tools readily available.
