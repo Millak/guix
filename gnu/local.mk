@@ -1382,7 +1382,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/gcc-libvtv-runpath.patch			\
   %D%/packages/patches/gcc-strmov-store-file-names.patch	\
   %D%/packages/patches/gcc-4-compile-with-gcc-5.patch		 \
-  %D%/packages/patches/gcc-4.6-gnu-inline.patch			\
   %D%/packages/patches/gcc-4.9.3-mingw-gthr-default.patch	\
   %D%/packages/patches/gcc-5-hurd.patch				\
   %D%/packages/patches/gcc-5.0-libvtv-runpath.patch		\

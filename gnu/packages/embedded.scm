@@ -1147,17 +1147,17 @@ with a layered architecture of JTAG interface and TAP support.")
                    (append
                     (origin-patches (package-source gcc-base))
                     (search-patches
-                     "gcc-4.6-gnu-inline.patch"
                      "gcc-cross-environment-variables.patch")))))
         (arguments
          (substitute-keyword-arguments (package-arguments xgcc)
            ((#:phases phases)
             #~(modify-phases #$phases
+                (delete 'pre-x86-configure)
                 (add-after 'unpack 'chdir
                   (lambda _ (chdir "gcc")))))))
         (native-inputs
          (modify-inputs (package-native-inputs xgcc)
-           (prepend gcc-4.9)))
+           (prepend gcc-5)))
         (home-page "https://github.com/parallaxinc/propgcc")
         (supported-systems (delete "aarch64-linux" %supported-systems))))))
 
