@@ -156,22 +156,16 @@ GUI based workflow.  It is primarily used in the Orange framework.")
 (define-public orange
   (package
     (name "orange")
-    ;; XXX: The latest commit provides comparability with GCC 14, revert to
-    ;; git tag in the next refresh cycle.
-    (properties '((commit . "44e66283aff4132614ef64a877f9ceef963588a7")
-                  (revision . "0")))
-    (version (git-version "3.39.0"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "3.40.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/biolab/orange3")
-              (commit (assoc-ref properties 'commit))))
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d2ws64y8chj77yw689pr98wndpiapbh0msxyjah5ki8lygflizs"))))
+        (base32 "1kr3lsaqac73amwq841xhvgm63c4n58b28yqcv7pcgqswsl0dr00"))))
     (build-system pyproject-build-system)
     (arguments
      (list
