@@ -1316,6 +1316,13 @@ code.")
         '(modify-phases %standard-phases
            (add-after 'unpack 'chdir
              (lambda _ (chdir "loader")))
+           (add-after 'chdir 'patch-for-readlink
+             (lambda _
+               (substitute* "src/system.c"
+                 (("#include <stdio.h>")
+                  "\
+#include <stdio.h>
+#include <unistd.h>"))))
            (delete 'configure))))
       (native-inputs
        (list openspin (make-propeller-toolchain)))
