@@ -3365,6 +3365,35 @@ is Illumina hiseq Level 3 RSEM normalized expression data from 2015-11-01
 snapshot.")
     (license license:gpl2)))
 
+(define-public r-scpdata
+  (package
+    (name "r-scpdata")
+    (version "1.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "scpdata" version
+                              'experiment))
+       (sha256
+        (base32 "049qrzjj26s41q0nl3q85bz91lwpd5j3i1c4gxwbavm0izhhk3ym"))))
+    (properties `((upstream-name . "scpdata")))
+    (build-system r-build-system)
+    (arguments
+     ;; Tests require internet access via r-experimenthub
+     (list #:tests? #f))
+    (propagated-inputs (list r-annotationhub r-experimenthub r-qfeatures
+                             r-s4vectors r-singlecellexperiment))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://bioconductor.org/packages/scpdata")
+    (synopsis "Single-cell proteomics data package")
+    (description
+     "The package disseminates mass spectrometry (MS)-based single-cell proteomics
+(SCP) datasets.  The data were collected from published work and formatted
+using the `scp` data structure.  The data sets contain quantitative
+information at spectrum, peptide and/or protein level for single cells or
+minute sample amounts.")
+    (license license:gpl2)))
+
 (define-public r-sesamedata
   (package
     (name "r-sesamedata")
