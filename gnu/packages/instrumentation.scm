@@ -75,33 +75,26 @@
 (define-public babeltrace
   (package
     (name "babeltrace")
-    (version "2.0.5")
+    (version "2.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.efficios.com/files/babeltrace/babeltrace2-"
                                   version ".tar.bz2"))
               (sha256
-               (base32 "1d7jxljbfb4y8jmxm7744ndhh9k9rw8qhmnljb19wz7flzr9x3vv"))))
+               (base32 "171cn0y6qbixqggbw7minf4ggfa1j5yc0a1bsj5rnrxd6k93z0qj"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f  ; FIXME - When Python's bindings are enabled, tests do not
                     ; pass.
        #:make-flags
        ,#~(list
-           (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
-           "DISTSETUPOPTS=--single-version-externally-managed") ;no .egg files
+           (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
        #:configure-flags
        '("--enable-debug-info"
          "--enable-man-pages"
          "--enable-python-bindings"
          "--enable-python-plugins")
-       #:phases
-       (modify-phases %standard-phases
-         ;; These are recommended in the project's README for a development
-         ;; build configuration.
-         (add-after 'unpack 'reconfigure
-           (lambda _
-             (delete-file "configure"))))))
+       ))
     (inputs
      (list glib))
     ;; NOTE - elfutils is used for the LTTng debug information filter
@@ -110,30 +103,15 @@
     ;; `#:configure-flags`.
     (propagated-inputs
      (list elfutils))
-    ;; NOTE - python-3 is set here for generating the bindings.  Users need to
-    ;; install python-3 in their profile in order to use these bindings.
-    ;;
-    ;; NOTE - Babeltrace 2.0.4 is distributed with a aclocal.m4 that does not
-    ;; support Python3.10.  We can either disable Python's bindings or we can
-    ;; reconfigure the project with our autoconf.  This is because the
-    ;; distribution tarballs are generated on Ubuntu LTS 18.04.
-    ;;
-    ;; `paredit-raise-sexp' on the first list of native inputs and remove the
-    ;; 'autoreconf invocation whenever we bump to the next version that is
-    ;; goind to be generated on Ubuntu LTS 22.04.
     (native-inputs
-     (append
-      (list asciidoc
-            bison
-            flex
-            pkg-config
-            python-3
-            python-sphinx
-            swig-4.0
-            xmltoman)
-      (list autoconf
-            automake
-            libtool)))
+     (list asciidoc
+           bison
+           flex
+           pkg-config
+           python-3
+           python-sphinx
+           swig-4.0
+           xmltoman))
     (home-page "https://babeltrace.org/")
     (synopsis "Trace manipulation toolkit")
     (description "Babeltrace 2 is a framework for viewing, converting,
@@ -388,14 +366,14 @@ many probes which instrument numerous interesting parts of Linux.")
 (define-public lttng-ust
   (package
     (name "lttng-ust")
-    (version "2.13.8")
+    (version "2.15.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://lttng.org/files/lttng-ust/"
                                   "lttng-ust-" version ".tar.bz2"))
               (sha256
                (base32
-                "0dyr4j8f8y6fmfpxb3ajkc1ndwpl1baxzbyc4ksx8ym3p7d9ivyl"))))
+                "0a1yk6cci5yqkdy3fvjdky0lc1sbpcxhpm43vb3h1pahg8y75jbb"))))
     (build-system gnu-build-system)
     (inputs
      (list numactl))
@@ -414,23 +392,19 @@ to ring buffers shared with a consumer daemon.")
 (define-public lttng-tools
   (package
     (name "lttng-tools")
-    (version "2.13.14")
+    (version "2.15.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://lttng.org/files/lttng-tools/"
                                   "lttng-tools-" version ".tar.bz2"))
               (sha256
                (base32
-                "1jxdwm0a3z70jrx6yg57x5cswi7ycgyazng41rkgxnq7mp2gggak"))))
+                "12pjxdfqg9ri4wng143x9dvwcrx9q2kg1isv4xc1v9vdalb92wsd"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--enable-python-bindings")
-       ;; FIXME - Tests are disabled for now because one test hangs
-       ;; indefinetely.  Also, parallel testing is not possible because of how
-       ;; the lttng-daemon handles sessions.  Thus, keep parallel testing
-       ;; disabled even after tests are enabled!
+       ;; FIXME - Tests are disabled for now.
        #:tests? #f
-       #:parallel-tests? #f
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'set-environment-variables
@@ -440,11 +414,8 @@ to ring buffers shared with a consumer daemon.")
          ;; We don't put (which "man") here because LTTng uses execlp.
          (add-after 'unpack 'patch-default-man-path
            (lambda _
-             (substitute* "src/common/defaults.h"
-               (("/usr/bin/man") "man"))))
-         (add-before 'configure 'autoreconf
-           (lambda _
-             (invoke "autoreconf" "-vfi"))))))
+             (substitute* "src/common/defaults.hpp"
+               (("/usr/bin/man") "man")))))))
     ;; NOTE - Users have to install python-3 in their profile to use the
     ;; bindings.  We don't put it in the inputs, because the rest of the tools
     ;; can work without it.
@@ -452,31 +423,22 @@ to ring buffers shared with a consumer daemon.")
      (list liburcu popt numactl))
     (propagated-inputs
      (list kmod module-init-tools))
-    ;; NOTE - LTTng 2.13.9 is distributed with a aclocal.m4 that does not
-    ;; support Python3.10.  We can either disable Python's bindings or we can
-    ;; reconfigure the project with our autoconf.  This is because the
-    ;; distribution tarballs are generated on Ubuntu LTS 18.04.
-    ;;
-    ;; `paredit-raise-sexp' on the first list of native inputs and remove the
-    ;; 'autoreconf build step whenever we bump to the next version that is
-    ;; goind to be generated on Ubuntu LTS 22.04.
     (native-inputs
-     (append
-      (list pkg-config
-            perl
-            libpfm4
-            python-3
-            swig-4.0
-            procps
-            which
-            flex
-            bison
-            asciidoc
-            libxml2
-            lttng-ust)
-      (list autoconf
-            automake
-            libtool)))
+     (list
+      asciidoc
+      babeltrace
+      bison
+      flex
+      libpfm4
+      libxml2
+      lttng-ust
+      perl
+      procps
+      python-3
+      swig-4.0
+      which
+      pkg-config
+      ))
     (home-page "https://lttng.org/")
     (synopsis "LTTng userspace tracer libraries")
     (description "The lttng-tools project provides a session
