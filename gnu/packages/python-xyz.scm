@@ -207,6 +207,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages bioinformatics)
+  #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages check)
@@ -26687,6 +26688,58 @@ binding is created using the standard @code{ctypes} library.")
            python-pytest
            python-setuptools
            python-wrapper))
+    (home-page "https://github.com/pybind/pybind11/")
+    (synopsis "Seamless operability between C++11 and Python")
+    (description
+     "@code{pybind11} is a lightweight header-only library that exposes C++
+types in Python and vice versa, mainly to create Python bindings of existing
+C++ code.  Its goals and syntax are similar to the @code{Boost.Python}
+library: to minimize boilerplate code in traditional extension modules by
+inferring type information using compile-time introspection.")
+    (license license:bsd-3)))
+
+(define-public pybind11
+  (package
+    (name "pybind11")
+    (version "3.0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/pybind/pybind11")
+                     (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1ad4fnn4p2m3sradxxd9wfnll3pa44aw081b6ssh3pq95xqpwksg"))
+              (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "-DCATCH_INCLUDE_DIR="
+                             (assoc-ref %build-inputs "catch2")
+                             "/include/catch"))
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda args
+              (apply (assoc-ref gnu:%standard-phases 'check) args)))
+          (add-after 'install 'build-python-library
+            (lambda _
+              (with-directory-excursion "../source"
+                (setenv "PYBIND11_USE_CMAKE" "yes")
+                (invoke "pip" "install" "--no-deps" "--no-build-isolation"
+                        "--prefix" #$output ".")))))))
+    (inputs (list boost))
+    (native-inputs
+     (list catch2-1
+           eigen
+           python-pytest
+           python-setuptools
+           python-wrapper
+           python-scikit-build-core))
     (home-page "https://github.com/pybind/pybind11/")
     (synopsis "Seamless operability between C++11 and Python")
     (description
