@@ -10556,6 +10556,29 @@ individual SNP score statistics in a SNP set and efficiently compute SNP-set
 level p-values.")
     (license license:gpl2+)))
 
+(define-public r-smotefamily
+  (package
+    (name "r-smotefamily")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "smotefamily" version))
+       (sha256
+        (base32 "05ck6c4pldqqspb7abjh8vabc3g0fp6ivfbd9y2q2rm031mil4p2"))))
+    (properties `((upstream-name . "smotefamily")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dbscan r-fnn r-igraph))
+    (home-page "https://cran.r-project.org/package=smotefamily")
+    (synopsis
+     "Collection of oversampling techniques for class imbalance problem based on SMOTE")
+    (description
+     "A collection of various oversampling techniques developed from SMOTE is
+provided.  SMOTE is an oversampling technique which synthesizes a new minority
+instance between a pair of one minority instance and one of its K nearest
+neighbor.")
+    (license license:gpl3+)))
+
 (define-public r-sn
   (package
     (name "r-sn")
