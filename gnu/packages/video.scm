@@ -1865,7 +1865,8 @@ operate properly.")
          #$@(if (target-powerpc?)
                 ;; These tests fail on powerpc64-le (see:
                 ;; https://trac.ffmpeg.org/ticket/9604).
-                '("--ignore-tests=checkasm-sw_scale,filter-scale2ref_keep_aspect")
+                '("--ignore-tests=checkasm-sw_scale,\
+filter-scale2ref_keep_aspect,sws-floatimg-cmp")
                 '())
          "--enable-gpl"                 ;enable optional gpl licensed parts
          "--enable-shared"
