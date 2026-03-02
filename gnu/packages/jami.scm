@@ -81,8 +81,8 @@
 ;;; When updating Jami, make sure that the patches used for ffmpeg-jami are up
 ;;; to date with those listed in
 ;;; <https://git.jami.net/savoirfairelinux/jami-daemon/-/blob/master/contrib/src/ffmpeg/rules.mak>.
-(define %jami-nightly-version "20260216.0")
-(define %jami-daemon-commit "43d9809f92b0321f2c448a7220245e681e1223cb")
+(define %jami-nightly-version "20260220.0")
+(define %jami-daemon-commit "67a68a69f958ca72142ed3cc20b3181ae32f3661")
 
 (define-public libjami
   (package
@@ -96,7 +96,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1cb1v6mqld8m9qp5i8m2m166r8dfiz5ggbzw5fzz3psbh870f4fj"))))
+                "1hjx9vzskjkg8aa6699l28wpx1f69agynfyr56xsb2d8nyifs5ds"))))
     ;; Reduce the output by about 2 MiB by splitting the seldom used 'jamid'
     ;; daemon binary to the "bin" output.
     (outputs '("out" "bin" "debug"))
@@ -222,7 +222,7 @@ QSortFilterProxyModel conveniently exposed for QML.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xk6dbwl1xbwc5kr6c3iymwpr5nr9kzffwmfhdf85mvq7jl4ps7x"))
+                "0g6hdh9kdnvfika2x4ymcmm00i13ml2rp91flzawqhlb3nm6jdy6"))
               (patches (search-patches
                         "jami-libjami-cmake.patch"
                         "jami-avutil-link.patch"))))
