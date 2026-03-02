@@ -118,6 +118,8 @@
             set-store-connection-cache
             set-store-connection-cache!
 
+            %default-store-connection-buffer-size
+
             connect-to-daemon
             open-connection
             port->connection
@@ -356,10 +358,11 @@ non-blocking."
                                     (errno (system-error-errno args)))))
                  (loop rest)))))))))
 
-(define %default-buffer-size 8192)
+(define %default-store-connection-buffer-size 8192)
 
 (define* (connect-to-daemon uri-or-filename #:key non-blocking?
-                            (buffer-size %default-buffer-size))
+                            (buffer-size
+                             %default-store-connection-buffer-size))
   "Connect to the daemon at URI-OR-FILENAME and return an input/output port.
 If NON-BLOCKING?, use a non-blocking socket when using the file, unix or guix
 URI schemes.  Use BUFFER-SIZE defaulting to 8192.
@@ -406,7 +409,8 @@ the daemon.  Use 'open-connection' for that."
 (define* (open-connection #:optional (uri (%daemon-socket-uri))
                           #:key port (reserve-space? #t) cpu-affinity
                           non-blocking? built-in-builders
-                          (buffer-size %default-buffer-size))
+                          (buffer-size
+                           %default-store-connection-buffer-size))
   "Connect to the daemon at URI (a string), or, if PORT is not #f, use it as
 the I/O port over which to communicate to a build daemon.
 
