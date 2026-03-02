@@ -53796,13 +53796,13 @@ Most operations can be parallelized.")
 (define-public r-mlrmbo
   (package
     (name "r-mlrmbo")
-    (version "1.1.5.1")
+    (version "1.1.6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlrMBO" version))
               (sha256
                (base32
-                "16fwj7m28g4km7yalqppxmh3lw2jln0z072l6awia38qkdg6xwhc"))))
+                "13bzqp7vfh85rak04kxk6my1fpjfidg48ywswab4vdvhikbhxv7z"))))
     (properties
      '((upstream-name . "mlrMBO")
        (updater-extra-native-inputs
