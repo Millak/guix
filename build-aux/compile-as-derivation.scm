@@ -20,6 +20,9 @@
 
 (use-modules (srfi srfi-26))
 
+;; Avoid lots of readlink calls
+(fluid-set! %file-port-name-canonicalization #f)
+
 ;; Add ~/.config/guix/current to the search path.
 (eval-when (expand load eval)
   (and=> (or (getenv "XDG_CONFIG_HOME")

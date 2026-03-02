@@ -111,6 +111,9 @@ build daemon, from within the generated build program."
                   #~(begin
                       (use-modules (ice-9 match))
 
+                      ;; To avoid lots of readlink calls
+                      (fluid-set! %file-port-name-canonicalization #f)
+
                       (eval-when (expand load eval)
                         ;; (gnu packages …) modules are going to be looked up
                         ;; under SOURCE.  (guix config) is looked up in FRONT.
@@ -246,6 +249,9 @@ Display a spinner when nothing happens."
                 #:rest rest)
   "Return a derivation that unpacks SOURCE into STORE and compiles Scheme
 files."
+  ;; Avoid lots of readlink calls
+  (fluid-set! %file-port-name-canonicalization #f)
+
   ;; Build the build program and then use it as a trampoline to build from
   ;; SOURCE.
   (mlet %store-monad ((build  (build-program source version guile-version
