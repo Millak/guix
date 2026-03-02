@@ -2516,6 +2516,11 @@ for @acronym{EDA, elecronic design automation} and chip design.")))
             (lambda* (#:key tests? #:allow-other-keys)
               ;; Run the tests as specified in pyproject.toml.
               (when tests?
+                (substitute* "pyproject.toml"
+                  ;; Fix failing test
+                  (("TESTSRC=\\{package\\} ")
+                   ""))
+                (setenv "TESTSRC" ".")
                 (invoke "python"
                         #$(plain-file "python-klayout-test-runner.py"
                                       "import tomllib, subprocess
