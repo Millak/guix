@@ -5818,6 +5818,27 @@ the scores and loadings.  See Andrecut (2009)
 @url{doi:10.1089/cmb.2008.0221}.")
     (license license:expat)))
 
+(define-public r-numbers
+  (package
+    (name "r-numbers")
+    (version "0.9-2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "numbers" version))
+       (sha256
+        (base32 "1kgzb9pqdkghkch6l4zhbngrzbnwkqgz6hgi8wkswvm12831bqq1"))))
+    (properties `((upstream-name . "numbers")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=numbers")
+    (synopsis "Number-theoretic functions")
+    (description
+     "This package provides number-theoretic functions for factorization,
+prime numbers, twin primes, primitive roots, modular logarithm and inverses,
+extended GCD, Farey series and continued fractions.  It includes Legendre and
+Jacobi symbols, some divisor functions, Euler's Phi function, etc.")
+    (license license:gpl3+)))
+
 (define-public r-pbapply
   (package
     (name "r-pbapply")
