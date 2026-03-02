@@ -23304,6 +23304,10 @@ route on the local host;
 @item nowhere
 means the destination does not exist.
 @end table
+
+@item @code{table} (default: @code{254})
+The routing table number to modify.
+
 @end table
 @end deftp
 

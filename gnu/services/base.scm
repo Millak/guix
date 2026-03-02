@@ -163,6 +163,7 @@
             network-route-device
             network-route-ipv6?
             network-route-gateway
+            network-route-table
 
             static-networking-service
             static-networking-service-type
@@ -3258,7 +3259,8 @@ Write, say, @samp{\"~a/24\"} for a 24-bit network mask.")
   (gateway     network-route-gateway (default #f))
   (scope       network-route-scope
                (default 'universe)
-               (sanitize assert-network-route-scope)))
+               (sanitize assert-network-route-scope))
+  (table       network-route-table (default 254)))
 
 (eval-when (expand load eval)
   (define* (cidr->netmask str #:optional (family AF_INET))
@@ -3495,7 +3497,9 @@ to CONFIG."
                                                #:scope
                                                #$(route-scope->constant
                                                   (network-route-scope
-                                                   route))))
+                                                   route))
+                                               #:table
+                                               #$(network-route-table route)))
                                 routes)
                         #t)))))
 
