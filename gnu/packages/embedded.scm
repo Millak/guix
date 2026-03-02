@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2019, 2023, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016-2019, 2023-2026 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2017, 2020 Efraim Flashner <efraim@flashner.co.il>
@@ -1069,17 +1069,16 @@ with a layered architecture of JTAG interface and TAP support.")
                     "0w0dff3s7wv2d9m78a4jhckiik58q38wx6wpbba5hzbs4yxz35ck"))
                   (patches '())))
         (arguments
-         (list
-          ;; FIXME: For some reason there are many test failures.  It's not
-          ;; obvious how to fix the failures.
-          #:tests? #f
-          #:phases
-          #~(modify-phases %standard-phases
-              (add-after 'unpack 'chdir
-                (lambda _ (chdir "binutils") #t))
-              #$@(substitute-keyword-arguments (package-arguments xbinutils)
-                   ((#:configure-flags flags)
-                    #~(cons "--disable-werror" #$flags))))))
+         (substitute-keyword-arguments (package-arguments xbinutils)
+           ((#:configure-flags flags)
+            #~(cons "--disable-werror" #$flags))
+           ;; FIXME: For some reason there are many test failures.  It's not
+           ;; obvious how to fix the failures.
+           ((#:tests? tests? #false) #false)
+           ((#:phases phases '%standard-phases)
+            `(modify-phases ,phases
+               (add-after 'unpack 'chdir
+                 (lambda _ (chdir "binutils")))))))
         (native-inputs
          `(("bison" ,bison)
            ("flex" ,flex)
