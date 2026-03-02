@@ -424,45 +424,6 @@ files}, are written in a custom domain-specific language (@dfn{DSL}) that
 resembles Python.")
     (license license:asl2.0)))
 
-(define-public meson-python
-  (package
-    (name "meson-python")
-    (version "0.17.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "meson_python" version))
-              (sha256
-               (base32
-                "10szxcqgki4zwkrwmsirdg68h03k9qmfswd4r5xyz7p1y9lizfgg"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags #~(list "tests"
-                                ;; The test_pep518 tries to install
-                                ;; dependencies from the network using pip.
-                                "-k" "not test_pep518")))
-    (propagated-inputs
-     (list meson
-           ninja/pinned
-           python-colorama
-           python-cython
-           python-pyproject-metadata
-           python-tomli
-           python-typing-extensions
-           python-wheel))
-    (native-inputs
-     (list ;; For tests.
-           git-minimal/pinned
-           patchelf
-           pkg-config
-           python-cython
-           python-gitpython
-           python-pytest
-           python-pytest-mock))
-    (home-page "https://github.com/mesonbuild/meson-python")
-    (synopsis "Meson-based build backend for Python")
-    (description "Meson-python is a PEP 517 build backend for Meson projects.")
-    (license license:expat)))
-
 (define-public muon
   (package
     (name "muon")
