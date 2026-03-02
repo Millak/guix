@@ -8218,6 +8218,38 @@ user's email address and GitHub username, using various sources of system and
 configuration information.")
     (license license:expat)))
 
+(define-public r-wrapr
+  (package
+    (name "r-wrapr")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "wrapr" version))
+       (sha256
+        (base32 "1r2mqgf4wiwx83lgs20r59c3h7yynkaif4qp6lbd20y06avb1jz1"))))
+    (properties `((upstream-name . "wrapr")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases '(modify-phases %standard-phases
+                  (add-after 'unpack 'set-HOME
+                    (lambda _
+                      (setenv "HOME" "/tmp"))))))
+    (native-inputs (list r-knitr r-r-rsp r-tinytest))
+    (home-page "https://github.com/WinVector/wrapr")
+    (synopsis "Wrap R Tools for debugging and parametric programming")
+    (description
+     "This package provides tools for writing and debugging R code.  Provides:
+@code{%.>%} dot-pipe (an S3 configurable pipe), @code{unpack/to} (R style
+multiple assignment/return), @code{build_frame()} /
+@code{draw_frame()} (@code{data.frame} example tools), @code{qc()} (quoting
+concatenate), @code{:=} (named map builder), @code{let()}
+(converts non-standard evaluation interfaces to parametric standard evaluation
+interfaces, inspired by @code{gtools::strmacro()} and @code{base::bquote()}),
+and more.")
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public r-rtdists
   (package
     (name "r-rtdists")
