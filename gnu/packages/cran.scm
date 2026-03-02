@@ -16738,14 +16738,14 @@ provided.")
 (define-public r-geosphere
   (package
     (name "r-geosphere")
-    (version "1.5-20")
+    (version "1.6-5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "geosphere" version))
        (sha256
         (base32
-         "01cwlrbqi216a19h9721i0vj7vakrybybqkicbg9pwyv6c2hy8cq"))))
+         "0vncljdgjhhyx1kywz2d946bkrmpawcxx8nfs1fv9875mjx9hd9p"))))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp r-sp))
     (home-page "https://cran.r-project.org/web/packages/geosphere")
