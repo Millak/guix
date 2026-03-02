@@ -44102,19 +44102,19 @@ See e.g. Gentle (2003) @url{doi:10.1007/b97336}.")
 (define-public r-lhs
   (package
     (name "r-lhs")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lhs" version))
        (sha256
         (base32
-         "0907icg9bl7h8a7wr8a60f59b8y89qj9rx1f7vxiybrjdcy7fjvb"))))
+         "0g7265yln00ylf0i8sfiynv3aq48v4j034v72rli9b9qhxrmqn3a"))))
     (properties `((upstream-name . "lhs")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-doe-base r-knitr r-testthat))
     (home-page "https://github.com/bertcarnell/lhs")
     (synopsis "Latin Hypercube Samples")
     (description
