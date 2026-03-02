@@ -115,14 +115,14 @@ Python versions below 3.14.")
 (define-public python-blosc
   (package
     (name "python-blosc")
-    (version "1.11.3")
+    (version "1.11.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "blosc" version))
        (sha256
         (base32
-         "13h8ks58iy4h3ayk7havb4hmkma88598qkf4i4paj53qpa76bvc9"))
+         "0dqxyk87xwmj2g1midp29zpibf58vxqavx2sqy9ylfjdapci5cz0"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "blosc/c-blosc")))))
@@ -140,8 +140,7 @@ Python versions below 3.14.")
     (native-inputs
      (list cmake-minimal
            ninja/pinned
-           ;; See: <https://github.com/Blosc/python-blosc/issues/347>.
-           python-numpy-1
+           python-numpy
            python-psutil
            python-py-cpuinfo
            python-scikit-build
