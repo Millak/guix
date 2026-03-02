@@ -8739,6 +8739,38 @@ package can generate VPCs for continuous, categorical, censored, and
 (repeated) time-to-event data.")
     (license license:expat)))
 
+(define-public r-vtreat
+  (package
+    (name "r-vtreat")
+    (version "1.6.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "vtreat" version))
+       (sha256
+        (base32 "04ymyv7ybahs4k6yc2dbmhhnxnjsa09h8cbfayslr655rzlgyqx5"))))
+    (properties `((upstream-name . "vtreat")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases '(modify-phases %standard-phases
+                  (add-after 'unpack 'set-HOME
+                    (lambda _
+                      (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list r-digest r-wrapr))
+    (native-inputs (list r-knitr r-r-rsp r-tinytest))
+    (home-page "https://github.com/WinVector/vtreat/")
+    (synopsis "Statistically sound data.frame processor/conditioner")
+    (description
+     "This package provides a @code{data.frame} processor/conditioner that
+prepares real-world data for predictive modeling in a statistically sound
+manner.  @code{vtreat} prepares variables so that data has fewer exceptional
+cases, making it easier to safely use models in production.  Common problems
+@code{vtreat} defends against: @code{Inf}, @code{NA}, too many categorical
+levels, rare categorical levels, and new categorical levels (levels seen
+during application, but not during training).")
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public r-rvenn
   (package
     (name "r-rvenn")
