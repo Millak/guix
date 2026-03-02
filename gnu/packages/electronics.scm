@@ -680,17 +680,17 @@ Simulator Trace} files.")
 (define-public iverilog
   (package
     (name "iverilog")
-    (version "20251012")
+    (version "13_0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/steveicarus/iverilog")
               (commit
-               (string-append "s" version))))
+               (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05k4x4lcgx554w2a8qcmmgjmg0k6swvcwl1pn5kcv4xafcz6rmxj"))))
+        (base32 "0vjja9vlnia42wb5l6vg7zv2v3n6d70nr0l26b3v0lmpnb3q7ws9"))))
     (build-system gnu-build-system)
     (arguments
      (list
