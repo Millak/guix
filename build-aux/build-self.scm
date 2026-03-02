@@ -169,6 +169,13 @@ build daemon, from within the generated build program."
                            ;; build output.
                            (connect sock AF_UNIX build-output)
 
+                           (when (integer? proto)
+                             ;; port->connection doesn't setup buffering, so
+                             ;; do this here
+                             (setvbuf (store-connection-socket store)
+                                      'block
+                                      %default-store-connection-buffer-size))
+
                            (display
                             (and=>
                              ;; Silence autoload warnings and the likes.
