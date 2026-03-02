@@ -3215,6 +3215,35 @@ edition of the book \"Data Mining with R, learning with case studies\"
 by Luis Torgo, published by CRC Press.")
     (license license:gpl2+)))
 
+(define-public r-doe-base
+  (package
+    (name "r-doe-base")
+    (version "1.2-5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "DoE.base" version))
+       (sha256
+        (base32 "1fglnzhjygpq6y967ffw7z7p7c2fiy72ama68lnpkvvvzqm4xk2r"))))
+    (properties `((upstream-name . "DoE.base")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-combinat
+                             r-conf-design
+                             r-lattice
+                             r-mass
+                             r-numbers
+                             r-partitions
+                             r-vcd))
+    (home-page "https://prof.bht-berlin.de/groemping/DoE/")
+    (synopsis
+     "Full factorials, orthogonal arrays and base utilities for DoE packages")
+    (description
+     "This package creates full factorial experimental designs and designs
+based on orthogonal arrays for (industrial) experiments.  It provides diverse
+quality criteria and utility functions for the class design, which is also
+used by other packages for designed experiments.")
+    (license license:gpl2+)))
+
 (define-public r-domc
   (package
     (name "r-domc")
