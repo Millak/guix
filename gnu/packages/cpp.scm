@@ -1124,7 +1124,7 @@ apps.")
 (define-public hyprwire
   (package
     (name "hyprwire")
-    (version "0.2.1")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1133,7 +1133,7 @@ apps.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rzclhk42x9im9n6fz2bj98l9lb7jhl3vijvck4rj6yhb80kvli0"))))
+                "0jasbbsqqysp88vn75dl9kcx3mzvvdldbq9g2jdpd25j3w8wl7rx"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f)) ; There are no tests
     (native-inputs (list pkg-config gcc-15))
