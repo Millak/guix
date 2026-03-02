@@ -15900,6 +15900,8 @@ use of the Meson build system.")
 
 ;; XXX: Deprecated on <2026-01-26>.
 (define-deprecated/public-alias python-meson-python python-meson)
+;;; Deprecated on 2026-03-02.
+(define-deprecated-package meson-python python-meson)
 
 (define-public python-mccabe
   (package
