@@ -137,16 +137,16 @@ over IRC, instant messaging, network games, and most server software.")
 (define-public libupnp
   (package
     (name "libupnp")
-    (version "1.14.25")
+    ;; Stick to the 1.14.x releases for now as 1.18.x breaks 'vlc' and 'obs'.
+    (version "1.14.30")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "https://github.com/pupnp/pupnp/releases/download"
-                          "/release-" version "/libupnp-" version".tar.bz2"))
+      (method git-fetch)
+      (uri (git-reference
+             (url "https://github.com/pupnp/pupnp")
+             (commit (string-append "release-" version))))
       (sha256
-       (base32 "0mlzkjb5ashy1p8j9z0wp4r1gd0w7kyv608g6a94ygspcxbz3z9n"))))
-    (native-inputs
-     (list pkg-config))
+       (base32 "1ddm777i6msgjaxlfqvrwlblb4kql3fw3l3v2vibwgwbifbw6dpa"))))
     (build-system gnu-build-system)
     (arguments
      ;; The tests require a network device capable of multicasting which is
@@ -154,7 +154,8 @@ over IRC, instant messaging, network games, and most server software.")
      ;; https://lists.gnu.org/archive/html/guix-devel/2015-01/msg00312.html.
      `(#:tests? #f
        #:configure-flags '("--disable-static")))
-    (home-page "https://pupnp.sourceforge.net")
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (home-page "https://pupnp.github.io/pupnp/")
     (synopsis "Portable SDK for UPnP Devices")
     (description
      "The portable SDK for UPnP Devices (libupnp) provides developers with an
