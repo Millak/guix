@@ -38016,13 +38016,13 @@ classes.")
 (define-public r-clarabel
   (package
     (name "r-clarabel")
-    (version "0.11.1")
+    (version "0.11.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "clarabel" version))
        (sha256
-        (base32 "0079xqz8n1q7gspym36j7m3v54mhbpz2imy9xlbj7373dknb5w60"))))
+        (base32 "14181g2rsqnd564qhv7b09dfxjbsdk8vj0x3avxyaw9flx99ihdq"))))
     (properties
      '((upstream-name . "clarabel")
        (updater-extra-native-inputs . ("r-matrix" "rust"))))
@@ -38034,6 +38034,7 @@ classes.")
           (add-after 'unpack 'set-variables-for-rust
             (lambda _
               (setenv "CC" #$(cc-for-target)))))))
+    (propagated-inputs (list r-cli))
     (native-inputs (list r-knitr r-matrix r-tinytest
                          rust `(,rust "cargo")))
     (home-page "https://oxfordcontrol.github.io/clarabel-r/")
