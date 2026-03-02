@@ -54153,13 +54153,13 @@ package also supersedes the package @code{BBmisc}.")
 (define-public r-mlr3pipelines
   (package
     (name "r-mlr3pipelines")
-    (version "0.10.0")
+    (version "0.11.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3pipelines" version))
               (sha256
                (base32
-                "1pxidwrgcalrm7n2szx0a6xbwvqq5gfn6g53kqgg8gcq861rs64w"))))
+                "0ff609b2n3qm446gx8hiyncbr4zpgil2xmlbkgvw7vlnv4p3k59c"))))
     (properties
      '((updater-extra-native-inputs . ("r-rpart"))))
     (build-system r-build-system)
@@ -54177,11 +54177,21 @@ package also supersedes the package @code{BBmisc}.")
     (native-inputs
      ;; There are lots of inputs the importer adds that we don't need.
      (list r-bbotk
+           r-bestnormalize
+           r-dimred
+           r-fastica
+           r-future
+           r-kernlab
            r-knitr
+           r-mlr3filters
            r-mlr3learners
+           r-quanteda
            r-rmarkdown
            r-rpart
-           r-testthat))
+           r-smotefamily
+           r-testthat
+           r-themis
+           r-vtreat))
     (home-page "https://mlr3pipelines.mlr-org.com/")
     (synopsis "Preprocessing Operators and Pipelines for @code{mlr3}")
     (description "@code{mlr3pipelines} enriches @code{mlr3} with a diverse
