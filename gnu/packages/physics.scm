@@ -669,7 +669,7 @@ conventions.")
            python-toolz))
     (native-inputs
      ;; Note: build-backend is mesonpy.
-     (list meson-python ninja python-numpy python-packaging python-pytest
+     (list ninja python-meson python-numpy python-packaging python-pytest
            python-pytest-lazy-fixtures python-pytest-mock
            pkg-config))
     (home-page "https://github.com/pace-neutrons/Euphonic")
