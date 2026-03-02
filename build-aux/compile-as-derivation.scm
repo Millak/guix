@@ -41,6 +41,10 @@
 
 (match (command-line)
   ((program source)
+   ;; The build procedure outputs to this port, so setup buffering to avoid
+   ;; one char per syscall.
+   (setvbuf (current-error-port) 'line)
+
    (with-error-handling
      (with-store store
        (let* ((script (string-append source "/build-aux/build-self.scm"))
