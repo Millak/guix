@@ -695,6 +695,15 @@ is to provide an accurate identifier for record tracks.")
        (sha256
         (base32 "0v866n5rwdz45ks8dlhl8hzx3p54hcjl0rz7x3rbsj4c96jn0m5c"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'fix-gst-init
+                          (lambda _
+                            ;; `None' is no longer accepted as of gstreamer
+                            ;; 2.28.1.
+                            (substitute* "audioread/gstdec.py"
+                              (("Gst.init\\(None\\)")
+                               "Gst.init([])")))))))
     (propagated-inputs (list ffmpeg python-pygobject))
     (native-inputs
      (list gstreamer
