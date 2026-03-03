@@ -3,7 +3,7 @@
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2019, 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2019, 2020, 2023, 2024, 2026 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020 Stefan <stefan-guix@vodafonemail.de>
@@ -427,8 +427,11 @@ when booting a root file system on a Btrfs subvolume."
                (arguments (menu-entry-multiboot-arguments entry))
                ;; Choose between device names as understood by Mach's built-in
                ;; IDE driver ("hdX") and those understood by rumpdisk ("wdX"
-               ;; in the "noide" case).
-               (disk (if (member "noide" arguments) "w" "h"))
+               ;; in the "noide" case).  There are no IDE drivers in Mach for
+               ;; hurd64, so always use rumpdisk there.
+               (rumpdisk? (or (target-hurd64?)
+                              (member "noide" arguments)))
+               (disk (if rumpdisk? "w" "h"))
                (device-spec (and=> device file-system-device->string))
                (device-name (and=> device-spec device-spec->device-name))
                (modules (menu-entry-multiboot-modules entry)))
