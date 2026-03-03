@@ -3386,7 +3386,7 @@ that offer bindings to some of the Frameworks.")
 (define-public kded
   (package
     (name "kded")
-    (version "6.22.0")
+    (version "6.23.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3395,9 +3395,11 @@ that offer bindings to some of the Frameworks.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0zglfabmy1p4msi3z7gf6vjml25vaaj77xfna5scy394ih341rdz"))))
-    (build-system cmake-build-system)
-    (arguments (list #:tests? #f))
+                "0kaghxn09276h2wzp0bz7mmq9r2zh918zvf0ibpss29s7ww9g3x8"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -3407,7 +3409,7 @@ that offer bindings to some of the Frameworks.")
            kdbusaddons
            kdoctools
            kservice
-           qtbase))
+           qtwayland))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Central daemon of KDE work spaces")
     (description "KDED stands for KDE Daemon.  KDED runs in the background and
