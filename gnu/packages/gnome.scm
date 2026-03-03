@@ -13661,17 +13661,17 @@ historical battery usage and related statistics.")
 (define-public libcall-ui
   (package
     (name "libcall-ui")
-    (version "0.1.1")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://gitlab.gnome.org/World/Phosh/libcall-ui")
-             (commit "6798b38d4d66d069751151b3e9a202c6de8d7f3c")))
+             (commit (string-append "v" version))))
        (file-name (git-file-name "libcall-ui" version))
        (sha256
         (base32
-         "0zfrxh77ag8garqj319amnxjcdyp3ig12dkxfkl6wbwn1mvyrwx8"))
+         "1bzrsrqjbncnck762sfr9a55n0l540bx0850dhjm6lwi0yp7giyc"))
        (patches (search-patches "libcall-ui-make-it-installable.patch"))))
     (build-system meson-build-system)
     (arguments
@@ -13686,7 +13686,8 @@ historical battery usage and related statistics.")
               (setenv "DISPLAY" ":1"))))))
     (propagated-inputs ; All these in call-ui.pc.
      (list glib
-           gtk+
+           gtk
+           libadwaita
            libcallaudio
            libhandy))
     (native-inputs
