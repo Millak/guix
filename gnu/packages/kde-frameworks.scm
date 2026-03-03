@@ -3029,7 +3029,7 @@ maintaining an index of the contents of your files.")
 (define-public kbookmarks
   (package
     (name "kbookmarks")
-    (version "6.22.0")
+    (version "6.23.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3038,7 +3038,7 @@ maintaining an index of the contents of your files.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0y8sc3ys2livvb94ny43mw7r1h5jh4yn9j5n52pqainyag53c0m9"))))
+                "1qlb7s5gcl6vq40pa64lmhr0w56ln4bsv0dr88zip9b9zlg8cl0q"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kwidgetsaddons))
