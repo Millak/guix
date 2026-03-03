@@ -338,13 +338,15 @@ gnu/packages/jupyter\.scm                          @guix/python
 gnu/packages/python(-.+|)\.scm$                    @guix/python
 gnu/packages/sphinx\.scm                           @guix/python
 gnu/packages/tryton\.scm                           @guix/python
-guix/build/pyproject-build-system\.scm             @guix/python
 guix/build-system/pyproject\.scm                   @guix/python
-guix/build/python-build-system\.scm                @guix/python
 guix/build-system/python\.scm                      @guix/python
+guix/build/pyproject-build-system\.scm             @guix/python
+guix/build/python-build-system\.scm                @guix/python
+guix/build/toml\.scm                               @guix/python
 guix/import/pypi\.scm                              @guix/python
 guix/scripts/import/pypi\.scm                      @guix/python
 tests/import/pypi\.scm                             @guix/python
+tests/toml\.scm                                    @guix/python
 
 gnu/ci\.scm                                        @guix/qa-packages
 gnu/packages/benchmark\.scm                        @guix/qa-packages

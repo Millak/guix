@@ -968,13 +968,15 @@ perl-build-system as well as the rakudo-build-system."
               (make-regexp* "^gnu/packages/python(-.+|)\\.scm$")
               "gnu/packages/sphinx.scm"
               "gnu/packages/tryton.scm"
-              "guix/build/pyproject-build-system.scm"
               "guix/build-system/pyproject.scm"
-              "guix/build/python-build-system.scm"
               "guix/build-system/python.scm"
+              "guix/build/pyproject-build-system.scm"
+              "guix/build/python-build-system.scm"
+              "guix/build/toml.scm" ;temporary, until other build system will use it
               "guix/import/pypi.scm"
               "guix/scripts/import/pypi.scm"
-              "tests/import/pypi.scm")))
+              "tests/import/pypi.scm"
+              "tests/toml.scm")))
 
 (define-team qa-packages
   (team 'qa-packages
