@@ -4904,7 +4904,18 @@ general purpose DVD/HD-DVD/Blu-ray disc dumper.")
                                   version
                                   ".tar.gz"))
               (sha256 (base32
-                       "074zj8ydp05yy1hjcglfv3hkvj4cm50f9nralka1992pm6yf8yvy"))))
+                       "074zj8ydp05yy1hjcglfv3hkvj4cm50f9nralka1992pm6yf8yvy"))
+              (snippet
+               #~(begin
+                   (use-modules (ice-9 textual-ports))
+                   (let* ((sndlibextra.c "src/sndlibextra.c")
+                          (sndlibextra.c-original
+                           (call-with-input-file sndlibextra.c
+                             get-string-all)))
+                     (call-with-output-file sndlibextra.c
+                       (lambda (port)
+                         (display "#include <stdlib.h>\n" port)
+                         (display sndlibextra.c-original port))))))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config libtool))
