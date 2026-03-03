@@ -507,13 +507,13 @@ triangulations.")
 (define-public units
   (package
    (name "units")
-   (version "2.25")
+   (version "2.26")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/units/units-" version
                                 ".tar.gz"))
             (sha256 (base32
-                     "02zclvjji25hsdriz4jwys5i21dbcmz3i4gap8266k8bq0xg9v9n"))))
+                     "0m1whwcggib8kyzmcjkw94sxnd8r19d7bh6k6gj2w8g2kyjgfhsc"))))
    (build-system gnu-build-system)
    (inputs
      (list bash-minimal       ;for wrap-program
