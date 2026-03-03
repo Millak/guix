@@ -4551,11 +4551,15 @@ with a number of bugfixes and changes to improve IT playback.")
           (add-after 'unpack 'fix-xpm-warnings
             (lambda _
               (substitute* (find-files "." "\\.xpm$")
-                (("static char") "static const char")))))))
+                (("static char") "static const char"))))
+          (add-after 'unpack 'fix-deprecated-functions
+            (lambda _
+              (substitute* (find-files "src/gui" "\\.cpp$")
+                (("^.*SetVirtualSizeHints.*$" ) "")))))))
     (inputs
      (list jack-1
            alsa-lib
-           wxwidgets-gtk2-3.0
+           wxwidgets
            libsndfile
            libsamplerate
            liblo
