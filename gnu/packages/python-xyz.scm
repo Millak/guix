@@ -35328,7 +35328,7 @@ to void* values.")
 (define-public python-catalogue
   (package
     (name "python-catalogue")
-    (version "2.0.7")
+    (version "2.0.10")
     (source
      (origin
        (method git-fetch)
@@ -35337,9 +35337,9 @@ to void* values.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0f7dqd8swycnspwfka79whr0v630v52hdmkmd1x7l920h33pg467"))))
+        (base32 "1v93a5dfhqa70kvjh4jxw9mqgwzbzg9w53an0frrx1rj6h96kmw5"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/explosion/catalogue")
     (synopsis "Lightweight function registries for your library")
     (description
