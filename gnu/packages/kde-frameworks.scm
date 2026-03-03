@@ -4924,7 +4924,7 @@ applications.")
 (define-public kde-frameworkintegration
   (package
     (name "kde-frameworkintegration")
-    (version "6.22.0")
+    (version "6.23.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4933,7 +4933,7 @@ applications.")
                     "frameworkintegration-" version ".tar.xz"))
               (sha256
                (base32
-                "0pks8wl1i5hshn4146r9w8cpm67jxya97s7fj81c3rx2bkgi9r33"))))
+                "1kb69wv6hkdrswbi5jxlz0wvzcakfvkf6xmkhqldrsdq7h86wibk"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
