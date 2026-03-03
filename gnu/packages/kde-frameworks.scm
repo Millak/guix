@@ -3703,7 +3703,7 @@ consumption.")
 (define-public kio
   (package
     (name "kio")
-    (version "6.22.1")
+    (version "6.23.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3712,8 +3712,8 @@ consumption.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0w1kr5hszwgdhm8kascgmzcqkpv77l1isfpw47cwdjiv5gmziah4"))))
-    (build-system cmake-build-system)
+                "15zb6inm08k429410l7bbrb0zcs3a2df7x6sqsgs3f07y3q5k7k2"))))
+    (build-system qt-build-system)
     (propagated-inputs
      (list acl
            kbookmarks
@@ -3742,14 +3742,15 @@ consumption.")
                   libxml2
                   libxslt
                   qt5compat
-                  qtbase
                   qtdeclarative
+                  qtwayland
                   libxkbcommon
                   sonnet
                   `(,util-linux "lib")  ; libmount
                   zlib))
     (arguments
      (list
+      #:qtbase qtbase
       #:test-exclude
       (string-append "("
                      (string-join '("kiogui-favicontest"
@@ -3801,8 +3802,6 @@ consumption.")
               (when tests?
                 (setenv "HOME" (getcwd))
                 (setenv "XDG_RUNTIME_DIR" (getcwd))
-                (setenv "QT_QPA_PLATFORM" "offscreen")
-                (setenv "DBUS_FATAL_WARNINGS" "0")
                 (invoke "dbus-launch" "ctest"
                         "--rerun-failed" "--output-on-failure" "-E"
                         test-exclude)))))))
