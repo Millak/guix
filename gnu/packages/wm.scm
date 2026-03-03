@@ -1985,6 +1985,7 @@ for wlroots-based Wayland compositors.")
            xcb-util-xrm
            xcb-util-wm
            xterm))
+    (outputs '("out" "doc"))
     (arguments
      `(#:modules ((guix build cmake-build-system)
                   (guix build utils)
@@ -1993,7 +1994,8 @@ for wlroots-based Wayland compositors.")
        ;; so that '--no-name' is used, which removes timestamps from
        ;; gzip output.
        #:configure-flags
-       '("-DCOMPRESS_MANPAGES=off")
+       ,#~(list (string-append "-DAWESOME_DOC_PATH=" #$output:doc)
+                "-DCOMPRESS_MANPAGES=off")
        ;; Building awesome in its source directory is no longer
        ;; supported.
        #:out-of-source? #t
