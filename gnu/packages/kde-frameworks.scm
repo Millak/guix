@@ -2871,7 +2871,7 @@ were traditional plugins.")
 (define-public kpty
   (package
     (name "kpty")
-    (version "6.22.0")
+    (version "6.23.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2880,7 +2880,7 @@ were traditional plugins.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0qwn1cfasp8p1pfs67b5izpgqq52da69y4w2ax4gpl89wqvawx79"))))
+                "0ldrln2h4cxdf41qcnfprqnp3inpb223z4j73rnz4lncp6v8w8d1"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
