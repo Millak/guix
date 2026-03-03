@@ -36364,15 +36364,21 @@ than trying to just split strings.")
     (license license:asl2.0)))
 
 (define-public python-srsly
+  ;; TODO: Unbundle libraries https://github.com/explosion/srsly/pull/120
+  ;; srsly.msgpack, srsly.cloudpickle, srsly.ruamel_yaml, srsly.ujson should
+  ;; be replaced with msgpack, cloudpickle, ruamel.yaml, and ujson.
   (package
     (name "python-srsly")
-    (version "2.5.1")
+    (version "2.5.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "srsly" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/explosion/srsly")
+              (commit (string-append "release-v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0zn74zyb928v898j6l86a83qgdvza78ksjg0v8ixla9yrzv4n6xb"))))
+        (base32 "1ww4jrih9rgv0nls9vkh8886mpp6wxa76khr9fwzxjkx4k3xbmbg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
