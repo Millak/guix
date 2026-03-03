@@ -36,7 +36,7 @@
 ;;; Copyright © 2020 Josh Marshall <joshua.r.marshall.1991@gmail.com>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2020-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
@@ -532,6 +532,25 @@ with a flexible variety of user interfaces.")
 unit testing.  Test output is in XML for automatic testing and GUI based for
 supervised tests.")
     (license license:lgpl2.1))) ; no copyright notices. LGPL2.1 is in the tarball
+
+(define-public python-pytest-pretty
+  (package
+    (name "python-pytest-pretty")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_pretty" version))
+       (sha256
+        (base32 "1wrvqhn0r5vpa1xhj61lywms87hc9a6hgnvqmr03w00gwhdr5scp"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pytest python-rich))
+    (native-inputs (list python-hatchling))
+    (home-page "https://github.com/samuelcolvin/pytest-pretty")
+    (synopsis "Pytest plugin to customize summary output")
+    (description "@code{pytest-pretty} is a Pytest plugin for customizing the
+appearance of the printed summary data.")
+    (license license:expat)))
 
 (define-public shunit2
   (package
