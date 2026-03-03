@@ -47045,7 +47045,8 @@ folder.
 
 @table @asis
 @item @code{path} (type: string)
-The media folder location.
+The media folder location.  For Guix Home services, if the path is
+relative, it will be looked up in the user's home directory.
 
 @item @code{types} (default: @code{'()}) (type: list)
 A list indicating the types of file included in the media folder.

@@ -224,12 +224,21 @@
           (use-modules (gnu build activation))
 
           (for-each (lambda (directory)
-                      (unless (file-exists? directory)
-                        (mkdir-p/perms directory
-                                       (getpw #$(if home-service?
-                                                    #~(getuid)
-                                                    %readymedia-user-account))
-                                       #$(if home-service? #o755 #o775))))
+                      (let ((directory
+                             (if #$home-service?
+                                 (if (absolute-file-name? directory)
+                                     directory
+                                     (string-append (or (getenv "HOME")
+                                                        (passwd:dir
+                                                         (getpwuid (getuid))))
+                                                    "/" directory))
+                                 directory)))
+                        (unless (file-exists? directory)
+                          (mkdir-p/perms directory
+                                         (getpw #$(if home-service?
+                                                      #~(getuid)
+                                                      %readymedia-user-account))
+                                         #$(if home-service? #o755 #o775)))))
                     (list #$@(map readymedia-media-directory-path
                                   media-directories)))
           (for-each (lambda (directory)
