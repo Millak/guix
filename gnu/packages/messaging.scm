@@ -3030,20 +3030,25 @@ designed for experienced users.")
 (define-public zulip-term
   (package
     (name "zulip-term")
-    (version "0.7.0")
+    ;; XXX: 0.7.0 was released in 2019.
+    (properties '((commit . "6a799870eccc00d612e25ff881d18f4ff66d92fa")
+                  (revision . "0")))
+    (version (git-version "0.7.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/zulip/zulip-terminal")
-              (commit version)))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0p7q9r1bwak3kx4ig96pn3x53ggp9y70xczvqj6225bmi99r92v6"))))
+        (base32 "0sxf07fc9rarxcjl1mi8r5asnh9svggc7hfg9r425rh9qxnsda5i"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 2411 passed, 3 skipped, 7 deselected, 19 xfailed, 77 warnings
+      ;; tests: 2827 passed, 6 skipped, 7 deselected, 19 xfailed
       #:test-flags
       #~(list "-k" (string-join
                     ;; 3 tests fail with pytest passing option in decorator
@@ -3061,12 +3066,19 @@ designed for experienced users.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-pytest-config
             (lambda _
-              (substitute* "setup.cfg"
-                ((".*-cov.*") "")
-                ((".rxXs") ""))
-              (substitute* "tests/cli/test_run.py"
-                (("lines = lines.split\\(\"pytest: \", 1\\)\\[1\\]")
-                 "lines = lines.split('__main__.py: ', 1)[1]")))))))
+              (substitute* "pyproject.toml"
+                ((" --cov=zulipterminal --no-cov-on-fail")
+                 ""))))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                (("lxml==4.9.4") "lxml>=4.9.4")
+                (("pygments>=2.17.2,<2.18.0") "pygments>=2.17.2")
+                (("typing_extensions~=4.5.0") "typing_extensions>=4.5.0")
+                (("tzlocal>=5.0,<5.1") "tzlocal>=5.0")
+                ;; XXX: the package provides 0.15 version for some reason.
+                (("urwid_readline>=0.15.1") "urwid_readline>=0.15.0")
+                (("zulip>=0.8.2,<0.9.0") "zulip>=0.8.2")))))))
     (inputs
      (list python-beautifulsoup4
            python-lxml
