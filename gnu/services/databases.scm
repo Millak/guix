@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 David Larsson <david.larsson@selfhosted.xyz>
 ;;; Copyright © 2021 Aljosha Papsch <ep@stern-data.com>
 ;;; Copyright © 2025, 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
+;;; Copyright © 2025, 2026 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -809,16 +810,22 @@ port=" (number->string port) "
 ;;; Redis
 ;;;
 
-(define-maybe string)
+(define-maybe string (prefix redis-))
 
 (define (uglify-field-name field-name)
   (string-delete #\? (symbol->string field-name)))
 
-(define (serialize-field field-name val)
-  #~(format #f "~a=~a\n" #$(uglify-field-name field-name) #$val))
+(define (redis-serialize-field field-name val)
+  (format #f "~a=~a\n" (uglify-field-name field-name) val))
 
-(define serialize-string serialize-field)
-(define serialize-number serialize-field)
+(define redis-serialize-package
+  serialize-package)
+
+(define redis-serialize-string
+  redis-serialize-field)
+
+(define redis-serialize-number
+  redis-serialize-field)
 
 (define-configuration redis-configuration
   (redis (package redis)
@@ -831,7 +838,8 @@ a value of 0 will disable listening on a TCP socket.")
   (working-directory (string "/var/lib/redis")
                      "Directory in which to store the
 database and related files.")
-  (config-file maybe-string "Default location for config file."))
+  (config-file maybe-string "Default location for config file.")
+  (prefix redis-))
 
 (define (default-redis.conf bind port working-directory)
   (mixed-text-file "redis.conf"
