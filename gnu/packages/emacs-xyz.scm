@@ -41960,10 +41960,10 @@ service, and connect it with Emacs via inter-process communication.")
       (license license:gpl3+))))
 
 (define-public emacs-telega
-  (let ((commit "70945291fff62ad0c8c2d2c28cbad319138ae811"))
+  (let ((commit "805819bf81dffe2922e9e06ae02d58429d03aa1a"))
     (package
       (name "emacs-telega")
-      (version "0.8.600")               ; see telega-version in telega.el
+      (version "0.8.601")               ; see telega-version in telega.el
       (source
        (origin
          (method git-fetch)
@@ -41971,7 +41971,7 @@ service, and connect it with Emacs via inter-process communication.")
                (url "https://github.com/zevlg/telega.el")
                (commit commit)))
          (sha256
-          (base32 "08z81m3aa7lf895iy5fkdp52qkvl2nw1r1k1k67dipnyrj4y2bfk"))
+          (base32 "0d02ymr5fw6fknzf9ikaky48swd9yfp5zn846zlwb5083p6bpmis"))
          (file-name (git-file-name "emacs-telega" version))
          (patches
           (search-patches "emacs-telega-test-env.patch"))))
@@ -42028,10 +42028,8 @@ service, and connect it with Emacs via inter-process communication.")
                    (string-append ";; " all))))))))
       (inputs
        (list emacs-telega-server ffmpeg tgs2png))
-      (native-inputs '())
       (propagated-inputs
-       (list emacs-company
-             emacs-transient            ; requires 0.9.0
+       (list emacs-transient            ; requires 0.9.0
              emacs-visual-fill-column))
       (home-page "https://zevlg.github.io/telega.el/")
       (synopsis "GNU Emacs client for the Telegram messenger")
