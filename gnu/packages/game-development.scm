@@ -22,7 +22,7 @@
 ;;; Copyright © 2020 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2021 Dmitry Polyakov <polyakov@liltechdude.xyz>
-;;; Copyright © 2020-2022, 2024-2025 James Smith <jsubuntuxp@disroot.org>
+;;; Copyright © 2020-2022, 2024-2026 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021, 2026 Andy Tai <atai@atai.org>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
@@ -953,7 +953,7 @@ clone.")
 (define-public trenchbroom
   (package
     (name "trenchbroom")
-    (version "2024.2")
+    (version "2025.4")
     (source
      (origin
        (method git-fetch)
@@ -962,16 +962,12 @@ clone.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18cb3w7wxc9y2izh0flkkl77sg897dh0g49zq7rbhpvw35j4xgaj"))))
+        (base32 "0858q0dfr8f3z8aaafgvrx3zbmjlsldjyw6jjic4x4psyw2xfg3h"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
            #~(list "-DCMAKE_BUILD_TYPE=Release" "-G" "Unix Makefiles"
                    "-DCMAKE_PREFIX_PATH=cmake/packages"
-                   (string-append "-DFREEIMAGE_INCLUDE_PATH="
-                                  #$freeimage "/include")
-                   (string-append "-DFREEIMAGE_LIBRARY="
-                                  #$freeimage "/lib/libfreeimage.so")
                    (string-append "-Dfreetype_INCLUDE_DIR="
                                   #$freetype "/include/freetype2")
                    (string-append "-Dfreetype_LIBRARY="
@@ -1016,7 +1012,7 @@ clone.")
     (inputs
      (list assimp
            bash-minimal
-           catch2
+           catch2-3.8
            fmt
            freeglut
            freeimage
@@ -1027,8 +1023,8 @@ clone.")
            libxxf86vm
            mesa
            miniz
-           qtbase-5
-           qtsvg-5
+           qtbase
+           qtsvg
            tinyxml2))
     (native-inputs (list git pandoc python p7zip))
     (home-page "https://kristianduske.com/trenchbroom/")
