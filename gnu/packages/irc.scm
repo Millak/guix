@@ -1028,6 +1028,39 @@ search.  It is intended for use with the IRC bouncer @command{pounce},
 but can also be used independently as a logging bot.")
     (license license:gpl3+)))
 
+(define-public scooper
+  (package
+    (name "scooper")
+    (version "1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.causal.agency/scooper")
+              (commit version)))
+       (sha256
+        (base32 "0sqb8hg402il38pjhwa3lfyrskf1yr6yjd5fswqvk3d15v1jq4m8"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ; There are no tests.
+           #:make-flags
+           #~(list
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))))
+    (native-inputs
+     (list pkg-config universal-ctags))
+    (inputs
+     (list kcgi
+           libressl
+           litterbox
+           sqlite))
+    (home-page "https://code.causal.agency/june/scooper")
+    (synopsis "Web interface for the litterbox IRC logger")
+    (description
+     "@command{scooper} is a CGI and FastCGI web interface that also provides
+IRC log listings and full-text search.")
+    (license license:gpl3+)))
+
 (define-public inspircd
   (package
     (name "inspircd")
