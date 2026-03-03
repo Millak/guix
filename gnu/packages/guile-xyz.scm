@@ -5784,7 +5784,8 @@ processing filters.")
                 (("SITEDIR=\"\\$datadir/guile-cv\"")
                  "SITEDIR=\"$datadir/guile/site/$GUILE_EFFECTIVE_VERSION\"")
                 (("SITECCACHEDIR=\"\\$libdir/guile-cv/")
-                 "SITECCACHEDIR=\"$libdir/"))))
+                 "SITECCACHEDIR=\"$libdir/"))
+              (delete-file "configure")))         ;trigger 'bootstrap' phase
           (add-after 'unpack 'substitute-libs
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (substitute* "cv/init.scm"
