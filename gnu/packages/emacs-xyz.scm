@@ -34748,7 +34748,7 @@ and comments.")
 (define-public emacs-yeetube
   (package
     (name "emacs-yeetube")
-    (version "2.1.11")
+    (version "2.1.12")
     (source
      (origin
        (method git-fetch)
@@ -34757,12 +34757,12 @@ and comments.")
               (commit version)))
        (sha256
         (base32
-         "0jydjijmmj1nkr4462w5j5b3hhy7ms43zpxs325mjna6f9cmylgd"))
+         "0zvbfwxq3dx14ynpafpvv1swg7hbg3k9avir9b7cymf4r5hrjnx3"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
      (list
-      #:tests? #f                       ; no tests
+      #:test-command #~(list "make" "test" "GUIX_SHELL=")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'locate-binaries
