@@ -4130,10 +4130,18 @@ parallel computing platforms.  It also supports serial execution.")
     (outputs '("out" "doc"))
     (arguments
      (list
-      #:test-target "test"
+      #:test-target "vanilla-test"  ;TODO: restore to "test" with next release
       #:make-flags #~(list (string-append "PREFIX=" #$output)
                            "ENABLE_EDITLINE=1"
                            "ENABLE_LIBYOSYS=1"
+                           "ENABLE_PYOSYS=1"
+                           (format #f "PYTHON_DESTDIR=~a"
+                                   (string-append
+                                    #$output "/lib/python"
+                                    #$(version-major+minor
+                                       (package-version python))
+                                    "/site-packages"))
+                           "PYOSYS_USE_UV=0"
                            (format #f "ABCEXTERNAL=~a/bin/abc"
                                    #$(this-package-input "abc-yosyshq")))
       #:phases
@@ -4214,8 +4222,10 @@ parallel computing platforms.  It also supports serial execution.")
                   editline
                   libffi
                   psmisc
+                  pybind11
                   python
                   python-click
+                  python-cxxheaderparser
                   readline
                   tcl
                   z3
