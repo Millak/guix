@@ -32,19 +32,19 @@ then
 fi
 
 orig_drv="`guix build guile-gcrypt -d`"
-latest_drv="`guix build guile-gcrypt --with-branch=guile-gcrypt=master -d`"
+latest_drv="`guix build guile-gcrypt --with-branch=guile-gcrypt=main -d`"
 test -n "$latest_drv"
 test "$orig_drv" != "$latest_drv"
 
 # FIXME: '-S' currently doesn't work with non-derivation source.
-# checkout="`guix build guile-gcrypt --with-branch=guile-gcrypt=master -S`"
+# checkout="`guix build guile-gcrypt --with-branch=guile-gcrypt=main -S`"
 checkout="`guix gc --references "$latest_drv" | grep guile-gcrypt | grep -v -E '(-builder|\.drv)'`"
 test -d "$checkout"
 test -f "$checkout/COPYING"
 
 orig_drv="`guix build guix -d`"
-latest_drv="`guix build guix --with-branch=guile-gcrypt=master -d`"
-guix gc -R "$latest_drv" | grep guile-gcrypt-git.master
+latest_drv="`guix build guix --with-branch=guile-gcrypt=main -d`"
+guix gc -R "$latest_drv" | grep guile-gcrypt-git.main
 test "$orig_drv" != "$latest_drv"
 
 v0_1_0_drv="`guix build guix --with-commit=guile-gcrypt=9e3eacdec1d -d`"
