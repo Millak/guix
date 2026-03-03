@@ -74,6 +74,7 @@
 ;;; Copyright © 2025 iamawacko <iamawacko@protonmail.com>
 ;;; Copyright © 2025 dan <i@dan.games>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2026 VnPower <vnpower@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3143,6 +3144,36 @@ service with @code{xsecurelock}.  Instead, add a helper binary to your
   %default-privileged-programs))
 @end example")
     (license license:asl2.0)))
+
+(define-public gtk-session-lock
+  (package
+    (name "gtk-session-lock")
+    (version "0.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Cu3PO42/gtk-session-lock")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32 "0a1y0b05ka136ldd5rs5k719hnj8bx5fkm8z8hl4zgsycxi80wj8"))
+              (file-name (git-file-name name version))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:glib-or-gtk? #t
+           #:tests? #f                  ; tests require more dependencies
+           #:configure-flags #~(list "-Dtests=false")))
+    (inputs
+     (list gtk+ wayland vala))
+    (native-inputs
+     (list pkg-config gobject-introspection))
+    (home-page "https://github.com/Cu3PO42/gtk-session-lock")
+    (synopsis "GTK Session Lock library for GTK3")
+    (description "@code{gtk-session-lock} is a fork of @code{gtk-layer-shell} to
+build screen lockers using the secure @code{ext-session-lock-v1} protocol.  This
+library is compatible with C, C++ and any language that supports GObject
+introspection files (Python, Vala, etc, see using the library below).")
+    (license (list license:gpl3
+                   license:expat))))
 
 (define-public wl-color-picker
   (package
