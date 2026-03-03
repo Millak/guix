@@ -2340,7 +2340,7 @@ localized country name to ISO 3166-1 alpha 2 code mapping and vice verca.
 (define-public kcrash
   (package
     (name "kcrash")
-    (version "6.22.0")
+    (version "6.23.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2349,11 +2349,16 @@ localized country name to ISO 3166-1 alpha 2 code mapping and vice verca.
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "03kh3qchrnny1r5f463kr15pnxi82c8ricwpx538f04cb2h7qb9j"))))
+                "146ywqc0anrsbc6p7a6yqznnx825x13r2xwvjiw8qlb683z3hgwc"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kcoreaddons kwindowsystem))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'check-setup
+                 (lambda _ (setenv "HOME" (getcwd)))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Graceful handling of application crashes")
     (description "KCrash provides support for intercepting and handling
