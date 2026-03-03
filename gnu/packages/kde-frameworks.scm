@@ -2968,7 +2968,7 @@ between feed formats.")
 (define-public baloo
   (package
     (name "baloo")
-    (version "6.22.0")
+    (version "6.23.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2977,7 +2977,7 @@ between feed formats.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0akdlrsyhd96v85wyvj56aspz1d5g8zgw9a16svrkm2kx4darcjp"))))
+                "04q1s93ccbnzjz7dxwxbfjyx2ywx9cnsqkfrm4hk821dfzmc7kk1"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kcoreaddons kfilemetadata))
