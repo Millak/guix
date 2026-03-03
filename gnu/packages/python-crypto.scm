@@ -1798,16 +1798,22 @@ can also encrypt and decrypt messages using RSA and ECDH.")
 (define-public python-pyu2f
   (package
     (name "python-pyu2f")
-    (version "0.1.5")
+    ;; Released version fails tests in Python 3.12.
+    ;; pyu2f is no longer being developed.
+    (properties '((commit . "064be5ab9f4282855a15c79ecb9f7eec37f3938c")
+                  (revision . "0")))
+    (version (git-version "0.1.5"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/google/pyu2f/")
-             (commit (string-append "v" version))))
+             (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jlpplw7hlrh8bgmp37g18panij0p7ism6r4d981my4dc73lbwik"))))
+        (base32 "1373q4vzn449p8vsclhrsa5jb3vx9x77g2hdvibim5qwa1d724b9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
