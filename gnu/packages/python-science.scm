@@ -7,7 +7,7 @@
 ;;; Copyright © 2016-2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2022 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2019-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2019-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2019 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2020-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
@@ -3029,7 +3029,7 @@ logic, also known as grey logic.")
 (define-public python-scikit-image
   (package
     (name "python-scikit-image")
-    (version "0.25.2")
+    (version "0.26.0")
     (source
      (origin
        (method git-fetch)
@@ -3038,24 +3038,16 @@ logic, also known as grey logic.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cr3ki47z9g8kylnff1nrmv5fr3lrgmibl41q0v98pldghnslxdv"))))
+        (base32 "1x90jad3jqin8ws1j1i89zrajpcbn1h87nl5yxxf5cs3b7ha13rf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 8271 passed, 160 skipped, 1 deselected, 89 xfailed
       #:test-flags
       #~(list "--ignore=benchmarks/"
-              "--pyargs" "skimage"
               ;; RuntimeWarning: divide by zero encountered in scalar divide
-              "-k" "not test_ellipse_parameter_stability")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'remove-local-source
-            (lambda _
-              (delete-file-recursively "skimage"))))))
-    ;; See pyproject.toml for the list of build and run time requirements.
-    ;; NOTE: scikit-image has an optional dependency on python-pooch, however
-    ;; propagating it would enable many more tests that require online data.
+              ;; (see:
+              ;; <https://github.com/scikit-image/scikit-image/issues/7348>).
+              "-k" "not test_ellipse_parameter_stability")))
     (propagated-inputs
      (list python-imageio
            python-lazy-loader
@@ -3079,6 +3071,7 @@ logic, also known as grey logic.")
      (list python-meson
            python-pytest
            python-pytest-localserver
+           python-pytest-pretty
            python-pythran))
     (home-page "https://scikit-image.org/")
     (synopsis "Image processing in Python")
