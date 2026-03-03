@@ -194,31 +194,6 @@ a menu system for providing multiple options to the user.")
     (home-page "https://github.com/JEG2/highline")
     (license (list license:gpl2 license:ruby))))
 
-(define-public ruby-hoe
-  (package
-    (name "ruby-hoe")
-    (version "4.2.2")
-    (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "hoe" version))
-              (sha256
-               (base32
-                "1rhj1zs02mpdw6f4fh3mpfmj0p5pfar7rfxm758pk7l931mm8pyn"))))
-    (build-system ruby-build-system)
-    (arguments
-     (list
-      ;; Circular dependency with minitest
-      #:tests? #f))
-    (synopsis "Ruby project management helper")
-    (description
-     "Hoe is a rake/rubygems helper for project Rakefiles.  It helps manage,
-maintain, and release projects and includes a dynamic plug-in system allowing
-for easy extensibility.  Hoe ships with plug-ins for all the usual project
-tasks including rdoc generation, testing, packaging, deployment, and
-announcement.")
-    (home-page "https://www.zenspider.com/projects/hoe.html")
-    (license license:expat)))
-
 (define-public ruby-rsync
   (package
     (name "ruby-rsync")
