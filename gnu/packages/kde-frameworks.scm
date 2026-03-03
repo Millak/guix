@@ -3922,7 +3922,7 @@ KIO enabled infrastructure.")
 (define-public kirigami-addons
   (package
     (name "kirigami-addons")
-    (version "1.10.0")
+    (version "1.12.0")
     (source
      (origin
        (method git-fetch)
@@ -3931,7 +3931,7 @@ KIO enabled infrastructure.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1f93y893kvqysdrvcr1f6f5rmg38k0hbmf53r672xrxis5yar0vl"))))
+        (base32 "0vwnv5vslw3w8is7pa7sshm1gw99r3krdg6chs36393a43cga3ri"))))
     (build-system qt-build-system)
     (arguments
      (list
