@@ -1234,6 +1234,55 @@ APIs.")
     ;; the Expat license, incompatible with the GPL.
     (license (license:non-copyleft "file://LICENSE.TERMS"))))
 
+(define-public kcgi
+  (package
+    (name "kcgi")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kristapsdz/kcgi")
+              (commit
+               (string-append "VERSION_"
+                              (string-replace-substring version "." "_")))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0km2295rmxlgl3livhil861h0s43bks2cqyvpf80zcqiba1ilmsw"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; There are only regression tests which are only recommended if running
+      ;; bleeding edge sources.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key outputs #:allow-other-keys)
+              (invoke "./configure"
+                      (string-append "CC=" #$(cc-for-target))
+                      (string-append "PREFIX=" #$output))))
+          (replace 'build
+            (lambda* (#:key outputs parallel-build? #:allow-other-keys)
+              (apply invoke "bmake"
+                     (string-append "LDFLAGS=-Wl,-rpath,"
+                                    #$output "/lib")
+                     (if parallel-build?
+                         (list "-j" (number->string (parallel-job-count)))
+                         '()))))
+          (replace 'install
+            (lambda _
+              (invoke "bmake" "install"))))))
+    (native-inputs
+     (list bmake libbsd pkg-config))
+    (inputs
+     (list zlib))
+    (home-page "https://kristaps.bsd.lv/kcgi/")
+    (synopsis "Minimal CGI and FastCGI library for C/C++")
+    (description "This package provides a CGI and FastCGI library for C/C++
+web applications.  It is minimal, secure, and auditable.")
+    (license license:isc)))
+
 (define-public fcgiwrap
   (let ((commit "2870d2729a3930988f0041e2d78fec672e69afac")
         (revision "1"))
