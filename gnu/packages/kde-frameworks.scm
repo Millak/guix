@@ -12,7 +12,7 @@
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023-2025 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2023-2025 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2023-2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2024-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -106,7 +106,7 @@
 (define-public extra-cmake-modules
   (package
     (name "extra-cmake-modules")
-    (version "6.22.0")
+    (version "6.23.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -115,7 +115,7 @@
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "19h9qssgwxmh9fzq54k17b22kgrrdw5yyrv5785w4xxjf6asd0yb"))))
+                "152112hi1abkm38cn1z5zqfqn9xf32dlp9lm7rfkm6nhcm3x78nv"))))
     (build-system cmake-build-system)
     (native-inputs
      ;; Add test dependency, except on armhf where building it is too
