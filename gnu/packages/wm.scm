@@ -1934,19 +1934,18 @@ for wlroots-based Wayland compositors.")
              "awesome-" version ".tar.xz"))
        (sha256
         (base32 "0lqpw401mkkmp9wgbvrmm45bqq2j9357l4irwdqv6l1305pls9kq"))
-       (modules '((guix build utils)
-                  (srfi srfi-19)))
        (snippet
-        '(begin
-           ;; Remove non-reproducible timestamp and use the date of
-           ;; the source file instead.
-           (substitute* "common/version.c"
-             (("__DATE__ \" \" __TIME__")
-              (date->string
-               (time-utc->date
-                (make-time time-utc 0 (stat:mtime (stat "awesome.c"))))
-               "\"~c\"")))
-           #t))
+        #~(begin
+            (use-modules (guix build utils)
+                         (srfi srfi-19))
+            ;; Remove non-reproducible timestamp and use the date of
+            ;; the source file instead.
+            (substitute* "common/version.c"
+              (("__DATE__ \" \" __TIME__")
+               (date->string
+                (time-utc->date
+                 (make-time time-utc 0 (stat:mtime (stat "awesome.c"))))
+                "\"~c\"")))))
        (patches
         (search-patches "awesome-reproducible-png.patch"
                         "awesome-4.3-fno-common.patch"))))
@@ -1987,55 +1986,51 @@ for wlroots-based Wayland compositors.")
            xterm))
     (outputs '("out" "doc"))
     (arguments
-     `(#:modules ((guix build cmake-build-system)
+     (list
+      #:modules '((guix build cmake-build-system)
                   (guix build utils)
                   (ice-9 match))
-       ;; Let compression happen in our 'compress-documentation' phase
-       ;; so that '--no-name' is used, which removes timestamps from
-       ;; gzip output.
-       #:configure-flags
-       ,#~(list (string-append "-DAWESOME_DOC_PATH=" #$output:doc)
-                "-DCOMPRESS_MANPAGES=off")
-       ;; Building awesome in its source directory is no longer
-       ;; supported.
-       #:out-of-source? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'set-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "lib/awful/completion.lua"
-               (("/usr/bin/env")
-                ""))
-             (substitute* '("lib/menubar/utils.lua" "awesomerc.lua")
-               (("(terminal = ).*$" _ p)
-                (string-append p "'" (assoc-ref inputs "xterm") "/bin/xterm'\n")))
-             ;; The build process needs to load Cairo dynamically.
-             (let* ((cairo (string-append (assoc-ref inputs "cairo") "/lib")))
-               (setenv "LD_LIBRARY_PATH" cairo)
-               (setenv "HOME" (getcwd))
-               (setenv "XDG_CACHE_HOME" (getcwd)))))
-         (replace 'check
-           (lambda _
-             ;; There aren't any tests, so just make sure the binary
-             ;; gets built and can be run successfully.
-             (invoke "../build/awesome" "-v")))
-         (add-after 'install 'patch-session-file
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (awesome (string-append out "/bin/awesome")))
-               (substitute* (string-append out "/share/xsessions/awesome.desktop")
-                 (("Exec=awesome") (string-append "Exec=" awesome))))))
-         (add-after 'install 'wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((awesome (assoc-ref outputs "out"))
-                    (cairo (string-append (assoc-ref inputs "cairo") "/lib"))
-                    (lua-version ,(version-major+minor (package-version lua)))
-                    (lua-lgi (assoc-ref inputs "lua-lgi")))
-               (wrap-program (string-append awesome "/bin/awesome")
-                 `("GUIX_LUA_PATH" ";" prefix (,(getenv "GUIX_LUA_PATH")))
-                 `("GUIX_LUA_CPATH" ";" prefix (,(getenv "GUIX_LUA_CPATH")))
-                 `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))
-                 `("LD_LIBRARY_PATH" suffix (,cairo)))))))))
+      ;; Let compression happen in our 'compress-documentation' phase
+      ;; so that '--no-name' is used, which removes timestamps from
+      ;; gzip output.
+      #:configure-flags
+      #~(list (string-append "-DAWESOME_DOC_PATH=" #$output:doc)
+              "-DCOMPRESS_MANPAGES=off")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "lib/awful/completion.lua"
+                (("/usr/bin/env")
+                 ""))
+              (substitute* '("lib/menubar/utils.lua" "awesomerc.lua")
+                (("(terminal = ).*$" _ p)
+                 (string-append p "'" (assoc-ref inputs "xterm") "/bin/xterm'\n")))
+              ;; The build process needs to load Cairo dynamically.
+              (let* ((cairo (string-append (assoc-ref inputs "cairo") "/lib")))
+                (setenv "LD_LIBRARY_PATH" cairo)
+                (setenv "HOME" (getcwd))
+                (setenv "XDG_CACHE_HOME" (getcwd)))))
+          (replace 'check
+            (lambda _
+              ;; There aren't any tests, so just make sure the binary
+              ;; gets built and can be run successfully.
+              (invoke "../build/awesome" "-v")))
+          (add-after 'install 'patch-session-file
+            (lambda _
+              (substitute*
+                  (string-append #$output "/share/xsessions/awesome.desktop")
+                (("Exec=awesome")
+                 (string-append
+                  "Exec=" (string-append #$output "/bin/awesome"))))))
+          (add-after 'install 'wrap
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((cairo (string-append (assoc-ref inputs "cairo") "/lib")))
+                (wrap-program (string-append #$output "/bin/awesome")
+                  `("GUIX_LUA_PATH" ";" prefix (,(getenv "GUIX_LUA_PATH")))
+                  `("GUIX_LUA_CPATH" ";" prefix (,(getenv "GUIX_LUA_CPATH")))
+                  `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))
+                  `("LD_LIBRARY_PATH" suffix (,cairo)))))))))
     (home-page "https://awesomewm.org/")
     (synopsis "Highly configurable window manager")
     (description
