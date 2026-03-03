@@ -23321,17 +23321,21 @@ pytest-fixtures-style dependency injection.")
 (define-public python-bson
   (package
     (name "python-bson")
-    (version "0.5.10")
+    (properties '((commit . "4e6b4c206f7204034ef74bff8ae84a95d76d1684")
+                  (revision . "0")))
+    (version (git-version "0.5.10"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)               ;for tests
        (uri (git-reference
              (url "https://github.com/py-bson/bson")
-             (commit version)))
+             (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1vpy4rsvm3hhawvbg9rbw4j36ck8qylkhm8cjy0q6imvinkd2als"))))
+         "015db9gfqcirv3zjscvh5hyfw8cixjsbvfxaqdzji863vrvl5ns8"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
