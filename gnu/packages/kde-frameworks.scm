@@ -48,6 +48,7 @@
   #:use-module (gnu packages attr)
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
@@ -502,7 +503,7 @@ It is the default icon theme for the KDE Plasma desktop.")
 (define-public kapidox
   (package
     (name "kapidox")
-    (version "6.22.0")
+    (version "6.23.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -511,13 +512,21 @@ It is the default icon theme for the KDE Plasma desktop.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "05kp8h5gpl0iy7kd6i857z1zfaj5fmxdpdw52paxqm27iinr6vs3"))))
+                "1n73ff06gmlrh4nl6bpfmarybhrkk2jip8lq0g9qmzdddcj5p154"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f ; test need network
-           #:phases #~(modify-phases %standard-phases
-                        ;; Some package requirements are not necessary.
-                        (delete 'sanity-check))))
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; Some package requirements are not necessary.
+               (delete 'sanity-check)
+               (add-after 'install 'wrap-path
+                 (lambda _
+                   (wrap-program (string-append #$output
+                                                "/bin/depdiagram_generate_all")
+                     `("PATH" prefix
+                       (,(string-append #$(this-package-input "coreutils")
+                                        "/bin")))))))))
     (native-inputs (list python-setuptools))
     (propagated-inputs
      ;; kapidox is a python programm
@@ -526,7 +535,7 @@ It is the default icon theme for the KDE Plasma desktop.")
      ;; and python-xml.
      (list python python-jinja2 python-pyyaml python-requests))
     (inputs
-     (list qtbase))
+     (list bash-minimal coreutils qtbase))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "KDE Doxygen Tools")
     (description "This framework contains scripts and data for building API
