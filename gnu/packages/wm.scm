@@ -1952,13 +1952,13 @@ for wlroots-based Wayland compositors.")
                         "awesome-4.3-fno-common.patch"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list asciidoc
-           docbook-xsl
+     (list docbook-xsl
            doxygen
            gperf
            imagemagick
            lua-ldoc
            pkg-config
+           ruby-asciidoctor
            xmlto))
     (inputs
      (list bash-minimal
