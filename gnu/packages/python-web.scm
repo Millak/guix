@@ -3524,10 +3524,9 @@ origin than that of the web application.")
 (define-public python-httplib2
   (package
     (name "python-httplib2")
-    (version "0.22.0")
+    (version "0.31.2")
     (source
      (origin
-       ;; Tests not included in the release tarball.
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/httplib2/httplib2")
@@ -3535,7 +3534,7 @@ origin than that of the web application.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1zkp3glv0iha7p68p5m0sb8mrrammkdc0mx32517xry52s4iva7g"))))
+         "0wdnf4rhw9ar8b15lzvif11ibnnpqkfif3alkhkfywy3ikk8nrxb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3545,11 +3544,12 @@ origin than that of the web application.")
              (lambda _
                (substitute* "requirements-test.txt"
                  (("==") ">=")))))))
+    (propagated-inputs
+     (list python-pyparsing
+           python-pysocks))
     (native-inputs
      (list python-cryptography
-           python-future
            python-mock
-           python-pyparsing
            python-pytest
            python-pytest-cov
            python-pytest-randomly
