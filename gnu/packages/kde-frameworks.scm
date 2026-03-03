@@ -3958,7 +3958,7 @@ and desktop experiences.")
 (define-public knewstuff
   (package
     (name "knewstuff")
-    (version "6.22.0")
+    (version "6.23.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3967,8 +3967,8 @@ and desktop experiences.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1ddiyr75r5ggy532xjw2d9pp2c8p1pdzls42xhzfjvmnv1r4wv8z"))))
-    (build-system cmake-build-system)
+                "1595rrsydg0r76k853v2d5gapfs5xls6rvdcxan99x7i3nvvvx62"))))
+    (build-system qt-build-system)
     (propagated-inputs
      (list attica
            kcoreaddons))
@@ -3981,20 +3981,19 @@ and desktop experiences.")
            ki18n
            kpackage
            kwidgetsaddons
-           qtbase
            qtdeclarative
+           qtwayland
            syndication))
     (arguments
-     (list ;; This failing test is run by the cmake-build-system phases but not
+     (list #:qtbase qtbase
+           ;; This failing test is run by the cmake-build-system phases but not
            ;; by the gnu-build-system phases.
            #:test-exclude "knewstuff-atticaprovidertest"
            #:phases
            #~(modify-phases %standard-phases
                (add-before 'check 'check-setup
                  (lambda _ ; XDG_DATA_DIRS isn't set
-                   (setenv "HOME" (getcwd))
-                   ;; make Qt render "offscreen", required for tests
-                   (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+                   (setenv "HOME" (getcwd)))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Framework for downloading and sharing additional application data")
     (description "The KNewStuff library implements collaborative data sharing
