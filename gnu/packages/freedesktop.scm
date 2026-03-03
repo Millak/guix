@@ -3216,39 +3216,39 @@ compatible with the well-known scripts of the same name.")
         (base32
          "1p4yvbhqr8yf231gm69vdz3h7na8m6x1mhiw3bmhg4gm6x4idysb"))
        (patches (search-patches
-                 "xdg-desktop-portal-1.20.3-disable-configuration-search-exit.patch"))
-       (modules '((guix build utils)))
-       ;; Disable failing tests.
-       (snippet #~(substitute* "tests/meson.build"
-                    ((".*test_dynamiclauncher.*") "")
-                    ((".*test_notification.*") "")
-                    ((".*test_usb.*") "")))))
+                 "xdg-desktop-portal-1.20.3-disable-configuration-search-exit.patch"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-Dsystemd=disabled" "-Ddocumentation=disabled")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'po-chmod
-           (lambda _
-             ;; Make sure 'msgmerge' can modify the PO files.
-             (for-each (lambda (po)
-                         (chmod po #o666))
-                       (find-files "po" "\\.po$"))))
-         (add-before 'configure 'relax-gcc-14-strictness
-           (lambda _
-             (setenv "CFLAGS"
-                     "-g -O2 -Wno-error=incompatible-pointer-types")))
-         (add-after 'unpack 'set-home-directory
-           (lambda _ (setenv "HOME" "/tmp"))))))
+     (list
+      #:configure-flags #~(list "-Dsystemd=disabled")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-libumockdev-preload.so-file-name
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (substitute* "tests/conftest.py"
+                (("libumockdev-preload.so")
+                 (search-input-file (or native-inputs inputs)
+                                    "lib/libumockdev-preload.so")))))
+          (add-after 'unpack 'set-home-directory
+            (lambda _ (setenv "HOME" "/tmp")))
+          (add-before 'check 'prepare-for-tests
+            (lambda _
+              ;; These environment variables must be set when running the
+              ;; tests in an unprivileged container.  It avoids using
+              ;; bubblewrap to validate icon and sound files, which would fail
+              ;; in such an environment.
+              (setenv "XDP_VALIDATE_ICON_INSECURE" "1")
+              (setenv "XDP_VALIDATE_SOUND_INSECURE" "1"))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
+           gst-plugins-good             ;for wavparse plugin
            pkg-config
            python
            python-dbusmock
            python-pytest
-           python-pytest-xdist))
+           python-pytest-xdist
+           umockdev))
     (inputs
      (list bubblewrap
            dbus
@@ -3258,9 +3258,7 @@ compatible with the well-known scripts of the same name.")
            gdk-pixbuf
            geoclue
            glib
-           gstreamer
            gst-plugins-base
-           gst-plugins-good
            json-glib
            libportal
            pipewire
@@ -3286,7 +3284,7 @@ and others.")
 ;; Deprecation added on 2026-03-01.
 (define-deprecated-package xdg-desktop-portal-next
   xdg-desktop-portal)
-  
+
 (define-public xdg-desktop-portal-gtk
   (package
     (name "xdg-desktop-portal-gtk")
