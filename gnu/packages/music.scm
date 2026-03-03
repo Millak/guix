@@ -4517,42 +4517,41 @@ with a number of bugfixes and changes to improve IT playback.")
         (base32 "0dd2kryizwrzndbwafpbddf9w2ghw9gfmb8nyss5hll70b1dx59f"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'add-sigc++-includes
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((sig (search-input-directory inputs "include/sigc++-2.0"))
-                   (xml (search-input-directory inputs "include/libxml2"))
-                   (cwd (getcwd)))
-               (setenv "CPATH"
-                       (string-append sig ":"
-                                      sig "../../lib/sigc++-2.0/include:"
-                                      xml ":"
-                                      cwd "/libs/pbd:"
-                                      cwd "/libs/midi++:"
-                                      (or (getenv "CPATH") ""))))
-             (substitute* '("src/control_osc.hpp"
-                            "src/gui/app_frame.hpp"
-                            "src/gui/config_panel.hpp"
-                            "src/gui/keys_panel.hpp"
-                            "src/gui/latency_panel.hpp"
-                            "src/gui/main_panel.hpp"
-                            "src/gui/midi_bind_panel.hpp"
-                            "src/gui/prefs_dialog.hpp")
-               (("sigc\\+\\+/object.h")
-                "sigc++/sigc++.h"))
-             (substitute* '("src/engine.cpp"
-                            "src/gui/latency_panel.cpp"
-                            "src/gui/looper_panel.cpp"
-                            "src/gui/main_panel.cpp")
-               (("(\\(| )bind " _ pre)
-                (string-append pre "sigc::bind ")))
-             #t))
-         (add-after 'unpack 'fix-xpm-warnings
-           (lambda _
-             (substitute* (find-files "." "\\.xpm$")
-               (("static char") "static const char"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'add-sigc++-includes
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((sig (search-input-directory inputs "include/sigc++-2.0"))
+                    (xml (search-input-directory inputs "include/libxml2"))
+                    (cwd (getcwd)))
+                (setenv "CPATH"
+                        (string-append sig ":"
+                                       sig "../../lib/sigc++-2.0/include:"
+                                       xml ":"
+                                       cwd "/libs/pbd:"
+                                       cwd "/libs/midi++:"
+                                       (or (getenv "CPATH") ""))))
+              (substitute* '("src/control_osc.hpp"
+                             "src/gui/app_frame.hpp"
+                             "src/gui/config_panel.hpp"
+                             "src/gui/keys_panel.hpp"
+                             "src/gui/latency_panel.hpp"
+                             "src/gui/main_panel.hpp"
+                             "src/gui/midi_bind_panel.hpp"
+                             "src/gui/prefs_dialog.hpp")
+                (("sigc\\+\\+/object.h")
+                 "sigc++/sigc++.h"))
+              (substitute* '("src/engine.cpp"
+                             "src/gui/latency_panel.cpp"
+                             "src/gui/looper_panel.cpp"
+                             "src/gui/main_panel.cpp")
+                (("(\\(| )bind " _ pre)
+                 (string-append pre "sigc::bind ")))))
+          (add-after 'unpack 'fix-xpm-warnings
+            (lambda _
+              (substitute* (find-files "." "\\.xpm$")
+                (("static char") "static const char")))))))
     (inputs
      (list jack-1
            alsa-lib
