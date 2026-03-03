@@ -1,0 +1,35 @@
+From d9238276001fdb2174dc1c74d3b7566ab851d4b8 Mon Sep 17 00:00:00 2001
+Message-ID: <d9238276001fdb2174dc1c74d3b7566ab851d4b8.1772575988.git.contact@simendsjo.me>
+From: =?UTF-8?q?Simen=20Endsj=C3=B8?= <contact@simendsjo.me>
+Date: Tue, 3 Mar 2026 23:08:56 +0100
+Subject: [PATCH] fix(types): add 32 additional bytes for mq-attr on linux.
+
+mq-attr is defined as *at least* 32 bytes, but linux reserves an
+additional 32 bytes for future use.
+
+SBCL 2.6.1 and 2.6.2 crashes when running the test suite.
+
+Ref
+- https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/mqueue.h#n33
+- https://bugs.launchpad.net/sbcl/+bug/2143167
+---
+ src/types.lisp | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/types.lisp b/src/types.lisp
+index 206bc6c..c6cb846 100644
+--- a/src/types.lisp
++++ b/src/types.lisp
+@@ -70,7 +70,8 @@ non-blocking flag."
+   (mq-flags mq-flags)
+   (mq-maxmsg :long)
+   (mq-msgsize :long)
+-  (mq-curmsgs :long))
++  (mq-curmsgs :long)
++  #+linux (%reserved :long :count 4))
+ 
+ (defcstruct timespec
+   "Timespec CStruct that specifies time in seconds and nanosecands."
+-- 
+2.52.0
+

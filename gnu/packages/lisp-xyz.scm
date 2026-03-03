@@ -9311,6 +9311,9 @@ using bindings to the portaudio library.")
               (url "https://github.com/xFA25E/cl-posix-mqueue")
               (commit version)))
        (file-name (git-file-name "cl-posix-mqueue" version))
+       ;; This patch has not yet been merged upstream, ref
+       ;; https://github.com/xFA25E/cl-posix-mqueue/pull/4
+       (patches (search-patches "sbcl-cl-posix-mqueue-mqattr-size.patch"))
        (sha256
         (base32 "1c6002yqliqqwsnn08bx9n9ap7nx8ypjxnvhp65g01fqdcx7bpq7"))))
     (build-system asdf-build-system/sbcl)

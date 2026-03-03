@@ -2398,6 +2398,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/sbcl-burgled-batteries3-fix-signals.patch	\
   %D%/packages/patches/sbcl-ciel-repl.patch			\
   %D%/packages/patches/sbcl-clml-fix-types.patch		\
+  %D%/packages/patches/sbcl-cl-posix-mqueue-mqattr-size.patch	\
   %D%/packages/patches/sbcl-cl-redis-replace-sbcl-specific-calls.patch	\
   %D%/packages/patches/sbcl-eazy-gnuplot-skip-path-check.patch	\
   %D%/packages/patches/sbcl-lack-fix-tests.patch		\
