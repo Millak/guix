@@ -8364,13 +8364,22 @@ S3.")
 (define-public python-flask-sqlalchemy
   (package
     (name "python-flask-sqlalchemy")
-    (version "3.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "flask_sqlalchemy" version))
-              (sha256
-               (base32
-                "04l3dfivznlpvk9p9f20zdbyxl869k42z2w7glddlbc0h6w8pdp4"))))
+    ;; Released version fails tests in Python 3.12.
+    (properties '((commit . "168cb4b7b50fe5176307a10d873781bfafc6eeda")
+                  (revision . "0")))
+    (version (git-version "3.1.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pallets-eco/flask-sqlalchemy")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0xw8v1540m21x9crpgb0i3rxyhh1d24ldg354vndw9cif74ls5p6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
