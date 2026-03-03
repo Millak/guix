@@ -580,7 +580,7 @@ in JavaScript.")
 (define-public libdmapsharing
   (package
     (name "libdmapsharing")
-    (version "3.9.10")
+    (version "3.9.13")
     (source
      (origin
        (method url-fetch)
@@ -588,7 +588,7 @@ in JavaScript.")
         (string-append "https://www.flyn.org/projects/"
                        name "/" name "-" version ".tar.gz"))
        (sha256
-        (base32 "152hnddwxv590cn802awv3mn27ixc3s6ac691a7z02d1c5fl45p2"))))
+        (base32 "0ylzd6pwc6dda366f360z7psvwz3dg6dflwbwxm6s7g154zzcn9n"))))
     (build-system glib-or-gtk-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -602,12 +602,12 @@ in JavaScript.")
            docbook-xml-4.3
            gobject-introspection
            pedansee
-           pkg-config
-           vala))
+           pkg-config))
     (inputs
      (list avahi
            (librsvg-for-system)
            libgee
+           libsoup
            gst-plugins-base
            gtk+))
     (propagated-inputs
