@@ -1262,7 +1262,7 @@ or user activity.")
 (define-public kirigami
   (package
     (name "kirigami")
-    (version "6.22.0")
+    (version "6.23.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1271,7 +1271,7 @@ or user activity.")
                     "kirigami-" version ".tar.xz"))
               (sha256
                (base32
-                "1yndwwkirf4bd6kkyb1mbwrv2hmqdxkk07csvxdrqqhrb5jma8h6"))))
+                "15ppb5zmjz06rhm9gfq3zwx9s5x4p5gyxji7banlbrq09jmk8qaz"))))
     (build-system cmake-build-system)
     (arguments
      (list
