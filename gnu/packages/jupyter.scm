@@ -1613,50 +1613,6 @@ Docker registry.")
     (description "A bash shell kernel for Jupyter.")
     (license license:expat)))
 
-(define-public python-sparqlkernel
-  (package
-    (name "python-sparqlkernel")
-    (version "1.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "sparqlkernel" version))
-              (sha256
-               (base32
-                "004v22nyi5cnpxq4fiws89p7i5wcnzv45n3n70axdd6prh6rkapx"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ;no test suite
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'no-custom-css
-            (lambda _
-              (substitute* "sparqlkernel/install.py"
-                (("notebook.DEFAULT_STATIC_FILES_PATH") "\"/does-not-matter\"")
-                (("install_custom_css\\( destd, PKGNAME \\)") ""))))
-          (add-after 'wrap 'install-kernelspec
-            (lambda _
-              (setenv "HOME" "/tmp")
-              (invoke
-               (string-append #$output "/bin/jupyter-sparqlkernel")
-               "install"
-               (string-append "--InstallKernelSpec.prefix=" #$output)))))))
-    (native-inputs (list python-setuptools))
-    (propagated-inputs
-     (list python-ipykernel
-           python-notebook
-           python-pygments
-           python-rdflib
-           python-sparqlwrapper
-           python-traitlets))
-    (home-page "https://github.com/paulovn/sparql-kernel")
-    (synopsis "Jupyter kernel for SPARQL")
-    (description
-     "This module installs a Jupyter kernel for SPARQL.  It allows sending
-queries to an SPARQL endpoint, fetching and presenting the results in a
-notebook.")
-    (license license:bsd-3)))
-
 (define-public python-ipydatawidgets
   (package
     (name "python-ipydatawidgets")
