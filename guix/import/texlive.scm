@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim@guixotic.coop>
-;;; Copyright © 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2024, 2026 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -618,54 +618,68 @@ of package with UPSTREAM-NAME in VERSION."
             (delete-duplicates (sort (map trim-filename specific) string<)
                                string-prefix?))))
 
-(define (texlive->svn-multi-reference upstream-name version database)
-  "Return <svn-multi-reference> object for TeX Live package with UPSTREAM-NAME
-at VERSION."
-  (let* ((data (assoc-ref database upstream-name))
-         (files (append (or (assoc-ref data 'docfiles) (list))
-                        (or (assoc-ref data 'runfiles) (list))
-                        (or (assoc-ref data 'srcfiles) (list))))
-         (locations
-          ;; Drop "texmf-dist/" prefix from files.  Special case
-          ;; TEXLIVE-SCRIPTS and TEXLIVE-SOURCE, where files are not always
-          ;; exported from "texmf-dist/".
-          (if (member upstream-name '("scripts" "source"))
-              files
-              (files->locations
-               ;; Ignore any file not starting with the expected prefix, such
-               ;; as tlpkg/tlpostcode/...  Nothing good can come from this.
-               (filter-map
-                (lambda (file)
-                  (and (string-prefix? "texmf-dist/" file)
-                       (string-drop file (string-length "texmf-dist/"))))
-                files)))))
-    (svn-multi-reference
-     (url (match upstream-name
-            ("scripts"
-             (string-append
-              %texlive-repository "tags/texlive-" version "/Master"))
-            ("source"
-             (string-append %texlive-repository
-                            "tags/texlive-" version "/Build/source"))
-            (_
-             (texlive-packages-repository version))))
-     (locations (sort locations string<))
-     (revision (assoc-ref database 'database-revision)))))
+(define (texlive->svn-reference upstream-name version database)
+  "Return a <svn-reference> or <svn-multi-reference> object for TeX Live
+package with UPSTREAM-NAME at VERSION."
+  (let ((revision (assoc-ref database 'database-revision)))
+    ;; TEXLIVE-SOURCE is the only package using a regular SVN reference.
+    (if (string= upstream-name "source")
+        (svn-reference
+          (url (string-append %texlive-repository
+                              "tags/texlive-" version "/Build/source"))
+          (revision revision))
+        (let* ((data (assoc-ref database upstream-name))
+               (files (append (or (assoc-ref data 'docfiles) (list))
+                              (or (assoc-ref data 'runfiles) (list))
+                              (or (assoc-ref data 'srcfiles) (list))))
+               (locations
+                ;; Drop "texmf-dist/" prefix from files.  Special case
+                ;; TEXLIVE-SCRIPTS, where files are not all coming from
+                ;; "texmf-dist/".
+                (if (string= upstream-name "scripts")
+                    files
+                    (files->locations
+                     ;; Ignore any file not starting with the expected prefix,
+                     ;; such as tlpkg/tlpostcode/...  Nothing good can come
+                     ;; from this.
+                     (filter-map
+                      (lambda (file)
+                        (and (string-prefix? "texmf-dist/" file)
+                             (string-drop file (string-length "texmf-dist/"))))
+                      files)))))
+          (svn-multi-reference
+            (url (match upstream-name
+                   ("scripts"
+                    (string-append
+                     %texlive-repository "tags/texlive-" version "/Master"))
+                   ("source"
+                    (string-append %texlive-repository
+                                   "tags/texlive-" version "/Build/source"))
+                   (_
+                    (texlive-packages-repository version))))
+            (locations (sort locations string<))
+            (revision revision))))))
 
 (define (tlpdb->package upstream-name version database)
   (and-let* ((data (assoc-ref database upstream-name))
              (name (downstream-package-name "texlive-" upstream-name))
              (reference
-              (texlive->svn-multi-reference upstream-name version database))
+              (texlive->svn-reference upstream-name version database))
              (source (with-store store
-                       (download-multi-svn-to-store
+                       ((if (string= upstream-name "source")
+                            download-svn-to-store
+                            download-multi-svn-to-store)
                         store reference
-                        (format #f "~a-~a-svn-multi-checkout" name version)))))
-    (let* ((scripts (list-linked-scripts upstream-name database))
+                        (format #f "~a-~a-svn-checkout" name version)))))
+    (let* ((revision (assoc-ref database 'database-revision))
+           (scripts (list-linked-scripts upstream-name database))
            (upstream-inputs
             (list-upstream-inputs upstream-name version database))
            (tex-formats (list-formats data))
-           (meta-package? (null? (svn-multi-reference-locations reference)))
+           (texlive-source? (string= upstream-name "source"))
+           (meta-package?
+            (and (not texlive-source?)
+                 (null? (svn-multi-reference-locations reference))))
            (empty-package? (and meta-package? (not (pair? tex-formats)))))
       (values
        `(package
@@ -677,22 +691,25 @@ at VERSION."
            ,(and (not meta-package?)
                  `(origin
                     (method svn-multi-fetch)
-                    (uri (svn-multi-reference
-                          (url
-                           ,(match upstream-name
-                              ("scripts"
-                               '(string-append
-                                 %texlive-repository "tags/texlive-" version
-                                 "/Master"))
-                              ("source"
-                               '(string-append
-                                 %texlive-repository "tags/texlive-" version
-                                 "/Build/source"))
-                              (_
-                               '(texlive-packages-repository version))))
-                          (revision ,(svn-multi-reference-revision reference))
-                          (locations
-                           (list ,@(svn-multi-reference-locations reference)))))
+                    (uri ,(if texlive-source?
+                              `(svn-reference
+                                 (url (string-append
+                                       %texlive-repository
+                                       "tags/texlive-" version "/Build/source"))
+                                 (revision ,revision))
+                              `(svn-multi-reference
+                                 (url
+                                  ,(match upstream-name
+                                     ("scripts"
+                                      '(string-append
+                                        %texlive-repository
+                                        "tags/texlive-" version "/Master"))
+                                     (_
+                                      '(texlive-packages-repository version))))
+                                 (revision ,revision)
+                                 (locations
+                                  (list ,@(svn-multi-reference-locations
+                                           reference))))))
                     (file-name (git-file-name name version))
                     (sha256
                      (base32
@@ -712,7 +729,7 @@ at VERSION."
           ;;
           ;; Use trivial build system only when the package contains no files,
           ;; and no TeX format file is expected to be built.
-          (build-system ,(if empty-package?
+          (build-system ,(if (or empty-package? texlive-source?)
                              'trivial-build-system
                              'texlive-build-system))
           ;; Arguments.
@@ -755,7 +772,7 @@ at VERSION."
           (description ,(and=> (assoc-ref data 'longdesc) beautify-description))
           (license
            ,(cond
-             (meta-package?
+             ((or meta-package? texlive-source?)
               '(fsf-free "https://www.tug.org/texlive/copying.html"))
              ((assoc-ref data 'catalogue-license) => string->license)
              (else #f))))
@@ -787,8 +804,7 @@ VERSION."
 (define (package-from-texlive-repository? package)
   (let ((name (package-name package)))
     ;; TEXLIVE-SCRIPTS and TEXLIVE-SOURCE do not use TEXLIVE-BUILD-SYSTEM, but
-    ;; package's structure is sufficiently regular to benefit from
-    ;; auto-updates.
+    ;; their structure is sufficiently regular to benefit from this updater.
     (or (member name '("texlive-scripts" "texlive-source"))
         (and (string-prefix? "texlive-" (package-name package))
              (eq? 'texlive
@@ -805,7 +821,7 @@ prefix when PARTIAL-VERSION? is #t."
          (upstream-source
           (package upstream-name)
           (version version)
-          (urls (texlive->svn-multi-reference upstream-name version database))
+          (urls (texlive->svn-reference upstream-name version database))
           (inputs (list-upstream-inputs upstream-name version database))))))
 
 (define %texlive-updater

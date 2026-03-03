@@ -495,6 +495,14 @@ SOURCE, an <upstream-source>."
            #:recursive? (git-reference-recursive? ref))
           source))
 
+(define* (package-update/svn-fetch store package source
+                                   #:key key-download key-server)
+  "Return the version, checkout, and SOURCE, to update PACKAGE to
+SOURCE, an <upstream-source>."
+  (values (upstream-source-version source)
+          (download-svn-to-store store (upstream-source-urls source))
+          source))
+
 (define* (package-update/svn-multi-fetch store package source
                                          #:key key-download key-server)
   "Return the version, checkout, and SOURCE, to update PACKAGE to
@@ -507,6 +515,7 @@ SOURCE, an <upstream-source>."
   ;; Mapping of origin methods to source update procedures.
   `((,url-fetch . ,package-update/url-fetch)
     (,git-fetch . ,package-update/git-fetch)
+    (,svn-fetch . ,package-update/svn-fetch)
     (,svn-multi-fetch . ,package-update/svn-multi-fetch)))
 
 (define* (package-update store package
@@ -722,6 +731,8 @@ new version string if an update was made, and #f otherwise."
          (old-commit  (match (origin-uri (package-source package))
                         ((? git-reference? ref)
                          (git-reference-commit ref))
+                        ((? svn-reference? ref)
+                         (svn-reference-revision ref))
                         ((? svn-multi-reference? ref)
                          (svn-multi-reference-revision ref))
                         (_ #f)))
@@ -733,12 +744,16 @@ new version string if an update was made, and #f otherwise."
                         ((first _ ...) first)
                         ((? git-reference? ref)
                          (git-reference-url ref))
+                        ((? svn-reference? ref)
+                         (svn-reference-url ref))
                         ((? svn-multi-reference? ref)
                          (svn-multi-reference-url ref))
                         (_ #f)))
          (new-commit  (match (upstream-source-urls source)
                         ((? git-reference? ref)
                          (git-reference-commit ref))
+                        ((? svn-reference? ref)
+                         (svn-reference-revision ref))
                         ((? svn-multi-reference? ref)
                          (svn-multi-reference-revision ref))
                         (_ #f)))
