@@ -4855,7 +4855,7 @@ need.")
 (define-public ktextaddons
   (package
     (name "ktextaddons")
-    (version "1.8.0")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
@@ -4863,7 +4863,7 @@ need.")
              "mirror://kde/stable/" name "/" name "-" version ".tar.xz"))
        (sha256
         (base32
-         "16cc671qcbg4g4lmx8yfhygmyg0ha00l3sk4w4cgh6q37mfn170m"))))
+         "0yfyz6rlfkx1a3wa360ydgfz668l1s42qd25n3995vqblv6dl081"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -4897,6 +4897,7 @@ test")
            kconfigwidgets
            kcoreaddons
            ki18n
+           kiconthemes
            kio
            ksyntaxhighlighting
            ktextwidgets
