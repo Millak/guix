@@ -3537,7 +3537,7 @@ window does not need focus for them to be activated.")
 (define-public kiconthemes
   (package
     (name "kiconthemes")
-    (version "6.22.0")
+    (version "6.23.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3546,28 +3546,29 @@ window does not need focus for them to be activated.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1j1w1gl0c6jcv6lqnc2gwmxlq1dg71mfqd8pvj97vzvia606hhc1"))))
-    (build-system cmake-build-system)
+                "0zh1m4n52zfwxlx0lz040sldl54hdf9mhl8ypij31vszz2xgrvvn"))))
+    (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules qttools shared-mime-info))
     (inputs
-     (list libxkbcommon
+     (list breeze-icons
            karchive
            kauth
            kcodecs
            kcolorscheme
-           kcoreaddons
            kconfig
            kconfigwidgets
+           kcoreaddons
            ki18n
            kitemviews
            kwidgetsaddons
-           qtbase
+           libxkbcommon
            qtdeclarative
            qtsvg
-           breeze-icons))
+           qtwayland))
     (arguments
-     (list #:phases
+     (list #:qtbase qtbase
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'enable-testing
                  (lambda _
@@ -3575,10 +3576,8 @@ window does not need focus for them to be activated.")
                      (("if \\(BUILD_TESTING\\)" all)
                       (string-append all "\n    enable_testing()")))))
                (add-before 'check 'check-setup
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (setenv "HOME" (getcwd))
-                   ;; make Qt render "offscreen", required for tests
-                   (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+                 (lambda _
+                   (setenv "HOME" (getcwd)))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Icon GUI utilities")
     (description "This library contains classes to improve the handling of icons
