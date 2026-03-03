@@ -34,6 +34,8 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages django)
+  #:use-module (gnu packages elf)
+  #:use-module (gnu packages engineering)
   #:use-module (gnu packages file)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
@@ -44,6 +46,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages less)
   #:use-module (gnu packages mail)
+  #:use-module (gnu packages markup)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages package-management)
@@ -56,6 +59,7 @@
   #:use-module (gnu packages text-editors)
   #:use-module (gnu packages time)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages vim)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages)
   #:use-module (guix build-system glib-or-gtk)
@@ -120,6 +124,59 @@
 using semantic patches in the @acronym{SmPL, Semantic Patch Language} for
 specifying desired matches and transformations in the C code.")
       (license license:gpl2))))
+
+(define-public e9patch
+  (package
+    (name "e9patch")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/GJDuck/e9patch")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bgv05fnz0kfzpyikadp96zrr83214lk2nx82jpmlv9dq0lhxccq"))
+       ;; E9Patch is sensitive to Zydis version, including the latter's bugs:
+       ;; https://github.com/GJDuck/e9patch/pull/94#issuecomment-2525069952
+       (patches (search-patches "e9patch-zydis-4.1-compat.patch"))
+       (modules '((guix build utils)))
+       ;; The following snippet is also for Zydis 4.1 compatibility.
+       ;; The patch replaces a single line in 43 files, producing a giant diff:
+       ;; https://github.com/GJDuck/e9patch/pull/93.patch
+       (snippet
+        #~(begin
+            (substitute* (find-files "test/regtest" "\\.exp$")
+              (("\\$0x8877665544332211")
+               "$-0x778899aabbccddef"))
+            ;; The regular expression to test is .*a.*,
+            ;; matching the number produced by the substitution above.
+            (substitute* "test/regtest/not_regex.exp"
+              ((".*\\$-0x778899aabbccddef.*")
+               ""))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))))
+    (native-inputs (list markdown xxd))
+    (inputs (list elfutils zycore zydis zlib))
+    (home-page "https://github.com/GJDuck/e9patch")
+    (synopsis "Static binary rewriting tool")
+    (description
+     "E9Patch is a static binary rewriting tool for x86-64 ELF binaries,
+both executables and shared objects.  The patched binaries can be used
+in place of the original, without requiring additional runtime dependencies.
+Binary patches can be defined through a high-level interface, which focuses
+on ease of use, or low-level interfaces, which provide additional flexibility
+and allow optimizations for performance.")
+    (license (list license:expat        ;src/e9patch/e9loader_*.cpp
+                   license:gpl3+))))    ;rest
 
 (define-public patchutils
   (package

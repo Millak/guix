@@ -1215,6 +1215,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/dvdbackup-with-libdvdread-6.1.0+.patch	\
   %D%/packages/patches/dvd+rw-tools-add-include.patch 		\
   %D%/packages/patches/dwarves-threading-reproducibility.patch	\
+  %D%/packages/patches/e9patch-zydis-4.1-compat.patch		\
   %D%/packages/patches/efitools-riscv64-support.patch		\
   %D%/packages/patches/efivar-fix-fprint-format.patch		\
   %D%/packages/patches/elastix-1404.patch			\

@@ -1,0 +1,80 @@
+commit c02dd23b12fd687a041ab3b872b3f989cd1342dc
+Author: Nguyễn Gia Phong <cnx@loang.net>
+Date:   2024-11-18 15:13:17 +0900
+
+    Make compatible with Zydis 4.1
+
+    This Zydis version is more explicit in formatting
+    lea instructions in Intel format.
+
+    The hunk adding sqrtss is due to a bug in Zydis:
+    https://github.com/zyantific/zydis/issues/542
+
+    For this reason, E9Patch is not open to updating Zydis.
+
+diff --git a/src/e9tool/e9x86_64.cpp b/src/e9tool/e9x86_64.cpp
+index 6a7f5cff3692..03eb3a41dd66 100644
+--- a/src/e9tool/e9x86_64.cpp
++++ b/src/e9tool/e9x86_64.cpp
+@@ -152,8 +152,7 @@ void e9tool::getInstrInfo(const ELF *elf, const Instr *I, InstrInfo *info,
+     ZydisDecodedOperand operands[ZYDIS_MAX_OPERAND_COUNT];
+ 
+     ZyanStatus result = ZydisDecoderDecodeFull(&decoder,
+-        elf->data + I->offset, I->size, D, operands, ZYDIS_MAX_OPERAND_COUNT,
+-        0);
++        elf->data + I->offset, I->size, D, operands);
+     if (!ZYAN_SUCCESS(result) || I->size != D->length ||
+             D->operand_count > sizeof(info->op) / sizeof(info->op[0]))
+         error("failed to decompress instruction at address 0x%lx; decode "
+@@ -336,7 +335,7 @@ void e9tool::getInstrInfo(const ELF *elf, const Instr *I, InstrInfo *info,
+         info->string.section    = elf->strs + shdr->sh_name;
+         result = ZydisFormatterFormatInstruction(&formatter, D, operands,
+             D->operand_count_visible, info->string.instr,
+-            sizeof(info->string.instr)-1, I->address);
++            sizeof(info->string.instr)-1, I->address, ZYAN_NULL);
+         if (!ZYAN_SUCCESS(result))
+             error("failed to decompress instruction at address 0x%lx; "
+                 "formatting failed", I->address);
+diff --git a/test/regtest/print_intel.exp b/test/regtest/print_intel.exp
+index ae91f44..9bdbe0f 100644
+--- a/test/regtest/print_intel.exp
++++ b/test/regtest/print_intel.exp
+@@ -24,14 +24,14 @@ jmp 0xa000163
+ call 0xa000168
+ jmp 0xa00016d
+ jmp 0xa000177
+-lea r10, [rip+0x14]
++lea r10, qword ptr [rip+0x14]
+ push r10
+ push r11
+ mov rcx, 0xffffffffffff8889
+ jmp qword ptr [rsp+rcx*1+0x777f]
+ call 0xa0001b5
+ add rsp, 0x8
+-lea rdx, [rip+0x2]
++lea rdx, qword ptr [rip+0x2]
+ call rdx
+ pop r14
+ add r9, 0x6
+@@ -85,7 +85,7 @@ xor eax, eax
+ inc eax
+ mov edi, eax
+ inc rdi
+-lea rsi, [rip+0x54]
++lea rsi, qword ptr [rip+0x54]
+ mov rdx, 0x7
+ syscall
+ PASSED
+diff --git a/test/regtest/same_op_2.exp b/test/regtest/same_op_2.exp
+index f99033a..45790b8 100644
+--- a/test/regtest/same_op_2.exp
++++ b/test/regtest/same_op_2.exp
+@@ -12,6 +12,7 @@ shl $0x7, %rdi
+ sar $0x3, %rdi
+ pxor %xmm0, %xmm0
+ cvtsi2ss %rax, %xmm0
++sqrtss %xmm0, %xmm1
+ xor %esi, %esi
+ xor %eax, %eax
+ PASSED
+
