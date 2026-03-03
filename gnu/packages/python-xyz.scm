@@ -9185,16 +9185,28 @@ recognition library with full Unicode support.  It has features like:
 (define-public python-makefun
   (package
     (name "python-makefun")
-    (version "1.15.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "makefun" version))
-              (sha256
-               (base32
-                "19a8dga8rnmjn5gy1cy1wdi28swbkdkypwbqikbxil6ynqcg3c20"))))
+    ;; Released version fails tests in Python 3.12 due to asyncio
+    (properties '((commit . "bacb3e1a6edc36e5f8dda3fbdad5dacdda1675eb")
+                  (revision . "0")))
+    (version (git-version "1.16.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/smarie/python-makefun")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "10xw93r9lxqfgaapnf07pywmy58mw8z7fgcaw7ym66cn71gjxw4d"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-setuptools python-setuptools-scm python-wheel))
+     (list python-pytest
+           python-pytest-asyncio
+           python-setuptools
+           python-setuptools-scm))
     (home-page "https://github.com/smarie/python-makefun")
     (synopsis "Library to dynamically create python functions")
     (description "@code{makefun} helps create functions dynamically with a
