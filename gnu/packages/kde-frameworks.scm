@@ -762,7 +762,7 @@ KColorScheme.")
 (define-public kconfig
   (package
     (name "kconfig")
-    (version "6.22.0")
+    (version "6.23.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -771,7 +771,7 @@ KColorScheme.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "142p6kz9p5ppi8amqy5yx6spg2dn8psf9fhqlmx36vsqbz1wz9dy"))))
+                "1vlmralhg094vkfzr0nkzdi147m83ck4hk182xx04vp6p6kdd5kd"))))
     (build-system qt-build-system)
     (native-inputs
      (list dbus extra-cmake-modules inetutils qttools tzdata-for-tests))
