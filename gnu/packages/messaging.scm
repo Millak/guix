@@ -2987,29 +2987,38 @@ designed for experienced users.")
 (define-public python-zulip
   (package
     (name "python-zulip")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zulip" version))
        (sha256
-        (base32 "0hq8kl5cvbqsmb5zqq5wi61cnv0zzlcqg69yn59wqgwybng1853s"))))
+        (base32 "1s41q0yiwjzx2488gcrpw1gndk9nvwzi8cxn1dlpy415fqaa9sxb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-backend #~'unittest
+      #:test-flags #~(list "discover" "--verbose" "tests/")
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: It tries to load from ~/zuliprc and fails:
-          ;; zulip.ConfigNotFoundError: api_key or email not specified and
-          ;; file /homeless-shelter/zuliprc does not exist.
-          (delete 'sanity-check))))
+          (add-after 'unpack 'remove-zulip-api-script
+            (lambda _
+              ;; XXX: zulip-api requires configured access to Zulip instance.
+              (substitute* "setup.py"
+                ((".*zulip-api=.*")
+                 ""))))
+          (add-after 'sanity-check 'restore-zulip-api-script
+            (lambda _
+              (substitute* "setup.py"
+                (("matrix_bridge:main\"," match)
+                 (string-append match "\n\"zulip-api=zulip.cli:cli\""))))))))
     (native-inputs
-     (list python-matrix-nio
-           python-pytest
+     (list python-mock
            python-setuptools))
     (propagated-inputs
      (list python-click
            python-distro
+           python-matrix-nio
            python-requests
            python-typing-extensions))
     (home-page "https://github.com/zulip/python-zulip-api")
