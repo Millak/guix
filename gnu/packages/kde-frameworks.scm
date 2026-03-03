@@ -3101,7 +3101,7 @@ using the XBEL format.")
 (define-public kcmutils
   (package
     (name "kcmutils")
-    (version "6.22.0")
+    (version "6.23.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3110,8 +3110,8 @@ using the XBEL format.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "14rrkqxnpii5jw5krg5nzcbqj37zckyqm95w3b4yzr7hw4xjvvf6"))))
-    (build-system cmake-build-system)
+                "1y0h8bffb9f2jlrrb6x1k5z5b4r93pj572wbm5gyj7691gfgxv2l"))))
+    (build-system qt-build-system)
     (propagated-inputs
      (list kconfigwidgets
            kcoreaddons
@@ -3132,14 +3132,9 @@ using the XBEL format.")
            kcolorscheme
            kwidgetsaddons
            kxmlgui
-           qtbase))
+           qtwayland))
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'check-setup
-            (lambda _
-              (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+     (list #:qtbase qtbase))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Utilities for KDE System Settings modules")
     (description "KCMUtils provides various classes to work with KCModules.
