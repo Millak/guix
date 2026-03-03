@@ -51409,7 +51409,7 @@ the @code{home-dotfiles-service-type} will only provision dotfiles from this
 subset of applications.  This field will be ignored if @code{layout} is set
 to @code{'plain}.
 
-@item @code{excluded} (default: @code{'(".*~" ".*\\.swp" "\\.git/.*" "\\.gitignore")}) (type: list-of-strings)
+@item @code{excluded} (default: @code{'(".*~" ".*\\.swp" "/\\.git/.*" "\\.gitignore")}) (type: list-of-strings)
 The list of file patterns @code{home-dotfiles-service-type} will exclude
 while visiting each one of the @code{directories}.
 

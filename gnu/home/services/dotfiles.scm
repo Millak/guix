@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2024 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2024 Giacomo Leidi <therewasa@fishinthecalculator.me>
+;;; Copyright © 2024, 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,7 +45,9 @@
 (define %home-dotfiles-excluded
   '(".*~"
     ".*\\.swp"
-    "\\.git/.*"
+    ;; This first / is safe until regexp-exec in directory-contents
+    ;; is passed an absolute file name.
+    "/\\.git/.*"
     "\\.gitignore"))
 
 (define %home-dotfiles-layouts
