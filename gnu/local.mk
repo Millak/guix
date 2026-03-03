@@ -1975,6 +1975,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/netsurf-y2038-tests.patch		\
   %D%/packages/patches/netsurf-longer-test-timeout.patch	\
   %D%/packages/patches/nhc98-c-update.patch			\
+  %D%/packages/patches/nheko-0-12-1-fix-rendering-replies.patch	\
   %D%/packages/patches/nix-dont-build-html-doc.diff		\
   %D%/packages/patches/nfs4-acl-tools-0.3.7-fixpaths.patch	\
   %D%/packages/patches/network-manager-plugin-ownership.patch	\

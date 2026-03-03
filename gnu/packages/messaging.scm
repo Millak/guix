@@ -2356,7 +2356,11 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
        (sha256
         (base32 "098jqccwsfbqkdpnhbych2rd076385wb51fx9qyjfiddidxv2mas"))
        (modules '((guix build utils)))
-       (snippet '(delete-file-recursively "third_party"))))
+       (snippet '(delete-file-recursively "third_party"))
+       ;; Release 0.12.1 has a major bug which prevents replies
+       ;; from rendering: https://github.com/Nheko-Reborn/nheko/issues/1944
+       ;; TODO: revaluate for future versions.
+       (patches (search-patches "nheko-0-12-1-fix-rendering-replies.patch"))))
     (arguments
      (list
       #:tests? #f                       ;no test target
