@@ -2365,6 +2365,31 @@ activated using a set of environment variables.")
 for the Sweetscape 010 binary-format editor.")
     (license license:bsd-3)))
 
+(define-public python-pyasyncore
+  (package
+    (name "python-pyasyncore")
+    (version "1.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/simonrob/pyasyncore")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11fk83w9dwnwhg5z1524w6h021yvn0aqn2hsf929yzyk0rmsr6c2"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/simonrob/pyasyncore")
+    (synopsis "Make asyncore available for Python 3.12 onwards")
+    (description
+     "This package contains the
+@url{https://docs.python.org/3.11/library/asyncore.html, asyncore} module as
+found in Python versions prior to 3.12. It is provided so that existing code
+relying on @code{import asyncore} is able to continue being used without
+significant refactoring.")
+    (license license:psfl)))
+
 (define-public python-pygls
   (package
     (name "python-pygls")
