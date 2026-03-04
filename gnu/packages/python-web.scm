@@ -12593,6 +12593,14 @@ the @code{googleapis/api-common-protos} repository.")
        (sha256
         (base32 "1d7li74cakgl9vghxfir9nxwy36980alvxwgwjg0zyla3hgj07cq"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; XXX: DeprecationWarning: datetime.datetime.utcfromtimestamp() is
+      ;; deprecated and scheduled for removal in a future version. Use
+      ;; timezone-aware objects to represent datetimes in UTC:
+      ;; datetime.datetime.fromtimestamp(timestamp, datetime.UTC).
+      #~(list "-W" "ignore::DeprecationWarning")))
     (propagated-inputs (list python-google-api-core python-google-auth))
     (native-inputs
      (list python-grpcio
