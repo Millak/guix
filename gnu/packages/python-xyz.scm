@@ -23727,13 +23727,13 @@ protocols written in pure Python.")
 (define-public python-dunamai
   (package
     (name "python-dunamai")
-    (version "1.21.2")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dunamai" version))
        (sha256
-        (base32 "1i35i8ym6n8mpgrq31hivrvfciy12gv26jwlzimmkx9jy2spz0h5"))))
+        (base32 "0zgrl9rr5qij6zdc6vsc6gs4qin7k2brykh38280bv90m91sr5jk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
