@@ -2795,7 +2795,7 @@ written in C++.")
 (define-public zug
   (package
    (name "zug")
-   (version "0.1.1")
+   (version "0.1.2")
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -2803,7 +2803,7 @@ written in C++.")
                   (commit (string-append "v" version))))
             (file-name (git-file-name name version))
             (sha256
-             (base32 "06vsbzx4ripidpb6ia7y1y8pmjk6gxzr93ilby90ahj6p2x08baf"))
+             (base32 "1fy6wvvlp1253lzh66zcq5sp656jxvanxf7iq8pi37ymjq5fyynh"))
             (modules '((guix build utils)))
             (snippet #~(delete-file-recursively "tools"))))
    (build-system cmake-build-system)
