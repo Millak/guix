@@ -6642,7 +6642,6 @@ your Python package version as a calendar version.")
     (propagated-inputs (list python-packaging python-wrapt))
     (native-inputs
      (list ;; python-canalystii ; Not packed yet
-           python-future
            python-hypothesis
            python-mock
            python-parameterized
