@@ -3525,7 +3525,7 @@ and components.  The following simulation kernels are supported:
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/StefanSchippers/xschem")
+              (url "https://codeberg.org/stef_xschem/xschem/")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
@@ -3537,17 +3537,17 @@ and components.  The following simulation kernels are supported:
                   tk
                   libxpm
                   cairo
+                  libjpeg-turbo
                   libxrender
-                  libxcb)) ; Last 3 are optional, but good to have.
+                  libxcb)) ; Last 4 are optional, but good to have.
     (build-system gnu-build-system)
     (arguments
      (list
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'configure)
-          (add-before 'build 'setenv
-            (lambda* (#:key outputs #:allow-other-keys)
+          (replace 'configure
+            (lambda _
               (setenv "CC" #$(cc-for-target))
               (invoke "./configure" (string-append "--prefix=" #$output)))))))
     (synopsis "Hierarchical schematic editor")
@@ -3555,7 +3555,7 @@ and components.  The following simulation kernels are supported:
      "Xschem is an X11 schematic editor written in C and focused on
 hierarchical and parametric design.  It can generate VHDL, Verilog or Spice
 netlists from the drawn schematic, allowing the simulation of the circuit.")
-    (home-page "https://xschem.sourceforge.io/stefan/index.html")
+    (home-page "http://repo.hu/projects/xschem/xschem_man/xschem_man.html/")
     (license license:gpl2+)))
 
 (define-public route-rnd
