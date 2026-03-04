@@ -161,6 +161,8 @@
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages ruby-xyz)
+  #:use-module (gnu packages rust)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages rsync)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages selinux)
@@ -217,6 +219,9 @@
        (modules '((guix build utils)))
        (snippet
         '(begin
+           ;; Delete the bundled rust crates.
+           (delete-file-recursively "subprojects/packagecache")
+           (mkdir-p "subprojects/packagecache")
            ;; TODO: Scrub all firmwares from this directory!
            (with-directory-excursion "pc-bios"
              ;; Delete firmwares provided by SeaBIOS.
@@ -261,28 +266,34 @@
                                             "share/qemu/pxe-virtio.rom"))
                       #~((string-append #$output "/share/qemu"))))
               (out #$output))
-          (list (string-append "--cc=" gcc)
-                ;; Some architectures insist on using HOST_CC.
-                (string-append "--host-cc=" gcc)
-                (string-append "--prefix=" out)
-                "--sysconfdir=/etc"
-                "--enable-fdt=system"
-                (string-append "--firmwarepath=" out "/share/qemu:"
-                               (dirname seabios) ":"
-                               (dirname ipxe) ":"
-                               (dirname openbios) ":"
-                               (dirname opensbi))
-                (string-append "--smbd=" out "/libexec/samba-wrapper")
-                "--disable-debug-info"  ;for space considerations
-                ;; The binaries need to be linked against -lrt.
-                (string-append "--extra-ldflags=-lrt")))
+          (cons* (string-append "--cc=" gcc)
+                 ;; Some architectures insist on using HOST_CC.
+                 (string-append "--host-cc=" gcc)
+                 (string-append "--prefix=" out)
+                 "--sysconfdir=/etc"
+                 "--enable-fdt=system"
+                 (string-append "--firmwarepath=" out "/share/qemu:"
+                                (dirname seabios) ":"
+                                (dirname ipxe) ":"
+                                (dirname openbios) ":"
+                                (dirname opensbi))
+                 (string-append "--smbd=" out "/libexec/samba-wrapper")
+                 "--disable-debug-info"  ;for space considerations
+                 ;; The binaries need to be linked against -lrt.
+                 (string-append "--extra-ldflags=-lrt")
+                 #$@(if (this-package-native-input "rust")
+                        #~((list "--enable-rust"))
+                        #~((list)))))
       ;; Make build and test output verbose to facilitate investigation upon failure.
       #:make-flags #~'("V=1")
       #:modules `((srfi srfi-1)
                   (srfi srfi-26)
                   (ice-9 ftw)
                   (ice-9 match)
+                  ((guix build cargo-build-system) #:prefix cargo:)
                   ,@%default-gnu-modules)
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%default-gnu-imported-modules)
       #:phases
       #~(modify-phases %standard-phases
           ;; Since we removed the bundled firmwares above, many tests
@@ -325,6 +336,29 @@
                                     "\"~a\",~%" file))
                           allowed-differences)
                 (close-port allowed-differences-whitelist))))
+          #$@(if (this-package-native-input "rust")
+                 #~((add-after 'unpack 'prepare-rust-crates
+                      (lambda args
+                        (apply (assoc-ref cargo:%standard-phases
+                                          'prepare-rust-crates)
+                               args)
+                        ;; Use /tmp/rust-crates as the source.
+                        (substitute* (find-files "subprojects" "-rs\\.wrap$")
+                          (("source_url = (.*)" _ url)
+                           (let ((split-url (string-split url #\/)))
+                             (string-append
+                               "source_url = file:///tmp/rust-crates/rust-"
+                               (list-ref split-url 6) "-"
+                               (list-ref split-url 7) ".tar.gz\n"))))
+                        ;; "Download" the packages.
+                        (for-each
+                          (lambda (wrapper)
+                            (invoke "meson" "subprojects" "download"
+                                    (string-drop-right wrapper 5)))
+                          (scandir "subprojects"
+                                   (lambda (file)
+                                     (string-suffix?  "-rs.wrap" file)))))))
+                 #~())
           ;; If the ipxe firmware isn't available, remove it from the list
           ;; of files expected to be available and remove some of the tests.
           #$@(if (not (this-package-input "ipxe-qemu"))
@@ -587,27 +621,38 @@ exec smbd $@")))
             zlib
             `(,zstd "lib"))))
     (native-inputs
-     ;; Note: acpica is here only to pretty-print firmware differences with IASL
-     ;; (see the replace-firmwares phase above).
-     (list acpica
-           bison
-           flex
-           gettext-minimal
-           `(,glib "bin")               ;gtester, etc.
-           meson
-           ninja
-           perl
-           pkg-config
-           python-wrapper
-           python-sphinx
-           python-sphinx-rtd-theme
-           python-tomli
-           texinfo
-           ;; The following static libraries are required to build
-           ;; the static output of QEMU.
-           `(,glib "static")
-           `(,pcre2 "static")
-           `(,zlib "static")))
+     (append
+      ;; The rust code doesn't seem to be in use yet.
+      (if #f ;(supported-package? rust)
+          (append
+            (cons* rust
+                   rust-bindgen-cli
+                   (cargo-inputs 'qemu))
+            (or (and=> (%current-target-system)
+                       (compose list make-rust-sysroot))
+                '()))
+          '())
+      ;; Note: acpica is here only to pretty-print firmware differences with
+      ;; IASL (see the replace-firmwares phase above).
+      (list acpica
+            bison
+            flex
+            gettext-minimal
+            `(,glib "bin")               ;gtester, etc.
+            meson
+            ninja
+            perl
+            pkg-config
+            python-wrapper
+            python-sphinx
+            python-sphinx-rtd-theme
+            python-tomli
+            texinfo
+            ;; The following static libraries are required to build
+            ;; the static output of QEMU.
+            `(,glib "static")
+            `(,pcre2 "static")
+            `(,zlib "static"))))
     (home-page "https://www.qemu.org")
     (synopsis "Machine emulator and virtualizer")
     (description
