@@ -8514,7 +8514,7 @@ interfaces.")
 (define-public python-click
   (package
     (name "python-click")
-    (version "8.1.8")
+    (version "8.3.1")
     (source
      (origin
        (method git-fetch)
@@ -8523,7 +8523,7 @@ interfaces.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wqkkim5gmhdrc62c79s5gbzz2x60l1bf9aacpakfv6rr1zjl054"))))
+        (base32 "041w6s8w11za2jlws7sxvrcfmi0bvr354nq74wyb66gsk908idii"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list less
