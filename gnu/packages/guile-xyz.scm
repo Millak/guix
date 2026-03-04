@@ -3470,7 +3470,7 @@ wrap G-Golf applications when writing a Guix package.")))
 (define-public guile-wayland-scm-socket
   (package
     (name "guile-wayland-scm-socket")
-    (version "0.0.1")
+    (version "0.0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3479,7 +3479,7 @@ wrap G-Golf applications when writing a Guix package.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17xfc2826nh96ivsszv4avpcs4gbli8k3r0i1idyxkdhxa745rm7"))))
+                "0xxran6690777d64i01ap3a76zjm3panfpplljpvsdzdxhbccbld"))))
     (build-system gnu-build-system)
     (arguments
      (list
