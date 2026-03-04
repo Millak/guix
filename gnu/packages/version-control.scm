@@ -3239,7 +3239,7 @@ RCS, PRCS, and Aegis packages.")
 (define-public cvs-fast-export
   (package
     (name "cvs-fast-export")
-    (version "1.56")
+    (version "1.68")
     (source
      (origin
        (method git-fetch)
@@ -3248,23 +3248,23 @@ RCS, PRCS, and Aegis packages.")
               (commit version)))
        (sha256
         (base32
-         "0gsbddafyfp2k2kklrkjiiz4dhinqidf0pc77id4j7v3ll3xpszi"))))
+         "17225lamdw8rf2yk76rhx8zxhzqjhv88ig3ng21qgvxbhl52wnzm"))))
     (build-system gnu-build-system)
     (arguments
      (list
-      ;; Tests require cppcheck (among other things), however they fail.
+      ;; Tests require a lot of dependencies and are glacially slow.
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure))
-      #:parallel-build? #f          ; parallel a2x commands fail spectacularly
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "CFLAGS+=-Wno-error=calloc-transposed-args")
               (string-append "prefix?=" #$output))))
     (inputs
      (list git python-wrapper))
     (native-inputs
-     (list asciidoc
+     (list ruby-asciidoctor/minimal
            bison
            flex))
     (home-page "http://www.catb.org/esr/cvs-fast-export/")
