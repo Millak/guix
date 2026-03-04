@@ -39,7 +39,7 @@
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2023 Kyle Andrews <kyle@posteo.net>
 ;;; Copyright © 2024 Marco Baggio <guix@mawumag.com>
-;;; Copyright © 2024, 2025 Spencer King <spencer.king@wustl.edu>
+;;; Copyright © 2024-2026 Spencer King <spencer.king@wustl.edu>
 ;;; Copyright © 2024-2025 Tor-björn Claesson <tclaesson@gmail.com>
 ;;; Copyright © 2025 Jonas Freimuth <jonas.freimuth@posteo.de>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
@@ -2925,6 +2925,42 @@ The implementations use the kd-tree data structure for faster k-nearest
 neighbor search.  An R interface to fast kNN and fixed-radius NN search is
 also provided.")
     (license license:gpl2+)))
+
+(define-public r-ddpcr
+  (package
+    (name "r-ddpcr")
+    (version "1.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ddpcr" version))
+       (sha256
+        (base32 "1lid37pbgkgrk8cvl2cg12iz5apkj3ynivv3s1azk5clz2qy72k9"))))
+    (properties `((upstream-name . "ddpcr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr
+                             r-dt
+                             r-ggplot2
+                             r-magrittr
+                             r-mixtools
+                             r-plyr
+                             r-readr
+                             r-rlang
+                             r-shiny
+                             r-shinydisconnect
+                             r-shinyjs
+                             r-tibble))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://github.com/daattali/ddpcr")
+    (synopsis
+     "Analysis and visualization of droplet digital PCR in R and on the web")
+    (description
+     "This package is an interface to explore, analyze, and visualize droplet
+digital PCR (@code{ddPCR}) data in R.  This is the first non-proprietary
+software for analyzing two-channel @code{ddPCR} data.  An interactive tool was
+also created and is available online to facilitate this analysis for anyone
+who is not comfortable with using R.")
+    (license license:expat)))
 
 (define-public r-deoptimr
   (package
