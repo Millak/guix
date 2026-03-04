@@ -609,7 +609,8 @@ Return the new origin S-expression or #f if transformation isn't applicable."
                                                (package-version package))))
       (if new-origin
           (begin
-            (info location (G_ "transforming source from url-fetch to git-fetch~%"))
+            (info location (G_ "~a: changing source to 'git-fetch'~%")
+                  (package-full-name package))
             (object->string* new-origin (location-column location)))
           str)))
 
