@@ -1209,8 +1209,8 @@ sample proximities between pairs of cases.")
     (license license:gpl3+)))
 
 (define-public r-rcppml/devel
-  (let ((commit "5449a5b479908f40f56cf911f11e0a7e156d207f")
-        (revision "2"))
+  (let ((commit "2beac6580174f8f3ef4ac6fdb2ca2b65705d265a")
+        (revision "3"))
     (package
       (name "r-rcppml-devel")
       (version (git-version "0.5.6" revision commit))
@@ -1222,9 +1222,11 @@ sample proximities between pairs of cases.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0sfn6cm8qqsv1g80wc6pimldr0q11vfqik0hcynp8dfrkmvzhj8n"))))
+                  "0nv4w2a31bhccblnp5jqylpf9dbbwv07mpkxma40gp8r12k6sv0r"))))
       (properties `((upstream-name . "RcppML")))
       (build-system r-build-system)
+      ;; Reported here: https://github.com/zdebruine/RcppML/issues/71
+      (arguments (list #:tests? #false))
       (propagated-inputs (list r-matrix r-rcpp))
       (native-inputs (list r-knitr r-testthat))
       (home-page "https://github.com/zdebruine/RcppML")
