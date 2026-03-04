@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
@@ -33,7 +33,8 @@
   #:autoload   (gnu packages) (specification->package fold-packages)
   #:autoload   (guix import utils) (default-git-error
                                     generate-git-source
-                                    git-repository-url?)
+                                    git-repository-url?
+                                    tarball-url->git-repository-url)
   #:use-module (guix combinators)
   #:use-module (guix scripts)
   #:use-module ((guix scripts build) #:select (%standard-build-options))
@@ -47,7 +48,6 @@
   #:use-module (ice-9 control)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
@@ -569,7 +569,7 @@ are put in alphabetical order."
 ;;; url-fetch->git-fetch
 ;;;
 
-(define (transform-to-git-fetch location origin home-page version)
+(define (transform-to-git-fetch location origin repository-url version)
   "Transform an origin using url-fetch to use git-fetch if appropriate.
 Return the new origin S-expression or #f if transformation isn't applicable."
   (match origin
@@ -584,8 +584,8 @@ Return the new origin S-expression or #f if transformation isn't applicable."
                            (('snippet . _) #t)
                            (_ #f))
                          rest)))
-       `(,@(generate-git-source home-page version
-                                (default-git-error home-page location))
+       `(,@(generate-git-source repository-url version
+                                (default-git-error repository-url location))
          ,@rest)))
     (_ #f)))
 
@@ -594,12 +594,11 @@ Return the new origin S-expression or #f if transformation isn't applicable."
                                (policy 'safe)
                                (edit-expression edit-expression))
   "Transform PACKAGE's source from url-fetch to git-fetch when appropriate."
-  (define (transform-source location str)
+  (define (transform-source location repository-url str)
     (let* ((origin-exp (call-with-input-string str read-with-comments))
-           (home-page (package-home-page package))
            (new-origin (transform-to-git-fetch location
                                                origin-exp
-                                               home-page
+                                               repository-url
                                                (package-version package))))
       (if new-origin
           (begin
@@ -607,18 +606,26 @@ Return the new origin S-expression or #f if transformation isn't applicable."
             (object->string* new-origin (location-column location)))
           str)))
 
-  ;; Check if this package uses url-fetch and has a git repository home-page
-  (and-let* ((source (package-source package))
-             (home-page (package-home-page package))
-             (location                  ; source might be inherited
-              (and=> (and (origin? source)
-                          (eq? url-fetch (origin-method source))
-                          (git-repository-url? home-page)
-                          (package-field-location package 'source))
-                     absolute-location)))
-    (edit-expression
-     (location->source-properties location)
-     (cut transform-source location <>))))
+  ;; Check if this package uses 'url-fetch' and has a known corresponding Git
+  ;; repository.
+  (let* ((source (package-source package))
+         (home-page (package-home-page package))
+         (repository-url (and (origin? source)
+                              (eq? url-fetch (origin-method source))
+                              (or (and (git-repository-url? home-page)
+                                       home-page)
+                                  (and=> (match (origin-uri source)
+                                           (((? string? head) . _) head)
+                                           ((? string? url) url)
+                                           (_ #f))
+                                         tarball-url->git-repository-url))))
+         (location                                ;source might be inherited
+          (and=> (package-field-location package 'source)
+                 absolute-location)))
+    (when (and repository-url location)
+      (edit-expression
+       (location->source-properties location)
+       (cut transform-source location repository-url <>)))))
 
 
 ;;;

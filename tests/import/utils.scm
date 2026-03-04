@@ -344,4 +344,13 @@ error procedure has been called."
   (let ((sexp error-called? (test-generate-git-source "1.0.0" "2.0.0")))
     error-called?))
 
+(test-equal "tarball-url->git-repository-url, guile"
+  '("https://https.git.savannah.gnu.org/git/guile.git"
+    "https://gitlab.gnome.org/GNOME/brasero.git"
+    "https://github.com/aide/aide")
+  (map tarball-url->git-repository-url
+       '("mirror://gnu/guile/guile-3.0.11.tar.gz"
+         "mirror://gnome/sources/brasero/3.12/brasero-3.12.3.tar.xz"
+         "https://github.com/aide/aide/releases/download/v0.19.3/aide-0.19.3.tar.gz")))
+
 (test-end "import-utils")

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2013, 2018-2020, 2023, 2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2013, 2018-2020, 2023, 2025-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2017, 2019, 2020, 2022, 2023, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
@@ -58,6 +58,11 @@
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 receive)
   #:use-module (ice-9 regex)
+  #:autoload   (web uri) (string->uri
+                          uri-scheme
+                          uri-host
+                          uri-path
+                          split-and-decode-uri-path)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-11)
@@ -76,6 +81,7 @@
             peek-body
 
             git-repository-url?
+            tarball-url->git-repository-url
             download-git-repository
             git-origin
             git->origin
@@ -201,6 +207,36 @@ thrown."
       (string-prefix? "https://framagit.org/" url)
       ;; Fallback.
       (string-suffix? ".git" url)))
+
+(define (tarball-url->git-repository-url url)
+  "Given URL, the URL of a source code tarball, return the URL of the
+corresponding Git repository or #f if it could not be guessed."
+  (let ((uri (string->uri url)))
+    (match (uri-scheme uri)
+      ('mirror
+       (match (uri-host uri)
+         ((or "gnu" "savannah")
+          (string-append "https://https.git.savannah.gnu.org/git/"
+                         (match (split-and-decode-uri-path (uri-path uri))
+                           ((name _ ...)
+                            (string-append name ".git")))))
+         ("gnome"
+          (string-append "https://gitlab.gnome.org/GNOME/"
+                         (match (split-and-decode-uri-path (uri-path uri))
+                           (("sources" name _ ...)
+                            (string-append name ".git")))))
+         ;; TODO: Add "kernel" and other mirrors.
+         (_ #f)))
+      ((or 'https 'http)
+       (match (uri-host uri)
+         ((or "github.com" "gitlab.com")
+          (match (split-and-decode-uri-path (uri-path uri))
+            ((owner repository _ ...)
+             (string-append "https://" (uri-host uri)
+                            "/" owner "/" repository))))
+         (_
+          #f)))
+      (_ #f))))
 
 (define* (download-git-repository url ref #:key recursive?)
   "Fetch the given REF from the Git repository at URL.  Return three values :

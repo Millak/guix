@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2024, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -667,6 +667,41 @@
                       (and=> (read-package-field
                               (@ (my-packages-1) my-coreutils-1) 'source 9)
                              (cut string-contains <> "patches")))))))
+    "1"))
+
+(unless (false-if-exception
+         (getaddrinfo "https.git.savannah.gnu.org" "https"))
+  (test-skip 1))
+(test-equal "url-fetch->git-fetch, mirror:// URL"
+  '(origin
+     (method git-fetch)
+     (uri (git-reference
+            (url "https://https.git.savannah.gnu.org/git/sed.git")
+            (commit (string-append "v" version))))
+     (file-name (git-file-name name version))
+     (sha256
+      (base32
+       "00p6v3aa22jz365scmifr06fspkylzrvbqda0waz4x06q5qv0263")))
+  (call-with-test-package
+      '((version "4.9")
+        (source
+         (origin
+           (method url-fetch)
+           (uri (string-append "mirror://gnu/sed/sed-"
+                               version ".tar.gz"))
+           (sha256
+            (base32 "0000000000000000000000000000000000000000000000000000")))))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages-1.scm"))
+
+      ;; Note: This ends up cloning the 'sed' repository on Savannah.
+      (system* "guix" "style" "-L" directory "-S" "git-source" "my-coreutils-1")
+
+      (load file)
+      (call-with-input-string (read-package-field
+                               (@ (my-packages-1) my-coreutils-1) 'source 8)
+        read))
     "1"))
 
 (test-assert "url-fetch->git-fetch, non-git home-page unchanged"
