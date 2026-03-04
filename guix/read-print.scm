@@ -362,7 +362,7 @@ expressions and blanks that were read."
   ;; of 1, except that indent is 1 instead of 2 columns.
   (vhashq
    ('source '(package))
-   ('git-reference '(uri origin source))
+   ('git-reference '(uri origin))
    ('sha256 '(origin source package))
    ('arguments '(package))
    ('list '(arguments package))
