@@ -10,6 +10,7 @@ gnu/packages/machine-learning\.scm                 @guix/ai
 
 gnu/packages/audio\.scm                            @guix/audio
 gnu/packages/fluidplug\.scm                        @guix/audio
+gnu/packages/music\.scm                            @guix/audio
 gnu/packages/xiph\.scm                             @guix/audio
 
 gnu/packages/elixir(-.+|)\.scm$                    @guix/beam
