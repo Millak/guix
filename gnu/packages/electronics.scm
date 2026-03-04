@@ -3687,7 +3687,7 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
 (define-public sby
   (package
     (name "sby")
-    (version "0.62")
+    (version "0.63")
     (source
      (origin
        (method git-fetch)
@@ -3696,7 +3696,7 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03l60j3darb7xlfbzhqw78m0xsmqsy5q3i2zrxd669zzlbpqwq4s"))))
+        (base32 "1p23w9jd95b86n7f94zpqdaz19fn2b2lyww1p8dcy9p3zrcn7750"))))
     (build-system gnu-build-system)
     (arguments
      (list
