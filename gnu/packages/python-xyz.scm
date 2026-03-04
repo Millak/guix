@@ -1651,6 +1651,7 @@ data is updated.
                 (("build")
                  "")))))))
     (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-pyasyncore))
     (home-page "https://github.com/dsoprea/PyInotify")
     (synopsis "Linux filesystem activity monitor library for Python")
     (description
