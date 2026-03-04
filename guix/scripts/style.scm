@@ -578,15 +578,22 @@ Return the new origin S-expression or #f if transformation isn't applicable."
        ('uri uri-expr)
        ('sha256 ('base32 _))
        rest ...)
-     (let ((rest (filter (match-lambda
-                           (('patches . _) #t)
-                           (('modules . _) #t)
-                           (('snippet . _) #t)
-                           (_ #f))
-                         rest)))
-       `(,@(generate-git-source repository-url version
-                                (default-git-error repository-url location))
-         ,@rest)))
+     (catch 'git-error
+       (lambda ()
+         (let ((rest (filter (match-lambda
+                               (('patches . _) #t)
+                               (('modules . _) #t)
+                               (('snippet . _) #t)
+                               (_ #f))
+                             rest)))
+           `(,@(generate-git-source repository-url version
+                                    (lambda args
+                                      (apply throw args)))
+             ,@rest)))
+       (let ((report-error (default-git-error repository-url location)))
+         (lambda args
+           (apply report-error args)
+           #f))))
     (_ #f)))
 
 (define* (url-fetch->git-fetch package
