@@ -401,7 +401,7 @@ Medicine} server instead of SQLite.")
 (define-public xmedcon
   (package
     (name "xmedcon")
-    (version "0.25.3")
+    (version "0.26.1")
     (source
      (origin
        (method git-fetch)
@@ -411,7 +411,7 @@ Medicine} server instead of SQLite.")
                                     (string-replace-substring version "." "_")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rvh1i967s87d8vpm5fgz07c9vnvwbh3cdphwp806jcvw93y90kw"))))
+        (base32 "0vgq5jckvfjiq22041irzz85dvc986gbynz6dzl240fwy2xxqz6w"))))
     (build-system gnu-build-system)
     (arguments
      (list
