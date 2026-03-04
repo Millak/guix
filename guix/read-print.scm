@@ -363,6 +363,7 @@ expressions and blanks that were read."
   (vhashq
    ('source '(package))
    ('git-reference '(uri origin))
+   ('snippet '(origin))
    ('sha256 '(origin source package))
    ('arguments '(package))
    ('list '(arguments package))
