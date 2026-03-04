@@ -7294,6 +7294,42 @@ trees (phylogenies) and characters.")
 with Python.")
     (license license:expat)))
 
+(define-public deacon
+  (package
+    (name "deacon")
+    (version "0.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "deacon" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1p7q48ql67mxqi7fv0jaxbfn0js85sb2ai0h3vfvizwd1lfyldxl"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:features ''("ensure_simd/scalar"))) ; Avoid AVX2 dependency.
+    (native-inputs (list pkg-config))
+    (inputs (cons* bzip2
+                   xz
+                   `(,zstd "lib")
+                   (cargo-inputs 'deacon)))
+    (home-page "https://github.com/bede/deacon")
+    (synopsis
+     "Accelerated DNA sequence search and [host] depletion using minimizers")
+    (description
+     "Deacon filters DNA sequences in FASTA/Q files and streams using
+SIMD-accelerated minimizer comparison with query sequence(s), emitting either
+matching sequences (search mode), or sequences without matches (deplete mode).
+Sequences match when they share enough distinct minimizers with the indexed
+query to exceed chosen absolute and relative thresholds.  Query size has little
+impact on filtering speed, enabling ultrafast search and depletion with gene-,
+genome- and pangenome-scale queries using a laptop.")
+    ;; Upstream suggests compiling with '-C target-cpu=native'
+    (properties '((tunable? . #t)))
+    (license license:expat)))
+
 (define-public delly
   (package
     (name "delly")
@@ -20327,7 +20363,7 @@ bgzipped text file that contains a pair of genomic coordinates per line.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 107 failed, 54 passed, 8 skipped, 7 xfailed, 14 errors  
+      ;; tests: 107 failed, 54 passed, 8 skipped, 7 xfailed, 14 errors
       #:tests? #f)) ;most of them need remote data
     (native-inputs
      (list python-biopython
