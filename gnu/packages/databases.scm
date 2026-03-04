@@ -689,6 +689,44 @@ delivers higher throughput and lower median latencies, making it ideal for
 modern workloads.")
     (license license:bsd-3)))
 
+(define-public dicedb-cli
+  (package
+    (name "dicedb-cli")
+    (version "1.0.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dicedb/dicedb-cli")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hglagah0wpdkzw5fs5b1jx6m972yriwjl4zwg7sjs529v4jf3sw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/dicedb/dicedb-cli"
+      #:test-flags
+      ;; XXX: This might be an issue with cobra: parse_args_test.go:90:
+      ;; parseArgs("SET key \"unterminated value") = []string{}; expected
+      ;; []string{"SET", "key", "unterminated value"}
+      #~(list "-skip" "TestParseArgs_EdgeCases/Unterminated_quote.*")))
+    (native-inputs
+     (list go-github-com-chzyer-readline
+           go-github-com-dicedb-dicedb-go
+           go-github-com-fatih-color
+           go-github-com-google-shlex
+           go-github-com-spf13-cobra
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/DiceDB/dicedb-cli")
+    (synopsis "Command line interface for DiceDB")
+    (description
+     "@command{dicedb-cli} is a command line interface for
+@url{https://dicedb.io, DiceDB}, a Redis-compliant in-memory database.")
+    (license (list license:expat       ;MIT in README
+                   license:bsd-3))))   ;BSD-3 in LICENSE file
+
 (define-public leveldb
   (package
     (name "leveldb")
