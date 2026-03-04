@@ -184,11 +184,11 @@ mechanism for extending its functionality.")
 
 (define-public orthanc-postgresql
   ;; No tags provided.
-  (let ((changeset "ddc98844d931")
+  (let ((changeset "81d837d7d20d")
         (revision "0"))
     (package
       (name "orthanc-postgresql")
-      (version (git-version "7.2" revision changeset))
+      (version (git-version "10.0" revision changeset))
       (source
        (origin
          (method hg-fetch)
@@ -197,7 +197,7 @@ mechanism for extending its functionality.")
                 (changeset changeset)))
          (file-name (hg-file-name name version))
          (sha256
-          (base32 "1zv2lrj0f3fahmdyiwyj70ayv5ysa3cj33i58fbk7hy2zclrkjzf"))))
+          (base32 "1ijxa8hlpxjcrcp0b54fzmxf01lqb9741bff4ak1nw24sn9z96ai"))))
       (build-system cmake-build-system)
       (arguments
        (list
