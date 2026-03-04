@@ -32,6 +32,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages xml)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
@@ -67,6 +68,7 @@
            groff
            libtool
            pkg-config
+           python-setuptools
            ;; For tests.
            bc
            perl                         ; will also build Perl bindings
