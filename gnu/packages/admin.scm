@@ -2608,7 +2608,7 @@ features of sudo with a fraction of the codebase.")
 (define-public wpa-supplicant-minimal
   (package
     (name "wpa-supplicant-minimal")
-    (version "2.10")
+    (version "2.11")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2616,7 +2616,7 @@ features of sudo with a fraction of the codebase.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "0bvvw7bx149a57llzrwzlpggyym84f8jdd4abwsk0f2b2pjpmpr0"))
+                "02pwqwdcirnyfmfzrc0xb66qs8gzrpb6905nzcv8w2p3fips0bli"))
               (modules '((guix build utils)))
               (snippet
                '(begin
