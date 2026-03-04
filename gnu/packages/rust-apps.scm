@@ -3089,11 +3089,14 @@ support, watch support (like @command{top}) and a tree view.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((bin (string-append (assoc-ref outputs "out") "/bin"))
                     (bindgen (string-append bin "/bindgen"))
-                    (llvm-dir (string-append
-                                (assoc-ref inputs "clang") "/lib")))
+                    (clang   (assoc-ref inputs "clang"))
+                    (llvm-dir (string-append clang "/lib"))
+                    (clang-bin (string-append clang "/bin")))
                (install-file "target/release/bindgen" bin)
                (wrap-program bindgen
-                 `("LIBCLANG_PATH" = (,llvm-dir))))))
+                 `("LIBCLANG_PATH" = (,llvm-dir))
+                 ;; The bindgen binary requires clang, add one as a fallback.
+                 `("PATH" suffix (,clang-bin))))))
          (add-after 'install 'install-completions
            (lambda* (#:key native-inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
