@@ -26,7 +26,7 @@
 ;;; Copyright © 2022-2025 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2024, 2026 Alexis Simon <alexis.simon@runbox.com>
-;;; Copyright © 2024 Spencer King <spencer.king@geneoscopy.com>
+;;; Copyright © 2024, 2026 Spencer King <spencer.king@wustl.edu>
 ;;; Copyright © 2025 nomike Postmann <nomike@nomike.com>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2026 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -5724,7 +5724,7 @@ genome (2.9 GB for paired-end).")
 (define-public bwa
   (package
     (name "bwa")
-    (version "0.7.18")
+    (version "0.7.19")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5733,7 +5733,7 @@ genome (2.9 GB for paired-end).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vf3iwkzxqkzhcfz2q3qyvcv3jrvbb012qy21pfgjl8lv20ywfr1"))))
+                "04hvp3sl64h5wmlkzjawmma3v8h1lb9vbqwkkz8nkxmqzy8vnzx3"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f ;no "check" target
