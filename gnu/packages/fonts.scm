@@ -2052,6 +2052,33 @@ display all Unicode symbols.  This package provides the Serif variant of
 Hebrew fonts.")
     (license license:silofl1.1)))
 
+(define-public font-google-noto-serif-hebrew
+  (package
+    (name "font-google-noto-serif-hebrew")
+    (version "2.004")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/notofonts/hebrew/releases/download"
+             "/NotoSerifHebrew-v"
+             version
+             "/NotoSerifHebrew-v"
+             version
+             ".zip"))
+       (file-name (string-append name "-" version ".zip"))
+       (sha256
+        (base32 "1nj61jhag924337gww77xxg3k6qy1pnnjldxikqra505457kyllr"))))
+    (build-system font-build-system)
+    (home-page "https://fonts.google.com/noto/specimen/Noto+Serif+Hebrew")
+    (synopsis "Hebrew serif font")
+    (description
+     "Google Noto Fonts is a family of fonts designed to support
+all languages with a consistent look and aesthetic.  Its goal is to properly
+display all Unicode symbols.  This package provides the Serif variant of
+Hebrew fonts.")
+    (license license:silofl1.1)))
+
 (define-public font-google-roboto
   (package
     (name "font-google-roboto")
