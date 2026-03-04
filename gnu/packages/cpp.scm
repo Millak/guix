@@ -2825,7 +2825,7 @@ composable sequential transformations.")
 (define-public lager
   (package
    (name "lager")
-   (version "0.1.1")
+   (version "0.1.3")
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -2833,7 +2833,7 @@ composable sequential transformations.")
                   (commit (string-append "v" version))))
             (file-name (git-file-name name version))
             (sha256
-             (base32 "1by9d49qnkncifyjcq16zy605d7v4ps6hvc01q5nsp1nbswm94m4"))))
+             (base32 "123a75qklhiyic3yaj74h4p8jav2m92x9ssjnfsdiilhycp4p764"))))
    (build-system cmake-build-system)
    (arguments (list #:configure-flags #~(list "-Dlager_BUILD_EXAMPLES=no")
                     #:modules `((guix build cmake-build-system)
