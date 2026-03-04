@@ -115,15 +115,15 @@ Health Federation.")
 (define-public orthanc
   (package
     (name "orthanc")
-    (version "1.12.7")
+    (version "1.12.10")
     (source
      (origin
        (method hg-fetch)
        (uri (hg-reference (url "https://orthanc.uclouvain.be/hg/orthanc")
-                          (changeset "a30cc2fa7250")))
+                          (changeset "8628c32729cf")))
        (file-name (hg-file-name name version))
        (sha256
-        (base32 "1n8v0dh17g9ihny8cpq63qd6ai5l95i5h3sz9vwzfnd7q3qh0rb9"))))
+        (base32 "16xkbs6amhx81yvn7avkg8nwha6sj55l6vipa5290yf0rgygyadr"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -147,7 +147,7 @@ Health Federation.")
               ;; /etc/localtime is not present in the build container;
               ;; don't let that stop the build.
               (substitute* "OrthancFramework/Sources/Toolbox.cpp"
-                (("if \\(!SystemToolbox::IsExistingFile\\(LOCALTIME\\)\\)")
+                (("if \\(!boost::filesystem::exists\\(LOCALTIME\\)\\)")
                  "if (false)"))))
           ;; There is no test target; simply run the binary.
           (replace 'check
@@ -158,7 +158,7 @@ Health Federation.")
                          glibc-utf8-locales ;for one test
                          googletest
                          python))
-    (inputs (list boost-1.83
+    (inputs (list boost
                   civetweb
                   curl
                   dcmtk
