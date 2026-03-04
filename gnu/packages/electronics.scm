@@ -2104,12 +2104,12 @@ The following features are currently available:
 
 (define-public opensta
   ;; There are no releases, we use last commit.
-  (let ((commit "6e29fcb3f0d8a73af3a0913eb945b665a72e69cb")
-        (revision "1"))
+  (let ((commit "62cd210a8aff98cb8bf795e7b70c610faf5deebb")
+        (revision "0"))
     (package
       (name "opensta")
       ;; The version string is taken from the CMakeLists.txt.
-      (version (git-version "2.7.0" revision commit))
+      (version (git-version "3.0.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -2118,7 +2118,7 @@ The following features are currently available:
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1drhgp4s6q8j4fhsbxn6szmxl48xdlq0x5z4g6z72img453qvglx"))))
+          (base32 "1ppkymc6f00hf49f1hxsgiilrqbvxb1cv4i3x1vw5g4s6h01b0sy"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -2139,7 +2139,7 @@ The following features are currently available:
            (string-append "-DCUDD_DIR=" #$(this-package-input "cudd"))
            (string-append "-DBUILD_SHARED_LIBS=YES")
            "-B./build")))
-      (native-inputs (list bison flex swig-4.0))
+      (native-inputs (list bison flex swig-4.4))
       (inputs (list cudd eigen tcl tcllib zlib))
       (synopsis "Parallax Static Timing Analyzer")
       (description
