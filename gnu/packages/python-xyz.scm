@@ -2365,6 +2365,35 @@ activated using a set of environment variables.")
 for the Sweetscape 010 binary-format editor.")
     (license license:bsd-3)))
 
+(define-public python-pyasynchat
+  (package
+    (name "python-pyasynchat")
+    (version "1.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/simonrob/pyasynchat")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fsxr7rv662wwlpq8fklj8z6g0x9f693l0mk1qhib5v5xni99698"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-pyasyncore))
+    (home-page "https://github.com/simonrob/pyasynchat")
+    (synopsis "Make asynchat available for Python 3.12 onwards")
+    (description
+     "This package contains the
+@url{https://docs.python.org/3.11/library/asynchat.html, asynchat} module as
+found in Python versions prior to 3.12.  It is provided so that existing code
+relying on @code{import asynchat} is able to continue being used without
+significant refactoring.")
+    (license license:psfl)))
+
 (define-public python-pyasyncore
   (package
     (name "python-pyasyncore")
