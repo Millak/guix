@@ -1627,6 +1627,11 @@ the \"texlive\" importer."
                        "group")
   vcs)
 
+(define-member (person "Spencer King"
+                       "spencer.king@wustl.edu"
+                       "spencerking")
+  julia)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
