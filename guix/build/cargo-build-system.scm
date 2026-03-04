@@ -2,7 +2,7 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
-;;; Copyright © 2019-2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -101,8 +101,9 @@ Cargo.toml file present at its root."
                                        " | cut -d/ -f2"
                                        " | grep -q '^Cargo.toml$'"))))))
 
-(define* (unpack-rust-crates #:key inputs (vendor-dir "guix-vendor")
-                             #:allow-other-keys)
+(define* (prepare-rust-crates #:key inputs (vendor-dir "guix-vendor")
+                              #:allow-other-keys)
+  "Find the rust-crate inputs and cache them for future use."
   (define (inputs->rust-inputs inputs)
     "Filter using the label part from INPUTS."
     (filter (lambda (input)
@@ -115,29 +116,70 @@ Cargo.toml file present at its root."
       (((names . directories) ...)
        directories)))
 
+  (chmod "." #o755)
   (let ((rust-inputs (inputs->directories (inputs->rust-inputs inputs))))
     (unless (null? rust-inputs)
-      (mkdir-p "target/package")
-      (mkdir-p vendor-dir)
-      ;; TODO: copy only regular inputs to target/package, not native-inputs.
-      (for-each
-        (lambda (input-crate)
-          (for-each
-            (lambda (packaged-crate)
-              (unless
-                (file-exists?
-                  (string-append "target/package/" (basename packaged-crate)))
-                (install-file packaged-crate "target/package/")))
-            (find-files
-              (string-append input-crate "/share/cargo/registry") "\\.crate$")))
-        (delete-duplicates rust-inputs))
-
-      (for-each (lambda (crate)
-                  (invoke "tar" "xzf" crate "-C" vendor-dir))
-                (find-files "target/package" "\\.crate$")))))
+      (let ((crate-cache "/tmp/rust-crates/"))
+        (mkdir-p crate-cache)
+        (mkdir-p vendor-dir)
+        (for-each
+          (lambda (input-crate)
+            (when (file-exists?
+                    (string-append input-crate "/share/cargo/registry"))
+              (for-each
+                (lambda (packaged-crate)
+                  (unless
+                    (file-exists?
+                      (string-append crate-cache (basename packaged-crate)))
+                    (install-file packaged-crate crate-cache))
+                  ;; TODO: Move this to 'unpack-rust-crates.
+                  ;; Unpack the inputs from rust-sources.
+                  (invoke "tar" "xzf" packaged-crate "-C" vendor-dir))
+                (find-files
+                  (string-append input-crate "/share/cargo/registry")
+                  "\\.crate$")))
+            (unless
+              (file-exists?
+                (string-append crate-cache (strip-store-file-name input-crate)))
+              (copy-file input-crate
+                         (string-append
+                           crate-cache (strip-store-file-name input-crate)))))
+          (delete-duplicates rust-inputs))))))
 
 (define (rust-package? name)
   (string-prefix? "rust-" name))
+
+(define* (unpack-rust-crates #:key source inputs (vendor-dir "guix-vendor")
+                             #:allow-other-keys)
+  "Vendor Cargo.toml dependencies as guix inputs."
+
+  ;; Prepare one new directory with all the required dependencies.
+  ;; It's necessary to do this (instead of just using /gnu/store as the
+  ;; directory) because we want to hide the libraries in subdirectories
+  ;; share/rust-source/... instead of polluting the user's profile root.
+  (chmod "." #o755)
+  (mkdir-p vendor-dir)
+  (for-each
+    (match-lambda
+      ((name . path)
+       (let* ((basepath (strip-store-file-name path))
+              (crate-dir (string-append vendor-dir "/" basepath)))
+         (and (crate-src? path #:source source)
+              ;; Gracefully handle duplicate inputs
+              (not (file-exists? crate-dir))
+              (if (directory-exists? path)
+                  (copy-recursively path crate-dir)
+                  (begin
+                    (mkdir-p crate-dir)
+                    ;; Cargo crates are simply gzipped tarballs but with a
+                    ;; .crate extension. We expand the source to a directory
+                    ;; name we control so that we can generate any cargo
+                    ;; checksums.  The --strip-components argument is needed to
+                    ;; prevent creating an extra directory within `crate-dir`.
+                    (format #t "Unpacking ~a~%" name)
+                    (invoke "tar" "xf" path "-C" crate-dir
+                            "--strip-components" "1")))))))
+    inputs))
 
 (define* (check-for-pregenerated-files #:key parallel-build? #:allow-other-keys)
   "Check the source code for files which are known to generally be bundled
@@ -169,35 +211,7 @@ libraries or executables."
                     (cargo-target #f)
                     (vendor-dir "guix-vendor")
                     #:allow-other-keys)
-  "Vendor Cargo.toml dependencies as guix inputs."
-  (chmod "." #o755)
-  ;; Prepare one new directory with all the required dependencies.
-  ;; It's necessary to do this (instead of just using /gnu/store as the
-  ;; directory) because we want to hide the libraries in subdirectories
-  ;; share/rust-source/... instead of polluting the user's profile root.
-  (mkdir-p vendor-dir)
-  (for-each
-    (match-lambda
-      ((name . path)
-       (let* ((basepath (strip-store-file-name path))
-              (crate-dir (string-append vendor-dir "/" basepath)))
-         (and (crate-src? path #:source source)
-              ;; Gracefully handle duplicate inputs
-              (not (file-exists? crate-dir))
-              (if (directory-exists? path)
-                  (copy-recursively path crate-dir)
-                  (begin
-                    (mkdir-p crate-dir)
-                    ;; Cargo crates are simply gzipped tarballs but with a
-                    ;; .crate extension. We expand the source to a directory
-                    ;; name we control so that we can generate any cargo
-                    ;; checksums.  The --strip-components argument is needed to
-                    ;; prevent creating an extra directory within `crate-dir`.
-                    (format #t "Unpacking ~a~%" name)
-                    (invoke "tar" "xf" path "-C" crate-dir
-                            "--strip-components" "1")))))))
-    inputs)
-
+  "Prepare the environment for building the rust package."
   ;; For cross-building
   (when target
     (setenv "CARGO_BUILD_TARGET" cargo-target)
@@ -464,7 +478,8 @@ directory = '" vendor-dir "'") port)
     (replace 'check check)
     (replace 'install install)
     (add-after 'build 'package package)
-    (add-after 'unpack 'unpack-rust-crates unpack-rust-crates)
+    (add-after 'unpack 'prepare-rust-crates prepare-rust-crates)
+    (add-after 'prepare-rust-crates 'unpack-rust-crates unpack-rust-crates)
     (add-after 'configure 'check-for-pregenerated-files check-for-pregenerated-files)
     (add-after 'patch-generated-file-shebangs 'patch-cargo-checksums patch-cargo-checksums)))
 
