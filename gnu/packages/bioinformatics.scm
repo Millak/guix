@@ -9767,6 +9767,7 @@ generally slower than modern maximum likelihood approaches.")
      (list bc
            time
            python-wrapper
+           python-setuptools
            pkg-config))
     (inputs
      (list htslib))
