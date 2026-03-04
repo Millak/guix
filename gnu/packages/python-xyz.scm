@@ -17165,6 +17165,7 @@ checksums.  It implement more than a hundred checksum routines.")
                 (setenv "HOME" "/tmp")
                 (invoke "make" "test")))))))
     (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-pyasynchat))
     (home-page "https://github.com/giampaolo/pysendfile")
     (synopsis "Python interface to sendfile(2)")
     (description "The @code{pysendfile} Python library provides an interface to
