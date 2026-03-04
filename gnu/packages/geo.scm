@@ -2611,7 +2611,7 @@ volunteers.")
 (define-public libspatialindex
   (package
     (name "libspatialindex")
-    (version "1.9.3")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
@@ -2620,8 +2620,7 @@ volunteers.")
                            version ".tar.bz2"))
        (sha256
         (base32
-         "02n5vjcyk04w0djidyp21hfbxfpbbara8ifd9nml6158rwqr8lja"))))
-    (arguments (list #:tests? #f))
+         "19g9h9dnb2zwmjinkg2z0gfgsjncmw8ipaqib03n6sj0mpf3z7ll"))))
     (build-system cmake-build-system)
     (home-page "https://libspatialindex.org")
     (synopsis "Spatial indexing library")
