@@ -4274,7 +4274,7 @@ and users are in full control of their data and workflow.")
     (build-system cargo-build-system)
     (arguments
      (list
-      #:features '()
+      #:features '(list)
       #:install-source? #f
       #:modules
       '((guix build cargo-build-system)
