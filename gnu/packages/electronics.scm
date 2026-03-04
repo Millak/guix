@@ -4116,7 +4116,7 @@ parallel computing platforms.  It also supports serial execution.")
 (define-public yosys
   (package
     (name "yosys")
-    (version "0.62")
+    (version "0.63")
     (source
      (origin
        (method git-fetch)
@@ -4124,7 +4124,7 @@ parallel computing platforms.  It also supports serial execution.")
               (url "https://github.com/YosysHQ/yosys")
               (commit (string-append "v" version))))
        (sha256
-        (base32 "1x4j191wsp276jallp0xr92z19q4r5ddy2vr8vli95nrn5chy1hl"))
+        (base32 "1iaafzsc0pbd61m5hh12nzr2z4rn4n7i68l6ij9vli4m5zsxw39k"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -4196,6 +4196,7 @@ parallel computing platforms.  It also supports serial execution.")
                          cxxopts ;header-only library
                          flex
                          gawk ;for the tests and "make" progress pretty-printing
+                         googletest
                          gtkwave        ;for the tests
                          iverilog ;for the tests
                          perl
