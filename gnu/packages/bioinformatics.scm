@@ -1694,11 +1694,11 @@ the mutation counts.")
     (license license:gpl3)))
 
 (define-public r-singlet
-  (let ((commit "765a6c45081807a1522f0e8983e2417822a36f36")
+  (let ((commit "ef4a374f27681477b95d856b74bd3cbbb379308d")
         (revision "1"))
     (package
       (name "r-singlet")
-      (version (git-version "0.99.26" revision commit))
+      (version (git-version "0.99.8" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1707,7 +1707,7 @@ the mutation counts.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "040v8wzl9qr8ribr6qss61fz4698d14cqs8nxbc8hqwiqlpy3vs4"))))
+                  "1s9g3i0ypsnpnal40f223d5lzijxchwaf1kvavyijl75zaj8i6af"))))
       (properties `((upstream-name . "singlet")))
       (build-system r-build-system)
       (propagated-inputs (list r-dplyr
@@ -1718,10 +1718,12 @@ the mutation counts.")
                                r-matrix
                                r-msigdbr
                                r-rcpp
+                               ;; See https://github.com/zdebruine/singlet/issues/25
                                r-rcppml/devel
                                r-reshape2
                                r-scuttle
-                               r-seurat))
+                               r-seurat
+                               r-statmod))
       (native-inputs (list r-knitr r-testthat))
       (home-page "https://github.com/zdebruine/singlet")
       (synopsis "Non-negative Matrix Factorization for single-cell analysis")
