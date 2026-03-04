@@ -1379,41 +1379,43 @@ For information about libevdev, see:
     (license license:expat)))
 
 (define-public python-pyxdg
-  (package
-    (name "python-pyxdg")
-    (version "0.28")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyxdg" version))
-       (sha256
-        (base32
-         "1d48bqwkbnpid80cpwz6h62i112laxl0ivpj58hdyd79fhqbnrrj"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; Tests failing with error: AssertionError: 'image' != 'inode'
-      #~(list "--deselect=test/test_mime.py::MimeTest::test_get_type"
-              "--deselect=test/test_mime.py::MimeTest::test_get_type2")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda _
-              (setenv "XDG_DATA_DIRS"
-                      (string-append #$(this-package-native-input "shared-mime-info")
-                                     "/share/")))))))
-    (native-inputs
-     (list shared-mime-info
-           hicolor-icon-theme
-           python-pytest
-           python-setuptools))
-    (home-page "https://www.freedesktop.org/wiki/Software/pyxdg")
-    (synopsis "Implementations of freedesktop.org standards in Python")
-    (description
-     "PyXDG is a collection of implementations of freedesktop.org standards in
+  ;; Latest unreleased commits add Python 3.12, 3.14 and 3.15 support.
+  (let ((commit "63033ac306aa26d32e1439417e59ae8f8a4c9820")
+        (revision "0"))
+    (package
+      (name "python-pyxdg")
+      (version "0.28")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://gitlab.freedesktop.org/xdg/pyxdg")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "10wk95rmcr2fglmvmv1a6ad9hkw9587r0rlww0gq6kbfz85whgmd"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'pre-check
+              (lambda _
+                (setenv "XDG_DATA_DIRS"
+                        (string-append #$(this-package-native-input "shared-mime-info")
+                                       "/share/")))))))
+      (native-inputs
+       (list shared-mime-info
+             hicolor-icon-theme
+             python-pytest
+             python-setuptools))
+      (home-page "https://www.freedesktop.org/wiki/Software/pyxdg")
+      (synopsis "Implementations of freedesktop.org standards in Python")
+      (description
+       "PyXDG is a collection of implementations of freedesktop.org standards in
 Python.")
-    (license license:lgpl2.0)))
+      (license license:lgpl2.0))))
 
 (define-public hyprland-protocols
   (package
