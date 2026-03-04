@@ -401,7 +401,7 @@ individual low-level driver modules.")
 (define-public eqy
   (package
     (name "eqy")
-    (version "0.62")
+    (version "0.63")
     (source
      (origin
        (method git-fetch)
@@ -410,7 +410,7 @@ individual low-level driver modules.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lbi3pn4d2zmqy2pd3pvdv007znildr06ink2g8sh6c9zb74xrk4"))))
+        (base32 "05rk6gy0xnaksxqdkpm08i3ngh0adavfyfjyscw5l1b7d7yhfavh"))))
     (build-system gnu-build-system)
     (arguments
      (list
