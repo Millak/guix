@@ -2025,6 +2025,33 @@ display all Unicode symbols.  This package provides the Serif variant of CJK
 fonts.")
     (license license:silofl1.1)))
 
+(define-public font-google-noto-sans-hebrew
+  (package
+    (name "font-google-noto-sans-hebrew")
+    (version "3.001")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/notofonts/hebrew/releases/download"
+             "/NotoSansHebrew-v"
+             version
+             "/NotoSansHebrew-v"
+             version
+             ".zip"))
+       (file-name (string-append name "-" version ".zip"))
+       (sha256
+        (base32 "1jy31i9afacb0savxbrdg9mjcq8v24llbk0gyi668qsf9f0p22nz"))))
+    (build-system font-build-system)
+    (home-page "https://fonts.google.com/noto/specimen/Noto+Sans+Hebrew")
+    (synopsis "Hebrew sans font")
+    (description
+     "Google Noto Fonts is a family of fonts designed to support
+all languages with a consistent look and aesthetic.  Its goal is to properly
+display all Unicode symbols.  This package provides the Serif variant of
+Hebrew fonts.")
+    (license license:silofl1.1)))
+
 (define-public font-google-roboto
   (package
     (name "font-google-roboto")
