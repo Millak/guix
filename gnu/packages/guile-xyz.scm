@@ -3616,7 +3616,7 @@ Probably can be replaced with guile's built-in file-descriptor procedures.")
 (define-public guile-wayland-scm
   (package
     (name "guile-wayland-scm")
-    (version "0.0.1")
+    (version "0.0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3625,7 +3625,7 @@ Probably can be replaced with guile's built-in file-descriptor procedures.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17xfc2826nh96ivsszv4avpcs4gbli8k3r0i1idyxkdhxa745rm7"))))
+                "0xxran6690777d64i01ap3a76zjm3panfpplljpvsdzdxhbccbld"))))
     (build-system gnu-build-system)
     (arguments
      (list
