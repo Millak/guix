@@ -1956,7 +1956,7 @@ conversion and pretty-printing.")
                   (("/bin/perl")
                    (string-append "/bin/perl"
                                   " -I "
-                                  (site-perl #$(this-package-input perl-file-next))
+                                  (site-perl #$(this-package-input "perl-file-next"))
                                   " -I "
                                   (site-perl #$output))))))))))
     (inputs
