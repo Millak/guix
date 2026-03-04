@@ -677,6 +677,41 @@ intelligence.")
       (inputs (cons oniguruma
                     (cargo-inputs 'rust-syntect-5.3))))))
 
+(define-public rust-tikv-jemallocator-for-polars
+  (let ((commit "c7991e5bb6b3e9f79db6b0f48dcda67c5c3d2936")
+        (revision "0"))
+    (hidden-package
+     (package
+       (name "rust-tikv-jemallocator")
+       (version (git-version "0.6.0" revision commit))
+       (source (origin
+                 (method git-fetch)
+                 (uri (git-reference
+                       (url "https://github.com/pola-rs/jemallocator")
+                       (commit commit)))
+                 (file-name (git-file-name name version))
+                 (sha256
+                  (base32
+                   "0wwdw0f3a9vgck3x10gxq80606b2wam31vglhjw2fabdvq2wmxcy"))))
+       (build-system cargo-build-system)
+       (arguments
+           (list #:skip-build? #t
+                 #:cargo-package-crates
+                 ''("tikv-jemalloc-sys"
+                    "tikv-jemallocator")
+                 #:phases
+                 #~(modify-phases %standard-phases
+                     (add-after 'unpack 'remove-workspace-members
+                       (lambda _
+                         ; Avoid dev dependency, that is excluded from workspace
+                         (substitute* "jemallocator/Cargo.toml"
+                           (("^tikv-jemalloc-ctl.*$") "")))))))
+       (inputs (cargo-inputs 'rust-tikv-jemallocator-for-polars))
+       (home-page "https://github.com/pola-rs/jemallocator")
+       (synopsis "Rust allocator backed by jemalloc")
+       (description "This package provides a Rust allocator backed by jemalloc.")
+       (license (list license:expat license:asl2.0))))))
+
 (define-public rust-codex-0.0.0.785c0c43
   (let ((commit "785c0c43df941e6997ff3a9e8a9dd48da2661f20")
         (revision "0"))

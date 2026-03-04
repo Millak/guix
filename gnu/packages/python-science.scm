@@ -68,6 +68,7 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages cross-base)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages digest)
@@ -99,6 +100,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages simulation)
@@ -1680,7 +1682,7 @@ spheres, cubes, etc.")
     (arguments
      (list
       ;; tests:
-      ;; - api: 5 passed 
+      ;; - api: 5 passed
       ;; - dask: 269 passed, 2 skipped, 93 xfailed, 191 warnings
       ;; - python: 269 passed, 2 skipped, 93 xfailed, 197 warnings
       #:test-flags
@@ -2198,7 +2200,7 @@ backward differences are used.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-version
             ;; Version is hardcoded.
-            (lambda _ 
+            (lambda _
               (substitute* "pyproject.toml"
                 (("0.1.0")
                  #$version))))
@@ -3738,7 +3740,7 @@ depends on @code{scipy.sparse} for some computations.")
          ;; One test fails with error: AssertionError: False is not true : 5
          ;; lines are different, starting at line 1
          "--deselect=tdda/test_tdda.py::TestOne::test_ddiff_values_output"
-         ;; TypeError: 'property' object is not iterable 
+         ;; TypeError: 'property' object is not iterable
          "--deselect=tdda/test_tdda.py::TestPandasDataFrames::test_types_match")
       #:phases
       #~(modify-phases %standard-phases
@@ -4099,7 +4101,7 @@ doing practical, real world data analysis in Python.")
            python-xlrd
            python-xlsxwriter
            ;; Not packaged yet
-           ;; 
+           ;;
            ;; python-calamine
            ;; python-poethepoet
            ;; python-pyarrow-stubs
@@ -4896,7 +4898,7 @@ two-dimensional renderings such as scatter plots and histograms.
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 6677 passed, 9632 skipped, 14 xfailed, 4 xpassed, 53 warnings 
+      ;; tests: 6677 passed, 9632 skipped, 14 xfailed, 4 xpassed, 53 warnings
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-pytest-config
@@ -4996,7 +4998,7 @@ name) using the Python's @code{dataclass}.")
        (sha256
         (base32 "11crz1l6swabwzmwbrxypfw8gbbp81higzgi5nsxzfigcrrqq30a"))))
     (build-system pyproject-build-system)
-    ;; tests: 317 passed, 48 skipped 
+    ;; tests: 317 passed, 48 skipped
     (native-inputs
      (list python-flit-core
            python-pytest))
@@ -5853,6 +5855,101 @@ to do spectral analysis in Python.")
     (description "This package provides utilities and tools for open data
 science including tools for accessing data sets in Python.")
     (license license:bsd-3)))
+
+(define-public python-polars-runtime-32
+  (package
+    (name "python-polars-runtime-32")
+    (version "1.38.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "polars_runtime_32" version))
+       (sha256
+        (base32 "1v72zkyhcziiizpymjlh2d5rwnkmvhlp18ln8brp31y5yp8hxwh4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'build-without-rust-nightly
+            (lambda _
+              ;; Add cargo flags that allow compilation without Rust nightly.
+              (substitute* "pyproject.toml"
+                ((".*tool.maturin.*" all)
+                 (string-append all "no-default-features = true\n"
+                                "features = [\"full\"]\n")))))
+          (add-after 'unpack 'fix-tikv-jemallocator
+            (lambda _
+              ;; removes a patch.crates-io option that is packaged in
+              ;; gnu/packages/rust-sources: rust-tikv-jemallocator-for-polars
+              (substitute* "Cargo.toml"
+                (("^tikv-jemallocator.*") ""))))
+          ;; jemalloc needs unbundling for tikv-jemallocator-sys
+          (add-before 'build 'override-jemalloc
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((jemalloc (assoc-ref inputs "jemalloc")))
+                ;; This flag is needed when not using the bundled jemalloc.
+                ;; https://github.com/tikv/jemallocator/issues/19
+                (setenv "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
+                (setenv "JEMALLOC_OVERRIDE"
+                        (string-append jemalloc "/lib/libjemalloc_pic.a")))))
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums)))))))
+    (inputs
+     (cons* jemalloc
+            lz4
+            (list zstd "lib")
+            (cargo-inputs 'python-polars-runtime-32)))
+    (native-inputs
+     (append
+      (list maturin
+            pkg-config
+            rust
+            `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
+    (home-page "https://pola.rs/")
+    (synopsis "Blazingly fast DataFrame library")
+    (description "Polars is an analytical query engine written for DataFrames.
+It is designed to be fast, easy to use and expressive.")
+    (properties '(("upstream-name" . "polars-runtime-32")
+                  (tunable? . #true)))
+    (license license:expat)))
+
+(define-public python-polars
+  (package
+    (name "python-polars")
+    (version "1.38.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "polars" version))
+       (sha256
+        (base32 "0fc2fx2p72g01nhhhfs1fzbwz58rcj7zppascanq1y2f6kjjnfl0"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-polars-runtime-32))
+    (native-inputs (list python-setuptools))
+    (home-page "https://pola.rs/")
+    (synopsis "Blazingly fast DataFrame library")
+    (description
+     "Polars is a DataFrame library for manipulating structured data.")
+    (license license:expat)))
 
 (define-public python-pyfma
   (package
