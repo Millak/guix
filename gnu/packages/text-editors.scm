@@ -373,8 +373,8 @@ intuitive, while also taking advantage of the capabilities of modern terminals."
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out")))
                (wrap-program (string-append out "/bin/vis")
-                 `("GUIX_LUA_PATH" ":" prefix (,(getenv "GUIX_LUA_PATH")))
-                 `("GUIX_LUA_CPATH" ":" prefix (,(getenv "GUIX_LUA_CPATH"))))
+                 `("GUIX_LUA_PATH" ";" prefix (,(getenv "GUIX_LUA_PATH")))
+                 `("GUIX_LUA_CPATH" ";" prefix (,(getenv "GUIX_LUA_CPATH"))))
                #t)))
          (add-after 'wrap-binary 'check
            (assoc-ref %standard-phases 'check))
