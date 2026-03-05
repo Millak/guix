@@ -24,7 +24,7 @@
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2023 Cairn <cairn@pm.me>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
+;;; Copyright © 2025, 2026 Jake Forster <jakecameron.forster@gmail.com>
 ;;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;; Copyright © 2025, 2026 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2025 dan <i@dan.games>
@@ -1399,7 +1399,7 @@ libraries designed for computer vision research and implementation.")
                                         module-ad-commit)))
     (package
       (name "insight-toolkit")
-      (version "5.4.4")
+      (version "5.4.5")
       (source
        (origin
          (method git-fetch)
@@ -1408,7 +1408,7 @@ libraries designed for computer vision research and implementation.")
                (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1l5rby8jj8726k380aivycmhn56cz56mr9k3r56c8hkkrfwwng50"))
+          (base32 "0sd037pgsdfigc5gi4lr5iwm063s0wrjl8i4b8dfxmrbipxjvn33"))
          ;; This patch is required to build with both ITK_USE_GPU=ON and
          ;; ITK_WRAP_PYTHON=ON.
          ;; <https://github.com/InsightSoftwareConsortium/ITK/pull/4842>
@@ -1465,11 +1465,6 @@ libraries designed for computer vision research and implementation.")
                 (substitute* "CMake/ITKSetStandardCompilerFlags.cmake"
                   (("-mtune=native")
                    ""))))
-            (add-after 'unpack 'ignore-warnings
-              (lambda _
-                (substitute* "Wrapping/Generators/Python/CMakeLists.txt"
-                  (("-Werror")
-                   ""))))
             (add-after 'unpack 'exclude-gtest-target
               (lambda _
                 ;; Prevent ITKGoogleTest from being added to
@@ -1507,12 +1502,6 @@ libraries designed for computer vision research and implementation.")
                          "Modules/Remote/AdaptiveDenoising")
                 (delete-file
                  "Modules/Remote/AdaptiveDenoising.remote.cmake")))
-            (add-after 'unpack 'fix-numpy-bool
-              (lambda _
-                ;; <https://github.com/InsightSoftwareConsortium/ITK/pull/5402>
-                (substitute* (string-append "Wrapping/Generators/"
-                                            "Python/itk/support/types.py")
-                  (("np\\.bool") "np.bool_"))))
             (delete 'check)    ;tests require network access and external data
             (add-after 'install 'python-sanity-check
               (lambda* (#:key inputs outputs tests? #:allow-other-keys)
@@ -1536,7 +1525,6 @@ libraries designed for computer vision research and implementation.")
                     zlib))
       (native-inputs
        (list castxml
-             gcc-13
              git-minimal
              pkg-config
              python-numpy               ;for phase 'python-sanity-check
