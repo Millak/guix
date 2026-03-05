@@ -3469,12 +3469,12 @@ wrap G-Golf applications when writing a Guix package.")))
 (define-public guile-wayland-scm-socket
   (package
     (name "guile-wayland-scm-socket")
-    (version "v0.0.1")
+    (version "0.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                      (url "https://codeberg.org/shegeley/wayland-scm")
-                     (commit version)))
+                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
