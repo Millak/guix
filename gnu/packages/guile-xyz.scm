@@ -3867,15 +3867,18 @@ many readers as needed).")
     (name "guile-ncurses")
     (version "3.1")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnu/guile-ncurses/guile-ncurses-"
-                                 version ".tar.gz"))
-             (sha256
-              (base32
-               "0cypz1ikw66n8bc2klsnnaj1plpl22dwq6pwyc7dvffamz7fi2gf"))))
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://https.git.savannah.gnu.org/git/guile-ncurses.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00xhlca5s278i4g74qgks35ymisa98rhcj63bflja289gpb7j8wf"))))
     (build-system gnu-build-system)
     (inputs (list ncurses guile-3.0))
-    (native-inputs (list pkg-config))
+    (native-inputs (list autoconf automake libtool texinfo pkg-config))
     (arguments
      `(#:modules ((guix build gnu-build-system)
                   ((guix build guile-build-system)
