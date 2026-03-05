@@ -46,6 +46,7 @@
 ;;; Copyright © 2025 Julian Flake <julian@flake.de>
 ;;; Copyright © 2025 Ahmad Jarara <ajarara@fastmail.com>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2025 dan <i@dan.games>
 ;;; Copyright © 2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -106,6 +107,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages shells)
@@ -2128,6 +2130,40 @@ notifications from Signal through the Molly app, and pushes them to a user's
 distributor.  Message encryption keys are never stored nor received by
 Mollysocket.")
     (license license:agpl3+)))
+
+(define-public ncspot
+  (package
+    (name "ncspot")
+    (version "1.3.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/hrkfdn/ncspot")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02i5v7jad80zx2ad9a2ppxg4ipd3faisys41gxcwmpy2kisrlssk"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f))
+    (inputs
+     (cons* dbus
+            libxcb
+            ncurses
+            openssl
+            pulseaudio
+            (cargo-inputs 'ncspot)))
+    (native-inputs
+     (list pkg-config python))
+    (home-page "https://github.com/hrkfdn/ncspot")
+    (synopsis "Ncurses Spotify client written in Rust")
+    (description
+     "@command{ncspot} is an ncurses Spotify client written in Rust using
+librespot.  It is heavily inspired by ncurses MPD clients, such as
+@command{ncmpc}.  It provides a simple and resource friendly alternative to
+the official client.")
+    (license license:bsd-2)))
 
 (define-public netavark
   (package
