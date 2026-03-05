@@ -4127,6 +4127,7 @@ parallel computing platforms.  It also supports serial execution.")
         (base32 "1iaafzsc0pbd61m5hh12nzr2z4rn4n7i68l6ij9vli4m5zsxw39k"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
+    (outputs '("out" "doc"))
     (arguments
      (list
       #:test-target "test"
@@ -4187,11 +4188,11 @@ parallel computing platforms.  It also supports serial execution.")
                  "SPHINXOPTS    = --keep-going"))
               (invoke "make" "-C" "docs" "info")
               (install-file "docs/build/texinfo/yosyshqyosys.info"
-                            (string-append #$output "/share/info"))
+                            (string-append #$output:doc "/share/info"))
               (copy-recursively
                "docs/build/texinfo/yosyshqyosys-figures"
                (string-append
-                #$output "/share/info/yosyshqyosys-figures")))))))
+                #$output:doc "/share/info/yosyshqyosys-figures")))))))
     (native-inputs (list bison
                          cxxopts ;header-only library
                          flex
