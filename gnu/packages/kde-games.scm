@@ -2058,7 +2058,8 @@ This package is part of the KDE games module.")
            kubrick
            lskat
            palapeli
-           picmi))
+           picmi
+           skladnik))
     (home-page "https://apps.kde.org/categories/games/")
     (synopsis "KDE Games")
     (description "This metapackage includes a collection of games provided
