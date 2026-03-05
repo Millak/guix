@@ -1595,7 +1595,7 @@ the \"texlive\" importer."
                        "czan")
   lua ruby)
 
-(define-member (person "folaht"
+(define-member (person "Folât Pjêrsômêj"
                        "folaht@protonmail.com"
                        "folaht")
   documentation)
