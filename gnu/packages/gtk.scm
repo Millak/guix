@@ -2561,14 +2561,14 @@ does not deal with windowing system surfaces, drawing, scene graphs, or input.")
 (define-public spread-sheet-widget
   (package
     (name "spread-sheet-widget")
-    (version "0.8")
+    (version "0.10")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://alpha.gnu.org/gnu/ssw/"
                            "spread-sheet-widget-" version ".tar.gz"))
        (sha256
-        (base32 "0jwmx5i02jwmkp6gci2mapqglh2g3a0092wns185hfygiwlxi2c5"))))
+        (base32 "1ra7x02jskbznnkglpkbbrj3p7fprllrjxfw8zhra697a31jwsc0"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
