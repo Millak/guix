@@ -283,6 +283,7 @@ calls."
   (match-lambda
     ("artistic2" 'artistic2.0)
     ("apache2" 'asl2.0)
+    ("agpl3" 'agpl3+)                   ;usually means "or later"
     ("gpl" 'gpl3+)
     ("gpl1" 'gpl1)
     ("gpl1+" 'gpl1+)
@@ -294,6 +295,7 @@ calls."
     ("lgpl3" 'lgpl3)
     ("knuth" 'knuth)
     ("pd" 'public-domain)
+    ("0bsd" 'bsd-0)
     ("bsd2" 'bsd-2)
     ("bsd3" 'bsd-3)
     ("bsd4" 'bsd-4)
