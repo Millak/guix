@@ -1509,6 +1509,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gnome-control-center-firmware-security.patch	\
   %D%/packages/patches/gnome-control-center-libexecdir.patch	\
   %D%/packages/patches/gnome-dictionary-meson-i18n.patch	\
+  %D%/packages/patches/gnome-recipes-rest-in-soup.patch	\
   %D%/packages/patches/gnome-settings-daemon-gc.patch		\
   %D%/packages/patches/gnome-session-support-elogind.patch	\
   %D%/packages/patches/gnome-tweaks-search-paths.patch		\

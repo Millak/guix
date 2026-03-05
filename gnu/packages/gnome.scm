@@ -801,7 +801,8 @@ patterns.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1h049mzqnlcfqwrhmzbq3pzzdglvy2bn9fj1p8wql7a60pn8sr32"))))
+                "1h049mzqnlcfqwrhmzbq3pzzdglvy2bn9fj1p8wql7a60pn8sr32"))
+              (patches (search-patches "gnome-recipes-rest-in-soup.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
