@@ -169,12 +169,13 @@
     (name "artanis")
     (version "1.3.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/artanis/artanis-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "16cwjyl0ykz6r7vvczrwaik6y4pc0fwc0hvwskfbgv9z71j2alzi"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://https.git.savannah.gnu.org/git/artanis.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256 (base32
+                       "0qpksi681z10jsip8ka0phq5kmkpxfcy5nvm861dsbjb335klbb6"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -213,7 +214,10 @@
     (propagated-inputs
      (list guile-json-4 guile-curl guile-readline guile-redis))
     (native-inputs
-     (list bash-minimal                           ;for the `source' builtin
+     (list autoconf
+           automake
+           gnu-gettext                 ;for 'AC_LIB_LINKFLAGS_FROM_LIBS' macro
+           bash-minimal                           ;for the `source' builtin
            pkg-config
            util-linux))                           ;for the `script' command
     (arguments
