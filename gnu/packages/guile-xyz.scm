@@ -3547,12 +3547,12 @@ Probably can be replaced with guile's built-ins: @code{fdes->ports},
 (define-public guile-wayland-scm-shm
   (package
     (name "guile-wayland-scm-shm")
-    (version "v0.0.1")
+    (version "0.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                      (url "https://codeberg.org/shegeley/wayland-scm")
-                     (commit version)))
+                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
