@@ -13950,19 +13950,20 @@ JavaScript code.")
   (sbcl-package->clasp-package sbcl-css-lite))
 
 (define-public sbcl-ctype
-  (let ((commit "6eb84dfbf1d41f251cc0c09f6e69a2b9415fd3d6"))
+  (let ((commit "d9a77273cf2bdfd98c6a5f920b04c5909b674c17")
+        (revision "5"))
     (package
       (name "sbcl-ctype")
-      (version (git-version "0.0.0" "4" commit))
+      (version (git-version "0.0.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/s-expressionists/ctype")
-               (commit commit)))
+                (url "https://github.com/s-expressionists/ctype")
+                (commit commit)))
          (file-name (git-file-name "cl-ctype" version))
          (sha256
-          (base32 "0sn81ax3imgbkgrd8yjrqknyl2sf36mrylbbdyxvpkyx9nyp80v6"))))
+          (base32 "1l1qz49584l8kss3l1lp5k2brw4xs4xqxhnjzq9fnnwbmy8253nq"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria))
