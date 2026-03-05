@@ -2343,20 +2343,18 @@ rules."
   (let ((plasma-plasma (plasma-package config)))
     (map (lambda (name)
            ((package-direct-input-selector name) plasma-plasma))
-         '("packagekit"          ;for discover
-           "plasma-desktop"
-           "plasma-workspace"
-           "kactivitymanagerd"
-           "plasma-disks"
-           "kdeplasma-addons"
+         '("kdeplasma-addons"
            "kinfocenter"
-           "libksysguard"
            "kpmcore"
            "ktexteditor"
            "kwalletmanager"
-           "powerdevil"
-           "kwallet"
-           "plasma-firewall"))))
+           "libksysguard"
+           "packagekit"          ;for discover
+           "plasma-desktop"
+           "plasma-disks"
+           "plasma-firewall"
+           "plasma-workspace"
+           "powerdevil"))))
 
 ;; see https://bugs.kde.org/show_bug.cgi?id=456210
 ;; if `kde' no exits, fallback to `other', and then unlock lockscreen not work,
