@@ -11972,6 +11972,31 @@ or JRuby.")
     (home-page "https://puma.io/")
     (license license:expat)))
 
+(define-public ruby-hoe-git2
+  (package
+    (name "ruby-hoe-git2")
+    (version "1.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/halostatue/hoe-git2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15gpidgba1xx038srgnnh0dgfjpdq00vhmkl7kmnxl7awf9qldpx"))))
+    (build-system ruby-build-system)
+    (inputs (list git-minimal))
+    (propagated-inputs
+     (list ruby-hoe-3))
+    (synopsis "Hoe plugins for tighter Git integration")
+    (description
+     "This package provides a set of Hoe plugins for tighter Git integration.
+It provides tasks to automate release tagging and pushing and changelog
+generation.")
+    (home-page "https://github.com/halostatue/hoe-git2")
+    (license license:expat)))
+
 (define-public ruby-hoe-git
   (package
     (name "ruby-hoe-git")
