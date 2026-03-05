@@ -1843,6 +1843,7 @@ for xdg-desktop-portal that is using Qt/KF5.")
                              aurorae
                              baloo
                              bluedevil
+                             bolt ;for plasma-thunderbolt
                              breeze
                              breeze-gtk
                              breeze-icons ;default mouse icon
@@ -1889,6 +1890,7 @@ for xdg-desktop-portal that is using Qt/KF5.")
                              plasma-nm
                              plasma-pa
                              plasma-systemmonitor
+                             plasma-thunderbolt
                              plasma-vault
                              plasma-welcome
                              plasma-workspace
@@ -1925,7 +1927,6 @@ for xdg-desktop-portal that is using Qt/KF5.")
                                '(gnu packages kde-systemtools))
                               'partitionmanager)
                              spectacle))
-    ;; plasma-thunderbolt ;waiting for bolt
     (synopsis "The KDE Plasma desktop environment")
     (home-page "https://kde.org/plasma-desktop/")
     (description
