@@ -3704,15 +3704,22 @@ client bindings for Wayland.")
     (name "g-wrap")
     (version "1.9.15")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://savannah/g-wrap/g-wrap-"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://https.git.savannah.gnu.org/git/g-wrap.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ak0bha37dfpj9kmyw1r8fj8nva639aw5xr66wr5gd3l1rqf5xhg"))))
+                "19bwqfk33djd51ijylvcmz3zz9pqvv1k7bk8k912b1bwbpfr3j0y"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config))
+     (list autoconf
+           automake
+           libtool
+           gnu-gettext                 ;for 'AC_LIB_LINKFLAGS_FROM_LIBS' macro
+           texinfo
+           pkg-config))
     (propagated-inputs
      (list guile-2.2 guile-lib))
     (inputs
