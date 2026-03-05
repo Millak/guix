@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2024, 2025 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2024-2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2025 Junker <dk@junkeria.club>
 ;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
 ;;;
@@ -41,8 +41,10 @@
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-graphics)
   #:use-module (gnu packages kde-multimedia)
+  #:use-module (gnu packages kde-pim)
   #:use-module (gnu packages libreoffice)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages markup)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ocr)
@@ -328,6 +330,50 @@ cmark processors if they are installed.")
      "KleverNotes is a note taking and management application.  It uses Markdown
 and allows you to preview your content.")
     (license license:gpl3+)))
+
+(define-public marknote
+  (package
+    (name "marknote")
+    (version "1.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/marknote"
+                           "/marknote-" version ".tar.xz"))
+       (sha256
+        (base32 "1697mp11x1w5bc6l2abzvw8wiadkchp29k6nqbdrr86rqd8zbhln"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'check-setup
+                 (lambda _
+                   (setenv "HOME" (getcwd)))))))
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list kcolorscheme
+           kconfig
+           kcoreaddons
+           kcrash
+           ki18n
+           kiconthemes
+           kirigami
+           kirigami-addons
+           kmime
+           kwindowsystem
+           kxmlgui
+           md4c
+           qtdeclarative
+           qtsvg
+           qtwayland))
+    (home-page "https://apps.kde.org/marknote/")
+    (synopsis "Markdown note manager")
+    (description "Marknote is a note manager that lets you create rich text
+notes in Markdown format and organise them into notebooks.  You can choose an
+icon and an accent color for each notebook.")
+    (license license:gpl2+)))
 
 (define-public tellico
   (package
