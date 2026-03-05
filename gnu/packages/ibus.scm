@@ -1020,7 +1020,7 @@ hanja dictionary and small hangul character classification.")
                (add-before 'check 'pre-check
                  (lambda _
                    (setenv "HOME" (getcwd))))))) ; tests write to $HOME
-    (native-inputs (list (list glib "bin") pkg-config))
+    (native-inputs (list (list glib "bin") gobject-introspection pkg-config))
     (inputs (list glib gtk+ ibus python python-pygobject))
     (native-search-paths
      (list (search-path-specification
