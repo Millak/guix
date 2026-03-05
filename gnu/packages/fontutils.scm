@@ -24,7 +24,7 @@
 ;;; Copyright © 2024 Sören Tempel <soeren@soeren-tempel.net>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Sou Bunnbu (宋文武) <iyzsong@gmail.com>
-;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025, 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Alexey Abramov <levenson@mmer.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -2036,7 +2036,7 @@ maintain the Noto Fonts project.")
 (define-public fcft
   (package
     (name "fcft")
-    (version "3.3.2")
+    (version "3.3.3")
     (home-page "https://codeberg.org/dnkl/fcft")
     (source (origin
               (method git-fetch)
@@ -2044,7 +2044,7 @@ maintain the Noto Fonts project.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1saqi8fxrz2lddx9pj6ym4ikx11sgqlyp8w10ngdlci384p49sbb"))))
+                "0653l611lfkry6lcpbhvcpd9lsrv9ybfabxafpwa39jn3ykaah9j"))))
     (build-system meson-build-system)
     (native-inputs
      (list check pkg-config scdoc))
