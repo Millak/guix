@@ -36759,20 +36759,20 @@ multiple processes (imagine multiprocessing, billiard, futures, celery etc).
 (define-public python-telethon
   (package
     (name "python-telethon")
-    (version "1.41.1")
+    (version "1.42.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/LonamiWebs/Telethon")
+              (url "https://codeberg.org/Lonami/Telethon")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rbzqbxsihqm2w1zrvaaafvzwyqqyjx49wfffxrnsr9m32giwzsp"))))
+        (base32 "16xp5cwfv1ly25zcnnn0jgrmzpsl3yqzf92dfbnpyiy64j8wkh9l"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-pytest-asyncio-0.26
+           python-pytest-asyncio
            python-pytest-trio
            python-setuptools))
     (propagated-inputs
