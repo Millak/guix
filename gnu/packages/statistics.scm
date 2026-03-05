@@ -215,14 +215,14 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
 (define-public pspp
   (package
     (name "pspp")
-    (version "2.0.1")
+    (version "2.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://gnu/pspp/pspp-" version ".tar.gz"))
        (sha256
         (base32
-         "002c08rxym056mn7a73jwjmcazqd4gh5j1cyml603y4ckvqb1nwf"))))
+         "1hqlxza6cbpvhcnnns047rmydrg8f991jad7dhg6m9nzgf9m1rdm"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
@@ -637,7 +637,7 @@ available, greatly increasing its breadth and scope.")
       #:phases
       #~(modify-phases %standard-phases
           ;; TODO: The deprecation warnings break the tests, report upstream.
-          ;; 
+          ;;
           ;; AttributeError: module 'numpy' has no attribute 'bool'. `np.bool`
           ;; was a deprecated alias for the builtin `bool`. To avoid this
           ;; error in existing code, use `bool` by itself. Doing this will not
