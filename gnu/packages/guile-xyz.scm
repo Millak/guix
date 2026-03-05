@@ -1436,20 +1436,19 @@ HTML (via SXML) or any other format for rendering.")
     (name "guile-sjson")
     (version "0.2.2")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://dustycloud.org/misc/sjson-" version
-                                  ".tar.gz"))
-              (sha256
-               (base32
-                "08sr16fg5cqvik3wblav6k4b6djc5ydhgfvxa49bc5bh1irqvrcn"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/dustyweb/guile-sjson")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256 (base32
+                       "1npbla3vy1m0dqvr8gfzx1ncd2mp2cm59mnb7g490vak29kc8s9j"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  ;; Allow builds with Guile 3.0.
-                  (substitute* "configure"
-                    (("2\\.2 2\\.0")
-                     "3.0 2.2 2.0"))
-                  #t))))
+               ;; Allow builds with Guile 3.0.
+               #~(substitute* "configure.ac"
+                   (("2\\.2 2\\.0")
+                    "3.0 2.2 2.0")))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config))
