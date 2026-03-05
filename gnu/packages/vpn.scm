@@ -315,7 +315,7 @@ Networks and The Calyx Institute, where the former is default.")
        (list python-setuptools))
       (inputs
        (list bash-minimal
-             python-pygobject
+             python-pygobject-3.50
              python-urllib3
              python-requests
              webkitgtk-with-libsoup2))
