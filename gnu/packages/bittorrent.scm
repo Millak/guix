@@ -655,24 +655,23 @@ the following features:
         (base32
          "1kbac1qjbddcib0bldqaf0dcq5mqi9i2jv2fd4fayam4bcmjgfmr"))))
     (build-system pyproject-build-system)
-    (inputs (list bash-minimal))
-    (propagated-inputs
-     (list gtk+
-           libtorrent-rasterbar
-           nss-certs
-           python-pycairo
-           python-chardet
-           python-dbus-1.2
-           python-mako
-           python-pygobject
-           python-pillow
-           python-pyopenssl
-           python-pyxdg
-           python-rencode
-           python-service-identity
-           python-setproctitle
-           python-twisted
-           python-zope-interface))
+    (inputs (list bash-minimal
+                  gtk+
+                  libtorrent-rasterbar
+                  nss-certs
+                  python-pycairo
+                  python-chardet
+                  python-dbus-1.2
+                  python-mako
+                  python-pygobject-3.50
+                  python-pillow
+                  python-pyopenssl
+                  python-pyxdg
+                  python-rencode
+                  python-service-identity
+                  python-setproctitle
+                  python-twisted
+                  python-zope-interface))
     (native-inputs
      (list intltool
            python-pytest
