@@ -7,7 +7,7 @@
 ;;; Copyright © 2020, 2023-2025 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2023, 2025 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2023, 2025, 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
@@ -1839,7 +1839,6 @@ for xdg-desktop-portal that is using Qt/KF5.")
     (arguments
      (list #:builder #~(begin
                          (mkdir #$output))))
-    ;; TODO: cleanup, check what is no need
     (propagated-inputs (list appmenu-gtk-module
                              aurorae
                              baloo
@@ -1853,7 +1852,6 @@ for xdg-desktop-portal that is using Qt/KF5.")
                              kactivitymanagerd
                              kdeclarative ;required by sddm breeze theme
                              kde-cli-tools
-                             kdecoration
                              kde-gtk-config
                              kded
                              kdeplasma-addons
