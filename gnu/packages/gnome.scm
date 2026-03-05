@@ -14395,7 +14395,7 @@ GNU Privacy Guard built with libadwaita.")
 (define-public gnome-software
   (package
     (name "gnome-software")
-    (version "46.5")
+    (version "48.4")
     (source
      (origin
        (method url-fetch)
@@ -14404,7 +14404,7 @@ GNU Privacy Guard built with libadwaita.")
                        name "/"
                        (version-major version) "/"
                        name "-" version ".tar.xz"))
-       (sha256 (base32 "0b5y9z64582aarw3v92wjm63yib2q85ylny1k7k4d2y48jivirb9"))))
+       (sha256 (base32 "0fr6rmnbglf4h0c3q6zfb1fyf5y7pihndcif48xbc26dcay31lcw"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -14414,7 +14414,9 @@ GNU Privacy Guard built with libadwaita.")
       #~(list "--no-suite=plugins")
       #:glib-or-gtk? #t
       #:configure-flags
-      #~(list "-Dhardcoded_proprietary_webapps=false")
+      #~(list "-Dhardcoded_proprietary_webapps=false"
+              (string-append "-Dc_link_args=-Wl,-rpath=" #$output
+                             "/lib/gnome-software"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-iso-codes
@@ -14423,18 +14425,17 @@ GNU Privacy Guard built with libadwaita.")
                 (substitute* "./gs-language.c"
                   (("DATADIR")
                    (format #f "\"~a/share\"" #$iso-codes))))))
-          (add-before 'install 'disable-gtk-update-icon-cache
+          (add-after 'unpack 'disable-gtk-update-icon-cache
             (lambda _
-              (setenv "DESTDIR" "/")
-              ;; Needed for complete RUNPATHs, but not actually needed at runtime.
-              (copy-file
-               "../build/lib/libgnomesoftware.so.20"
-               (string-append #$output "/lib/libgnomesoftware.so.20")))))))
+              (substitute* "meson_post_install.sh"
+                (("(gtk-update-icon-cache|update-desktop-database)")
+                 "true")))))))
     (native-inputs
      (list docbook-xsl
            gettext-minimal
            `(,glib "bin")
            gtk-doc/stable
+           itstool
            libglib-testing
            libxslt                      ;for xsltproc
            pkg-config
