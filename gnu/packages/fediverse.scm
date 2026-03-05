@@ -159,7 +159,7 @@ Features include:
 (define-public tuba
   (package
     (name "tuba")
-    (version "0.9.2")
+    (version "0.10.3")
     (source
      (origin
        (method git-fetch)
@@ -168,7 +168,7 @@ Features include:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a66kgsa7blsfk4fp62m76jmvqqlmilih1rs48wb41q69ldm0953"))))
+        (base32 "1w87dma3v04zk8b7s67f3nq2fdrjarb91m8apkhhdh3qa23w3rk1"))))
     (build-system meson-build-system)
     (arguments
       (list
