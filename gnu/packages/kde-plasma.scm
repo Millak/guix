@@ -1840,13 +1840,16 @@ for xdg-desktop-portal that is using Qt/KF5.")
      (list #:builder #~(begin
                          (mkdir #$output))))
     ;; TODO: cleanup, check what is no need
-    (propagated-inputs (list aurorae
+    (propagated-inputs (list appmenu-gtk-module
+                             aurorae
                              baloo
                              bluedevil
                              breeze
                              breeze-gtk
                              breeze-icons ;default mouse icon
+                             colord
                              discover
+                             fwupd
                              kactivitymanagerd
                              kdeclarative ;required by sddm breeze theme
                              kde-cli-tools
@@ -1858,7 +1861,10 @@ for xdg-desktop-portal that is using Qt/KF5.")
                              kglobalacceld
                              kiconthemes ;required by sddm breeze theme
                              kinfocenter
+                             kio
+                             kio-extras
                              kmenuedit
+                             knighttime
                              krdp
                              kscreen
                              kscreenlocker
