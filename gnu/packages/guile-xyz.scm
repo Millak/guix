@@ -2457,13 +2457,14 @@ written in pure Scheme by using Guile's foreign function interface.")
     (name "guile-xosd")
     (version "0.2.2")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/alezost/" name
-                                  "/releases/download/v" version
-                                  "/" name "-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/alezost/guile-xosd")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "10r29bpyrsvjalnzkam2falj9k34lvxmch05zs606zp1nk93whp3"))))
+                "0jc88zg6icdg70mxbg732hx5by5bahqjm68yhx2ypqdqi7kqq1fk"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -2476,7 +2477,7 @@ written in pure Scheme by using Guile's foreign function interface.")
                       (or (getenv "CPATH") "")))
              #t)))))
     (native-inputs
-     (list pkg-config))
+     (list autoconf automake libtool texinfo pkg-config))
     (inputs
      (list guile-3.0 libx11 libxext libxinerama xosd))
     (home-page "https://github.com/alezost/guile-xosd")
