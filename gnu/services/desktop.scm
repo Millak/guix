@@ -2325,7 +2325,8 @@ rules."
   (let ((plasma-plasma (plasma-package config)))
     (map (lambda (name)
            ((package-direct-input-selector name) plasma-plasma))
-         '("fwupd" ;for kinfocenter and discover
+         '("bolt" ;for plasma-thunderbolt
+           "fwupd" ;for kinfocenter and discover
            "kdeplasma-addons"
            "kinfocenter"
            "kpmcore"
@@ -2344,7 +2345,8 @@ rules."
   (let ((plasma-plasma (plasma-package config)))
     (map (lambda (name)
            ((package-direct-input-selector name) plasma-plasma))
-         '("fwupd" ;for kinfocenter and discover
+         '("bolt" ;for plasma-thunderbolt
+           "fwupd" ;for kinfocenter and discover
            "kdeplasma-addons"
            "kinfocenter"
            "kpmcore"
