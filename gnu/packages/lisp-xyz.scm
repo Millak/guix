@@ -33406,7 +33406,11 @@ optimization policies.")
   (sbcl-package->cl-source-package sbcl-trucler))
 
 (define-public ecl-trucler
-  (sbcl-package->ecl-package sbcl-trucler))
+  (package
+    (inherit (sbcl-package->ecl-package sbcl-trucler))
+    (arguments
+     ;; https://github.com/s-expressionists/Trucler/issues/14
+     (list #:tests? #f))))
 
 (define-public sbcl-type-i
   (let ((commit "d34440ab4ebf5a46a58deccb35950b15670e3667")
