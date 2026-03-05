@@ -204,7 +204,8 @@ set -l guix_graph_backends \
     graphviz \
     d3js \
     cypher \
-    graphml
+    graphml \
+    cyclonedx-json
 set -l guix_graph_types \
     package \
     reverse-package \
@@ -217,6 +218,8 @@ set -l guix_graph_types \
     referrers \
     module
 set -l guix_image_types \
+    a20-olinuxino-lime2-raw \
+    am335x-evm-raw \
     docker \
     efi-raw \
     efi32-raw \
@@ -232,7 +235,9 @@ set -l guix_image_types \
     pine64-raw \
     pinebook-pro-raw \
     qcow2 \
+    qcow2-gpt \
     raw-with-offset \
+    rock-4c-plus-raw \
     rock64-raw \
     tarball \
     uncompressed-iso9660 \
@@ -254,6 +259,7 @@ set -l guix_importers \
     hexpm \
     json \
     luanti \
+    minetest \
     npm-binary \
     nuget \
     opam \
@@ -301,6 +307,7 @@ set -l guix_processes_formats \
     recutils \
     normalized
 set -l guix_refresh_updaters \
+    apache \
     bioconductor \
     composer \
     cpan \
@@ -334,7 +341,8 @@ set -l guix_repl_types \
 set -l guix_style_stylings \
     format \
     inputs \
-    arguments
+    arguments \
+    git-source
 set -l guix_commands \
     deploy \
     describe \
@@ -486,6 +494,7 @@ set -l guix_commands_with_build_options \
     pack \
     package \
     pull \
+    shell \
     system \
     time-machine \
     upgrade
@@ -792,7 +801,6 @@ complete -f -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_se
 set -l guix_importer nuget
 complete -x -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_seen_subcommand_from $guix_importer" -s a -l archive=        -d "specify the archive repository"
 complete -f -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_seen_subcommand_from $guix_importer" -s r -l recursive       -d "import packages recursively"
-complete -x -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_seen_subcommand_from $guix_importer" -s s -l style=          -d "choose output style" -a "specification variable"
 complete -x -c guix -n "__fish_seen_subcommand_from $guix_command; and __fish_seen_subcommand_from $guix_importer" -s p -l license-prefix= -d "add custom prefix to licenses"
 
 
