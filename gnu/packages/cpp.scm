@@ -307,7 +307,7 @@ navigation, and handling of incoming packets.")
 (define-public castxml
 (package
   (name "castxml")
-  (version "0.6.4")
+  (version "0.7.0")
   (source (origin
             (method git-fetch)
             (uri
@@ -316,7 +316,7 @@ navigation, and handling of incoming packets.")
               (commit (string-append "v" version))))
             (file-name (git-file-name name version))
             (sha256
-             (base32 "0l5ys9zmllfgwhjrm897akbsf38iswfcarhxg27xfhiy0bmzcwsg"))))
+             (base32 "03l9nyd871c5gk5cdp8fbgyszps5989rhw12wap8dgmr6s6jv3rj"))))
   (build-system cmake-build-system)
   (arguments
    (list
@@ -327,7 +327,7 @@ navigation, and handling of incoming packets.")
                       #$(version-major
                          (package-version (this-package-native-input "clang")))))))
   (inputs (list libffi))
-  (native-inputs (list clang-17 llvm-17))
+  (native-inputs (list clang-21 llvm-21))
   (home-page "https://github.com/CastXML/CastXML")
   (synopsis "C-family abstract syntax tree XML output")
   (description "CastXML is a C-family abstract syntax tree XML output tool.
