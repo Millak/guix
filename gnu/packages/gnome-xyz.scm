@@ -562,7 +562,7 @@ provides the @command{g4music} command.")
            python-numpy
            python-pycairo
            python-pyglm
-           python-pygobject
+           python-pygobject-3.50
            python-pyopengl))
     (native-inputs
      (list python-pytest python-setuptools))
