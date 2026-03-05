@@ -43,6 +43,7 @@
 (define-module (gnu packages gl)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages backup)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
@@ -57,6 +58,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -339,22 +341,28 @@ also known as DXTn or DXTC) for Mesa.")
            libxxf86vm
            xorgproto))
     (inputs
-     (cons* elfutils                   ;libelf required for r600 when using llvm
-            expat
-            (force libva-without-mesa)
-            libxml2
-            libxrandr
-            libxvmc
-            llvm-for-mesa
-            vulkan-loader
-            wayland
-            wayland-protocols
-            `(,zstd "lib")
-            ;; Rust isn't needed for all architectures.
-            (if (target-x86-64?)
-                ;; NVK dependencies
-                (cargo-inputs 'mesa)
-                '())))
+     (append
+       (list elfutils                  ;libelf required for r600 when using llvm
+             expat
+             (force libva-without-mesa)
+             libxml2
+             libxrandr
+             libxvmc
+             llvm-for-mesa
+             vulkan-loader
+             wayland
+             wayland-protocols
+             `(,zstd "lib"))
+       ;; The freedreno driver wants libarchive and lua.
+       (if (target-arm?)
+           (list libarchive
+                 lua-5.4)
+           '())
+       ;; Rust isn't needed for all architectures.
+       (if (target-x86-64?)
+           ;; NVK dependencies
+           (cargo-inputs 'mesa)
+           '())))
     (native-inputs
      (append
       (list bison
