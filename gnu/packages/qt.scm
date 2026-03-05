@@ -34,7 +34,7 @@
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;; Copyright © 2024 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
-;;; Copyright © 2024 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2024, 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2025 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -3505,6 +3505,47 @@ message.")
     (description "The Qt Speech module provides a virtual keyboard framework
 that consists of a C++ backend supporting custom input methods as well as a UI
 frontend implemented in QML.")))
+
+(define-public qtvirtualkeyboard
+  (package
+    (name "qtvirtualkeyboard")
+    (version "6.9.2")
+    (source (origin
+              (method url-fetch)
+              (uri (qt-url name version))
+              (sha256
+               (base32
+                "1qqizh7kyqbqqnrm1mmlf2709rm1rnflbqdl1bi75yms07d00hbv"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'check-setup
+            (lambda _
+              (setenv "QML_IMPORT_PATH"
+                      (string-append #$output "/lib/qt6/qml:"
+                                     (getenv "QML_IMPORT_PATH")))
+              (setenv "HOME" (getcwd))
+              (setenv "QT_QPA_PLATFORM" "offscreen")
+              (setenv "DISPLAY" ":1")
+              (system "Xvfb +extension GLX :1 &")))
+          (delete 'check)               ;move after the install phase
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check))
+          (add-after 'install 'delete-installed-tests
+            (lambda _
+              (delete-file-recursively (string-append #$output "/tests")))))))
+    (native-inputs (list perl xorg-server-for-tests))
+    (inputs (list qtbase))
+    (propagated-inputs (list qtdeclarative qtmultimedia qtsvg))
+    (synopsis "QtQuick virtual keyboard")
+    (description "The Qt Speech module provides a virtual keyboard framework
+that consists of a C++ backend supporting custom input methods as well as a UI
+frontend implemented in QML.")
+    (home-page (package-home-page qtbase))
+    (license (package-license qtbase))))
 
 (define-public qtspell
   (package
