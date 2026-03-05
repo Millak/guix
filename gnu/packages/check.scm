@@ -322,6 +322,10 @@ like Jasmine or Mocha.")
           (sha256
            (base32
             "04qg1p9afdd6453k18qskazrvscysdcjz9j6w4i6p5x4xyma19v6")))))))
+    (arguments
+     ;; FIXME: The tests hang on the 64bit Hurd.
+     (list #:tests? (and (not (%current-target-system))
+                         (not (system-hurd64?)))))
     (build-system gnu-build-system)
     (home-page "https://libcheck.github.io/check/")
     (synopsis "Unit test framework for C")
