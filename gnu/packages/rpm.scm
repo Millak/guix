@@ -113,7 +113,10 @@ applying deltarpms, compatible with the original deltarpm packages.")
               (let ((dst (string-append #$output:doc "/share/gtk-doc")))
                 (mkdir-p (dirname dst))
                 (rename-file (search-input-directory outputs "share/gtk-doc")
-                             dst)))))))
+                             dst))))
+          (delete 'check)
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check)))))
     (native-inputs
      (list docbook-xml-4.1.2
            `(,glib "bin")
