@@ -11796,7 +11796,7 @@ mp3, Ogg Vorbis and FLAC")
      (list bash-minimal
            gtk+
            python
-           python-pygobject
+           python-pygobject-3.50
            gstreamer
            gst-plugins-base))
     (home-page "https://soundconverter.org/")
