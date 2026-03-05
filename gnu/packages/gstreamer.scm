@@ -1165,11 +1165,13 @@ RTSP connections and messages.")
                (py:site-packages %build-inputs %outputs) "/gi/overrides"))))
     (native-inputs
      (list pkg-config python))
+    ;; XXX: Move back to propagated-inputs once we no longer need to use
+    ;; the old 3.50 version.
+    (inputs (list python-pygobject-3.50))
     (propagated-inputs
      (list gst-plugins-base
            gst-plugins-bad              ; for gst-analytics
-           gst-rtsp-server
-           python-pygobject))
+           gst-rtsp-server))
     (home-page "https://gstreamer.freedesktop.org/")
     (synopsis "GStreamer GObject Introspection overrides for Python")
     (description
