@@ -492,8 +492,6 @@ panfrost,r300,r600,svga,softpipe,llvmpipe,tegra,v3d,vc4,virgl,zink"))
                                  (string-split (list-ref split-url 6) #\_) "-")
                                "-" (list-ref split-url 7) ".tar.gz\n"))))
                         ;; "Download" the packages.
-                        ;; once-cell-1.8.0 was yanked by upstream
-                        (delete-file "subprojects/once_cell-1-rs.wrap")
                         (for-each
                           (lambda (wrapper)
                             (invoke "meson" "subprojects" "download"
