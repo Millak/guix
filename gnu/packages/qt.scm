@@ -3502,9 +3502,9 @@ message.")
     (inputs (list qtbase-5 qtdeclarative-5))
     (propagated-inputs (list qtquickcontrols-5 qtsvg-5))
     (synopsis "QtQuick virtual keyboard")
-    (description "The Qt Speech module provides a virtual keyboard framework
-that consists of a C++ backend supporting custom input methods as well as a UI
-frontend implemented in QML.")))
+    (description "The Qt Virtual Keyboard module provides a virtual keyboard
+framework that consists of a C++ backend supporting custom input methods as well
+as a UI frontend implemented in QML.")))
 
 (define-public qtvirtualkeyboard
   (package
@@ -3541,9 +3541,9 @@ frontend implemented in QML.")))
     (inputs (list qtbase))
     (propagated-inputs (list qtdeclarative qtmultimedia qtsvg))
     (synopsis "QtQuick virtual keyboard")
-    (description "The Qt Speech module provides a virtual keyboard framework
-that consists of a C++ backend supporting custom input methods as well as a UI
-frontend implemented in QML.")
+    (description "The Qt Virtual Keyboard module provides a virtual keyboard
+framework that consists of a C++ backend supporting custom input methods as well
+as a UI frontend implemented in QML.")
     (home-page (package-home-page qtbase))
     (license (package-license qtbase))))
 
