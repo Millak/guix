@@ -2754,6 +2754,7 @@ XDG-Output for wlclock to work.")
            wayland
            wayland-protocols
            xcb-util-errors
+           xcb-util-renderutil
            xcb-util-wm
            xorg-server-xwayland))
     (native-inputs
