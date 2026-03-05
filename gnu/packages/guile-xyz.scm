@@ -1872,12 +1872,14 @@ types are supported.")
     (name "guile-aa-tree")
     (version "3.1.1")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://savannah/guile-aa-tree/guile-aa-tree-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0044c105r3q9vpl17pv3phl1b79kjm1llhkakqgiasixyav01blh"))))
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://https.git.savannah.gnu.org/git/guile-aa-tree.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256 (base32
+                       "0ghbrszjhv2abgpf11js6grqrri53frysf4360a5yvwhy9bb42pc"))))
     (build-system guile-build-system)
     (inputs (list guile-3.0))
     (arguments
