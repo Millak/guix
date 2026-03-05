@@ -2194,17 +2194,19 @@ using S-expressions.")
     (name "guile-debbugs")
     (version "0.0.3")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/guile-debbugs/guile-debbugs-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1cc63nw3xdfjrfk8c58r6d5lidmfq5cpqcy32yd5xp81yccprvn9"))))
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://https.git.savannah.gnu.org/git/guile-debbugs.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256 (base32
+                       "0ipv3vywx02yhyssq5rp1bifg1qkydgh6kr16vfspxs601q8bbm2"))))
     (build-system gnu-build-system)
     (propagated-inputs
      (list guile-email))
     (native-inputs
-     (list guile-3.0 pkg-config))
+     (list autoconf automake texinfo guile-3.0 pkg-config))
     (home-page "https://savannah.gnu.org/projects/guile-debbugs/")
     (synopsis "Guile interface to the Debbugs bug tracking service")
     (description
