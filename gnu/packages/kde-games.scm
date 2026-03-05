@@ -7,7 +7,7 @@
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2024, 2025 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2025 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2025, 2026 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,6 +36,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages games)
   #:use-module (gnu packages gl)
+  #:use-module (gnu packages graphics)
   #:use-module ((gnu packages freedesktop) #:select (shared-mime-info))
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-multimedia)
@@ -1972,6 +1973,42 @@ This package is part of the KDE games module.")
            license:fdl1.2+
            (license:non-copyleft
             "https://invent.kde.org/games/kpat/-/blob/master/COPYING")))))
+
+(define-public skladnik
+  (package
+    (name "skladnik")
+    (version "25.12.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/skladnik-" version ".tar.xz"))
+       (sha256
+        (base32 "0jjawicyn3ng1n7fpricb3my3lx1gfhaw96ba7pa2rl9c2vlgp9v"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f)) ;no tests
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list libkdegames
+           kconfig
+           kconfigwidgets
+           kcoreaddons
+           kcrash
+           kdbusaddons
+           ki18n
+           kio
+           kwidgetsaddons
+           kxmlgui
+           povray))
+    (home-page "https://apps.kde.org/skladnik/")
+    (synopsis "Japanese warehouse keeper sokoban game")
+    (description "Skladnik is the Japanese warehouse keeper sokoban game.
+
+This package is part of the KDE games module.")
+    (license license:gpl2+)))
 
 (define-public kde-games
   (package
