@@ -402,15 +402,15 @@ also known as DXTn or DXTC) for Mesa.")
       #~(list
          #$@(cond
              ((target-aarch64?)
-              ;; This includes more drivers than "auto": asahi, r300, r600
-              '("-Dgallium-drivers=asahi,etnaviv,freedreno,lima,nouveau,\
-panfrost,r300,r600,svga,softpipe,llvmpipe,tegra,v3d,vc4,virgl,zink"))
+              ;; This includes more drivers than "auto": r300, r600
+              '("-Dgallium-drivers=asahi,etnaviv,freedreno,iris,lima,nouveau,\
+panfrost,r300,r600,svga,softpipe,lima,llvmpipe,tegra,v3d,vc4,virgl,zink"))
              ((target-arm32?)
               ;; This includes more drivers than "auto": r300, r600
-              '("-Dgallium-drivers=etnaviv,freedreno,lima,nouveau,\
-panfrost,r300,r600,svga,softpipe,llvmpipe,tegra,v3d,vc4,virgl,zink"))
+              '("-Dgallium-drivers=etnaviv,freedreno,iris,lima,nouveau,\
+panfrost,r300,r600,svga,softpipe,lima,llvmpipe,tegra,v3d,vc4,virgl,zink"))
              ((or (target-ppc64le?) (target-ppc32?) (target-riscv64?))
-              ;; This include more drivers than "auto": svga
+              ;; This includes more drivers than "auto": svga
               '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,svga,softpipe,llvmpipe,virgl,zink"))
              (else
               '("-Dgallium-drivers=auto")))
@@ -433,8 +433,8 @@ panfrost,r300,r600,svga,softpipe,llvmpipe,tegra,v3d,vc4,virgl,zink"))
               ;; TODO: Enable nouveau/NVK.
               '("-Dvulkan-drivers=intel,intel_hasvk,amd,swrast"))
              ((target-aarch64?)
-              ;; This differs from "auto" which only includes swrast and intel
-              '("-Dvulkan-drivers=freedreno,amd,broadcom,swrast,asahi"))
+              ;; This includes more drivers than "auto": amd, broadcom
+              '("-Dvulkan-drivers=freedreno,amd,broadcom,intel,panfrost,swrast,asahi"))
              (else
               '("-Dvulkan-drivers=auto")))
 
