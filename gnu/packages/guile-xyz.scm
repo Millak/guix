@@ -3811,14 +3811,34 @@ quotes.")
     (name "guile-reader")
     (version "0.6.4")
     (source  (origin
-               (method url-fetch)
-               (uri (string-append "mirror://savannah/guile-reader/guile-reader-"
-                                   version ".tar.gz"))
+               (method git-fetch)
+               (uri (git-reference
+                      (url
+                       "https://https.git.savannah.gnu.org/git/guile-reader.git")
+                      (commit (string-append "v" version))))
+               (file-name (git-file-name name version))
                (sha256
                 (base32
-                 "0nqkk4x18i7p3k9jxld4fnk8d69bq9ag6hqsyjzbfw9fmhrh08kb"))))
+                 "0y3dq509hwm30ixb3cs3wci2lpni78438q7zz8f7way8vqp5164a"))))
     (build-system gnu-build-system)
-    (native-inputs (list pkg-config gperf))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'bootstrap 'copy-config.rpath
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; This file is not automatically copied by 'autoreconf'.
+                   (let ((config-rpath (search-input-file
+                                        inputs
+                                        "/share/gettext/config.rpath")))
+                     (install-file config-rpath "build-aux")))))))
+    (native-inputs
+     (list autoconf
+           automake
+           libtool
+           gnu-gettext                 ;for 'AC_LIB_LINKFLAGS_FROM_LIBS' macro
+           texinfo
+           pkg-config
+           gperf))
     (inputs (list guile-3.0))
     (synopsis "Framework for building readers for GNU Guile")
     (description
