@@ -3623,12 +3623,12 @@ Probably can be replaced with guile's built-in file-descriptor procedures.")
 (define-public guile-wayland-scm
   (package
     (name "guile-wayland-scm")
-    (version "v0.0.1")
+    (version "0.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                      (url "https://codeberg.org/shegeley/wayland-scm")
-                     (commit version)))
+                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
