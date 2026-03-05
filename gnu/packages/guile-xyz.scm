@@ -3897,13 +3897,16 @@ library.")
     (name "guile-lib")
     (version "0.2.8.1")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://savannah/guile-lib/guile-lib-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1ca95g15a88l7rpqcnzmhj1kyxc7gyfbvnni1hckv8z677cc4x0k"))
-              (patches (search-patches "guile-lib-fix-tests-for-guile2.2.patch"))))
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://https.git.savannah.gnu.org/git/guile-lib.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256 (base32
+                       "1f5a1mi1w487ia677nl8b6gixbgcavnbykzmgqs0yiyrc3w6vdcz"))
+              (patches (search-patches
+                        "guile-lib-fix-tests-for-guile2.2.patch"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0") ;placate guild warnings
@@ -3921,6 +3924,7 @@ $(libdir)/guile/@GUILE_EFFECTIVE_VERSION@/site-ccache\n")))))))
     (native-inputs
      (list autoconf
            automake
+           texinfo
            gettext-minimal
            guile-3.0
            pkg-config))
