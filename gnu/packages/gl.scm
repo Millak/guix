@@ -363,7 +363,7 @@ also known as DXTn or DXTC) for Mesa.")
                  lua-5.4)
            '())
        ;; Rust isn't needed for all architectures.
-       (if (target-x86-64?)
+       (if (and (target-x86-64?) (target-linux?))
            ;; NVK dependencies
            (cargo-inputs 'mesa)
            '())))
@@ -393,7 +393,7 @@ also known as DXTn or DXTC) for Mesa.")
                 wayland-protocols)
           '())
       ;; Rust isn't needed for all architectures.
-      (if (target-x86-64?)
+      (if (and (target-x86-64?) (target-linux?))
           ;; NVK dependencies
           (list rust
                 rust-bindgen-cli
