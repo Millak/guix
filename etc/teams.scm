@@ -1595,6 +1595,11 @@ the \"texlive\" importer."
                        "czan")
   lua ruby)
 
+(define-member (person "folaht"
+                       "folaht@protonmail.com"
+                       "folaht")
+  documentation)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
