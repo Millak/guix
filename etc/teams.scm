@@ -1420,7 +1420,7 @@ the \"texlive\" importer."
 (define-member (person "Zheng Junjie"
                        "z572@z572.online"
                        "Z572")
-  core-packages qt kde)
+  core-packages)
 
 (define-member (person "Sughosha"
                        "sughosha@disroot.org"
