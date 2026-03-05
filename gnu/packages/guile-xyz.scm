@@ -2521,10 +2521,6 @@ library}.")
               (assoc-ref %standard-phases 'check)))))
     (native-inputs (list autoconf automake libtool pkg-config))
     (inputs (list guile-3.0 yaml-cpp))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "GUILE_EXTENSIONS_PATH")
-            (files (list "lib/guile/3.0")))))
     (home-page "https://gitlab.com/yorgath/guile-yamlpp")
     (synopsis "Guile YAML reader/writer based on @code{yaml-cpp}")
     (description
@@ -3538,10 +3534,6 @@ wrap G-Golf applications when writing a Guix package.")))
                 (install-file "socket.scm" share-dir))))
           (delete 'check)
           (delete 'install))))
-    (native-search-paths
-     (list (search-path-specification
-             (variable "GUILE_EXTENSIONS_PATH")
-             (files (list "lib/guile/3.0")))))
     (inputs (list gcc guile-3.0))
     (synopsis "C bindings for UNIX sockets in multi-scheme (Guile, Gauche,
 Chicken) Wayland library")
@@ -3615,10 +3607,6 @@ Probably can be replaced with guile's built-ins: @code{fdes->ports},
                 (install-file "shm.scm" share-dir))))
           (delete 'check)
           (delete 'install))))
-    (native-search-paths
-     (list (search-path-specification
-             (variable "GUILE_EXTENSIONS_PATH")
-             (files (list "lib/guile/3.0")))))
     (inputs (list gcc guile-3.0))
     (synopsis "C bindings for wayland shared memory (SHM) in multi-scheme
 (Guile, Gauche, Chicken) wayland library")
@@ -3686,10 +3674,6 @@ Probably can be replaced with guile's built-in file-descriptor procedures.")
                 (substitute* (list client-file)
                   (("WAYLAND_BASE_PROTOCOL_PATH")
                    core-protocol-file))))))))
-    (native-search-paths
-     (list (search-path-specification
-             (variable "GUILE_EXTENSIONS_PATH")
-             (files (list "lib/guile/3.0")))))
     (native-inputs (list guile-3.0 pkg-config texinfo autoconf automake))
     (inputs (list wayland wayland-protocols))
     (propagated-inputs (list guile-wayland-scm-socket guile-wayland-scm-shm))
