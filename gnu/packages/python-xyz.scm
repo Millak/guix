@@ -34235,7 +34235,7 @@ and to reference instance methods using weak-references.")
 (define-public python-pyee
   (package
     (name "python-pyee")
-    (version "13.0.0")
+    (version "13.0.1")
     (source
      (origin
        (method git-fetch)
@@ -34244,23 +34244,13 @@ and to reference instance methods using weak-references.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10xfkf5yvkfyf9ccm0k88gjhqv00hcsal33p937a1lijmxqbx398"))))
+        (base32 "0qmvbh8w15criy9fysgpppla1sk201c6dqvig0hvgxdirmp1zc4j"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; Pytest 9 expects an argument TOML list here,
-                ;; while we already pass -vv and do not want --capture=no.
-                (("addopts = \"--verbose -s\".*") "")))))))
     (propagated-inputs (list python-typing-extensions))
     (native-inputs
      (list python-mock
            python-pytest
-           python-pytest-asyncio-0.26
+           python-pytest-asyncio
            python-pytest-trio
            python-setuptools
            python-trio
