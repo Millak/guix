@@ -28051,13 +28051,13 @@ access the system cron automatically and simply using a direct API.")
 (define-public python-apscheduler
   (package
     (name "python-apscheduler")
-    (version "3.11.1")
+    (version "3.11.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "apscheduler" version))
               (sha256
                (base32
-                "08gjh0l7ba87yp23ilqigp3q004gnnw092p9gxsd310c83v7mdqd"))))
+                "0hgg7r3s1k6qj4fy3whrpyqj8vm0wvk3lk4c1h15z07caaq6d69a"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -28085,7 +28085,7 @@ access the system cron automatically and simply using a direct API.")
            python-gevent
            python-pyside-6
            python-pytest
-           python-pytest-asyncio-0.26
+           python-pytest-asyncio
            python-pytz
            python-setuptools
            python-setuptools-scm
