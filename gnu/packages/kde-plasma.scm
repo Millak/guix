@@ -2610,6 +2610,46 @@ PulseAudio.")
 adding, modifying and removing contacts.")
     (license license:lgpl2.0+)))
 
+(define-public plasma-thunderbolt
+  (package
+    (name "plasma-thunderbolt")
+    (version "6.5.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0ac66xxkzvw6k9dy39klxfnxkgx47qzpqhy2dj49khyi2ckq0yzg"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'check-setup
+                 (lambda _
+                   (setenv "HOME" (getcwd))))
+               (replace 'check
+                 (lambda* (#:key tests? test-exclude #:allow-other-keys)
+                   (when tests?
+                     (invoke "dbus-launch" "ctest" "--output-on-failure"
+                             "-E" test-exclude)))))))
+    (native-inputs
+     (list dbus extra-cmake-modules))
+    (inputs
+     (list bolt
+           kcmutils
+           kcoreaddons
+           kdbusaddons
+           ki18n
+           knotifications))
+    (home-page "https://invent.kde.org/plasma/plasma-thunderbolt")
+    (synopsis "Plasma integration for controlling Thunderbolt devices")
+    (description "This package provides a Plasma Sytem Settings module and a
+KDED module to handle authorization of Thunderbolt devices.")
+    (license license:gpl3+)))
+
 (define-public plasma-vault
   (package
     (name "plasma-vault")
