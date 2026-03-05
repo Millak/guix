@@ -559,7 +559,7 @@ components.")
             libtiff
             libyaml
             libyuv
-            pybind11
+            pybind11-2
             python-jinja2
             python-ply
             qtbase)

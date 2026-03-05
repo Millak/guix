@@ -225,7 +225,7 @@ Version: ~a
      (list catch2-3
            cmake-minimal
            highfive
-           pybind11
+           pybind11-2
            python-wrapper
            python-setuptools
            python-setuptools-scm))
@@ -275,7 +275,7 @@ scattering simulations.")
                 (for-each (lambda (test)
                             (invoke "python" test))
                           (find-files "tests" "^test_.*\\.py$"))))))))
-    (native-inputs (list pybind11 python-setuptools cmake python-pytest
+    (native-inputs (list pybind11-2 python-setuptools cmake python-pytest
                          python-numpy))
     (inputs (list eigen))
     (home-page "https://github.com/ralna/gofit")

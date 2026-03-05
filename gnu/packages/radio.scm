@@ -1042,7 +1042,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
            js-mathjax
            orc
            pkg-config
-           pybind11
+           pybind11-2
            python-cheetah
            python-mako
            python-pyzmq
@@ -1140,7 +1140,7 @@ environment.")
           (add-after 'install 'wrap-python
             (assoc-ref py:%standard-phases 'wrap)))))
     (native-inputs
-     (list doxygen pkg-config pybind11 python-mako python-six))
+     (list doxygen pkg-config pybind11-2 python-mako python-six))
     (inputs
      (list airspy
            airspyhf
@@ -1226,7 +1226,7 @@ primitives for SDR (Software Defined Radio).")
        (list cppunit
              doxygen
              pkg-config
-             pybind11
+             pybind11-2
              python-numpy))
       (inputs
        (list boost-1.83
@@ -1278,7 +1278,7 @@ DMR, NXDN, P25, etc.")
     (native-inputs
      (list doxygen
            pkg-config
-           pybind11
+           pybind11-2
            python
            python-numpy
            python-six))
@@ -1332,7 +1332,7 @@ to the fix block above.
           (add-after 'install 'wrap-python
             (assoc-ref py:%standard-phases 'wrap)))))
     (native-inputs
-     (list pkg-config pybind11 python-six))
+     (list pkg-config pybind11-2 python-six))
     (inputs
      (list boost-1.83
            gmp
@@ -2007,7 +2007,7 @@ operators.")
                   googletest
                   libusb
                   mesa
-                  pybind11
+                  pybind11-2
                   python
                   python-numpy
                   soapysdr

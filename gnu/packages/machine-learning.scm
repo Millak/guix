@@ -439,7 +439,7 @@ CTranslate2, which is a inference engine for transformer models.")
     (build-system pyproject-build-system)
     (propagated-inputs (list python-numpy python-scipy))
     (inputs (list fasttext))
-    (native-inputs (list pybind11 python-setuptools python-wheel))))
+    (native-inputs (list pybind11-2 python-setuptools python-wheel))))
 
 (define-public python-funsor
   (package
@@ -805,7 +805,7 @@ Learning usecases.")
                (find-files (site-packages inputs outputs) "\\.so$")))))))
     (inputs (list eigen-for-python-ml-dtypes))
     (propagated-inputs (list python-numpy))
-    (native-inputs (list pybind11
+    (native-inputs (list pybind11-2
                          python-absl-py
                          python-pytest
                          python-setuptools))
@@ -2047,7 +2047,7 @@ parts of speech and entities, do syntactic analysis, and more.")
      (append
       (list cmake-minimal
             googletest
-            pybind11
+            pybind11-2
             python-fb-re2
             python-parameterized
             python-pytest
@@ -2135,7 +2135,7 @@ operators and standard data types.")
                  (package-transitive-supported-systems pkg)))
        (list python-nbval))))
     (inputs
-     (list onnx protobuf pybind11))
+     (list onnx protobuf pybind11-2))
     (propagated-inputs
      (list python-numpy))
     (synopsis "Library to optimize ONNX models")
@@ -2257,7 +2257,7 @@ with a single function call.")
            nlohmann-json
            onnx
            protobuf
-           pybind11
+           pybind11-2
            re2-next
            safeint
            zlib))
@@ -2426,7 +2426,7 @@ than 8 bits, and at the end only some significant 8 bits are kept.")
            libwebp
            libx11
            openblas
-           pybind11
+           pybind11-2
            zlib))
     (synopsis
      "Toolkit for making machine learning and data analysis applications in
@@ -3791,7 +3791,7 @@ find_library(ML_DTYPES_LIBRARIES
     (native-inputs
      (list pkg-config
            googletest
-           pybind11
+           pybind11-2
            python-setuptools
            python-wrapper               ;for its /bin
            swig-4.0
@@ -4543,7 +4543,7 @@ multiplications and convolution library for server-side inference.")
         ;; There are no tests
         #:tests? #f))
       (inputs (list libuv))
-      (native-inputs (list googletest pkg-config pybind11 libnop))
+      (native-inputs (list googletest pkg-config pybind11-2 libnop))
       (home-page "https://github.com/pytorch/tensorpipe")
       (synopsis "Tensor-aware point-to-point communication primitive for
 machine learning")
@@ -5190,7 +5190,7 @@ PyTorch.")
             openssl ; for cpp-httplib
             pthreadpool
             protobuf
-            pybind11
+            pybind11-2
             ;; qnnpack
             qnnpack-pytorch
             rdma-core
@@ -5906,7 +5906,7 @@ implementations and an easy-to-use API to create custom metrics.  It offers:
            python-pillow
            python-pytorch))
     (native-inputs
-     (list pybind11
+     (list pybind11-2
            python-pytest
            python-setuptools
            python-wheel
@@ -6186,7 +6186,7 @@ models on CPU and GPU.")
     (native-inputs (list ctranslate2
                          python-setuptools
                          python-wheel
-                         pybind11
+                         pybind11-2
                          python-pyyaml
                          python-numpy))))
 
@@ -6324,7 +6324,7 @@ a Qt interface for Argos Translate.")
     (propagated-inputs
      (list python-numpy python-scikit-learn python-scipy))
     (native-inputs
-     (list pybind11
+     (list pybind11-2
            python-pytest
            python-setuptools
            python-setuptools-scm
@@ -7120,7 +7120,7 @@ add_subdirectory[(][.][.]/[.][.]/dlib/external/pybind11 pybind11_build[)]")
      (list cmake-minimal
            perl
            pkg-config
-           pybind11
+           pybind11-2
            python-pytest
            python-setuptools))))
 

@@ -129,7 +129,7 @@ single-file databases with support for secondary indexes.")
     (propagated-inputs
      (list python-adbc-driver-manager))
     (native-inputs
-     (list pybind11
+     (list pybind11-2
            python-fsspec
            ;; python-google-cloud-storage ;python-grpcio fails (see: guix/guix#1436)
            python-numpy

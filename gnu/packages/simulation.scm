@@ -1220,7 +1220,7 @@ demos = [d for d in demos if d[0].stem not in excludeList]~%"
     (inputs
      (modify-inputs (package-inputs fenics-dolfin)
        (delete "python")
-       (prepend pybind11 python-matplotlib)))
+       (prepend pybind11-2 python-matplotlib)))
     (native-inputs
      (modify-inputs (package-native-inputs fenics-dolfin)
        (prepend cmake-minimal
@@ -1508,7 +1508,7 @@ counters and tunnels).")
           ;; has already been loaded.
           (delete 'sanity-check))))
     (inputs
-     (list fenics openmpi pybind11))
+     (list fenics openmpi pybind11-2))
     (native-inputs
      (list pkg-config
            python-decorator

@@ -1839,7 +1839,7 @@ foundation for the Mamba package manager.")
      (list cmake-minimal
            ninja
            pkg-config
-           pybind11
+           pybind11-2
            python-scikit-build
            python-pytest
            python-setuptools))

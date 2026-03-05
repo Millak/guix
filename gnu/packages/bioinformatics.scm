@@ -3252,7 +3252,7 @@ and gene expression visualization.")
                              python-scipy
                              python-threadpoolctl
                              python-umap-learn))
-    (native-inputs (list pybind11 python-pytest python-setuptools))
+    (native-inputs (list pybind11-2 python-pytest python-setuptools))
     (home-page "https://github.com/tanaylab/metacells.git")
     (synopsis "Single-cell RNA Sequencing Analysis")
     (description "The metacells package implements the improved metacell
@@ -23875,7 +23875,7 @@ instruments, or Pacific Biosciences RSII or Sequel sequencers.")
     (inputs
      (list curl zlib))
     (propagated-inputs
-     (list pybind11))
+     (list pybind11-2))
     (home-page "https://github.com/aidenlab/straw")
     (synopsis "Stream data from .hic files")
     (description "Straw is library which allows rapid streaming of contact
@@ -24006,7 +24006,7 @@ e.g. from GenBank or Gff files, or Biopython SeqRecords.")
           ;; dependencies.
           (delete 'sanity-check))))
     (native-inputs
-     (list pybind11
+     (list pybind11-2
            python-pytest
            python-pypairix
            python-setuptools
@@ -24072,7 +24072,7 @@ browser.")
                  "-DCMAKE_CXX_FLAGS=\"-I ../vendor/cereal/include/\" -fPIC"
                  "..")
                 (invoke "make")))))))
-    (propagated-inputs (list pybind11))
+    (propagated-inputs (list pybind11-2))
     (native-inputs (list cmake-minimal python-setuptools))
     (home-page "https://github.com/nanoporetech/pyspoa")
     (synopsis "Python bindings for the SIMD partial order alignment library")
@@ -24159,7 +24159,7 @@ aligner.")
            python-scipy
            python-umap-learn
            ;; [optional]
-           pybind11
+           pybind11-2
            python-hnswlib
            python-igraph
            python-louvain))

@@ -737,7 +737,7 @@ covariance @url{https://github.com/vnmabus/dcor#sr14,[SR14]}
     (build-system pyproject-build-system)
     (native-inputs
      (list cmake-minimal ;TODO: propagate from python-scikit-build-core
-           pybind11
+           pybind11-2
            python-pytest
            python-scikit-build-core))
     (propagated-inputs
@@ -1108,7 +1108,7 @@ sampler for Markov chain Monte Carlo (MCMC).")
     (build-system pyproject-build-system)
     (native-inputs
      (list cmake-minimal
-           pybind11
+           pybind11-2
            python-pytest
            python-scikit-build-core
            python-setuptools-scm))

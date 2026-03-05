@@ -4367,7 +4367,7 @@ primes and prime k-tuplets up to 264.")
                                                "/include/eigen3/")
                                 "\"],"))))))))
     (native-inputs
-     (list pybind11
+     (list pybind11-2
            python-matplotx
            python-perfplot
            python-pytest
@@ -4483,7 +4483,7 @@ programming language.")
               (setenv "DUCC0_OPTIMIZATION" "portable-strip"))))))
     (native-inputs
      (list cmake-minimal
-           pybind11
+           pybind11-2
            python-nanobind
            python-pytest
            python-pytest-xdist

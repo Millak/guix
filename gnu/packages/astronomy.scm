@@ -257,7 +257,7 @@ reused in several astronomical applications, such as @code{wsclean},
            boost
            pkg-config
            python
-           pybind11))
+           pybind11-2))
     (inputs
      (list casacore
            cfitsio
@@ -5112,7 +5112,7 @@ CFITSIO library.  Among other things, it can
      (list eigen
            fftw))
     (propagated-inputs
-     (list pybind11     ;XXX: Double check if it needs be here.
+     (list pybind11-2     ;XXX: Double check if it needs be here.
            python-astropy
            python-lsstdesc-coord
            python-numpy))
@@ -7557,7 +7557,7 @@ and the Generalized Lomb-Scargle periodogram
     (build-system pyproject-build-system)
     (native-inputs
      (list cmake-minimal
-           pybind11
+           pybind11-2
            python-pandas
            python-pytest
            python-scipy

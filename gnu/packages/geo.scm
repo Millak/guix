@@ -941,7 +941,7 @@ OpenGeoSys")
     (native-inputs
      (list git
            ninja
-           pybind11))
+           pybind11-2))
     (inputs
      (list boost
            eigen

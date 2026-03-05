@@ -542,7 +542,7 @@ compare against a vast section of other version formats.")
     ;; tests: 22304 passed, 524 skipped
     (native-inputs
      (list cmake-minimal
-           pybind11
+           pybind11-2
            python-pytest
            python-scikit-build-core))
     (propagated-inputs
@@ -3374,7 +3374,7 @@ into dataclasses.")
               ;; Tests that pass but avoided for load reasons.
               "-k" "not test_filled_random_big and not test_lines_random_big")))
     (native-inputs
-     (list pybind11
+     (list pybind11-2
            python-meson
            python-pytest
            python-wurlitzer))
@@ -5483,7 +5483,7 @@ interface utility to parse @url{https://hjson.github.io/, HJSON}) documents.")
                 ((", '-march=native'")
                  "")))))))
     (native-inputs
-     (list pybind11
+     (list pybind11-2
            python-pytest
            python-setuptools))
     (propagated-inputs
@@ -9242,7 +9242,7 @@ browser.")
     (native-inputs
      (list python-setuptools))
     (inputs
-     (list pybind11
+     (list pybind11-2
            static-abseil-cpp
            python))
     (propagated-inputs
@@ -12075,7 +12075,7 @@ comparison.
     (native-inputs
      (list pkg-config
            python-meson
-           pybind11
+           pybind11-2
            python-pytest
            python-pytest-timeout
            python-pytest-xdist
@@ -12812,7 +12812,7 @@ Python list with elements of type @code{PIL.Image} (from the
         (base32 "0hpnb63xp8yaflah3i1z5azh6mg36rz0liy27km47417w2q72v0c"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list pybind11
+     (list pybind11-2
            python-attrs
            python-hypothesis
            python-setuptools-scm
@@ -14588,7 +14588,7 @@ connect strings, then issue SQL commands within IPython or IPython Notebook.")
            python-setuptools
            python-wheel
            cmake-minimal
-           pybind11))
+           pybind11-2))
     (home-page "https://github.com/metaopt/optree")
     (synopsis "Optimized PyTree Utilities")
     (description "This package contains operations on PyTrees (a tree made of
@@ -26645,7 +26645,7 @@ commit, but it also includes some other useful statistics.")
 binding is created using the standard @code{ctypes} library.")
     (license license:isc)))
 
-(define-public pybind11
+(define-public pybind11-2
   (package
     (name "pybind11")
     (version "2.13.6")

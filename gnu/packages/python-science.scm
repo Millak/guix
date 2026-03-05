@@ -190,7 +190,7 @@
                                    (number->string (parallel-job-count))
                                    "1")
                           "-E" (string-join ignored-tests "|")))))))))
-    (native-inputs (list openssh-sans-x python python-numpy pybind11 zip))
+    (native-inputs (list openssh-sans-x python python-numpy pybind11-2 zip))
     (inputs (list gsl hdf5 openmpi postgresql))
     (propagated-inputs (list python-pyyaml)) ;for the Python bindings
     (home-page "http://pyre.orthologue.com/")
@@ -574,7 +574,7 @@ higher scores.")
     ;; a way to use a system library.
     (propagated-inputs (list python-numpy))
     (native-inputs (list cmake-minimal
-                         pybind11
+                         pybind11-2
                          python-pytest
                          python-pytest-benchmark
                          python-scikit-build-core
@@ -812,7 +812,7 @@ it can be used for displaying many qualitatively different samples.")
                             ;; verbose=True for more information.
                             "TestOpRelConeQuad::test_oprelcone_2")))))
     (native-inputs
-     (list pybind11
+     (list pybind11-2
            python-pytest
            python-setuptools))
     (propagated-inputs
@@ -1468,7 +1468,7 @@ Features:
      (list #:test-flags #~(list "-k" "not test_interactive_pyside6")))
     (native-inputs
      (list cmake-minimal
-           pybind11
+           pybind11-2
            python-annotated-types
            python-boost-histogram
            python-ipykernel
@@ -2363,7 +2363,7 @@ web, by sharing data and other research outputs.")
     (native-inputs
      (list cmake-minimal
            osqp
-           pybind11
+           pybind11-2
            python-pytest
            python-pytorch
            python-scikit-build-core
@@ -2501,7 +2501,7 @@ different units.")
               (delete-file-recursively "pyamg"))))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list pybind11
+     (list pybind11-2
            python-cppheaderparser
            python-pytest
            python-pyyaml
@@ -2690,7 +2690,7 @@ or as a TikZ file for use in LaTeX documents;
     (build-system pyproject-build-system)
     (native-inputs
      (list cmake-minimal
-           pybind11
+           pybind11-2
            python-pytest
            python-setuptools))
     (propagated-inputs (list python-numpy python-scipy))
@@ -2929,7 +2929,7 @@ genetic variation data.")
                              python-pathspec
                              python-tomli
                              python-typing-extensions))
-    (native-inputs (list pybind11
+    (native-inputs (list pybind11-2
                          python-cattrs
                          python-fastjsonschema
                          python-hatch-fancy-pypi-readme
@@ -3419,7 +3419,7 @@ cross-validation.")
     (inputs
      (list boost-1.88
            openblas
-           pybind11
+           pybind11-2
            qhull
            xsimd))
     (propagated-inputs
@@ -4740,7 +4740,7 @@ readable.")
                 (("#include <nonstd/string_view.hpp>")
                  "#include <cstdint>\n#include <nonstd/string_view.hpp>")))))))
     (native-inputs
-     (list pybind11
+     (list pybind11-2
            python-cython
            python-setuptools))
     (inputs
@@ -5869,7 +5869,7 @@ science including tools for accessing data sets in Python.")
                 "12i68jj9n1qj9phjnj6f0kmfhlsd3fqjlk9p6d4gs008azw5m8yn"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-numpy-1))
-    (native-inputs (list pybind11 python-pytest python-setuptools))
+    (native-inputs (list pybind11-2 python-pytest python-setuptools))
     (home-page "https://github.com/nschloe/pyfma")
     (synopsis "Fused multiply-add for Python")
     (description "@code{pyfma} provides an implementation of fused

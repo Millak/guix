@@ -136,7 +136,7 @@
            hdf5
            libpng
            protobuf
-           pybind11
+           pybind11-2
            python
            python-ply
            python-pydot

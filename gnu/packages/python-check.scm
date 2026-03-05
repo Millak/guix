@@ -5151,7 +5151,7 @@ unused.")
     (native-inputs
      (list cmake-minimal
            ninja
-           pybind11
+           pybind11-2
            python-pytest-bootstrap
            python-scikit-build
            python-setuptools))

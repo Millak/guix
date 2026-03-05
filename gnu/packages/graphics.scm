@@ -916,7 +916,7 @@ baking tools to produce normal maps.")
            clang
            flex
            llvm
-           pybind11
+           pybind11-2
            python-wrapper))
     (inputs
      (list boost-1.83
@@ -1736,7 +1736,7 @@ with strong support for multi-part, multi-channel use cases.")
            openjpeg
            ;; openvdb ; OpenVDB needs OIIO to be built with C++17 or higher
            pugixml
-           pybind11
+           pybind11-2
            python-wrapper
            robin-map
            zlib))

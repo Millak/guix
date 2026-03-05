@@ -100,7 +100,7 @@
            mmtf-cpp
            googletest
            pkg-config
-           pybind11))
+           pybind11-2))
     (inputs
       `(("glew" ,glew)
         ("libarchive" ,libarchive)

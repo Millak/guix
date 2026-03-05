@@ -5298,7 +5298,7 @@ forward kinematics solvers.")
     (source
      (origin
        (inherit (package-source orocos-kinematics-dynamics))))
-    (native-inputs (list python pybind11 python-psutil))
+    (native-inputs (list python pybind11-2 python-psutil))
     (inputs (list orocos-kinematics-dynamics))
     (arguments
      (list

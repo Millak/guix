@@ -355,7 +355,7 @@ A lexer, @code{pytools.lex}.
     (native-inputs
      (list cmake-minimal
            pocl
-           pybind11
+           pybind11-2
            python-mako
            python-nanobind
            python-pytest
