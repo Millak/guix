@@ -4334,7 +4334,7 @@ TkDiff is included for browsing and merging your changes.")
 (define-public qgit
   (package
     (name "qgit")
-    (version "2.12")
+    (version "2.13")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4343,11 +4343,7 @@ TkDiff is included for browsing and merging your changes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16gy1xyn4xa3bjziphcdixbf6qv3bcs81z2k9j6biwpzs1ingkdb"))
-              ;; TODO: Remove this patch in the next update since it is fixed
-              ;; in the next commit.
-              (patches
-               (search-patches "qgit-2.12-fix-search-style.patch"))))
+                "0di205cy97qdfgwnmzscw0ar7i734gmqjxz1lyfdrfhwhwapmv44"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
