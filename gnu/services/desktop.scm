@@ -2325,18 +2325,18 @@ rules."
   (let ((plasma-plasma (plasma-package config)))
     (map (lambda (name)
            ((package-direct-input-selector name) plasma-plasma))
-         '("packagekit"          ;for discover
-           "plasma-desktop"
-           "plasma-workspace"
-           "plasma-disks"
-           "kdeplasma-addons"
+         '("kdeplasma-addons"
            "kinfocenter"
-           "libksysguard"
            "kpmcore"
            "ktexteditor"
            "kwalletmanager"
-           "powerdevil"
-           "plasma-firewall"))))
+           "libksysguard"
+           "packagekit"          ;for discover
+           "plasma-desktop"
+           "plasma-disks"
+           "plasma-firewall"
+           "plasma-workspace"
+           "powerdevil"))))
 
 (define (plasma-dbus-service config)
   "Return the list of KDE Plasma dependencies that provide D-Bus services."
