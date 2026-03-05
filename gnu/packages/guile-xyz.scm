@@ -5808,12 +5808,14 @@ processing filters.")
     (name "guile-cv")
     (version "0.4.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/guile-cv/guile-cv-"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://https.git.savannah.gnu.org/git/guile-cv.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "00620zxm1rxlws7vn1zp2zzcb6y6r3szzj6b4b9fyjb86k972izb"))))
+                "15qmhfiijca2468s8s9xhb0wskiy4wgym9p5jqi4xy30ddnpvyk2"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -5827,8 +5829,7 @@ processing filters.")
                 (("SITEDIR=\"\\$datadir/guile-cv\"")
                  "SITEDIR=\"$datadir/guile/site/$GUILE_EFFECTIVE_VERSION\"")
                 (("SITECCACHEDIR=\"\\$libdir/guile-cv/")
-                 "SITECCACHEDIR=\"$libdir/"))
-              (delete-file "configure")))         ;trigger 'bootstrap' phase
+                 "SITECCACHEDIR=\"$libdir/"))))
           (add-after 'unpack 'substitute-libs
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (substitute* "cv/init.scm"
