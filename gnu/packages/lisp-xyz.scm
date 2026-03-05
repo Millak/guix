@@ -33370,8 +33370,8 @@ correctly.")
   (sbcl-package->ecl-package sbcl-trivialib-type-unify))
 
 (define-public sbcl-trucler
-  (let ((commit "d40ff965520cbccf4980b7e7e3122912a11f24ad")
-        (revision "1"))
+  (let ((commit "39d4ba1a44f6998a961ed19b9cd8d19ea48d43ba")
+        (revision "2"))
     (package
       (name "sbcl-trucler")
       (version (git-version "0.0.0" revision commit))
@@ -33383,7 +33383,7 @@ correctly.")
                (commit commit)))
          (file-name (git-file-name "cl-trucler" commit))
          (sha256
-          (base32 "0a0zi7q88j31n0b17yfxb66xjvvridgqr4vr6z3pgnm9wha990a6"))))
+          (base32 "16cxx9pgpn3bkrmazc4lqhmaf20c0rhp1vaj78ms8ldwfqqrgznr"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-acclimation))
