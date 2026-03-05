@@ -66,6 +66,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system go)
@@ -250,6 +251,34 @@ managers.")
        (sha256
         (base32 "19pszccw536g0ryd4z33ni1lx9a20hi47g9x4xwmg1v4plpr5szr"))))
     (build-system cargo-build-system)
+    (arguments
+     (list
+       #:imported-modules (append %copy-build-system-modules
+                                  %cargo-build-system-modules)
+       #:modules '((guix build cargo-build-system)
+                   ((guix build copy-build-system) #:prefix copy:)
+                   (guix build utils))
+       #:install-source? #f
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'set-asset-out-dir
+             (lambda _
+               (setenv "ASCIINEMA_GEN_DIR" "target/assets")))
+           (add-after 'install 'install-more
+             (lambda args
+               (apply (assoc-ref copy:%standard-phases 'install)
+                      #:install-plan
+                      '(("target/assets/man" "share/man/man1"
+                         #:include-regexp ("\\.1$"))
+                        ("target/assets/completion/asciinema.bash"
+                         "share/bash-completion/completions/asciinema")
+                        ("target/assets/completion/asciinema.elv"
+                         "share/elvish/lib/asciinema")
+                        ("target/assets/completion/asciinema.fish"
+                         "share/fish/vendor_completions.d")
+                        ("target/assets/completion/_asciinema"
+                         "share/zsh/site-functions"))
+                      args))))))
     (native-inputs (list python-minimal)) ;needed for tests
     (inputs (cargo-inputs 'asciinema))
     (home-page "https://asciinema.org")
