@@ -39,7 +39,7 @@
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2024 Suhail <suhail@bayesians.ca>
 ;;; Copyright © 2024 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Ashvith Shetty <ashvithshetty10@gmail.com>
 ;;; Copyright © 2024, 2025-2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Roman Scherer <roman@burningswell.com>
@@ -900,7 +900,7 @@ eye-candy, customizable, and reasonably lightweight.")
 (define-public foot
   (package
     (name "foot")
-    (version "1.25.0")
+    (version "1.26.0")
     (home-page "https://codeberg.org/dnkl/foot")
     (source
      (origin
@@ -910,7 +910,7 @@ eye-candy, customizable, and reasonably lightweight.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vfqg52hf2yi0zrg01lcgq1q4vi99d0mgf6vmff1510nv4hv1d5k"))))
+        (base32 "04pbw6v05n8s32mjgjxxzzixzxhcx850fnah14wjhjsx0nnqsway"))))
     (build-system meson-build-system)
     (arguments
      (list
