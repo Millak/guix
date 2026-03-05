@@ -2170,15 +2170,16 @@ allows users to interact with the Guile REPL through Jupyter.")
    (name "guile-sparql")
    (version "0.0.8")
    (source (origin
-            (method url-fetch)
-            (uri (string-append
-                  "https://github.com/roelj/guile-sparql/releases/download/"
-                  version "/guile-sparql-" version ".tar.gz"))
-            (sha256
-             (base32 "1jf4972f9fpm0rd865xpnc9mzl3xv6vhfnp0iygadydy905z9nln"))))
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/roelj/guile-sparql")
+                   (commit version)))
+             (file-name (git-file-name name version))
+             (sha256 (base32
+                      "0iy390dsa0rs6d4gapw1s03gz4zba26w5sdiyvnzlygwv0d1inww"))))
    (build-system gnu-build-system)
    (native-inputs
-    (list pkg-config))
+    (list autoconf automake texinfo pkg-config))
    (inputs
     (list guile-3.0))
    (home-page "https://github.com/roelj/guile-sparql")
