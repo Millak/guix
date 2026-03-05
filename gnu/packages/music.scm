@@ -3631,7 +3631,8 @@ can connect to any JACK port and record the output into a stereo WAV file.")
                 (("libasound.so.2")
                  (search-input-file inputs "/lib/libasound.so.2"))))))))
     (native-inputs
-     (list pkg-config
+     (list gobject-introspection
+           pkg-config
            python-setuptools))
     (inputs
      (list alsa-lib
