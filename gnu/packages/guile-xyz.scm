@@ -4725,27 +4725,27 @@ a standalone WebAssembly toolchain.")
     (name "guile-file-names")
     (version "0.3")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "http://brandon.invergo.net/software/download/"
-                                  "guile-file-names/guile-file-names-"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/brandoninvergo/guile-file-names")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "01chizdxkhw6aqv629vxka9f5x3534ij7r0jqndawsg2vxm1r9sz"))))
+                "0hmsbvbcl9a7366afcqi0pdhjhlq7l137nkmv1a5z9b8pcgzx90s"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-target-directory
            (lambda _
-             (substitute* "src/Makefile.in"
+             (substitute* "src/Makefile.am"
                (("guilemoddir = \\$\\(GUILE_SITE\\)")
-                "guilemoddir = $(datadir)/guile/site/$(GUILE_EFFECTIVE_VERSION)\n"))
-             #t)))))
+                "guilemoddir = $(datadir)/guile/site/$(GUILE_EFFECTIVE_VERSION)\n")))))))
     (inputs
      (list guile-2.2))
     (native-inputs
-     (list pkg-config))
+     (list autoconf automake texinfo pkg-config))
     (home-page "https://gitlab.com/brandoninvergo/guile-file-names")
     (synopsis "Manipulate file names")
     (description
