@@ -2434,7 +2434,12 @@ The specification of the Brotli Compressed Data Format is defined in RFC 7932.")
        #:source-dir "java"
        ;; Tests are mixed in with java sources, the ant build system
        ;; doesn't allow that
-       #:tests? #f))
+       #:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'drop-android-wrapper
+                    (lambda _
+                      (delete-file-recursively
+                       "java/org/brotli/wrapper/android"))))))
     (native-inputs (list java-junit))))
 
 (define-public ucl
