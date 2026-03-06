@@ -1,0 +1,19 @@
+Upstream-Status: https://github.com/lgi-devs/lgi/pull/342
+---
+ tests/pango.lua | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/tests/pango.lua b/tests/pango.lua
+index e20a6799..ea00b903 100644
+--- a/tests/pango.lua
++++ b/tests/pango.lua
+@@ -35,7 +35,6 @@ function pango.glyphstring()
+       local offset = items[i].offset
+       local length = items[i].length
+       local analysis = items[i].analysis
+-      local pgs = Pango.GlyphString()
+-      Pango.shape(string.sub(s,1+offset), length, analysis, pgs)
++      local pgs = Pango.shape(string.sub(s,1+offset), length, analysis)
+       -- Pull out individual glyphs with pgs.glyphs
+       local glyphs = pgs.glyphs
+       check(type(glyphs) == 'table')

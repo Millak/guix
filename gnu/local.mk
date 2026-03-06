@@ -1869,6 +1869,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/lua-5.4-liblua-so.patch			\
   %D%/packages/patches/lua-5.4-search-paths.patch		\
   %D%/packages/patches/lua-5.x-search-path-helpers.patch	\
+  %D%/packages/patches/lua-lgi-fix-pango.patch			\
+  %D%/packages/patches/lua-lgi-fix-ref.patch			\
   %D%/packages/patches/luanti-paths.patch			\
   %D%/packages/patches/lugaru-fix-sound.patch			\
   %D%/packages/patches/luit-posix.patch				\

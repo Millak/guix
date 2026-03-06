@@ -982,6 +982,8 @@ describing the commented declarations and functions.")
              (url "https://github.com/pavouk/lgi")
              (commit version)))
        (file-name (git-file-name name version))
+       (patches (search-patches "lua-lgi-fix-ref.patch"
+                                "lua-lgi-fix-pango.patch"))
        (sha256
         (base32 "03rbydnj411xpjvwsyvhwy4plm96481d7jax544mvk7apd8sd5jj"))))
     (build-system gnu-build-system)
