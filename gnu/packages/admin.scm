@@ -5329,7 +5329,8 @@ cache of unix and unix-like systems.")
         (base32 "0pq1wy2m84ma0pg5k200f0fhywvx4qa873v8n5pz56ahc4ddcyk7"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest
+     (list gobject-introspection
+           python-pytest
            python-pytest-mock
            python-setuptools
            python-typing-extensions
