@@ -17105,16 +17105,16 @@ has not yet been packaged for Guix.")
 (define-public ruby-google-protobuf
   (package
     (name "ruby-google-protobuf")
-    (version "3.25.3")
+    (version "4.34.0.rc.2")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "google-protobuf" version))
               (sha256
                (base32
-                "1mnxzcq8kmyfb9bkzqnp019d1hx1vprip3yzdkkha6b3qz5rgg9r"))))
+                "0fanmx5s1g3565npg7l1y3i4zxyd9v9nvvyns1j3lpdndpmqq9fm"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:tests? #f))  ;; has no tests
+     (list #:tests? #f))  ; There are no tests.
     (native-inputs (list ruby-rake))
     (synopsis "Protocol Buffers are Google's data interchange format")
     (description "This library contains the Ruby extension that implements
