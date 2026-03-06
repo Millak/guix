@@ -2230,7 +2230,30 @@ memory-efficient.")
           (add-after 'install 'fix-bin-name
             (lambda _
               (rename-file (string-append #$output "/bin/TMSU")
-                           (string-append #$output "/bin/tmsu")))))))
+                           (string-append #$output "/bin/tmsu"))))
+          (add-after 'install 'install-misc
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (let ((bin (string-append #$output "/bin"))
+                      (sbin (string-append #$output "/sbin")))
+                  (for-each (lambda (f) (install-file f bin))
+                            (list "misc/bin/tmsu-fs-merge"
+                                  "misc/bin/tmsu-fs-mv"
+                                  "misc/bin/tmsu-fs-rm"))
+                  (install-file "misc/bin/mount.tmsu" sbin)))))
+          (add-after 'install 'install-shell-completions
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (let ((bash (string-append #$output "/etc/bash_completion.d"))
+                      (zsh  (string-append #$output "/share/zsh/site-functions")))
+                  (for-each mkdir-p (list bash zsh))
+                  (copy-file "misc/bash/tmsu" (string-append bash "/tmsu"))
+                  (copy-file "misc/zsh/_tmsu" (string-append zsh "/_tmsu"))))))
+          (add-after 'install 'install-man-pages
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (install-file "misc/man/tmsu.1"
+                              (string-append #$output "/share/man/man1"))))))))
     (inputs
      (list go-github-com-mattn-go-sqlite3
            go-github-com-hanwen-go-fuse
