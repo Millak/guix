@@ -6209,7 +6209,7 @@ compact disc (CDDA) identifiers.")
 (define-public perl-webservice-musicbrainz
   (package
     (name "perl-webservice-musicbrainz")
-    (version "1.0.7")
+    (version "1.0.10")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -6217,7 +6217,7 @@ compact disc (CDDA) identifiers.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "08aahiyk2gr7r3lfn5gpamhziy448g9139j7lfjsjhbm67q5an3d"))))
+                "1gxxmsi5ax6rarcs0wkxz3xsfm0mrh7mpbgmlcnkw2rzzkq5gz7a"))))
     (build-system perl-build-system)
     (arguments
      ;; Tests try to connect to http://musicbrainz.org.
