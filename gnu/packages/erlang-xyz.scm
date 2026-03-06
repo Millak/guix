@@ -874,13 +874,13 @@ parsing library.")
 (define-public erlang-xmpp
   (package
     (name "erlang-xmpp")
-    (version "1.11.1")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "xmpp" version))
        (sha256
-        (base32 "05ipgf53dnz5d7hfz0bvmv1lxs0c85737ni5ak0wxcsaj3gk7jd5"))))
+        (base32 "1j122s3yz7ssn6d0plfigmraq6466k2pn07bf5kjbflzcmrswjq1"))))
     (build-system rebar-build-system)
     (inputs (list erlang-ezlib
                   erlang-fast-tls
