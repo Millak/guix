@@ -157,6 +157,26 @@ for manipulating Web protocols.")
     (home-page "https://hex.pm/packages/erlang_color")
     (license license:expat)))
 
+(define-public erlang-erlydtl
+  (package
+    (name "erlang-erlydtl")
+    (version "0.15.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/erlydtl/erlydtl")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00p194jgmvzqza7xr7fdm2n091ymkyy66aj4gc82n0kzdlh03vbm"))))
+    (build-system rebar-build-system)
+    (synopsis "Django templates for Erlang")
+    (description
+     "ErlyDTL compiles Django Template Language to Erlang bytecode.")
+    (home-page "https://github.com/erlydtl/erlydtl")
+    (license license:expat)))
+
 (define-public erlang-exometer-core
   (package
     (name "erlang-exometer-core")
