@@ -2961,6 +2961,49 @@ tunnel proxy protocol.")
 user-defined collections.")
     (license license:expat)))
 
+(define-public go-github-com-shopify-ejson
+  (package
+    (name "go-github-com-shopify-ejson")
+    (version "1.5.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Shopify/ejson")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04rwm109sha6pla99zbmp1d7808w55iw2kyd6qbqsr6dm02mxxdk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Shopify/ejson"
+      #:test-flags
+      #~(list "-vet=off")))
+    (native-inputs
+     (list go-github-com-urfave-cli))
+    (propagated-inputs
+     (list go-github-com-dustin-gojson
+           go-github-com-smartystreets-goconvey
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/Shopify/ejson")
+    (synopsis "Library to manage encrypted secrets using asymmetric encryption")
+    (description
+     "@command{ejson} is a utility (CLI and Go library) for managing a
+collection of secrets in source control.
+
+The secrets are encrypted using
+@url{http://en.wikipedia.org/wiki/Public-key_cryptography, public key},
+@url{http://en.wikipedia.org/wiki/Elliptic_curve_cryptography, elliptic curve}
+cryptography (@url{http://nacl.cr.yp.to/, NaCl Box}:
+@url{http://en.wikipedia.org/wiki/Curve25519, Curve25519} +
+@url{http://en.wikipedia.org/wiki/Salsa20, Salsa20} +
+@url{http://en.wikipedia.org/wiki/Poly1305-AES, Poly1305-AES}).  Secrets are
+collected in a JSON file, in which all the string values are encrypted.
+Public keys are embedded in the file, and the decrypter looks up the
+corresponding private key from its local filesystem.")
+    (license license:expat)))
+
 (define-public go-github-com-skeema-knownhosts
   (package
     (name "go-github-com-skeema-knownhosts")
@@ -3979,6 +4022,23 @@ tools."))))
 
 (define-deprecated-package age-keygen
   age)
+
+(define-public go-ejson
+  (package/inherit go-github-com-shopify-ejson
+    (name "go-ejson")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-shopify-ejson)
+       ((#:tests? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "github.com/Shopify/ejson/cmd/ejson")
+       ((#:unpack-path _ "") "github.com/Shopify/ejson")))
+    (native-inputs
+     (append
+      (package-native-inputs go-github-com-shopify-ejson)
+      (package-propagated-inputs go-github-com-shopify-ejson)))
+    (propagated-inputs '())))
 
 (define-public go-imohash
   (package/inherit go-github-com-kalafut-imohash
