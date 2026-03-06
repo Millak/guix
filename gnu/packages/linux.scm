@@ -5792,9 +5792,9 @@ from the module-init-tools project.")
            (add-before 'check 'disable-failing-test
              (lambda _
                ;; This test relies on writing to /proc/%d/oom_score_adj.
-               (substitute* "testsuite_cli_test.go"
-                 (("TestI" match)
-                  (string-append "skipped" match))))))
+               (substitute* "Makefile"
+                 (("go test -v" match)
+                  (string-append match " -vet=off -skip 'TestI'"))))))
        #:make-flags
        #~(list (string-append "CC=" #$(cc-for-target))
                (string-append "VERSION=v" #$version)
@@ -5811,7 +5811,7 @@ from the module-init-tools project.")
         (list
           ;; For the test suite.
           cppcheck
-          go-1.23)))
+          go)))
     (home-page "https://github.com/rfjakob/earlyoom")
     (synopsis "Simple out of memory (OOM) daemon for the Linux kernel")
     (description "Early OOM is a minimalist out of memory (OOM) daemon that
