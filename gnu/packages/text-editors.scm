@@ -33,7 +33,7 @@
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 David Pflug <david@pflug.io>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
-;;; Copyright © 2024, 2025 Spencer King <spencer.king@wustl.edu>
+;;; Copyright © 2024-2026 Spencer King <spencer.king@wustl.edu>
 ;;; Copyright © 2024 Murilo <murilo@disroot.org>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -851,7 +851,7 @@ Wordstar-, EMACS-, Pico, Nedit or vi-like key bindings.  e3 can be used on
 (define-public mg
   (package
     (name "mg")
-    (version "20250523")
+    (version "20260227")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -860,7 +860,7 @@ Wordstar-, EMACS-, Pico, Nedit or vi-like key bindings.  e3 can be used on
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1a08jvljmysangmwzv9ga84iy0s7afr7vb1gabivrxagkb5j70f5"))
+                "0l4ngmarslrdrd8p2yz4lj868xgd8rhjga6490p3jimkxfwn1asx"))
               (modules '((guix build utils)))
               (snippet '(begin
                           (substitute* "GNUmakefile"
