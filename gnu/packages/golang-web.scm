@@ -4446,6 +4446,41 @@ Values for HTTP as defined in @url{https://rfc-editor.org/rfc/rfc9651.html,
 RFC 9651}.")
     (license license:bsd-3)))
 
+(define-public go-github-com-dylibso-observe-sdk-go
+  (package
+    (name "go-github-com-dylibso-observe-sdk-go")
+    (version "0.0.0-20240828172851-9145d8ad07e1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dylibso/observe-sdk")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cx0zdfp6jqw9ih4h0m5556jnz9i0yvz4p1crvmbm7vbyfgklmmv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dylibso/observe-sdk/go"
+      #:unpack-path "github.com/dylibso/observe-sdk"))
+    (propagated-inputs
+     (list go-github-com-ianlancetaylor-demangle
+           go-github-com-tetratelabs-wabin
+           go-github-com-tetratelabs-wazero
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracehttp
+           go-go-opentelemetry-io-proto-otlp
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/dylibso/observe-sdk")
+    (synopsis "Continuous runtime observablity SDKs to monitor WebAssembly code")
+    (description
+     "This package provides a Golang implementatin of observability SDKs for
+WebAssembly, enabling continuous monitoring of WebAssembly code as it executes
+within a runtime.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-eggsampler-acme-v3
   (package
     (name "go-github-com-eggsampler-acme-v3")
