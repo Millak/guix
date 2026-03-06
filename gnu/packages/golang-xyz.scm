@@ -4189,6 +4189,31 @@ python-prompt-toolkit}, making it easier to build cross-platform command line
 tools using Go.")
     (license license:expat)))
 
+(define-public go-github-com-c9s-goprocinfo
+  (package
+    (name "go-github-com-c9s-goprocinfo")
+    (version "0.0.0-20210130143923-c95fcf8c64a8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/c9s/goprocinfo")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0krsj95cynsc5jqac5f9m2g78d3h06aak0fv5bsdljd4f6bykxv7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/c9s/goprocinfo"))
+    (home-page "https://github.com/c9s/goprocinfo")
+    (synopsis "Linux /proc info parser for Go")
+    (description
+     "This package implements a functionality to parse @code{/proc}
+information for Golang.")
+    (license license:expat)))
+
 (define-public go-github-com-caarlos0-env
   (package
     (name "go-github-com-caarlos0-env")
