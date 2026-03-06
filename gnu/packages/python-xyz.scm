@@ -28732,7 +28732,7 @@ implementation of the D-Bus protocol.")
                             (loop)))))))))))))
     (native-inputs (list python-pytest python-setuptools upower which))
     (inputs (list dbus))
-    (propagated-inputs (list python-dbus-python python-pygobject))
+    (propagated-inputs (list python-dbus python-pygobject))
     (home-page "https://github.com/martinpitt/python-dbusmock")
     (synopsis "Python library for mock D-Bus objects")
     (description
