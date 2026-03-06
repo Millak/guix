@@ -31829,6 +31829,24 @@ tool."))))
     (propagated-inputs '())
     (inputs '())))
 
+(define-public go-ply
+  (package/inherit go-howett-net-plist
+    (name "go-ply")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-howett-net-plist)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:import-path _) "howett.net/plist/cmd/ply")
+       ((#:unpack-path _ "") "howett.net/plist")))
+    (native-inputs
+     (append
+      (package-native-inputs go-howett-net-plist)
+      (package-propagated-inputs go-howett-net-plist)))
+    (propagated-inputs '())
+    (inputs '())))
+
 (define-public go-toml
   (package/inherit go-github-com-pelletier-go-toml-v2
     (name "go-toml")
