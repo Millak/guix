@@ -390,9 +390,19 @@ directory = '" vendor-dir "'") port)
                (for-each
                 (lambda (crate)
                   (invoke "tar" "xzf" crate "-C" vendor-dir))
-                (find-files "target/package" "\\.crate$"))
+                (map (lambda (f) (string-append "target/package/" f))
+                     (scandir "target/package"
+                              (lambda (f) (string-suffix? ".crate" f)))))
                (patch-cargo-checksums #:vendor-dir vendor-dir))
              cargo-package-crates))
+
+        ;; Cargo creates target/package/tmp-crate/ as scratch space during
+        ;; packaging and leaves .crate file copies there after uplifting them
+        ;; to target/package/.  Delete it so the repacking scandir does not
+        ;; pick the tmp-crate directory instead of the extracted crate
+        ;; directory when crate names sort after "tmp-crate" alphabetically.
+        (when (file-exists? "target/package/tmp-crate")
+          (delete-file-recursively "target/package/tmp-crate"))
 
         ;; Then unpack the crate, reset the timestamp of all contained files, and
         ;; repack them.  This is necessary to ensure that they are reproducible.
