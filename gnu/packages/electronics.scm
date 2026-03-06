@@ -4211,19 +4211,20 @@ parallel computing platforms.  It also supports serial execution.")
     (arguments
      (list
       #:test-target "vanilla-test"  ;TODO: restore to "test" with next release
-      #:make-flags #~(list (string-append "PREFIX=" #$output)
-                           "ENABLE_EDITLINE=1"
-                           "ENABLE_LIBYOSYS=1"
-                           "ENABLE_PYOSYS=1"
-                           (format #f "PYTHON_DESTDIR=~a"
-                                   (string-append
-                                    #$output "/lib/python"
-                                    #$(version-major+minor
-                                       (package-version python))
-                                    "/site-packages"))
-                           "PYOSYS_USE_UV=0"
-                           (format #f "ABCEXTERNAL=~a/bin/abc"
-                                   #$(this-package-input "abc-yosyshq")))
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              "ENABLE_EDITLINE=1"
+              "ENABLE_LIBYOSYS=1"
+              "ENABLE_PYOSYS=1"
+              (format #f "PYTHON_DESTDIR=~a"
+                      (string-append
+                       #$output "/lib/python"
+                       #$(version-major+minor
+                          (package-version python))
+                       "/site-packages"))
+              "PYOSYS_USE_UV=0"
+              (format #f "ABCEXTERNAL=~a/bin/abc"
+                      #$(this-package-input "abc-yosyshq")))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'configure 'fix-paths
@@ -4281,35 +4282,37 @@ parallel computing platforms.  It also supports serial execution.")
                "docs/build/texinfo/yosyshqyosys-figures"
                (string-append
                 #$output:doc "/share/info/yosyshqyosys-figures")))))))
-    (native-inputs (list bison
-                         cxxopts ;header-only library
-                         flex
-                         gawk ;for the tests and "make" progress pretty-printing
-                         googletest
-                         gtkwave        ;for the tests
-                         iverilog ;for the tests
-                         perl
-                         pkg-config
-                         python-sphinxcontrib-bibtex
-                         python-sphinx-inline-tabs
-                         texinfo))
+    (native-inputs
+     (list bison
+           cxxopts ;header-only library
+           flex
+           gawk ;for the tests and "make" progress pretty-printing
+           googletest
+           gtkwave        ;for the tests
+           iverilog ;for the tests
+           perl
+           pkg-config
+           python-sphinxcontrib-bibtex
+           python-sphinx-inline-tabs
+           texinfo))
     ;; Optional dependencies increase considerably package closure.
     ;; - gtkwave: required only for vcd2fst binary, used by ‘sim’ command.
     ;; - graphviz, xdot: used by ‘show’ command to display schematics.
-    (inputs (list abc-yosyshq
-                  bash-minimal
-                  clang
-                  editline
-                  libffi
-                  psmisc
-                  pybind11
-                  python
-                  python-click
-                  python-cxxheaderparser
-                  readline
-                  tcl
-                  z3
-                  zlib))
+    (inputs
+     (list abc-yosyshq
+           bash-minimal
+           clang
+           editline
+           libffi
+           psmisc
+           pybind11
+           python
+           python-click
+           python-cxxheaderparser
+           readline
+           tcl
+           z3
+           zlib))
     (home-page "https://yosyshq.net/yosys/")
     (synopsis "Open synthesis suite for RTL code")
     (description "Yosys consist on a framework of RTL synthesis tools.  It
