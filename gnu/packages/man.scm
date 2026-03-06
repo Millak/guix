@@ -48,6 +48,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages groff)
@@ -465,14 +466,41 @@ automatically.")
      (list
       #:out-of-source? #t
       #:configure-flags
-      #~(list "-Dconfigdir=etc/xdg/qman")))
+      #~(list "-Dconfigdir=etc/xdg/qman")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda _
+              (substitute* '("src/config_def.py"
+                             "man/qman.1")
+                (("\\/usr\\/bin\\/man")
+                 (string-append #$(this-package-input "man-db")
+                                "/bin/man"))
+                (("\\/usr\\/bin\\/groff")
+                 (string-append #$(this-package-input "groff")
+                                "/bin/groff"))
+                (("\\/usr\\/bin\\/whatis")
+                 (string-append #$(this-package-input "man-db")
+                                "/bin/whatis"))
+                (("\\/usr\\/bin\\/apropos")
+                 (string-append #$(this-package-input "man-db")
+                                "/bin/apropos"))
+                (("\\/usr\\/bin\\/xdg\\\\-open")
+                 (string-append #$(this-package-input "xdg-utils")
+                                "/bin/xdg\\-open"))
+                (("\\/usr\\/bin\\/xdg\\\\-email")
+                 (string-append #$(this-package-input "xdg-utils")
+                                "/bin/xdg\\-email"))))))))
     (native-inputs
      (list cmake-minimal
            pkg-config))
     (inputs
      (list cunit
+           groff
+           man-db
            ncurses
            python-cogapp
+           xdg-utils
            zlib))
     (home-page "https://github.com/plp13/qman")
     (synopsis "Modern man page viewer for terminals")
