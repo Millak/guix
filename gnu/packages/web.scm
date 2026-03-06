@@ -6125,33 +6125,32 @@ you'd expect.")
 (define-public go-jqp
   (package
     (name "go-jqp")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/noahgorstein/jqp")
-             (commit (string-append "v" version))))
+              (url "https://github.com/noahgorstein/jqp")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11xqh4113gkzp32hd4dg4cvjp40q3hxfh3889wd4bw2snl0alvcb"))))
+        (base32 "1j5nc3l8qzvzrfggvyh4xg3wxx4hsmkm89437sjw5gcmgscsy9d4"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:embed-files #~(list ".*.xml")
       #:install-source? #f
-      #:import-path "github.com/noahgorstein/jqp"))
-    (inputs
-     (list go-github-com-spf13-viper
-           go-github-com-spf13-cobra
-           go-github-com-muesli-termenv
-           go-github-com-itchyny-gojq
-           go-github-com-itchyny-timefmt-go
-           go-github-com-charmbracelet-lipgloss
-           go-github-com-charmbracelet-bubbletea
-           go-github-com-charmbracelet-bubbles
+      #:import-path "github.com/noahgorstein/jqp"
+      #:embed-files #~(list ".*.xml")))
+    (native-inputs
+     (list go-github-com-alecthomas-chroma-v2
            go-github-com-atotto-clipboard
-           go-github-com-alecthomas-chroma-v2))
+           go-github-com-charmbracelet-bubbles
+           go-github-com-charmbracelet-bubbletea
+           go-github-com-charmbracelet-lipgloss
+           go-github-com-itchyny-gojq
+           go-github-com-muesli-termenv
+           go-github-com-spf13-cobra
+           go-github-com-spf13-viper))
     (home-page "https://github.com/noahgorstein/jqp")
     (synopsis "TUI playground to experiment with jq")
     (description
