@@ -5774,8 +5774,8 @@ from the module-init-tools project.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/rfjakob/earlyoom")
-                    (commit (string-append "v" version))))
+                     (url "https://github.com/rfjakob/earlyoom")
+                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
@@ -5783,35 +5783,35 @@ from the module-init-tools project.")
     (build-system gnu-build-system)
     (arguments
      (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (delete 'configure)            ; no configure script
-           (add-before 'check 'set-go-HOME
-             (lambda _
-               (setenv "HOME" (getcwd))))
-           (add-before 'check 'disable-failing-test
-             (lambda _
-               ;; This test relies on writing to /proc/%d/oom_score_adj.
-               (substitute* "Makefile"
-                 (("go test -v" match)
-                  (string-append match " -vet=off -skip 'TestI'"))))))
-       #:make-flags
-       #~(list (string-append "CC=" #$(cc-for-target))
-               (string-append "VERSION=v" #$version)
-               (string-append "PREFIX=" #$output)
-               (string-append "SYSCONFDIR=" #$output "/etc")
-               "GO111MODULE=off")
-       #:test-target "test"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)            ; no configure script
+          (add-before 'check 'set-go-HOME
+            (lambda _
+              (setenv "HOME" (getcwd))))
+          (add-before 'check 'disable-failing-test
+            (lambda _
+              ;; This test relies on writing to /proc/%d/oom_score_adj.
+              (substitute* "Makefile"
+                (("go test -v" match)
+                 (string-append match " -vet=off -skip 'TestI'"))))))
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "VERSION=v" #$version)
+              (string-append "PREFIX=" #$output)
+              (string-append "SYSCONFDIR=" #$output "/etc")
+              "GO111MODULE=off")
+      #:test-target "test"))
     (native-inputs
-      (append
-        ;; To generate the manpage.
-        (if (or (target-x86-64?) (target-x86-32?))
+     (append
+      ;; To generate the manpage.
+      (if (or (target-x86-64?) (target-x86-32?))
           (list pandoc)
           '())
-        (list
-          ;; For the test suite.
-          cppcheck
-          go)))
+      (list
+       ;; For the test suite.
+       cppcheck
+       go)))
     (home-page "https://github.com/rfjakob/earlyoom")
     (synopsis "Simple out of memory (OOM) daemon for the Linux kernel")
     (description "Early OOM is a minimalist out of memory (OOM) daemon that
