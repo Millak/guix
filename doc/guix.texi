@@ -8800,14 +8800,15 @@ dependency like so:
 (define gdb-sans-guile
   (package
     (inherit gdb)
-    (inputs (modify-inputs (package-inputs gdb)
+    (inputs (modify-inputs inputs
               (delete "guile")))))
 @end lisp
 
-The @code{modify-inputs} form above removes the @code{"guile"} package
-from the @code{inputs} field of @code{gdb}.  The @code{modify-inputs}
-macro is a helper that can prove useful anytime you want to remove, add,
-or replace package inputs.
+In the body of the @code{inputs} field above, @code{inputs} is bound to
+the inherited value.  Thus, the @code{modify-inputs} form above removes
+the @code{"guile"} package from the @code{inputs} field of @code{gdb}.
+The @code{modify-inputs} macro is a helper that can prove useful anytime
+you want to remove, add, or replace package inputs.
 
 @defmac modify-inputs inputs clauses
 Modify the given package inputs, as returned by @code{package-inputs} & co.,
@@ -9131,7 +9132,7 @@ these lines:
 (define gdb-sans-guile
   (package
     (inherit gdb)
-    (inputs (modify-inputs (package-inputs gdb)
+    (inputs (modify-inputs inputs
               (delete "guile")))))
 
 ;; Return a manifest containing that one package plus Git.

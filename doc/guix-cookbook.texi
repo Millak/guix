@@ -5297,7 +5297,7 @@ did above with transformation options. We can add them like so:
   "Return P with FLAGS as additional 'configure' flags."
   (package/inherit p
     (arguments
-     (substitute-keyword-arguments (package-arguments p)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags original-flags #~(list))
         #~(append #$original-flags #$flags))))))
 

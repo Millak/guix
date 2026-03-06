@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -192,18 +192,55 @@ of TYPE matches the expansion-time ABI."
                (or (and=> (assoc-ref lst (syntax->datum f)) car)
                    #'(lambda (x) x)))))
 
-         (define (wrap-field-value f value)
+         (define (field-index f)
+           ;; Return the index of F within the record.
+           (let ((f (syntax->datum f)))
+             (let loop ((fields '(expected ...))
+                        (index 0))
+               (match fields
+                 (()
+                  ;; Internal error.
+                  (record-error 'name s "field not found ~a" f))
+                 ((head . rest)
+                  (if (eq? f head)
+                      index
+                      (loop rest (+ 1 index))))))))
+
+         (define* (wrap-field-value f value #:optional parent)
+           ;; Wrap VALUE, the value of field F, such that its sanitizer is
+           ;; called and its properties (thunked, delayed) honored.  When
+           ;; PARENT is true, bind F to the value inherited from PARENT in the
+           ;; lexical scope of VALUE.
            (let* ((sanitizer (field-sanitizer f))
                   (value     #`(#,sanitizer #,value)))
              (cond ((thunked-field? f)
-                    #`(lambda (x)
-                        (syntax-parameterize ((#,this-identifier
-                                               (lambda (s)
-                                                 (syntax-case s ()
-                                                   (id
-                                                    (identifier? #'id)
-                                                    #'x)))))
-                          #,value)))
+                    (if parent
+                        ;; Compute the value being inherited by calling the
+                        ;; thunked field F of PARENT with a self-reference for
+                        ;; the new record being constructed.
+                        (with-syntax ((inherited
+                                       #`((struct-ref #,parent
+                                                      #,(field-index f))
+                                          #,this-identifier)))
+                          #`(lambda (x)
+                              (syntax-parameterize ((#,this-identifier
+                                                     (lambda (s)
+                                                       (syntax-case s ()
+                                                         (id
+                                                          (identifier? #'id)
+                                                          #'x)))))
+                                ;; Bind F, the field identifier, to the value
+                                ;; being inherited.
+                                (let-syntax ((#,f (identifier-syntax inherited)))
+                                  #,value))))
+                        #`(lambda (x)
+                            (syntax-parameterize ((#,this-identifier
+                                                   (lambda (s)
+                                                     (syntax-case s ()
+                                                       (id
+                                                        (identifier? #'id)
+                                                        #'x)))))
+                              #,value))))
                    ((delayed-field? f)
                     #`(delay #,value))
                    (else value))))
@@ -227,9 +264,19 @@ of TYPE matches the expansion-time ABI."
                         #,(wrap-field-value #'field #'value)))))
                 field+value))
 
+         (define (field-bindings/inheritance parent field+value)
+           ;; Return field to value bindings, for use in 'let*' below.
+           (map (lambda (field+value)
+                  (syntax-case field+value ()
+                    ((field value)
+                     #`(field
+                        #,(wrap-field-value #'field #'value parent)))))
+                field+value))
+
          (syntax-case s (inherit expected ...)
            ((_ (inherit orig-record) (field value) (... ...))
-            #`(let* #,(field-bindings #'((field value) (... ...)))
+            #`(let* #,(field-bindings/inheritance #'orig-record
+                                                  #'((field value) (... ...)))
                 #,(abi-check #'type abi-cookie)
                 #,(record-inheritance #'orig-record
                                       #'((field value) (... ...)))))

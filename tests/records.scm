@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2016, 2018-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2016, 2018-2022, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -237,6 +237,70 @@
          (and (eq? second x)
               (bar? first)
               (eq? first y)))))))
+
+(test-equal "define-record-type* & thunked & no inherited value"
+  '(baz)                                          ;the unbound variable
+  (catch 'unbound-variable
+    (lambda ()
+      (eval '(begin
+               (define-record-type* <foo> foo make-foo
+                 foo?
+                 (bar foo-bar)
+                 (baz foo-baz (thunked)))
+
+               ;; There's no inheritance here so 'baz' is unbound in the field
+               ;; body.  Call 'foo-baz' to trigger to unbound variable error.
+               (foo-baz (foo (bar 1) (baz baz))))
+            (test-module)))
+    (lambda (key proc message arguments . rest)
+      arguments)))
+
+(test-equal "define-record-type* & thunked & inherited value"
+  '(1 22)
+  (begin
+    (define-record-type* <foo> foo make-foo
+      foo?
+      (bar foo-bar)
+      (baz foo-baz (thunked)))
+
+    (let* ((parent (foo (bar 1) (baz 2)))
+           (child (foo (inherit parent)
+                       (baz (* baz 11)))))
+      (list (foo-bar child) (foo-baz child)))))
+
+(test-equal "define-record-type* & thunked & inherited value & this-record"
+  '((1 2) => (21 (inherited . 42)))
+  (begin
+    (define-record-type* <foo> foo make-foo
+      foo?
+      (bar foo-bar)
+      (baz foo-baz (thunked)))
+
+    (let* ((parent (foo (bar 1)
+                        (baz (* 2 (foo-bar this-record)))))
+           (child (foo (inherit parent)
+                       (bar 21)
+                       (baz (cons 'inherited baz)))))
+      `((,(foo-bar parent) ,(foo-baz parent))
+        =>
+        (,(foo-bar child) ,(foo-baz child))))))
+
+(test-equal "define-record-type* & thunked & inherited value & sanitizer"
+  '((1 "2") => (4 "88"))
+  (begin
+    (define-record-type* <foo> foo make-foo
+      foo?
+      (bar foo-bar)
+      (baz foo-baz (thunked) (sanitize number->string)))
+
+    (let* ((parent (foo (bar 1)
+                        (baz (* 2 (foo-bar this-record)))))
+           (child (foo (inherit parent)
+                       (bar 4)
+                       (baz (+ 80 (string->number baz))))))
+      `((,(foo-bar parent) ,(foo-baz parent))
+        =>
+        (,(foo-bar child) ,(foo-baz child))))))
 
 (test-assert "define-record-type* & delayed"
   (begin
