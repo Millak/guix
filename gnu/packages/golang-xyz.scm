@@ -13221,26 +13221,27 @@ https://github.com/jessevdk/go-flags.")
 (define-public go-github-com-itchyny-gojq
   (package
     (name "go-github-com-itchyny-gojq")
-    (version "0.12.17")
+    (version "0.12.18")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/itchyny/gojq")
-             (commit (string-append "v" version))))
+              (url "https://github.com/itchyny/gojq")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0raipf3k392bihjk6kddzl3xsnap8wlvhplngmzx2vkp2f11x6fc"))))
+        (base32 "10grskimdq887rsips3hpkvz39m9j1k6g3n5k05wws14dwsb52pn"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/itchyny/gojq"))
-    (inputs
-     (list go-github-com-google-go-cmp
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-itchyny-go-yaml
            go-github-com-itchyny-timefmt-go
            go-github-com-mattn-go-isatty
-           go-github-com-mattn-go-runewidth
-           go-gopkg-in-yaml-v3))
+           go-github-com-mattn-go-runewidth))
     (home-page "https://github.com/itchyny/gojq")
     (synopsis "Pure Go implementation of jq")
     (description
