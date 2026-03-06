@@ -2221,8 +2221,10 @@ memory-efficient.")
      (list
       #:install-source? #f
       #:import-path "github.com/oniony/TMSU"
+      #:build-flags
+      #~(list "-tags=libsqlite3")
       #:test-flags
-      #~(list "-vet=off")
+      #~(list "-vet=off" "-tags=libsqlite3")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'fix-bin-name
@@ -2232,7 +2234,8 @@ memory-efficient.")
     (inputs
      (list go-github-com-mattn-go-sqlite3
            go-github-com-hanwen-go-fuse
-           go-golang-org-x-crypto))
+           go-golang-org-x-crypto
+           sqlite))
     (home-page "https://github.com/oniony/TMSU")
     (synopsis "Tag files and access them through a virtual file system")
     (description
