@@ -2002,7 +2002,8 @@ This package is part of the KDE games module.")
            kio
            kwidgetsaddons
            kxmlgui
-           povray))
+           povray
+           qtwayland))
     (home-page "https://apps.kde.org/skladnik/")
     (synopsis "Japanese warehouse keeper sokoban game")
     (description "Skladnik is the Japanese warehouse keeper sokoban game.
