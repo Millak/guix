@@ -691,6 +691,42 @@ Gemini clients and servers.")
 2019.")
     (license license:expat)))
 
+(define-public go-github-com-1password-onepassword-sdk-go
+  (package
+    (name "go-github-com-1password-onepassword-sdk-go")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/1Password/onepassword-sdk-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "058vamq6d2gjhdlng92ygiyhy85c8k9yqaq7p03xj9r6drgrggc9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/1password/onepassword-sdk-go"
+      #:embed-files
+      #~(list "extism-runtime.wasm"
+              "extism-runtime.wasm.version")
+      #:test-subdirs
+      #~(list "internal"))) ;run unitests only
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-extism-go-sdk
+           go-github-com-tetratelabs-wazero
+           go-golang-org-x-sys))
+    (home-page "https://github.com/1password/onepassword-sdk-go")
+    (synopsis "1Password Go SDK")
+    (description
+     "This package provides a Go SDK to interact with
+@url{https://1password.com/, 1Password} API.")
+    (license license:expat)))
+
 (define-public go-github-com-42wim-httpsig
   (package
     (name "go-github-com-42wim-httpsig")
