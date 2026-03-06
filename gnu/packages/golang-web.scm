@@ -5013,6 +5013,73 @@ against documents, as well as for calculating & applying
        ((#:import-path "github.com/evanphx/json-patch")
         "github.com/evanphx/json-patch/v5")))))
 
+(define-public go-github-com-extism-go-sdk
+  (package
+    (name "go-github-com-extism-go-sdk")
+    (version "1.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/extism/go-sdk")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15s9l0qnp0y0z0c59mnp90c4nm50hy12l3c41b22nvfh956zdss3"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/extism/extism-sdk-plugins-config
+            ;; - github.com/extism/extism-sdk-plugins-exit
+            ;; - github.com/extism/extism-sdk-plugins-fs
+            ;; - github.com/extism/extism-sdk-plugins-host
+            ;; - github.com/extism/extism-sdk-plugins-host-memory
+            ;; - github.com/extism/extism-sdk-plugins-host-multiple
+            ;; - github.com/extism/extism-sdk-plugins-http
+            ;; - github.com/extism/extism-sdk-plugins-lib
+            ;; - github.com/extism/extism-sdk-plugins-log
+            ;; - github.com/extism/extism-sdk-plugins-main
+            ;; - github.com/extism/extism-sdk-plugins-noop
+            ;; - github.com/extism/extism-sdk-plugins-println
+            ;; - github.com/extism/extism-sdk-plugins-replace
+            ;; - github.com/extism/extism-sdk-plugins-sleep
+            ;; - github.com/extism/extism-sdk-plugins-count-vowels
+            ;; - github.com/extism/extism-sdk-plugins-var
+            (delete-file-recursively "plugins")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/extism/go-sdk"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; Tests try to get remove data or call to API from
+               ;; <https://raw.githubusercontent.com/extism/extism/main/wasm/code.wasm>,
+               ;; <https://jsonplaceholder.typicode.com/todos/1>
+               ;; <https://extism.org>
+               (list "TestWasmUrl"
+                     "TestHTTP_allowed"
+                     "TestHTTPHeaders_allowed"
+                     "TestHTTPHeaders_denied"
+                     ;; open /mnt/test.txt: errno 2
+                     "TestFS")
+               "|"))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-dylibso-observe-sdk-go
+           go-github-com-gobwas-glob
+           go-github-com-tetratelabs-wazero))
+    (home-page "https://github.com/extism/go-sdk")
+    (synopsis "Extism Go SDK")
+    (description
+     "This package provides Golang SDK for integrating with the
+@url{https://extism.org/, Extism} runtime - a cross-language framework for
+building with WebAssembly.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-fasthttp-router
   (package
     (name "go-github-com-fasthttp-router")
