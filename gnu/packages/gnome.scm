@@ -11321,6 +11321,10 @@ supports both X and Wayland display servers.")
        (sha256
         (base32 "17ampw9p1fp7s7i43cz9r68v6mm7xmb1sndx1mqmkns35kn8yl8a"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
     (native-inputs
      (list desktop-file-utils intltool pkg-config))
     (inputs
