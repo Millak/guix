@@ -478,7 +478,7 @@ the screen.")
            ;; https://github.com/canonical/lightdm/issues/346
            dbus-1.15.0
            python-wrapper
-           python-pygobject
+           python-pygobject-3.50
            which
            yelp-tools))
     ;; Required by liblightdm-gobject-1.pc.
