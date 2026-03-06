@@ -92,10 +92,10 @@
               (sha256
                (base32
                 "16pk8g5rx00x45gnxrqg160b1l02fds1b7iz6shllbfczghgz1rj"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (native-inputs
      (list appstream extra-cmake-modules pkg-config qttools))
-    (inputs (list qtbase qt5compat glib pulseaudio))
+    (inputs (list glib pulseaudio qt5compat qtwayland))
     (arguments
      (list #:configure-flags
            #~(list "-DPHONON_BUILD_QT5=OFF"
