@@ -2197,58 +2197,42 @@ memory-efficient.")
 (define-public tmsu
   (package
     (name "tmsu")
-    (version "0.7.5")
+    ;; XXX: 0.7.5 was released in 2019, since that time master branch
+    ;; accumulated a lot of fixes and support for a fresh Go version, use the
+    ;; latest (2022), commit from master's HEAD. Project closed Issues and
+    ;; Pull Requests, potentially it's abandoned one.
+    (properties '((commit . "0bf4b8031cbeffc0347007d85647062953e90571")
+                  (revision . "0")))
+    (version (git-version "0.7.5"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/oniony/TMSU")
-             (commit (string-append "v" version))))
+              (url "https://github.com/oniony/TMSU")
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0834hah7p6ad81w60ifnxyh9zn09ddfgrll04kwjxwp7ypbv38wq"))))
+         "1kyncrmbaxhhqys2mhnvbz95zh72arv3an9hfhjbdcxa12b9w6g5"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/oniony/TMSU"
       #:install-source? #f
+      #:import-path "github.com/oniony/TMSU"
+      #:test-flags
+      #~(list "-vet=off")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'adjust-makefile
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (substitute* "Makefile"
-                  (("SHELL=.*") (string-append "SHELL=" (which "sh") "\n"))
-                  ;; Make sure we do not compile 2 more times during the check
-                  ;; phase.
-                  (("unit-test: compile") "unit-test:")
-                  (("integration-test: compile") "integration-test:")
-                  ;; Simplify install path.
-                  (("usr/") "")))))
-          (replace 'build
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (invoke "make" "compile"))))
-          (replace 'check
-            (lambda* (#:key import-path tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  ;; Remove shaky test file, see
-                  ;; <https://github.com/oniony/TMSU/issues/281>.
-                  (for-each
-                   (lambda (test-file)
-                     (delete-file test-file))
-                   (find-files "." "^fingerprinter_test.go$"))
-                  (invoke "make" "test")))))
-          (replace 'install
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                (setenv "DESTDIR" #$output)
-                (invoke "make" "install")))))))
+          (add-after 'install 'fix-bin-name
+            (lambda _
+              (rename-file (string-append #$output "/bin/TMSU")
+                           (string-append #$output "/bin/tmsu")))))))
     (inputs
-     (list go-github-com-mattn-go-sqlite3 go-github-com-hanwen-go-fuse))
+     (list go-github-com-mattn-go-sqlite3
+           go-github-com-hanwen-go-fuse
+           go-golang-org-x-crypto))
     (home-page "https://github.com/oniony/TMSU")
     (synopsis "Tag files and access them through a virtual file system")
     (description
