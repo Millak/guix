@@ -8767,6 +8767,34 @@ generics.")
 sizes.  It converts boring ugly numbers to human-friendly strings and back.")
     (license license:expat)))
 
+(define-public go-github-com-dustin-gojson
+  (package
+    (name "go-github-com-dustin-gojson")
+    (version "0.0.0-20160307161227-2e71ec9dd5ad")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dustin/gojson")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vrmmyn7l568l1k71mxd54iqf3d54pn86cf278i374j86jn0bdxf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dustin/gojson"
+      #:test-flags
+      #~(list "-vet=off")))
+    (home-page "https://github.com/dustin/gojson")
+    (synopsis "Go's @code{encoding/json} with the scanner API made public")
+    (description
+     "Package @code{json} implements encoding and decoding of JSON objects as
+defined in @url{https://rfc-editor.org/rfc/rfc4627.html, RFC 4627}.  The
+mapping between JSON objects and Go values is described in the documentation
+for the Marshal and Unmarshal functions.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-dustinkirkland-golang-petname
   (package
     (name "go-github-com-dustinkirkland-golang-petname")
