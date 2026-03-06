@@ -13218,6 +13218,36 @@ https://github.com/jessevdk/go-flags.")
 @url{https://github.com/yaml/go-yaml}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-itchyny-gojq
+  (package
+    (name "go-github-com-itchyny-gojq")
+    (version "0.12.17")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/itchyny/gojq")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0raipf3k392bihjk6kddzl3xsnap8wlvhplngmzx2vkp2f11x6fc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/itchyny/gojq"))
+    (inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-itchyny-timefmt-go
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-runewidth
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/itchyny/gojq")
+    (synopsis "Pure Go implementation of jq")
+    (description
+     "@command{gojq} is an Go implementation and library of the jq JSON
+processor.")
+    (license license:expat)))
+
 (define-public go-github-com-itchyny-timefmt-go
   (package
     (name "go-github-com-itchyny-timefmt-go")
@@ -32005,6 +32035,17 @@ various modes for analyzing and transforming YAML data.")))
     (native-inputs (package-propagated-inputs go-mvdan-cc-gofumpt))
     (propagated-inputs '())
     (inputs '())))
+
+(define-public gojq
+  (package
+    (inherit go-github-com-itchyny-gojq)
+    (name "gojq")
+    (arguments
+     (ensure-keyword-arguments
+      (package-arguments go-github-com-itchyny-gojq)
+      (list #:import-path "github.com/itchyny/gojq/cmd/gojq"
+            #:unpack-path "github.com/itchyny/gojq"
+            #:install-source? #f)))))
 
 (define-public misspell
   (package/inherit go-github-com-client9-misspell
