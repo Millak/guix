@@ -80,7 +80,7 @@
            gtk+
            gtksourceview-3
            python-pyyaml
-           python-pygobject
+           python-pygobject-3.50
            webkitgtk-for-gtk3))
     ;; TODO: package the following for python3 (if possible), add them as
     ;; dependencies, and remove them from rednotebook source:
