@@ -4270,6 +4270,21 @@ parallel computing platforms.  It also supports serial execution.")
               (wrap-program (string-append #$output "/bin/yosys-witness")
                 `("GUIX_PYTHONPATH" ":" prefix
                   (,(getenv "GUIX_PYTHONPATH"))))))
+          ;; Building the yosys-slang plugin requires yosys; unbundling the
+          ;; package would produce a circular dependency.
+          (add-after 'install 'install-yosys-slang
+            (lambda* (#:key parallel-build? #:allow-other-keys)
+              (copy-recursively #$(this-package-native-input "yosys-slang")
+                                "yosys-slang")
+              (setenv "PATH"
+                      (string-append #$output "/bin:" (getenv "PATH")))
+              (with-directory-excursion "yosys-slang"
+                (invoke "make" "-j" (if parallel-build?
+                                        (number->string (parallel-job-count))
+                                        "1"))
+                (install-file
+                 "build/slang.so"
+                 (string-append #$output "/share/yosys/plugins")))))
           (add-before 'build 'build-info
             (lambda _
               (substitute* '("docs/Makefile")
@@ -4284,6 +4299,7 @@ parallel computing platforms.  It also supports serial execution.")
                 #$output:doc "/share/info/yosyshqyosys-figures")))))))
     (native-inputs
      (list bison
+           cmake-minimal
            cxxopts ;header-only library
            flex
            gawk ;for the tests and "make" progress pretty-printing
@@ -4294,7 +4310,19 @@ parallel computing platforms.  It also supports serial execution.")
            pkg-config
            python-sphinxcontrib-bibtex
            python-sphinx-inline-tabs
-           texinfo))
+           texinfo
+           (origin
+             (method git-fetch)
+             (uri
+              (git-reference
+                (url "https://github.com/povik/yosys-slang")
+                ;; No tags, nor releases.
+                (commit "d82b0b163a725fc1a401fbb6b465cd862517ec1f")
+                (recursive? #t)))  ;requires slang and fmt
+             (file-name "yosys-slang")
+             (sha256
+              (base32
+               "07h4qssphggd4mbn376vldqwzj1i16y1ix455xzr4lgx6s2q9ryg")))))
     ;; Optional dependencies increase considerably package closure.
     ;; - gtkwave: required only for vcd2fst binary, used by ‘sim’ command.
     ;; - graphviz, xdot: used by ‘show’ command to display schematics.
@@ -4319,6 +4347,13 @@ parallel computing platforms.  It also supports serial execution.")
 currently has extensive Verilog-2005 support, and performs synthesis of VHDL
 code using external plugins.  It provides a basic set of synthesis algorithms
 for various application domains, including FPGAs and ASICs.")
-    (license license:isc)))
+    (license (list
+              ;; yosys-slang/src/initial_eval.cc
+              ;; yosys-slang/third_party/slang
+              license:expat
+              ;; yosys-slang/third_party/fmt
+              license:bsd-2 license:bsd-3 license:psfl
+              ;; yosys
+              license:isc))))
 
 (define-deprecated-package yosys-clang yosys)
