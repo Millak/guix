@@ -129,6 +129,81 @@
 on @url{https://github.com/tulir/whatsmeow, whatsmeow}.")
     (license license:agpl3+)))
 
+(define-public pantalaimon
+  (package
+    (name "pantalaimon")
+    (version "0.10.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/matrix-org/pantalaimon")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07cf5k0b1i5pfplmx2p5l3ba76jjfzzcky9ylj7593k7nrm5drl3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "tests"
+              ;; These tests hang.
+              "--ignore=tests/proxy_test.py"
+              "-k" "not test_start_loop")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'create-pytest-ini
+            (lambda _
+              (call-with-output-file "pytest.ini"
+                (lambda (port)
+                  (format port "[pytest]
+asyncio_mode = auto")))))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                ;; Newer version is packaged.
+                (("\"matrix-nio\\[e2e\\] >= 0\\.24, < 0\\.25\\.2\"")
+                 "\"matrix-nio[e2e] >= 0.24, <= 0.25.2\""))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (with-directory-excursion "docs/man"
+                (let ((man (string-append #$output "/share/man")))
+                  (install-file "panctl.1" (string-append man "/man1"))
+                  (install-file "pantalaimon.5" (string-append man "/man5"))
+                  (install-file "pantalaimon.8"
+                                (string-append man "/man8")))))))))
+    (native-inputs
+     (list python-aioresponses
+           python-faker
+           python-pytest
+           python-pytest-aiohttp
+           python-pytest-asyncio
+           python-setuptools))
+    (propagated-inputs
+     (list python-aiohttp
+           python-attrs
+           python-cachetools
+           python-click
+           python-dbus-1.2
+           python-janus
+           python-keyring
+           python-logbook
+           python-matrix-nio
+           python-notify2
+           python-peewee
+           python-platformdirs
+           python-prompt-toolkit
+           python-pydbus
+           python-pygobject))
+    (home-page "https://github.com/matrix-org/pantalaimon")
+    (synopsis "Matrix proxy daemon that adds E2E encryption capabilities")
+    (description
+     "Pantalaimon is an end-to-end encryption aware Matrix reverse proxy
+daemon.  Pantalaimon acts as a good man in the middle that handles the
+encryption for you.  Messages are transparently encrypted and decrypted for
+clients inside of pantalaimon.")
+    (license license:asl2.0)))
+
 (define-public python-matrix-client
   (package
     (name "python-matrix-client")
@@ -178,6 +253,77 @@ on @url{https://github.com/tulir/whatsmeow, whatsmeow}.")
      "This package contains code used by Synapse, Sydent, and Sygnal.")
     (license license:asl2.0)))
 
+(define-public python-matrix-nio
+  (package
+    (name "python-matrix-nio")
+    (version "0.25.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/poljar/matrix-nio.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07prfdnkr13d0pvzhnicwnpn562fwq9zx05d6wza230s7vj0mmk4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "tests"
+              "-k" (string-join
+                    ;; This test requires an Internet connection
+                    (list "not test_connect_wrapper"
+                          ;; XXX: fixture 'event_loop' not found
+                          "test_sync_forever"
+                          "test_stop_sync_forever")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"cachetools~=.*\"")
+                 "\"cachetools\""))))
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* "tests/helpers.py"
+                (("from nio.crypto import OlmAccount, OlmDevice")
+                 "from nio.crypto.device import OlmDevice
+from nio.crypto.sessions import OlmAccount")))))))
+    (native-inputs
+     (list python-aioresponses
+           python-faker
+           python-hpack
+           python-hyperframe
+           python-hypothesis
+           python-pytest
+           python-pytest-aiohttp
+           python-pytest-asyncio
+           python-pytest-benchmark
+           python-setuptools))
+    (propagated-inputs
+     (list python-aiofiles
+           python-aiohttp
+           python-aiohttp-socks
+           python-atomicwrites
+           python-cachetools
+           python-h11
+           python-h2
+           python-jsonschema
+           python-olm
+           python-peewee
+           python-pycryptodome
+           python-unpaddedbase64))
+    (home-page "https://github.com/poljar/matrix-nio")
+    (synopsis
+     "Python Matrix client library, designed according to sans I/O principles")
+    (description
+     "Matrix nio is a multilayered Matrix client library.  The underlying base
+layer doesn't do any network IO on its own, but on top of that is a full
+fledged batteries-included asyncio layer using aiohttp.")
+    (license license:isc)))
+
 (define-public python-matrix-synapse-ldap3
   (package
     (name "python-matrix-synapse-ldap3")
@@ -208,6 +354,42 @@ on @url{https://github.com/tulir/whatsmeow, whatsmeow}.")
      "This package allows Synapse to use LDAP as a password provider.
 This lets users log in to Synapse with their username and password from
 an LDAP server.")
+    (license license:asl2.0)))
+
+(define-public python-synapse-s3-storage-provider
+  (package
+    (name "python-synapse-s3-storage-provider")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/matrix-org/synapse-s3-storage-provider")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03y72439z718wjapdgqcw1qajpc917djsf4jhp2qrgv9l71rrrk9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "-m" "twisted.trial" "test_s3")))
+    (native-inputs
+     (list python-setuptools
+           python-mock synapse))
+    (propagated-inputs
+     (list python-boto3
+           python-botocore
+           python-humanize
+           python-psycopg2
+           python-pyyaml
+           python-tqdm
+           python-twisted))
+    (home-page "https://github.com/matrix-org/synapse-s3-storage-provider")
+    (synopsis "Synapse storage provider to fetch and store media in Amazon S3")
+    (description
+     "This package implements a storage provider for Synapse, enabling it to
+fetch and store media in Amazon S3.")
     (license license:asl2.0)))
 
 (define-public synapse
@@ -340,186 +522,4 @@ core development team at matrix.org, written in Python/Twisted.  It is
 intended to showcase the concept of Matrix and let folks see the spec in the
 context of a codebase and let you run your own homeserver and generally help
 bootstrap the ecosystem.")
-    (license license:asl2.0)))
-
-(define-public python-matrix-nio
-  (package
-    (name "python-matrix-nio")
-    (version "0.25.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/poljar/matrix-nio.git")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "07prfdnkr13d0pvzhnicwnpn562fwq9zx05d6wza230s7vj0mmk4"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "tests"
-              "-k" (string-join
-                    ;; This test requires an Internet connection
-                    (list "not test_connect_wrapper"
-                          ;; XXX: fixture 'event_loop' not found
-                          "test_sync_forever"
-                          "test_stop_sync_forever")
-                    " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("\"cachetools~=.*\"")
-                 "\"cachetools\""))))
-          (add-after 'unpack 'fix-tests
-            (lambda _
-              (substitute* "tests/helpers.py"
-                (("from nio.crypto import OlmAccount, OlmDevice")
-                 "from nio.crypto.device import OlmDevice
-from nio.crypto.sessions import OlmAccount")))))))
-    (native-inputs
-     (list python-aioresponses
-           python-faker
-           python-hpack
-           python-hyperframe
-           python-hypothesis
-           python-pytest
-           python-pytest-aiohttp
-           python-pytest-asyncio
-           python-pytest-benchmark
-           python-setuptools))
-    (propagated-inputs
-     (list python-aiofiles
-           python-aiohttp
-           python-aiohttp-socks
-           python-atomicwrites
-           python-cachetools
-           python-h11
-           python-h2
-           python-jsonschema
-           python-olm
-           python-peewee
-           python-pycryptodome
-           python-unpaddedbase64))
-    (home-page "https://github.com/poljar/matrix-nio")
-    (synopsis
-     "Python Matrix client library, designed according to sans I/O principles")
-    (description
-     "Matrix nio is a multilayered Matrix client library.  The underlying base
-layer doesn't do any network IO on its own, but on top of that is a full
-fledged batteries-included asyncio layer using aiohttp.")
-    (license license:isc)))
-
-(define-public python-synapse-s3-storage-provider
-  (package
-    (name "python-synapse-s3-storage-provider")
-    (version "1.6.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/matrix-org/synapse-s3-storage-provider")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "03y72439z718wjapdgqcw1qajpc917djsf4jhp2qrgv9l71rrrk9"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-backend #~'custom
-      #:test-flags #~(list "-m" "twisted.trial" "test_s3")))
-    (native-inputs
-     (list python-setuptools
-           python-mock synapse))
-    (propagated-inputs
-     (list python-boto3
-           python-botocore
-           python-humanize
-           python-psycopg2
-           python-pyyaml
-           python-tqdm
-           python-twisted))
-    (home-page "https://github.com/matrix-org/synapse-s3-storage-provider")
-    (synopsis "Synapse storage provider to fetch and store media in Amazon S3")
-    (description
-     "This package implements a storage provider for Synapse, enabling it to
-fetch and store media in Amazon S3.")
-    (license license:asl2.0)))
-
-(define-public pantalaimon
-  (package
-    (name "pantalaimon")
-    (version "0.10.6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/matrix-org/pantalaimon")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "07cf5k0b1i5pfplmx2p5l3ba76jjfzzcky9ylj7593k7nrm5drl3"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "tests"
-              ;; These tests hang.
-              "--ignore=tests/proxy_test.py"
-              "-k" "not test_start_loop")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'create-pytest-ini
-            (lambda _
-              (call-with-output-file "pytest.ini"
-                (lambda (port)
-                  (format port "[pytest]
-asyncio_mode = auto")))))
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "setup.py"
-                ;; Newer version is packaged.
-                (("\"matrix-nio\\[e2e\\] >= 0\\.24, < 0\\.25\\.2\"")
-                 "\"matrix-nio[e2e] >= 0.24, <= 0.25.2\""))))
-          (add-after 'install 'install-doc
-            (lambda _
-              (with-directory-excursion "docs/man"
-                (let ((man (string-append #$output "/share/man")))
-                  (install-file "panctl.1" (string-append man "/man1"))
-                  (install-file "pantalaimon.5" (string-append man "/man5"))
-                  (install-file "pantalaimon.8"
-                                (string-append man "/man8")))))))))
-    (native-inputs
-     (list python-aioresponses
-           python-faker
-           python-pytest
-           python-pytest-aiohttp
-           python-pytest-asyncio
-           python-setuptools))
-    (propagated-inputs
-     (list python-aiohttp
-           python-attrs
-           python-cachetools
-           python-click
-           python-dbus-1.2
-           python-janus
-           python-keyring
-           python-logbook
-           python-matrix-nio
-           python-notify2
-           python-peewee
-           python-platformdirs
-           python-prompt-toolkit
-           python-pydbus
-           python-pygobject))
-    (home-page "https://github.com/matrix-org/pantalaimon")
-    (synopsis "Matrix proxy daemon that adds E2E encryption capabilities")
-    (description
-     "Pantalaimon is an end-to-end encryption aware Matrix reverse proxy
-daemon.  Pantalaimon acts as a good man in the middle that handles the
-encryption for you.  Messages are transparently encrypted and decrypted for
-clients inside of pantalaimon.")
     (license license:asl2.0)))
