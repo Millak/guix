@@ -3034,7 +3034,7 @@ user interaction (e.g.  measuring distances).")
               (substitute* "volctl/xwrappers.py"
                 (("libXfixes.so")
                  (search-input-file inputs "/lib/libXfixes.so"))))))))
-    (native-inputs (list python-setuptools))
+    (native-inputs (list gobject-introspection python-setuptools))
     (inputs (list libxfixes))
     (propagated-inputs
      (list python-click
