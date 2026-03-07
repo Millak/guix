@@ -186,6 +186,30 @@ performance counters.  There also exist converters for profiling output of
 Python, PHP, and Perl.")
     (license license:gpl2)))
 
+(define-public kdesdk-thumbnailers
+  (package
+    (name "kdesdk-thumbnailers")
+    (version "25.12.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kdesdk-thumbnailers-" version ".tar.xz"))
+       (sha256
+        (base32 "17brrk20w32x6dqjqrqm2vgzhnhk2lpbzyay5k6cxsqsra0fbxvz"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list gettext-minimal kio qtbase))
+    (home-page "https://invent.kde.org/sdk/kdesdk-thumbnailers")
+    (synopsis "Plugins for the thumbnailing system")
+    (description "This package provides thumbnailer plugins for Gettext
+Translation (.po) files.")
+    (license license:gpl3+)))
+
 (define-public kdevelop-pg-qt
   (package
     (name "kdevelop-pg-qt")
