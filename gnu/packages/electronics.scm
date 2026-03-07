@@ -2577,7 +2577,7 @@ for @acronym{EDA, elecronic design automation} and chip design.")))
 (define-public python-klayout
   (package
     (name "python-klayout")
-    (version "0.30.5")
+    (version "0.30.6")                  ;keep in sync with klayout
     (source
      (origin
        (method git-fetch)
@@ -2585,7 +2585,7 @@ for @acronym{EDA, elecronic design automation} and chip design.")))
              (url "https://github.com/klayout/klayout")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1ixl8wzpiaw6frb28x9y9jy3fvhjclmn4xl77i72rs37rf4i2a2s"))
+        (base32 "0p4achjlynhg5wc0zmxkzljx115l7vcg3mp3f8i8pjydv8visnh4"))
        (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (arguments
