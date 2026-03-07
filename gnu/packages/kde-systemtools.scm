@@ -177,6 +177,37 @@ The main features of Dolphin are:
 Dolphin with the version control systems: Bzr, Git, Mercurial, Subversion.")
     (license license:gpl2+)))
 
+(define-public kde-inotify-survey
+  (package
+    (name "kde-inotify-survey")
+    (version "25.12.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kde-inotify-survey-" version ".tar.xz"))
+       (sha256
+        (base32 "1iqfm3ll4kivfjdiif4jrbwh01yaanka59s77pn7a8hjilg9b0w3"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase))
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list kauth
+           kcoreaddons
+           kdbusaddons
+           ki18n
+           knotifications))
+    (home-page "https://invent.kde.org/system/kde-inotify-survey")
+    (synopsis "Inotify limits monitoring tool")
+    (description "kde-inotify-survey is a tool to monitor inotify limits.  It
+informs the user when they have been or about to be reached.  It provides the
+@command{kde-inotify-survey} command and a KDED module that additionally polls
+the state every couple minutes and warns if the user capacities have been
+exhausted.")
+    (license license:gpl3+)))
+
 (define-public kdf
   (package
     (name "kdf")
