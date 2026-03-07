@@ -4014,14 +4014,14 @@ commits.")
 (define-public python-mkdocs-material
   (package
     (name "python-mkdocs-material")
-    (version "7.1.3")
+    (version "7.3.6")
     (source
      (origin
        (method url-fetch)
        (uri
         (pypi-uri "mkdocs-material" version))
        (sha256
-        (base32 "0ci9xiasq9nfn09v11m7p49vzazdbgslw7rpzjd6y3hsmn9vljz3"))
+        (base32 "05y2qx01qqpc04iq1bbzcsaiq51zvg2samdgjf6kb2shya7bs78v"))
        (modules '((guix build utils)))
        (snippet
         ;; TODO There are still bundled assets and minified JS.
@@ -4052,8 +4052,8 @@ commits.")
                  ""))))
           (add-after 'ensure-no-mtimes-pre-1980 'inject-javascript-assets
             (lambda* (#:key inputs #:allow-other-keys)
-              (mkdir-p "material/assets/javascripts/min/")
-              (with-directory-excursion "material/assets/javascripts/min/"
+              (mkdir-p "material/assets/javascripts/lunr/min")
+              (with-directory-excursion "material/assets/javascripts/lunr/min"
                 (symlink-js inputs))))
           (add-after 'wrap 'replace-javascript-assets
             (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -4061,9 +4061,9 @@ commits.")
                      (js-assets (string-append site "/material/"
                                                "assets/javascripts")))
                 (with-directory-excursion js-assets
-                  (delete-file-recursively "min")
-                  (mkdir-p "min")
-                  (with-directory-excursion "min"
+                  (delete-file-recursively "lunr/min")
+                  (mkdir-p "lunr/min")
+                  (with-directory-excursion "lunr/min"
                     (symlink-js inputs))))))))))
     (native-inputs (list python-setuptools))
     (inputs (list js-lunr-ar
