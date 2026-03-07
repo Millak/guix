@@ -353,7 +353,8 @@ your computer.")
                   kcrash
                   solid
                   kwidgetsaddons
-                  qgpgme))
+                  qgpgme
+                  qtwayland))
     (arguments (list #:qtbase qtbase
                      #:tests? #f))
     (home-page "https://apps.kde.org/isoimagewriter/")
