@@ -3240,39 +3240,45 @@ RCS, PRCS, and Aegis packages.")
   (package
     (name "cvs-fast-export")
     (version "1.56")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://www.catb.org/~esr/cvs-fast-export/"
-                                  "cvs-fast-export-" version ".tar.gz"))
-              (sha256
-               (base32
-                "058bzp3npng48ascls943m16kgvrl0h197a10brf7mvx8zpfc7sc"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/esr/cvs-fast-export")
+              (commit version)))
+       (sha256
+        (base32
+         "0gsbddafyfp2k2kklrkjiiz4dhinqidf0pc77id4j7v3ll3xpszi"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure))       ; no configure script
-       #:parallel-build? #f         ; parallel a2x commands fail spectacularly
-       #:make-flags
-       (list "CC=gcc" (string-append "prefix?=" (assoc-ref %outputs "out")))))
+     (list
+      ;; Tests require cppcheck (among other things), however they fail.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))
+      #:parallel-build? #f          ; parallel a2x commands fail spectacularly
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "prefix?=" #$output))))
     (inputs
-     `(("git" ,git)
-       ("python" ,python-wrapper)))
+     (list git python-wrapper))
     (native-inputs
      (list asciidoc
-           ;; These are needed for the tests.
-           cvs rcs))
+           bison
+           flex))
     (home-page "http://www.catb.org/esr/cvs-fast-export/")
     (synopsis "Export an RCS or CVS history as a fast-import stream")
-    (description "This program analyzes a collection of RCS files in a CVS
-repository (or outside of one) and, when possible, emits an equivalent history
-in the form of a fast-import stream.  Not all possible histories can be
-rendered this way; the program tries to emit useful warnings when it can't.
+    (description
+     "This program analyzes a collection of RCS files in a CVS repository (or
+outside of one) and, when possible, emits an equivalent history in the form of
+a fast-import stream.  Not all possible histories can be rendered this way;
+the program tries to emit useful warnings when it can't.
 
-The program can also produce a visualization of the resulting commit directed
-acyclic graph (DAG) in the input format of @uref{http://www.graphviz.org,
-Graphviz}.  The package also includes @command{cvssync}, a tool for mirroring
-masters from remote CVS hosts.")
+The program can also produce a visualization of the resulting commit
+@acronym{DAG, directed acyclic graph} in the input format of
+@uref{http://www.graphviz.org, Graphviz}.  The package also includes
+@command{cvssync}, a tool for mirroring masters from remote CVS hosts.")
     (license license:gpl2+)))
 
 (define-public vc-dwim
