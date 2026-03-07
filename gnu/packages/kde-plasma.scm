@@ -3263,6 +3263,7 @@ of a Plasma shell.")
                   plasma-activities-stats
                   kguiaddons
                   kirigami
+                  knewstuff
                   knotifications
                   krunner
                   plasma-workspace
