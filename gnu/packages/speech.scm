@@ -35,12 +35,15 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
+  #:use-module ((guix build-system python) #:select (pypi-uri))
   #:use-module (gnu packages)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages base)            ;for 'which'
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages nss)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages emacs)
@@ -55,10 +58,16 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-science)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages python-check)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages video))
 
 (define-public flite
@@ -703,3 +712,60 @@ engine.")
 
 (define-deprecated-package sphinxbase
   pocketsphinx)
+
+(define-public python-onnx-ir
+  (package
+    (name "python-onnx-ir")
+    (version "0.1.15")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/onnx/ir-py")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dlml3ajv217n3rjx19wqjvh8mxsg9yvkqcxb4rv7qgv7mzr51zk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore=tools/model_zoo_test"
+              ;; This test imports onnxscript which is not available (circular
+              ;; dependency: python-onnx-ir -> python-onnxscript -> python-onnx-ir).
+              "--ignore=src/onnx_ir/passes/common/common_subexpression_elimination_test.py"
+              ;; These tests require safetensors >= 0.7.0, Guix has 0.4.3.
+              "--ignore=src/onnx_ir/_safetensors/"
+              ;; This test imports all onnx_ir modules including
+              ;; common_subexpression_elimination_test.py which imports onnxscript.
+              ;; Cannot add onnxscript to native-inputs: circular dependency
+              ;; (python-onnx-ir -> python-onnxscript -> python-onnx-ir).
+              "--ignore=tests/public_api_test.py"
+              ;; These tests use [node_name] syntax in ONNX text format, which
+              ;; was added in onnx 1.18.0 (PR #6349).  Guix has onnx 1.17.0.
+              "-k" (string-join
+                    '("not test_from_to_onnx_text"
+                      "not test_to_onnx_text_excluding_initializers"
+                      "not test_deserialize_builds_correct_value_connections_for_subgraphs")
+                    " and "))))
+    (propagated-inputs
+     (list python-numpy
+           onnx
+           python-typing-extensions
+           python-ml-dtypes))
+    (native-inputs
+     (list python-setuptools
+           python-pytest
+           python-parameterized
+           python-hypothesis
+           python-pyyaml
+           python-pytorch
+           python-torchvision
+           python-transformers
+           python-safetensors
+           (list onnxruntime "python")))
+    (home-page "https://github.com/onnx/ir-py")
+    (synopsis "ONNX IR Python library")
+    (description "This package provides a Python library for ONNX
+intermediate representation.")
+    (license license:asl2.0)))
