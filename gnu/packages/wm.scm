@@ -2450,19 +2450,19 @@ limited size and a few external dependencies.  It is configurable via
     ;;             LICENSE       LICENSE.dwm   LICENSE.tinywl
     (license (list license:gpl3+ license:expat license:cc0))))
 
-(define-public mangowc
+(define-public mangowm
   (package
-    (name "mangowc")
-    (version "0.12.3")
+    (name "mangowm")
+    (version "0.12.8")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/DreamMaoMao/mangowc")
+              (url "https://github.com/mangowm/mango")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "024vq3l8pwv4nxq0rnvpgdhy58fdq2k0zlca83s6nv4zzf0qxqvj"))))
+        (base32 "1jfm3kd2iscwfxhflmq8mdph64rd26jc6ps0sqmf0y9ysagqbnlk"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -2495,14 +2495,17 @@ limited size and a few external dependencies.  It is configurable via
                   xcb-util-wm
                   wlroots-0.19
                   scenefx))
-    (home-page "https://github.com/DreamMaoMao/mangowc")
+    (home-page "https://github.com/mangowm/mango")
     (synopsis "Wayland compositor based on wlroots and scenefx")
     (description
-     "MangoWC is a modern, lightweight, high-performance Wayland compositor
+     "MangoWM is a modern, lightweight, high-performance Wayland compositor
 built on dwl — crafted for speed, flexibility, and a customizable desktop experience.")
-    (license (list license:gpl3 ;mangowc itself, dwl
+    (license (list license:gpl3 ;mangowm itself, dwl
                    license:expat ;dwm, sway, wlroots
                    license:cc0)))) ;tinywl
+
+(define-deprecated-package mangowc
+  mangowm)
 
 (define-public niri
   (package
