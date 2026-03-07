@@ -1913,6 +1913,10 @@ for xdg-desktop-portal that is using Qt/KF5.")
                              (module-ref
                               (resolve-interface
                                '(gnu packages kde-systemtools))
+                              'kde-inotify-survey)
+                             (module-ref
+                              (resolve-interface
+                               '(gnu packages kde-systemtools))
                               'konsole)
                              (module-ref
                               (resolve-interface
