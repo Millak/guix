@@ -28,6 +28,7 @@
 ;;; Copyright © 2025 Laura Kirsch <laurakirsch240406@gmail.com>
 ;;; Copyright © 2026 Nikita Alkhovik <forgoty13@gmail.com>
 ;;; Copyright © 2026 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2026 Spencer King <spencer.king@wustl.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1165,7 +1166,7 @@ The following systems are supported:
 (define-public sameboy
   (package
     (name "sameboy")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method git-fetch)
@@ -1174,12 +1175,12 @@ The following systems are supported:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pwnik37c3sgvib5xbadwbq2mjjvgxilhig09rjb3xp5i1d7ykja"))))
+        (base32 "107k6lfh4y9q73azab0r7pb7hs8fwk46537pfc5liqp38blz6ij5"))))
     (build-system gnu-build-system)
     (native-inputs
      (list rgbds pkg-config))
     (inputs
-     (list sdl2))
+     (list libpng sdl2))
     (arguments
      `(#:tests? #f                      ; There are no tests
        #:make-flags `(,(string-append "CC=" ,(cc-for-target))
