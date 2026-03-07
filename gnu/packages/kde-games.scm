@@ -779,7 +779,8 @@ This package is part of the KDE games module.")
            kio
            kwidgetsaddons
            kxmlgui
-           libkdegames))
+           libkdegames
+           qtwayland))
     (home-page "https://apps.kde.org/klickety/")
     (synopsis "Molecular game")
     (description "KAtomic is a fun educational game built around molecular
