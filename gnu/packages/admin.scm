@@ -6889,14 +6889,14 @@ versions of @command{find}, including POSIX, GNU, and *BSD find.")
 (define-public rdfind
   (package
     (name "rdfind")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://rdfind.pauldreik.se/" name "-" version
                            ".tar.gz"))
        (sha256
-        (base32 "0afzwhmzlzhzzckd9iwkbx6grrzm5p4vk0zbpz8lz7hx5qan7i3q"))))
+        (base32 "0ddgwx9131ba8ym75xnrz2rcy7l1rjdn8yzf6h0xrhic00r0sb8a"))))
     (build-system gnu-build-system)
     (native-inputs (list which))
     (inputs (list nettle))
