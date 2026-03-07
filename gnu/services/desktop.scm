@@ -2327,6 +2327,7 @@ rules."
            ((package-direct-input-selector name) plasma-plasma))
          '("bolt" ;for plasma-thunderbolt
            "fwupd" ;for kinfocenter and discover
+           "kde-inotify-survey"
            "kdeplasma-addons"
            "kinfocenter"
            "kpmcore"
@@ -2347,6 +2348,7 @@ rules."
            ((package-direct-input-selector name) plasma-plasma))
          '("bolt" ;for plasma-thunderbolt
            "fwupd" ;for kinfocenter and discover
+           "kde-inotify-survey"
            "kdeplasma-addons"
            "kinfocenter"
            "kpmcore"
