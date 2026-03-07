@@ -357,6 +357,102 @@ so that it is not identified and subsequently blocked by network filtering
 devices.")
       (license license:bsd-2))))
 
+(define-public go-cloud-google-com-go
+  (package
+    (name "go-cloud-google-com-go")
+    (version "0.123.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/google-cloud-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00hp2c41zmh533ii43y20mrh1jsgqk8k49hw96rxz1kras7xy9vy"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; TODO: there are a lot of modules (about 205) in this package
+            ;; which need to be packaged individually; as for now use it as
+            ;; source only to build for Restic update.
+            ;;
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - cloud.google.com/go/auth
+            ;; - cloud.google.com/go/auth/oauth2adapt
+            ;; - cloud.google.com/go/compute/metadata
+            ;; - cloud.google.com/go/storage
+            (for-each delete-file-recursively
+                      (list "auth"
+                            "compute/metadata"
+                            "storage"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "cloud.google.com/go"
+      #:test-flags
+      #~(list "-vet=off")
+      #:test-subdirs
+      #~(list "bigquery/internal/query"
+              "civil"
+              "compute/metadata"
+              "container/apiv1"
+              "errorreporting"
+              "errorreporting/apiv1beta1"
+              "functions/metadata"
+              "httpreplay/internal/proxy"
+              "internal"
+              "internal/btree"
+              "internal/carver/cmd/carver"
+              "internal/detect"
+              "internal/fields"
+              "internal/leakcheck"
+              "internal/librariangen/bazel"
+              "internal/librariangen/config"
+              "internal/librariangen/execv"
+              "internal/librariangen/request"
+              "internal/optional"
+              "internal/pretty"
+              "internal/protostruct"
+              "internal/protoveneer/cmd/protoveneer"
+              "internal/testutil"
+              "internal/trace"
+              "internal/tracecontext"
+              "internal/uid"
+              "internal/version"
+              "longrunning"
+              "pubsub/internal/distribution"
+              "pubsub/internal/scheduler"
+              "pubsub/internal/testutil"
+              "pubsub/v2/internal/distribution"
+              "pubsub/v2/internal/scheduler"
+              "pubsub/v2/internal/testutil"
+              "pubsublite/internal/test"
+              "pubsublite/internal/wire"
+              "rpcreplay"
+              "spanner/spansql"
+              "translate")))
+    (propagated-inputs
+     (list ;; go-cloud-google-com-go-storage
+           go-github-com-google-go-cmp
+           go-github-com-google-martian-v3
+           go-github-com-googleapis-gax-go-v2
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-trace
+           go-golang-org-x-oauth2
+           go-google-golang-org-api
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://cloud.google.com/go")
+    (synopsis "Google Cloud Client Libraries for Go")
+    (description
+     "Package cloud is the root of the packages used to access Google Cloud
+Services.")
+    (license license:asl2.0)))
+
 (define-public go-cloud-google-com-go-auth
   (package
     (name "go-cloud-google-com-go-auth")
