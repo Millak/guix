@@ -6756,6 +6756,7 @@ including @i{fix-its} for automatic refactoring.")
                                         "bin/clazy-standalone"
                                         "bin/gdb"
                                         "bin/kcachegrind"
+                                        "bin/perf"
                                         "bin/valgrind")))))))))
     (native-inputs
      (list googletest
@@ -6779,6 +6780,7 @@ including @i{fix-its} for automatic refactoring.")
             libsecret
             libxkbcommon
             llvm-20
+            perf
             qt5compat
             qtcharts
             qtdeclarative
