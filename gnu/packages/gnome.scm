@@ -13703,7 +13703,7 @@ receive calls.")
 (define-public calls
   (package
     (name "calls")
-    (version "48.2")
+    (version "49.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -13711,10 +13711,9 @@ receive calls.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1xh3k9vhbcb44nrkfjgbxkpjgxl1x3j01fqd1zjv3zrncaavv2ni"))
+                "1ph5m8rzksn1jmirxnp7xx9937hihsfg6vwavrsm30688kq9z2xf"))
               (patches
-               (search-patches "calls-disable-application-test.patch"
-                               "calls-disable-sip-test.patch"))))
+               (search-patches "calls-disable-sip-test.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -13722,6 +13721,14 @@ receive calls.")
       #:configure-flags #~'("-Dgtk_doc=true")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              (substitute* "tests/meson.build"
+                ;; The application test does not work in a Guix container,
+                ;; because an actual sound card is required to run this
+                ;; integration test; the following disables it.
+                (("dbus_run_session.found \\()")
+                 "false"))))
           (add-before 'check 'pre-check
             (lambda _
               (setenv "HOME" (getcwd))
@@ -13741,7 +13748,7 @@ receive calls.")
            gtk
            libcall-ui
            libgee
-           libpeas
+           libpeas-2
            libadwaita
            modem-manager
            sofia-sip))
