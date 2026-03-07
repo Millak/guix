@@ -18137,6 +18137,163 @@ an alternative fork of @url{https://github.com/mattbaird/jsonpatch}.")
 @url{https://godoc.org/google.golang.org/api, Google Cloud Services}.")
     (license license:bsd-3)))
 
+(define-public go-google-golang-org-genproto
+  (package
+    (name "go-google-golang-org-genproto")
+    (version "0.0.0-20260226221140-a57be14db171")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/go-genproto")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y0gc5x6bfs2iq27pq510zwspaccplds4sa5zs40vkhw90ikmvy5"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            (delete-file-recursively "googleapis/api")
+            (delete-file-recursively "googleapis/rpc")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f ;no tests
+      #:import-path "google.golang.org/genproto"))
+    (propagated-inputs
+     (list go-cloud-google-com-go ;keep here untill all inputs are available
+           ;; go-cloud-google-com-go-accessapproval
+           ;; go-cloud-google-com-go-accesscontextmanager
+           ;; go-cloud-google-com-go-aiplatform
+           ;; go-cloud-google-com-go-analytics
+           ;; go-cloud-google-com-go-apigateway
+           ;; go-cloud-google-com-go-apigeeconnect
+           ;; go-cloud-google-com-go-apigeeregistry
+           ;; go-cloud-google-com-go-appengine
+           ;; go-cloud-google-com-go-area120
+           ;; go-cloud-google-com-go-artifactregistry
+           ;; go-cloud-google-com-go-asset
+           ;; go-cloud-google-com-go-assuredworkloads
+           ;; go-cloud-google-com-go-automl
+           ;; go-cloud-google-com-go-baremetalsolution
+           ;; go-cloud-google-com-go-batch
+           ;; go-cloud-google-com-go-beyondcorp
+           ;; go-cloud-google-com-go-bigquery
+           ;; go-cloud-google-com-go-bigtable
+           ;; go-cloud-google-com-go-billing
+           ;; go-cloud-google-com-go-binaryauthorization
+           ;; go-cloud-google-com-go-certificatemanager
+           ;; go-cloud-google-com-go-channel
+           ;; go-cloud-google-com-go-cloudbuild
+           ;; go-cloud-google-com-go-clouddms
+           ;; go-cloud-google-com-go-cloudtasks
+           ;; go-cloud-google-com-go-compute
+           ;; go-cloud-google-com-go-contactcenterinsights
+           ;; go-cloud-google-com-go-container
+           ;; go-cloud-google-com-go-containeranalysis
+           ;; go-cloud-google-com-go-datacatalog
+           ;; go-cloud-google-com-go-dataflow
+           ;; go-cloud-google-com-go-dataform
+           ;; go-cloud-google-com-go-datafusion
+           ;; go-cloud-google-com-go-datalabeling
+           ;; go-cloud-google-com-go-dataplex
+           ;; go-cloud-google-com-go-dataproc-v2
+           ;; go-cloud-google-com-go-dataqna
+           ;; go-cloud-google-com-go-datastore
+           ;; go-cloud-google-com-go-datastream
+           ;; go-cloud-google-com-go-deploy
+           ;; go-cloud-google-com-go-dialogflow
+           ;; go-cloud-google-com-go-dlp
+           ;; go-cloud-google-com-go-documentai
+           ;; go-cloud-google-com-go-domains
+           ;; go-cloud-google-com-go-edgecontainer
+           ;; go-cloud-google-com-go-errorreporting
+           ;; go-cloud-google-com-go-essentialcontacts
+           ;; go-cloud-google-com-go-eventarc
+           ;; go-cloud-google-com-go-filestore
+           ;; go-cloud-google-com-go-firestore
+           ;; go-cloud-google-com-go-functions
+           ;; go-cloud-google-com-go-gkebackup
+           ;; go-cloud-google-com-go-gkeconnect
+           ;; go-cloud-google-com-go-gkehub
+           ;; go-cloud-google-com-go-gkemulticloud
+           ;; go-cloud-google-com-go-gsuiteaddons
+           ;; go-cloud-google-com-go-iam
+           ;; go-cloud-google-com-go-iap
+           ;; go-cloud-google-com-go-ids
+           ;; go-cloud-google-com-go-iot
+           ;; go-cloud-google-com-go-kms
+           ;; go-cloud-google-com-go-language
+           ;; go-cloud-google-com-go-lifesciences
+           ;; go-cloud-google-com-go-logging
+           ;; go-cloud-google-com-go-longrunning
+           ;; go-cloud-google-com-go-managedidentities
+           ;; go-cloud-google-com-go-maps
+           ;; go-cloud-google-com-go-mediatranslation
+           ;; go-cloud-google-com-go-memcache
+           ;; go-cloud-google-com-go-metastore
+           ;; go-cloud-google-com-go-monitoring
+           ;; go-cloud-google-com-go-networkconnectivity
+           ;; go-cloud-google-com-go-networkmanagement
+           ;; go-cloud-google-com-go-networksecurity
+           ;; go-cloud-google-com-go-notebooks
+           ;; go-cloud-google-com-go-optimization
+           ;; go-cloud-google-com-go-orchestration
+           ;; go-cloud-google-com-go-orgpolicy
+           ;; go-cloud-google-com-go-osconfig
+           ;; go-cloud-google-com-go-oslogin
+           ;; go-cloud-google-com-go-phishingprotection
+           ;; go-cloud-google-com-go-policytroubleshooter
+           ;; go-cloud-google-com-go-privatecatalog
+           ;; go-cloud-google-com-go-pubsub
+           ;; go-cloud-google-com-go-pubsublite
+           ;; go-cloud-google-com-go-recaptchaenterprise-v2
+           ;; go-cloud-google-com-go-recommendationengine
+           ;; go-cloud-google-com-go-recommender
+           ;; go-cloud-google-com-go-redis
+           ;; go-cloud-google-com-go-resourcemanager
+           ;; go-cloud-google-com-go-resourcesettings
+           ;; go-cloud-google-com-go-retail
+           ;; go-cloud-google-com-go-run
+           ;; go-cloud-google-com-go-scheduler
+           ;; go-cloud-google-com-go-secretmanager
+           ;; go-cloud-google-com-go-security
+           ;; go-cloud-google-com-go-securitycenter
+           ;; go-cloud-google-com-go-servicedirectory
+           ;; go-cloud-google-com-go-shell
+           ;; go-cloud-google-com-go-spanner
+           ;; go-cloud-google-com-go-speech
+           ;; go-cloud-google-com-go-storagetransfer
+           ;; go-cloud-google-com-go-talent
+           ;; go-cloud-google-com-go-texttospeech
+           ;; go-cloud-google-com-go-tpu
+           ;; go-cloud-google-com-go-trace
+           ;; go-cloud-google-com-go-translate
+           ;; go-cloud-google-com-go-video
+           ;; go-cloud-google-com-go-videointelligence
+           ;; go-cloud-google-com-go-vision-v2
+           ;; go-cloud-google-com-go-vmmigration
+           ;; go-cloud-google-com-go-vmwareengine
+           ;; go-cloud-google-com-go-vpcaccess
+           ;; go-cloud-google-com-go-webrisk
+           ;; go-cloud-google-com-go-websecurityscanner
+           ;; go-cloud-google-com-go-workflows
+           go-github-com-golang-protobuf
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://google.golang.org/genproto")
+    (synopsis "Go proto packages")
+    (description
+     "This repository contains the Go packages for common protocol buffer
+types, and the generated @url{http://grpc.io, @code{gRPC}} code necessary for
+interacting with Google's @code{gRPC} APIs.")
+    (license license:asl2.0)))
+
 (define-public go-google-golang-org-genproto-googleapis-api
   (package
     (name "go-google-golang-org-genproto-googleapis-api")
