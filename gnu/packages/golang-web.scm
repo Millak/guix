@@ -587,6 +587,72 @@ cloud.google.com/go/auth and golang.org/x/oauth2.")
 API service accounts for Go.")
     (license license:asl2.0)))
 
+(define-public go-cloud-google-com-go-storage
+  (package
+    (name "go-cloud-google-com-go-storage")
+    (version "1.60.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googleapis/google-cloud-go")
+             (commit (go-version->git-ref version #:subdir "storage"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sjwrcjqja62mgv4bzl8z4jps9bf55l8zln5wy8qjvrs6ql117ny"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-all-but "." "storage")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      ;; XXX: Enable when all inputs are packages, using as source only
+      ;; package to update Restic.
+      #:tests? #f
+      #:import-path "cloud.google.com/go/storage"
+      #:unpack-path "cloud.google.com/go"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-cloud-google-com-go
+           ;; go-cloud-google-com-go-auth
+           ;; go-cloud-google-com-go-compute-metadata
+           ;; go-cloud-google-com-go-iam
+           ;; go-cloud-google-com-go-longrunning
+           go-github-com-google-uuid
+           go-github-com-googleapis-gax-go-v2
+           ;; go-github-com-googlecloudplatform-opentelemetry-operations-go-exporter-metric
+           ;; go-go-opentelemetry-io-contrib-detectors-gcp
+           go-go-opentelemetry-io-otel
+           ;; go-go-opentelemetry-io-otel-exporters-stdout-stdoutmetric
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-go-opentelemetry-io-otel-trace
+           go-golang-org-x-oauth2
+           go-golang-org-x-sync
+           go-google-golang-org-api
+           go-google-golang-org-genproto
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://cloud.google.com/go")
+    (synopsis "Google Cloud Storage Go SDK")
+    (description
+     "Package storage provides an easy way to work with Google Cloud Storage.
+Google Cloud Storage stores data in named objects, which are grouped into
+buckets.")
+    (license license:asl2.0)))
+
 (define-public go-code-gitea-io-sdk-gitea
   (package
     (name "go-code-gitea-io-sdk-gitea")
