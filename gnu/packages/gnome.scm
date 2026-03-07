@@ -1494,7 +1494,6 @@ tour of all gnome components and allows the user to set them up.")
      (list #:glib-or-gtk? #t
            #:imported-modules
            `((guix build cargo-build-system)
-             (guix build json)
              ,@%meson-build-system-modules)
            #:modules '((guix build meson-build-system)
                        ((guix build cargo-build-system) #:prefix cargo:)
