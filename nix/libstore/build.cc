@@ -1972,11 +1972,15 @@ static void prepareSlirpChrootAction(SpawnContext & sctx)
     }
 
     /* Limit /etc to containing just /etc/resolv.conf and /etc/hosts, and
-       read-only at that */
+       read-only at that.  Resolve symlinks in the source path so that
+       bindMount sees a regular file and bind-mounts it, rather than
+       copying a symlink whose target may not exist in the chroot
+       (e.g. /etc/resolv.conf -> /run/systemd/resolve/stub-resolv.conf
+       with /run/ being empty in the chroot). */
     Strings etcFiles = { "/etc/resolv.conf", "/etc/hosts" };
     for(auto & i : etcFiles) {
         if(pathExists(i)) {
-            ctx.filesInChroot[i] = i;
+            ctx.filesInChroot[i] = canonPath(i, true);
             ctx.readOnlyFilesInChroot.insert(i);
         }
     }
