@@ -6930,6 +6930,51 @@ parameters.")
      "This package provides packet processing capabilities for Go.")
     (license license:bsd-3)))
 
+(define-public go-github-com-google-martian-v3
+  (package
+    (name "go-github-com-google-martian-v3")
+    (version "3.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/martian")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0js95rw72mklxx8dilqdc86a50yhvykyczck4ci3xx6090p3fj2q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/google/martian/v3"
+      #:test-flags
+      #~(list "-vet=off"
+              "-skip" (string-join
+                       ;; Panic during test and mismatched assertions.
+                       (list "TestEcho"
+                             "TestFileExistsInBothExplictlyMappedPathAndInferredPath"
+                             "TestLargeEcho/Gzip"
+                             "TestLargeEcho/RawData"
+                             "TestModifierFromJSON"
+                             "TestProcessorChaining"
+                             "TestRequestEditor"
+                             "TestRequestOverHTTPS"
+                             "TestStaticModifierExplicitPathMapping"
+                             "TestStaticModifierOnRequest"
+                             "TestStaticModifierSingleRangeRequest")
+                       "|"))))
+    (propagated-inputs
+     (list go-github-com-golang-snappy
+           go-golang-org-x-net
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/google/martian")
+    (synopsis "Library for building custom HTTP/S proxies")
+    (description
+     "Package martian provides an HTTP/1.1 proxy with an API for configurable
+request and response modifiers.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-google-nftables
   (package
     (name "go-github-com-google-nftables")
