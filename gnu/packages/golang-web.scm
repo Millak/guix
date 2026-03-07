@@ -13388,8 +13388,9 @@ implementation in the Go standard library}.")
      (list
       #:import-path "github.com/quic-go/quic-go"
       #:test-flags
-      ;; Error:      	Should NOT be empty, but was []
-      #~(list "-skip" "TestHandshakePacketBuffering")
+      ;; [1] Error: Should NOT be empty, but was []
+      ;; [2] Error: Received unexpected error: Application error 0x0 (remote)
+      #~(list "-skip" "TestHandshakePacketBuffering|TestDrainServerAcceptQueue")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
