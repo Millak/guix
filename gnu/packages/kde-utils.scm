@@ -395,7 +395,8 @@ your computer.")
            kxmlgui
            purpose
            python
-           sonnet))
+           sonnet
+           qtwayland))
     (home-page "https://apps.kde.org/kaichat/")
     (synopsis "Chat interface for AI models")
     (description "KAIChat is a chat interface which allows you to chat with AI
