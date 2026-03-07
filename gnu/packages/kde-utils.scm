@@ -914,7 +914,8 @@ with support for QR scanning.")
            kirigami-addons
            kitemmodels
            qqc2-desktop-style
-           qtdeclarative))
+           qtdeclarative
+           qtwayland))
     (home-page "https://apps.kde.org/komodo/")
     (synopsis "To-do manager that uses todo.txt")
     (description "KomoDo is a to-do manager that uses
