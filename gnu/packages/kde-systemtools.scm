@@ -56,6 +56,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image-processing)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xdisorg))
 
@@ -505,6 +506,57 @@ who want to quickly see problems occurring on their server.
 
 This package is part of the KDE administration module.")
     (license license:gpl2+)))
+
+(define-public kup
+  (package
+    (name "kup")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/kup"
+                           "/kup-" version ".tar.xz"))
+       (sha256
+        (base32 "02hvzxpcm2rrdc8rkcx39zwgg42f561ida3h5dgsqg4pi7vz6n5c"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f ;no tests
+           #:configure-flags
+           #~(list "-DQT_MAJOR_VERSION=6")))
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list kcmutils
+           kconfig
+           kcoreaddons
+           kdbusaddons
+           ki18n
+           kidletime
+           kio
+           kjobwidgets
+           knotifications
+           kwidgetsaddons
+           kxmlgui
+           libgit2
+           libplasma
+           plasma5support
+           qtwayland
+           solid))
+    (home-page "https://apps.kde.org/kup/")
+    (synopsis "Backup scheduler for Plasma desktop")
+    (description "Kup is a backup scheduler for Plasma desktop.  It helps you
+remember to keep up-to-date backups of your personal files.
+It provides:
+@itemize
+@item incremental backup archive with the use of @code{bup},
+@item synchronized folders with the use of @code{rsync},
+@item support for local filesystem or external usb storage,
+@item Monitor availability of backup destinations, like for example a mounted
+ network storage and
+@item integration into KDE's Plasma desktop.
+@end itemize")
+    (license license:gpl3+)))
 
 (define-public kwalletmanager
   (package
