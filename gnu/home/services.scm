@@ -765,7 +765,9 @@ environment, and its configuration file, when available.")))
 ;;;
 
 (define home-gc-root-service-type
-  (system->home-service-type gc-root-service-type))
+  (service-type
+    (inherit (system->home-service-type gc-root-service-type))
+    (default-value '())))
 
 
 ;;;
