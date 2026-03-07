@@ -2798,7 +2798,8 @@ part.")
            kontactinterface
            kparts
            krunner
-           kwindowsystem))
+           kwindowsystem
+           qtwayland))
     (home-page "https://apps.kde.org/zanshin/")
     (synopsis "TO-do management application")
     (description "Zanshin is a powerful yet simple application for managing
