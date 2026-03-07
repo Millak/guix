@@ -356,7 +356,7 @@ your computer.")
                   qgpgme))
     (arguments (list #:qtbase qtbase
                      #:tests? #f))
-    (home-page "https://invent.kde.org/utilities/isoimagewriter")
+    (home-page "https://apps.kde.org/isoimagewriter/")
     (synopsis "Write hybrid ISO files onto USB disks")
     (description
      "This package provides a tool to write ISO files to USB disks.")
