@@ -822,7 +822,8 @@ the available CD drives.")
       (native-inputs
        (list extra-cmake-modules pkg-config kdoctools))
       (inputs
-       (list eudev
+       (list breeze-icons ; default icon set
+             eudev
              kcoreaddons
              kdbusaddons
              ki18n
@@ -831,7 +832,7 @@ the available CD drives.")
              kwindowsystem
              kxmlgui
              libxscrnsaver
-             breeze-icons ; default icon set
+             qtwayland
              solid
              v4l-utils ; libdvbv5
              vlc))
