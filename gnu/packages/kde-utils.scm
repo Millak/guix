@@ -401,6 +401,44 @@ your computer.")
 models such as Ollama.")
     (license license:gpl3+)))
 
+(define-public kalm
+  (package
+    (name "kalm")
+    (version "25.12.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kalm-" version ".tar.xz"))
+       (sha256
+        (base32 "15vs3ga6p12iikbq990fpbr4a4fc89g7viya55q8rgziykd3vr2s"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'check-setup
+                 (lambda _
+                   (setenv "HOME" (getcwd)))))))
+    (native-inputs
+     (list extra-cmake-modules python-minimal))
+    (inputs
+     (list kconfig
+           kcoreaddons
+           kcrash
+           ki18n
+           kirigami
+           kirigami-addons
+           qqc2-desktop-style
+           qtbase
+           qtdeclarative
+           qtwayland
+           sonnet))
+    (home-page "https://apps.kde.org/kalm/")
+    (synopsis "Breathing techniques teacher")
+    (description "Kalm can teach you different breathing techniques.")
+    (license license:lgpl2.1+)))
+
 (define-public kamera
   (package
     (name "kamera")
