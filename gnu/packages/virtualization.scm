@@ -44,6 +44,7 @@
 ;;; Copyright © 2025 Douglas Deslauriers <Douglas.Deslauriers@vector.com>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
+;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1327,42 +1328,41 @@ it emulates a variety of hardware and peripherals.")
     (license (list license:gpl3+ license:mpl2.0))))
 
 (define-public spike
-  (package
-    (name "spike")
-    (version "1.1.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/riscv-software-src/riscv-isa-sim")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32 "0cik2m0byfp9ppq0hpg3xyrlp5ag1i4dww7a7872mlm36xxqagg0"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-before 'configure 'gcc14
-             (lambda _
-               (substitute* "fesvr/device.h"
-                 (("#include <string>" all)
-                  (string-append all "\n#include <cstdint>")))))
-           (add-before 'configure 'configure-dtc-path
-             (lambda* (#:key inputs #:allow-other-keys)
-               ;; Reference dtc by its absolute store path.
-               (substitute* "riscv/dts.cc"
-                 (("DTC")
-                  (string-append "\"" (search-input-file inputs "/bin/dtc") "\""))))))))
-    (inputs
-     (list bash-minimal dtc))
-    (native-inputs
-     (list python-wrapper))
-    (home-page "https://github.com/riscv-software-src/riscv-isa-sim")
-    (synopsis "RISC-V ISA Simulator")
-    (description "Spike, the RISC-V ISA Simulator, implements a functional model
+  (let ((commit "591cff16109ced6a21bb2a612a3853b4e9cbd86d")
+        (revision "0"))
+    (package
+      (name "spike")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/riscv-software-src/riscv-isa-sim")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "07lhf524y0kkrap5lvfqddrq6hhc0g2ypfcq341w2nrjw95izasc"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'configure 'configure-dtc-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; Reference dtc by its absolute store path.
+                (substitute* "riscv/dts.cc"
+                  (("DTC")
+                   (string-append "\"" (search-input-file inputs "/bin/dtc")
+                                  "\""))))))))
+      (inputs
+       (list dtc))
+      (native-inputs
+       (list python-minimal-wrapper))
+      (home-page "https://github.com/riscv-software-src/riscv-isa-sim")
+      (synopsis "RISC-V ISA Simulator")
+      (description "Spike, the RISC-V ISA Simulator, implements a functional model
 of one or more RISC-V harts.")
-    (license license:bsd-3)))
+      (license license:bsd-3))))
 
 (define-public incus
   (package
