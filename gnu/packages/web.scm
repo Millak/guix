@@ -7075,7 +7075,7 @@ Currently, the following browsers (and their derivatives) are supported:
 (define-public darkhttpd
   (package
     (name "darkhttpd")
-    (version "1.16")
+    (version "1.17")
     (source
      (origin
        (method git-fetch)
@@ -7084,7 +7084,7 @@ Currently, the following browsers (and their derivatives) are supported:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15mmq1v8p50mm9wx5w6g4rlr40b7d044lw7rs1wyzdiw9lcnihvm"))))
+        (base32 "1i492a0g640hkpvmv3vdf8hy61kfc649y8myj7r5hva4im8l76kp"))))
     (build-system gnu-build-system)
     (arguments
      (list
