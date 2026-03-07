@@ -13,7 +13,7 @@
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024, 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Junker dk@junkeria.club
 ;;; Copyright © 2025 Reza Housseini <reza@housseini.me>
 ;;;
@@ -1870,7 +1870,7 @@ and more.")
 (define-public ebusd
   (package
     (name "ebusd")
-    (version "25.1")
+    (version "26.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1879,36 +1879,34 @@ and more.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1k85vzjhhya7r41nid5yylr7jyvl09455hpny6wrjkipz68icgdf"))))
+                "1as59bjv9m6hgzg7bjy4nwwzqkwf18a1ss515wjzziaz8a32nq0a"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--localstatedir=/var")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/ebusd/main.h"
-              (("#define CONFIG_PATH .*")
-               (string-append "#define CONFIG_PATH \"" (assoc-ref inputs "config")
-                              "/ebusd-2.1.x/\"\n")))))
-         ;; If we don't set GIT_REVISION, then the build system will include the
-         ;; current date in the version string, making the build unreproducible.
-         ;;
-         ;; See:
-         ;;   * https://codeberg.org/guix/guix/issues/6638
-         ;;   * https://github.com/john30/ebusd/blob/v22.4/configure.ac#L159-L163
-         (add-after 'unpack 'set-version-info
-           (lambda _
-             (setenv "GIT_REVISION" ,version)))
-         (add-after 'install 'install-config
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((config-destination
-                    (string-append (assoc-ref outputs "out")
-                                   "/share/ebusd")))
-               (copy-recursively (string-append (assoc-ref inputs "config")
-                                                "/ebusd-2.1.x")
-                                 config-destination)
-               #t))))))
+     (list #:configure-flags #~(list "--localstatedir=/var")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch
+                 (lambda _
+                   (let ((config (string-append #$output "/share/ebusd/")))
+                     (substitute* "src/ebusd/main.h"
+                       (("#define CONFIG_PATH .*")
+                        (format #f "#define CONFIG_PATH \"~a\"\n" config))))))
+               ;; If we don't set GIT_REVISION, then the build system will include the
+               ;; current date in the version string, making the build unreproducible.
+               ;;
+               ;; See:
+               ;;   * https://codeberg.org/guix/guix/issues/6638
+               ;;   * https://github.com/john30/ebusd/blob/v22.4/configure.ac#L159-L163
+               (add-after 'unpack 'set-version-info
+                 (lambda _
+                   (setenv "GIT_REVISION" #$version)))
+               (add-after 'install 'install-config
+                 (lambda _
+                   (let ((config-destination (string-append #$output
+                                                            "/share/ebusd"))
+                         (config #$(this-package-native-input "config")))
+                     (copy-recursively (string-append config "/src/")
+                                       config-destination)))))))
     (inputs
      (list mosquitto))
     (native-inputs
@@ -1916,14 +1914,14 @@ and more.")
        ("autoconf" ,autoconf)
        ("config"
         ,(origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/john30/ebusd-configuration")
-                     (commit "666c0f6b9c4d7545eff7f43ab28a1c7baeab7913")))
-              (file-name "config-checkout")
-              (sha256
-               (base32
-                "0yxnx8p4lbk614l16854r9s9d8s9c7ixgczfs8mph94xz0wkda7x"))))))
+           (method git-fetch)
+           (uri (git-reference
+                  (url "https://github.com/john30/ebusd-configuration")
+                  (commit "f72859829a4a6a03c51f5374356f4c0d6353e897")))
+           (file-name "ebusd-configuration")
+           (sha256
+            (base32
+             "0683jnj6nvvhp6w6sam8ldakw39lf64wjlwjzva9v35ly2fddj5g"))))))
     (synopsis "Daemon for communicating with eBUS devices")
     (description "This package provides @command{ebusd}, a daemon for
 handling communication with eBUS devices connected to a 2-wire bus system
