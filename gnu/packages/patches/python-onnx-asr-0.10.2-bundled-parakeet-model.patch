@@ -1,0 +1,21 @@
+From: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-02-13
+Subject: Use bundled Parakeet TDT V3 int8 model instead of downloading from
+ HuggingFace.
+
+The @PARAKEET_MODEL_DIR@ placeholder is replaced with the actual store path
+during the build.
+
+--- a/src/onnx_asr/loader.py
++++ b/src/onnx_asr/loader.py
+@@ -308,6 +308,10 @@
+         case "nemo-parakeet-tdt-0.6b-v3":
+             model_type = NemoConformerTdt
+             default_repo_id = "istupakov/parakeet-tdt-0.6b-v3-onnx"
++            if path is None:
++                path = "@PARAKEET_MODEL_DIR@"
++            if quantization is None:
++                quantization = "int8"
+         case "nemo-conformer-aed":
+             model_type = NemoConformerAED
+         case "nemo-canary-1b-v2":

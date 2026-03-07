@@ -824,3 +824,132 @@ intermediate representation.")
     (description "This package enables developers to author ONNX models
 using a Python-based domain-specific language.")
     (license license:expat)))
+
+;;; Parakeet TDT V3 ONNX model weights from istupakov/parakeet-tdt-0.6b-v3-onnx
+;;; (HuggingFace, revision abd2878d52a678ce380088ef9d9b1d9664404565).
+;;; License: CC-BY-4.0 (NVIDIA).
+;;; Int8 quantized variant (~670 MB total).
+
+(define %parakeet-hf-base
+  "https://huggingface.co/istupakov/parakeet-tdt-0.6b-v3-onnx/resolve/abd2878d52a678ce380088ef9d9b1d9664404565")
+
+(define parakeet-tdt-config
+  (origin
+    (method url-fetch)
+    (uri (string-append %parakeet-hf-base "/config.json"))
+    (file-name "config.json")
+    (sha256
+     (base32 "0rn4i8ad5h1vga6yq04qpy6qmc30rpvd9bqhqbrcm64pdg3h6sb6"))))
+
+(define parakeet-tdt-vocab
+  (origin
+    (method url-fetch)
+    (uri (string-append %parakeet-hf-base "/vocab.txt"))
+    (file-name "vocab.txt")
+    (sha256
+     (base32 "0pf3wcvps76wq7iadw37lk7xcjs7gpmlbxficg2nmg54krkl91fm"))))
+
+(define parakeet-tdt-encoder-int8
+  (origin
+    (method url-fetch)
+    (uri (string-append %parakeet-hf-base "/encoder-model.int8.onnx"))
+    (file-name "encoder-model.int8.onnx")
+    (sha256
+     (base32 "02gzb82y86vl7jr69bn7qyfbifpd4nbi9ivpnabn020vgvxd4fb1"))))
+
+(define parakeet-tdt-decoder-joint-int8
+  (origin
+    (method url-fetch)
+    (uri (string-append %parakeet-hf-base "/decoder_joint-model.int8.onnx"))
+    (file-name "decoder_joint-model.int8.onnx")
+    (sha256
+     (base32 "0w3scrvqj74xv6h2f8c1k2q9234nwf1yvj7dv9sh78yiwcz4i9zf"))))
+
+(define-public python-onnx-asr
+  (package
+    (name "python-onnx-asr")
+    (version "0.10.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "onnx_asr" version))
+       (sha256
+        (base32 "0d5vmkavcqjf7b2aa0nc118b2pf34mc7yzjkaw92rl42rwwijf3h"))
+       (patches
+        (search-patches "python-onnx-asr-0.10.2-bundled-parakeet-model.patch"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list ;; These tests try to download models from HuggingFace Hub.
+              "--ignore=tests/onnx_asr/test_recognize.py"
+              "--ignore=tests/onnx_asr/test_cli.py"
+              "--ignore=tests/onnx_asr/test_load_model_errors.py"
+              ;;; These tests would compare preprocessor output against
+              ;;; reference implementations that are not in Guix:
+              ;;; - kaldi_native_fbank (C++ lib, not packaged)
+              ;;; - nemo (NVIDIA NeMo framework, not packaged)
+              ;;; - openai-whisper (Python package, not packaged;
+              ;;;   whisper-cpp exists but is C++ only, no Python module)
+              "--ignore=tests/preprocessors/test_kaldi.py"
+              "--ignore=tests/preprocessors/test_nemo.py"
+              "--ignore=tests/preprocessors/test_whisper_preprocessor.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-parakeet-model
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (site (string-append out "/lib/python"
+                                          #$(version-major+minor
+                                             (package-version python))
+                                          "/site-packages/onnx_asr"))
+                     (model-dir (string-append site
+                                               "/models-data"
+                                               "/parakeet-tdt-0.6b-v3")))
+                (mkdir-p model-dir)
+                (symlink (assoc-ref inputs "config.json")
+                         (string-append model-dir "/config.json"))
+                (symlink (assoc-ref inputs "vocab.txt")
+                         (string-append model-dir "/vocab.txt"))
+                (symlink (assoc-ref inputs "encoder-model.int8.onnx")
+                         (string-append model-dir
+                                        "/encoder-model.int8.onnx"))
+                (symlink (assoc-ref inputs
+                            "decoder_joint-model.int8.onnx")
+                         (string-append model-dir
+                                          "/decoder_joint-model.int8.onnx")))))
+          (add-after 'install-parakeet-model 'patch-model-paths
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (site (string-append out "/lib/python"
+                                          #$(version-major+minor
+                                             (package-version python))
+                                          "/site-packages/onnx_asr"))
+                     (model-dir (string-append site
+                                               "/models-data"
+                                               "/parakeet-tdt-0.6b-v3")))
+                (substitute* (string-append site "/loader.py")
+                  (("@PARAKEET_MODEL_DIR@") model-dir))))))))
+    (propagated-inputs
+     (list python-numpy
+           python-huggingface-hub
+           (list onnxruntime "python")))
+    (native-inputs
+     (list nss-certs-for-test
+           onnx
+           parakeet-tdt-config
+           parakeet-tdt-vocab
+           parakeet-tdt-encoder-int8
+           parakeet-tdt-decoder-joint-int8
+           python-hatchling
+           python-onnxscript
+           python-pytorch
+           python-pytest
+           python-torchaudio))
+    (home-page "https://github.com/istupakov/onnx-asr")
+    (synopsis "Speech recognition using ONNX models")
+    (description
+     "ONNX ASR is a Python library for automatic speech recognition using
+ONNX Runtime.  It supports models including Whisper and NeMo Parakeet.
+Includes bundled Parakeet TDT V3 model weights (int8, CC-BY-4.0, NVIDIA).")
+    (license license:expat)))

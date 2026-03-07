@@ -2101,6 +2101,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-msal-requests.patch	\
   %D%/packages/patches/python-norns-nose.patch			\
   %D%/packages/patches/python-numpy-gcc-14.patch		\
+  %D%/packages/patches/python-onnx-asr-0.10.2-bundled-parakeet-model.patch	\
   %D%/packages/patches/python-random2-getrandbits-test.patch		\
   %D%/packages/patches/python-pillow-use-zlib-1.3.patch	\
   %D%/packages/patches/python-pydocstyle-add-support-for-pep701.patch	\
