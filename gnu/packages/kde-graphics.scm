@@ -149,6 +149,41 @@ image editing capabilities.")
 for scanner hardware.")
     (license license:lgpl3+)))
 
+(define-public colord-kde
+  (package
+    (name "colord-kde")
+    (version "25.12.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/colord-kde-" version ".tar.xz"))
+       (sha256
+        (base32 "1zzz1i1p14z325zb4fgg4nzigxfwplpcr0n1yxkwbl4ayyzl5hkg"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests
+    (native-inputs
+     (list extra-cmake-modules pkg-config))
+    (inputs
+     (list kcmutils
+           kcoreaddons
+           kdbusaddons
+           ki18n
+           kitemmodels
+           kwidgetsaddons
+           kwindowsystem
+           lcms
+           libx11
+           libxcb
+           libxrandr
+           qtbase))
+    (home-page "https://invent.kde.org/graphics/colord-kde")
+    (synopsis "Colord interfaces and session daemon provider")
+    (description "This package provides interfaces and session daemon to
+@code{colord}.")
+    (license license:gpl2+)))
+
 (define-public digikam
   (package
     (name "digikam")
