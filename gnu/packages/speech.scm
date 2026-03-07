@@ -769,3 +769,58 @@ engine.")
     (description "This package provides a Python library for ONNX
 intermediate representation.")
     (license license:asl2.0)))
+
+(define-public python-onnxscript
+  (package
+    (name "python-onnxscript")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/microsoft/onnxscript")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pdjiyakxqyi6g25ks773brc9wipgalvx9b9yfkzbp5vigqsg1ax"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'delete-build-lib
+            (lambda _
+              ;; Pytest gets confused when test modules exist in both
+              ;; build/lib and source tree.
+              (delete-file-recursively "build/lib"))))
+      #:test-flags
+      #~(list
+         ;; These tests require 2.1 GB of test fixtures stored in Git LFS
+         ;; (testdata/unittest_models/, testdata/e2e_models/).
+         "--ignore=tests/ir/serde_roundtrip_test.py"
+         "--ignore=tests/ir/graph_view_test.py"
+         "--ignore=tests/optimizer/test_models.py"
+         "--ignore=tests/version_converter/version_conversion_test.py"
+         ;; Uses onnx.hub to download models from the internet.
+         "--ignore=tools/ir/model_zoo_test/")))
+    (propagated-inputs
+     (list onnx
+           python-ml-dtypes
+           python-numpy
+           python-onnx-ir
+           python-packaging
+           python-typing-extensions))
+    (native-inputs
+     (list git-minimal
+           python-setuptools
+           python-pytest
+           python-parameterized
+           python-expecttest
+           python-pytorch
+           python-torchvision
+           (list onnxruntime "python")))
+    (home-page "https://github.com/microsoft/onnxscript")
+    (synopsis "ONNX Script enables authoring ONNX models in Python")
+    (description "This package enables developers to author ONNX models
+using a Python-based domain-specific language.")
+    (license license:expat)))
