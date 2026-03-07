@@ -4366,6 +4366,42 @@ external rate conversion.")
                    ;; `rate/rate_samplerate.c': LGPL v2.1 or later.
                    license:lgpl2.1+))))
 
+(define-public snd-rane-sl3
+  (let ((commit "01099892261b55ec5ee814292d840eeb664c1904")
+        (revision "0"))
+    (package
+      (name "snd-rane-sl3")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/nvgeele/snd-rane-sl3")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1j2aan5xmbi8hgkzzwjb7rarqh4g65rg3s1qd1c8x5m6fpqdnvli"))))
+      (build-system linux-module-build-system)
+      (arguments
+       (list
+        #:tests? #f ;No tests.
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (add-before 'build 'change-directory
+              (lambda _
+                (chdir "snd-rane-sl3"))))))
+      (inputs (list linux-libre-headers))
+      (home-page "https://github.com/nvgeele/snd-rane-sl3")
+      (synopsis
+       "Linux ALSA kernel driver for the Rane SL3 USB Audio interface")
+      (description
+       "snd-rane-sl3 provides a native Linux kernel module that
+enables the Rane SL3 to work as a standard ALSA audio device, supporting 6
+channels (3 stereo pairs) of 24-bit PCM audio at 44.1kHz and 48kHz sample
+rates.")
+      (license license:gpl3))))
+
 (define-public iptables
   (package
     (name "iptables")
