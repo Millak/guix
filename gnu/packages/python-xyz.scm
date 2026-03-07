@@ -154,6 +154,7 @@
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
 ;;; Copyright © 2023 Wiktor Żelazny <wz@freeshell.de>
+;;; Copyright © 2023-2026 Spencer King <spencer.king@wustl.edu>
 ;;; Copyright © 2024 Timothee Mathieu <timothee.mathieu@inria.fr>
 ;;; Copyright © 2024 Ian Eure <ian@retrospec.tv>
 ;;; Copyright © 2024 Adriel Dumas--Jondeau <leirda@disroot.org>
@@ -35603,19 +35604,17 @@ with one function call.  IceCream makes print debugging a little sweeter.")
 (define-public python-icegrams
   (package
     (name "python-icegrams")
-    (version "1.1.3")
+    (version "1.1.6")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              ;; no tests in the PyPI archive
              (url "https://github.com/mideind/Icegrams")
-             ;; multiple commits were tagged with 1.1.3
-             ;; 1.1.3-final is what is noted on the Releases page
-             (commit (string-append version "-final"))))
+             (commit (string-append version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19mgkdpzn8r2bxxyw1yx7ijwnp4bl52g85iv90jfqbm4gh4j7rqh"))))
+        (base32 "0kzj3k1rl11l66l2xlqilx576hgknb5fd7im96mqjq34ykm70i6f"))))
     (build-system pyproject-build-system)
     (arguments
      (list
