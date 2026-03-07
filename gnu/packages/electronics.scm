@@ -1762,7 +1762,7 @@ which allows one to install the M8 firmware on any Teensy.")
     (inherit m8c)
     (name "m8c-serial")
     (arguments
-     (substitute-keyword-arguments (package-arguments m8c)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(cons* "-DUSE_LIBSERIAL=ON"
                  (delete "-DUSE_LIBUSB=ON" #$flags)))))
@@ -2054,7 +2054,7 @@ Automation}, portable and vendor neutral FPGA place and route tool.")
     (arguments
      (delkw
       #:qtbase
-      (substitute-keyword-arguments (package-arguments nextpnr)
+      (substitute-keyword-arguments arguments
         ((#:configure-flags flags '())
          #~(delete! "-DBUILD_GUI=ON" #$flags)))))
     (synopsis
@@ -2069,7 +2069,7 @@ Automation}, portable and vendor neutral FPGA place and route tool.")
     (inherit libngspice)
     (name "ngspice")
     (arguments
-     (substitute-keyword-arguments (package-arguments libngspice)
+     (substitute-keyword-arguments arguments
        ;; Tests require a X server running, so we keep them disabled
        ((#:configure-flags flags)
         #~(cons*  "--enable-rpath" "--with-x" "--with-readline=yes"
@@ -2536,7 +2536,7 @@ clock tree synthesis, routing, parasitic extraction, and timing analysis.")
     (arguments
      (delkw
       #:qtbase
-      (substitute-keyword-arguments (package-arguments openroad)
+      (substitute-keyword-arguments arguments
         ((#:configure-flags flags '())
          #~(cons* "-DBUILD_GUI=OFF"
                   (delete! "-DBUILD_GUI=ON" #$flags))))))
@@ -2690,7 +2690,7 @@ verification.")
        (sha256
         (base32 "1kn18ibvm7bzdyw2d914284wriravyh5qwfarj06pb052x1yblyx"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments osvvm)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #t)
         #f)
        ((#:phases phases #~%standard-phases)

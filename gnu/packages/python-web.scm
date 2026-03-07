@@ -5955,7 +5955,7 @@ outside of the Zope framework.")
           #:tests? #f
           #:phases #~(modify-phases %standard-phases
                        (delete 'sanity-check)))
-         (substitute-keyword-arguments (package-arguments orig)
+         (substitute-keyword-arguments arguments
            ((#:tests? _ #f) #f)
            ((#:phases phases '%standard-phases)
             #~(modify-phases #$phases

@@ -249,7 +249,7 @@ programs can be captured and transferred to systems that have Awk but not
   (package/inherit cppawk
     (name "cppawk-egawk")
     (arguments
-     (substitute-keyword-arguments (package-arguments cppawk)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         `(modify-phases ,phases
            (replace 'fix-awk-paths

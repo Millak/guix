@@ -209,7 +209,7 @@ C/C++ part.")
     (inherit icu4c)
     (name "icu4c-build-root")
     (arguments
-     (substitute-keyword-arguments (package-arguments icu4c)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #f)
          #f)
         ((#:out-of-source? _ #t)

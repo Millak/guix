@@ -157,7 +157,7 @@ sources.")
     (inherit luanti)
     (name "luanti-server")
     (arguments
-     (substitute-keyword-arguments (package-arguments luanti)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags configure-flags)
         #~(cons* "-DBUILD_CLIENT=FALSE"
                  "-DBUILD_SERVER=TRUE"
@@ -238,7 +238,7 @@ new features.")
          (sha256
           (base32 "1qk98kzjv748f0aak8k20nxkqa7wbxwj3qjd4ks08ab9apgwzlps"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments luanti)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'unpack 'disable-development-build
@@ -507,7 +507,7 @@ complicated to maintain.")
   (package/inherit luanti-mineclonia
     (name "luanti-mineclonia-csm")
     (arguments
-     (substitute-keyword-arguments (package-arguments luanti-mineclonia)
+     (substitute-keyword-arguments arguments
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'enable-csm-support

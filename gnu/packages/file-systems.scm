@@ -894,7 +894,7 @@ performance and other characteristics.")
     (inherit bcachefs-tools-minimal)
     (name "bcachefs-tools-minimal-static")
     (arguments
-     (substitute-keyword-arguments (package-arguments bcachefs-tools-minimal)
+     (substitute-keyword-arguments arguments
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'patch-makefile
@@ -2182,7 +2182,7 @@ memory-efficient.")
       #:configure-flags
       #~'("CFLAGS=-ffunction-sections -fdata-sections -Os -no-pie"
           "LDFLAGS=-static")
-      (substitute-keyword-arguments (package-arguments squashfuse)
+      (substitute-keyword-arguments arguments
         ((#:phases phases)
          #~(modify-phases #$phases
              (add-after 'install 'install-private-headers

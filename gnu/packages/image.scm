@@ -1715,7 +1715,7 @@ and XMP metadata of images in various formats.")
   (package
     (inherit exiv2)
     (arguments
-     (substitute-keyword-arguments (package-arguments exiv2)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'delete-static-libraries)))))))

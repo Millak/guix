@@ -319,7 +319,7 @@ static analysis of the ELF binaries at hand.")
   (package
     (inherit libelf)
     (arguments
-      (substitute-keyword-arguments (package-arguments libelf)
+      (substitute-keyword-arguments arguments
         ((#:make-flags flags #~'())
          #~(append #$flags '("CFLAGS=-fPIC")))))
     (properties `((hidden? . #t) ,@(package-properties libelf)))))
@@ -389,7 +389,7 @@ changed.")
                (base32
                 "0zdby3gpmm8q4735pviaq92zj41i2rdnhwhyrsb3sinc9hzmz4db"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments patchelf)
+     (substitute-keyword-arguments arguments
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
             (add-after 'fix-tests 'skip-empty-rpath-test

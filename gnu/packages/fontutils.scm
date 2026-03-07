@@ -682,7 +682,7 @@ implementing the pen protocol for manipulating glyphs.")
    (package/inherit python-fontpens-bootstrap
      (name "python-fontpens")
      (arguments
-      (substitute-keyword-arguments (package-arguments python-fontpens-bootstrap)
+      (substitute-keyword-arguments arguments
         ((#:tests? _ #f)
          #t)
         ((#:phases phases #~%standard-phases)
@@ -1463,7 +1463,7 @@ high quality, anti-aliased and subpixel rendered text on a display.")
     (name "fontconfig")
     (outputs (cons "doc" (package-outputs fontconfig)))
     (arguments
-     (substitute-keyword-arguments (package-arguments fontconfig)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags configure-flags)
         #~(delete "--disable-docs" #$configure-flags))
        ((#:phases phases '%standard-phases)

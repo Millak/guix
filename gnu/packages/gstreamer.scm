@@ -1082,7 +1082,7 @@ non-linear editors.")
 given, also pass them to the build system instead of the ones used by PKG."
     (package/inherit pkg
       (arguments
-       (substitute-keyword-arguments (package-arguments pkg)
+       (substitute-keyword-arguments arguments
          ((#:configure-flags flags #~'())
          #~(append
             (list

@@ -493,7 +493,7 @@ data types.")
                   (for-each delete-file
                             (find-files "Lib/distutils/command" "\\.exe$"))))))
     (arguments
-     (substitute-keyword-arguments (package-arguments python-2)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(append #$flags
                   ;; XXX Use quote to avoid world rebuild at this time
@@ -1509,7 +1509,7 @@ data types.")
     (outputs '("out" "debug"))
     (build-system gnu-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments python)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags configure-flags)
         #~(append #$configure-flags
                   (list "--with-pydebug")))))
@@ -1580,7 +1580,7 @@ and the unversioned commands available.")))
   (hidden-package
    (package/inherit python
      (arguments
-      (substitute-keyword-arguments (package-arguments python)
+      (substitute-keyword-arguments arguments
         ((#:configure-flags flags #~())
          #~(append '("--with-ensurepip=no")
                    (delete "--with-ensurepip=install" #$flags))))))))

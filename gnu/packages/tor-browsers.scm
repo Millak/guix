@@ -878,7 +878,7 @@ Mullvad Browser.")
         (base32
          "0sj87q0x1lfkvhbz154dabmgm8l18j9d1h1xhyqlmwz3whz1hsfi"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments mullvadbrowser-base)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'ublock-private-allowed

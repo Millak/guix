@@ -486,7 +486,7 @@ support for high performance Telegram Bot creation.")
       (inherit base)
       (name "tde2e")
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:tests? _ #f) #f)
          ((#:configure-flags flags #~'())
           #~(list "-DTD_E2E_ONLY=ON")))))))

@@ -241,7 +241,7 @@ with the editor vim.")))
              "--enable-xim"
              "--disable-selinux"
              "--enable-gui")
-       ,@(substitute-keyword-arguments (package-arguments vim)
+       ,@(substitute-keyword-arguments arguments
            ((#:phases phases)
             `(modify-phases ,phases
                (add-before 'check 'skip-some-more-tests

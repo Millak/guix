@@ -169,7 +169,7 @@ integration of this capability into your own programs.")
   (package/inherit zint
     (name "zint-with-qt")
     (build-system qt-build-system)
-    (arguments (substitute-keyword-arguments (package-arguments zint)
+    (arguments (substitute-keyword-arguments arguments
                  ((#:disallowed-references references)
                   (delete qtbase references))
                  ((#:qtbase _ #f)
@@ -391,7 +391,7 @@ Python as well as GUI widgets for GTK and Qt.")
     (name "zbar-minimal")
     (build-system gnu-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments zbar)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(cons* "--with-gtk=no" (delete "--with-gtk=auto" #$flags)))
        ((#:disallowed-references _ '())

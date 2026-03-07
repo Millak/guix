@@ -1418,7 +1418,7 @@ more.")
        (delete "guile")
        (prepend curl)))
     (arguments
-     (substitute-keyword-arguments (package-arguments texmacs)
+     (substitute-keyword-arguments arguments
        ((#:phases orig)
         #~(modify-phases #$orig
             ;; The non-deterministic compression issue is solved in Mogan.

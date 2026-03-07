@@ -593,7 +593,7 @@ features.")
       (inherit base)
       (name "qbittorrent-no-x")
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:configure-flags configure-flags)
           #~(cons "-DGUI=OFF" #$configure-flags))))
       (inputs

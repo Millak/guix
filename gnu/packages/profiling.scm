@@ -301,7 +301,7 @@ project.")
        (sha256
         (base32 "0hwl0aihn6fgpl0qhqckxc3sslb78wq6xav5ykfgfjzpyddqyrd0"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments cubew)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(append #$flags
                   (list "--with-compression=full")))
@@ -423,7 +423,7 @@ sampling profiler for games and other applications.")
     (inherit tracy-wayland)
     (name "tracy")
     (arguments
-     (substitute-keyword-arguments (package-arguments tracy-wayland)
+     (substitute-keyword-arguments arguments
        ((#:make-flags flags #~'())
         #~(append #$flags
                   ;; The LEGACY flag indicate we want to build tracy with glfw.

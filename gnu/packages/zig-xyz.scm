@@ -386,7 +386,7 @@ across several operating systems.")
          (sha256
           (base32 "1ilq3hqprrwpbz7ckp01g4ksl41jq57rd7zf622w3immy6apc8k2"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:zig _ #f) zig-0.14))))))
 
 (define-public zig-known-folders-for-zls-0.15
@@ -407,7 +407,7 @@ across several operating systems.")
          (sha256
           (base32 "1bwv7kndr4lv7khrrjwg2vgg3cy41y28rmv7rbv7jy06shqy4nzq"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:zig _ #f) zig-0.15))))))
 
 (define-public zig-pixman

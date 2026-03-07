@@ -117,7 +117,7 @@ C or C++ programs, though that is not its primary goal.")
   (package/inherit
    libgc
    (arguments
-    (substitute-keyword-arguments (package-arguments libgc)
+    (substitute-keyword-arguments arguments
       ((#:configure-flags flags #~'())
        #~(cons "--enable-static" #$flags))))
 
@@ -141,7 +141,7 @@ C or C++ programs, though that is not its primary goal.")
     libgc
     (name "libgc-back-pointers")
     (arguments
-     (substitute-keyword-arguments (package-arguments libgc)
+     (substitute-keyword-arguments arguments
        ((#:make-flags _ #~'())
         #~(list "CPPFLAGS=-DKEEP_BACK_PTRS=1"))))
     (synopsis "The BDW garbage collector, with back-pointer tracking")))

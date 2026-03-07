@@ -126,7 +126,7 @@ is in the public domain.")
                (base32
                 "19bc2inw7f9fn0y6j3b57w4mk6bzi2q8hp5yn6qyd8kav7ynvqj2"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments sqlite)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #f)
         #f)
        ((#:configure-flags flags #~(list))

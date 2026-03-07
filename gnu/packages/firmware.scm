@@ -601,7 +601,7 @@ provide OpenFirmware functionality on top of an already running system.")
     (package
       (inherit base)
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ;; No need to cross-compile, package produces reproducible firmware.
          ((#:target _ #f) #f)
          ((#:phases phases)
@@ -792,7 +792,7 @@ source."
                     (cross-binutils "i686-linux-gnu")))))
     (supported-systems %supported-systems)
     (arguments
-     (substitute-keyword-arguments (package-arguments seabios)
+     (substitute-keyword-arguments arguments
        ((#:modules modules %default-gnu-modules)
         `((ice-9 match)
           (ice-9 threads)
@@ -1186,7 +1186,7 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
       (inherit base)
       (name "ovmf-x86-64")
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               (replace 'install
@@ -1226,7 +1226,7 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
     (package
       (inherit base)
       (arguments
-        (substitute-keyword-arguments (package-arguments base)
+        (substitute-keyword-arguments arguments
           ((#:phases phases)
            #~(modify-phases #$phases
                (replace 'install
@@ -1248,7 +1248,7 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
     (package
       (inherit base)
       (arguments
-        (substitute-keyword-arguments (package-arguments base)
+        (substitute-keyword-arguments arguments
           ((#:phases phases)
            #~(modify-phases #$phases
                (replace 'install
@@ -1269,7 +1269,7 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
       (inherit base)
       (name "ovmf-arm")
       (arguments
-        (substitute-keyword-arguments (package-arguments base)
+        (substitute-keyword-arguments arguments
           ((#:phases phases)
            #~(modify-phases #$phases
                (replace 'install
@@ -1285,7 +1285,7 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
     (package
       (inherit base)
       (arguments
-        (substitute-keyword-arguments (package-arguments base)
+        (substitute-keyword-arguments arguments
           ((#:phases phases)
            #~(modify-phases #$phases
                (replace 'install
@@ -1997,7 +1997,7 @@ or passthrough board.")
                  (base32
                   "1skj7iq6dad48xhy2ljjmwpbhhdv3gk7cmi28lh3xfsnxphm4v8r"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               (replace 'copy-lufa-source

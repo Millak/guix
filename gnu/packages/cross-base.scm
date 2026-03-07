@@ -79,7 +79,7 @@
   (package (inherit p)
     (name (string-append (package-name p) "-cross-" target))
     (arguments
-     (substitute-keyword-arguments (package-arguments p)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(cons #$(string-append "--target=" target)
                 #$flags))))))
@@ -438,7 +438,7 @@ target that libc."
     (name (string-append (package-name gnumach-headers)
                          "-cross-" target))
     (arguments
-     (substitute-keyword-arguments (package-arguments gnumach-headers)
+     (substitute-keyword-arguments arguments
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             ;; Cheat by setting the host_cpu variable manually, since using
@@ -474,7 +474,7 @@ the base compiler.  Use XBINUTILS as the associated cross-Binutils."
     (inherit mig)
     (name (string-append "mig-cross"))
     (arguments
-     (substitute-keyword-arguments (package-arguments mig)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(list #$(string-append "--target=" target)))
        ((#:tests? _ #f)
@@ -543,7 +543,7 @@ the base compiler.  Use XBINUTILS as the associated cross-Binutils."
                            "-cross-" target))
 
       (arguments
-       (substitute-keyword-arguments (package-arguments hurd-headers)
+       (substitute-keyword-arguments arguments
          ((#:configure-flags flags)
           `(cons* ,(string-append "--build=" (%current-system))
                   ,(string-append "--host=" target)

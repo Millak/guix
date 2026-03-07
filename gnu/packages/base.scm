@@ -602,7 +602,7 @@ standard.")
                 (base32
                  "0mxhw43d4wpqmvg0l4znk1vm10fy92biyh90lzdnqjcic2lb6cg8"))))
      (arguments
-      (substitute-keyword-arguments (package-arguments coreutils-minimal)
+      (substitute-keyword-arguments arguments
         ((#:phases phases '%standard-phases)
          `(modify-phases ,phases
             (add-before 'check 'disable-broken-test
@@ -756,7 +756,7 @@ included.")
                "1cmd0riv37bqy9mwbg6n3523qgr8b3bbm5kwj19sjrasl4yq9d0c"))
              (patches '())))
    (arguments
-    (substitute-keyword-arguments (package-arguments binutils)
+    (substitute-keyword-arguments arguments
       ((#:make-flags _ #~'()) #~'())))
    (native-inputs '())
    (properties '())))
@@ -774,7 +774,7 @@ included.")
        (sha256
         (base32 "1j64m2czn9ygd5g1cjjcw7q43b18xh6qkrdl1pkm03ncjnj3wwrl"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments binutils)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(cons* "--enable-gold=default"
                  (delete "LDFLAGS=-static-libgcc" #$flags)))
@@ -802,7 +802,7 @@ included.")
      (modify-inputs (package-native-inputs binutils)
        (append texinfo))) ; because makeinfo is needed when building bfd alone
     (arguments
-     (substitute-keyword-arguments (package-arguments binutils)
+     (substitute-keyword-arguments arguments
        ;; Only build as a shared library
        ((#:configure-flags flags)
         #~(append #$flags '("--enable-shared" "--disable-static")))
@@ -1295,7 +1295,7 @@ with the Linux kernel.")
                                        "glibc-hurd-mach-print.patch"
                                        "glibc-hurd-gettyent.patch"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments glibc)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(cons* "CFLAGS=-g -O2 -Wno-error=builtin-declaration-mismatch"
                  "--enable-crypt"
@@ -1335,7 +1335,7 @@ with the Linux kernel.")
                                   "glibc-hurd-clock_gettime_monotonic.patch")))
                              (origin-patches (package-source glibc-2.35)))))))
     (arguments
-     (substitute-keyword-arguments (package-arguments glibc)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(cons* #$(string-append
                     "CFLAGS=-g -O2"
@@ -1747,7 +1747,7 @@ and daylight-saving rules.")
   (hidden-package
     (package/inherit tzdata
       (arguments
-        (substitute-keyword-arguments (package-arguments tzdata)
+        (substitute-keyword-arguments arguments
           ((#:phases phases)
            #~(modify-phases #$phases
                (add-after 'post-install 'install-leap-seconds

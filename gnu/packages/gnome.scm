@@ -409,7 +409,7 @@ services.")
     (name "libcloudproviders")
     (outputs (cons "doc" (package-outputs libcloudproviders-minimal)))
     (arguments
-     (substitute-keyword-arguments (package-arguments libcloudproviders-minimal)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags _)
         '(list "-Denable-gtk-doc=true")) ;false by default
        ((#:phases phases '%standard-phases)
@@ -2353,7 +2353,7 @@ GNOME Desktop.")
                (base32
                 "1dqsgrb62fgmy4w63bjl3b525nil4idrrdcscia1h3isaly0zlds"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments gcr)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (replace 'skip-gtk-update-icon-cache
@@ -2409,7 +2409,7 @@ GNOME Desktop.")
   (package/inherit gdl
     (name "gdl-minimal")
     (arguments
-     (substitute-keyword-arguments (package-arguments gdl)
+     (substitute-keyword-arguments arguments
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'disable-doc-generation
@@ -3073,7 +3073,7 @@ API.")
         (base32
          "1jcyfs912h29xpnj3fd2mk7pr1mljs61vhdpypphj88xfrlrv6hy"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments libpeas)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~(list))
         #~(cons* "-Dlua51=false" #$flags))))
     (inputs
@@ -3260,7 +3260,7 @@ compiles to GTKBuilder XML.")
                (base32
                 "0hj7f4xhwjc4x32r3lswwclbw37fw3spy806g4plkmym25hz4ydy"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments blueprint-compiler)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'fix-tests)))))))
@@ -4442,7 +4442,7 @@ targeting the GNOME stack simple.")
                 "0xvhg32sxnfyvxn86hh9mn65mh1g189vhsjcahccj0zbwnrkqz3w"))
               (patches (search-patches "vala-0.52-fix-valagirparser.patch"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments vala)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(cons*
            (string-append "CFLAGS=-g -O2"
@@ -4493,7 +4493,7 @@ editors, IDEs, etc.")
 (define-public vte/gtk+-3
   (package/inherit vte
     (name "vte-with-gtk+3")
-    (arguments (substitute-keyword-arguments (package-arguments vte)
+    (arguments (substitute-keyword-arguments arguments
                  ((#:configure-flags flags #~'())
                   #~(cons "-Dgtk4=false" (delete "-Dgtk3=false" #$flags)))))
     (propagated-inputs (modify-inputs (package-propagated-inputs vte)
@@ -4514,7 +4514,7 @@ editors, IDEs, etc.")
               (file-name (git-file-name name version))
               (sha256 (base32
                        "0fv6lx7kk1xrfsvc95jm23vxkmyfypriz4nvj0kjy4nshgccwlch"))))
-    (arguments (substitute-keyword-arguments (package-arguments vte)
+    (arguments (substitute-keyword-arguments arguments
                  ((#:configure-flags flags)
                   #~(append (list "-Dsixel=true") #$flags))))
     (inputs (modify-inputs (package-inputs vte)
@@ -4668,7 +4668,7 @@ GLib and GObject, and integrates JSON with GLib data types.")
     (name "json-glib")
     (outputs (cons "doc" (package-outputs json-glib-minimal)))
     (arguments
-     (substitute-keyword-arguments (package-arguments json-glib-minimal)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags _)
         #~(list "-Dman=true"
                 #$@(if (%current-target-system)
@@ -4976,7 +4976,7 @@ and the GLib main loop, to integrate well with GNOME applications.")
                (base32
                 "04rgv6hkyhgi7lak9865yxgbgky6gc635p7w6nhcbj64rx0prdz4"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments libsoup-minimal)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags configure-flags)
         ;; The option name changed between libsoup 2 and libsoup 3.
         #~(cons "-Dgtk_doc=false"
@@ -4998,7 +4998,7 @@ and the GLib main loop, to integrate well with GNOME applications.")
     (name "libsoup")
     (outputs (cons "doc" (package-outputs libsoup-minimal)))
     (arguments
-     (substitute-keyword-arguments (package-arguments libsoup-minimal)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags configure-flags)
         #~(cons "-Ddocs=enabled"
                 ;; The default value is 'auto', meaning it could be skipped.
@@ -5523,7 +5523,7 @@ output devices.")
        (sha256
         (base32 "0vwfx06k1in8hci3kdxpc3c0bh81f1vl5bp7favd3rdz4wd661vl"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments colord-minimal)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(begin
             (use-modules (srfi srfi-1))
@@ -7181,7 +7181,7 @@ USB transfers with your high-level application or system daemon.")
   (package/inherit gusb-minimal
     (name "gusb")
     (arguments
-     (substitute-keyword-arguments (package-arguments gusb-minimal)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         `(cons "-Ddocs=true"
                (delete "-Ddocs=false" ,flags)))))
@@ -12207,7 +12207,7 @@ for usage on small and big screens.")
        (sha256
         (base32 "1y23k623sjkldfrdiwfarpchg5mg58smcy1pkgnwfwca15wm1ra5"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments libhandy)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         '(list "-Dglade_catalog=disabled" "-Dgtk_doc=true"))))))
 

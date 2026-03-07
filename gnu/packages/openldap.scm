@@ -139,7 +139,7 @@
            (base32
             "06qf8lcalvgzr3w1m697xrj12ikav5im00wjmxa62qdmsg5rvji1"))))
        (arguments
-        (substitute-keyword-arguments (package-arguments openldap)
+        (substitute-keyword-arguments arguments
           ((#:configure-flags flags)
            #~(append
               (list #$(string-append "CFLAGS=-g -O2"

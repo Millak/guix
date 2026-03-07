@@ -163,7 +163,7 @@ translated messages from the catalogs.  Nearly all GNU packages use Gettext.")
                 "04kbg1sx0ncfrsbr85ggjslqkzzb243fcw9nyh3rrv1a22ihszf7"))
               (patches (search-patches "gettext-libunicode-update.patch"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments gettext-minimal)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'touch-test
@@ -187,7 +187,7 @@ translated messages from the catalogs.  Nearly all GNU packages use Gettext.")
   (package/inherit gettext-minimal
     (name "gettext")
     (arguments
-     (substitute-keyword-arguments (package-arguments gettext-minimal)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'install 'add-emacs-autoloads
@@ -352,6 +352,6 @@ areas where they were not expected like documentation.")
      (modify-inputs (package-native-inputs po4a)
        (delete "docbook-xml" "perl-test-pod" "texlive-local-tree")))
     (arguments
-     (substitute-keyword-arguments (package-arguments po4a)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #t) #f)))
     (properties '((hidden? . #t)))))

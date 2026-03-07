@@ -92,7 +92,7 @@ IPv4 and IPv6.  ONC RPC is notably used by the network file system (NFS).")
                     (patches (search-patches "libtirpc-hurd.patch"
                                              "libtirpc-CVE-2021-46828.patch"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments libtirpc)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags ''())
         ;; When cross-building the target system's krb5-config should be used.
         #~(list (string-append "ac_cv_prog_KRB5_CONFIG="

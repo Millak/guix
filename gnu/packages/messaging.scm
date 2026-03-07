@@ -702,7 +702,7 @@ identi.ca and status.net).")
             (files (list (string-append "lib/purple-2")
                          "lib/pidgin")))))
     (arguments
-     (substitute-keyword-arguments (package-arguments bitlbee)
+     (substitute-keyword-arguments arguments
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
            (replace 'configure                    ;add "--purple=1"

@@ -362,7 +362,7 @@ toolchain.  Among other features it provides
                version commit
                "08pm3f4hh6djl3szhqgm7fa3qisdl2xh9jrp18m0z7bk2vd0bzw7"))
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ;; Patch for fixing RUNPATH not applied to intermediate versions.
          ((#:validate-runpath? _ #t) #f)
          ;; Patch for cross-compilation not applied to intermediate versions.
@@ -439,7 +439,7 @@ toolchain.  Among other features it provides
                    "1qsfsv8wg0kz616sgj7dw9ihdz5rsm80p3ambl5lnkrjhwym7z7x"))
          (patches (search-patches "zig-0.10.0-675-TypeOf-hack.patch"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases
               (add-after 'unpack 'set-host-triple
@@ -488,7 +488,7 @@ toolchain.  Among other features it provides
                version commit
                "0829wymcwph71zlwql6v7i7j9gr1m96acyp2xsr69vq2h98wmlap"))
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases
               (replace 'prepare-source

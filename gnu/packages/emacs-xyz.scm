@@ -24457,7 +24457,7 @@ of XELB.")
     (inherit emacs-xelb)
     (name "emacs-xelb-no-x-toolkit")
     (arguments
-     (substitute-keyword-arguments (package-arguments emacs-xelb)
+     (substitute-keyword-arguments arguments
        ((#:emacs emacs) `,emacs-no-x-toolkit)))))
 
 (define-public emacs-exwm-no-x-toolkit
@@ -24468,7 +24468,7 @@ of XELB.")
     (propagated-inputs
      (list emacs-xelb-no-x-toolkit))
     (arguments
-     (substitute-keyword-arguments (package-arguments emacs-exwm)
+     (substitute-keyword-arguments arguments
        ((#:emacs emacs) `,emacs-no-x-toolkit)))))
 
 (define-public emacs-switch-window
@@ -43935,7 +43935,7 @@ conversion program}, a Japanese input method on Emacs.")
                        (string-append "LISPDIR=" #$output "/share/emacs/site-lisp")))
             ;; no tests in this subtree
             #:tests? #f)
-      (substitute-keyword-arguments (package-arguments emacs-ddskk)
+      (substitute-keyword-arguments arguments
         ((#:phases phases)
          #~(modify-phases #$phases
              (add-after 'fix-test 'chdir

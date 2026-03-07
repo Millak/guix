@@ -1084,7 +1084,7 @@ PyCryptodome variants, the other being python-pycryptodomex.")
   (package/inherit python-pycryptodome
     (name "python-pycryptodomex")
     (arguments
-     (substitute-keyword-arguments (package-arguments python-pycryptodome)
+     (substitute-keyword-arguments arguments
        ((#:test-flags _)
         #~(list "-m" "Cryptodome.SelfTest"))
        ((#:phases phases #~%standard-phases)

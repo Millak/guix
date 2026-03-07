@@ -272,7 +272,7 @@ across a broad spectrum of applications.")
                (base32
                 "13iviiwk1srpw9dmiwabkxv56v0pl0zggjp8zxy1419k5zzfsy34"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments boost)
+     (substitute-keyword-arguments arguments
       ((#:make-flags _ #f)
        #~(list "threading=multi" "link=shared"
               ;; Set the RUNPATH to $libdir so that the libs find each other.
@@ -306,7 +306,7 @@ across a broad spectrum of applications.")
     (inherit boost)
     (name "boost-static")
     (arguments
-     (substitute-keyword-arguments (package-arguments boost)
+     (substitute-keyword-arguments arguments
        ((#:make-flags flags)
         #~(cons "link=static" (delete "link=shared" #$flags)))))))
 
@@ -324,7 +324,7 @@ across a broad spectrum of applications.")
                (base32
                 "1jj1aai5rdmd72g90a3pd8sw9vi32zad46xv5av8fhnr48ir6ykj"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments boost)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags _ #~'())
         #~(let ((icu (dirname (dirname (search-input-file
                                         %build-inputs "bin/uconv")))))
@@ -452,7 +452,7 @@ signals and slots system.")
      (modify-inputs (package-inputs boost)
        (append openmpi)))
     (arguments
-     (substitute-keyword-arguments (package-arguments boost)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'configure 'update-jam

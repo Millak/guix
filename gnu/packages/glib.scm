@@ -204,7 +204,7 @@ shared NFS home directories.")
    (package/inherit dbus
      (name "dbus-for-jami")
      (arguments
-      (substitute-keyword-arguments (package-arguments dbus)
+      (substitute-keyword-arguments arguments
         ((#:phases phases)
          #~(modify-phases #$phases
              (add-after 'unpack 'customize-config
@@ -234,7 +234,7 @@ shared NFS home directories.")
 (define-public dbus-verbose
   (package/inherit dbus
     (name "dbus-verbose")
-    (arguments (substitute-keyword-arguments (package-arguments dbus)
+    (arguments (substitute-keyword-arguments arguments
                  ((#:configure-flags flags '())
                   #~(cons "-Dverbose_mode=true" #$flags))))
     (synopsis "D-Bus with verbose mode enabled for debugging")
@@ -450,7 +450,7 @@ functions for strings and common data structures.")
        (modify-inputs (package-native-inputs base)
          (prepend gobject-introspection-minimal)))
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               ;; GI tests require installed libraries
@@ -469,7 +469,7 @@ functions for strings and common data structures.")
        (modify-inputs (package-native-inputs base)
          (append gi-docgen python-docutils)))
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:configure-flags flags ''())
           #~(cons "-Ddocumentation=true"
                   (delete "-Dman-pages=disabled" #$flags)))

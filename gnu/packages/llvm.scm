@@ -882,7 +882,7 @@ Library.")
                 "07zby3gwy5c8jssabrhjk3nsxlwipnm6sk4dsvck1l5d0br1ywsg"))
               (file-name (string-append "libomp-" version ".tar.xz"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments libomp-15)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (replace 'chdir-to-source-and-install-license
@@ -911,7 +911,7 @@ Library.")
         "0d681xiixmx9inwvz14vi3xsznrcryk06a8rvk9cljiq5kc80szc"))
       (patches (search-patches "llvm-13-gcc-14.patch"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments llvm-14)
+     (substitute-keyword-arguments arguments
       ((#:tests? _ #t)
        ;; The tests on riscv64 error on the differences between
        ;; generic and generic-rv64.
@@ -956,7 +956,7 @@ Library.")
                 "0kvbr4j6ldpssiv7chgqra5y77n7jwbyxlwcl7z32v31f49jcybb"))
               (file-name (string-append "libomp-" version ".tar.xz"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments libomp-14)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         ;; Work around faulty target detection, fixed in 14:
         ;; https://github.com/llvm/llvm-project/issues/52910
@@ -985,7 +985,7 @@ Library.")
         "1pzx9zrmd7r3481sbhwvkms68fwhffpp4mmz45dgrkjpyl2q96kx"))
       (patches (search-patches "llvm-13-gcc-14.patch"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments llvm-13)
+     (substitute-keyword-arguments arguments
        ;; Disable tests for old releases now compiled with newer GCC.
        ((#:tests? _ #false) #false)
        ((#:phases phases)
@@ -1042,7 +1042,7 @@ Library.")
                 "14dh0r6h2xh747ffgnsl4z08h0ri04azi9vf79cbz7ma1r27kzk0"))
               (file-name (string-append "libomp-" version ".tar.xz"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments libomp-13)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~`(,@(delete "-DLIBOMPTARGET_BUILD_AMDGCN_BCLIB=OFF" #$flags)))))
     (native-inputs
@@ -1122,7 +1122,7 @@ Library.")
     (version "18.1.8")
     (source (llvm-monorepo version))
     (arguments
-     (substitute-keyword-arguments (package-arguments llvm-15)
+     (substitute-keyword-arguments arguments
        ((#:modules modules '((guix build cmake-build-system)
                              (guix build utils)))
         (if (%current-target-system)
@@ -1409,7 +1409,7 @@ Library.")
                      "clang-rocm-default-new-dtags.patch"
                      (assoc-ref %llvm-patches (package-version llvm-base)))))))
     (arguments
-     (substitute-keyword-arguments (package-arguments llvm-base)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(append #$flags
                   (list "-DLLVM_TARGETS_TO_BUILD=AMDGPU;X86"
@@ -1452,7 +1452,7 @@ This AMD fork includes AMD-specific additions."))))
        (replace "clang-runtime" clang-runtime-rocm)
        (append python-lit)))
     (arguments
-     (substitute-keyword-arguments (package-arguments clang-base)
+     (substitute-keyword-arguments arguments
        ;;  The tests can be run, as allowed by check phase rewrite and
        ;;  LLVM_EXTERNAL_LIT setting.  However, 84/46171 are failing. Most
        ;;  should probably be disabled.
@@ -2102,7 +2102,7 @@ generator targetting AMD hardware.")
     (source (package-source llvm-rocm))
     (inputs (list llvm-rocm))
     (arguments
-     (substitute-keyword-arguments (package-arguments lld-base)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(append #$flags
                   '("-DLLVM_TARGETS_TO_BUILD=AMDGPU;X86")))))))
@@ -2121,7 +2121,7 @@ generator targetting AMD hardware.")
     (version (package-version llvm-rocm))
     (source (package-source llvm-rocm))
     (arguments
-     (substitute-keyword-arguments (package-arguments libomp-20)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags '())
         #~(cons
            (string-append "-DOPENMP_LIT_ARGS="
@@ -2210,7 +2210,7 @@ the host.")
                rocr-runtime
                rocm-device-libs)))
     (arguments
-     (substitute-keyword-arguments (package-arguments clang-rocm-toolchain)
+     (substitute-keyword-arguments arguments
        ((#:builder _)
         #~(begin
             (use-modules (ice-9 match)
@@ -2326,7 +2326,7 @@ using @code{clang-rename}.")))
       (inherit base-llvm)
       (name "llvm-for-mesa")
       (arguments
-       (substitute-keyword-arguments (package-arguments base-llvm)
+       (substitute-keyword-arguments arguments
          ((#:modules modules '((guix build cmake-build-system)
                                (guix build utils)))
           `((ice-9 regex)
@@ -2463,7 +2463,7 @@ LLVM bitcode files.")
   (package
     (inherit llvm-13)
     (arguments
-     (substitute-keyword-arguments (package-arguments llvm-13)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags ''())
         #~(cons* "-DLLVM_BUILD_LLVM_DYLIB=ON"
                  "-DLLVM_LINK_LLVM_DYLIB=ON"
@@ -2500,7 +2500,7 @@ LLVM bitcode files.")
        ;; This reduces the package size on disk from 547 MiB to 311 MiB.
        ;; Cling is intended to be used as a REPL on the host machine, not as a
        ;; cross-compiling toolchain.
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:configure-flags cf ''())
           #~(cons* "-DLLVM_TARGETS_TO_BUILD=host;NVPTX" #$cf)))))))
 
@@ -2511,7 +2511,7 @@ LLVM bitcode files.")
       (version (package-version llvm-cling))
       (source (package-source llvm-cling))
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases
               (add-after 'install 'delete-static-libraries
@@ -2785,7 +2785,7 @@ required to build Swift.")
                 "00bpplh8zd495n7dw5a64ncy23r2sgj7071kyhw7r9s53ihw1k1m"))
               (patches (search-patches "clang-18.0-libc-search-path.patch"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments swift-llvm)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(cons "-DUSE_DEPRECATED_GCC_INSTALL_PREFIX=ON" #$flags))
        ((#:phases phases)

@@ -872,7 +872,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                 "qtbase-patch-libvulkan.patch"))))
     (build-system cmake-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments qtbase-5)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags _ ''())
         `(let ((out (assoc-ref %outputs "out")))
            (list "-GNinja"              ;officially supported
@@ -1620,7 +1620,7 @@ support for MNG, TGA, TIFF and WBMP image formats.")
               (base32
                "145hbdaj4r3lljgiasx404c12dl5sk4nghc1pc7w5xy1m8gppcgf"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (native-inputs (list perl))
     (inputs
@@ -1686,7 +1686,7 @@ XLSX document format.")
               (base32
                "19pq6bmr7zs2n7m8hqsyxyml7kggdkvz0sdhxsg5gvk9fa264b4i"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'disable-network-tests
@@ -1716,7 +1716,7 @@ xmlpatternsvalidator.")))
                 "1nnmch6a3k8ja9q8vzhl6kcl52xyy90rpbnaaqqvirwdgrfjvkg1"))
               (patches (search-patches "qtdeclarative-5-disable-qmlcache.patch"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #f) #f)             ;TODO: Enable the tests
        ((#:phases phases)
         #~(modify-phases #$phases
@@ -1983,7 +1983,7 @@ with Bluetooth and NFC.")
               (base32
                "11fb6bvabkdhjlwyd3q0nmzhaildv9dnda78j9sphfdd5c0x1i6c"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (native-inputs
      (list perl qtdeclarative-5))
@@ -2067,7 +2067,7 @@ recognition API for devices.")))
                (base32
                 "00h0qm6g0qjy56q3b7vp1m93p1jyaidlsl1cqmvv38ws5r79pb4h"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:parallel-tests? _ #f) #f)    ; can lead to race condition
        ((#:phases phases)
         `(modify-phases ,phases
@@ -2106,7 +2106,7 @@ recognition API for devices.")))
                   (substitute* "examples/multimedia/multimedia.pro"
                     (("spectrum") "#"))))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         `(modify-phases ,phases
            (replace 'configure
@@ -2296,7 +2296,7 @@ record media, and manage a collection of media content.")
                (base32
                 "07gqgd6ixqnsvc9r1c9y92vaxwj11ijrqvnxib8sv6xwhcmhvw43"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'disable-failing-tests
@@ -2440,7 +2440,7 @@ compositor libraries.")
     (native-inputs (list perl))
     (inputs (list qtbase-5 eudev))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'patch-dlopen-paths
@@ -2501,7 +2501,7 @@ interacting with serial ports from within Qt.")
                (base32
                 "0408pp9glr17yh60snmb2gx0vr7fwk0xf17hiwpwg837qk4si07f"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'patch-libsocketcan-reference
@@ -2584,7 +2584,7 @@ application).")
                (base32
                 "0msg2ghi5g7anv7nlkj55b1dwpz6dgd4qv1brikb06nvmxs6dl8b"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'disable-network-tests
@@ -2702,7 +2702,7 @@ Server Protocol (LSP) for Qt.")
     deps/rapidjson/1\\.1\\.0/include \\\\")
                         "")))))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #f) #f)             ; TODO: Enable the tests
        ((#:phases phases)
         #~(modify-phases #$phases
@@ -2727,7 +2727,7 @@ positioning and geolocation plugins.")))
                (base32
                 "1ybk3ig69p6zyrxabcfkb4pcyc251gy1m2brkf4q52cmcwcysias"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #f) #f)             ; TODO: Enable the tests
        ((#:phases phases)
         #~(modify-phases #$phases
@@ -2785,7 +2785,7 @@ plugin for Adobe After Effects.")
                (base32
                 "1imzr7gxbbl1m05g6a4ji0pxvabp0j4x3q33dxa7zfrjczmhcc23"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #f) #f)           ; TODO: Enable the tests
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
@@ -2977,7 +2977,7 @@ body can have its own physical properties like mass, density and friction.")
                (base32
                 "0d22z6a1l7iv1xmzgsf7inpgi857mg1ffv327wv7q2iapg2fsiw3"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #f) #f)))           ; TODO: Enable the tests
     (inputs (list qtbase-5 qtdeclarative-5))
     (synopsis "Qt Quick Controls and other Quick modules")
@@ -2997,7 +2997,7 @@ can be used to build complete interfaces in Qt Quick.")))
                (base32
                 "0v7mwzhc42cwf12z11g9qmysqhsqcvfk4pghh9n2p2kbrz6xdnd0"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #f) #f)))           ; TODO: Enable the tests
     (inputs (list qtbase-5 qtdeclarative-5))
     (synopsis "Qt Quick Controls 2 and other Quick 2 modules")
@@ -3018,7 +3018,7 @@ not available.")))
                (base32
                 "07m25w5qm6i13ygxg0pwaqfda4b8zyhs87n366cyn3wwm96x18ma"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #f) #f)))           ; TODO: Enable the tests
     (inputs (list qtbase-5 qtdeclarative-5))
     (synopsis "Qt Graphical Effects module")
@@ -3073,7 +3073,7 @@ and mobile applications targeting TV-like form factors.")))
                   ;; the scion test refers to the bundled 3rd party test code.
                   (substitute* "tests/auto/auto.pro"
                     (("scion") "#"))))))
-    (arguments (substitute-keyword-arguments (package-arguments qtsvg-5)
+    (arguments (substitute-keyword-arguments arguments
                  ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (inputs (list qtbase-5 qtdeclarative-5))
     (synopsis "Qt SCXML module")
@@ -3192,7 +3192,7 @@ purchasing goods and services.")))
                (base32
                 "0csimm84df9f70irp8di8r208jpiv6hhfbxdi4sxh9935ygpqgc4"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'remove-failing-test
@@ -3265,7 +3265,7 @@ graphs by selecting one of the charts themes.")
                (base32
                 "09xwhff4l0yn6dn22qcnsn8k929r7xvg2a4zmslq1hd6ph2d2as2"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (inputs (list qtbase-5 qtdeclarative-5))
     (synopsis "Qt Data Visualization module")
@@ -3413,7 +3413,7 @@ processes or computers.")
                (base32
                 "11s5nhcj7ns7fwwmpmfv8i45b5h3xmjlq8rhm6qk11plvwi44dss"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (inputs (list qtbase-5))
     (native-inputs (list perl qtdeclarative-5 qtmultimedia-5 qtxmlpatterns-5))
@@ -3482,7 +3482,7 @@ message.")
                (base32
                 "03qxll32431qwrrbnb75mm9xbdq0lvzj03037yzw6mxfhl491sh6"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #f) #f) ; TODO: pass 2 fail test
        ((#:phases phases)
         `(modify-phases ,phases
@@ -3896,7 +3896,7 @@ linux/libcurl_wrapper.h")
      ;; Required by Qt5WebEngineCoreConfig.cmake.
      (list qtbase-5 qtdeclarative-5 qtwebchannel-5))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
+     (substitute-keyword-arguments arguments
        ((#:modules modules '())
         `((guix build gnu-build-system)
           (guix build utils)
@@ -4541,7 +4541,7 @@ instances.")
         (base32
          "069aww3aww6968hmipzfbj57a5vw6jxj1mr20nsb1yh98n5c01rv"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments single-application-qt5)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(cons "-DQT_DEFAULT_MAJOR_VERSION=6" #$flags))))
     (inputs (list qtbase))))
@@ -4603,7 +4603,7 @@ Python.")
   (package/inherit pyotherside
     (name "pyotherside-for-qt5")
     (arguments
-     (substitute-keyword-arguments (package-arguments pyotherside)
+     (substitute-keyword-arguments arguments
        ((#:qtbase _ #f)
         qtbase-5)
        ((#:phases phases '%standard-phases)
@@ -5320,7 +5320,7 @@ securely.  It will not store any data unencrypted unless explicitly requested.")
      (modify-inputs (package-inputs qtkeychain)
        (replace "qtbase" qtbase)))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtkeychain)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~(list))
         #~(cons "-DBUILD_WITH_QT6=ON" #$flags))
        ((#:phases phases '%standard-phases)
@@ -5960,7 +5960,7 @@ color-related widgets.")
        (replace "qtbase" qtbase)
        (delete "qtxmlpatterns")))
     (arguments
-     (substitute-keyword-arguments (package-arguments python-shiboken-2)
+     (substitute-keyword-arguments arguments
        ((#:phases p)
         #~(modify-phases #$p
             (delete 'workaround-importlib-error)
@@ -6571,7 +6571,7 @@ a secure way.")
   (package
     (inherit packagekit-qt5)
     (name "packagekit-qt6")
-    (arguments (substitute-keyword-arguments (package-arguments packagekit-qt5)
+    (arguments (substitute-keyword-arguments arguments
                  ((#:configure-flags flags #~'())
                   #~(cons "-DBUILD_WITH_QT6=ON" #$flags))))
     (inputs (modify-inputs (package-inputs packagekit-qt5)

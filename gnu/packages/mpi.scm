@@ -196,7 +196,7 @@ bind processes, and much more.")
               (append rocm-smi-lib)
               (delete "numactl")))               ;libnuma is no longer needed.
     (arguments
-     (substitute-keyword-arguments (package-arguments hwloc-1)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags '())
         #~(cons* (string-append "--with-opencl="
                                 #$(this-package-input "opencl-icd-loader"))
@@ -488,7 +488,7 @@ software vendors, application developers and computer science researchers.")
     (name "openmpi-c++")
     (outputs '("out"))
     (arguments
-     (substitute-keyword-arguments (package-arguments openmpi)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(cons "--enable-mpi-cxx" #$flags))))
     (synopsis "C++ bindings for MPI")))
@@ -512,7 +512,7 @@ software vendors, application developers and computer science researchers.")
                   (guix build utils))
       #:imported-modules `((guix build ant-build-system)
                            ,@%default-gnu-imported-modules)
-      (substitute-keyword-arguments (package-arguments openmpi)
+      (substitute-keyword-arguments arguments
         ((#:configure-flags flags)
          #~(cons "--enable-mpi-java" #$flags))
         ((#:make-flags flags ''())
@@ -541,7 +541,7 @@ software vendors, application developers and computer science researchers.")
   (package/inherit openmpi
     (name "openmpi-thread-multiple")
     (arguments
-     (substitute-keyword-arguments (package-arguments openmpi)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(cons "--enable-mpi-thread-multiple" #$flags))))
     (description "This version of Open@tie{}MPI has an implementation of
@@ -747,7 +747,7 @@ modular framework for other derived implementations.")
               (append rdma-core)
               (append psm2)))
     (arguments
-      (substitute-keyword-arguments (package-arguments mpich)
+      (substitute-keyword-arguments arguments
         ((#:configure-flags flags)
          #~(list "--disable-silent-rules" ;let's see what's happening
                  "--enable-debuginfo"

@@ -236,7 +236,7 @@ package contains the library, but no drivers.")
        ("libxml2" ,libxml2)             ; for pixma back end
        ,@(package-inputs sane)))
     (arguments
-     (substitute-keyword-arguments (package-arguments sane)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         `(modify-phases ,phases
            (delete 'disable-backends)

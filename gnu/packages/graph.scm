@@ -591,7 +591,7 @@ contains supporting code for evaluation and parameter tuning.")
          (sha256
           (base32 "0m0hyqn9db0xdbvan0lin7xf11dl4xdpjwwpagw01hl4z72w3al0"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments faiss)
+       (substitute-keyword-arguments arguments
          ((#:configure-flags flags '())
           ;; Add -fpermissive to suppress errors about non-conforming code.
           #~(cons "-DCMAKE_CXX_FLAGS=-fpermissive"

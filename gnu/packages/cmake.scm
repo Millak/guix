@@ -386,7 +386,7 @@ and workspaces that can be used in the compiler environment of your choice.")
                 "125yhgkmh5ap14w9yyh442manbb7k96dws4pa3hz32qp7njpjn3n"))))
     (outputs '("out" "doc"))
     (arguments
-     (substitute-keyword-arguments (package-arguments cmake-minimal)
+     (substitute-keyword-arguments arguments
        ;; Use cmake-minimal this time.
        ((#:cmake _ #f)
         (if (%current-target-system)

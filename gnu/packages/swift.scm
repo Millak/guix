@@ -131,7 +131,7 @@ Swift-specific modifications, required to build Swift 4.2.4.")
                (base32
                 "1405irbglx933i6jc8546gcrgb3y3703h66jm1jnd6acgfyg74ly"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments swift-cmark)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'install-cmake-exports)))))))
@@ -389,7 +389,7 @@ a previous Swift compiler.")
     (version %swift-6.2-version)
     (source %swift-6.2-source)
     (arguments
-     (substitute-keyword-arguments (package-arguments swift-bootstrap)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(append (cons (string-append "-DCMAKE_INSTALL_RPATH="
                                        #$output "/lib/swift/linux:"

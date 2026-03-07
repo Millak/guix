@@ -148,7 +148,7 @@ instead.")
     (inherit tor)
     (name "tor-client")
     (arguments
-     (substitute-keyword-arguments (package-arguments tor)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(append #$flags
                   (list "--disable-module-relay")))))
@@ -380,7 +380,7 @@ OnionShare.")
     (inherit onionshare-cli)
     (name "onionshare")
     (arguments
-     (substitute-keyword-arguments (package-arguments onionshare-cli)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'absolutize

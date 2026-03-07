@@ -295,7 +295,7 @@ Python code natively, including C extensions.")
                (base32
                 "1yq6n888fxfdqid29q3w8bn7ii800bjkf44w82kjwgh0c2kxv1kp"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments pypy2)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (replace 'patch-source

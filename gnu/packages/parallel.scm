@@ -328,7 +328,7 @@ minimal slurm package BASE-SLURM."
     (inherit base-slurm)
     (name "slurm")
     (arguments
-     (substitute-keyword-arguments (package-arguments base-slurm)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(cons* "--enable-slurmrestd"
                  (string-append "--with-bpf="
@@ -761,7 +761,7 @@ commonly needed services in distributed and parallel computing systems.")
                        ;; Remove ~5 MiB of pre-built HTML doc.
                        (delete-file-recursively "docs/_build/html")))))
     (arguments
-     (substitute-keyword-arguments (package-arguments openpmix)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(list (string-append "--with-hwloc="
                                (ungexp (this-package-input "hwloc") "lib"))

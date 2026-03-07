@@ -91,7 +91,7 @@ formatters, and other extensions.")
   (hidden-package
    (package/inherit python-cliff
      (arguments
-      (substitute-keyword-arguments (package-arguments python-cliff)
+      (substitute-keyword-arguments arguments
         ((#:tests? t? #t)
          #f)
         ((#:phases phases #~%standard-phases)
@@ -249,7 +249,7 @@ is for some reason not possible and local caching of the fetched data.")
   (hidden-package
    (package/inherit python-os-service-types
      (arguments
-      (substitute-keyword-arguments (package-arguments python-os-service-types)
+      (substitute-keyword-arguments arguments
         ((#:tests? t? #t)
          #f)
         ((#:phases phases #~%standard-phases)
@@ -352,7 +352,7 @@ extensions.")
   (hidden-package
    (package/inherit python-stevedore
      (arguments
-      (substitute-keyword-arguments (package-arguments python-stevedore)
+      (substitute-keyword-arguments arguments
         ((#:tests? t? #t)
          #f)
         ((#:phases phases #~%standard-phases)
@@ -682,7 +682,7 @@ in an application or library.")
   (hidden-package
    (package/inherit python-oslo-i18n
      (arguments
-      (substitute-keyword-arguments (package-arguments python-oslo-i18n)
+      (substitute-keyword-arguments arguments
         ((#:tests? t? #t)
          #f)
         ((#:phases phases #~%standard-phases)
@@ -739,7 +739,7 @@ handlers and support for context specific logging (like resource id’s etc).")
   (hidden-package
    (package/inherit python-oslo-log
      (arguments
-      (substitute-keyword-arguments (package-arguments python-oslo-log)
+      (substitute-keyword-arguments arguments
         ((#:tests? t? #t)
          #f)
         ((#:phases phases #~%standard-phases)
@@ -865,7 +865,7 @@ for debugging, and better support for mocking results.")
   (hidden-package
    (package/inherit python-oslotest
      (arguments
-      (substitute-keyword-arguments (package-arguments python-oslotest)
+      (substitute-keyword-arguments arguments
         ((#:tests? t? #t)
          #f)
         ((#:phases phases #~%standard-phases)

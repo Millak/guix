@@ -1782,7 +1782,7 @@ session can be interrupted and easily resumed at a later time.")
   (package (inherit non-sequencer)
     (name "non-session-manager")
     (arguments
-     (substitute-keyword-arguments (package-arguments non-sequencer)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         `(cons "--project=session-manager"
                (delete "--project=sequencer" ,flags)))))
@@ -1803,7 +1803,7 @@ communicate with the session management daemon.")
   (package (inherit non-sequencer)
     (name "non-mixer")
     (arguments
-     (substitute-keyword-arguments (package-arguments non-sequencer)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         `(cons "--project=mixer"
                (delete "--project=sequencer" ,flags)))))
@@ -1825,7 +1825,7 @@ studio.")
   (package (inherit non-sequencer)
     (name "non-timeline")
     (arguments
-     (substitute-keyword-arguments (package-arguments non-sequencer)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         `(cons "--project=timeline"
                (delete "--project=sequencer" ,flags)))))

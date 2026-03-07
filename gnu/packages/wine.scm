@@ -210,7 +210,7 @@ integrate Windows applications into your desktop.")
            wayland
            wayland-protocols))
     (arguments
-     (substitute-keyword-arguments (package-arguments wine-minimal)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags _ '()) #~'())))))
 
 (define-public wine64
@@ -312,7 +312,7 @@ integrate Windows applications into your desktop.")
      (modify-inputs (package-native-inputs wine)
        (prepend python-3)))
     (arguments
-     (substitute-keyword-arguments (package-arguments wine)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'patch-SHELL)

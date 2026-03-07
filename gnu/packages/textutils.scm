@@ -262,7 +262,7 @@ case-folding, and other operations for data in the UTF-8 encoding.")
      (if (this-package-native-input "julia")
          (strip-keyword-arguments
           '(#:tests?)
-          (substitute-keyword-arguments (package-arguments utf8proc-bootstrap)
+          (substitute-keyword-arguments arguments
             ((#:phases phases '%standard-phases)
              #~(modify-phases #$phases
                  (add-before 'check 'check-data
@@ -272,7 +272,7 @@ case-folding, and other operations for data in the UTF-8 encoding.")
                                             (string-append "data/" i)))
                                '("NormalizationTest.txt" "GraphemeBreakTest.txt"
                                  "DerivedCoreProperties.txt"))))))))
-          (substitute-keyword-arguments (package-arguments utf8proc-bootstrap)
+          (substitute-keyword-arguments arguments
             ((#:tests? _ #t) #f))))
     (properties
      (alist-delete 'hidden? (package-properties utf8proc-bootstrap)))))

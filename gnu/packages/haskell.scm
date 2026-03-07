@@ -1563,7 +1563,7 @@ interactive environment for the functional language Haskell.")
                 (patches (search-patches "ghc-9.2-cabal-support-package-path.patch"
                                          "ghc-9-StgCRunAsm-only-when-needed.patch"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases
               ;; File Common.hs has been moved to src/ in this release.
@@ -1706,7 +1706,7 @@ SRC_HC_OPTS += -optc-mno-outline-atomics
                   "1qk7rlqf02s3b6m6sqqngmjq1mxnrz88h159lz6k25gddmdg5kp8"))
                 (patches (search-patches "ghc-9-StgCRunAsm-only-when-needed.patch"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases
              ;; Files don’t exist any more.

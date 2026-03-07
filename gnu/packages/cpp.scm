@@ -2290,7 +2290,7 @@ Google's C++ code base.")
                 (patches
                  (search-patches "abseil-cpp-20220623.1-no-kepsilon-i686.patch"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:configure-flags flags #~'())
           (if (target-riscv64?)
               #~(cons* "-DCMAKE_SHARED_LINKER_FLAGS=-latomic"
@@ -2337,7 +2337,7 @@ Google's C++ code base.")
   (hidden-package
    (package/inherit base
      (arguments
-      (substitute-keyword-arguments (package-arguments base)
+      (substitute-keyword-arguments arguments
         ((#:configure-flags flags)
          #~(cons* #$(string-append "-DCMAKE_CXX_STANDARD="
                                    (number->string version))
@@ -2348,7 +2348,7 @@ Google's C++ code base.")
     (hidden-package
      (package/inherit base
        (arguments
-        (substitute-keyword-arguments (package-arguments base)
+        (substitute-keyword-arguments arguments
           ((#:configure-flags flags)
            #~(cons* "-DCMAKE_POSITION_INDEPENDENT_CODE=ON"
                     (delete "-DBUILD_SHARED_LIBS=ON" #$flags)))))))))
@@ -3810,7 +3810,7 @@ parsing with only a single memory allocation.")
                          "sajson-for-gemmi-numbers-as-strings.patch")
                         (origin-patches (package-source sajson))))))
     (arguments
-     (substitute-keyword-arguments (package-arguments sajson)
+     (substitute-keyword-arguments arguments
        ;; This is a modified version used in gemmi, in which numbers are kept
        ;; as strings. Building the tests fails with the modification.
        ((#:tests? _ #f) #f)))
@@ -4059,7 +4059,7 @@ common controls and win32-style extensions.")
     (inherit swell)
     (name "swell-colortheme")
     (arguments
-     (substitute-keyword-arguments (package-arguments swell)
+     (substitute-keyword-arguments arguments
        ((#:make-flags flags)
         #~(append #$flags '("libSwell.colortheme")))
        ((#:phases phases)
@@ -4083,7 +4083,7 @@ programs that use @code{swell}.")))
     (inherit swell)
     (name "jnetlib")
     (arguments
-     (substitute-keyword-arguments (package-arguments swell)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #t) #t)
        ((#:phases phases)
         #~(modify-phases #$phases
@@ -4116,7 +4116,7 @@ features:
     (inherit swell)
     (name "eel2")
     (arguments
-     (substitute-keyword-arguments (package-arguments swell)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #t) #f) ;no tests
        ;; FIXME: Remove this flag when this issue will be fixed:
        ;; https://github.com/justinfrankel/WDL/issues/32.
@@ -4675,7 +4675,7 @@ on @code{.po} files and doesn't need @code{.mo} files pre-generated.")
 (define-public tinygettext-with-sdl2
   (package/inherit tinygettext
     (arguments
-     (substitute-keyword-arguments (package-arguments tinygettext)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(list "-DTINYGETTEXT_WITH_SDL=ON" "-DBUILD_TESTS=ON"))))
     (native-inputs (list pkg-config tinycmmc))

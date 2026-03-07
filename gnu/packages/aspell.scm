@@ -464,7 +464,7 @@ European languages.")
                 (patches (search-patches "ispell-for-linphone-cmake.patch"))))
       (build-system cmake-build-system)
       (arguments
-       (substitute-keyword-arguments (package-arguments ispell)
+       (substitute-keyword-arguments arguments
          ((#:modules _ ''())
           '((guix build cmake-build-system)
             (guix build utils)

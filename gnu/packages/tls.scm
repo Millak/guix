@@ -1011,7 +1011,7 @@ coding footprint.")
   (hidden-package
    (package/inherit mbedtls
      (arguments
-      (substitute-keyword-arguments (package-arguments mbedtls)
+      (substitute-keyword-arguments arguments
         ((#:phases phases)
          #~(modify-phases #$phases
              (add-before 'configure 'configure-extra-features
@@ -1181,7 +1181,7 @@ ciphers such as ChaCha20, Curve25519, NTRU, and Blake2b.")
   (package/inherit wolfssl
     (name "wolfssl-for-rpcs3")
     (arguments
-     (substitute-keyword-arguments (package-arguments wolfssl)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags ''())
         #~(cons* "--enable-des3"
                  "--enable-pwdbased"

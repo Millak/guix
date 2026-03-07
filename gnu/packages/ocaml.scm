@@ -2261,7 +2261,7 @@ module of this library is parameterised by the type of S-expressions.")
     (arguments
      `(#:ocaml ,ocaml-4.09
        #:findlib ,ocaml4.09-findlib
-       ,@(substitute-keyword-arguments (package-arguments ocaml-csexp)
+       ,@(substitute-keyword-arguments arguments
            ((#:dune _) ocaml4.09-dune-bootstrap))))
     (propagated-inputs
      `(("ocaml-result" ,ocaml4.09-result)))))
@@ -2273,7 +2273,7 @@ module of this library is parameterised by the type of S-expressions.")
     (arguments
      `(#:ocaml ,ocaml-5.0
        #:findlib ,ocaml5.0-findlib
-       ,@(substitute-keyword-arguments (package-arguments ocaml-csexp)
+       ,@(substitute-keyword-arguments arguments
            ((#:dune _) ocaml5.0-dune-bootstrap))))
     (propagated-inputs
      `(("ocaml-result" ,ocaml5.0-result)))))
@@ -3895,7 +3895,7 @@ and consumable.")
                (base32
                 "1z8mmk1idh9hjhh2b9rp5b1h8kmzcxhagqkw0pvxn6ykx1brskq1"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments ocaml-sedlex)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #t) #f)))               ; no tests
     (native-inputs '())))
 

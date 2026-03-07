@@ -326,7 +326,7 @@ that implements both the msgpack and msgpack-rpc specifications.")
   (package/inherit lua-libmpack
     (name "lua5.1-libmpack")
     (arguments
-     (substitute-keyword-arguments (package-arguments lua-libmpack)
+     (substitute-keyword-arguments arguments
        ((#:make-flags flags)
         `(let* ((lua-version ,(package-version lua-5.1))
                 (lua-major+minor ,(version-major+minor (package-version lua-5.1))))
@@ -346,7 +346,7 @@ that implements both the msgpack and msgpack-rpc specifications.")
   (package/inherit lua-libmpack
     (name "lua5.2-libmpack")
     (arguments
-     (substitute-keyword-arguments (package-arguments lua-libmpack)
+     (substitute-keyword-arguments arguments
        ((#:make-flags flags)
         `(let* ((lua-version ,(package-version lua-5.2))
                 (lua-major+minor ,(version-major+minor (package-version lua-5.2))))
@@ -971,7 +971,7 @@ game development and other performance-critical applications.")
         (sha256
          (base32 "0cd12dvkzqdafz46q4302mzgpzbz589zmmiga7bq07f2sqy4vrvv"))))
      (arguments
-      (substitute-keyword-arguments (package-arguments flatbuffers)
+      (substitute-keyword-arguments arguments
         ((#:configure-flags flags #~'())
          #~(append #$flags '("-DCMAKE_POSITION_INDEPENDENT_CODE=ON"))))))))
 

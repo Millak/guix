@@ -168,7 +168,7 @@ embedded-4_9-branch/")
            ("gcc@5" ,gcc-5)
            ,@(package-native-inputs xgcc)))
         (arguments
-         (substitute-keyword-arguments (package-arguments xgcc)
+         (substitute-keyword-arguments arguments
            ((#:phases phases)
             #~(modify-phases #$phases
                 (add-after 'set-paths 'augment-CPLUS_INCLUDE_PATH
@@ -285,7 +285,7 @@ usable on embedded products.")
         (inherit base)
         (name "newlib-nano")
         (arguments
-         (substitute-keyword-arguments (package-arguments base)
+         (substitute-keyword-arguments arguments
            ;; The configure flags are identical to the flags used by the "GCC
            ;; ARM embedded" project.  They optimize newlib for use on small
            ;; embedded systems with limited memory.
@@ -378,7 +378,7 @@ embedded-7-branch/")
                   (delete "isl")
                   (prepend flex isl-0.18)))
                (arguments
-                (substitute-keyword-arguments (package-arguments xgcc)
+                (substitute-keyword-arguments arguments
                   ((#:phases phases)
                    #~(modify-phases #$phases
                        (add-after 'unpack 'expand-version-string
@@ -463,7 +463,7 @@ embedded-7-branch/")
             (base32
              "1dq23fqrk75g1a4v7569fvnnw5q440zawbxi3w0g05n8jlqsmvcy"))))
         (arguments
-         (substitute-keyword-arguments (package-arguments base)
+         (substitute-keyword-arguments arguments
            ;; The configure flags are identical to the flags used by the "GCC
            ;; ARM embedded" project.
            ((#:configure-flags flags)
@@ -517,7 +517,7 @@ embedded-7-branch/")
                   (delete "isl")
                   (prepend flex isl-0.18)))
                (arguments
-                (substitute-keyword-arguments (package-arguments xgcc)
+                (substitute-keyword-arguments arguments
                   ((#:phases phases)
                    #~(modify-phases #$phases
                        (add-after 'unpack 'expand-version-string
@@ -602,7 +602,7 @@ embedded-7-branch/")
             (base32
              "095j23mg928rmf4yqmj39wc0nsd207liqrdw4ygh58nygsm4gpmh"))))
         (arguments
-         (substitute-keyword-arguments (package-arguments base)
+         (substitute-keyword-arguments arguments
            ;; The configure flags are identical to the flags used by the "GCC
            ;; ARM embedded" project.
            ((#:configure-flags flags)
@@ -645,7 +645,7 @@ embedded-7-branch/")
            (sha256
             (base32 "0r6q0m3d8g3k3rkmnqjw8aw5fcnsrmywf4ispdkxmk1al3whk1vk"))))
         (arguments
-         (substitute-keyword-arguments (package-arguments base)
+         (substitute-keyword-arguments arguments
            ((#:phases phases)
             #~(modify-phases #$phases
                 (replace 'expand-version-string
@@ -685,7 +685,7 @@ embedded-7-branch/")
            (sha256
             (base32
              "0drs9v8avh4y2h5bs0ixjn9x662jzkkikx8z034wgl41dxmn6786"))))
-        (arguments (substitute-keyword-arguments (package-arguments base)
+        (arguments (substitute-keyword-arguments arguments
                      ((#:configure-flags flags)
                       #~(cons* "--enable-newlib-mb"
                                "--enable-newlib-reent-check-verify"
@@ -761,7 +761,7 @@ embedded-7-branch/")
       (package
         (inherit base)
         (name "libstdc++-nano-arm-none-eabi")
-        (arguments (substitute-keyword-arguments (package-arguments base)
+        (arguments (substitute-keyword-arguments arguments
                      ((#:make-flags flags)
                       #~(map (lambda (flag)
                                (if (or (string-prefix? "CFLAGS=" flag)
@@ -902,7 +902,7 @@ languages are C and C++.")
       (inherit gdb)
       (name "gdb-arm-none-eabi")
       (arguments
-       (substitute-keyword-arguments (package-arguments gdb)
+       (substitute-keyword-arguments arguments
          ((#:configure-flags flags '())
           #~(cons* "--target=arm-none-eabi"
                    "--enable-multilib"
@@ -1069,7 +1069,7 @@ with a layered architecture of JTAG interface and TAP support.")
                     "0w0dff3s7wv2d9m78a4jhckiik58q38wx6wpbba5hzbs4yxz35ck"))
                   (patches '())))
         (arguments
-         (substitute-keyword-arguments (package-arguments xbinutils)
+         (substitute-keyword-arguments arguments
            ((#:configure-flags flags)
             #~(cons "--disable-werror" #$flags))
            ;; FIXME: For some reason there are many test failures.  It's not
@@ -1149,7 +1149,7 @@ with a layered architecture of JTAG interface and TAP support.")
                     (search-patches
                      "gcc-cross-environment-variables.patch")))))
         (arguments
-         (substitute-keyword-arguments (package-arguments xgcc)
+         (substitute-keyword-arguments arguments
            ((#:phases phases)
             #~(modify-phases #$phases
                 (delete 'pre-x86-configure)

@@ -601,7 +601,7 @@ the Nix package manager.")
     (propagated-inputs '())
 
     (arguments
-     (substitute-keyword-arguments (package-arguments guix)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags '())
         ;; Pretend we have those libraries; we don't actually need them.
         #~(append #$flags
@@ -1908,7 +1908,7 @@ resolution compared to the classic solver.")
         (search-patches "conda-fix-plugin-settings-test.patch"
                         "conda-fix-cross-platform-export-tests.patch"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments conda-bootstrap)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             ;; Remove the patch that forces classic solver - we have libmamba
@@ -2221,7 +2221,7 @@ outputs of those builds.")
     (inherit guix-build-coordinator)
     (name "guix-build-coordinator-agent-only")
     (arguments
-     (substitute-keyword-arguments (package-arguments guix-build-coordinator)
+     (substitute-keyword-arguments arguments
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (add-after 'install 'strip-non-agent-files

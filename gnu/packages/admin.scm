@@ -2718,7 +2718,7 @@ command.")
               (patches (search-patches
                         "wpa-supplicant-dbus-group-policy.patch"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments wpa-supplicant-minimal)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'configure 'set-config-options
@@ -4746,7 +4746,7 @@ system distribution, akin to many similar tools.")
     (inherit fastfetch-minimal)
     (name "fastfetch")
     (arguments
-     (substitute-keyword-arguments (package-arguments fastfetch-minimal)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(append #$flags
                   (list  "-DBINARY_LINK_TYPE=dynamic"
@@ -6166,7 +6166,7 @@ then it can be a greeter.")
     (inherit pam-mount)
     (name "greetd-pam-mount")
     (arguments
-     (substitute-keyword-arguments (package-arguments pam-mount)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags ''())
         #~(cons* "--with-rundir=/run/greetd" #$flags))
        ((#:phases phases)

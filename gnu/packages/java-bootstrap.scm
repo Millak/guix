@@ -612,7 +612,7 @@ machine.")))
                '(delete-file "src/classlib/gnuclasspath/lib/classes.zip"))))
     (build-system gnu-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments jamvm-1-bootstrap)
+     (substitute-keyword-arguments arguments
        ((#:modules modules %default-gnu-modules)
         (append '((srfi srfi-1)
                   (srfi srfi-26))

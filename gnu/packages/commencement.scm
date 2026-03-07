@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2017 Mark H Weaver <mhw@netris.org>
@@ -1185,7 +1185,7 @@ ac_cv_c_float_format='IEEE (little-endian)'
                      ("kernel-headers" ,%bootstrap-linux-libre-headers)
                      ,@(%boot-mesboot-core-inputs)))
     (arguments
-     (substitute-keyword-arguments (package-arguments gcc-core-mesboot0)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (replace 'setenv
@@ -1231,7 +1231,7 @@ ac_cv_c_float_format='IEEE (little-endian)'
     (name "binutils-mesboot1")
     (native-inputs (%boot-mesboot0-inputs))
     (arguments
-     (substitute-keyword-arguments (package-arguments binutils-mesboot0)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags configure-flags)
         #~(let ((out (assoc-ref %outputs "out")))
             `("--disable-nls" "--disable-shared"
@@ -1441,7 +1441,7 @@ ac_cv_c_float_format='IEEE (little-endian)'
              "1fqqk5zkmdg4vmqzdmip9i42q6b82i3f6yc0n86n9021cr7ms2k9"))))
        ,@(package-native-inputs gcc-core-mesboot1)))
     (arguments
-     (substitute-keyword-arguments (package-arguments gcc-core-mesboot1)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags configure-flags)
         #~(let ((out (assoc-ref %outputs "out")))
             `("--enable-languages=c,c++"
@@ -1572,7 +1572,7 @@ ac_cv_c_float_format='IEEE (little-endian)'
     (native-inputs `(("headers" ,mesboot-headers)
                      ,@(%boot-mesboot3-inputs)))
     (arguments
-     (substitute-keyword-arguments (package-arguments glibc-mesboot0)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags configure-flags)
         #~(let ((out (assoc-ref %outputs "out"))
                 (headers (assoc-ref %build-inputs "headers")))
@@ -1671,7 +1671,7 @@ SHELL := " shell "
                      ,@(%boot-mesboot3-inputs)))
     (arguments
      `(#:validate-runpath? #f ; fails when using --enable-shared
-       ,@(substitute-keyword-arguments (package-arguments glibc-headers-mesboot)
+       ,@(substitute-keyword-arguments arguments
            ((#:make-flags make-flags)
             #~(let ((bash (assoc-ref %build-inputs "bash")))
                 (list (string-append "SHELL=" bash "/bin/sh"))))
@@ -1768,7 +1768,7 @@ exec " gcc "/bin/" program
                      ,@(%boot-mesboot4-inputs)))
     (arguments
      `(#:validate-runpath? #f
-       ,@(substitute-keyword-arguments (package-arguments gcc-mesboot1)
+       ,@(substitute-keyword-arguments arguments
            ((#:configure-flags configure-flags)
             #~(let ((out (assoc-ref %outputs "out"))
                     (glibc (assoc-ref %build-inputs "libc")))
@@ -1954,7 +1954,7 @@ exec " gcc "/bin/" program
        `(("xz" ,xz-mesboot)
          ("sed" ,sed-mesboot)
          ,@(package-native-inputs pkg)))
-      (arguments (substitute-keyword-arguments (package-arguments pkg)
+      (arguments (substitute-keyword-arguments arguments
                    ((#:configure-flags flags ''())
                     `(cons "--disable-year2038" ,flags)))))))
 
@@ -1987,7 +1987,7 @@ exec " gcc "/bin/" program
      `(#:guile ,%bootstrap-guile
        #:implicit-inputs? #f
        #:tests? #f                                ; cannot run "make check"
-       ,@(substitute-keyword-arguments (package-arguments gnu-make)
+       ,@(substitute-keyword-arguments arguments
            ((#:configure-flags flags ''())
             ;; The generated config.status has some problems due to the
             ;; bootstrap environment.  Disable dependency tracking to work
@@ -2090,7 +2090,7 @@ exec " gcc "/bin/" program
        #:guile ,%bootstrap-guile
        ;; The build system assumes we have done a mistake when time_t is 32-bit
        ;; on a 64-bit system.  Ignore that for our bootstrap toolchain.
-       ,@(substitute-keyword-arguments (package-arguments findutils)
+       ,@(substitute-keyword-arguments arguments
            ((#:configure-flags flags ''())
             `(append
                ;; TODO: Figure out exactly with architectures need this.
@@ -2275,7 +2275,7 @@ exec " gcc "/bin/" program
                                                     (remove-triplet-prefix name)))
                                          (scandir "."
                                                   has-triplet-prefix?))))))))
-             (substitute-keyword-arguments (package-arguments binutils)
+             (substitute-keyword-arguments arguments
                ((#:configure-flags cf)
                 #~(append (list #$(string-append "--target="
                                                  (boot-triplet))
@@ -2303,7 +2303,7 @@ exec " gcc "/bin/" program
 
          ,@(match (%current-system)
              ((or "i686-linux" "x86_64-linux")
-              (substitute-keyword-arguments (package-arguments lib)
+              (substitute-keyword-arguments arguments
                 ((#:phases phases)
                  #~(modify-phases #$phases
                      (add-after 'unpack 'workaround-wrapper-bug
@@ -2336,7 +2336,7 @@ exec " gcc "/bin/" program
          ;; XXX: libstdc++.so NEEDs ld.so for some reason.
          #:validate-runpath? #f
 
-         ,@(substitute-keyword-arguments (package-arguments lib)
+         ,@(substitute-keyword-arguments arguments
              ((#:configure-flags flags)
               (if (target-hurd64?)
                   #~(cons* "--disable-shared"
@@ -2405,7 +2405,7 @@ exec " gcc "/bin/" program
                   (ice-9 regex)
                   (srfi srfi-1)
                   (srfi srfi-26))
-      (substitute-keyword-arguments (package-arguments gcc)
+      (substitute-keyword-arguments arguments
         ((#:configure-flags flags)
          #~(append (list #$(string-append "--target=" (boot-triplet))
 
@@ -2557,7 +2557,7 @@ exec " gcc "/bin/" program
 
                    ;; At the very least, this must not depend on GCC & co.
                    #:disallowed-references (list %bootstrap-binutils))
-             (substitute-keyword-arguments (package-arguments perl)
+             (substitute-keyword-arguments arguments
                ((#:phases phases)
                 #~(modify-phases #$phases
                     ;; Pthread support is missing in the bootstrap compiler
@@ -2672,7 +2672,7 @@ memoized as a function of '%current-system'."
     (arguments
      `(#:guile ,%bootstrap-guile
        #:implicit-inputs? #f
-       ,@(substitute-keyword-arguments (package-arguments linux-libre-headers)
+       ,@(substitute-keyword-arguments arguments
            ((#:phases phases)
             `(modify-phases ,phases
                (add-after 'unpack 'lower-version-requirements
@@ -2762,7 +2762,7 @@ memoized as a function of '%current-system'."
                             gnumach-headers-boot0))
        (inputs (list flex-boot0 gnumach-headers-boot0))
        (arguments
-        (substitute-keyword-arguments (package-arguments mig)
+        (substitute-keyword-arguments arguments
           ((#:configure-flags flags '())
            #~(list (string-append "LDFLAGS=-Wl,-rpath="
                                   #$(this-package-native-input "flex")
@@ -2852,7 +2852,7 @@ memoized as a function of '%current-system'."
      `(#:implicit-inputs? #f
        #:guile ,%bootstrap-guile
 
-       ,@(substitute-keyword-arguments (package-arguments expat)
+       ,@(substitute-keyword-arguments arguments
            ((#:configure-flags flags ''())
             ;; Since we're not passing the right -Wl,-rpath flags, build the
             ;; static library to avoid RUNPATH validation failure.
@@ -2986,7 +2986,7 @@ memoized as a function of '%current-system'."
        `(#:guile ,%bootstrap-guile
          #:implicit-inputs? #f
 
-         ,@(substitute-keyword-arguments (package-arguments libc)
+         ,@(substitute-keyword-arguments arguments
              ((#:configure-flags flags)
               `(append (list ,(string-append "--host=" (boot-triplet))
                              ,(string-append "--build="
@@ -3104,7 +3104,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
      `(#:implicit-inputs? #f
        #:guile ,%bootstrap-guile
 
-       ,@(substitute-keyword-arguments (package-arguments static-bash)
+       ,@(substitute-keyword-arguments arguments
            ((#:configure-flags flags #~'())
             ;; Add a '-L' flag so that the pseudo-cross-ld of
             ;; BINUTILS-BOOT0 can find libc.a.
@@ -3236,7 +3236,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                                           ,@(if (target-powerpc? (%current-system))
                                                 (list static-bash-for-glibc)
                                                 '())))
-             (substitute-keyword-arguments (package-arguments binutils)
+             (substitute-keyword-arguments arguments
                ((#:configure-flags flags #~'())
                 ;; For gprofng, tell the build system where to look for libstdc++.
                 #~(append #$flags
@@ -3301,6 +3301,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                   (srfi srfi-26)
                   ,@%default-gnu-modules)
 
+      ;; TODO: Consider writing 'arguments' instead of (package-arguments gcc).
       (substitute-keyword-arguments (package-arguments gcc)
         ((#:make-flags flags)
          ;; Since $LIBRARY_PATH is not honored, add the relevant flags.
@@ -3430,7 +3431,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
        (modify-inputs (package-inputs parent)
          (delete "libxcrypt")))
       (arguments
-       (substitute-keyword-arguments (package-arguments parent)
+       (substitute-keyword-arguments arguments
          ((#:phases phases #~%standard-phases)
           #~(modify-phases #$phases
               (delete 'add-libxcrypt-reference-pkgconfig))))))))

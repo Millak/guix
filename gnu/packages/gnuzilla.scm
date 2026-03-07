@@ -309,7 +309,7 @@ in C/C++.")
                (base32
                 "1a3h7p7126pxzpidb1lqckvhfh1had805mai4l96mnc878phbx61"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments mozjs)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(delete "--enable-rust-simd" #$flags))
        ((#:phases phases)
@@ -387,7 +387,7 @@ fractional-second-digits-append-item.js")
                (base32
                 "0xvwk3vkbxnybpi3gwk48nxffg44lbv58mbk2xq6cz50ffq0k5k2"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments mozjs)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(delete "--enable-rust-simd" #$flags))
        ((#:phases phases)

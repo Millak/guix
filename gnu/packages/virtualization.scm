@@ -638,7 +638,7 @@ server and embedded PowerPC, and S390 guests.")
     (synopsis
      "Machine emulator and virtualizer (without GUI or docs) for the host architecture")
     (arguments
-     (substitute-keyword-arguments (package-arguments qemu)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags configure-flags #~'())
         ;; Restrict to the host's architecture.
         (let* ((system (or (%current-target-system)
@@ -2083,7 +2083,7 @@ client desktops.
                 libxrender
                 libxtst)))
     (arguments
-     (substitute-keyword-arguments (package-arguments vmware-open-vm-tools)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(delete "--without-x" #$flags))))
     (description "This package provides a GTK+ support for @code{open-vm-tools}.")))
@@ -3786,7 +3786,7 @@ disks, resizing disks, and much more.")
   (package/inherit libguestfs-minimal
     (name "libguestfs")
     (arguments
-     (substitute-keyword-arguments (package-arguments libguestfs-minimal)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(append
            (filter

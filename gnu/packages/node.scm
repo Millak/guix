@@ -773,7 +773,7 @@ source files.")
                               "deps/uv"
                               "deps/zlib"))))))
     (arguments
-     (substitute-keyword-arguments (package-arguments node-bootstrap)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags configure-flags)
         ''("--shared-cares"
            "--shared-libuv"
@@ -998,7 +998,7 @@ fi"
   (package/inherit node-lts
     (name "libnode")
     (arguments
-     (substitute-keyword-arguments (package-arguments node-lts)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags ''())
         `(cons* "--shared" "--without-npm" ,flags))
        ((#:phases phases '%standard-phases)

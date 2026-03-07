@@ -251,7 +251,7 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
      (modify-inputs (package-native-inputs cairo)
        (prepend gtk-doc/stable)))
     (arguments
-     (substitute-keyword-arguments (package-arguments cairo)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags ''())
         #~(cons "-Dgtk_doc=true" #$flags))
        ((#:phases phases '%standard-phases)
@@ -278,7 +278,7 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
      `(("mesa" ,mesa)
        ,@(package-inputs cairo)))
     (arguments
-     (substitute-keyword-arguments (package-arguments cairo)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags ''())
         #~(cons "-Dxlib-xcb=enabled" #$flags))))
     (synopsis "2D graphics library (with X11 support)")))
@@ -642,7 +642,7 @@ highlighting and other features typical of a source code editor.")
       (list
        #:configure-flags
        #~(list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types"))
-      (substitute-keyword-arguments (package-arguments gtksourceview)
+      (substitute-keyword-arguments arguments
         ((#:phases phases)
          `(modify-phases ,phases
             (delete 'disable-gtk-update-icon-cache))))))))
@@ -855,7 +855,7 @@ is part of the GNOME accessibility project.")
   (package/inherit at-spi2-core
     (outputs (cons "doc" (package-outputs at-spi2-core)))
     (arguments
-     (substitute-keyword-arguments (package-arguments at-spi2-core)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags ''())
         #~(cons #$(if (%current-target-system)
                       "-Ddocs=false"
@@ -1503,7 +1503,7 @@ exceptions, macros, and a dynamic programming environment.")
                  (base32
                   "0dslfldzgxis8g0g3xaffcqnd1njzz23fjy0v3lc0r2694ra4ny4"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments guile-cairo)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           `(modify-phases ,phases
              ;; To allow running the check phase before install, add two phases

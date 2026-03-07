@@ -2573,7 +2573,7 @@ data analysis.")
        (sha256
         (base32 "08z1b58n31grfvl42wi6rdwrfhrdhnzkkxhg19iag3zkvkcvxqjl"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments python-scikit-learn)
+     (substitute-keyword-arguments arguments
        ((#:test-flags flags)
         #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
                 "-m" "not network"
@@ -4928,7 +4928,7 @@ PyTorch.")
              (chdir outdir)
              (delete-file-recursively "deps"))))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qnnpack)
+     (substitute-keyword-arguments arguments
        ((#:phases phases #~%standard-phases)
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-cmake
@@ -5395,7 +5395,7 @@ in the audio domain.")
      (modify-inputs (package-inputs python-pytorch)
        (append fbgemm nnpack)))
     (arguments
-     (substitute-keyword-arguments (package-arguments python-pytorch)
+     (substitute-keyword-arguments arguments
       ((#:phases phases)
        #~(modify-phases #$phases
            (delete 'disable-avx-dependencies)))))
@@ -5435,7 +5435,7 @@ in the audio domain.")
      (modify-inputs (package-inputs python-pytorch)
        (replace "gloo" gloo-for-r-torch)))
     (arguments
-     (substitute-keyword-arguments (package-arguments python-pytorch)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (replace 'use-system-libraries

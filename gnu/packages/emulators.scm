@@ -692,7 +692,7 @@ turbo speed, networked multiplayer, and graphical enhancements.")
                           "libretro-dolphin-emu-libusb-assert.patch"
                           "libretro-dolphin-emu-vulkan-headers.patch"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments dolphin-emu)
+       (substitute-keyword-arguments arguments
          ((#:configure-flags flags ''())
           #~(cons* (string-append "-DCMAKE_CXX_FLAGS="
                                   "-I" (search-input-directory
@@ -1154,7 +1154,7 @@ The following systems are supported:
            (base32
             "1bbcsikgcycf3cp9ciicg4yckjyamdfvgk4fgw079la59q8aw13q"))))
        (arguments
-        (substitute-keyword-arguments (package-arguments mgba)
+        (substitute-keyword-arguments arguments
           ((#:configure-flags flags ''())
            ;; Relax error checks to avoid a build failure with GCC 14.
            #~(cons "-DCMAKE_C_FLAGS=-Wno-error=incompatible-pointer-types"
@@ -4249,7 +4249,7 @@ performance, features, and ease of use.")
                  (base32
                   "0z9wqmx351f9160jsmprznqw5sx5lslyisbr41b9igzsr5j94db3"))))
       (build-system gnu-build-system)
-      (arguments (substitute-keyword-arguments (package-arguments bsnes)
+      (arguments (substitute-keyword-arguments arguments
                    ((#:make-flags flags ''())
                     ;; This is needed because the modified bsnes code that
                     ;; bsnes-hd uses is based on an older copy that still
@@ -4280,7 +4280,7 @@ turn into actual gradients (without influencing the sharpness of the artwork).
   (package/inherit bsnes-hd
     (name "libretro-bsnes-hd")
     (arguments
-     (substitute-keyword-arguments (package-arguments bsnes-hd)
+     (substitute-keyword-arguments arguments
        ((#:make-flags flags ''())
         #~(cons "target=libretro" #$flags))
        ((#:phases phases '%standard-phases)
@@ -4508,7 +4508,7 @@ Advance.")
                  (base32
                   "1sbhq614rvcm01ln7883ivdhni1mg1v4lyyvcwsy92i9wbh8qd9i"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments jg-bsnes)
+       (substitute-keyword-arguments arguments
          ((#:make-flags flags)
           #~(cons* #$(string-append "GIT_VERSION=" version)
                    (string-append "prefix=" #$output)
@@ -4853,7 +4853,7 @@ and Atomiswave emulator derived from reicast.")
 (define-public libretro-flycast
   (package/inherit flycast
     (name "libretro-flycast")
-    (arguments (substitute-keyword-arguments (package-arguments flycast)
+    (arguments (substitute-keyword-arguments arguments
                  ((#:configure-flags flags)
                   #~(cons "-DLIBRETRO=ON" #$flags))))))
 

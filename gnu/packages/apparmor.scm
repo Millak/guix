@@ -128,7 +128,7 @@ supported by Canonical since 2009.")
                       "USE_SYSTEM=1"
                       ;; No need to run the linter
                       "PYFLAKES=true"))
-        (substitute-keyword-arguments (package-arguments base)
+        (substitute-keyword-arguments arguments
           ((#:phases phases)
            #~(modify-phases #$phases
                (delete 'configure)
@@ -189,7 +189,7 @@ supported by Canonical since 2009.")
       (arguments
        (append
         (list #:tests? #f)              ;no tests
-        (substitute-keyword-arguments (package-arguments base)
+        (substitute-keyword-arguments arguments
           ((#:phases phases)
            #~(modify-phases #$phases
                (delete 'chdir-parser)

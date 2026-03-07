@@ -441,7 +441,7 @@ Go.  It also includes runtime support libraries for these languages.")
            (package-arguments parent)
            ;; For native builds of some GCC versions the C++ include path needs to
            ;; be adjusted so it does not interfere with GCC's own build processes.
-           (substitute-keyword-arguments (package-arguments parent)
+           (substitute-keyword-arguments arguments
              ((#:modules modules %default-gnu-modules)
               `((srfi srfi-1)
                 ,@modules))
@@ -498,10 +498,10 @@ Go.  It also includes runtime support libraries for these languages.")
                      (inherit gcc-base)
                      (version (package-version this-package)))))
        (if (%current-target-system)
-           (substitute-keyword-arguments (package-arguments parent)
+           (substitute-keyword-arguments arguments
             ((#:configure-flags flags '())
              `(cons "CXX=g++ -std=c++03" ,flags)))
-           (substitute-keyword-arguments (package-arguments parent)
+           (substitute-keyword-arguments arguments
              ((#:modules modules %default-gnu-modules)
               `((srfi srfi-1)
                 ,@modules))
@@ -567,10 +567,10 @@ Go.  It also includes runtime support libraries for these languages.")
                      (inherit gcc-base)
                      (version (package-version this-package)))))
        (if (%current-target-system)
-           (substitute-keyword-arguments (package-arguments parent)
+           (substitute-keyword-arguments arguments
             ((#:configure-flags flags '())
              `(cons "CXX=g++ -std=c++11" ,flags)))
-           (substitute-keyword-arguments (package-arguments parent)
+           (substitute-keyword-arguments arguments
              ((#:modules modules %default-gnu-modules)
               `((srfi srfi-1)
                 ,@modules))
@@ -650,7 +650,7 @@ Go.  It also includes runtime support libraries for these languages.")
      (let ((parent (package
                      (inherit gcc-base)
                      (version (package-version this-package)))))
-       (substitute-keyword-arguments (package-arguments parent)
+       (substitute-keyword-arguments arguments
          ((#:modules modules %default-gnu-modules)
           `((srfi srfi-1)
             ,@modules))
@@ -1009,7 +1009,7 @@ It also includes runtime support libraries for these languages.")
               (modules '((guix build utils)))
               (snippet gcc-canadian-cross-objdump-snippet)))
     (arguments
-     (substitute-keyword-arguments (package-arguments gcc-11)
+     (substitute-keyword-arguments arguments
        ((#:phases phases #~%standard-phases)
        (if (target-hurd?)
            #~(modify-phases #$phases
@@ -1039,7 +1039,7 @@ It also includes runtime support libraries for these languages.")
                                        "gcc-5.0-libvtv-runpath.patch"))
               (modules '((guix build utils)))
               (snippet gcc-canadian-cross-objdump-snippet)))
-    (arguments (substitute-keyword-arguments (package-arguments gcc-13)
+    (arguments (substitute-keyword-arguments arguments
                  ((#:phases phases #~%standard-phases)
                   #~(modify-phases #$phases
                       (add-before 'configure 'pre-x86-configure
@@ -1073,7 +1073,7 @@ It also includes runtime support libraries for these languages.")
               (modules '((guix build utils)))
               (snippet gcc-canadian-cross-objdump-snippet)))
     (arguments
-     (substitute-keyword-arguments (package-arguments gcc-14)
+     (substitute-keyword-arguments arguments
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (add-after 'install 'adjust-modules-file
@@ -1369,7 +1369,7 @@ as the 'native-search-paths' field."
                  (delete "lib" (package-outputs gcc))))
     (native-search-paths search-paths)
     (arguments
-     (substitute-keyword-arguments (package-arguments gcc)
+     (substitute-keyword-arguments arguments
        ((#:modules modules %default-gnu-modules)
         `(,@modules
           (srfi srfi-1)
@@ -1635,7 +1635,7 @@ also includes the druntime and phobos libraries."
     (outputs (delete "lib" (package-outputs gcc)))
     (properties (alist-delete 'hidden? (package-properties gcc)))
     (arguments
-     (substitute-keyword-arguments (package-arguments gcc)
+     (substitute-keyword-arguments arguments
        ((#:modules _ '())
         '((guix build gnu-build-system)
           (guix build utils)
@@ -1696,7 +1696,7 @@ misnomer.")))
         "This package is part of the GNU Compiler Collection and
 provides the GNU compiler for the Go programming language.")
       (arguments
-       (substitute-keyword-arguments (package-arguments gccgo)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               #$@(if (and (version>=? (package-version gccgo) "12.0")

@@ -375,7 +375,7 @@ random access nor for in-place modification.  This package provides the
         (base32
          "0wxdr7qws1z1b1gp5jsm7n2ccnjlmrnds52d5wc5xkzagyslgf67"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments libarchive)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'patch-pwd)

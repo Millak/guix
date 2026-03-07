@@ -1224,7 +1224,7 @@ themselves.")
   (package/inherit libpciaccess
     (name "libpciaccess-static")
     (arguments
-     (substitute-keyword-arguments (package-arguments libpciaccess)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(cons "-Ddefault_library=static" #$flags))))
     (propagated-inputs
@@ -6738,7 +6738,7 @@ and embedded platforms.")
      (modify-inputs (package-inputs uim)
        (prepend gtk+)))
     (arguments
-     (substitute-keyword-arguments (package-arguments uim)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags configure-flags)
         #~(append #$configure-flags
                   (list "CFLAGS=-O2 -g -fcommon")))))

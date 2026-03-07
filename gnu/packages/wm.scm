@@ -2817,7 +2817,7 @@ modules for building a Wayland compositor.")
     (propagated-inputs (modify-inputs (package-propagated-inputs wlroots)
                          (delete libdisplay-info)))
     (arguments
-     (substitute-keyword-arguments (package-arguments wlroots)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             ;; Required to fix build with GCC >= 15.
@@ -3338,7 +3338,7 @@ core/thread.")
     (package/inherit base
       (name "waybar-experimental")
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:configure-flags flags '())
           #~(cons "-Dexperimental=true"
                   #$flags))))
@@ -3621,7 +3621,7 @@ productive, customizable lisp based systems.")
     (inputs
      (list sbcl-slynk stumpwm))
     (arguments
-     (substitute-keyword-arguments (package-arguments stumpwm)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         `(modify-phases ,phases
            (replace 'build-program
@@ -4195,7 +4195,7 @@ wasting your precious memory.")
        (modify-inputs (package-inputs lemonbar)
          (prepend freetype libxft libx11)))
       (arguments
-       (substitute-keyword-arguments (package-arguments lemonbar)
+       (substitute-keyword-arguments arguments
          ((#:make-flags make-flags)
           #~(#$@make-flags
              (format #f "CFLAGS=~a -DVERSION='~s'"

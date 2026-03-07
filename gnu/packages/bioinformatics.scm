@@ -5793,7 +5793,7 @@ and more accurate.  BWA-MEM also has better performance than BWA-backtrack for
                 "076c4q0cdqz8jgylb067y9zmvxglppnzi3qiscn0xiypgc6lgb5r"))))
     (build-system gnu-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments bwa)
+     (substitute-keyword-arguments arguments
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'patch-C-error
@@ -6674,7 +6674,7 @@ meso, or continuum scale.")
     (inherit lammps)
     (name "lammps-serial")
     (arguments
-     (substitute-keyword-arguments (package-arguments lammps)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(list
         ;; activate all possible lammps packages.
@@ -11050,7 +11050,7 @@ viewer.")
      `(#:tests? #f ;no "check" target
        #:make-flags
        (list "LIBCURSES=-lncurses")
-       ,@(substitute-keyword-arguments (package-arguments samtools)
+       ,@(substitute-keyword-arguments arguments
            ((#:modules _ #f)
             '((ice-9 ftw)
               (ice-9 regex)
@@ -12336,7 +12336,7 @@ sequences.")
   (package (inherit star)
     (name "starlong")
     (arguments
-     (substitute-keyword-arguments (package-arguments star)
+     (substitute-keyword-arguments arguments
        ((#:make-flags flags)
         `(list "STARlong"))
        ((#:phases phases)

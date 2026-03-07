@@ -406,7 +406,7 @@ code to use the 3M garbage collector.")
          (modify-inputs (package-native-inputs racket-vm-cgc)
            (prepend racket-vm-cgc))))
     (arguments
-     (substitute-keyword-arguments (package-arguments racket-vm-cgc)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags _ '())
         #~(cons "--enable-bconly"
                 #$(cond
@@ -458,7 +458,7 @@ collector, 3M (``Moving Memory Manager'').")
          (prepend chez-scheme-for-racket
                   chez-nanopass-bootstrap))))
     (arguments
-     (substitute-keyword-arguments (package-arguments racket-vm-cgc)
+     (substitute-keyword-arguments arguments
        ((#:phases those-phases #~%standard-phases)
         #~(modify-phases #$those-phases
             (add-after 'unpack 'unpack-nanopass
@@ -997,7 +997,7 @@ DrRacket IDE, are not included.")
        '("xrepl" "xrepl-doc" "xrepl-lib"))))
     (build-system gnu-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments racket-minimal)
+     (substitute-keyword-arguments arguments
        ((#:make-flags _ '())
         #~`("main-distribution"))
        ((#:configure-flags _ '())

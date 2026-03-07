@@ -309,7 +309,7 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
         (sha256
          (base32 "1znc2q1m9p2kxz1rkfkh2hg2sx6i3aqv72zsraad7bci364cvfd4"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments python-django)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases (delete 'delete-sitecustomize)))))))
 

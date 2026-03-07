@@ -472,7 +472,7 @@ destructors.  It is the core memory allocator used in Samba.")
     (synopsis
      "Hierarchical, reference counted memory pool system (static library)")
     (arguments
-     (substitute-keyword-arguments (package-arguments talloc)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         ;; Since Waf, the build system talloc uses, apparently does not
         ;; support building static libraries from a ./configure flag, roll our

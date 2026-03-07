@@ -303,7 +303,7 @@ other groovy submodules.")))
       (name "groovy-parser-antlr4")
       (arguments
        `(#:tests? #f
-         ,@(substitute-keyword-arguments (package-arguments base)
+         ,@(substitute-keyword-arguments arguments
             ((#:phases phases)
              `(modify-phases ,phases
                 (add-before 'build 'generate-parser
@@ -360,7 +360,7 @@ other groovy submodules."))))
       (inherit base)
       (arguments
        `(#:tests? #f;Requires spock-framework which is a circular dependency
-         ,@(substitute-keyword-arguments (package-arguments base)
+         ,@(substitute-keyword-arguments arguments
              ((#:phases phases)
               `(modify-phases ,phases
                  ;; These annotations are used for QA, but do not affect build output.
@@ -413,7 +413,7 @@ similar to javadoc."))))
       (arguments
        `(;#:tests? #f;Requires spock-framework which is a circular dependency
          #:ant ,ant/java8; ant is actually a dependency of this package, and we need 1.10
-         ,@(substitute-keyword-arguments (package-arguments base)
+         ,@(substitute-keyword-arguments arguments
              ((#:phases phases)
               `(modify-phases ,phases
                  ;; These annotations are used for QA, but do not affect build output.
@@ -445,7 +445,7 @@ similar to javadoc."))))
     (package
       (inherit base)
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           `(modify-phases ,phases
              (delete 'copy-resources)
@@ -529,7 +529,7 @@ arguments in Groovy using the picocli library."))))
     (package
       (inherit base)
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           `(modify-phases ,phases
              (add-before 'check 'fix-test
@@ -553,7 +553,7 @@ library used to build graphical interfaces."))))
     (package
       (inherit base)
       (arguments
-         (substitute-keyword-arguments (package-arguments base)
+         (substitute-keyword-arguments arguments
            ((#:phases phases)
             `(modify-phases ,phases
                (add-before 'check 'build-swing
@@ -744,7 +744,7 @@ tests in Groovy."))))
     (package
       (inherit base)
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           `(modify-phases ,phases
              (delete 'copy-resources)

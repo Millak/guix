@@ -1491,7 +1491,7 @@ as a drop-in replacement of MySQL.")
   (package/inherit mariadb
     (name "mariadb-embedded")
     (arguments
-     (substitute-keyword-arguments (package-arguments mariadb)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(append '("-DWITH_EMBEDDED_SERVER=ON") #$flags))))))
 
@@ -2228,7 +2228,7 @@ data in a single database.  RocksDB is partially based on @code{LevelDB}.")
                 (sha256
                  (base32
                   "0pdy461m9a48x4i829sirpypdlzf3q79p8iw3dng9wd4r4vyv594"))))
-      (arguments (substitute-keyword-arguments (package-arguments rocksdb)
+      (arguments (substitute-keyword-arguments arguments
                    ((#:configure-flags flags ''())
                     #~(cons "-DCMAKE_CXX_FLAGS=-Wno-error=maybe-uninitialized"
                             #$flags)))))))
@@ -3256,7 +3256,7 @@ database.")
        (sha256
         (base32 "1p7jr5048syd9ln0bsh2n5ba6fd7x9wfa1x67b7wychv7a46dfx1"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments valkey-7)
+     (substitute-keyword-arguments arguments
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
             (replace 'adjust-tests

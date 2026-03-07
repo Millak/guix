@@ -183,7 +183,7 @@ and many other languages.")
               (delete "gtk+")
               (prepend gtk+-2)))
     (arguments
-     (substitute-keyword-arguments (package-arguments wxwidgets)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(append #$flags '("--with-gtk=2")))))))
 
@@ -198,7 +198,7 @@ and many other languages.")
   (package/inherit wxwidgets
     (name "wxwidgets-sans-egl")
     (arguments
-       (substitute-keyword-arguments (package-arguments wxwidgets)
+       (substitute-keyword-arguments arguments
          ((#:configure-flags flags)
           #~(cons "--disable-glcanvasegl" #$flags))))))
 
@@ -268,7 +268,7 @@ and many other languages.")
       (native-inputs (modify-inputs (package-native-inputs wxwidgets-sans-egl)
                        (prepend nanosvg)))
       (arguments
-       (substitute-keyword-arguments (package-arguments wxwidgets-sans-egl)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'unpack 'copy-nanosvg-source

@@ -934,7 +934,7 @@ hydrology and waste deposition.")
     (native-inputs (modify-inputs (package-native-inputs ogs-serial)
                      (prepend pkg-config)))
     (arguments
-     (substitute-keyword-arguments (package-arguments ogs-serial)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(cons* "-DOGS_USE_PETSC=ON" "-DCMAKE_C_COMPILER=mpicc"
                  "-DCMAKE_CXX_COMPILER=mpic++"

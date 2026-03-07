@@ -51,7 +51,7 @@
               (inherit bison)
               (arguments
                ;; Disable tests, since they require flex.
-               (substitute-keyword-arguments (package-arguments bison)
+               (substitute-keyword-arguments arguments
                  ((#:tests? _ #f) #f)))
               (inputs (alist-delete "flex" (package-inputs bison))))))
        `(("bison" ,bison-for-tests))))

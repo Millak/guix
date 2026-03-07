@@ -79,7 +79,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                                           (_ "glibc-bootstrap-system.patch")))
                                    (origin-patches (package-source base))))))
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:configure-flags flags)
           ;; Arrange so that getaddrinfo & co. do not contact the nscd,
           ;; and can use statically-linked NSS modules.
@@ -187,7 +187,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
         (bzip2 (package
                  (inherit bzip2)
                  (arguments
-                  (substitute-keyword-arguments (package-arguments bzip2)
+                  (substitute-keyword-arguments arguments
                     ((#:phases phases)
                      #~(modify-phases #$phases
                          (add-before 'build 'dash-static
@@ -222,7 +222,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                                          (origin-patches
                                           (package-source gawk))))))
                 (arguments
-                 (substitute-keyword-arguments (package-arguments gawk)
+                 (substitute-keyword-arguments arguments
                    ((#:configure-flags _ #~'())
                     ;; Starting from gawk 4.1.0, some of the tests for the
                     ;; plug-in mechanism just fail on static builds:
@@ -245,7 +245,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
 	(tar (package
                (inherit tar)
 	       (arguments
-                (substitute-keyword-arguments (package-arguments tar)
+                (substitute-keyword-arguments arguments
                   ((#:configure-flags flags #~'())
                    ;; Work around a cross-compilation bug whereby libgnu.a
                    ;; would provide '__mktime_internal', which conflicts
@@ -268,7 +268,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                 (inherit grep)
                 (inputs '())                   ;remove PCRE, which is optional
                 (arguments
-                 (substitute-keyword-arguments (package-arguments grep)
+                 (substitute-keyword-arguments arguments
                    ((#:configure-flags flags #~'())
                     #~(cons "--disable-perl-regexp"
                             (delete "--enable-perl-regexp" #$flags)))
@@ -481,7 +481,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
      (name "gcc-static")
      (outputs '("out"))                           ; all in one
      (arguments
-      (substitute-keyword-arguments (package-arguments gcc-14)
+      (substitute-keyword-arguments arguments
         ((#:modules modules %default-gnu-modules)
          `((srfi srfi-1)
            (srfi srfi-26)
@@ -625,7 +625,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
          (replace "libgc" libgc/static-libs)))
 
       (arguments
-       (substitute-keyword-arguments (package-arguments guile)
+       (substitute-keyword-arguments arguments
          ((#:configure-flags flags #~'())
           ;; When `configure' checks for ltdl availability, it
           ;; doesn't try to link using libtool, and thus fails

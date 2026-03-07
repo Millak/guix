@@ -687,7 +687,7 @@ GNU@tie{}Guile.  Use the @code{(ice-9 readline)} module and call its
                  (base32
                   "0xfnd99iws9dwk5va8bmqpysmb8pnb1w91rw7rbfzzklyfvpibh6"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments guile-next)
+       (substitute-keyword-arguments arguments
          ((#:configure-flags flags #~'())
           #~(cons*
              #$(string-append

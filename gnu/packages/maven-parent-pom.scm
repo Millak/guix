@@ -575,7 +575,7 @@ tool.  This package contains the Maven parent POM.")
     (package
       (inherit base)
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           `(modify-phases ,phases
              (delete 'install-plugins)
@@ -588,7 +588,7 @@ tool.  This package contains the Maven parent POM.")
     (package
       (inherit base)
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           `(modify-phases ,phases
              (delete 'install-plugins)
@@ -606,7 +606,7 @@ tool.  This package contains the Maven parent POM.")
     (package
       (inherit base)
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           `(modify-phases ,phases
              (delete 'install-plugins)

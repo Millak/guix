@@ -185,7 +185,7 @@ tunneling, and so on.")
 (define-public curl-ssh
   (package/inherit curl
     (arguments
-     (substitute-keyword-arguments (package-arguments curl)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(cons "--with-libssh2" #$flags))))
     (inputs

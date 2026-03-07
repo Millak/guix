@@ -1026,7 +1026,7 @@ as well as an API to create KDED modules.")
               (patches '())))
     (inputs (modify-inputs (package-inputs kdbusaddons-5) (delete "kinit")))
     (arguments
-     (substitute-keyword-arguments (package-arguments kdbusaddons-5)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'patch-source)))))))
@@ -4146,7 +4146,7 @@ widgets with a user-interface defined in terms of actions.")
                (base32
                 "0czrlqh5cxnj1mlbz839c7hifhnpzl476d92lv4hxji50wnjlfqr"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments kparts)
+     (substitute-keyword-arguments arguments
        ((#:qtbase _ #f) qtbase-5)))
     (propagated-inputs
      (list kio-5 ktextwidgets-5 kxmlgui-5))

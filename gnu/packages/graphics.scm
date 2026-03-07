@@ -1843,7 +1843,7 @@ in Julia).")
            (base32
             "0l7gqxxz7rmdqrv65r6ki7avg636d7s6bfq7h1213gjr1dz8hiij"))))
        (arguments
-        (substitute-keyword-arguments (package-arguments openscenegraph)
+        (substitute-keyword-arguments arguments
           ((#:configure-flags flags)
            ;; As per the above wiki link, the following plugins are enough:
            #~(append
@@ -2619,7 +2619,7 @@ It supports:
                  (base32
                   "15mbqz7kg23xgy46ijm8p5wnj4q8xipyr7ckwz8kpa5v3lxssyf3"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments skia)
+       (substitute-keyword-arguments arguments
          ;; gn/find_headers.py fails to decode some JSON, probably because of
          ;; a warning.
          ((#:tests? _ #false) #false)

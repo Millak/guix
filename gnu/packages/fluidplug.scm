@@ -357,7 +357,7 @@
     (inherit fluidplug-lv2)
     (name (fluidplug-plugin->package-name record))
     (arguments
-     (substitute-keyword-arguments (package-arguments fluidplug-lv2)
+     (substitute-keyword-arguments arguments
        ((#:make-flags make-flags)
         #~(list (string-append "CC=" #$(cc-for-target))
                 (string-append "DESTDIR=" #$output)

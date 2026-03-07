@@ -2806,7 +2806,7 @@ models in the STL and OFF file formats.")
                        ""))))
        (file-name (git-file-name name version))))
     (arguments
-     (substitute-keyword-arguments (package-arguments openscad)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(begin
             (use-modules (srfi srfi-1))

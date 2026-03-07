@@ -509,7 +509,7 @@ plug-in system.")
     (inherit kodi)
     (name "kodi-wayland")
     (arguments
-     (substitute-keyword-arguments (package-arguments kodi)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         `(cons "-DCORE_PLATFORM_NAME=wayland"
                (delete "-DCORE_PLATFORM_NAME=x11" ,flags)))))

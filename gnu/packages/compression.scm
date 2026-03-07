@@ -923,7 +923,7 @@ C, forked from the zip manipulation library found in the zlib distribution.")
   (package/inherit minizip-ng
     (name "minizip-ng-compat")
     (arguments
-     (substitute-keyword-arguments (package-arguments minizip-ng)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(delete "-DMZ_COMPAT=OFF" #$flags))))))
 
@@ -3148,7 +3148,7 @@ exported by the zlib library.")
                 "0672q35vjrpakmsr1gwj9k5fwv5ihzhahm19bq4y74wqpn91p7fw"))
               (patches (search-patches "miniz-for-pytorch.patch"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments miniz)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags '())
         ;; The changes break the examples.
         `(cons "-DBUILD_EXAMPLES=OFF" ,flags))))

@@ -403,7 +403,7 @@ object-oriented library such as @code{scikit-learn}.")
   (package/inherit python-anndata
     (name "python-anndata-minimal")
     (arguments
-     (substitute-keyword-arguments (package-arguments python-anndata)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #t) #f)))
     (native-inputs
      (list python-hatch-vcs
@@ -1948,7 +1948,7 @@ between dataframe libraries.
   (package/inherit python-narwhals
     (name "python-narwhals-minimal")
     (arguments
-     (substitute-keyword-arguments (package-arguments python-anndata)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #t) #f)))
     (native-inputs
      (list python-hatchling))

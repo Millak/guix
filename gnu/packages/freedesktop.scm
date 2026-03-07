@@ -228,7 +228,7 @@ application-centers for distributions.")
      (modify-inputs (package-inputs appstream)
        (prepend qtbase-5)))
     (arguments
-     (substitute-keyword-arguments (package-arguments appstream)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(append '("-Dqt=true" "-Dqt-versions=5") #$flags))))))
 
@@ -242,7 +242,7 @@ application-centers for distributions.")
      (modify-inputs (package-inputs appstream)
        (prepend qtbase)))
     (arguments
-     (substitute-keyword-arguments (package-arguments appstream)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(append '("-Dqt=true" "-Dqt-versions=6") #$flags))))))
 
@@ -696,7 +696,7 @@ other applications that need to directly deal with input devices.")
      (fold alist-delete (package-inputs libinput)
            '("cairo" "glib" "gtk+" "libwacom")))
     (arguments
-     (substitute-keyword-arguments (package-arguments libinput)
+     (substitute-keyword-arguments arguments
       ((#:configure-flags flags ''())
        `(cons* "-Dlibwacom=false"
                "-Ddebug-gui=false"    ;requires gtk+@3

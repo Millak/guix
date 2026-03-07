@@ -502,7 +502,7 @@
   (package/inherit opus
     (name "opus+custom")
     (arguments
-     (substitute-keyword-arguments (package-arguments opus)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags ''())
         ;; Opus Custom is an optional extension of the Opus
         ;; specification that allows for unsupported frame

@@ -236,7 +236,7 @@ ncursesw library provides wide character support.")
   (package/inherit ncurses
     (name "ncurses-with-gpm")
     (arguments
-     (substitute-keyword-arguments (package-arguments ncurses)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags cf)
         #~(cons (string-append "--with-gpm="
                                #$(this-package-input "gpm")
@@ -250,7 +250,7 @@ ncursesw library provides wide character support.")
   (package/inherit ncurses
     (name "ncurses-with-tinfo")
     (arguments
-     (substitute-keyword-arguments (package-arguments ncurses)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags cf)
         #~(cons "--with-termlib=tinfo" #$cf))))))
 

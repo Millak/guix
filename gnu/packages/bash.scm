@@ -287,7 +287,7 @@ without modification.")
     (outputs (delete "include" (package-outputs bash)))
 
     (arguments
-     (substitute-keyword-arguments (package-arguments bash)
+     (substitute-keyword-arguments arguments
        ((#:modules _ '())
         '((guix build gnu-build-system)
           (guix build utils)
@@ -351,7 +351,7 @@ without modification.")
   (package/inherit bash
     (name "bash-with-syslog")
     (arguments
-     (substitute-keyword-arguments (package-arguments bash)
+     (substitute-keyword-arguments arguments
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
            (add-after 'unpack 'enable-syslogging

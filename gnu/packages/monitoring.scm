@@ -168,7 +168,7 @@
     (name "aw-client")
     (version "0.5.15")
     (arguments
-     (substitute-keyword-arguments (package-arguments aw-core)
+     (substitute-keyword-arguments arguments
        ((#:test-flags test-flags #~(list))
         #~(list
             ;; Most likely requires the server to run.
@@ -191,7 +191,7 @@
     (name "aw-notify")
     (version "0.0.0")                   ;unreleased.
     (arguments
-     (substitute-keyword-arguments (package-arguments aw-core)
+     (substitute-keyword-arguments arguments
        ((#:tests? tests? #t)
         #f)))                           ;No tests.
     (synopsis "Notify library for ActivityWatch")
@@ -203,7 +203,7 @@
     (name "aw-qt")
     (version "0.1.0")
     (arguments
-     (substitute-keyword-arguments (package-arguments aw-core)
+     (substitute-keyword-arguments arguments
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             ;; (delete 'sanity-check)
@@ -276,7 +276,7 @@ retrieval of all your quantified self data.")
     (name "aw-watcher-afk")
     (version "0.2.0")
     (arguments
-     (substitute-keyword-arguments (package-arguments aw-core)
+     (substitute-keyword-arguments arguments
        ((#:tests? tests? #t)
         #f) ;Most likely requires the server to run.
        ((#:test-backend _ #f)
@@ -295,7 +295,7 @@ retrieval of all your quantified self data.")
     (name "aw-watcher-input")
     (version "0.1.0")
     (arguments
-     (substitute-keyword-arguments (package-arguments aw-core)
+     (substitute-keyword-arguments arguments
        ((#:tests? tests? #t)
         #f)))                           ;No tests.
     (propagated-inputs
@@ -309,7 +309,7 @@ retrieval of all your quantified self data.")
     (name "aw-watcher-window")
     (version "0.2.0")
     (arguments
-     (substitute-keyword-arguments (package-arguments aw-core)
+     (substitute-keyword-arguments arguments
        ((#:tests? tests? #t)
         #f)))                           ;No tests.
     (propagated-inputs
@@ -631,7 +631,7 @@ solution (client-side agent)")
     (name "zabbix-server")
     (outputs '("out" "front-end" "schema"))
     (arguments
-     (substitute-keyword-arguments (package-arguments zabbix-agentd)
+     (substitute-keyword-arguments arguments
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
             (add-after 'install 'install-front-end

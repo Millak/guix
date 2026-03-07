@@ -1695,7 +1695,7 @@ process."))))
   (package
     (inherit maven-core-bootstrap)
     (arguments
-      (substitute-keyword-arguments (package-arguments maven-core-bootstrap)
+      (substitute-keyword-arguments arguments
         ((#:phases phases)
          `(modify-phases ,phases
             (add-before 'build 'modify-metainf
@@ -2693,7 +2693,7 @@ reporting or the build process.")))
     (version (package-version maven-3.0-pom))
     (source (package-source maven-3.0-pom))
     (arguments
-      (substitute-keyword-arguments (package-arguments maven-settings-builder)
+      (substitute-keyword-arguments arguments
         ((#:phases phases)
          `(modify-phases ,phases
             (add-before 'build 'generate-components.xml
@@ -2723,7 +2723,7 @@ reporting or the build process.")))
     (version (package-version maven-3.0-pom))
     (source (package-source maven-3.0-pom))
     (arguments
-      (substitute-keyword-arguments (package-arguments maven-model-builder)
+      (substitute-keyword-arguments arguments
         ((#:phases phases)
          `(modify-phases ,phases
             (add-before 'build 'generate-components.xml
@@ -2755,7 +2755,7 @@ reporting or the build process.")))
     (version (package-version maven-3.0-pom))
     (source (package-source maven-3.0-pom))
     (arguments
-      (substitute-keyword-arguments (package-arguments maven-plugin-api)
+      (substitute-keyword-arguments arguments
         ((#:phases phases)
          `(modify-phases ,phases
             (add-before 'install 'fix-pom
@@ -2932,7 +2932,7 @@ reporting or the build process.")))
     (source (package-source maven-3.0-pom))
     (arguments
      `(#:tests? #f ;require an old version of java-easymock
-       ,@(substitute-keyword-arguments (package-arguments maven-compat)
+       ,@(substitute-keyword-arguments arguments
           ((#:phases phases)
            `(modify-phases ,phases
               (add-before 'install 'fix-pom
@@ -3215,7 +3215,7 @@ Maven project dependencies.")
                (base32
                 "1cl1qk4r0gp62bjzfm7lml9raz1my2kd4yf0ci0lnfsn0h5qivnb"))))
     (arguments
-      (substitute-keyword-arguments (package-arguments maven-common-artifact-filters)
+      (substitute-keyword-arguments arguments
        ((#:phases phases)
         `(modify-phases ,phases
            (delete 'fix-aether)

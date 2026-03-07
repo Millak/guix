@@ -303,7 +303,7 @@ propagated by default) such as @code{gst-plugins-good} and
   (package/inherit webkitgtk
     (name "webkitgtk-for-gtk3")
     (arguments
-     (substitute-keyword-arguments (package-arguments webkitgtk)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(cons* "-DUSE_GTK4=OFF"
                  (delete "-DUSE_GTK4=ON" #$flags)))))
@@ -320,7 +320,7 @@ propagated by default) such as @code{gst-plugins-good} and
 (define-public webkitgtk-with-libsoup2
   (package/inherit webkitgtk-for-gtk3
     (name "webkitgtk-with-libsoup2")
-    (arguments (substitute-keyword-arguments (package-arguments webkitgtk-for-gtk3)
+    (arguments (substitute-keyword-arguments arguments
                  ((#:configure-flags flags)
                   #~(cons "-DUSE_SOUP2=ON" #$flags))))
     (propagated-inputs
@@ -339,7 +339,7 @@ propagated by default) such as @code{gst-plugins-good} and
               (sha256
                (base32 "0bzv2h25qr7h0r8likdb8g248qvsilf41cj7prf1avghfr1pzjdg"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments webkitgtk)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(cons "-DPORT=WPE"
                 (delete "-DPORT=GTK" #$flags)))))

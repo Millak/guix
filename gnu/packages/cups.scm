@@ -777,7 +777,7 @@ should only be used as part of the Guix cups-pk-helper service.")
   (package/inherit hplip
     (name "hplip-minimal")
     (arguments
-     (substitute-keyword-arguments (package-arguments hplip)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags cf)
         ;; Produce a "light build", meaning that only the printer (CUPS) and
         ;; scanner (SANE) support gets built, without all the 'hp-*'

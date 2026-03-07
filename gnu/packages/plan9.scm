@@ -132,7 +132,7 @@ reconstruct a Plan 9 terminal-like experience from a non-Plan 9 system.")
     (inherit drawterm)
     (name "drawterm-wayland")
     (arguments
-     (substitute-keyword-arguments (package-arguments drawterm)
+     (substitute-keyword-arguments arguments
        ((#:make-flags _)
         `(list "CONF=linux"
                ,(string-append "CC=" (cc-for-target))))))

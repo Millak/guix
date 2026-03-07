@@ -954,7 +954,7 @@ gnu build version."))))
   (package/inherit fftw
     (name "fftwf")
     (arguments
-     (substitute-keyword-arguments (package-arguments fftw)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags fftw-configure-flags)
         `(cons* "--enable-single"
                 ,@(if (string-prefix? "arm" (or (%current-target-system)
@@ -975,7 +975,7 @@ gnu build version."))))
      `(("openmpi" ,openmpi)
        ,@(package-inputs fftw)))
     (arguments
-     (substitute-keyword-arguments (package-arguments fftw)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags cf)
         `(cons "--enable-mpi" ,cf))
        ((#:phases phases '%standard-phases)
@@ -1434,7 +1434,7 @@ features, and more.")
         ;; XXX: Some tests fail, but onnxruntime will move on to the next
         ;; release soon enough.
         (arguments
-         (substitute-keyword-arguments (package-arguments eigen)
+         (substitute-keyword-arguments arguments
            ((#:tests? tests? #t)
             #f)))))))
 
@@ -1462,7 +1462,7 @@ features, and more.")
        ;; XXX: Tests stable_norm_5 and stable_norm_6 are failing due to
        ;; EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE.
        (arguments
-        (substitute-keyword-arguments (package-arguments eigen)
+        (substitute-keyword-arguments arguments
           ((#:tests? flag #f) #false)))))))
 
 (define-public xtensor
@@ -2192,7 +2192,7 @@ and not by the available RAM.")
     (inherit form)
     (name "parform")
     (arguments
-     (substitute-keyword-arguments (package-arguments form)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(cons* "--enable-parform=yes" #$flags))
        ((#:phases phases)

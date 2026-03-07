@@ -973,7 +973,7 @@ including 2D color images.")
     (inherit gmic)
     (name "gmic-qt")
     (arguments
-     (substitute-keyword-arguments (package-arguments gmic)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags _)
         #~(list "-DGMIC_QT_HOST=none"
                 "-DENABLE_DYNAMIC_LINKING=ON"))
@@ -998,7 +998,7 @@ including 2D color images.")
      (modify-inputs (package-inputs gmic-qt)
        (prepend gexiv2 gdk-pixbuf gegl gimp pango)))
     (arguments
-     (substitute-keyword-arguments (package-arguments gmic-qt)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(list "-DGMIC_QT_HOST=gimp3"
                 "-DENABLE_DYNAMIC_LINKING=ON"))))
@@ -1370,7 +1370,7 @@ libraries designed for computer vision research and implementation.")
              (("add_subdirectory\\((tiff|png|jpeg|zlib|bzlib|geotiff)\\)")
               ""))))))
     (arguments
-     (substitute-keyword-arguments (package-arguments vxl)
+     (substitute-keyword-arguments arguments
       ((#:configure-flags flags)
        #~(cons* ;; Needed for itk-snap
                 "-DVNL_CONFIG_LEGACY_METHODS=ON"

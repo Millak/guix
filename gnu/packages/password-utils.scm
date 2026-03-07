@@ -1277,7 +1277,7 @@ using password-store through rofi interface:
     (inherit rofi-pass)
     (name "rofi-pass-wayland")
     (arguments
-     (substitute-keyword-arguments (package-arguments rofi-pass)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             ;; Set the clipboard and backend tools to ones for Wayland in the

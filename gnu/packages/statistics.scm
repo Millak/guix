@@ -803,7 +803,7 @@ posteriors and evidences.")
   (package (inherit r-with-tests)
     (name "r-minimal")
     (arguments
-     (substitute-keyword-arguments (package-arguments r-with-tests)
+     (substitute-keyword-arguments arguments
        ((#:tests? #f #f) #f)
        ((#:disallowed-references refs '())
         (cons (this-package-native-input "perl") refs))

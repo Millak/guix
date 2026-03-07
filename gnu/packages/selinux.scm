@@ -142,7 +142,7 @@ module into a binary representation.")
     (name "libselinux")
     (outputs '("out" "python"))
     (arguments
-     (substitute-keyword-arguments (package-arguments libsepol)
+     (substitute-keyword-arguments arguments
        ((#:make-flags flags)
         #~(cons* "PYTHON=python3"
                  (string-append "LIBSEPOLA="
@@ -197,7 +197,7 @@ the core SELinux management utilities.")
   (package/inherit libsepol
     (name "libsemanage")
     (arguments
-     (substitute-keyword-arguments (package-arguments libsepol)
+     (substitute-keyword-arguments arguments
        ((#:make-flags flags)
         #~(cons* "PYTHON=python3"
                  (string-append "PYTHONLIBDIR="
@@ -236,7 +236,7 @@ binary policies.")
   (package/inherit libsepol
     (name "secilc")
     (arguments
-     (substitute-keyword-arguments (package-arguments libsepol)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'portability)
@@ -255,7 +255,7 @@ binary policies.")
   (package/inherit libsepol
     (name "python-sepolgen")
     (arguments
-     (substitute-keyword-arguments (package-arguments libsepol)
+     (substitute-keyword-arguments arguments
        ((#:modules _ #~%default-gnu-modules)
         '((srfi srfi-1)
           (guix build gnu-build-system)

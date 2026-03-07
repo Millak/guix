@@ -510,7 +510,7 @@ drawing.")
          (sha256
           (base32 "1cqnl8zlxccqg0901gx21h06j9wk3ja6lr8wp4k85ni4msf4m09g"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments st)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'unpack 'remove-calls-to-git
@@ -1456,7 +1456,7 @@ until the screensaver should be activated.")
     (inherit lib9)
     (name "9yacc")
     (arguments
-     (substitute-keyword-arguments (package-arguments lib9)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'patch 'patch-for-9yacc
@@ -1487,7 +1487,7 @@ generator.")))
     (inherit 9yacc)
     (name "9base")
     (arguments
-     (substitute-keyword-arguments (package-arguments 9yacc)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'patch-for-9yacc 'patch-for-9base

@@ -152,7 +152,7 @@ for configuration, scripting, and rapid prototyping.")
   (package (inherit lua)
            (version "5.4.8")
            (arguments
-            (substitute-keyword-arguments (package-arguments lua)
+            (substitute-keyword-arguments arguments
               ((#:make-flags flags)
                (append (delete "linux" flags)
                        '("linux-readline")))))

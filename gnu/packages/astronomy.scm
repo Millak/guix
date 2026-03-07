@@ -3228,7 +3228,7 @@ celestial-to-terrestrial coordinate transformations.")
   (package/inherit python-astropy
     (name "python-astropy-minimal")
     (arguments
-     (substitute-keyword-arguments (package-arguments python-astropy)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #t) #f)))
     (native-inputs
      (list nss-certs-for-test
@@ -10446,7 +10446,7 @@ functionality needed for solar data analysis.")
   (package/inherit python-sunpy
     (name "python-sunpy-minimal")
     (arguments
-     (substitute-keyword-arguments (package-arguments python-sunpy)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #t) #f)))
     (native-inputs
      (list python-setuptools

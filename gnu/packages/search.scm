@@ -435,7 +435,7 @@ decompression.")
   (package/inherit recoll
     (name "recoll-cli")
     (arguments
-     (substitute-keyword-arguments (package-arguments recoll)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~(list))
         #~(cons* "-Dqtgui=false"  "-Dx11mon=false" #$flags))
        ((#:phases phases #~%standard-phases)

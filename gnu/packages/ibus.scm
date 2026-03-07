@@ -236,7 +236,7 @@ may also simplify input method development.")
 (define-public ibus
   (package/inherit ibus-minimal
     (arguments
-     (substitute-keyword-arguments (package-arguments ibus-minimal)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(cons* "--enable-python-library"
                  (delete "--disable-gtk4" #$flags)))

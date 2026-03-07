@@ -406,7 +406,7 @@ in particular ones that can be solved by @command{clingo}.")
     (name name)
     (version (package-version clingo)) ; for #$version in arguments
     (arguments
-     (substitute-keyword-arguments (package-arguments clingo)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(cons* "-DCLINGO_BUILD_WITH_LUA=yes"
                  (string-append "-DLUACLINGO_INSTALL_DIR="
@@ -429,7 +429,7 @@ Lua code.")))
     (name "python-clingo")
     (version (package-version clingo)) ; for #$version in arguments
     (arguments
-     (substitute-keyword-arguments (package-arguments clingo)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(cons* "-DCLINGO_BUILD_WITH_PYTHON=pip"
                  (string-append "-DCMAKE_MODULE_PATH="
@@ -526,7 +526,7 @@ directly from the python command line.")))
       #:modules '((guix build cmake-build-system)
                   ((guix build pyproject-build-system) #:prefix python:)
                   (guix build utils))
-      (substitute-keyword-arguments (package-arguments clingcon)
+      (substitute-keyword-arguments arguments
         ((#:phases phases)
          #~(modify-phases #$phases
              (add-after 'install 'install-distinfo

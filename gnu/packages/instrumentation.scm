@@ -150,7 +150,7 @@ bindings, and the command-line tool @command{babeltrace2}.")
     (name "babeltrace-dev")
     (synopsis "Trace manipulation toolkit (variant for plugin developers)")
     (arguments
-     (substitute-keyword-arguments (package-arguments babeltrace)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         `(modify-phases ,phases
            (add-before 'configure 'set-environment-variables

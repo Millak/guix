@@ -309,7 +309,7 @@ also known as DXTn or DXTC) for Mesa.")
       (arguments
        (strip-keyword-arguments
         '(#:make-flags)
-        (substitute-keyword-arguments (package-arguments libva)
+        (substitute-keyword-arguments arguments
           ((#:configure-flags flags)
            '(list "--disable-glx"))))))))
 
@@ -657,7 +657,7 @@ from software emulation to complete hardware acceleration for modern GPUs.")
     (source (origin
               (inherit (package-source mesa))))
     (arguments
-     (substitute-keyword-arguments (package-arguments mesa)
+     (substitute-keyword-arguments arguments
        ((#:modules modules)
         (cons '(ice-9 textual-ports) modules))
        ((#:configure-flags flags)
@@ -1093,7 +1093,7 @@ and surfaces, receiving input and events.")
     ;; When building out of source, the install phase fails with:
     ;;  file INSTALL cannot find "/tmp/guix-build-glfw-3.4.drv-0/build/docs/html":
     ;;  No such file or directory
-    (arguments (substitute-keyword-arguments (package-arguments glfw)
+    (arguments (substitute-keyword-arguments arguments
                  ((#:out-of-source? _ #f) #f)))))
 
 (define-public nanovg

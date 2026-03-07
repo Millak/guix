@@ -177,7 +177,7 @@ standard operating system features.")
                (base32
                 "02a7b05zrka20jhzag2jb4jl624i1m456bsv69jb9zgys2p9dv1n"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments imgui)
+     (substitute-keyword-arguments arguments
        ((#:make-flags flags ''())
         ;; Remove "-DImDrawIdx=unsigned int" and "-DIMGUI_ENABLE_FREETYPE"
         ;; from make-flags as this breaks MangoHud, the only user of this

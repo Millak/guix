@@ -93,7 +93,7 @@ conversions for values passed between the two languages.")
   (hidden-package
    (package/inherit libffi
      (arguments
-      (substitute-keyword-arguments (package-arguments libffi)
+      (substitute-keyword-arguments arguments
         ((#:configure-flags flags #~'())
          #~(append #$flags '("--disable-exec-static-tramp"))))))))
 

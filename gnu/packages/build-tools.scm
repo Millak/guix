@@ -537,7 +537,7 @@ other lower-level build files.")
                (base32
                 "0q287af75d6w3c7dbfq7rmbh9isqzs9v30fjpm37lcafs2p7966k"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments premake4)
+     (substitute-keyword-arguments arguments
       ((#:phases phases)
        `(modify-phases ,phases
            (replace 'enter-source

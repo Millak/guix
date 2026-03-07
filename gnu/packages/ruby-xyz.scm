@@ -555,7 +555,7 @@ eq(1)\\}}.")
    (package
      (inherit ruby-rspec-its)
      (arguments
-      (substitute-keyword-arguments (package-arguments ruby-rspec-its)
+      (substitute-keyword-arguments arguments
         ((#:tests? _ #f) #f)))
      (native-inputs '()))))
 
@@ -1845,7 +1845,7 @@ for performance optimizations in Ruby code.")
    (package
      (inherit ruby-rubocop-performance)
      (arguments
-      (substitute-keyword-arguments (package-arguments ruby-rubocop-performance)
+      (substitute-keyword-arguments arguments
         ((#:tests? _ #f) #f)))
      (propagated-inputs '())
      (native-inputs '()))))
@@ -3735,7 +3735,7 @@ It is a low-dependency variant of ruby-hydra.")
     (inherit ruby-hydra-minimal)
     (name "ruby-hydra")
     (arguments
-     (substitute-keyword-arguments (package-arguments ruby-hydra-minimal)
+     (substitute-keyword-arguments arguments
        ((#:tests? tests? #t)
         #t)
        ((#:phases phases #~%standard-phases)
@@ -10512,7 +10512,7 @@ engine.")
         (base32
          "0ngirjbai3f5ki2sf6m4gxbbrjpr3b35bz5nrz1cifyw1jk6a6sr"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments ruby-sqlite3)
+     (substitute-keyword-arguments arguments
        ((#:tests? #t #t) #f)
        ((#:gem-flags _ #f)
         ''("--"
@@ -11056,7 +11056,7 @@ defined in a @file{.env} file.")
     (inherit ruby-dotenv)
     (name "ruby-dotenv-rails")
     (arguments
-     (substitute-keyword-arguments (package-arguments ruby-dotenv)
+     (substitute-keyword-arguments arguments
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
             (delete 'do-not-build-dotenv-rails)

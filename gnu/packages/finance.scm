@@ -236,7 +236,7 @@ line client and a client based on Qt.")
                (base32
                 "04kh88xklyq5w2x0zykfas6ssxajp1z33c2899fq342jnfr510b6"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments bitcoin-core)
+     (substitute-keyword-arguments arguments
        ((#:qtbase original-flags #f)
         qtbase-5)))
     (native-inputs

@@ -82,7 +82,7 @@
            (julia-patch "libunwind-cfa-rsp"
                         "0qs5b1h5lsr5qakkv6sddgy5ghlxpjrn2jiqcvg7bkczy24klr6j")))))
     (arguments
-     (substitute-keyword-arguments (package-arguments libunwind)
+     (substitute-keyword-arguments arguments
        ;; Skip tests on this older and patched version of libunwind.
        ((#:tests? _ #t) #f)))
     (home-page "https://github.com/JuliaLang/julia/tree/master/deps/")))

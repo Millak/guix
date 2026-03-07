@@ -896,7 +896,7 @@ Initiation Protocol (SIP) and a multimedia framework.")
                  (base32
                   "1n5k1pk8v2rbq8gnhnpck6m9ljyl9ynr5bbyy2k1ln1nmdjn909n"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments pjproject)
+       (substitute-keyword-arguments arguments
          ((#:configure-flags _ ''())
           ;; This package is tailored for DhtNet; see how it is built for its
           ;; CI in

@@ -127,7 +127,7 @@ by no means limited to these applications.)  This package provides XML DTDs.")
       (inherit template)
       (arguments
        (let ((dest-dir (format #f "xml/docbook/~a/" version)))
-         (substitute-keyword-arguments (package-arguments template)
+         (substitute-keyword-arguments arguments
            ;; XXX: A default value must be provided otherwise this
            ;; substitution has no effect.
            ((#:install-plan _ #f)
@@ -147,7 +147,7 @@ by no means limited to these applications.)  This package provides XML DTDs.")
       (inherit template)
       (arguments
        (let ((dest-dir (format #f "xml/docbook/~a/" version)))
-         (substitute-keyword-arguments (package-arguments template)
+         (substitute-keyword-arguments arguments
            ((#:install-plan _ #f)
             #~`(("catalog.xml" #$dest-dir)
                 ("docbook.nvdl" #$dest-dir)
@@ -167,7 +167,7 @@ downloading from @var{source}, where @var{version} is a string and
       (inherit base-template)
       (arguments
        (let* ((dest-dir (format #f "xml/docbook/~a/" version)))
-         (substitute-keyword-arguments (package-arguments base-template)
+         (substitute-keyword-arguments arguments
            ((#:phases phases)
             ;; Some programs, such as kdoctools, instead of using
             ;; XML_CATALOG_FILES, prefer to use cmake to locate
@@ -247,7 +247,7 @@ downloading from @var{source}, where @var{version} is a string and
     (package
       (inherit template)
       (arguments
-       (substitute-keyword-arguments (package-arguments template)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'unpack 'copy-catalog-file

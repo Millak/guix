@@ -313,7 +313,7 @@ internal RPC protocols and file formats.")
                (base32
                 "0ggyfrfal7wms4n8pba224jwpjxn19rigd5y90m3x2bg97ych775"))))
     (build-system gnu-build-system)
-    (arguments (substitute-keyword-arguments (package-arguments protobuf)
+    (arguments (substitute-keyword-arguments arguments
                  ;; XXX: insists on using bundled googletest
                  ((#:tests? _ #f) #false)
                  ((#:configure-flags _ #f)
@@ -336,7 +336,7 @@ internal RPC protocols and file formats.")
                (base32
                 "0a955bz59ihrb5wg7dwi12xajdi5pmz4bl0g147rbdwv393jwwxk"))))
     (build-system gnu-build-system)
-    (arguments (substitute-keyword-arguments (package-arguments protobuf)
+    (arguments (substitute-keyword-arguments arguments
                  ((#:configure-flags _ #f)
                   #~(list))
                  ((#:phases phases)

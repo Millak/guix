@@ -266,7 +266,7 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
   (package/inherit gdb
     (name "gdb-multiarch")
     (arguments
-     (substitute-keyword-arguments (package-arguments gdb)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags '())
         #~(cons* "--enable-targets=all"
                  "--enable-multilib"
@@ -292,7 +292,7 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
   (package/inherit gdb-14
     (name "avr-gdb")
     (arguments
-     (substitute-keyword-arguments (package-arguments gdb-14)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags '())
         #~(cons* "--target=avr"
                  "--disable-nls"
@@ -380,7 +380,7 @@ AMD's commercially available GPU architectures.")
      (modify-inputs (package-native-inputs gdb)
        (prepend bison flex perl)))
     (arguments
-     (substitute-keyword-arguments (package-arguments gdb)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags _ '())
         ''("--program-prefix=roc"
            "--disable-binutils"

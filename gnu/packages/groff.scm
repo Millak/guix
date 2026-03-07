@@ -147,7 +147,7 @@ is usually the formatter of \"man\" documentation pages.")
 
        #:configure-flags '("--with-doc=no")
 
-       ,@(substitute-keyword-arguments (package-arguments groff)
+       ,@(substitute-keyword-arguments arguments
            ((#:phases phases)
             `(modify-phases ,phases
                (add-after 'install 'remove-non-essential-programs

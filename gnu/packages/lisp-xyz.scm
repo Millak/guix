@@ -1076,7 +1076,7 @@ portable between implementations.")
       (inherit pkg)
       (outputs '("out"))
       (arguments
-       (substitute-keyword-arguments (package-arguments pkg)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           `(modify-phases ,phases
              (delete 'build-doc))))))))
@@ -1087,7 +1087,7 @@ portable between implementations.")
       (inherit pkg)
       (outputs '("out"))
       (arguments
-       (substitute-keyword-arguments (package-arguments pkg)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           `(modify-phases ,phases
              (delete 'build-doc))))))))
@@ -1314,7 +1314,7 @@ computer known.")
     (package
       (inherit pkg)
       (arguments
-       (substitute-keyword-arguments (package-arguments pkg)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           `(modify-phases ,phases
              (add-after 'unpack 'fix-readtable
@@ -4170,7 +4170,7 @@ and a core image.")
       (inherit pkg)
       (outputs '("out"))
       (arguments
-       (substitute-keyword-arguments (package-arguments pkg)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           `(modify-phases ,phases
              (delete 'build-image))))))))
@@ -9144,7 +9144,7 @@ pure Common Lisp.")
     (package
       (inherit pkg)
       (arguments
-       (substitute-keyword-arguments (package-arguments pkg)
+       (substitute-keyword-arguments arguments
          ;; Tests are failing on ECL with:
          ;; PCG.TEST::TEST-REWINDAn error occurred during initialization:
          ;; 40502229875678917802724098623316930025 is not of type
@@ -9922,7 +9922,7 @@ Redis data structure store.")
     (package
       (inherit pkg)
       (arguments
-       (substitute-keyword-arguments (package-arguments pkg)
+       (substitute-keyword-arguments arguments
          ;; Tests are failing on ECL with:
          ;;   Test L-COMMANDS: An error occurred during initialization:
          ;;   Protocol not found: "tcp".
@@ -10041,7 +10041,7 @@ versioning specification: @url{http://semver.org}.")
     (package
       (inherit pkg)
       (arguments
-       (substitute-keyword-arguments (package-arguments pkg)
+       (substitute-keyword-arguments arguments
          ;; TODO: https://github.com/cldm/cl-semver/issues/9
          ((#:tests? _ #f) #f))))))
 
@@ -10351,7 +10351,7 @@ Development into CL+SSL was done by David Lichteblau.")
        (modify-inputs (package-native-inputs pkg)
          (delete "sbcl-trivial-sockets")))
       (arguments
-       (substitute-keyword-arguments (package-arguments pkg)
+       (substitute-keyword-arguments arguments
          ((#:tests? _ #f) #f))))))
 
 (define-public sbcl-cl-steamworks
@@ -11040,7 +11040,7 @@ Common Lisp objects while constructing bindings for placeholders
     (package
       (inherit pkg)
       (arguments
-       (substitute-keyword-arguments (package-arguments pkg)
+       (substitute-keyword-arguments arguments
          ;; The tests fail on ECL with:
          ;;   "In MAKE-ARRAY: the elements in :INITIAL-CONTENTS do not match
          ;;    the array dimensions."
@@ -12629,7 +12629,7 @@ interfaces as well as a functional and an object oriented interface.")
       (inputs
        (alist-delete "uffi" (package-inputs pkg)))
       (arguments
-       (substitute-keyword-arguments (package-arguments pkg)
+       (substitute-keyword-arguments arguments
          ((#:asd-systems asd-systems '())
           `(cons "clsql-cffi" ,asd-systems)))))))
 
@@ -13248,7 +13248,7 @@ interface is meant to be easy and non-intrusive.")
     (package
       (inherit pkg)
       (arguments
-       (substitute-keyword-arguments (package-arguments pkg)
+       (substitute-keyword-arguments arguments
          ;; The tests only work on SBCL.
          ((#:tests? _ #f) #f))))))
 
@@ -18620,7 +18620,7 @@ type correctness in Common Lisp.  It is based on CLtL2 extensions.")
     (package
       (inherit pkg)
       (arguments
-       (substitute-keyword-arguments (package-arguments pkg)
+       (substitute-keyword-arguments arguments
          ;; The tests fail on ECL with a COMPILE-FILE-ERROR for t/package.lisp.
          ((#:tests? _ #f) #f))))))
 
@@ -22852,7 +22852,7 @@ specification}, a toolkit for writing GUIs in Common Lisp.")
     (package
       (inherit pkg)
       (arguments
-       (substitute-keyword-arguments (package-arguments pkg)
+       (substitute-keyword-arguments arguments
          ;; Tests fail with "FUNCTION: Not a valid argument (R1
          ;; (GENERATE-REGION))."  on ECL.
          ((#:tests? _ #f) #f))))))
@@ -23701,7 +23701,7 @@ library for Ruby, which is itself based on the Lucene library for Java.")
     (package
       (inherit pkg)
       (arguments
-       (substitute-keyword-arguments (package-arguments pkg)
+       (substitute-keyword-arguments arguments
          ;; Tests fail with "Pathname without a physical namestring" error
          ;; on ECL.
          ((#:tests? _ #f) #f))))))
@@ -30036,7 +30036,7 @@ multiple inspectors with independent history.")
       (inherit pkg)
       (outputs '("out"))
       (arguments
-       (substitute-keyword-arguments (package-arguments pkg)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           `(modify-phases ,phases
              (delete 'build-image))))))))
@@ -30047,7 +30047,7 @@ multiple inspectors with independent history.")
       (inherit pkg)
       (outputs '("out"))
       (arguments
-       (substitute-keyword-arguments (package-arguments pkg)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           `(modify-phases ,phases
              (delete 'build-image))))))))
@@ -31758,7 +31758,7 @@ roman numeral given in the key.")
       (inherit ecl-package)
       (outputs '("out"))
       (arguments
-       (substitute-keyword-arguments (package-arguments ecl-package)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           `(modify-phases ,phases
              (delete 'build-binary))))))))

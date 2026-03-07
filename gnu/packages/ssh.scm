@@ -374,7 +374,7 @@ Additionally, various channel-specific options can be negotiated.")
        (file-name (git-file-name name version))
        (sha256 (base32 "13g7b652rf9lqlp492fiyi8ypf04v65ar3z174gjmkskl77m4b7k"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments openssh)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~(list))
         #~(cons* "--with-privsep-user=sshd"
                  "--with-pam-service=sshd"

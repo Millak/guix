@@ -1997,7 +1997,7 @@ valuable enough at this time.")
     (inherit julia-documenter)
     (name "julia-documenter-bootstrap")
     (arguments
-     (substitute-keyword-arguments (package-arguments julia-documenter)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         `(modify-phases ,phases
            (delete 'patch-source)))

@@ -358,7 +358,7 @@ Medicine} server instead of SQLite.")
   (package/inherit orthanc-mysql
     (name "orthanc-mariadb")
     (arguments
-     (substitute-keyword-arguments (package-arguments orthanc-mysql)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (replace 'check
@@ -440,7 +440,7 @@ GUI application (@code{xmedcon}).")
   (package/inherit xmedcon
     (name "xmedcon-minimal")
     (arguments
-     (substitute-keyword-arguments (package-arguments xmedcon)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(append (list "--disable-glib" "--disable-gui") #$flags))))
     (inputs (modify-inputs (package-inputs xmedcon)

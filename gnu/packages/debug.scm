@@ -322,7 +322,7 @@ tool.")
           (sha256
            (base32 "03352zbp73wgwyk25f26rw7h5yqyjp6fysl2n7nj32wp16vxmlza"))))
        (arguments
-        (substitute-keyword-arguments (package-arguments base)
+        (substitute-keyword-arguments arguments
           ((#:configure-flags _ #~'())
            #~(list (string-append
                     "--target-list="

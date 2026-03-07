@@ -292,7 +292,7 @@ project (but it is usable outside of the Gnome platform).")
   (hidden-package
    (package/inherit libxml2
      (arguments
-      (substitute-keyword-arguments (package-arguments libxml2)
+      (substitute-keyword-arguments arguments
         ((#:configure-flags flags #~'())
          #~(cons "--with-zlib" #$flags)))))))
 

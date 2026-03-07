@@ -1994,7 +1994,7 @@ audio/video codec library.")
                 "ffmpeg-add-av_stream_get_first_dts-for-chromium.patch"))))
     (arguments
      (if (target-x86-32?)
-         (substitute-keyword-arguments (package-arguments ffmpeg)
+         (substitute-keyword-arguments arguments
            ((#:phases phases)
             #~(modify-phases #$phases
                 (add-before 'configure 'relax-gcc-14-strictness
@@ -2018,7 +2018,7 @@ audio/video codec library.")
                (base32
                 "1g8116rp4fgq82br8lclb2dmw3fvyh2zkzhnngm7z97pg1i0dypl"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments ffmpeg-6)
+     (substitute-keyword-arguments arguments
        ((#:modules modules %default-gnu-modules)
         `((srfi srfi-1) ,@modules))
        ((#:phases phases)
@@ -2047,7 +2047,7 @@ audio/video codec library.")
               (base32
                "05q6bpid5hfr9djp6cf3sq8majkjiqnl3v9i2y0an23w8qgld412"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments ffmpeg-5)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags ''())
         #~(cons "--enable-avresample"
                 (fold delete #$flags '("--enable-libshaderc"))))))))
@@ -2078,7 +2078,7 @@ audio/video codec library.")
                      "ffmpeg-jami-screen-sharing-x11-fix.patch"
                      "ffmpeg-jami-pipewiregrab-source-filter.patch"))))))
       (arguments
-       (substitute-keyword-arguments (package-arguments ffmpeg)
+       (substitute-keyword-arguments arguments
          ((#:configure-flags _ '())
           ;; The base configure flags preserved from ffmpeg appear first.
           #~(list "--disable-static"
@@ -4206,7 +4206,7 @@ be used for realtime video capture via Linux-specific APIs.")
   (package/inherit v4l-utils
     (name "v4l-utils-minimal")
     (arguments
-     (substitute-keyword-arguments (package-arguments v4l-utils)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'split)))
@@ -5264,7 +5264,7 @@ Content System specification.")
                  (append zimg)
                  (replace "svt-av1" svt-av1-3)))
        (arguments
-        (substitute-keyword-arguments (package-arguments ffmpeg)
+        (substitute-keyword-arguments arguments
           ((#:configure-flags flags)
            #~(append #$flags
                      (list "--enable-gpl"
@@ -5298,7 +5298,7 @@ Content System specification.")
      (package
        (inherit x265)
        (arguments
-        (substitute-keyword-arguments (package-arguments x265)
+        (substitute-keyword-arguments arguments
           ((#:phases phases)
            #~(modify-phases #$phases
                (add-after 'unpack 'apply-handbrake-patches

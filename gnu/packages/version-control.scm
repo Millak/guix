@@ -619,7 +619,7 @@ everything from small to very large projects with speed and efficiency.")
                "subtree"                ;git-subtree
                "gui"))                  ;gitk, git gui
     (arguments
-     (substitute-keyword-arguments (package-arguments git-minimal)
+     (substitute-keyword-arguments arguments
        ((#:disallowed-references disallowed-refs ''())
         (list (this-package-native-input "bash")))
        ((#:make-flags flags #~'())
@@ -835,7 +835,7 @@ everything from small to very large projects with speed and efficiency.")
                 "0if0vqn3fj22p95a0125zpgwz3mqfqxqnvwa7fkf7b00wh0c1wyz"))))
     ;; Temporary measure to prevent unnecessary package rebuilds.
     (arguments
-      (substitute-keyword-arguments (package-arguments git-minimal)
+      (substitute-keyword-arguments arguments
         ((#:configure-flags flags #~'())
          (if (%current-target-system) git-cross-configure-flags #~(list)))))))
 
@@ -1868,7 +1868,7 @@ a built-in cache to decrease server I/O pressure.")
                (base32
                 "0yp6rm60pz8pj8wrm1aglix51hhy00al86mm94ag2bifc92q23ar"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments cgit)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #f)
         (not (%current-target-system)))
        ((#:make-flags _ '())

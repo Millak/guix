@@ -834,7 +834,7 @@ fight or flee@dots{}
     (inherit boohu)
     (name "boohu-tk")
     (arguments
-     (substitute-keyword-arguments (package-arguments boohu)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #t) #f)
        ((#:build-flags _ #~())
         #~(list "--tags=tk"))
@@ -3488,7 +3488,7 @@ corruption… You hope luck will be on your side!
   (package/inherit shamogu
     (name "shamogu-sdl")
     (arguments
-     (substitute-keyword-arguments (package-arguments shamogu)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #t) #f)
        ((#:build-flags _ #'()) #~(list "--tags=sdl"))
        ((#:phases _ #~%standard-phases)
@@ -5439,7 +5439,7 @@ next campaign.")
     (native-inputs
      (list pkg-config))
     (arguments
-     (substitute-keyword-arguments (package-arguments wesnoth)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags _)
         #~'("-DENABLE_SYSTEM_LUA=ON" "-DENABLE_GAME=OFF"))))
     (synopsis "Dedicated @emph{Battle for Wesnoth} server")
@@ -5834,7 +5834,7 @@ Transport Tycoon Deluxe.")
     (inputs (modify-inputs (package-inputs openttd)
               (append zstd harfbuzz)))
     (arguments
-     (substitute-keyword-arguments (package-arguments openttd)
+     (substitute-keyword-arguments arguments
        ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases
               (add-before 'check 'build-tests
@@ -11470,7 +11470,7 @@ player adaptability for character progression.")
   (package/inherit harmonist
     (name "harmonist-sdl")
     (arguments
-     (substitute-keyword-arguments (package-arguments harmonist)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #t) #f)
        ((#:build-flags _ #'()) #~(list "--tags=sdl"))
        ((#:phases _ #~%standard-phases)

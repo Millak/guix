@@ -650,7 +650,7 @@ problems for efficient solution on parallel systems.")
      (let ((parent (package
                      (inherit openfoam-org)
                      (version (package-version this-package)))))
-       (substitute-keyword-arguments (package-arguments parent)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               (delete 'disable-failing-tests))))))

@@ -201,7 +201,7 @@ Library and other user programs.")
     (name "hurd-minimal")
     (inputs (list glibc/hurd-headers gnumach-headers))
     (arguments
-     (substitute-keyword-arguments (package-arguments hurd-headers)
+     (substitute-keyword-arguments arguments
        ((#:make-flags flags '())
         #~'(#$(string-append "lib-subdirs=libshouldbeinlibc libihash libstore")
             "prog-subdirs="
@@ -224,7 +224,7 @@ Library, Parted and netdde for GNU/Hurd.")
   (package (inherit hurd-headers)
     (name "libirqhelp")
     (arguments
-     (substitute-keyword-arguments (package-arguments hurd-headers)
+     (substitute-keyword-arguments arguments
        ((#:make-flags flags '())
         #~'(#$(string-append "lib-subdirs=libirqhelp")
             "prog-subdirs="
@@ -277,7 +277,7 @@ Hurd-minimal package which are needed for both glibc and GCC.")
     (inherit gnumach-headers)
     (name "gnumach")
     (arguments
-     (substitute-keyword-arguments (package-arguments gnumach-headers)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags ''())
         `(cons* "--enable-kdb"          ;enable kernel debugger
                 "--disable-net-group"

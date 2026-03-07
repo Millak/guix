@@ -4621,7 +4621,7 @@ and users are in full control of their data and workflow.")
     (inherit rust-xremap)
     (name "xremap-gnome")
     (arguments
-     (substitute-keyword-arguments (package-arguments rust-xremap)
+     (substitute-keyword-arguments arguments
        ((#:features _) '(list "gnome"))))))
 
 (define-public xremap-hyprland
@@ -4629,7 +4629,7 @@ and users are in full control of their data and workflow.")
     (inherit rust-xremap)
     (name "xremap-hyprland")
     (arguments
-     (substitute-keyword-arguments (package-arguments rust-xremap)
+     (substitute-keyword-arguments arguments
        ((#:features _) '(list "hypr"))))))
 
 (define-public xremap-kde
@@ -4637,7 +4637,7 @@ and users are in full control of their data and workflow.")
     (inherit rust-xremap)
     (name "xremap-kde")
     (arguments
-     (substitute-keyword-arguments (package-arguments rust-xremap)
+     (substitute-keyword-arguments arguments
        ((#:features _) '(list "kde"))))))
 
 (define-public xremap-niri
@@ -4645,7 +4645,7 @@ and users are in full control of their data and workflow.")
     (inherit rust-xremap)
     (name "xremap-niri")
     (arguments
-     (substitute-keyword-arguments (package-arguments rust-xremap)
+     (substitute-keyword-arguments arguments
        ((#:features _) '(list "niri"))))))
 
 (define-public xremap-wlroots
@@ -4653,7 +4653,7 @@ and users are in full control of their data and workflow.")
     (inherit rust-xremap)
     (name "xremap-wlroots")
     (arguments
-     (substitute-keyword-arguments (package-arguments rust-xremap)
+     (substitute-keyword-arguments arguments
        ((#:features _) '(list "wlroots"))))))
 
 (define-deprecated-package xremap-sway
@@ -4664,7 +4664,7 @@ and users are in full control of their data and workflow.")
     (inherit rust-xremap)
     (name "xremap-x11")
     (arguments
-     (substitute-keyword-arguments (package-arguments rust-xremap)
+     (substitute-keyword-arguments arguments
        ((#:features _) '(list "x11"))))))
 
 (define-public xsv

@@ -496,7 +496,7 @@ languages.")
     (synopsis "The extensible, customizable, self-documenting text
 editor (console only)")
     (arguments
-     (substitute-keyword-arguments (package-arguments emacs-minimal)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(cons* "--with-modules" "--with-native-compilation=aot"
                  (delete "--with-gnutls=no" #$flags)))
@@ -592,7 +592,7 @@ editor (console only)")
     (synopsis "The extensible, customizable, self-documenting text editor")
     (build-system glib-or-gtk-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments emacs-no-x)
+     (substitute-keyword-arguments arguments
        ((#:modules _) (%emacs-modules build-system))
        ((#:configure-flags flags #~'())
         #~(cons* "--with-cairo" #$flags))
@@ -637,7 +637,7 @@ editor (console only)")
   (package/inherit emacs
     (name "emacs-pgtk")
     (arguments
-     (substitute-keyword-arguments (package-arguments emacs)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(cons* "--with-pgtk" #$flags))))
     (synopsis "Emacs text editor with @code{pgtk} frames")
@@ -650,7 +650,7 @@ of GTK.")))
     (synopsis "The extensible, customizable, self-documenting text
 editor (with xwidgets support)")
     (arguments
-     (substitute-keyword-arguments (package-arguments emacs)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(cons "--with-xwidgets" #$flags))))
     (inputs
@@ -663,7 +663,7 @@ editor (with xwidgets support)")
     (name "emacs-pgtk-xwidgets")
     (synopsis "Emacs text editor with @code{xwidgets} and @code{pgtk} support")
     (arguments
-     (substitute-keyword-arguments (package-arguments emacs-pgtk)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(cons "--with-xwidgets" #$flags))))
     (inputs
@@ -712,7 +712,7 @@ editor (without X toolkit)" )
               (delete "gtk+")
               (prepend inotify-tools)))
     (arguments
-     (substitute-keyword-arguments (package-arguments emacs-no-x)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(cons "--with-x-toolkit=no" #$flags))))))
 
@@ -722,7 +722,7 @@ editor (without X toolkit)" )
     (synopsis "The extensible, customizable, self-documenting text
 editor (with wide ints)" )
     (arguments
-     (substitute-keyword-arguments (package-arguments emacs)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(cons "--with-wide-int" #$flags))))))
 
@@ -751,7 +751,7 @@ editor (with wide ints)" )
                         "emacs-next-native-comp-fix-filenames.patch"
                         "emacs-native-comp-pin-packages.patch"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments emacs-minimal)
+     (substitute-keyword-arguments arguments
        ((#:make-flags flags #~'())
         #~(append #$flags (list (string-append "SELECTOR=" #$%emacs-next-selector)))))))))
 
@@ -768,7 +768,7 @@ editor (with wide ints)" )
     (version version)
     (source source)
     (arguments
-     (substitute-keyword-arguments (package-arguments emacs)
+     (substitute-keyword-arguments arguments
        ((#:make-flags flags #~'())
         #~(append #$flags (list (string-append "SELECTOR=" #$%emacs-next-selector))))))))
 

@@ -144,7 +144,7 @@ is on expressing the content semantically, avoiding physical markup commands.")
                       perl-unicode-eastasianwidth perl-text-unidecode
                       perl-libintl-perl)))
     (arguments
-     (substitute-keyword-arguments (package-arguments texinfo)
+     (substitute-keyword-arguments arguments
        ((#:modules modules `((guix build utils)
                              (guix build gnu-build-system)))
         `((srfi srfi-26)
@@ -228,7 +228,7 @@ is on expressing the content semantically, avoiding physical markup commands.")
     (name "info-reader")
     (arguments
      (append
-      (substitute-keyword-arguments (package-arguments texinfo-7)
+      (substitute-keyword-arguments arguments
        ((#:modules modules `((guix build utils)
                              (guix build gnu-build-system)))
         `((srfi srfi-1)

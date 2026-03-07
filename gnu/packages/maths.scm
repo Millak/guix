@@ -1226,7 +1226,7 @@ large scale eigenvalue problems.")
      (modify-inputs (package-inputs arpack-ng)
        (prepend openmpi)))
     (arguments
-     (substitute-keyword-arguments (package-arguments arpack-ng)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags _ #~())
         #~'("-DMPI=ON"))
        ((#:phases phases #~%standard-phases)
@@ -2153,7 +2153,7 @@ Interface to wrap the HDF5 library, which is implemented in C.")
     (inputs (modify-inputs (package-inputs hdf5)
               (prepend openmpi)))
     (arguments
-     (substitute-keyword-arguments (package-arguments hdf5)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags '())
         #~(append (filter (lambda (flag)
                             (not
@@ -2459,7 +2459,7 @@ sharing of scientific data.")
               (replace "hdf5" hdf5-parallel-openmpi)))
     ;; TODO: Replace pkg-config references in nc-config with absolute references
     (arguments
-     (substitute-keyword-arguments (package-arguments netcdf)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(cons* "CC=mpicc"
                  "CXX=mpicxx"
@@ -3495,7 +3495,7 @@ script files.")
        ("texlive" ,(texlive-local-tree (list texlive-epsf))) ; for texi2dvi
        ,@(package-native-inputs octave-cli)))
     (arguments
-     (substitute-keyword-arguments (package-arguments octave-cli)
+     (substitute-keyword-arguments arguments
        ((#:modules modules %default-gnu-modules)
         `((guix build qt-utils) ,@modules))
        ((#:imported-modules imported-modules %default-gnu-imported-modules)
@@ -4097,7 +4097,7 @@ scientific applications modeled by partial differential equations.")
     (inherit petsc)
     (name "petsc-complex")
     (arguments
-     (substitute-keyword-arguments (package-arguments petsc)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags cf)
         #~(cons "--with-scalar-type=complex" #$cf))))
     (synopsis "Library to solve PDEs (with complex scalars)")))
@@ -4117,7 +4117,7 @@ scientific applications modeled by partial differential equations.")
                 pt-scotch32
                 `(,pt-scotch32 "metis"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments petsc)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags cf)
         #~`("--with-hypre=1"
             "--with-mpiexec=mpirun"
@@ -4157,7 +4157,7 @@ scientific applications modeled by partial differential equations.")
      (modify-inputs (package-inputs petsc-complex)
        (prepend openmpi)))
     (arguments
-     (substitute-keyword-arguments (package-arguments petsc-complex)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags cf)
         #~`("--with-mpiexec=mpirun"
             ,(string-append "--with-mpi-dir="
@@ -4839,7 +4839,7 @@ arising after the discretization of partial differential equations.")
   (package (inherit slepc)
     (name "slepc-openmpi")
     (arguments
-     (substitute-keyword-arguments (package-arguments slepc)
+     (substitute-keyword-arguments arguments
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
            (add-before 'check 'mpi-setup
@@ -5212,7 +5212,7 @@ sparse system of linear equations A x = b using Gaussian elimination.")
        (delete "scotch")
        (prepend openmpi scalapack pt-scotch)))
     (arguments
-     (substitute-keyword-arguments (package-arguments mumps)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         `(modify-phases ,phases
            (add-before 'check 'mpi-setup
@@ -5478,7 +5478,7 @@ bio-chemistry.")
     (inherit scotch)
     (name "scotch32")
     (arguments
-     (substitute-keyword-arguments (package-arguments scotch)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~'("-DBUILD_SHARED_LIBS=YES" "-DBUILD_PTSCOTCH=OFF" "-DINTSIZE=32"))))
     (synopsis
@@ -5491,7 +5491,7 @@ bio-chemistry.")
     (propagated-inputs
      (list openmpi))                              ;headers include MPI headers
     (arguments
-     (substitute-keyword-arguments (package-arguments scotch)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~'("-DBUILD_SHARED_LIBS=YES" "-DBUILD_PTSCOTCH=ON" "-DINTSIZE=64"))
        ((#:phases phases #~%standard-phases)
@@ -5507,7 +5507,7 @@ bio-chemistry.")
     (propagated-inputs
      (list openmpi))                     ;headers include MPI headers
     (arguments
-     (substitute-keyword-arguments (package-arguments pt-scotch)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~'("-DBUILD_SHARED_LIBS=YES" "-DBUILD_PTSCOTCH=ON" "-DINTSIZE=32"))))
     (synopsis
@@ -5783,7 +5783,7 @@ point numbers.")
         (delete "sbcl")
         (prepend ecl)))
     (arguments
-     (substitute-keyword-arguments (package-arguments maxima)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
          #~(list "--enable-ecl"))
         ((#:phases phases)
@@ -6036,7 +6036,7 @@ from the GotoBLAS2-1.13 BSD version.")
     (name "openblas-ilp64")
     (supported-systems %64bit-supported-systems)
     (arguments
-     (substitute-keyword-arguments (package-arguments openblas)
+     (substitute-keyword-arguments arguments
        ((#:make-flags flags #~'())
         ;; These should be '64' but julia hardcodes '64_'.
         #~(append (list "INTERFACE64=1"
@@ -6648,7 +6648,7 @@ COLAMD which has the the option to apply constraints to the ordering.")
                          "gklib-suitesparse.patch")
                         (origin-patches (package-source gklib))))))
     (arguments
-     (substitute-keyword-arguments (package-arguments gklib)
+     (substitute-keyword-arguments arguments
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'patch-cmake
@@ -7876,7 +7876,7 @@ problems.")
     (inputs (modify-inputs (package-inputs hypre)
               (prepend openmpi)))
     (arguments
-     (substitute-keyword-arguments (package-arguments hypre)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~`("--with-MPI" ,@(delete "--without-MPI" #$flags)))
        ((#:phases phases)
@@ -8529,7 +8529,7 @@ symmetric matrices.")
      (modify-inputs (package-inputs elpa)
        (prepend openmpi scalapack zlib)))
     (arguments
-     (substitute-keyword-arguments (package-arguments elpa)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags cf #~())
         #~(cons "--with-mpi=yes"
                 (delete "--with-mpi=no" #$cf)))
@@ -8780,7 +8780,7 @@ easily be incorporated into existing simulation codes.")
            hypre-openmpi
            petsc-openmpi))
     (arguments
-     (substitute-keyword-arguments (package-arguments sundials)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~())
         #~(cons* "-DENABLE_MPI:BOOL=ON"
                  "-DENABLE_HYPRE:BOOL=ON"
@@ -9418,7 +9418,7 @@ built on top of DUNE, the Distributed and Unified Numerics Environment.")
               (inputs (modify-inputs (package-inputs p)
                         (append openmpi)))
               (arguments
-               (substitute-keyword-arguments (package-arguments p)
+               (substitute-keyword-arguments arguments
                  ((#:phases phases '%standard-phases)
                   `(modify-phases ,phases
                      (add-before 'check 'mpi-setup
@@ -10011,7 +10011,7 @@ true in all models.")
                 (sha256
                  (base32 "1zznrlj4zp1mc7s4pfw11aq773q2lr9yl6pph630zg5mqijaim5g"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments cadiback)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'patch-build-files 'fix-prefix

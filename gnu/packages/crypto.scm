@@ -1769,7 +1769,7 @@ SunMD5, sha1crypt, NT, bsdicrypt, bigcrypt, and descrypt.")
    (package/inherit libxcrypt
      (name "libxcrypt-without-failure-tokens")
      (arguments
-      (substitute-keyword-arguments (package-arguments libxcrypt)
+      (substitute-keyword-arguments arguments
         ((#:configure-flags flags #~'())
          #~(cons* "--disable-failure-tokens" #$flags)))))))
 

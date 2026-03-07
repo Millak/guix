@@ -3083,7 +3083,7 @@ auto-wah.")
   (package (inherit guitarix)
     (name "guitarix-lv2")
     (arguments
-     (substitute-keyword-arguments (package-arguments guitarix)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         `(cons "--no-standalone" ,flags))))))
 
@@ -5257,7 +5257,7 @@ stretching and pitch scaling of audio.  This package contains the library.")
           (base32
            "11srnzgpavcj6n70zjdm7488jzrprk71mg9dgr1sa6vwp575hf2m"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments libsbsms)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               (delete 'fix-ar-lib-path)

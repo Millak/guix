@@ -137,7 +137,7 @@ default Emacs configuration, but it carries a much lighter feature set.")
 
          ,@(package-native-inputs zile)))
       (arguments
-       (substitute-keyword-arguments (package-arguments zile)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           `(modify-phases ,phases
              (replace 'bootstrap

@@ -318,7 +318,7 @@ menu to select one of the installed operating systems.")
      (modify-inputs (package-native-inputs grub)
        (delete "help2man" "texinfo" "parted" "qemu" "qemu-minimal" "xorriso")))
     (arguments
-     (substitute-keyword-arguments (package-arguments grub-pc)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #t) #f)
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
@@ -338,7 +338,7 @@ menu to select one of the installed operating systems.")
     (inherit base)
     (synopsis "GRand Unified Boot loader (Coreboot payload version)")
     (arguments
-     (substitute-keyword-arguments (package-arguments base)
+     (substitute-keyword-arguments arguments
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (add-before 'check 'disable-broken-tests
@@ -422,7 +422,7 @@ menu to select one of the installed operating systems.")
             (modify-inputs (package-native-inputs base)
               (delete "parted" "qemu-minimal" "xorriso")))))
     (arguments
-     (substitute-keyword-arguments (package-arguments base)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #f) (and (not (%current-target-system))
                              (this-package-native-input "qemu-minimal")))
        ((#:configure-flags flags #~'())
@@ -497,7 +497,7 @@ menu to select one of the installed operating systems.")
     (name "grub-efi32")
     (synopsis "GRand Unified Boot loader (UEFI 32bit version)")
     (arguments
-     (substitute-keyword-arguments (package-arguments grub-efi)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(cons* #$@(cond ((target-x86?)
                            #~("--target=i386"))
@@ -587,7 +587,7 @@ menu to select one of the installed operating systems.")
     (package
       (inherit base)
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ;; Running the tests isn't supported for this grub platform.
          ((#:tests? _ #t) #f)))
       (synopsis "GRand Unified Boot loader (u-boot version)")
@@ -607,7 +607,7 @@ menu to select one of the installed operating systems.")
      (modify-inputs (package-inputs grub-efi)
        (prepend grub)))
     (arguments
-     (substitute-keyword-arguments (package-arguments grub-efi)
+     (substitute-keyword-arguments arguments
        ((#:modules modules `((guix build utils)
                              (guix build gnu-build-system)))
         `((ice-9 ftw) ,@modules))
@@ -1176,7 +1176,7 @@ U-Boot must be used."
                        (package-description u-boot)))
       (build-system gnu-build-system)
       (arguments
-       (substitute-keyword-arguments (package-arguments u-boot)
+       (substitute-keyword-arguments arguments
          ((#:target _ #f)
           (and (not (native-build?)) triplet))
          ((#:modules modules '())
@@ -1277,7 +1277,7 @@ CONFIG_TOOLS_KWBIMAGE=n"))))
     (package
       (inherit base)
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'unpack 'set-environment
@@ -1317,7 +1317,7 @@ removed so that it fits within common partitioning schemes.")))
     (package
       (inherit base)
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'unpack 'set-environment
@@ -1338,7 +1338,7 @@ removed so that it fits within common partitioning schemes.")))
     (package
       (inherit base)
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'unpack 'set-environment
@@ -1445,7 +1445,7 @@ Documentation} for more information (for example by running @samp{info
   (package
     (inherit base)
     (arguments
-     (substitute-keyword-arguments (package-arguments base)
+     (substitute-keyword-arguments arguments
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
             (add-after 'install 'symlink-u-boot-command
@@ -1463,7 +1463,7 @@ Documentation} for more information (for example by running @samp{info
     (package
       (inherit base)
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'unpack 'set-environment
@@ -1479,7 +1479,7 @@ Documentation} for more information (for example by running @samp{info
     (package
       (inherit base)
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'unpack 'set-environment
@@ -1498,7 +1498,7 @@ Documentation} for more information (for example by running @samp{info
     (package
       (inherit base)
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'unpack 'set-environment
@@ -1676,7 +1676,7 @@ grub-efi-netboot-removable-bootloader.")
                  (base32
                   "01mja33351hkcs59rmfvppqlxqw4rh9gng7a7hx2cfspqwh2y6kr"))))
       (arguments
-       (substitute-keyword-arguments (package-arguments u-boot)
+       (substitute-keyword-arguments arguments
          ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases
               (add-after 'unpack 'patch-u-boot
@@ -1803,7 +1803,7 @@ For more information, refer to
     (package
       (inherit base)
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases
               (add-after 'patch-u-boot 'set-default-fdt-file
@@ -2044,7 +2044,7 @@ the features of iPXE without the hassle of reflashing.")
                      binutils
                      (name "binutils-64-bit-bfd")
                      (arguments
-                       (substitute-keyword-arguments (package-arguments binutils)
+                       (substitute-keyword-arguments arguments
                         ((#:configure-flags flags ''())
                          #~(cons* "--enable-64-bit-bfd" #$flags)))))))
              (modify-inputs (package-native-inputs ipxe)
@@ -2066,7 +2066,7 @@ the features of iPXE without the hassle of reflashing.")
               ("rtl8139"     . ("10ec" . "8139"))
               ("virtio"      . ("1af4" . "1000"))
               ("vmxnet3"     . ("15ad" . "07b0")))))
-       (substitute-keyword-arguments (package-arguments ipxe)
+       (substitute-keyword-arguments arguments
          ((#:modules modules)
           `((ice-9 match) ,@modules))
          ((#:make-flags flags)

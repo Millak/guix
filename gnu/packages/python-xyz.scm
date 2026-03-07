@@ -8341,7 +8341,7 @@ and convert DDL to BigQuery JSON schema.")
                (base32
                 "0ykr61yiiizgvm3bzipa3l73rvj49wmrybbfwhvpgk3pscl5pa68"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments python-jsonschema)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #t) #f)))
     (propagated-inputs
      (list python-attrs
@@ -16758,7 +16758,7 @@ from an XML-based format.")
     (package/inherit base
       (name "python-fonttools")
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:tests? _ #f)
           (not (%current-target-system)))
          ((#:phases phases '%standard-phases)
@@ -22013,7 +22013,7 @@ feels like an AST.")
      (inherit python-libcst)
      (name "python-libcst-minimal")
      (arguments
-      (substitute-keyword-arguments (package-arguments python-libcst)
+      (substitute-keyword-arguments arguments
         ((#:tests? _ #t) #f)))
     (native-inputs
      (list python-minimal-wrapper
@@ -25942,7 +25942,7 @@ events on Linux.")
     (inherit python-pyinotify)
     (name "python-pyinotify-cli")
     (arguments
-     (substitute-keyword-arguments (package-arguments python-pyinotify)
+     (substitute-keyword-arguments arguments
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (delete 'drop-shebang)
@@ -28199,7 +28199,7 @@ Complete support for Berkeley DB Base Replication.  Support for RPC.")
        (sha256
         (base32 "00bqdsfx8jgmfz5bgkx10nlw5bfsw11a86f91zkl53snvk45xl3h"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments python-berkeleydb)
+     (substitute-keyword-arguments arguments
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (delete 'remove-legacy)))
@@ -41139,7 +41139,7 @@ interfaces.")
                (search-patches
                 "python-zeroc-ice-3.6.5-python-3.11-support.patch"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments python-zeroc-ice)
+     (substitute-keyword-arguments arguments
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (add-before 'build 'relax-gcc-14-strictness

@@ -591,7 +591,7 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
    (package/inherit python-jupyter-client
      (name "python-jupyter-client-bootstrap")
      (arguments
-      (substitute-keyword-arguments (package-arguments python-jupyter-client)
+      (substitute-keyword-arguments arguments
         ((#:tests? _) #f)))
      (native-inputs
       (list python-hatchling)))))

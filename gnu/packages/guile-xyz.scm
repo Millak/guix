@@ -1851,7 +1851,7 @@ types are supported.")
     (name "guile2.2-pfds")
     (native-inputs (list guile-2.2))
     (arguments
-     (substitute-keyword-arguments (package-arguments guile-pfds)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         `(modify-phases ,phases
            (delete 'work-around-guile-bug)
@@ -2250,7 +2250,7 @@ format.")
     (inputs (modify-inputs (package-inputs guile-email)
               (replace "guile" guile-2.2)))
     (arguments
-     (substitute-keyword-arguments (package-arguments guile-email)
+     (substitute-keyword-arguments arguments
        ((#:make-flags make-flags '())
         #~(cons "guile_effective_version=2.2"
                 #$make-flags))))))
@@ -2591,7 +2591,7 @@ It currently supports MySQL, Postgres and SQLite3.")
     (inherit guile-dbi)
     (name "guile-dbd-sqlite3")
     (arguments
-     (substitute-keyword-arguments (package-arguments guile-dbi)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         `(modify-phases ,phases
            (replace 'chdir
@@ -2616,7 +2616,7 @@ SQL databases.  This package implements the interface for SQLite.")))
     (inherit guile-dbi)
     (name "guile-dbd-postgresql")
     (arguments
-     (substitute-keyword-arguments (package-arguments guile-dbi)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         `(modify-phases ,phases
            (replace 'chdir
@@ -2646,7 +2646,7 @@ PostgreSQL.")))
     (inherit guile-dbi)
     (name "guile-dbd-mysql")
     (arguments
-     (substitute-keyword-arguments (package-arguments guile-dbi)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         `(modify-phases ,phases
            (replace 'chdir
@@ -4155,7 +4155,7 @@ inspired by the SCSH regular expression system.")
     (inherit guile-irregex)
     (name "guile2.0-irregex")
     (arguments
-     (substitute-keyword-arguments (package-arguments guile-irregex)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             ;; For some reason guile 2.0 cannot load foo.scm using

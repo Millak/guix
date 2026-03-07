@@ -60,7 +60,7 @@
       (inherit xgcc)
       (name "avr-gcc")
       (arguments
-       (substitute-keyword-arguments (package-arguments xgcc)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'set-paths 'augment-CPLUS_INCLUDE_PATH

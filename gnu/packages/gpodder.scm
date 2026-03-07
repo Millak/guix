@@ -160,7 +160,7 @@ and track podcasts.")
      (modify-inputs (package-inputs libmygpo-qt)
        (replace "qtbase" qtbase-5)))
     (arguments
-     (substitute-keyword-arguments (package-arguments libmygpo-qt)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(delete "-DBUILD_WITH_QT6=ON" #$flags))))))
 

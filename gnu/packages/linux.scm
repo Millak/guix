@@ -2099,7 +2099,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-pocket-reform.dtb")))))))))))
       (description (string-append (package-description base)
                     "  Configuration options and patches have been applied for use with MNT/Reform systems."))
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'unpack 'apply-reform-patches
@@ -2434,7 +2434,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-pocket-reform.dtb")))))))))))
       (description (string-append (package-description base)
                     "  Configuration options and patches have been applied for use with MNT/Reform systems."))
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'unpack 'apply-reform-patches
@@ -4124,7 +4124,7 @@ module.")
    (package (inherit e2fsprogs)
             (arguments
              ;; Do not build shared libraries.
-             (substitute-keyword-arguments (package-arguments e2fsprogs)
+             (substitute-keyword-arguments arguments
                ((#:configure-flags _)
                 '(list "--disable-blkid" "--disable-fuse2fs"))
                ((#:make-flags _)
@@ -5368,7 +5368,7 @@ user-space processes.")
        (sha256
         (base32 "11yfl2w2a445hllyzlakq97n32g06972vxpmh7lpbclnj9fhb5zp"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments fuse)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags original-flags #~(list))
         #~(append #$original-flags '("--default-library=static")))))))
 
@@ -5430,7 +5430,7 @@ UnionFS-FUSE additionally supports copy-on-write.")
               (("mtab_needs_update[[:blank:]]*\\([a-z_]+\\)") "0")
               (("/bin/") ""))))))
     (arguments
-     (substitute-keyword-arguments (package-arguments fuse)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags '())
         #~(cons "-Ddefault_library=static"
                 #$flags))))))
@@ -5451,7 +5451,7 @@ UnionFS-FUSE additionally supports copy-on-write.")
                (string-append "target_link_libraries"
                               libs " dl)")))))))
     (arguments
-     (substitute-keyword-arguments (package-arguments unionfs-fuse)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(cons "-DCMAKE_EXE_LINKER_FLAGS=-static" #$flags))
        ((#:phases phases #~%standard-phases)
@@ -5663,7 +5663,7 @@ for systems using the Linux kernel.  This includes commands such as
     (inherit kbd)
     (name "loadkeys-static")
     (arguments
-     (substitute-keyword-arguments (package-arguments kbd)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags ''())
         `(append '("LDFLAGS=-static" "--disable-shared" "--disable-nls"
                    "--disable-vlock"              ;so we don't need libpam
@@ -6154,7 +6154,7 @@ mapper.  Kernel components are part of Linux-libre.")
               ("udev:static" ,eudev "static")))
 
     (arguments
-     (substitute-keyword-arguments (package-arguments lvm2)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags '())
         ;; LVM2 doesn't use Libtool, hence the custom option.
         `(append '("--enable-static_link")
@@ -6573,7 +6573,7 @@ SMBus access.")
               (sha256
                (base32 "0hd4c1w8lnwc3j95h3vpd125170l1d4myspyrlpamqx6wbr6jpnv"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments i2c-tools)
+     (substitute-keyword-arguments arguments
        ((#:make-flags _)
         #~(list (string-append "prefix=" #$output)
                 (string-append "CC=" #$(cc-for-target))))))))
@@ -7255,7 +7255,7 @@ arrays when needed.")
     (inherit mdadm)
     (name "mdadm-static")
     (arguments
-     (substitute-keyword-arguments (package-arguments mdadm)
+     (substitute-keyword-arguments arguments
        ((#:make-flags flags)
         #~(cons* "LDFLAGS = -static"
                  "CXFLAGS = -DNO_LIBUDEV"
@@ -8385,7 +8385,7 @@ The package provides additional NTFS tools.")
      (inherit ntfs-3g)
      (name "ntfs-3g-static")
      (arguments
-      (substitute-keyword-arguments (package-arguments ntfs-3g)
+      (substitute-keyword-arguments arguments
         ((#:configure-flags flags)
          `(append ,flags
                   (list "--enable-really-static"
@@ -10256,7 +10256,7 @@ available in the kernel Linux.")
      "Unprivileged chroot, bind mount, and binfmt_misc (statically linked)")
     (inputs `(("talloc" ,talloc/static)))
     (arguments
-     (substitute-keyword-arguments (package-arguments proot)
+     (substitute-keyword-arguments arguments
        ((#:make-flags flags)
         `(cons "LDFLAGS = -ltalloc -static -static-libgcc" ,flags))
        ((#:phases phases)
@@ -11101,7 +11101,7 @@ file systems.")
                (base32
                 "13xkn9jpmwp4fm9r68vhgznkmxhnv83n2b39mhy2qdaph90w2a1l"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments xfsprogs)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags configure-flags '())
         `(cons "--enable-gettext=no"
                ,configure-flags))))
@@ -11115,7 +11115,7 @@ file systems.")
     (name "xfsprogs-static")
     (outputs (list "out"))
     (arguments
-     (substitute-keyword-arguments (package-arguments xfsprogs)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags configure-flags '())
         `(append ,configure-flags
                  (list "--enable-static")))
@@ -11618,7 +11618,7 @@ tools for managing PipeWire.")
       (inherit base)
       (name "wireplumber-minimal")
       (arguments
-       (substitute-keyword-arguments (package-arguments base)
+       (substitute-keyword-arguments arguments
          ((#:configure-flags flags ''())
           #~(cons "-Delogind=disabled" #$flags))))
       (inputs
@@ -12648,7 +12648,7 @@ work properly.")
    firejail
    (name "firejail-disable-sandbox-check")
    (arguments
-    (substitute-keyword-arguments (package-arguments firejail)
+    (substitute-keyword-arguments arguments
       ((#:configure-flags flags #~'())
        #~(append #$flags
                  (list "--disable-sandbox-check")))))

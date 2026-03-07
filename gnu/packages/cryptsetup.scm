@@ -122,7 +122,7 @@ files).  This assumes LIBRARY uses Libtool."
     (inherit library)
     (name (string-append (package-name library) "-static"))
     (arguments
-     (substitute-keyword-arguments (package-arguments library)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         (let* ((build-system (package-build-system library))
                (static-flags (cond ((eq? build-system cmake-build-system)
@@ -138,7 +138,7 @@ files).  This assumes LIBRARY uses Libtool."
     (inherit cryptsetup-minimal)
     (name "cryptsetup-static")
     (arguments
-     (substitute-keyword-arguments (package-arguments cryptsetup-minimal)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags ''())
         `(cons* "--disable-shared"
                 "--enable-static-cryptsetup"
