@@ -71,14 +71,14 @@
 (define-public tor
   (package
     (name "tor")
-    (version "0.4.8.18")
+    (version "0.4.9.5")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://dist.torproject.org/tor-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "1y1sv6s4d46d5yq18ql5zqa5v5haddz5m47vpai4xzsfkl86rsja"))))
+               "0yg1k4qcvf7ikc296wgr7nr5axhpkkjb3xkn364n93ildgwc4jf9"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
