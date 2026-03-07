@@ -7151,12 +7151,19 @@ language.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0h32npfjir3k0yciisr6ybziv1bshmzw6x3bfkh3i72y3i7nv610"))))
+        (base32 "0h32npfjir3k0yciisr6ybziv1bshmzw6x3bfkh3i72y3i7nv610"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (delete-file-recursively "vendor")))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/gorilla/csrf"))
+      #:import-path "github.com/gorilla/csrf"
+      #:test-flags
+      ;; fatal error: crypto/rand: failed to read random data (see
+      ;; https://go.dev/issue/66821): unexpected EOF
+      #~(list "-skip" "TestGenerateRandomBytes")))
     (propagated-inputs
      (list go-github-com-gorilla-securecookie
            go-github-com-pkg-errors))
