@@ -431,36 +431,30 @@ Go.  It also includes runtime support libraries for these languages.")
                  '("alpha" "bfin" "i386" "m68k"
                    "pa" "sh" "tilepro" "xtensa")))))
     (arguments
-     ;; Since 'arguments' is a function of the package's version, define
-     ;; 'parent' such that the 'arguments' thunk gets to see the right
-     ;; version.
-     (let ((parent (package
-                     (inherit gcc-base)
-                     (version (package-version this-package)))))
-       (if (%current-target-system)
-           (package-arguments parent)
-           ;; For native builds of some GCC versions the C++ include path needs to
-           ;; be adjusted so it does not interfere with GCC's own build processes.
-           (substitute-keyword-arguments arguments
-             ((#:modules modules %default-gnu-modules)
-              `((srfi srfi-1)
-                ,@modules))
-             ((#:phases phases)
-              `(modify-phases ,phases
-                 (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (let ((libc (assoc-ref inputs "libc"))
-                           (gcc (assoc-ref inputs  "gcc")))
-                       (setenv "CPLUS_INCLUDE_PATH"
-                               (string-join (fold delete
-                                                  (string-split (getenv "CPLUS_INCLUDE_PATH")
-                                                                #\:)
-                                                  (list (string-append libc "/include")
-                                                        (string-append gcc "/include/c++")))
-                                            ":"))
-                       (format #t
-                               "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
-                               (getenv "CPLUS_INCLUDE_PATH")))))))))))
+     (if (%current-target-system)
+         arguments
+         ;; For native builds of some GCC versions the C++ include path needs to
+         ;; be adjusted so it does not interfere with GCC's own build processes.
+         (substitute-keyword-arguments arguments
+           ((#:modules modules %default-gnu-modules)
+            `((srfi srfi-1)
+              ,@modules))
+           ((#:phases phases)
+            `(modify-phases ,phases
+               (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((libc (assoc-ref inputs "libc"))
+                         (gcc (assoc-ref inputs  "gcc")))
+                     (setenv "CPLUS_INCLUDE_PATH"
+                             (string-join (fold delete
+                                                (string-split (getenv "CPLUS_INCLUDE_PATH")
+                                                              #\:)
+                                                (list (string-append libc "/include")
+                                                      (string-append gcc "/include/c++")))
+                                          ":"))
+                     (format #t
+                             "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
+                             (getenv "CPLUS_INCLUDE_PATH"))))))))))
     (supported-systems (fold delete %supported-systems
                              '("aarch64-linux" "riscv64-linux"
                                "powerpc64le-linux" "x86_64-gnu")))))
@@ -491,40 +485,34 @@ Go.  It also includes runtime support libraries for these languages.")
                  '("aarch64" "alpha" "bfin" "i386" "m68k"
                    "pa" "sh" "tilepro" "xtensa")))))
     (arguments
-     ;; Since 'arguments' is a function of the package's version, define
-     ;; 'parent' such that the 'arguments' thunk gets to see the right
-     ;; version.
-     (let ((parent (package
-                     (inherit gcc-base)
-                     (version (package-version this-package)))))
-       (if (%current-target-system)
-           (substitute-keyword-arguments arguments
-            ((#:configure-flags flags '())
-             `(cons "CXX=g++ -std=c++03" ,flags)))
-           (substitute-keyword-arguments arguments
-             ((#:modules modules %default-gnu-modules)
-              `((srfi srfi-1)
-                ,@modules))
-             ((#:configure-flags flags '())
-              `(cons "CXX=g++ -std=c++03" ,flags))
-             ;; For native builds of some GCC versions the C++ include path needs to
-             ;; be adjusted so it does not interfere with GCC's own build processes.
-             ((#:phases phases)
-              `(modify-phases ,phases
-                 (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (let ((libc (assoc-ref inputs "libc"))
-                           (gcc (assoc-ref inputs  "gcc")))
-                       (setenv "CPLUS_INCLUDE_PATH"
-                               (string-join (fold delete
-                                                  (string-split (getenv "CPLUS_INCLUDE_PATH")
-                                                                #\:)
-                                                  (list (string-append libc "/include")
-                                                        (string-append gcc "/include/c++")))
-                                            ":"))
-                       (format #t
-                               "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
-                               (getenv "CPLUS_INCLUDE_PATH")))))))))))
+     (if (%current-target-system)
+         (substitute-keyword-arguments arguments
+           ((#:configure-flags flags '())
+            `(cons "CXX=g++ -std=c++03" ,flags)))
+         (substitute-keyword-arguments arguments
+           ((#:modules modules %default-gnu-modules)
+            `((srfi srfi-1)
+              ,@modules))
+           ((#:configure-flags flags '())
+            `(cons "CXX=g++ -std=c++03" ,flags))
+           ;; For native builds of some GCC versions the C++ include path needs to
+           ;; be adjusted so it does not interfere with GCC's own build processes.
+           ((#:phases phases)
+            `(modify-phases ,phases
+               (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((libc (assoc-ref inputs "libc"))
+                         (gcc (assoc-ref inputs  "gcc")))
+                     (setenv "CPLUS_INCLUDE_PATH"
+                             (string-join (fold delete
+                                                (string-split (getenv "CPLUS_INCLUDE_PATH")
+                                                              #\:)
+                                                (list (string-append libc "/include")
+                                                      (string-append gcc "/include/c++")))
+                                          ":"))
+                     (format #t
+                             "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
+                             (getenv "CPLUS_INCLUDE_PATH"))))))))))
     (supported-systems (fold delete %supported-systems
                              '("riscv64-linux" "x86_64-gnu")))
     (inputs
@@ -560,40 +548,34 @@ Go.  It also includes runtime support libraries for these languages.")
                  '("aarch64" "alpha" "bfin" "i386" "m68k" "nios2"
                    "pa" "sh" "tilepro" "xtensa")))))
     (arguments
-     ;; Since 'arguments' is a function of the package's version, define
-     ;; 'parent' such that the 'arguments' thunk gets to see the right
-     ;; version.
-     (let ((parent (package
-                     (inherit gcc-base)
-                     (version (package-version this-package)))))
-       (if (%current-target-system)
-           (substitute-keyword-arguments arguments
-            ((#:configure-flags flags '())
-             `(cons "CXX=g++ -std=c++11" ,flags)))
-           (substitute-keyword-arguments arguments
-             ((#:modules modules %default-gnu-modules)
-              `((srfi srfi-1)
-                ,@modules))
-             ((#:configure-flags flags '())
-              `(cons "CXX=g++ -std=c++11" ,flags))
-             ;; For native builds of some GCC versions the C++ include path needs to
-             ;; be adjusted so it does not interfere with GCC's own build processes.
-             ((#:phases phases)
-              `(modify-phases ,phases
-                 (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (let ((libc (assoc-ref inputs "libc"))
-                           (gcc (assoc-ref inputs  "gcc")))
-                       (setenv "CPLUS_INCLUDE_PATH"
-                               (string-join (fold delete
-                                                  (string-split (getenv "CPLUS_INCLUDE_PATH")
-                                                                #\:)
-                                                  (list (string-append libc "/include")
-                                                        (string-append gcc "/include/c++")))
-                                            ":"))
-                       (format #t
-                               "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
-                               (getenv "CPLUS_INCLUDE_PATH")))))))))))
+     (if (%current-target-system)
+         (substitute-keyword-arguments arguments
+           ((#:configure-flags flags '())
+            `(cons "CXX=g++ -std=c++11" ,flags)))
+         (substitute-keyword-arguments arguments
+           ((#:modules modules %default-gnu-modules)
+            `((srfi srfi-1)
+              ,@modules))
+           ((#:configure-flags flags '())
+            `(cons "CXX=g++ -std=c++11" ,flags))
+           ;; For native builds of some GCC versions the C++ include path needs to
+           ;; be adjusted so it does not interfere with GCC's own build processes.
+           ((#:phases phases)
+            `(modify-phases ,phases
+               (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((libc (assoc-ref inputs "libc"))
+                         (gcc (assoc-ref inputs  "gcc")))
+                     (setenv "CPLUS_INCLUDE_PATH"
+                             (string-join (fold delete
+                                                (string-split (getenv "CPLUS_INCLUDE_PATH")
+                                                              #\:)
+                                                (list (string-append libc "/include")
+                                                      (string-append gcc "/include/c++")))
+                                          ":"))
+                     (format #t
+                             "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
+                             (getenv "CPLUS_INCLUDE_PATH"))))))))))
     ;; Override inherited texinfo-5 with latest version.
     (native-inputs (list perl ;for manpages
                          texinfo))
@@ -644,38 +626,32 @@ Go.  It also includes runtime support libraries for these languages.")
               (modules '((guix build utils)))
               (snippet gcc-canadian-cross-objdump-snippet)))
     (arguments
-     ;; Since 'arguments' is a function of the package's version, define
-     ;; 'parent' such that the 'arguments' thunk gets to see the right
-     ;; version.
-     (let ((parent (package
-                     (inherit gcc-base)
-                     (version (package-version this-package)))))
-       (substitute-keyword-arguments arguments
-         ((#:modules modules %default-gnu-modules)
-          `((srfi srfi-1)
-            ,@modules))
-         ((#:configure-flags flags '())
-          `(cons "CXX=g++ -std=c++11" ,flags))
-         ;; For native builds of some GCC versions the C++ include path needs to
-         ;; be adjusted so it does not interfere with GCC's own build processes.
-         ((#:phases phases)
-          (if (%current-target-system)
-              phases
-              `(modify-phases ,phases
-                 (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (let ((libc (assoc-ref inputs "libc"))
-                           (gcc (assoc-ref inputs  "gcc")))
-                       (setenv "CPLUS_INCLUDE_PATH"
-                               (string-join (fold delete
-                                                  (string-split (getenv "CPLUS_INCLUDE_PATH")
-                                                                #\:)
-                                                  (list (string-append libc "/include")
-                                                        (string-append gcc "/include/c++")))
-                                            ":"))
-                       (format #t
-                               "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
-                               (getenv "CPLUS_INCLUDE_PATH")))))))))))
+     (substitute-keyword-arguments arguments
+       ((#:modules modules %default-gnu-modules)
+        `((srfi srfi-1)
+          ,@modules))
+       ((#:configure-flags flags '())
+        `(cons "CXX=g++ -std=c++11" ,flags))
+       ;; For native builds of some GCC versions the C++ include path needs to
+       ;; be adjusted so it does not interfere with GCC's own build processes.
+       ((#:phases phases)
+        (if (%current-target-system)
+            phases
+            `(modify-phases ,phases
+               (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((libc (assoc-ref inputs "libc"))
+                         (gcc (assoc-ref inputs  "gcc")))
+                     (setenv "CPLUS_INCLUDE_PATH"
+                             (string-join (fold delete
+                                                (string-split (getenv "CPLUS_INCLUDE_PATH")
+                                                              #\:)
+                                                (list (string-append libc "/include")
+                                                      (string-append gcc "/include/c++")))
+                                          ":"))
+                     (format #t
+                             "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
+                             (getenv "CPLUS_INCLUDE_PATH"))))))))))
     (native-inputs (list perl ;for manpages
                          texinfo))
     (inputs
