@@ -2726,32 +2726,70 @@ memoized as a function of '%current-system'."
      (source
       (origin
         (inherit (package-source gnumach-headers))
-        (patches '())))
+        (patches '())
+        (method
+         (git-fetch-from-tarball
+          (origin
+            (method url-fetch)
+            (uri (string-append
+                  "mirror://gnu/guix/mirror/gnumach-"
+                  (package-version gnumach-headers) ".tar.gz"))
+            (sha256
+             (base32
+              "0dchfv2fg92503ydw4kj3myz2036x4hbf6i9k1s4q6mg210qanfs")))))))
      (native-inputs (list autoconf-boot0 automake-boot0 texinfo-boot0)))))
 
 (define mig-boot0
-  (with-boot0
-   (package
-     (inherit mig)
-     (name "mig-boot0")
-     (native-inputs (list autoconf-boot0 automake-boot0 bison-boot0 flex-boot0
-                          gnumach-headers-boot0))
-     (inputs (list flex-boot0 gnumach-headers-boot0))
-     (arguments
-      (substitute-keyword-arguments (package-arguments mig)
-        ((#:configure-flags flags '())
-         #~(list (string-append "LDFLAGS=-Wl,-rpath="
-                                #$(this-package-native-input "flex")
-                                "/lib/"))))))))
+  (let ((tarball-version "1.8+git3f4b006"))
+    (with-boot0
+     (package
+       (inherit mig)
+       (name "mig-boot0")
+       (source
+        (origin
+          (inherit (package-source mig))
+          (method
+           (git-fetch-from-tarball
+            (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://gnu/guix/mirror/mig-"
+                    tarball-version ".tar.gz"))
+              (sha256
+               (base32
+                "0bgrhbkaym1y222abjrcz3qrv28jr1kvq99a8vssplww73mcf92c")))))))
+       (native-inputs (list autoconf-boot0 automake-boot0 bison-boot0 flex-boot0
+                            gnumach-headers-boot0))
+       (inputs (list flex-boot0 gnumach-headers-boot0))
+       (arguments
+        (substitute-keyword-arguments (package-arguments mig)
+          ((#:configure-flags flags '())
+           #~(list (string-append "LDFLAGS=-Wl,-rpath="
+                                  #$(this-package-native-input "flex")
+                                  "/lib/")))))))))
 
 (define hurd-headers-boot0
-  (with-boot0
-   (package
-     (inherit hurd-headers)
-     (name "hurd-headers-boot0")
-     (native-inputs
-      (list autoconf-boot0 automake-boot0 mig-boot0))
-     (inputs '()))))
+  (let ((tarball-version "0.9+git6290b4c"))
+    (with-boot0
+     (package
+       (inherit hurd-headers)
+       (name "hurd-headers-boot0")
+       (source
+        (origin
+          (inherit (package-source hurd-headers))
+          (method
+           (git-fetch-from-tarball
+            (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://gnu/guix/mirror/hurd-"
+                    tarball-version ".tar.gz"))
+              (sha256
+               (base32
+                "0w18nv4bv0b5vg6mqxhajma3h56nf9iipa444hby5hqf9c1kaa32")))))))
+       (native-inputs
+        (list autoconf-boot0 automake-boot0 mig-boot0))
+       (inputs '())))))
 
 (define hurd-minimal-boot0
   (with-boot0
