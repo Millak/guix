@@ -122,7 +122,8 @@
            knewstuff
            kwidgetsaddons
            kxmlgui
-           libkdegames))
+           libkdegames
+           qtwayland))
     (home-page "https://apps.kde.org/katomic/")
     (synopsis "Molecular game")
     (description "KAtomic is a fun educational game built around molecular
