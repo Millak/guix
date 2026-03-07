@@ -456,3 +456,54 @@ You run your application in Valgrind with @code{--tool=massif} and then open
 the generated @file{massif.out.%pid} in the visualizer.  Gzip or Bzip2
 compressed massif files can also be opened transparently.")
     (license license:gpl2+)))
+
+(define-public umbrello
+  (package
+    (name "umbrello")
+    (version "25.12.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/umbrello-" version ".tar.xz"))
+       (sha256
+        (base32 "1hjryprcazfwdfp66nh3l1lm300b9xadymgp2f56xfhr11lij83s"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:configure-flags
+           #~(list "-DQT_MAJOR_VERSION=6")))
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list karchive
+           kcompletion
+           kconfig
+           kcoreaddons
+           kcrash
+           kdevelop-pg-qt
+           ki18n
+           kiconthemes
+           kio
+           ktexteditor
+           kwidgetsaddons
+           kwindowsystem
+           kxmlgui
+           libxml2
+           libxslt
+           qtsvg
+           qtwayland))
+    (home-page "https://apps.kde.org/umbrello/")
+    (synopsis "GUI for diagramming Unified Modelling Language (UML)")
+    (description "Umbrello is a @acronym{UML, Unified Modelling Language}
+modelling tool and code generator.  It can create diagrams of software and
+other systems in the industry-standard UML format, and can also generate code
+from UML diagrams in a variety of programming languages.
+
+Features:
+@itemize
+@item Supported formats: XMI.
+@item Types of diagrams: use case, class, sequence, communication, state,
+activity, component, deployment and relationship.
+@end itemize")
+    (license license:gpl2+)))
