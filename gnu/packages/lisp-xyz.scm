@@ -26454,9 +26454,6 @@ to dispatch on the basis of types rather than classes.")
 (define-public cl-polymorphic-functions
   (sbcl-package->cl-source-package sbcl-polymorphic-functions))
 
-(define-public ecl-polymorphic-functions
-  (sbcl-package->ecl-package sbcl-polymorphic-functions))
-
 (define-public sbcl-portable-condition-system
   (let ((commit "1307ec146d227a9d8ea42312c1ba2a5206a9eb3c")
         (revision "0"))
