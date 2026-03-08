@@ -33509,8 +33509,8 @@ implement low-level numerical data types and functionality.")
   (sbcl-package->clasp-package sbcl-type-templates))
 
 (define-public sbcl-typo
-  (let ((commit "0e883490f81edf2a1be4e5b101d1caec78d7853b")
-        (revision "0"))
+  (let ((commit "86ebb75edba8bb6b828d5196d96f38ed1225384d")
+        (revision "1"))
     (package
       (name "sbcl-typo")
       (version (git-version "0.0.0" revision commit))
@@ -33522,7 +33522,7 @@ implement low-level numerical data types and functionality.")
                (commit commit)))
          (file-name (git-file-name "cl-typo" version))
          (sha256
-          (base32 "08cmkjl3f77rfhxbjyd6f3kinhzak30mdfphnpf73sh1vw4v0vym"))))
+          (base32 "12r0jwhl41mfgb3wkikisvp5qf35nmajmvqv2gjjph7j2p5qh8h0"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
