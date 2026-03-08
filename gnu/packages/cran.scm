@@ -14261,13 +14261,13 @@ selected chapters is included in this package.")
 (define-public r-httpgd
   (package
     (name "r-httpgd")
-    (version "2.0.3")
+    (version "2.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "httpgd" version))
        (sha256
-        (base32 "02p9d50gbzaz1v77ssby9fgxx8pxp4n8h50k57x9niymgi7phnmx"))))
+        (base32 "13ixshy0makcakzqpqbw78aknvmfks361jrn40ml0jn0n1aqlqrf"))))
     (properties `((upstream-name . "httpgd")))
     (build-system r-build-system)
     ;; XXX On the build farm the tests fail with "Too many open files".  It
