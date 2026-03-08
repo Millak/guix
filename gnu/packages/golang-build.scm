@@ -520,6 +520,38 @@ language (golang), namely support for record length-delimited message
 streaming.")
     (license license:asl2.0)))
 
+(define-public go-github-com-matttproud-golang-protobuf-extensions-v2
+  (package
+    (name "go-github-com-matttproud-golang-protobuf-extensions-v2")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/matttproud/golang_protobuf_extensions")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0jw4vjycwx0a82yvixmp25805krdyqd960y8lnyggllb6br0vh41"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/matttproud/golang_protobuf_extensions/v2"
+      #:skip-build? #t))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-golang-protobuf
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/matttproud/golang_protobuf_extensions")
+    (synopsis "Streaming Protocol Buffers in Go")
+    (description
+     "This package provides various Protocol Buffer extensions for the Go
+language, namely support for record length-delimited message streaming.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-mmcloughlin-avo
   (package
     (name "go-github-com-mmcloughlin-avo")
