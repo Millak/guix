@@ -15392,9 +15392,6 @@ color spaces, which supports many color models.")
 (define-public cl-dufy
   (sbcl-package->cl-source-package sbcl-dufy))
 
-(define-public ecl-dufy
-  (sbcl-package->ecl-package sbcl-dufy))
-
 (define-public sbcl-duologue
   (let ((commit "ea1ada244a81da65f85b548823c9a6d7c9c145e1")
         (revision "0"))
