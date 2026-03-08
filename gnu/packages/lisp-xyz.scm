@@ -13027,8 +13027,8 @@ allows one to gradually make their programs safer.")
   (sbcl-package->ecl-package sbcl-coalton))
 
 (define-public sbcl-coleslaw
-  (let ((commit "e7e68ce6020d13b14bf212890a7d8973d7af3b40")
-        (revision "0"))
+  (let ((commit "ef76a42e4ad2e19043b893f852619d0718b94a9b")
+        (revision "1"))
     (package
       (name "sbcl-coleslaw")
       (version (git-version "0.9.7" revision commit))
@@ -13040,7 +13040,7 @@ allows one to gradually make their programs safer.")
                (commit commit)))
          (file-name (git-file-name "cl-coleslaw" version))
          (sha256
-          (base32 "1w21a272q4x7nlr4kbmwwvkjvb4hpnw869byvy47vv361y7pimws"))))
+          (base32 "126dl1m6zh7m6gmq2xnam0bfg6nv7gdkvcr4x1i3407s3wpmirw5"))))
       (build-system asdf-build-system/sbcl)
       (outputs '("out" "bin"))
       (arguments
