@@ -24,17 +24,64 @@
   #:use-module (guix build-system pyproject)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-vcs)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages textutils)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils))
+
+(define-public bundlewrap
+  (package
+    (name "bundlewrap")
+    (version "5.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bundlewrap/bundlewrap")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p0082lwyfkppswm8cpr1yp28y0cm0f8rk3ly3xlym7qyidglkli"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "tests/unit")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (inputs
+     (list python-bcrypt
+           python-cryptography
+           python-jinja2
+           python-librouteros
+           python-mako
+           python-pyyaml
+           python-requests
+           python-tomlkit))
+    (home-page "https://bundlewrap.org")
+    (synopsis "Config management with Python")
+    (description
+     "BundleWrap is a decentralized configuration management system that is
+designed to be powerful, easy to extend and extremely versatile.
+
+
+By allowing for easy and low-overhead config management, BundleWrap fills the
+gap between complex deployments using Chef or Puppet and old school system
+administration over SSH.  While most other config management systems rely on a
+client-server architecture, BundleWrap works off a repository cloned to local
+machine.  It then automates the process of SSHing into servers and making sure
+everything is configured the way it's supposed to be.")
+    (license license:gpl3)))
 
 (define-public chezmoi
   (package
