@@ -689,7 +689,7 @@ read/write access to i2c devices to users in the @samp{i2c} group.")
 (define-public ddcui
   (package
     (name "ddcui")
-    (version "0.5.4")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -698,7 +698,7 @@ read/write access to i2c devices to users in the @samp{i2c} group.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hq19gdy9ybraclkqvv1nlf46irql5b6wrc1y6wi0ihkqly20vgz"))))
+        (base32 "13gqgswkkqbn1x97ayiwj4ds2rbdnw564c2rhpi89zymhc1azj19"))))
     (build-system qt-build-system)
     (arguments
      (list #:tests? #f))                    ; No test suite
