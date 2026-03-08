@@ -18703,13 +18703,13 @@ standardization of the analyses and the development of best practices.")
 (define-public r-microbiomestat
   (package
     (name "r-microbiomestat")
-    (version "1.3")
+    (version "1.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "MicrobiomeStat" version))
               (sha256
                (base32
-                "02xg8l4d0z5wrdrm5dj5a0q51vsbhf3f6z2lk8294c4d85s09dhl"))))
+                "0in28lzds3sv1xa25vs8q5mmm1ax78s2axhq7mi23njqip5xmsr1"))))
     (properties
      '((upstream-name . "MicrobiomeStat")
        (updater-extra-inputs . ("nlopt"))
@@ -18717,23 +18717,21 @@ standardization of the analyses and the development of best practices.")
     (build-system r-build-system)
     (inputs (list nlopt))
     (native-inputs (list pkg-config))
-    (propagated-inputs (list r-bbmisc
+    (propagated-inputs (list r-bbotk
                              r-dplyr
                              r-foreach
                              r-ggplot2
                              r-ggrepel
-                             r-lhs
                              r-lmertest
                              r-mass
                              r-matrix
                              r-matrixstats
-                             r-mlr
-                             r-mlrmbo
+                             r-mlr3
+                             r-mlr3mbo
                              r-modeest
-                             r-paramhelpers
+                             r-paradox
                              r-rcpp
                              r-rcpparmadillo
-                             r-smoof
                              r-statmod))
     (home-page "https://cran.r-project.org/package=MicrobiomeStat")
     (synopsis "Statistical methods for microbiome compositional data")
