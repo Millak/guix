@@ -32273,14 +32273,14 @@ experiments using ANOVA or mixed models.")
 (define-public r-lmertest
   (package
     (name "r-lmertest")
-    (version "3.2-0")
+    (version "3.2-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lmerTest" version))
        (sha256
         (base32
-         "10rcjxwiccmrnra41q790j6vbqfglmcmr1whbz5adgfyv35w2s60"))))
+         "0s2r0960hlaax104jgrn7s6z0pz690ski5f5kzh4z0j0i6aydid0"))))
     (properties `((upstream-name . "lmerTest")))
     (build-system r-build-system)
     (propagated-inputs
