@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2026 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -320,6 +321,48 @@ that implements protobuf encoding and decoding, and @code{protoc-c}, a code
 generator that converts Protocol Buffer @code{.proto} files to C descriptor
 code.")
     (license license:bsd-2)))
+
+(define-public protobuf-matchers
+  (package
+    (name "protobuf-matchers")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/inazarenko/protobuf-matchers")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "036h1y6v1nykari0g71m16276b43dnzqc16dcf3p3hh91sc2m0b8"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(substitute*
+            "protobuf-matchers/protocol-buffer-matchers-test.cc"
+            (("#include.*/test.pb.h") "#include \"test.pb.h")))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:build-type "Release"
+           #:configure-flags #~'("-DBUILD_SHARED_LIBS=ON")
+           #:out-of-source? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install
+                 (lambda _
+                   (install-file "libprotobuf-matchers.so"
+                                 (string-append #$output "/lib"))
+                   (install-file
+                     "protobuf-matchers/protocol-buffer-matchers.h"
+                     (string-append #$output "/include"
+                                    "/protobuf-matchers")))))))
+    (native-inputs (list googletest))
+    (inputs (list abseil-cpp protobuf-6))
+    (home-page "https://github.com/inazarenko/protobuf-matchers")
+    (synopsis "GMock matchers for Protobuf message objects")
+    (description
+     "This package provides a library of matchers for Protocol Buffers
+message objects.")
+    (license license:asl2.0)))
 
 (define-public protozero
   (package
