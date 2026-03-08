@@ -1231,7 +1231,11 @@ tst_qt_cmake_create.cpp"
 
                        ;; One of the finicky tests, see
                        ;; https://codeberg.org/guix/guix/issues/7545
-                       "tst_qlatin1stringmatcher")
+                       "tst_qlatin1stringmatcher"
+
+                       ;; This test fails deterministically on a non-privileged
+                       ;; daemon.
+                       "tst_qstandardpaths")
                       #$@(cond
                            ((target-ppc64le?)
                              #~((list
