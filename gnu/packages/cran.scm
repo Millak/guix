@@ -12914,23 +12914,21 @@ flexible and easy to set up.")
 (define-public r-tglkmeans
   (package
     (name "r-tglkmeans")
-    (version "0.5.8")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tglkmeans" version))
        (sha256
-        (base32 "195abc44qig0ii6spifwab0znk21lam86qr0d341xhkn5v1jz79z"))))
+        (base32 "1gq4mfma7n97l4i7766d1ylgm17bz5ndv4clggp3gnbdr8l4sy57"))))
     (properties `((upstream-name . "tglkmeans")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli
                              r-dofuture
                              r-dplyr
                              r-future
-                             r-ggplot2
                              r-magrittr
                              r-matrix
-                             r-plyr
                              r-purrr
                              r-rcpp
                              r-rcppparallel
