@@ -26041,10 +26041,11 @@ discontiguous ranges of time.")
   (sbcl-package->ecl-package sbcl-periods))
 
 (define-public sbcl-phos
-  (let ((commit "6620b82b091cdfed655e1093ef045dbe518d5474"))
+  (let ((commit "eb81eaf306fe94d19e0c695d18537220ae6c27d1")
+        (revision "2"))
     (package
       (name "sbcl-phos")
-      (version (git-version "0.0.1" "1" commit))
+      (version (git-version "0.0.1" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -26054,10 +26055,14 @@ discontiguous ranges of time.")
          (file-name (git-file-name "phos" version))
          (sha256
           (base32
-           "1zwci86rkbaiix0w2gd5q6nr8v2vv945pkvwp0j240iyzd4hfxr3"))))
+           "0407vdy5q0h0r1p14wln8hgcn3gikgwazm7sbjcw4i5i3xnwsbl5"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       (list sbcl-quri sbcl-cl-ppcre sbcl-trivia sbcl-usocket sbcl-cl+ssl
+       (list sbcl-quri
+             sbcl-cl-ppcre
+             sbcl-trivia
+             sbcl-usocket
+             sbcl-cl+ssl
              ;; For the experimental GUI:
              sbcl-nodgui))
       (native-inputs
@@ -26066,7 +26071,7 @@ discontiguous ranges of time.")
       (synopsis "Gemini client library and experimental GUI")
       (description "This package contains a Gemini client library for Common
 Lisp.  A subsystem offers an experimental GUI Gemini client.")
-      (license license:isc))))
+      (license (list license:agpl3 license:isc)))))
 
 (define-public cl-phos
   (sbcl-package->cl-source-package sbcl-phos))
