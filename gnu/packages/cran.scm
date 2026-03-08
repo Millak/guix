@@ -4910,13 +4910,13 @@ charts and several other useful visualizations.")
 (define-public r-ggstats
   (package
     (name "r-ggstats")
-    (version "0.12.0")
+    (version "0.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggstats" version))
        (sha256
-        (base32 "1ggx6vfnnckk3gbxqvlplsk5q1yl5hxyfj03ry1w0zs8k911pk8z"))))
+        (base32 "11ypgk4cdvwm7vk633809dbh0s2i973jajmmcxasm6ylip507pc2"))))
     (properties
      '((upstream-name . "ggstats")
        (updater-extra-native-inputs . ("r-broom-helpers"))))
