@@ -638,7 +638,7 @@ RGB animations.")
 (define-public ddcutil
   (package
     (name "ddcutil")
-    (version "2.1.4")
+    (version "2.2.5")
     (source
      (origin
        (method git-fetch)
@@ -647,7 +647,7 @@ RGB animations.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wk82cdg7vddk6pbnn6qq3p71j4bppq13is2ck40glig08ax1bg5"))))
+        (base32 "0mmzfa0g726dmqrmyyysnzxrhdkd93ay4dzzv0kqkvgdcqizh5z8"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool pkg-config))
