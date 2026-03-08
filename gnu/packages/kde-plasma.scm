@@ -1840,17 +1840,19 @@ for xdg-desktop-portal that is using Qt/KF5.")
     (arguments
      (list #:builder #~(begin
                          (mkdir #$output))))
+    ;; These inputs are used by plasma-desktop-service-type.
+    (inputs (list bolt         ;for plasma-thunderbolt
+                  fwupd        ;for kinfocenter and discover
+                  packagekit)) ;for discover
     (propagated-inputs (list appmenu-gtk-module
                              aurorae
                              baloo
                              bluedevil
-                             bolt ;for plasma-thunderbolt
                              breeze
                              breeze-gtk
                              breeze-icons ;default mouse icon
                              colord
                              discover
-                             fwupd
                              kactivitymanagerd
                              kdeclarative ;required by sddm breeze theme
                              kde-cli-tools
@@ -1881,7 +1883,6 @@ for xdg-desktop-portal that is using Qt/KF5.")
                              milou
                              ocean-sound-theme
                              oxygen-sounds
-                             packagekit     ;for discover
                              plasma5support ;required by sddm breeze theme
                              plasma-browser-integration
                              plasma-desktop
