@@ -158,7 +158,7 @@ Back-UPS, and BackUPS-Office.")
 (define-public tuned-minimal
   (package
     (name "tuned-minimal")
-    (version "2.26.0")
+    (version "2.27.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -167,7 +167,7 @@ Back-UPS, and BackUPS-Office.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0r4a42s2hk9hcrp835164yzddmvr8n4b17bhhpwxx16iiaizramn"))))
+                "11h65i65y0ly3iw8kkhzq6mv8csw9jkgy57k51jf3g99w57pcl9y"))))
     (build-system pyproject-build-system)
     (arguments
        (list
@@ -215,8 +215,8 @@ Back-UPS, and BackUPS-Office.")
                   (("/etc/modprobe\\.d/tuned\\.conf")
                    "/etc/tuned/modprobe.d/tuned.conf"))))
             ;; There is nothing to build except documentation.
-            ;; https://github.com/redhat-performance/tuned/blob/v2.26.0/INSTALL#L4
-            ;; https://github.com/redhat-performance/tuned/blob/v2.26.0/tuned.spec
+            ;; https://github.com/redhat-performance/tuned/blob/v2.27.0/INSTALL#L4
+            ;; https://github.com/redhat-performance/tuned/blob/v2.27.0/tuned.spec
             (replace 'build
               (lambda* (#:key inputs #:allow-other-keys)
                 (invoke "make" "html"
