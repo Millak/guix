@@ -55165,14 +55165,14 @@ indefinite article choice, \"a\" or \"an\".")
 (define-public r-textclean
   (package
     (name "r-textclean")
-    (version "0.9.3")
+    (version "0.9.7")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "textclean" version))
         (sha256
           (base32
-            "0kgjh6c4f14qkjc4fds7q7rpf4nkma3p0igm54fplmm3p853nvrz"))))
+            "0cmp4rdq4f3s4ffwqi9cdd9r7vqb97hy3dswwyz0gn4a94q854j8"))))
     (properties `((upstream-name . "textclean")))
     (build-system r-build-system)
     (propagated-inputs
