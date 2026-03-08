@@ -27049,14 +27049,14 @@ Analysis and its Applications.")
 (define-public r-flashclust
   (package
     (name "r-flashclust")
-    (version "1.01-2")
+    (version "1.1-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "flashClust" version))
        (sha256
         (base32
-         "0l4lpz451ll7f7lfxmb7ds24ppzhfg1c3ypvydglcc35p2dq99s8"))))
+         "1sdl7p1h9rlx92jqnvx5ryflg9ac7lr1ax7bxmxla18sj8v459sf"))))
     (properties `((upstream-name . "flashClust")))
     (build-system r-build-system)
     (native-inputs (list gfortran))
