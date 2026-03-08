@@ -28,6 +28,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils))
@@ -36,34 +37,35 @@
   (package
     (name "adns")
     (version "1.6.1")
-    (source (origin
-              (method url-fetch)
-              (uri (list (string-append "mirror://gnu/adns/adns-"
-                                        version ".tar.gz")
-                         (string-append
-                           "https://www.chiark.greenend.org.uk/~ian/adns/ftp/adns-"
-                           version ".tar.gz")))
-              (sha256
-               (base32
-                "1k81sjf0yzv6xj35vcxp0ccajxrhhmyly7a57xlbs1kmkdwb6f3i"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "git://git.chiark.greenend.org.uk/~ianmdlvl/adns.git")
+              (commit (string-append "adns-" version))))
+       (sha256
+        (base32
+         "0ln3l5j7wb1xazrzl76p9xar52p6l2k1cwy7jazxw1acl71k9h5n"))))
     (build-system gnu-build-system)
     (arguments
-     ;; Make sure the programs under bin/ fine libadns.so.
-     '(#:configure-flags (list (string-append "LDFLAGS=-Wl,-rpath -Wl,"
-                                              (assoc-ref %outputs "out")
-                                              "/lib"))
-
-       ;; XXX: Tests expect real name resolution to work.
-       #:tests? #f))
+     (list
+      ;; INFO: Tests expect real name resolution to work.
+      #:tests? #f
+      #:configure-flags
+      #~(list
+         ;; Make sure the programs under bin/ find libadns.so.
+         (string-append "LDFLAGS=-Wl,-rpath -Wl,"
+                        #$output:out
+                        "/lib"))))
     (native-inputs
      (list m4))
     (home-page "https://www.gnu.org/software/adns/")
     (synopsis "Asynchronous DNS client library and utilities")
     (description
-     "GNU adns is a C library that provides easy-to-use DNS resolution
-functionality.  The library is asynchronous, allowing several concurrent
-calls.  The package also includes several command-line utilities for use in
-scripts.")
+     "GNU adns is a C library that provides easy-to-use @acronym{DNS, Domain
+Name System} resolution functionality.  The library is asynchronous, allowing
+several concurrent calls.  The package also includes several command-line
+utilities for use in scripts.")
     (license license:gpl3+)))
 
 (define-public c-ares
