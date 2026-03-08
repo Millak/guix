@@ -31860,7 +31860,10 @@ tool."))))
        ((#:install-source? _ #t) #f)
        ((#:import-path _) "github.com/mattn/go-sixel/cmd/...")
        ((#:unpack-path _ "") "github.com/mattn/go-sixel")))
-    (native-inputs (package-propagated-inputs go-github-com-mattn-go-sixel))
+    (native-inputs
+     (append
+      (package-native-inputs go-github-com-mattn-go-sixel)
+      (package-propagated-inputs go-github-com-mattn-go-sixel)))
     (propagated-inputs '())
     (inputs '())
     (description
