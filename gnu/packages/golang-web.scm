@@ -1323,7 +1323,7 @@ URL using a struct that represents the URL query parameters.")
 (define-public go-github-com-arceliar-ironwood
   (package
     (name "go-github-com-arceliar-ironwood")
-    (version "v0.0.0-20241213013129-743fe2fccbd3")
+    (version "v0.0.0-20260117132459-7017dbc41d8e")
     (source
      (origin
        (method git-fetch)
@@ -1333,7 +1333,7 @@ URL using a struct that represents the URL query parameters.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1nnqn388lg4m9cq24vbgcp4z2wh78mga82p59gqzdl7d2cvpsk56"))))
+         "17y9hb9xw3lmqd3gs6xfindx1jlgy0kb0x74x6x3x93vglva4c8v"))))
     (build-system go-build-system)
     (arguments
      (list
