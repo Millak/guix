@@ -4,6 +4,7 @@
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2026 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,15 +22,15 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages adns)
-  #:use-module (guix gexp)
-  #:use-module (guix licenses)
-  #:use-module (guix packages)
-  #:use-module (guix download)
-  #:use-module (guix utils)
+  #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages m4)
+  #:use-module (gnu packages pkg-config)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
-  #:use-module (gnu packages m4)
-  #:use-module (gnu packages pkg-config))
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix packages)
+  #:use-module (guix utils))
 
 (define-public adns
   (package
@@ -63,7 +64,7 @@
 functionality.  The library is asynchronous, allowing several concurrent
 calls.  The package also includes several command-line utilities for use in
 scripts.")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public c-ares
   (package
@@ -146,7 +147,7 @@ asynchronously.  It is intended for applications which need to perform DNS
 queries without blocking, or need to perform multiple DNS queries in parallel.
 The primary examples of such applications are servers which communicate with
 multiple clients and programs with graphical user interfaces.")
-    (license (x11-style "https://c-ares.haxx.se/license.html"))))
+    (license (license:x11-style "https://c-ares.haxx.se/license.html"))))
 
 (define-public c-ares-for-node-lts
   (hidden-package c-ares))
