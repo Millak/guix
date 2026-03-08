@@ -26071,9 +26071,6 @@ Lisp.  A subsystem offers an experimental GUI Gemini client.")
 (define-public cl-phos
   (sbcl-package->cl-source-package sbcl-phos))
 
-(define-public ecl-phos
-  (sbcl-package->ecl-package sbcl-phos))
-
 (define-public sbcl-physical-quantities
   (package
     (name "sbcl-physical-quantities")
