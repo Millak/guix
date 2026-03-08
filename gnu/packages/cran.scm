@@ -16524,13 +16524,13 @@ so-called readr first edition parsing engine, now superseded by vroom.")
 (define-public r-mirt
   (package
     (name "r-mirt")
-    (version "1.45.1")
+    (version "1.46.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mirt" version))
        (sha256
-        (base32 "12n24h5nb8xpqzbf9pqmpqlmy2fjna323b15csfzjl2xkwvcaa85"))))
+        (base32 "02cyvrdgd5cwyl1malx6a77xn2mvbh9wq22i5jzgxymkdasz30yp"))))
     (properties `((upstream-name . "mirt")))
     (build-system r-build-system)
     (propagated-inputs (list r-dcurver
@@ -16544,6 +16544,7 @@ so-called readr first edition parsing engine, now superseded by vroom.")
                              r-rcpp
                              r-rcpparmadillo
                              r-simdesign
+                             r-splines2
                              r-vegan))
     (native-inputs (list r-boot r-knitr r-nonnest2))
     (home-page "https://philchalmers.github.io/mirt/")
