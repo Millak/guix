@@ -31952,17 +31952,6 @@ and Gopher website hosting.")
     (package/inherit pkg
       (outputs '("out")))))
 
-(define-public ecl-tripod
-  ;; FIXME: Making a standalone binary doesn't work with ECL.
-  (let ((pkg (sbcl-package->ecl-package sbcl-tripod)))
-    (package/inherit pkg
-      (outputs '("out"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments pkg)
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (delete 'build-program))))))))
-
 ;;; Split the trivia package in two to work around the circular dependency
 ;;; between guicho271828/trivia and guicho271828/type-i.
 (define-public sbcl-trivia.trivial
