@@ -3,6 +3,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,6 +22,7 @@
 
 (define-module (tests services configuration)
   #:use-module (gnu services configuration)
+  #:use-module (gnu services configuration environment-variables)
   #:use-module (guix diagnostics)
   #:use-module (guix gexp)
   #:autoload (guix i18n) (G_)
@@ -48,14 +50,14 @@
   (port-configuration-port (port-configuration)))
 
 (test-equal "wrong type for a field"
-  '("configuration.scm" 59 11)                    ;error location
+  '("configuration.scm" 61 11)                    ;error location
   (guard (c ((configuration-error? c)
              (let ((loc (error-location c)))
                (list (basename (location-file loc))
                      (location-line loc)
                      (location-column loc)))))
     (port-configuration
-     ;; This is line 58; the test relies on line/column numbers!
+     ;; This is line 60; the test relies on line/column numbers!
      (port "This is not a number!"))))
 
 (define-configuration port-configuration-cs
@@ -363,3 +365,126 @@
    (config-with-maybe-string/no-serialization-name
     (config-with-maybe-string/no-serialization
      (name "foo")))))
+
+
+;;;
+;;; environment-variables serializer
+;;;
+
+(define-configuration/no-serialization env-config
+  (port  (number 80) "")
+  (count maybe-number "")
+  (name  string "")
+  (url maybe-string "")
+  (active? (boolean #f) ""))
+
+(test-group "environment variables serializer"
+
+  (test-equal "basic serialization"
+    '(("PORT" . "70")
+      ("COUNT" . "80")
+      ("NAME" . "Hello World")
+      ("URL" . "https://example.org")
+      ("ACTIVE" . "true"))
+    (serialize-environment-variables
+     (env-config
+      (port 70)
+      (name "Hello World")
+      (url "https://example.org")
+      (active? #t)
+      (count 80))
+     env-config-fields))
+
+  (test-equal "field selection"
+    '(("PORT" . "80"))
+    (serialize-environment-variables
+     (env-config
+      (name "Hello World"))
+     env-config-fields
+     '(port)))
+
+  (test-equal "field negative selection"
+    '(("NAME" . "Hello World")
+      ("ACTIVE" . "false"))
+    (serialize-environment-variables
+     (env-config
+      (name "Hello World"))
+     env-config-fields
+     '(port)
+     #t))
+
+  (test-equal "variable prefixes"
+    '(("TEST_PORT" . "80")
+      ("TEST_NAME" . "Hello World")
+      ("TEST_ACTIVE" . "false"))
+    (serialize-environment-variables
+     (env-config
+      (name "Hello World"))
+     env-config-fields
+     #:prefix "TEST_"))
+
+  (test-equal "boolean serialization"
+    '(("PORT" . "80")
+      ("NAME" . "Hello World")
+      ("ACTIVE" . "1"))
+    (serialize-environment-variables
+     (env-config
+      (name "Hello World")
+      (active? #t))
+     env-config-fields
+     #:true-value "1"
+     #:false-value "0"))
+
+  (test-equal "full record serialization"
+    '(("TEST_COUNT" . "800")
+      ("TEST_NAME" . "Hello World")
+      ("TEST_URL" . "https://example.org")
+      ("TEST_ACTIVE" . "1"))
+    (serialize-environment-variables
+     (env-config
+      (port 90)
+      (name "Hello World")
+      (count 800)
+      (url "https://example.org")
+      (active? #t))
+     env-config-fields
+     '(port)
+     #t
+     #:prefix "TEST_"
+     #:true-value "1"
+     #:false-value "0")))
+
+(define-configuration another-env-config
+  (port
+   (number 80)
+   ""
+   (serializer serialize-number-environment-variable))
+  (count
+   (maybe-number)
+   ""
+   (serializer serialize-maybe-number-environment-variable))
+  (name
+   (string)
+   ""
+   (serializer serialize-string-environment-variable))
+  (url
+   (maybe-string)
+   ""
+   (serializer serialize-maybe-string-environment-variable))
+  (active?
+   (boolean #f)
+   ""
+   (serializer serialize-boolean-environment-variable)))
+
+(test-group "environment variables serializer, with field serializers"
+
+  (test-assert "full record serialization"
+    (gexp?
+     (serialize-configuration
+      (another-env-config
+       (port 90)
+       (name "Hello World")
+       (count 800)
+       (url "https://example.org")
+       (active? #t))
+      another-env-config-fields))))
