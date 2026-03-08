@@ -2362,6 +2362,15 @@ rules."
            "plasma-workspace"
            "powerdevil"))))
 
+(define (plasma-udev-configurations config)
+  "Return the list of KDE Plasma dependencies that provide udev rules and
+hardware files."
+  (let ((plasma-plasma (plasma-package config)))
+    (map (lambda (name)
+           ((package-direct-input-selector name) plasma-plasma))
+         '("bolt"      ;for plasma-thunderbolt
+           "fwupd")))) ;for kinfocenter and discover
+
 ;; see https://bugs.kde.org/show_bug.cgi?id=456210
 ;; if `kde' no exits, fallback to `other', and then unlock lockscreen not work,
 ;; so add it.
@@ -2380,6 +2389,8 @@ rules."
                              plasma-dbus-service)
           (service-extension pam-root-service-type
                              plasma-pam-services)
+          (service-extension udev-service-type
+                             plasma-udev-configurations)
           (service-extension profile-service-type
                              (compose list
                                       plasma-package))))))
