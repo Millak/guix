@@ -277,44 +277,49 @@ is on expressing the content semantically, avoiding physical markup commands.")
   (package/inherit texinfo-7
     (name "info-reader")
     (arguments
-     `(,@(substitute-keyword-arguments (package-arguments texinfo)
-           ((#:phases phases)
-            `(modify-phases ,phases
-               ;; Make sure 'info-reader' can read compressed info files
-               ;; in a pure environment.  There are also a few other
-               ;; uncompressors listed in this file (lzip, unxz, bunzip2, ...)
-               ;; but let's not include them because info manuals in Guix
-               ;; are always compressed with 'gzip'.
-               ;; TODO(core-updates): maybe move to the 'texinfo' package.
-               (add-after 'unpack 'absolute-binary-path
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* "info/filesys.c"
-                     (("gunzip") (search-input-file inputs "/bin/gunzip"))
-                     (("gzip") (search-input-file inputs "/bin/gzip")))))
-               (add-after 'install 'keep-only-info-reader
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   ;; Remove everything but 'bin/info' and associated
-                   ;; files.
-                   (define (files)
-                     (scandir "." (lambda (file)
-                                    (not (member file '("." ".."))))))
+     (append
+      (substitute-keyword-arguments (package-arguments texinfo-7)
+       ((#:modules modules `((guix build utils)
+                             (guix build gnu-build-system)))
+        `((srfi srfi-1)
+          (ice-9 ftw)
+          ,@modules))
+        ((#:phases phases)
+         #~(modify-phases #$phases
+             ;; Make sure 'info-reader' can read compressed info files
+             ;; in a pure environment.  There are also a few other
+             ;; uncompressors listed in this file (lzip, unxz, bunzip2, ...)
+             ;; but let's not include them because info manuals in Guix
+             ;; are always compressed with 'gzip'.
+             ;; TODO(core-updates): maybe move to the 'texinfo' package.
+             (add-after 'unpack 'absolute-binary-path
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (substitute* "info/filesys.c"
+                   (("gunzip") (search-input-file inputs "/bin/gunzip"))
+                   (("gzip") (search-input-file inputs "/bin/gzip")))))
+             (add-after 'install 'keep-only-info-reader
+               (lambda* (#:key outputs #:allow-other-keys)
+                 ;; Remove everything but 'bin/info' and associated
+                 ;; files.
+                 (define (files)
+                   (scandir "." (lambda (file)
+                                  (not (member file '("." ".."))))))
 
-                   (let ((out (assoc-ref outputs "out")))
-                     (with-directory-excursion out
-                       (for-each delete-file-recursively
-                                 (fold delete (files) '("bin" "share"))))
-                     (with-directory-excursion (string-append out "/bin")
-                       (for-each delete-file (delete "info" (files))))
-                     (with-directory-excursion (string-append out "/share")
-                       (for-each delete-file-recursively
-                                 (fold delete (files)
-                                       '("info" "locale"))))
-                     #t))))))
-       #:disallowed-references ,(list (this-package-input "perl"))
-       #:modules ((ice-9 ftw) (srfi srfi-1)
-                  ,@%default-gnu-modules)))
+                 (let ((out (assoc-ref outputs "out")))
+                   (with-directory-excursion out
+                     (for-each delete-file-recursively
+                               (fold delete (files) '("bin" "share"))))
+                   (with-directory-excursion (string-append out "/bin")
+                     (for-each delete-file (delete "info" (files))))
+                   (with-directory-excursion (string-append out "/share")
+                     (for-each delete-file-recursively
+                               (fold delete (files)
+                                     '("info" "locale")))))))
+             (delete 'wrap-program))))
+      (list
+       #:disallowed-references (list (this-package-input "perl")))))
     (synopsis "Standalone Info documentation reader")
-    (inputs (modify-inputs (package-inputs texinfo)
+    (inputs (modify-inputs (package-inputs texinfo-7)
               (prepend gzip)))))
 
 (define-public texi2html
