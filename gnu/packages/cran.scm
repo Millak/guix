@@ -30940,13 +30940,13 @@ Cohen (1988).")
 (define-public r-libcoin
   (package
     (name "r-libcoin")
-    (version "1.0-10")
+    (version "1.0-11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "libcoin" version))
        (sha256
-        (base32 "1bvysrq2s3951vr5ab1jzbz4hyx5j04yzh04vxdpd287bm4y08rh"))))
+        (base32 "1vnikn0m1hq9j6izmkbqm8i7ckikflyw7x8xa2wf00rz6k4ppqg0"))))
     (build-system r-build-system)
     (arguments
      (list
