@@ -2990,10 +2990,13 @@ designed for experienced users.")
     (version "0.9.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "zulip" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zulip/python-zulip-api")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1s41q0yiwjzx2488gcrpw1gndk9nvwzi8cxn1dlpy415fqaa9sxb"))))
+        (base32 "1dy99ma8iqycl5j52zsahlwrgps96sschnn8jqm7pqmy2rz8ijlr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3001,7 +3004,15 @@ designed for experienced users.")
       #:test-flags #~(list "discover" "--verbose" "tests/")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-zulip-api-script
+          ;; Source provides 4 Python packages:
+          ;; - packaged_helloworld
+          ;; - zulip
+          ;; - zulip_bots
+          ;; - zulip_botserver
+          (add-after 'unpack 'select-zulip
+            (lambda _
+              (chdir "zulip")))
+          (add-after 'select-zulip 'remove-zulip-api-script
             (lambda _
               ;; XXX: zulip-api requires configured access to Zulip instance.
               (substitute* "setup.py"
