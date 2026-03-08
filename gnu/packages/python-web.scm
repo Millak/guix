@@ -4368,6 +4368,38 @@ high-speed transfers via libcurl and frequently outperforms alternatives.")
     ;; under the terms of LGPLv2.1+ or Expat.
     (license (list license:lgpl2.1+ license:expat))))
 
+(define-public python-stamina
+  (package
+    (name "python-stamina")
+    (version "25.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hynek/stamina")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "100iadhzmxbavk0ras3srnagh9af5pxbqrm4mrrkyy69knih9jiy"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-anyio
+           python-dirty-equals
+           python-hatch-fancy-pypi-readme
+           python-hatch-vcs
+           python-hatchling
+           python-structlog))
+    (propagated-inputs
+     (list python-tenacity
+           python-typing-extensions))
+    (home-page "https://github.com/hynek/stamina")
+    (synopsis "Retries library for Python")
+    (description
+     "@code{stamina} is an opinionated wrapper around the
+@url{https://tenacity.readthedocs.io/en/latest/, Tenacity} package.")
+    (license license:expat)))
+
 (define-public python-stripe
   (package
     (name "python-stripe")
