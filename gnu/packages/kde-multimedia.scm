@@ -97,7 +97,8 @@
      (list appstream extra-cmake-modules pkg-config qttools))
     (inputs (list glib pulseaudio qt5compat qtwayland))
     (arguments
-     (list #:configure-flags
+     (list #:qtbase qtbase
+           #:configure-flags
            #~(list "-DPHONON_BUILD_QT5=OFF"
                    "-DPHONON_BUILD_QT6=ON"
                    "-DCMAKE_CXX_FLAGS=-fPIC")))
@@ -112,12 +113,15 @@
     (name "phonon-qt5")
     (native-inputs
      (list appstream extra-cmake-modules pkg-config qttools-5))
-    (inputs (list qtbase-5 glib pulseaudio))
+    (inputs (list glib pulseaudio qtwayland-5))
     (arguments
-     (list #:configure-flags
-           #~(list "-DPHONON_BUILD_QT5=ON"
-                   "-DPHONON_BUILD_QT6=OFF"
-                   "-DCMAKE_CXX_FLAGS=-fPIC")))
+     (substitute-keyword-arguments (package-arguments phonon)
+       ((#:qtbase _ #f)
+        qtbase-5)
+       ((#:configure-flags _ '())
+        #~(list "-DPHONON_BUILD_QT5=ON"
+                "-DPHONON_BUILD_QT6=OFF"
+                "-DCMAKE_CXX_FLAGS=-fPIC"))))
     (home-page "https://community.kde.org/Phonon")
     (synopsis "KDE's multimedia library")
     (description "KDE's multimedia library.")
