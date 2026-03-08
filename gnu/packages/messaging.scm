@@ -3038,6 +3038,43 @@ designed for experienced users.")
      "This package provides Python bindings to Zulip's API.")
     (license license:asl2.0)))
 
+(define-public python-zulip-bots
+  (package
+    (inherit python-zulip)
+    (name "python-zulip-bots")
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:test-flags #~(list "discover" "--verbose")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'select-zulip-bots
+            (lambda _
+              (chdir "zulip_bots")))
+          (add-after 'select-zulip-bots 'ignore-failing-tests
+            (lambda _
+              ;; Additional packaging is required.
+              (delete-file "zulip_bots/bots/salesforce/test_salesforce.py")
+              (delete-file "zulip_bots/bots/witai/test_witai.py")
+              (delete-file "zulip_bots/bots/dialogflow/test_dialogflow.py")
+              (delete-file "zulip_bots/bots/chessbot/test_chessbot.py"))))))
+    (propagated-inputs
+     (list python-beautifulsoup4
+           python-html2text
+           python-importlib-metadata
+           python-lxml
+           python-dropbox
+           python-pip    ;check if it will pull packages during runtime
+           python-typing-extensions
+           python-tweepy
+           python-zulip
+           ;; [optional]
+           ;; python-apiai   ;not packaged yet in Guix
+           ;; python-chess
+           #;python-wit))    ;witai
+    (synopsis "Zulip's Bot framework")
+    (description "This package provides Zulip's Bot framework.")))
+
 (define-public zulip-term
   (package
     (name "zulip-term")
