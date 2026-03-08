@@ -14126,13 +14126,13 @@ Zucchini.")
 (define-public r-highr
   (package
     (name "r-highr")
-    (version "0.11")
+    (version "0.12")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "highr" version))
               (sha256
                (base32
-                "19z0gwdy46z6gb46b3fs2ljxa2cn0bpvx7aam0jk75h180l183g9"))))
+                "0av1zj8722y2jmz65w7niwqzmyvqvjannbb0k63r9a92013ddqg8"))))
     (properties
      ;; We can't have r-knitr among the inputs here, because r-highr depends
      ;; on r-xfun, which is an input to r-knitr.
