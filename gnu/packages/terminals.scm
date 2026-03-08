@@ -275,9 +275,9 @@ managers.")
                         ("target/assets/completion/asciinema.elv"
                          "share/elvish/lib/asciinema")
                         ("target/assets/completion/asciinema.fish"
-                         "share/fish/vendor_completions.d")
+                         "share/fish/vendor_completions.d/")
                         ("target/assets/completion/_asciinema"
-                         "share/zsh/site-functions"))
+                         "share/zsh/site-functions/"))
                       args))))))
     (native-inputs (list python-minimal)) ;needed for tests
     (inputs (cargo-inputs 'asciinema))
