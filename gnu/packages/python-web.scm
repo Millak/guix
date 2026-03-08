@@ -1689,6 +1689,36 @@ feaatures are:
 in Python 3.13 by PEP-594.")
     (license license:psfl)))
 
+(define-public python-librouteros
+  (package
+    (name "python-librouteros")
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/luqasz/librouteros")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0in952b2idb5j8v6sxfm21gqbr5i5776w5ir0hdsxjrl2f29305v"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:build-backend "hatchling.build"
+      #:test-flags
+      #~(list "tests/unit")))
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-pytest-asyncio
+           python-stamina))
+    (home-page "https://github.com/luqasz/librouteros")
+    (synopsis "Python implementation of MikroTik RouterOS API")
+    (description
+     "This package implements MikroTik's @code{RouterOS} API.")
+    (license license:gpl2+)))
+
 (define-public python-opentelemetry-api
   (package
     (name "python-opentelemetry-api")
