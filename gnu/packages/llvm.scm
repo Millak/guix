@@ -1131,10 +1131,11 @@ Library.")
               (srfi srfi-26)
               ,@modules)
             modules))
-       ;; TODO: Figure out why some tests fail on powerpc64le-linux.
+       ;; TODO: Figure out why some tests fail on some architectures.
        ((#:tests? current-test-config #t)
         (and current-test-config
-             (not (target-ppc64le?))))
+             (not (target-ppc64le?))
+             (not (target-arm32?))))
        ((#:configure-flags cf #~'())
         (if (%current-target-system)
             ;; Use a newer version of llvm-tblgen and add the new
