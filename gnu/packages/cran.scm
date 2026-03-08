@@ -31614,14 +31614,14 @@ repositories.")
 (define-public r-fs
   (package
     (name "r-fs")
-    (version "1.6.6")
+    (version "1.6.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fs" version))
        (sha256
         (base32
-         "02l5ymh77c3yfm3vbi23zryl6ank0y7d20crzvk2iv1g9s2a1lsp"))))
+         "04g49f3abg181d85bv05gx322m3h70p95k9hjmn1cxsin7saiw78"))))
     (properties
      '((updater-ignored-native-inputs
         . ("r-testthat" "r-spelling" "r-vctrs" "r-withr"))))
@@ -31629,7 +31629,7 @@ repositories.")
     ;; Tests require r-testthat, which indirectly depends on this package.
     (arguments (list #:tests? #false))
     (native-inputs
-     (list r-knitr))
+     (list pkg-config r-knitr))
     (home-page "https://fs.r-lib.org")
     (synopsis "Cross-platform file system operations based on libuv")
     (description
