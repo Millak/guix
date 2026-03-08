@@ -15558,13 +15558,13 @@ separately.")
 (define-public r-shinymeta
   (package
     (name "r-shinymeta")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "shinymeta" version))
        (sha256
-        (base32 "0jq4ifk59xyvjgmccgx9nhqc0pn2kbd9w1wdsr2470xdhmypvra5"))))
+        (base32 "01xgif5bil822lcp5ami55bcv0dncdqk5kaqjvhgka5jlv90hznc"))))
     (properties
      '((upstream-name . "shinymeta")
        (updater-extra-native-inputs
