@@ -3075,6 +3075,28 @@ designed for experienced users.")
     (synopsis "Zulip's Bot framework")
     (description "This package provides Zulip's Bot framework.")))
 
+(define-public python-zulip-botserver
+  (package
+    (inherit python-zulip)
+    (name "python-zulip-botserver")
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:test-flags #~(list "discover" "--verbose")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'select-zulip-bots
+            (lambda _
+              (chdir "zulip_botserver"))))))
+    (propagated-inputs
+     (list python-flask
+           python-typing-extensions
+           python-zulip
+           python-zulip-bots))
+    (synopsis "Zulip's Flask server for running bots")
+    (description
+     "This package provides Zulip's Flask server for running bots.")))
+
 (define-public zulip-term
   (package
     (name "zulip-term")
