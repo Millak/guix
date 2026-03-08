@@ -33541,9 +33541,6 @@ reasoning about types, but without consing.")
 (define-public cl-typo
   (sbcl-package->cl-source-package sbcl-typo))
 
-(define-public ecl-typo
-  (sbcl-package->ecl-package sbcl-typo))
-
 (define-public sbcl-uax-14
   (let ((commit "0432162525119c401d3d705bb9bcc9580a03914f")
         (revision "1"))
