@@ -17192,13 +17192,13 @@ initiative to bring PASSTEC 2000 functionalities to R.")
 (define-public r-partykit
   (package
    (name "r-partykit")
-   (version "1.2-25")
+   (version "1.2-26")
    (source (origin
              (method url-fetch)
              (uri (cran-uri "partykit" version))
              (sha256
               (base32
-               "0848vb2sp70hl40sbp6x4bmpqda5c0v59v65iqvrml65saphbgbs"))))
+               "0pkibyg987iqhc05blafl3j7ykpzc1i9pv629064awziajgfqlpp"))))
    (properties
     '((updater-extra-native-inputs . ("r-mlbench")))) ;for tests
    (build-system r-build-system)
