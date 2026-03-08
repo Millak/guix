@@ -27107,25 +27107,24 @@ structured in groups, etc. and hierarchical cluster analysis.")
 (define-public r-factoextra
   (package
     (name "r-factoextra")
-    (version "1.0.7")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "factoextra" version))
        (sha256
         (base32
-         "1allvdjhd3pq8xz30b1cymwcik5iaahghrjrlnn54cwkfhfg0kv2"))))
+         "0229j9mana85c3yn3dsxpncr25wyn3nvsavb5dy1c33wyparr8lv"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-abind
-           r-cluster
+     (list r-cluster
            r-dendextend
            r-factominer
            r-ggplot2
            r-ggpubr
            r-ggrepel
-           r-reshape2
-           r-tidyr))
+           r-rlang))
+    (native-inputs (list r-testthat))
     (home-page "http://www.sthda.com/english/rpkgs/factoextra")
     (synopsis "Extract and visualize the results of multivariate data analyses")
     (description
