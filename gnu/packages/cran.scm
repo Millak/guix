@@ -32653,14 +32653,14 @@ Bioconductor packages.")
 (define-public r-rgl
   (package
     (name "r-rgl")
-    (version "1.3.34")
+    (version "1.3.36")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rgl" version))
        (sha256
         (base32
-         "1ny8xp64424795ns84kw8akz27dkfdw8sidx2jd4x9bgkixd2h7y"))
+         "0iqm97bwd5xs9sp50x6rvriw7dynwzccwpfhcv664g2cdgr0lmqm"))
        (snippet
         '(delete-file "inst/htmlwidgets/lib/CanvasMatrix/CanvasMatrix.min.js"))))
     ;; For OpenGL and X11 support
