@@ -19941,32 +19941,27 @@ contexts.")
 (define-public r-cvxr
   (package
     (name "r-cvxr")
-    (version "1.0-15")
+    (version "1.8.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "CVXR" version))
               (sha256
                (base32
-                "13435gwqgdaw7xxxza5k9p10z2wjlw9x5d1znj03h44k6wm1jfy1"))))
+                "1ws4g64qbw0grk253pvxy5pnlp7336y94md5cvslcwy8ww1yql64"))))
     (properties `((upstream-name . "CVXR")))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:skipped-tests
-      ;; This test fails with an accuracy error.
-      '(("test-g01-atoms.R"
-         "test mixed_norm"))))
     (propagated-inputs
-     (list r-bit64
+     (list r-clarabel
            r-cli
-           r-ecosolver
            r-gmp
+           r-highs
            r-matrix
            r-osqp
            r-rcpp
            r-rcppeigen
-           r-rmpfr
-           r-scs))
+           r-s7
+           r-scs
+           r-slam))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://cvxr.rbind.io")
     (synopsis "Disciplined convex optimization")
