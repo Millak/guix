@@ -22990,13 +22990,13 @@ features:
 (define-public r-n2r
   (package
     (name "r-n2r")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "N2R" version))
        (sha256
-        (base32 "0bbxl0y36bmsxwi4rs4f6jwhf9bhag2rkvvzcg5669vgm2p4scjr"))))
+        (base32 "17806y0992nxrdmv2s2v80g6f55s1pgkd9j39jpks62qr7i14kcl"))))
     (properties `((upstream-name . "N2R")))
     (build-system r-build-system)
     (propagated-inputs
