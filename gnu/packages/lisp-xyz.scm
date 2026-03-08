@@ -13023,9 +13023,6 @@ allows one to gradually make their programs safer.")
 (define-public cl-coalton
   (sbcl-package->cl-source-package sbcl-coalton))
 
-(define-public ecl-coalton
-  (sbcl-package->ecl-package sbcl-coalton))
-
 (define-public sbcl-coleslaw
   (let ((commit "ef76a42e4ad2e19043b893f852619d0718b94a9b")
         (revision "1"))
