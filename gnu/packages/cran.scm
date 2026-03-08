@@ -29990,13 +29990,13 @@ emission distributions.")
 (define-public r-nleqslv
   (package
     (name "r-nleqslv")
-    (version "3.3.5")
+    (version "3.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nleqslv" version))
        (sha256
-        (base32 "0fjby0qva2lp2i7x752wva0z15xqys9fgrrcfimqszg65wnig60j"))))
+        (base32 "153qna9r3i4fy90f9bsz93nrzvs6d1kcyrlcip5gs5i5ij9c63g2"))))
     (build-system r-build-system)
     (native-inputs (list gfortran))
     (home-page "https://cran.r-project.org/web/packages/nleqslv/")
