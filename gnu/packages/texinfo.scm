@@ -7,7 +7,7 @@
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2024, 2026 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;;
@@ -38,9 +38,13 @@
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages gperf)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-compression)
@@ -113,18 +117,38 @@ is on expressing the content semantically, avoiding physical markup commands.")
     (inherit texinfo)
     (version "7.3")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/texinfo/texinfo-"
-                                  version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://git.savannah.gnu.org/git/texinfo.git")
+                     (commit (string-append "texinfo-" version))))
+              (file-name (git-file-name "texinfo" version))
               (sha256
                (base32
-                "0bn7ckhxjqrgfvxz122vr5z9bs26bpfxyr2jp1rriyhwynq4xxsi"))))
+                "1ln3rr34b9k9m8mhg01ygifj945610cn5qk11mfvgzpavyy5rghg"))))
+    (native-inputs (list autoconf
+                         automake
+                         bash-minimal
+                         coreutils-minimal
+                         gawk
+                         gettext-minimal
+                         gperf
+                         help2man
+                         (libc-utf8-locales-for-target)
+                         libtool
+                         ncurses
+                         perl
+                         perl-text-unidecode
+                         perl-unicode-eastasianwidth))
     (inputs (modify-inputs (package-inputs texinfo)
-              (append perl-archive-zip           ;needed for 'tex2any --epub3'
+              (append perl-archive-zip  ;needed for 'tex2any --epub3'
                       perl-unicode-eastasianwidth perl-text-unidecode
                       perl-libintl-perl)))
     (arguments
      (substitute-keyword-arguments (package-arguments texinfo)
+       ((#:modules modules `((guix build utils)
+                             (guix build gnu-build-system)))
+        `((srfi srfi-26)
+          ,@modules))
        ((#:configure-flags flags
          ''())
         #~(cons* "--with-external-Unicode-EastAsianWidth"
@@ -133,6 +157,38 @@ is on expressing the content semantically, avoiding physical markup commands.")
                  #$flags))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
+            (add-after 'unpack 'patch-bootstrap-shebangs
+              (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                (let ((sh (search-input-file (or native-inputs inputs)
+                                             "/bin/sh"))
+                      (perl (search-input-file (or native-inputs inputs)
+                                               "/bin/perl")))
+                  (for-each
+                   (cute patch-shebang <> (list (dirname sh)))
+                   (find-files "." ".*[.]sh"))
+                  (for-each
+                   (cute patch-shebang <> (list (dirname perl)))
+                   (find-files "." ".*[.]pl")))))
+            #$@(if (%current-target-system)
+                   ;; Texinfo uses a C binary during the build process, but
+                   ;; lacks the concept of `CC_FOR_BUILD'
+                   ;; Hack around that by building it manually.
+                   #~((add-after 'configure 'build-native-tools
+                        (lambda _
+                          (with-directory-excursion "info"
+                            (lambda _
+                              (invoke "make" "CC=gcc" "makedoc")))))
+                      (add-after 'configure 'fixup-texindex-building-from-git
+                        (lambda _
+                          (symlink "../../texindex/texindex"
+                                   "tools/texindex/texindex"))))
+                   #~())
+            (add-after 'configure 'patch-jrtangle
+              (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                (let ((mv (search-input-file (or native-inputs inputs)
+                                             "/bin/mv")))
+                  (substitute* "texindex/jrtangle"
+                    (("mv") mv)))))
             (add-after 'install 'wrap-program
               (lambda* (#:key inputs outputs #:allow-other-keys)
                 (let* ((out (assoc-ref outputs "out"))
