@@ -37019,13 +37019,13 @@ marginal histograms/boxplots/density plots to ggplot2 scatterplots.")
 (define-public r-ggpattern
   (package
     (name "r-ggpattern")
-    (version "1.2.1")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggpattern" version))
        (sha256
-        (base32 "09sqxbs9bxzj2rqxx210a1zrsvy5gk4nmnglp0f1nybccgslsvdz"))))
+        (base32 "1mfr9nc8pcidim98rwvh9l623v2cb5bmshv0bv5wwag3azacb15b"))))
     (properties `((upstream-name . "ggpattern")))
     (build-system r-build-system)
     (propagated-inputs
