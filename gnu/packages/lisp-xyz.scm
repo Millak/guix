@@ -13088,9 +13088,6 @@ allows one to gradually make their programs safer.")
 (define-public cl-coleslaw
   (sbcl-package->cl-source-package sbcl-coleslaw))
 
-(define-public ecl-coleslaw
-  (sbcl-package->ecl-package sbcl-coleslaw))
-
 (define-public sbcl-collectors
   (let ((commit "4c5e70cf399381de8fb485d4ed5a5c8fd7555146")
         (revision "2"))
