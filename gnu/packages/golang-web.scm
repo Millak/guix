@@ -18073,7 +18073,7 @@ docs}.")
       #:import-path "k8s.io/kube-openapi"
       #:test-flags
       ;; Go@1.24 forces vet, but tests are not ready yet.
-      #~(list "-vet=off" 
+      #~(list "-vet=off"
               ;; It tries to regenerate the test data.
               "-skip" "TestGenerators")))
     (native-inputs
