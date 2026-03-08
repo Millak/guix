@@ -26009,14 +26009,14 @@ and classification and regression trees.")
 (define-public r-later
   (package
     (name "r-later")
-    (version "1.4.7")
+    (version "1.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "later" version))
        (sha256
         (base32
-         "1gl6gkrv56zffkbrcv7wjfi5qzkk7gl70ib4wqjqc0wkmw29bjaq"))))
+         "06fjj0i0vd175adpx7nnbkvk34qs1gr3p98slbm0kx0xznrqhpff"))))
     (properties
      ;; Avoid a dependency cycle.
      '((updater-ignored-native-inputs . ("r-nanonext" "r-promises"))))
