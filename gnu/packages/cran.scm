@@ -33936,14 +33936,14 @@ Chapter 6, Springer, Use R! Series. <doi:10.1007/978-3-030-29184-6_6>.")
 (define-public r-ddrtree
   (package
     (name "r-ddrtree")
-    (version "0.1.5")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "DDRTree" version))
        (sha256
         (base32
-         "16s5fjw7kwlxhrkzdny62sx32fvmg3rxjc3wrh6krd31jh1fqlfk"))))
+         "09fzqfrybp4j1ilbw1cls7cpaanmi4c0vw3595c0ppbvzf4lqa67"))))
     (properties `((upstream-name . "DDRTree")))
     (build-system r-build-system)
     (propagated-inputs
