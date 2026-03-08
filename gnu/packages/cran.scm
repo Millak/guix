@@ -34946,13 +34946,13 @@ preparing, executing, and processing HTTP requests.")
 (define-public r-gmisc
   (package
     (name "r-gmisc")
-    (version "3.1.0")
+    (version "3.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Gmisc" version))
        (sha256
-        (base32 "10nyyasy2ry7yqx4kf5xamdv5x8a4xpn882gcf7vqgdzyj53ibaf"))))
+        (base32 "1bmrqw22dsbx5bv57qqvizh51gm6msdjwa4hmsbk2dknbqpvggn8"))))
     (properties
      '((upstream-name . "Gmisc")
        ;; Avoid dependency cycle.
@@ -34974,11 +34974,11 @@ preparing, executing, and processing HTTP requests.")
                              r-stringr
                              r-xml
                              r-yaml))
-    (native-inputs (list r-boot
+    (native-inputs (list r-bench
                          r-dplyr
                          r-knitr
-                         r-rms
-                         r-testthat))
+                         r-testthat
+                         r-vdiffr))
     (home-page "https://gforge.se")
     (synopsis "Descriptive statistics, transition plots, and more")
     (description
