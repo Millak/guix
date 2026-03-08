@@ -16304,14 +16304,14 @@ signals directly in the Bruker format.")
 (define-public r-codedepends
   (package
     (name "r-codedepends")
-    (version "0.6.6")
+    (version "0.6.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "CodeDepends" version))
        (sha256
         (base32
-         "0msq5ksjqp2pjzl6f1vizw53gdf5lz520bpdr5dbjwz5mc1mp0bz"))))
+         "02sj40qxq5vywgqay9q9vpv3s6j3jjr46kc8q3v1yw2vbsmlvrz0"))))
     (properties `((upstream-name . "CodeDepends")))
     (build-system r-build-system)
     (propagated-inputs
