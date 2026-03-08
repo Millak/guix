@@ -17652,6 +17652,8 @@ other directories.  It is optimized for filewalking.")
      (list
       #:import-path "github.com/matttproud/golang_protobuf_extensions/v2"
       #:skip-build? #t))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
     (propagated-inputs
      (list go-github-com-golang-protobuf
            go-google-golang-org-protobuf))
