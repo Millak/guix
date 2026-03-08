@@ -15398,13 +15398,13 @@ molecular functions, respectively, and produces intuitive graphical outputs.")
 (define-public r-xllim
   (package
     (name "r-xllim")
-    (version "2.3")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "xLLiM" version))
        (sha256
-        (base32 "08v6acn6vpn8asn61ldqdryjz0xk5zyd2v63aqrc5xximpqwrp7d"))))
+        (base32 "1h2z6a3j3yi7rj5lyk7gb1iyp2vf516fgmk7wr333gfkvk522n2r"))))
     (properties `((upstream-name . "xLLiM")))
     (build-system r-build-system)
     (propagated-inputs (list r-abind
