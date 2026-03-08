@@ -5030,7 +5030,7 @@ implementing them.")
 (define-public yggdrasil
   (package
     (name "yggdrasil")
-    (version "0.5.12")
+    (version "0.5.13")
     (source
      (origin
        (method git-fetch)
@@ -5041,7 +5041,7 @@ implementing them.")
           (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "072r52b6bkpc7bhn0v1z6dm6q5g9qf4k1xlqwrvzmzwai6fm0lrn"))
+        (base32 "09rwii1c52y3659nlnlrfssfn2yf6gz3s45h8vjmd4j05fpqv1rg"))
        (patches (search-patches "yggdrasil-extra-config.patch"))))
     (build-system go-build-system)
     (arguments
@@ -5076,8 +5076,8 @@ implementing them.")
            go-github-com-hashicorp-go-syslog
            go-github-com-hjson-hjson-go-v4
            go-github-com-kardianos-minwinsvc
-           go-github-com-olekukonko-tablewriter-0.0.5
-           go-github-com-quic-go-quic-go-0.52
+           go-github-com-olekukonko-tablewriter
+           go-github-com-quic-go-quic-go
            go-github-com-vishvananda-netlink
            go-github-com-wlynxg-anet
            go-golang-org-x-crypto
