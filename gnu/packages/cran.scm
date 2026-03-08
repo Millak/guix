@@ -32519,14 +32519,14 @@ package provides a minimal R interface by relying on the Rcpp package.")
 (define-public r-rcppparallel
   (package
     (name "r-rcppparallel")
-    (version "5.1.11-1")
+    (version "5.1.11-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppParallel" version))
        (sha256
         (base32
-         "0qk3gaia5g1da5yqd9a3jcwp1f4jldj1a4r9cqpxbjqjh9a87371"))
+         "02wq4x5s4y1p2q55km6lllqy6m9pjyzmpz8k3dg1g06dc8yh239m"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "src/tbb/"))))
