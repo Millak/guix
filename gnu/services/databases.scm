@@ -69,7 +69,6 @@
             postgresql-configuration-postgresql
             postgresql-configuration-uid
 
-            postgresql-service
             postgresql-service-type
 
             %default-postgresql-role-shepherd-requirement
@@ -370,28 +369,6 @@ host	all	all	::1/128 	md5"))
            profile-service-type
            (compose list postgresql-configuration-postgresql))))
    (description "Run the PostgreSQL database server.")))
-
-(define-deprecated (postgresql-service #:key (postgresql postgresql-10)
-                                       (port 5432)
-                                       (locale "en_US.utf8")
-                                       (config-file (postgresql-config-file))
-                                       (data-directory
-                                        "/var/lib/postgresql/data")
-                                       (extension-packages '()))
-  postgresql-service-type
-  "Return a service that runs @var{postgresql}, the PostgreSQL database
-server.
-
-The PostgreSQL daemon loads its runtime configuration from @var{config-file}
-and stores the database cluster in @var{data-directory}."
-  (service postgresql-service-type
-           (postgresql-configuration
-            (postgresql postgresql)
-            (port port)
-            (locale locale)
-            (config-file config-file)
-            (data-directory data-directory)
-            (extension-packages extension-packages))))
 
 (define-record-type* <postgresql-role>
   postgresql-role make-postgresql-role
