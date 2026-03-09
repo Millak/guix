@@ -707,6 +707,7 @@ Valid compressors are: ~a~%") compressor-name %valid-compressors)))
                 ("i686" "i386")
                 ("x86_64" "amd64")
                 ("aarch64" "arm64")
+                ("arm" "armhf") ; Guix only supports armv7 or later.
                 ("mipsisa32r6" "mipsr6")
                 ("mipsisa32r6el" "mipsr6el")
                 ("mipsisa64r6" "mips64r6")
