@@ -1450,10 +1450,11 @@ and auto-mapping slices to MIDI note numbers.")
     (home-page "https://github.com/clearly-broken-software/ninjas2")
     (license license:gpl3+)))
 
+;; This package tracks the stable release of LilyPond.
 (define-public lilypond
   (package
     (name "lilypond")
-    (version "2.25.30")
+    (version "2.24.4")
     (source
      (origin
        (method url-fetch)
@@ -1461,7 +1462,7 @@ and auto-mapping slices to MIDI note numbers.")
                            "v" (version-major+minor version) "/"
                            "lilypond-" version ".tar.gz"))
        (sha256
-        (base32 "0q5id9v211i9zgjmwzmvi2qfvr3flh55kh476653r04a2br53962"))))
+        (base32 "073qa7m9xkghad4x37rxb9v45vp4vfmsylwnjzhj17y7f4ss0vz9"))))
     (build-system gnu-build-system)
     (arguments
       (list #:tests? #f                      ;out-test/collated-files.html fails
