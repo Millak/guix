@@ -10,7 +10,7 @@
 ;;; Copyright © 2023-2025 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Superfly Johnson <superfly.johnson@yahoo.com>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2025 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2025, 2026 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -111,7 +111,7 @@ KDSoap.")
   (package
     (name "qxmpp")
     ;; kaidan requires a precise version
-    (version "1.14.0")
+    (version "1.14.3")
     (source
      (origin
        (method git-fetch)
@@ -120,7 +120,7 @@ KDSoap.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v12ws1598f69pjcyn7vzaln8dnfi53jcxsvmi7fvcy5m3a6sm9k"))))
+        (base32 "1gic4pbd2jhw7s89mf1bb4pglb891gb12d44f8wbic7ynjbczd5y"))))
     (build-system qt-build-system)
     (arguments
      `(#:qtbase ,qtbase
