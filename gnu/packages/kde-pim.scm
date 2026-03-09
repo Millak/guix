@@ -1597,14 +1597,14 @@ and retrieving certificates from LDAP servers.")
 (define-public kmail
   (package
     (name "kmail")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmail-" version ".tar.xz"))
        (sha256
-        (base32 "0x2v9plj328jlqsxhbawvzkdszaawmfmiwdnw6l1g9zyyg9y6ap1"))))
+        (base32 "1h91d39khwmr4c6380w53nf112z9nk5zrd811q82hd7a8l4rivg1"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules dbus kdoctools))
