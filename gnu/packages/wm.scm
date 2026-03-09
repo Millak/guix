@@ -1420,7 +1420,7 @@ prompt.")
        (list gtk+
              libwnck
              python-xlib
-             python-pygobject
+             python-pygobject-3.50
              python-dbus))
       ;; The actual home page https://ssokolow.com/quicktile/
       ;; gives an SSL error.
