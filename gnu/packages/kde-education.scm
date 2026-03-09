@@ -179,14 +179,14 @@ Currently available boards include:
 (define-public kalgebra
   (package
     (name "kalgebra")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/kalgebra-" version ".tar.xz"))
        (sha256
-        (base32 "0h08lhm9ycyzjs3vga4rbdxl04j11n6p2xypzgirxx6hmg0nhnk9"))))
+        (base32 "05chl85zvcvlkdn657awx93n0zpk6lzpq5cgx27rfl0wjyy5mbbm"))))
     (build-system qt-build-system)
     (arguments
      (list
