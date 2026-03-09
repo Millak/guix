@@ -7745,6 +7745,58 @@ which produces a descriptive fatal error if the JSON is invalid, and so on.")
 versa.")
     (license (package-license perl))))
 
+(define-public perl-languageserver
+  (package
+    (name "perl-languageserver")
+    (version "2.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/G/GR/GRICHTER/Perl-LanguageServer-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0smxh0shnrvnf8wcznyv8a0yylh30s7rq4kyikfyn177my83f2bd"))))
+    (build-system perl-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-perlls-script
+            (lambda _
+              (let ((bin (string-append #$output "/bin")))
+                (mkdir-p bin)
+                (let ((script (string-append bin "/perlls")))
+                  (call-with-output-file script
+                    (lambda (port)
+                      (format port "#!~a~%use Perl::LanguageServer;~%Perl::LanguageServer::run();~%"
+                              #$(file-append perl "/bin/perl"))))
+                  (chmod script #o755)))))
+          (add-after 'install-perlls-script 'wrap-perl-languageserver-command
+            (lambda _
+              (wrap-program (string-append #$output "/bin/perlls")
+                `("PERL5LIB" ":" prefix
+                  (,(getenv "PERL5LIB")
+                   ,(string-append #$output "/lib/perl5/site_perl")))))))))
+    (inputs (list bash-minimal))
+    (propagated-inputs (list perl-anyevent
+                             perl-anyevent-aio
+                             perl-class-refresh
+                             perl-compiler-lexer
+                             perl-coro
+                             perl-data-dump
+                             perl-encode-locale
+                             perl-hash-safekeys
+                             perl-io-aio
+                             perl-json
+                             perl-moose
+                             perl-padwalker))
+    (home-page "https://metacpan.org/release/Perl-LanguageServer")
+    (synopsis "Language Server and Debug Protocol Adapter for Perl")
+    (description "This package provides a Language Server and Debug Protocol
+Adapter for Perl.")
+    (license license:artistic2.0)))
+
 (define-public perl-lexical-persistence
   (package
     (name "perl-lexical-persistence")
