@@ -4611,13 +4611,13 @@ to understand their data better and discover new insights.")
 (define-public r-anndatar
   (package
     (name "r-anndatar")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "anndataR" version))
        (sha256
-        (base32 "1vi9aqgdjy0nlbsk7628sz12jsxd9bfb79yxhh0ngijpxj9sxd4p"))))
+        (base32 "1gn1yyfs08a77zrl4cidahxim3kgcvpbsrgfxxnhhrka57xcylld"))))
     (properties `((upstream-name . "anndataR")))
     (build-system r-build-system)
     (arguments
