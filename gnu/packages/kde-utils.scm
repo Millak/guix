@@ -333,7 +333,7 @@ your computer.")
 (define-public isoimagewriter
   (package
     (name "isoimagewriter")
-    (version "25.12.2")
+    (version "25.12.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
@@ -341,7 +341,7 @@ your computer.")
                                   ".tar.xz"))
               (sha256
                (base32
-                "1pjcd57k0jjg4ykj9yblhrbr5x4ffy274i5bdp3jjn0z90ygi8d7"))))
+                "02g9k51srrqslapjxzcymnmy9v1frv9pkgg8wmf6d0607hwkaff5"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list gpgme
