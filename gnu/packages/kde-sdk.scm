@@ -112,14 +112,14 @@ used in KDE development tools Kompare and KDevelop.")
 (define-public kapptemplate
   (package
     (name "kapptemplate")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kapptemplate-" version ".tar.xz"))
        (sha256
-        (base32 "1vnn3vrl93d5nqidiaqqlqp3gibqjbnkg7s0jd2xirmsw4i7jnkz"))))
+        (base32 "057whvd1zcv929m8b574mfh1yfalm84yaw6y35qw2i84c1waky5c"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase))
