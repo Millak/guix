@@ -1204,14 +1204,14 @@ This package is part of the KDE games module.")
 (define-public palapeli
   (package
     (name "palapeli")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/palapeli-" version ".tar.xz"))
        (sha256
-        (base32 "06352k9xdls5x76x2s6qachfym92lx2sb4hm1fpl5li456lcp7p2"))))
+        (base32 "1r95rl398k9ja8qhdcbp6175wd8wllbq9053mnfz5a4gmvb5r3ss"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
