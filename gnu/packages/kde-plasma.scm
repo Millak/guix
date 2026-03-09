@@ -412,7 +412,8 @@ Breeze is the default theme for the KDE Plasma desktop.")
                   qtdeclarative
                   qtsvg
                   qtwayland
-                  qtwebview))
+                  qtwebview
+                  wayland)) ; required by flatpak
     ;; -- The following features have been disabled:
     ;; * RpmOstree, rpm-ostree binary to manage the system. Required to build the rpm-ostree backend
     ;;
