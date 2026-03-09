@@ -954,7 +954,7 @@ desktop.  It supports:
 (define-public smb4k
   (package
     (name "smb4k")
-    (version "4.0.5")
+    (version "4.0.6")
     (source
      (origin
        (method git-fetch)
@@ -962,7 +962,7 @@ desktop.  It supports:
                            (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16lm0d83xq5rjc4cnaaznvqibmh4kn6s0spccjrb99zsyhp4fgkc"))))
+        (base32 "1k0szca8dkl6awfcnn5yfzpdv6jcs5zp9x97vn5b3j5z2qfcawf7"))))
     (build-system qt-build-system)
     (arguments (list
                 #:qtbase qtbase
