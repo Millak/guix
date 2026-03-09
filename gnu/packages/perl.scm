@@ -4965,6 +4965,23 @@ base class for errors/exceptions that can either be thrown, for subsequent
 catch, or can simply be recorded.")
     (license (package-license perl))))
 
+(define-public perl-event
+  (package
+    (name "perl-event")
+    (version "1.28")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/E/ET/ETJ/Event-" version
+                           ".tar.gz"))
+       (sha256
+        (base32 "1i0ca4hkp386fq9cxkbzrm7qb8gm8j8f417bir0yzg5254i28105"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Event")
+    (synopsis "Event loop processing")
+    (description "This package provides event loop processing.")
+    (license license:perl-license)))
+
 (define-public perl-test-count
   (package
     (name "perl-test-count")
