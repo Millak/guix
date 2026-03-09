@@ -1440,14 +1440,14 @@ easier to do so.")
 (define-public kitinerary
   (package
     (name "kitinerary")
-    (version "25.12.2")
+    (version "25.12.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kitinerary-" version ".tar.xz"))
               (sha256
                (base32
-                "0ilh8dnp1nhk0pawf98n29pk3c1v9g0yjdqggl569l2gipzp8l3g"))))
+                "04sdniwky2zk3rbg8z9vwa6q0zxd2byvkd60yq18jj2c5sz790yx"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
