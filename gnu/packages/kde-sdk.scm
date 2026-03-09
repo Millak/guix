@@ -426,14 +426,14 @@ include:
 (define-public massif-visualizer
   (package
     (name "massif-visualizer")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/massif-visualizer-" version ".tar.xz"))
        (sha256
-        (base32 "08dzvdhyrl74l76ikkk79ap2cf5jgj3ypr7b3sl56abdxxgj6jjc"))))
+        (base32 "049346q4h4816x4k1w1zp2ji1998q8bs7rrj8cjvn14p7pp02605"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config shared-mime-info))
