@@ -1522,11 +1522,12 @@ Guile.")
     ;; more than an hour of silence, so double the max silent time.
     (properties `((max-silent-time . 7200)))))
 
+;; This package tracks the unstable release of LilyPond.
 (define-public lilypond-next
   (package
     (inherit lilypond)
     (name "lilypond-next")
-    (version "2.25.30")
+    (version "2.25.35")
     (source
      (origin
        (method url-fetch)
@@ -1534,7 +1535,7 @@ Guile.")
                            "v" (version-major+minor version) "/"
                            "lilypond-" version ".tar.gz"))
        (sha256
-        (base32 "0q5id9v211i9zgjmwzmvi2qfvr3flh55kh476653r04a2br53962"))))))
+        (base32 "0q7az6jxnkpvbfa4d0fb1mqp2cvl6agkaiccfh7l7r8yvf6c8ydx"))))))
 
 (define-public emacs-lilypond-mode
   (package
