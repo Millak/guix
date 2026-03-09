@@ -1922,14 +1922,14 @@ This package is part of the KDE games module.")
 (define-public kpat
   (package
     (name "kpat")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kpat-" version ".tar.xz"))
        (sha256
-        (base32 "0lr9c6a90485s9vxvhl1fcfd1a9pglpf07m58w2hi6v348yra2k4"))))
+        (base32 "15xrqjhbpxzj92mh4py0s14jviy0sp4kzanf48x9vp3y4kyzxrb7"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
