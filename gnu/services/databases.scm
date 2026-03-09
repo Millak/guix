@@ -97,7 +97,6 @@
             memcached-configuration-udp-port
             memcached-configuration-additional-options
 
-            mysql-service
             mysql-service-type
             mysql-configuration
             mysql-configuration?
@@ -827,10 +826,6 @@ port=" (number->string port) "
    (default-value (mysql-configuration))
    (description "Run the MySQL or MariaDB database server,
 @command{mysqld}.")))
-
-(define-deprecated (mysql-service #:key (config (mysql-configuration)))
-  mysql-service-type
-  (service mysql-service-type config))
 
 
 ;;;
