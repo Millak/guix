@@ -867,14 +867,14 @@ protocol, supporting end-to-end encryption.  Its features include:
 (define-public ruqola
   (package
     (name "ruqola")
-    (version "2.6.1")
+    (version "2.7.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde//stable/ruqola/ruqola-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "09pp1xp7r1jwjiaairfzxcjcdj7sssrjv8dspbn19frmj0bivs5f"))))
+                "0p00y19f5hsdfbkjf0m6ch2hszx0jc62jk21jh82ga4lh100v25r"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -911,6 +911,7 @@ protocol, supporting end-to-end encryption.  Its features include:
            qtnetworkauth
            qtmultimedia
            qtwayland
+           qtspeech
            qtsvg
            sonnet))
     (home-page "https://apps.kde.org/ruqola/")
