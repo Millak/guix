@@ -19635,14 +19635,14 @@ correspondence between different data sources.")
 (define-public r-enrichplot
   (package
     (name "r-enrichplot")
-    (version "1.30.4")
+    (version "1.30.5")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "enrichplot" version))
        (sha256
         (base32
-         "080q91ll8rvqf93hcmxc7kjbmmihyh0vrpxck2pqrwglbqxm4xll"))))
+         "12c6xwp29mmalvxp3asliv2hlha5vv8l37prmmcgpdi4nghfic3b"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-aplot
