@@ -43,6 +43,7 @@
 ;;; Copyright © 2020, 2023 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;; Copyright © 2026 Robin Templeton <robin@guixotic.coop>
+;;; Copyright © 2026 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -77,6 +78,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages dbm)
   #:use-module (gnu packages file)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -88,6 +90,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages language)
   #:use-module (gnu packages less)
+  #:use-module (gnu packages libevent)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages perl-compression)
@@ -534,6 +537,25 @@ implicitly.")
 installed SDL and related libraries.  Based on your platform it offers the
 possibility to download and install prebuilt binaries or to build SDL & co.@:
 from source codes.")
+    (license license:perl-license)))
+
+(define-public perl-anyevent-bdb
+  (package
+    (name "perl-anyevent-bdb")
+    (version "1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/M/ML/MLEHMANN/AnyEvent-BDB-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "1j7gb94kzwpb5w2ww5mz3a6ys4jysvnzmf9ibxp64r04jh861qwk"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-anyevent perl-bdb))
+    (home-page "https://metacpan.org/release/AnyEvent-BDB")
+    (synopsis "Truly asynchronous Berkeley db access")
+    (description "This package provides asynchronous Berkeley DB Access.")
     (license license:perl-license)))
 
 (define-public perl-any-moose
