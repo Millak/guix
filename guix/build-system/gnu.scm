@@ -113,29 +113,25 @@ builder, or the distro's final Guile when GUILE is #f."
       (arguments
        ;; 'ensure-keyword-arguments' guarantees that this procedure is
        ;; idempotent.
-       (ensure-keyword-arguments (package-arguments p)
+       (ensure-keyword-arguments arguments
                                  `(#:guile ,guile
                                    #:implicit-inputs? #f)))
       (replacement
-       (let ((replacement (package-replacement p)))
-         (and replacement
-              (package-with-explicit-inputs replacement inputs loc
-                                            #:native-inputs
-                                            native-inputs
-                                            #:guile guile))))
+       (and replacement
+            (package-with-explicit-inputs replacement inputs loc
+                                          #:native-inputs
+                                          native-inputs
+                                          #:guile guile)))
       (native-inputs
        (let ((filtered (duplicate-filter native-inputs*)))
         `(,@(call native-inputs*)
-          ,@(map rewritten-input
-                 (filtered (package-native-inputs p))))))
+          ,@(map rewritten-input (filtered native-inputs)))))
       (propagated-inputs
-       (map rewritten-input
-            (package-propagated-inputs p)))
+       (map rewritten-input propagated-inputs))
       (inputs
        (let ((filtered (duplicate-filter inputs*)))
          `(,@(call inputs*)
-           ,@(map rewritten-input
-                  (filtered (package-inputs p)))))))))
+           ,@(map rewritten-input (filtered inputs))))))))
 
 (define* (package-with-explicit-inputs* explicit-inputs #:optional guile)
   "Return a procedure that rewrites the given package and all its dependencies
@@ -152,9 +148,9 @@ so that they use EXPLICIT-INPUTS (a thunk) instead of implicit inputs."
         (package
           (inherit p)
           (inputs (append (explicit-inputs)
-                          (duplicate-filter (package-inputs p))))
+                          (duplicate-filter inputs)))
           (arguments
-           (ensure-keyword-arguments (package-arguments p)
+           (ensure-keyword-arguments arguments
                                      `(#:implicit-inputs? #f
                                        #:guile ,guile))))
         p))
@@ -193,26 +189,24 @@ flags for VARIABLE, the associated value is augmented."
     (package
       (inherit p)
       (arguments
-       (let ((args (package-arguments p)))
-         (substitute-keyword-arguments args
-           ((#:configure-flags flags)
-            (let* ((var= (string-append variable "="))
-                   (len  (string-length var=)))
-              #~(cons #$(string-append var= value)
-                      (map (lambda (flag)
-                             (if (string-prefix? #$var= flag)
-                                 (string-append
-                                  #$(string-append var= value " ")
-                                  (substring flag #$len))
-                                 flag))
-                           #$flags)))))))
+       (substitute-keyword-arguments arguments
+         ((#:configure-flags flags)
+          (let* ((var= (string-append variable "="))
+                 (len  (string-length var=)))
+            #~(cons #$(string-append var= value)
+                    (map (lambda (flag)
+                           (if (string-prefix? #$var= flag)
+                               (string-append
+                                #$(string-append var= value " ")
+                                (substring flag #$len))
+                               flag))
+                         #$flags))))))
       (replacement
-       (let ((replacement (package-replacement p)))
-         (and replacement
-              (package-with-extra-configure-variable replacement
-                                                     variable value))))
-      (inputs (rewritten-inputs (package-inputs p)))
-      (propagated-inputs (rewritten-inputs (package-propagated-inputs p))))))
+       (and replacement
+            (package-with-extra-configure-variable replacement
+                                                   variable value)))
+      (inputs (rewritten-inputs inputs))
+      (propagated-inputs (rewritten-inputs propagated-inputs)))))
 
 (define (static-libgcc-package p)
   "A version of P linked with `-static-gcc'."
@@ -224,14 +218,14 @@ use `--strip-all' as the arguments to `strip'."
   (package
     (inherit p)
     (arguments
-     (substitute-keyword-arguments (package-arguments p)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(cons* "--disable-shared" "LDFLAGS=-static" #$flags))
        ((#:strip-flags flags #~'("--strip-unneeded"))
         (if strip-all?
             #~'("--strip-all")
             flags))))
-    (replacement (and=> (package-replacement p) static-package))))
+    (replacement (and=> replacement static-package))))
 
 (define* (dist-package p source #:key (phases '%dist-phases))
   "Return a package that takes source files from the SOURCE directory,
@@ -243,7 +237,7 @@ exact build phases are defined by PHASES."
       (source s)
       (arguments
        ;; Use the right phases and modules.
-       (substitute-keyword-arguments (package-arguments p)
+       (substitute-keyword-arguments arguments
          ((#:modules modules %default-gnu-modules)
           `((guix build gnu-dist)
             ,@modules))
@@ -256,7 +250,7 @@ exact build phases are defined by PHASES."
        ;; Add autotools & co. as inputs.
        (let ((ref (lambda (module var)
                     (module-ref (resolve-interface module) var))))
-         `(,@(package-native-inputs p)
+         `(,@native-inputs
            ("autoconf" ,(ref '(gnu packages autotools) 'autoconf-wrapper))
            ("automake" ,(ref '(gnu packages autotools) 'automake))
            ("libtool"  ,(ref '(gnu packages autotools) 'libtool))
@@ -269,7 +263,7 @@ listed in REFS."
   (if (eq? (package-build-system p) gnu-build-system) ; XXX: dirty
       (package (inherit p)
         (arguments `(#:allowed-references ,refs
-                     ,@(package-arguments p))))
+                     ,@arguments)))
       p))
 
 
