@@ -152,14 +152,14 @@ for scanner hardware.")
 (define-public colord-kde
   (package
     (name "colord-kde")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/colord-kde-" version ".tar.xz"))
        (sha256
-        (base32 "1zzz1i1p14z325zb4fgg4nzigxfwplpcr0n1yxkwbl4ayyzl5hkg"))))
+        (base32 "0iwz54yqgjnyf941n33rk6x7lqjd5jj83gvcvq8rsb7s7skyxkm9"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f)) ;no tests
