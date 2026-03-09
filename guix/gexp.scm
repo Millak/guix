@@ -224,7 +224,7 @@ returned by 'gexp->sexp'."
              (let ((extra (length inputs)))
                (lambda args
                  (apply (gexp-proc gexp) (drop args extra))))
-             (gexp-location gexp)))
+             (and=> (gexp-location gexp) location->source-properties)))
 
 
 ;;;
@@ -1250,7 +1250,7 @@ The other arguments are as for 'derivation'."
                    (append modules (gexp-self-modules exp))
                    (gexp-self-extensions exp)
                    (gexp-proc exp)
-                   (gexp-location exp))))
+                   (and=> (gexp-location exp) location->source-properties))))
 
   (mlet* %store-monad ( ;; The following binding forces '%current-system' and
                        ;; '%current-target-system' to be looked up at >>=
