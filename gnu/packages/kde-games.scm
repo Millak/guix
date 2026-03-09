@@ -136,14 +136,14 @@ This package is part of the KDE games module.")
 (define-public ktuberling
   (package
     (name "ktuberling")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ktuberling-" version ".tar.xz"))
        (sha256
-        (base32 "0aajz7jxx5nka31903ri2nbyzy1djs96lkxz53m7q48j1kqyhz74"))))
+        (base32 "0lvwb126rq0prpmmd1argvydvhvpg6fb9wjwkiy33dsigjin4a8d"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
