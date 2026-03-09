@@ -1775,6 +1775,257 @@ for terminal emulators that require consistent character spacing.")
     (license (list license:expat license:cc-by4.0 license:unlicense
                    license:asl2.0 license:silofl1.1))))
 
+(define-public font-nerd-jetbrains-mono
+  (package
+    (name "font-nerd-jetbrains-mono")
+    (version "3.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ryanoasis/nerd-fonts")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0adash47a0pmvhhbqr9wzp3r287hzj50f28pswdxm30l0br6zgfa"))
+       (modules '((srfi srfi-26)
+                  (ice-9 ftw)
+                  (guix build utils)))
+       (snippet
+        ;; Remove fonts we don't use to save space and build time.
+        #~(begin
+            (delete-file-recursively "patched-fonts")
+            (with-directory-excursion "src/unpatched-fonts"
+              (let ((keep? (cut member <>
+                                '("." ".." "JetBrainsMono"))))
+                (for-each delete-file-recursively
+                          (scandir "."
+                                   (negate keep?)))))))))
+    (build-system font-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-directory
+            (lambda _
+              (chdir "src/unpatched-fonts/JetBrainsMono")))
+          (add-before 'install 'build
+            (lambda _
+              (for-each (lambda (font)
+                          ;; Patch every font variant with normal, mono and
+                          ;; proportional modes.
+                          ;; --complete: Include all icon sets.
+                          ;; --mono will generate the Mono variants.
+                          ;; --variable-width-glyphs will generate the
+                          ;; Proportional variants (used for graphical
+                          ;; environments).
+                          ;; If no flag is specified, the no-mono no-proportional
+                          ;; font will be built.
+                          ;; --ext ttf: Generate TrueType font.
+                          ;; --no-progressbars: Disable progress bars for clean build
+                          ;; output.
+                          (for-each (lambda (mode)
+                                      (apply invoke "fontforge" "-script"
+                                             "../../../font-patcher"
+                                             `("--complete" ,@(if mode
+                                                                  (list mode)
+                                                                  '())
+                                               "--ext"
+                                               "ttf"
+                                               "--no-progressbars"
+                                               "--outputdir"
+                                               "."
+                                               ,font)))
+                                    '(#nil "--mono" "--variable-width-glyphs")))
+                        `("Ligatures/Bold/JetBrainsMono-Bold.ttf"
+                          "Ligatures/BoldItalic/JetBrainsMono-BoldItalic.ttf"
+                          "Ligatures/ExtraBold/JetBrainsMono-ExtraBold.ttf"
+                          ,(string-append "Ligatures/ExtraBoldItalic/"
+                                          "JetBrainsMono-ExtraBoldItalic.ttf")
+                          "Ligatures/ExtraLight/JetBrainsMono-ExtraLight.ttf"
+                          ,(string-append "Ligatures/ExtraLightItalic/"
+                                          "JetBrainsMono-ExtraLightItalic.ttf")
+                          "Ligatures/Italic/JetBrainsMono-Italic.ttf"
+                          "Ligatures/Light/JetBrainsMono-Light.ttf"
+                          "Ligatures/LightItalic/JetBrainsMono-LightItalic.ttf"
+                          "Ligatures/Medium/JetBrainsMono-Medium.ttf"
+                          ,(string-append "Ligatures/MediumItalic/"
+                                          "JetBrainsMono-MediumItalic.ttf")
+                          "Ligatures/Regular/JetBrainsMono-Regular.ttf"
+                          "Ligatures/SemiBold/JetBrainsMono-SemiBold.ttf"
+                          ,(string-append "Ligatures/SemiBoldItalic/"
+                                          "JetBrainsMono-SemiBoldItalic.ttf")
+                          "Ligatures/Thin/JetBrainsMono-Thin.ttf"
+                          "Ligatures/ThinItalic/JetBrainsMono-ThinItalic.ttf"
+                          "NoLigatures/Bold/JetBrainsMonoNL-Bold.ttf"
+                          ,(string-append "NoLigatures/BoldItalic/"
+                                          "JetBrainsMonoNL-BoldItalic.ttf")
+                          "NoLigatures/ExtraBold/JetBrainsMonoNL-ExtraBold.ttf"
+                          ,(string-append "NoLigatures/ExtraBoldItalic/"
+                                          "JetBrainsMonoNL-ExtraBoldItalic.ttf")
+                          ,(string-append "NoLigatures/ExtraLight/"
+                                          "JetBrainsMonoNL-ExtraLight.ttf")
+                          ,(string-append "NoLigatures/ExtraLightItalic/"
+                                          "JetBrainsMonoNL-ExtraLightItalic.ttf")
+                          "NoLigatures/Italic/JetBrainsMonoNL-Italic.ttf"
+                          "NoLigatures/Light/JetBrainsMonoNL-Light.ttf"
+                          ,(string-append "NoLigatures/LightItalic/"
+                                          "JetBrainsMonoNL-LightItalic.ttf")
+                          "NoLigatures/Medium/JetBrainsMonoNL-Medium.ttf"
+                          ,(string-append "NoLigatures/MediumItalic/"
+                                          "JetBrainsMonoNL-MediumItalic.ttf")
+                          "NoLigatures/Regular/JetBrainsMonoNL-Regular.ttf"
+                          "NoLigatures/SemiBold/JetBrainsMonoNL-SemiBold.ttf"
+                          ,(string-append "NoLigatures/SemiBoldItalic/"
+                                          "JetBrainsMonoNL-SemiBoldItalic.ttf")
+                          "NoLigatures/Thin/JetBrainsMonoNL-Thin.ttf"
+                          ,(string-append "NoLigatures/ThinItalic/"
+                                          "JetBrainsMonoNL-ThinItalic.ttf")))))
+          (add-after 'build 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (for-each (lambda (font)
+                            ;; Use Python script with fontforge to validate the font.
+                            (invoke "python3" "-c"
+                                    (format #f
+                                     "import fontforge
+name = ~s
+font = fontforge.open(name)
+glyph_count = len([g for g in font.glyphs() if g.unicode > 0])
+print(f'Font has {glyph_count} glyphs with Unicode mapping')
+if glyph_count < 8000:
+    raise ValueError(f'Font has too few glyphs: {glyph_count}')
+print(f'✓ Font validation passed for {name}')
+font.close()~%"
+                                     font)))
+                          '("JetBrainsMonoNerdFont-Bold.ttf"
+                            "JetBrainsMonoNerdFont-Bold.ttf"
+                            "JetBrainsMonoNerdFontMono-Bold.ttf"
+                            "JetBrainsMonoNerdFontMono-Bold.ttf"
+                            "JetBrainsMonoNerdFontPropo-Bold.ttf"
+                            "JetBrainsMonoNerdFontPropo-Bold.ttf"
+                            "JetBrainsMonoNerdFont-BoldItalic.ttf"
+                            "JetBrainsMonoNerdFont-BoldItalic.ttf"
+                            "JetBrainsMonoNerdFontMono-BoldItalic.ttf"
+                            "JetBrainsMonoNerdFontMono-BoldItalic.ttf"
+                            "JetBrainsMonoNerdFontPropo-BoldItalic.ttf"
+                            "JetBrainsMonoNerdFontPropo-BoldItalic.ttf"
+                            "JetBrainsMonoNerdFont-ExtraBold.ttf"
+                            "JetBrainsMonoNerdFont-ExtraBold.ttf"
+                            "JetBrainsMonoNerdFontMono-ExtraBold.ttf"
+                            "JetBrainsMonoNerdFontMono-ExtraBold.ttf"
+                            "JetBrainsMonoNerdFontPropo-ExtraBold.ttf"
+                            "JetBrainsMonoNerdFontPropo-ExtraBold.ttf"
+                            "JetBrainsMonoNerdFont-ExtraBoldItalic.ttf"
+                            "JetBrainsMonoNerdFont-ExtraBoldItalic.ttf"
+                            "JetBrainsMonoNerdFontMono-ExtraBoldItalic.ttf"
+                            "JetBrainsMonoNerdFontMono-ExtraBoldItalic.ttf"
+                            "JetBrainsMonoNerdFontPropo-ExtraBoldItalic.ttf"
+                            "JetBrainsMonoNerdFontPropo-ExtraBoldItalic.ttf"
+                            "JetBrainsMonoNerdFont-ExtraLight.ttf"
+                            "JetBrainsMonoNerdFont-ExtraLight.ttf"
+                            "JetBrainsMonoNerdFontMono-ExtraLight.ttf"
+                            "JetBrainsMonoNerdFontMono-ExtraLight.ttf"
+                            "JetBrainsMonoNerdFontPropo-ExtraLight.ttf"
+                            "JetBrainsMonoNerdFontPropo-ExtraLight.ttf"
+                            "JetBrainsMonoNerdFont-ExtraLightItalic.ttf"
+                            "JetBrainsMonoNerdFont-ExtraLightItalic.ttf"
+                            "JetBrainsMonoNerdFontMono-ExtraLightItalic.ttf"
+                            "JetBrainsMonoNerdFontMono-ExtraLightItalic.ttf"
+                            "JetBrainsMonoNerdFontPropo-ExtraLightItalic.ttf"
+                            "JetBrainsMonoNerdFontPropo-ExtraLightItalic.ttf"
+                            "JetBrainsMonoNerdFont-Italic.ttf"
+                            "JetBrainsMonoNerdFont-Italic.ttf"
+                            "JetBrainsMonoNerdFontMono-Italic.ttf"
+                            "JetBrainsMonoNerdFontMono-Italic.ttf"
+                            "JetBrainsMonoNerdFontPropo-Italic.ttf"
+                            "JetBrainsMonoNerdFontPropo-Italic.ttf"
+                            "JetBrainsMonoNerdFont-Light.ttf"
+                            "JetBrainsMonoNerdFont-Light.ttf"
+                            "JetBrainsMonoNerdFontMono-Light.ttf"
+                            "JetBrainsMonoNerdFontMono-Light.ttf"
+                            "JetBrainsMonoNerdFontPropo-Light.ttf"
+                            "JetBrainsMonoNerdFontPropo-Light.ttf"
+                            "JetBrainsMonoNerdFont-LightItalic.ttf"
+                            "JetBrainsMonoNerdFont-LightItalic.ttf"
+                            "JetBrainsMonoNerdFontMono-LightItalic.ttf"
+                            "JetBrainsMonoNerdFontMono-LightItalic.ttf"
+                            "JetBrainsMonoNerdFontPropo-LightItalic.ttf"
+                            "JetBrainsMonoNerdFontPropo-LightItalic.ttf"
+                            "JetBrainsMonoNerdFont-Medium.ttf"
+                            "JetBrainsMonoNerdFont-Medium.ttf"
+                            "JetBrainsMonoNerdFontMono-Medium.ttf"
+                            "JetBrainsMonoNerdFontMono-Medium.ttf"
+                            "JetBrainsMonoNerdFontPropo-Medium.ttf"
+                            "JetBrainsMonoNerdFontPropo-Medium.ttf"
+                            "JetBrainsMonoNerdFont-MediumItalic.ttf"
+                            "JetBrainsMonoNerdFont-MediumItalic.ttf"
+                            "JetBrainsMonoNerdFontMono-MediumItalic.ttf"
+                            "JetBrainsMonoNerdFontMono-MediumItalic.ttf"
+                            "JetBrainsMonoNerdFontPropo-MediumItalic.ttf"
+                            "JetBrainsMonoNerdFontPropo-MediumItalic.ttf"
+                            "JetBrainsMonoNerdFont-Regular.ttf"
+                            "JetBrainsMonoNerdFont-Regular.ttf"
+                            "JetBrainsMonoNerdFontMono-Regular.ttf"
+                            "JetBrainsMonoNerdFontMono-Regular.ttf"
+                            "JetBrainsMonoNerdFontPropo-Regular.ttf"
+                            "JetBrainsMonoNerdFontPropo-Regular.ttf"
+                            "JetBrainsMonoNerdFont-SemiBold.ttf"
+                            "JetBrainsMonoNerdFont-SemiBold.ttf"
+                            "JetBrainsMonoNerdFontMono-SemiBold.ttf"
+                            "JetBrainsMonoNerdFontMono-SemiBold.ttf"
+                            "JetBrainsMonoNerdFontPropo-SemiBold.ttf"
+                            "JetBrainsMonoNerdFontPropo-SemiBold.ttf"
+                            "JetBrainsMonoNerdFont-SemiBoldItalic.ttf"
+                            "JetBrainsMonoNerdFont-SemiBoldItalic.ttf"
+                            "JetBrainsMonoNerdFontMono-SemiBoldItalic.ttf"
+                            "JetBrainsMonoNerdFontMono-SemiBoldItalic.ttf"
+                            "JetBrainsMonoNerdFontPropo-SemiBoldItalic.ttf"
+                            "JetBrainsMonoNerdFontPropo-SemiBoldItalic.ttf"
+                            "JetBrainsMonoNerdFont-Thin.ttf"
+                            "JetBrainsMonoNerdFont-Thin.ttf"
+                            "JetBrainsMonoNerdFontMono-Thin.ttf"
+                            "JetBrainsMonoNerdFontMono-Thin.ttf"
+                            "JetBrainsMonoNerdFontPropo-Thin.ttf"
+                            "JetBrainsMonoNerdFontPropo-Thin.ttf"
+                            "JetBrainsMonoNerdFont-ThinItalic.ttf"
+                            "JetBrainsMonoNerdFont-ThinItalic.ttf"
+                            "JetBrainsMonoNerdFontMono-ThinItalic.ttf"
+                            "JetBrainsMonoNerdFontMono-ThinItalic.ttf"
+                            "JetBrainsMonoNerdFontPropo-ThinItalic.ttf"
+                            "JetBrainsMonoNerdFontPropo-ThinItalic.ttf"))))))))
+    (native-inputs (list fontforge python-minimal))
+    (home-page "https://www.nerdfonts.com/")
+    (synopsis "JetBrains Mono with an iconic font collection")
+    (description
+     "This package provides the JetBrains Mono font with the extra
+glyphs from Nerd Fonts.
+
+@itemize
+@item JetBrains
+@item JetBrains Mono
+@end itemize
+
+These fonts include glyphs from multiple icon sets:
+
+@itemize
+@item Powerline with Extra Symbols
+@item Font Awesome and Font Awesome Extension
+@item Material Design Icons
+@item Weather Icons
+@item Devicons
+@item Octicons
+@item Font Logos (formerly Font Linux)
+@item Pomicons
+@item Codeicons
+@end itemize
+
+The monospaced variant ensures all glyphs have uniform width, which is essential
+for terminal emulators that require consistent character spacing.")
+    ;; https://github.com/ryanoasis/nerd-fonts/blob/master/license-audit.md
+    (license (list license:expat license:cc-by4.0 license:unlicense
+                   license:asl2.0 license:silofl1.1))))
+
 (define-public font-new-computer-modern
   (package
     (name "font-new-computer-modern")
