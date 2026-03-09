@@ -2192,6 +2192,25 @@ paste with any OS.")
 as defined by two typical specimens of Perl coders.")
     (license (package-license perl))))
 
+(define-public perl-compiler-lexer
+  (package
+    (name "perl-compiler-lexer")
+    (version "0.23")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/G/GO/GOCCY/Compiler-Lexer-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "1nwr1bzq2yg47322hf02j5732cl2gfz4jj97594lzymvzr5cwcb0"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-module-build-xsutil))
+    (home-page "https://metacpan.org/release/Compiler-Lexer")
+    (synopsis "Lexical Analyzer for Perl5")
+    (description "This package provides a lexical analyzer for Perl5.")
+    (license license:perl-license)))
+
 (define-public perl-conf-libconfig
   (package
     (name "perl-conf-libconfig")
