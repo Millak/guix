@@ -919,6 +919,32 @@ error when it would have happened.")
     (description "This module disables bareword filehandles.")
     (license (package-license perl))))
 
+(define-public perl-bdb
+  (package
+    (name "perl-bdb")
+    (version "1.92")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/M/ML/MLEHMANN/BDB-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0szbvbcvkawfsyxkhzkrglzdlbr9p6f2z2wh82m1mz5f5ffwmwm3"))))
+    (build-system perl-build-system)
+    (arguments
+     `(#:module-build-flags
+       (let ((out  (assoc-ref %outputs "out"))
+             (ldb (assoc-ref %build-inputs "bdb")))
+         (list
+          (string-append "-I" ldb "/include")
+          (string-append "-L" ldb "/lib" "-ldb")))))
+    (propagated-inputs (list perl-common-sense))
+    (inputs (list bdb-5.3))
+    (home-page "https://metacpan.org/release/BDB")
+    (synopsis "Asynchronous Berkeley DB access")
+    (description "This package provides asynchronous Berkeley DB access.")
+    (license license:perl-license)))
+
 (define-public perl-browser-open
   (package
     (name "perl-browser-open")
