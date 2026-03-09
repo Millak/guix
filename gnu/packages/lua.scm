@@ -26,6 +26,7 @@
 ;;; Copyright © 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Aaron Boyd <aaron.boyd.org@gmail.com>
+;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1200,6 +1201,68 @@ on numbers.")
 
 (define-public lua5.1-bitop
   (make-lua-bitop "lua5.1-bitop" lua-5.1))
+
+(define (make-lua-djot name lua)
+  (package
+    (name name)
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jgm/djot.lua")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "0kivx4yyj2zhj23d93h5rr0ab7gkazd3z7r7aqv1bgmigcw47pj2"))
+       (modules '((guix build utils)))
+       (snippet #~(begin
+                    (delete-file-recursively "clib")
+                    (delete-file-recursively "doc/api")
+                    (delete-file "doc/djot.1")))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-makefile
+            (lambda _
+              (substitute* "Makefile"
+                (("^all: .*") "all:\n"))))
+          (delete 'configure)
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "lua" "test.lua"))))
+          (replace 'install
+            (lambda _
+              (let ((lua-path
+                     (string-append
+                      #$output
+                      "/share/lua/"
+                      #$(version-major+minor (package-version lua)))))
+                (install-file "djot.lua" lua-path)
+                (copy-recursively "djot" (string-append lua-path "/djot"))))))))
+    (native-inputs (list lua))
+    (home-page "https://github.com/jgm/djot.lua")
+    (synopsis "Lua parser for the djot light markup language")
+    (description
+     "This package provides a Lua parser for djot, a light markup syntax.
+It can produce an AST, rendered HTML, or a stream of match tokens
+that identify elements by source position, which could be used
+for syntax highlighting or a linting tool.")
+    (license license:expat)))
+
+(define-public lua5.4-djot
+  (make-lua-djot "lua5.4-djot" lua-5.4))
+
+(define-public lua-djot
+  (make-lua-djot "lua-djot" lua))
+
+(define-public lua5.2-djot
+  (make-lua-djot "lua5.2-djot" lua-5.2))
+
+(define-public lua5.1-djot
+  (make-lua-djot "lua5.1-djot" lua-5.1))
 
 (define-public lutok
   (package
