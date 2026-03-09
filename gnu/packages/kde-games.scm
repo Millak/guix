@@ -1484,14 +1484,14 @@ This package is part of the KDE games module.")
 (define-public kspaceduel
   (package
     (name "kspaceduel")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kspaceduel-" version ".tar.xz"))
        (sha256
-        (base32 "02r39b2fh111y5dsm2w29mq7hpin08iwxm6k901acv07wswyyixp"))))
+        (base32 "14d2yb5k0qf6b9g38mh4mblr5y4yd392ncb8gnwbagzxbnjz46d3"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
