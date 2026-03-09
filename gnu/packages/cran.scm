@@ -32540,28 +32540,8 @@ package provides a minimal R interface by relying on the Rcpp package.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'use-system-tbb
             (lambda* (#:key inputs #:allow-other-keys)
-              (setenv "TBB_ROOT" (assoc-ref inputs "tbb"))))
-          (add-before 'install 'relax-gcc-14-strictness
-            (lambda _
-              ;; XXX FIXME: $HOME/.R/Makevars seems to be the only way to
-              ;; set custom CFLAGS for R?
-              (setenv "HOME" (getcwd))
-              (mkdir-p ".R")
-              (with-directory-excursion ".R"
-                (with-output-to-file "Makevars"
-                  (lambda _
-                    (display (string-append
-                              "CXXFLAGS=-g -O2"
-                              " -Wno-error=changes-meaning\n")))))))
-          ;; This change lets us use GCC 13+.  We need to patch things here so
-          ;; that packages using RcppParallel to generate code can be compiled
-          ;; without errors.
-          (add-after 'install 'gcc-compatibility
-            (lambda _
-              (substitute* (string-append #$output "/site-library/RcppParallel/include/tbb/task.h")
-                (("task\\* next_offloaded")
-                 "tbb::task* next_offloaded")))))))
-    (inputs (list tbb-2020))
+              (setenv "TBB_ROOT" #$(this-package-input "onetbb")))))))
+    (inputs (list onetbb))
     (native-inputs (list r-rcpp r-runit))
     (home-page "https://rcppcore.github.io/RcppParallel/")
     (synopsis "Parallel programming tools for Rcpp")
