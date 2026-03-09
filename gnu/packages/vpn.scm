@@ -1247,7 +1247,7 @@ DNS domain name queries.")
 (define-public sshoot
   (package
     (name "sshoot")
-    (version "1.5.1")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)
@@ -1256,7 +1256,7 @@ DNS domain name queries.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0725p0l2gx881hsjw3nj44n4gm1kv9hirv5cd4d9yr1ba87whp3q"))))
+        (base32 "0xyj1ahhkcc7m27ym7ch4dwp2x43v9mfs9aiqnnnkq226rydffjl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1264,13 +1264,12 @@ DNS domain name queries.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "sshoot/tests/test_manager.py"
+              (substitute* "tests/manager_test.py"
                 (("/bin/sh")
                  (search-input-file inputs "bin/sh"))))))))
     (inputs (list python-argcomplete python-prettytable python-pyyaml
                   python-pyxdg python-toolrack))
-    (native-inputs (list python-pytest python-pytest-mock python-setuptools
-                         python-wheel))
+    (native-inputs (list python-pytest python-pytest-mock python-setuptools))
     (home-page "https://github.com/albertodonato/sshoot")
     (synopsis "VPN session manager (sshuttle)")
     (description
