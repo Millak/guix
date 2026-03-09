@@ -1654,22 +1654,6 @@ pictures, sounds, or video.")
                (base32
                 "0rc8rpsw2lwa5af35zd8iifah02wg2rnn1i890h2h8zh55hvpjy9"))))))
 
-(define-deprecated/public postgresql-11 #f
-  (package
-    (inherit postgresql-13)
-    (name "postgresql")
-    (version "11.22")
-    (source (origin
-              (inherit (package-source postgresql-13))
-              (uri (string-append "https://ftp.postgresql.org/pub/source/v"
-                                  version "/postgresql-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1w71xf97i3hha6vl05xqf960k75nczs6375w3f2phwhdg9ywkdrc"))))
-    (native-inputs
-     (modify-inputs (package-native-inputs postgresql-13)
-       (replace "docbook-xml" docbook-xml-4.2)))))
-
 (define-public postgresql postgresql-14)
 
 (define-public libpg-query-17
