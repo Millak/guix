@@ -5102,6 +5102,24 @@ functionality for hashes.  The primary focus for the moment is providing a
 common API - speeding up by XS is far away at the moment.")
     (license license:perl-license)))
 
+(define-public perl-hash-safekeys
+  (package
+    (name "perl-hash-safekeys")
+    (version "0.04")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/M/MO/MOB/Hash-SafeKeys-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1k3wqg9z3s3schkxl8s9fj7l0xb5nxqmkqg6icgpqrysz4xss955"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Hash-SafeKeys")
+    (synopsis "Get hash contents without resetting each iterator")
+    (description "This package provides a way to get hash contents without
+resetting each iterator in Perl.")
+    (license license:perl-license)))
+
 (define-public perl-module-mask
   (package
     (name "perl-module-mask")
