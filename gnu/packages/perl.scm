@@ -1304,6 +1304,33 @@ algorithm to keep the most used entries in the cache.")
  for parsing @samp{.ini} files that returns the sections in order.")
     (license license:perl-license)))
 
+(define-public perl-coro
+  (package
+    (name "perl-coro")
+    (version "6.57")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/M/ML/MLEHMANN/Coro-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1ihl2zaiafr2k5jzj46j44j8vxqs23fqcsahypmi23jl6f0f8a0r"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-canary-stability))
+    (propagated-inputs (list perl-anyevent
+                             perl-anyevent-aio
+                             perl-anyevent-bdb
+                             perl-bdb
+                             perl-common-sense
+                             perl-ev
+                             perl-event
+                             perl-guard
+                             perl-io-aio))
+    (home-page "https://metacpan.org/release/Coro")
+    (synopsis "Real threads in Perl")
+    (description "This package provides real threads for Perl.")
+    (license license:perl-license)))
+
 (define-public perl-devel-overrideglobalrequire
   (package
     (name "perl-devel-overrideglobalrequire")
