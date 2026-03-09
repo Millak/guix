@@ -769,14 +769,14 @@ scanners.")
 (define-public libkexiv2
   (package
     (name "libkexiv2")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1dkqfxzfsxpvbsr214hhbdlg19w0951ay1qp78nlwsx97k819ndq"))))
+        (base32 "1v2kcv7wxcazf6gyb8jhvkpahxq997b4j80gvlsai16hrm3dxmlf"))))
     (build-system cmake-build-system)
     (arguments
      (list
