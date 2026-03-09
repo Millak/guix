@@ -44,7 +44,7 @@
 (define-public libcotp
   (package
     (name "libcotp")
-    (version "3.1.0")
+    (version "4.0.0")
     (source
      (origin
        (method git-fetch)
@@ -53,7 +53,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lw15blzzds3qq4ydhi6fsk189p1rbvzy5fzz4r3fv6wlmcyyprs"))))
+        (base32 "0p5z04klbb3p9ljkz6qmdb4fk9sx79yv7zcac005c0zk875pz1py"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f))
     ;; TODO: tests:
