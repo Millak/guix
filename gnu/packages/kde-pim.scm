@@ -114,14 +114,14 @@ opening hours expressions.")
 (define-public kosmindoormap
   (package
     (name "kosmindoormap")
-    (version "25.12.2")
+    (version "25.12.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0xxvxnydcih1ggl7wf2wm7rdcyp4js82ic0iakahs3grxpyw718q"))))
+                "06rklrm6gv5jlngigpn8rrk7whb7md24v89j4xr3zgczqaclr9hx"))))
     (build-system cmake-build-system)
     (native-inputs (list bison extra-cmake-modules flex python-minimal))
     (inputs (list ki18n
