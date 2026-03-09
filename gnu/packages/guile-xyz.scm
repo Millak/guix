@@ -6615,7 +6615,7 @@ WebSocket protocol as defined by RFC 6455.")
     (arguments
      '(#:source-directory "src"))
     (inputs (list guile-3.0-latest))
-    (propagated-inputs (list guile-fibers-1.1 guile-gnutls))
+    (propagated-inputs (list guile-fibers guile-gnutls))
     (home-page "https://github.com/flatwhatson/guile-gemini")
     (synopsis "Guile implementation of the Gemini protocol")
     (description
