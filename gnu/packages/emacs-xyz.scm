@@ -40805,29 +40805,26 @@ a decentralized social network that runs on an Org Mode file over HTTP.")
     (license license:gpl3+)))
 
 (define-public emacs-fedi
-  ;; One year since last tagged release.
-  (let ((commit "62aea20f11161d2665180498e79aade7e5f5a114")
-        (revision "3"))
-    (package
-      (name "emacs-fedi")
-      (version (git-version "0.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://codeberg.org/martianh/fedi.el")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1s2i6fgw3682h173mx287zjh8w1nsw9jykjkkmx1qjqwgg0hxpzz"))))
-      (build-system emacs-build-system)
-      (arguments (list #:tests? #f)) ; no tests
-      (propagated-inputs (list emacs-markdown-mode))
-      (home-page "https://codeberg.org/martianh/fedi.el")
-      (synopsis "Library to make writing clients for APIs easier")
-      (description "@code{fedi.el} is an Emacs library used by several
+  (package
+    (name "emacs-fedi")
+    (version "0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/martianh/fedi.el")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ldag8659nqphc2isw1n3xv8dqf468ppwf1q10zn03sdj4dc1i11"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #f)) ; no tests
+    (propagated-inputs (list emacs-markdown-mode))
+    (home-page "https://codeberg.org/martianh/fedi.el")
+    (synopsis "Library to make writing clients for APIs easier")
+    (description "@code{fedi.el} is an Emacs library used by several
   fediverse frontend packages.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-ebdb
   (package
