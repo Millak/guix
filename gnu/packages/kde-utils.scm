@@ -478,14 +478,14 @@ to camera devices supported by @code{libgphoto2} using
 (define-public kate
   (package
     (name "kate")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kate-" version ".tar.xz"))
        (sha256
-        (base32 "0ah6cy92yir68z25460ccl48i5nrfqswpzil9a7l69h3qxspsk88"))
+        (base32 "1awhrqkbd1ckxdb8xqli72s6x3fhvrlr07912wv888lrq5vdjqfp"))
        (modules '((guix build utils)))
        ;; Unbundle SingleApplication.
        (snippet
