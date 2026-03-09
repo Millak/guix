@@ -1628,13 +1628,12 @@ combine the information contained in both.")
                       (delete "swig"))))))
 
 (define-public itk-snap
-  ;; The latest release, 4.2.2, segmentation faults on startup.
-  ;; The commit is version 4.4.0-alpha3.
-  (let ((commit "65251254d44d68a6c0530984169784e35de020dd")
+  ;; No tag for version 4.4.0.  This seems to be the commit.
+  (let ((commit "20f631865372dc7d1f49a1e930d83131102f7a20")
         (revision "0"))
   (package
     (name "itk-snap")
-    (version (git-version "4.2.2" revision commit))
+    (version (git-version "4.4.0" revision commit))
     (source
      (origin
        (method git-fetch)
@@ -1643,13 +1642,12 @@ combine the information contained in both.")
              (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07dgcfklc55yj3ldcq6fc5fil8qfrv7z6c3xhbd293kz7kpjr4yc"))))
+        (base32 "0zfaiz5lc1fy0n48bwbjgw3yschmscmq9bh0ym05cpaf4sbr4p7l"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:configure-flags
-      #~(list "-DSNAP_VERSION_GIT_BRANCH=release"
-              "-DSNAP_PACKAGE_QT_PLUGINS=OFF")
+      #~(list "-DSNAP_VERSION_GIT_BRANCH=release")
       #:phases
       #~(modify-phases %standard-phases
           ;; During the installation phase all libraries provided by all
@@ -1658,9 +1656,7 @@ combine the information contained in both.")
           (add-after 'unpack 'do-not-copy-dependencies
             (lambda _
               (substitute* "CMakeLists.txt"
-                (("install_qt5_executable\
-\\(\\$\\{SNAP_MAIN_INSTALL_DIR\\}/\\$\\{SNAP_EXE\\}\\)")
-                 ""))))
+                (("install\\(SCRIPT \\$\\{deploy_script\\}\\)") ""))))
           (add-after 'unpack 'disable-gui-tests
             (lambda _
               ;; The GUI tests just segmentation fault.
@@ -1740,15 +1736,16 @@ combine the information contained in both.")
     (native-inputs
      (list
       doxygen
+      qttools
       ;; Use the submodule commits in this version of ITK-SNAP.
       (origin
         (method git-fetch)
         (uri (git-reference
               (url "https://github.com/pyushkevich/c3d")
-              (commit "a86a2a32db8635c1535522332fee68bc56eacaa2")))
+              (commit "d4d963629d7dfdca4b0607907f0e91827c22ea2a")))
         (file-name "c3d-checkout")
         (sha256
-         (base32 "0da3ikx7pqlrmvhkmzil269j6kyd84pphy1mls8v69gmzl89piis")))
+         (base32 "15yh2rdynql99yy5hanq5rha1pry9c3ryb7bfy47vvyqksk0znvs")))
       (origin
         (method git-fetch)
         (uri (git-reference
@@ -1761,10 +1758,10 @@ combine the information contained in both.")
         (method git-fetch)
         (uri (git-reference
               (url "https://github.com/pyushkevich/greedy")
-              (commit "f10152c5374da08ee024c4c60ef8882876bd0808")))
+              (commit "2d5dfa1891ac726524495d4ca8a3461be86c12f5")))
         (file-name "greedy-checkout")
         (sha256
-         (base32 "0xk1l0h4wis4nkfwjnvh624bdlhy7l26djibk4l00wzv0vvq21qv")))))
+         (base32 "13rz423p7p95ca94c5njr8jxbcic1hp8iqap613zlxmvl4n9vx15")))))
     (home-page "https://sourceforge.net/p/itk-snap/")
     (synopsis "Medical image segmentation")
     (description "ITK-SNAP is a tool for segmenting anatomical structures in
