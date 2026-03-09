@@ -142,14 +142,14 @@ multi-floor indoor maps.")
 (define-public grantleetheme
   (package
     (name "grantleetheme")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/grantleetheme-" version ".tar.xz"))
        (sha256
-        (base32 "09v4ik066zv3nwf3mma5fmm2c3sc8ygy345kxp7bpiv2vlhrcim9"))))
+        (base32 "0c23yvcn6b4gi97w10bqdh05jylwdr07325j1kwhnw97jygz42zz"))))
     (build-system qt-build-system)
     (arguments (list
                 #:qtbase qtbase
