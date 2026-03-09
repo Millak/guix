@@ -885,14 +885,14 @@ This package is part of the KDE games module.")
 (define-public kdiamond
   (package
     (name "kdiamond")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kdiamond-" version ".tar.xz"))
        (sha256
-        (base32 "1hj7mywkq1m30sb2nklwwfn0xly96g9645655mv2c8l27h2if6g1"))))
+        (base32 "08aiic17lw6f485czcjsl7zj8hrpzm7afgcmizh00chp7h0nnm4c"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
