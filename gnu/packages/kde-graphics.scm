@@ -13,7 +13,7 @@
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Mehmet Tekman <mtekman89@gmail.com>
-;;; Copyright © 2023, 2025 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2023, 2025, 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2024 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
@@ -125,14 +125,14 @@ image editing capabilities.")
 (define-public ksanecore
   (package
     (name "ksanecore")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                              "/src/ksanecore-" version ".tar.xz"))
        (sha256
-        (base32 "02dsvq7gwkdph1xjp91gdpixgv2pbzvncv73h5krha5w24aw0z44"))))
+        (base32 "10p2brijv96ilvxd7jz3xa1qibzpx4kziwcsyqn18r6pg9g6niv0"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
