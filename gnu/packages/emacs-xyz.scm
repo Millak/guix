@@ -8638,7 +8638,7 @@ easily supportable, giving the same experience across environments.")
 (define-public emacs-symon
   (package
     (name "emacs-symon")
-    (version "20160630")
+    (version "20260223")
     (source
      (origin
        (method git-fetch)
@@ -8647,7 +8647,7 @@ easily supportable, giving the same experience across environments.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q7di9s8k710nx98wnqnbkkhdimrn0jf6z4xkm4c78l6s5idjwlz"))))
+        (base32 "0n4dqxmpa0vk9za991rcm9za90l5b8cqzqjgzj4nr1yj2lip7f72"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/zk-phi/symon")
     (synopsis "Tiny graphical system monitor")
