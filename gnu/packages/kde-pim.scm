@@ -1722,14 +1722,14 @@ manager from KDE.")
 (define-public kmail-account-wizard
   (package
     (name "kmail-account-wizard")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmail-account-wizard-" version ".tar.xz"))
        (sha256
-        (base32 "1bcr1bfihf261w06ahkjsqazgffgk5indwxwz3mr53v1lgamp8nk"))))
+        (base32 "00nmx3c9jmfgcrzkhkizjihzlzk382m1pnhmr3200dqmdf72ch8a"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules shared-mime-info))
