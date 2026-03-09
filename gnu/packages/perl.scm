@@ -539,6 +539,26 @@ possibility to download and install prebuilt binaries or to build SDL & co.@:
 from source codes.")
     (license license:perl-license)))
 
+(define-public perl-anyevent-aio
+  (package
+    (name "perl-anyevent-aio")
+    (version "1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/M/ML/MLEHMANN/AnyEvent-AIO-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "0svh0mlp17g0ypq8bgs3h3axg8v7h0z45hryacgn6q8mcj65n43b"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-anyevent perl-io-aio))
+    (home-page "https://metacpan.org/release/AnyEvent-AIO")
+    (synopsis "Truly asynchronous file and directory I/O")
+    (description "This package provides asynchronous file and directory I/O
+for Perl.")
+    (license license:perl-license)))
+
 (define-public perl-anyevent-bdb
   (package
     (name "perl-anyevent-bdb")
