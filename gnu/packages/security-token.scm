@@ -407,15 +407,17 @@ semi-transparent way.
 (define-public pkcs11-provider
   (package
     (name "pkcs11-provider")
-    (version "1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/latchset/" name
-                                  "/releases/download/v" version "/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0lzn2wj3pxwb0b2xrx1dk96nkbm2bpl75clhkr1cpnfnc3v02gc4"))))
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/latchset/pkcs11-provider/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1k4hcdh748x4lyrb1gq69wm28909d0qw6rb2fpxhxsd07k0mxpi4"))))
     (build-system meson-build-system)
     (arguments
      (list #:phases
