@@ -335,14 +335,14 @@ collection and item views.")
 (define-public akonadi-contacts
   (package
     (name "akonadi-contacts")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/akonadi-contacts-" version ".tar.xz"))
        (sha256
-        (base32 "11inxc12lk4hbc26g1axy8k080qgxqrqrilp93agfy1l2jannkgs"))))
+        (base32 "13w9a31abkpr45vpcz783xhgi4l4hwv9dnnfxarjppmzlqcv8nsp"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
