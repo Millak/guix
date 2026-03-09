@@ -6744,21 +6744,6 @@ and embedded platforms.")
                   (list "CFLAGS=-O2 -g -fcommon")))))
     (synopsis "Multilingual input method framework (GTK+ support)")))
 
-(define-public uim-qt
-  (package/inherit uim
-    (name "uim-qt")
-    (inputs
-     (modify-inputs (package-inputs uim)
-       (prepend qtbase-5 qtx11extras)))
-    (arguments
-     (substitute-keyword-arguments (package-arguments uim)
-       ((#:configure-flags configure-flags)
-        #~(append #$configure-flags
-                  (list "--with-qt5-immodule"
-                        "--with-qt5"
-                        "CPPFLAGS=-fcommon")))))
-    (synopsis "Multilingual input method framework (Qt support)")))
-
 (define-public keynav
   (package
     (name "keynav")
