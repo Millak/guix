@@ -1336,43 +1336,43 @@ The peer-to-peer VPN implements a Layer 2 (Ethernet) network between the peers
         (base32 "1z2yl8crqwk064jki9avbnrhckja8526dyyqmgy2j135xxm9ri31"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list ,(string-append "CC=" (cc-for-target))
-             "--directory=src"
-             "WITH_BASHCOMPLETION=yes"
-             ;; Install the ‘simple and dirty’ helper script wg-quick(8).
-             "WITH_WGQUICK=yes"
-             (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             ;; Currently used only to create an empty /etc/wireguard directory.
-             (string-append "SYSCONFDIR=no-thanks"))
-       ;; The test suite is meant to be run interactively.  It runs Clang's
-       ;; scan-build static analyzer and then starts a web server to display the
-       ;; results.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-after 'install 'install-contrib-docs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/wireguard-tools")))
-               (copy-recursively "contrib/" doc))))
-         (add-after 'install 'wrap-wg-quick
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (inputs-sbin (map (lambda (input)
-                                        (string-append (assoc-ref inputs input)
-                                                       "/sbin"))
-                                      (list "iproute"
-                                            "iptables"
-                                            "procps"
-                                            "resolvconf")))
-                    (coreutils (string-append (assoc-ref inputs "coreutils")
-                                              "/bin")))
-               (wrap-program (string-append out "/bin/wg-quick")
-                 #:sh (search-input-file inputs "bin/bash")
-                 `("PATH" ":" prefix ,(append inputs-sbin
-                                              (list coreutils))))))))))
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              "--directory=src"
+              "WITH_BASHCOMPLETION=yes"
+              ;; Install the ‘simple and dirty’ helper script wg-quick(8).
+              "WITH_WGQUICK=yes"
+              (string-append "PREFIX=" #$output)
+              ;; Currently used only to create an empty /etc/wireguard directory.
+              (string-append "SYSCONFDIR=no-thanks"))
+      ;; The test suite is meant to be run interactively.  It runs Clang's
+      ;; scan-build static analyzer and then starts a web server to display the
+      ;; results.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)            ; no configure script
+          (add-after 'install 'install-contrib-docs
+            (lambda _
+              (copy-recursively
+               "contrib/"
+               (string-append #$output "/share/doc/wireguard-tools"))))
+          (add-after 'install 'wrap-wg-quick
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((inputs-sbin (map (lambda (input)
+                                         (string-append (assoc-ref inputs input)
+                                                        "/sbin"))
+                                       (list "iproute"
+                                             "iptables"
+                                             "procps"
+                                             "resolvconf")))
+                     (coreutils (string-append (assoc-ref inputs "coreutils")
+                                               "/bin")))
+                (wrap-program (string-append #$output "/bin/wg-quick")
+                  #:sh (search-input-file inputs "bin/bash")
+                  `("PATH" ":" prefix ,(append inputs-sbin
+                                               (list coreutils))))))))))
     (inputs
      `(("resolvconf" ,openresolv)
        ("coreutils" ,coreutils)
