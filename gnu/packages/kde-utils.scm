@@ -910,14 +910,14 @@ with support for QR scanning.")
 (define-public komodo
   (package
     (name "komodo")
-    (version "1.5.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/komodo/" version
                            "/komodo-" version ".tar.xz"))
        (sha256
-        (base32 "1xdn3k71a5s801p2cpddyvjbpb8ki8i4y2mig15am0v1r2ag16mi"))))
+        (base32 "16h814cmh5v60fr71la73ldicblb5snfl6rnvwqg5p5a1wgk59n7"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase))
