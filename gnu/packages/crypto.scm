@@ -1825,7 +1825,7 @@ configured to start gpg-agent.")
 (define-public libdigidocpp
   (package
     (name "libdigidocpp")
-    (version "4.2.0")
+    (version "4.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1834,7 +1834,7 @@ configured to start gpg-agent.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lz8zahdmzav6csnx9r40dhzvaj7zjwvlgdjlx1s0idfrlbs3zd3"))
+        (base32 "1kv1cyc8ylsxcvhsx1lgbjaar7ilf14gmcnmzclql2wd5vf1973z"))
        (modules '((guix build utils)))
        (snippet '(delete-file-recursively "src/minizip"))))
     (build-system cmake-build-system)
