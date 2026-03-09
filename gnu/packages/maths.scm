@@ -6089,23 +6089,27 @@ parts of it.")
        (sha256
         (base32
          "1ifbbk4mg4ykm92i9b09wwbcwpyzlfzn8lhds8f3p7cbcga7q530"))))
-    (build-system cmake-build-system)
+    ;; To build the package, we can either rely on a preset Makefile, or
+    ;; generate a new one through a CMake configuration.
+    ;; We choose the first option, so we delete the configure phase and we set
+    ;; the build system to gnu-build-system to build the package through the
+    ;; 'make' command.
+    (build-system gnu-build-system)
     (arguments
      (list
-      #:build-type "Release"
-      #:configure-flags
-      #~(list "-DBUILD_SHARED_LIBS=ON"
-              "-DBUILD_STATIC_LIBS=OFF"
-              "-DCMAKE_C_FLAGS=-g"
-              "-DCMAKE_Fortran_FLAGS=-g")
+      ;; Set the test target (but tests are indeed already run in the build
+      ;; phase, which calls 'make -C test all').
+      #:test-target "test"
       ;; No default baseline is supplied for powerpc-linux.
       #:substitutable? (not (target-ppc32?))
       #:make-flags
       #~(list (string-append "PREFIX=" #$output)
+              "CFLAGS=-O3"              ; optimization flags
+              "FFLAGS=-O3"              ; optimization flags
               "SHELL=bash"
-              "DEBUG=1"                 ; enable debug symbols
-              "MAKE_NB_JOBS=0"          ;use jobserver for submakes
-              "NO_STATIC=1"             ;avoid a 67 MiB static archive
+              "DEBUG=1"                 ; enable debug symbols -g
+              "MAKE_NB_JOBS=0"          ; use jobserver for submakes
+              "NO_STATIC=1"             ; avoid a 67 MiB static archive
 
               ;; This is the maximum number of threads OpenBLAS will ever use
               ;; (that is, if $OPENBLAS_NUM_THREADS is greater than that, then
@@ -6148,12 +6152,13 @@ parts of it.")
                     ((target-riscv64?)
                      '("TARGET=RISCV64_GENERIC"))
                     (else '())))
-      ;; no configure script
       #:phases
       #~(modify-phases %standard-phases
+          ;; Skip configure phase since we rely on a preset Makefile.
+          (delete 'configure)
+          ;; Get libgfortran found when building in utest.
           (add-before 'build 'set-extralib
             (lambda* (#:key inputs #:allow-other-keys)
-              ;; Get libgfortran found when building in utest.
               (setenv "FEXTRALIB"
                       (string-append
                        "-L"
