@@ -683,7 +683,7 @@ drive, USB stick, etc
 (define-public kcharselect
   (package
     (name "kcharselect")
-    (version "25.12.2")
+    (version "25.12.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
@@ -691,7 +691,7 @@ drive, USB stick, etc
                                   ".tar.xz"))
               (sha256
                (base32
-                "1j6frcn0fa6cl1kmiqz8ic2l03rzl22kwj54izd5g7y7r6a7qg5g"))))
+                "1ppczh9ajp19nwzbvc631lfhcqwprayzjygzxn1jvivda51mbpwh"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
