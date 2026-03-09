@@ -4,7 +4,7 @@
 ;;; Copyright © 2021-2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2025 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2025, 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -65,14 +65,14 @@
 (define-public ark
   (package
     (name "ark")
-    (version "25.12.2")
+    (version "25.12.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/ark-" version ".tar.xz"))
               (sha256
                (base32
-                "0y5454r7nkqk66rq7w8xiihmnm9myrwxcg2imhy7cnn62h4kbmxb"))
+                "12q2brbgg68kknf193wx44spg8jbqzib58hhrvnkqvr1ivq7xwl1"))
               ;; The libarchive package in Guix does not support
               ;; xar; disable related tests.
               (patches (search-patches "ark-skip-xar-test.patch"))))
