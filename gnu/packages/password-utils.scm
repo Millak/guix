@@ -566,7 +566,7 @@ Counterpane's Passwordsafe.")
 (define-public otpclient
   (package
     (name "otpclient")
-    (version "4.3.1")
+    (version "4.4.1")
     (source
      (origin
        (method git-fetch)
@@ -575,7 +575,7 @@ Counterpane's Passwordsafe.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09pyym24vy06rk7f6pkbm5vzbjpi6c8amvffxcw2pmkcwn94vv5a"))))
+        (base32 "1gqn3mhjsw5m0a2zadnhrnfd2a796wvvvigklkmdnfyjmhn3iqs6"))))
     (build-system cmake-build-system)
     (arguments
      (list
