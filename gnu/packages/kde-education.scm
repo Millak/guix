@@ -9,7 +9,7 @@
 ;;; Copyright © 2023-2025 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2025 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2025, 2026 Sughosha <sughosha@disroot.org>
 
 ;;;
 ;;; This file is part of GNU Guix.
@@ -65,14 +65,14 @@
 (define-public kqtquickcharts
   (package
     (name "kqtquickcharts")
-    (version "25.12.2")
+    (version "25.12.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kqtquickcharts-" version ".tar.xz"))
               (sha256
                (base32
-                "0z2421ffvxfp85pl80203g3pd3xg8dh60rd6zxy182bkr5l5hymw"))))
+                "0jywd5s5l9bj4bv1jvbjghgdmiac4q1infxr1mfs7z4fd6408nbc"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list qtdeclarative))
