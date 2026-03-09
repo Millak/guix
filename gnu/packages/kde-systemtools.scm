@@ -592,14 +592,14 @@ It provides:
 (define-public kwalletmanager
   (package
     (name "kwalletmanager")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kwalletmanager-" version ".tar.xz"))
        (sha256
-        (base32 "0lbi40ivslzi1gh904mggw45n32r84gvjhfd59pqfavkhip6dafl"))))
+        (base32 "12ddl0fpydj5bm46q3428s99kcfg1b1jbqmlkjpamhzmfylxyjmp"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
