@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2024, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -137,11 +137,11 @@ builder, or the distro's final Guile when GUILE is #f."
            ,@(map rewritten-input
                   (filtered (package-inputs p)))))))))
 
-(define* (package-with-explicit-inputs* inputs #:optional guile)
+(define* (package-with-explicit-inputs* explicit-inputs #:optional guile)
   "Return a procedure that rewrites the given package and all its dependencies
-so that they use INPUTS (a thunk) instead of implicit inputs."
+so that they use EXPLICIT-INPUTS (a thunk) instead of implicit inputs."
   (define (duplicate-filter package-inputs)
-    (let ((names (match (inputs)
+    (let ((names (match (explicit-inputs)
                    (((name _ ...) ...)
                     name))))
       (fold alist-delete package-inputs names)))
@@ -151,7 +151,7 @@ so that they use INPUTS (a thunk) instead of implicit inputs."
              (not (memq #:implicit-inputs? (package-arguments p))))
         (package
           (inherit p)
-          (inputs (append (inputs)
+          (inputs (append (explicit-inputs)
                           (duplicate-filter (package-inputs p))))
           (arguments
            (ensure-keyword-arguments (package-arguments p)
