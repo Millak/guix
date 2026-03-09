@@ -190,14 +190,14 @@ Python, PHP, and Perl.")
 (define-public kdesdk-thumbnailers
   (package
     (name "kdesdk-thumbnailers")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kdesdk-thumbnailers-" version ".tar.xz"))
        (sha256
-        (base32 "17brrk20w32x6dqjqrqm2vgzhnhk2lpbzyay5k6cxsqsra0fbxvz"))))
+        (base32 "0xk6a24ngrrc98rkyz6zbyd9ngdyzd4saqb9fq1illsnvwd9z0bz"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f)) ;no tests
