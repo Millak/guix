@@ -609,14 +609,14 @@ Kate's features include:
 (define-public kbackup
   (package
     (name "kbackup")
-    (version "25.12.2")
+    (version "25.12.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kbackup-" version ".tar.xz"))
               (sha256
                (base32
-                "1kcb18bjqwxg2813yyky84lk1qhi8y6navw4jl1ijz1pkd01m6hr"))))
+                "03cln9n9i9caynjkf7660prrjwcrx0p80y7y72rqvnxzzmzcxh00"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kguiaddons
