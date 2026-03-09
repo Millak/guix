@@ -25,6 +25,7 @@
 ;;; Copyright © 2022, 2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2024, 2025 Allan Adair <allan@adair.no>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1323,7 +1324,7 @@ The peer-to-peer VPN implements a Layer 2 (Ethernet) network between the peers
 (define-public wireguard-tools
   (package
     (name "wireguard-tools")
-    (version "1.0.20250521")
+    (version "1.0.20260223")
     (source
      (origin
        (method git-fetch)
@@ -1332,7 +1333,7 @@ The peer-to-peer VPN implements a Layer 2 (Ethernet) network between the peers
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02xqy774m36930091ng75g8qd1j7yf8r0blysdwqpjzvpvs656s8"))))
+        (base32 "1z2yl8crqwk064jki9avbnrhckja8526dyyqmgy2j135xxm9ri31"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
