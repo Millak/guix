@@ -407,14 +407,14 @@ This package is part of the KDE games module.")
 (define-public kajongg
   (package
     (name "kajongg")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/kajongg-" version ".tar.xz"))
        (sha256
-        (base32 "0ccyg22w50bv9qa7fzk33wwbvjzs1605653i6byh2sv2bi2ngyh5"))))
+        (base32 "16ab4v1rm8f4pzb4s21zg4yinj2dfg12rkc0s59gvxb81v1vnkmj"))))
     (build-system qt-build-system)
     (arguments
      (list
