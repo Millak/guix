@@ -7219,6 +7219,34 @@ This document describes how to use Inline with the C programming language.
 It also goes a bit into Perl C internals.")
     (license (package-license perl))))
 
+(define-public perl-io-aio
+  (package
+    (name "perl-io-aio")
+    (version "4.81")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/M/ML/MLEHMANN/IO-AIO-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0a87vkk9pir09vsgvs3x3ic29ya5rva7aw9z90gsqd5px4h9y0k7"))))
+    (build-system perl-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-configure-shell
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "configure"
+                     (("/bin/sh")
+                      (search-input-file inputs "bin/sh"))))))))
+    (native-inputs (list bash-minimal perl-canary-stability))
+    (propagated-inputs (list perl-common-sense))
+    (home-page "https://metacpan.org/release/IO-AIO")
+    (synopsis "Asynchronous/Advanced Input/Output")
+    (description "This package provides asynchronous and advanced input/output
+for Perl.")
+    (license license:perl-license)))
+
 (define-public perl-io-all
   (package
     (name "perl-io-all")
