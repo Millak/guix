@@ -180,14 +180,14 @@ Dolphin with the version control systems: Bzr, Git, Mercurial, Subversion.")
 (define-public kde-inotify-survey
   (package
     (name "kde-inotify-survey")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kde-inotify-survey-" version ".tar.xz"))
        (sha256
-        (base32 "1iqfm3ll4kivfjdiif4jrbwh01yaanka59s77pn7a8hjilg9b0w3"))))
+        (base32 "1qwhdh4qfv7834vghzsasdgk1h080jpzb5nkbd5g0v8nvi6j1h05"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase))
