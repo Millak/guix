@@ -6,7 +6,7 @@
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023-2025 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2023-2025 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2023-2026 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -63,14 +63,14 @@
 (define-public baloo-widgets
   (package
     (name "baloo-widgets")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/baloo-widgets-" version ".tar.xz"))
        (sha256
-        (base32 "08xbsb1ni1d05ldmml9ppx33r5r2qdccfn6lla8rpzdbdwjdcsk0"))))
+        (base32 "04f769ij3hp5ljfb3xfqq7mib1qhp4my5d9znpp6v97dvw5gq0qb"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
