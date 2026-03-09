@@ -48,44 +48,6 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz))
 
-(define-public lean
-  (package
-    (name "lean")
-    (version "3.51.1")
-    (home-page "https://lean-lang.org" )
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/leanprover-community/lean")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "17g4d3lqnbl1yfy2pjannf73v8qhc5003d2jkmrqiy05zkqs8d9n"))))
-    (build-system cmake-build-system)
-    (inputs
-     (list gmp))
-    (arguments
-     (list
-      #:build-type "Release"            ; default upstream build type
-      ;; XXX: Test phases currently fail on 32-bit sytems.
-      ;; Tests for those architectures have been temporarily
-      ;; disabled, pending further investigation.
-      #:tests? (and (not (%current-target-system))
-                    (let ((arch (%current-system)))
-                      (not (or (string-prefix? "i686" arch)
-                               (string-prefix? "armhf" arch)))))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'configure 'chdir-to-src
-            (lambda _ (chdir "src"))))))
-    (synopsis "Theorem prover and programming language")
-    (description
-     "Lean is a theorem prover and programming language with a small trusted
-core based on dependent typed theory, aiming to bridge the gap between
-interactive and automated theorem proving.")
-    (license license:asl2.0)))
-
 (define-public lean4
   (package
     (name "lean4")
