@@ -2405,14 +2405,14 @@ transport data and for performing public transport journey queries.")
 (define-public libgravatar
   (package
     (name "libgravatar")
-    (version "25.12.2")
+    (version "25.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libgravatar-" version ".tar.xz"))
        (sha256
-        (base32 "0dyhlldyafs2iac1162z0nnf4c16fmaa7nhn4ydb8hjld4r3lvq8"))))
+        (base32 "19l87h6vqrr728h44hmidcd5ngjbc2pbkq3bwdb3bnph2nnqhwrs"))))
     (build-system cmake-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kconfig
