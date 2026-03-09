@@ -1729,8 +1729,7 @@ files for the fonts of the @var{manifest} entries."
   (gexp->derivation "fonts-dir" build
                     #:system system
                     #:modules '((guix build utils)
-                                (guix build union)
-                                (srfi srfi-26))
+                                (guix build union))
                     #:local-build? #t
                     #:substitutable? #f
                     #:properties
