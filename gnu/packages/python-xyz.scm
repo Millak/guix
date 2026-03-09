@@ -4017,11 +4017,13 @@ commits.")
     (version "7.3.6")
     (source
      (origin
-       (method url-fetch)
-       (uri
-        (pypi-uri "mkdocs-material" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/squidfunk/mkdocs-material")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "05y2qx01qqpc04iq1bbzcsaiq51zvg2samdgjf6kb2shya7bs78v"))
+        (base32 "06ghwidcdqimx6jc6yz1zdbyc8rqklkwj5h5cxsihazh0f52fivk"))
        (modules '((guix build utils)))
        (snippet
         ;; TODO There are still bundled assets and minified JS.
