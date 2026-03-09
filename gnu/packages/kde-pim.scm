@@ -2273,14 +2273,14 @@ and exchanging calendar data, vCalendar and iCalendar.")
 (define-public kpkpass
   (package
     (name "kpkpass")
-    (version "25.12.2")
+    (version "25.12.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/kpkpass-" version ".tar.xz"))
               (sha256
                (base32
-                "07ccs60ir40llh2km4y2c3gqbcpqcqrmr9qnmlgq6q8spq952jgh"))))
+                "1yaxi20vayzanp6hkmjky6dysmrldlra2xpf4z2hqx0igk1vs5pr"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list karchive qtdeclarative shared-mime-info))
