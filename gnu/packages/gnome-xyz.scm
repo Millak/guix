@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2020, 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2019, 2021 Alexandros Theodotou <alex@zrythm.org>
-;;; Copyright © 2019 Giacomo Leidi <therewasa@fishinthecalculator.me>
+;;; Copyright © 2019, 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Kei Kebreau <kkebreau@posteo.net>
@@ -814,6 +814,57 @@ overview, transforming it into a dock for easier application launching and
 faster window switching.")
     (home-page "https://micheleg.github.io/dash-to-dock/")
     (license license:gpl2+)))
+
+(define-public gnome-shell-extension-dock-ng
+  (package
+    (name "gnome-shell-extension-dock-ng")
+    (version "1.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/ochi12/dock-ng")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0q0v86n832kgqz0x3m0k75m09yy7r8qk3rf3niq06cs00ypm3xl6"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:make-flags #~(list (string-append "INSTALLBASE="
+                                          #$output
+                                          "/share/gnome-shell/extensions")
+                           (string-append "VERSION="
+                                          #$version))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'bootstrap)
+          (delete 'configure)
+          (add-before 'build 'set-environment-variables
+            (lambda _
+              (setenv "HOME" (getcwd))
+              (setenv "XDG_CACHE_HOME" (string-append (getcwd) "/.cache"))))
+          (replace 'build
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke `("make" "build" ,@make-flags))))
+          (replace 'install
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke `("make" "install" ,@make-flags)))))))
+    (native-inputs
+     (list `(,glib "bin")
+           gnome-shell
+           intltool
+           pkg-config))
+    (propagated-inputs
+     (list glib))
+    (synopsis "Lightweight dock for GNOME Shell")
+    (description "This package provides a lightweight, non-fixed, dock for GNOME
+Shell, built on the dash.  It implements a batteries included approach, with
+little configuration involved and a small feature set including adaptive
+intellihide and multimonitor support.")
+    (home-page "https://github.com/ochi12/dock-ng")
+    (license license:gpl3+)))
 
 (define-public gnome-shell-extension-gsconnect
   (package
