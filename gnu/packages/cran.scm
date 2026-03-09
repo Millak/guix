@@ -51155,19 +51155,19 @@ data interface.")
 (define-public r-nanotime
   (package
     (name "r-nanotime")
-    (version "0.3.12")
+    (version "0.3.13")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nanotime" version))
        (sha256
-        (base32 "197bycqypzsdabqdyf47l8qap1nysvxf0zcyfbhx4sbzfxwiflgv"))))
+        (base32 "1bwik7rd960is9l1315b4ffrd0b3myhb2ngllqr8g41c7jad7q89"))))
     (properties
      `((upstream-name . "nanotime")
        (updater-extra-native-inputs . ("tzdata-for-tests"))))
     (build-system r-build-system)
     (propagated-inputs (list r-bit64 r-rcpp r-rcppcctz r-rcppdate r-zoo))
-    (native-inputs (list r-tinytest tzdata-for-tests))
+    (native-inputs (list r-rcpp r-tinytest tzdata-for-tests))
     (home-page "https://github.com/eddelbuettel/nanotime")
     (synopsis "Nanosecond-resolution time support for R")
     (description
