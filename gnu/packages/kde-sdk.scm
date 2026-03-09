@@ -10,7 +10,7 @@
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2020, 2023-2025 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2023-2025 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2023-2026 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,7 +56,7 @@
 (define-public poxml
   (package
     (name "poxml")
-    (version "25.12.2")
+    (version "25.12.3")
     (source (origin
               (method url-fetch)
               (uri
@@ -64,7 +64,7 @@
                               "/src/poxml-" version ".tar.xz"))
               (sha256
                (base32
-                "0d78adkvf4j81qkmwlprrc7k7qzvpmzgzadhxhgkdsqxhahrg2xv"))))
+                "0z2lacq5v8ychmgy628alcbbpwlyihizmgqn82axv9vq9c95f2gl"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
