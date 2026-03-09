@@ -656,7 +656,7 @@ album-experience.")
                   python-mpd2
                   python-pycairo
                   python-pygobject))
-    (native-inputs (list gettext-minimal `(,glib "bin")))
+    (native-inputs (list gettext-minimal `(,glib "bin") gobject-introspection))
     (home-page "https://github.com/SoongNoonien/mpdevil")
     (synopsis "Music browser for the MPD")
     (description "mpdevil is a music browser for the Music Player Daemon (MPD),
