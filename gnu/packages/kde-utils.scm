@@ -780,14 +780,14 @@ conversions between European currencies.")
 (define-public keysmith
   (package
     (name "keysmith")
-    (version "25.12.2")
+    (version "25.12.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/keysmith-" version ".tar.xz"))
               (sha256
                (base32
-                "0dqsmg0sf1hx2z98v92hs5zqwvkh2gk7kr8fp8qdqcnnh3006k0z"))))
+                "1m52klqwisq49z3fn7r7y86xxr8syya3lscaw1d27h5yr9vxbg71"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules pkg-config python-minimal))
     (inputs (list kconfig
