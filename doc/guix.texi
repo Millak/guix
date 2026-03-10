@@ -33087,6 +33087,75 @@ strings, see
 
 @end deftp
 
+@subsubheading Zulip IRC bridge Service
+
+@cindex IRC, bridge to Zulip
+@cindex Zulip, bridge to IRC
+@url{https://zulip.com/integrations/irc, Zulip IRC integration} is a
+Zulip extension to bridge @acronym{IRC, Internet Relay Chat} room to a
+stream in the Zulip messaging system.
+
+@defvar zulip-irc-bridge-service-type
+This is the service type for the Zulip IRC bridge.  Its value is a
+@code{zulip-irc-bridge-configuration} configuration instance, which is
+documented below.
+
+The following example configures a Zulip integration to bridge an IRC
+room to a Zulip stream.
+
+@lisp
+(operating-system
+
+  ;; @dots{}
+
+  (services
+   (list @dots{}
+         (service zulip-irc-bridge-service-type
+                  (zulip-irc-bridge-configuration
+                   (irc-server  "irc.example.chat")
+                   (channel     "#example")
+                   (nick-prefix "irc_mirror")
+                   (stream      "test here")
+                   (site        "https://example.zulipchat.com")
+                   (user        "irc-bot@@example.zulipchat.com")
+                   (api-key     "cabba9ecabba9ecabba9ecabba9ecabb"))))))
+@end lisp
+
+@end defvar
+
+@c %end of fragment
+
+@deftp {Data Type} zulip-irc-bridge-configuration
+Available @code{zulip-irc-bridge-configuration} fields are:
+
+@table @asis
+@item @code{irc-mirror} (default: @code{(file-append python-zulip "/share/zulip/integrations/bridge_with_irc/irc-mirror.py")}) (type: file-like)
+Path to IRC mirror integration to use for the service.
+
+@item @code{irc-server} (type: string)
+The IRC server where to search the room to mirror.
+
+@item @code{channel} (type: string)
+The Zulip where to store the topic where IRC will be mirrored.
+
+@item @code{nick-prefix} (type: string)
+Bot nickname.
+
+@item @code{stream} (type: string)
+The Zulip stream/topic where the mirroring takes place.
+
+@item @code{site} (type: string)
+The Zulip server that the IRC bridge integration should operate on.
+
+@item @code{user} (type: string)
+The Zulip bot email that the IRC integration service should use.
+
+@item @code{api-key} (type: string)
+The API key of the Zulip bot that will send the mirrored messages.
+
+@end table
+
+@end deftp
 
 @c %end of fragment
 

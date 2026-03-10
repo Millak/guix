@@ -28,6 +28,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages irc)
   #:use-module (gnu packages messaging)
+  #:use-module (gnu packages python)
   #:autoload   (gnu packages rust-apps) (mollysocket)
   #:use-module (gnu packages tls)
   #:use-module (gnu services)
@@ -248,7 +249,10 @@
             soju-accounts
             soju-shepherd-services
 
-            soju-service-type))
+            soju-service-type
+
+            zulip-irc-bridge-configuration
+            zulip-irc-bridge-service-type))
 
 ;;; Commentary:
 ;;;
@@ -2725,3 +2729,81 @@ point to different things after a reload, such as renewed TLS certificates.")
                        (service-extension account-service-type
                                           soju-accounts)))
                 (description "Run the soju IRC bouncer.")))
+
+
+;;;
+;;; Zulip.
+;;;
+
+(define-record-type* <zulip-irc-bridge-configuration>
+  zulip-irc-bridge-configuration make-zulip-irc-bridge-configuration
+  zulip-irc-bridge-configuration?
+  (irc-mirror  zulip-irc-bridge-mirror
+               (default (file-append python-zulip "/bin/zulip-irc-bridge")))
+  (irc-server  zulip-irc-bridge-server)
+  (channel     zulip-irc-bridge-channel)
+  (nick-prefix zulip-irc-bridge-nick-prefix)
+  (stream      zulip-irc-bridge-stream)
+  (topic       zulip-irc-bridge-topic
+               (default #f))
+  (site        zulip-irc-bridge-site)
+  (user        zulip-irc-bridge-user)
+  (api-key     zulip-irc-bridge-api-key))
+
+(define %zulip-accounts
+  (list (user-group
+          (name "zulip")
+          (system? #t))
+        (user-account
+          (name "zulip")
+          (group "zulip")
+          (system? #t)
+          (comment "Kanata daemon user")
+          (home-directory "/var/empty")
+          (create-home-directory? #f)
+          (shell (file-append shadow "/sbin/nologin")))))
+
+(define (zulip-irc-bridge-services config)
+  "Return a <shepherd-service> for Zulip irc-mirror with CONFIG."
+  (match-record config <zulip-irc-bridge-configuration>
+                (irc-mirror irc-server channel nick-prefix stream topic site user api-key)
+    (let* ((command (cons* irc-mirror
+                           (string-append "--irc-server=" irc-server)
+                           (string-append "--channel=" channel)
+                           (string-append "--nick-prefix=" nick-prefix)
+                           (string-append "--stream=" stream)
+                           (string-append "--site=" site)
+                           (string-append "--user=" user)
+                           (string-append "--api-key=" api-key)
+                           (if topic
+                               (list (string-append "--topic=" topic))
+                               '())))
+           (log-file "/var/log/zulip-irc-bridge.log"))
+      (list (shepherd-service
+              (documentation "Run the Zulip IRC mirror.")
+              (requirement '(user-processes networking))
+              (provision '(zulip-irc-bridge))
+
+              ;; The bridge attempts to connect to IRC but might fail if
+              ;; networking is not up.  To work around that, retry slowly upon
+              ;; failure and adjust the respawn limit accordingly.
+              (respawn-delay 5)
+              (respawn-limit #~'(5 . 60))
+
+              (start #~(make-forkexec-constructor '#$command
+                                                  #:log-file #$log-file
+                                                  #:user "zulip"
+                                                  #:group "zulip"))
+              (stop #~(make-kill-destructor)))))))
+
+(define zulip-irc-bridge-service-type
+  (service-type
+   (name 'zulip)
+   (extensions
+    (list (service-extension account-service-type
+                             (const %zulip-accounts))
+          (service-extension shepherd-root-service-type
+                             zulip-irc-bridge-services)))
+   (description
+    "Install and configure the Zulip @acronym{IRC, Internet Relay Chat} bridge
+as a Shepherd service.")))
