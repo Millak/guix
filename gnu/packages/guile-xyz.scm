@@ -44,7 +44,7 @@
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022, 2023 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2022, 2025 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2022, 2025-2026 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2024 Ilya Chernyshov <ichernyshovvv@gmail.com>
@@ -6060,13 +6060,20 @@ implementation in itself.")
        (sha256
         (base32 "0g508aajkyi513wbhm1rhs03ilnb701lwlrvppkmc0vynydlk9ws"))))
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-before 'build 'remove-unnecessary-file
-                          (lambda _
-                            (delete-file "run-tests.scm")
-                            (delete-file-recursively "tests"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'check
+            (lambda _
+              (invoke "guile" "--no-auto-compile" "run-tests.scm")
+              (delete-file "run-tests.scm")
+              (delete-file-recursively "tests")))
+          (add-after 'build 'install-info-documentation
+            (lambda _
+              (invoke "makeinfo" "doc/guile-uuid.texi" "-o"
+                      (string-append #$output "/share/info/")))))))
     (build-system guile-build-system)
-    (native-inputs (list guile-3.0))
+    (native-inputs (list guile-3.0 texinfo))
     (propagated-inputs (list guile-gcrypt))
     (home-page "https://codeberg.org/elb/guile-uuid")
     (synopsis "UUID generation and manipulation library for Guile Scheme")
@@ -6076,7 +6083,6 @@ implementation in itself.")
 standard hex-and-dash format of any variant and version.
 Conversion between binary and hex-and-dash string UUIDs is also included.")
     (license license:gpl3+)))
-
 
 (define-public guile-semver
   (package
