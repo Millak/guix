@@ -3429,7 +3429,7 @@ from being able to mix multiple JACK audio streams.")
 (define-public pipemixer
   (package
     (name "pipemixer")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
       (method git-fetch)
@@ -3440,10 +3440,21 @@ from being able to mix multiple JACK audio streams.")
       (sha256
        (base32 "08ji4lg24flzi6g3yaavfq8hz3kr98q2ripk5m4qk9z172qxbbc9"))))
     (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pw-device
+            (lambda _
+              (substitute* "src/pw/device.c"
+                ;; TODO: Report upstream:
+                ;; ../source/src/pw/device.c:328:80: error: expected
+                ;; ‘;’ before ‘{’ token
+                (("iter\\) \\{") "iter); {")))))))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list libinih ncurses pipewire-minimal))
+     (list libinih ncurses pipewire-minimal-1.4))
     (synopsis "TUI volume control app for pipewire.")
     (description "This is a TUI volume control application for pipewire built with
 ncurses. Heavily inspired by pulsemixer and pwvucontrol.")
