@@ -3056,18 +3056,18 @@ extension and customization.")
 (define-public libmedfile
   (package
     (name "libmedfile")
-    (version "4.0.0")
+    (version "6.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://files.salome-platform.org/Salome/other/med-"
+             "https://files.salome-platform.org/Salome/medfile/med-"
              version ".tar.gz"))
        (sha256
         (base32
-         "017h9p0x533fm4gn6pwc8kmp72rvqmcn6vznx72nkkl2b05yjx54"))))
+         "1a0zbdaj3s459s0cdayq4s3k3vbrfg7y32sf7s7qvi2bhz3fvwgq"))))
     (build-system cmake-build-system)
-    (inputs (list hdf5-1.10))
+    (inputs (list hdf5 zlib))
     (arguments
      `(#:parallel-tests? #f
        #:phases
