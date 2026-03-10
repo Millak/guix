@@ -168,7 +168,6 @@ gnu/packages/gawk.scm
 gnu/packages/gcc.scm
 gnu/packages/gd.scm
 gnu/packages/gdb.scm
-gnu/packages/genimage.scm
 gnu/packages/gettext.scm
 gnu/packages/gkrellm.scm
 gnu/packages/gnome-circle.scm

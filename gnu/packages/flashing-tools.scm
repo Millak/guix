@@ -11,7 +11,7 @@
 ;;; Copyright © 2021 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
-;;; Copyright © 2022 Danny Milosavljevic <dannym@scratchpost.org>
+;;; Copyright © 2018, 2022 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2023 B. Wilson <x@wilsonb.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
@@ -20,6 +20,9 @@
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Ian Eure <ian@retrospec.tv>
 ;;; Copyright © 2023 Thomas Albers Raviola <thomas@thomaslabs.org>
+;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -59,8 +62,12 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages bootloaders)
+  #:use-module (gnu packages cdrom)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpio)
+  #:use-module (gnu packages disk)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages electronics)
   #:use-module (gnu packages elf)
@@ -74,6 +81,7 @@
   #:use-module (gnu packages libftdi)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages mtools)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages perl)
@@ -83,7 +91,9 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages virtualization)
   #:use-module (gnu packages xml)
   #:use-module (srfi srfi-26))
 
@@ -245,6 +255,118 @@ With dfu-util you are able to download firmware to your device or upload
 firmware from it.")
     (home-page "https://dfu-util.sourceforge.net/")
     (license license:gpl2+)))
+
+(define-public genimage
+  (let ((commit "00009af6e29cfd46909bc8b4180147dda9f82ba8")
+        (revision "0"))
+    (package
+      (name "genimage")
+      (version (git-version "18" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/pengutronix/genimage")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1mijyq79cb0yj4jm9ln9smpddq1f6r8cnsa568qca0krcv0p3zag"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:modules
+         ((ice-9 match)
+          ,@%default-gnu-imported-modules)
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'guixify
+             (lambda* (#:key inputs #:allow-other-keys)
+               (map (match-lambda
+                      ((input directory regexp)
+                       (substitute* "config.c"
+                         (((format #f "\\.def = \"(~a)\"" regexp) _ command)
+                          (string-append ".def = \"" (assoc-ref inputs input)
+                                         "/" directory "/" command "\"")))))
+                    '(("cpio"           "bin"  "cpio")
+                      ("coreutils"      "bin"  "dd")
+                      ("e2fsprogs"      "sbin" "debugfs|e2fsck|mke2fs|tune2fs")
+                      ("genext2fs"      "bin"  "genext2fs")
+                      ("cdrkit-libre"   "bin"  "genisoimage")
+                      ("mtools"         "bin"  "mcopy|mmd")
+                      ;; mkcramfs is obsolete.
+                      ("dosfstools"     "sbin" "mkdosfs")
+                      ("mtd-utils"      "sbin" "mkfs.(jffs2|ubifs)|ubinize")
+                      ("f2fs-tools"     "sbin" "(mkfs|sload).f2fs")
+                      ("squashfs-tools" "bin"  "mksquashfs")
+                      ("qemu"           "bin"  "qemu-img")
+                      ;; rauc and fiptool are unsupported.
+                      ("tar"            "bin"  "tar")
+                      ("u-boot-tools"   "bin"  "mkimage")))
+               (substitute* "util.c"
+                 (("\"/bin/sh\"")
+                  (string-append "\"" (assoc-ref inputs "bash") "/bin/sh\"")))))
+           (add-before 'check 'disable-failing-tests
+             (lambda _
+               ;; We don't have /etc/passwd so uid 0 is not known as "root".
+               ;; Thus patch it out.
+               (substitute* '("test/flash.test")
+                 (("test_expect_success \"flash\"")
+                  "test_expect_fail \"flash\""))
+               (substitute* '("test/hdimage.test")
+                 (("test_expect_success fdisk,sfdisk \"hdimage\"")
+                  "test_expect_fail fdisk,sfdisk \"hdimage\"")
+                 (("test_expect_success hexdump \"hdimage no-partition\"")
+                  "test_expect_fail hexdump \"hdimage no-partition\""))))
+           (add-before 'check 'fix-failing-tests
+             (lambda _
+               ;; We don't have /etc/passwd so uid 0 is not known as "root".
+               ;; Thus patch it out.
+               (substitute* '("test/ext2test.2.dump"
+                              "test/ext3test.2.dump"
+                              "test/ext4test.2.dump"
+                              "test/ext2test-percent.2.dump"
+                              "test/mke2fs.2.dump"
+                              "test/mke2fs.3.dump")
+                 (("root") "unknown"))))
+           (add-before 'check 'setenv-check
+             (lambda _
+               ;; Our container doesn't provide access to /etc/mtab
+               (setenv "EXT2FS_NO_MTAB_OK" "1")
+               ;; Make test reproducible
+               (setenv "GENIMAGE_MKFJFFS2" "mkfs.jffs2 -U")
+               (setenv "GENIMAGE_MKE2FS" "mke2fs -E no_copy_xattrs")))
+           (replace 'check
+             (lambda _
+               (invoke "make" "TEST_LOG_COMPILER=" "check"))))))
+      (native-inputs
+       (list autoconf
+             automake
+             ;;; Note: cramfs is obsolete.
+             dtc ; for the tests
+             pkg-config
+             util-linux)) ; for the tests
+      (inputs
+       `(("bash" ,bash)
+         ("cdrkit-libre" ,cdrkit-libre)
+         ("cpio" ,cpio)
+         ;; Note: invoked by final executable.
+         ("coreutils" ,coreutils) ; chmod, dd
+         ("dosfstools" ,dosfstools)
+         ("e2fsprogs" ,e2fsprogs)
+         ("f2fs-tools" ,f2fs-tools)
+         ("genext2fs" ,genext2fs)
+         ("libconfuse" ,libconfuse)
+         ("mtd-utils" ,mtd-utils)
+         ("mtools" ,mtools)
+         ("qemu" ,qemu-minimal)
+         ("squashfs-tools" ,squashfs-tools)
+         ("tar" ,tar)
+         ("u-boot-tools" ,u-boot-tools)))
+      (synopsis "Create Flash images according to specification")
+      (description "@command{genimage} creates Flash images according to a
+specification file.")
+      (home-page "https://github.com/pengutronix/genimage")
+      (license license:gpl2))))
 
 (define-public teensy-loader-cli
   (package

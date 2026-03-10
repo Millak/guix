@@ -313,7 +313,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/gd.scm				\
   %D%/packages/gdb.scm				\
   %D%/packages/genealogy.scm			\
-  %D%/packages/genimage.scm			\
   %D%/packages/geo.scm				\
   %D%/packages/gettext.scm			\
   %D%/packages/ghostscript.scm			\
@@ -1430,7 +1429,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/gemmi-fix-pegtl-usage.patch		\
   %D%/packages/patches/gemmi-fix-sajson-types.patch		\
   %D%/packages/patches/gemrb-remove-ifdef-and-externalize-path-setting-to-cmake.patch	\
-  %D%/packages/patches/genimage-mke2fs-test.patch		\
   %D%/packages/patches/geoclue-config.patch			\
   %D%/packages/patches/gettext-libunicode-update.patch		\
   %D%/packages/patches/ghc-8.0-fall-back-to-madv_dontneed.patch	\
