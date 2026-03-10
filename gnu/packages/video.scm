@@ -7268,7 +7268,7 @@ included for convenience.")
 (define-public showmethekey
   (package
     (name "showmethekey")
-    (version "1.20.0")
+    (version "1.21.0")
     (source
      (origin
        (method git-fetch)
@@ -7277,7 +7277,7 @@ included for convenience.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hfr2qhlgpp4fiy8885lv2b0cqa5kpyix32d9lg5xhg1hhxnsmc4"))))
+        (base32 "1zncwnv0w3khd3vc73r2zmhg3j96km021nlszgrmsj0xz5qnbi31"))))
     (build-system meson-build-system)
     (arguments
      (list
