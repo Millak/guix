@@ -2009,15 +2009,20 @@ Python and R interfaces.")
     (version "2.4.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.astromatic.net/download/stiff/stiff-"
-                           version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/astromatic/stiff")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "14m92dskzw7bwsr64ha4p0mj3ndv13gwcbfic3qxrs3zq5353s7l"))))
+        (base32 "1iffrncag1w6nd9c6v3dlx9m79nfg6ph42i0gsvlq8pvjph7s6pa"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "CFLAGS=-fcommon")))
     (inputs
      (list libtiff zlib libjpeg-turbo))
-    (home-page "https://www.astromatic.net/software/stiff")
+    (home-page "https://www.astromatic.net/software/stiff/")
     (synopsis "Convert scientific FITS images to TIFF format")
     (description
      "STIFF is a program that converts scientific @acronym{FITS, Flexible Image
