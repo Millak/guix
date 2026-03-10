@@ -1096,7 +1096,7 @@ an embedded event driven algorithm.")
                    ,(string-append
                      #$(this-package-input "openroad-cli") "/bin")
                    ,(string-append
-                     #$(this-package-input "python-wrapper") "/bin")
+                     #$(this-package-input "python") "/bin")
                    ,(string-append
                      #$(this-package-input "ruby") "/bin")
                    ,(string-append
@@ -1112,6 +1112,7 @@ an embedded event driven algorithm.")
            magic
            netgen
            openroad-cli
+           python
            python-click
            python-cloup
            python-deprecated
@@ -1125,7 +1126,6 @@ an embedded event driven algorithm.")
            python-rapidfuzz
            python-rich
            python-semver
-           python-wrapper
            python-yamlcore-0.0.2
            ruby
            verilator
