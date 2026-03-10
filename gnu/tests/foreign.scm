@@ -403,7 +403,7 @@ and file system, if appropriate."
 (define debian-13-qcow2
   ;; Image taken from <https://www.debian.org/distrib/>.
   ;; XXX: Those images are periodically removed from debian.org.
-  (let ((image-date "20251006-2257"))
+  (let ((image-date "20260112-2355"))
     (origin
       (uri (string-append "https://cloud.debian.org/images/cloud/trixie/"
                           image-date "/debian-13-nocloud-amd64-"
@@ -412,17 +412,17 @@ and file system, if appropriate."
       (file-name "debian-13-nocloud-amd64.qcow2")
       (sha256
        (base32
-        "0g7kcvz2yzr0xchlv5kc8d2rd2lzk4akh02i43i92cmys7q3r05c")))))
+        "0nrc2mgnlzxa48vj0mdkwm2llf1pg4xj4idab1xd123d6p8ggvms")))))
 
 (define debian-uidmap-deb-file
   ;; This package provides 'newgidmap' & co., used by the unprivileged daemon.
   (origin
     (uri
-     "mirror://debian/pool/main/s/shadow/uidmap_4.13+dfsg1-1+deb12u1_amd64.deb")
+     "mirror://debian/pool/main/s/shadow/uidmap_4.13+dfsg1-1+deb12u2_amd64.deb")
     (method url-fetch)
     (sha256
      (base32
-      "0iqhljzmnni3k3jc1xb0mrb7cqywkzrmdc2322kd8b1wpw45zv8l"))))
+      "0imc6d6q6hzbfksmm9ibsc0wiqjhggvxv1zhvwvvsmy45ipxris5"))))
 
 ;; This test starts failing when derivations in repo for GNU Hello and its dependencies
 ;; differs from versions in current Guix package. The simple way to fix it is to update
