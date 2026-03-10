@@ -437,6 +437,7 @@ of the ssh protocol.  It was originally developed to address performance issues 
 (define-public hpn-ssh-sans-x
   (package
     (inherit hpn-ssh)
+    (name "hpn-ssh-sans-x")
     (inputs
      (modify-inputs (package-inputs hpn-ssh)
        (delete "xauth")))
