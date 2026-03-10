@@ -1082,7 +1082,25 @@ an embedded event driven algorithm.")
               (substitute* "librelane/steps/verilator.py"
                 (("\"verilator\"")
                  (format #f "~s"
-                         (search-input-file inputs "/bin/verilator")))))))))
+                         (search-input-file inputs "/bin/verilator"))))))
+          (add-after 'compress-documentation 'wrap-program
+            (lambda _
+              (wrap-program (string-append #$output "/bin/librelane")
+                `("PATH" ":" prefix
+                  (,(string-append
+                     #$(this-package-input "ciel") "/bin")
+                   ,(string-append
+                     #$(this-package-input "magic") "/bin")
+                   ,(string-append
+                     #$(this-package-input "netgen") "/bin")
+                   ,(string-append
+                     #$(this-package-input "openroad-cli") "/bin")
+                   ,(string-append
+                     #$(this-package-input "python-wrapper") "/bin")
+                   ,(string-append
+                     #$(this-package-input "ruby") "/bin")
+                   ,(string-append
+                     #$(this-package-input "yosys") "/bin")))))))))
     (native-inputs
      (list python-customtkinter
            python-poetry-core
@@ -1091,6 +1109,9 @@ an embedded event driven algorithm.")
            python-setuptools))
     (inputs
      (list ciel
+           magic
+           netgen
+           openroad-cli
            python-click
            python-cloup
            python-deprecated
@@ -1104,8 +1125,11 @@ an embedded event driven algorithm.")
            python-rapidfuzz
            python-rich
            python-semver
+           python-wrapper
            python-yamlcore-0.0.2
-           verilator))
+           ruby
+           verilator
+           yosys))
     (home-page "https://librelane.readthedocs.io/")
     (synopsis "ASIC implementation flow infrastructure")
     (description "LibreLane is an @acronym{EDA, Electronic Design Automation}
