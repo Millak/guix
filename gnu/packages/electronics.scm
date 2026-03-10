@@ -3023,7 +3023,17 @@ form of AXI, AXI lite, and AXI stream modules.")
                           "test_vcs_no_tool_options"
                           "test_vcs_minimal"
                           "test_xcelium")
-                    " and not "))))
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Fixes #6530.
+          (add-after 'install 'copy-templates
+            (lambda _
+              (copy-recursively
+               "edalize/templates"
+               (string-append #$output "/lib/python"
+                              #$(version-major+minor (package-version python))
+                              "/site-packages/edalize/templates")))))))
     (native-inputs
      (list python-pytest python-setuptools python-setuptools-scm))
     (propagated-inputs
