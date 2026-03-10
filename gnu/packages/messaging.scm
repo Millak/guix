@@ -3029,13 +3029,56 @@ designed for experienced users.")
     (propagated-inputs
      (list python-click
            python-distro
-           python-matrix-nio
            python-requests
-           python-typing-extensions))
+           python-typing-extensions
+           ;; [optional]
+           python-dateutil
+           python-feedparser
+           python-google-api-client
+           python-google-auth-httplib2
+           python-google-auth-oauthlib
+           ;; python-irc
+           ;; python-litellm
+           python-matrix-nio
+           ;; python-mercurial
+           python-platformdirs
+           ;; python-pysvn
+           ;; python-twitter
+           python-pytz
+           ;; python-slack-sdk
+           ;; python-sleekxmpp
+           ;; python-trac
+           #;python-zephyr))
     (home-page "https://github.com/zulip/python-zulip-api")
     (synopsis "Zulip's API Python bindings")
     (description
-     "This package provides Python bindings to Zulip's API.")
+     "This package provides Python bindings to Zulip's API.
+
+Included common integrations and bridges are located in
+share/zulip/integrations or in lib/<...>/site-packages/integrations:
+@itemize
+@item bridge_between_zulips
+@item bridge_with_irc
+@item bridge_with_matrix
+@item bridge_with_slack
+@item codebase
+@item git
+@item google
+@item hg
+@item jabber
+@item jira
+@item litellm
+@item log2zulip
+@item nagios
+@item openshift
+@item perforce
+@item rss
+@item svn
+@item trac
+@item trello
+@item twitter
+@item zephyr
+@end itemize")
     (license license:asl2.0)))
 
 (define-public python-zulip-bots
