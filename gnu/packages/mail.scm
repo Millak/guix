@@ -1939,7 +1939,7 @@ compresses it.")
 (define-public claws-mail
   (package
     (name "claws-mail")
-    (version "4.3.1")
+    (version "4.4.0")
     (source
      (origin
        (method url-fetch)
@@ -1948,7 +1948,7 @@ compresses it.")
                        version ".tar.xz"))
        (sha256
         (base32
-          "19k8yii61n6j80riw6i8nzypygb0kv3b6npw5ljmiav7qw8g5bfq"))))
+          "0nr5r8lzg44sdawa8hjdadgbnpnh0m0m51j1h1cpmk8gbyfm9q03"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
@@ -1990,7 +1990,6 @@ compresses it.")
             compface
             curl
             dbus
-            dbus-glib
             enchant
             expat
             fontconfig
