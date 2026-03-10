@@ -1825,16 +1825,44 @@ drags, snap-to-border support, and virtual desktops.")
           (base32 "0ihgcxppywpcp24zhws1if6h7cxbrq2vd53wyh36j5mxylpbi59w"))))
       (build-system cargo-build-system)
       (arguments
-       (list #:install-source? #f
-             #:features ''("x11" "wayland")
-             #:cargo-install-paths ''("crates/eww")))
+       (list
+        #:install-source? #f
+        #:features ''("x11" "wayland")
+        #:cargo-install-paths ''("crates/eww")
+        #:modules
+        '((guix build cargo-build-system)
+          (guix build utils)
+          (ice-9 match))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'install-completions
+              (lambda* (#:key native-inputs #:allow-other-keys)
+                (for-each
+                 (match-lambda
+                   ((shell . path)
+                    (mkdir-p (in-vicinity #$output (dirname path)))
+                    (let ((binary
+                           (if #$(%current-target-system)
+                               (search-input-file native-inputs "bin/eww")
+                               (in-vicinity #$output "bin/eww"))))
+                      (with-output-to-file (in-vicinity #$output path)
+                        (lambda _
+                          (invoke binary "shell-completions" "--shell" shell))))))
+                 '(("bash"   . "share/bash-completion/completions/eww")
+                   ("elvish" . "share/elvish/lib/eww")
+                   ("fish"   . "share/fish/vendor_completions.d/eww.fish")
+                   ("zsh"    . "share/zsh/site-functions/_eww"))))))))
       (inputs (cons* gdk-pixbuf
                      glib
                      gtk+
                      gtk-layer-shell
                      libdbusmenu
                      (cargo-inputs 'eww)))
-      (native-inputs (list pkg-config))
+      (native-inputs
+       (append (if (%current-target-system)
+                   (list this-package)
+                   '())
+               (list pkg-config)))
       (home-page "https://elkowar.github.io/eww/")
       (synopsis "Widget system that works in any window manager")
       (description
