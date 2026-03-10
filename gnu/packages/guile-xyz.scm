@@ -2800,12 +2800,12 @@ above command-line parameters.")
      (list autoconf
            automake
            gettext-minimal
-           guile-3.0
+           guile-3.0-latest           ;to match the Guile version used by Guix
            pkg-config
            texinfo))
     (inputs
      (list bash-minimal
-           guile-3.0
+           guile-3.0-latest
            guile-config
            guile-lib
            guix))
