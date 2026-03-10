@@ -12,7 +12,7 @@
 ;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2024, 2026 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2020 Jesse Gibbons <jgibbons2357+guix@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
@@ -188,8 +188,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.5.0")
-        (commit "deedd482e437182dc8e35b9ef260cfd0dc68e7f2")
-        (revision 1))
+        (commit "520785e315eddbe47199ac557e88e60eca3ae97c")
+        (revision 2))
     (package
       (name "guix")
 
@@ -205,7 +205,7 @@
                        (commit commit)))
                 (sha256
                  (base32
-                  "14rch8ycl3zy0da4xkrnbyjsxlwnfcm30dfrvjqcgz5s2v71jiaq"))
+                  "1kkryhrr2vxyirr5xzl69386kvy9rqlkpz10qbdv222dw628lcda"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
