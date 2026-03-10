@@ -237,8 +237,7 @@ blurred background.")
         (base32 "09vb9b0pmyhj6fh0b6by59bykszbkdayhz678pnb4pyrdmlvv1am"))))
     (build-system trivial-build-system)
     (arguments
-     `(#:modules ((guix build utils)
-                  (srfi srfi-26))
+     `(#:modules ((guix build utils))
        #:builder (begin
                    (use-modules (guix build utils)
                                 (srfi srfi-26))

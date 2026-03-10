@@ -1037,8 +1037,7 @@ coding footprint.")
     (build-system trivial-build-system)
     (arguments
      (list
-      #:modules '((guix build utils)
-                  (srfi srfi-26))
+      #:modules '((guix build utils))
       #:builder
       #~(begin
           (use-modules (guix build utils)

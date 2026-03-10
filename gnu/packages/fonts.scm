@@ -4206,8 +4206,7 @@ characteristic so that they sit smoothly with the Tamil glyphs.")
        (base32 "1594lxdk6788bb3i3c2fh74z4pwpzcp2r1xl3cz8cz77nrcjkl8m"))))
     (build-system trivial-build-system)
     (arguments
-     (list #:modules '((guix build utils)
-                       (ice-9 ftw))
+     (list #:modules '((guix build utils))
            #:builder
            #~(let* ((orig #$(package-source this-package))
                     (dist (string-append orig "/dist/v" #$version))

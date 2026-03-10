@@ -381,8 +381,6 @@ Additionally, various channel-specific options can be negotiated.")
                  #$flags))
        ((#:modules mods %default-gnu-modules)
         (cons '(ice-9 string-fun) mods))
-       ((#:imported-modules mods %default-gnu-imported-modules)
-        (cons '(ice-9 string-fun) mods))
        ((#:phases phases #~(list))
         #~(modify-phases #$phases
             (add-after 'unpack 'patch-ssh-stuff
