@@ -204,12 +204,14 @@
   #:use-module (gnu packages aspell)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages calendar)
   #:use-module (gnu packages chez)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages code)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages dav)
   #:use-module (gnu packages dictionaries)
   #:use-module (gnu packages djvu)
   #:use-module (gnu packages ebook)
@@ -8405,6 +8407,41 @@ them whenever another command is invoked.")
     (synopsis "Track Emacs command frequencies")
     (description "@code{emacs-keyfeq} tracks and shows how many times you used
 a command.")
+    (license license:gpl3+)))
+
+(define-public emacs-khalel
+  (package
+    (name "emacs-khalel")
+    (version "0.1.15")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/hperrey/khalel")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06h5272kmg0ykf0zqdy2qwhlzszqsw176l1brk04bg8xyc3a4384"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'locate-input-binaries
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "khalel.el"
+                ("khalel-khal-command"
+                 (search-input-file inputs "/bin/khal"))
+                ("khalel-vdirsyncer-command"
+                 (search-input-file inputs "/bin/vdirsyncer"))))))))
+    (inputs (list khal vdirsyncer))
+    (home-page "https://gitlab.com/hperrey/khalel")
+    (synopsis "Interact with local or remote CalDAV calendars")
+    (description
+     "Khalel accesses calendars stored in ICS files and provides means of
+listing existing events, edit them as well as to create new ones largely
+through an Org mode interface.")
     (license license:gpl3+)))
 
 (define-public emacs-khardel
