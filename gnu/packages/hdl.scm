@@ -202,6 +202,7 @@ chip written in platform-independent VHDL.")
                 (setenv "HOME" "/tmp")
                 (with-directory-excursion "3rdParty/en_cl_fix/sim"
                   (invoke "python3" "run.py" "--simulator" "nvc"
+                          "-p" (number->string (parallel-job-count))
                           "--simulator-path"
                           (dirname (search-input-file inputs "bin/nvc"))))
                 (with-directory-excursion "sim"
@@ -210,7 +211,8 @@ chip written in platform-independent VHDL.")
                     ;; https://github.com/VUnit/vunit/issues/777
                     (("compile_builtins=False, ")
                      ""))
-                  (invoke "python3" "run.py" "--nvc" "-v"))))))
+                  (invoke "python3" "run.py" "--nvc" "-v"
+                          "-p" (number->string (parallel-job-count))))))))
       #:install-plan
       #~'(;; Library work.
           ("src" "share/open-logic/work/src"
