@@ -9183,14 +9183,11 @@ proposals for count data.")
      (list
       ;; Vignettes require r-tseries, which depends on r-zoo.
       #:test-types '(list "tests")
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; These tests require r-tseries, which depends on r-zoo.
-             (for-each delete-file
-                       '("tests/vignette-zoo-quickref.R"
-                         "tests/vignette-zoo.R")))))))
+      #:test-directory "tests"
+      ;; These tests require r-tseries, which depends on r-zoo.
+      #:skipped-tests
+      '("vignette-zoo-quickref.R"
+        "vignette-zoo.R")))
     (propagated-inputs
      (list r-lattice))
     (native-inputs (list r-chron
