@@ -30982,12 +30982,10 @@ Cohen (1988).")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; This file requires r-coin, which depends on this package.
-             (delete-file "tests/regtest_libcoin.R"))))))
+      #:test-directory "tests"
+      #:skipped-tests
+      ;; This file requires r-coin, which depends on this package.
+      '("regtest_libcoin.R")))
     (propagated-inputs (list r-mvtnorm))
     (home-page "https://cran.r-project.org/web/packages/libcoin")
     (synopsis "Linear test statistics for permutation inference")
