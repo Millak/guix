@@ -693,7 +693,7 @@ OpenSSL for TARGET."
                (base32
                 "0wihnr5bjdc3v0r4viwb1d1lf1rfkbrcmwzj7vjqpqdap11l2nps"))))))
 
-(define-public openssl openssl-3.0)
+(define-public openssl openssl-3.5)
 
 (define-public bearssl
   (package
@@ -917,7 +917,7 @@ certificates for free.")
                 "0pfrpi77964cg15dm6y0w03l64xs0k2nqc15qh2xmv8vdnjyhywx"))
               (patches (search-patches "perl-net-ssleay-colon-parsing.patch"))))
     (build-system perl-build-system)
-    (inputs (list openssl))
+    (inputs (list openssl-3.0))
     (arguments
      `(#:phases
        (modify-phases %standard-phases

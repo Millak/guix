@@ -966,7 +966,7 @@ fi"
            icu4c-76
            libuv-for-node-lts
            `(,nghttp2 "lib")
-           openssl
+           openssl-3.0
            zlib
            ; ngtcp2? nghttp3?
            ;; Regular build-time dependencies.
@@ -986,7 +986,7 @@ fi"
            ngtcp2
            nghttp3
            `(,nghttp2 "lib")
-           openssl
+           openssl-3.0
            zlib))
     (supported-systems
       (cons "riscv64-linux" (package-supported-systems node-bootstrap)))

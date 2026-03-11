@@ -914,7 +914,7 @@ regular) Diffie Hellman key exchanges, and many extensions.")
      (list #:extra-directories (list "openssl")
            #:configure-flags
            #~(list "--ghc-options=-optc=-Wno-incompatible-pointer-types")))
-    (inputs (list ghc-network openssl))
+    (inputs (list ghc-network openssl-3.0))
     (home-page "https://github.com/haskell-cryptography/HsOpenSSL")
     (synopsis "Partial OpenSSL binding for Haskell")
     (description
