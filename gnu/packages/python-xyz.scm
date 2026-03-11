@@ -29378,62 +29378,32 @@ register custom encoders and decoders.")
     (arguments
      (list
       ;; tests:
-      ;;   - x86_64-linux: 1580 passed, 67 skipped, 700 deselected, 4 xfailed
-      ;;   - aarch64-linux: 1342 passed, 67 skipped, 56 deselected, 4 xfailed
+      ;;   - x86_64-linux:   1393 passed, 70 skipped, 2 deselected, 4 xfailed
+      ;;   - aarch64-linux:  1378 passed, 70 skipped, 17 deselected, 4 xfailed
       #:test-flags
-      #~(list "-p" "no:asyncio"
-              "-m" "not network"
-              ;; TODO: Set as global on the next python-team iteration, tests
-              ;; are not stable, see:
-              ;; <https://codeberg.org/guix/guix/issues/6649>.
-              #$@(if (target-aarch64?)
-                     '("--ignore=tests/test_sockets.py")
-                     '())
-              "-k"
-              (string-join
-               (list
-                "not test_is_block_device"
-                #$@(if (target-aarch64?)
-                       ;; Assertion Errors
-                       '("test_shielded_cancel_sleep_time"
-                         "test_run_in_custom_limiter")
-                       '())
-                #$@(cond
-                    ((or (target-aarch64?)
-                         (target-riscv64?))
-                     #~("test_keyboardinterrupt_during_test"))
-                    (#t #~()))
-
-                ;; These fail because of network (or specifically IPv6
-                ;; network) access (see:
-                ;; https://github.com/agronholm/anyio/issues/417).
-                "test_accept"
-                "test_accept_after_close"
-                "test_close_during_receive"
-                "test_close_from_other_task"
-                "test_concurrent_receive"
-                "test_concurrent_send"
-                "test_connect_tcp_with_tls"
-                "test_connect_tcp_with_tls_cert_check_fail"
-                "test_connection_refused"
-                "test_extra_attributes"
-                "test_getaddrinfo"
-                "test_getnameinfo"
-                "test_happy_eyeballs"
-                "test_iterate"
-                "test_receive_after_close"
-                "test_receive_timeout"
-                "test_reuse_port"
-                "test_run_process"
-                "test_send_after_close"
-                "test_send_after_eof"
-                "test_send_after_peer_closed"
-                "test_send_eof"
-                "test_send_large_buffer"
-                "test_send_receive"
-                "test_socket_options"
-                "test_unretrieved_future_exception_server_crash")
-               " and not "))))
+      #~(list "-m" "not network"
+              ;; Tests are shaky with a lot of DNS lookups.
+              "--ignore=tests/test_sockets.py"
+              #$@(map (lambda (ls)
+                        (string-append "--deselect=" (string-join ls "::")))
+                      (append
+                       ;; _pytest.pytester.Pytester.TimeoutExpired: 3 second
+                       ;; timeout expired running: <...>
+                       '(("tests/test_pytest_plugin.py"
+                          "test_keyboardinterrupt_during_test"))
+                       (if (target-aarch64?)
+                           ;; Assertions are not equal on ARM.
+                           '(("tests/streams/test_tls.py"
+                              "TestTLSListener"
+                              "test_handshake_fail")
+                             ("tests/test_taskgroups.py"
+                              "test_shielded_cancel_sleep_time")
+                             ("tests/test_to_thread.py"
+                              "test_run_in_custom_limiter")
+                             ("tests/test_to_thread.py"
+                              "TestBlockingPortalProvider"
+                              "test_single_thread"))
+                           '()))))))
     (propagated-inputs
      (list python-idna
            python-sniffio
