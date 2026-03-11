@@ -18323,17 +18323,8 @@ Zero-inflated CMP regression (Sellers & Raim, 2016)
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; Needs package seriation, but adding it would lead to a
-             ;; dependency cycle.
-             (delete-file "tests/testthat/test-seriate_dendrogram.R")
-             ;; XXX Test fails with: `best_entanglement` not identical to 0.
-             (delete-file "tests/testthat/test-untangle.R")
-             ;; XXX Test fails with: !opt$warn is not TRUE
-             (delete-file "tests/testthat/test-zzz.R"))))))
+      #:skipped-tests
+      '(("test-seriate_dendrogram.R" "seriate_dendrogram works"))))
     (propagated-inputs
      (list r-ggplot2 r-magrittr r-viridis))
     (native-inputs
