@@ -12297,6 +12297,36 @@ found in the manual pages @code{mcr-package} and @code{mcreg}.")
 you call it again with the same arguments it returns the pre-computed value.")
     (license license:expat)))
 
+(define-public r-merderiv
+  (package
+    (name "r-merderiv")
+    (version "0.2-5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "merDeriv" version))
+       (sha256
+        (base32 "1zc4pslim520w1mqn32ijksf5qn9qg66gg1zmrf1iicgbsnhq6ff"))))
+    (properties
+     '((upstream-name . "merDeriv")
+       (updater-extra-native-inputs . ("r-lmeinfo" "r-mirt"))))
+    (build-system r-build-system)
+    (propagated-inputs (list r-lavaan
+                             r-lme4
+                             r-matrix
+                             r-nonnest2
+                             r-numderiv
+                             r-sandwich))
+    (native-inputs (list r-lmeinfo r-mirt r-tinytest))
+    (home-page "https://github.com/nctingwang/merDeriv")
+    (synopsis
+     "Case-wise and cluster-wise derivatives for mixed effects models")
+    (description
+     "This package lets you compute case-wise and cluster-wise derivative for
+mixed effects models with respect to fixed effects parameter, random
+effect (co)variances, and residual variance.")
+    (license license:gpl2+)))
+
 (define-public r-mgcv
   (package
     (name "r-mgcv")
