@@ -31787,12 +31787,13 @@ User credentials are shared with command line git through the
            "r-roxyglobals")))) ;not needed
     (build-system r-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; FIXME cran_version("usethis") return NULL
-             (delete-file "tests/testthat/test-release.R")))
+     (list
+      #:skipped-tests
+      ;; This requires network access
+      '(("test-release.R"
+         "cran_version\\(\\) returns package version if package found"))
+      #:phases
+      '(modify-phases %standard-phases
          ;; This is needed for tests.
          (add-after 'unpack 'set-HOME
            (lambda _ (setenv "HOME" "/tmp"))))))
