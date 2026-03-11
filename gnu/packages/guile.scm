@@ -829,7 +829,7 @@ Guile's foreign function interface.")
   (package
     (name "guile-sqlite3")
     (version "0.1.3")
-    (home-page "https://notabug.org/guile-sqlite3/guile-sqlite3.git")
+    (home-page "https://codeberg.org/guile-sqlite3/guile-sqlite3.git")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -966,13 +966,13 @@ manipulate repositories of the Git version control system.")
        ;; in the same method.
        (method url-fetch)
        (uri
-        (string-append "https://notabug.org/guile-zlib/guile-zlib/archive/v"
+        (string-append "https://codeberg.org/guile-compression/guile-zlib/archive/v"
                        version ".tar.gz"))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         ;; content nar-sha256: 0rwjlqr1hl2vczs16xsihw8pyj6s70p1yv9ky0sawhm6g30639k9
         (base32
-         "1h9q7rw8bh5mwa8qjik0pqwcr8v9hnk7xnvwcbsg6yfa695wlv3g"))))
+         "04p9lb3bq5y0k358s8agpksx9x68vzx330cb8jkn4qp3qj7cmnx2"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake pkg-config guile-3.0))
     (inputs (list guile-3.0 zlib))
@@ -981,7 +981,7 @@ manipulate repositories of the Git version control system.")
      "This package provides Guile bindings for zlib, a lossless
 data-compression library.  The bindings are written in pure Scheme by using
 Guile's foreign function interface.")
-    (home-page "https://notabug.org/guile-zlib/guile-zlib")
+    (home-page "https://codeberg.org/guile-compression/guile-zlib")
     (license license:gpl3+)))
 
 (define-public guile2.2-zlib
@@ -991,7 +991,7 @@ Guile's foreign function interface.")
   (package
     (name "guile-lzlib")
     (version "0.3.0")
-    (home-page "https://notabug.org/guile-lzlib/guile-lzlib")
+    (home-page "https://codeberg.org/guile-compression/guile-lzlib")
     (source
      (origin
        ;; Note: Until "builtin:git-download" can be taken for granted, this
@@ -1027,7 +1027,7 @@ pure Scheme by using Guile's foreign function interface.")
   (package
     (name "guile-zstd")
     (version "0.1.1")
-    (home-page "https://notabug.org/guile-zstd/guile-zstd")
+    (home-page "https://codeberg.org/guile-compression/guile-zstd")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url home-page)

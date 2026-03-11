@@ -527,7 +527,7 @@ gpgpme starting with version 1.7.")
   (package
     (name "guile-gcrypt")
     (version "0.5.0")
-    (home-page "https://notabug.org/cwebber/guile-gcrypt")
+    (home-page "https://codeberg.org/guile-gcrypt/guile-gcrypt")
     (source (origin
               (method git-fetch)
               (uri (git-reference

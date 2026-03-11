@@ -67,7 +67,7 @@ GNU Guix depends on the following packages:
 @itemize
 @item @url{https://gnu.org/software/guile/, GNU Guile}, version 3.0.x,
 version 3.0.9 or later;
-@item @url{https://notabug.org/cwebber/guile-gcrypt, Guile-Gcrypt}, version
+@item @url{https://codeberg.org/guile-gcrypt/guile-gcrypt, Guile-Gcrypt}, version
 0.1.0 or later;
 @item
 @uref{https://gitlab.com/gnutls/guile/, Guile-GnuTLS} (@pxref{Guile
@@ -76,11 +76,11 @@ gnutls-guile, GnuTLS-Guile})@footnote{The Guile bindings to
 @uref{https://gnutls.org/, GnuTLS} were distributed as part of GnuTLS
 until version 3.7.8 included.};
 @item
-@uref{https://notabug.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, version 0.1.0
+@uref{https://codeberg.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, version 0.1.0
 or later;
-@item @uref{https://notabug.org/guile-zlib/guile-zlib, Guile-zlib},
+@item @uref{https://codeberg.org/guile-compression/guile-zlib, Guile-zlib},
 version 0.1.0 or later;
-@item @uref{https://notabug.org/guile-lzlib/guile-lzlib, Guile-lzlib};
+@item @uref{https://codeberg.org/guile-compression/guile-lzlib, Guile-lzlib};
 @item @uref{https://www.nongnu.org/guile-avahi/, Guile-Avahi};
 @item
 @uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, version 0.10.0
@@ -102,7 +102,7 @@ Support for build offloading (@pxref{Daemon Offload Setup}) and
 version 0.13.0 or later.
 
 @item
-@uref{https://notabug.org/guile-zstd/guile-zstd, Guile-zstd}, for zstd
+@uref{https://codeberg.org/guile-compression/guile-zstd, Guile-zstd}, for zstd
 compression and decompression in @command{guix publish} and for
 substitutes (@pxref{Invoking guix publish}).
 
