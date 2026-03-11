@@ -3350,7 +3350,7 @@ to enforce it.")
 (define-public python-vunit
   (package
     (name "python-vunit")
-    (version "5.0.0-dev.8") ;v4.7.0 dates back from 2 years ago.
+    (version "5.0.0-dev.9") ;v4.7.0 dates back from 2 years ago.
     (source
      (origin
        (method git-fetch)
@@ -3359,7 +3359,7 @@ to enforce it.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a1bz5jh28i59x63fkgqf333jb68bm2hjicg2zlahzyydr4y1wji"))))
+        (base32 "1j9rvlshzi4mdy7wah1j8ri63drkjb47xly22q40wvl2xp2ghqgs"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3369,24 +3369,17 @@ to enforce it.")
                   (srfi srfi-26))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-ghdl-jit
+          (add-after 'unpack 'fix-ghdl-version
             (lambda _
-              ;; TODO: Remove when fixed upstream (see:
-              ;; https://github.com/VUnit/vunit/pull/1121).
-              (substitute* "vunit/sim_if/ghdl.py"
-                ((": \"llvm\",")
-                 (string-append
-                  ": \"llvm\",\n\tr\"static elaboration, LLVM JIT code "
-                  "generator\": \"llvm-jit\",")))))
+              ;; Guix uses ghdl 6.0.0.
+              (substitute* "tests/unit/test_ghdl_interface.py"
+                (("GHDL 5\\.0\\.1") "GHDL 6.0.0")
+                (("GNAT Version: 14\\.2\\.0") "GNAT Version: 15.2.0"))))
           (add-after 'install 'unbundle
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let ((site-packages
                      (string-append (site-packages inputs outputs)
                                     "/vunit/vhdl/")))
-                (mkdir-p (string-append site-packages "JSON-for-VHDL"))
-                (symlink
-                 (search-input-directory inputs "share/json-for-vhdl/work/src")
-                 (string-append site-packages "JSON-for-VHDL/src"))
                 (symlink
                  (search-input-directory inputs "share/osvvm/work/osvvm")
                  (string-append site-packages "osvvm")))))
@@ -3427,7 +3420,7 @@ to enforce it.")
            python-setuptools
            python-setuptools-scm))
     (inputs
-     (list json-for-vhdl-for-vunit osvvm-2023.04))
+     (list osvvm-2023.04))
     (propagated-inputs
      (list python-colorama))
     (home-page "https://vunit.github.io")
