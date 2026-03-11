@@ -29468,13 +29468,10 @@ haven package.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; This file requires r-mosaic, which we can't add because of a
-             ;; dependency cycle.
-             (delete-file "tests/testthat/test-layer-factory.R"))))))
+      #:skipped-tests
+      ;; This file requires r-mosaic, which we can't add because of a
+      ;; dependency cycle.
+      '("test-layer-factory.R")))
     (propagated-inputs
      (list r-ggiraph
            r-ggplot2
