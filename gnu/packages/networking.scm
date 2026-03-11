@@ -5158,7 +5158,7 @@ daemon.")
 (define-public nebula
   (package
     (name "nebula")
-    (version "1.10.0")
+    (version "1.10.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5167,7 +5167,7 @@ daemon.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1x4r8b3ny0vxipf404l8z00m5cs7cfy810670gmznl61jkaq1zd7"))
+                "0y0c9l6dzhdrhfzss1hv2sm18y2qzgmkcyiw9s3rav3ij1kcspxh"))
               ;; Remove windows-related binary blobs and files
               (snippet
                #~(begin
@@ -5196,6 +5196,7 @@ daemon.")
                      "nebula-cert")))))))
     (inputs
      (list go-dario-cat-mergo
+           go-filippo-io-bigmod
            go-github-com-anmitsu-go-shlex
            go-github-com-armon-go-radix
            go-github-com-cyberdelia-go-metrics-graphite
