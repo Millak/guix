@@ -9454,9 +9454,6 @@ classes and cyclic data structures are supported.")
 (define-public cl-prevalence
   (sbcl-package->cl-source-package sbcl-cl-prevalence))
 
-(define-public ecl-cl-prevalence
-  (sbcl-package->ecl-package sbcl-cl-prevalence))
-
 (define-public sbcl-cl-progress-bar
   (let ((commit "9374170858663c8fe829e9fb5a29bd2cb48d95ae"))
     (package
