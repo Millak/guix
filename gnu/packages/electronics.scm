@@ -797,67 +797,6 @@ iCE40 FPGAs and providing simple tools for analyzing and creating bitstream
 files.")
     (license license:isc)))
 
-(define-public json-for-vhdl
-  ;; No tagged releases.
-  (let ((commit "0dc9e317440263cd4941f157f5e5668baa858ec2")
-        (revision "0"))
-    (package
-      (name "json-for-vhdl")
-      (version (git-version "20220905" revision commit)) ;last revision
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/Paebbels/JSON-for-VHDL/")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1062g2c3dpsb67zhqrn1j04p7jl28g4mcxd6nhrqqfffjsvxkpw9"))))
-      (build-system copy-build-system)
-      (arguments
-       (list
-        #:install-plan
-        #~'(("src" "share/json-for-vhdl/work/src"
-             #:include ("vhdl")))
-        #:phases
-        #~(modify-phases %standard-phases
-            ;; The examples/Encodings_VUnit test requires vhdl builtins.
-            (add-after 'unpack 'fix-check
-              (lambda _
-                (substitute* "tests/VUnit/run.py"
-                  (("from_argv\\(\\)")
-                   "from_argv()\nvu.add_vhdl_builtins()")))))))
-      (native-search-paths
-       (list (search-path-specification
-               (variable "FW_JSON_VHDL")
-               (separator #f)
-               (files (list "share/json-for-vhdl")))))
-      (home-page "https://github.com/Paebbels/JSON-for-VHDL/")
-      (synopsis "Parse and query JSON data structures in VHDL")
-      (description
-       "The JSON-for-VHDL library provides a parser to query JSON data
-structures from external files on disk.  It provides a context to be
-used in the declarative section of design units.")
-      (license license:asl2.0))))
-
-;;; Required by python-vunit.
-(define json-for-vhdl-for-vunit
-  (let ((commit "95e848b8902c6b4275d715462e1a2cc60706917c") ;sync with vunit
-        (revision "0"))
-    (package
-      (inherit json-for-vhdl)
-      (name "json-for-vhdl-for-vunit")
-      (version (git-version "20220106" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/Paebbels/JSON-for-VHDL/")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1c106hm0sfnzdi5j9vaacjlz7i5m1dm75j7lrgcdsa4siw5ac7k3")))))))
-
 (define-public klayout
   (package
     (name "klayout")
