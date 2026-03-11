@@ -72,7 +72,7 @@
 each consisting of a file name under TEST-DIRECTORY and one or more names of
 tests to be skipped.  If the entry is just a file name, delete the test file."
   (when skipped-tests
-    (with-directory-excursion "tests/testthat/"
+    (with-directory-excursion test-directory
       (for-each (match-lambda
                   ((file test-names ...)
                    (substitute file

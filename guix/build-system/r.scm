@@ -110,7 +110,7 @@ release corresponding to NAME and VERSION."
                   (tests? #t)
                   (test-target "tests")
                   (test-types #f)
-                  test-directory
+                  (test-directory "tests/testthat")
                   skipped-tests
                   (configure-flags ''())
                   (phases '%standard-phases)
