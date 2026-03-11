@@ -3324,12 +3324,15 @@ to enforce it.")
                  (string-append site-packages "osvvm")))))
           (add-after 'check 'run-examples
             ;; Run examples as an extra check.
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key tests? parallel-build? #:allow-other-keys)
               (when tests?
                 (with-directory-excursion "examples/vhdl"
                   (for-each
                    (lambda (dir)
-                     (invoke "python3" (string-append dir "/run.py"))
+                     (invoke "python3" (string-append dir "/run.py")
+                             "-p" (if parallel-build?
+                                      (number->string (parallel-job-count))
+                                      "1"))
                      (delete-file-recursively "vunit_out"))
                    (scandir "."
                             (negate
