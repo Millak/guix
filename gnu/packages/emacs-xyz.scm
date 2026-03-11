@@ -16817,6 +16817,32 @@ The following completions are currently available:
 @end itemize")
     (license license:gpl3+)))
 
+(define-public emacs-swagg
+  (package
+    (name "emacs-swagg")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/isamert/swagg.el")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xlknc7j5vz1sv5gwr8v6vyfginflsksjyzx6qz1svibkdwp223g"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-compat
+                             emacs-dash
+                             emacs-s
+                             emacs-request
+                             emacs-yaml))
+    (home-page "https://github.com/isamert/swagg.el")
+    (synopsis "UI to interact with OpenAPI definations")
+    (description
+     "This package provides a practical Emacs UI for OpenAPI definitions.  It
+lets you fetch and interact with OpenAPI (formerly Swagger) definitions.")
+    (license license:gpl3+)))
+
 (define-public emacs-sway
   (let ((commit "84eae5e16a643eb00b0a422ded751cceb17cc8f0")
         (revision "0"))
