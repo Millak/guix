@@ -616,6 +616,28 @@ using NumPy-like idioms.")
 line drawing algorithm}.")
     (license license:expat)))
 
+(define-public python-catppuccin
+  (package
+    (name "python-catppuccin")
+    (version "2.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "catppuccin" version))
+       (sha256
+        (base32 "0d38gjn6661pb9jl4bg6l698aw4llir44xacrg8nj8xw6nzz6d9h"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatchling python-pytest
+           ;; These are optional dependencies but required for tests.
+           python-matplotlib python-pygments python-rich))
+    (home-page "https://github.com/catppuccin/python")
+    (synopsis "Pastel palette for Python libraries")
+    (description "Catppuccin for Python is a soothing pastel pallete for Python
+libraries.  It aims to be the middle ground between low and high contrast
+themes.  It also includes themes for IPython, Matplotlib, Pygments and Rich.")
+    (license license:expat)))
+
 (define-public python-calmjs-parse
   (package
     (name "python-calmjs-parse")
