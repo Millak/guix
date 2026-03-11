@@ -14406,14 +14406,10 @@ that can be distributed without access to a live server.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; These tests need Internet access.
-             (with-directory-excursion "tests/testthat/"
-               (for-each delete-file '("test-expect-request-header.R"
-                                       "test-expect-request.R"))))))))
+      ;; These tests need Internet access.
+      #:skipped-tests
+      '("test-expect-request-header.R"
+        "test-expect-request.R")))
     (propagated-inputs (list r-digest r-httr2 r-jsonlite r-rlang r-testthat))
     (native-inputs (list r-curl
                          r-knitr
