@@ -19665,16 +19665,6 @@ provides the R language without the environment.")
         (base32
          "1399i66f09zbd4zl2fdps1dq5vyaw71ayz8qh3kp17r20dixkdz8"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; Needs package GeneralizedHyperbolic
-             (delete-file "tests/t-fitdist-customoptim.R")
-             ;; Needs package rgenoud
-             (delete-file "tests/t-fitdistcens.R"))))))
     (propagated-inputs
      (list r-mass r-rlang r-survival))
     (native-inputs
