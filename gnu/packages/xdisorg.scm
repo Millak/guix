@@ -2000,7 +2000,7 @@ to an arbitrary balanced color.")
            libxxf86vm
            libxcb
            python
-           python-pygobject
+           python-pygobject-3.50
            python-pyxdg
            wayland))
     (home-page "https://gitlab.com/chinstrap/gammastep")
