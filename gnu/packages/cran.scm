@@ -28429,12 +28429,10 @@ splice site positions.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; These tests require r-lme4, creating a dependency cycle.
-             (delete-file "inst/tinytest/test_mkReTrms.R"))))))
+      #:test-directory "inst/tinytest"
+      #:skipped-tests
+      ;; These tests require r-lme4, creating a dependency cycle.
+      '("test_mkReTrms.R")))
     (propagated-inputs (list r-matrix r-rdpack))
     (native-inputs (list r-tinytest))
     (home-page "https://github.com/bbolker/reformulas")
