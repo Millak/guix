@@ -17921,24 +17921,49 @@ JSON Reference and JSON Pointer.")
 (define-public python-fastbencode
   (package
     (name "python-fastbencode")
-    (version "0.3.2")   ;the last non Rust version
+    (version "0.3.9")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "fastbencode" version))
-       (modules '((guix build utils)))
-       ;; Delete pre-generated Cython C files.
-       (snippet '(for-each delete-file (find-files "." "\\.c$")))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/breezy-team/fastbencode")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1daal7xgsl2sjxq8pcilcas9wd9j9796wd4rlkhrvv5h0k2k4k53"))))
+        (base32 "0d4sd1c2yv85spxx2gvi2fm0avlgpnb7nfkvw7hpxlx6qlaqi4ad"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-backend #~'unittest
-      #:test-flags #~(list "fastbencode.tests.test_suite")))
+      #:test-flags #~(list "tests.test_suite")
+      #:imported-modules (append %cargo-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums)))))))
+    (inputs (cargo-inputs 'fastbencode))
     (native-inputs
-     (list python-cython
-           python-setuptools))
+     (append
+      (list python-setuptools-rust
+            rust
+            `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
     (home-page "https://github.com/breezy-team/fastbencode")
     (synopsis "Python Bencode (de)serializer with optional fast C extensions")
     (description

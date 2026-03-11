@@ -43215,6 +43215,26 @@
                                 rust-zerotrie-0.2.2
                                 rust-zerovec-0.11.2
                                 rust-zerovec-derive-0.11.1))
+                     (fastbencode =>
+                                  (list rust-autocfg-1.5.0
+                                        rust-heck-0.5.0
+                                        rust-indoc-2.0.7
+                                        rust-libc-0.2.180
+                                        rust-memoffset-0.9.1
+                                        rust-once-cell-1.21.3
+                                        rust-portable-atomic-1.13.0
+                                        rust-proc-macro2-1.0.105
+                                        rust-pyo3-0.27.2
+                                        rust-pyo3-build-config-0.27.2
+                                        rust-pyo3-ffi-0.27.2
+                                        rust-pyo3-macros-0.27.2
+                                        rust-pyo3-macros-backend-0.27.2
+                                        rust-quote-1.0.43
+                                        rust-rustversion-1.0.22
+                                        rust-syn-2.0.114
+                                        rust-target-lexicon-0.13.4
+                                        rust-unicode-ident-1.0.22
+                                        rust-unindent-0.2.4))
                      (fclones =>
                               (list rust-aho-corasick-1.1.3
                                     rust-android-tzdata-0.1.1
