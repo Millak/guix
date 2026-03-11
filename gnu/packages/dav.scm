@@ -77,13 +77,10 @@ command-line environment with support for file manipulation on remote WebDAV
 servers.")
     (license license:gpl2+)))
 
-;; This package isn't reproducible due to non-deterministic behaviour in a
-;; procedural macros that's provided by a crate used by pimsync.
-;; See https://github.com/stalwartlabs/hashify/issues/4
 (define-public pimsync
   (package
     (name "pimsync")
-    (version "0.5.6")
+    (version "0.5.7")
     (source
      (origin
        (method git-fetch)
@@ -92,13 +89,20 @@ servers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01qxg0mk7if96rmb0q88wgjpnv1fb8iw2dbzwlm0ars1mi3xpmr3"))))
+        (base32 "0x90l9k3sfnszrvmzqclykpv2py33v9jh92ps68wdd7xkrjp42ga"))))
     (build-system cargo-build-system)
     (arguments
      (list
       #:install-source? #f
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-guix-vendored-dependencies
+            (lambda _
+              (substitute* "Cargo.toml"
+                (("^\\[patch.crates-io\\]")
+                 "")
+                (("^hashify.*$")
+                 "hashify = { version = \"*\" }\n"))))
           (add-after 'unpack 'setup-environment
             (lambda _
               (setenv "PIMSYNC_VERSION"
