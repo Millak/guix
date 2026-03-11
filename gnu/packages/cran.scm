@@ -31848,14 +31848,9 @@ Rcpp, RStudio projects, and more.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; One test attempts to connect to a website
-             (delete-file "tests/testthat/test-diff.R")
-             ;; This one fails for silly reasons.
-             (delete-file "tests/testthat/test-platform-info.R"))))))
+      #:skipped-tests
+      ;; This test fails for silly reasons.
+      '("test-platform-info.R")))
     (propagated-inputs
      (list r-cli))
     (native-inputs (list r-callr r-testthat r-withr))
