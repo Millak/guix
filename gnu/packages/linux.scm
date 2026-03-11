@@ -931,6 +931,16 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
     ("CONFIG_FUSE_FS" . m)
     ("CONFIG_CIFS" . m)
     ("CONFIG_9P_FS" . m)
+    ;; Enable DMABUF used by wayland, pipewire and libcamera
+    ;; https://codeberg.org/guix/guix/issues/5995
+    ("CONFIG_UDMABUF" . m)
+    ("CONFIG_DMABUF_MOVE_NOTIFY" . #t)
+    ("CONFIG_DMABUF_HEAPS" . m)
+    ("CONFIG_DMABUF_HEAPS_SYSTEM" . m)
+    ("CONFIG_DMABUF_HEAPS_CMA" . m)
+    ,@(if (version>=? version "6.17")
+          '(("CONFIG_DMABUF_HEAPS_CMA_LEGACY" . #t))
+          '())
     ;; Disable the EFI pstore storage backend to avoid causing
     ;; unrecoverable failures on some EFI systems:
     ;; https://lists.gnu.org/archive/html/help-guix/2025-01/msg00173.html
