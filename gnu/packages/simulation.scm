@@ -119,7 +119,7 @@
                   expat
                   ffmpeg
                   findutils
-                  fmt-11
+                  fmt
                   freetype
                   gdal
                   gl2ps
@@ -161,7 +161,7 @@
                   readline
                   trilinos-zoltan
                   utfcpp
-                  vtk
+                  vtk-9.5
                   xz
                   zlib))
     (outputs '("debug" ;~60MB
