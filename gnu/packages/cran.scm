@@ -29422,12 +29422,11 @@ subsequence} (LCS) using a dynamic programming algorithm.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; Two tests fail with accuracy problems.
-             (delete-file "tests/testthat/test-interval-calculations.R"))))))
+      #:skipped-tests
+      ;; These two tests fail with accuracy problems.
+      '(("test-interval-calculations.R"
+         "CI for sample proportions work."
+         "CI for sample proportions work with long_names."))))
     (propagated-inputs
      (list r-dplyr r-mass r-rlang r-tidyr))
     (native-inputs (list r-testthat))
