@@ -78,6 +78,7 @@ gnu/packages/connman.scm
 gnu/packages/containers.scm
 gnu/packages/convmv.scm
 gnu/packages/coq.scm
+gnu/packages/coreboot.scm
 gnu/packages/cpio.scm
 gnu/packages/cpp.scm
 gnu/packages/cppi.scm

@@ -2,7 +2,7 @@
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2016, 2018, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
@@ -83,7 +83,6 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mtools)
-  #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -523,162 +522,6 @@ USB and interacts with low-level software running on the device, known as Loke.
 Loke and Heimdall communicate via the custom Samsung-developed protocol typically
 referred to as the \"Odin 3 protocol\".")
     (license license:expat)))
-
-(define-public ifdtool
-  (package
-    (name "ifdtool")
-    (version "25.09")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://review.coreboot.org/coreboot")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1a1n64dwr5fzdnaj45bjci85ap5yra5gwz4x056zn6481xwvbsmv"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:make-flags
-      #~(list (string-append "CC=" #$(cc-for-target))
-              "INSTALL=install"
-              (string-append "PREFIX=" #$output))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
-            (lambda _
-              (chdir "util/ifdtool")))
-          (delete 'configure))           ; no configure script
-      #:tests? #f))                    ; no test suite
-    (home-page "https://doc.coreboot.org/util/ifdtool/")
-    (synopsis "Intel Firmware Descriptor dumper")
-    (description "This package provides @command{ifdtool}, a program to
-dump Intel Firmware Descriptor data of an image file.")
-    (license license:gpl2)))
-
-(define-public bincfg
-  (package
-    (name "bincfg")
-    (version "25.09")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://review.coreboot.org/coreboot")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1a1n64dwr5fzdnaj45bjci85ap5yra5gwz4x056zn6481xwvbsmv"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f ; no test suite
-      #:make-flags
-      #~(list
-         (string-append "CC=" #$(cc-for-target)))
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure) ; no configure script
-          (add-after 'unpack 'chdir
-            (lambda _
-              (chdir "util/bincfg")))
-          (add-after 'build 'build-binaries
-            (lambda* (#:key make-flags #:allow-other-keys)
-              (for-each
-               (lambda (target result)
-                 (apply invoke "make" (string-append "gen-" target) make-flags)
-                 (rename-file result
-                              (string-append target ".bin")))
-               (list
-                ;; generate GbE for X200
-                "gbe-ich9m"
-                ;; generate GbE for X220/x230
-                "gbe-82579LM"
-                ;; generate IFD for X200
-                "ifd-x200")
-               (list
-                "flashregion_3_gbe.bin"
-                "flashregion_3_gbe.bin"
-                "flashregion_0_fd.bin"))))
-          ;; The Makefile has no install target.
-          (replace 'install
-            (lambda _
-              (let ((bin (string-append #$output "/bin"))
-                    (lib (string-append #$output "/lib/bincfg"))
-                    (data (string-append #$output "/share/bincfg")))
-                ;; Install the program
-                (install-file "bincfg" bin)
-                ;; And its data
-                (for-each
-                 (lambda (path)
-                   (install-file path data))
-                 (append (find-files "." ".*\\.set")
-                         (find-files "." ".*\\.spec")))
-                ;; And the files generated with the data
-                (for-each
-                 (lambda (path)
-                   (install-file path lib))
-                 (find-files "." ".*\\.bin"))))))))
-    (native-inputs (list bison flex))
-    (home-page "https://coreboot.org")
-    (synopsis "Encoder/decoder for binary formats described in text files")
-    (description "
-The bincfg program comes with specifications files for the following binary
-formats:
-@itemize
-@item Various DDR3 and DDR4 SPD
-@item Configuration data for the Intel 82579LM Gigabit Ethernet PHY
-@item Configuration data for the Intel Gigabit Ethernet controller present in
-      the Intel ICH9-M chipset.
-@item Intel Firmware Descriptor data for the Lenovo ThinkPad X200
-@item Configuration data for the ITE IT8718F SuperIO
-@end itemize
-It also comes with example files generated by bincfg.")
-    (license license:gpl3+)))
-
-(define-public intelmetool
-  (package
-    (name "intelmetool")
-    (version "25.09")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://review.coreboot.org/coreboot")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1a1n64dwr5fzdnaj45bjci85ap5yra5gwz4x056zn6481xwvbsmv"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ;no test suite
-      #:make-flags
-      #~(list (string-append "CC=" #$(cc-for-target))
-              "INSTALL=install"
-              (string-append "PREFIX=" #$output))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
-            (lambda _
-              (chdir "util/intelmetool")))
-          (delete 'configure) ;no configure script
-          (delete 'check))))
-    (inputs (list pciutils zlib))
-    (home-page
-     "https://github.com/coreboot/coreboot/tree/main/util/intelmetool/")
-    (synopsis "Intel Management Engine tools")
-    (description "This package provides tools for working with Intel
-Management Engine (ME).  You need to @code{sudo rmmod mei_me} and
-@code{sudo rmmod mei} before using this tool.  Also pass
-@code{iomem=relaxed} to the Linux kernel command line.")
-    (license license:gpl2)
-
-    ;; This is obviously an Intel thing, plus it requires <cpuid.h>.
-    (supported-systems '("x86_64-linux" "i686-linux"))))
 
 (define-public me-cleaner
   (package

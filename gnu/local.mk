@@ -56,6 +56,7 @@
 # Copyright © 2022 Alex Griffin <a@ajgrf.com>
 # Copyright © 2022 ( <paren@disroot.org>
 # Copyright © 2022, 2026 jgart <jgart@dismail.de>
+# Copyright © 2022-2023, 2025-2026 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 # Copyright © 2023-2025 Zheng Junjie <z572@z572.online>
 # Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
 # Copyright © 2023 Andy Tai <atai@atai.org>
@@ -216,6 +217,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/convmv.scm			\
   %D%/packages/codex.scm				\
   %D%/packages/coq.scm				\
+  %D%/packages/coreboot.scm			\
   %D%/packages/cpio.scm				\
   %D%/packages/cpp.scm 				\
   %D%/packages/cppi.scm				\
