@@ -7228,12 +7228,9 @@ multivariate analysis.")
      (list
       ;; Vignettes require r-ggally.
       #:test-types '(list "tests")
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; These tests require r-rrcov, leading to a dependency cycle.
-             (delete-file "tests/tmcd.R"))))))
+      ;; These tests require r-rrcov, leading to a dependency cycle.
+      #:test-directory "tests"
+      #:skipped-tests '("tmcd.R")))
     (native-inputs
      (list gfortran
            r-cluster
