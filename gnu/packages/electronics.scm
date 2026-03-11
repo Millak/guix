@@ -861,7 +861,7 @@ used in the declarative section of design units.")
 (define-public klayout
   (package
     (name "klayout")
-    (version "0.30.6")                  ;keep in sync with python-klayout
+    (version "0.30.7")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -870,7 +870,7 @@ used in the declarative section of design units.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0p4achjlynhg5wc0zmxkzljx115l7vcg3mp3f8i8pjydv8visnh4"))))
+               "0xyrn9vhx871vm141hgsb9qrdim51vfk2mw8hcqyam1ixkbz5jjv"))))
     (build-system copy-build-system)
     (arguments
      (list
