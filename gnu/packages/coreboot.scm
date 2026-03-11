@@ -197,3 +197,52 @@ Management Engine (ME).  You need to @code{sudo rmmod mei_me} and
 
     ;; This is obviously an Intel thing, plus it requires <cpuid.h>.
     (supported-systems '("x86_64-linux" "i686-linux"))))
+
+(define-public nvramtool
+  (package
+    (name "nvramtool")
+    (version "25.09")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://review.coreboot.org/coreboot")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1a1n64dwr5fzdnaj45bjci85ap5yra5gwz4x056zn6481xwvbsmv"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no test suite
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              "INSTALL=install"
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "util/nvramtool")))
+          (delete 'configure)))) ; no configure script
+    (home-page "https://coreboot.org")
+    (synopsis "Command line tool that can edit Coreboot settings")
+    (description "@command{nvramtool} can see and/or modify Coreboot settings
+like the serial port speed, log level, etc.  It requires Coreboot to be compiled
+with CONFIG_USE_OPTION_TABLE and some options require the iomem=relaxed kernel
+command line to work.  Features:
+@itemize
+@item If Coreboot was compiled without CONFIG_STATIC_OPTION_TABLE, it can change
+      its settings, which are applied after a reboot.
+@item It can modify Coreboot images  default settings with
+      @command{nvramtool -C coreboot.rom [...]}.
+@item It has various options related to the file format used to store these
+      settings.
+@item It can also read/write the CMOS memory where the Coreboot settings can be
+      located.
+@end itemize")
+    ;; Some files are "GPL-2.0-only or BSD-3-Clause", other are GPL-2.0-only
+    ;; and anyway there is. There is also a license declaration in
+    ;; cli/nvramtool.8 that applies to "This program" which uses the GPLv2.
+    (license license:gpl2)))
