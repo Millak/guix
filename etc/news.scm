@@ -33,6 +33,7 @@
 ;; Copyright © 2025 Rivulet Cedar <rivulet_cedar@yeah.net>
 ;; Copyright © 2025 jgart <jgart@dismail.de>
 ;; Copyright © 2025 Steve George <steve@futurile.net>
+;; Copyright © 2026 Noé Lopez <noelopez@free.fr>
 
 ;;
 ;; Copying and distribution of this file, with or without modification, are
@@ -41,6 +42,40 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "b52ce9041ad58aeababd2d50d3e72bc23dffff60")
+        (title
+         (en "GNOME 48 is now available")
+         (fr "GNOME 48 maintenant disponible")
+         (de "GNOME 48 jetzt verfügbar"))
+        (body
+         (en "The GNOME desktop was updated from version 46 to 48, bringing
+accent colors, an improved Files (Nautilus) application, a new image
+viewer (Loupe), and more:
+
+@itemize
+@item @url{https://release.gnome.org/47/, GNOME 47 release notes}
+@item @url{https://release.gnome.org/48/, GNOME 48 release notes}
+@end itemize")
+         (fr "La version 48 de l’environnement de bureau GNOME est maintenant
+disponible. Les nouvelles fonctionnalitées incluent: les couleurs d’accent,
+l’application Fichiers (Nautilus) améliorée, un nouveau visionneur
+d’images (Loupe), et plus:
+
+@itemize
+@item @url{https://release.gnome.org/47/, GNOME 47 release notes}
+@item @url{https://release.gnome.org/48/, GNOME 48 release notes}
+@end itemize")
+         (de "Die GNOME-Desktopumgebung wurde von Version 46 auf 48
+aktualisiert. Neue Funktionen in dieser Version sind die Möglichkeit, eine
+Akzentfarbe zu wählen, Verbesserungen in der Dateien-Anwendung (Nautilus), ein
+neuer Bildbetrachter (Loupe), und mehr. Für eine ausführlichere Liste an
+Änderungen, siehe:
+
+@itemize
+@item @url{https://release.gnome.org/47/, GNOME 47 release notes}
+@item @url{https://release.gnome.org/48/, GNOME 48 release notes}
+@end itemize")))
 
  (entry (commit "d659fe8666c4bc38fcbdbe7b7a35101f2d7cc41b")
         (title
