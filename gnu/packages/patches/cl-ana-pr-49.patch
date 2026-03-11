@@ -1,0 +1,33 @@
+Upstream status: https://github.com/ghollisjr/cl-ana/pull/49
+
+From 491ba1127126ca6209b7c4dc1485377c7f772f7e Mon Sep 17 00:00:00 2001
+From: Philip Taron <philip.taron@gmail.com>
+Date: Mon, 16 Feb 2026 12:32:04 -0800
+Subject: [PATCH] Fix type error in fixed-mem-cache for SBCL 2.6.0
+
+In cl-ana.makeres, the fixed-mem-cache function uses
+(setf (cdr (last cache)) (list id)) where cache can be nil (initial
+state or after popping all elements). (last nil) returns nil, making
+(setf (cdr nil) ...) undefined. SBCL 2.6.0's stricter type inference
+catches this as a type conflict, causing COMPILE-FILE-ERROR.
+
+Replace with nconc which handles the nil case correctly.
+---
+ makeres/makeres.lisp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/makeres/makeres.lisp b/makeres/makeres.lisp
+index 1999ac4..373bb57 100644
+--- a/makeres/makeres.lisp
++++ b/makeres/makeres.lisp
+@@ -936,8 +936,8 @@ compressed storage, but alas."
+                               (> total maxmem))
+                    do (unload-target (pop cache))))
+               (load-target id)
+-              (setf (cdr (last cache))
+-                    (list id)))))))))
++              (setf cache
++                    (nconc cache (list id))))))))))
+ 
+ ;; Caching utility functions:
+ 

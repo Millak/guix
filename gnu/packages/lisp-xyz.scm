@@ -4394,8 +4394,8 @@ Lisp expressions in multiple implementations.")
   (sbcl-package->cl-source-package sbcl-cl-all))
 
 (define-public sbcl-cl-ana
-  (let ((commit "848185eed1ed65bab3a124870c122f761ce0d87e")
-        (revision "2"))
+  (let ((commit "88abde5ad3fa327958720426b89a8457e6943b94")
+        (revision "3"))
     (package
       (name "sbcl-cl-ana")
       (version (git-version "0.0.0" revision commit))
@@ -4406,8 +4406,9 @@ Lisp expressions in multiple implementations.")
                (url "https://github.com/ghollisjr/cl-ana")
                (commit commit)))
          (file-name (git-file-name "cl-ana" version))
+         (patches (search-patches "cl-ana-pr-49.patch"))
          (sha256
-          (base32 "026agqsxq3pg2k9jmy2wysil2z0yn5rykzzhr8rqxsspdwz51z1y"))))
+          (base32 "1dg8wkc2bv66lykr2fjgn91jw7aa9xnpk20h0g8pp2xr6981gfl9"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list openmpi ;; for hdf-cffi

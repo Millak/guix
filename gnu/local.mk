@@ -55,7 +55,7 @@
 # Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 # Copyright © 2022 Alex Griffin <a@ajgrf.com>
 # Copyright © 2022 ( <paren@disroot.org>
-# Copyright © 2022 jgart <jgart@dismail.de>
+# Copyright © 2022, 2026 jgart <jgart@dismail.de>
 # Copyright © 2023-2025 Zheng Junjie <z572@z572.online>
 # Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
 # Copyright © 2023 Andy Tai <atai@atai.org>
@@ -1092,6 +1092,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ceph-fix-cmake.patch                     \
   %D%/packages/patches/cf-tool-add-languages.patch		\
   %D%/packages/patches/chmlib-inttypes.patch			\
+  %D%/packages/patches/cl-ana-pr-49.patch			\
   %D%/packages/patches/cl-asdf-config-directories.patch		\
   %D%/packages/patches/clamav-config-llvm-libs.patch		\
   %D%/packages/patches/clamav-system-tomsfastmath.patch		\
