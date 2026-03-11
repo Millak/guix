@@ -15721,16 +15721,14 @@ and easily share url to pages within your Shiny apps.")
     (build-system r-build-system)
     (arguments
      (list
+      ;; This file requires r-shinytest, which has a big JavaScript problem.
+      #:skipped-tests
+      '("test_tree_interactive.R")
       #:modules '((guix build utils)
                   (guix build r-build-system)
                   (srfi srfi-1))
       #:phases
       '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; This file requires r-shinytest, which has a big JavaScript
-             ;; problem.
-             (delete-file "tests/testthat/test_tree_interactive.R")))
          (add-after 'unpack 'replace-minified-javascript
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "inst/www/jsTree-3.3.7/"
