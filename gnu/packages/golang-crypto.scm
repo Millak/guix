@@ -21,7 +21,7 @@
 ;;; Copyright © 2023 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2023 Miguel Ángel Moreno <mail@migalmoreno.com>
 ;;; Copyright © 2023 conses <contact@conses.eu>
-;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023, 2024, 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Jean Simard <woshilapin@tuziwo.info>
 ;;; Copyright © 2024 Jesse Eisses <jesse@eisses.email>
 ;;; Copyright © 2024 Superfly Johnson <superfly.johnson@yahoo.com>
@@ -180,6 +180,31 @@ can be ignored.")
      "This package implements file encryption according to the
 @url{https://age-encryption.org/v1} specification.  It features small explicit
 keys, no configuration options, and Unix-style composability.")
+    (license license:bsd-3)))
+
+(define-public go-filippo-io-bigmod
+  (package
+    (name "go-filippo-io-bigmod")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/FiloSottile/bigmod")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "029h8qh9ym384q56aprm1if9arq7kmqdsv6l2wbjhkq8w307vd7r"))))
+    (build-system go-build-system)
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (arguments
+     '(#:import-path "filippo.io/bigmod"))
+    (home-page "https://github.com/FiloSottile/bigmod")
+    (synopsis "Constant-time library for big integers modulo a prime")
+    (description "Bigmod is a constant-time library for big integers modulo a
+prime, usable for cryptographic applications.  Exported from
+crypto/internal/bigmod, the backend of crypto/rsa and crypto/ecdsa.")
     (license license:bsd-3)))
 
 (define-public go-filippo-io-edwards25519
