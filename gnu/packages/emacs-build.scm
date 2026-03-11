@@ -72,7 +72,9 @@ as bold, underscore or italic.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "09n8skr5wi8bs7x81d5bi6z89dd8s1zi9a5f4r2qadaz69slncxq"))))
+         "09n8skr5wi8bs7x81d5bi6z89dd8s1zi9a5f4r2qadaz69slncxq"))
+       (patches
+        (search-patches "emacs-buttercup-1.38-native-comp-spy-on-trampoline-scope.patch"))))
     (build-system emacs-build-system)
     (arguments
      (list
