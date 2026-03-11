@@ -21453,9 +21453,6 @@ in Common Lisp.")
 (define-public cl-lispbuilder-sdl
   (sbcl-package->cl-source-package sbcl-lispbuilder-sdl))
 
-(define-public ecl-lispbuilder-sdl
-  (sbcl-package->ecl-package sbcl-lispbuilder-sdl))
-
 (define-public sbcl-list-named-class
   (let ((commit "2955791a7469131bcab42d800883f27993ee1d62")
         (revision "0"))
