@@ -42,6 +42,7 @@
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright © 2025 Junker <dk@junkeria.club>
 ;;; Copyright © 2025 benjamin wil <hey@benjaminwil.info>
+;;; Copyright © 2026 Ignatius Menzies <ignatius.menzies@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -698,6 +699,58 @@ syntax highlighting, tabbed interface, and customizable settings.")
     (home-page "https://helix-editor.com/")
     (synopsis "Post-modern modal text editor")
     (description "A Kakoune / Neovim inspired editor, written in Rust.")
+    (license (list license:mpl2.0))))
+
+(define-public evil-helix
+  (package
+    (name "evil-helix")
+    (version "20250915")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/usagi-flow/evil-helix")
+             (commit (string-append "release-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "117mg4mwib3v57wi8aiyqhlx9dqbmsns218pgxq1dmajjd6qljpa"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+       #:install-source? #f
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'disable-grammar-build
+             (lambda _
+               (setenv "HELIX_DISABLE_AUTO_GRAMMAR_BUILD" "1")))
+           (replace 'install
+             (lambda _
+               (let* ((bin (string-append #$output "/bin"))
+                      (hx (string-append bin "/hx"))
+                      (share (string-append #$output "/share/helix"))
+                      (runtime (string-append share "/runtime"))
+                      (applications (string-append share "/applications")))
+                 (install-file "target/release/hx" bin)
+                 (install-file "contrib/Helix.desktop" applications)
+                 (copy-recursively "runtime" runtime)
+                 (wrap-program hx
+                   `("HELIX_RUNTIME" prefix
+                     (,runtime)))))))))
+    (inputs (cons bash-minimal (cargo-inputs 'evil-helix)))
+    (home-page "https://github.com/usagi-flow/evil-helix")
+    (synopsis "Bringing the Helix editor to the evil side")
+    (description "A soft fork of Helix which introduces keybindings and other
+features to make it more comfortable for Vim users.  Changes include:
+@itemize
+@item Vim keybindings
+@item Adjusted behaviours and defaults for Visual line mode
+@item Basic Vim modeline support
+@item Support for colored/rainbow indentation guides
+@item Minimalistic window separator
+@end itemize
+Moreover, evil-helix introduces the @code{editor.evil} option, which is true by
+default.  It can be set to false to completely deactivate evil-helix behavior
+without having to use a different build.")
     (license (list license:mpl2.0))))
 
 (define-public joe
