@@ -27049,9 +27049,6 @@ pattern-matching-like, but a char-by-char procedural parser.")
 (define-public cl-prometheus
   (sbcl-package->cl-source-package sbcl-prometheus))
 
-(define-public ecl-prometheus
-  (sbcl-package->ecl-package sbcl-prometheus))
-
 (define-public sbcl-promise
   (let ((commit "801db8f853da7935ae2e487fd7f8763acbc5ad2a")
         (revision "0"))
