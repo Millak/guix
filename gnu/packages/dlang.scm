@@ -71,6 +71,11 @@
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-tests
+                 (lambda _
+                   ;; Skip broken make ONESHELL shell test.
+                   (substitute* "rdmd_test.d"
+                     (("makeVersion = .*$") "makeVersion = \"skip\";"))))
                (delete 'configure)
                (replace 'build
                  (lambda _
