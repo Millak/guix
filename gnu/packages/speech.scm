@@ -953,3 +953,49 @@ using a Python-based domain-specific language.")
 ONNX Runtime.  It supports models including Whisper and NeMo Parakeet.
 Includes bundled Parakeet TDT V3 model weights (int8, CC-BY-4.0, NVIDIA).")
     (license license:expat)))
+
+(define-public python-pocket-tts
+  (package
+    (name "python-pocket-tts")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kyutai-labs/pocket-tts")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b9xxyrwa8vsz6r6fi7p47z8rd7q2gjjnwq47br89zp2lkzym3zm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list ;;; These tests try to download models from HuggingFace Hub.
+              "--ignore=tests/test_cli_generate.py"
+              "--ignore=tests/test_documentation_examples.py")))
+    (propagated-inputs
+     (list python-beartype
+           python-einops
+           python-fastapi
+           python-huggingface-hub
+           python-numpy
+           python-pydantic
+           python-pytorch
+           python-safetensors
+           python-scipy
+           python-sentencepiece
+           python-soundfile
+           python-typer
+           python-typing-extensions
+           python-uvicorn))
+    (native-inputs
+     (list nss-certs-for-test
+           python-hatchling
+           python-pytest))
+    (home-page "https://github.com/kyutai-labs/pocket-tts")
+    (synopsis "Fast neural text-to-speech")
+    (description
+     "Pocket TTS is a fast neural text-to-speech engine with ~100M parameters,
+running at approximately 6x realtime on CPU.  English only.")
+    (license license:expat)))
