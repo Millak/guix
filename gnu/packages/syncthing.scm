@@ -205,7 +205,7 @@ Protocol.")
              python-bcrypt
              python-dateutil
              python-pycairo
-             python-pygobject
+             python-pygobject-3.50
              psmisc
              syncthing))
       (home-page "https://github.com/kozec/syncthing-gtk")
