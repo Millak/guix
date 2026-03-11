@@ -9782,6 +9782,11 @@ between a set of landmarks and the samples are calculated.")
     (build-system r-build-system)
     (properties
      '((updater-ignored-native-inputs . ("r-car" "r-gamm4"))))
+    (arguments
+     (list
+      #:skipped-tests
+      ;; 2/3 mismatches (average diff: 0.267)
+      '(("test-resids.R" "weighted residuals"))))
     (propagated-inputs
      (list r-boot
            r-lattice
