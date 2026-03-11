@@ -18,14 +18,37 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages wordnet)
-  #:use-module (guix packages)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
-  #:use-module (guix licenses)
   #:use-module (guix download)
+  #:use-module (guix git-download)
+  #:use-module (guix licenses)
+  #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages tcl))
+
+(define-public wfrench
+  (package
+    (name "wfrench")
+    (version "1.2.9")
+    (source (origin
+	      (method git-fetch)
+	      (uri (git-reference
+		     (url "https://gitlab.com/gpernot/wfrench")
+		     (commit version)))
+	      (file-name (git-file-name name version))
+	      (sha256
+	       (base32
+		"0vmgk303wbx67vhhcl36ycm8wlr334a1zayw8xdg0qs3nyn4qn09"))))
+    (build-system copy-build-system)
+    (arguments
+     (list #:install-plan #~'(("french" "share/wfrench/french"))))
+    (home-page "https://gitlab.com/gpernot/wfrench")
+    (synopsis "French word list")
+    (description "This package provides a list of French words.")
+    (license gpl3+)))
 
 (define-public wordnet
   (package
