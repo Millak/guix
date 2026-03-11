@@ -17608,24 +17608,17 @@ illustration.")
 (define-public r-rcppml
   (package
     (name "r-rcppml")
-    (version "0.3.7")
+    (version "0.3.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppML" version))
        (sha256
-        (base32 "1ih8i7i6m221iw227mnl3rvnaw2l53h8fpnc4f8yn9sm10anap1j"))))
+        (base32 "0jxfi8ignrh3jgjn51fl6igzw1rclzbk36y218klnl1nnib2abls"))))
     (properties `((upstream-name . "RcppML")))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           ;; It is unclear why these fail.
-           (lambda _ (delete-file "tests/testthat/test_bipartition.R"))))))
     (propagated-inputs (list r-matrix r-rcpp r-rcppeigen))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-nnlm r-testthat))
     (home-page "https://github.com/zdebruine/RcppML")
     (synopsis "Rcpp machine learning library")
     (description
