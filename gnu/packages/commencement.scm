@@ -3428,7 +3428,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
     (package
       (inherit parent)
       (inputs
-       (modify-inputs (package-inputs parent)
+       (modify-inputs inputs
          (delete "libxcrypt")))
       (arguments
        (substitute-keyword-arguments arguments

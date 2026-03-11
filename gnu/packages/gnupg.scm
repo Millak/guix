@@ -485,10 +485,10 @@ and every application benefits from this.")
              (chdir "lang/qt"))))))
     (propagated-inputs (list gpgme))    ;required by QGpgmeConfig.cmake
     (native-inputs
-     (modify-inputs (package-native-inputs gpgme)
+     (modify-inputs native-inputs
        (prepend pkg-config)))
     (inputs
-     (modify-inputs (package-inputs gpgme)
+     (modify-inputs inputs
        (prepend qtbase-5)))
     (synopsis "Qt API bindings for gpgme")
     (description "QGpgme provides a very high level Qt API around GpgMEpp.
@@ -514,10 +514,10 @@ gpgpme starting with version 1.7.")
              (chdir "lang/qt"))))))
     (propagated-inputs (list gpgme))    ;required by QGpgmeConfig.cmake
     (native-inputs
-     (modify-inputs (package-native-inputs gpgme)
+     (modify-inputs native-inputs
        (prepend pkg-config)))
     (inputs
-     (modify-inputs (package-inputs gpgme)
+     (modify-inputs inputs
        (prepend qtbase)))
     (synopsis "Qt API bindings for gpgme")
     (description "QGpgme provides a very high level Qt API around GpgMEpp.")
@@ -573,10 +573,10 @@ interface (FFI) of Guile.")
     (inherit guile-gcrypt)
     (name "guile2.2-gcrypt")
     (native-inputs
-     (modify-inputs (package-native-inputs guile-gcrypt)
+     (modify-inputs native-inputs
        (replace "guile" guile-2.2)))
     (inputs
-     (modify-inputs (package-inputs guile-gcrypt)
+     (modify-inputs inputs
        (replace "guile" guile-2.2)))))
 
 (define-public python-gpg
@@ -908,7 +908,7 @@ enter a passphrase when required by @code{gpg} or other software.")))
     (arguments
      `(#:configure-flags '("--enable-fallback-curses")))
     (inputs
-     (modify-inputs (package-inputs pinentry-tty)
+     (modify-inputs inputs
        (prepend gtk+-2 glib)))
     (description
      "Pinentry provides a console and a GTK+ GUI that allows users to enter a
@@ -919,7 +919,7 @@ passphrase when @code{gpg} is run and needs it.")))
     (inherit pinentry-tty)
     (name "pinentry-gnome3")
     (inputs
-     (modify-inputs (package-inputs pinentry-tty)
+     (modify-inputs inputs
        (prepend gtk+-2 gcr-3 glib)))
     (arguments
      `(#:configure-flags '("--enable-pinentry-gnome3"
@@ -936,7 +936,7 @@ software.")))
     (arguments
      `(#:configure-flags '("--enable-fallback-curses")))
     (inputs
-     (modify-inputs (package-inputs pinentry-tty)
+     (modify-inputs inputs
        (prepend qtbase qtwayland)))
   (description
    "Pinentry provides a console and a Qt GUI that allows users to enter a
@@ -960,7 +960,7 @@ passphrase when @code{gpg} is run and needs it.")))
        ("gettext" ,gettext-minimal)
        ,@(package-native-inputs pinentry-tty)))
     (inputs
-     (modify-inputs (package-inputs pinentry-tty)
+     (modify-inputs inputs
        (prepend efl)))
     (description
    "Pinentry provides a console and a graphical interface for @acronym{EFL,

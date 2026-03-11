@@ -412,14 +412,14 @@ OnionShare.")
                   (apply invoke "xvfb-run" "pytest" "-vv"
                          (find-files "tests" "^test_gui.*\\.py$")))))))))
     (native-inputs
-     (modify-inputs (package-native-inputs onionshare-cli)
+     (modify-inputs native-inputs
        (prepend xvfb-run)))
     (inputs
      ;; The desktop client uses onionshare-cli like a python module.  But
      ;; propagating onionshare-cli's inputs is not great, since a user would
      ;; not expect to have those installed when using onionshare-cli as a
      ;; standalone utility.  So add onionshare-cli's inputs here.
-     (modify-inputs (package-inputs onionshare-cli)
+     (modify-inputs inputs
        (prepend onionshare-cli          ;TODO: package obfs4proxy
                 python-gnupg
                 python-pyside-6

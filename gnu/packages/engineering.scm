@@ -2836,7 +2836,7 @@ models in the STL and OFF file formats.")
                   (("\\$\\{CMAKE_SOURCE_DIR\\}/submodules/sanitizers-cmake/cmake")
                    (string-append (assoc-ref inputs "sanitizers-cmake")
                                   "/share/sanitizers-cmake/cmake")))))))))
-    (inputs (modify-inputs (package-inputs openscad)
+    (inputs (modify-inputs inputs
               (append curl libfive)))
     (synopsis "Script-based 3D modeling app with Python support")
     (description

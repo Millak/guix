@@ -1282,7 +1282,7 @@ a debugging tool, @command{gssdp-device-sniffer}.")
     (arguments
      (list #:configure-flags
            #~(list "-Dgtk_doc=true")))
-    (propagated-inputs (modify-inputs (package-propagated-inputs gssdp)
+    (propagated-inputs (modify-inputs propagated-inputs
               (replace "libsoup" libsoup-minimal-2)))))
 
 (define-public gupnp
@@ -4496,7 +4496,7 @@ editors, IDEs, etc.")
     (arguments (substitute-keyword-arguments arguments
                  ((#:configure-flags flags #~'())
                   #~(cons "-Dgtk4=false" (delete "-Dgtk3=false" #$flags)))))
-    (propagated-inputs (modify-inputs (package-propagated-inputs vte)
+    (propagated-inputs (modify-inputs propagated-inputs
                          (replace "gtk" gtk+)))
     (properties
      `((upstream-name . "vte")))))
@@ -4517,7 +4517,7 @@ editors, IDEs, etc.")
     (arguments (substitute-keyword-arguments arguments
                  ((#:configure-flags flags)
                   #~(append (list "-Dsixel=true") #$flags))))
-    (inputs (modify-inputs (package-inputs vte)
+    (inputs (modify-inputs inputs
               (append libsixel)
               (append lz4)))))
 
@@ -4698,9 +4698,9 @@ GLib and GObject, and integrates JSON with GLib data types.")
     (native-inputs
      (if (%current-target-system)
          ;; No docs, but rst2man is used for man pages.
-         (modify-inputs (package-native-inputs json-glib-minimal)
+         (modify-inputs native-inputs
            (prepend python-docutils))
-         (modify-inputs (package-native-inputs json-glib-minimal)
+         (modify-inputs native-inputs
            (prepend gi-docgen gobject-introspection
                     python-docutils))))))
 
@@ -4990,7 +4990,7 @@ and the GLib main loop, to integrate well with GNOME applications.")
                 (substitute* "tests/meson.build"
                   (("[ \t]*\\['ssl', true, \\[\\]\\],") ""))))))))
     (native-inputs
-     (modify-inputs (package-native-inputs libsoup-minimal)
+     (modify-inputs native-inputs
        (replace "vala" vala-0.52)))))
 
 (define-public libsoup
@@ -5026,7 +5026,7 @@ and the GLib main loop, to integrate well with GNOME applications.")
                 (mkdir-p (string-append #$output:doc "/share"))
                 (rename-file (string-append #$output "/share/doc")
                              (string-append #$output:doc "/share/doc"))))))))
-    (native-inputs (modify-inputs (package-native-inputs libsoup-minimal)
+    (native-inputs (modify-inputs native-inputs
                      (prepend gettext-minimal gi-docgen)))))
 
 (define-public libsecret
@@ -5545,7 +5545,7 @@ output devices.")
                    (string-append "'" #$output
                                   "/etc/bash_completion.d'")))))))))
     (native-inputs
-     (modify-inputs (package-native-inputs colord-minimal)
+     (modify-inputs native-inputs
        (append bash-completion
                docbook-xsl
                gtk-doc/stable
@@ -6022,7 +6022,7 @@ throughout GNOME for API documentation).")
 (define-public devhelp-with-libsoup2
   (hidden-package
    (package/inherit devhelp
-     (inputs (modify-inputs (package-inputs devhelp)
+     (inputs (modify-inputs inputs
                (replace "webkitgtk-for-gtk3" webkitgtk-with-libsoup2))))))
 
 (define-public cogl

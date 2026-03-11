@@ -248,7 +248,7 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
     (properties (alist-delete 'hidden? (package-properties cairo)))
     (outputs (cons "doc" (package-outputs cairo)))
     (native-inputs
-     (modify-inputs (package-native-inputs cairo)
+     (modify-inputs native-inputs
        (prepend gtk-doc/stable)))
     (arguments
      (substitute-keyword-arguments arguments
@@ -616,10 +616,10 @@ highlighting and other features typical of a source code editor.")
                (base32
                 "0zd84229bddvp8zpnn86q34i16mhf9x3pzry795gilc3na7x3jby"))))
     (native-inputs
-     (modify-inputs (package-native-inputs gtksourceview)
+     (modify-inputs native-inputs
        (replace "gobject-introspection" gobject-introspection)))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs gtksourceview)
+     (modify-inputs propagated-inputs
        (replace "gtk" gtk+)
        (replace "glib" glib)))))
 
@@ -871,7 +871,7 @@ is part of the GNOME accessibility project.")
                    (string-append "docs_dir = '" #$output:doc
                                   "/share/doc'\n")))))))))
     (native-inputs
-     (modify-inputs (package-native-inputs at-spi2-core)
+     (modify-inputs native-inputs
        (append gi-docgen python python-sphinx)
        (replace "python-dbusmock" python-dbusmock)))
     (properties (alist-delete 'hidden?
@@ -1738,7 +1738,7 @@ library.")
        (sha256
         (base32 "1qwdj9xw1w651kqwh82nipbryimm1ir5n3c6q34nphsx576bj9h1"))))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs cairomm)
+     (modify-inputs propagated-inputs
        (prepend libsigc++-2)))))
 
 (define-public pangomm
@@ -1868,7 +1868,7 @@ text rendering library.")
        (sha256
         (base32 "1cysiz908phkagwnls44xxa60xls7r3fw540zcg00g7q520jl50a"))))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs atkmm)
+     (modify-inputs propagated-inputs
        (replace "glibmm" glibmm-2.66)))))
 
 (define-public gtkmm
@@ -2336,7 +2336,7 @@ with some extra work.")
 (define-public gtk-doc/stable
   (hidden-package
    (package/inherit gtk-doc
-     (inputs (modify-inputs (package-inputs gtk-doc)
+     (inputs (modify-inputs inputs
                (replace "dblatex" dblatex/stable))))))
 
 (define-public gtk-engines

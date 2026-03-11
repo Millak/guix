@@ -6644,7 +6644,7 @@ WebSocket usage in Python programs.")
        (sha256
         (base32 "0p0cz2mdissq7iw1n7jrmsfir0jfmgs1dvnpnrx477ffx9hbsxnk"))))
     (native-inputs
-     (modify-inputs (package-native-inputs python-websocket-client)
+     (modify-inputs native-inputs
        (append python-six)))))
 
 (define-public python-purl
@@ -10145,7 +10145,7 @@ Plus all the standard features of requests:
       (list python-hatchling
             python-hatch-fancy-pypi-readme))
      (propagated-inputs
-      (modify-inputs (package-propagated-inputs python-httpx)
+      (modify-inputs propagated-inputs
         (replace "python-httpcore"  python-httpcore-bootstrap))))))
 
 (define-public python-httpx-sse
@@ -13573,7 +13573,7 @@ return paginated responses to your clients.")
                       `(modify-phases ,phases
                          (delete 'sanity-check)))))
                   (propagated-inputs
-                   (modify-inputs (package-propagated-inputs python-tortoise-orm)
+                   (modify-inputs propagated-inputs
                      (replace "python-aiosqlite" python-aiosqlite)))))))
     (native-inputs
      (list python-aiosqlite

@@ -1223,7 +1223,7 @@ large scale eigenvalue problems.")
   (package (inherit arpack-ng)
     (name "arpack-ng-openmpi")
     (inputs
-     (modify-inputs (package-inputs arpack-ng)
+     (modify-inputs inputs
        (prepend openmpi)))
     (arguments
      (substitute-keyword-arguments arguments
@@ -2150,7 +2150,7 @@ Interface to wrap the HDF5 library, which is implemented in C.")
 (define-public hdf5-parallel-openmpi
   (package/inherit hdf5
     (name "hdf5-parallel-openmpi")
-    (inputs (modify-inputs (package-inputs hdf5)
+    (inputs (modify-inputs inputs
               (prepend openmpi)))
     (arguments
      (substitute-keyword-arguments arguments
@@ -2454,7 +2454,7 @@ sharing of scientific data.")
 (define-public netcdf-parallel-openmpi
   (package/inherit netcdf
     (name "netcdf-parallel-openmpi")
-    (inputs (modify-inputs (package-inputs netcdf)
+    (inputs (modify-inputs inputs
               (append openmpi pnetcdf)
               (replace "hdf5" hdf5-parallel-openmpi)))
     ;; TODO: Replace pkg-config references in nc-config with absolute references
@@ -2563,10 +2563,10 @@ scientific data storage.")
     (inherit netcdf-cxx4)
     (name "netcdf-cxx4-parallel-openmpi")
     (synopsis "NetCDF C++ interface (with MPI support)")
-    (inputs (modify-inputs (package-inputs netcdf-cxx4)
+    (inputs (modify-inputs inputs
               (prepend openmpi)
               (replace "hdf5" hdf5-parallel-openmpi)))
-    (propagated-inputs (modify-inputs (package-propagated-inputs netcdf-cxx4)
+    (propagated-inputs (modify-inputs propagated-inputs
               (replace "netcdf" netcdf-parallel-openmpi)))))
 
 (define-public n2p2
@@ -3383,7 +3383,7 @@ can solve two kinds of problems:
                             ((compile-file "../..") "autodiff_benchmarks"))))))
                   (delete 'check)
                   (delete 'install))))
-    (inputs (modify-inputs (package-inputs ceres)
+    (inputs (modify-inputs inputs
               (prepend googlebenchmark ceres)))
     (synopsis "Benchmarks of the Ceres optimization problem solver")))
 
@@ -4107,7 +4107,7 @@ scientific applications modeled by partial differential equations.")
     (inherit petsc)
     (name "petsc-openmpi")
     (inputs
-     (modify-inputs (package-inputs petsc)
+     (modify-inputs inputs
        (prepend hdf5-parallel-openmpi
                 hypre-openmpi
                 metis
@@ -4154,7 +4154,7 @@ scientific applications modeled by partial differential equations.")
     (inherit petsc-complex)
     (name "petsc-complex-openmpi")
     (inputs
-     (modify-inputs (package-inputs petsc-complex)
+     (modify-inputs inputs
        (prepend openmpi)))
     (arguments
      (substitute-keyword-arguments arguments
@@ -5200,7 +5200,7 @@ sparse system of linear equations A x = b using Gaussian elimination.")
   (package
     (inherit mumps)
     (name "mumps-metis")
-    (inputs (modify-inputs (package-inputs mumps)
+    (inputs (modify-inputs inputs
               (delete "scotch")))))
 
 (define-public mumps-openmpi
@@ -5208,7 +5208,7 @@ sparse system of linear equations A x = b using Gaussian elimination.")
     (inherit mumps)
     (name "mumps-openmpi")
     (inputs
-     (modify-inputs (package-inputs mumps)
+     (modify-inputs inputs
        (delete "scotch")
        (prepend openmpi scalapack pt-scotch)))
     (arguments
@@ -5227,7 +5227,7 @@ sparse system of linear equations A x = b using Gaussian elimination.")
   (package
     (inherit mumps-openmpi)
     (name "mumps-metis-openmpi")
-    (inputs (modify-inputs (package-inputs mumps-openmpi)
+    (inputs (modify-inputs inputs
               (delete "pt-scotch")))))
 
 (define-public ruby-asciimath
@@ -5779,7 +5779,7 @@ point numbers.")
     (name "maxima-ecl")
     (properties '((hidden? . #t)))
     (inputs
-      (modify-inputs (package-inputs maxima)
+      (modify-inputs inputs
         (delete "sbcl")
         (prepend ecl)))
     (arguments
@@ -7873,7 +7873,7 @@ problems.")
   (package
     (inherit hypre)
     (name "hypre-openmpi")
-    (inputs (modify-inputs (package-inputs hypre)
+    (inputs (modify-inputs inputs
               (prepend openmpi)))
     (arguments
      (substitute-keyword-arguments arguments
@@ -8526,7 +8526,7 @@ symmetric matrices.")
   (package/inherit elpa
     (name "elpa-openmpi")
     (inputs
-     (modify-inputs (package-inputs elpa)
+     (modify-inputs inputs
        (prepend openmpi scalapack zlib)))
     (arguments
      (substitute-keyword-arguments arguments
@@ -8820,7 +8820,7 @@ easily be incorporated into existing simulation codes.")
         (base32
          "0nx4sqhmi126m14myzm7syv2053harav9snl0a247wnkcgs5rxrv"))))
     (inputs
-     (modify-inputs (package-inputs sundials)
+     (modify-inputs inputs
        (prepend gfortran openblas)))
     (arguments
      '(#:configure-flags `("-DCMAKE_C_FLAGS=-O2 -g -fcommon"
@@ -9415,7 +9415,7 @@ built on top of DUNE, the Distributed and Unified Numerics Environment.")
         (if (dune-package? p)
             (package (inherit p)
               (name (string-append (package-name p) "-openmpi"))
-              (inputs (modify-inputs (package-inputs p)
+              (inputs (modify-inputs inputs
                         (append openmpi)))
               (arguments
                (substitute-keyword-arguments arguments

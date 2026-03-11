@@ -311,13 +311,13 @@ output file formats and printers.")
 (define-public ghostscript/x
   (package/inherit ghostscript
     (name (string-append (package-name ghostscript) "-with-x"))
-    (inputs (modify-inputs (package-inputs ghostscript)
+    (inputs (modify-inputs inputs
               (prepend libxext libxt)))))
 
 (define-public ghostscript/cups
   (package/inherit ghostscript
     (name "ghostscript-with-cups")
-    (inputs (modify-inputs (package-inputs ghostscript)
+    (inputs (modify-inputs inputs
               (prepend cups-minimal)))))
 
 (define-public ijs

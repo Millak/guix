@@ -310,7 +310,7 @@ IM module for GTK+3 applications.
             (lambda _
               (chdir ".."))))))
     (inputs
-     (modify-inputs (package-inputs fcitx5-gtk)
+     (modify-inputs inputs
        (delete "gtk+")
        (prepend fcitx5-gtk gtk)))
     (native-search-paths

@@ -305,7 +305,7 @@ required structures.")
   ;; to have the choice between GnuTLS with Dane and without Dane.
   (package/inherit gnutls
     (name "gnutls-dane")
-    (inputs (modify-inputs (package-inputs gnutls)
+    (inputs (modify-inputs inputs
               (prepend unbound)))))
 
 (define-public guile-gnutls
@@ -361,10 +361,10 @@ bindings that were formerly provided as part of GnuTLS.")
   (package/inherit guile-gnutls
     (name "guile2.2-gnutls")
     (native-inputs
-     (modify-inputs (package-native-inputs guile-gnutls)
+     (modify-inputs native-inputs
        (replace "guile" guile-2.2)))
     (inputs
-     (modify-inputs (package-inputs guile-gnutls)
+     (modify-inputs inputs
        (replace "guile" guile-2.2)))))
 
 (define (target->openssl-target pkg target)

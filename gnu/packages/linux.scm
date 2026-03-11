@@ -3681,7 +3681,7 @@ block devices, UUIDs, TTYs, and many other tools.")
    util-linux
    (name "util-linux-with-udev")
    (inputs
-    (modify-inputs (package-inputs util-linux)
+    (modify-inputs inputs
       (prepend eudev)))))
 
 (define-public chimerautils
@@ -10569,7 +10569,7 @@ libraries, which are often integrated directly into libfabric.")
        (sha256
         (base32 "1znmw83rmippv0fwz0x7lgylfk17dr9ckll8lrm4z7kclspnqpj8"))))
     (inputs
-     (modify-inputs (package-inputs libfabric)
+     (modify-inputs inputs
        (append cxi-driver-for-libfabric-1)))))
 
 (define-public psm
@@ -11106,7 +11106,7 @@ file systems.")
         `(cons "--enable-gettext=no"
                ,configure-flags))))
     (native-inputs
-     (modify-inputs (package-native-inputs xfsprogs)
+     (modify-inputs native-inputs
        (delete "gettext-minimal")))))
 
 (define-public xfsprogs/static
@@ -11622,7 +11622,7 @@ tools for managing PipeWire.")
          ((#:configure-flags flags ''())
           #~(cons "-Delogind=disabled" #$flags))))
       (inputs
-       (modify-inputs (package-inputs base)
+       (modify-inputs inputs
          (delete "elogind"))))))
 
 (define-public ell

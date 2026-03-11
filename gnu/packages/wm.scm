@@ -344,7 +344,7 @@ the @code{.../share/quickshell} path in the package.")
     (inherit dank-material-shell-minimal)
     (name "dank-material-shell")
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs dank-material-shell-minimal)
+     (modify-inputs propagated-inputs
        (append dbus
                brightnessctl
                cava
@@ -2814,7 +2814,7 @@ modules for building a Wayland compositor.")
        (file-name (git-file-name "wlroots" version))
        (sha256
         (base32 "00s73nhi3sc48l426jdlqwpclg41kx1hv0yk4yxhbzw19gqpfm1h"))))
-    (propagated-inputs (modify-inputs (package-propagated-inputs wlroots)
+    (propagated-inputs (modify-inputs propagated-inputs
                          (delete libdisplay-info)))
     (arguments
      (substitute-keyword-arguments arguments
@@ -4192,7 +4192,7 @@ wasting your precious memory.")
                  (base32
                   "0588g37h18lv50h7w8vfbwhvc3iajh7sdr53848spaif99nh3mh4"))))
       (inputs
-       (modify-inputs (package-inputs lemonbar)
+       (modify-inputs inputs
          (prepend freetype libxft libx11)))
       (arguments
        (substitute-keyword-arguments arguments

@@ -312,10 +312,10 @@ menu to select one of the installed operating systems.")
     (inherit grub-pc)
     (name "grub-minimal")
     (inputs
-     (modify-inputs (package-inputs grub-pc)
+     (modify-inputs inputs
        (delete "lvm2" "mdadm" "fuse" "console-setup")))
     (native-inputs
-     (modify-inputs (package-native-inputs grub)
+     (modify-inputs native-inputs
        (delete "help2man" "texinfo" "parted" "qemu" "qemu-minimal" "xorriso")))
     (arguments
      (substitute-keyword-arguments arguments
@@ -401,7 +401,7 @@ menu to select one of the installed operating systems.")
     (inherit base)
     (synopsis "GRand Unified Boot loader (UEFI version)")
     (inputs
-     (modify-inputs (package-inputs base)
+     (modify-inputs inputs
        (prepend efibootmgr mtools)))
     (native-inputs
      (cond ((or (target-x86-64?)
@@ -409,7 +409,7 @@ menu to select one of the installed operating systems.")
                 (target-aarch64?)
                 (target-arm32?))
             ;; We add the firmware needed to run the tests.
-            (modify-inputs (package-native-inputs base)
+            (modify-inputs native-inputs
               (prepend
                 (cond ((target-x86-64?) ovmf-x86-64)
                       ((target-x86-32?) ovmf-i686)
@@ -419,7 +419,7 @@ menu to select one of the installed operating systems.")
            (else
             ;; The tests are skipped in this package so we remove some
             ;; test dependencies.
-            (modify-inputs (package-native-inputs base)
+            (modify-inputs native-inputs
               (delete "parted" "qemu-minimal" "xorriso")))))
     (arguments
      (substitute-keyword-arguments arguments
@@ -554,10 +554,10 @@ menu to select one of the installed operating systems.")
     (native-inputs
      (cond
        ((target-x86-64?)
-        (modify-inputs (package-native-inputs grub-efi)
+        (modify-inputs native-inputs
           (replace "ovmf-x86-64" ovmf-i686)))
         ((target-aarch64?)
-         (modify-inputs (package-native-inputs grub-efi)
+         (modify-inputs native-inputs
            (prepend
             (cross-gcc "arm-linux-gnueabihf")
             (cross-binutils "arm-linux-gnueabihf"))
@@ -604,7 +604,7 @@ menu to select one of the installed operating systems.")
     (name "grub-hybrid")
     (synopsis "GRand Unified Boot loader (hybrid version)")
     (inputs
-     (modify-inputs (package-inputs grub-efi)
+     (modify-inputs inputs
        (prepend grub)))
     (arguments
      (substitute-keyword-arguments arguments
@@ -930,7 +930,7 @@ also initializes the boards (RAM etc).")
                                   (string-append "infodir=" info-dir)
                                   make-flags))))))))
     (native-inputs
-     (modify-inputs (package-native-inputs u-boot)
+     (modify-inputs native-inputs
        (append fontconfig
                python-sphinx
                python-sphinx-prompt
@@ -948,12 +948,12 @@ Info manual.")))
     (name "u-boot-tools")
     (native-inputs
      (if (string-match "^x86_64-linux" (%current-system))
-         (modify-inputs (package-native-inputs u-boot)
+         (modify-inputs native-inputs
                           (prepend python-filelock
                                    python-pycryptodomex
                                    python-pytest
                                    python-pytest-xdist))
-           (modify-inputs (package-native-inputs u-boot)
+           (modify-inputs native-inputs
                           (prepend python-filelock
                                    python-pycryptodomex))))
     (inputs (list gnutls ncurses/tinfo))
@@ -1283,7 +1283,7 @@ CONFIG_TOOLS_KWBIMAGE=n"))))
               (add-after 'unpack 'set-environment
                 (lambda* (#:key inputs #:allow-other-keys)
                   (setenv "BL31" (search-input-file inputs "/bl31.elf"))))))))
-      (inputs (modify-inputs (package-inputs base)
+      (inputs (modify-inputs inputs
                 (append (match soc
                           ('rk3588 arm-trusted-firmware-rk3588)
                           ('rk3399 arm-trusted-firmware-rk3399)
@@ -1326,10 +1326,10 @@ removed so that it fits within common partitioning schemes.")))
                                  (or native-inputs inputs) "libexec/scp.bin"))
                   (setenv "BL31" (search-input-file inputs "bl31.bin"))))))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (append (force scp-firmware))))
       (inputs
-       (modify-inputs (package-inputs base)
+       (modify-inputs inputs
          (append arm-trusted-firmware-sun50i-a64))))))
 
 (define-public u-boot-orangepi-zero2w
@@ -1346,7 +1346,7 @@ removed so that it fits within common partitioning schemes.")))
                   (setenv "SCP" "/dev/null")
                   (setenv "BL31" (search-input-file inputs "bl31.bin"))))))))
       (inputs
-       (modify-inputs (package-inputs base)
+       (modify-inputs inputs
          ;; The Zero 2W uses the slightly revised Allwinner H618.
          (append arm-trusted-firmware-sun50i-h616))))))
 
@@ -1455,7 +1455,7 @@ Documentation} for more information (for example by running @samp{info
                 (symlink (search-input-file outputs "libexec/u-boot")
                          (string-append #$output "/bin/u-boot"))))))))
     ;; cert-to-efi-sig-list from efitools creates the EFI capsule ESL.
-    (inputs (modify-inputs (package-inputs base)
+    (inputs (modify-inputs inputs
               (append efitools sdl2)))))
 
 (define-public u-boot-sifive-unleashed
@@ -1471,7 +1471,7 @@ Documentation} for more information (for example by running @samp{info
                   (setenv "OPENSBI" (search-input-file inputs
                                                        "fw_dynamic.bin"))))))))
       (inputs
-       (modify-inputs (package-inputs base)
+       (modify-inputs inputs
          (append opensbi-generic))))))
 
 (define-public u-boot-sifive-unmatched
@@ -1487,7 +1487,7 @@ Documentation} for more information (for example by running @samp{info
                   (setenv "OPENSBI" (search-input-file inputs
                                                        "fw_dynamic.bin"))))))))
       (inputs
-       (modify-inputs (package-inputs base)
+       (modify-inputs inputs
          (append opensbi-generic))))))
 
 (define-public u-boot-starfive-visionfive2
@@ -1511,7 +1511,7 @@ Documentation} for more information (for example by running @samp{info
                                 (string-append #$output
                                                "/libexec/spl"))))))))
       (inputs
-       (modify-inputs (package-inputs base)
+       (modify-inputs inputs
          (append opensbi-for-visionfive2))))))
 
 (define-public u-boot-rock64-rk3328
@@ -1762,7 +1762,7 @@ grub-efi-netboot-removable-bootloader.")
                   (symlink (string-append #$output "/bin/fw_printenv")
                            (string-append #$output "/bin/fw_setenv"))))))))
       (native-inputs
-       (modify-inputs (package-native-inputs u-boot)
+       (modify-inputs native-inputs
          (delete "dtc"))))))            ;otherwise the build fails
 
 ;;; Note: the default cross-build of this package is currently broken on
@@ -2031,10 +2031,10 @@ the features of iPXE without the hassle of reflashing.")
     (native-inputs
      ;; QEMU uses a 64-bit UEFI firmware.
      (if (target-x86-64?)
-         (modify-inputs (package-native-inputs ipxe)
+         (modify-inputs native-inputs
            (prepend edk2-tools))
          (if (target-64bit?)
-           (modify-inputs (package-native-inputs ipxe)
+           (modify-inputs native-inputs
              (prepend edk2-tools
                       (cross-gcc "x86_64-linux-gnu")
                       (cross-binutils "x86_64-linux-gnu")))
@@ -2047,7 +2047,7 @@ the features of iPXE without the hassle of reflashing.")
                        (substitute-keyword-arguments arguments
                         ((#:configure-flags flags ''())
                          #~(cons* "--enable-64-bit-bfd" #$flags)))))))
-             (modify-inputs (package-native-inputs ipxe)
+             (modify-inputs native-inputs
                (prepend edk2-tools
                         (make-ld-wrapper "ld-wrapper-64-bit-bfd"
                                          #:binutils binutils)

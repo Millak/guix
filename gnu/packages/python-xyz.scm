@@ -14531,14 +14531,14 @@ following CLI scripts:
     (arguments
      (list #:test-flags #~(list "--pyargs" "ipyparallel")))
     (native-inputs
-     (modify-inputs (package-native-inputs python-ipyparallel-bootstrap)
+     (modify-inputs native-inputs
        (append python-ipython
                python-pytest
                python-pytest-asyncio
                python-pytest-tornado
                python-testpath)))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-ipyparallel-bootstrap)
+     (modify-inputs propagated-inputs
        (replace "python-jupyter-client-bootstrap" python-jupyter-client)
        (append python-ipykernel)))
     (properties (alist-delete 'hidden? (package-properties
@@ -16787,7 +16787,7 @@ from an XML-based format.")
                                       "MtiTest")
                                     " and not "))))))))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (append python-pytest)))
       (propagated-inputs
        (list python-brotli
@@ -23681,7 +23681,7 @@ protocols written in pure Python.")
         (base32 "0n3p8jyxl4zwc63la10v8llc58fc5pcnfqdq9f1vn0hgy5jdi7z1"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (modify-inputs (package-native-inputs python-dulwich)
+     (modify-inputs native-inputs
        (prepend python-setuptools-rust)))
     (arguments
      (list
@@ -33080,7 +33080,7 @@ key-value pairs from a @code{.env} file and set them as environment variables.")
                (delete-file "tests/test_ipython.py")
                (invoke "python" "-m" "pytest")))))))
     (native-inputs
-     (modify-inputs (package-native-inputs python-dotenv)
+     (modify-inputs native-inputs
        (append python-mock)
        (replace "python-sh" python-sh-1)))))
 

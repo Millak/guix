@@ -179,7 +179,7 @@ and many other languages.")
 (define-public wxwidgets-gtk2
   (package/inherit wxwidgets
     (name "wxwidgets-gtk2")
-    (inputs (modify-inputs (package-inputs wxwidgets)
+    (inputs (modify-inputs inputs
               (delete "gtk+")
               (prepend gtk+-2)))
     (arguments
@@ -265,7 +265,7 @@ and many other languages.")
          (sha256
           (base32
            "1xk6w7q4xv4cj906xa5dwam5q51mc8bszbkkz7l8d3wjmsz73rwv"))))
-      (native-inputs (modify-inputs (package-native-inputs wxwidgets-sans-egl)
+      (native-inputs (modify-inputs native-inputs
                        (prepend nanosvg)))
       (arguments
        (substitute-keyword-arguments arguments

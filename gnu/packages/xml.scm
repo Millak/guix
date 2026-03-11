@@ -1284,7 +1284,7 @@ Libxml2).")
   (package/inherit xmlsec
     (name "xmlsec-nss")
     (native-inputs
-     (modify-inputs (package-native-inputs xmlsec)
+     (modify-inputs native-inputs
        (prepend `(,nss "bin"))))        ;certutil, for tests
     (inputs
      (list nss libltdl))

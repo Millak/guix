@@ -1307,7 +1307,7 @@ using password-store through rofi interface:
                               '("pass" "pwgen" "rofi" "wl-copy" "wtype")))))
                    (list "addpass" "rofi-pass")))))))))
     (inputs
-     (modify-inputs (package-inputs rofi-pass)
+     (modify-inputs inputs
        (replace "xclip" wl-clipboard)
        (replace "xdotool" wtype)
        (delete "xset")))

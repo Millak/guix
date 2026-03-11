@@ -157,7 +157,7 @@ anti-aliased glyph bitmap generation with 256 gray levels.")
     (inherit freetype)
     (name "freetype-with-brotli")
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs freetype)
+     (modify-inputs propagated-inputs
        (prepend brotli)))))
 
 (define-public opentype-sanitizer
@@ -697,7 +697,7 @@ implementing the pen protocol for manipulating glyphs.")
                    ((".*\\(\\(0, 0), \\(50, 20), \\(100, 40)).*") "")
                    ((".*107\\.70329614269009.*") ""))))))))
      (native-inputs
-      (modify-inputs (package-native-inputs python-fontpens-bootstrap)
+      (modify-inputs native-inputs
         (append python-fontparts-bootstrap
                 python-fontpens-bootstrap
                 python-pytest
@@ -738,7 +738,7 @@ process.  FontParts is the successor of RoboFab.")
   (package/inherit python-fontparts-bootstrap
     (name "python-fontparts")
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-fontparts-bootstrap)
+     (modify-inputs propagated-inputs
        (replace "python-defcon-bootstrap" python-defcon)))
     (properties
      (alist-delete 'hidden?
@@ -1488,7 +1488,7 @@ high quality, anti-aliased and subpixel rendered text on a display.")
                      (delete-file-recursively source)))
                  '("man3" "man5"))))))))
     (native-inputs
-     (modify-inputs (package-native-inputs fontconfig)
+     (modify-inputs native-inputs
        (append docbook-utils)))
     (properties (alist-delete 'hidden? (package-properties fontconfig)))))
 
@@ -1988,7 +1988,7 @@ UFO3 as described by the UFO font format.")
   (package/inherit python-defcon-bootstrap
     (name "python-defcon")
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-defcon-bootstrap)
+     (modify-inputs propagated-inputs
        (replace "python-fontpens-bootstrap" python-fontpens)))
     (properties
      (alist-delete 'hidden?

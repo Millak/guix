@@ -1160,7 +1160,7 @@ The following systems are supported:
            #~(cons "-DCMAKE_C_FLAGS=-Wno-error=incompatible-pointer-types"
                    #$flags))))
       (inputs
-        (modify-inputs (package-inputs mgba)
+        (modify-inputs inputs
                        (replace "ffmpeg" ffmpeg-6)))))))
 
 (define-public sameboy

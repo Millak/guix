@@ -157,7 +157,7 @@ and track podcasts.")
   (package/inherit libmygpo-qt
     (name "libmygpo-qt5")
     (inputs
-     (modify-inputs (package-inputs libmygpo-qt)
+     (modify-inputs inputs
        (replace "qtbase" qtbase-5)))
     (arguments
      (substitute-keyword-arguments arguments

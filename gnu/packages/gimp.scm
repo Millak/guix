@@ -410,7 +410,7 @@ that is extensible via a plugin system.")
                     (find-files (string-append #$output "/bin")
                                 (lambda (_ stat)
                                   (eq? 'regular (stat:type stat))))))))))
-    (inputs (modify-inputs (package-inputs gimp-2)
+    (inputs (modify-inputs inputs
               (replace "gtk+" gtk+)
               (prepend bash-minimal
                        libjxl
@@ -421,7 +421,7 @@ that is extensible via a plugin system.")
                        gjs
                        libxslt
                        xdg-utils)))
-    (native-inputs (modify-inputs (package-native-inputs gimp-2)
+    (native-inputs (modify-inputs native-inputs
                      (prepend appstream-glib
                               gi-docgen
                               libarchive

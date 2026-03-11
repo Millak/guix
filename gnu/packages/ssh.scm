@@ -354,7 +354,7 @@ Additionally, various channel-specific options can be negotiated.")
   (package
     (inherit openssh)
     (name "openssh-sans-x")
-    (inputs (modify-inputs (package-inputs openssh)
+    (inputs (modify-inputs inputs
               (delete "xauth")))
     (synopsis "OpenSSH client and server without X11 support")))
 
@@ -427,7 +427,7 @@ Additionally, various channel-specific options can be negotiated.")
                                 (string-replace-substring file "/hpn" "/"))))
                    (find-files mandir)))))))))
     (native-inputs
-     (modify-inputs (package-native-inputs openssh)
+     (modify-inputs native-inputs
        (append autoconf automake)))
     (synopsis "High performance SSH/SCP client, and server")
     (description "HPN-SSH is a series of modifications to OpenSSH, the predominant implementation
@@ -439,7 +439,7 @@ of the ssh protocol.  It was originally developed to address performance issues 
     (inherit hpn-ssh)
     (name "hpn-ssh-sans-x")
     (inputs
-     (modify-inputs (package-inputs hpn-ssh)
+     (modify-inputs inputs
        (delete "xauth")))
     (synopsis "High performance SSH/SCP client, and server without X11 support")))
 
@@ -525,11 +525,11 @@ libssh library.")
     (inherit guile-ssh)
     (name "guile2.2-ssh")
     (native-inputs
-     (modify-inputs (package-native-inputs guile-ssh)
+     (modify-inputs native-inputs
        (delete "guile")
        (prepend guile-2.2 ;needed when cross-compiling.
                 )))
-    (inputs (modify-inputs (package-inputs guile-ssh)
+    (inputs (modify-inputs inputs
               (replace "guile" guile-2.2)))))
 
 (define-public corkscrew

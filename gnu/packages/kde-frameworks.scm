@@ -330,7 +330,7 @@ accessibility clients such as screen readers.")
   (package
     (inherit libqaccessibilityclient)
     (name "libqaccessibilityclient-qt5")
-    (inputs (modify-inputs (package-inputs libqaccessibilityclient)
+    (inputs (modify-inputs inputs
               (replace "qtbase" qtbase-5)))))
 
 (define-public qca
@@ -1024,7 +1024,7 @@ as well as an API to create KDED modules.")
     (source (origin
               (inherit (package-source kdbusaddons-5))
               (patches '())))
-    (inputs (modify-inputs (package-inputs kdbusaddons-5) (delete "kinit")))
+    (inputs (modify-inputs inputs (delete "kinit")))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:phases phases)

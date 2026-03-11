@@ -2294,7 +2294,7 @@ reporting or the build process.")))
                (base32
                 "0hbbbxj14qyq8pccyab96pjqq90jnjmid1pml9kx55c5smfpjn37"))))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs maven-resolver-parent-pom)
+     (modify-inputs propagated-inputs
        (replace "maven-parent-pom" maven-parent-pom-34)))))
 
 (define-public maven-resolver-1.6-api
@@ -2303,7 +2303,7 @@ reporting or the build process.")))
     (version (package-version maven-resolver-1.6-parent-pom))
     (source (package-source maven-resolver-1.6-parent-pom))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs maven-resolver-api)
+     (modify-inputs propagated-inputs
        (replace "maven-resolver-parent-pom" maven-resolver-1.6-parent-pom)))))
 
 (define-public maven-resolver-1.6-spi
@@ -2312,7 +2312,7 @@ reporting or the build process.")))
     (version (package-version maven-resolver-1.6-parent-pom))
     (source (package-source maven-resolver-1.6-parent-pom))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs maven-resolver-spi)
+     (modify-inputs propagated-inputs
        (replace "maven-resolver-api" maven-resolver-1.6-api)))))
 
 (define-public maven-resolver-1.6-test-util
@@ -2321,7 +2321,7 @@ reporting or the build process.")))
     (version (package-version maven-resolver-1.6-parent-pom))
     (source (package-source maven-resolver-1.6-parent-pom))
     (inputs
-     (modify-inputs (package-inputs maven-resolver-test-util)
+     (modify-inputs inputs
        (replace "maven-resolver-api" maven-resolver-1.6-api)
        (replace "maven-resolver-spi" maven-resolver-1.6-spi)))))
 
@@ -2331,10 +2331,10 @@ reporting or the build process.")))
     (version (package-version maven-resolver-1.6-parent-pom))
     (source (package-source maven-resolver-1.6-parent-pom))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs maven-resolver-util)
+     (modify-inputs propagated-inputs
        (replace "maven-resolver-api" maven-resolver-1.6-api)))
     (native-inputs
-     (modify-inputs (package-native-inputs maven-resolver-util)
+     (modify-inputs native-inputs
        (replace "maven-resolver-test-util" maven-resolver-1.6-test-util)))))
 
 (define-public maven-resolver-1.6-connector-basic
@@ -2343,12 +2343,12 @@ reporting or the build process.")))
     (version (package-version maven-resolver-1.6-parent-pom))
     (source (package-source maven-resolver-1.6-parent-pom))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs maven-resolver-connector-basic)
+     (modify-inputs propagated-inputs
        (replace "maven-resolver-api" maven-resolver-1.6-api)
        (replace "maven-resolver-spi" maven-resolver-1.6-spi)
        (replace "maven-resolver-util" maven-resolver-1.6-util)))
     (native-inputs
-     (modify-inputs (package-native-inputs maven-resolver-connector-basic)
+     (modify-inputs native-inputs
        (replace "maven-resolver-test-util" maven-resolver-1.6-test-util)))))
 
 (define-public maven-resolver-1.6-impl
@@ -2397,14 +2397,14 @@ reporting or the build process.")))
          (replace 'install
            (install-from-pom "maven-resolver-impl/pom.xml")))))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs maven-resolver-impl)
+     (modify-inputs propagated-inputs
        (delete "maven-resolver-named-locks")
        (replace "maven-resolver-api" maven-resolver-1.6-api)
        (replace "maven-resolver-spi" maven-resolver-1.6-spi)
        (replace "maven-resolver-util" maven-resolver-1.6-util)
        (replace "maven-resolver-parent-pom" maven-resolver-1.6-parent-pom)))
     (native-inputs
-     (modify-inputs (package-native-inputs maven-resolver-impl)
+     (modify-inputs native-inputs
        (delete "java-hamcrest-all")
        (delete "java-mockito-1")
        (replace "maven-resolver-test-util" maven-resolver-1.6-test-util)))))
@@ -2415,13 +2415,13 @@ reporting or the build process.")))
     (version (package-version maven-resolver-1.6-parent-pom))
     (source (package-source maven-resolver-1.6-parent-pom))
     (inputs
-     (modify-inputs (package-inputs maven-resolver-transport-file)
+     (modify-inputs inputs
        (delete "maven-wagon-provider-api")
        (replace "maven-resolver-api" maven-resolver-1.6-api)
        (replace "maven-resolver-spi" maven-resolver-1.6-spi)
        (replace "maven-resolver-util" maven-resolver-1.6-util)))
     (native-inputs
-     (modify-inputs (package-native-inputs maven-resolver-transport-file)
+     (modify-inputs native-inputs
        (replace "maven-resolver-test-util" maven-resolver-1.6-test-util)))))
 
 (define-public maven-resolver-1.6-transport-http
@@ -2445,13 +2445,13 @@ reporting or the build process.")))
                (lambda _
                  (display "org.eclipse.aether.transport.http.HttpTransporterFactory\n"))))))))
     (inputs
-     (modify-inputs (package-inputs maven-resolver-transport-http)
+     (modify-inputs inputs
        (delete "maven-wagon-provider-api")
        (replace "maven-resolver-api" maven-resolver-1.6-api)
        (replace "maven-resolver-spi" maven-resolver-1.6-spi)
        (replace "maven-resolver-util" maven-resolver-1.6-util)))
     (native-inputs
-     (modify-inputs (package-native-inputs maven-resolver-transport-http)
+     (modify-inputs native-inputs
        (replace "maven-resolver-test-util" maven-resolver-1.6-test-util)))))
 
 (define maven-3.8-pom
@@ -2465,7 +2465,7 @@ reporting or the build process.")))
                                   "apache-maven-" version "-src.tar.gz"))
               (sha256 (base32 "01q2g8sklxsys46i4dxqr89klcxfzz40f2kz4lxbdl1phyibqk92"))))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs maven-pom)
+     (modify-inputs propagated-inputs
        (replace "maven-parent-pom" maven-parent-pom-35)))))
 
 (define-public maven-3.8-artifact
@@ -2474,7 +2474,7 @@ reporting or the build process.")))
     (version (package-version maven-3.8-pom))
     (source (package-source maven-3.8-pom))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs maven-artifact)
+     (modify-inputs propagated-inputs
        (replace "maven-pom" maven-3.8-pom)))))
 
 (define-public maven-3.8-model
@@ -2483,7 +2483,7 @@ reporting or the build process.")))
     (version (package-version maven-3.8-pom))
     (source (package-source maven-3.8-pom))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs maven-model)
+     (modify-inputs propagated-inputs
        (replace "maven-pom" maven-3.8-pom)))))
 
 (define-public maven-3.8-builder-support
@@ -2492,7 +2492,7 @@ reporting or the build process.")))
     (version (package-version maven-3.8-pom))
     (source (package-source maven-3.8-pom))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs maven-builder-support)
+     (modify-inputs propagated-inputs
        (replace "maven-pom" maven-3.8-pom)))))
 
 (define-public maven-3.8-settings
@@ -2501,7 +2501,7 @@ reporting or the build process.")))
     (version (package-version maven-3.8-pom))
     (source (package-source maven-3.8-pom))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs maven-settings)
+     (modify-inputs propagated-inputs
        (replace "maven-pom" maven-3.8-pom)))))
 
 (define-public maven-3.8-settings-builder
@@ -2510,7 +2510,7 @@ reporting or the build process.")))
     (version (package-version maven-3.8-pom))
     (source (package-source maven-3.8-pom))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs maven-settings-builder)
+     (modify-inputs propagated-inputs
        (replace "maven-builder-support" maven-3.8-builder-support)
        (replace "maven-settings" maven-3.8-settings)
        (replace "maven-pom" maven-3.8-pom)))))
@@ -2521,7 +2521,7 @@ reporting or the build process.")))
     (version (package-version maven-3.8-pom))
     (source (package-source maven-3.8-pom))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs maven-model-builder)
+     (modify-inputs propagated-inputs
        (replace "maven-artifact" maven-3.8-artifact)
        (replace "maven-builder-support" maven-3.8-builder-support)
        (replace "maven-model" maven-3.8-model)
@@ -2533,7 +2533,7 @@ reporting or the build process.")))
     (version (package-version maven-3.8-pom))
     (source (package-source maven-3.8-pom))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs maven-repository-metadata)
+     (modify-inputs propagated-inputs
        (replace "maven-pom" maven-3.8-pom)))))
 
 (define-public maven-3.8-resolver-provider
@@ -2542,7 +2542,7 @@ reporting or the build process.")))
     (version (package-version maven-3.8-pom))
     (source (package-source maven-3.8-pom))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs maven-resolver-provider)
+     (modify-inputs propagated-inputs
        (replace "maven-model" maven-3.8-model)
        (replace "maven-model-builder" maven-3.8-model-builder)
        (replace "maven-builder-support" maven-3.8-builder-support)
@@ -2558,7 +2558,7 @@ reporting or the build process.")))
     (version (package-version maven-3.8-pom))
     (source (package-source maven-3.8-pom))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs maven-plugin-api)
+     (modify-inputs propagated-inputs
        (replace "maven-artifact" maven-3.8-artifact)
        (replace "maven-model" maven-3.8-model)))))
 
@@ -2568,7 +2568,7 @@ reporting or the build process.")))
     (version (package-version maven-3.8-pom))
     (source (package-source maven-3.8-pom))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs maven-core)
+     (modify-inputs propagated-inputs
        (replace "maven-artifact" maven-3.8-artifact)
        (replace "maven-resolver-provider" maven-3.8-resolver-provider)
        (replace "maven-model" maven-3.8-model)
@@ -2774,7 +2774,7 @@ reporting or the build process.")))
             (_ input)))
         (package-propagated-inputs maven-model-builder)))
     (native-inputs
-     (modify-inputs (package-native-inputs maven-plugin-api)
+     (modify-inputs native-inputs
        (prepend java-plexus-container-default)))))
 
 (define-public maven-3.0-repository-metadata
@@ -2974,7 +2974,7 @@ reporting or the build process.")))
                (base32
                 "0qm8y85kip2hyhnhlkqgj0rhmf83z07s7l7gzsfl5dzl3kvp8nal"))))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs maven-shared-utils)
+     (modify-inputs propagated-inputs
        (prepend maven-3.0-core maven-components-parent-pom-21)))))
 
 (define-public maven-shared-utils-3.1

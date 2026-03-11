@@ -4936,5 +4936,5 @@ $(which espanso)}.  On a Guix system, you can define the following in your
       #:install-source? #f
       #:cargo-install-paths ''("espanso")
       #:features '(list "modulo" "vendored-tls" "wayland")))
-    (inputs (modify-inputs (package-inputs espanso-x11)
+    (inputs (modify-inputs inputs
               (append wl-clipboard)))))

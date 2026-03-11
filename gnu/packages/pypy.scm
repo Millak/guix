@@ -402,10 +402,10 @@ Python code natively, including C extensions.")
                         ((shebang-match-python) shebang-pypy3))))
                   (copy-recursively dist-dir #$output))))))))
     (native-inputs
-     (modify-inputs (package-native-inputs pypy2)
+     (modify-inputs native-inputs
        (replace "python2" pypy2)))
     (inputs
-     (modify-inputs (package-inputs pypy2)
+     (modify-inputs inputs
        (append xz)))))
 
 (define-deprecated-package pypy3

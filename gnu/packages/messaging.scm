@@ -692,7 +692,7 @@ identi.ca and status.net).")
   (package/inherit bitlbee
     (name "bitlbee-purple")
     (synopsis "IRC to instant messaging gateway (using Pidgin's libpurple)")
-    (inputs (modify-inputs (package-inputs bitlbee)
+    (inputs (modify-inputs inputs
               (prepend pidgin)))
     (native-search-paths
      (list (search-path-specification
@@ -2698,7 +2698,7 @@ validating international phone numbers.")
                (base32
                 "1y4ivhy3kwgggrr3g521zaf97334aan0yqpzzryss80k326q5rhf"))))
     (inputs
-     (modify-inputs (package-inputs libphonenumber)
+     (modify-inputs inputs
        (delete "abseil-cpp" "icedtea")))))
 
 (define-public chatty

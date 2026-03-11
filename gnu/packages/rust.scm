@@ -128,7 +128,7 @@
        ((#:disallowed-references _ '())
         (list (this-package-native-input "rustc-bootstrap")))))
     (native-inputs
-     (modify-inputs (package-native-inputs base-rust)
+     (modify-inputs native-inputs
        (replace "rustc-bootstrap" base-rust)
        (replace "cargo-bootstrap" (list base-rust "cargo"))))))
 
@@ -907,7 +907,7 @@ safety and thread safety guarantees.")
              ;; Also remove the bundled (mostly Windows) libraries.
              (for-each delete-file
                        (find-files "vendor" "\\.(a|dll|exe|lib)$"))))))
-      (inputs (modify-inputs (package-inputs base-rust)
+      (inputs (modify-inputs inputs
                              (replace "llvm" llvm-15))))))
 
 (define-public rust-1.68
@@ -1153,11 +1153,11 @@ safety and thread safety guarantees.")
            (package-arguments base-rust)))
       (native-inputs
        (if (supported-package? rust-bootstrap-1.74)
-           (modify-inputs (package-native-inputs base-rust)
+           (modify-inputs native-inputs
              (replace "cargo-bootstrap" (list rust-bootstrap-1.74 "cargo"))
              (replace "rustc-bootstrap" rust-bootstrap-1.74))
            (package-native-inputs base-rust)))
-      (inputs (modify-inputs (package-inputs base-rust)
+      (inputs (modify-inputs inputs
                 (replace "llvm" llvm-17))))))
 
 (define-public rust-1.76
@@ -1337,7 +1337,7 @@ safety and thread safety guarantees.")
                    (("\\[llvm\\]") "[llvm]\ndownload-ci-llvm = false")
                    (("\\[rust\\]") "[rust]\ndownload-rustc = false"))))))))
       ;; Need llvm >= 18.0
-      (inputs (modify-inputs (package-inputs base-rust)
+      (inputs (modify-inputs inputs
                              (replace "llvm" llvm-19))))))
 
 (define-public rust-1.84
@@ -1554,7 +1554,7 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                (("features = \\[\"fs\"" all)
                 (string-append all ", \"use-libc\"")))))))
       (inputs
-       (modify-inputs (package-inputs base-rust)
+       (modify-inputs inputs
          (prepend curl `(,nghttp2 "lib") libffi))))))
 
 (define-public rust-1.90
@@ -1614,7 +1614,7 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                (("features = \\[\"fs\"" all)
                 (string-append all ", \"use-libc\"")))))))
       (inputs
-       (modify-inputs (package-inputs base-rust)
+       (modify-inputs inputs
          (replace "llvm" llvm-21))))))
 
 (define-public rust-1.91
@@ -2313,18 +2313,18 @@ ar = \"" (search-input-file inputs (string-append "/bin/" #$(ar-for-target targe
               (delete 'wrap-rust-analyzer)
               (delete 'wrap-rustc)))))
       (inputs
-       (modify-inputs (package-inputs base-rust)
+       (modify-inputs inputs
          (prepend xz)))                 ; for lzma-sys
       (propagated-inputs
        (if (target-mingw? target)
-           (modify-inputs (package-propagated-inputs base-rust)
+           (modify-inputs propagated-inputs
              (prepend
               (make-mingw-w64
                 (string-take target (string-index target #\-))
                 #:with-winpthreads? #t)))
            (package-propagated-inputs base-rust)))
       (native-inputs
-       (modify-inputs (package-native-inputs base-rust)
+       (modify-inputs native-inputs
          (prepend (cross-gcc target
                              #:libc (cross-libc target)))
          (prepend (if (target-mingw? target)

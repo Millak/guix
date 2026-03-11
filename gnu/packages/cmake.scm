@@ -419,14 +419,14 @@ and workspaces that can be used in the compiler environment of your choice.")
                                     (string-append #$output:doc html))
                   (delete-file-recursively (string-append #$output html)))))))))
     (inputs
-     (modify-inputs (package-inputs cmake-minimal)
+     (modify-inputs inputs
        (prepend ncurses)                ;required for ccmake
        ;; Avoid circular dependency with (gnu packages debug).
        (prepend (module-ref (resolve-interface '(gnu packages debug))
                             'cppdap))))
     ;; Extra inputs required to build the documentation.
     (native-inputs
-     (modify-inputs (package-native-inputs cmake-minimal)
+     (modify-inputs native-inputs
        (append python-sphinx
                texinfo)))))
 

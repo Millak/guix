@@ -259,7 +259,7 @@ with the editor vim.")))
                      (zero? (system (string-append xorg-server "/bin/Xvfb "
                                                     display " &")))))))))))
     (native-inputs
-     (modify-inputs (package-native-inputs vim)
+     (modify-inputs native-inputs
        (prepend pkg-config xorg-server-for-tests)))
     (inputs
      `(("acl" ,acl)
@@ -539,7 +539,7 @@ similar to CoqIDE or ProofGeneral.")
     (description "Coqtail enables interactive Coq proof development in Neovim
 similar to CoqIDE or ProofGeneral.")
     (native-inputs
-     (modify-inputs (package-native-inputs vim-coqtail)
+     (modify-inputs native-inputs
        (replace "vim-vader" neovim-vader)
        (append python-minimal)))))
 

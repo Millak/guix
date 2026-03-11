@@ -259,7 +259,7 @@ simulation, statistical modeling, machine learning and much more.")
                                       (delete 'sanity-check))))
         (native-inputs (list python-hatchling))
         (propagated-inputs
-         (modify-inputs (package-propagated-inputs parent)
+         (modify-inputs propagated-inputs
            (replace "python-jupyter-client" python-jupyter-client-bootstrap)))))))
 
 (define-public python-jupytext

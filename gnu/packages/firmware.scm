@@ -787,7 +787,7 @@ source."
     (native-inputs
      (if (member (%current-system) '("i686-linux" "x86_64-linux"))
          (package-native-inputs seabios)
-         (modify-inputs (package-native-inputs seabios)
+         (modify-inputs native-inputs
            (prepend (cross-gcc "i686-linux-gnu")
                     (cross-binutils "i686-linux-gnu")))))
     (supported-systems %supported-systems)
@@ -1384,7 +1384,7 @@ interface standards, such as:
   (let ((base (make-arm-trusted-firmware "rk3399")))
     (package
       (inherit base)
-      (native-inputs (modify-inputs (package-native-inputs base)
+      (native-inputs (modify-inputs native-inputs
                        (prepend (cross-gcc "arm-none-eabi")
                                 (cross-binutils "arm-none-eabi")))))))
 
@@ -1964,7 +1964,7 @@ or passthrough board.")
     (package
       (inherit base)
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "xgcc" (make-gcc-arm-none-eabi-12.3.rel1)))))))
 
 (define* (make-qmk-firmware-keychron keyboard keymap
@@ -2050,7 +2050,7 @@ or passthrough board.")
                          "0r501hkk0idwfm6qs09g1wb808ga452gz39dw32x13rmg3a901s6")))
                    "lib/printf")))))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (prepend
           (package
             (inherit (make-qmk-newlib-nano-arm-none-eabi))

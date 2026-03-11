@@ -164,7 +164,7 @@ integrate Windows applications into your desktop.")
     (inherit wine-minimal)
     (name "wine")
     (native-inputs
-     (modify-inputs (package-native-inputs wine-minimal)
+     (modify-inputs native-inputs
        (prepend gettext-minimal perl pkg-config)))
     (inputs
      ;; Some libraries like libjpeg are now compiled into native PE objects.
@@ -217,7 +217,7 @@ integrate Windows applications into your desktop.")
   (package
     (inherit wine)
     (name "wine64")
-    (inputs (modify-inputs (package-inputs wine)
+    (inputs (modify-inputs inputs
               (prepend wine)))
     (arguments
      (substitute-keyword-arguments
@@ -299,7 +299,7 @@ integrate Windows applications into your desktop.")
          (file-name (string-append name "-" wine-version ".tar.xz"))
          (sha256
           (base32 "0087dr25h0wxvclacnnvx70q296976gxfj2lzw6wc7rwjdbnhyn0")))))
-    (inputs (modify-inputs (package-inputs wine)
+    (inputs (modify-inputs inputs
               (prepend autoconf ; for autoreconf
                        ffmpeg
                        gtk+
@@ -309,7 +309,7 @@ integrate Windows applications into your desktop.")
                        util-linux ; for hexdump
                        wine-staging-patchset-data)))
     (native-inputs
-     (modify-inputs (package-native-inputs wine)
+     (modify-inputs native-inputs
        (prepend python-3)))
     (arguments
      (substitute-keyword-arguments arguments
@@ -347,7 +347,7 @@ integrated into the main branch.")
   (package
     (inherit wine-staging)
     (name "wine64-staging")
-    (inputs (modify-inputs (package-inputs wine-staging)
+    (inputs (modify-inputs inputs
               (prepend wine-staging)))
     (arguments
      (substitute-keyword-arguments (package-arguments wine64)

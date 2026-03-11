@@ -997,14 +997,14 @@ variables from them.")
                    (dep-path "GUILE_LOAD_PATH" site)
                    (dep-path "GUILE_LOAD_COMPILED_PATH" site-ccache)))))))))
    (inputs
-     (modify-inputs (package-inputs guile-dotenv)
+     (modify-inputs inputs
        (append bash-minimal)))
    (native-inputs
-    (modify-inputs (package-native-inputs guile-dotenv)
+    (modify-inputs native-inputs
       ;; As opposed to guile-config, here we need to propagate it.
       (delete "guile-config")))
    (propagated-inputs
-    (modify-inputs (package-propagated-inputs guile-dotenv)
+    (modify-inputs propagated-inputs
       (prepend guile-config
                guile-dotenv)))
    (description
@@ -1076,14 +1076,14 @@ tables.")
   (package
     (inherit guile-dsv)
     (name "guile2.2-dsv")
-    (native-inputs (modify-inputs (package-native-inputs guile-dsv)
+    (native-inputs (modify-inputs native-inputs
                      (replace "guile-smc" guile2.2-smc)
                      (replace "guile" guile-2.2)
                      (replace "guile-lib" guile2.2-lib)))
-    (inputs (modify-inputs (package-inputs guile-dsv)
+    (inputs (modify-inputs inputs
               (replace "guile"  guile-2.2)
               (replace "guile-lib" guile2.2-lib)))
-    (propagated-inputs (modify-inputs (package-propagated-inputs guile-dsv)
+    (propagated-inputs (modify-inputs propagated-inputs
                          (replace "guile-lib" guile2.2-lib)
                          (replace "guile-smc" guile2.2-smc)))))
 
@@ -1252,10 +1252,10 @@ is not available for Guile 2.0.")
     (inherit guile-fibers)
     (name "guile2.2-fibers")
     (inputs
-     (modify-inputs (package-inputs guile-fibers)
+     (modify-inputs inputs
        (replace "guile" guile-2.2)))
     (native-inputs
-     (modify-inputs (package-native-inputs guile-fibers)
+     (modify-inputs native-inputs
        (replace "guile" guile-2.2)))))
 
 (define-public guile-fibers-next
@@ -1277,10 +1277,10 @@ is not available for Guile 2.0.")
                  (base32
                   "0qh0czz5qvk5mmrc8x2gmvl5psdfd22q2rhzj4jrpan6k3d55bl8"))))
       (inputs
-       (modify-inputs (package-inputs guile-fibers)
+       (modify-inputs inputs
          (replace "guile" guile-next)))
       (native-inputs
-       (modify-inputs (package-native-inputs guile-fibers)
+       (modify-inputs native-inputs
          (replace "guile" guile-next))))))
 
 (define-public guile-kracht
@@ -1680,7 +1680,7 @@ using Guile's foreign function interface.")
   (package
     (inherit guile-squee)
     (name "guile2.2-squee")
-    (native-inputs (modify-inputs (package-native-inputs guile-squee)
+    (native-inputs (modify-inputs native-inputs
                      (replace "guile" guile-2.2)))))
 
 (define-public guile-colorized
@@ -2077,7 +2077,7 @@ messaging library.")
   (package
     (inherit guile-simple-zmq)
     (name "guile2.2-simple-zmq")
-    (native-inputs (modify-inputs (package-native-inputs guile-simple-zmq)
+    (native-inputs (modify-inputs native-inputs
                      (replace "guile" guile-2.2)))))
 
 (define-public jupyter-guile-kernel
@@ -2247,7 +2247,7 @@ format.")
   (package
     (inherit guile-email)
     (name "guile2.2-email")
-    (inputs (modify-inputs (package-inputs guile-email)
+    (inputs (modify-inputs inputs
               (replace "guile" guile-2.2)))
     (arguments
      (substitute-keyword-arguments arguments
@@ -2381,7 +2381,7 @@ Scheme by using Guile’s foreign function interface.")
   (package
     (inherit guile-newt)
     (name "guile2.2-newt")
-    (inputs (modify-inputs (package-inputs guile-newt)
+    (inputs (modify-inputs inputs
               (replace "guile" guile-2.2)))))
 
 (define-public guile-mastodon
@@ -2447,7 +2447,7 @@ written in pure Scheme by using Guile's foreign function interface.")
   (package
     (inherit guile-parted)
     (name "guile2.2-parted")
-    (inputs (modify-inputs (package-inputs guile-parted)
+    (inputs (modify-inputs inputs
               (replace "guile" guile-2.2)))
     (propagated-inputs
      `(("guile-bytestructures" ,guile2.2-bytestructures)))))
@@ -2603,7 +2603,7 @@ It currently supports MySQL, Postgres and SQLite3.")
     (inputs
      (list sqlite zlib))
     (native-inputs
-     (modify-inputs (package-native-inputs guile-dbi)
+     (modify-inputs native-inputs
        (prepend guile-dbi ; only required for headers
                 pkg-config)))
     (synopsis "Guile DBI driver for SQLite")
@@ -2632,7 +2632,7 @@ SQL databases.  This package implements the interface for SQLite.")))
     (inputs
      (list postgresql zlib))
     (native-inputs
-     (modify-inputs (package-native-inputs guile-dbi)
+     (modify-inputs native-inputs
        (prepend guile-dbi ; only required for headers
                 )))
     (synopsis "Guile DBI driver for PostgreSQL")
@@ -2665,7 +2665,7 @@ PostgreSQL.")))
      (list `(,mariadb "dev")
            `(,mariadb "lib") zlib))
     (native-inputs
-     (modify-inputs (package-native-inputs guile-dbi)
+     (modify-inputs native-inputs
        (prepend guile-dbi ; only required for headers
                 )))
     (synopsis "Guile DBI driver for MySQL")
@@ -2754,7 +2754,7 @@ above command-line parameters.")
   (package
     (inherit guile-config)
     (name "guile2.2-config")
-    (inputs (modify-inputs (package-inputs guile-config)
+    (inputs (modify-inputs inputs
               (replace "guile" guile-2.2)))))
 
 (define-public guile-hall
@@ -2869,7 +2869,7 @@ The library is shipped with documentation in Info format and usage examples.")
     (inherit guile-ics)
     (name "guile2.2-ics")
     (native-inputs
-     (modify-inputs (package-native-inputs guile-ics)
+     (modify-inputs native-inputs
        (replace "guile" guile-2.2)
        (replace "guile-lib" guile2.2-lib)
        (replace "guile-smc" guile2.2-smc)))
@@ -3133,7 +3133,7 @@ object-oriented programming system, GOOPS.")
     (inherit guile-g-golf)
     (name "guile2.2-g-golf")
     (inputs
-     (modify-inputs (package-inputs guile-g-golf)
+     (modify-inputs inputs
        (replace "guile" guile-2.2)
        (replace "guile-lib" guile2.2-lib)))))
 
@@ -4294,7 +4294,7 @@ store.")
   (package
     (inherit guile-redis)
     (name "guile2.2-redis")
-    (native-inputs (modify-inputs (package-native-inputs guile-redis)
+    (native-inputs (modify-inputs native-inputs
                      (replace "guile" guile-2.2)))))
 
 (define-public guile-commonmark
@@ -4830,7 +4830,7 @@ pre-alpha code.")
     (inherit guile-gi)
     (name "guile2.2-gi")
     (inputs
-     (modify-inputs (package-inputs guile-gi)
+     (modify-inputs inputs
        (replace "guile" guile-2.2)))))
 
 (define-public guile-srfi-89
@@ -6453,7 +6453,7 @@ over, or update a value in arbitrary data structures.")
     (inherit guile-lens)
     (name "guile2.2-lens")
     (native-inputs
-     (modify-inputs (package-native-inputs guile-lens)
+     (modify-inputs native-inputs
        (replace "guile" guile-2.2)))))
 
 (define-public guile-xapian
@@ -6493,10 +6493,10 @@ models and also supports a rich set of boolean query operators.")
     (inherit guile-xapian)
     (name "guile2.2-xapian")
     (inputs
-     (modify-inputs (package-inputs guile-xapian)
+     (modify-inputs inputs
        (replace "guile" guile-2.2)))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs guile-xapian)
+     (modify-inputs propagated-inputs
        (replace "guile-lib" guile2.2-lib)))))
 
 (define-public guile-torrent
@@ -7582,10 +7582,10 @@ with a FSM is being built (for example, from a Makefile.)")
   (package
     (inherit guile-smc)
     (name "guile2.2-smc")
-    (native-inputs (modify-inputs (package-native-inputs guile-smc)
+    (native-inputs (modify-inputs native-inputs
                      (replace "guile" guile-2.2)
                      (replace "guile-lib" guile2.2-lib)))
-    (inputs (modify-inputs (package-inputs guile-smc)
+    (inputs (modify-inputs inputs
               (replace "guile" guile-2.2)
               (replace "guile-lib" guile2.2-lib)))))
 

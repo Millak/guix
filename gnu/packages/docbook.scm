@@ -279,7 +279,7 @@ downloading from @var{source}, where @var{version} is a string and
                                "catalog.xml"))
                      (list "rewriteSystem" "rewriteURI")))))))))
       (native-inputs
-       (modify-inputs (package-native-inputs template)
+       (modify-inputs native-inputs
          (prepend libxml2))))))
 
 (define-public docbook-mathml-1.0
@@ -800,7 +800,7 @@ DB2LaTeX.")
 (define-public dblatex/stable
   (hidden-package
    (package/inherit dblatex
-     (inputs (modify-inputs (package-inputs dblatex)
+     (inputs (modify-inputs inputs
                (replace "imagemagick" imagemagick/stable)
                (replace "inkscape" inkscape/pinned))))))
 

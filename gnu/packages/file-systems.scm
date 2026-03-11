@@ -931,7 +931,7 @@ performance and other characteristics.")
                 (apply invoke "make" "install"
                        (string-append "PREFIX=" #$output)
                        #$(bcachefs-tools-make-install-flags))))))))
-    (inputs (modify-inputs (package-inputs bcachefs-tools-minimal)
+    (inputs (modify-inputs inputs
               (prepend `(,eudev "static")
                        `(,keyutils "static")
                        `(,libscrypt "static")

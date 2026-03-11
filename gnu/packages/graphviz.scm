@@ -145,7 +145,7 @@ interfaces for other technical domains.")
 (define-public graphviz-minimal
   (package/inherit graphviz
     (name "graphviz-minimal")
-    (inputs (modify-inputs (package-inputs graphviz)
+    (inputs (modify-inputs inputs
               (delete "libxrender" "libx11" "pango" "libxaw")))
     (synopsis "Graph visualization software (without X11 support)")))
 

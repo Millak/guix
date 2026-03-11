@@ -161,9 +161,9 @@ to create smooth, animated user interfaces.")
   (package
     (inherit sddm)
     (name "sddm-qt5")
-    (native-inputs (modify-inputs (package-native-inputs sddm)
+    (native-inputs (modify-inputs native-inputs
                      (replace "qttools" qttools-5)))
-    (inputs (modify-inputs (package-inputs sddm)
+    (inputs (modify-inputs inputs
               (replace "qtbase" qtbase-5)
               (replace "qtsvg" qtsvg-5)
               (replace "qtdeclarative" qtdeclarative-5)

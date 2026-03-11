@@ -1767,7 +1767,7 @@ which allows one to install the M8 firmware on any Teensy.")
         #~(cons* "-DUSE_LIBSERIAL=ON"
                  (delete "-DUSE_LIBUSB=ON" #$flags)))))
     (inputs
-     (modify-inputs (package-inputs m8c)
+     (modify-inputs inputs
        (replace "libusb" libserialport)))
     (synopsis "Cross-platform M8 tracker headless client - serial backend")))
 
@@ -2078,7 +2078,7 @@ Automation}, portable and vendor neutral FPGA place and route tool.")
         #~(modify-phases #$phases
             (delete 'delete-scripts)))))
     (native-inputs
-     (modify-inputs (package-native-inputs libngspice)
+     (modify-inputs native-inputs
        (append perl)))
     (inputs (list libngspice readline libxaw libx11))))
 
@@ -2788,7 +2788,7 @@ Chip toolkit.")
     (arguments (list #:test-flags #~(list ".")))
     (native-inputs (list cmake-minimal python-pytest python-minimal-wrapper
                          python-scikit-build-core))
-    (inputs (modify-inputs (package-inputs gdstk)
+    (inputs (modify-inputs inputs
               (prepend python-numpy)))
     (synopsis "Python module for creation and manipulation of GDSII files")
     (description
@@ -4261,7 +4261,7 @@ unique design feature of Trilinos is its focus on packages.")
                          (delete
                           "-DCMAKE_CXX_FLAGS=-O3 -fPIC" #$flags))))))
     (inputs
-     (modify-inputs (package-inputs trilinos-serial-xyce)
+     (modify-inputs inputs
        (prepend openmpi)))))
 
 (define-public verilator
@@ -4409,7 +4409,7 @@ parallel computing platforms.  It also supports serial execution.")
                          (delete
                           "-DCMAKE_CXX_FLAGS=-O3 -fPIC" #$flags))))))
     (inputs
-     (modify-inputs (package-inputs xyce-serial)
+     (modify-inputs inputs
        (prepend openmpi)
        (replace "trilinos-serial-xyce" trilinos-parallel-xyce)))))
 

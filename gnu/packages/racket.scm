@@ -403,7 +403,7 @@ code to use the 3M garbage collector.")
     (native-inputs
      (if (%current-target-system)
          (package-native-inputs racket-vm-cgc)
-         (modify-inputs (package-native-inputs racket-vm-cgc)
+         (modify-inputs native-inputs
            (prepend racket-vm-cgc))))
     (arguments
      (substitute-keyword-arguments arguments
@@ -441,7 +441,7 @@ collector, 3M (``Moving Memory Manager'').")
     (inherit racket-vm-bc)
     (name "racket-vm-cs")
     (inputs
-     (let ((inputs (modify-inputs (package-inputs racket-vm-cgc)
+     (let ((inputs (modify-inputs inputs
                      (prepend zlib lz4))))
        (if (nix-system->native-chez-machine-type)
            (modify-inputs inputs

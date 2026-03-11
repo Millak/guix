@@ -214,7 +214,7 @@ of C++20 coroutines in connection with certain asynchronous Qt actions.")
     (inherit qcoro-qt5)
     (name "qcoro-qt6")
     (synopsis "C++ Coroutine Library for Qt6")
-    (inputs (modify-inputs (package-inputs qcoro-qt5)
+    (inputs (modify-inputs inputs
               (replace "qtbase" qtbase)
               (replace "qtdeclarative" qtdeclarative)
               (replace "qtwebsockets" qtwebsockets)
@@ -1279,17 +1279,17 @@ tst_qt_cmake_create.cpp"
                 (substitute* "cmake_install.cmake"
                   (("include.*tests/cmake_install") "#"))))))))
     (native-inputs
-     (modify-inputs (package-native-inputs qtbase-5)
+     (modify-inputs native-inputs
        (prepend ninja                   ;CMake Generator, also used for tests
                 tzdata-for-tests
                 wayland-protocols
                 xvfb-run-for-tests)))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs qtbase-5)
+     (modify-inputs propagated-inputs
        ;; Required by Qt6GuiDependencies.cmake.
        (prepend libxkbcommon vulkan-headers)))
     (inputs
-     (modify-inputs (package-inputs qtbase-5)
+     (modify-inputs inputs
        (delete "libxkbcommon")
        (prepend at-spi2-core
                 bash-minimal
@@ -4617,7 +4617,7 @@ Python.")
                    (string-append #$output "/lib/qt"
                                   #$(version-major (package-version qtbase-5))
                                   "/qml")))))))))
-    (inputs (modify-inputs (package-inputs pyotherside)
+    (inputs (modify-inputs inputs
               (replace "qtdeclarative" qtdeclarative-5)
               (replace "qtquickcontrols2" qtquickcontrols-5)
               (replace "qtsvg" qtsvg-5)))))
@@ -5314,10 +5314,10 @@ securely.  It will not store any data unencrypted unless explicitly requested.")
     (inherit qtkeychain)
     (name "qtkeychain-qt6")
     (native-inputs
-     (modify-inputs (package-native-inputs qtkeychain)
+     (modify-inputs native-inputs
        (replace "qttools" qttools)))
     (inputs
-     (modify-inputs (package-inputs qtkeychain)
+     (modify-inputs inputs
        (replace "qtbase" qtbase)))
     (arguments
      (substitute-keyword-arguments arguments
@@ -5864,7 +5864,7 @@ color-related widgets.")
   (package/inherit qcustomplot
     (name "qcustomplot-qt5")
     (inputs
-     (modify-inputs (package-inputs qcustomplot)
+     (modify-inputs inputs
        (replace "qtbase" qtbase-5)))))
 
 ;; TODO: Split shiboken2 binding generator into a dedicated output.
@@ -5956,7 +5956,7 @@ color-related widgets.")
                 "0b92b4zi5rqg5acgbb6yan349idvzmc0x8wjwkdwkga2ad38gh4y"))))
     (build-system cmake-build-system)
     (inputs
-     (modify-inputs (package-inputs python-shiboken-2)
+     (modify-inputs inputs
        (replace "qtbase" qtbase)
        (delete "qtxmlpatterns")))
     (arguments
@@ -6574,7 +6574,7 @@ a secure way.")
     (arguments (substitute-keyword-arguments arguments
                  ((#:configure-flags flags #~'())
                   #~(cons "-DBUILD_WITH_QT6=ON" #$flags))))
-    (inputs (modify-inputs (package-inputs packagekit-qt5)
+    (inputs (modify-inputs inputs
               (replace "qtbase" qtbase)))
     (synopsis "Qt6 bindings for PackageKit")
     (description "Provides Qt6 bindings to PackageKit which is a DBUS

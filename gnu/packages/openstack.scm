@@ -100,7 +100,7 @@ formatters, and other extensions.")
      (native-inputs
       (list python-setuptools python-wheel))
      (propagated-inputs
-      (modify-inputs (package-propagated-inputs python-cliff)
+      (modify-inputs propagated-inputs
         (replace "python-stevedore" python-stevedore-bootstrap))))))
 
 (define-public python-debtcollector
@@ -746,7 +746,7 @@ handlers and support for context specific logging (like resource id’s etc).")
          #~(modify-phases #$phases
              (delete 'sanity-check)))))
      (propagated-inputs
-      (modify-inputs (package-propagated-inputs python-oslo-log)
+      (modify-inputs propagated-inputs
         (delete "python-oslo-config"))))))
 
 (define-public python-oslo-serialization

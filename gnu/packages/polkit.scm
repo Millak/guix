@@ -231,7 +231,7 @@ easily with PolicyKit.")
   (package
     (inherit polkit-qt)
     (name "polkit-qt6")
-    (inputs (modify-inputs (package-inputs polkit-qt)
+    (inputs (modify-inputs inputs
               (replace "qtbase" qtbase)))))
 
 (define-public polkit-gnome

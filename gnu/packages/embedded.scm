@@ -374,7 +374,7 @@ embedded-7-branch/")
                     (search-patches
                      "gcc-7-cross-environment-variables.patch")))))
                (native-inputs
-                (modify-inputs (package-native-inputs xgcc)
+                (modify-inputs native-inputs
                   (delete "isl")
                   (prepend flex isl-0.18)))
                (arguments
@@ -513,7 +513,7 @@ embedded-7-branch/")
                     (search-patches
                      "gcc-10-cross-environment-variables.patch")))))
                (native-inputs
-                (modify-inputs (package-native-inputs xgcc)
+                (modify-inputs native-inputs
                   (delete "isl")
                   (prepend flex isl-0.18)))
                (arguments
@@ -1110,7 +1110,7 @@ with a layered architecture of JTAG interface and TAP support.")
                     (origin-patches (package-source gcc-6))
                     (search-patches "gcc-cross-environment-variables.patch")))))
         (native-inputs
-         (modify-inputs (package-native-inputs xgcc)
+         (modify-inputs native-inputs
            (prepend flex)))
         ;; All headers and cross libraries of the propeller toolchain are
         ;; installed under the "propeller-elf" prefix.
@@ -1156,7 +1156,7 @@ with a layered architecture of JTAG interface and TAP support.")
                 (add-after 'unpack 'chdir
                   (lambda _ (chdir "gcc")))))))
         (native-inputs
-         (modify-inputs (package-native-inputs xgcc)
+         (modify-inputs native-inputs
            (prepend gcc-5)))
         (home-page "https://github.com/parallaxinc/propgcc")
         (supported-systems (delete "aarch64-linux" %supported-systems))))))

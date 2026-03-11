@@ -1412,7 +1412,7 @@ more.")
         (search-patches "texmacs-wayland-hidpi.patch"))))
     (build-system qt-build-system)
     (inputs
-     (modify-inputs (package-inputs texmacs)
+     (modify-inputs inputs
        ;; Replaced by S7 scheme
        ;; TODO: Maybe unbundle S7
        (delete "guile")

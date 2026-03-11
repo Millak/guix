@@ -447,7 +447,7 @@ functions for strings and common data structures.")
   (let ((base glib-minimal))
     (package/inherit base
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (prepend gobject-introspection-minimal)))
       (arguments
        (substitute-keyword-arguments arguments
@@ -466,7 +466,7 @@ functions for strings and common data structures.")
       (properties (alist-delete 'hidden? (package-properties base)))
       (outputs (cons "doc" (package-outputs base)))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (append gi-docgen python-docutils)))
       (arguments
        (substitute-keyword-arguments arguments
@@ -646,10 +646,10 @@ provide bindings to call into the C library.")
   (let ((base gobject-introspection-minimal))
     (package/inherit base
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "glib" glib)))
       (propagated-inputs
-       (modify-inputs (package-propagated-inputs base)
+       (modify-inputs propagated-inputs
          (replace "glib" glib)
          ;; Note: The label stays the same despite the name change.
          (replace "python-setuptools-bootstrap" python-setuptools))))))
@@ -988,7 +988,7 @@ useful for C++.")
        (sha256
         (base32 "0bqm9vqwhas69q6n89wd2xgxvrlkpxra13dzsx8m67hqk0jp8n2k"))))
      (propagated-inputs
-      (modify-inputs (package-propagated-inputs glibmm)
+      (modify-inputs propagated-inputs
         (replace "libsigc++" libsigc++-2)))))
 
 (define-public python-pygobject

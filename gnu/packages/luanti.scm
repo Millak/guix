@@ -172,7 +172,7 @@ sources.")
                           (string-append (getcwd) "/../source/games"))
                   (invoke "../source/bin/luantiserver" "--run-unittests"))))))))
     (inputs
-     (modify-inputs (package-inputs luanti)
+     (modify-inputs inputs
        (delete "libjpeg-turbo"
                "libpng"
                "libogg"

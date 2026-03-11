@@ -273,5 +273,5 @@ or higher power saving modes to adapt to the current usage.")
     (inherit tuned-minimal)
     (name "tuned")
     (inputs
-     (modify-inputs (package-inputs tuned-minimal)
+     (modify-inputs inputs
        (prepend dmidecode perf wireless-tools)))))

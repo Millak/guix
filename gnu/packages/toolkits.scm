@@ -185,7 +185,7 @@ standard operating system features.")
         #~(filter (negate (lambda (x) (string-prefix? "-D" x)))
                   #$flags))))
     (inputs
-     (modify-inputs (package-inputs imgui)
+     (modify-inputs inputs
        (delete "freetype")))))
 
 (define-public nuklear

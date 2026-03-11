@@ -8724,7 +8724,7 @@ container.")))
     (inputs
      (list java-eclipse-jetty-util))
     (native-inputs
-     (modify-inputs (package-native-inputs java-eclipse-jetty-util)
+     (modify-inputs native-inputs
        (prepend java-eclipse-jetty-io)))))
 
 (define-public java-eclipse-jetty-xml-9.2

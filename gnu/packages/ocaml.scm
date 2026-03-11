@@ -5144,7 +5144,7 @@ writing to these structures, and they are accessed via the Bigarray module.")
        ;; TODO doesn't find test deps for some reason?
        ;; I have no clue why.
        #:tests? #f))
-    (propagated-inputs (modify-inputs (package-propagated-inputs ocaml-cstruct)
+    (propagated-inputs (modify-inputs propagated-inputs
                          (append ocaml-cstruct ocaml-ppxlib ocaml-sexplib)))
     (native-inputs (modify-inputs (package-propagated-inputs ocaml-cstruct)
                      (append ocaml-cstruct-sexp ocaml-findlib

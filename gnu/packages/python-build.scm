@@ -1187,7 +1187,7 @@ specified by PEP 517, @code{flit_core.buildapi}.")
   (package/inherit python-flit-core-bootstrap
     (name "python-flit-core")
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-flit-core-bootstrap)
+     (modify-inputs propagated-inputs
        (delete "python-toml")
        (prepend python-tomli)))))
 
@@ -1402,7 +1402,7 @@ has features such as:
   (package/inherit python-hatchling
     (name "python-hatchling-bootstrap")
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-hatchling)
+     (modify-inputs propagated-inputs
        (replace "python-packaging" python-packaging-bootstrap)))))
 
 (define-public python-hatchling-for-hatch

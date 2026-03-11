@@ -189,7 +189,7 @@ tunneling, and so on.")
        ((#:configure-flags flags)
         #~(cons "--with-libssh2" #$flags))))
     (inputs
-     (modify-inputs (package-inputs curl)
+     (modify-inputs inputs
        (prepend libssh2)))
     (properties `((hidden? . #t)))))
 

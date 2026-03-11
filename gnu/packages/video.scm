@@ -2032,7 +2032,7 @@ audio/video codec library.")
             phases))
        ((#:configure-flags flags ''())
         #~(fold delete #$flags '("--enable-libplacebo")))))
-    (inputs (modify-inputs (package-inputs ffmpeg-6)
+    (inputs (modify-inputs inputs
               (delete "libplacebo")))))
 
 (define-public ffmpeg-4
@@ -2318,7 +2318,7 @@ audio/video codec library.")
                            "--enable-encoder=mjpeg_vaapi"
                            "--enable-encoder=hevc_vaapi")
                          '())))))
-      (inputs (modify-inputs (package-inputs ffmpeg)
+      (inputs (modify-inputs inputs
                 (append pipewire))))))
 
 (define-public ffmpegthumbnailer
@@ -4213,7 +4213,7 @@ be used for realtime video capture via Linux-specific APIs.")
        ((#:disallowed-references _ '())
         (list qtbase qtbase-5))))                 ;FIXME: most likely useless
     (outputs '("out"))
-    (inputs (modify-inputs (package-inputs v4l-utils)
+    (inputs (modify-inputs inputs
               (delete "qtbase")))))
 
 (define-public obs
@@ -5260,7 +5260,7 @@ Content System specification.")
            (base32
             "1fj3y70cfzh9z33l62zxdb8a2kdvynncn1y09w0ix83r2pqs538c"))
           (patches (search-patches "ffmpeg-svt-av1-v3.patch"))))
-       (inputs (modify-inputs (package-inputs ffmpeg)
+       (inputs (modify-inputs inputs
                  (append zimg)
                  (replace "svt-av1" svt-av1-3)))
        (arguments

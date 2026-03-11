@@ -344,7 +344,7 @@ minimal slurm package BASE-SLURM."
                  #$flags))))
     ;; FIXME: More optional inputs could be added.
     (inputs
-     (modify-inputs (package-inputs base-slurm)
+     (modify-inputs inputs
        ;; Add dependencies required by the slurm REST API.
        (prepend dbus freeipmi http-parser
                 libjwt librdkafka libyaml (list mariadb "dev"))))))
@@ -371,7 +371,7 @@ minimal slurm package BASE-SLURM."
               (sha256
                (base32
                 "130pjygqk794dchknjqdsinciv2b7c7r5agqsgca7m804xp09wnl"))))
-    (inputs (modify-inputs (package-inputs slurm-minimal)
+    (inputs (modify-inputs inputs
               (replace "openpmix" openpmix)))))   ;use version 6.0.0
 
 (define-public slurm-25.05 (make-slurm slurm-minimal-25.05))

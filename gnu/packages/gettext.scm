@@ -349,7 +349,7 @@ areas where they were not expected like documentation.")
     (native-inputs
      ;; Remove test dependencies, primarily to reduce the size of the
      ;; dependency graph of the ‘guix’ package.
-     (modify-inputs (package-native-inputs po4a)
+     (modify-inputs native-inputs
        (delete "docbook-xml" "perl-test-pod" "texlive-local-tree")))
     (arguments
      (substitute-keyword-arguments arguments

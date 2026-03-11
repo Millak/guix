@@ -661,7 +661,7 @@ def contents() -> str:
      (modify-inputs (package-inputs python-2.7)
        (replace "openssl" openssl)))
     (native-inputs
-     (let ((inputs (modify-inputs (package-native-inputs python-2)
+     (let ((inputs (modify-inputs native-inputs
                      (prepend tzdata-for-tests
                               unzip
                               (@ (gnu packages compression) zip)))))

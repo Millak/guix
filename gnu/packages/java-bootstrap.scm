@@ -733,7 +733,7 @@ supports sufficient parts of Java 7 to build Icedtea 2.x.")
   (package
     (inherit jamvm)
     (inputs
-     (modify-inputs (package-inputs jamvm)
+     (modify-inputs inputs
        (replace "ecj-javac-wrapper" ecj4-javac-wrapper)))
     (properties
      (alist-delete 'hidden? (package-properties jamvm)))))

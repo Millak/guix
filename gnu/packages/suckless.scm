@@ -518,7 +518,7 @@ drawing.")
                   (substitute* "Makefile"
                     (("git submodule init") "")
                     (("git submodule update") ""))))))))
-      (inputs (modify-inputs (package-inputs st)
+      (inputs (modify-inputs inputs
                 (prepend libxext harfbuzz)))
       (home-page "https://github.com/LukeSmithxyz/st")
       (synopsis "Luke Smith's fork of st")

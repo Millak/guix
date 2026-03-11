@@ -560,7 +560,7 @@ editor (console only)")
                           (search-auxiliary-file "emacs/comp-integrity.el"))
                        "-f" "ert-run-tests-batch-and-exit")))))))))
     (inputs
-     (modify-inputs (package-inputs emacs-minimal)
+     (modify-inputs inputs
        (prepend gnutls
                 ;; For native compilation
                 libgccjit
@@ -614,7 +614,7 @@ editor (console only)")
                        (pdmp (find-files libexec "\\.pdmp$"))
                        (pdmp-real (find-files libexec "\\.pdmp-real$")))
                   (for-each rename-file pdmp-real pdmp))))))))
-    (inputs (modify-inputs (package-inputs emacs-no-x)
+    (inputs (modify-inputs inputs
               (prepend
                cairo
                dbus
@@ -654,7 +654,7 @@ editor (with xwidgets support)")
        ((#:configure-flags flags #~'())
         #~(cons "--with-xwidgets" #$flags))))
     (inputs
-     (modify-inputs (package-inputs emacs)
+     (modify-inputs inputs
        (prepend webkitgtk-with-libsoup2 libxcomposite)))))
 
 (define-public emacs-pgtk-xwidgets
@@ -667,7 +667,7 @@ editor (with xwidgets support)")
        ((#:configure-flags flags #~'())
         #~(cons "--with-xwidgets" #$flags))))
     (inputs
-     (modify-inputs (package-inputs emacs-pgtk)
+     (modify-inputs inputs
        (prepend gsettings-desktop-schemas webkitgtk-with-libsoup2)))))
 
 (define-public emacs-lucid
@@ -708,7 +708,7 @@ toolkit)")
     (synopsis "The extensible, customizable, self-documenting text
 editor (without X toolkit)" )
     ;; Using emacs' inputs as base, since it has all the graphical stuff
-    (inputs (modify-inputs (package-inputs emacs)
+    (inputs (modify-inputs inputs
               (delete "gtk+")
               (prepend inotify-tools)))
     (arguments
@@ -796,10 +796,10 @@ editor (with wide ints)" )
                  (base32
                   "0ry0dn9xrndpz54hs92dnnsw4xa4qn4lz898ldlh2rs47ah1f4wl"))))
       (native-inputs
-       (modify-inputs (package-native-inputs emacs)
+       (modify-inputs native-inputs
          (prepend autoconf automake guile-for-guile-emacs)))
       (inputs
-       (modify-inputs (package-inputs emacs)
+       (modify-inputs inputs
          (prepend imagemagick)))
       (home-page "https://guile-emacs.org")
       (synopsis "Emacs text editor powered by Guile('s elisp implementation)")

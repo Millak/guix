@@ -375,7 +375,7 @@ tool.")
                             (delete-file "tests/qemu-iotests/127")
                             (delete-file "tests/qemu-iotests/267"))))
                       '())))))
-       (inputs (modify-inputs (package-inputs base)
+       (inputs (modify-inputs inputs
                  (delete "dtc")))
        (home-page "https://github.com/AFLplusplus/qemuafl")
        (synopsis "QEMU for AFL++")))))
@@ -717,7 +717,7 @@ the position of the variable and allows you to modify its value.")
                 "11vvch8bi0yhjfz7gn92b3xmmm0cgi3qfiyhbnnj89frkhbwd87n"))
               (patches (search-patches "remake-impure-dirs.patch"))))
     (inputs
-     (modify-inputs (package-inputs gnu-make)
+     (modify-inputs inputs
        (prepend readline)))
     (home-page "https://bashdb.sourceforge.net/remake/")
     (description "Remake is an enhanced version of GNU Make that adds improved

@@ -2126,7 +2126,7 @@ does not include game data.")
     (arguments
      ;; No tests.  See https://github.com/Keriew/augustus/issues/82.
      `(#:tests? #f))
-    (inputs (modify-inputs (package-inputs julius)
+    (inputs (modify-inputs inputs
               (prepend expat)))
     (home-page "https://github.com/Keriew/augustus")
     (synopsis "Re-implementation of Caesar III game engine with gameplay changes")
@@ -3433,7 +3433,7 @@ To run, you must put your official game data, @code{Levels} and @code{Help} in
        (modules '((guix build utils)))
        (patches (search-patches
                  "serious-sam-classic-engine-patch-paths.patch"))))
-    (inputs (modify-inputs (package-inputs serious-sam-classic)
+    (inputs (modify-inputs inputs
               (prepend vulkan-loader vulkan-headers)))
     (synopsis
      "SeriousSam engine and Serious Sam: TFE and TSE with Vulkan renderer")
@@ -3498,7 +3498,7 @@ corruption… You hope luck will be on your side!
                 (rename-file (string-append #$output "/bin/shamogu")
                              (string-append #$output "/bin/shamogu-sdl"))))))))
     (native-inputs
-     (modify-inputs (package-native-inputs shamogu)
+     (modify-inputs native-inputs
        (prepend pkg-config)))))
 
 (define-public solarus
@@ -3576,9 +3576,9 @@ in mind.")
           (add-before 'configure 'chdir
             (lambda _
               (chdir "editor"))))))
-    (native-inputs (modify-inputs (package-inputs solarus)
+    (native-inputs (modify-inputs native-inputs
                      (prepend qttools qlementine)))
-    (inputs (modify-inputs (package-inputs solarus)
+    (inputs (modify-inputs inputs
               (prepend solarus)
               (append qtbase qtsvg qtwayland)))
     (synopsis "Create and modify quests for the Solarus engine")
@@ -3608,7 +3608,7 @@ quests for the Solarus engine.")))
     (native-inputs (modify-inputs (package-inputs solarus)
                      (prepend qlementine qlementine-icons qtappinstancemanager
                               qttools)))
-    (inputs (modify-inputs (package-inputs solarus)
+    (inputs (modify-inputs inputs
               (prepend solarus)
               (append qtbase qtsvg qtwayland)))
     (synopsis "Game launcher and browser for Solarus")
@@ -5811,10 +5811,10 @@ Transport Tycoon Deluxe.")
                     (assoc-ref outputs "out")))
                  (search-path-as-list (list base) (map cdr inputs)))))))))
     (inputs
-     (modify-inputs (package-inputs openttd-engine)
+     (modify-inputs inputs
        (prepend fluidsynth freepats-gm)))
     (native-inputs
-     (modify-inputs (package-native-inputs openttd-engine)
+     (modify-inputs native-inputs
        (prepend openttd-opengfx openttd-openmsx openttd-opensfx)))))
 
 (define-public openttd-jgrpp
@@ -5831,7 +5831,7 @@ Transport Tycoon Deluxe.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1jzzvribf2cqvjl9cympyx9qpplljvmhqrrlw7aq4ckzl92d87z3"))))
-    (inputs (modify-inputs (package-inputs openttd)
+    (inputs (modify-inputs inputs
               (append zstd harfbuzz)))
     (arguments
      (substitute-keyword-arguments arguments
@@ -8247,10 +8247,10 @@ monsters in a quest to find the mystifyingly fabulous Orb of Zot.")
            "GAME=crawl-tiles"
            #$flags))))
     (inputs
-     (modify-inputs (package-inputs crawl)
+     (modify-inputs inputs
        (prepend font-dejavu freetype glu libpng sdl2 sdl2-image sdl2-mixer)))
     (native-inputs
-     (modify-inputs (package-native-inputs crawl)
+     (modify-inputs native-inputs
        (prepend pngcrush which)))
     (synopsis "Graphical roguelike dungeon crawler game")))
 
@@ -8940,7 +8940,7 @@ some graphical niceities, and numerous bug-fixes and other improvements.")
                         #t))))
        ,@(strip-keyword-arguments '(#:make-flags #:phases)
                                   (package-arguments quakespasm))))
-    (inputs (modify-inputs (package-inputs quakespasm)
+    (inputs (modify-inputs inputs
               (prepend
                glslang
                spirv-tools
@@ -11481,7 +11481,7 @@ player adaptability for character progression.")
                  (string-append #$output "/bin/harmonist")
                  (string-append #$output "/bin/harmonist-sdl"))))))))
     (native-inputs
-     (modify-inputs (package-native-inputs harmonist)
+     (modify-inputs native-inputs
        (prepend pkg-config)))))
 
 (define-public li-ri

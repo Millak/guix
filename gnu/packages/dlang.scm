@@ -582,7 +582,7 @@ compiler for the D programming language.")
                           (format #f "s,~a,~a,g" in-dmd-bootstrap out)
                           out-bin-dmd))))))))
     (native-inputs
-     (modify-inputs (package-native-inputs dmd-bootstrap)
+     (modify-inputs native-inputs
        (delete "gdmd")
        (append dmd-bootstrap)))
     (properties

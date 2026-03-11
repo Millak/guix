@@ -124,7 +124,7 @@ default Emacs configuration, but it carries a much lighter feature set.")
                   "0wlli8hqal9ikmbl3a49kyhzyf164jk6mdbir3bclq2gxszs532d"))
                 (file-name (string-append name "-" version "-checkout"))))
       (inputs
-       (modify-inputs (package-inputs zile)
+       (modify-inputs inputs
          (prepend guile-2.0)))
       (native-inputs
        `(("m4" ,m4)                               ;for 'bootstrap'

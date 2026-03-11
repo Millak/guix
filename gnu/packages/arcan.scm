@@ -172,7 +172,7 @@ engine with a Lua scripting interface.")
     (inherit arcan)
     (name "arcan-sdl")
     (inputs
-     (modify-inputs (package-inputs arcan)
+     (modify-inputs inputs
        (delete "libdrm")
        (prepend glu libglvnd mesa sdl2)))
     (arguments

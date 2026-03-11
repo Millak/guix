@@ -2711,7 +2711,7 @@ command.")
 (define-public wpa-supplicant
   (package (inherit wpa-supplicant-minimal)
     (name "wpa-supplicant")
-    (inputs (modify-inputs (package-inputs wpa-supplicant-minimal)
+    (inputs (modify-inputs inputs
               (prepend dbus)))
     (source (origin
               (inherit (package-source wpa-supplicant-minimal))
@@ -2750,11 +2750,11 @@ command.")
   (package
     (inherit wpa-supplicant)
     (name "wpa-supplicant-gui")
-    (inputs (modify-inputs (package-inputs wpa-supplicant)
+    (inputs (modify-inputs inputs
               (prepend qtbase-5 qtsvg-5 qtwayland-5)))
     (native-inputs
      ;; For icons.
-     (modify-inputs (package-native-inputs wpa-supplicant)
+     (modify-inputs native-inputs
        (prepend imagemagick/stable
                 inkscape/pinned)))
     (build-system qt-build-system)
@@ -4758,7 +4758,7 @@ system distribution, akin to many similar tools.")
                                         #$(this-package-input "libdrm")
                                         "/share/libdrm/amdgpu.ids"))))))
     (inputs
-     (modify-inputs (package-inputs fastfetch-minimal)
+     (modify-inputs inputs
        (append dbus
                glib
                hwdata

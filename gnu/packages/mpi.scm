@@ -179,13 +179,13 @@ bind processes, and much more.")
               ;; XXX: Remove after updating package from 2.13.0.
               (patches (search-patches "hwloc-add-with-opencl.patch"))))
 
-    (native-inputs (modify-inputs (package-native-inputs hwloc-1)
+    (native-inputs (modify-inputs native-inputs
                      (append autoconf)
                      (append automake)
                      (append libtool)
                      (append opencl-headers)
                      (append bash)))              ;for completion tests
-    (inputs (modify-inputs (package-inputs hwloc-1)
+    (inputs (modify-inputs inputs
               (append level-zero)
               ;; XXX: rocm-smi requires libdrm/drm.h but doesn't propagate a
               ;; package providing these. For now, libdrm is used to provide
@@ -404,7 +404,7 @@ software vendors, application developers and computer science researchers.")
        (sha256
         (base32 "02yqfwv2fn9n0glprkk7dzrkrcnpfwfz5874ydx88w0iadi2gdyz"))))
 
-    (inputs (modify-inputs (package-inputs openmpi)
+    (inputs (modify-inputs inputs
               ;; As of Open MPI 5.0.X, PMIx is used to communicate
               ;; with SLURM, so SLURM'S PMI is no longer needed.
               (delete "slurm")
@@ -412,7 +412,7 @@ software vendors, application developers and computer science researchers.")
               (replace "libfabric" libfabric)
               (append openpmix)        ;for PMI support (launching via "srun")
               (append prrte)))         ;for PMI support (launching via "srun")
-    (native-inputs (modify-inputs (package-native-inputs openmpi)
+    (native-inputs (modify-inputs native-inputs
                      (append python)))
 
     (outputs '("out" "debug"))
@@ -741,7 +741,7 @@ modular framework for other derived implementations.")
 (define-public mpich-ofi
   (package/inherit mpich
     (name "mpich-ofi")
-    (inputs (modify-inputs (package-inputs mpich)
+    (inputs (modify-inputs inputs
               (delete ucx)
               (append libfabric)
               (append rdma-core)

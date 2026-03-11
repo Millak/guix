@@ -189,7 +189,7 @@ of parts of the Windows API.")
        (sha256
         (base32 "1fknj2ysm3nj7kz5k8wvxpny0a7bjbi290z9cs7fwrk3yqv454w4"))))
     (inputs
-     (modify-inputs (package-inputs freerdp)
+     (modify-inputs inputs
        (replace "ffmpeg" ffmpeg)
        (prepend fuse icu4c mit-krb5 sdl3 sdl3-gfx sdl3-ttf)))
     (arguments

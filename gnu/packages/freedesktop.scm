@@ -222,10 +222,10 @@ application-centers for distributions.")
   (package/inherit appstream
     (name "appstream-qt")
     (native-inputs
-     (modify-inputs (package-native-inputs appstream)
+     (modify-inputs native-inputs
        (prepend qttools-5)))
     (inputs
-     (modify-inputs (package-inputs appstream)
+     (modify-inputs inputs
        (prepend qtbase-5)))
     (arguments
      (substitute-keyword-arguments arguments
@@ -236,10 +236,10 @@ application-centers for distributions.")
   (package/inherit appstream
     (name "appstream-qt6")
     (native-inputs
-     (modify-inputs (package-native-inputs appstream)
+     (modify-inputs native-inputs
        (prepend qttools)))
     (inputs
-     (modify-inputs (package-inputs appstream)
+     (modify-inputs inputs
        (prepend qtbase)))
     (arguments
      (substitute-keyword-arguments arguments

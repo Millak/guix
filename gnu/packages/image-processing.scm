@@ -984,7 +984,7 @@ including 2D color images.")
     (native-inputs
      (list pkg-config qttools-5))
     (inputs
-     (modify-inputs (package-inputs gmic)
+     (modify-inputs inputs
        (prepend gmic qtbase-5)))
     (synopsis "Qt frontend for the G'MIC image processing framework")
     (license license:gpl3+)))
@@ -995,7 +995,7 @@ including 2D color images.")
     (name "gmic-qt-gimp")
     (inputs
      ;; GIMP and its dependencies.
-     (modify-inputs (package-inputs gmic-qt)
+     (modify-inputs inputs
        (prepend gexiv2 gdk-pixbuf gegl gimp pango)))
     (arguments
      (substitute-keyword-arguments arguments
@@ -1620,9 +1620,9 @@ combine the information contained in both.")
          ((#:phases phases #~%standard-phases)
           #~(modify-phases #$phases
               (delete 'python-sanity-check)))))
-     (inputs (modify-inputs (package-inputs insight-toolkit)
+     (inputs (modify-inputs inputs
                (delete "python")))
-     (native-inputs (modify-inputs (package-native-inputs insight-toolkit)
+     (native-inputs (modify-inputs native-inputs
                       (delete "castxml")
                       (delete "python-numpy")
                       (delete "swig"))))))

@@ -80,7 +80,7 @@ loop.")
 (define-public libevent-with-openssl
   (package/inherit libevent
     (name "libevent-with-openssl")
-    (inputs (modify-inputs (package-inputs libevent)
+    (inputs (modify-inputs inputs
               (prepend openssl)))
     (arguments
      ;; This skips some of the tests which fail on armhf and aarch64.

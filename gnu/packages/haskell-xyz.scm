@@ -7575,7 +7575,7 @@ manipulating monad transformer stacks.")
     (inherit ghc-mockery)
     (name "ghc-mockery-bootstrap")
     (arguments `(#:tests? #f))
-    (inputs (modify-inputs (package-inputs ghc-mockery)
+    (inputs (modify-inputs inputs
               (replace "ghc-logging-facade" ghc-logging-facade-bootstrap)))
     (native-inputs '())
     (properties '((hidden? #t)))))

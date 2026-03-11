@@ -617,11 +617,11 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
       (outputs (delete "debug" (package-outputs guile)))
 
       (inputs
-       (modify-inputs (package-inputs guile)
+       (modify-inputs inputs
          (prepend `(,libunistring "static"))))
 
       (propagated-inputs
-       (modify-inputs (package-propagated-inputs guile)
+       (modify-inputs propagated-inputs
          (replace "libgc" libgc/static-libs)))
 
       (arguments

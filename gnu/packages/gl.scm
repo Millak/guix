@@ -1088,7 +1088,7 @@ and surfaces, receiving input and events.")
               (sha256
                (base32
                 "1sd396kkn53myp61kxrd18h7b1q4ix173hhxhvl0iz8j4x5h1v5m"))))
-    (native-inputs (modify-inputs (package-native-inputs glfw)
+    (native-inputs (modify-inputs native-inputs
                      (prepend pkg-config)))
     ;; When building out of source, the install phase fails with:
     ;;  file INSTALL cannot find "/tmp/guix-build-glfw-3.4.drv-0/build/docs/html":

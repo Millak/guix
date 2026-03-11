@@ -920,10 +920,10 @@ Mullvad Browser.")
             (delete 'deploy-tor-assets)
             (delete 'autoconfig-tor)))))
     (inputs
-     (modify-inputs (package-inputs torbrowser)
+     (modify-inputs inputs
        (delete lyrebird)))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs torbrowser)
+     (modify-inputs propagated-inputs
        (append ublock-origin/icecat)))
     (home-page "https://mullvad.net/en/browser")
     (synopsis "Privacy-focused web browser")

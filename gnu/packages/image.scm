@@ -377,7 +377,7 @@ APNG patch provides APNG support to libpng.")
         (base32
          "01r34c31gq136jwshdfira44wbl6nb8qfgj4a4vam9r0hr8rdwsd"))))
     (inputs
-     (modify-inputs (package-inputs libpng-apng)
+     (modify-inputs inputs
        (replace "apng"
          (origin
            (method url-fetch)

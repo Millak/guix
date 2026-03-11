@@ -780,7 +780,7 @@ everything from small to very large projects with speed and efficiency.")
                                             package-transitive-propagated-inputs
                                             perl-inputs)))))))))))))))
     (native-inputs
-     (modify-inputs (package-native-inputs git-minimal)
+     (modify-inputs native-inputs
        ;; For documentation.
        (append asciidoc
                docbook2x
@@ -791,7 +791,7 @@ everything from small to very large projects with speed and efficiency.")
                texinfo
                xmlto)))
     (inputs
-     (modify-inputs (package-inputs git-minimal)
+     (modify-inputs inputs
        (append bash-minimal             ;for wrap-program
                python                   ;for git-p4
 
@@ -1888,7 +1888,7 @@ a built-in cache to decrease server I/O pressure.")
                 (invoke "tar" "--strip-components=1" "-C" "git" "-xf"
                         #$(this-package-input "git-source.tar.xz"))))))))
     (inputs
-     (modify-inputs (package-inputs cgit)
+     (modify-inputs inputs
        (replace "git-source.tar.xz"
          ;; cgit-pink is tightly bound to git. Use GIT_VER from the Makefile,
          ;; which may not match the current (package-version git).
@@ -1899,7 +1899,7 @@ a built-in cache to decrease server I/O pressure.")
             (base32
              "0w43a35mhc2qf2gjkxjlnkf2lq8g0snf34iy5gqx2678yq7llpa0"))))))
     (native-inputs
-     (modify-inputs (package-native-inputs cgit)
+     (modify-inputs native-inputs
        (append gnu-gettext perl)))
     (home-page "https://git.causal.agency/cgit-pink/about/")
     (description "cgit-pink is a fast web interface for the Git SCM, using a

@@ -5262,7 +5262,7 @@ mechanisms and introduces the concepts of order point.")
        #~(modify-phases %standard-phases
            (delete 'sanity-check))))
      (propagated-inputs
-      (modify-inputs (package-propagated-inputs trytond-stock-supply)
+      (modify-inputs propagated-inputs
         (delete "trytond-purchase-request"))))))
 
 (define-public trytond-stock-supply-day

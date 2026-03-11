@@ -1762,7 +1762,7 @@ users.")
        (sha256
         (base32 "0m9i5k1n6j0nvmsqcy12x2ngqzjvxxlc3jg29igh93hb7lprlkjv"))))
     (native-inputs
-     (modify-inputs (package-native-inputs hamlib)
+     (modify-inputs native-inputs
        (prepend autoconf automake libtool texinfo)))
     (arguments
      `(#:configure-flags '("--disable-shared"

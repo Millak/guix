@@ -588,7 +588,7 @@ Python}.")
     (inherit mailutils)
     (name "guile2.2-mailutils")
     (inputs
-     (modify-inputs (package-inputs mailutils)
+     (modify-inputs inputs
        (replace "guile" guile-2.2)))))
 
 (define-public nullmailer

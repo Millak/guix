@@ -248,11 +248,11 @@ management tool.")
     ;; Integration tests need a running Docker daemon.
     (arguments (list #:tests? #f))
     (native-inputs (list python-setuptools))
-    (inputs (modify-inputs (package-inputs python-docker)
+    (inputs (modify-inputs inputs
               (prepend python-six)
               (delete "python-urllib3")))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-docker)
+     (modify-inputs propagated-inputs
        (prepend python-docker-pycreds python-urllib3-1.26)))))
 
 ;; Needed for old v1 of docker-compose; remove once Docker is updated to a

@@ -733,7 +733,7 @@ decode RAW picture files.")
   (package
     (inherit libkdcraw)
     (name "libkdcraw-qt5")
-    (inputs (modify-inputs (package-inputs libkdcraw)
+    (inputs (modify-inputs inputs
               (replace "qtbase" qtbase-5)))))
 
 (define-public libksane

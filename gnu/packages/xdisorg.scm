@@ -4467,7 +4467,7 @@ on the screen and which then writes out the necessary C code for it.")
 (define-public xforms-gl
   (package/inherit xforms
     (name "xforms-gl")
-    (propagated-inputs (modify-inputs (package-propagated-inputs xforms)
+    (propagated-inputs (modify-inputs propagated-inputs
                          (append mesa)))
     (synopsis
      "GUI toolkit for X based on the X11 Xlib library, with OpenGL support")))

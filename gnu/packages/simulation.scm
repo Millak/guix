@@ -696,7 +696,7 @@ functions in virtual scenarios.")
     (build-system pyproject-build-system)
     (arguments '())
     (native-inputs
-     (modify-inputs (package-native-inputs open-simulation-interface)
+     (modify-inputs native-inputs
        (append python-pytest python-setuptools)))
     (propagated-inputs
      (list python-pyyaml
@@ -1218,11 +1218,11 @@ demos = [d for d in demos if d[0].stem not in excludeList]~%"
                                   (install-file file tgt-dir))))
                             (find-files "." ".*\\.(py|gz|xdmf)$")))))))))
     (inputs
-     (modify-inputs (package-inputs fenics-dolfin)
+     (modify-inputs inputs
        (delete "python")
        (prepend pybind11-2 python-matplotlib)))
     (native-inputs
-     (modify-inputs (package-native-inputs fenics-dolfin)
+     (modify-inputs native-inputs
        (prepend cmake-minimal
                 python-decorator
                 python-numpy-1

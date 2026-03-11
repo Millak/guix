@@ -240,7 +240,7 @@ line client and a client based on Qt.")
        ((#:qtbase original-flags #f)
         qtbase-5)))
     (native-inputs
-     (modify-inputs (package-native-inputs bitcoin-core)
+     (modify-inputs native-inputs
        (delete qttools)
        (append imagemagick
                librsvg

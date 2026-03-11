@@ -2129,7 +2129,7 @@ Format (GFF) with Biopython integration.")
         (sha256
          (base32 "131hiir94jkm9jj2wfpybwndgzn8k0zc1ji1qjn5cz7w48x3ri13"))))
      (propagated-inputs
-      (modify-inputs (package-propagated-inputs python-bcbio-gff)
+      (modify-inputs propagated-inputs
         (replace "python-biopython" python-biopython-1.73))))))
 
 (define bed-sample-files
@@ -6703,7 +6703,7 @@ meso, or continuum scale.")
         "-D MLIAP_ENABLE_PYTHON=yes"
         (string-append "-DN2P2_DIR=" #$(this-package-input "n2p2"))))))
     (inputs
-     (modify-inputs (package-inputs lammps)
+     (modify-inputs inputs
        (delete "pnetcdf")
        (replace "hdf5-parallel-openmpi" hdf5)
        (delete "openmpi")))))

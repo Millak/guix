@@ -1681,7 +1681,7 @@ a single block.")
                  #~(modify-phases %standard-phases
                      (delete 'sanity-check))))
                (propagated-inputs
-                (modify-inputs (package-propagated-inputs pkg)
+                (modify-inputs propagated-inputs
                   (delete "python-django-crispy-forms")))))
            (list python-crispy-bootstrap3 python-crispy-bootstrap4))
       (list python-pytest python-pytest-django python-setuptools)))

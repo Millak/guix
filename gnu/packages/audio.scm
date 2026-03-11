@@ -7560,7 +7560,7 @@ minimum.")
     (arguments
      (list #:configure-flags '(list "-Denable_rsvg=true")))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs ztoolkit)
+     (modify-inputs propagated-inputs
        (prepend (librsvg-for-system))))
     (synopsis "ZToolkit with SVG support")))
 

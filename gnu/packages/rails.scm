@@ -895,7 +895,7 @@ Rails generators.  An existing user is @code{rspec-rails}, which uses
     ;; yet.
     (arguments (list #:tests? #f))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs ruby-ammeter-bootstrap)
+     (modify-inputs propagated-inputs
        (append ruby-rspec-rails)))
     (properties
      (alist-delete 'hidden? (package-properties ruby-ammeter-bootstrap)))))

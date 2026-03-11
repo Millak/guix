@@ -358,7 +358,7 @@ across a broad spectrum of applications.")
        ((#:make-flags make-flags)
         #~(cons* "--without-python" #$make-flags))))
     (inputs
-     (modify-inputs (package-inputs boost)
+     (modify-inputs inputs
        (delete "python-minimal-wrapper")))
     (properties '((hidden? . #t)))))
 
@@ -367,7 +367,7 @@ across a broad spectrum of applications.")
     (inherit boost-1.83)
     (name "boost-numpy")
     (native-inputs
-     (modify-inputs (package-native-inputs boost)
+     (modify-inputs native-inputs
        (append python-numpy-1)))))
 
 (define-public boost-with-numpy
@@ -375,7 +375,7 @@ across a broad spectrum of applications.")
     (inherit boost)
     (name "boost-with-numpy")
     (native-inputs
-     (modify-inputs (package-native-inputs boost)
+     (modify-inputs native-inputs
        (append python-numpy)))
     (synopsis "Boost C++ libraries with inclusion of Boost.NumPy")))
 
@@ -449,7 +449,7 @@ signals and slots system.")
     (inherit boost)
     (name "boost-mpi")
     (inputs
-     (modify-inputs (package-inputs boost)
+     (modify-inputs inputs
        (append openmpi)))
     (arguments
      (substitute-keyword-arguments arguments
@@ -469,7 +469,7 @@ signals and slots system.")
     (inherit boost-mpi)
     (name "boost-mpi-numpy")
     (inputs
-     (modify-inputs (package-inputs boost-mpi)
+     (modify-inputs inputs
        (append python-numpy)))
     (synopsis "Boost C++ libraries with inclusion of Boost.MPI and Boost.NumPy")))
 

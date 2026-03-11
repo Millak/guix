@@ -589,10 +589,10 @@ the Nix package manager.")
 
     ;; Use a minimum set of dependencies.
     (native-inputs
-     (modify-inputs (package-native-inputs guix)
+     (modify-inputs native-inputs
        (delete "po4a" "graphviz" "font-ghostscript" "help2man")))
     (inputs
-     (modify-inputs (package-inputs guix)
+     (modify-inputs inputs
        (delete (basename (bootstrap-guile-url-path (%current-system)))
                (basename (bootstrap-guile-url-path "i686-linux"))
                "util-linux")
@@ -633,10 +633,10 @@ the Nix package manager.")
      (inherit guix)
      (name "guix-minimal")
      (native-inputs
-      (modify-inputs (package-native-inputs guix)
+      (modify-inputs native-inputs
         (delete "guile-ssh")))
      (propagated-inputs
-      (modify-inputs (package-propagated-inputs guix)
+      (modify-inputs propagated-inputs
         (delete "guile-ssh"))))))
 
 (define-public (guix-for-channels channels)
@@ -1921,7 +1921,7 @@ resolution compared to the classic solver.")
                 ;; directory, which would cause non-reproducible builds.
                 (setenv "CONDA_PKGS_DIRS" "/tmp/conda-pkgs")))))))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs conda-bootstrap)
+     (modify-inputs propagated-inputs
        (prepend python-conda-libmamba-solver)))))
 
 (define-public conan

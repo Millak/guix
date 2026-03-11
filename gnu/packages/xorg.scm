@@ -5569,7 +5569,7 @@ used to connect to VNC servers such as the tigervnc-server package.")
                 xauth
                 xinit)))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs xorg-server)
+     (modify-inputs propagated-inputs
        (prepend xauth)))
     (synopsis "High-performance VNC remote desktop server based on Xorg")
     (description "TigerVNC implements a @acronym{VNC, Virtual Network Computing}
@@ -6735,7 +6735,7 @@ and embedded platforms.")
   (package/inherit uim
     (name "uim-gtk")
     (inputs
-     (modify-inputs (package-inputs uim)
+     (modify-inputs inputs
        (prepend gtk+)))
     (arguments
      (substitute-keyword-arguments arguments
@@ -7121,7 +7121,7 @@ the server and cleaning up before returning the exit status of the command.")
         (sha256
          (base32 "1073m4gzn8yv9kn70fbyq8a2xckgz0wljjr2w7i2bsrg767h29gd"))))
      (inputs
-      (modify-inputs (package-inputs xvfb-run)
+      (modify-inputs inputs
         (replace "xorg-server" xorg-server-for-tests))))))
 
 (define-public xwayland-run

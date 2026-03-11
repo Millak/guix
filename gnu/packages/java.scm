@@ -1609,7 +1609,7 @@ new Date();"))))
                             (release-tag-suffix . "-ga")
                             (release-tag-version-delimiter . ".")))
                          (native-inputs
-                          (modify-inputs (package-native-inputs bootstrap)
+                          (modify-inputs native-inputs
                             (replace "openjdk" bootstrap)))
                          (home-page (string-append
                                      "https://openjdk.java.net/projects/jdk/"
@@ -1715,7 +1715,7 @@ blacklisted.certs.pem"
               (search-patches "openjdk-15-jtask-reproducibility.patch"
                               "openjdk-15-xcursor-no-dynamic.patch"))))
    (inputs
-    (modify-inputs (package-inputs base)
+    (modify-inputs inputs
       (append libxcursor)))             ;for our patch to work
    (arguments
     (substitute-keyword-arguments (package-arguments base)
@@ -1728,7 +1728,7 @@ blacklisted.certs.pem"
        #~(cons "--without-gtest"        ;this replaces...
                (delete "--disable-hotspot-gtest" #$flags))))) ;... this
    (native-inputs
-    (append (modify-inputs (package-native-inputs base)
+    (append (modify-inputs native-inputs
               (delete "make"            ;remove old gnu-make-4.2
                       "openjdk")        ;to remove non-jdk output
               (append `(,openjdk14 "jdk")))
@@ -5078,7 +5078,7 @@ every feature for every plugin.")))
      (list java-modello-core java-modello-plugins-java
            java-modello-plugins-xml))
     (native-inputs
-     (modify-inputs (package-native-inputs java-modello-core)
+     (modify-inputs native-inputs
        (prepend java-xmlunit java-modello-test)))
     (synopsis "Modello XPP3 Plugin")
     (description "The modello XPP3 plugin generates XML readers and writers based
@@ -5734,7 +5734,7 @@ The jMock library
                                          (not (string-suffix? "-sources.jar" name)))))))
                    #t)))))))
     (inputs
-     (modify-inputs (package-inputs java-hamcrest-core)
+     (modify-inputs inputs
        (prepend java-junit
                 java-jmock-1
                 ;; This is necessary because of what seems to be a race condition.
@@ -6802,7 +6802,7 @@ This package provides the blocking I/O model library.")
          (add-after 'unpack 'chdir
            (lambda _ (chdir "httpcore-nio") #t)))))
     (inputs
-     (modify-inputs (package-inputs java-httpcomponents-httpcore)
+     (modify-inputs inputs
        (prepend java-httpcomponents-httpcore java-hamcrest-core)))
     (description "HttpCore is a set of low level HTTP transport components
 that can be used to build custom client and server side HTTP services with a
@@ -6823,7 +6823,7 @@ NIO.")))
          (add-after 'unpack 'chdir
            (lambda _ (chdir "httpcore-ab") #t)))))
     (inputs
-     (modify-inputs (package-inputs java-httpcomponents-httpcore)
+     (modify-inputs inputs
        (prepend java-httpcomponents-httpcore java-commons-cli
                 java-hamcrest-core)))
     (synopsis "Apache HttpCore benchmarking tool")
@@ -6840,7 +6840,7 @@ an Apache AB clone based on HttpCore.")))
          (add-after 'unpack 'chdir
            (lambda _ (chdir "httpcore-osgi"))))))
     (inputs
-     (modify-inputs (package-inputs java-httpcomponents-httpcore)
+     (modify-inputs inputs
                     (prepend java-httpcomponents-httpcore
                              java-httpcomponents-httpcore-nio
                              java-hamcrest-core)))
@@ -6914,7 +6914,7 @@ standards and recommendations.")
          (add-after 'unpack 'chdir
            (lambda _ (chdir "httpclient-cache"))))))
     (inputs
-     (modify-inputs (package-inputs java-httpcomponents-httpclient)
+     (modify-inputs inputs
                     (prepend java-httpcomponents-httpclient
                              java-httpcomponents-httpmime
                              java-hamcrest-core)))
@@ -6932,7 +6932,7 @@ resources.")))
          (add-after 'unpack 'chdir
            (lambda _ (chdir "httpclient-osgi") #t)))))
     (inputs
-     (modify-inputs (package-inputs java-httpcomponents-httpclient)
+     (modify-inputs inputs
                     (prepend java-httpcomponents-httpclient
                              java-httpcomponents-httpclient-cache
                              java-osgi-framework
@@ -13964,7 +13964,7 @@ This module lays the groundwork for the other two modules.")
              (invoke "ant" "jar")
              #t)))))
     (inputs
-     (modify-inputs (package-inputs java-logback-core)
+     (modify-inputs inputs
        (prepend java-logback-core java-slf4j-api)))
     (native-inputs
      (list groovy))

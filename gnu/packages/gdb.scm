@@ -374,10 +374,10 @@ AMD's commercially available GPU architectures.")
         (base32
          "1msxz5xnm6fl2p9hzjnkaayd8x3dc0dp34ff60asr8mgxwxlcd9c"))))
     (inputs
-     (modify-inputs (package-inputs gdb)
+     (modify-inputs inputs
        (prepend rocdbgapi)))
     (native-inputs
-     (modify-inputs (package-native-inputs gdb)
+     (modify-inputs native-inputs
        (prepend bison flex perl)))
     (arguments
      (substitute-keyword-arguments arguments

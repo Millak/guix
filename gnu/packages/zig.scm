@@ -418,7 +418,7 @@ toolchain.  Among other features it provides
                                 (string-append #$output:zig1 "/bin"))))
               (delete 'install-glibc-abilists)))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (prepend binaryen)
          (delete "glibc-abi-tool")))
       (outputs '("out" "zig1")))))
@@ -472,7 +472,7 @@ toolchain.  Among other features it provides
               (delete 'backup-source)
               (delete 'restore-source)))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (prepend `(,base "zig1")))))))
 
 ;; Supply zig1.wasm.zst, build zig2 + zig1.wasm, install zig2 + zig1.wasm.
@@ -503,7 +503,7 @@ toolchain.  Among other features it provides
                   (install-file "stage1/zig1.wasm"
                                 (string-append #$output:zig1 "/bin"))))))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (prepend zstd)
          (replace "zig" `(,base "zig1")))))))
 
@@ -537,7 +537,7 @@ toolchain.  Among other features it provides
               (delete 'build)
               (delete 'install)))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out"))
          (delete "zstd"))))))
 
@@ -566,7 +566,7 @@ toolchain.  Among other features it provides
                                 "stage1")
                   (make-file-writable "stage1/zig1.wasm")))))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 ;; Supply zig1.wasm, build zig2, install zig2.
@@ -588,7 +588,7 @@ toolchain.  Among other features it provides
               (delete 'build-zig1)
               (delete 'install-zig1)))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.10.0-853
@@ -611,7 +611,7 @@ toolchain.  Among other features it provides
                 (lambda _
                   (invoke "zig2" "build" "update-zig1" "--verbose")))))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.10.0-961
@@ -628,7 +628,7 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.10.0-962
@@ -645,7 +645,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.10.0-1027
@@ -662,7 +662,7 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 ;; Supply zig2, build zig1.wasm + zig2, install zig2.
@@ -687,7 +687,7 @@ toolchain.  Among other features it provides
                           "update-zig1" "--verbose")))
               (delete 'prepare-source)))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.10.0-1497
@@ -704,7 +704,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.10.0-1505-source
@@ -741,7 +741,7 @@ toolchain.  Among other features it provides
                   (invoke "./zig2" "build" "--zig-lib-dir" "lib"
                           "update-zig1" "--verbose")))))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.10.0-1637-source
@@ -781,7 +781,7 @@ toolchain.  Among other features it provides
                   (invoke "./zig2" "build" "--zig-lib-dir" "lib"
                           "update-zig1" "--verbose")))))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.10.0-1657
@@ -798,7 +798,7 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.10.0-1681
@@ -815,7 +815,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.10.0-1712
@@ -832,7 +832,7 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.10.0-1713
@@ -849,7 +849,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.10.0-1888
@@ -866,7 +866,7 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.10.0-1891
@@ -883,7 +883,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.10.0-2558
@@ -900,11 +900,11 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (inputs
-       (modify-inputs (package-inputs base)
+       (modify-inputs inputs
          (replace "clang" clang-16)
          (replace "lld" lld-16)))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "llvm" llvm-16)
          (replace "zig" `(,base "zig1"))))
       (properties `((max-silent-time . 9600)
@@ -939,7 +939,7 @@ toolchain.  Among other features it provides
                     (copy-file (in-vicinity #+zig-0.10.0-2565-source path)
                                path))))))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.10.0-2571
@@ -956,7 +956,7 @@ toolchain.  Among other features it provides
       ;; zig2+zig1
       (arguments (package-arguments zig-0.10.0-748))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.10.0-2796-source
@@ -989,7 +989,7 @@ toolchain.  Among other features it provides
                    (string-append #+zig-0.10.0-2796-source "/lib")
                    "lib")))))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.10.0-2824-source
@@ -1029,7 +1029,7 @@ toolchain.  Among other features it provides
                   (delete-file-recursively "lib")
                   (copy-recursively "../lib-backup" "lib")))))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.10.0-3660
@@ -1046,7 +1046,7 @@ toolchain.  Among other features it provides
       ;; zig2+zig1
       (arguments (package-arguments zig-0.10.0-748))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.10.0-3726
@@ -1063,7 +1063,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.10.0-3728
@@ -1080,7 +1080,7 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.10.0-3807
@@ -1097,7 +1097,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.10.0-3813
@@ -1114,7 +1114,7 @@ toolchain.  Among other features it provides
       ;; zig2+zig1
       (arguments (package-arguments zig-0.10.0-748))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.10.0-3980
@@ -1131,7 +1131,7 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.10.0-3985
@@ -1148,7 +1148,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.11-glibc-abi-tool
@@ -1260,7 +1260,7 @@ toolchain.  Among other features it provides
                   (invoke "zig" "build" "--zig-lib-dir" "lib"
                           "update-zig1" "--verbose")))))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.11.0-384
@@ -1277,7 +1277,7 @@ toolchain.  Among other features it provides
       ;; zig2+zig1
       (arguments (package-arguments zig-0.10.0-748))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.11.0-494
@@ -1294,11 +1294,11 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (inputs
-       (modify-inputs (package-inputs base)
+       (modify-inputs inputs
          (replace "clang" clang-17)
          (replace "lld" lld-17)))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "llvm" llvm-17)
          (replace "zig" `(,base "zig1"))))
       (properties `((max-silent-time . 9600)
@@ -1318,7 +1318,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.11.0-631
@@ -1335,7 +1335,7 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.11.0-638
@@ -1352,7 +1352,7 @@ toolchain.  Among other features it provides
       ;; zig1+zig2
       (arguments (package-arguments zig-0.10.0-1073))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.11.0-702
@@ -1375,7 +1375,7 @@ toolchain.  Among other features it provides
                 (lambda _
                   (invoke "zig2" "build" "update-zig1" "--verbose")))))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.11.0-761
@@ -1392,7 +1392,7 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.11.0-1967
@@ -1409,7 +1409,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.11.0-3245
@@ -1426,7 +1426,7 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.11.0-3344
@@ -1449,7 +1449,7 @@ toolchain.  Among other features it provides
                 (lambda _
                   (invoke "zig2" "build" "update-zig1" "--verbose")))))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.11.0-3501
@@ -1466,7 +1466,7 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.11.0-3503
@@ -1483,7 +1483,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.11.0-3506
@@ -1500,7 +1500,7 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.11.0-3604
@@ -1517,7 +1517,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.12-glibc-abi-tool
@@ -1599,7 +1599,7 @@ toolchain.  Among other features it provides
                   (invoke "zig" "build" "--zig-lib-dir" "lib"
                           "update-zig1" "--verbose")))))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.13-glibc-abi-tool
@@ -1659,7 +1659,7 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.13.0-503
@@ -1676,7 +1676,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.13.0-1323
@@ -1693,7 +1693,7 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.13.0-1528
@@ -1710,7 +1710,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.13.0-1951
@@ -1736,11 +1736,11 @@ toolchain.  Among other features it provides
                   (substitute* "src/zig_llvm.cpp"
                     ((".*LastEnvironmentType.*") ""))))))))
       (inputs
-       (modify-inputs (package-inputs base)
+       (modify-inputs inputs
          (replace "clang" clang-19)
          (replace "lld" lld-19)))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "llvm" llvm-19)
          (replace "zig" `(,base "zig1"))))
       (properties `((max-silent-time . 9600)
@@ -1760,7 +1760,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.13.0-2795
@@ -1777,7 +1777,7 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.13.0-2899
@@ -1794,7 +1794,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.13.0-2924
@@ -1811,7 +1811,7 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.13.0-2925
@@ -1828,7 +1828,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.13.0-3252
@@ -1845,7 +1845,7 @@ toolchain.  Among other features it provides
       ;; zig2+zig1
       (arguments (package-arguments zig-0.10.0-748))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.14-glibc-abi-tool
@@ -1910,11 +1910,11 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (inputs
-       (modify-inputs (package-inputs base)
+       (modify-inputs inputs
          (replace "clang" clang-20)
          (replace "lld" lld-20)))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "llvm" llvm-20)
          (replace "zig" `(,base "zig1"))))
       (properties `((max-silent-time . 9600)
@@ -1934,7 +1934,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.14.0-930
@@ -1951,7 +1951,7 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.14.0-934
@@ -1968,7 +1968,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.14.0-1091
@@ -1985,7 +1985,7 @@ toolchain.  Among other features it provides
       ;; zig2
       (arguments (package-arguments zig-0.10.0-851))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "zig1")))))))
 
 (define zig-0.14.0-1197
@@ -2002,7 +2002,7 @@ toolchain.  Among other features it provides
       ;; zig1
       (arguments (package-arguments zig-0.10.0-747))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" `(,base "out")))))))
 
 (define zig-0.15-libc-abi-tools

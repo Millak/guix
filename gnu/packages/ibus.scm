@@ -264,7 +264,7 @@ may also simplify input method development.")
                          ,(string-append #$output "/lib/girepository-1.0")))))
                   (list (search-input-file outputs "bin/ibus-setup")
                         (search-input-file outputs "bin/ibus-daemon")))))))))
-    (inputs (modify-inputs (package-inputs ibus-minimal)
+    (inputs (modify-inputs inputs
               (prepend gtk
                        pango
                        python

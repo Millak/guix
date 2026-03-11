@@ -1015,7 +1015,7 @@ electromagnetic properties for molecules and crystals.")
           ;; Tests require python-pyscf.
           ((#:tests? _ #f) #f)))
        (native-inputs
-        (modify-inputs (package-native-inputs base)
+        (modify-inputs native-inputs
           (prepend (package-source base))))
        (supported-systems '("x86_64-linux"))
        (home-page "https://github.com/sunqm/qcint")

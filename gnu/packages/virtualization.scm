@@ -690,11 +690,11 @@ server and embedded PowerPC, and S390 guests.")
                                ((label package output)
                                 (not (string=? "static" output)))
                                (_ input)))
-                           (modify-inputs (package-native-inputs qemu)
+                           (modify-inputs native-inputs
                              (delete "gettext-minimal"
                                      "python-sphinx"
                                      "python-sphinx-rtd-theme"))))
-    (inputs (modify-inputs (package-inputs qemu)
+    (inputs (modify-inputs inputs
               (delete "libusb"
                       "mesa"
                       "sdl2"
@@ -2070,7 +2070,7 @@ client desktops.
   (package/inherit vmware-open-vm-tools
     (name "vmware-open-vm-tools-gtk")
     (inputs
-     (modify-inputs (package-inputs vmware-open-vm-tools)
+     (modify-inputs inputs
        (prepend gdk-pixbuf-xlib
                 gtk+
                 gtkmm-3
@@ -3840,7 +3840,7 @@ disks, resizing disks, and much more.")
 $LDFLAGS += \" -Wl,-rpath=" #$output "/lib \"
 create_header"))))))))))
     (native-inputs
-     (modify-inputs (package-native-inputs libguestfs-minimal)
+     (modify-inputs native-inputs
        (prepend bash-completion
                 gobject-introspection
                 python
@@ -3849,7 +3849,7 @@ create_header"))))))))))
                 vala
                 xorriso)))
     (inputs
-     (modify-inputs (package-inputs libguestfs-minimal)
+     (modify-inputs inputs
        (prepend acl
                 bdb
                 fuse

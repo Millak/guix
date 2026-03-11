@@ -2312,7 +2312,7 @@ Google's C++ code base.")
                                       "absl_symbolize_test|absl_log_format_test")))))
                      #~())))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "googletest" googletest))))))
 
 (define-public abseil-cpp-20250127
@@ -3381,7 +3381,7 @@ syntax with variables, conditions, functions and more.")
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags #~(list "--ignore=case_studies/")))
-    (native-inputs (modify-inputs (package-native-inputs jsonnet)
+    (native-inputs (modify-inputs native-inputs
                      (append python-pyyaml python-pytest python-setuptools)))
     (synopsis "Python bindings for Jsonnet, the data templating language")
     (description "This package provides a Python library named @code{_jsonnet}

@@ -4714,7 +4714,7 @@ to cl-async.")
                  (search-input-file inputs
                                     "/lib/async-process/libasyncprocess.so"))))))))
     (inputs
-     (modify-inputs (package-inputs libasyncprocess)
+     (modify-inputs inputs
        (prepend libasyncprocess sbcl-cffi)))
     (home-page "https://github.com/lem-project/async-process")
     (synopsis "Asynchronous process execution for Common Lisp")
@@ -10348,7 +10348,7 @@ Development into CL+SSL was done by David Lichteblau.")
     (package
       (inherit pkg)
       (native-inputs
-       (modify-inputs (package-native-inputs pkg)
+       (modify-inputs native-inputs
          (delete "sbcl-trivial-sockets")))
       (arguments
        (substitute-keyword-arguments arguments
@@ -19872,7 +19872,7 @@ and @code{kqueue(2)}), a pathname library and file-system utilities.")
       (inherit parent)
       (propagated-inputs
        ;; Need header to compile.
-       (modify-inputs (package-propagated-inputs parent)
+       (modify-inputs propagated-inputs
          (prepend libfixposix))))))
 
 (define-public ecl-iolib

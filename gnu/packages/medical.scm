@@ -390,9 +390,9 @@ Medicine} server instead of SQLite.")
                             "-e" "CREATE DATABASE orthanctest;")
                     (invoke "./UnitTests" socket username password
                             database)))))))))
-    (native-inputs (modify-inputs (package-native-inputs orthanc-mysql)
+    (native-inputs (modify-inputs native-inputs
                      (prepend mariadb))) ;for tests
-    (inputs (modify-inputs (package-inputs orthanc-mysql)
+    (inputs (modify-inputs inputs
               (delete "mysql")
               (prepend `(,mariadb "dev")
                        `(,mariadb "lib"))))
@@ -443,6 +443,6 @@ GUI application (@code{xmedcon}).")
      (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
         #~(append (list "--disable-glib" "--disable-gui") #$flags))))
-    (inputs (modify-inputs (package-inputs xmedcon)
+    (inputs (modify-inputs inputs
               (delete "glib" "gtk+")))
     (synopsis "Medical image conversion utility (variant with CLI only)")))

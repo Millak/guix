@@ -539,7 +539,7 @@ table-level bloom filters, and updates to the MANIFEST format.")
        ((#:tests? _ #t) #f) ; TODO: Find out why some tests fails to build
        ((#:import-path _) "github.com/cockroachdb/pebble/v2")))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs go-github-com-cockroachdb-pebble)
+     (modify-inputs propagated-inputs
        (append go-github-com-cockroachdb-crlib
                go-github-com-cockroachdb-swiss
                go-github-com-minio-minlz
@@ -1624,9 +1624,9 @@ pictures, sounds, or video.")
                 "0snbxmlygf7m4cxjpscmz3yjn4lnqsw313y9xgpv7vk9k9gm20s4"))
               (patches (search-patches
                         "postgresql-disable-resolve_symlinks.patch"))))
-    (native-inputs (modify-inputs (package-native-inputs postgresql-16)
+    (native-inputs (modify-inputs native-inputs
                      (delete "pkg-config")))
-    (inputs (modify-inputs (package-inputs postgresql-16)
+    (inputs (modify-inputs inputs
               (delete "icu4c")))))
 
 (define-public postgresql-14

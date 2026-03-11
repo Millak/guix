@@ -176,7 +176,7 @@ integration of this capability into your own programs.")
                   qtbase)
                  ((#:configure-flags flags ''())
                   #~(cons "-DZINT_QT6=ON" #$flags))))
-    (inputs (modify-inputs (package-inputs zint)
+    (inputs (modify-inputs inputs
               ;; The UI library of qttools is linked to; hence it must be used
               ;; as an input rather than a native input.
               (append qtsvg qttools)))
@@ -397,7 +397,7 @@ Python as well as GUI widgets for GTK and Qt.")
        ((#:disallowed-references _ '())
         (list qtbase gtk+))))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs zbar)
+     (modify-inputs propagated-inputs
        (delete "gtk+")))))
 
 (define-public qrcodegen-cpp

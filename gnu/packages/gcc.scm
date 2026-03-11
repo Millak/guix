@@ -516,7 +516,7 @@ Go.  It also includes runtime support libraries for these languages.")
     (supported-systems (fold delete %supported-systems
                              '("riscv64-linux" "x86_64-gnu")))
     (inputs
-     (modify-inputs (package-inputs gcc-base)
+     (modify-inputs inputs
        (prepend isl-0.11 cloog)))))
 
 (define-public gcc-4.9
@@ -580,7 +580,7 @@ Go.  It also includes runtime support libraries for these languages.")
     (native-inputs (list perl ;for manpages
                          texinfo))
     (inputs
-     (modify-inputs (package-inputs gcc-base)
+     (modify-inputs inputs
        (prepend isl-0.11 cloog)))
     (supported-systems (fold delete %supported-systems
                              '("riscv64-linux" "x86_64-gnu")))))
@@ -655,7 +655,7 @@ Go.  It also includes runtime support libraries for these languages.")
     (native-inputs (list perl ;for manpages
                          texinfo))
     (inputs
-     (modify-inputs (package-inputs gcc-base)
+     (modify-inputs inputs
        (prepend ;; GCC5 needs <isl/band.h> which is removed in later versions.
                 isl-0.18)))
     (supported-systems (fold delete %supported-systems
@@ -1411,7 +1411,7 @@ as the 'native-search-paths' field."
   (package
     (inherit gdc)
     (arguments
-     (substitute-keyword-arguments (package-arguments gdc)
+     (substitute-keyword-arguments arguments
        ((#:modules modules)
         `(,@modules
           (ice-9 ftw)))
@@ -1484,14 +1484,14 @@ as the 'native-search-paths' field."
                        "^/lib/debug/.*/lib/libgdruntime"
                        "^/lib/debug/.*/lib/libgphobos"))))))))
     (inputs
-     (modify-inputs (package-inputs gdc)
+     (modify-inputs inputs
        ;; This makes flags like -static-libstdc++ work. Required for using this
        ;; compiler as a bootstrap compiler for GDC 12+.
        ;; Additionally, this allows us to support linking with GCC libraries,
        ;; without building or storing them ourselves.
        (append (list gcc "lib"))))
     (native-inputs
-     (let ((orig (package-native-inputs gdc)))
+     (let ((orig native-inputs))
        (if bootstrap-gdc
            (modify-inputs orig
              ;; Since GCC 12, GDC is self-hosted, requiring a version of itself
@@ -1601,7 +1601,7 @@ also includes the druntime and phobos libraries."
      (package
        (inherit base)
        (native-inputs
-        (modify-inputs (package-native-inputs base)
+        (modify-inputs native-inputs
           (prepend flex)))))))
 
 (define-public (make-libgccjit gcc)
@@ -1637,9 +1637,9 @@ also includes the druntime and phobos libraries."
                           (find-files
                            (string-append (assoc-ref outputs "out") "/bin")
                            ".*(c\\+\\+|cpp|g\\+\\+|gcov|gcc|gcc-.*)"))))))))
-    (inputs (modify-inputs (package-inputs gcc)
+    (inputs (modify-inputs inputs
               (delete "libstdc++")))
-    (native-inputs (modify-inputs (package-native-inputs gcc)
+    (native-inputs (modify-inputs native-inputs
                      (prepend gcc)))
     (synopsis "GCC library generating machine code on-the-fly at runtime")
     (description

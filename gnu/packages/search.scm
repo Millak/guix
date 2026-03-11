@@ -442,10 +442,10 @@ decompression.")
         #~(modify-phases #$phases
             (delete 'patchelf)))))
     (inputs
-     (modify-inputs (package-inputs recoll)
+     (modify-inputs inputs
        (delete "qtbase")))
     (native-inputs
-     (modify-inputs (package-native-inputs recoll)
+     (modify-inputs native-inputs
        (delete "patchelf" "qttools")))))
 
 (define-public hyperestraier

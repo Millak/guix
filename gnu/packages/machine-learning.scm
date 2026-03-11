@@ -5392,7 +5392,7 @@ in the audio domain.")
   (package/inherit python-pytorch
     (name "python-pytorch-avx")
     (inputs
-     (modify-inputs (package-inputs python-pytorch)
+     (modify-inputs inputs
        (append fbgemm nnpack)))
     (arguments
      (substitute-keyword-arguments arguments
@@ -5432,7 +5432,7 @@ in the audio domain.")
     (source %python-pytorch-for-r-torch-src)
     (build-system python-build-system)
     (inputs
-     (modify-inputs (package-inputs python-pytorch)
+     (modify-inputs inputs
        (replace "gloo" gloo-for-r-torch)))
     (arguments
      (substitute-keyword-arguments arguments

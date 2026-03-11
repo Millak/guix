@@ -891,7 +891,7 @@ Library.")
                 (install-file "LICENSE.TXT"
                               (string-append #$output "/share/doc"))))))))
     (native-inputs
-     (modify-inputs (package-native-inputs libomp-15)
+     (modify-inputs native-inputs
        (replace "clang" clang-14)
        (replace "llvm" llvm-14)))))
 
@@ -965,7 +965,7 @@ Library.")
         #~(modify-phases #$phases
             (delete 'chdir-to-source-and-install-license)))))
     (native-inputs
-     (modify-inputs (package-native-inputs libomp-14)
+     (modify-inputs native-inputs
        (replace "clang" clang-13)
        (replace "llvm" llvm-13)))))
 
@@ -1046,7 +1046,7 @@ Library.")
        ((#:configure-flags flags)
         #~`(,@(delete "-DLIBOMPTARGET_BUILD_AMDGCN_BCLIB=OFF" #$flags)))))
     (native-inputs
-     (modify-inputs (package-native-inputs libomp-13)
+     (modify-inputs native-inputs
        (replace "clang" clang-12)
        (replace "llvm" llvm-12)))))
 
@@ -1077,7 +1077,7 @@ Library.")
     (version (package-version llvm-16))
     (source (llvm-monorepo version))
     (native-inputs
-     (modify-inputs (package-native-inputs libomp-15)
+     (modify-inputs native-inputs
        (replace "clang" clang-16)
        (replace "llvm" llvm-16)))))
 
@@ -1109,7 +1109,7 @@ Library.")
     (version (package-version llvm-17))
     (source (llvm-monorepo version))
     (native-inputs
-     (modify-inputs (package-native-inputs libomp-15)
+     (modify-inputs native-inputs
        (replace "clang" clang-17)
        (replace "llvm" llvm-17)))))
 
@@ -1180,7 +1180,7 @@ Library.")
     (version (package-version llvm-18))
     (source (llvm-monorepo version))
     (native-inputs
-     (modify-inputs (package-native-inputs libomp-15)
+     (modify-inputs native-inputs
        (replace "clang" clang-18)
        (replace "llvm" llvm-18)))))
 
@@ -1211,7 +1211,7 @@ Library.")
     (version (package-version llvm-19))
     (source (llvm-monorepo version))
     (native-inputs
-     (modify-inputs (package-native-inputs libomp-15)
+     (modify-inputs native-inputs
        (replace "clang" clang-19)
        (replace "llvm" llvm-19)))))
 
@@ -1242,7 +1242,7 @@ Library.")
     (version (package-version llvm-20))
     (source (llvm-monorepo version))
     (native-inputs
-     (modify-inputs (package-native-inputs libomp-15)
+     (modify-inputs native-inputs
        (replace "clang" clang-20)
        (replace "llvm" llvm-20)))))
 
@@ -1273,7 +1273,7 @@ Library.")
     (version (package-version llvm-21))
     (source (llvm-monorepo version))
     (native-inputs
-     (modify-inputs (package-native-inputs libomp-15)
+     (modify-inputs native-inputs
        (replace "clang" clang-21)
        (replace "llvm" llvm-21)))))
 
@@ -1432,7 +1432,7 @@ This AMD fork includes AMD-specific additions."))))
     (name "clang-runtime-rocm")
     (version (package-version llvm-rocm))
     (source (package-source llvm-rocm))
-    (inputs (modify-inputs (package-inputs clang-runtime-base)
+    (inputs (modify-inputs inputs
               (replace "llvm" llvm-rocm)))))
 
 (define-public clang-runtime-rocm (make-clang-runtime-rocm clang-runtime-20))
@@ -1444,10 +1444,10 @@ This AMD fork includes AMD-specific additions."))))
     (name "clang-rocm")
     (version (package-version llvm-rocm))
     (source (package-source llvm-rocm))
-    (inputs (modify-inputs (package-inputs clang-base)
+    (inputs (modify-inputs inputs
               (delete "clang-tools-extra")))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs clang-base)
+     (modify-inputs propagated-inputs
        (replace "llvm" llvm-rocm)
        (replace "clang-runtime" clang-runtime-rocm)
        (append python-lit)))
@@ -1744,7 +1744,7 @@ components which highly leverage existing libraries in the larger LLVM Project."
               (sha256
                (base32
                 "0qg3fgc7wj34hdkqn21y03zcmsdd01szhhm1hfki63iifrm3y2v9"))))
-    (inputs (modify-inputs (package-inputs lld)
+    (inputs (modify-inputs inputs
               (replace "llvm" llvm-12)))))
 
 (define-public lld-16
@@ -2146,7 +2146,7 @@ generator targetting AMD hardware.")
                     "config.environment['CPLUS_INCLUDE_PATH']"
                     " = os.environ['CPLUS_INCLUDE_PATH']\n")))))))))
     (native-inputs
-     (modify-inputs (package-native-inputs libomp-20)
+     (modify-inputs native-inputs
        (replace "clang" clang-rocm)
        (replace "llvm" llvm-rocm)))))
 
@@ -2204,7 +2204,7 @@ the host.")
     (inherit clang-rocm-toolchain)
     (name "rocm-toolchain")
     (inputs
-     (modify-inputs (package-inputs clang-rocm-toolchain)
+     (modify-inputs inputs
        (append lld-wrapper-rocm
                offload-rocm
                rocr-runtime
@@ -2518,7 +2518,7 @@ LLVM bitcode files.")
                 ;; This reduces the size from 22 MiB to 4 MiB.
                 (lambda _
                   (for-each delete-file (find-files #$output "\\.a$"))))))))
-      (inputs (modify-inputs (package-inputs base)
+      (inputs (modify-inputs inputs
                 (replace "llvm" llvm-cling))))))
 
 (define clang-cling
@@ -2528,7 +2528,7 @@ LLVM bitcode files.")
       (version (package-version llvm-cling))
       (source (package-source llvm-cling))
       (propagated-inputs
-       (modify-inputs (package-propagated-inputs base)
+       (modify-inputs propagated-inputs
          (replace "llvm" llvm-cling)
          (replace "clang-runtime" clang-cling-runtime))))))
 

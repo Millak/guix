@@ -951,7 +951,7 @@ building block for other projects.")
                  (find-files
                   #$(this-package-native-input "python-irc-parser-tests") "\\.yaml$"))))))))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs go-gopkg-in-irc-v3)
+     (modify-inputs propagated-inputs
        (append go-golang-org-x-time)))))
 
 (define-public chathistorysync

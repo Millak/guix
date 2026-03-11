@@ -1360,7 +1360,7 @@ dynamic library for the C language implementation of HEALPix.")
                (invoke "aclocal")
                (invoke "automake" "--add-missing")
                (invoke "autoconf"))))))
-    (inputs (modify-inputs (package-inputs healpix)
+    (inputs (modify-inputs inputs
               (prepend libsharp zlib)))
     (description
      (string-replace-substring (package-description healpix)

@@ -4465,7 +4465,7 @@ client in Golang.")
          (package-arguments go-github-com-datadog-datadog-go)
        ((#:import-path _) "github.com/DataDog/datadog-go/v5")))
     (native-inputs
-     (modify-inputs (package-native-inputs go-github-com-datadog-datadog-go)
+     (modify-inputs native-inputs
        (append go-github-com-golang-mock)))))
 
 (define-public go-github-com-davecgh-go-xdr
@@ -12595,7 +12595,7 @@ part of @url{https://github.com/pion, Pion} WebRTC implementation.")
       #:tests? #f ;Tests require network access.
       #:import-path "github.com/pion/ice/v4"))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs go-github-com-pion-ice-v3)
+     (modify-inputs propagated-inputs
        (replace "go-github-com-pion-dtls-v2" go-github-com-pion-dtls-v3)
        (replace "go-github-com-pion-stun-v2" go-github-com-pion-stun-v3)
        (replace "go-github-com-pion-turn-v3" go-github-com-pion-turn-v4)))))
@@ -12851,7 +12851,7 @@ Protocol,SCTP} as specified in
      (list
       #:import-path "github.com/pion/srtp/v3"))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs go-github-com-pion-srtp-v2)
+     (modify-inputs propagated-inputs
        (replace "go-github-com-pion-transport-v2"
          go-github-com-pion-transport-v4)))))
 
@@ -13000,7 +13000,7 @@ throughout the @url{https://github.com/pion, Pion} modules.")
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs go-github-com-pion-transport)
+     (modify-inputs propagated-inputs
        (prepend go-github-com-wlynxg-anet)))))
 
 (define-public go-github-com-pion-transport-v3
@@ -13044,7 +13044,7 @@ throughout the @url{https://github.com/pion, Pion} modules.")
      (list
       #:import-path "github.com/pion/transport/v4"))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs go-github-com-pion-transport-v3)
+     (modify-inputs propagated-inputs
        (prepend go-golang-org-x-time)))))
 
 (define-public go-github-com-pion-turn-v2

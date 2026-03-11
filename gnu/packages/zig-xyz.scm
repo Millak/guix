@@ -636,7 +636,7 @@ Language Server Protocol} for the Zig programming language.")
                   "1dbg06v136yjcs9grc6xwsmv0cm39c0sdkh5vzn7h1qxxka6ixlp"))))
       (build-system zig-build-system)
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" zig-0.13))))))
 
 (define-public zig-zls-0.14
@@ -665,10 +665,10 @@ Language Server Protocol} for the Zig programming language.")
              #:zig-release-type "safe"
              #:zig-build-flags ''("-Dpie")))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" zig-0.14)))
       (inputs
-       (modify-inputs (package-inputs base)
+       (modify-inputs inputs
          (prepend zig-lsp-codegen)
          (replace "zig-diffz" zig-diffz-for-zig-zls-0.14)
          (replace "zig-known-folders" zig-known-folders-for-zig-0.14))))))
@@ -694,10 +694,10 @@ Language Server Protocol} for the Zig programming language.")
                     ("known_folders" . "zig-known-folders")
                     ("lsp_kit" . "zig-lsp-kit"))))))
       (native-inputs
-       (modify-inputs (package-native-inputs base)
+       (modify-inputs native-inputs
          (replace "zig" zig-0.15)))
       (inputs
-       (modify-inputs (package-inputs base)
+       (modify-inputs inputs
          (prepend zig-lsp-kit-for-zls-0.15)
          (delete "zig-lsp-codegen")
          (replace "zig-diffz" zig-diffz-for-zls-0.15)

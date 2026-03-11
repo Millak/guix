@@ -37427,7 +37427,7 @@ utilities.")
       #:tests? #f                       ;no test suite
       #:lisp-directory "src/extra"))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs emacs-treemacs)
+     (modify-inputs propagated-inputs
        (append emacs-all-the-icons
                emacs-evil
                emacs-magit

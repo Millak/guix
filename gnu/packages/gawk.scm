@@ -110,7 +110,7 @@ including network access, sorting, and large libraries.")
   (package/inherit gawk
     (name "gawk-mpfr")
     (inputs
-     (modify-inputs (package-inputs gawk)
+     (modify-inputs inputs
        (prepend mpfr)))))
 
 ;; Suffixed with -next because, similarly to Emacs, development versions are
@@ -258,7 +258,7 @@ programs can be captured and transferred to systems that have Awk but not
                  (("awk=gawk") (string-append "awk=" (which "egawk")))
                  (("awk '") (string-append (which "egawk") " '")))))))))
     (inputs
-     (modify-inputs (package-inputs cppawk)
+     (modify-inputs inputs
        (delete "gawk-mpfr")
        (prepend egawk-next)))
     (synopsis "Wrapper script that adds C preprocessing to Enhanced GNU Awk")))

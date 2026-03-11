@@ -735,7 +735,7 @@ model to base your own plug-in on, here it is.")
     (inherit gst-plugins-good)
     (name "gst-plugins-good-qt")
     (inputs
-     (modify-inputs (package-inputs gst-plugins-good)
+     (modify-inputs inputs
        (prepend qtbase
                 qtdeclarative
                 qtshadertools

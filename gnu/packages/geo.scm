@@ -409,7 +409,7 @@ hierarchical hexagonal geospatial indexing system")
        (sha256
         (base32 "16gxa1sivghxw179rik87r918mjasars2qkzidlwq83qfa4axn20"))))
     (inputs
-     (modify-inputs (package-inputs python-h3)
+     (modify-inputs inputs
        (replace "h3" h3-3)))))
 
 (define-public geos
@@ -927,11 +927,11 @@ hydrology and waste deposition.")
   (package
     (inherit ogs-serial)
     (name "ogs-petsc")
-    (inputs (modify-inputs (package-inputs ogs-serial)
+    (inputs (modify-inputs inputs
               (prepend openmpi petsc-openmpi)
               (replace "hdf5" hdf5-parallel-openmpi)
               (replace "netcdf-cxx4" netcdf-cxx4-parallel-openmpi)))
-    (native-inputs (modify-inputs (package-native-inputs ogs-serial)
+    (native-inputs (modify-inputs native-inputs
                      (prepend pkg-config)))
     (arguments
      (substitute-keyword-arguments arguments

@@ -32112,7 +32112,7 @@ various modes for analyzing and transforming YAML data.")))
                                  (string-append bash "/completions"))))))))))
     (native-inputs
      (append
-      (modify-inputs (package-native-inputs go-github-com-opencontainers-runtime-tools)
+      (modify-inputs native-inputs
         (append go-md2man))
       (package-propagated-inputs go-github-com-opencontainers-runtime-tools)))
     (propagated-inputs '())

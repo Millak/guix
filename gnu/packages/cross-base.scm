@@ -457,7 +457,7 @@ target that libc."
                          "x86_64")))))))))))
     (supported-systems %supported-systems)
     (native-inputs
-     (modify-inputs (package-native-inputs gnumach-headers)
+     (modify-inputs native-inputs
        (prepend xgcc xbinutils)))))
 
 (define* (cross-mig target
@@ -490,10 +490,10 @@ the base compiler.  Use XBINUTILS as the associated cross-Binutils."
                             '#$%gcc-cross-include-paths))))))))
     (propagated-inputs
      (list xgnumach-headers))
-    (inputs (modify-inputs (package-inputs mig)
+    (inputs (modify-inputs inputs
               (delete "gnumach-headers")))
     (native-inputs
-     (modify-inputs (package-native-inputs mig)
+     (modify-inputs native-inputs
        (prepend xgcc xbinutils)))))
 
 (define* (cross-kernel-headers* target

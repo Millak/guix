@@ -139,7 +139,7 @@ is on expressing the content semantically, avoiding physical markup commands.")
                          perl
                          perl-text-unidecode
                          perl-unicode-eastasianwidth))
-    (inputs (modify-inputs (package-inputs texinfo)
+    (inputs (modify-inputs inputs
               (append perl-archive-zip  ;needed for 'tex2any --epub3'
                       perl-unicode-eastasianwidth perl-text-unidecode
                       perl-libintl-perl)))
@@ -269,7 +269,7 @@ is on expressing the content semantically, avoiding physical markup commands.")
       (list
        #:disallowed-references (list (this-package-input "perl")))))
     (synopsis "Standalone Info documentation reader")
-    (inputs (modify-inputs (package-inputs texinfo-7)
+    (inputs (modify-inputs inputs
               (prepend gzip)))))
 
 (define-public texi2html

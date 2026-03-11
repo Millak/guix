@@ -666,7 +666,7 @@ solution (client-side agent)")
                                        (assoc-ref %build-inputs "zlib")))
                   (delete "--enable-agent" #$flags)))))
     (inputs
-     (modify-inputs (package-inputs zabbix-agentd)
+     (modify-inputs inputs
        (prepend curl
                 libevent
                 net-snmp

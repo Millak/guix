@@ -792,7 +792,7 @@ included.")
                          (substitute* "gold/Makefile.in"
                            ((" testsuite") " ")))))
                   #~())))))
-    (native-inputs (modify-inputs (package-native-inputs binutils)
+    (native-inputs (modify-inputs native-inputs
                      (append bc)))))
 
 (define-public libbfd

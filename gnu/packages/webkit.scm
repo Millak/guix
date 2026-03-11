@@ -308,10 +308,10 @@ propagated by default) such as @code{gst-plugins-good} and
         #~(cons* "-DUSE_GTK4=OFF"
                  (delete "-DUSE_GTK4=ON" #$flags)))))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs webkitgtk)
+     (modify-inputs propagated-inputs
        (replace "gtk" gtk+)))
     (inputs
-     (modify-inputs (package-inputs webkitgtk)
+     (modify-inputs inputs
        (prepend libnotify)))))
 
 ;;; Required by e.g. emacs-next-pgtk, emacs-xwidgets, and some other GNOME
@@ -324,7 +324,7 @@ propagated by default) such as @code{gst-plugins-good} and
                  ((#:configure-flags flags)
                   #~(cons "-DUSE_SOUP2=ON" #$flags))))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs webkitgtk-for-gtk3)
+     (modify-inputs propagated-inputs
        (replace "libsoup" libsoup-minimal-2)))))
 
 (define-public wpewebkit
@@ -343,7 +343,7 @@ propagated by default) such as @code{gst-plugins-good} and
        ((#:configure-flags flags)
         #~(cons "-DPORT=WPE"
                 (delete "-DPORT=GTK" #$flags)))))
-    (inputs (modify-inputs (package-inputs webkitgtk)
+    (inputs (modify-inputs inputs
               (prepend libinput)))
     (synopsis "WebKit port optimized for embedded devices")
     (description "WPE WebKit allows embedders to create simple and performant

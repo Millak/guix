@@ -428,7 +428,7 @@ sampling profiler for games and other applications.")
         #~(append #$flags
                   ;; The LEGACY flag indicate we want to build tracy with glfw.
                   (list "LEGACY=1")))))
-    (inputs (modify-inputs (package-inputs tracy-wayland)
+    (inputs (modify-inputs inputs
               (delete "libxkbcommon" "wayland")
               (prepend glfw)))
     (synopsis "Frame profiler (X11 version)")))

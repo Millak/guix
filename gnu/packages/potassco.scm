@@ -462,7 +462,7 @@ Lua code.")))
                          (format port "Version: ~a~%" #$version)))))))))))
     (inputs (list clingo python-wrapper))
     (propagated-inputs (list python-cffi))
-    (native-inputs (modify-inputs (package-native-inputs clingo)
+    (native-inputs (modify-inputs native-inputs
                      (prepend python-scikit-build)))
     (synopsis "Python bindings for clingo")
     (description "This package provides Python bindings to the clingo package,
@@ -499,10 +499,10 @@ Python code.")))
                       (format port "Metadata-Version: 1.1~%")
                       (format port "Name: clingodl~%")
                       (format port "Version: ~a~%" #$version))))))))))
-    (inputs (modify-inputs (package-inputs clingo-dl)
+    (inputs (modify-inputs inputs
               (prepend python-wrapper)))
     (propagated-inputs (list python-clingo python-cffi))
-    (native-inputs (modify-inputs (package-native-inputs clingo-dl)
+    (native-inputs (modify-inputs native-inputs
                      (prepend python-scikit-build)))
     (synopsis "Python bindings for clingo-dl")
     (description "This package allows users to add the clingo-dl propagator
@@ -539,10 +539,10 @@ directly from the python command line.")))
                          (format port "Metadata-Version: 1.1~%")
                          (format port "Name: clingcon~%")
                          (format port "Version: ~a~%" #$version))))))))))))
-    (inputs (modify-inputs (package-inputs clingcon)
+    (inputs (modify-inputs inputs
               (prepend python-wrapper)))
     (propagated-inputs (list python-clingo python-cffi))
-    (native-inputs (modify-inputs (package-native-inputs clingcon)
+    (native-inputs (modify-inputs native-inputs
                      (prepend python-scikit-build)))
     (synopsis "Python bindings for clingcon")
     (description "This package allows users to add the clingcon propagator

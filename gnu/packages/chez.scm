@@ -534,7 +534,7 @@ version of Chez Scheme.")
                                        "zuo"))))))
     (build-system gnu-build-system)
     (inputs
-     (modify-inputs (package-inputs chez-scheme-for-racket)
+     (modify-inputs inputs
        (replace "chez-scheme-for-racket-bootstrap-bootfiles"
          chez-scheme-bootstrap-bootfiles)
        ;; for X11 clipboard support in expeditor:
@@ -832,7 +832,7 @@ User's Guix}, among other documents.")
 
 (define-public stex
   (package/inherit stex-bootstrap
-    (inputs (modify-inputs (package-inputs stex-bootstrap)
+    (inputs (modify-inputs inputs
               (prepend chez-scheme)))
     (outputs '("out" "doc"))
     (properties '())))

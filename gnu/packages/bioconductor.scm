@@ -22959,7 +22959,7 @@ accessibility data.")
                  ((".*find_overlapping_ccans works.*" m)
                   (string-append m "skip('guix')"))))))))
       (propagated-inputs
-       (modify-inputs (package-propagated-inputs r-cicero)
+       (modify-inputs propagated-inputs
          (delete "r-monocle")
          (prepend r-monocle3))))))
 

@@ -295,7 +295,7 @@ by APL.")
                   (install-file "libcbqn.so" lib)
                   (install-file "include/bqnffi.h" include))))))))
     (native-inputs (list cbqn-bootstrap libffi))
-    (inputs (modify-inputs (package-inputs cbqn-bootstrap)
+    (inputs (modify-inputs inputs
               (prepend bqn-sources)))
     (license (append (package-license cbqn-bootstrap)
                      (list license:isc   ;Singeli module
