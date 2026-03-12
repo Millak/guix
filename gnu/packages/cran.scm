@@ -53479,12 +53479,9 @@ rate speciation and extinction.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; 17 tests here fail with minor accuracy errors.
-             (delete-file "tests/testthat/test-integral.R"))))))
+      #:skipped-tests
+      ;; 18 tests here fail with minor accuracy errors.
+      '("test-integral.R")))
     (propagated-inputs
      (list r-rcpp))
     (native-inputs
