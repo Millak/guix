@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2024 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2024,2026 Eric Bavier <bavier@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,35 +20,42 @@
 
 (define-module (gnu packages nickle)
   #:use-module (gnu packages)
+  #:use-module (gnu packages algebra)
+  #:use-module (gnu packages bison)
+  #:use-module (gnu packages flex)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages readline)
-  #:use-module (guix build-system gnu)
+  #:use-module (gnu packages ruby-xyz)
+  #:use-module (guix build-system meson)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages))
 
 (define-public nickle
   (package
     (name "nickle")
-    (version "2.97")
+    (version "2.107")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nickle.org/release/nickle-"
-                                  version ".tar.gz"))
+                                  version ".tar.xz"))
               (sha256
                (base32
-                "0gqashcs3r0d1yp6rq6q2ayjdwsjxnd8z0ij55ayrbhn296l7mp2"))
-              (patches (search-patches "nickle-man-release-date.patch"))))
-    (build-system gnu-build-system)
-    (inputs (list readline))
+                "1wli8p5fv2ldy51ycc8pcx8rl3ph2wbyiqs21qpjadlvildaaqj0"))))
+    (build-system meson-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-build-date
-           (lambda _
-             ;; Our patch touches Makefile.am, but rather than rebootstrap,
-             ;; make the substitution directly in Makefile.in.
-             (substitute* "Makefile.in"
-               (("BUILD_DATE") "RELEASE_DATE")))))))
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'configure 'disable-benchmarks
+                          ;; Benchmarks would require `gmp` and don't
+                          ;; test anything not already covered by other
+                          ;; tests, so disable them here.
+                          (lambda _
+                            (substitute* "meson.build"
+                              (("^subdir\\('bench'\\)" &)
+                               (string-append "# " &))))))))
+    (native-inputs (list bc bison flex pkg-config ruby-asciidoctor-pdf))
+    (inputs (list readline))
     (synopsis "Numeric oriented programming language")
     (description
      "Nickle is a programming language based prototyping environment with
