@@ -52920,11 +52920,11 @@ package also provides functions to visualize the observed data and the MLE.")
     (build-system r-build-system)
     (arguments
      (list
+      #:skipped-tests
+      ;; Requires r-dfoptim.
+      '("test_misc_rma_mv.r")
       #:phases
       '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           ;; Requires r-dfoptim.
-           (lambda _ (delete-file "tests/testthat/test_misc_rma_mv.r")))
          ;; When there is no HOME directory, this package will fail to find
          ;; the vignette builder.
          (add-after 'unpack 'set-HOME
