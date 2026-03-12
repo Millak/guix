@@ -1670,141 +1670,143 @@ layout of a circuit corresponds to the desired netlists.")
     (license license:gpl1)))
     
 (define-public nextpnr
-  (let ((commit "d8117e3cadaa4f4db606b64a465b7638b05dac68")
-        (revision "1"))
-    (package
-      (name "nextpnr")
-      (version (git-version "0.9" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/YosysHQ/nextpnr/")
-                (commit commit)
-                ;; XXX: Fetch some bundled libraries such as QtPropertyBrowser,
-                ;; json11 and python-console, which have custom modifications or
-                ;; no longer have their original upstream.
-                (recursive? #t)))
-         (file-name (git-file-name name version))
-         (snippet
-          #~(begin
-              (use-modules (guix build utils)
-                           (ice-9 ftw)
-                           (srfi srfi-26))
-              ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-              (define (delete-all-but directory . preserve)
-                (with-directory-excursion directory
-                  (let* ((pred (negate (cut member <>
-                                            (cons* "." ".." preserve))))
-                         (items (scandir "." pred)))
-                    (for-each (cut delete-file-recursively <>) items))))
-              (delete-all-but "3rdparty"
-                              ;; The following sources have all been patched, so
-                              ;; cannot easily be unbundled.
-                              "QtPropertyBrowser"
-                              "json11"
-                              "python-console"
-                              "oourafft")))
-         (patches (search-patches "nextpnr-imgui.patch"))
-         (sha256
-          (base32 "0668adviwh8n9c5xy7k3qiyfn77rrzd79b403i3m19hhy8vq907p"))))
-      (outputs '("out" "bba"))
-      (build-system qt-build-system)
-      (arguments
-       (list
-        #:qtbase qtbase                   ;for Qt 6
-        #:configure-flags
-        #~(list "-DARCH=generic;ice40;ecp5;himbaechel"
-                "-DBUILD_GUI=ON"
-                "-DUSE_OPENMP=ON"
-                "-DBUILD_TESTS=ON"
-                "-DHIMBAECHEL_UARCH=ng-ultra;gowin;gatemate"
-                "-DHIMBAECHEL_NGULTRA_DEVICES=ng-ultra"
-                "-DHIMBAECHEL_SPLIT=ON"
-                (string-append "-DHIMBAECHEL_PRJBEYOND_DB="
-                               (search-input-directory
-                                %build-inputs "share/prjbeyond-db"))
-                (string-append "-DHIMBAECHEL_PEPPERCORN_PATH="
-                               (search-input-directory
-                                %build-inputs "share/prjpeppercorn"))
-                (string-append
-                 "-DEXPORT_BBA_FILES=" #$output:bba "/share/nextpnr/bba-files")
-                (string-append "-DCURRENT_GIT_VERSION=nextpnr-" #$version)
-                (string-append "-DICESTORM_INSTALL_PREFIX="
-                               #$(this-package-native-input "icestorm"))
-                (string-append "-DTRELLIS_INSTALL_PREFIX="
-                               #$(this-package-native-input "prjtrellis")))
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'unbundle-googletest
-              (lambda _
-                (substitute* "CMakeLists.txt"
-                  (("add_subdirectory\\(3rdparty\\/googletest.*")
-                   (string-append "find_package(GTest)\n"
-                                  "add_library(gtest_main ALIAS "
-                                  "GTest::gtest_main)\n"))
-                  (("\\$\\{CMAKE_SOURCE_DIR}/3rdparty/googletest.*")
-                   (string-append
-                    #$(this-package-native-input "googletest") "/include)")))))
-            (add-after 'unpack 'unbundle-sanitizers-cmake
-              (lambda _
-                (substitute* "CMakeLists.txt"
-                  ;; Use the system sanitizers-cmake module.  This is made
-                  ;; necessary 'sanitizers-cmake' installing a FindPackage
-                  ;; module but no CMake config file.
-                  (("\\$\\{CMAKE_SOURCE_DIR}/3rdparty/sanitizers-cmake/cmake")
-                   (string-append
-                    #$(this-package-native-input "sanitizers-cmake")
-                    "/share/sanitizers-cmake/cmake")))))
-            (add-after 'install 'run-tests
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  (setenv "PATH"
-                          (string-append #$output "/bin:" (getenv "PATH")))
-                  ;; ice40
-                  (invoke "./nextpnr-ice40-test")
-                  (chdir "../source")
-                  (setenv "NEXTPNR" "nextpnr-ice40")
-                  (with-directory-excursion "ice40/smoketest/attosoc"
-                    (invoke "./smoketest.sh"))
-                  (with-directory-excursion "tests/ice40/regressions"
-                    (invoke "make" (string-append
-                                    "NPNR=" #$output "/bin/nextpnr-ice40")))
-                  ;; generic
-                  (setenv "NPNR" "nextpnr-generic")
-                  (invoke "nextpnr-generic" "--uarch" "example" "--test")
-                  (with-directory-excursion "tests/generic/flow/bel-pin"
-                    (invoke "./run.sh"))
-                  ;; ecp5
-                  (invoke "nextpnr-ecp5"
-                          "--um5g-25k" "--package" "CABGA381" "--test")
-                  (with-directory-excursion "tests/ecp5/regressions"
-                    (invoke "make"
-                            (string-append
-                             "NPNR=" #$output "/bin/nextpnr-ecp5")))))))))
-      (native-inputs
-       (list apycula
-             googletest
-             icestorm
-             iverilog
-             gzip
-             prjbeyond-db
-             `(,prjpeppercorn "db")
-             prjtrellis
-             python-minimal-wrapper
-             sanitizers-cmake
-             yosys))
-      (inputs
-       (list boost
-             eigen
-             pybind11-2
-             qtimgui))
-      (synopsis
-       "Place-and-Route tool for @acronym{FPGA, Field Programmable Gate Array}")
-      (description "@code{nextpnr} is an @acronym{EDA, Electronic Design
+  (package
+    (name "nextpnr")
+    (version "0.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/YosysHQ/nextpnr/")
+              (commit (string-append "nextpnr-" version))
+              ;; XXX: Fetch some bundled libraries such as QtPropertyBrowser,
+              ;; json11 and python-console, which have custom modifications or
+              ;; no longer have their original upstream.
+              (recursive? #t)))
+       (file-name (git-file-name name version))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils)
+                         (ice-9 ftw)
+                         (srfi srfi-26))
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "3rdparty"
+                            ;; The following sources have all been patched, so
+                            ;; cannot easily be unbundled.
+                            "QtPropertyBrowser"
+                            "json11"
+                            "python-console"
+                            "oourafft"
+                            "imgui"
+                            "qtimgui")))
+       (sha256
+        (base32 "01iwavnnz9pik49mw8z83529grvaa45pvihivmnfzhq1z49cg0c2"))))
+    (outputs '("out" "bba"))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:qtbase qtbase                   ;for Qt 6
+      #:configure-flags
+      #~(list "-DARCH=generic;ice40;ecp5;himbaechel"
+              "-DBUILD_GUI=ON"
+              "-DUSE_OPENMP=ON"
+              "-DBUILD_TESTS=ON"
+              "-DHIMBAECHEL_UARCH=ng-ultra;gowin;gatemate"
+              "-DHIMBAECHEL_NGULTRA_DEVICES=ng-ultra"
+              "-DHIMBAECHEL_SPLIT=ON"
+              (string-append "-DHIMBAECHEL_PRJBEYOND_DB="
+                             (search-input-directory
+                              %build-inputs "share/prjbeyond-db"))
+              (string-append "-DHIMBAECHEL_PEPPERCORN_PATH="
+                             (search-input-directory
+                              %build-inputs "share/prjpeppercorn"))
+              (string-append
+               "-DEXPORT_BBA_FILES=" #$output:bba "/share/nextpnr/bba-files")
+              (string-append "-DCURRENT_GIT_VERSION=nextpnr-" #$version)
+              (string-append "-DICESTORM_INSTALL_PREFIX="
+                             #$(this-package-native-input "icestorm"))
+              (string-append "-DTRELLIS_INSTALL_PREFIX="
+                             #$(this-package-native-input "prjtrellis")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-test
+            (lambda _
+              (substitute* "himbaechel/uarch/gatemate/tests/lut.cc"
+                (("9LU") "8LU"))))
+          (add-after 'unpack 'unbundle-googletest
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("add_subdirectory\\(3rdparty\\/googletest.*")
+                 (string-append "find_package(GTest)\n"
+                                "add_library(gtest_main ALIAS "
+                                "GTest::gtest_main)\n"))
+                (("\\$\\{CMAKE_SOURCE_DIR}/3rdparty/googletest.*")
+                 (string-append
+                  #$(this-package-native-input "googletest") "/include)")))))
+          (add-after 'unpack 'unbundle-sanitizers-cmake
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                ;; Use the system sanitizers-cmake module.  This is made
+                ;; necessary 'sanitizers-cmake' installing a FindPackage
+                ;; module but no CMake config file.
+                (("\\$\\{CMAKE_SOURCE_DIR}/3rdparty/sanitizers-cmake/cmake")
+                 (string-append
+                  #$(this-package-native-input "sanitizers-cmake")
+                  "/share/sanitizers-cmake/cmake")))))
+          (add-after 'install 'run-tests
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "PATH"
+                        (string-append #$output "/bin:" (getenv "PATH")))
+                ;; ice40
+                (invoke "./nextpnr-ice40-test")
+                (chdir "../source")
+                (setenv "NEXTPNR" "nextpnr-ice40")
+                (with-directory-excursion "ice40/smoketest/attosoc"
+                  (invoke "./smoketest.sh"))
+                (with-directory-excursion "tests/ice40/regressions"
+                  (invoke "make" (string-append
+                                  "NPNR=" #$output "/bin/nextpnr-ice40")))
+                ;; generic
+                (setenv "NPNR" "nextpnr-generic")
+                (invoke "nextpnr-generic" "--uarch" "example" "--test")
+                (with-directory-excursion "tests/generic/flow/bel-pin"
+                  (invoke "./run.sh"))
+                ;; ecp5
+                (invoke "nextpnr-ecp5"
+                        "--um5g-25k" "--package" "CABGA381" "--test")
+                (with-directory-excursion "tests/ecp5/regressions"
+                  (invoke "make"
+                          (string-append
+                           "NPNR=" #$output "/bin/nextpnr-ecp5")))))))))
+    (native-inputs
+     (list apycula
+           googletest
+           icestorm
+           iverilog
+           gzip
+           prjbeyond-db
+           `(,prjpeppercorn "db")
+           prjtrellis
+           python-minimal-wrapper
+           sanitizers-cmake
+           yosys))
+    (inputs
+     (list boost
+           eigen
+           pybind11))
+    (synopsis
+     "Place-and-Route tool for @acronym{FPGA, Field Programmable Gate Array}")
+    (description "@code{nextpnr} is an @acronym{EDA, Electronic Design
 Automation}, portable and vendor neutral FPGA place and route tool.")
-      (home-page "https://github.com/YosysHQ/nextpnr/")
-      (license license:isc))))
+    (home-page "https://github.com/YosysHQ/nextpnr/")
+    (license license:isc)))
 
 (define-public nextpnr-cli
   (package
@@ -1817,9 +1819,6 @@ Automation}, portable and vendor neutral FPGA place and route tool.")
       (substitute-keyword-arguments (package-arguments nextpnr)
         ((#:configure-flags flags '())
          #~(delete! "-DBUILD_GUI=ON" #$flags)))))
-    (inputs
-     (modify-inputs (package-inputs nextpnr)
-       (delete "qtimgui")))
     (synopsis
      (string-append (package-synopsis nextpnr) " Cli only version."))))
 
