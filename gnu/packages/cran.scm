@@ -17652,13 +17652,13 @@ C++ code.")
 (define-public r-rcppde
   (package
     (name "r-rcppde")
-    (version "0.1.8")
+    (version "0.1.9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppDE" version))
               (sha256
                (base32
-                "07hrfvpkddc2yzs6bq52vmdymyry250pgizfxyb6mw47lcb7jjlf"))))
+                "0fzyjbm4d51gykbavhlpkvh8qarzbkb13vwa80dfp6rpgslfx2pl"))))
     (properties `((upstream-name . "RcppDE")))
     (build-system r-build-system)
     (propagated-inputs
