@@ -933,11 +933,11 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
     ("CONFIG_9P_FS" . m)
     ;; Enable DMABUF used by wayland, pipewire and libcamera
     ;; https://codeberg.org/guix/guix/issues/5995
-    ("CONFIG_UDMABUF" . m)
+    ("CONFIG_UDMABUF" . #t)
     ("CONFIG_DMABUF_MOVE_NOTIFY" . #t)
-    ("CONFIG_DMABUF_HEAPS" . m)
-    ("CONFIG_DMABUF_HEAPS_SYSTEM" . m)
-    ("CONFIG_DMABUF_HEAPS_CMA" . m)
+    ("CONFIG_DMABUF_HEAPS" . #t)
+    ("CONFIG_DMABUF_HEAPS_SYSTEM" . #t)
+    ("CONFIG_DMABUF_HEAPS_CMA" . #t)
     ,@(if (version>=? version "6.17")
           '(("CONFIG_DMABUF_HEAPS_CMA_LEGACY" . #t))
           '())
