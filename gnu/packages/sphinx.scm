@@ -630,16 +630,24 @@ math in HTML via JavaScript.")
 (define-public python-sphinxcontrib-jquery
   (package
     (name "python-sphinxcontrib-jquery")
-    (version "4.1")
+    ;; Tests of 4.1 (released in 2024) fail with sphinx 9.
+    (properties '((commit . "80d1d3925c17c1860283323972680690f81d7b18")
+                  (revision . "0")))
+    (version (git-version "4.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "sphinxcontrib-jquery" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sphinx-contrib/jquery")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0ymw7a9nahq7xn69dw8v6l3zvcj9zlnil4qskxvjqsp30jgp680n"))))
+        (base32 "0la7qasz5xlyzpx20ldcc62vkwg4xk2dd39j27dqz7zv1m8mjg0c"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-sphinx))
-    (native-inputs (list python-flit-core))
+    (native-inputs (list python-flit-core python-pytest))
     (home-page "https://github.com/sphinx-contrib/jquery")
     (synopsis "Extension to include jQuery on newer Sphinx releases")
     (description
