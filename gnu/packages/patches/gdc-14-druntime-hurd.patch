@@ -1,0 +1,4086 @@
+Upstream status: https://github.com/D-Programming-GDC/gcc/pull/25
+
+Backport of
+ https://github.com/dlang/dmd/pull/22829
+ https://github.com/dlang/phobos/pull/10980
+
+to gdc-14
+
+with additional gdc specific changes.
+Also regenerates the autotools.
+
+From e8c3f2cfad1a69cd3fa5445a0d61d2f59d73a5d1 Mon Sep 17 00:00:00 2001
+From: Yelninei <yelninei@tutamail.com>
+Date: Sat, 11 Apr 2026 19:42:55 +0000
+Subject: [PATCH 1/4] phobos: Port to GNU/Hurd
+
+---
+ libphobos/src/std/datetime/timezone.d | 1 +
+ libphobos/src/std/math/algebraic.d    | 1 +
+ libphobos/src/std/process.d           | 2 ++
+ 3 files changed, 4 insertions(+)
+
+diff --git a/libphobos/src/std/datetime/timezone.d b/libphobos/src/std/datetime/timezone.d
+index b23891808..e68f2e828 100644
+--- a/libphobos/src/std/datetime/timezone.d
++++ b/libphobos/src/std/datetime/timezone.d
+@@ -338,6 +338,7 @@ public:
+             else version (linux)         enum utcZone = "UTC";
+             else version (Darwin)        enum utcZone = "UTC";
+             else version (Solaris)       enum utcZone = "UTC";
++            else version (Hurd)          enum utcZone = "UTC";
+             else static assert(0, "The location of the UTC timezone file on this Posix platform must be set.");
+ 
+             auto tzs = [testTZ("America/Los_Angeles", "PST", "PDT", dur!"hours"(-8), dur!"hours"(1)),
+diff --git a/libphobos/src/std/math/algebraic.d b/libphobos/src/std/math/algebraic.d
+index fd305231d..c909148ea 100644
+--- a/libphobos/src/std/math/algebraic.d
++++ b/libphobos/src/std/math/algebraic.d
+@@ -611,6 +611,7 @@ else version (FreeBSD)      version = GenericPosixVersion;
+ else version (OpenBSD)      version = GenericPosixVersion;
+ else version (Solaris)      version = GenericPosixVersion;
+ else version (DragonFlyBSD) version = GenericPosixVersion;
++else version (Hurd)         version = GenericPosixVersion;
+ 
+ private real polyImpl(real x, in real[] A) @trusted pure nothrow @nogc
+ {
+diff --git a/libphobos/src/std/process.d b/libphobos/src/std/process.d
+index 3b8922179..b245936da 100644
+--- a/libphobos/src/std/process.d
++++ b/libphobos/src/std/process.d
+@@ -1039,6 +1039,8 @@ private Pid spawnProcessPosix(scope const(char[])[] args,
+                     import core.sys.freebsd.unistd : closefrom;
+                 else version (OpenBSD)
+                     import core.sys.openbsd.unistd : closefrom;
++                else version (Hurd)
++                    import core.sys.hurd.unistd : closefrom;
+ 
+                 static if (!__traits(compiles, closefrom))
+                 {
+-- 
+2.52.0
+
+From 0549a921b9309f860f0a038427a7fc6526fcde4d Mon Sep 17 00:00:00 2001
+From: Yelninei <yelninei@tutamail.com>
+Date: Sat, 11 Apr 2026 20:09:59 +0000
+Subject: [PATCH 2/4] druntime: Backport support for GNU/Hurd
+
+---
+ libphobos/libdruntime/core/demangle.d         |   1 +
+ libphobos/libdruntime/core/stdc/config.d      |   2 +
+ libphobos/libdruntime/core/stdc/errno.d       | 107 +++
+ libphobos/libdruntime/core/stdc/limits.d      |  14 +
+ libphobos/libdruntime/core/sys/hurd/config.d  |  30 +
+ libphobos/libdruntime/core/sys/hurd/dlfcn.d   | 114 +++
+ libphobos/libdruntime/core/sys/hurd/elf.d     | 162 +++++
+ libphobos/libdruntime/core/sys/hurd/errno.d   |  21 +
+ .../libdruntime/core/sys/hurd/execinfo.d      |  16 +
+ libphobos/libdruntime/core/sys/hurd/link.d    | 134 ++++
+ .../libdruntime/core/sys/hurd/sys/types.d     |  22 +
+ libphobos/libdruntime/core/sys/hurd/time.d    |  15 +
+ libphobos/libdruntime/core/sys/hurd/unistd.d  |  30 +
+ libphobos/libdruntime/core/sys/linux/stdio.d  |   1 +
+ libphobos/libdruntime/core/sys/posix/dirent.d |  11 +
+ libphobos/libdruntime/core/sys/posix/fcntl.d  | 107 +++
+ .../libdruntime/core/sys/posix/netinet/in_.d  |  58 +-
+ libphobos/libdruntime/core/sys/posix/poll.d   |  16 +
+ .../libdruntime/core/sys/posix/pthread.d      | 218 ++++--
+ libphobos/libdruntime/core/sys/posix/sched.d  |  11 +
+ .../libdruntime/core/sys/posix/semaphore.d    |  32 +-
+ libphobos/libdruntime/core/sys/posix/signal.d | 189 ++++-
+ libphobos/libdruntime/core/sys/posix/spawn.d  |  42 ++
+ .../libdruntime/core/sys/posix/sys/ioctl.d    |  37 +
+ .../libdruntime/core/sys/posix/sys/ipc.d      |  43 ++
+ .../libdruntime/core/sys/posix/sys/mman.d     |  33 +
+ .../libdruntime/core/sys/posix/sys/msg.d      |  44 ++
+ .../libdruntime/core/sys/posix/sys/resource.d |  58 ++
+ .../libdruntime/core/sys/posix/sys/shm.d      |  26 +
+ .../libdruntime/core/sys/posix/sys/socket.d   | 161 +++++
+ .../libdruntime/core/sys/posix/sys/stat.d     |  72 ++
+ .../libdruntime/core/sys/posix/sys/statvfs.d  | 152 ++--
+ .../libdruntime/core/sys/posix/sys/types.d    | 669 +++++++++++-------
+ libphobos/libdruntime/core/sys/posix/sys/un.d |   9 +
+ .../libdruntime/core/sys/posix/sys/utsname.d  |  39 +-
+ .../libdruntime/core/sys/posix/sys/wait.d     |  23 +
+ .../libdruntime/core/sys/posix/termios.d      |  97 +++
+ libphobos/libdruntime/core/sys/posix/time.d   |  12 +
+ libphobos/libdruntime/core/thread/osthread.d  |   8 +
+ libphobos/libdruntime/core/time.d             |  25 +
+ libphobos/libdruntime/gcc/backtrace.d         |   2 +
+ libphobos/libdruntime/gcc/sections/elf.d      |   9 +
+ 42 files changed, 2474 insertions(+), 398 deletions(-)
+ create mode 100644 libphobos/libdruntime/core/sys/hurd/config.d
+ create mode 100644 libphobos/libdruntime/core/sys/hurd/dlfcn.d
+ create mode 100644 libphobos/libdruntime/core/sys/hurd/elf.d
+ create mode 100644 libphobos/libdruntime/core/sys/hurd/errno.d
+ create mode 100644 libphobos/libdruntime/core/sys/hurd/execinfo.d
+ create mode 100644 libphobos/libdruntime/core/sys/hurd/link.d
+ create mode 100644 libphobos/libdruntime/core/sys/hurd/sys/types.d
+ create mode 100644 libphobos/libdruntime/core/sys/hurd/time.d
+ create mode 100644 libphobos/libdruntime/core/sys/hurd/unistd.d
+
+diff --git a/libphobos/libdruntime/core/demangle.d b/libphobos/libdruntime/core/demangle.d
+index 272ee1e1b..522991dd7 100644
+--- a/libphobos/libdruntime/core/demangle.d
++++ b/libphobos/libdruntime/core/demangle.d
+@@ -3045,6 +3045,7 @@ CXX_DEMANGLER getCXXDemangler() nothrow @trusted
+         version (OpenBSD) import core.sys.openbsd.dlfcn : RTLD_DEFAULT;
+         version (Darwin) import core.sys.darwin.dlfcn : RTLD_DEFAULT;
+         version (Solaris) import core.sys.solaris.dlfcn : RTLD_DEFAULT;
++        version (Hurd) import core.sys.hurd.dlfcn : RTLD_DEFAULT;
+ 
+         if (auto found = cast(CXX_DEMANGLER) dlsym(RTLD_DEFAULT, "__cxa_demangle"))
+             atomicStore(__cxa_demangle, found);
+diff --git a/libphobos/libdruntime/core/stdc/config.d b/libphobos/libdruntime/core/stdc/config.d
+index ca833eaac..c5ad3a87e 100644
+--- a/libphobos/libdruntime/core/stdc/config.d
++++ b/libphobos/libdruntime/core/stdc/config.d
+@@ -262,6 +262,8 @@ else version (DigitalMars)
+             alias real c_long_double;
+         else version (Darwin)
+             alias real c_long_double;
++        else version (Hurd)
++            alias real c_long_double;
+     }
+ }
+ 
+diff --git a/libphobos/libdruntime/core/stdc/errno.d b/libphobos/libdruntime/core/stdc/errno.d
+index ddec70f7a..21c4dff97 100644
+--- a/libphobos/libdruntime/core/stdc/errno.d
++++ b/libphobos/libdruntime/core/stdc/errno.d
+@@ -2551,6 +2551,113 @@ else version (WASI)
+     enum ERFKILL         = 132;
+     enum EHWPOISON       = 133;
+ }
++else version (Hurd)
++{
++    enum EPERM                          = 0x40000001;   /* Operation not permitted */
++    enum ENOENT                         = 0x40000002;   /* No such file or directory */
++    enum ESRCH                          = 0x40000003;   /* No such process */
++    enum EINTR                          = 0x40000004;   /* Interrupted system call */
++    enum EIO                            = 0x40000005;   /* Input/output error */
++    enum ENXIO                          = 0x40000006;   /* No such device or address */
++    enum E2BIG                          = 0x40000007;   /* Argument list too long */
++    enum ENOEXEC                        = 0x40000008;   /*enum Exec format error */
++    enum EBADF                          = 0x40000009;   /* Bad file descriptor */
++    enum ECHILD                         = 0x4000000a;   /* No child processes */
++    enum EDEADLK                        = 0x4000000b;   /* Resource deadlock avoided */
++    enum ENOMEM                         = 0x4000000c;   /* Cannot allocate memory */
++    enum EACCES                         = 0x4000000d;   /* Permission denied */
++    enum EFAULT                         = 0x4000000e;   /* Bad address */
++    enum ENOTBLK                        = 0x4000000f;   /* Block device required */
++    enum EBUSY                          = 0x40000010;   /* Device or resource busy */
++    enum EEXIST                         = 0x40000011;   /* File exists */
++    enum EXDEV                          = 0x40000012;   /* Invalid cross-device link */
++    enum ENODEV                         = 0x40000013;   /* No such device */
++    enum ENOTDIR                        = 0x40000014;   /* Not a directory */
++    enum EISDIR                         = 0x40000015;   /* Is a directory */
++    enum EINVAL                         = 0x40000016;   /* Invalid argument */
++    enum EMFILE                         = 0x40000018;   /* Too many open files */
++    enum ENFILE                         = 0x40000017;   /* Too many open files in system */
++    enum ENOTTY                         = 0x40000019;   /* Inappropriate ioctl for device */
++    enum ETXTBSY                        = 0x4000001a;   /* Text file busy */
++    enum EFBIG                          = 0x4000001b;   /* File too large */
++    enum ENOSPC                         = 0x4000001c;   /* No space left on device */
++    enum ESPIPE                         = 0x4000001d;   /* Illegal seek */
++    enum EROFS                          = 0x4000001e;   /* Read-only file system */
++    enum EMLINK                         = 0x4000001f;   /* Too many links */
++    enum EPIPE                          = 0x40000020;   /* Broken pipe */
++    enum EDOM                           = 0x40000021;   /* Numerical argument out of domain */
++    enum ERANGE                         = 0x40000022;   /* Numerical result out of range */
++    enum EAGAIN                         = 0x40000023;   /* Resource temporarily unavailable */
++    enum EINPROGRESS                    = 0x40000024;   /* Operation now in progress */
++    enum EALREADY                       = 0x40000025;   /* Operation already in progress */
++    enum ENOTSOCK                       = 0x40000026;   /* Socket operation on non-socket */
++    enum EMSGSIZE                       = 0x40000028;   /* Message too long */
++    enum EPROTOTYPE                     = 0x40000029;   /* Protocol wrong type for socket */
++    enum ENOPROTOOPT                    = 0x4000002a;   /* Protocol not available */
++    enum EPROTONOSUPPORT                = 0x4000002b;   /* Protocol not supported */
++    enum ESOCKTNOSUPPORT                = 0x4000002c;   /* Socket type not supported */
++    enum EOPNOTSUPP                     = 0x4000002d;   /* Operation not supported */
++    enum EPFNOSUPPORT                   = 0x4000002e;   /* Protocol family not supported */
++    enum EAFNOSUPPORT                   = 0x4000002f;   /* Address family not supported by protocol */
++    enum EADDRINUSE                     = 0x40000030;   /* Address already in use */
++    enum EADDRNOTAVAIL                  = 0x40000031;   /* Cannot assign requested address */
++    enum ENETDOWN                       = 0x40000032;   /* Network is down */
++    enum ENETUNREACH                    = 0x40000033;   /* Network is unreachable */
++    enum ENETRESET                      = 0x40000034;   /* Network dropped connection on reset */
++    enum ECONNABORTED                   = 0x40000035;   /* Software caused connection abort */
++    enum ECONNRESET                     = 0x40000036;   /* Connection reset by peer */
++    enum ENOBUFS                        = 0x40000037;   /* No buffer space available */
++    enum EISCONN                        = 0x40000038;   /* Transport endpoint is already connected */
++    enum ENOTCONN                       = 0x40000039;   /* Transport endpoint is not connected */
++    enum EDESTADDRREQ                   = 0x40000027;   /* Destination address required */
++    enum ESHUTDOWN                      = 0x4000003a;   /* Cannot send after transport endpoint shutdown */
++    enum ETOOMANYREFS                   = 0x4000003b;   /* Too many references: cannot splice */
++    enum ETIMEDOUT                      = 0x4000003c;   /* Connection timed out */
++    enum ECONNREFUSED                   = 0x4000003d;   /* Connection refused */
++    enum ELOOP                          = 0x4000003e;   /* Too many levels of symbolic links */
++    enum ENAMETOOLONG                   = 0x4000003f;   /* File name too long */
++    enum EHOSTDOWN                      = 0x40000040;   /* Host is down */
++    enum EHOSTUNREACH                   = 0x40000041;   /* No route to host */
++    enum ENOTEMPTY                      = 0x40000042;   /* Directory not empty */
++    enum EPROCLIM                       = 0x40000043;   /* Too many processes */
++    enum EUSERS                         = 0x40000044;   /* Too many users */
++    enum EDQUOT                         = 0x40000045;   /* Disk quota exceeded */
++    enum ESTALE                         = 0x40000046;   /* Stale file handle */
++    enum EREMOTE                        = 0x40000047;   /* Object is remote */
++    enum EBADRPC                        = 0x40000048;   /* RPC struct is bad */
++    enum ERPCMISMATCH                   = 0x40000049;   /* RPC version wrong */
++    enum EPROGUNAVAIL                   = 0x4000004a;   /* RPC program not available */
++    enum EPROGMISMATCH                  = 0x4000004b;   /* RPC program version wrong */
++    enum EPROCUNAVAIL                   = 0x4000004c;   /* RPC bad procedure for program */
++    enum ENOLCK                         = 0x4000004d;   /* No locks available */
++    enum EFTYPE                         = 0x4000004f;   /* Inappropriate file type or format */
++    enum EAUTH                          = 0x40000050;   /* Authentication error */
++    enum ENEEDAUTH                      = 0x40000051;   /* Need authenticator */
++    enum ENOSYS                         = 0x4000004e;   /* Function not implemented */
++    enum ELIBEXEC                       = 0x40000053;   /* Cannot exec a shared library directly */
++    enum ENOTSUP                        = 0x40000076;   /* Not supported */
++    enum EILSEQ                         = 0x4000006a;   /* Invalid or incomplete multibyte or wide character */
++    enum EBACKGROUND                    = 0x40000064;   /* Inappropriate operation for background process */
++    enum EDIED                          = 0x40000065;   /* Translator died */
++    enum ED                             = 0x40000066;   /* ? */
++    enum EGREGIOUS                      = 0x40000067;   /* You really blew it this time */
++    enum EIEIO                          = 0x40000068;   /* Computer bought the farm */
++    enum EGRATUITOUS                    = 0x40000069;   /* Gratuitous error */
++    enum EBADMSG                        = 0x4000006b;   /* Bad message */
++    enum EIDRM                          = 0x4000006c;   /* Identifier removed */
++    enum EMULTIHOP                      = 0x4000006d;   /* Multihop attempted */
++    enum ENODATA                        = 0x4000006e;   /* No data available */
++    enum ENOLINK                        = 0x4000006f;   /* Link has been severed */
++    enum ENOMSG                         = 0x40000070;   /* No message of desired type */
++    enum ENOSR                          = 0x40000071;   /* Out of streams resources */
++    enum ENOSTR                         = 0x40000072;   /* Device not a stream */
++    enum EOVERFLOW                      = 0x40000073;   /* Value too large for defined data type */
++    enum EPROTO                         = 0x40000074;   /* Protocol error */
++    enum ETIME                          = 0x40000075;   /* Timer expired */
++    enum ECANCELED                      = 0x40000077;   /* Operation canceled */
++    enum EOWNERDEAD                     = 0x40000078;   /* Owner died */
++    enum ENOTRECOVERABLE                = 0x40000079;   /* State not recoverable */
++ }
+ else
+ {
+     static assert(false, "Unsupported platform");
+diff --git a/libphobos/libdruntime/core/stdc/limits.d b/libphobos/libdruntime/core/stdc/limits.d
+index f3f88006a..e67b0cb22 100644
+--- a/libphobos/libdruntime/core/stdc/limits.d
++++ b/libphobos/libdruntime/core/stdc/limits.d
+@@ -182,3 +182,17 @@ else version (Windows)
+     ///
+     enum PIPE_BUF       = 5120;
+ }
++else version (Hurd)
++{
++    // no arbitrary fixed limits
++    ///
++    // enum MAX_CANON
++    ///
++    // enum MAX_INPUT
++    ///
++    enum NAME_MAX       = 255;
++    ///
++    // enum PATH_MAX
++    ///
++    // enum PIPE_BUF
++}
+diff --git a/libphobos/libdruntime/core/sys/hurd/config.d b/libphobos/libdruntime/core/sys/hurd/config.d
+new file mode 100644
+index 000000000..109990d54
+--- /dev/null
++++ b/libphobos/libdruntime/core/sys/hurd/config.d
+@@ -0,0 +1,30 @@
++/**
++ * D header file for GNU/Hurd.
++ *
++ * Copyright: Copyright (c) 2026 D Language Foundation
++ * License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
++ */
++module core.sys.hurd.config;
++
++version (Hurd):
++
++public import core.sys.posix.config;
++
++// man 7 feature_test_macros
++// http://www.gnu.org/software/libc/manual/html_node/Feature-Test-Macros.html
++enum _GNU_SOURCE = true;
++// deduced <features.h>
++// http://sourceware.org/git/?p=glibc.git;a=blob;f=include/features.h
++enum _DEFAULT_SOURCE = true;
++enum _ATFILE_SOURCE = true;
++
++// _BSD_SOURCE and _SVID_SOURCE are deprecated aliases for _DEFAULT_SOURCE.
++deprecated("use _DEFAULT_SOURCE")
++{
++    enum _BSD_SOURCE = true;
++    enum _SVID_SOURCE = true;
++}
++
++enum __USE_MISC = _DEFAULT_SOURCE;
++enum __USE_ATFILE = _ATFILE_SOURCE;
++enum __USE_GNU = _GNU_SOURCE;
+diff --git a/libphobos/libdruntime/core/sys/hurd/dlfcn.d b/libphobos/libdruntime/core/sys/hurd/dlfcn.d
+new file mode 100644
+index 000000000..430857621
+--- /dev/null
++++ b/libphobos/libdruntime/core/sys/hurd/dlfcn.d
+@@ -0,0 +1,114 @@
++/**
++ * D header file for GNU/Hurd.
++ *
++ * Copyright: Copyright (c) 2026 D Language Foundation
++ * License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
++ * $(LINK2 http://sourceware.org/git/?p=glibc.git;a=blob;f=dlfcn/dlfcn.h, glibc dlfcn/dlfcn.h)
++ */
++module core.sys.hurd.dlfcn;
++
++version (Hurd):
++extern (C):
++nothrow:
++@nogc:
++@system:
++
++
++public import core.sys.posix.dlfcn;
++import core.sys.hurd.config;
++
++// <bits/dlfcn.h>
++
++// http://sourceware.org/git/?p=glibc.git;a=blob;f=bits/dlfcn.h
++// enum RTLD_LAZY = 0x00001; // POSIX
++// enum RTLD_NOW = 0x00002; // POSIX
++enum RTLD_BINDING_MASK = 0x3;
++enum RTLD_NOLOAD = 0x00004;
++enum RTLD_DEEPBIND = 0x00008;
++
++// enum RTLD_GLOBAL = 0x00100; // POSIX
++// enum RTLD_LOCAL = 0; // POSIX
++enum RTLD_NODELETE = 0x01000;
++
++static if (__USE_GNU)
++{
++    RT DL_CALL_FCT(RT, Args...)(RT function(Args) fctp, auto ref Args args)
++    {
++        _dl_mcount_wrapper_check(cast(void*)fctp);
++        return fctp(args);
++    }
++
++    void _dl_mcount_wrapper_check(void* __selfpc);
++}
++// <bits/dlfcn.h>
++
++static if (__USE_GNU)
++{
++    enum RTLD_NEXT = cast(void *)-1L;
++    enum RTLD_DEFAULT = cast(void *)0;
++    alias c_long Lmid_t;
++    enum LM_ID_BASE = 0;
++    enum LM_ID_NEWLM = -1;
++}
++
++// void* dlopen(const scope char* __file, int __mode); // POSIX
++// int dlclose(void* __handle); // POSIX
++// void* dlsym(void* __handle, const scope char* __name); // POSIX
++
++static if (__USE_GNU)
++{
++    void* dlmopen(Lmid_t __nsid, const scope char* __file, int __mode);
++    void* dlvsym(void* __handle, const scope char* __name, const scope char* __version);
++}
++
++// char* dlerror(); // POSIX
++
++static if (__USE_GNU)
++{
++    struct Dl_info
++    {
++        const(char)* dli_fname;
++        void* dli_fbase;
++        const(char)* dli_sname;
++        void* dli_saddr;
++    }
++
++    int dladdr(const scope void* __address, Dl_info* __info);
++    int dladdr1(void* __address, Dl_info* __info, void** __extra_info, int __flags);
++
++    enum
++    {
++        RTLD_DL_SYMENT = 1,
++        RTLD_DL_LINKMAP = 2,
++    }
++
++    int dlinfo(void* __handle, int __request, void* __arg);
++
++    enum
++    {
++        RTLD_DI_LMID = 1,
++        RTLD_DI_LINKMAP = 2,
++        RTLD_DI_CONFIGADDR = 3,
++        RTLD_DI_SERINFO = 4,
++        RTLD_DI_SERINFOSIZE = 5,
++        RTLD_DI_ORIGIN = 6,
++        RTLD_DI_PROFILENAME = 7,
++        RTLD_DI_PROFILEOUT = 8,
++        RTLD_DI_TLS_MODID = 9,
++        RTLD_DI_TLS_DATA = 10,
++        RTLD_DI_MAX = 10,
++    }
++
++    struct Dl_serpath
++    {
++        char* dls_name;
++        uint dls_flags;
++    }
++
++    struct Dl_serinfo
++    {
++        size_t dls_size;
++        uint dls_cnt;
++        Dl_serpath[1] dls_serpath;
++    }
++}
+diff --git a/libphobos/libdruntime/core/sys/hurd/elf.d b/libphobos/libdruntime/core/sys/hurd/elf.d
+new file mode 100644
+index 000000000..0cdc29c5a
+--- /dev/null
++++ b/libphobos/libdruntime/core/sys/hurd/elf.d
+@@ -0,0 +1,162 @@
++/**
++ * D header file for GNU/Hurd.
++ *
++ * Copyright: Copyright (c) 2026 D Language Foundation
++ * License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
++ * $(LINK2 http://sourceware.org/git/?p=glibc.git;a=blob;f=elf/elf.h, glibc elf/elf.h)
++ */
++module core.sys.hurd.elf;
++
++version (Hurd):
++extern (C):
++pure:
++nothrow:
++@system:
++
++import core.stdc.stdint;
++public import core.sys.elf;
++
++extern (D)
++{
++    auto ELF32_ST_VISIBILITY(O)(O o) { return o & 0x03; }
++    alias ELF32_ST_VISIBILITY ELF64_ST_VISIBILITY;
++}
++
++struct Elf32_Nhdr
++{
++    Elf32_Word n_namesz;
++    Elf32_Word n_descsz;
++    Elf32_Word n_type;
++}
++
++struct Elf64_Nhdr
++{
++    Elf64_Word n_namesz;
++    Elf64_Word n_descsz;
++    Elf64_Word n_type;
++}
++
++enum NT_PRSTATUS =     1;
++enum NT_FPREGSET =     2;
++enum NT_PRPSINFO =     3;
++enum NT_PRXREG =       4;
++enum NT_TASKSTRUCT =   4;
++enum NT_PLATFORM =     5;
++enum NT_AUXV =         6;
++enum NT_GWINDOWS =     7;
++enum NT_ASRS =         8;
++enum NT_PSTATUS =      10;
++enum NT_PSINFO =       13;
++enum NT_PRCRED =       14;
++enum NT_UTSNAME =      15;
++enum NT_LWPSTATUS =    16;
++enum NT_LWPSINFO =     17;
++enum NT_PRFPXREG =     20;
++enum NT_SIGINFO =      0x53494749;
++enum NT_FILE =         0x46494c45;
++enum NT_PRXFPREG =     0x46e62b7f;
++enum NT_PPC_VMX =      0x100;
++enum NT_PPC_SPE =      0x101;
++enum NT_PPC_VSX =      0x102;
++enum NT_386_TLS =      0x200;
++enum NT_386_IOPERM =   0x201;
++enum NT_X86_XSTATE =   0x202;
++enum NT_S390_HIGH_GPRS =       0x300;
++enum NT_S390_TIMER =   0x301;
++enum NT_S390_TODCMP =  0x302;
++enum NT_S390_TODPREG = 0x303;
++enum NT_S390_CTRS =    0x304;
++enum NT_S390_PREFIX =  0x305;
++enum NT_S390_LAST_BREAK =      0x306;
++enum NT_S390_SYSTEM_CALL =     0x307;
++enum NT_S390_TDB =     0x308;
++enum NT_ARM_VFP =      0x400;
++enum NT_ARM_TLS =      0x401;
++enum NT_ARM_HW_BREAK = 0x402;
++enum NT_ARM_HW_WATCH = 0x403;
++
++enum NT_VERSION =      1;
++
++struct Elf32_Dyn
++{
++    Elf32_Sword   d_tag;
++    union _d_un
++    {
++        Elf32_Word d_val;
++        Elf32_Addr d_ptr;
++    } _d_un d_un;
++}
++
++struct Elf64_Dyn
++{
++    Elf64_Sxword  d_tag;
++    union _d_un
++    {
++        Elf64_Xword d_val;
++        Elf64_Addr d_ptr;
++    } _d_un d_un;
++}
++
++enum NT_GNU_ABI_TAG =      1;
++enum NT_GNU_HWCAP =        2;
++enum NT_GNU_BUILD_ID =     3;
++enum NT_GNU_GOLD_VERSION = 4;
++
++struct Elf32_auxv_t
++{
++    uint32_t a_type;
++    union _a_un
++    {
++        uint32_t a_val;
++    } _a_un a_un;
++}
++
++struct Elf64_auxv_t
++{
++    uint64_t a_type;
++    union _a_un
++    {
++        uint64_t a_val;
++    } _a_un a_un;
++}
++
++enum AT_NULL =         0;
++enum AT_IGNORE =       1;
++enum AT_EXECFD =       2;
++enum AT_PHDR =         3;
++enum AT_PHENT =        4;
++enum AT_PHNUM =        5;
++enum AT_PAGESZ =       6;
++enum AT_BASE =         7;
++enum AT_FLAGS =        8;
++enum AT_ENTRY =        9;
++enum AT_NOTELF =       10;
++enum AT_UID =          11;
++enum AT_EUID =         12;
++enum AT_GID =          13;
++enum AT_EGID =         14;
++enum AT_CLKTCK =       17;
++enum AT_PLATFORM =     15;
++enum AT_HWCAP =        16;
++enum AT_FPUCW =        18;
++enum AT_DCACHEBSIZE =  19;
++enum AT_ICACHEBSIZE =  20;
++enum AT_UCACHEBSIZE =  21;
++enum AT_IGNOREPPC =    22;
++
++enum AT_SECURE =       23;
++
++enum AT_BASE_PLATFORM = 24;
++
++enum AT_RANDOM =       25;
++
++enum AT_HWCAP2 =       26;
++
++enum AT_EXECFN =       31;
++enum AT_SYSINFO =      32;
++enum AT_SYSINFO_EHDR = 33;
++
++enum AT_L1I_CACHESHAPE =       34;
++enum AT_L1D_CACHESHAPE =       35;
++enum AT_L2_CACHESHAPE =        36;
++enum AT_L3_CACHESHAPE =        37;
+diff --git a/libphobos/libdruntime/core/sys/hurd/errno.d b/libphobos/libdruntime/core/sys/hurd/errno.d
+new file mode 100644
+index 000000000..db9c83c90
+--- /dev/null
++++ b/libphobos/libdruntime/core/sys/hurd/errno.d
+@@ -0,0 +1,21 @@
++/**
++ * D header file for GNU/Hurd
++ *
++ * Copyright: Copyright (c) 2026 D Language Foundation
++ * License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
++ * $(LINK2 http://sourceware.org/git/?p=glibc.git;a=blob;f=stdlib/errno.h, glibc stdlib/errno.h)
++ */
++module core.sys.hurd.errno;
++
++version (Hurd):
++extern (C):
++nothrow:
++
++public import core.stdc.errno;
++import core.sys.hurd.config;
++
++static if (_GNU_SOURCE)
++{
++    extern __gshared char* program_invocation_name, program_invocation_short_name;
++    alias error_t = int;
++}
+diff --git a/libphobos/libdruntime/core/sys/hurd/execinfo.d b/libphobos/libdruntime/core/sys/hurd/execinfo.d
+new file mode 100644
+index 000000000..4afeffa8f
+--- /dev/null
++++ b/libphobos/libdruntime/core/sys/hurd/execinfo.d
+@@ -0,0 +1,16 @@
++/**
++ * D header file for GNU/Hurd.
++ *
++ * Copyright: Copyright (c) 2026 D Language Foundation
++ * License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
++ */
++module core.sys.hurd.execinfo;
++
++version (Hurd):
++extern (C):
++nothrow:
++@nogc:
++
++int backtrace(void** buffer, int size);
++char** backtrace_symbols(const(void*)* buffer, int size);
++void backtrace_symbols_fd(const(void*)* buffer, int size, int fd);
+diff --git a/libphobos/libdruntime/core/sys/hurd/link.d b/libphobos/libdruntime/core/sys/hurd/link.d
+new file mode 100644
+index 000000000..e9df0fc0b
+--- /dev/null
++++ b/libphobos/libdruntime/core/sys/hurd/link.d
+@@ -0,0 +1,134 @@
++/**
++ * D header file for GNU/Hurd.
++ * Copyright: Copyright (c) 2026 D Language Foundation
++ * License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
++ *
++ * $(LINK2 http://sourceware.org/git/?p=glibc.git;a=blob;f=elf/link.h, glibc elf/link.h)
++ */
++module core.sys.hurd.link;
++
++version (Hurd):
++extern (C):
++nothrow:
++@system:
++
++version (X86)     version = X86_Any;
++version (X86_64)  version = X86_Any;
++
++import core.stdc.stdint : uintptr_t, uint32_t, uint64_t;
++import core.sys.hurd.config : __WORDSIZE;
++import core.sys.hurd.dlfcn : Lmid_t;
++import core.sys.hurd.elf;
++
++version (X86_Any)
++{
++    // http://sourceware.org/git/?p=glibc.git;a=blob;f=bits/elfclass.h
++    alias __WORDSIZE __ELF_NATIVE_CLASS;
++    alias uint32_t Elf_Symndx;
++}
++else
++    static assert(0, "unimplemented");
++// <bits/elfclass.h>
++
++template ElfW(string type)
++{
++    mixin("alias Elf"~__ELF_NATIVE_CLASS.stringof~"_"~type~" ElfW;");
++}
++
++enum
++{
++    RT_CONSISTENT,
++    RT_ADD,
++    RT_DELETE,
++}
++
++struct r_debug
++{
++    int r_version;
++    link_map* r_map;
++    ElfW!"Addr" r_brk;
++    typeof(RT_CONSISTENT) r_state;
++    ElfW!"Addr" r_ldbase;
++}
++
++extern r_debug _r_debug;
++extern ElfW!"Dyn"* _DYNAMIC;
++
++struct link_map
++{
++    ElfW!"Addr" l_addr;
++    char* l_name;
++    ElfW!"Dyn"* l_ld;
++    link_map* l_next, l_prev;
++}
++
++enum
++{
++    LA_ACT_CONSISTENT,
++    LA_ACT_ADD,
++    LA_ACT_DELETE,
++}
++
++enum
++{
++    LA_SER_ORIG = 0x01,
++    LA_SER_LIBPATH = 0x02,
++    LA_SER_RUNPATH = 0x04,
++    LA_SER_CONFIG = 0x08,
++    LA_SER_DEFAULT = 0x40,
++    LA_SER_SECURE = 0x80,
++}
++
++
++enum
++{
++    LA_FLG_BINDTO = 0x01,
++    LA_FLG_BINDFROM = 0x02,
++}
++
++
++enum
++{
++    LA_SYMB_NOPLTENTER = 0x01,
++    LA_SYMB_NOPLTEXIT = 0x02,
++    LA_SYMB_STRUCTCALL = 0x04,
++    LA_SYMB_DLSYM = 0x08,
++    LA_SYMB_ALTVALUE = 0x10,
++}
++
++struct dl_phdr_info
++{
++    ElfW!"Addr" dlpi_addr;
++    const(char)* dlpi_name;
++    const(ElfW!"Phdr")* dlpi_phdr;
++    ElfW!"Half" dlpi_phnum;
++
++    // check the SIZE argument of the dl_iterate_phdr callback whether
++    // the following members are available
++    ulong dlpi_adds;
++    ulong dlpi_subs;
++
++    size_t dlpi_tls_modid;
++    void *dlpi_tls_data;
++}
++
++private alias extern(C) int function(dl_phdr_info*, size_t, void *) dl_iterate_phdr_cb;
++private alias extern(C) int function(dl_phdr_info*, size_t, void *) @nogc dl_iterate_phdr_cb_ngc;
++extern int dl_iterate_phdr(dl_iterate_phdr_cb __callback, void*__data);
++extern int dl_iterate_phdr(dl_iterate_phdr_cb_ngc __callback, void*__data) @nogc;
++
++// ld.so auditing interfaces prototypes have to be defined by the auditing DSO.
++extern uint la_version(uint __version);
++extern void la_activity(uintptr_t *__cookie, uint __flag);
++extern char* la_objsearch(const(char)* __name, uintptr_t* __cookie,
++                          uint __flag);
++extern uint la_objopen(link_map* __map, Lmid_t __lmid,
++                       uintptr_t* __cookie);
++extern void la_preinit(uintptr_t* __cookie);
++extern uintptr_t la_symbind32(Elf32_Sym* __sym, uint __ndx,
++                              uintptr_t* __refcook, uintptr_t* __defcook,
++                              uint *__flags, const(char)* __symname);
++extern uintptr_t la_symbind64(Elf64_Sym* __sym, uint __ndx,
++                              uintptr_t* __refcook, uintptr_t* __defcook,
++                              uint* __flags, const(char)* __symname);
++extern uint la_objclose(uintptr_t *__cookie);
+diff --git a/libphobos/libdruntime/core/sys/hurd/sys/types.d b/libphobos/libdruntime/core/sys/hurd/sys/types.d
+new file mode 100644
+index 000000000..a523a8df3
+--- /dev/null
++++ b/libphobos/libdruntime/core/sys/hurd/sys/types.d
+@@ -0,0 +1,22 @@
++/**
++ * D header file for Hurd extensions to POSIX's sys/types.h.
++ *
++ * Copyright: Copyright (c) 2026 D Language Foundation
++ * License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
++ */
++
++module core.sys.hurd.sys.types;
++
++import core.sys.posix.config;
++
++version (Hurd):
++extern(C):
++@nogc:
++nothrow:
++
++static if (__WORDSIZE == 32)
++    alias ushort ipc_pid_t;
++else
++    alias int ipc_pid_t;
++
++alias fsid_t = ulong;
+diff --git a/libphobos/libdruntime/core/sys/hurd/time.d b/libphobos/libdruntime/core/sys/hurd/time.d
+new file mode 100644
+index 000000000..12031e599
+--- /dev/null
++++ b/libphobos/libdruntime/core/sys/hurd/time.d
+@@ -0,0 +1,15 @@
++/**
++ * D header file for Hurd extensions to POSIX's time.h.
++ *
++ * Copyright: Copyright (c) 2026 D Language Foundation
++ * License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
++ */
++module core.sys.hurd.time;
++
++public import core.sys.posix.time;
++
++version (Hurd):
++
++enum CLOCK_MONOTONIC_RAW      = 4;
++enum CLOCK_REALTIME_COARSE    = 5;
++enum CLOCK_MONOTONIC_COARSE   = 6;
+diff --git a/libphobos/libdruntime/core/sys/hurd/unistd.d b/libphobos/libdruntime/core/sys/hurd/unistd.d
+new file mode 100644
+index 000000000..a351134cd
+--- /dev/null
++++ b/libphobos/libdruntime/core/sys/hurd/unistd.d
+@@ -0,0 +1,30 @@
++/**
++ * D header file for GNU/Hurd.
++ *
++ * Copyright: Copyright (c) 2026 D Language Foundation
++ * License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
++ */
++module core.sys.hurd.unistd;
++
++public import core.sys.posix.unistd;
++
++version (Hurd):
++extern(C):
++nothrow:
++@nogc:
++
++
++// Additional seek constants for sparse file handling
++// from Hurds's unistd.h, stdio.h
++enum {
++    /// Offset is relative to the next location containing data
++    SEEK_DATA = 3,
++    /// Offset is relative to the next hole (or EOF if file is not sparse)
++    SEEK_HOLE = 4
++}
++
++/// Prompt for a password without echoing it.
++char* getpass(const(char)* prompt);
++
++/// Close all open file descriptors greater or equal to `lowfd`
++void closefrom(int lowfd);
+diff --git a/libphobos/libdruntime/core/sys/linux/stdio.d b/libphobos/libdruntime/core/sys/linux/stdio.d
+index 2d079fd71..0b2ea266b 100644
+--- a/libphobos/libdruntime/core/sys/linux/stdio.d
++++ b/libphobos/libdruntime/core/sys/linux/stdio.d
+@@ -6,6 +6,7 @@
+   * Authors: Danny Milosavljevic
+   */
+ module core.sys.linux.stdio;
++version (linux):
+ version (CRuntime_Glibc):
+ public import core.sys.posix.stdio;
+ import core.sys.posix.sys.types : ssize_t, off64_t = off_t;
+diff --git a/libphobos/libdruntime/core/sys/posix/dirent.d b/libphobos/libdruntime/core/sys/posix/dirent.d
+index c7e8649d6..be56a7c2d 100644
+--- a/libphobos/libdruntime/core/sys/posix/dirent.d
++++ b/libphobos/libdruntime/core/sys/posix/dirent.d
+@@ -147,6 +147,17 @@ else version (Solaris)
+         char[1] d_name = 0;
+     }
+ }
++else version (Hurd)
++{
++    struct dirent
++    {
++        ino_t       d_ino;
++        ushort      d_reclen;
++        ubyte       d_type;
++        ubyte       d_namlen;
++        char[1]     d_name = 0;
++    }
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+diff --git a/libphobos/libdruntime/core/sys/posix/fcntl.d b/libphobos/libdruntime/core/sys/posix/fcntl.d
+index c0e9006a0..b5af01e74 100644
+--- a/libphobos/libdruntime/core/sys/posix/fcntl.d
++++ b/libphobos/libdruntime/core/sys/posix/fcntl.d
+@@ -843,6 +843,113 @@ else version (Solaris)
+         }
+     }
+ }
++else version (Hurd)
++{
++    enum F_DUPFD        = 0;
++    enum F_GETFD        = 1;
++    enum F_SETFD        = 2;
++    enum F_GETFL        = 3;
++    enum F_SETFL        = 4;
++    enum F_GETOWN       = 5;
++    enum F_SETOWN       = 6;
++
++    static if ( __USE_FILE_OFFSET64 )
++    {
++        enum F_GETLK      = F_GETLK64;
++        enum F_SETLK      = F_SETLK64;
++        enum F_SETLKW     = F_SETLKW64;
++    }
++    else
++    {
++        enum F_GETLK      = 7;
++        enum F_SETLK      = 8;
++        enum F_SETLKW     = 9;
++    }
++    enum F_GETLK64        = 10;
++    enum F_SETLK64        = 11;
++    enum F_SETLKW64       = 12;
++
++    enum F_DUPFD_CLOEXEC = 1030;
++
++    enum FD_CLOEXEC     = 1;
++
++    enum F_RDLCK        = 1;
++    enum F_WRLCK        = 2;
++    enum F_UNLCK        = 3;
++
++    enum O_CREAT        = 0x0010;
++    enum O_EXCL         = 0x0020;
++    enum O_NOCTTY       = 0;
++    enum O_TRUNC        = 0x00010000;
++
++    enum O_APPEND       = 0x0100;
++    enum O_DSYNC        = O_SYNC;
++    enum O_NONBLOCK     = 0x0004;
++    enum O_RSYNC        = O_SYNC;
++
++
++    enum O_ACCMODE      = O_RDWR;
++    enum O_RDONLY       = 0x0001;
++    enum O_WRONLY       = 0x0002;
++    enum O_RDWR         = (O_RDONLY|O_WRONLY);
++
++    enum O_SYNC         = O_FSYNC;
++    enum O_FSYNC        = 0x0400;
++
++    enum O_READ         = O_RDONLY;
++    enum O_WRITE        = O_WRONLY;
++    enum O_EXEC         = 0x0004;
++    enum O_NORW         = 0;
++    enum O_LARGEFILE    = 0;
++    enum O_NOLINK       = 0x0040;
++    enum O_NOTRANS      = 0x0080;
++    enum O_NOFOLLOW     = 0x00100000;
++    enum O_DIRECTORY    = 0x00200000;
++    enum O_ASYNC        = 0x0200;
++    enum O_NOATIME      = 0x0800;
++    enum O_SHLOCK       = 0x00020000;
++    enum O_EXLOCK       = 0x00040000;
++    enum O_NDELAY       = O_NONBLOCK;
++    enum O_HURD         = (0xffff | O_EXLOCK | O_SHLOCK);
++    enum O_CLOEXEC      = 0x00400000;
++    enum O_TMPFILE      = 0x00800000;
++    enum O_IGNORE_CTTY  = 0x00080000;
++
++
++    version (X86)
++    {
++        struct flock
++        {
++            int     l_type;
++            int     l_whence;
++            off_t   l_start;
++            off_t   l_len;
++            pid_t   l_pid;
++        }
++    }
++    else version (X86_64)
++    {
++        struct flock
++        {
++            short   l_type;
++            short   l_whence;
++            off_t   l_start;
++            off_t   l_len;
++            pid_t   l_pid;
++        }
++    }
++    else
++    {
++        static assert(false, "Unsupported platform");
++    }
++
++    enum AT_FDCWD            = -100;
++
++    enum AT_EACCESS          = 0x200;
++    enum AT_SYMLINK_NOFOLLOW = 0x100;
++    enum AT_SYMLINK_FOLLOW   = 0x400;
++    enum AT_REMOVEDIR        = 0x200;
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+diff --git a/libphobos/libdruntime/core/sys/posix/netinet/in_.d b/libphobos/libdruntime/core/sys/posix/netinet/in_.d
+index 5818ee6e2..c5b7c4018 100644
+--- a/libphobos/libdruntime/core/sys/posix/netinet/in_.d
++++ b/libphobos/libdruntime/core/sys/posix/netinet/in_.d
+@@ -85,18 +85,31 @@ version (CRuntime_Glibc)
+     //{
+     //    in_addr_t s_addr;
+     //}
++    version (linux)
++    {
++        private enum __SOCK_SIZE__ = 16;
+ 
+-    private enum __SOCK_SIZE__ = 16;
++        struct sockaddr_in
++        {
++            sa_family_t sin_family;
++            in_port_t   sin_port;
++            in_addr     sin_addr;
+ 
+-    struct sockaddr_in
++            /* Pad to size of `struct sockaddr'. */
++            ubyte[__SOCK_SIZE__ - sa_family_t.sizeof -
++                  in_port_t.sizeof - in_addr.sizeof] __pad;
++        }
++    }
++    else version (Hurd)
+     {
+-        sa_family_t sin_family;
+-        in_port_t   sin_port;
+-        in_addr     sin_addr;
+-
+-        /* Pad to size of `struct sockaddr'. */
+-        ubyte[__SOCK_SIZE__ - sa_family_t.sizeof -
+-              in_port_t.sizeof - in_addr.sizeof] __pad;
++        struct sockaddr_in
++        {
++            ubyte       sin_len;
++            sa_family_t sin_family;
++            in_port_t   sin_port;
++            in_addr     sin_addr;
++            ubyte[8]    sin_zero;
++        }
+     }
+ 
+     enum
+@@ -513,13 +526,28 @@ version (CRuntime_Glibc)
+         }
+     }
+ 
+-    struct sockaddr_in6
++    version (linux)
+     {
+-        sa_family_t sin6_family;
+-        in_port_t   sin6_port;
+-        uint32_t    sin6_flowinfo;
+-        in6_addr    sin6_addr;
+-        uint32_t    sin6_scope_id;
++        struct sockaddr_in6
++        {
++            ushort      sin6_family;
++            uint16_t    sin6_port;
++            uint32_t    sin6_flowinfo;
++            in6_addr    sin6_addr;
++            uint32_t    sin6_scope_id;
++        }
++    }
++    else version (Hurd)
++    {
++        struct sockaddr_in6
++        {
++            uint8_t     sin6_len;
++            sa_family_t sin6_family;
++            uint16_t    sin6_port;
++            uint32_t    sin6_flowinfo;
++            in6_addr    sin6_addr;
++            uint32_t    sin6_scope_id;
++        }
+     }
+ 
+     extern __gshared immutable in6_addr in6addr_any;
+diff --git a/libphobos/libdruntime/core/sys/posix/poll.d b/libphobos/libdruntime/core/sys/posix/poll.d
+index 5901f62b5..eeaea0b36 100644
+--- a/libphobos/libdruntime/core/sys/posix/poll.d
++++ b/libphobos/libdruntime/core/sys/posix/poll.d
+@@ -338,6 +338,22 @@ else version (Solaris)
+         POLLNVAL    = 0x0020,
+     }
+ }
++else version (Hurd)
++{
++    enum
++    {
++        POLLIN      = 0x001,
++        POLLRDNORM  = POLLIN,
++        POLLRDBAND  = POLLPRI,
++        POLLPRI     = 0x002,
++        POLLOUT     = 0x004,
++        POLLWRNORM  = POLLOUT,
++        POLLWRBAND  = POLLOUT,
++        POLLERR     = 0x008,  /* ocatal 010 */
++        POLLHUP     = 0x010,  /* ocatal 020 */
++        POLLNVAL    = 0x020,  /* ocatal 040 */
++    }
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+diff --git a/libphobos/libdruntime/core/sys/posix/pthread.d b/libphobos/libdruntime/core/sys/posix/pthread.d
+index 6c5f1a93e..b6c9ca555 100644
+--- a/libphobos/libdruntime/core/sys/posix/pthread.d
++++ b/libphobos/libdruntime/core/sys/posix/pthread.d
+@@ -104,41 +104,83 @@ void pthread_testcancel();
+ */
+ version (CRuntime_Glibc)
+ {
+-    enum
++    version (linux)
+     {
+-        PTHREAD_CANCEL_ENABLE,
+-        PTHREAD_CANCEL_DISABLE
+-    }
++        enum
++        {
++            PTHREAD_CANCEL_ENABLE,
++            PTHREAD_CANCEL_DISABLE
++        }
+ 
+-    enum
+-    {
+-        PTHREAD_CANCEL_DEFERRED,
+-        PTHREAD_CANCEL_ASYNCHRONOUS
+-    }
++        enum
++        {
++            PTHREAD_CANCEL_DEFERRED,
++            PTHREAD_CANCEL_ASYNCHRONOUS
++        }
+ 
+-    enum PTHREAD_CANCELED = cast(void*) -1;
++        enum PTHREAD_CANCELED = cast(void*) -1;
+ 
+-    //enum pthread_mutex_t PTHREAD_COND_INITIALIZER = { __LOCK_ALT_INITIALIZER, 0, "", 0 };
++        //enum pthread_mutex_t PTHREAD_COND_INITIALIZER = { __LOCK_ALT_INITIALIZER, 0, "", 0 };
+ 
+-    enum
+-    {
+-        PTHREAD_CREATE_JOINABLE,
+-        PTHREAD_CREATE_DETACHED
+-    }
++        enum
++        {
++            PTHREAD_CREATE_JOINABLE,
++            PTHREAD_CREATE_DETACHED
++        }
+ 
+-    enum
+-    {
+-        PTHREAD_INHERIT_SCHED,
+-        PTHREAD_EXPLICIT_SCHED
+-    }
++        enum
++        {
++            PTHREAD_INHERIT_SCHED,
++            PTHREAD_EXPLICIT_SCHED
++        }
+ 
+-    enum PTHREAD_MUTEX_INITIALIZER  = pthread_mutex_t.init;
+-    enum PTHREAD_ONCE_INIT          = pthread_once_t.init;
++        enum PTHREAD_MUTEX_INITIALIZER  = pthread_mutex_t.init;
++        enum PTHREAD_ONCE_INIT          = pthread_once_t.init;
+ 
+-    enum
++        enum
++        {
++            PTHREAD_PROCESS_PRIVATE,
++            PTHREAD_PROCESS_SHARED
++        }
++    }
++    else version (Hurd)
+     {
+-        PTHREAD_PROCESS_PRIVATE,
+-        PTHREAD_PROCESS_SHARED
++        enum
++        {
++            PTHREAD_CANCEL_DISABLE,
++            PTHREAD_CANCEL_ENABLE,
++        }
++
++        enum
++        {
++            PTHREAD_CANCEL_DEFERRED,
++            PTHREAD_CANCEL_ASYNCHRONOUS
++        }
++
++        enum PTHREAD_CANCELED = cast(void*) -1;
++
++        // enum __pthread_cond PTHREAD_COND_INITIALIZER = { __PTHREAD_SPIN_LOCK_INITIALIZER, NULL, NULL, 0, NULL }
++
++        enum
++        {
++            PTHREAD_CREATE_JOINABLE = 0,
++            PTHREAD_CREATE_DETACHED,
++        }
++
++        enum
++        {
++            PTHREAD_EXPLICIT_SCHED = 0,
++            PTHREAD_INHERIT_SCHED ,
++        }
++
++        enum PTHREAD_MUTEX_INITIALIZER  = pthread_mutex_t.init;
++        enum PTHREAD_ONCE_INIT          = pthread_once_t.init;
++
++        enum
++        {
++            PTHREAD_PROCESS_PRIVATE = 0,
++            PTHREAD_PROCESS_SHARED,
++        }
+     }
+ }
+ else version (Darwin)
+@@ -455,32 +497,70 @@ alias void function(void*) _pthread_cleanup_routine;
+ alias void function(void*) @nogc _pthread_cleanup_routine_nogc;
+ version (CRuntime_Glibc)
+ {
+-    struct _pthread_cleanup_buffer
++    version (linux)
+     {
+-        _pthread_cleanup_routine    __routine;
+-        void*                       __arg;
+-        int                         __canceltype;
+-        _pthread_cleanup_buffer*    __prev;
+-    }
++        struct _pthread_cleanup_buffer
++        {
++            _pthread_cleanup_routine    __routine;
++            void*                       __arg;
++            int                         __canceltype;
++            _pthread_cleanup_buffer*    __prev;
++        }
+ 
+-    void _pthread_cleanup_push(_pthread_cleanup_buffer*, _pthread_cleanup_routine, void*);
+-    void _pthread_cleanup_push(_pthread_cleanup_buffer*, _pthread_cleanup_routine_nogc, void*) @nogc;
+-    void _pthread_cleanup_pop(_pthread_cleanup_buffer*, int);
++        void _pthread_cleanup_push(_pthread_cleanup_buffer*, _pthread_cleanup_routine, void*);
++        void _pthread_cleanup_push(_pthread_cleanup_buffer*, _pthread_cleanup_routine_nogc, void*) @nogc;
++        void _pthread_cleanup_pop(_pthread_cleanup_buffer*, int);
+ 
+-    struct pthread_cleanup
+-    {
+-        _pthread_cleanup_buffer buffer = void;
++        struct pthread_cleanup
++        {
++            _pthread_cleanup_buffer buffer = void;
+ 
+-        extern (D) void push(F: _pthread_cleanup_routine)(F routine, void* arg )
++            extern (D) void push(F: _pthread_cleanup_routine)(F routine, void* arg )
++            {
++                _pthread_cleanup_push( &buffer, routine, arg );
++            }
++
++            extern (D) void pop()( int execute )
++            {
++                _pthread_cleanup_pop( &buffer, execute );
++            }
++        }
++    }
++    else version (Hurd)
++    {
++        struct __pthread_cancelation_handler
+         {
+-            _pthread_cleanup_push( &buffer, routine, arg );
++          _pthread_cleanup_routine       __handler;
++            void*                          __arg;
++            __pthread_cancelation_handler* __next;
+         }
+ 
+-        extern (D) void pop()( int execute )
++        private __pthread_cancelation_handler** __pthread_get_cleanup_stack();
++
++        struct pthread_cleanup
+         {
+-            _pthread_cleanup_pop( &buffer, execute );
++            __pthread_cancelation_handler** handlers = void;
++            __pthread_cancelation_handler handler = void;
++
++            extern (D) void push(F: _pthread_cleanup_routine)(F routine, void* arg)
++            {
++                handlers = __pthread_get_cleanup_stack();
++                handler = __pthread_cancelation_handler(routine, arg, *handlers);
++                *handlers = &handler;
++            }
++            extern (D) void pop()(int execute)
++            {
++                if (execute)
++                    handler.__handler(handler.__arg);
++                *handlers = handler.__next;
++            }
+         }
+     }
++    else
++    {
++        static assert(false, "Unsupported platform");
++    }
++
+ }
+ else version (Darwin)
+ {
+@@ -1042,9 +1122,24 @@ int pthread_setconcurrency(int);
+ 
+ version (CRuntime_Glibc)
+ {
+-    enum PTHREAD_MUTEX_NORMAL       = 0;
+-    enum PTHREAD_MUTEX_RECURSIVE    = 1;
+-    enum PTHREAD_MUTEX_ERRORCHECK   = 2;
++
++    version(linux)
++    {
++        enum PTHREAD_MUTEX_NORMAL       = 0;
++        enum PTHREAD_MUTEX_RECURSIVE    = 1;
++        enum PTHREAD_MUTEX_ERRORCHECK   = 2;
++    }
++    else version(Hurd)
++    {
++        enum PTHREAD_MUTEX_NORMAL       = 0;
++        enum PTHREAD_MUTEX_ERRORCHECK   = 1;
++        enum PTHREAD_MUTEX_RECURSIVE    = 2;
++
++    }
++    else
++    {
++        static assert(false, "Unsupported platform");
++    }
+     enum PTHREAD_MUTEX_DEFAULT      = PTHREAD_MUTEX_NORMAL;
+ 
+     int pthread_attr_getguardsize(const scope pthread_attr_t*, size_t*);
+@@ -1378,6 +1473,22 @@ else version (Solaris)
+     int pthread_mutexattr_setprioceiling(pthread_mutexattr_t*, int);
+     int pthread_mutexattr_setprotocol(pthread_mutexattr_t*, int);
+ }
++else version (Hurd)
++{
++  enum
++  {
++      PTHREAD_PRIO_NONE = 0,
++      PTHREAD_PRIO_INHERIT,
++      PTHREAD_PRIO_PROTECT,
++  }
++
++  int pthread_mutex_getprioceiling(const scope pthread_mutex_t*, int*);
++  int pthread_mutex_setprioceiling(pthread_mutex_t*, int, int*);
++  int pthread_mutexattr_getprioceiling(const scope pthread_mutexattr_t*, int*);
++  int pthread_mutexattr_getprotocol(const scope pthread_mutexattr_t*, int*);
++  int pthread_mutexattr_setprioceiling(pthread_mutexattr_t*, int);
++  int pthread_mutexattr_setprotocol(pthread_mutexattr_t*, int);
++}
+ 
+ //
+ // Scheduling (TPS)
+@@ -1399,10 +1510,21 @@ int pthread_setschedprio(pthread_t, int);
+ 
+ version (CRuntime_Glibc)
+ {
+-    enum
++    version (linux)
+     {
+-        PTHREAD_SCOPE_SYSTEM,
+-        PTHREAD_SCOPE_PROCESS
++        enum
++        {
++            PTHREAD_SCOPE_SYSTEM,
++            PTHREAD_SCOPE_PROCESS
++        }
++    }
++    else version (Hurd)
++    {
++        enum
++        {
++            PTHREAD_SCOPE_SYSTEM = 0,
++         PTHREAD_SCOPE_PROCESS,
++        }
+     }
+ 
+     int pthread_attr_getinheritsched(const scope pthread_attr_t*, int*);
+diff --git a/libphobos/libdruntime/core/sys/posix/sched.d b/libphobos/libdruntime/core/sys/posix/sched.d
+index ba7ab8984..008ad0602 100644
+--- a/libphobos/libdruntime/core/sys/posix/sched.d
++++ b/libphobos/libdruntime/core/sys/posix/sched.d
+@@ -162,6 +162,17 @@ else version (Solaris)
+     enum SCHED_FX = 6;
+     enum _SCHED_NEXT = 7;
+ }
++else version (Hurd)
++{
++    struct sched_param
++    {
++        int sched_priority;
++    }
++
++    enum SCHED_FIFO     = 1;
++    enum SCHED_OTHER    = 0;
++    enum SCHED_RR       = 2;
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+diff --git a/libphobos/libdruntime/core/sys/posix/semaphore.d b/libphobos/libdruntime/core/sys/posix/semaphore.d
+index 4f3b6e951..ead305cce 100644
+--- a/libphobos/libdruntime/core/sys/posix/semaphore.d
++++ b/libphobos/libdruntime/core/sys/posix/semaphore.d
+@@ -51,19 +51,31 @@ int sem_wait(sem_t*);
+ 
+ version (CRuntime_Glibc)
+ {
+-    private alias int __atomic_lock_t;
+-
+-    private struct _pthread_fastlock
++    version(linux)
+     {
+-      c_long            __status;
+-      __atomic_lock_t   __spinlock;
+-    }
++        private alias int __atomic_lock_t;
+ 
+-    struct sem_t
++        private struct _pthread_fastlock
++        {
++            c_long            __status;
++            __atomic_lock_t   __spinlock;
++        }
++
++        struct sem_t
++        {
++            _pthread_fastlock __sem_lock;
++            int               __sem_value;
++            void*             __sem_waiting;
++        }
++    }
++    else version (Hurd)
+     {
+-      _pthread_fastlock __sem_lock;
+-      int               __sem_value;
+-      void*             __sem_waiting;
++        private enum __SIZEOF_SEM_T = 20;
++        union sem_t
++        {
++            byte[__SIZEOF_SEM_T] __size;
++            c_long __align;
++        }
+     }
+ 
+     enum SEM_FAILED = cast(sem_t*) null;
+diff --git a/libphobos/libdruntime/core/sys/posix/signal.d b/libphobos/libdruntime/core/sys/posix/signal.d
+index a8b7f7511..235d89c9c 100644
+--- a/libphobos/libdruntime/core/sys/posix/signal.d
++++ b/libphobos/libdruntime/core/sys/posix/signal.d
+@@ -168,6 +168,9 @@ else version (NetBSD)
+     enum SIGRTMIN = 33;
+     enum SIGRTMAX = 63;
+ }
++else version (Hurd)
++{
++}
+ else version (linux)
+ {
+     // Note: CRuntime_Bionic switched to calling these functions
+@@ -561,6 +564,24 @@ else version (Solaris)
+     enum SIGUSR2 = 17;
+     enum SIGURG = 21;
+ }
++else version (Hurd)
++{
++    enum SIGALRM = 14;
++    enum SIGBUS = 10;
++    enum SIGCHLD = 20;
++    enum SIGCONT = 19;
++    enum SIGHUP = 1;
++    enum SIGKILL = 9;
++    enum SIGPIPE = 13;
++    enum SIGQUIT = 3;
++    enum SIGSTOP = 17;
++    enum SIGTSTP = 18;
++    enum SIGTTIN = 21;
++    enum SIGTTOU = 22;
++    enum SIGUSR1 = 30;
++    enum SIGUSR2 = 31;
++    enum SIGURG = 16;
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+@@ -848,6 +869,26 @@ else version (Darwin)
+         int             sa_flags;
+     }
+ }
++else version (Hurd)
++{
++  struct sigaction_t
++  {
++      static if ( true /* __USE_POSIX199309 */ )
++      {
++          union
++          {
++              sigfn_t     sa_handler;
++              sigactfn_t  sa_sigaction;
++          }
++      }
++      else
++      {
++          sigfn_t     sa_handler;
++      }
++      sigset_t        sa_mask;
++      int             sa_flags;
++  }
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+@@ -1417,6 +1458,41 @@ else version (Solaris)
+     enum SI_ASYNCIO = -4;
+     enum SI_MESGQ   = -5;
+ }
++else version(Hurd)
++{
++    enum SIG_HOLD = cast(sigfn_t2) 2;
++
++    alias c_ulong sigset_t;
++
++    enum SA_NOCLDSTOP   = 0x0008; // (CX|XSI)
++
++    enum SIG_BLOCK      = 1;
++    enum SIG_UNBLOCK    = 2;
++    enum SIG_SETMASK    = 3;
++
++    struct siginfo_t
++    {
++        int si_signo;
++        int si_errno;
++        int si_code;
++
++        pid_t si_pid;
++        uid_t si_uid;
++        void* si_addr;
++        int si_status;
++        c_long si_band;
++        sigval  si_value;
++    }
++
++    enum
++    {
++        SI_ASYNCIO = -4,
++        SI_MESGQ,
++        SI_TIMER,
++        SI_QUEUE,
++        SI_USER
++    }
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+@@ -2375,6 +2451,89 @@ else version (Solaris)
+         POLL_HUP,
+     }
+ }
++else version(Hurd)
++{
++    enum SIGPOLL = 23;
++    enum SIGPROF = 27;
++    enum SIGSYS = 12;
++    enum SIGTRAP = 5;
++    enum SIGVTALRM = 26;
++    enum SIGXCPU = 24;
++    enum SIGXFSZ = 25;
++
++    enum
++    {
++        SA_ONSTACK = 0x0001,
++        SA_RESETHAND = 0x0004,
++        SA_RESTART = 0x0002,
++        SA_SIGINFO = 0x0040,
++        // SA_NOCLDWAIT = ,
++        SA_NODEFER = 0x00010,
++    }
++
++    enum
++    {
++        ILL_ILLOPC = 1,
++        ILL_ILLOPN,
++        ILL_ILLADR,
++        ILL_ILLTRP,
++        ILL_PRVOPC,
++        ILL_PRVREG,
++        ILL_COPROC,
++        ILL_BADSTK
++    }
++
++    enum
++    {
++        FPE_INTDIV = 1,
++        FPE_INTOVF,
++        FPE_FLTDIV,
++        FPE_FLTOVF,
++        FPE_FLTUND,
++        FPE_FLTRES,
++        FPE_FLTINV,
++        FPE_FLTSUB
++    }
++
++    enum
++    {
++        SEGV_MAPERR = 1,
++        SEGV_ACCERR
++    }
++
++    enum
++    {
++        BUS_ADRALN = 1,
++        BUS_ADRERR,
++        BUS_OBJERR
++    }
++
++    enum
++    {
++        TRAP_BRKPT = 1,
++        TRAP_TRACE
++    }
++
++    enum
++    {
++        CLD_EXITED = 1,
++        CLD_KILLED,
++        CLD_DUMPED,
++        CLD_TRAPPED,
++        CLD_STOPPED,
++        CLD_CONTINUED
++    }
++
++    enum
++    {
++        POLL_IN = 1,
++        POLL_OUT,
++        POLL_MSG,
++        POLL_ERR,
++        POLL_PRI,
++        POLL_HUP
++    }
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+@@ -2416,11 +2575,21 @@ int sigrelse(int);
+ 
+ version (CRuntime_Glibc)
+ {
+-    enum SS_ONSTACK     = 1;
+-    enum SS_DISABLE     = 2;
+-    enum MINSIGSTKSZ    = 2048;
+-    enum SIGSTKSZ       = 8192;
++    version (linux)
++    {
++        enum SS_ONSTACK     = 1;
++        enum SS_DISABLE     = 2;
++        enum MINSIGSTKSZ    = 2048;
++        enum SIGSTKSZ       = 8192;
++    }
+ 
++    version (Hurd)
++    {
++        enum SS_ONSTACK     = 0x0001;
++        enum SS_DISABLE     = 0x0004;
++        enum MINSIGSTKSZ    = 8192;
++        enum SIGSTKSZ       = (MINSIGSTKSZ + 32768);
++    }
+     //ucontext_t (defined in core.sys.posix.ucontext)
+     //mcontext_t (defined in core.sys.posix.ucontext)
+ 
+@@ -2980,6 +3149,18 @@ else version (Solaris)
+         int __sigev_pad2;
+     }
+ }
++else version (Hurd)
++{
++    struct sigevent
++    {
++      sigval      sigev_value;
++      int         sigev_signo;
++      int         sigev_notify;
++
++      void function(sigval) sigev_notify_function;
++      void*                 sigev_notify_attributes;
++  }
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+diff --git a/libphobos/libdruntime/core/sys/posix/spawn.d b/libphobos/libdruntime/core/sys/posix/spawn.d
+index 789053396..b0e184e9f 100644
+--- a/libphobos/libdruntime/core/sys/posix/spawn.d
++++ b/libphobos/libdruntime/core/sys/posix/spawn.d
+@@ -34,6 +34,8 @@ OpenBSD: https://github.com/openbsd/src/blob/master/include/spawn.h
+ DragonFlyBSD: https://github.com/DragonFlyBSD/DragonFlyBSD/blob/master/include/spawn.h
+ 
+ Solaris: https://github.com/illumos/illumos-gate/blob/master/usr/src/head/spawn.h
++
++Hurd: https://sourceware.org/git/?p=glibc.git;a=blob;f=posix/spawn.h;hb=HEAD
+ */
+ 
+ version (OSX) // macOS and iOS only as this API is prohibited on WatchOS and TVOS
+@@ -370,5 +372,45 @@ else version (Solaris)
+         int posix_spawnattr_setsigignore_np(posix_spawnattr_t* attr, const sigset_t* sigignore);
+     }
+ }
++else version (Hurd)
++{
++    // Source: https://sourceware.org/git/?p=glibc.git;a=blob;f=posix/spawn.h;hb=HEAD
++    enum
++    {
++        POSIX_SPAWN_RESETIDS = 0x01,
++        POSIX_SPAWN_SETPGROUP = 0x02,
++        POSIX_SPAWN_SETSIGDEF = 0x04,
++        POSIX_SPAWN_SETSIGMASK = 0x08,
++        POSIX_SPAWN_SETSCHEDPARAM = 0x10,
++        POSIX_SPAWN_SETSCHEDULER = 0x20,
++    }
++    import core.sys.posix.config : _GNU_SOURCE;
++    static if (_GNU_SOURCE)
++    {
++        enum
++        {
++            POSIX_SPAWN_USEVFORK = 0x40,
++            POSIX_SPAWN_SETSID = 0x80
++        }
++    }
++    struct posix_spawnattr_t
++    {
++        short __flags;
++        pid_t __pgrp;
++        sigset_t __sd;
++        sigset_t __ss;
++        sched_param __sp;
++        int __policy;
++        int[16] __pad;
++    }
++    private struct __spawn_action;
++    struct posix_spawn_file_actions_t
++    {
++        int __allocated;
++        int __used;
++        __spawn_action* __actions;
++        int[16] __pad;
++    }
++}
+ else
+     static assert(0, "Unsupported OS");
+diff --git a/libphobos/libdruntime/core/sys/posix/sys/ioctl.d b/libphobos/libdruntime/core/sys/posix/sys/ioctl.d
+index caf3ebafb..596b19ed5 100644
+--- a/libphobos/libdruntime/core/sys/posix/sys/ioctl.d
++++ b/libphobos/libdruntime/core/sys/posix/sys/ioctl.d
+@@ -400,6 +400,43 @@ else version (DragonFlyBSD)
+ else version (Solaris)
+ {
+ }
++else version (Hurd)
++{
++    struct tchars
++    {
++        char t_intrc;
++        char t_quitc;
++        char t_startc;
++        char t_stopc;
++        char t_eofc;
++        char t_brkc;
++    }
++    struct ltchars
++    {
++        char t_suspc;
++        char t_dsuspc;
++        char t_rprntc;
++        char t_flushc;
++        char t_werasc;
++        char t_lnextc;
++    }
++    struct sgttyb
++    {
++        char sg_ispeed;
++        char sg_ospeed;
++        char sg_erase;
++        char sg_kill;
++        short sg_flags;
++    }
++
++    struct winsize
++    {
++        ushort ws_row;
++        ushort ws_col;
++        ushort ws_xpixel;
++        ushort ws_ypixel;
++    }
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+diff --git a/libphobos/libdruntime/core/sys/posix/sys/ipc.d b/libphobos/libdruntime/core/sys/posix/sys/ipc.d
+index 32caba95a..1d12841ff 100644
+--- a/libphobos/libdruntime/core/sys/posix/sys/ipc.d
++++ b/libphobos/libdruntime/core/sys/posix/sys/ipc.d
+@@ -246,6 +246,49 @@ else version (Solaris)
+     enum IPC_SET        = 11;
+     enum IPC_STAT       = 12;
+ }
++else version (Hurd)
++{
++    version (X86)
++    {
++        struct ipc_perm
++        {
++            key_t   __key;
++            ushort   uid;
++            ushort   gid;
++            ushort   cuid;
++            ushort   cgid;
++            ushort  mode;
++            ushort  __seq;
++        }
++    }
++    else version (X86_64)
++    {
++        struct ipc_perm
++        {
++            key_t   __key;
++            uid_t   uid;
++            gid_t   gid;
++            uid_t   cuid;
++            gid_t   cgid;
++            mode_t  mode;
++            ushort  __seq;
++        }
++    }
++    else
++    {
++        static assert(false, "Unsupported platform");
++    }
++
++    enum IPC_CREAT      = 0x0200; // 01000
++    enum IPC_EXCL       = 0x0400; // 02000
++    enum IPC_NOWAIT     = 0x0800; // 04000
++
++    enum key_t IPC_PRIVATE = 0;
++
++    enum IPC_RMID       = 0;
++    enum IPC_SET        = 1;
++    enum IPC_STAT       = 2;
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+diff --git a/libphobos/libdruntime/core/sys/posix/sys/mman.d b/libphobos/libdruntime/core/sys/posix/sys/mman.d
+index b1eb9fa81..35baa422c 100644
+--- a/libphobos/libdruntime/core/sys/posix/sys/mman.d
++++ b/libphobos/libdruntime/core/sys/posix/sys/mman.d
+@@ -170,6 +170,14 @@ else version (DragonFlyBSD)
+ else version (Solaris)
+ {
+ }
++else version (Hurd)
++{
++    enum POSIX_MADV_NORMAL      = 0;
++    enum POSIX_MADV_RANDOM      = 1;
++    enum POSIX_MADV_SEQUENTIAL  = 2;
++    enum POSIX_MADV_WILLNEED    = 3;
++    enum POSIX_MADV_DONTNEED    = 4;
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+@@ -234,6 +242,13 @@ else version (Solaris)
+     enum PROT_WRITE = 0x02;
+     enum PROT_EXEC = 0x04;
+ }
++else version (Hurd)
++{
++    enum PROT_NONE      = 0x00;
++    enum PROT_READ      = 0x04;
++    enum PROT_WRITE     = 0x02;
++    enum PROT_EXEC      = 0x01;
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+@@ -473,6 +488,19 @@ else version (Solaris)
+     enum MS_SYNC = 0x0004;
+     enum MS_ASYNC = 0x0001;
+     enum MS_INVALIDATE  = 0x0002;
++}
++ else version (Hurd)
++{
++    enum MAP_SHARED     = 0x0010;
++    enum MAP_PRIVATE    = 0x0000;
++    enum MAP_FIXED      = 0x0100;
++    enum MAP_ANON       = 0x0002;
++
++    enum MAP_FAILED     = cast(void*)-1;
++
++    enum MS_ASYNC       = 1;
++    enum MS_INVALIDATE  = 0;
++    enum MS_SYNC        = 2;
+ }
+ else
+ {
+@@ -590,6 +618,11 @@ else version (Solaris)
+     enum MCL_CURRENT = 0x0001;
+     enum MCL_FUTURE = 0x0002;
+ }
++else version (Hurd)
++{
++    enum MCL_CURRENT    = 0x0001;
++    enum MCL_FUTURE     = 0x0002;
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+diff --git a/libphobos/libdruntime/core/sys/posix/sys/msg.d b/libphobos/libdruntime/core/sys/posix/sys/msg.d
+index 19e07bd64..f6b353bf5 100644
+--- a/libphobos/libdruntime/core/sys/posix/sys/msg.d
++++ b/libphobos/libdruntime/core/sys/posix/sys/msg.d
+@@ -173,6 +173,50 @@ version (linux)
+         }
+     }
+ }
++else version (Hurd)
++{
++    import core.sys.hurd.sys.types;
++    enum MSG_STAT = 11;
++    enum MSG_INFO = 12;
++
++    enum MSG_NOERROR = 1 << 12; // octal!10000
++    enum  MSG_EXCEPT = 2 << 12; // octal!20000
++
++    struct msginfo
++    {
++        int msgpool;
++        int msgmap;
++        int msgmax;
++        int msgmnb;
++        int msgmni;
++        int msgssz;
++        int msgtql;
++        ushort msgseg;
++    }
++
++    alias ushort msgqnum_t;
++    alias ushort msglen_t;
++
++    private struct msg;
++    private struct __wait_queue;
++
++    struct msqid_ds
++    {
++        ipc_perm msg_perm;
++        msg *__msg_first;
++        msg *__msg_last;
++        time_t msg_stime;
++        time_t msg_rtime;
++        time_t msg_ctime;
++        __wait_queue *__wwait;
++        __wait_queue *__rwait;
++        ushort __msg_cbytes;
++        msgqnum_t msg_qnum;
++        msglen_t msg_qbytes;
++        ipc_pid_t msg_lspid;
++        ipc_pid_t msg_lrpid;
++    }
++}
+ else
+ {
+     // https://sourceware.org/git/?p=glibc.git;a=blob;f=bits/msq.h
+diff --git a/libphobos/libdruntime/core/sys/posix/sys/resource.d b/libphobos/libdruntime/core/sys/posix/sys/resource.d
+index 3a9a18763..36fd6e959 100644
+--- a/libphobos/libdruntime/core/sys/posix/sys/resource.d
++++ b/libphobos/libdruntime/core/sys/posix/sys/resource.d
+@@ -477,6 +477,64 @@ else version (Solaris)
+         RLIMIT_AS     = 6,
+     }
+ }
++else version (Hurd)
++{
++    enum
++    {
++        PRIO_PROCESS = 0,
++        PRIO_PGRP    = 1,
++        PRIO_USER    = 2,
++    }
++
++    static if (__USE_FILE_OFFSET64)
++         alias ulong rlim_t;
++    else
++         alias c_ulong rlim_t;
++
++    static if (__USE_FILE_OFFSET64)
++        enum RLIM_INFINITY = 0xffffffffffffffffUL;
++    else
++        enum RLIM_INFINITY = cast(c_ulong)(~0UL);
++
++    enum RLIM_SAVED_MAX = RLIM_INFINITY;
++    enum RLIM_SAVED_CUR = RLIM_INFINITY;
++
++    enum
++    {
++        RUSAGE_SELF     =  0,
++        RUSAGE_CHILDREN = -1,
++    }
++
++    struct rusage
++    {
++        timeval ru_utime;
++        timeval ru_stime;
++        c_long ru_maxrss;
++        c_long ru_ixrss;
++        c_long ru_idrss;
++        c_long ru_isrss;
++        c_long ru_minflt;
++        c_long ru_majflt;
++        c_long ru_nswap;
++        c_long ru_inblock;
++        c_long ru_oublock;
++        c_long ru_msgsnd;
++        c_long ru_msgrcv;
++        c_long ru_nsignals;
++        c_long ru_nvcsw;
++        c_long ru_nivcsw;
++    }
++    enum
++    {
++        RLIMIT_CORE   = 4,
++        RLIMIT_CPU    = 0,
++        RLIMIT_DATA   = 2,
++        RLIMIT_FSIZE  = 1,
++        RLIMIT_NOFILE = 8,
++        RLIMIT_STACK  = 3,
++        RLIMIT_AS     = 10,
++    }
++}
+ else
+     static assert (false, "Unsupported platform");
+ 
+diff --git a/libphobos/libdruntime/core/sys/posix/sys/shm.d b/libphobos/libdruntime/core/sys/posix/sys/shm.d
+index 6ecdc0def..41c2c9794 100644
+--- a/libphobos/libdruntime/core/sys/posix/sys/shm.d
++++ b/libphobos/libdruntime/core/sys/posix/sys/shm.d
+@@ -180,6 +180,32 @@ else version (Darwin)
+ else version (Solaris)
+ {
+ 
++}
++else version (Hurd)
++{
++    import core.sys.hurd.sys.types;
++    enum SHM_RDONLY     = 0x01000; // 010000
++    enum SHM_RND        = 0x02000; // 020000
++    enum SHM_REMAP      = 0x4000; // 040000
++
++    alias short   shmatt_t;
++
++    private struct __vm_area_struct;
++
++    struct shmid_ds
++    {
++        ipc_perm    shm_perm;
++        size_t      shm_segsz;
++        time_t      shm_atime;
++        time_t      shm_dtime;
++        time_t      shm_ctime;
++        ipc_pid_t   shm_cpid;
++        ipc_pid_t   shm_lpid;
++        shmatt_t    shm_nattch;
++        private ushort      __shm_npages;
++        private c_ulong*    __shm_pages;
++        private __vm_area_struct* __attaches;
++    }
+ }
+ else
+ {
+diff --git a/libphobos/libdruntime/core/sys/posix/sys/socket.d b/libphobos/libdruntime/core/sys/posix/sys/socket.d
+index 7c6fab631..9a74f5981 100644
+--- a/libphobos/libdruntime/core/sys/posix/sys/socket.d
++++ b/libphobos/libdruntime/core/sys/posix/sys/socket.d
+@@ -1589,6 +1589,153 @@ else version (Solaris)
+         SHUT_RDWR
+     }
+ }
++else version (Hurd)
++{
++    alias uint   socklen_t;
++    alias ubyte sa_family_t;
++
++    struct sockaddr
++    {
++        ubyte       ss_len;
++        sa_family_t sa_family;
++        byte[14]    sa_data;
++    }
++
++    private enum : size_t
++    {
++        _SS_SIZE    = 128,
++        _SS_PADSIZE = _SS_SIZE - c_ulong.sizeof - sa_family_t.sizeof - ubyte.sizeof,
++    }
++
++    struct sockaddr_storage
++    {
++        ubyte       ss_len;
++        sa_family_t ss_family;
++        byte[_SS_PADSIZE] __ss_padding;
++        c_ulong     __ss_align;
++    }
++    struct msghdr
++    {
++        void*      msg_name;
++        socklen_t  msg_namelen;
++        iovec*     msg_iov;
++        int        msg_iovlen;
++        void*      msg_control;
++        socklen_t  msg_controllen;
++        int        msg_flags;
++    }
++
++    struct cmsghdr
++    {
++        socklen_t cmsg_len;
++        int        cmsg_level;
++        int        cmsg_type;
++    }
++    enum : uint
++    {
++        SCM_RIGHTS = 0x01
++    }
++
++    extern (D) inout(ubyte)*   CMSG_DATA( return scope inout(cmsghdr)* cmsg ) pure nothrow @nogc { return cast(ubyte*)( cmsg + 1 ); }
++    private inout(cmsghdr)* __cmsg_nxthdr(inout(msghdr)*, inout(cmsghdr)*) pure nothrow @nogc;
++    extern (D)  inout(cmsghdr)* CMSG_NXTHDR(inout(msghdr)* msg, inout(cmsghdr)* cmsg) pure nothrow @nogc
++    {
++        return __cmsg_nxthdr(msg, cmsg);
++    }
++
++    extern (D) inout(cmsghdr)* CMSG_FIRSTHDR( inout(msghdr)* mhdr ) pure nothrow @nogc
++    {
++        return ( cast(size_t)mhdr.msg_controllen >= cmsghdr.sizeof
++                 ? cast(inout(cmsghdr)*) mhdr.msg_control
++                 : cast(inout(cmsghdr)*) null );
++    }
++
++    extern (D)
++     {
++         size_t CMSG_ALIGN( size_t len ) pure nothrow @nogc
++         {
++             return (len + size_t.sizeof - 1) & cast(size_t) (~(size_t.sizeof - 1));
++         }
++
++         size_t CMSG_LEN( size_t len ) pure nothrow @nogc
++         {
++             return CMSG_ALIGN(cmsghdr.sizeof) + len;
++         }
++     }
++
++    extern (D) size_t CMSG_SPACE(size_t len) pure nothrow @nogc
++    {
++        return CMSG_ALIGN(len) + CMSG_ALIGN(cmsghdr.sizeof);
++    }
++    struct linger
++    {
++        int l_onoff;
++        int l_linger;
++    }
++
++    enum
++    {
++        SOCK_DGRAM      = 2,
++        SOCK_RDM        = 4,
++        SOCK_SEQPACKET  = 5,
++        SOCK_STREAM     = 1,
++    }
++    enum
++    {
++        SOL_SOCKET      = 0xffff
++    }
++    enum
++    {
++        SO_ACCEPTCONN   = 0x0002,
++        SO_BROADCAST    = 0x0020,
++        SO_DEBUG        = 0x0001,
++        SO_DONTROUTE    = 0x0010,
++        SO_ERROR        = 0x1007,
++        SO_KEEPALIVE    = 0x0008,
++        SO_LINGER       = 0x0080,
++        SO_OOBINLINE    = 0x0100,
++        SO_RCVBUF       = 0x1002,
++        SO_RCVLOWAT     = 0x1004,
++        SO_RCVTIMEO     = 0x1006,
++        SO_REUSEADDR    = 0x0004,
++        SO_REUSEPORT    = 0x0200,
++        SO_SNDBUF       = 0x1002,
++        SO_SNDLOWAT     = 0x1003,
++        SO_SNDTIMEO     = 0x1005,
++        SO_TYPE         = 0x1008
++    }
++    enum
++    {
++        SOMAXCONN       = 128
++    }
++    enum : uint
++    {
++        MSG_CTRUNC      = 0x20,
++        MSG_DONTROUTE   = 0x04,
++        MSG_EOR         = 0x08,
++        MSG_OOB         = 0x01,
++        MSG_PEEK        = 0x02,
++        MSG_TRUNC       = 0x10,
++        MSG_WAITALL     = 0x40,
++        MSG_NOSIGNAL    = 0x0400
++    }
++
++    enum
++    {
++        AF_INET         = 2,
++        AF_LOCAL        = 1,
++        AF_UNIX         = AF_LOCAL,
++        AF_UNSPEC       = 0,
++        AF_APPLETALK    = 16,
++        AF_IPX          = 23
++    }
++    enum
++    {
++        SHUT_RD             = 0,
++        SHUT_WR             = 1,
++        SHUT_RDWR           = 2
++    }
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+@@ -1890,6 +2037,13 @@ else version (Solaris)
+         AF_INET6 = 26,
+     }
+ }
++else version (Hurd)
++{
++    enum
++    {
++        AF_INET6 = 26,
++    }
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+@@ -1951,6 +2105,13 @@ else version (Solaris)
+         SOCK_RAW = 4,
+     }
+ }
++else version (Hurd)
++{
++    enum
++    {
++        SOCK_RAW = 3,
++    }
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+diff --git a/libphobos/libdruntime/core/sys/posix/sys/stat.d b/libphobos/libdruntime/core/sys/posix/sys/stat.d
+index b89478fe7..35aac45da 100644
+--- a/libphobos/libdruntime/core/sys/posix/sys/stat.d
++++ b/libphobos/libdruntime/core/sys/posix/sys/stat.d
+@@ -1412,6 +1412,67 @@ else version (Solaris)
+     enum S_ISGID = 0x400;
+     enum S_ISVTX = 0x200;
+ }
++else version (Hurd)
++{
++    import core.sys.hurd.sys.types;
++    static if (__USE_FILE_OFFSET64)
++        private enum SPARE_SIZE = 8;
++    else
++        private enum SPARE_SIZE = 11;
++
++    struct stat_t
++    {
++        int       st_fstype;            /* File system type.  */
++        fsid_t    st_fsid;              /* File system ID.  */
++        alias st_dev = st_fsid;
++        ino_t     st_ino;               /* File number. */
++        uint      st_gen;
++        dev_t     st_rdev;
++        mode_t    st_mode;
++        nlink_t   st_nlink;
++        uid_t     st_uid;
++        gid_t     st_gid;
++        off_t     st_size;
++
++        static if (_DEFAULT_SOURCE || _XOPEN_SOURCE >= 700)
++        {
++            timespec    st_atim;
++            timespec    st_mtim;
++            timespec    st_ctim;
++            extern(D) @safe @property inout pure nothrow
++            {
++                ref inout(time_t) st_atime() return { return st_atim.tv_sec; }
++                ref inout(time_t) st_mtime() return { return st_mtim.tv_sec; }
++                ref inout(time_t) st_ctime() return { return st_ctim.tv_sec; }
++            }
++      }
++      else
++      {
++            time_t      st_atime;
++            c_ulong     st_atimensec;
++            time_t      st_mtime;
++            c_ulong     st_mtimensec;
++            time_t      st_ctime;
++            c_ulong     st_ctimensec;
++      }
++
++        blksize_t   st_blksize;
++        blkcnt_t    st_blocks;
++
++        uid_t       st_author;
++        uint        st_flags;
++        int[SPARE_SIZE]      st_spare;
++    }
++    version (X86)     static assert(stat_t.sizeof == 128);
++    version (X86_64)  static assert(stat_t.sizeof == 176);
++
++    enum S_ISUID    = 0x800; // octal 0004000
++    enum S_ISGID    = 0x400; // octal 0002000
++    enum S_ISVTX    = 0x200; // octal 0001000
++
++    enum UTIME_NOW = -1;
++    enum UTIME_OMIT = -2;
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+@@ -2081,6 +2142,17 @@ else version (Solaris)
+     enum S_IFDOOR = 0xD000;
+     enum S_IFPORT = 0xE000;
+ }
++else version (Hurd)
++{
++    enum S_IFMT     = 0xF000; // octal 0170000
++    enum S_IFBLK    = 0x6000; // octal 0060000
++    enum S_IFCHR    = 0x2000; // octal 0020000
++    enum S_IFIFO    = 0x1000; // octal 0010000
++    enum S_IFREG    = 0x8000; // octal 0100000
++    enum S_IFDIR    = 0x4000; // octal 0040000
++    enum S_IFLNK    = 0xA000; // octal 0120000
++    enum S_IFSOCK   = 0xC000; // octal 0140000
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+diff --git a/libphobos/libdruntime/core/sys/posix/sys/statvfs.d b/libphobos/libdruntime/core/sys/posix/sys/statvfs.d
+index eae0e5c95..63ca2440f 100644
+--- a/libphobos/libdruntime/core/sys/posix/sys/statvfs.d
++++ b/libphobos/libdruntime/core/sys/posix/sys/statvfs.d
+@@ -18,71 +18,117 @@ nothrow:
+ @nogc:
+ 
+ version (CRuntime_Glibc) {
+-    static if (__WORDSIZE == 32)
++    version (linux)
+     {
+-        version=_STATVFSBUF_F_UNUSED;
+-    }
+-    struct statvfs_t
+-    {
+-        c_ulong f_bsize;
+-        c_ulong f_frsize;
+-        fsblkcnt_t f_blocks;
+-        fsblkcnt_t f_bfree;
+-        fsblkcnt_t f_bavail;
+-        fsfilcnt_t f_files;
+-        fsfilcnt_t f_ffree;
+-        fsfilcnt_t f_favail;
+-        c_ulong f_fsid;
+-        version (_STATVFSBUF_F_UNUSED)
++        static if (__WORDSIZE == 32)
+         {
+-            int __f_unused;
++            version=_STATVFSBUF_F_UNUSED;
++        }
++        struct statvfs_t
++        {
++            c_ulong f_bsize;
++            c_ulong f_frsize;
++            fsblkcnt_t f_blocks;
++            fsblkcnt_t f_bfree;
++            fsblkcnt_t f_bavail;
++            fsfilcnt_t f_files;
++            fsfilcnt_t f_ffree;
++            fsfilcnt_t f_favail;
++            c_ulong f_fsid;
++            version (_STATVFSBUF_F_UNUSED)
++            {
++                int __f_unused;
++            }
++            c_ulong f_flag;
++            c_ulong f_namemax;
++            int[6] __f_spare;
++        }
++        /* Definitions for the flag in `f_flag'.  These definitions should be
++           kept in sync with the definitions in <sys/mount.h>.  */
++        static if (_GNU_SOURCE)
++        {
++            enum FFlag
++            {
++                ST_RDONLY = 1,        /* Mount read-only.  */
++                ST_NOSUID = 2,
++                ST_NODEV = 4,         /* Disallow access to device special files.  */
++                ST_NOEXEC = 8,        /* Disallow program execution.  */
++                ST_SYNCHRONOUS = 16,      /* Writes are synced at once.  */
++                ST_MANDLOCK = 64,     /* Allow mandatory locks on an FS.  */
++                ST_WRITE = 128,       /* Write on file/directory/symlink.  */
++                ST_APPEND = 256,      /* Append-only file.  */
++                ST_IMMUTABLE = 512,       /* Immutable file.  */
++                ST_NOATIME = 1024,        /* Do not update access times.  */
++                ST_NODIRATIME = 2048,     /* Do not update directory access times.  */
++                ST_RELATIME = 4096        /* Update atime relative to mtime/ctime.  */
++
++            }
++        }  /* Use GNU.  */
++        else
++        { // Posix defined:
++            enum FFlag
++                {
++                    ST_RDONLY = 1,        /* Mount read-only.  */
++                    ST_NOSUID = 2
++                }
++        }
++        static if ( __USE_FILE_OFFSET64 )
++        {
++            int statvfs64 (const char * file, statvfs_t* buf);
++            alias statvfs = statvfs64;
++
++            int fstatvfs64 (int fildes, statvfs_t *buf) @trusted;
++            alias fstatvfs = fstatvfs64;
++        }
++        else
++        {
++            int statvfs (const char * file, statvfs_t* buf);
++            int fstatvfs (int fildes, statvfs_t *buf);
+         }
+-        c_ulong f_flag;
+-        c_ulong f_namemax;
+-        int[6] __f_spare;
+     }
+-    /* Definitions for the flag in `f_flag'.  These definitions should be
+-      kept in sync with the definitions in <sys/mount.h>.  */
+-    static if (_GNU_SOURCE)
++    else version (Hurd)
+     {
+-        enum FFlag
++        import core.sys.hurd.sys.types;
++        struct statvfs_t
+         {
+-            ST_RDONLY = 1,        /* Mount read-only.  */
+-            ST_NOSUID = 2,
+-            ST_NODEV = 4,         /* Disallow access to device special files.  */
+-            ST_NOEXEC = 8,        /* Disallow program execution.  */
+-            ST_SYNCHRONOUS = 16,      /* Writes are synced at once.  */
+-            ST_MANDLOCK = 64,     /* Allow mandatory locks on an FS.  */
+-            ST_WRITE = 128,       /* Write on file/directory/symlink.  */
+-            ST_APPEND = 256,      /* Append-only file.  */
+-            ST_IMMUTABLE = 512,       /* Immutable file.  */
+-            ST_NOATIME = 1024,        /* Do not update access times.  */
+-            ST_NODIRATIME = 2048,     /* Do not update directory access times.  */
+-            ST_RELATIME = 4096        /* Update atime relative to mtime/ctime.  */
+-
++            uint       f_type;
++            c_ulong    f_bsize;
++            fsblkcnt_t f_blocks;
++            fsblkcnt_t f_bfree;
++            fsblkcnt_t f_bavail;
++            fsfilcnt_t f_files;
++            fsfilcnt_t f_ffree;
++            fsid_t     f_fsid;
++            c_ulong    f_namelen;
++            fsfilcnt_t f_favail;
++            c_ulong    f_frsize;
++            c_ulong    f_flag;
++            uint[3]    f_spare;
+         }
+-    }  /* Use GNU.  */
+-    else
+-    { // Posix defined:
++
+         enum FFlag
+         {
+-            ST_RDONLY = 1,        /* Mount read-only.  */
+-            ST_NOSUID = 2
++            ST_RDONLY = 1,
++            ST_NOSUID = 2,
++            ST_NOEXEC = 8,
++            ST_SYNCHRONOUS = 16,
++            ST_NOATIME = 32,
++            ST_RELATIME = 64,
+         }
+-    }
+ 
+-    static if ( __USE_FILE_OFFSET64 )
+-    {
+-        int statvfs64 (const char * file, statvfs_t* buf);
+-        alias statvfs64 statvfs;
++        static if ( __USE_FILE_OFFSET64 )
++        {
++            int statvfs64 (const char * file, statvfs_t* buf);
++            alias statvfs = statvfs64;
+ 
+-        int fstatvfs64 (int fildes, statvfs_t *buf) @trusted;
+-        alias fstatvfs64 fstatvfs;
+-    }
+-    else
+-    {
+-        int statvfs (const char * file, statvfs_t* buf);
+-        int fstatvfs (int fildes, statvfs_t *buf);
++            int fstatvfs64 (int fildes, statvfs_t *buf) @trusted;
++            alias fstatvfs = fstatvfs64;
++        }
++        else
++        {
++            int statvfs (const char * file, statvfs_t* buf);
++            int fstatvfs (int fildes, statvfs_t *buf);
++        }
+     }
+ 
+ }
+diff --git a/libphobos/libdruntime/core/sys/posix/sys/types.d b/libphobos/libdruntime/core/sys/posix/sys/types.d
+index 642b3839a..46fb36189 100644
+--- a/libphobos/libdruntime/core/sys/posix/sys/types.d
++++ b/libphobos/libdruntime/core/sys/posix/sys/types.d
+@@ -279,6 +279,32 @@ else version (Solaris)
+     alias c_long time_t;
+     alias uint uid_t;
+ }
++else version (Hurd)
++{
++    static if ( __USE_FILE_OFFSET64 )
++    {
++        alias long      blkcnt_t;
++        alias ulong     ino_t;
++        alias long      off_t;
++    }
++    else
++    {
++        alias slong_t   blkcnt_t;
++        alias ulong_t   ino_t;
++        alias slong_t   off_t;
++    }
++    alias slong_t   blksize_t;
++    alias ulong_t   dev_t;
++    alias uint      gid_t;
++    alias uint      mode_t;
++    alias ulong_t   nlink_t;
++    alias int       pid_t;
++    //size_t (defined in core.stdc.stddef)
++    alias c_long    ssize_t;
++    alias uint      uid_t;
++
++    alias slong_t   time_t;
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+@@ -390,6 +416,24 @@ else version (Solaris)
+     alias id_t zoneid_t;
+     alias id_t ctid_t;
+ }
++else version (Hurd)
++{
++    static if ( __USE_FILE_OFFSET64 )
++    {
++        alias ulong     fsblkcnt_t;
++        alias ulong     fsfilcnt_t;
++    }
++    else
++    {
++        alias ulong_t   fsblkcnt_t;
++        alias ulong_t   fsfilcnt_t;
++    }
++    alias slong_t   clock_t;
++    alias uint      id_t;
++    alias int       key_t;
++    alias slong_t   suseconds_t;
++    alias uint      useconds_t;
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+@@ -413,21 +457,84 @@ pthread_t
+ 
+ version (CRuntime_Glibc)
+ {
+-    version (X86)
++    version (linux)
+     {
+-        enum __SIZEOF_PTHREAD_ATTR_T = 36;
+-        enum __SIZEOF_PTHREAD_MUTEX_T = 24;
+-        enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_COND_T = 48;
+-        enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_RWLOCK_T = 32;
+-        enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
+-        enum __SIZEOF_PTHREAD_BARRIER_T = 20;
+-        enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
+-    }
+-    else version (X86_64)
+-    {
+-        static if (__WORDSIZE == 64)
++        version (X86)
++        {
++            enum __SIZEOF_PTHREAD_ATTR_T = 36;
++            enum __SIZEOF_PTHREAD_MUTEX_T = 24;
++            enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
++            enum __SIZEOF_PTHREAD_COND_T = 48;
++            enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
++            enum __SIZEOF_PTHREAD_RWLOCK_T = 32;
++            enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
++            enum __SIZEOF_PTHREAD_BARRIER_T = 20;
++            enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
++        }
++        else version (X86_64)
++        {
++            static if (__WORDSIZE == 64)
++            {
++                enum __SIZEOF_PTHREAD_ATTR_T = 56;
++                enum __SIZEOF_PTHREAD_MUTEX_T = 40;
++                enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
++                enum __SIZEOF_PTHREAD_COND_T = 48;
++                enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
++                enum __SIZEOF_PTHREAD_RWLOCK_T = 56;
++                enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
++                enum __SIZEOF_PTHREAD_BARRIER_T = 32;
++                enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
++            }
++            else
++            {
++                enum __SIZEOF_PTHREAD_ATTR_T = 32;
++                enum __SIZEOF_PTHREAD_MUTEX_T = 32;
++                enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
++                enum __SIZEOF_PTHREAD_COND_T = 48;
++                enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
++                enum __SIZEOF_PTHREAD_RWLOCK_T = 44;
++                enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
++                enum __SIZEOF_PTHREAD_BARRIER_T = 20;
++                enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
++            }
++        }
++        else version (AArch64)
++        {
++            enum __SIZEOF_PTHREAD_ATTR_T = 64;
++            enum __SIZEOF_PTHREAD_MUTEX_T = 48;
++            enum __SIZEOF_PTHREAD_MUTEXATTR_T = 8;
++            enum __SIZEOF_PTHREAD_COND_T = 48;
++            enum __SIZEOF_PTHREAD_CONDATTR_T = 8;
++            enum __SIZEOF_PTHREAD_RWLOCK_T = 56;
++            enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
++            enum __SIZEOF_PTHREAD_BARRIER_T = 32;
++            enum __SIZEOF_PTHREAD_BARRIERATTR_T = 8;
++        }
++        else version (ARM)
++        {
++            enum __SIZEOF_PTHREAD_ATTR_T = 36;
++            enum __SIZEOF_PTHREAD_MUTEX_T = 24;
++            enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
++            enum __SIZEOF_PTHREAD_COND_T = 48;
++            enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
++            enum __SIZEOF_PTHREAD_RWLOCK_T = 32;
++            enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
++            enum __SIZEOF_PTHREAD_BARRIER_T = 20;
++            enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
++        }
++        else version (HPPA)
++        {
++            enum __SIZEOF_PTHREAD_ATTR_T = 36;
++            enum __SIZEOF_PTHREAD_MUTEX_T = 48;
++            enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
++            enum __SIZEOF_PTHREAD_COND_T = 48;
++            enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
++            enum __SIZEOF_PTHREAD_RWLOCK_T = 64;
++            enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
++            enum __SIZEOF_PTHREAD_BARRIER_T = 48;
++            enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
++        }
++        else version (IA64)
+         {
+             enum __SIZEOF_PTHREAD_ATTR_T = 56;
+             enum __SIZEOF_PTHREAD_MUTEX_T = 40;
+@@ -439,262 +546,290 @@ version (CRuntime_Glibc)
+             enum __SIZEOF_PTHREAD_BARRIER_T = 32;
+             enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
+         }
+-        else
++        else version (MIPS32)
+         {
+-            enum __SIZEOF_PTHREAD_ATTR_T = 32;
+-            enum __SIZEOF_PTHREAD_MUTEX_T = 32;
++            enum __SIZEOF_PTHREAD_ATTR_T = 36;
++            enum __SIZEOF_PTHREAD_MUTEX_T = 24;
+             enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
+             enum __SIZEOF_PTHREAD_COND_T = 48;
+             enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
+-            enum __SIZEOF_PTHREAD_RWLOCK_T = 44;
++            enum __SIZEOF_PTHREAD_RWLOCK_T = 32;
+             enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
+             enum __SIZEOF_PTHREAD_BARRIER_T = 20;
+             enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
+         }
++        else version (MIPS64)
++        {
++            enum __SIZEOF_PTHREAD_ATTR_T = 56;
++            enum __SIZEOF_PTHREAD_MUTEX_T = 40;
++            enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
++            enum __SIZEOF_PTHREAD_COND_T = 48;
++            enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
++            enum __SIZEOF_PTHREAD_RWLOCK_T = 56;
++            enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
++            enum __SIZEOF_PTHREAD_BARRIER_T = 32;
++            enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
++        }
++        else version (PPC)
++        {
++            enum __SIZEOF_PTHREAD_ATTR_T = 36;
++            enum __SIZEOF_PTHREAD_MUTEX_T = 24;
++            enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
++            enum __SIZEOF_PTHREAD_COND_T = 48;
++            enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
++            enum __SIZEOF_PTHREAD_RWLOCK_T = 32;
++            enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
++            enum __SIZEOF_PTHREAD_BARRIER_T = 20;
++            enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
++        }
++        else version (PPC64)
++        {
++            enum __SIZEOF_PTHREAD_ATTR_T = 56;
++            enum __SIZEOF_PTHREAD_MUTEX_T = 40;
++            enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
++            enum __SIZEOF_PTHREAD_COND_T = 48;
++            enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
++            enum __SIZEOF_PTHREAD_RWLOCK_T = 56;
++            enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
++            enum __SIZEOF_PTHREAD_BARRIER_T = 32;
++            enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
++        }
++        else version (RISCV32)
++        {
++            enum __SIZEOF_PTHREAD_ATTR_T = 36;
++            enum __SIZEOF_PTHREAD_MUTEX_T = 24;
++            enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
++            enum __SIZEOF_PTHREAD_COND_T = 48;
++            enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
++            enum __SIZEOF_PTHREAD_RWLOCK_T = 32;
++            enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
++            enum __SIZEOF_PTHREAD_BARRIER_T = 20;
++            enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
++        }
++        else version (RISCV64)
++        {
++            enum __SIZEOF_PTHREAD_ATTR_T = 56;
++            enum __SIZEOF_PTHREAD_MUTEX_T = 40;
++            enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
++            enum __SIZEOF_PTHREAD_COND_T = 48;
++            enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
++            enum __SIZEOF_PTHREAD_RWLOCK_T = 56;
++            enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
++            enum __SIZEOF_PTHREAD_BARRIER_T = 32;
++            enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
++        }
++        else version (SPARC)
++        {
++            enum __SIZEOF_PTHREAD_ATTR_T = 36;
++            enum __SIZEOF_PTHREAD_MUTEX_T = 24;
++            enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
++            enum __SIZEOF_PTHREAD_COND_T = 48;
++            enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
++            enum __SIZEOF_PTHREAD_RWLOCK_T = 32;
++            enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
++            enum __SIZEOF_PTHREAD_BARRIER_T = 20;
++            enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
++        }
++        else version (SPARC64)
++        {
++            enum __SIZEOF_PTHREAD_ATTR_T = 56;
++            enum __SIZEOF_PTHREAD_MUTEX_T = 40;
++            enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
++            enum __SIZEOF_PTHREAD_COND_T = 48;
++            enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
++            enum __SIZEOF_PTHREAD_RWLOCK_T = 56;
++            enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
++            enum __SIZEOF_PTHREAD_BARRIER_T = 32;
++            enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
++        }
++        else version (S390)
++        {
++            enum __SIZEOF_PTHREAD_ATTR_T = 36;
++            enum __SIZEOF_PTHREAD_MUTEX_T = 24;
++            enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
++            enum __SIZEOF_PTHREAD_COND_T = 48;
++            enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
++            enum __SIZEOF_PTHREAD_RWLOCK_T = 32;
++            enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
++            enum __SIZEOF_PTHREAD_BARRIER_T = 20;
++            enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
++        }
++        else version (SystemZ)
++        {
++            enum __SIZEOF_PTHREAD_ATTR_T = 56;
++            enum __SIZEOF_PTHREAD_MUTEX_T = 40;
++            enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
++            enum __SIZEOF_PTHREAD_COND_T = 48;
++            enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
++            enum __SIZEOF_PTHREAD_RWLOCK_T = 56;
++            enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
++            enum __SIZEOF_PTHREAD_BARRIER_T = 32;
++            enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
++        }
++        else version (LoongArch64)
++        {
++            enum __SIZEOF_PTHREAD_ATTR_T = 56;
++            enum __SIZEOF_PTHREAD_MUTEX_T = 40;
++            enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
++            enum __SIZEOF_PTHREAD_COND_T = 48;
++            enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
++            enum __SIZEOF_PTHREAD_RWLOCK_T = 56;
++            enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
++            enum __SIZEOF_PTHREAD_BARRIER_T = 32;
++            enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
++        }
++        else
++        {
++            static assert (false, "Unsupported platform");
++        }
++
++        union pthread_attr_t
++        {
++            byte[__SIZEOF_PTHREAD_ATTR_T] __size;
++            c_long __align;
++        }
++
++        private alias int __atomic_lock_t;
++
++        private struct _pthread_fastlock
++        {
++            c_long          __status;
++            __atomic_lock_t __spinlock;
++        }
++
++        private alias void* _pthread_descr;
++
++        union pthread_cond_t
++        {
++            byte[__SIZEOF_PTHREAD_COND_T] __size;
++            long  __align;
++        }
++
++        union pthread_condattr_t
++        {
++            byte[__SIZEOF_PTHREAD_CONDATTR_T] __size;
++            int __align;
++        }
++
++        alias uint pthread_key_t;
++
++        union pthread_mutex_t
++        {
++            byte[__SIZEOF_PTHREAD_MUTEX_T] __size;
++            c_long __align;
++        }
++
++        union pthread_mutexattr_t
++        {
++            byte[__SIZEOF_PTHREAD_MUTEXATTR_T] __size;
++            int __align;
++        }
++
++        alias int pthread_once_t;
++
++        struct pthread_rwlock_t
++        {
++            byte[__SIZEOF_PTHREAD_RWLOCK_T] __size;
++            c_long __align;
++        }
++
++        struct pthread_rwlockattr_t
++        {
++            byte[__SIZEOF_PTHREAD_RWLOCKATTR_T] __size;
++            c_long __align;
++        }
++
++        alias c_ulong pthread_t;
+     }
+-    else version (AArch64)
+-    {
+-        enum __SIZEOF_PTHREAD_ATTR_T = 64;
+-        enum __SIZEOF_PTHREAD_MUTEX_T = 48;
+-        enum __SIZEOF_PTHREAD_MUTEXATTR_T = 8;
+-        enum __SIZEOF_PTHREAD_COND_T = 48;
+-        enum __SIZEOF_PTHREAD_CONDATTR_T = 8;
+-        enum __SIZEOF_PTHREAD_RWLOCK_T = 56;
+-        enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
+-        enum __SIZEOF_PTHREAD_BARRIER_T = 32;
+-        enum __SIZEOF_PTHREAD_BARRIERATTR_T = 8;
+-    }
+-    else version (ARM)
+-    {
+-        enum __SIZEOF_PTHREAD_ATTR_T = 36;
+-        enum __SIZEOF_PTHREAD_MUTEX_T = 24;
+-        enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_COND_T = 48;
+-        enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_RWLOCK_T = 32;
+-        enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
+-        enum __SIZEOF_PTHREAD_BARRIER_T = 20;
+-        enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
+-    }
+-    else version (HPPA)
+-    {
+-        enum __SIZEOF_PTHREAD_ATTR_T = 36;
+-        enum __SIZEOF_PTHREAD_MUTEX_T = 48;
+-        enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_COND_T = 48;
+-        enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_RWLOCK_T = 64;
+-        enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
+-        enum __SIZEOF_PTHREAD_BARRIER_T = 48;
+-        enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
+-    }
+-    else version (IA64)
+-    {
+-        enum __SIZEOF_PTHREAD_ATTR_T = 56;
+-        enum __SIZEOF_PTHREAD_MUTEX_T = 40;
+-        enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_COND_T = 48;
+-        enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_RWLOCK_T = 56;
+-        enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
+-        enum __SIZEOF_PTHREAD_BARRIER_T = 32;
+-        enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
+-    }
+-    else version (MIPS32)
+-    {
+-        enum __SIZEOF_PTHREAD_ATTR_T = 36;
+-        enum __SIZEOF_PTHREAD_MUTEX_T = 24;
+-        enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_COND_T = 48;
+-        enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_RWLOCK_T = 32;
+-        enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
+-        enum __SIZEOF_PTHREAD_BARRIER_T = 20;
+-        enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
+-    }
+-    else version (MIPS64)
+-    {
+-        enum __SIZEOF_PTHREAD_ATTR_T = 56;
+-        enum __SIZEOF_PTHREAD_MUTEX_T = 40;
+-        enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_COND_T = 48;
+-        enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_RWLOCK_T = 56;
+-        enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
+-        enum __SIZEOF_PTHREAD_BARRIER_T = 32;
+-        enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
+-    }
+-    else version (PPC)
+-    {
+-        enum __SIZEOF_PTHREAD_ATTR_T = 36;
+-        enum __SIZEOF_PTHREAD_MUTEX_T = 24;
+-        enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_COND_T = 48;
+-        enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_RWLOCK_T = 32;
+-        enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
+-        enum __SIZEOF_PTHREAD_BARRIER_T = 20;
+-        enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
+-    }
+-    else version (PPC64)
+-    {
+-        enum __SIZEOF_PTHREAD_ATTR_T = 56;
+-        enum __SIZEOF_PTHREAD_MUTEX_T = 40;
+-        enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_COND_T = 48;
+-        enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_RWLOCK_T = 56;
+-        enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
+-        enum __SIZEOF_PTHREAD_BARRIER_T = 32;
+-        enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
+-    }
+-    else version (RISCV32)
+-    {
+-        enum __SIZEOF_PTHREAD_ATTR_T = 36;
+-        enum __SIZEOF_PTHREAD_MUTEX_T = 24;
+-        enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_COND_T = 48;
+-        enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_RWLOCK_T = 32;
+-        enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
+-        enum __SIZEOF_PTHREAD_BARRIER_T = 20;
+-        enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
+-    }
+-    else version (RISCV64)
+-    {
+-        enum __SIZEOF_PTHREAD_ATTR_T = 56;
+-        enum __SIZEOF_PTHREAD_MUTEX_T = 40;
+-        enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_COND_T = 48;
+-        enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_RWLOCK_T = 56;
+-        enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
+-        enum __SIZEOF_PTHREAD_BARRIER_T = 32;
+-        enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
+-    }
+-    else version (SPARC)
+-    {
+-        enum __SIZEOF_PTHREAD_ATTR_T = 36;
+-        enum __SIZEOF_PTHREAD_MUTEX_T = 24;
+-        enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_COND_T = 48;
+-        enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_RWLOCK_T = 32;
+-        enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
+-        enum __SIZEOF_PTHREAD_BARRIER_T = 20;
+-        enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
+-    }
+-    else version (SPARC64)
+-    {
+-        enum __SIZEOF_PTHREAD_ATTR_T = 56;
+-        enum __SIZEOF_PTHREAD_MUTEX_T = 40;
+-        enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_COND_T = 48;
+-        enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_RWLOCK_T = 56;
+-        enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
+-        enum __SIZEOF_PTHREAD_BARRIER_T = 32;
+-        enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
+-    }
+-    else version (S390)
+-    {
+-        enum __SIZEOF_PTHREAD_ATTR_T = 36;
+-        enum __SIZEOF_PTHREAD_MUTEX_T = 24;
+-        enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_COND_T = 48;
+-        enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_RWLOCK_T = 32;
+-        enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
+-        enum __SIZEOF_PTHREAD_BARRIER_T = 20;
+-        enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
+-    }
+-    else version (SystemZ)
+-    {
+-        enum __SIZEOF_PTHREAD_ATTR_T = 56;
+-        enum __SIZEOF_PTHREAD_MUTEX_T = 40;
+-        enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_COND_T = 48;
+-        enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_RWLOCK_T = 56;
+-        enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
+-        enum __SIZEOF_PTHREAD_BARRIER_T = 32;
+-        enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
+-    }
+-    else version (LoongArch64)
+-    {
+-        enum __SIZEOF_PTHREAD_ATTR_T = 56;
+-        enum __SIZEOF_PTHREAD_MUTEX_T = 40;
+-        enum __SIZEOF_PTHREAD_MUTEXATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_COND_T = 48;
+-        enum __SIZEOF_PTHREAD_CONDATTR_T = 4;
+-        enum __SIZEOF_PTHREAD_RWLOCK_T = 56;
+-        enum __SIZEOF_PTHREAD_RWLOCKATTR_T = 8;
+-        enum __SIZEOF_PTHREAD_BARRIER_T = 32;
+-        enum __SIZEOF_PTHREAD_BARRIERATTR_T = 4;
+-    }
+-    else
++    else version (Hurd)
+     {
+-        static assert (false, "Unsupported platform");
+-    }
++        import core.sys.hurd.sys.types;
++        import core.sys.posix.time: clockid_t;
+ 
+-    union pthread_attr_t
+-    {
+-        byte[__SIZEOF_PTHREAD_ATTR_T] __size;
+-        c_long __align;
+-    }
++        private struct __sched_param
++        {
++            int __sched_priority;
++        }
+ 
+-    private alias int __atomic_lock_t;
++        private struct __pthread;
+ 
+-    private struct _pthread_fastlock
+-    {
+-        c_long          __status;
+-        __atomic_lock_t __spinlock;
+-    }
++        struct pthread_attr_t
++        {
++            __sched_param schedparam;
++            void* stackaddr;
++            size_t __stacksize;
++            size_t __guardsize;
++            int __detachstate;
++            int __inheritsched;
++            int __contentionscope;
++            int __schedpolicy;
++        }
+ 
+-    private alias void* _pthread_descr;
++        struct pthread_cond_t
++        {
++            pthread_spinlock_t __lock;
++            __pthread *__queue;
++            pthread_condattr_t *__attr;
++            uint __wrefs;
++            void *__data;
++        }
+ 
+-    union pthread_cond_t
+-    {
+-        byte[__SIZEOF_PTHREAD_COND_T] __size;
+-        long  __align;
+-    }
++        struct pthread_condattr_t
++        {
++            int __pshared;
++            clockid_t __clock;
++        }
+ 
+-    union pthread_condattr_t
+-    {
+-        byte[__SIZEOF_PTHREAD_CONDATTR_T] __size;
+-        int __align;
+-    }
++        alias int pthread_key_t;
+ 
+-    alias uint pthread_key_t;
++        struct pthread_mutex_t
++        {
++            uint __lock;
++            uint __owner_id;
++            uint __cnt;
++            int __shpid;
++            int __type;
++            int __flags;
++            union
++            {
++                uint[2] __reserved;
++                void *__pointer_aligned;
++            }
++        }
+ 
+-    union pthread_mutex_t
+-    {
+-        byte[__SIZEOF_PTHREAD_MUTEX_T] __size;
+-        c_long __align;
+-    }
++        struct pthread_mutexattr_t
++        {
++            int __prioceiling;
++            int __protocol;
++            int __pshared;
++            int __mutex_type;
++        }
+ 
+-    union pthread_mutexattr_t
+-    {
+-        byte[__SIZEOF_PTHREAD_MUTEXATTR_T] __size;
+-        int __align;
+-    }
++        struct pthread_once_t
++        {
++            int __run;
++            pthread_spinlock_t __lock;
++        }
+ 
+-    alias int pthread_once_t;
++        struct pthread_rwlock_t
++        {
++            pthread_spinlock_t __held;
++            pthread_spinlock_t __lock;
++            int __readers;
++            __pthread *__readerqueue;
++            __pthread *__writerqueue;
++            pthread_rwlockattr_t *__attr;
++            void *__data;
++        }
+ 
+-    struct pthread_rwlock_t
+-    {
+-        byte[__SIZEOF_PTHREAD_RWLOCK_T] __size;
+-        c_long __align;
+-    }
++        struct pthread_rwlockattr_t
++        {
++            int __pshared;
++        }
+ 
+-    struct pthread_rwlockattr_t
+-    {
+-        byte[__SIZEOF_PTHREAD_RWLOCKATTR_T] __size;
+-        c_long __align;
++        alias c_long pthread_t;
+     }
+-
+-    alias c_ulong pthread_t;
+-}
++ }
+ else version (CRuntime_Musl)
+ {
+     version (D_LP64)
+@@ -1300,17 +1435,37 @@ pthread_barrierattr_t
+ 
+ version (CRuntime_Glibc)
+ {
+-    struct pthread_barrier_t
+-    {
+-        byte[__SIZEOF_PTHREAD_BARRIER_T] __size;
+-        c_long __align;
+-    }
++  version (linux)
++  {
++      struct pthread_barrier_t
++      {
++          byte[__SIZEOF_PTHREAD_BARRIER_T] __size;
++          c_long __align;
++      }
+ 
+-    struct pthread_barrierattr_t
+-    {
+-        byte[__SIZEOF_PTHREAD_BARRIERATTR_T] __size;
+-        int __align;
+-    }
++      struct pthread_barrierattr_t
++      {
++          byte[__SIZEOF_PTHREAD_BARRIERATTR_T] __size;
++          int __align;
++      }
++  }
++  else version (Hurd)
++  {
++      struct pthread_barrier_t
++      {
++          pthread_spinlock_t __lock;
++          __pthread *__queue;
++          uint __pending;
++          uint __count;
++          pthread_barrierattr_t *__attr;
++          void *__data;
++      }
++
++      struct pthread_barrierattr_t
++      {
++          int __pshared;
++      }
++  }
+ }
+ else version (FreeBSD)
+ {
+diff --git a/libphobos/libdruntime/core/sys/posix/sys/un.d b/libphobos/libdruntime/core/sys/posix/sys/un.d
+index 11e98a72a..0d4746ee3 100644
+--- a/libphobos/libdruntime/core/sys/posix/sys/un.d
++++ b/libphobos/libdruntime/core/sys/posix/sys/un.d
+@@ -104,3 +104,12 @@ else version (Solaris)
+         byte[108]    sun_path;
+     }
+ }
++else version (Hurd)
++{
++    struct sockaddr_un
++    {
++        ubyte       sun_len;
++        sa_family_t sun_family;
++        byte[108]   sun_path;
++    }
++}
+diff --git a/libphobos/libdruntime/core/sys/posix/sys/utsname.d b/libphobos/libdruntime/core/sys/posix/sys/utsname.d
+index 5de50aca4..507113b6f 100644
+--- a/libphobos/libdruntime/core/sys/posix/sys/utsname.d
++++ b/libphobos/libdruntime/core/sys/posix/sys/utsname.d
+@@ -19,19 +19,36 @@ nothrow:
+ 
+ version (CRuntime_Glibc)
+ {
+-    private enum utsNameLength = 65;
+-
+-    struct utsname
++    version(linux)
+     {
+-        char[utsNameLength] sysname = 0;
+-        char[utsNameLength] nodename = 0;
+-        char[utsNameLength] release = 0;
+-        char[utsNameLength] version_ = 0;
+-        // TODO Deprecate after version_ has been in an official release.
+-        alias update = version_;
+-        char[utsNameLength] machine = 0;
++        private enum utsNameLength = 65;
++        struct utsname
++        {
++            char[utsNameLength] sysname = 0;
++            char[utsNameLength] nodename = 0;
++            char[utsNameLength] release = 0;
++            char[utsNameLength] version_ = 0;
++            // TODO Deprecate after version_ has been in an official release.
++            alias update = version_;
++            char[utsNameLength] machine = 0;
++
++            char[utsNameLength] __domainname = 0;
++        }
++    }
+ 
+-        char[utsNameLength] __domainname = 0;
++    else version(Hurd)
++    {
++        private enum utsNameLength = 1024;
++        struct utsname
++        {
++            char[utsNameLength] sysname = 0;
++            char[utsNameLength] nodename = 0;
++            char[utsNameLength] release = 0;
++            char[utsNameLength] version_ = 0;
++            // TODO Deprecate after version_ has been in an official release.
++            alias update = version_;
++            char[utsNameLength] machine = 0;
++        }
+     }
+ 
+     int uname(utsname* __name);
+diff --git a/libphobos/libdruntime/core/sys/posix/sys/wait.d b/libphobos/libdruntime/core/sys/posix/sys/wait.d
+index f6b0674a3..e1a8fece1 100644
+--- a/libphobos/libdruntime/core/sys/posix/sys/wait.d
++++ b/libphobos/libdruntime/core/sys/posix/sys/wait.d
+@@ -106,6 +106,15 @@ else version (Solaris)
+     enum WNOHANG        = 64;
+     enum WUNTRACED      = 4;
+ }
++else version (Hurd)
++{
++    enum WNOHANG        = 1;
++    enum WUNTRACED      = 2;
++    private
++    {
++        enum __W_CONTINUED = 0xFFFF;
++    }
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+@@ -430,6 +439,20 @@ else version (Solaris)
+         P_CPUID,        /* CPU identifier.                      */
+         P_PSETID,       /* Processor set identifier             */
+     }
++}
++ else version (Hurd)
++{
++    enum WEXITED    = 16;
++    enum WSTOPPED   = WUNTRACED;
++    enum WCONTINUED = 4;
++    enum WNOWAIT    = 8;
++
++    enum idtype_t
++    {
++        P_ALL,
++        P_PID,
++        P_PGID
++    }
+ }
+ else
+ {
+diff --git a/libphobos/libdruntime/core/sys/posix/termios.d b/libphobos/libdruntime/core/sys/posix/termios.d
+index e4a99e686..ecc736715 100644
+--- a/libphobos/libdruntime/core/sys/posix/termios.d
++++ b/libphobos/libdruntime/core/sys/posix/termios.d
+@@ -831,6 +831,103 @@ else version (Solaris)
+     enum B460800 = 22;
+     enum B921600 = 23;
+ }
++else version (Hurd)
++{
++    alias ubyte cc_t;
++    alias uint  speed_t;
++    alias uint  tcflag_t;
++
++    enum NCCS   = 20;
++
++    struct termios
++    {
++        tcflag_t   c_iflag;
++        tcflag_t   c_oflag;
++        tcflag_t   c_cflag;
++        tcflag_t   c_lflag;
++        cc_t[NCCS] c_cc;
++        speed_t    c_ispeed;
++        speed_t    c_ospeed;
++    }
++
++    enum VEOF       = 0;
++    enum VEOL       = 1;
++    enum VERASE     = 3;
++    enum VINTR      = 8;
++    enum VKILL      = 5;
++    enum VMIN       = 16;
++    enum VQUIT      = 9;
++    enum VSTART     = 12;
++    enum VSTOP      = 13;
++    enum VSUSP      = 10;
++    enum VTIME      = 17;
++
++    enum BRKINT     = 0x0000002;
++    enum ICRNL      = 0x0000100;
++    enum IGNBRK     = 0x0000001;
++    enum IGNCR      = 0x0000080;
++    enum IGNPAR     = 0x0000004;
++    enum INLCR      = 0x0000040;
++    enum INPCK      = 0x0000010;
++    enum ISTRIP     = 0x0000020;
++    enum IXOFF      = 0x0000400;
++    enum IXON       = 0x0000200;
++    enum PARMRK     = 0x0000008;
++
++    enum OPOST      = 0x0000001;
++
++    enum B0         = 0;
++    enum B50        = 50;
++    enum B75        = 75;
++    enum B110       = 110;
++    enum B134       = 134;
++    enum B150       = 150;
++    enum B200       = 200;
++    enum B300       = 300;
++    enum B600       = 600;
++    enum B1200      = 1200;
++    enum B1800      = 1800;
++    enum B2400      = 2400;
++    enum B4800      = 4800;
++    enum B9600      = 9600;
++    enum B19200     = 19200;
++    enum B38400     = 38400;
++
++    enum CSIZE      = 0x0000300;
++    enum   CS5      = 0x0000000;
++    enum   CS6      = 0x0000100;
++    enum   CS7      = 0x0000200;
++    enum   CS8      = 0x0000300;
++    enum CSTOPB     = 0x0000400;
++    enum CREAD      = 0x0000800;
++    enum PARENB     = 0x0001000;
++    enum PARODD     = 0x0002000;
++    enum HUPCL      = 0x0004000;
++    enum CLOCAL     = 0x0008000;
++
++    enum ECHO       = 0x00000008;
++    enum ECHOE      = 0x00000002;
++    enum ECHOK      = 0x00000004;
++    enum ECHONL     = 0x00000010;
++    enum ICANON     = 0x00000100;
++    enum IEXTEN     = 0x00000400;
++    enum ISIG       = 0x00000080;
++    enum NOFLSH     = 0x80000000;
++    enum TOSTOP     = 0x00400000;
++
++    enum TCSANOW    = 0;
++    enum TCSADRAIN  = 1;
++    enum TCSAFLUSH  = 2;
++
++    enum TCIFLUSH   = 0;
++    enum TCOFLUSH   = 1;
++    enum TCIOFLUSH  = 2;
++
++    enum TCIOFF     = 3;
++    enum TCION      = 4;
++    enum TCOOFF     = 1;
++    enum TCOON      = 2;
++}
+ 
+ /*
+ speed_t cfgetispeed(const scope termios*);
+diff --git a/libphobos/libdruntime/core/sys/posix/time.d b/libphobos/libdruntime/core/sys/posix/time.d
+index f49764d19..662ad1c6c 100644
+--- a/libphobos/libdruntime/core/sys/posix/time.d
++++ b/libphobos/libdruntime/core/sys/posix/time.d
+@@ -155,6 +155,10 @@ else version (Solaris)
+ {
+     enum CLOCK_MONOTONIC = 4;
+ }
++else version (Hurd)
++{
++    enum CLOCK_MONOTONIC = 1;
++}
+ else
+ {
+     static assert(0);
+@@ -254,6 +258,14 @@ else version (Solaris)
+ 
+     alias timespec timestruc_t;
+ }
++else version (Hurd)
++{
++    struct timespec
++    {
++        time_t  tv_sec;
++        c_long  tv_nsec;
++    }
++}
+ else
+ {
+     static assert(false, "Unsupported platform");
+diff --git a/libphobos/libdruntime/core/thread/osthread.d b/libphobos/libdruntime/core/thread/osthread.d
+index a9fcf9625..471c4cac2 100644
+--- a/libphobos/libdruntime/core/thread/osthread.d
++++ b/libphobos/libdruntime/core/thread/osthread.d
+@@ -2154,6 +2154,14 @@ extern (C) void thread_init() @nogc nothrow
+             enum SIGRTMIN = SIGUSR1;
+             enum SIGRTMAX = 32;
+         }
++	else version (Hurd)
++        {
++            // Hurd does not support SIGRTMIN or SIGRTMAX
++            // Use SIGUSR1 for SIGRTMIN, SIGUSR2 for SIGRTMIN + 1
++            // And use 32 for SIGRTMAX (32 is the max signal number on Hurd)
++            enum SIGRTMIN = SIGUSR1;
++            enum SIGRTMAX = 32;
++        }
+ 
+         if ( suspendSignalNumber == 0 )
+         {
+diff --git a/libphobos/libdruntime/core/time.d b/libphobos/libdruntime/core/time.d
+index c3192fc39..4cfaf8f30 100644
+--- a/libphobos/libdruntime/core/time.d
++++ b/libphobos/libdruntime/core/time.d
+@@ -330,6 +330,17 @@ else version (Solaris) enum ClockType
+     second = 6,
+     threadCPUTime = 7,
+ }
++else version (Hurd) enum ClockType
++{
++    normal = 0,
++    coarse = 2,
++    precise = 3,
++    // processCPUTime = 4,
++    raw = 5,
++    second = 6,
++    // threadCPUTime = 7,
++
++}
+ else
+ {
+     // It needs to be decided (and implemented in an appropriate version branch
+@@ -429,6 +440,20 @@ version (Posix)
+             case second: assert(0);
+             }
+         }
++        else version (Hurd)
++        {
++            import core.sys.hurd.time;
++            with(ClockType) final switch (clockType)
++            {
++            case coarse: return CLOCK_MONOTONIC_COARSE;
++            case normal: return CLOCK_MONOTONIC;
++            case precise: return CLOCK_MONOTONIC;
++            // case processCPUTime: return CLOCK_PROCESS_CPUTIME_ID;
++            case raw: return CLOCK_MONOTONIC_RAW;
++            // case threadCPUTime: return CLOCK_THREAD_CPUTIME_ID;
++            case second: assert(0);
++            }
++        }
+         else
+             // It needs to be decided (and implemented in an appropriate
+             // version branch here) which clock types new platforms are going
+diff --git a/libphobos/libdruntime/gcc/backtrace.d b/libphobos/libdruntime/gcc/backtrace.d
+index db8ec4bcf..cc776570b 100644
+--- a/libphobos/libdruntime/gcc/backtrace.d
++++ b/libphobos/libdruntime/gcc/backtrace.d
+@@ -408,6 +408,8 @@ private:
+         import core.sys.openbsd.dlfcn;
+     else version (Solaris)
+         import core.sys.solaris.dlfcn;
++    else version (Hurd)
++        import core.sys.hurd.dlfcn;
+     else version (Posix)
+         import core.sys.posix.dlfcn;
+ 
+diff --git a/libphobos/libdruntime/gcc/sections/elf.d b/libphobos/libdruntime/gcc/sections/elf.d
+index a67dd4a42..748947afd 100644
+--- a/libphobos/libdruntime/gcc/sections/elf.d
++++ b/libphobos/libdruntime/gcc/sections/elf.d
+@@ -82,6 +82,12 @@ else version (Solaris)
+     import core.sys.solaris.sys.elf;
+     import core.sys.solaris.sys.link;
+ }
++else version (Hurd)
++{
++    import core.sys.hurd.dlfcn;
++    import core.sys.hurd.elf;
++    import core.sys.hurd.link;
++}
+ else
+ {
+     static assert(0, "unimplemented");
+@@ -781,6 +787,8 @@ version (Shared)
+                     strtab = cast(const(char)*)(info.dlpi_addr + dyn.d_un.d_ptr); // relocate
+                 else version (Solaris)
+                     strtab = cast(const(char)*)(info.dlpi_addr + dyn.d_un.d_ptr); // relocate
++                else version (Hurd)
++                    strtab = cast(const(char)*)(dyn.d_un.d_ptr);
+                 else
+                     static assert(0, "unimplemented");
+                 break;
+@@ -916,6 +924,7 @@ bool findDSOInfoForAddr(in void* addr, dl_phdr_info* result=null) nothrow @nogc
+     else version (NetBSD)  enum IterateManually = true;
+     else version (OpenBSD) enum IterateManually = true;
+     else version (Solaris) enum IterateManually = true;
++    else version (Hurd)    enum IterateManually = true;
+     else                   enum IterateManually = false;
+ 
+     static if (IterateManually)
+-- 
+2.52.0
+
+From 50c699d486cb9c365f5a27835eb154900f1a85e0 Mon Sep 17 00:00:00 2001
+From: Yelninei <yelninei@tutamail.com>
+Date: Sat, 11 Apr 2026 20:19:20 +0000
+Subject: [PATCH 3/4] libphobos: Support for GNU/Hurd.
+
+---
+ libphobos/configure.tgt                          |  3 +++
+ libphobos/libdruntime/Makefile.am                | 10 ++++++++++
+ libphobos/libdruntime/config/common/threadasm.S  |  2 +-
+ libphobos/libdruntime/config/x86/switchcontext.S |  8 ++++----
+ libphobos/m4/druntime/os.m4                      |  5 +++++
+ 5 files changed, 23 insertions(+), 5 deletions(-)
+
+diff --git a/libphobos/configure.tgt b/libphobos/configure.tgt
+index 715964444..5d0862a91 100644
+--- a/libphobos/configure.tgt
++++ b/libphobos/configure.tgt
+@@ -76,6 +76,9 @@ case "${target}" in
+   x86_64-*-linux* | i?86-*-linux*)
+ 	LIBPHOBOS_SUPPORTED=yes
+ 	;;
++  x86_64-*-gnu* | i?86-*-gnu*)
++        LIBPHOBOS_SUPPORTED=yes
++	;;
+   x86_64-*-netbsd* | i?86-*-netbsd*)
+ 	LIBPHOBOS_SUPPORTED=yes
+ 	;;
+diff --git a/libphobos/libdruntime/Makefile.am b/libphobos/libdruntime/Makefile.am
+index f17d8beb9..275ba5f65 100644
+--- a/libphobos/libdruntime/Makefile.am
++++ b/libphobos/libdruntime/Makefile.am
+@@ -38,6 +38,7 @@ ALL_DRUNTIME_INSTALL_DSOURCES = $(DRUNTIME_DSOURCES) \
+ 	$(DRUNTIME_DSOURCES_LINUX) $(DRUNTIME_DSOURCES_NETBSD) \
+ 	$(DRUNTIME_DSOURCES_OPENBSD) $(DRUNTIME_DSOURCES_POSIX) \
+ 	$(DRUNTIME_DSOURCES_SOLARIS) $(DRUNTIME_DSOURCES_WINDOWS) \
++	$(DRUNTIME_DSOURCES_HURD) \
+ 	$(DRUNTIME_DSOURCES_GENERATED) $(DRUNTIME_DISOURCES) \
+ 	$(DRUNTIME_DSOURCES_ELF) $(DRUNTIME_DSOURCES_STDCXX)
+ 
+@@ -76,6 +77,9 @@ endif
+ if DRUNTIME_OS_SOLARIS
+     DRUNTIME_SOURCES_CONFIGURED += $(DRUNTIME_DSOURCES_SOLARIS)
+ endif
++if DRUNTIME_OS_HURD
++    DRUNTIME_SOURCES_CONFIGURED += $(DRUNTIME_DSOURCES_HURD)
++endif
+ # CPU specific sources
+ if DRUNTIME_CPU_AARCH64
+     DRUNTIME_SOURCES_CONFIGURED += config/aarch64/switchcontext.S
+@@ -355,6 +359,12 @@ DRUNTIME_DSOURCES_SOLARIS = core/sys/solaris/dlfcn.d \
+ 	core/sys/solaris/sys/procset.d core/sys/solaris/sys/types.d \
+ 	core/sys/solaris/time.d
+ 
++DRUNTIME_DSOURCES_HURD = core/sys/hurd/config.d \
++	core/sys/hurd/dlfcn.d core/sys/hurd/elf.d \
++	core/sys/hurd/errno.d core/sys/hurd/execinfo.d \
++	core/sys/hurd/link.d core/sys/hurd/sys/types.d \
++	core/sys/hurd/time.d core/sys/hurd/unistd.d
++
+ DRUNTIME_DSOURCES_WINDOWS = core/sys/windows/accctrl.d \
+ 	core/sys/windows/aclapi.d core/sys/windows/aclui.d \
+ 	core/sys/windows/basetsd.d core/sys/windows/basetyps.d \
+diff --git a/libphobos/libdruntime/config/common/threadasm.S b/libphobos/libdruntime/config/common/threadasm.S
+index e8bf15d51..1524d77bd 100644
+--- a/libphobos/libdruntime/config/common/threadasm.S
++++ b/libphobos/libdruntime/config/common/threadasm.S
+@@ -22,7 +22,7 @@ a copy of the GCC Runtime Library Exception along with this program;
+ see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+ <http://www.gnu.org/licenses/>.  */
+ 
+-#if (__linux__ || __FreeBSD__ || __NetBSD__ || __OpenBSD__ || __DragonFly__) && __ELF__
++#if (__linux__ || __FreeBSD__ || __NetBSD__ || __OpenBSD__ || __DragonFly__ || __GNU__) && __ELF__
+ /*
+  * Mark the resulting object file as not requiring execution permissions on
+  * stack memory. The absence of this section would mark the whole resulting
+diff --git a/libphobos/libdruntime/config/x86/switchcontext.S b/libphobos/libdruntime/config/x86/switchcontext.S
+index beb7c5451..7fc3bada8 100644
+--- a/libphobos/libdruntime/config/x86/switchcontext.S
++++ b/libphobos/libdruntime/config/x86/switchcontext.S
+@@ -108,7 +108,7 @@ CSYM(fiber_switchContext):
+ 
+ # endif /* defined(__ELF__) */
+ 
+-# if defined(__MACH__)
++# if defined(__APPLE__)
+ 
+ #  if defined(__i386__)
+ 
+@@ -177,7 +177,7 @@ LASFDE1:
+         .p2align 2,0
+ LEFDE1:
+ 
+-#  endif /* defined(__MACH__) && defined(__i386__) */
++#  endif /* defined(__APPLE__) && defined(__i386__) */
+ 
+ #  if defined(__x86_64__) && !defined(__ILP32__)
+ 
+@@ -247,8 +247,8 @@ LASFDE1:
+         .p2align 3,0
+ LEFDE1:
+ 
+-#  endif /* defined(__MACH__) && defined(__x86_64__) && !defined(__ILP32__) */
++#  endif /* defined(__APPLE__) && defined(__x86_64__) && !defined(__ILP32__) */
+ 
+-# endif /* defined (__MACH__) */
++# endif /* defined(__APPLE__) */
+ 
+ #endif /* !defined(__CET__) */
+diff --git a/libphobos/m4/druntime/os.m4 b/libphobos/m4/druntime/os.m4
+index 15cde3b04..f907e0929 100644
+--- a/libphobos/m4/druntime/os.m4
++++ b/libphobos/m4/druntime/os.m4
+@@ -89,6 +89,9 @@ AC_DEFUN([DRUNTIME_OS_SOURCES],
+       mingw*)  druntime_target_os_parsed="mingw"
+              ;;
+       *solaris*) druntime_target_os_parsed="solaris"
++            ;;
++      gnu*) druntime_target_os_parsed="hurd"
++            ;;
+   esac
+   AM_CONDITIONAL([DRUNTIME_OS_AIX],
+                  [test "$druntime_target_os_parsed" = "aix"])
+@@ -110,6 +113,8 @@ AC_DEFUN([DRUNTIME_OS_SOURCES],
+                  [test "$druntime_target_os_parsed" = "mingw"])
+   AM_CONDITIONAL([DRUNTIME_OS_SOLARIS],
+                  [test "$druntime_target_os_parsed" = "solaris"])
++  AM_CONDITIONAL([DRUNTIME_OS_HURD],
++                 [test "$druntime_target_os_parsed" = "hurd"])
+ 
+   druntime_target_posix="no"
+   case "$druntime_cv_target_os" in
+-- 
+2.52.0
+
+From 5fe2b8d511b0d6cb920504b276764cd8ae4e5ca4 Mon Sep 17 00:00:00 2001
+From: Yelninei <yelninei@tutamail.com>
+Date: Sat, 11 Apr 2026 20:34:11 +0000
+Subject: [PATCH 4/4] libphobos: regenerate autotools
+
+---
+ libphobos/configure               |  21 ++++-
+ libphobos/libdruntime/Makefile.in | 135 +++++++++++++++++++-----------
+ 2 files changed, 105 insertions(+), 51 deletions(-)
+
+diff --git a/libphobos/configure b/libphobos/configure
+index 9b6a41879..f4de8b556 100755
+--- a/libphobos/configure
++++ b/libphobos/configure
+@@ -666,6 +666,8 @@ DCFG_ARM_EABI_UNWINDER
+ DCFG_THREAD_MODEL
+ DRUNTIME_OS_POSIX_FALSE
+ DRUNTIME_OS_POSIX_TRUE
++DRUNTIME_OS_HURD_FALSE
++DRUNTIME_OS_HURD_TRUE
+ DRUNTIME_OS_SOLARIS_FALSE
+ DRUNTIME_OS_SOLARIS_TRUE
+ DRUNTIME_OS_MINGW_FALSE
+@@ -11867,7 +11869,7 @@ else
+   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
+   lt_status=$lt_dlunknown
+   cat > conftest.$ac_ext <<_LT_EOF
+-#line 11870 "configure"
++#line 11872 "configure"
+ #include "confdefs.h"
+ 
+ #if HAVE_DLFCN_H
+@@ -11973,7 +11975,7 @@ else
+   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
+   lt_status=$lt_dlunknown
+   cat > conftest.$ac_ext <<_LT_EOF
+-#line 11976 "configure"
++#line 11978 "configure"
+ #include "confdefs.h"
+ 
+ #if HAVE_DLFCN_H
+@@ -14433,6 +14435,9 @@ fi
+       mingw*)  druntime_target_os_parsed="mingw"
+              ;;
+       *solaris*) druntime_target_os_parsed="solaris"
++            ;;
++      gnu*) druntime_target_os_parsed="hurd"
++            ;;
+   esac
+    if test "$druntime_target_os_parsed" = "aix"; then
+   DRUNTIME_OS_AIX_TRUE=
+@@ -14514,6 +14519,14 @@ else
+   DRUNTIME_OS_SOLARIS_FALSE=
+ fi
+ 
++   if test "$druntime_target_os_parsed" = "hurd"; then
++  DRUNTIME_OS_HURD_TRUE=
++  DRUNTIME_OS_HURD_FALSE='#'
++else
++  DRUNTIME_OS_HURD_TRUE='#'
++  DRUNTIME_OS_HURD_FALSE=
++fi
++
+ 
+   druntime_target_posix="no"
+   case "$druntime_cv_target_os" in
+@@ -16074,6 +16087,10 @@ if test -z "${DRUNTIME_OS_SOLARIS_TRUE}" && test -z "${DRUNTIME_OS_SOLARIS_FALSE
+   as_fn_error $? "conditional \"DRUNTIME_OS_SOLARIS\" was never defined.
+ Usually this means the macro was only invoked conditionally." "$LINENO" 5
+ fi
++if test -z "${DRUNTIME_OS_HURD_TRUE}" && test -z "${DRUNTIME_OS_HURD_FALSE}"; then
++  as_fn_error $? "conditional \"DRUNTIME_OS_HURD\" was never defined.
++Usually this means the macro was only invoked conditionally." "$LINENO" 5
++fi
+ if test -z "${DRUNTIME_OS_POSIX_TRUE}" && test -z "${DRUNTIME_OS_POSIX_FALSE}"; then
+   as_fn_error $? "conditional \"DRUNTIME_OS_POSIX\" was never defined.
+ Usually this means the macro was only invoked conditionally." "$LINENO" 5
+diff --git a/libphobos/libdruntime/Makefile.in b/libphobos/libdruntime/Makefile.in
+index b6d90362f..813a94cc4 100644
+--- a/libphobos/libdruntime/Makefile.in
++++ b/libphobos/libdruntime/Makefile.in
+@@ -121,16 +121,17 @@ target_triplet = @target@
+ @DRUNTIME_OS_MINGW_TRUE@				   config/mingw/msvc.c
+ 
+ @DRUNTIME_OS_SOLARIS_TRUE@am__append_10 = $(DRUNTIME_DSOURCES_SOLARIS)
++@DRUNTIME_OS_HURD_TRUE@am__append_11 = $(DRUNTIME_DSOURCES_HURD)
+ # CPU specific sources
+-@DRUNTIME_CPU_AARCH64_TRUE@am__append_11 = config/aarch64/switchcontext.S
+-@DRUNTIME_CPU_ARM_TRUE@am__append_12 = config/arm/switchcontext.S
+-@DRUNTIME_CPU_LOONGARCH_TRUE@am__append_13 = config/loongarch/switchcontext.S
+-@DRUNTIME_CPU_MIPS_TRUE@am__append_14 = config/mips/switchcontext.S
+-@DRUNTIME_CPU_POWERPC_TRUE@am__append_15 = config/powerpc/switchcontext.S
+-@DRUNTIME_CPU_X86_TRUE@@DRUNTIME_OS_MINGW_TRUE@am__append_16 = config/mingw/switchcontext.S
+-@DRUNTIME_CPU_X86_TRUE@@DRUNTIME_OS_MINGW_FALSE@am__append_17 = config/x86/switchcontext.S
+-@DRUNTIME_CPU_SYSTEMZ_TRUE@am__append_18 = config/systemz/get_tls_offset.S
+-@DRUNTIME_CPU_S390_TRUE@am__append_19 = config/s390/get_tls_offset.S
++@DRUNTIME_CPU_AARCH64_TRUE@am__append_12 = config/aarch64/switchcontext.S
++@DRUNTIME_CPU_ARM_TRUE@am__append_13 = config/arm/switchcontext.S
++@DRUNTIME_CPU_LOONGARCH_TRUE@am__append_14 = config/loongarch/switchcontext.S
++@DRUNTIME_CPU_MIPS_TRUE@am__append_15 = config/mips/switchcontext.S
++@DRUNTIME_CPU_POWERPC_TRUE@am__append_16 = config/powerpc/switchcontext.S
++@DRUNTIME_CPU_X86_TRUE@@DRUNTIME_OS_MINGW_TRUE@am__append_17 = config/mingw/switchcontext.S
++@DRUNTIME_CPU_X86_TRUE@@DRUNTIME_OS_MINGW_FALSE@am__append_18 = config/x86/switchcontext.S
++@DRUNTIME_CPU_SYSTEMZ_TRUE@am__append_19 = config/systemz/get_tls_offset.S
++@DRUNTIME_CPU_S390_TRUE@am__append_20 = config/s390/get_tls_offset.S
+ subdir = libdruntime
+ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
+ am__aclocal_m4_deps = $(top_srcdir)/../config/acx.m4 \
+@@ -485,52 +486,58 @@ am__objects_23 = core/sys/solaris/dlfcn.lo core/sys/solaris/elf.lo \
+ 	core/sys/solaris/sys/procset.lo core/sys/solaris/sys/types.lo \
+ 	core/sys/solaris/time.lo
+ @DRUNTIME_OS_SOLARIS_TRUE@am__objects_24 = $(am__objects_23)
+-@DRUNTIME_CPU_AARCH64_TRUE@am__objects_25 = config/aarch64/libgdruntime_la-switchcontext.lo
+-@DRUNTIME_CPU_ARM_TRUE@am__objects_26 = config/arm/libgdruntime_la-switchcontext.lo
+-@DRUNTIME_CPU_LOONGARCH_TRUE@am__objects_27 = config/loongarch/libgdruntime_la-switchcontext.lo
+-@DRUNTIME_CPU_MIPS_TRUE@am__objects_28 = config/mips/libgdruntime_la-switchcontext.lo
+-@DRUNTIME_CPU_POWERPC_TRUE@am__objects_29 = config/powerpc/libgdruntime_la-switchcontext.lo
+-@DRUNTIME_CPU_X86_TRUE@@DRUNTIME_OS_MINGW_TRUE@am__objects_30 = config/mingw/libgdruntime_la-switchcontext.lo
+-@DRUNTIME_CPU_X86_TRUE@@DRUNTIME_OS_MINGW_FALSE@am__objects_31 = config/x86/libgdruntime_la-switchcontext.lo
+-@DRUNTIME_CPU_SYSTEMZ_TRUE@am__objects_32 = config/systemz/libgdruntime_la-get_tls_offset.lo
+-@DRUNTIME_CPU_S390_TRUE@am__objects_33 = config/s390/libgdruntime_la-get_tls_offset.lo
+-am__objects_34 = $(am__objects_6) $(am__objects_8) $(am__objects_10) \
++am__objects_25 = core/sys/hurd/config.lo core/sys/hurd/dlfcn.lo \
++	core/sys/hurd/elf.lo core/sys/hurd/errno.lo \
++	core/sys/hurd/execinfo.lo core/sys/hurd/link.lo \
++	core/sys/hurd/sys/types.lo core/sys/hurd/time.lo \
++	core/sys/hurd/unistd.lo
++@DRUNTIME_OS_HURD_TRUE@am__objects_26 = $(am__objects_25)
++@DRUNTIME_CPU_AARCH64_TRUE@am__objects_27 = config/aarch64/libgdruntime_la-switchcontext.lo
++@DRUNTIME_CPU_ARM_TRUE@am__objects_28 = config/arm/libgdruntime_la-switchcontext.lo
++@DRUNTIME_CPU_LOONGARCH_TRUE@am__objects_29 = config/loongarch/libgdruntime_la-switchcontext.lo
++@DRUNTIME_CPU_MIPS_TRUE@am__objects_30 = config/mips/libgdruntime_la-switchcontext.lo
++@DRUNTIME_CPU_POWERPC_TRUE@am__objects_31 = config/powerpc/libgdruntime_la-switchcontext.lo
++@DRUNTIME_CPU_X86_TRUE@@DRUNTIME_OS_MINGW_TRUE@am__objects_32 = config/mingw/libgdruntime_la-switchcontext.lo
++@DRUNTIME_CPU_X86_TRUE@@DRUNTIME_OS_MINGW_FALSE@am__objects_33 = config/x86/libgdruntime_la-switchcontext.lo
++@DRUNTIME_CPU_SYSTEMZ_TRUE@am__objects_34 = config/systemz/libgdruntime_la-get_tls_offset.lo
++@DRUNTIME_CPU_S390_TRUE@am__objects_35 = config/s390/libgdruntime_la-get_tls_offset.lo
++am__objects_36 = $(am__objects_6) $(am__objects_8) $(am__objects_10) \
+ 	$(am__objects_12) $(am__objects_14) $(am__objects_16) \
+ 	$(am__objects_18) $(am__objects_20) $(am__objects_22) \
+-	$(am__objects_24) $(am__objects_25) $(am__objects_26) \
+-	$(am__objects_27) $(am__objects_28) $(am__objects_29) \
+-	$(am__objects_30) $(am__objects_31) $(am__objects_32) \
+-	$(am__objects_33)
+-am__objects_35 = gcc/config.lo gcc/libbacktrace.lo
+-am__objects_36 = $(am__objects_1) $(am__objects_2) $(am__objects_3) \
+-	$(am__objects_4) $(am__objects_34) $(am__objects_35)
+-am_libgdruntime_la_OBJECTS = $(am__objects_36)
++	$(am__objects_24) $(am__objects_26) $(am__objects_27) \
++	$(am__objects_28) $(am__objects_29) $(am__objects_30) \
++	$(am__objects_31) $(am__objects_32) $(am__objects_33) \
++	$(am__objects_34) $(am__objects_35)
++am__objects_37 = gcc/config.lo gcc/libbacktrace.lo
++am__objects_38 = $(am__objects_1) $(am__objects_2) $(am__objects_3) \
++	$(am__objects_4) $(am__objects_36) $(am__objects_37)
++am_libgdruntime_la_OBJECTS = $(am__objects_38)
+ libgdruntime_la_OBJECTS = $(am_libgdruntime_la_OBJECTS)
+ am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+-am__objects_37 = core/stdc/libgdruntime_convenience_la-errno_.lo \
++am__objects_39 = core/stdc/libgdruntime_convenience_la-errno_.lo \
+ 	etc/valgrind/libgdruntime_convenience_la-valgrind_.lo
+-@DRUNTIME_OS_MINGW_TRUE@am__objects_38 = $(am__objects_21) \
++@DRUNTIME_OS_MINGW_TRUE@am__objects_40 = $(am__objects_21) \
+ @DRUNTIME_OS_MINGW_TRUE@	config/mingw/libgdruntime_convenience_la-msvc.lo
+-@DRUNTIME_CPU_AARCH64_TRUE@am__objects_39 = config/aarch64/libgdruntime_convenience_la-switchcontext.lo
+-@DRUNTIME_CPU_ARM_TRUE@am__objects_40 = config/arm/libgdruntime_convenience_la-switchcontext.lo
+-@DRUNTIME_CPU_LOONGARCH_TRUE@am__objects_41 = config/loongarch/libgdruntime_convenience_la-switchcontext.lo
+-@DRUNTIME_CPU_MIPS_TRUE@am__objects_42 = config/mips/libgdruntime_convenience_la-switchcontext.lo
+-@DRUNTIME_CPU_POWERPC_TRUE@am__objects_43 = config/powerpc/libgdruntime_convenience_la-switchcontext.lo
+-@DRUNTIME_CPU_X86_TRUE@@DRUNTIME_OS_MINGW_TRUE@am__objects_44 = config/mingw/libgdruntime_convenience_la-switchcontext.lo
+-@DRUNTIME_CPU_X86_TRUE@@DRUNTIME_OS_MINGW_FALSE@am__objects_45 = config/x86/libgdruntime_convenience_la-switchcontext.lo
+-@DRUNTIME_CPU_SYSTEMZ_TRUE@am__objects_46 = config/systemz/libgdruntime_convenience_la-get_tls_offset.lo
+-@DRUNTIME_CPU_S390_TRUE@am__objects_47 = config/s390/libgdruntime_convenience_la-get_tls_offset.lo
+-am__objects_48 = $(am__objects_6) $(am__objects_8) $(am__objects_10) \
++@DRUNTIME_CPU_AARCH64_TRUE@am__objects_41 = config/aarch64/libgdruntime_convenience_la-switchcontext.lo
++@DRUNTIME_CPU_ARM_TRUE@am__objects_42 = config/arm/libgdruntime_convenience_la-switchcontext.lo
++@DRUNTIME_CPU_LOONGARCH_TRUE@am__objects_43 = config/loongarch/libgdruntime_convenience_la-switchcontext.lo
++@DRUNTIME_CPU_MIPS_TRUE@am__objects_44 = config/mips/libgdruntime_convenience_la-switchcontext.lo
++@DRUNTIME_CPU_POWERPC_TRUE@am__objects_45 = config/powerpc/libgdruntime_convenience_la-switchcontext.lo
++@DRUNTIME_CPU_X86_TRUE@@DRUNTIME_OS_MINGW_TRUE@am__objects_46 = config/mingw/libgdruntime_convenience_la-switchcontext.lo
++@DRUNTIME_CPU_X86_TRUE@@DRUNTIME_OS_MINGW_FALSE@am__objects_47 = config/x86/libgdruntime_convenience_la-switchcontext.lo
++@DRUNTIME_CPU_SYSTEMZ_TRUE@am__objects_48 = config/systemz/libgdruntime_convenience_la-get_tls_offset.lo
++@DRUNTIME_CPU_S390_TRUE@am__objects_49 = config/s390/libgdruntime_convenience_la-get_tls_offset.lo
++am__objects_50 = $(am__objects_6) $(am__objects_8) $(am__objects_10) \
+ 	$(am__objects_12) $(am__objects_14) $(am__objects_16) \
+-	$(am__objects_18) $(am__objects_20) $(am__objects_38) \
+-	$(am__objects_24) $(am__objects_39) $(am__objects_40) \
+-	$(am__objects_41) $(am__objects_42) $(am__objects_43) \
+-	$(am__objects_44) $(am__objects_45) $(am__objects_46) \
+-	$(am__objects_47)
+-am__objects_49 = $(am__objects_1) $(am__objects_37) $(am__objects_3) \
+-	$(am__objects_4) $(am__objects_48) $(am__objects_35)
+-am__objects_50 = $(am__objects_49)
+-am_libgdruntime_convenience_la_OBJECTS = $(am__objects_50)
++	$(am__objects_18) $(am__objects_20) $(am__objects_40) \
++	$(am__objects_24) $(am__objects_26) $(am__objects_41) \
++	$(am__objects_42) $(am__objects_43) $(am__objects_44) \
++	$(am__objects_45) $(am__objects_46) $(am__objects_47) \
++	$(am__objects_48) $(am__objects_49)
++am__objects_51 = $(am__objects_1) $(am__objects_39) $(am__objects_3) \
++	$(am__objects_4) $(am__objects_50) $(am__objects_37)
++am__objects_52 = $(am__objects_51)
++am_libgdruntime_convenience_la_OBJECTS = $(am__objects_52)
+ libgdruntime_convenience_la_OBJECTS =  \
+ 	$(am_libgdruntime_convenience_la_OBJECTS)
+ AM_V_P = $(am__v_P_@AM_V@)
+@@ -794,6 +801,7 @@ ALL_DRUNTIME_INSTALL_DSOURCES = $(DRUNTIME_DSOURCES) \
+ 	$(DRUNTIME_DSOURCES_LINUX) $(DRUNTIME_DSOURCES_NETBSD) \
+ 	$(DRUNTIME_DSOURCES_OPENBSD) $(DRUNTIME_DSOURCES_POSIX) \
+ 	$(DRUNTIME_DSOURCES_SOLARIS) $(DRUNTIME_DSOURCES_WINDOWS) \
++	$(DRUNTIME_DSOURCES_HURD) \
+ 	$(DRUNTIME_DSOURCES_GENERATED) $(DRUNTIME_DISOURCES) \
+ 	$(DRUNTIME_DSOURCES_ELF) $(DRUNTIME_DSOURCES_STDCXX)
+ 
+@@ -805,7 +813,7 @@ DRUNTIME_SOURCES_CONFIGURED = $(am__append_1) $(am__append_2) \
+ 	$(am__append_9) $(am__append_10) $(am__append_11) \
+ 	$(am__append_12) $(am__append_13) $(am__append_14) \
+ 	$(am__append_15) $(am__append_16) $(am__append_17) \
+-	$(am__append_18) $(am__append_19)
++	$(am__append_18) $(am__append_19) $(am__append_20)
+ 
+ # Provide __start_minfo, __stop_minfo if linker doesn't.
+ @DRUNTIME_OS_MINFO_BRACKETING_FALSE@DRTSTUFF = gcc/drtbegin.o gcc/drtend.o
+@@ -1032,6 +1040,12 @@ DRUNTIME_DSOURCES_SOLARIS = core/sys/solaris/dlfcn.d \
+ 	core/sys/solaris/sys/procset.d core/sys/solaris/sys/types.d \
+ 	core/sys/solaris/time.d
+ 
++DRUNTIME_DSOURCES_HURD = core/sys/hurd/config.d \
++	core/sys/hurd/dlfcn.d core/sys/hurd/elf.d \
++	core/sys/hurd/errno.d core/sys/hurd/execinfo.d \
++	core/sys/hurd/link.d core/sys/hurd/sys/types.d \
++	core/sys/hurd/time.d core/sys/hurd/unistd.d
++
+ DRUNTIME_DSOURCES_WINDOWS = core/sys/windows/accctrl.d \
+ 	core/sys/windows/aclapi.d core/sys/windows/aclui.d \
+ 	core/sys/windows/basetsd.d core/sys/windows/basetyps.d \
+@@ -1953,6 +1967,21 @@ core/sys/solaris/sys/priocntl.lo:  \
+ core/sys/solaris/sys/procset.lo: core/sys/solaris/sys/$(am__dirstamp)
+ core/sys/solaris/sys/types.lo: core/sys/solaris/sys/$(am__dirstamp)
+ core/sys/solaris/time.lo: core/sys/solaris/$(am__dirstamp)
++core/sys/hurd/$(am__dirstamp):
++	@$(MKDIR_P) core/sys/hurd
++	@: > core/sys/hurd/$(am__dirstamp)
++core/sys/hurd/config.lo: core/sys/hurd/$(am__dirstamp)
++core/sys/hurd/dlfcn.lo: core/sys/hurd/$(am__dirstamp)
++core/sys/hurd/elf.lo: core/sys/hurd/$(am__dirstamp)
++core/sys/hurd/errno.lo: core/sys/hurd/$(am__dirstamp)
++core/sys/hurd/execinfo.lo: core/sys/hurd/$(am__dirstamp)
++core/sys/hurd/link.lo: core/sys/hurd/$(am__dirstamp)
++core/sys/hurd/sys/$(am__dirstamp):
++	@$(MKDIR_P) core/sys/hurd/sys
++	@: > core/sys/hurd/sys/$(am__dirstamp)
++core/sys/hurd/sys/types.lo: core/sys/hurd/sys/$(am__dirstamp)
++core/sys/hurd/time.lo: core/sys/hurd/$(am__dirstamp)
++core/sys/hurd/unistd.lo: core/sys/hurd/$(am__dirstamp)
+ config/aarch64/$(am__dirstamp):
+ 	@$(MKDIR_P) config/aarch64
+ 	@: > config/aarch64/$(am__dirstamp)
+@@ -2100,6 +2129,10 @@ mostlyclean-compile:
+ 	-rm -f core/sys/freebsd/netinet/*.lo
+ 	-rm -f core/sys/freebsd/sys/*.$(OBJEXT)
+ 	-rm -f core/sys/freebsd/sys/*.lo
++	-rm -f core/sys/hurd/*.$(OBJEXT)
++	-rm -f core/sys/hurd/*.lo
++	-rm -f core/sys/hurd/sys/*.$(OBJEXT)
++	-rm -f core/sys/hurd/sys/*.lo
+ 	-rm -f core/sys/linux/*.$(OBJEXT)
+ 	-rm -f core/sys/linux/*.lo
+ 	-rm -f core/sys/linux/linux/*.$(OBJEXT)
+@@ -2284,6 +2317,8 @@ clean-libtool:
+ 	-rm -rf core/sys/freebsd/net/.libs core/sys/freebsd/net/_libs
+ 	-rm -rf core/sys/freebsd/netinet/.libs core/sys/freebsd/netinet/_libs
+ 	-rm -rf core/sys/freebsd/sys/.libs core/sys/freebsd/sys/_libs
++	-rm -rf core/sys/hurd/.libs core/sys/hurd/_libs
++	-rm -rf core/sys/hurd/sys/.libs core/sys/hurd/sys/_libs
+ 	-rm -rf core/sys/linux/.libs core/sys/linux/_libs
+ 	-rm -rf core/sys/linux/linux/.libs core/sys/linux/linux/_libs
+ 	-rm -rf core/sys/linux/netinet/.libs core/sys/linux/netinet/_libs
+@@ -2450,6 +2485,8 @@ distclean-generic:
+ 	-rm -f core/sys/freebsd/net/$(am__dirstamp)
+ 	-rm -f core/sys/freebsd/netinet/$(am__dirstamp)
+ 	-rm -f core/sys/freebsd/sys/$(am__dirstamp)
++	-rm -f core/sys/hurd/$(am__dirstamp)
++	-rm -f core/sys/hurd/sys/$(am__dirstamp)
+ 	-rm -f core/sys/linux/$(am__dirstamp)
+ 	-rm -f core/sys/linux/linux/$(am__dirstamp)
+ 	-rm -f core/sys/linux/netinet/$(am__dirstamp)
+-- 
+2.52.0
+

@@ -1469,8 +1469,21 @@ as the 'native-search-paths' field."
   (define version (package-version gdc))
   (define (since-version? since) (version>=? version since))
   (define (until-version? until) (version>? until version))
+  (define patches (cond ((and (since-version? "11")
+                              (until-version? "12"))
+                         (search-patches "gdc-11-druntime-hurd.patch"))
+                        ((and (since-version? "14")
+                              (until-version? "15"))
+                         (search-patches "gdc-14-druntime-hurd.patch"))
+                        (else '())))
   (package
     (inherit gdc)
+    (source
+     (origin
+       (inherit (package-source gdc))
+       (patches
+        (append (origin-patches (package-source gdc))
+                patches))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:modules modules)
