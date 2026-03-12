@@ -25851,8 +25851,8 @@ variable portably in Common Lisp.")
   (sbcl-package->ecl-package sbcl-path-parse))
 
 (define-public sbcl-pathname-utils
-  (let ((commit "3309d65a568acc392ade6a4096c940eb15e1149e")
-        (revision "4"))
+  (let ((commit "c0aa51ab78cb21581700d44deeed88a4743b6f13")
+        (revision "5"))
     (package
       (name "sbcl-pathname-utils")
       (version (git-version "1.1.0" revision commit))
@@ -25860,17 +25860,17 @@ variable portably in Common Lisp.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/pathname-utils")
+               (url "https://codeberg.org/shinmera/pathname-utils")
                (commit commit)))
          (file-name (git-file-name "cl-pathname-utils" version))
          (sha256
-          (base32 "0w7h0qhi53myakfbwvwgr9srbz5mmgsdcbynzkh5vjiibwjg1c3i"))))
+          (base32 "11hic5gspnkjfggdh4zzx9i1ha4vf7rjr2cyqmz1144sprl2nva6"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-parachute))
       (inputs
        (list sbcl-trivial-features))
-      (home-page "https://shinmera.github.io/pathname-utils/")
+      (home-page "https://codeberg.org/shinmera/pathname-utils")
       (synopsis "Collection of utilities to help with pathname operations")
       (description
        "This package provides a Common Lisp system with a collection of common
