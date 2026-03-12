@@ -14199,6 +14199,25 @@ and the Viterbi algorithm.  The algorithms are based of those of Walter
 Zucchini.")
     (license license:gpl2+)))
 
+(define-public r-highfive
+  (package
+    (name "r-highfive")
+    (version "3.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "HighFive" version))
+       (sha256
+        (base32 "1nzshjh5kizjiq93jy1cjsy5shcmk5z3qz0n4dcxf9wcg2rw7f0m"))))
+    (properties `((upstream-name . "HighFive")))
+    (build-system r-build-system)
+    (inputs (list hdf5))
+    (home-page "https://github.com/theAeon/HighFive")
+    (synopsis "HighFive C++ interface to HDF5")
+    (description
+     "This package provides a header-only C++ interface for libhdf5.")
+    (license license:boost1.0)))
+
 (define-public r-highr
   (package
     (name "r-highr")
