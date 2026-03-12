@@ -27860,6 +27860,23 @@ Log level to output logs. Possible values: @samp{"silent"}, @samp{"error"},
 @end table
 @end deftp
 
+@defvar rtkit-service-type
+Type for the service that allows D-Bus to start the RealtimeKit D-Bus
+service. The RTKit service provides a system D-Bus interface for user
+processes, such as PipeWire, to securely use realtime scheduling.
+
+The value for this service is a @code{<rtkit-configuration>} object.
+@end defvar
+
+@deftp {Data Type} rtkit-configuration
+Data type representing the configuration for @code{rtkit-service-type}.
+
+@table @asis
+@item @code{rtkit} (default: @code{rtkit}) (type: file-like)
+Package object for RTKit.
+
+@end table
+@end deftp
 
 @node Sound Services
 @subsection Sound Services

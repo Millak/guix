@@ -29,6 +29,7 @@
   #:use-module ((gnu packages glib) #:select (dbus))
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages freedesktop)
   #:use-module (guix deprecation)
   #:use-module (guix gexp)
   #:use-module ((guix packages) #:select (package-name))
@@ -45,7 +46,10 @@
             polkit-configuration
             polkit-configuration?
             polkit-service-type
-            polkit-service))  ; deprecated
+            polkit-service  ; deprecated
+
+            rtkit-configuration
+            rtkit-service-type))  
 
 ;;;
 ;;; D-Bus.
@@ -441,5 +445,37 @@ capabilities to ordinary users.  For example, an ordinary user can be granted
 the capability to suspend the system if the user is logged in locally."
   (service polkit-service-type
            (polkit-configuration (polkit polkit))))
+
+(define-record-type* <rtkit-configuration>
+  rtkit-configuration make-rtkit-configuration
+  rtkit-configuration?
+  (rtkit rtkit-configuration-rtkit
+         (default rtkit)))
+
+(define %rtkit-account
+  ;; Account used by rtkit.
+  (user-account
+    (name "rtkit")
+    (group "nogroup")
+    (system? #t)
+    (comment "Realtime kit user")
+    (home-directory "/var/empty")
+    (shell (file-append shadow "/sbin/nologin"))))
+
+(define rtkit-service-type
+  (let ((rtkit-package (compose list rtkit-configuration-rtkit)))
+    (service-type
+      (name 'rtkit)
+      (extensions
+       (list (service-extension
+              polkit-service-type rtkit-package)
+	     (service-extension dbus-root-service-type rtkit-package)
+	     (service-extension
+              account-service-type
+              (const (list %rtkit-account)))))
+      (default-value (rtkit-configuration))
+      (description
+       "Return a service that sets up D-Bus and PolKit so that the Realtime Kit
+daemon is readily usable."))))
 
 ;;; dbus.scm ends here
