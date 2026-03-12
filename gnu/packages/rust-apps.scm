@@ -2097,6 +2097,59 @@ replacement for i3status, written in pure Rust.  It provides a way to display
 bar.  It is also compatible with sway.")
     (license license:gpl3)))
 
+(define-public ianny
+  (package
+   (name "ianny")
+   (version "2.1.3")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/zefr0x/ianny")
+                  (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32 "14nmpz7nkjj2rr3g4f3npg8dd5b533wp73q90q4vgp06rf9mbyq8"))))
+   (build-system meson-build-system)
+   (arguments
+     (list
+      #:imported-modules `(,@%meson-build-system-modules
+                           ,@%cargo-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build meson-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-for-build
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "meson.build"
+                (("/etc/xdg/autostart")
+                 (string-append (assoc-ref outputs "out")
+                                "/etc/xdg/autostart")))
+              (delete-file "Cargo.lock")))
+          ;; The meson 'configure phase changes to a different directory and
+          ;; we need it created before unpacking the crates.
+          (add-after 'configure 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:vendor-dir "vendor"
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums)))))))
+   (native-inputs (list pkg-config rust `(,rust "cargo")))
+   (inputs
+    (cons dbus (cargo-inputs 'ianny)))
+   (home-page "https://github.com/zefr0x/ianny")
+   (synopsis "RSI break timer for Wayland")
+   (description "Desktop utility that helps prevent repetitive strain injuries
+by keeping track of usage patterns and periodically reminding the user to take
+breaks.")
+   (license license:gpl3)))
+
 (define-public iwmenu
   (package
     (name "iwmenu")
