@@ -618,6 +618,8 @@ enhance @code{scheme-mode} and Geiser.  @xref{Introduction,,,
 emacs-guix, Emacs-Guix Reference Manual}, to make sure you don't miss
 out!
 
+@unnumberedsubsubsec Taming Boilerplate with Templates
+
 @cindex code snippets
 @cindex templates
 @cindex reducing boilerplate
@@ -657,6 +659,8 @@ trigger string @code{origin...}, which can be expanded further.  The
 @code{origin} snippet in turn may insert other trigger strings ending on
 @code{...}, which also can be expanded further.
 
+@unnumberedsubsubsec Updating Copyright Lines
+
 @cindex insert or update copyright
 @cindex @code{M-x guix-copyright}
 @cindex @code{M-x copyright-update}
@@ -684,6 +688,31 @@ You can check if your copyright is up to date by evaluating @code{M-x
 copyright-update}.  If you want to do it automatically after each buffer
 save then add @code{(add-hook 'after-save-hook 'copyright-update)} in
 Emacs.
+
+@unnumberedsubsubsec Referencing Bug Reports
+
+@cindex bug references, Emacs
+Emacs has a nice minor mode called @code{bug-reference}, which can be
+used to follow link to issues and pull requests such as @samp{#1234} or
+@samp{guix/guix#1234} (@pxref{Bug Reference,,, emacs, The GNU Emacs
+Manual}).  To set it up, enable it in the relevant modes:
+
+@lisp
+(require 'bug-reference)
+(add-hook 'prog-mode-hook #'bug-reference-prog-mode)
+(add-hook 'erc-mode-hook #'bug-reference-mode)
+;; Add extra hooks for your mail user agent: Gnus, mu4e, etc.
+@end lisp
+
+When working from a Git checkout of Guix, setup is automatic:
+@code{bug-reference} automatically detects that the project is hosted on
+Codeberg@footnote{
+@c 'vc-git-repository-url' is used by
+@c 'bug-reference-setup-from-vc-alist', which checks for one of these
+@c names for the remote.
+As of Emacs@tie{}30.2, auto-detection works if and
+only if the Git remote is called @code{upstream} or @code{origin}.} and
+infers the issue and pull request URL from there.
 
 @node Guile Studio
 @subsection Guile Studio
