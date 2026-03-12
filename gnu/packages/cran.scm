@@ -47023,12 +47023,10 @@ space models and automatic ARIMA modelling.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; This depends on r-greg, which depends on this package.
-             (delete-file "tests/test_visual_with_Greg.R"))))))
+      #:test-directory "tests"
+      #:skipped-tests
+      ;; This depends on r-greg, which depends on this package.
+      '("test_visual_with_Greg.R")))
     (propagated-inputs
      (list r-abind r-checkmate))
     (native-inputs (list r-dplyr
