@@ -2854,6 +2854,31 @@ DESCRIPTION files.  It is intended for packages that create or manipulate
 other packages.")
     (license license:expat)))
 
+(define-public r-descr
+  (package
+    (name "r-descr")
+    (version "1.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "descr" version))
+       (sha256
+        (base32 "0yyxh1030pfjriwm8xfx9rp32cq7jfqlxq8mim1qvx06siah545c"))))
+    (properties `((upstream-name . "descr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-xtable))
+    (home-page "https://github.com/jalvesaq/descr")
+    (synopsis "Descriptive statistics")
+    (description
+     "This package provides weighted frequency and contingency tables of
+categorical variables and of the comparison of the mean value of a numerical
+variable by the levels of a factor, and methods to produce xtable objects of
+the tables and to plot them.  There are also functions to facilitate the
+character encoding conversion of objects, to quickly convert fixed width files
+into CSV ones, and to export a @code{data.frame} to a text file with the
+necessary R and SPSS codes to reread the data.")
+    (license license:gpl2+)))
+
 (define-public r-desctools
   (package
     (name "r-desctools")
