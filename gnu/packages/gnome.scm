@@ -915,6 +915,7 @@ tomorrow, the rest of the week and for special occasions.")
            gtk
            gvfs
            json-glib
+           localsearch
            libadwaita
            libdazzle
            libmediaart
@@ -922,8 +923,7 @@ tomorrow, the rest of the week and for special occasions.")
            python-pycairo
            python-pygobject
            python
-           tracker
-           tracker-miners))
+           tinysparql))
     (synopsis "Simple music player for GNOME desktop")
     (description "GNOME Music is the new GNOME music playing application that
 aims to combine an elegant and immersive browsing experience with simple
