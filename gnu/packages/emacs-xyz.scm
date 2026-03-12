@@ -21261,29 +21261,26 @@ required by the LaTeX output produced by Org mode.")
     (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))))
 
 (define-public emacs-org-contacts
-  ;; XXX: Upstream does not tag version bumps. Commit below matches latest
-  ;; version bump.
-  (let ((commit "217ba04c9d638067a6ccb0829cf1885f54c1d568"))
-    (package
-      (name "emacs-org-contacts")
-      (version "1.1")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://repo.or.cz/org-contacts")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0f0vjdvx0hffj2xvyrya8yfl77djmzmpxdxsx58ym4lmdvwyb6x3"))))
-      (build-system emacs-build-system)
-      (propagated-inputs (list emacs-org))
-      (home-page "https://repo.or.cz/org-contacts")
-      (synopsis "Contacts management system for Org mode")
-      (description "Manage your contacts from Org mode.  You can auto
+  (package
+    (name "emacs-org-contacts")
+    (version "1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://repo.or.cz/org-contacts")
+              (commit (string-append "release_" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1djnyswjbsb1k3ciyd2f9xfjfkhbkkfw3dzfmzzr8dx5v71gm47b"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-org))
+    (home-page "https://repo.or.cz/org-contacts")
+    (synopsis "Contacts management system for Org mode")
+    (description "Manage your contacts from Org mode.  You can auto
 complete email addresses, export contacts to a vCard file, put birthdays
 in your Org Agenda, and more.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-org-vcard
   (package
