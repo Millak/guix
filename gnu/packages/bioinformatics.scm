@@ -25279,7 +25279,7 @@ CSIv1, CSIv2 and FAI files.")
 (define-public python-gseapy
   (package
     (name "python-gseapy")
-    (version "1.0.4")
+    (version "1.1.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -25288,7 +25288,7 @@ CSIv1, CSIv2 and FAI files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06gh09dwwj2xr5zx8i41smy8arx2pw7rll7sk50np28z419bnyz9"))))
+                "0xdh2v0s2jwj5n541z9zlcq5f6ka0r8jk03jdv8z3j27hc6azf3s"))))
     (build-system cargo-build-system)
     (arguments
      (list

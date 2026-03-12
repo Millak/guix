@@ -61248,63 +61248,74 @@
                                            rust-unindent-0.2.4
                                            rust-vcpkg-0.2.15))
                      (python-gseapy =>
-                                    (list rust-autocfg-1.4.0
-                                          rust-bitflags-2.9.0
-                                          rust-cfg-if-1.0.0
+                                    (list rust-approx-0.5.1
+                                          rust-autocfg-1.5.0
+                                          rust-bytemuck-1.25.0
+                                          rust-cfg-if-1.0.4
                                           rust-crossbeam-deque-0.8.6
                                           rust-crossbeam-epoch-0.9.18
                                           rust-crossbeam-utils-0.8.21
-                                          rust-csv-1.3.1
-                                          rust-csv-core-0.1.12
+                                          rust-csv-1.4.0
+                                          rust-csv-core-0.1.13
                                           rust-either-1.15.0
-                                          rust-getrandom-0.3.2
-                                          rust-indoc-1.0.9
+                                          rust-getrandom-0.2.17
+                                          rust-getrandom-0.3.4
+                                          rust-heck-0.5.0
+                                          rust-indoc-2.0.7
                                           rust-itertools-0.14.0
-                                          rust-itoa-1.0.15
-                                          rust-libc-0.2.172
-                                          rust-lock-api-0.4.12
-                                          rust-memchr-2.7.4
-                                          rust-once-cell-1.21.3
-                                          rust-parking-lot-0.12.3
-                                          rust-parking-lot-core-0.9.10
+                                          rust-itoa-1.0.17
+                                          rust-libc-0.2.183
+                                          rust-libm-0.2.16
+                                          rust-matrixmultiply-0.3.10
+                                          rust-memchr-2.8.0
+                                          rust-memoffset-0.9.1
+                                          rust-nalgebra-0.33.2
+                                          rust-num-bigint-0.4.6
+                                          rust-num-complex-0.4.6
+                                          rust-num-integer-0.1.46
+                                          rust-num-rational-0.4.2
+                                          rust-num-traits-0.2.19
+                                          rust-once-cell-1.21.4
+                                          rust-paste-1.0.15
+                                          rust-portable-atomic-1.13.1
                                           rust-ppv-lite86-0.2.21
-                                          rust-proc-macro2-1.0.95
-                                          rust-pyo3-0.16.6
-                                          rust-pyo3-build-config-0.16.6
-                                          rust-pyo3-ffi-0.16.6
-                                          rust-pyo3-macros-0.16.6
-                                          rust-pyo3-macros-backend-0.16.6
-                                          rust-quote-1.0.40
-                                          rust-r-efi-5.2.0
-                                          rust-rand-0.9.1
+                                          rust-proc-macro2-1.0.106
+                                          rust-pyo3-0.25.1
+                                          rust-pyo3-build-config-0.25.1
+                                          rust-pyo3-ffi-0.25.1
+                                          rust-pyo3-macros-0.25.1
+                                          rust-pyo3-macros-backend-0.25.1
+                                          rust-quote-1.0.45
+                                          rust-r-efi-5.3.0
+                                          rust-rand-0.8.5
+                                          rust-rand-0.9.2
+                                          rust-rand-chacha-0.3.1
                                           rust-rand-chacha-0.9.0
-                                          rust-rand-core-0.9.3
-                                          rust-rayon-1.10.0
-                                          rust-rayon-core-1.12.1
-                                          rust-redox-syscall-0.5.11
-                                          rust-ryu-1.0.20
-                                          rust-scopeguard-1.2.0
-                                          rust-serde-1.0.219
-                                          rust-serde-derive-1.0.219
-                                          rust-smallvec-1.15.0
-                                          rust-syn-1.0.109
-                                          rust-syn-2.0.100
-                                          rust-target-lexicon-0.12.16
-                                          rust-unicode-ident-1.0.18
-                                          rust-unindent-0.1.11
-                                          rust-wasi-0.14.2+wasi-0.2.4
-                                          rust-windows-targets-0.52.6
-                                          rust-windows-aarch64-gnullvm-0.52.6
-                                          rust-windows-aarch64-msvc-0.52.6
-                                          rust-windows-i686-gnu-0.52.6
-                                          rust-windows-i686-gnullvm-0.52.6
-                                          rust-windows-i686-msvc-0.52.6
-                                          rust-windows-x86-64-gnu-0.52.6
-                                          rust-windows-x86-64-gnullvm-0.52.6
-                                          rust-windows-x86-64-msvc-0.52.6
-                                          rust-wit-bindgen-rt-0.39.0
-                                          rust-zerocopy-0.8.24
-                                          rust-zerocopy-derive-0.8.24))
+                                          rust-rand-core-0.6.4
+                                          rust-rand-core-0.9.5
+                                          rust-rand-distr-0.4.3
+                                          rust-rawpointer-0.2.1
+                                          rust-rayon-1.11.0
+                                          rust-rayon-core-1.13.0
+                                          rust-rustversion-1.0.22
+                                          rust-ryu-1.0.23
+                                          rust-safe-arch-0.7.4
+                                          rust-serde-1.0.228
+                                          rust-serde-core-1.0.228
+                                          rust-serde-derive-1.0.228
+                                          rust-simba-0.9.1
+                                          rust-statrs-0.18.0
+                                          rust-syn-2.0.117
+                                          rust-target-lexicon-0.13.5
+                                          rust-typenum-1.19.0
+                                          rust-unicode-ident-1.0.24
+                                          rust-unindent-0.2.4
+                                          rust-wasi-0.11.1+wasi-snapshot-preview1
+                                          rust-wasip2-1.0.2+wasi-0.2.9
+                                          rust-wide-0.7.33
+                                          rust-wit-bindgen-0.51.0
+                                          rust-zerocopy-0.8.42
+                                          rust-zerocopy-derive-0.8.42))
                      (python-libcst =>
                                     (list rust-aho-corasick-1.1.3
                                      rust-anes-0.1.6
