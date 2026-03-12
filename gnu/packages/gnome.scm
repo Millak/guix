@@ -10480,6 +10480,7 @@ playing media, scanning, and much more.")
    (propagated-inputs
      (list baobab
            cheese
+           decibels
            epiphany
            evince
            file-roller
