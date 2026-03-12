@@ -39,7 +39,7 @@
 ;;; Copyright © 2019, 2024, 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2019 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2019 Jonathan Frederickson <jonathan@terracrypt.net>
-;;; Copyright © 2019-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2019-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019 David Wilson <david@daviwil.com>
 ;;; Copyright © 2019, 2020 Raghav Gururajan <raghavgururajan@disroot.org>
@@ -188,6 +188,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages node-xyz)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages ocr)
   #:use-module (gnu packages openldap)
@@ -651,6 +652,73 @@ enhance the GLib testing framework.  With specific emphasis on easing the pain
 of writing test cases for asynchronous interactions.")
     (home-page "https://launchpad.net/gtx")
     (license license:lgpl2.1+)))
+
+(define-public decibels
+  (package
+    (name "decibels")
+    (version "49.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "mirror://gnome/sources/" name "/"
+                       (version-major version) "/"
+                       name "-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1jkkyv9r87skqyjhzflzzczzwf3ycwnavw1r3qa6jzlnwai9pdr9"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-gst-init
+            (lambda _
+              ;; `null' is no longer accepted as of gstreamer 2.28.1 (see:
+              ;; <https://gitlab.gnome.org/GNOME/decibels/-/merge_requests/178>).
+              (substitute* "src/stream.ts"
+                (("Gst.init\\(null)")
+                 "Gst.init([])"))))
+          (add-after 'unpack 'skip-gnome-post-install
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")
+                (("update_desktop_database: true")
+                 "update_desktop_database: false"))))
+          (add-after 'install 'wrap-program
+            (lambda _
+              (let ((typelib-path (getenv "GI_TYPELIB_PATH")))
+                (wrap-program (string-append #$output "/bin/org.gnome.Decibels")
+                  `("GI_TYPELIB_PATH" ":" prefix (,typelib-path))))))
+          (add-after 'glib-or-gtk-wrap 'install-alias
+            (lambda _
+              (symlink (string-append #$output "/bin/org.gnome.Decibels")
+                       (string-append #$output "/bin/decibels")))))))
+    (native-inputs
+     (list blueprint-compiler
+           gettext-minimal
+           `(,glib "bin")
+           pkg-config
+           node-typescript))
+    (inputs
+     (list bash-minimal
+           gjs
+           gst-plugins-bad              ;for GstPlay
+           gstreamer
+           libadwaita))
+    (home-page "https://gitlab.gnome.org/GNOME/decibels")
+    (synopsis "GNOME audio file player")
+    (description "Decibels, also known as Audio Player, is an audio player
+focused on simplicity.  It offers few advanced features such as:
+@itemize
+@item{An elegant waveform of the track.}
+@item{Adjustable playback speed.}
+@item{Easy seek controls.}
+@item{Playing multiple files at the same time.}
+@end itemize")
+    (license license:gpl3+)))
 
 (define-public dee
   (package
