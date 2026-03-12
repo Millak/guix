@@ -1865,6 +1865,61 @@ in different situations.
 @end enumerate")
     (license license:expat)))
 
+(define-public python-zxcvbn-rs-py
+  (package
+    (name "python-zxcvbn-rs-py")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fief-dev/zxcvbn-rs-py")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pmc68x6ycsz4g7sr48nb7cv6v46rljc3wb1vc531lyc6hsh80qm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums))))
+          (add-before 'check 'prepare-for-tests
+            (lambda _
+              (delete-file-recursively "zxcvbn_rs_py"))))))
+    (native-inputs
+     (list rust
+           `(,rust "cargo")
+           maturin
+           python-pytest
+           python-wheel))
+    (inputs
+     (cargo-inputs 'python-zxcvbn-rs-py))
+    (home-page "https://github.com/fief-dev/zxcvbn-rs-py")
+    (synopsis
+     "Python bindings for zxcvbn-rs, a password strength estimation library")
+    (description
+     "This package provides a library to estimate password strength.  It is
+implemented by python bindings for zxcvbn-rs and aims to be faster than
+@code{python-zxcvbn} thanks to its Rust core.")
+    (license license:expat)))
+
 ;; XXX: Not maintained since 2016.
 (define-public python-pydes
   (package
