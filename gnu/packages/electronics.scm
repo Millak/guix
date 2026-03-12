@@ -119,6 +119,7 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-compression)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -281,7 +282,7 @@ formal verification.  This is the Yosyshq fork of ABC.")
 (define-public apycula
   (package
     (name "apycula")
-    (version "0.28")
+    (version "0.31")
     ;; The pypi tar.gz file includes the necessary .pickle files, not available
     ;; in the home-page repository.
     (source
@@ -289,11 +290,24 @@ formal verification.  This is the Yosyshq fork of ABC.")
        (method url-fetch)
        (uri (pypi-uri "apycula" version))
        (sha256
-        (base32 "0llwcz4fji4sbdajlr43spf3mgdaw42rm15va1l9zb8314fn7wq1"))))
+        (base32 "0pf43cd071kv5ann78hl5qrcj9vhndr46ds2g12sgnfjfvh6pfpg"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;requires Gowin EDA tools
-    (inputs (list python-crc))
-    (native-inputs (list python-setuptools))
+    (arguments
+     (list #:tests? #f ;requires Gowin EDA tools
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-setup
+                 (lambda _
+                   ;; Acceptable, but degraded performance.
+                   (substitute* "setup.py"
+                     ((".*fastcrc.*") ""))))))) ;TODO: Package python-fastcrc
+    (propagated-inputs
+     (list python-cattrs
+           python-crcmod
+           python-numpy
+           python-msgpack
+           python-msgspec))
+    (native-inputs (list python-setuptools python-setuptools-scm))
     (home-page "https://github.com/YosysHQ/apicula/")
     (synopsis "Gowin FPGA bitstream format")
     (description
