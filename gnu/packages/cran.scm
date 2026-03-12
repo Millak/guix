@@ -52464,10 +52464,6 @@ and \"Persuasion\".")
      (list
       #:phases
       '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; Fails because of unexpected warnings.
-             (delete-file "tests/testthat/test-compare_df_cols.R")))
          (add-before 'check 'set-timezone
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Six tests would fail without this.
