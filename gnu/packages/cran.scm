@@ -30967,14 +30967,14 @@ unbalanced datasets.")
 (define-public r-multcomp
   (package
     (name "r-multcomp")
-    (version "1.4-29")
+    (version "1.4-30")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "multcomp" version))
        (sha256
         (base32
-         "14fsdlwvzbchfg9sd0xpbp7xva5cnyv3izdd5smdqbavjdf140y8"))))
+         "0p29pqrn7hfczblcgi2q616ir7r9s12bgr16ba8si10p49pk292b"))))
     (build-system r-build-system)
     ;; Vignettes require r-coin, but r-coin depends on r-multcomp.
     (arguments (list #:test-types '(list "tests")))
