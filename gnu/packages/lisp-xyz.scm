@@ -25885,6 +25885,12 @@ handling the accessing of files on the underlying system however.")
 (define-public cl-pathname-utils
   (sbcl-package->cl-source-package sbcl-pathname-utils))
 
+(define-public clasp-pathname-utils
+  (package
+    (inherit (sbcl-package->clasp-package sbcl-pathname-utils))
+    (arguments
+     (list #:tests? #f)))) ;see ECL variant
+
 (define-public ecl-pathname-utils
   (package
     (inherit (sbcl-package->ecl-package sbcl-pathname-utils))
