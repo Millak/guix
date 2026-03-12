@@ -8046,7 +8046,7 @@ next matching page.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://notabug.org/alezost/emacs-bui.git")
+                    (url "https://gitlab.com/alezost-emacs/bui.el")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
@@ -8055,7 +8055,7 @@ next matching page.")
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash))
-    (home-page "https://notabug.org/alezost/emacs-bui")
+    (home-page "https://gitlab.com/alezost-emacs/bui.el")
     (synopsis "Buffer interface library for Emacs")
     (description
      "BUI (Buffer User Interface) is a library for making @code{list} and
