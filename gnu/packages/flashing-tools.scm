@@ -694,7 +694,7 @@ Unifinished Extensible Firmware Interface (UEFI) images.")
 (define-public openfpgaloader
   (package
     (name "openfpgaloader")
-    (version "1.1.0")
+    (version "1.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -703,7 +703,7 @@ Unifinished Extensible Firmware Interface (UEFI) images.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jr9vx0r53h2wkmcyjkc5l90wvk4glinlkf42m00j7rp41bckfvp"))))
+                "00wbf7z5f55422fmqczxc6f7a2lmr52m1qx8m3ky5gl006rkf0sm"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config))
@@ -719,9 +719,11 @@ Unifinished Extensible Firmware Interface (UEFI) images.")
            #~(modify-phases %standard-phases
                (add-after 'install 'install-rules
                  (lambda _
-                   (install-file
-                    "../source/99-openfpgaloader.rules"
-                    (string-append #$output "/lib/udev/rules.d/")))))))
+                   (for-each
+                    (lambda (f)
+                      (install-file
+                       f (string-append #$output "/lib/udev/rules.d/")))
+                    (find-files "../source" "\\.rules$")))))))
     (synopsis "Utility for programming FPGA")
     (description "This package provides a program to transfer a bitstream
 to an FPGA.  To use @code{openfpgaloader} without root privileges it is
