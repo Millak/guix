@@ -27314,6 +27314,33 @@ functionality is added so that HDF5 objects behave very similar to their
 corresponding R counterparts.")
     (license license:asl2.0)))
 
+(define-public r-hdf5r-extra
+  (package
+    (name "r-hdf5r-extra")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "hdf5r.Extra" version))
+       (sha256
+        (base32 "1kfpa8i697f0ksa0pd726g6bf0j2injlbwkjg71k6apv3sq8aqxg"))))
+    (properties `((upstream-name . "hdf5r.Extra")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-checkmate
+                             r-dplyr
+                             r-easy-utils
+                             r-hdf5r
+                             r-matrix
+                             r-rlang))
+    (native-inputs (list r-testthat r-withr))
+    (home-page "https://github.com/ycli1995/hdf5r.Extra")
+    (synopsis "Extensions for HDF5 R interfaces")
+    (description
+     "This package provides some methods to manipulate HDF5 files, extending
+the @code{hdf5r} package.  Reading and writing R objects to HDF5 formats
+follow the specification of @code{AnnData}.")
+    (license license:expat)))
+
 (define-public r-itertools
   (package
     (name "r-itertools")
