@@ -35518,12 +35518,12 @@ This makes it a convenient and fast interface to C/C++ and Fortran code.")
     (build-system r-build-system)
     (arguments
      (list
+      #:skipped-tests
+      ;; This file requires r-fields for "quilt.plot", but r-fields depends on
+      ;; this package.
+      '("test-rmvnorm.R")
       #:phases
       '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; One test fails with: could not find function "quilt.plot"
-             (delete-file "tests/testthat/test-rmvnorm.R")))
          (add-before 'check 'set-HOME
            (lambda _
              ;; Needed for building vignettes.
