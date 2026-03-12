@@ -2685,7 +2685,7 @@ parsing of Variant Call Format (VCF) files.")
 (define-public python-decoupler
   (package
     (name "python-decoupler")
-    (version "2.1.2")
+    (version "2.1.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2694,7 +2694,7 @@ parsing of Variant Call Format (VCF) files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05d70zrgv8l9ihkgmr7hqcgn66yx1v1lm0hcfbc370asp97k2f74"))))
+                "07kpcjbnp5c00p3iw2my6k3bxfivswyxs2dljj0yhgjhxw2900av"))))
     (build-system pyproject-build-system)
     (arguments
      (list
