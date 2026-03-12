@@ -41866,18 +41866,6 @@ the current document.")
     (properties
      '((updater-ignored-native-inputs . ("r-titanic"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; One tests here requires r-titanic.
-             (delete-file "tests/testthat/test_callbacks.R")
-             ;; This needs internet access
-             (delete-file "tests/testthat/test_model_compatibility.R")
-             ;; object 'Arthritis' not found
-             (delete-file "tests/testthat/test_helpers.R"))))))
     (propagated-inputs
      (list r-data-table r-jsonlite r-matrix))
     (native-inputs
