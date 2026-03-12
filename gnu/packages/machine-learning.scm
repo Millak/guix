@@ -4751,7 +4751,6 @@ different backends")
                    ,(python:site-packages inputs outputs)))))))))
     (inputs
      (list bash-minimal
-           openblas
            python
            python-customtkinter
            spirv-headers
