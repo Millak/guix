@@ -1079,7 +1079,7 @@ an embedded event driven algorithm.")
            python-rapidfuzz
            python-rich
            python-semver
-           python-yamlcore-0.0.2
+           python-yamlcore
            ruby
            verilator
            yosys))
