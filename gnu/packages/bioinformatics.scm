@@ -922,7 +922,10 @@ suite native in R.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12h1di45fg06nhsliii7v0h1z567pkpis1xm4ar1qr8ns1n8iljw"))))
+        (base32 "12h1di45fg06nhsliii7v0h1z567pkpis1xm4ar1qr8ns1n8iljw"))
+       (modules '((guix build utils)))
+       (snippet
+        '(delete-file-recursively "r/src/vendor/highway"))))
     (properties `((upstream-name . "BPCells")))
     (build-system r-build-system)
     (arguments
@@ -930,7 +933,11 @@ suite native in R.")
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'chdir
-           (lambda _ (chdir "r"))))))
+           (lambda _
+             (substitute* "r/configure"
+               (("tools/hwy-test.cpp" m)
+                (string-append m " $HWY_LIBS $HWY_CFLAGS")))
+             (chdir "r"))))))
     (propagated-inputs
      (list r-dplyr
            r-ggplot2
@@ -957,7 +964,7 @@ suite native in R.")
            r-igraph
            r-iranges
            r-matrixstats))
-    (inputs (list hdf5 zlib))
+    (inputs (list hdf5 google-highway zlib))
     (native-inputs (list pkg-config))
     (home-page "https://github.com/bnprks/BPCells")
     (synopsis "Single cell counts matrices to PCA")
