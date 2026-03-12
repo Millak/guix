@@ -56989,13 +56989,10 @@ of known occurrences of a species.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         ;; These tests require internet access.
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             (delete-file "tests/testthat/test_logging.R")
-             (delete-file "tests/testthat/test_net.R"))))))
+      #:skipped-tests
+      ;; These tests require internet access.
+      '("test_logging.R"
+        "test_net.R")))
     (propagated-inputs
      (list r-base64enc
            r-curl
