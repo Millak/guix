@@ -56741,13 +56741,10 @@ runs.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         ;; These tests require internet access.
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             (delete-file "tests/testthat/test-zz_format.R")
-             (delete-file "tests/testthat/test-zz_get_info.R"))))))
+      #:skipped-tests
+      ;; These tests require internet access.
+      '("test-zz_format.R"
+        "test-zz_get_info.R")))
     (propagated-inputs
      (list r-httr r-jsonlite))
     (native-inputs
