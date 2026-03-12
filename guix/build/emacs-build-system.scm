@@ -182,7 +182,7 @@ locations in the store in '.el' files."
            ;; of generation -pkg.el will fail.
            (condition-case
             nil
-            (let ((version (lm-version)))
+            (let ((version (or (lm-header "package-version") (lm-version))))
               ;; raises an error if version is invalid
               (and (version-to-list version) version))
             (error "0.0.0"))
