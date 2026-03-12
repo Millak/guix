@@ -61,6 +61,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages nss)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages kerberos)
@@ -78,6 +79,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
+  #:use-module (gnu packages security-token)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
@@ -1197,6 +1199,50 @@ supports KDBX3 and KDBX4.")
     ;; There are no copyright headers in the source code.  The LICENSE file
     ;; indicates GPL3.
     (license license:gpl3+)))
+
+(define-public python-pykcs11
+  (package
+    (name "python-pykcs11")
+    (version "1.5.18")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/LudovicRousseau/PyKCS11")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1r1xn5lfnrnl62prd0a5ckmc8mggn6nqcnhsj9zg0vhf00ffs4gg"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(begin
+          (use-modules (ice-9 textual-ports))
+          (modify-phases %standard-phases
+            (add-before 'check 'fix-test-run
+              (lambda* (#:key inputs #:allow-other-keys)
+                (delete-file-recursively "PyKCS11")
+                (setenv "PYKCS11LIB" (search-input-file inputs "/lib/softhsm/libsofthsm2.so"))))
+            (add-before 'check 'setup-softhsm
+              (lambda _
+                (call-with-output-file "softhsm2.conf"
+                  (lambda (port)
+                    (put-string port "directories.tokendir = /tmp/tokens/")))
+                (setenv "SOFTHSM2_CONF" "softhsm2.conf")
+                (mkdir "/tmp/tokens")
+                (invoke "test/reset_softHSM.sh")))))))
+    (native-inputs
+     (list bash-minimal
+           python-asn1crypto
+           python-setuptools
+           python-pytest
+           softhsm
+           swig))
+    (home-page "https://github.com/LudovicRousseau/PyKCS11")
+    (synopsis "PKCS#11 wrapper for Python")
+    (description "This package provides a complete PKCS#11 wrapper for Python.")
+    (license license:gpl3)))
 
 (define-public python-pylibscrypt
   (package
