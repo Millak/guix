@@ -2003,33 +2003,6 @@ bindings for interpreted languages.  This package includes the C++,
 Python and R interfaces.")
     (license license:asl2.0)))
 
-(define-public stiff
-  (package
-    (name "stiff")
-    (version "2.4.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/astromatic/stiff")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1iffrncag1w6nd9c6v3dlx9m79nfg6ph42i0gsvlq8pvjph7s6pa"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:configure-flags
-           #~(list "CFLAGS=-fcommon")))
-    (inputs
-     (list libtiff zlib libjpeg-turbo))
-    (home-page "https://www.astromatic.net/software/stiff/")
-    (synopsis "Convert scientific FITS images to TIFF format")
-    (description
-     "STIFF is a program that converts scientific @acronym{FITS, Flexible Image
-Transport System} images to the more popular TIFF format for illustration
-purposes.")
-    (license license:gpl3+)))
-
 (define-public python-imgviz
   (package
     (name "python-imgviz")
