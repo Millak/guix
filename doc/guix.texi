@@ -41497,7 +41497,7 @@ system as the @code{os} field of @code{hurd-vm-configuration}, as in
 this example:
 
 @lisp
-(define childhurd-os
+(define %childhurd-os
   ;; Definition of my GNU/Hurd system, derived from the default one.
   (operating-system
     (inherit %hurd-vm-operating-system)
@@ -41588,7 +41588,7 @@ example below.
 @item @code{disk-size} (default: @code{'guess})
 The size of the disk image.
 
-@item @code{memory-size} (default: @code{512})
+@item @code{memory-size} (default: @code{2048})
 The memory size of the Virtual Machine in mebibytes.
 
 @item @code{options} (default: @code{'("--snapshot")})
