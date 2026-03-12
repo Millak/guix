@@ -20,7 +20,7 @@
 ;;; Copyright © 2021, 2022 Nikolay Korotkiy <sikmir@disroot.org>
 ;;; Copyright © 2022 Patrick Noll <patrick@patricknoll.com>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
-;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022-2023, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Jonathan Brielmaier <jonathan.brielmaier@web.de>
@@ -500,7 +500,7 @@ topology functions.")
 (define-public gnome-maps
   (package
     (name "gnome-maps")
-    (version "49.3")
+    (version "49.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -508,7 +508,7 @@ topology functions.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1pxx50cig25dz0ab5xkbppnibb4zcv3r3vy31dkn6ncf24vykj5z"))))
+                "1c04z2ly9vri98gmn4p5lhmfxhqjsc6rqz7kyprf0shdsicazyl6"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -532,14 +532,9 @@ topology functions.")
                                               "share/zoneinfo"))))
           (add-after 'install 'wrap
             (lambda _
-              (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH")))
-                (substitute* (string-append #$output "/share/gnome-maps/"
-                                            "org.gnome.Maps")
-                  (("imports\\.package\\.init" all)
-                   (string-append "'" gi-typelib-path "'.split(':').forEach("
-                                  "path => imports.gi.GIRepository.Repository."
-                                  "prepend_search_path(path));\n"
-                                  all)))))))))
+              (wrap-program (string-append #$output "/bin/gnome-maps")
+                `("GI_TYPELIB_PATH" ":" prefix
+                  (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
@@ -548,7 +543,8 @@ topology functions.")
            pkg-config
            tzdata-for-tests))
     (inputs
-     (list folks
+     (list bash-minimal
+           folks
            evolution-data-server
            geoclue
            geocode-glib
@@ -567,7 +563,7 @@ topology functions.")
            libshumate
            libsoup
            libxml2
-           webkitgtk-for-gtk3))
+           webkitgtk))
     (synopsis "Graphical map viewer and wayfinding program")
     (description "GNOME Maps is a graphical map viewer.  It uses map data from
 the OpenStreetMap project.  It can provide directions for walking, bicycling,
