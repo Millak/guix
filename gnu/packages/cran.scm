@@ -6888,6 +6888,33 @@ and complex numbers, decompositions of such matrices, and solutions of linear
 systems.")
     (license license:gpl2+)))
 
+(define-public r-rcppplanc
+  (package
+    (name "r-rcppplanc")
+    (version "2.0.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RcppPlanc" version))
+       (sha256
+        (base32 "14hg3mrfi7wrhdsgbhqyxaixdbnycr3knbsxaky59rs3lcn1sm87"))))
+    (properties `((upstream-name . "RcppPlanc")))
+    (build-system r-build-system)
+    (inputs (list hdf5 `(,hwloc "lib") openblas))
+    (propagated-inputs (list r-hdf5r-extra
+                             r-highfive
+                             r-matrix
+                             r-rcpp
+                             r-rcpparmadillo
+                             r-rcppprogress))
+    (native-inputs (list cmake-minimal pkg-config r-knitr r-testthat which))
+    (home-page "https://github.com/welch-lab/RcppPlanc/")
+    (synopsis "Parallel low-rank approximation with nonnegativity constraints")
+    (description
+     "This package provides Rcpp bindings for PLANC, a highly parallel and
+extensible NMF/NTF (Non-negative Matrix/Tensor Factorization) library.")
+    (license license:gpl2+)))
+
 (define-public r-rcppprogress
   (package
     (name "r-rcppprogress")
