@@ -5698,42 +5698,8 @@ comes with a simple counter example using FreeGLUT and browser examples
 in C using Gtk+-3 and WebKitGtk.")
       (license license:gpl3+))))
 
-(define-public emacsy-minimal
-  (let ((commit "v0.4.1-37-g5f91ee6"))
-    (package
-      (inherit emacsy)
-      (name "emacsy-minimal")
-      (version (string-drop commit 1))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.savannah.gnu.org/git/emacsy.git")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "03ym14g9qhjqmryr5z065kynqm8yhmvnbs2djl6vp3i9cmqln8cl"))))
-      (build-system gnu-build-system)
-      (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("gettext" ,gettext-minimal)
-         ("libtool" ,libtool)
-         ("makeinfo" ,texinfo)
-         ("pkg-config" ,pkg-config)))
-      (inputs
-       `(("guile" ,guile-2.2)
-         ("guile-lib" ,guile2.2-lib)
-         ("guile-readline" ,guile2.2-readline)))
-      (propagated-inputs '())
-      (arguments
-       `(#:configure-flags '("--without-examples")
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'configure 'setenv
-             (lambda _
-               (setenv "GUILE_AUTO_COMPILE" "0")
-               #t))))))))
+;; Deprecated on 2026-11-26.
+(define-deprecated-package emacsy-minimal emacsy)
 
 (define-public guile-jpeg
   (let ((commit "6a1673578b297c2c1b28e44a76bd5c49e76a5046")
