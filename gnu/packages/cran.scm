@@ -31978,22 +31978,61 @@ quick reporting.")
         (base32
          "1piad5aq9wjpss5diw89nwfgw8q833di22h26mpjh4h21jsfchc0"))))
     (properties
-     '((updater-extra-native-inputs . ("r-testthat"))))
+     '((updater-extra-native-inputs
+        . ("r-microbenchmark" "r-nlme" "r-randomforest" "r-rms"
+           "r-survival" "r-tables" "r-testthat" "r-zoo"))))
     (build-system r-build-system)
     (arguments
      (list
+      #:test-directory "inst/tests"
+      #:skipped-tests
+      '(("test-helpers.R" "splitLine with hyphening behaves correctly")
+        ("test-S3.R"
+         "Date is preserved"
+         ;; A lot of tests only work with additional optional packages, so we
+         ;; just disable them here instead of tracking down every package the
+         ;; tests might need.
+
+         ;; 'length = 2' in coercion to 'logical(1)'
+         "no error: functions"
+         ;; could not find function "tableExpand_cpp"
+         "tableExpand behaves correctly"
+         ;; object 'sex' not found
+         "pander.survdiff works correctly"
+         ;; could not find function "stat.table"
+         "pander.stat.table works correctly"
+         ;; One space differs.
+         "pander.ts behaves correctly"
+         ;; could not find function "as.irts"
+         "pander.irts works correctly"
+         ;; length of 'dimnames' [2] not equal to array extent
+         "pander.lrm works correctly"
+         ;; could not find function "ets"
+         "pander.ets works correctly")
+        ("test-evals.R"
+         "Plot: lattice package"
+         "caching works correctly"))
       #:phases
       '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
+         ;; This deprecated procedure has been removed in testthat.
+         (add-after 'unpack 'testthat-compatibility
            (lambda _
-             ;; These tests fail in the C locale.
-             (delete-file "inst/tests/test-helpers.R")
-             (delete-file "inst/tests/test-S3.R")
-             (delete-file "inst/tests/test-evals.R"))))))
+             (substitute* "inst/tests/test-S3.R"
+               (("is_true\\(\\)") "expect_true")))))))
     (propagated-inputs
      (list r-digest r-rcpp))
     (native-inputs
-     (list pandoc r-knitr r-testthat))
+     (list pandoc
+           r-descr
+           r-knitr
+           r-microbenchmark
+           r-nlme
+           r-randomforest
+           r-rms
+           r-survival
+           r-tables
+           r-testthat
+           r-zoo))
     (home-page "https://rapporter.github.io/pander")
     (synopsis "Render R objects into Pandoc's markdown")
     (description
