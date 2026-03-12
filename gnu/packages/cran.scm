@@ -12847,6 +12847,28 @@ dissimilarity analysis.  Most of its multivariate tools can be used for other
 data types as well.")
     (license license:gpl2+)))
 
+(define-public r-tables
+  (package
+    (name "r-tables")
+    (version "0.9.33")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "tables" version))
+       (sha256
+        (base32 "0vzja9g5w8afr68q0nx8szl7zx3f8z7dwzf6zhc0lzysrsm8g4kv"))))
+    (properties `((upstream-name . "tables")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-htmltools r-knitr))
+    (native-inputs (list r-hmisc r-kableextra r-knitr r-magrittr r-rmarkdown))
+    (home-page "https://dmurdoch.github.io/tables/")
+    (synopsis "Formula-driven table generation")
+    (description
+     "This package computes and displays complex tables of summary statistics.
+Output may be in @code{LaTeX}, HTML, plain text, or an R matrix for further
+processing.")
+    (license license:gpl2)))
+
 (define-public r-tailor
   (package
     (name "r-tailor")
