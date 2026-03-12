@@ -93,6 +93,7 @@
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages swig)
@@ -539,6 +540,34 @@ and other operations.  It includes a library and a command-line tool.")
     ;; The file ykcs11/pkcs11.h also declares an additional, very short free
     ;; license for that one file.  Please see it for details.  The vast
     ;; majority of files are licensed under bsd-2.
+    (license license:bsd-2)))
+
+(define-public python-yubico
+  (package
+    (name "python-yubico")
+    (version "1.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Yubico/python-yubico")
+              (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1bn1v3b0cdjziaz9qiix52z3f8yw74m9mxbv0n18np1lc4cbjyvk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore=test/usb/test_yubikey_usb_hid.py")))
+    (propagated-inputs (list python-pyusb))
+    (native-inputs (list python-setuptools
+                         python-pytest))
+    (home-page "https://github.com/Yubico/python-yubico")
+    (synopsis "Python library for Yubico's YubiKeys")
+    (description "This package provides a python library for talking to Yubico's
+@code{YubiKeys}.")
     (license license:bsd-2)))
 
 (define-public yubikey-personalization
