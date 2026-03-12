@@ -48345,15 +48345,6 @@ series/point highlighting.")
        ;; Avoid dependency cycle
        (updater-ignored-native-inputs . ("r-rstanarm"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; One test requires r-rstanarm, which depends on this very
-             ;; package.
-             (delete-file "tests/testthat/test_misc.R"))))))
     (propagated-inputs
      (list r-bayesplot
            r-colourpicker
