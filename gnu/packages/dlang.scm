@@ -520,7 +520,7 @@ integration tests...\n")
      (list bash-minimal))
     (native-inputs
      (list gdmd which
-           gdb      ; for tests
+           gdb/pinned   ; for tests
            (origin
              (method git-fetch)
              (uri (git-reference
