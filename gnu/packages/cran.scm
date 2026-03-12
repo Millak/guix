@@ -3876,13 +3876,13 @@ various statistical models with linear predictors.")
 (define-public r-embedsom
   (package
     (name "r-embedsom")
-    (version "2.2")
+    (version "2.2.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "EmbedSOM" version))
               (sha256
                (base32
-                "1ilsrb53x4zf0r8jc7csbdnnd8a903qkx09aakw8diif38s72rjy"))))
+                "00wk2r5fn0pa7laqqjxkd9llrjvli5h8h434cb8xirzrgbzhgjf8"))))
     (properties `((upstream-name . "EmbedSOM")))
     (build-system r-build-system)
     (propagated-inputs
