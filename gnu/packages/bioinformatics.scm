@@ -2366,7 +2366,7 @@ to explore and analyze bulk RNA-seq data.")
 (define-public python-cell2cell
   (package
     (name "python-cell2cell")
-    (version "0.7.4")
+    (version "0.8.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2375,7 +2375,7 @@ to explore and analyze bulk RNA-seq data.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02cqc5rm0qkm0np1k7bim1w7f5qjnwf1jcm5albd9cpvfs4bwgdr"))
+                "0z5dcm9i74c5iaqq92y25khg7i2smrfj8jb1g26iwzwf1cqxghmn"))
               (modules '((guix build utils)))
               (snippet
                '(begin
