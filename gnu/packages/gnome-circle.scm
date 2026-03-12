@@ -60,6 +60,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rust)
+  #:use-module (gnu packages security-token)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
@@ -1011,16 +1012,16 @@ graphical applications and processes.")
 (define-public secrets
   (package
     (name "secrets")
-    (version "6.5")
+    (version "11.1.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.gnome.org/World/secrets")
-             (commit version)))
+              (url "https://gitlab.gnome.org/World/secrets")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11jd9f0d3fyrs29p8cyzb6i2ib6mzhwwvjnznl55gkggrgnrcb8z"))))
+        (base32 "1lhj19zqwb12grrbh5xhgiilmr394s86vl1cqn4ix70zfd40wsy3"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -1038,30 +1039,49 @@ graphical applications and processes.")
                 (("gtk_update_icon_cache: true")
                  "gtk_update_icon_cache: false"))
               (setenv "DESTDIR" "/")))
-          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+          (add-after 'glib-or-gtk-wrap 'wrap-binaries
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (wrap-program (search-input-file outputs "bin/secrets")
                 `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
                                        ,(py:site-packages inputs outputs)))
-                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
+                `("GSETTINGS_SCHEMA_DIR" =
+                  (,(string-append #$output "/share/glib-2.0/schemas"))))))
+          (add-after 'install 'add-install-to-pythonpath
+            (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
+          (delete 'check)
+          (add-after 'glib-or-gtk-compile-schemas 'check
+            (assoc-ref %standard-phases 'check))
+          (add-before 'check 'set-search-path
+            (lambda _
+              (setenv "GSETTINGS_SCHEMA_DIR" (string-append #$output "/share/glib-2.0/schemas/")))))))
     (native-inputs
      (list desktop-file-utils
            gettext-minimal
            `(,glib "bin")
            gobject-introspection
-           pkg-config))
+           pkg-config
+           python
+           python-pytest))
     (inputs
-     (list bash-minimal
+     (list adwaita-icon-theme
+           bash-minimal
            glib
            gsettings-desktop-schemas
            gtk
+           gtksourceview
            libadwaita
            libhandy
            libpwquality
            python
+           python-pycairo
            python-pygobject
+           python-pykcs11
            python-pykeepass
-           python-pyotp))
+           python-pyotp
+           python-validators
+           python-yubico
+           python-zxcvbn-rs-py))
     (home-page "https://gitlab.gnome.org/World/secrets")
     (synopsis "Password manager for the GNOME desktop")
     (description
