@@ -35151,13 +35151,10 @@ want to include run-time testing features in their own packages.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; One test fails
-             (delete-file
-              "tests/testthat/test-is-atomic-recursive-vector.R"))))))
+      #:skipped-tests
+      ;; Expected `is_atomic(NULL)` to be TRUE.
+      '(("test-is-atomic-recursive-vector.R"
+         "test.is_atomic.null.returns_true"))))
     (propagated-inputs
      (list r-assertive-base))
     (native-inputs (list r-testthat))
