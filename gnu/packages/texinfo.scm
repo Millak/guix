@@ -154,6 +154,10 @@ is on expressing the content semantically, avoiding physical markup commands.")
         #~(cons* "--with-external-Unicode-EastAsianWidth"
                  "--with-external-Text-Unidecode"
                  "--with-external-libintl-perl"
+                 #$@(if (%current-target-system)
+                        ;; tries to build for the native perl
+                        '("--disable-perl-xs")
+                        '())
                  #$flags))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
@@ -170,15 +174,8 @@ is on expressing the content semantically, avoiding physical markup commands.")
                    (cute patch-shebang <> (list (dirname perl)))
                    (find-files "." ".*[.]pl")))))
             #$@(if (%current-target-system)
-                   ;; Texinfo uses a C binary during the build process, but
-                   ;; lacks the concept of `CC_FOR_BUILD'
-                   ;; Hack around that by building it manually.
-                   #~((add-after 'configure 'build-native-tools
-                        (lambda _
-                          (with-directory-excursion "info"
-                            (lambda _
-                              (invoke "make" "CC=gcc" "makedoc")))))
-                      (add-after 'configure 'fixup-texindex-building-from-git
+                   ;; for help2man
+                   #~((add-after 'configure 'fixup-texindex-building-from-git
                         (lambda _
                           (symlink "../../texindex/texindex"
                                    "tools/texindex/texindex"))))
