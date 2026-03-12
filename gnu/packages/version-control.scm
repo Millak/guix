@@ -922,8 +922,50 @@ to GitHub contributions calendar.")
         (base32 "1vz1qix1yi6j5lb95q39pdxn4b6nrq8m235kjjh605m2mf0r8wyd"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:install-source? #f))
-    (native-inputs (list pkg-config))
+     (list
+       #:install-source? #f
+       #:imported-modules (append %copy-build-system-modules
+                                  %cargo-build-system-modules)
+       #:modules '((guix build cargo-build-system)
+                   ((guix build copy-build-system) #:prefix copy:)
+                   (guix build utils))
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'install 'install-extras
+             (lambda args
+               (mkdir "assets")
+               (setenv "OUT_DIR" "assets")
+               (let ((git-cliff-mangen
+                       (if #$(%current-target-system)
+                           (search-input-file native-inputs
+                                              "bin/git-cliff-mangen")
+                           (in-vicinity #$output "bin/git-cliff-mangen")))
+                      (git-cliff-completions
+                       (if #$(%current-target-system)
+                           (search-input-file native-inputs
+                                              "bin/git-cliff-completions")
+                           (in-vicinity #$output "bin/git-cliff-completions"))))
+                 (invoke git-cliff-mangen)
+                 (invoke git-cliff-completions))
+               ;; Then delete the extra binaries.
+               (delete-file (string-append #$output "/bin/git-cliff-mangen"))
+               (delete-file (string-append #$output "/bin/git-cliff-completions"))
+               (apply (assoc-ref copy:%standard-phases 'install)
+                      #:install-plan
+                      '(("assets/git-cliff.bash"
+                         "share/bash-completion/completions/git-cliff")
+                        ("assets/git-cliff.elv"
+                         "share//elvish/lib/git-cliff")
+                        ("assets/git-cliff.fish"
+                         "share/fish/vendor_completions.d/")
+                        ("assets/_git-cliff" "share/zsh/site-functions/")
+                        ("assets/git-cliff.1" "share/man/man1/"))
+                      args))))))
+    (native-inputs
+     (append (if (%current-target-system)
+                 (list this-package)
+                 '())
+             (list pkg-config)))
     (inputs (cons* libgit2-1.9
                    zlib
                    `(,zstd "lib")
