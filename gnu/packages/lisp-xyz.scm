@@ -328,9 +328,6 @@ compatible, and adds new functionality.")
 (define-public cl-3d-math
   (sbcl-package->cl-source-package sbcl-3d-math))
 
-(define-public ecl-3d-math
-  (sbcl-package->ecl-package sbcl-3d-math))
-
 (define-public sbcl-3d-matrices
   (let ((commit "bc1ffa08dcf4732523e09adcf9deba4ddeb559ff")
         (revision "3"))
