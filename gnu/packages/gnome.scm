@@ -10445,7 +10445,7 @@ playing media, scanning, and much more.")
                             dbus
                             dconf
                             desktop-file-utils
-                            font-abattis-cantarell
+                            font-adwaita
                             font-dejavu
                             gnome-default-applications
                             gnome-online-accounts
