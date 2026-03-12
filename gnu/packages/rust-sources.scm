@@ -102,32 +102,6 @@
 transliterating them.  It supports Emoji and Chinese.")
      (license license:bsd-3))))
 
-(define-public rust-hashify-0.2.7.b787649
-  (let ((commit "b7876499e196073236ac32ae58c9e23cd0d7f22f")
-        (revision "0"))
-    (hidden-package
-      (package
-        (name "rust-hashify")
-        (version (git-version "0.2.7" revision commit))
-        (source
-          (origin
-            (method git-fetch)
-            (uri (git-reference (url "https://github.com/WhyNotHugo/hashify/")
-                                (commit "b7876499e196073236ac32ae58c9e23cd0d7f22f")))
-            (file-name (git-file-name "rust-hashify" "0.2.7.b787649"))
-            (sha256
-              (base32 "07i6ldb7br4b4b3irslxk0jxdfzy9garl4izciwwp8bca32pf421"))))
-        (build-system cargo-build-system)
-        (arguments
-         (list
-          #:skip-build? #t
-          #:cargo-package-crates ''("hashify")))
-        (inputs (cargo-inputs 'rust-hashify-0.2.7.b787649))
-        (home-page "https://github.com/WhyNotHugo/hashify/tree/reproducible-builds")
-        (synopsis "Perfect hashing for an imperfect world")
-        (description "This package provides procedural macros for creating hashing maps.")
-        (license license:expat)))))
-
 (define-public rust-hypher-0.1
   (hidden-package
    (package

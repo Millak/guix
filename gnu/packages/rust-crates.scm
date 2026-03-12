@@ -11565,7 +11565,14 @@
   (crate-source "hashify" "0.2.7"
                 "0k2x1vrkafnhhwk5y8yh6a835f81fizwpqygak9nm8mm1slkx7hl"))
 
-(define rust-hashify-0.2.7.b787649 package:rust-hashify-0.2.7.b787649)
+(define rust-hashify-0.2.7.b787649-for-pimsync
+  (origin
+    (method git-fetch)
+    (uri (git-reference (url "https://github.com/WhyNotHugo/hashify/")
+                        (commit "b7876499e196073236ac32ae58c9e23cd0d7f22f")))
+    (file-name (git-file-name "rust-hashify" "0.2.7.b787649"))
+    (sha256
+     (base32 "07i6ldb7br4b4b3irslxk0jxdfzy9garl4izciwwp8bca32pf421"))))
 
 (define rust-hashlink-0.10.0
   (crate-source "hashlink" "0.10.0"
@@ -58157,7 +58164,7 @@
                                rust-hashbrown-0.14.5
                                rust-hashbrown-0.15.5
                                rust-hashbrown-0.16.1
-                               rust-hashify-0.2.7.b787649
+                               rust-hashify-0.2.7.b787649-for-pimsync
                                rust-heck-0.5.0
                                rust-hex-0.4.3
                                rust-http-1.4.0
@@ -66576,76 +66583,6 @@
                                         rust-unic-ucd-version-0.9.0
                                         rust-unicode-ident-1.0.18
                                         rust-unicode-normalization-0.1.24))
-                     (rust-hashify-0.2.7.b787649 =>
-                                                 (list rust-aho-corasick-1.1.4
-                                                  rust-anes-0.1.6
-                                                  rust-anstyle-1.0.13
-                                                  rust-autocfg-1.5.0
-                                                  rust-bumpalo-3.20.2
-                                                  rust-cast-0.3.0
-                                                  rust-cfg-if-1.0.4
-                                                  rust-ciborium-0.2.2
-                                                  rust-ciborium-io-0.2.2
-                                                  rust-ciborium-ll-0.2.2
-                                                  rust-clap-4.5.60
-                                                  rust-clap-builder-4.5.60
-                                                  rust-clap-lex-1.0.0
-                                                  rust-criterion-0.5.1
-                                                  rust-criterion-plot-0.5.0
-                                                  rust-crossbeam-deque-0.8.6
-                                                  rust-crossbeam-epoch-0.9.18
-                                                  rust-crossbeam-utils-0.8.21
-                                                  rust-crunchy-0.2.4
-                                                  rust-either-1.15.0
-                                                  rust-half-2.7.1
-                                                  rust-hermit-abi-0.5.2
-                                                  rust-is-terminal-0.4.17
-                                                  rust-itertools-0.10.5
-                                                  rust-itoa-1.0.17
-                                                  rust-js-sys-0.3.91
-                                                  rust-libc-0.2.183
-                                                  rust-memchr-2.8.0
-                                                  rust-num-traits-0.2.19
-                                                  rust-once-cell-1.21.3
-                                                  rust-oorandom-11.1.5
-                                                  rust-phf-0.11.3
-                                                  rust-phf-generator-0.11.3
-                                                  rust-phf-macros-0.11.3
-                                                  rust-phf-shared-0.11.3
-                                                  rust-plotters-0.3.7
-                                                  rust-plotters-backend-0.3.7
-                                                  rust-plotters-svg-0.3.7
-                                                  rust-proc-macro2-1.0.106
-                                                  rust-quote-1.0.45
-                                                  rust-rand-0.8.5
-                                                  rust-rand-core-0.6.4
-                                                  rust-rayon-1.11.0
-                                                  rust-rayon-core-1.13.0
-                                                  rust-regex-1.12.3
-                                                  rust-regex-automata-0.4.14
-                                                  rust-regex-syntax-0.8.10
-                                                  rust-rustversion-1.0.22
-                                                  rust-same-file-1.0.6
-                                                  rust-serde-1.0.228
-                                                  rust-serde-core-1.0.228
-                                                  rust-serde-derive-1.0.228
-                                                  rust-serde-json-1.0.149
-                                                  rust-siphasher-1.0.2
-                                                  rust-syn-2.0.117
-                                                  rust-tinytemplate-1.2.1
-                                                  rust-unicode-ident-1.0.24
-                                                  rust-walkdir-2.5.0
-                                                  rust-wasm-bindgen-0.2.114
-                                                  rust-wasm-bindgen-macro-0.2.114
-                                                  rust-wasm-bindgen-macro-support-0.2.114
-                                                  rust-wasm-bindgen-shared-0.2.114
-                                                  rust-web-sys-0.3.91
-                                                  rust-winapi-util-0.1.11
-                                                  rust-windows-link-0.2.1
-                                                  rust-windows-sys-0.61.2
-                                                  rust-zerocopy-0.8.42
-                                                  rust-zerocopy-derive-0.8.42
-                                                  rust-zmij-1.0.21))
                      (rust-minisign =>
                                     (list rust-block-buffer-0.10.4
                                      rust-bumpalo-3.17.0
