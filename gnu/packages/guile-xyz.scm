@@ -3330,13 +3330,12 @@ writing a Guix package.")))
   (package
     (inherit guile-g-golf)
     (name "g-golf-adw-1-examples")
-    ;; XXX: Update version when we have a recent enough libadwaita.
-    (version "0.8.0")
+    (version "0.8.4")
     (source
      (g-golf-source #:version version
                     #:hash
                     (content-hash
-                     "14b6pjchra0axqifpm90m7jbxla2sarhd7bfhzqbn7d14b74sv2d")))
+                     "0qwwvqhhjc141dfj881mah1bgvwlgz111qrh0ml7qf4mc2ssjxqf")))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -3359,10 +3358,6 @@ writing a Guix package.")))
                 (chdir "examples/adw-1")
                 ;; Re-use the existing Makefile for its wildcard syntax.
                 (rename-file "Makefile.am" "Makefile")
-                (substitute* "Makefile"
-                  ;; Fix syntax error.
-                  (("hello-world")
-                   "hello-world \\"))
                 ;; Add a rule to install the examples.  We install to the
                 ;; documentation directory where examples are usually located,
                 ;; but we will later create a copy in /bin for `guix shell'.
@@ -3379,7 +3374,6 @@ install:
 	for f in $(EXTRA_DIST); do      \\
 	  cp -r $$f $(examplesdir)/$$f; \\
 	done
-	cp demo/g-resources $(examplesdir)/demo/g-resources
 " #$output)
                   (close-port port))))
             (delete 'configure)
@@ -3387,10 +3381,7 @@ install:
               (lambda _
                 ;; Create files for adwaita-1-demo needed in install phase.
                 (with-directory-excursion "demo"
-                  (system* "make")
-                  (system* "glib-compile-resources"
-                           "--target" "g-resources"
-                           "g-resources.xml"))))
+                  (invoke "make"))))
             (add-before 'install 'patch-scm-files
               (lambda* (#:key inputs #:allow-other-keys)
                 ;; `current-filename' calls in examples are broken.
@@ -3404,7 +3395,12 @@ install:
                            (("^exec guile ")
                             (string-append
                              "exec " (search-input-file inputs "/bin/guile")
-                             " ")))))
+                             " "))
+                           (("   \\(compile-g-resources")
+                            "   (chdir path)(compile-g-resources")
+                           (("glib-compile-resources")
+                            (search-input-file inputs
+                             "/bin/glib-compile-resources")))))
                      (map (cut string-drop <> 2) ;strip ./ prefix
                           (find-files "." (lambda (file stat)
                                         ;executables or .scm modules
@@ -3458,11 +3454,11 @@ install:
            bash-minimal
            libadwaita
            (librsvg-for-system)
+           `(,glib "bin") ;for glib-compile-resources
            gtk
            guile-3.0
            guile-g-golf))
-    (native-inputs (list `(,glib "bin") ;for glib-compile-resources
-                         guile-3.0))
+    (native-inputs (list guile-3.0))
     (propagated-inputs (list))
     (synopsis "G-Golf Adw-1 examples")
     (description
