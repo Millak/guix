@@ -8124,7 +8124,7 @@ management tasks from Emacs.  To begin with, run @code{M-x guix-about} or
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://notabug.org/alezost/emacs-build-farm.git")
+                    (url "https://gitlab.com/alezost-emacs/build-farm")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
@@ -8133,7 +8133,7 @@ management tasks from Emacs.  To begin with, run @code{M-x guix-about} or
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-bui emacs-magit-popup))
-    (home-page "https://notabug.org/alezost/emacs-build-farm")
+    (home-page "https://gitlab.com/alezost-emacs/build-farm")
     (synopsis "Emacs interface for Hydra and Cuirass build farms")
     (description
      "This Emacs package provides an interface for Hydra and
