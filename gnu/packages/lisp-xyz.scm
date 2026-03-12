@@ -27640,8 +27640,8 @@ Lisp.  It is intended to be a replacement of PURI.")
   (sbcl-package->ecl-package sbcl-quri))
 
 (define-public sbcl-radiance
-  (let ((commit "8d826c7fe1935338565580931db43f46181e0e85")
-        (revision "3"))
+  (let ((commit "8249b00388ffe1c7e516a148c8ea8e7d9bc4243c")
+        (revision "4"))
     (package
       (name "sbcl-radiance")
       (version (git-version "2.1.2" revision commit))
@@ -27649,26 +27649,14 @@ Lisp.  It is intended to be a replacement of PURI.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shirakumo/radiance")
-               (commit commit)))
+                (url "https://codeberg.org/shirakumo/radiance")
+                (commit commit)))
          (file-name (git-file-name "radiance" version))
          (sha256
-          (base32 "1j823dgp87www0sjbcbv9j025bfxlkwhjd7kz6635mrqwmmlki4l"))))
+          (base32 "1kl1936kzv1j2fmnm6n3nq503bxz38zzymwbwq3vhqa0jsqjwynm"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       `(#:tests? #f  ; TODO: The tests require some configuration.
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'disable-quicklisp
-             (lambda _
-               ;; Disable the automatic installation of systems by Quicklisp.
-               ;; (Maybe there would be a way to package Quicklisp and make it
-               ;; install things in the user's directory instead of
-               ;; /gnu/store/...).
-               (substitute* "interfaces.lisp"
-                 (("\\(unless \\(asdf:find-system configured-implementation NIL\\)"
-                   all)
-                  (string-append "#+quicklisp " all))))))))
+       (list #:tests? #f))  ; TODO: The tests require some configuration.
       (native-inputs
        (list sbcl-alexandria
              sbcl-dexador
@@ -27679,8 +27667,8 @@ Lisp.  It is intended to be a replacement of PURI.")
              sbcl-bordeaux-threads
              sbcl-cl-ppcre
              sbcl-closer-mop
-             sbcl-documentation-utils
              sbcl-deploy
+             sbcl-documentation-utils
              sbcl-form-fiddle
              sbcl-lambda-fiddle
              sbcl-local-time
@@ -27690,7 +27678,7 @@ Lisp.  It is intended to be a replacement of PURI.")
              sbcl-trivial-indent
              sbcl-trivial-mimes
              sbcl-ubiquitous))
-      (home-page "https://shirakumo.github.io/radiance/")
+      (home-page "https://codeberg.org/shirakumo/radiance")
       (synopsis "Common Lisp web application environment")
       (description
        "Radiance is a web application environment, which is sort of like a web
