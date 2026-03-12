@@ -14729,8 +14729,8 @@ replacement, which is called @code{*let}).")
   (sbcl-package->clasp-package sbcl-defstar))
 
 (define-public sbcl-deploy
-  (let ((commit "5d57fcce38b6156be951f3fed9fbbdacf4ba2912")
-        (revision "3"))
+  (let ((commit "c9b869d943d39fcddd8c4aa380995645bd2e3c0b")
+        (revision "4"))
     (package
       (name "sbcl-deploy")
       (version (git-version "3.0.0" revision commit))
@@ -14742,13 +14742,17 @@ replacement, which is called @code{*let}).")
                 (commit commit)))
          (file-name (git-file-name "deploy" version))
          (sha256
-          (base32 "1f2sahr2k4d291hn7x7bcy4nxav4va3rrw2gcw122zsg97siqy8h"))))
+          (base32 "05xvv6f1nh7p1dmdyqbpddisf2f9v5kvq2ixa38i263p35rg82sr"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
-       (list sbcl-cl-mpg123 sbcl-cl-out123))
+       (list sbcl-cl-mpg123
+             sbcl-cl-out123))
       (inputs
-       (list sbcl-cffi sbcl-documentation-utils sbcl-pathname-utils
-             sbcl-trivial-features sbcl-sha3))
+       (list sbcl-cffi
+             sbcl-documentation-utils
+             sbcl-pathname-utils
+             sbcl-trivial-features
+             sbcl-sha3))
       (home-page "https://codeberg.org/shinmera/deploy")
       (synopsis "Deployment tools for standalone Common Lisp application")
       (description
