@@ -1,6 +1,6 @@
 ;; GNU Guix news, for use by 'guix pull'.
 ;;
-;; Copyright © 2019-2025 Ludovic Courtès <ludo@gnu.org>
+;; Copyright © 2019-2026 Ludovic Courtès <ludo@gnu.org>
 ;; Copyright © 2019–2021, 2024 Tobias Geerinckx-Rice <me@tobias.gr>
 ;; Copyright © 2019, 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
 ;; Copyright © 2019, 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
@@ -42,6 +42,44 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "a7c8e68dc51144a6d3981b770aca9c4897fc7c0c")
+        (title
+         (en "Records such as packages can refer to inherited values"))
+        (body
+         (en "A new feature has been added to records—the facility used when
+defining packages, services, operating systems, and many other things—that,
+when inheriting from another record, allows you to refer to inherited field
+values.  When defining package variants, you may have seen this pattern:
+
+@lisp
+(package
+  (inherit gdb)
+  (inputs (modify-inputs (package-inputs gdb)
+            (delete \"guile\"))))
+@end lisp
+
+This can now be written like this:
+
+@lisp
+(package
+  (inherit gdb)
+  (inputs (modify-inputs inputs ;<- notice the change
+            (delete \"guile\"))))
+@end lisp
+
+Within the @code{inputs} body, the @code{inputs} identifier is now bound to
+the @dfn{inherited value}—i.e., the value this field inherits from @code{gdb}.
+The same mechanism can be used when changing other input fields or the
+@code{arguments} field.  It is less verbose but also
+@uref{https://issues.guix.gnu.org/50335, more accurate}.
+
+This change applies to all record types produced by
+@code{define-record-type*}: @code{package}, @code{origin},
+@code{operating-system}, @code{home-environment}, and so on.
+
+Note that this is an incompatible change: the newly introduced
+bindings—@code{inputs} in the example above—could shadow same-named bindings.")))
 
  (entry (commit "b52ce9041ad58aeababd2d50d3e72bc23dffff60")
         (title
