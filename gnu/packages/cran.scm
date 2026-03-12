@@ -53709,14 +53709,6 @@ Services (AWS) Simple Storage Service (S3) REST API.")
                (base32
                 "0wr2i7lxssayk0q17nqv614afmzqwvdkm601m2ycpqdk550y6ja6"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; Two tests produce warning where none are expected.
-             (delete-file "tests/testthat/test_print_LogEvent.R"))))))
     (propagated-inputs
      (list r-r6))
     (native-inputs
