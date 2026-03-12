@@ -3814,6 +3814,27 @@ Splines\" <doi:10.1214/aos/1176347963>. The term \"MARS\" is trademarked and
 thus not used in the name of the package.")
     (license license:gpl3)))
 
+(define-public r-easy-utils
+  (package
+    (name "r-easy-utils")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "easy.utils" version))
+       (sha256
+        (base32 "01p6hp7ajb7k9disdzkxvgjinv9wqxhk4k24r89q31ljyvkfrqw6"))))
+    (properties `((upstream-name . "easy.utils")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr r-fastmatch r-rlang r-scales))
+    (home-page "https://github.com/ycli1995/easy.utils")
+    (synopsis "Frequently used functions for easy R programming")
+    (description
+     "This package provides some utility functions for validation and data
+manipulation.  These functions can be helpful to reduce internal codes
+everywhere in package development.")
+    (license license:expat)))
+
 (define-public r-effects
   (package
     (name "r-effects")
