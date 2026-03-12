@@ -12541,7 +12541,7 @@ desktop environment.")
 (define-public gnome-boxes
   (package
     (name "gnome-boxes")
-    (version "48.1")
+    (version "49.1")
     (source
      (origin
        (method url-fetch)
@@ -12549,7 +12549,7 @@ desktop environment.")
                            (version-major version) "/"
                            "gnome-boxes-" version ".tar.xz"))
        (sha256
-        (base32 "1q2zzq6hizz5dillhqqddddlyjz7wy1sffyj06mh9axdrpa5aaj1"))))
+        (base32 "1jj41r9ras2ys0r2cw8f5bs3nkz0fj1jl693sc5q50yhvl0qhism"))))
     (outputs '("out" "debug"))
     (build-system meson-build-system)
     (arguments
@@ -12565,11 +12565,7 @@ desktop environment.")
                             (substitute* "src/installed-media.vala"
                               (("qemu-img")
                                (search-input-file inputs
-                                                  "/bin/qemu-img")))))
-                        (add-before 'configure 'relax-gcc-14-strictness
-                          (lambda _
-                            (setenv "CFLAGS"
-                                    "-g -O2 -Wno-error=int-conversion"))))))
+                                                  "/bin/qemu-img"))))))))
     (native-inputs
      (list desktop-file-utils           ;for update-desktop-database
            gettext-minimal
