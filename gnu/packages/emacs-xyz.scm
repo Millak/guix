@@ -13807,6 +13807,28 @@ structure as input representing the HTML tree you want to generate and
 generates it as a string.  Please see the homepage for usage examples.")
       (license license:gpl3+))))
 
+(define-public emacs-jag
+  (package
+    (name "emacs-jag")
+    (version "0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/martianh/jag.el")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hfv3hf0p7y5imrzb6rv90cjxd22ih2n529ggc7fwgd1n40zvgj8"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-string-inflection emacs-swagg))
+    (home-page "https://codeberg.org/martianh/jag.el")
+    (synopsis "Generate API client libraries in elisp using swagg.el")
+    (description
+     "This package provides utilities to use swagg.el to generate API client
+libraries from Swagger specs.")
+    (license license:gpl3+)))
+
 (define-public emacs-jedi
   (package
     (name "emacs-jedi")
