@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2020, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,18 +20,20 @@
   #:use-module (guix ssh)
   #:use-module (guix gexp)
   #:use-module (guix i18n)
-  #:use-module ((guix diagnostics) #:select (formatted-message))
+  #:use-module ((guix diagnostics) #:select (info formatted-message))
   #:use-module (guix inferior)
   #:use-module (guix store)
   #:use-module (guix monads)
   #:use-module (guix modules)
   #:use-module (guix derivations)
   #:use-module (guix utils)
+  #:use-module ((ssh session) #:select (session-get))
   #:use-module (ssh popen)
   #:use-module (ssh channel)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
   #:export (remote-eval))
 
 ;;; Commentary:
@@ -77,8 +79,19 @@ with status ~a")
   "Evaluate LOWERED, a lowered gexp, in SESSION.  This assumes that all the
 prerequisites of EXP are already available on the host at SESSION.  If
 BECOME-COMMAND is given, use that to invoke the remote Guile REPL."
-  (let* ((pipe   (remote-pipe-for-gexp lowered session become-command))
-         (result (read-repl-response pipe)))
+  (let* ((pipe (remote-pipe-for-gexp lowered session become-command))
+         (result output (read-repl-response pipe)))
+    ;; Print OUTPUT, the remote pipe's standard output and standard error,
+    ;; line by line.
+    (let ((host (session-get session 'host)))
+      (let loop ((str output))
+        (unless (string-null? str)
+          (let ((index (string-index str #\newline)))
+            (info (G_ "~a: ~a~%")
+                  host (if index (string-take str index) str))
+            (when index
+              (loop (string-drop str (+ 1 index))))))))
+
     (close-port pipe)
     result))
 
@@ -93,10 +106,21 @@ result to the current output port using the (guix repl) protocol."
         (use-modules (guix repl))
 
         ;; We use CURRENT-OUTPUT-PORT for REPL messages, so redirect PROGRAM's
-        ;; output to CURRENT-ERROR-PORT so that it does not interfere.
-        (send-repl-response '(with-output-to-port (current-error-port)
-                               (lambda ()
-                                 (primitive-load #$program)))
+        ;; output to CURRENT-ERROR-PORT so that it does not interfere.  Since
+        ;; 'open-remote-pipe*' mixes standard output and standard error,
+        ;; capture their output separately in a string port and reify it in
+        ;; Scheme.
+        (send-repl-response '(let ((output (open-output-string)))
+                               (set-port-encoding! output "UTF-8")
+                               (set-port-conversion-strategy! output
+                                                              'substitute)
+                               (let ((result
+                                      (with-error-to-port output
+                                        (lambda ()
+                                          (with-output-to-port output
+                                            (lambda ()
+                                              (primitive-load #$program)))))))
+                                 (values result (get-output-string output))))
                             (current-output-port))
 
         (force-output))))
