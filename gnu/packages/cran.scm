@@ -58380,12 +58380,9 @@ more complete @code{viridis} package.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; FIXME: Tests in this file fail for unknown reasons.
-             (delete-file "tests/testthat/test-stat_theodensity.R"))))))
+      #:skipped-tests
+      ;; FIXME: Tests in this file fail for unknown reasons.
+      '("test-stat_theodensity.R")))
     (propagated-inputs
      (list r-cli
            r-ggplot2
