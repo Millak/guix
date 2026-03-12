@@ -2127,7 +2127,7 @@ architecture from Cologne Chip.  It also provides data needed to produce a
               (lambda _
                 (chdir "libtrellis"))))))
       (native-inputs (list python-minimal-wrapper))
-      (inputs (list openocd boost-1.88 pybind11-2))
+      (inputs (list openocd boost pybind11))
       (synopsis "Placement and routing for ECP5 FPGAs")
       (description
        "Project Trellis is a Nextpnr backend compatible with ECP5 FPGAs.
