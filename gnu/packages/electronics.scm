@@ -1309,7 +1309,6 @@ management with library, schematic and board editors.")
 libparse, enabling dotlib file parsing.")
     (license license:asl2.0)))
 
-
 (define-public libpsf
   ;; There are no release nor tags.
   (let ((commit "001dc734e01725e739847c8cde6480a0cf35a082")
@@ -1668,7 +1667,7 @@ circuits. This is commonly used as a part of toolchains in a process called
 @acronym{LVS, layout versus schematic} with the intent to verify that the
 layout of a circuit corresponds to the desired netlists.")
     (license license:gpl1)))
-    
+
 (define-public nextpnr
   (package
     (name "nextpnr")
