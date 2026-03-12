@@ -10738,6 +10738,54 @@ nucleotide sequence analysis.  The package is primarily useful to developers
 of other R packages who wish to make use of HTSlib.")
     (license license:lgpl2.0+)))
 
+(define-public r-rliger
+  (package
+    (name "r-rliger")
+    (version "2.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/welch-lab/liger")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w849km9b347m56qwr5lr6ymdk7wv22hr224riscm0zrnx402yb3"))))
+    (properties `((upstream-name . "rliger")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cli
+                             r-delayedarray
+                             r-dplyr
+                             r-ggplot2
+                             r-hdf5array
+                             r-hdf5r
+                             r-leidenalg
+                             r-lifecycle
+                             r-magrittr
+                             r-matrix
+                             r-patchwork
+                             r-rann
+                             r-rcpp
+                             r-rcpparmadillo
+                             r-rcppplanc
+                             r-rcppprogress
+                             r-rlang
+                             r-s4vectors
+                             r-scales
+                             r-uwot))
+    (native-inputs
+     (list r-circlize r-complexheatmap r-knitr r-testthat r-viridis))
+    (home-page "https://github.com/welch-lab/liger")
+    (synopsis "Linked inference of genomic experimental relationships")
+    (description
+     "LIGER is a package for integrating and analyzing multiple single-cell
+datasets. It relies on integrative non-negative matrix factorization to
+identify shared and dataset-specific factors.")
+    (license license:gpl3)))
+
+(define-deprecated-package r-liger
+  r-rliger)
+
 (define-public r-rnbeads
   (package
     (name "r-rnbeads")
