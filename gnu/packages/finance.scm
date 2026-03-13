@@ -255,7 +255,7 @@ wallet and graphical user interface.")
 (define-public bitcoin-cash-node
   (package
     (name "bitcoin-cash-node")
-    (version "28.0.1")
+    (version "29.0.0")
     (source
      (origin
        (method git-fetch)
@@ -264,7 +264,7 @@ wallet and graphical user interface.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19v38clhxg6yd4xb8wh8bm3sf1ipv3ifg68nwgq0p8l5zqx41wgw"))))
+        (base32 "0fk0zfnl99552yfhzzvzj46lg16fr4dbgh0agp5pqll30wbk78d9"))))
     (build-system cmake-build-system)
     (native-inputs
      (list help2man
