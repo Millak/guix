@@ -584,7 +584,7 @@ configure network interfaces in Linux containers.")
 (define-public gvisor-tap-vsock
   (package
     (name "gvisor-tap-vsock")
-    (version "0.8.7")
+    (version "0.8.8")
     (source
      (origin
        (method git-fetch)
@@ -593,7 +593,7 @@ configure network interfaces in Linux containers.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1p9vypphssvqfcm3y2nc7b9v0wcc2smkrqq8k60vskaiza89974k"))
+        (base32 "1xz710dmy58gngd0qizjw8g9nkraksqald8vzhwc5h36dqkc8nrf"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -636,7 +636,9 @@ configure network interfaces in Linux containers.")
            go-github-com-containers-winquit
            go-github-com-coreos-stream-metadata-go
            go-github-com-dustin-go-humanize
+           go-github-com-foxcpp-go-mockdns
            go-github-com-google-gopacket
+           go-github-com-inetaf-tcpproxy
            go-github-com-insomniacslk-dhcp
            ;; go-github-com-linuxkit-virtsock  ;Windows only
            go-github-com-mdlayher-vsock
@@ -645,7 +647,6 @@ configure network interfaces in Linux containers.")
            go-github-com-onsi-ginkgo
            go-github-com-onsi-gomega
            go-github-com-opencontainers-go-digest
-           go-github-com-pkg-errors
            go-github-com-sirupsen-logrus
            go-github-com-songgao-packets
            go-github-com-songgao-water
@@ -655,6 +656,7 @@ configure network interfaces in Linux containers.")
            go-golang-org-x-mod
            go-golang-org-x-sync
            go-golang-org-x-sys
+           go-gopkg-in-yaml-v3
            go-gvisor-dev-gvisor))
     (home-page "https://github.com/containers/gvisor-tap-vsock")
     (synopsis "Network stack for virtualization based on gVisor")
