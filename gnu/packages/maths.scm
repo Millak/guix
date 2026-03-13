@@ -4859,6 +4859,40 @@ wedges, pyramids, n-spheres, n-balls, n-cubes, n-simplices, and the
 integration of real-, complex-, and vector-valued functions.")
     (license license:gpl3+)))
 
+(define-public python-simplesat
+  (package
+    (name "python-simplesat")
+    (version "0.9.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/enthought/sat-solver")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z44pi8yb6pvc9bisl3qnn3glj7ir0ad2j4gd4jfg2kxvwvi0w0b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--ignore=old")))
+    (native-inputs
+     (list python-mock
+           python-pytest
+           python-pyyaml
+           python-setuptools))
+    (propagated-inputs
+     (list python-attrs
+           python-okonomiyaki
+           python-six))
+    (home-page "https://github.com/enthought/sat-solver")
+    (synopsis
+     "@acronym{SAT, Boolean Satisfiability Problem} dependency handling")
+    (description
+     "This package provides a prototype Python implementation for SAT-based
+problems.")
+    (license license:bsd-3)))
+
 (define-public slepc
   (package
     (name "slepc")
