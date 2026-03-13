@@ -2180,7 +2180,7 @@ which speak the Qualcomm MSM Interface (QMI) protocol.")
            libxslt                      ;for xsltproc
            pkg-config
            python-minimal
-           python-dbus-1.2              ;for test
+           python-dbus                  ;for test
            python-pygobject             ;for test
            vala))
     (propagated-inputs
