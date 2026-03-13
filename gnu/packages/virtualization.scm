@@ -338,8 +338,8 @@
                         (substitute* "tests/meson.build"
                           (("subdir.*qtest.*") ""))
                         ;; efi-ne2k_pci.rom is from ipxe-qemu.
-                        (substitute* "tests/functional/meson.build"
-                          ((".*ppc_74xx.*") "")))))
+                        (substitute* "tests/functional/ppc/meson.build"
+                          ((".*'74xx',.*") "")))))
                  #~())
           (add-after 'unpack 'extend-test-time-outs
             (lambda _
