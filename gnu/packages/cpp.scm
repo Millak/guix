@@ -1673,6 +1673,38 @@ maintained anymore.")
 concurrent queue for C++11.")
     (license license:bsd-2)))
 
+(define-public ringbuffer
+  (package
+    (name "ringbuffer")
+    (version "0.9.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/JohannesLorenz/ringbuffer")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1c57hj6zyvcjpcbwrq8c1hj5brk1bnh69ayd88ny1p0gx031sjpk"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-DCMAKE_CXX_FLAGS=-Wno-error=array-bounds"
+                   (string-append "-DINSTALL_LIB_DIR=" #$output "/lib"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-export-header
+                 (lambda _
+                   (install-file "src/lib/ringbuffer_export.h"
+                                 (string-append #$output
+                                                "/include/ringbuffer")))))))
+    (home-page "https://github.com/JohannesLorenz/ringbuffer")
+    (synopsis "Lock-free multi-reader ringbuffer")
+    (description
+     "@code{ringbuffer} is a library containing a ringbuffer.  It is lock-free
+(using atomics only), and allows multiple readers, but only one writer.")
+    (license license:gpl3+)))
+
 (define-public spscqueue
   (package
     (name "spscqueue")
