@@ -50,7 +50,7 @@
 ;;; Copyright © 2021 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2021, 2022, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 David Wilson <david@daviwil.com>
-;;; Copyright © 2021-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Thiago Jung Bauermann <bauermann@kolabnow.com>
@@ -3795,22 +3795,18 @@ players, like VLC or MPlayer.")
 (define-public libdvdread
   (package
     (name "libdvdread")
-    (version "6.1.3")
+    (version "7.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.videolan.org/videolan/"
                                   "libdvdread/" version "/"
-                                  "libdvdread-" version ".tar.bz2"))
+                                  "libdvdread-" version ".tar.xz"))
               (sha256
                (base32
-                "0sakl4c8y2kkp09km0b5353w66pvfc72y8wi1vjwn252jx4ladff"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags '("--with-libdvdcss=yes")))
-    (native-inputs
-     (list pkg-config))
-    (propagated-inputs
-     (list libdvdcss))
+                "01ylalrr9lw6x7fz7z030243kln1hfd1pbh3m9ikjp610nih8gif"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config))
+    (propagated-inputs (list libdvdcss))
     (home-page "http://dvdnav.mplayerhq.hu/")
     (synopsis "Library for reading video DVDs")
     (description
