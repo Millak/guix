@@ -21274,7 +21274,6 @@ required by the LaTeX output produced by Org mode.")
        (sha256
         (base32 "1djnyswjbsb1k3ciyd2f9xfjfkhbkkfw3dzfmzzr8dx5v71gm47b"))))
     (build-system emacs-build-system)
-    (propagated-inputs (list emacs-org))
     (home-page "https://repo.or.cz/org-contacts")
     (synopsis "Contacts management system for Org mode")
     (description "Manage your contacts from Org mode.  You can auto
