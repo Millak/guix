@@ -329,7 +329,7 @@ family of functions.")
 (define-public python-burr
   (package
     (name "python-burr")
-    (version "0.40.2")
+    (version "0.42.0")
     (source
      (origin
        (method git-fetch)
@@ -338,7 +338,7 @@ family of functions.")
               (commit (string-append "burr-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0scdfdn2dkan5rkrh5ngai8j4i01rj6d6ncrhvab62r43c0h042q"))))
+        (base32 "0a2sf72qy9jkamg6r7d37mv7ayp698h031md7arfyq7v8q9q121n"))))
     (build-system pyproject-build-system)
     (arguments
      (list
