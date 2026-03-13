@@ -3741,38 +3741,21 @@ soon as it starts.")
 (define-public libbluray
   (package
     (name "libbluray")
-    (version "1.3.4")
+    (version "1.4.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.videolan.org/videolan/"
                                   name "/" version "/"
-                                  name "-" version ".tar.bz2"))
+                                  name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0aszpsz3pc7p7z6yahlib4na585m6pqbg2d9dkpyipgml1lgv3s7"))))
-    (build-system gnu-build-system)
+                "0jglp44wsjpp5k3mrxskfj9b488ksn7cj2dhxfjdqa3z150drdbn"))))
+    (build-system meson-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "--disable-bdjava-jar" "--disable-static")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'move-packages-to-libs
-            ;; Avoid the need to propagate libxml2 et al. by referring to them
-            ;; directly.
-            (lambda* (#:key inputs #:allow-other-keys)
-              (define (search-input-vicinity lib)
-                (dirname
-                 (search-input-file inputs
-                                    (string-append "lib/lib" lib ".so"))))
-              (substitute* "src/libbluray.pc.in"
-                (("@PACKAGES@") "")
-                (("^Libs.private:" field)
-                 (string-append field
-                                " -L" (search-input-vicinity "xml2")
-                                " -L" (search-input-vicinity "freetype")
-                                " -L" (search-input-vicinity "fontconfig")
-                                " -lxml2 -lfreetype -lfontconfig")))))
-          (add-before 'build 'fix-dlopen-paths
+          (add-after 'unpack 'fix-dlopen-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (define (lib/no.so library)
                 (let ((found (search-input-file inputs library)))
@@ -3782,9 +3765,26 @@ soon as it starts.")
                 (("\"libaacs\"")
                  (string-append "\"" (lib/no.so "lib/libaacs.so") "\""))
                 (("\"libbdplus\"")
-                 (string-append "\"" (lib/no.so "lib/libbdplus.so") "\""))))))))
+                 (string-append "\"" (lib/no.so "lib/libbdplus.so") "\"")))))
+          (add-after 'install 'move-packages-to-libs
+            ;; Avoid the need to propagate libxml2 et al. by referring to them
+            ;; directly.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define (search-input-vicinity lib)
+                (dirname
+                 (search-input-file inputs
+                                    (string-append "lib/lib" lib ".so"))))
+              (substitute* (string-append #$output
+                                          "/lib/pkgconfig/libbluray.pc")
+                (("^Requires.private.*") "")
+                (("^Libs.private:" field)
+                 (string-append field
+                                " -L" (search-input-vicinity "xml2")
+                                " -L" (search-input-vicinity "freetype")
+                                " -L" (search-input-vicinity "fontconfig")
+                                " -lxml2 -lfreetype -lfontconfig"))))))))
     (native-inputs (list pkg-config))
-    (inputs (list fontconfig freetype libaacs libbdplus libxml2))
+    (inputs (list fontconfig freetype libaacs libbdplus libudfread libxml2))
     (home-page "https://www.videolan.org/developers/libbluray.html")
     (synopsis "Blu-Ray Disc playback library")
     (description
