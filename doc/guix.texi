@@ -44244,10 +44244,11 @@ behind a reverse proxy and serve repositories from a custom location.
 (service fossil-service-type
          (fossil-configuration
           (repository "/srv/museum")
-          (repo-list? #t)
+          (list-repositories? #t)
           (base-url "https://museum.example")
-          (socket-file "/var/run/fossil.sock")
-          (compress? #f)))
+          (compress? #f)
+          (https? #t)
+          (socket-file "/var/run/fossil.sock")))
 @end lisp
 
 @deftp {Data Type} fossil-configuration
