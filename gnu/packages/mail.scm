@@ -68,6 +68,7 @@
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;; Copyright © 2026 Sergey Trofimov <sarg@sarg.org.ru>
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
+;;; Copyright © 2026 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4744,7 +4745,7 @@ on RFC 3501 and original @code{imaplib} module.")
 (define-public rspamd
   (package
     (name "rspamd")
-    (version "3.12.1")
+    (version "3.14.3")
     (source
      (origin
        (method git-fetch)
@@ -4752,7 +4753,7 @@ on RFC 3501 and original @code{imaplib} module.")
              (url "https://github.com/rspamd/rspamd")
              (commit version)))
        (sha256
-        (base32 "0li75dqqy0irrvv2jddmll2adf15cywif982ijj034hldg9162bc"))
+        (base32 "1yh3933ak7qzzys6yzixrs8pmmsh16ny23im958h8rqg0xrq3mcy"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -4783,11 +4784,11 @@ on RFC 3501 and original @code{imaplib} module.")
     (native-inputs
      (list pkg-config))
     (synopsis "Spam filtering system")
-    (description "Rspamd is an advanced spam filtering system that
-allows evaluation of messages by a number of rules including regular
-expressions, statistical analysis and custom services such as URL
-black lists.  Each message is analysed by Rspamd and given a spam
-score.")
+    (description
+     "Rspamd is a spam filter that evaluates email messages by a number
+of rules including: regular expressions, statistical analysis, and URL
+blacklists.  Rspamd gives each message a spam score, e.g., for further
+processing by an MTA.")
     (home-page "https://www.rspamd.com/")
     (license license:asl2.0)))
 
