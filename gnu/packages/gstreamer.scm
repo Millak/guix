@@ -766,7 +766,8 @@ model to base your own plug-in on, here it is.")
     (build-system meson-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "-Dsctp-internal-usrsctp=disabled"
+      #:configure-flags #~(list "-Dgpl=enabled"
+                                "-Dsctp-internal-usrsctp=disabled"
                                 ;; TODO: Figure out why audiovisualizer test
                                 ;; fails on riscv64-linux.
                                 #$@(if (target-riscv64?)
