@@ -15610,7 +15610,7 @@ implementation of D-Bus.")
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ; tests depend on system state
     (native-inputs (list python-setuptools))
-    (propagated-inputs (list python-dbus-1.2))
+    (propagated-inputs (list python-dbus))
     (home-page "https://bitbucket.org/takluyver/pynotify2")
     (synopsis "Python interface to D-Bus notifications")
     (description
