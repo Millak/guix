@@ -2759,7 +2759,7 @@ schemas for settings shared by various components of the GNOME desktop.")
                 (invoke "./run-tests")))))))
     (native-inputs (list python-pytest python-setuptools xorg-server-for-tests))
     (inputs (list gtk+))
-    (propagated-inputs (list python-pygobject))
+    (propagated-inputs (list python-pygobject-3.50))
     (home-page "https://getting-things-gnome.github.io/liblarch")
     (synopsis "Library to easily handle complex data structures")
     (description
