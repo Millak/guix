@@ -237,18 +237,21 @@ invoked on those path objects directly.")
 (define-public python-pathspec
   (package
     (name "python-pathspec")
-    (version "0.12.1")
+    (version "1.0.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pathspec" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cpburnz/python-pathspec")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "04jpkzic8f58z6paq7f3f7fdnlv9l89khv3sqsqk7ax10caxb0m4"))))
+        (base32 "1xjli6hl8588ki48s4mgx2nn5whnmikxngpfgjbfw4af92j4x5cr"))))
     (build-system pyproject-build-system)
     (arguments (list #:test-backend #~'unittest))
     (native-inputs
      (list python-flit-core
-           python-setuptools-bootstrap))
+           python-packaging-bootstrap))
     (home-page "https://github.com/cpburnz/python-pathspec")
     (synopsis "Utility library for gitignore style pattern matching of file paths")
     (description
