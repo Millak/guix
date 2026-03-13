@@ -134,6 +134,7 @@
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages tex)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
@@ -3667,6 +3668,39 @@ functions for the float and double types.")
 computing Fast Fourier transformations.  It supports multidimensional arrays,
 different floating point sizes and complex transformations.")
       (license license:bsd-3))))
+
+(define-public libbinio
+  ;; The latest tagged version does not support CMake build.  This commit has
+  ;; builds with CMake and has updated CMake version support.
+  (let ((commit "e88dad086265e179ab6aef7f479e19f3917c7a98")
+        (revision "0"))
+    (package
+      (name "libbinio")
+      (version (git-version "1.5" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/adplug/libbinio")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0rb33jl6gpxb88zymzl996m43b7r6wyw4lq0ib3626kna3baqnha"))))
+      (native-inputs
+       (list autoconf automake libtool texinfo))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:tests? #f ;no tests
+             #:configure-flags
+             #~(list "-DBUILD_SHARED_LIBS=ON")))
+      (home-page "http://adplug.github.io/libbinio/")
+      (synopsis "Binary I/O stream class library")
+      (description
+       "This binary I/O stream class library presents a platform-independent
+way to access binary data streams in C++.  The library is hardware independent
+in the form that it transparently converts between the different forms of
+machine-internal binary data representation.")
+      (license license:lgpl2.1+))))
 
 (define-public priocpp
   ;; Latest release is from 2022-08-14.
