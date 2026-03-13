@@ -313,7 +313,3 @@ environment spectrum.")
  to map Xlib/Xcb/X clients to a running arcan instance.  It allows
 running an X session as a window under Arcan.")
     (license (list license:bsd-3 license:expat))))
-
-;; Package was merged into arcan in upstream.
-(define-deprecated-package arcan-wayland
-  arcan)
