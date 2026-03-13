@@ -728,13 +728,7 @@ intelligence.")
           (file-name (git-file-name name version))
           (sha256
            (base32 "0rwj1ykknng39mhzna3fw3rcl3vngynsjdcj1namgkvw91zd9dl7"))
-          ;; TODO: Remove patches when Rust provides stable file locking API.
-          ;; The file_lock feature is tracked at
-          ;; <https://github.com/rust-lang/rust/issues/130994>.
-          (patches (search-patches "rust-codex-0.98.0-execpolicy-file-lock.patch"
-                                   "rust-codex-0.98.0-core-file-lock.patch"
-                                   "rust-codex-0.98.0-arg0-file-lock.patch"
-                                   "rust-codex-0.98.0-core-remove-self-dep.patch"))))
+          (patches (search-patches "rust-codex-0.98.0-core-remove-self-dep.patch"))))
        (build-system cargo-build-system)
        (arguments
         (list
@@ -832,9 +826,6 @@ and runtime for AI-assisted coding.")
         (file-name (git-file-name name version))
         (sha256
          (base32 "1mn322gbir4gn4y5jihdqg0wprjlnx771chyfmmm7ri7pnim1zmc"))
-        ;; TODO: Remove patches when Rust provides stable file locking API.
-        ;; The file_lock feature is tracked at
-        ;; <https://github.com/rust-lang/rust/issues/130994>.
         (modules '((guix build utils)))
         (snippet '(begin
                     ;;; These are JSON manifests with a dotslash
@@ -845,10 +836,7 @@ and runtime for AI-assisted coding.")
                     ;; Bundled bubblewrap source tree; includes a
                     ;; compiled BPF blob (demos/flatpak.bpf).
                     (delete-file-recursively "codex-rs/vendor/bubblewrap")))
-        (patches (search-patches "rust-codex-0.98.0-execpolicy-file-lock.patch"
-                                 "rust-codex-0.98.0-core-file-lock.patch"
-                                 "rust-codex-0.98.0-arg0-file-lock.patch"
-                                 "rust-codex-0.98.0-core-remove-self-dep.patch"
+        (patches (search-patches "rust-codex-0.98.0-core-remove-self-dep.patch"
                                  "rust-codex-0.98.0-windows-sandbox-protocol-version.patch"
                                  "rust-codex-0.98.0-test-shebangs.patch"))))
      (build-system cargo-build-system)
@@ -888,7 +876,8 @@ and runtime for AI-assisted coding.")
           "codex-login"              ; Depends on codex-core
           "codex-ollama"             ; Depends on codex-core
           "codex-common"             ; Depends on codex-core, codex-lmstudio, codex-ollama
-          "codex-mcp-server")         ; Depends on codex-core, codex-common
+          "codex-mcp-server"          ; Depends on codex-core, codex-common
+          "codex-network-proxy")      ; Depends on codex-core, rama
        #:phases
        #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir-to-workspace

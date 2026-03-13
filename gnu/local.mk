@@ -2376,10 +2376,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rust-1.70-fix-rustix-build.patch	\
   %D%/packages/patches/rust-1.78-unwinding-fix.patch		\
   %D%/packages/patches/rust-1.81-fix-riscv64-bootstrap.patch	\
-  %D%/packages/patches/rust-codex-0.98.0-arg0-file-lock.patch	\
-  %D%/packages/patches/rust-codex-0.98.0-core-file-lock.patch	\
   %D%/packages/patches/rust-codex-0.98.0-core-remove-self-dep.patch	\
-  %D%/packages/patches/rust-codex-0.98.0-execpolicy-file-lock.patch	\
   %D%/packages/patches/rust-codex-0.98.0-test-shebangs.patch	\
   %D%/packages/patches/rust-codex-0.98.0-test-timeout.patch	\
   %D%/packages/patches/rust-codex-0.98.0-windows-sandbox-protocol-version.patch	\

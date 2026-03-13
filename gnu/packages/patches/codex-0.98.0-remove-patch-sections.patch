@@ -2,28 +2,16 @@ Author: Danny Milosavljevic <dannym@friendly-machines.com>
 Date: 2026-02-08
 License: ASL2.0
 
-Remove [patch.crates-io] and [patch.'ssh://...'] sections and
-exclude network-proxy from workspace members.
+Remove [patch.crates-io] and [patch.'ssh://...'] sections.
 
 The [patch] sections point to git repositories which are unavailable
 in an offline build.  The vendored crossterm, ratatui,
 tokio-tungstenite and tungstenite forks are provided as cargo-inputs
 instead.
 
-The network-proxy workspace member depends on rama which requires
-Rust 1.91+.
-
 --- a/codex-rs/Cargo.toml
 +++ b/codex-rs/Cargo.toml
-@@ -28,7 +28,6 @@
-     "lmstudio",
-     "login",
-     "mcp-server",
--    "network-proxy",
-     "ollama",
-     "process-hardening",
-     "protocol",
-@@ -311,16 +310,3 @@
+@@ -311,16 +311,3 @@
  debug = 1         # Reduce debug symbol size
  inherits = "test"
  opt-level = 0

@@ -845,9 +845,6 @@ Commit and SemVer specifications.")
      (origin
        (inherit (package-source rust-codex-0.98.0))
        (patches (search-patches
-                 "rust-codex-0.98.0-execpolicy-file-lock.patch"
-                 "rust-codex-0.98.0-core-file-lock.patch"
-                 "rust-codex-0.98.0-arg0-file-lock.patch"
                  "codex-0.98.0-remove-patch-sections.patch"
                  "rust-codex-0.98.0-test-shebangs.patch"
                  "rust-codex-0.98.0-test-timeout.patch"))))
@@ -856,7 +853,7 @@ Commit and SemVer specifications.")
      (list
       #:install-source? #f
       #:cargo-install-paths '(list "cli" "exec" "exec-server"
-                                   "linux-sandbox" "mcp-server"
+                                   "linux-sandbox" "mcp-server" "network-proxy"
                                    "app-server" "tui")
       ;; schema_fixtures_match_generated (upstream fixture is stale:
       ;; FileChange::Update in codex-protocol gained old_content,
@@ -1042,7 +1039,7 @@ Commit and SemVer specifications.")
          "codex-exec"
          "codex-exec-server"
          "codex-stdio-to-uds"
-         ;; codex-network-proxy requires rama which needs Rust 1.91+.
+         "codex-network-proxy"
          "codex-chatgpt"
          "codex-cloud-tasks-client"
          ;;; Tier 5.
@@ -1148,7 +1145,10 @@ Commit and SemVer specifications.")
             (lambda _
               (setenv "HOME" "/tmp")
               (setenv "USER" "nixbld"))))))
-    (native-inputs (list perl python-minimal  ;for tests
+    (native-inputs (list clang              ;bindgen uses libclang to parse BoringSSL's C headers
+                         cmake-minimal    ;BoringSSL is compiled from C source
+                         libunwind        ;BoringSSL tests verify stack unwinding in assembly
+                         perl python-minimal ;for tests
                          pkg-config))
     (inputs (cons* bash-minimal coreutils git-minimal sed
                    openssl sqlite `(,zstd "lib")
@@ -1180,11 +1180,7 @@ Configure providers via @file{~/.codex/config.toml}.")
     (build-system cargo-build-system)
     (arguments
      (list
-      #:rust rust-1.88
       #:install-source? #f
-      ;; Skip doctests (--doc) because rustdoc is unavailable for non-default
-      ;; Rust versions in Guix.
-      #:cargo-test-flags '(list "--lib" "--bins" "--tests")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-codex-deps
