@@ -1044,13 +1044,16 @@ for \"genetic modifications\" as described by e.g.
 (define-public ginga
   (package
     (name "ginga")
-    (version "5.5.1")
+    (version "6.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ginga" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ejeschke/ginga")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1fw3h0x74hmwkfypjpy1q80kkds26fnv8ig65jb5hj1l4g3p8wj6"))))
+        (base32 "0l1ima1rif93fa80xb61xfcv72543hqfhi1galphxmnsiy0pl3h4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1078,7 +1081,7 @@ for \"genetic modifications\" as described by e.g.
            python-puremagic
            python-pyyaml
            python-qtpy
-           ;; [recomended]
+           ;; [optional]
            opencv
            python-astroquery
            python-dateutil
@@ -1086,13 +1089,10 @@ for \"genetic modifications\" as described by e.g.
            python-matplotlib
            python-photutils
            python-pillow-heif
-           python-scipy
-           ;; [qt6]
-           python-pyqt-6
-           ;; [pyside6]
-           python-pyside-6
-           ;; [tk,web]
            python-pycairo
+           python-pyqt-6
+           python-pyside-6
+           python-scipy
            python-tornado))
     (home-page "https://ejeschke.github.io/ginga/")
     (synopsis "Scientific image viewer and toolkit for FITS files")
