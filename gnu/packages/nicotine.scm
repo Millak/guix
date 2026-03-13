@@ -75,14 +75,16 @@
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
+                ;; Ensure writable cache directory
+                (setenv "HOME" "/tmp")
                 ;; Remove test that relies on network access.
                 (delete-file "pynicotine/tests/unit/test_version.py")
                 (invoke "xvfb-run" "python" "-m" "unittest")))))))
     (inputs (list bash-minimal
                   gspell
                   gtk
-                  python-pycairo
                   python-pygobject
+                  gobject-introspection
                   libappindicator
                   python-pytaglib))
     (native-inputs (list gettext-minimal python-setuptools xvfb-run))
