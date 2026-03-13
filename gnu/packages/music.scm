@@ -171,6 +171,7 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages messaging)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages mpd)
@@ -5354,6 +5355,119 @@ sequencing melodies and beats and for mixing and arranging songs.  LMMS
 includes instruments based on audio samples and various soft sythesizers.  It
 can receive input from a MIDI keyboard.")
     (license license:gpl2+)))
+
+(define-public lmms-next
+  (let ((commit "5e8f220b9c9801029465d7579c039c15cce28266")
+        (revision "0"))
+    (package/inherit lmms
+      (name "lmms-next")
+      (version (git-version "1.3.0-alpha.1" revision commit))
+      (source
+       (origin
+         (inherit (package-source lmms))
+         (uri (git-reference
+                (url "https://github.com/LMMS/lmms")
+                (commit commit)
+                ;; Clone recursively only for the optional plugins.  The 3rd
+                ;; party libraries will be deleted by the snippet.
+                (recursive? #t)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "03ivvxykmiqbkdx7k4h4797lz2bvv7y7zn26wdccfihwyfmk11b3"))
+         (modules '((guix build utils)))
+         (snippet
+          '(begin
+             ;; Delete the bundled 3rd party libraries.
+             (for-each delete-file-recursively
+               (list "plugins/CarlaBase/carla"
+                     "plugins/OpulenZ/adplug"
+                     "plugins/Xpressive/exprtk"
+                     "src/3rdparty"))
+             ;; Do not check submodules.
+             (substitute* "CMakeLists.txt"
+               ((".*CheckSubmodules.*") "")
+               ;; Do not use the bundled weakjack.
+               (("JACK libraries\" ON") "JACK libraries\" OFF"))
+             (substitute* "src/CMakeLists.txt"
+               ;; Do not add 3rd party libraries.
+               ((".*3rdparty.*") "")
+               ;; Use adplug and ringbuffer from the system.
+               (("\\$\\{EXTRA_LIBRARIES\\}" all)
+                (string-append all
+                               "\n\tadplug"
+                               "\n\tringbuffer")))
+             (with-directory-excursion "plugins"
+               ;; Use carla from the system.
+               (substitute* "CarlaBase/Carla.h"
+                 (("#include <CarlaDefines")
+                  "#include <carla/includes/CarlaDefines")
+                 (("#include <CarlaNative")
+                  "#include <carla/includes/CarlaNative")
+                 (("#include <CarlaBackend") "#include <carla/CarlaBackend")
+                 (("#include <CarlaUtils") "#include <carla/CarlaUtils"))
+               (with-directory-excursion "OpulenZ"
+                 ;; Do not use the bundled adplug.
+                 (substitute* "CMakeLists.txt"
+                   ((".*adplug .*") "")
+                   ((".*adplug/.*") "")
+                   (("^\\)") "")
+                   (("\\.png\"") ".png\"\n)"))
+                 ;; Use adplug from the system.
+                 (substitute* "OpulenZ.cpp"
+                   (("<opl\\.h>") "<adplug/opl.h>")
+                   (("<temuopl\\.h>") "<adplug/temuopl.h>")
+                   (("<mididata\\.h>") "<adplug/mididata.h>")))
+               ;; Do not use the bundled hiir.
+               (substitute* "SlewDistortion/CMakeLists.txt"
+                 (("TARGET_LINK_LIBRARIES\\(slewdistortion hiir\\)") ""))
+               ;; Do not use the bundled exprtk.
+               (substitute* "Xpressive/CMakeLists.txt"
+                 ((".*\\(exprtk .*") "")
+                 ((".*xpressive exprtk.*") "")))
+             ;; Avoid "invalid conversion from 'const unsigned char*' to
+             ;; 'unsigned char*'" error.
+             (substitute* "plugins/OpulenZ/OpulenZ.cpp"
+               (("unsigned char \\*inst") "const unsigned char *inst"))))))
+      (arguments
+       (substitute-keyword-arguments arguments
+         ((#:qtbase _ #f) qtbase)
+         ((#:configure-flags flags)
+          #~(cons* "-DWANT_QT6=ON" (delete "-DWANT_QT5=ON" #$flags)))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (delete 'unpack-rpmalloc)
+              (replace 'fix-carla-export
+                ;; Taken from NixOS package definition.
+                (lambda _
+                  (substitute* "plugins/CarlaBase/Carla.h"
+                    (("CARLA_EXPORT")
+                     "CARLA_API_EXPORT"))))))))
+      (native-inputs
+       (modify-inputs native-inputs
+         (delete "rpmalloc")
+         (replace "qttools" qttools)))
+      (inputs
+       (modify-inputs inputs
+         (delete "qtx11extras")
+         (replace "carla" carla-2.6)
+         (replace "qtwayland" qtwayland)
+         (replace "sdl12-compat" sdl2)
+         (append adplug
+                 exprtk
+                 hiir
+                 libxml2
+                 lilv
+                 lv2
+                 perl
+                 perl-list-moreutils
+                 perl-xml-parser
+                 qtsvg
+                 ringbuffer
+                 suil)))
+      (native-search-paths
+       (list (search-path-specification
+              (variable "LV2_PATH")
+              (files '("lib/lv2"))))))))
 
 (define-public stargate
   (package
