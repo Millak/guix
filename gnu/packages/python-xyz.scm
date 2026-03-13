@@ -2553,6 +2553,42 @@ pyte is a fork of vt102, which was an incomplete pure Python implementation
 of VT100 terminal.")
     (license license:lgpl3+)))
 
+(define-public python-pytokens
+  (package
+    (name "python-pytokens")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tusharsadhwani/pytokens")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j5ip72ldyazgznbwxzmrp4j4hwlk2x9yvzdk5yaivnkknhqxq0c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("--cov --cov-report=term-missing") ""))))
+          (add-before 'build 'build-with-cython
+            (lambda _
+              (setenv "PYTOKENS_USE_MYPYC" "0"))))))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools))
+    (home-page "https://github.com/tusharsadhwani/pytokens")
+    (synopsis "Spec compliant Python 3.14+ tokenizer")
+    (description
+     "This package provides a Fast, spec compliant Python 3.14+ tokenizer that
+runs on older Pythons.")
+    (license license:expat)))
+
 (define-public python-pyuca
   (package
     (name "python-pyuca")
