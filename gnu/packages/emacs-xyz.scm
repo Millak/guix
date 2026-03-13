@@ -39134,14 +39134,14 @@ user interfaces for various built-in modes.")
 (define-public emacs-calibre
   (package
     (name "emacs-calibre")
-    (version "1.5.0")
+    (version "1.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/calibre-" version
                            ".tar"))
        (sha256
-        (base32 "08rcwrydrlc995sdxn5ssm5f6ighxi5yr6i7bx9a1nf7n91mgbgh"))))
+        (base32 "0iqgd44wca54l5rn8g6c9qak2c1wblbnrx5a0118hkgckimp8c3k"))))
     (build-system emacs-build-system)
     (arguments
      (list
