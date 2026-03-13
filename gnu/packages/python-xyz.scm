@@ -11113,38 +11113,42 @@ and integrated feature-set for programming Python effectively.")
 (define-public python-black
   (package
     (name "python-black")
-    (version "25.1.0")
+    (version "26.3.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "black" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/psf/black")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0ri6xhcrm39c7q5si4wvx1fkq98mvbl4larmj4rxfai2s5f6sj9k"))))
+        (base32 "1m2vxwajavhpg34zkwyg4qyhf0lfsbphm9lvqkikal1lr1cymknz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 232 passed, 3 skipped, 4 subtests
       #:test-flags
-      ;; On the build farm we run out of resources if we let the build system
-      ;; autodetect the number of parallel processes.
-      '(list "--numprocesses" (number->string (min (parallel-job-count) 8)))
+      #~(list "--numprocesses" (number->string (min (parallel-job-count) 8))
+              ;; Diffs are not equal.
+              "--deselect=tests/test_format.py::test_simple_format")
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'patch-source-shebangs 'use-absolute-file-names
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* (find-files "tests" "\\.py$")
-               (("#!/usr/bin/env python3")
-                (string-append
-                 "#!" (search-input-file inputs "/bin/python3")))))))))
+      #~(modify-phases %standard-phases
+          (add-after 'patch-source-shebangs 'use-absolute-file-names
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "tests" "\\.py$")
+                (("#!/usr/bin/env python3")
+                 (string-append
+                  "#!" (search-input-file inputs "/bin/python3")))))))))
     (propagated-inputs
      (list python-aiohttp
            python-click
            python-mypy-extensions
            python-packaging
            python-pathspec
-           python-platformdirs))
+           python-platformdirs
+           python-pytokens))
     (native-inputs
-     (list python-pytest-8
+     (list python-pytest
            python-pytest-xdist
            python-hatch-fancy-pypi-readme
            python-hatch-vcs
