@@ -253,16 +253,16 @@ environment spectrum.")
 (define-public xarcan
   (package
     (name "xarcan")
-    (version "0.6.3")
+    (version "0.7.1")
     (source
      (origin
        (method git-fetch)
        (file-name (git-file-name name version))
        (uri (git-reference
-             (url "https://github.com/letoram/xarcan")
+             (url "https://codeberg.org/letoram/xarcan")
              (commit version)))
        (sha256
-        (base32 "1g24mmwnc45ig0x8jk0v91488k8933w07vxi4305sla56q4n82p4"))))
+        (base32 "1jpk272y58h94ss6j87i0cl1zlfp4g5803y0kpi09q8yy37icvcg"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -300,6 +300,7 @@ environment spectrum.")
            openssl
            pixman
            xcb-util
+           xcb-util-image
            xcb-util-wm
            xkbcomp
            xkeyboard-config
@@ -307,9 +308,10 @@ environment spectrum.")
            xtrans))
     (home-page "https://arcan-fe.com")
     (synopsis "Patched Xserver that bridges connections to Arcan")
-    (description "Patched Xserver with a KDrive backend that uses the arcan-shmif
- to map Xlib/Xcb/X clients to a running arcan instance.  It allows running an X session
-as a window under Arcan.")
+    (description
+     "Patched Xserver with a KDrive backend that uses the arcan-shmif
+ to map Xlib/Xcb/X clients to a running arcan instance.  It allows
+running an X session as a window under Arcan.")
     (license (list license:bsd-3 license:expat))))
 
 ;; Package was merged into arcan in upstream.
