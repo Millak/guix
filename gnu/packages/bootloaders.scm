@@ -285,22 +285,6 @@
              ;; targets are used.
              (if (member (%current-system) (package-supported-systems qemu-minimal))
                  (list qemu-minimal)
-                 '())
-
-             ;; XXX: When building GRUB 2.02 on 32-bit x86, we need a binutils
-             ;; capable of assembling 64-bit instructions.  However, our default
-             ;; binutils on 32-bit x86 is not 64-bit capable.
-             (if (string-match "^i[3456]86-" (%current-system))
-                 (let ((binutils (package/inherit
-                                     binutils
-                                   (name "binutils-i386")
-                                   (arguments
-                                    (substitute-keyword-arguments (package-arguments binutils)
-                                      ((#:configure-flags flags ''())
-                                       #~(cons* "--enable-64-bit-bfd" #$flags)))))))
-                   (list (make-ld-wrapper "ld-wrapper-i386"
-                                          #:binutils binutils)
-                         binutils))
                  '())))
     (home-page "https://www.gnu.org/software/grub/")
     (synopsis "GRand Unified Boot loader")
