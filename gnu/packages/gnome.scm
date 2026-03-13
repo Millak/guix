@@ -8207,7 +8207,7 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
 (define-public evolution-data-server
   (package
     (name "evolution-data-server")
-    (version "3.56.2")
+    (version "3.60.0")
     (source
      (origin
        (method url-fetch)
@@ -8215,7 +8215,7 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
                            (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0g793ivdv0x8lh15146v7xyyyb4dqhagiq7vqvm7d6pja2cw4knz"))))
+        (base32 "063cvwx83irc86f9kis572x4cpbsp3zzcwyknf8lvci81qz3hkp0"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -8233,7 +8233,6 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
                                (string-append lib "/evolution-data-server;")
                                (string-join runpaths ";"))
                 "-DENABLE_INTROSPECTION=ON"      ;required for Vala bindings
-                "-DENABLE_OAUTH2_WEBKITGTK4=OFF" ;requires webkitgtk-next
                 "-DWITH_PHONENUMBER=ON"))
       #:phases
       #~(modify-phases %standard-phases
@@ -8298,9 +8297,10 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
            json-glib
            libcanberra
            libgweather
-           libphonenumber-8.11
+           libphonenumber
            mit-krb5
            openldap
+           webkitgtk
            webkitgtk-for-gtk3))
     (synopsis "Store address books and calendars")
     (home-page "https://wiki.gnome.org/Apps/Evolution")
