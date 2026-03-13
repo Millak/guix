@@ -4166,14 +4166,16 @@ Spectrograph}.")
 (define-public python-crds
   (package
     (name "python-crds")
-    (version "13.1.4")
-    ;; Git: <https://github.com/spacetelescope/crds>
+    (version "13.1.11")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "crds" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spacetelescope/crds")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0zk3dfxalsgwgkn5s8vsrznqcrsypvwaq0gnvqi53905d1lky67i"))))
+        (base32 "1mpj7c70d9pbhpq9qv9jr5ha5b4zbadnb6hj0srm2byplagnsc9c"))))
     (build-system pyproject-build-system)
     (arguments
      (list
