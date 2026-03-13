@@ -58,6 +58,7 @@
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls))
 
 (define-public hexedit
@@ -254,11 +255,11 @@ for specifying patterns in the ImHex Hex Editor.")
     (sha256 sha256-hash)))
 
 (define-public imhex
-  (let* ((version "1.37.4")
+  (let* ((version "1.38.1")
          (imhex-patterns
           (make-imhex-patterns
            version
-           (base32 "0m9g93fzmj2rsgaq25y4mmfigjh1xxyh41zjs6lp5ydsl5hhrn6q"))))
+           (base32 "14c0w3pj3bcrwd6c5b0lbwdxbw003dcmyj5a4d86hab53v6hg91j"))))
     (package
       (name "imhex")
       (version version)
@@ -271,7 +272,7 @@ for specifying patterns in the ImHex Hex Editor.")
                (recursive? #t)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0l3fpizkz2ykdirbn9alddnnsg75w6kwpp92nvmird13l80z1sdr"))
+          (base32 "17aj8k2zbj78347rvfdy9gassw7kz9xj5vj30skvs5w4gf4lajln"))
          (modules '((guix build utils) (ice-9 ftw) (ice-9 match)))
          (snippet
           #~(begin
@@ -300,6 +301,7 @@ for specifying patterns in the ImHex Hex Editor.")
                                          "imgui"
                                          ;; Needs source to include miniaudio.h
                                          "miniaudio"
+                                         "md4c"
                                          "microtar")) ; XXX: unbundle
                      (delete-file-recursively dir)))
                  (scandir "."))
@@ -356,7 +358,7 @@ for specifying patterns in the ImHex Hex Editor.")
         #~(modify-phases %standard-phases
             (add-after 'unpack 'fix-paths
               (lambda _
-                (substitute* "main/gui/source/window/linux_window.cpp"
+                (substitute* "main/gui/source/window/platform/linux.cpp"
                   (("dbus-send")
                    #$(file-append dbus "/bin/dbus-send")))
                 (substitute* "cmake/build_helpers.cmake"
@@ -380,9 +382,12 @@ for specifying patterns in the ImHex Hex Editor.")
              curl
              edlib
              fmt
-             glfw
+             ;; ImHex supports Wayland on GLFW >= 3.4.  More info in:
+             ;; https://github.com/WerWolv/ImHex/issues/1941#issuecomment-2446252019
+             glfw-3.4
              libarchive
              libffi
+             libssh2
              llvm-17
              lunasvg
              plutovg
@@ -390,6 +395,7 @@ for specifying patterns in the ImHex Hex Editor.")
              mesa
              miniaudio
              nativefiledialog-extended
+             openssl
              xz
              fontconfig
              lz4
