@@ -2031,7 +2031,7 @@ commonly used macros.")
                (base32
                 "1bz4hns4vd9ifw0s4j7jgys143a650ny5lww5pppvmr9pikirwi5"))
               (patches
-               ;; Included in version 50.alpha.
+               ;; TODO: Remove when bumping to version 50.alpha or newer.
                (search-patches "gnome-contacts-evolution-compat.patch"))))
     (build-system meson-build-system)
     (arguments

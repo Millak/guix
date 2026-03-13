@@ -7,6 +7,8 @@ Subject: [PATCH] vcard-export: Adapt to evolution-data-server 3.59.1 EVCard
 The e_vcard_to_string() newly does not have any argument, the vCard
 is saved in a version it is stored in the structure. To export in
 a specific version, one can use e_vcard_convert_to_string().
+
+Upstream-Status: Merged in version 50.alpha
 ---
  meson.build                                    |  3 +++
  src/io/contacts-io-vcard-export-operation.vala | 10 ++++++++++
