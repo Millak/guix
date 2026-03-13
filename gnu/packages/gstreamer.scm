@@ -777,6 +777,15 @@ model to base your own plug-in on, here it is.")
       #:phases
       #~(modify-phases %standard-phases
           #$@%common-gstreamer-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "ext/resindvd/resindvdsrc.c"
+                ;; `g_module_open' is a wrapper above dlopen; pass it the
+                ;; absolute file name of the library to ensure it is always
+                ;; found.
+                (("\"libdvdcss\"")
+                 (format #f "~s"
+                         (search-input-file inputs "lib/libdvdcss.so"))))))
           (add-after 'unpack 'adjust-tests
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
               (let ((gst-plugins-good (assoc-ref (or native-inputs inputs)
