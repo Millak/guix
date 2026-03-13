@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 John Darrington <jmd@gnu.org>
-;;; Copyright © 2017, 2019, 2022, 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2019, 2021-2026 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2014, 2021-2023, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
@@ -1770,6 +1770,56 @@ pipeline, along with supporting a manual segmentation toolbox.  ITK-SNAP has a
 full-featured UI aimed at clinical researchers.")
     ;; This includes the submodules greedy, c3d and digestible.
     (license license:gpl3+))))
+
+(define-public elastix
+  (package
+    (name "elastix")
+    (version "5.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/SuperElastix/elastix")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sgw4cz4x6f78n6iqn87ll6wad32y67lmzvqfdfw1pzjkxbwzwyr"))
+       (patches
+        (search-patches "elastix-1404.patch"))))
+    (properties '((tunable? . #t)))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DELASTIX_USE_EIGEN=ON"
+              "-DELASTIX_ENABLE_PACKAGER:BOOL=OFF"
+              "-DELASTIX_BUILD_EXECUTABLE:BOOL=ON"
+              "-DCMAKE_CXX_FLAGS=-fPIC"
+              "-DCMAKE_CXX_STANDARD=17"
+              "-DBUILD_TESTING:BOOL=ON")
+      ;; These tests fail and are skipped in upstream CI.
+      #:test-exclude (string-join
+                      (list "elastix_run_example_COMPARE_IM"
+                            (string-append "elastix_run_3DCT_lung.MI.bspline."
+                                           "ASGD.001_COMPARE_TP"))
+                      "|")))
+    (inputs (list charls
+                  dcmtk
+                  eigen
+                  fftw
+                  insight-toolkit
+                  libpng
+                  libtiff
+                  zlib))
+    (home-page "https://elastix.dev/")
+    (synopsis "Image registration toolbox")
+    (description
+     "Elastix is a toolbox for rigid and nonrigid registration of images.  The
+software consists of a collection of algorithms that are commonly used to
+perform (medical) image registration: the task of finding a spatial
+transformation, mapping one image (the fixed image) to another (the moving
+image), by optimizing relevant image similarity metrics.")
+    (license license:asl2.0)))
 
 (define-public metapixel
   ;; Follow stable branch.

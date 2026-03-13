@@ -1,0 +1,32 @@
+From b54984063cd61636c57add80522bad23f70bb00a Mon Sep 17 00:00:00 2001
+From: Niels Dekker <N.Dekker@lumc.nl>
+Date: Tue, 3 Feb 2026 14:03:06 +0100
+Subject: [PATCH] ENH: Add relative path to lib directory to RPATH on Linux and
+ MacOS
+
+Addresses issue #1402, Avoid "error while loading shared libraries" on Linux
+---
+ Core/CMakeLists.txt | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/Core/CMakeLists.txt b/Core/CMakeLists.txt
+index 3b70abf12..204782b29 100644
+--- a/Core/CMakeLists.txt
++++ b/Core/CMakeLists.txt
+@@ -277,8 +277,14 @@ set(ELASTIX_LIBRARIES elastix_lib transformix_lib PARENT_SCOPE)
+ 
+ if(ELASTIX_BUILD_EXECUTABLE AND NOT WIN32)
+   # Tell the executables where to find the required .so files.
+-  set_target_properties(elastix_exe transformix_exe
+-    PROPERTIES INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib:${ITK_DIR}")
++  # Supports having the executables in bin, and the .so files in the lib directory next to the bin.
++  if (APPLE)
++    set_target_properties(elastix_exe transformix_exe
++      PROPERTIES BUILD_RPATH "@executable_path/../lib" INSTALL_RPATH "@executable_path/../lib:${CMAKE_INSTALL_PREFIX}/lib:${ITK_DIR}")
++  else()
++    set_target_properties(elastix_exe transformix_exe
++      PROPERTIES BUILD_RPATH "\$ORIGIN/../lib" INSTALL_RPATH "\$ORIGIN/../lib:${CMAKE_INSTALL_PREFIX}/lib:${ITK_DIR}")
++  endif()
+ endif()
+ 
+ if(ELASTIX_BUILD_EXECUTABLE AND NOT ELASTIX_NO_INSTALL_EXECUTABLES)
