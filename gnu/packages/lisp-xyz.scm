@@ -197,7 +197,7 @@ read/write Bit Map Font (BMF) into text, JSON and XML.")
               (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://github.com/Shinmera/3b-bmfont/")
+                      (url "https://codeberg.org/shinmera/3b-bmfont/")
                       (commit commit)))
                 (file-name (git-file-name "3b-bmfont2" version))
                 (sha256
@@ -304,7 +304,7 @@ vectors and streams.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/3d-math")
+               (url "https://codeberg.org/shinmera/3d-math")
                (commit commit)))
          (file-name (git-file-name "cl-3d-math" version))
          (sha256
@@ -315,7 +315,7 @@ vectors and streams.")
       (inputs
        (list sbcl-documentation-utils
              sbcl-type-templates))
-      (home-page "https://shinmera.github.io/3d-math/")
+      (home-page "https://shinmera.com/docs/3d-math/")
       (synopsis "Linear algebra for 2D and 3D computations")
       (description
        "The @code{3d-math} library implements types, operators, and algorithms
@@ -511,7 +511,7 @@ alternative 4x4 matrix representation.")
        (list sbcl-parachute))
       (inputs
        (list sbcl-documentation-utils))
-      (home-page "https://shinmera.github.io/3d-vectors/")
+      (home-page "https://shinmera.com/docs/3d-vectors/")
       (synopsis "Utility library implementing 2D, 3D, and 4D vectors")
       (description
        "@code{3D-VECTORS} is a library for vector math in 3D space.  It contains
@@ -12152,7 +12152,7 @@ options, e.g., by looking up an external key/value store
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/shinmera/clip")
+               (url "https://codeberg.org/shinmera/clip")
                (commit commit)))
          (file-name (git-file-name "clip" version))
          (sha256
@@ -12160,7 +12160,7 @@ options, e.g., by looking up an external key/value store
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-array-utils sbcl-lquery))
-      (home-page "https://shinmera.github.io/clip/")
+      (home-page "https://shinmera.com/docs/clip/")
       (synopsis "Common Lisp HTML templating engine")
       (description
        "Clip is an attempt at a templating library that allows you to write
@@ -14803,7 +14803,7 @@ that have several attributes, and a central data payload.  Most notably this
 includes the OS filesystem, but can also be used to address other
 filesystem-like things like archives, object stores, etc. in the same
 manner.")
-      (home-page "https://codeberg.org/Shinmera/depot")
+      (home-page "https://shinmera.com/docs/depot/")
       (license license:zlib))))
 
 (define-public cl-depot
@@ -16662,7 +16662,7 @@ parser/composer.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/feeder")
+               (url "https://codeberg.org/shinmera/feeder")
                (commit commit)))
          (file-name (git-file-name "feeder" version))
          (sha256
@@ -16670,7 +16670,7 @@ parser/composer.")
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-documentation-utils sbcl-local-time sbcl-plump))
-      (home-page "https://shinmera.github.io/feeder/")
+      (home-page "https://shinmera.com/docs/feeder/")
       (synopsis "RSS, Atom and general feed parsing and generating")
       (description
        "Feeder is a syndication feed library.  It presents a general protocol
@@ -16729,7 +16729,7 @@ given the Common Lisp implementation.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/file-attributes/")
+               (url "https://codeberg.org/shinmera/file-attributes/")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
@@ -16737,7 +16737,7 @@ given the Common Lisp implementation.")
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-cffi sbcl-documentation-utils sbcl-trivial-features))
-      (home-page "https://shinmera.github.io/file-attributes/")
+      (home-page "https://shinmera.com/docs/file-attributes/")
       (synopsis "Access to common file attributes in Common Lisp")
       (description
        "This is a small OS portability library to retrieve and set file
@@ -16796,7 +16796,7 @@ avoids many of the pitfalls of pathnames.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/file-notify")
+               (url "https://codeberg.org/shinmera/file-notify")
                (commit commit)))
          (file-name (git-file-name "cl-file-notify" version))
          (sha256
@@ -16806,7 +16806,7 @@ avoids many of the pitfalls of pathnames.")
        (list sbcl-cffi
              sbcl-documentation-utils
              sbcl-trivial-features))
-      (home-page "https://github.com/Shinmera/file-notify")
+      (home-page "https://codeberg.org/shinmera/file-notify")
       (synopsis "Get notifications for file accesses and changes")
       (description
        "File-Notify is a Common Lisp library for getting notifications for file
@@ -16829,7 +16829,7 @@ accesses and changes.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/file-select")
+               (url "https://codeberg.org/shinmera/file-select")
                (commit commit)))
          (file-name (git-file-name "file-select" version))
          (sha256
@@ -16839,7 +16839,7 @@ accesses and changes.")
        (list sbcl-cffi
              sbcl-documentation-utils
              sbcl-float-features))
-      (home-page "https://shinmera.github.io/file-select/")
+      (home-page "https://shinmera.com/docs/file-select/")
       (synopsis "Invoke the native file selection dialogs to open or save files")
       (description
        "This library allows you to open native file dialogs to open and save
@@ -16894,7 +16894,7 @@ fashion.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/filesystem-utils/")
+               (url "https://codeberg.org/shinmera/filesystem-utils/")
                (commit commit)))
          (file-name (git-file-name "cl-filesystem-utils" version))
          (sha256
@@ -16904,7 +16904,7 @@ fashion.")
        (list sbcl-documentation-utils
              sbcl-pathname-utils
              sbcl-trivial-features))
-      (home-page "https://shinmera.github.io/filesystem-utils/")
+      (home-page "https://shinmera.com/docs/filesystem-utils/")
       (synopsis "Collection of utilities for filesystem interaction")
       (description
        "This is an extension library to @code{pathname-utils}, to allow
@@ -17025,7 +17025,7 @@ the @command{flamegraph.pl} script, which is available in the Guix package
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/flare")
+               (url "https://codeberg.org/shinmera/flare")
                (commit commit)))
          (file-name (git-file-name "flare" version))
          (sha256
@@ -17038,7 +17038,7 @@ the @command{flamegraph.pl} script, which is available in the Guix package
              sbcl-for
              sbcl-lambda-fiddle
              sbcl-trivial-garbage))
-      (home-page "https://shinmera.github.io/flare/")
+      (home-page "https://shinmera.com/docs/flare/")
       (synopsis "Easy particle systems with fine grained control")
       (description
        "FLARE is a library designed to allow quick and precise particle effect
@@ -17156,7 +17156,7 @@ a sequence (or chain) of such elements.")
       (description
        "Portability library for IEEE float features that are not
 covered by the Common Lisp standard.")
-      (home-page "https://github.com/Shinmera/float-features")
+      (home-page "https://codeberg.org/shinmera/float-features")
       (license license:zlib))))
 
 (define-public cl-float-features
@@ -17178,7 +17178,7 @@ covered by the Common Lisp standard.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/flow")
+               (url "https://codeberg.org/shinmera/flow")
                (commit commit)))
          (file-name (git-file-name "flow" version))
          (sha256
@@ -17190,7 +17190,7 @@ covered by the Common Lisp standard.")
       (inputs
        (list sbcl-closer-mop
              sbcl-documentation-utils))
-      (home-page "https://shinmera.github.io/flow/")
+      (home-page "https://shinmera.com/docs/flow/")
       (synopsis "Tools for the representation of graphs and flowcharts")
       (description
        "FLOW is a flowchart graph library.  Unlike other graphing libraries,
@@ -17384,7 +17384,7 @@ time, etc.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/font-discovery")
+               (url "https://codeberg.org/shinmera/font-discovery")
                (commit commit)))
          (file-name (git-file-name "font-discovery" version))
          (sha256
@@ -17392,7 +17392,7 @@ time, etc.")
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-cffi sbcl-documentation-utils sbcl-trivial-indent))
-      (home-page "https://shinmera.github.io/font-discovery/")
+      (home-page "https://shinmera.com/docs/font-discovery/")
       (synopsis "Find system font files matching a font spec")
       (description
        "This is a library to find system font files.  It works on systems with
@@ -17416,7 +17416,7 @@ aren't already directly available on the system.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/for")
+               (url "https://codeberg.org/shinmera/for")
                (commit commit)))
          (file-name (git-file-name "cl-for" version))
          (sha256
@@ -17424,7 +17424,7 @@ aren't already directly available on the system.")
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-documentation-utils sbcl-form-fiddle sbcl-lambda-fiddle))
-      (home-page "https://shinmera.github.io/for/")
+      (home-page "https://shinmera.com/docs/for/")
       (synopsis "Extensible iteration macro library")
       (description
        "For is a library for an extensible iteration macro.  It allows you to write
@@ -17452,7 +17452,7 @@ require code-walking and is easier to extend.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/forge/")
+               (url "https://codeberg.org/shinmera/forge/")
                (commit commit)))
          (sha256
           (base32 "006vi2ihrn28pzrwa8b7axmv98bdaxzx7lacnh9pbacbjg3b7hb0"))
@@ -17494,7 +17494,7 @@ for the specific kind of project you're building to get the full picture.")
          (method git-fetch)
          (uri
           (git-reference
-           (url "https://github.com/Shinmera/form-fiddle")
+           (url "https://codeberg.org/shinmera/form-fiddle")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
@@ -17507,7 +17507,7 @@ for the specific kind of project you're building to get the full picture.")
       (description
        "Often times we need to destructure a form definition in a Common Lisp
 macro.  This library provides a set of simple utilities to help with that.")
-      (home-page "https://shinmera.github.io/form-fiddle/")
+      (home-page "https://shinmera.com/docs/form-fiddle/")
       (license license:zlib))))
 
 (define-public cl-form-fiddle
@@ -20737,13 +20737,13 @@ performance and simplicity in mind.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/lambda-fiddle")
+               (url "https://codeberg.org/shinmera/lambda-fiddle")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32 "1zarj1pqjqmk95kdx1axkgpwy2wq3canczk7f9z5hvaw5an6gand"))))
       (build-system asdf-build-system/sbcl)
-      (home-page "https://github.com/Shinmera/lambda-fiddle")
+      (home-page "https://codeberg.org/shinmera/lambda-fiddle")
       (synopsis "Collection of utilities to process lambda-lists")
       (description "This collection of utilities is useful in contexts where
 you want a macro that uses lambda-lists in some fashion but need more precise
@@ -20768,7 +20768,7 @@ processing.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/language-codes")
+               (url "https://codeberg.org/shinmera/language-codes")
                (commit commit)))
          (file-name (git-file-name name commit))
          (sha256
@@ -20776,7 +20776,7 @@ processing.")
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-documentation-utils))
-      (home-page "https://shinmera.github.io/language-codes/")
+      (home-page "https://shinmera.com/docs/language-codes/")
       (synopsis "Map ISO language codes to language names in Common Lisp")
       (description
        "This is a small library providing the ISO-639 language code to
@@ -20847,7 +20847,7 @@ text.")
          (method git-fetch)
          (uri
           (git-reference
-           (url "https://github.com/Shinmera/LASS")
+           (url "https://codeberg.org/shinmera/LASS")
            (commit commit)))
          (file-name (git-file-name "cl-lass" version))
          (sha256
@@ -20861,7 +20861,7 @@ text.")
 out in writing CSS quick and easy.  LASS was largely inspired by SASS.  LASS
 supports two modes, one being directly in your lisp code, the other in pure
 LASS files.")
-      (home-page "https://shinmera.github.io/LASS/")
+      (home-page "https://shinmera.com/docs/LASS/")
       (license license:zlib))))
 
 (define-public cl-lass
@@ -22193,7 +22193,7 @@ compression/decompression using bindings to the lzlib C library.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/machine-state")
+               (url "https://codeberg.org/shinmera/machine-state")
                (commit commit)))
          (file-name (git-file-name "cl-machine-state" version))
          (sha256
@@ -22207,7 +22207,7 @@ compression/decompression using bindings to the lzlib C library.")
       (arguments
        '(#:tests? #f                    ; No tests.
          #:asd-systems '("machine-state" "machine-state/opengl")))
-      (home-page "https://shinmera.github.io/machine-state/")
+      (home-page "https://shinmera.com/docs/machine-state/")
       (synopsis "Retrieve machine state information about CPU time, memory usage and more")
       (description
        "This library implements various functions to access status information
@@ -23412,7 +23412,7 @@ various string metrics in Common Lisp:
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/mmap")
+               (url "https://codeberg.org/shinmera/mmap")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
@@ -23423,7 +23423,7 @@ various string metrics in Common Lisp:
              sbcl-trivial-features))
       (inputs
        (list sbcl-cffi sbcl-documentation-utils))
-      (home-page "https://shinmera.github.io/mmap/")
+      (home-page "https://shinmera.com/docs/mmap/")
       (synopsis "File memory mapping for Common Lisp")
       (description
        "This is a utility library providing access to the @emph{mmap} family of
@@ -23485,7 +23485,7 @@ place.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/modularize")
+               (url "https://codeberg.org/shinmera/modularize")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
@@ -23494,7 +23494,7 @@ place.")
       (inputs
        (list sbcl-documentation-utils
              sbcl-trivial-package-local-nicknames))
-      (home-page "https://shinmera.github.io/modularize/")
+      (home-page "https://shinmera.com/docs/modularize/")
       (synopsis "Common Lisp modularization framework")
       (description
        "@code{MODULARIZE} is an attempt at providing a common interface to
@@ -23521,7 +23521,7 @@ tie modules together in functionality, hook into each other and so on.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/modularize-hooks")
+               (url "https://codeberg.org/shinmera/modularize-hooks")
                (commit commit)))
          (file-name (git-file-name "modularize-hooks" version))
          (sha256
@@ -23530,7 +23530,7 @@ tie modules together in functionality, hook into each other and so on.")
       (inputs
        (list sbcl-closer-mop sbcl-lambda-fiddle sbcl-modularize
              sbcl-trivial-arguments))
-      (home-page "https://shinmera.github.io/modularize-hooks/")
+      (home-page "https://shinmera.com/docs/modularize-hooks/")
       (synopsis "Generic hooks and triggers extension for Modularize")
       (description
        "This is a simple extension to @code{MODULARIZE} that allows modules to
@@ -23553,7 +23553,7 @@ define and trigger hooks, which other modules can hook on to.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/modularize-interfaces")
+               (url "https://codeberg.org/shinmera/modularize-interfaces")
                (commit commit)))
          (file-name (git-file-name "modularize-interfaces" version))
          (sha256
@@ -23562,7 +23562,7 @@ define and trigger hooks, which other modules can hook on to.")
       (inputs
        (list sbcl-lambda-fiddle sbcl-modularize sbcl-trivial-arguments
              sbcl-trivial-indent))
-      (home-page "https://shinmera.github.io/modularize-interfaces/")
+      (home-page "https://shinmera.com/docs/modularize-interfaces/")
       (synopsis "Programmatical interfaces extension for Modularize")
       (description
        "This is an extension to @code{MODULARIZE} that allows your application
@@ -23846,7 +23846,7 @@ for Common Lisp.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/multilang-documentation")
+               (url "https://codeberg.org/shinmera/multilang-documentation")
                (commit commit)))
          (file-name (git-file-name name commit))
          (sha256
@@ -23855,7 +23855,7 @@ for Common Lisp.")
       (inputs
        (list sbcl-documentation-utils sbcl-language-codes
              sbcl-system-locale))
-      (home-page "https://shinmera.github.io/multilang-documentation/")
+      (home-page "https://shinmera.com/docs/multilang-documentation/")
       (synopsis "Add multiple languages support to Common Lisp documentation")
       (description
        "This library provides a drop-in replacement function for
@@ -25038,7 +25038,7 @@ expressions.")
        (origin
          (method git-fetch)
          (uri (git-reference
-                (url "https://github.com/Shinmera/open-with")
+                (url "https://codeberg.org/shinmera/open-with")
                 (commit commit)))
          (file-name (git-file-name "cl-open-with" version))
          (sha256
@@ -25062,7 +25062,7 @@ expressions.")
        "This package provides a small utility library to open a thing (usually
 a file or URL) in an appropriate handler (usually an external file manager or
 browser).")
-      (home-page "https://shinmera.github.io/open-with/")
+      (home-page "https://shinmera.com/docs/open-with/")
       (license license:zlib))))
 
 (define-public cl-open-with
@@ -25874,7 +25874,7 @@ variable portably in Common Lisp.")
        (list sbcl-parachute))
       (inputs
        (list sbcl-trivial-features))
-      (home-page "https://codeberg.org/shinmera/pathname-utils")
+      (home-page "https://shinmera.com/docs/pathname-utils/")
       (synopsis "Collection of utilities to help with pathname operations")
       (description
        "This package provides a Common Lisp system with a collection of common
@@ -26158,13 +26158,13 @@ for Common Lisp.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/piping/")
+               (url "https://codeberg.org/shinmera/piping/")
                (commit commit)))
          (file-name (git-file-name "piping" version))
          (sha256
           (base32 "0in84qnfkynm36d4n4d6v87vprpi27xrydnga462wfhplji6klv5"))))
       (build-system asdf-build-system/sbcl)
-      (home-page "https://shinmera.github.io/piping/")
+      (home-page "https://shinmera.com/docs/piping/")
       (synopsis "Library to enable simple message pipelines")
       (description
        "This is a Common Lisp library to enable simple message pipelines.")
@@ -27060,7 +27060,7 @@ pattern-matching-like, but a char-by-char procedural parser.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/promise")
+               (url "https://codeberg.org/shinmera/promise")
                (commit commit)))
          (file-name (git-file-name "cl-promise" version))
          (sha256
@@ -27070,7 +27070,7 @@ pattern-matching-like, but a char-by-char procedural parser.")
        (list sbcl-parachute))
       (inputs
        (list sbcl-documentation-utils))
-      (home-page "https://shinmera.github.io/promise/")
+      (home-page "https://shinmera.com/docs/promise/")
       (synopsis "Promise mechanism for asynchronous operations")
       (description
        "This library implements a basic promise datastructure, which is useful
@@ -27710,7 +27710,7 @@ adaptations.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shirakumo/radiance-contribs")
+               (url "https://codeberg.org/shirakumo/radiance-contribs")
                (commit commit)))
          (file-name (git-file-name "radiance-contribs" version))
          (sha256
@@ -27789,7 +27789,7 @@ sequence.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/random-state")
+               (url "https://codeberg.org/shinmera/random-state")
                (commit commit)))
          (file-name (git-file-name "cl-random-state" version))
          (sha256
@@ -27797,7 +27797,7 @@ sequence.")
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-documentation-utils))
-      (home-page "https://shinmera.github.io/random-state/")
+      (home-page "https://shinmera.com/docs/random-state/")
       (synopsis "Portable random number generation")
       (description
        "This library is a collection of @dfn{pseudo random number generators}.
@@ -28659,7 +28659,7 @@ can coexist and interoperate with other extensions to as CLIM and Iterate.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/sdf")
+               (url "https://codeberg.org/shinmera/sdf")
                (commit commit)))
          (file-name (git-file-name "sdf" version))
          (sha256
@@ -28674,7 +28674,7 @@ can coexist and interoperate with other extensions to as CLIM and Iterate.")
              sbcl-pathname-utils))
       (arguments
        `(#:asd-systems '("sdf" "sdf/bmfont")))
-      (home-page "https://github.com/Shinmera/sdf")
+      (home-page "https://codeberg.org/shinmera/sdf")
       (synopsis "Signed distance font atlas generator")
       (description
        "This library generates
@@ -29446,7 +29446,7 @@ using advisors.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/simple-inferiors")
+               (url "https://codeberg.org/shinmera/simple-inferiors")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
@@ -29454,7 +29454,7 @@ using advisors.")
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-bordeaux-threads sbcl-documentation-utils))
-      (home-page "https://shinmera.github.io/simple-inferiors/")
+      (home-page "https://shinmera.com/docs/simple-inferiors/")
       (synopsis "Common Lisp library to use inferior processes")
       (description
        "This is a library to allow easy handling of external processes, and
@@ -29674,7 +29674,7 @@ on top of Hunchentoot.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/simple-tasks")
+               (url "https://codeberg.org/shinmera/simple-tasks")
                (commit commit)))
          (file-name (git-file-name "simple-tasks" version))
          (sha256
@@ -29682,7 +29682,7 @@ on top of Hunchentoot.")
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-array-utils sbcl-bordeaux-threads sbcl-dissect))
-      (home-page "https://shinmera.github.io/simple-tasks/")
+      (home-page "https://shinmera.com/docs/simple-tasks/")
       (synopsis "Simple task scheduling framework")
       (description "This is a task scheduling framework for Common Lisp.")
       (license license:zlib))))
@@ -30507,7 +30507,7 @@ empty object).")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/staple/")
+               (url "https://codeberg.org/shinmera/staple/")
                (commit commit)))
          (sha256
           (base32 "0qf0if7py3n4rszg25lcavpsqikfz6k5dvcmh5q67y8x5r12i5m7"))
@@ -31131,13 +31131,13 @@ and camel-case rules.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/system-load")
+               (url "https://codeberg.org/shinmera/system-load")
                (commit commit)))
          (file-name (git-file-name "cl-system-load" version))
          (sha256
           (base32 "08d8kr8j5l2m8p69f47iklxhna394vx9mrys0sgplf5f2bqb7xcv"))))
       (build-system asdf-build-system/sbcl)
-      (home-page "https://github.com/Shinmera/system-load")
+      (home-page "https://codeberg.org/shinmera/system-load")
       (synopsis "Access system's CPU and memory usage from Common Lisp")
       (description
        "System-Load is a Common Lisp library for accessing the system's CPU and
@@ -31159,7 +31159,7 @@ memory usage.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/system-locale/")
+               (url "https://codeberg.org/shinmera/system-locale/")
                (commit commit)))
          (file-name (git-file-name name commit))
          (sha256
@@ -31167,7 +31167,7 @@ memory usage.")
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-documentation-utils))
-      (home-page "https://shinmera.github.io/system-locale/")
+      (home-page "https://shinmera.com/docs/system-locale/")
       (synopsis "Get the system's locale and language settings in Common Lisp")
       (description
        "This library retrieves locale information configured on the
@@ -32068,13 +32068,13 @@ a simple-array ensuring that the resulting array is still a simple-array.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/trivial-arguments")
+               (url "https://codeberg.org/shinmera/trivial-arguments")
                (commit commit)))
          (file-name (git-file-name "trivial-arguments" version))
          (sha256
           (base32 "02vaqfavhj8jqxnr68nnzvzshm8jbgcy6m9lvyv4daa6f7ihqf88"))))
       (build-system asdf-build-system/sbcl)
-      (home-page "https://github.com/Shinmera/trivial-arguments")
+      (home-page "https://codeberg.org/shinmera/trivial-arguments")
       (synopsis "Common Lisp library to retrieve a function's lambda-list")
       (description
        "This is a simple library to retrieve the argument list of a function.")
@@ -32177,7 +32177,7 @@ information.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/trivial-benchmark/")
+               (url "https://codeberg.org/shinmera/trivial-benchmark/")
                (commit commit)))
          (file-name (git-file-name "cl-trivial-benchmark" version))
          (sha256
@@ -32185,7 +32185,7 @@ information.")
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria))
-      (home-page "https://shinmera.github.io/trivial-benchmark/")
+      (home-page "https://shinmera.com/docs/trivial-benchmark/")
       (synopsis "Easy to use benchmarking system for Common Lisp")
       (description
        "Trivial-Benchmark runs a block of code many times and outputs some
@@ -32494,13 +32494,13 @@ It provides four readtables.  The default one lets you write strings like this:
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/trivial-extensible-sequences")
+               (url "https://codeberg.org/shinmera/trivial-extensible-sequences")
                (commit commit)))
          (file-name (git-file-name "cl-trivial-extensible-sequences" version))
          (sha256
           (base32 "0352psdd8j0phjycr6ldckwspyal4jcf0f2fizi6fwdp7nvadng7"))))
       (build-system asdf-build-system/sbcl)
-      (home-page "https://shinmera.github.io/trivial-extensible-sequences/")
+      (home-page "https://shinmera.com/docs/trivial-extensible-sequences/")
       (synopsis "Portability library for the extensible sequences protocol")
       (description
        "This package provides a portability layer for the extensible sequences
@@ -32671,7 +32671,7 @@ thin compatibility layer for gray streams.")
          (method git-fetch)
          (uri
           (git-reference
-           (url "https://github.com/Shinmera/trivial-indent")
+           (url "https://codeberg.org/shinmera/trivial-indent")
            (commit commit)))
          (file-name (git-file-name "cl-trivial-indent" version))
          (sha256
@@ -32683,7 +32683,7 @@ thin compatibility layer for gray streams.")
        "This library allows you to define custom indentation hints for your
 macros if the one recognised by SLIME automatically produces unwanted
 results.")
-      (home-page "https://shinmera.github.io/trivial-indent/")
+      (home-page "https://shinmera.com/docs/trivial-indent/")
       (license license:zlib))))
 
 (define-public cl-trivial-indent
@@ -32737,7 +32737,7 @@ implementation specific equivalent.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/trivial-main-thread")
+               (url "https://codeberg.org/shinmera/trivial-main-thread")
                (commit commit)))
          (file-name (git-file-name "trivial-main-thread" version))
          (sha256
@@ -32745,7 +32745,7 @@ implementation specific equivalent.")
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-bordeaux-threads sbcl-simple-tasks sbcl-trivial-features))
-      (home-page "https://shinmera.github.io/trivial-main-thread/")
+      (home-page "https://shinmera.com/docs/trivial-main-thread/")
       (synopsis "Compatibility library to run things in the main thread")
       (description
        "This package provides a Common Lisp system which wraps the
@@ -33461,7 +33461,7 @@ the elements in compound type specifier, e.g. @code{dimensions} in
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/type-templates")
+               (url "https://codeberg.org/shinmera/type-templates")
                (commit commit)))
          (file-name (git-file-name "cl-type-templates" version))
          (sha256
@@ -33474,7 +33474,7 @@ the elements in compound type specifier, e.g. @code{dimensions} in
        (list sbcl-alexandria
              sbcl-documentation-utils
              sbcl-form-fiddle))
-      (home-page "https://shinmera.github.io/type-templates/")
+      (home-page "https://shinmera.com/docs/type-templates/")
       (synopsis "Library for defining and expanding templated functions")
       (description
        "The Type-Templates library allows you to define types and “template
@@ -33535,7 +33535,7 @@ reasoning about types, but without consing.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/uax-14")
+               (url "https://codeberg.org/shinmera/uax-14")
                (commit commit)))
          (file-name (git-file-name "uax-14" version))
          (sha256
@@ -33547,7 +33547,7 @@ reasoning about types, but without consing.")
        (list sbcl-documentation-utils))
       (arguments
        `(#:asd-systems '("uax-14")))
-      (home-page "https://shinmera.github.io/uax-14/")
+      (home-page "https://shinmera.com/docs/uax-14/")
       (synopsis "Unicode Standard Annex #14 for standardised line breaking")
       (description
        "This is an implementation of the Unicode Standards Annex
@@ -33618,7 +33618,7 @@ RFC7564.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/ubiquitous")
+               (url "https://codeberg.org/shinmera/ubiquitous")
                (commit commit)))
          (file-name (git-file-name "ubiquitous" version))
          (sha256
@@ -33629,7 +33629,7 @@ RFC7564.")
       (arguments
        '(#:asd-systems '("ubiquitous"
                          "ubiquitous-concurrent")))
-      (home-page "https://shinmera.github.io/ubiquitous/")
+      (home-page "https://shinmera.com/docs/ubiquitous/")
       (synopsis "Application configuration mechanism for Common Lisp")
       (description
        "@code{UBIQUITOUS} is a very easy-to-use library for persistent
@@ -34136,7 +34136,7 @@ algorithms.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/verbose/")
+               (url "https://codeberg.org/shinmera/verbose/")
                (commit commit)))
          (file-name (git-file-name "verbose" version))
          (sha256
@@ -34145,7 +34145,7 @@ algorithms.")
       (inputs
        (list sbcl-bordeaux-threads sbcl-dissect sbcl-documentation-utils
              sbcl-local-time sbcl-piping))
-      (home-page "https://shinmera.github.io/verbose/")
+      (home-page "https://shinmera.com/docs/verbose/")
       (synopsis "Logging framework using the piping library")
       (description
        "This is a Common Lisp library providing logging faciltiy similar to
@@ -35065,7 +35065,7 @@ reading and writing.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/zippy/")
+               (url "https://codeberg.org/shinmera/zippy/")
                (commit commit)))
          (sha256
           (base32 "16cvyyf2nzd9r3fcy4w6d5wh8n3x833wldmrxmnzd3k2xrkhzfl9"))
@@ -35094,7 +35094,7 @@ can read and write zip files.  It features:
 @item can compress stream->stream;
 @item extensible for other encryption and compression mechanisms.
 @end itemize\n")
-      (home-page "https://shinmera.github.io/zippy/")
+      (home-page "https://shinmera.com/docs/zippy/")
       (license license:zlib))))
 
 (define-public cl-zippy
