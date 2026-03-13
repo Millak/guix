@@ -2021,7 +2021,7 @@ commonly used macros.")
 (define-public gnome-contacts
   (package
     (name "gnome-contacts")
-    (version "48.0")
+    (version "49.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-contacts/"
@@ -2029,7 +2029,10 @@ commonly used macros.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1df1xhvlcqzd2y9c3mqclxr7n1rp9rcvaa2z30zyq9wlnnajjxm2"))))
+                "1bz4hns4vd9ifw0s4j7jgys143a650ny5lww5pppvmr9pikirwi5"))
+              (patches
+               ;; Included in version 50.alpha.
+               (search-patches "gnome-contacts-evolution-compat.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -2045,7 +2048,8 @@ commonly used macros.")
                 (("gtk_update_icon_cache: true")
                  "gtk_update_icon_cache: false")))))))
     (native-inputs
-     (list desktop-file-utils
+     (list blueprint-compiler
+           desktop-file-utils
            docbook-xml
            docbook-xml-4.2
            docbook-xsl

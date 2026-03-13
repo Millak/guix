@@ -1507,6 +1507,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gmp-arm-asm-nothumb.patch		\
   %D%/packages/patches/gmp-faulty-test.patch			\
   %D%/packages/patches/gnome-2048-fix-positional-argument.patch	\
+  %D%/packages/patches/gnome-contacts-evolution-compat.patch	\
   %D%/packages/patches/gnome-control-center-firmware-security.patch	\
   %D%/packages/patches/gnome-control-center-libexecdir.patch	\
   %D%/packages/patches/gnome-dictionary-meson-i18n.patch	\
