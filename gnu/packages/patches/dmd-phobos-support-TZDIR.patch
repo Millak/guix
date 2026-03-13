@@ -1,0 +1,42 @@
+commit 957d704139d6430fcce7e5b0d7058572f220ab09
+Author: Jonas Meeuws <jonas.meeuws@gmail.com>
+Date:   Thu Mar 12 01:27:34 2026 +0100
+
+    std.datetime.timezone: Support the TZDIR environment variable on POSIX.
+
+diff --git a/std/datetime/timezone.d b/std/datetime/timezone.d
+index 6a1898b0e..4e7b1f95b 100644
+--- a/std/datetime/timezone.d
++++ b/std/datetime/timezone.d
+@@ -2033,7 +2033,15 @@ public:
+     }
+     else version (Posix)
+     {
+-        enum defaultTZDatabaseDir = "/usr/share/zoneinfo/";
++        static nothrow
++        string defaultTZDatabaseDir()
++        {
++            import std.exception : assumeWontThrow;
++            import std.process : environment;
++            return environment
++                .get("TZDIR", "/usr/share/zoneinfo/")
++                .assumeWontThrow; // nothrow on POSIX
++        }
+     }
+     else version (Windows)
+     {
+@@ -2455,11 +2463,13 @@ public:
+             // RefCounted variable, but here, no references to the payload is
+             // escaped to the outside, so this should be @trusted
+             () @trusted {
+-                foreach (DirEntry de; dirEntries(tzDatabaseDir, SpanMode.depth))
++                foreach (DirEntry de; dirEntries(tzDatabaseDir, SpanMode.depth, false))
+                 {
+                     if (de.isFile)
+                     {
+                         auto tzName = de.name[tzDatabaseDir.length .. $];
++                        if (tzName.startsWith("/"))
++                            tzName = tzName[1 .. $];
+ 
+                         if (!tzName.extension().empty ||
+                             !tzName.startsWith(subName) ||

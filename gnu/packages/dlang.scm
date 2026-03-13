@@ -357,13 +357,12 @@ integration tests...\n")
     (build-system gnu-build-system)
     (arguments
      (list
-      #:disallowed-references (list (gexp-input (canonical-package gcc)
-                                                "lib"))
+      #:disallowed-references (list (gexp-input (canonical-package gcc) "lib")
+                                    tzdata-for-tests)
       ;; Disable tests, as gdmd cannot cope with some arguments used such as
       ;; '-conf'.
       #:tests? #f
       #:out-of-source? #t
-      #:test-target "test"
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
               (string-append "HOST_CXX=" #$(cxx-for-target))
@@ -389,7 +388,8 @@ integration tests...\n")
                              (append args '#$extra-args))))))
              (target-file (lambda (pkg-name path)
                             (file-append (this-package-input pkg-name) path)))
-             (target-bin-sh (target-file "bash-minimal" "/bin/sh")))
+             (target-bin-sh (target-file "bash-minimal" "/bin/sh"))
+             (target-lib-curl (target-file "curl" "/lib/libcurl.so")))
         #~(modify-phases %standard-phases
             (replace 'unpack
               (lambda* (#:key source #:allow-other-keys)
@@ -418,12 +418,9 @@ integration tests...\n")
             (add-after 'unpack 'patch-paths-in-phobos
               (lambda _
                 (with-directory-excursion "phobos"
-                  ;; (substitute* "std/datetime/timezone.d"
-                  ;;   (("\"/usr/share/zoneinfo/\"")
-                  ;;    (format #f "~s" target-zoneinfo)))
-                  ;; (substitute* "std/net/curl.d"
-                  ;;   (("\"libcurl\\.so\"")
-                  ;;    (format #f "~s" target-lib-curl)))
+                  (substitute* "std/net/curl.d"
+                    (("\"libcurl\\.so\"")
+                     (format #f "~s" #$target-lib-curl)))
                   (substitute* "std/process.d"
                     (("return \"/bin/sh\";")
                      (format #f "return ~s;" #$target-bin-sh))
@@ -472,7 +469,13 @@ integration tests...\n")
                                    "long_backtrace_trunc rt_trap_exceptions "))
                    ""))
                 (substitute* "dmd/druntime/test/gc/Makefile"
-                  ((" invariant ") " "))))
+                  ((" invariant ") " "))
+
+                ;; Skip a std.process unittest that fails due to "kill" not
+                ;; working properly in the build environment.
+                (substitute* "phobos/std/process.d"
+                  (("^.*sleep.*10000" all)
+                   (string-append "    return;\n" all)))))
             (delete 'bootstrap)
             (delete 'configure)
             (replace 'build
@@ -489,9 +492,11 @@ integration tests...\n")
                                    (string-append "DMD=" dmd)
                                    make-flags))))))
             (replace 'check
-              #$(wrap-in-directory-excursion "dmd" 'check))
+              #$(wrap-in-directory-excursion "dmd" 'check
+                                             #:test-target "test"))
             (add-after 'check 'check-phobos
-              #$(wrap-in-directory-excursion "phobos" 'check))
+              #$(wrap-in-directory-excursion "phobos" 'check
+                                             #:test-target "unittest"))
             (replace 'install
               (lambda* (#:key outputs #:allow-other-keys)
                 (let* ((platform (cond (#$(target-linux?) "linux")))
@@ -536,10 +541,11 @@ integration tests...\n")
               ;; Phobos license is identical.
               #$(wrap-in-directory-excursion "dmd" 'install-license-files))))))
     (inputs
-     (list bash-minimal))
+     (list curl                         ; std.net.curl
+           bash-minimal))               ; std.process
     (native-inputs
      (list gdmd which
-           gdb/pinned   ; for tests
+           gdb/pinned tzdata-for-tests  ; for tests
            (origin
              (method git-fetch)
              (uri (git-reference
@@ -548,7 +554,8 @@ integration tests...\n")
              (file-name (git-file-name "phobos" version))
              (sha256
               (base32
-               "1ydls3ar6d3f7ffqvidr46x3zrz3wlzjln5qa0nbz843ndjr4g7n")))))
+               "1ydls3ar6d3f7ffqvidr46x3zrz3wlzjln5qa0nbz843ndjr4g7n"))
+             (patches (search-patches "dmd-phobos-support-TZDIR.patch")))))
     (outputs '("out" "lib" "debug"))
     (synopsis "Reference D Programming Language compiler")
     (description "@acronym{DMD, Digital Mars D compiler} is the reference
@@ -573,7 +580,7 @@ compiler for the D programming language.")
           '(#:tests?)                   ;reinstate tests
           (package-arguments dmd-bootstrap))
        ((#:disallowed-references _ ''())
-        (list dmd-bootstrap))
+        (list dmd-bootstrap tzdata-for-tests))
        ((#:make-flags flags ''())
         #~(fold delete #$flags '("HOST_DMD=gdmd"
                                  "SHARED=0")))
