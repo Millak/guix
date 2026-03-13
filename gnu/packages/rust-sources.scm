@@ -835,6 +835,7 @@ and runtime for AI-assisted coding.")
         ;; TODO: Remove patches when Rust provides stable file locking API.
         ;; The file_lock feature is tracked at
         ;; <https://github.com/rust-lang/rust/issues/130994>.
+        (modules '((guix build utils)))
         (snippet '(begin
                     ;;; These are JSON manifests with a dotslash
                     ;;; shebang that download and run pre-built
