@@ -43,6 +43,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system meson)
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -997,18 +998,17 @@ Supported extensions to ISO 9660 are Rock Ridge, Joliet, AAIP, zisofs.")
 (define-public libudfread
   (package
     (name "libudfread")
-    (version "1.1.2")
+    (version "1.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://download.videolan.org/pub/videolan/libudfread/"
-                    name "-" version ".tar.bz2"))
+                    name "-" version ".tar.xz"))
               (sha256
                (base32
-                "05c943ymw94nzjxf7v102916frqk7icgw4gb244wx23jn8cnz56m"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list automake autoconf libtool pkg-config))
+                "03q5b1wm90vygx4rf4mzzrf0yhvhbvp72nyhv63pgz7v9jypqixv"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config))
     (home-page "https://code.videolan.org/videolan/libudfread")
     (synopsis "C library to read UDF file systems")
     (description "@code{libudfread} is a C library for reading
