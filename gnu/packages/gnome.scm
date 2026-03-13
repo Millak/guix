@@ -8686,7 +8686,7 @@ users.")
            libxslt
            perl
            pkg-config
-           python-dbus-1.2
+           python-dbus
            python-pygobject-3.50
            python-wrapper
            vala))
