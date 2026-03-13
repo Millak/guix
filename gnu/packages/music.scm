@@ -225,6 +225,7 @@
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
+  #:use-module (gnu packages wine)
   #:use-module ((srfi srfi-1) #:select (last)))
 
 (define-public alsa-scarlett-gui
@@ -5356,8 +5357,9 @@ includes instruments based on audio samples and various soft sythesizers.  It
 can receive input from a MIDI keyboard.")
     (license license:gpl2+)))
 
+;; This version tracks the latest commit from master branch.
 (define-public lmms-next
-  (let ((commit "5e8f220b9c9801029465d7579c039c15cce28266")
+  (let ((commit "83313e737d3137f7939f3daa9063a94a1ac01f7c")
         (revision "0"))
     (package/inherit lmms
       (name "lmms-next")
@@ -5373,7 +5375,7 @@ can receive input from a MIDI keyboard.")
                 (recursive? #t)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "03ivvxykmiqbkdx7k4h4797lz2bvv7y7zn26wdccfihwyfmk11b3"))
+          (base32 "1mpp449rvn9f10bcxhpmxfinvj3jdv4s6qjhlp0sj9l783pv3h69"))
          (modules '((guix build utils)))
          (snippet
           '(begin
@@ -5468,6 +5470,18 @@ can receive input from a MIDI keyboard.")
        (list (search-path-specification
               (variable "LV2_PATH")
               (files '("lib/lv2"))))))))
+
+(define-public lmms-next-with-vst
+  (package/inherit lmms-next
+    (name "lmms-next-with-vst")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:configure-flags flags)
+        #~(cons* (string-append "-DWINE_LOCATIONS=" #$(wine-for-system))
+                 (delete "-DWANT_VST=OFF" #$flags)))))
+    (inputs
+     (modify-inputs inputs
+       (append (wine-for-system))))))
 
 (define-public stargate
   (package
