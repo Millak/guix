@@ -7426,8 +7426,8 @@ default and preferred audio driver but also supports native drivers like ALSA.")
 
 ;;; This package variant tracks the latest in-development 2.6 release.
 (define-public carla-2.6
-  (let ((commit "aa400535b31c67f4b6c1b28e6e20e4d4f82111a3")
-        (revision "0"))
+  (let ((commit "294a80145e39c0755ab9073d90fd8b9524fbfc84")
+        (revision "1"))
     (package
       (inherit carla)
       (name "carla")
@@ -7441,7 +7441,12 @@ default and preferred audio driver but also supports native drivers like ALSA.")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0cnj2sgr60f5h6wdfmihc214wf3n74686sipl3iyzmylqrcyhbjn")))))))
+          (base32 "053yfwf9l9vqvq95c354by6nm8ym0wgkv3fr1434x5w9n1344z0z"))))
+      (inputs
+       (modify-inputs (package-inputs carla)
+         (replace "python-pyqt" python-pyqt-6)
+         (replace "qtbase" qtbase)
+         (replace "qtwayland" qtwayland))))))
 
 ;; This source is a fork of vst3sdk with the documentation and VSTGUI
 ;; submodules removed and a dummy `meson.build` file that just lists all
