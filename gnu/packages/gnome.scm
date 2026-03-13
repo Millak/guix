@@ -5157,7 +5157,7 @@ and the GLib main loop, to integrate well with GNOME applications.")
            libxslt
            pkg-config
            python
-           python-dbus-1.2
+           python-dbus
            python-pygobject-3.50
            vala))
     (propagated-inputs
