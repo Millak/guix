@@ -581,9 +581,7 @@ menu to select one of the installed operating systems.")
   (package
     (inherit (make-grub "ieee1275"))
     (synopsis "GRand Unified Boot loader (ieee1275 version)")
-    (supported-systems '("i686-linux" "x86_64-linux"
-                         "i586-gnu" "x86_64-gnu"
-                         "powerpc-linux" "powerpc64le-linux"))))
+    (supported-systems '("powerpc-linux" "powerpc64le-linux"))))
 
 (define-public grub-qemu
   (package
