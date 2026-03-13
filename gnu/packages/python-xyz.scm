@@ -39057,6 +39057,48 @@ very small subset the Python stubs contained in the complete @code{typeshed}
 collection.")
     (license license:asl2.0)))
 
+(define-public python-types-pyside6
+  (package
+    (name "python-types-pyside6")
+    ;; Project does not tag PyPI releases in Git, PyPI does not provide source
+    ;; variant.
+    (properties '((commit . "3a97b71975bda6d96cfa7b37ac6bf50ea100c1a2")
+                  (revision . "0")))
+    (version (git-version "6.10.1.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/LumaPictures/cg-stubs")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07ydqy33fapmmpyq6d90jax3k4vlbb3az1v77bjlgmg8x0jimh4k"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ;XXX: all tests failed
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'select-pyside6
+            (lambda _
+              (chdir "pyside6"))))))
+    (native-inputs
+     (list python-hatchling))
+    (home-page "https://github.com/LumaPictures/cg-stubs")
+    (synopsis "Accurate stubs for PySide6")
+    (description
+     "This package provides PySide6 stubs produced with @code{mypy}'s official
+stubgen tool to directly generate stubs, with a set of corrections applied.")
+    ;; As a derived work from PySide2, the stubs are delivered under the LGPL
+    ;; v2.1 . See file LICENSE for more details.
+    ;;
+    ;; MIT in pyproject.toml
+    (license (list license:lgpl2.1+
+                   license:expat))))
+
 (define-public python-types-python-dateutil
   (package
     (name "python-types-python-dateutil")
