@@ -10910,7 +10910,7 @@ functionality and behavior.")
 (define-public folks
   (package
     (name "folks")
-    (version "0.15.9")
+    (version "0.15.12")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -10919,7 +10919,7 @@ functionality and behavior.")
                     "folks-" version ".tar.xz"))
               (sha256
                (base32
-                "0ps1243l4vladlylj6f3h830lam2fi43kp1z2qzz6lf3amrv6493"))))
+                "05594055h3y0n1yig664g1fg7nn71b8rdf8vwkwff7mvv8mlxx11"))))
     (build-system meson-build-system)
     (arguments
      '(;; Tests are broken since GLib 2.80
