@@ -33,7 +33,7 @@
                                           "node-build-system"
                                           "ocaml-build-system"
                                           "perl-build-system"
-                                          "python-build-system"
+                                          "pyproject-build-system"
                                           "qt-build-system"
                                           "r-build-system"
                                           "rakudo-build-system"
