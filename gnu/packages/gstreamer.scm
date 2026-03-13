@@ -799,18 +799,18 @@ model to base your own plug-in on, here it is.")
 
                   ;; The 'elements_shm.test_shm_live' test sometimes times out
                   ;; (see:
-                  ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/790).
+                  ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/790>).
                   ((".*'elements/shm\\.c'.*") "")
 
                   ;; The 'elements_curlhttpsrc' test sometimes times out.
                   ((".*'elements/curlhttpsrc\\.c'.*") "")
 
                   ;; The 'mxfdemux' test fails for unknown reasons (see:
-                  ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3921).
+                  ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3921>).
                   ((".*'elements/mxfdemux.c'.*") "")
 
                   ;; Unexpected critical/warning, see
-                  ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3000>
+                  ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/792>
                   ((".*'elements/netsim\\.c'.*") "")
 
                   ;; TODO: Figure out why this test fails on riscv64-linux.
@@ -819,30 +819,19 @@ model to base your own plug-in on, here it is.")
                             "'elements/viewfinderbin.c'], true, ],"))
                          '())
 
-                  ;; This test is flaky on at least some architectures.
+                  ;; This test is flaky.
                   ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1244
-                  #$@(if (member (%current-system)
-                                 '("aarch64-linux" "riscv64-linux"))
-                         `((("'elements/camerabin\\.c'\\].*],")
-                            "'elements/camerabin.c'], true, ],"))
-                         '())
+                  (("'elements/camerabin\\.c'\\].*],")
+                   "'elements/camerabin.c'], true, ],")
 
                   ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1412
                   ((".*elements/dtls\\.c.*") "")
-
-                  ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3921
-                  ((".*elements/mxfdemux\\.c.*") "")
 
                   ;; Unable to create pipeline 'bin.
                   ;; ( vulkanupload ! vulkancolorconvert ! vulkandownload )':
                   ;; no element "vulkanupload"
                   ((".*elements/vkcolorconvert\\.c.*") "")
-                  ((".*elements/vkupload\\.c.*") ""))
-                (substitute* "tests/check/elements/zxing.c"
-                  ;; zxing 1.2.0 seemingly changed the type representation of
-                  ;; the EAN_13 structure; disable it.
-                  ((".*\"EAN_13\".*")
-                   "")))))
+                  ((".*elements/vkupload\\.c.*") "")))))
           (add-before 'check 'pre-check
             (lambda _
               ;; Tests require a running X server.
