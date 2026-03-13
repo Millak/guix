@@ -562,9 +562,11 @@ integration tests...\n")
 compiler for the D programming language.")
     (license license:boost1.0)
     (home-page "https://github.com/dlang/dmd")
-    ;; As reported by upstream:
-    ;; https://wiki.dlang.org/Compilers#Comparison
-    (supported-systems '("i686-linux" "x86_64-linux" "aarch64-linux"))
+    ;; As reported by upstream: https://wiki.dlang.org/Compilers#Comparison
+    ;; Note: aarch64-linux is currently unsupported as the build system doesn't
+    ;; work with gdmd yet. Attempting to force through anyways gives assembler
+    ;; errors.
+    (supported-systems '("i686-linux" "x86_64-linux"))
 
     ;; This variant exists only for bootstrapping purposes.
     (properties '((hidden? . #t)))))
