@@ -1,0 +1,66 @@
+Upstream-status: https://github.com/dlang/phobos/pull/10980
+
+From e2d65597896089a8bd06992a4b83e3d14176b02c Mon Sep 17 00:00:00 2001
+From: Yelninei <yelninei@tutamail.com>
+Date: Tue, 24 Mar 2026 19:46:30 +0000
+Subject: [PATCH] phobos: Fixes for GNU/Hurd.
+
+---
+ Makefile                | 2 +-
+ std/datetime/timezone.d | 1 +
+ std/math/algebraic.d    | 1 +
+ std/process.d           | 2 ++
+ 4 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 4fa51299e..a9d4789f6 100644
+--- a/Makefile
++++ b/Makefile
+@@ -305,7 +305,7 @@ else
+ endif
+ 
+ # build with shared library support (defaults to true on supported platforms)
+-SHARED=$(if $(findstring $(OS),linux freebsd),1,)
++SHARED=$(if $(findstring $(OS),linux freebsd hurd),1,)
+ 
+ TESTS_EXTRACTOR=$(ROOT)/tests_extractor$(DOTEXE)
+ PUBLICTESTS_DIR=$(ROOT)/publictests
+diff --git a/std/datetime/timezone.d b/std/datetime/timezone.d
+index 7461fcaa3..05c2999d3 100644
+--- a/std/datetime/timezone.d
++++ b/std/datetime/timezone.d
+@@ -338,6 +338,7 @@ public:
+             else version (linux)         enum utcZone = "UTC";
+             else version (Darwin)        enum utcZone = "UTC";
+             else version (Solaris)       enum utcZone = "UTC";
++            else version (Hurd)          enum utcZone = "UTC";
+             else static assert(0, "The location of the UTC timezone file on this Posix platform must be set.");
+ 
+             auto tzs = [testTZ("America/Los_Angeles", "PST", "PDT", dur!"hours"(-8), dur!"hours"(1)),
+diff --git a/std/math/algebraic.d b/std/math/algebraic.d
+index f96f24f15..05bf08b9c 100644
+--- a/std/math/algebraic.d
++++ b/std/math/algebraic.d
+@@ -631,6 +631,7 @@ else version (FreeBSD)      version = GenericPosixVersion;
+ else version (OpenBSD)      version = GenericPosixVersion;
+ else version (Solaris)      version = GenericPosixVersion;
+ else version (DragonFlyBSD) version = GenericPosixVersion;
++else version (Hurd)         version = GenericPosixVersion;
+ 
+ private real polyImpl(real x, in real[] A) @trusted pure nothrow @nogc
+ {
+diff --git a/std/process.d b/std/process.d
+index d359ca0ba..dc981c5e5 100644
+--- a/std/process.d
++++ b/std/process.d
+@@ -1031,6 +1031,8 @@ private Pid spawnProcessPosix(scope const(char[])[] args,
+                     import core.sys.freebsd.unistd : closefrom;
+                 else version (OpenBSD)
+                     import core.sys.openbsd.unistd : closefrom;
++                else version (Hurd)
++                    import core.sys.hurd.unistd : closefrom;
+ 
+                 static if (!__traits(compiles, closefrom))
+                 {
+-- 
+2.52.0

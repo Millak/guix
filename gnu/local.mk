@@ -1208,6 +1208,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/directfb-davinci-glibc-228-compat.patch	\
   %D%/packages/patches/django-compressor-build-with-beautifulsoup-4.14+.patch	\
   %D%/packages/patches/dkimproxy-add-ipv6-support.patch		\
+  %D%/packages/patches/dmd-hurd.patch				\
   %D%/packages/patches/dmd-phobos-support-TZDIR.patch		\
   %D%/packages/patches/doc++-gcc-14.patch			\
   %D%/packages/patches/docbook-utils-documentation-edits.patch	\
@@ -2141,6 +2142,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/pdl-2.100-reproducibility.patch	\
   %D%/packages/patches/petri-foo-0.1.87-fix-recent-file-not-exist.patch			\
   %D%/packages/patches/pharo-vm-cmake.patch                     \
+  %D%/packages/patches/phobos-hurd.patch			\
   %D%/packages/patches/plasma-framework-fix-KF5PlasmaMacros.cmake.patch \
   %D%/packages/patches/plasp-fix-normalization.patch \
   %D%/packages/patches/plasp-include-iostream.patch \

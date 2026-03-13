@@ -529,7 +529,9 @@ This compiler is based on the DMD frontend version 2.112.1.")
               ;; native-inputs below.
               (sha256
                (base32
-                "1b1zf7vck35ab67npjiakpyh60g5dlyl4f7v8chjnc2bwzyyc58a"))))
+                "1b1zf7vck35ab67npjiakpyh60g5dlyl4f7v8chjnc2bwzyyc58a"))
+              (patches
+               (search-patches "dmd-hurd.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -549,6 +551,13 @@ This compiler is based on the DMD frontend version 2.112.1.")
               ;; Do not build the shared libphobos2.so library, to avoid
               ;; retaining a reference to gcc:lib.
               "SHARED=0"
+              #$@(if (target-hurd?)
+                     (list (string-append "DISABLED_TESTS=core/thread/osthread "
+                                          "std/parallelism " ;; pthread stubs
+                                          "std/file " ;;  rename (NULL, "")
+                                          "std/socket " ;; ENOPROTOOPT
+                                          "std/net/curl ")) ;; timeout
+                     '())
               "DIFFABLE=1"              ;constant timestamp
               "VERBOSE=1")
       #:modules
@@ -652,7 +661,18 @@ This compiler is based on the DMD frontend version 2.112.1.")
                 ;; working properly in the build environment.
                 (substitute* "phobos/std/process.d"
                   (("^.*sleep.*10000" all)
-                   (string-append "    return;\n" all)))))
+                   (string-append "    return;\n" all)))
+                #$@(if (target-hurd?)
+                       '((for-each
+                          delete-file
+                          ;; environment differs in LD_ORIGIN_PATH
+                          '("dmd/compiler/test/dshell/sameenv.d"
+                            ;; Non _GLIBCXX_USE_CXX98_ABI version prints a warning
+                            "dmd/compiler/test/runnable_cxx/cppa.d"))
+                         ;; Segfault
+                         (substitute* "dmd/druntime/test/shared/Makefile"
+                           (("loadDR host ") "")))
+                       '())))
             (delete 'bootstrap)
             (delete 'configure)
             (replace 'build
@@ -676,7 +696,8 @@ This compiler is based on the DMD frontend version 2.112.1.")
                                              #:test-target "unittest"))
             (replace 'install
               (lambda* (#:key outputs #:allow-other-keys)
-                (let* ((platform (cond (#$(target-linux?) "linux")))
+                (let* ((platform (cond (#$(target-linux?) "linux")
+                                       (#$(target-hurd?)  "hurd")))
                        (bits (if #$(target-64bit?) 64 32))
                        (build-sub-dir (format #f "generated/~a/release/~a"
                                               platform bits))
@@ -723,20 +744,24 @@ This compiler is based on the DMD frontend version 2.112.1.")
      (list curl                         ; std.net.curl
            bash-minimal))               ; std.process
     (native-inputs
-     (list gdmd
-           which
-           gdb/pinned                   ; for tests
-           tzdata-for-tests             ; for tests
-           (origin
-             (method git-fetch)
-             (uri (git-reference
-                    (url "https://github.com/dlang/phobos")
-                    (commit (string-append "v" version))))
-             (file-name (git-file-name "phobos" version))
-             (sha256
-              (base32
-               "1w2ncn6q2fiq05wsygdfyyb0sbnsiddlnajkmajqcdcxjlih90cp"))
-             (patches (search-patches "dmd-phobos-support-TZDIR.patch")))))
+     (append
+      (if (target-linux?) ; tests using gdb are linux specific
+          (list gdb/pinned)
+          '())
+      (list gdmd
+            which
+            tzdata-for-tests             ; for tests
+            (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/dlang/phobos")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name "phobos" version))
+              (sha256
+               (base32
+                "1w2ncn6q2fiq05wsygdfyyb0sbnsiddlnajkmajqcdcxjlih90cp"))
+              (patches (search-patches "dmd-phobos-support-TZDIR.patch"
+                                       "phobos-hurd.patch"))))))
     (outputs '("out" "lib" "debug"))
     (home-page "https://github.com/dlang/dmd")
     (synopsis "Reference D Programming Language compiler")
@@ -747,7 +772,8 @@ compiler for the D programming language.")
     ;; Note: aarch64-linux is currently unsupported as the build system doesn't
     ;; work with gdmd yet. Attempting to force through anyways gives assembler
     ;; errors.
-    (supported-systems '("i686-linux" "x86_64-linux"))
+    (supported-systems '("i686-linux" "x86_64-linux"
+                         "i586-gnu" "x86_64-gnu"))
 
     ;; This variant exists only for bootstrapping purposes.
     (properties '((hidden? . #t)))))
