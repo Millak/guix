@@ -912,7 +912,7 @@ are interested in.")
      (list bash-minimal
            python-pyqt
            python-pyqtgraph
-           python-qt.py
+           python-qt-py
            python-simplespectral
            python-simplesoapy
            soapy-power))

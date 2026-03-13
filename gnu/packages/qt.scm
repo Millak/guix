@@ -5078,9 +5078,9 @@ top of the PyQt bindings for Qt.  PyQt-builder is used to build PyQt itself.")
 PySide2, PyQt6, PySide6) and additional custom QWidgets.")
     (license license:expat)))
 
-(define-public python-qt.py
+(define-public python-qt-py
   (package
-    (name "python-qt.py")
+    (name "python-qt-py")
     (version "1.3.7")
     (source
      (origin
@@ -5098,6 +5098,9 @@ PySide2, PyQt6, PySide6) and additional custom QWidgets.")
      "This package provides an abstraction layer on top of the various Qt
 bindings (PySide, PySide2, PyQt4 and PyQt5).")
     (license license:expat)))
+
+;; XXX: Deprecated on <2026-03-13>.
+(define-deprecated-package python-qt.py python-qt-py)
 
 (define-public python-superqt
   (package
