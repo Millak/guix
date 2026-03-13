@@ -39870,19 +39870,6 @@ e.g. filters, callbacks and errbacks can all be promises.")
      "Virtualenv is a tool to create isolated Python environments.")
     (license license:expat)))
 
-(define-public python-virtualenv-for-hatch
-  ;; For hatch@1.9.7, remove when no longer required.
-  (hidden-package
-   (package
-     (inherit python-virtualenv)
-     (version "20.25.3")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "virtualenv" version))
-        (sha256
-         (base32 "1gj57xqgrg53yfn9ypikgky01hvazxdyl556kwsc7b7avyxm9dbv")))))))
-
 ;; XXX: No new release since 2021, no updates on default branch since 2023, no
 ;; users in Guix; consider to remove if it keeps failing to build.
 (define-public python-virtualenv-clone
