@@ -2818,7 +2818,7 @@ and how they are displayed (View).")
            gtksourceview-4
            pango
            python
-           python-dbus-1.2
+           python-dbus
            python-liblarch
            python-lxml
            python-pycairo
