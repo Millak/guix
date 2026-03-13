@@ -532,7 +532,7 @@ Layer-4 sockets.")
 (define-public cni-plugins
   (package
     (name "cni-plugins")
-    (version "1.8.0")
+    (version "1.9.0")
     (source
      (origin
        (method git-fetch)
@@ -541,7 +541,7 @@ Layer-4 sockets.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bwczkf4kbrx47sa6mnp5kyn65dbg52qnlfyjyydrwshal8rz3gw"))
+        (base32 "0l3jgbizq0yaxld07hsdbh6ix2w6i789101ddk0ldnsmr93jg6ni"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "vendor")))))
@@ -549,19 +549,10 @@ Layer-4 sockets.")
     (arguments
      (list
       #:install-source? #f
-      #:tests? #f ; TODO: Figure out how to run tests.
-      #:import-path "github.com/containernetworking/plugins"
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'build
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
-                ;; XXX: Migrate to go-build-system logic.
-                (invoke "./build_linux.sh"))))
-          (replace 'install
-            (lambda* (#:key import-path #:allow-other-keys)
-              (copy-recursively (string-append "src/"import-path "/bin")
-                                (string-append #$output "/bin")))))))
+      ;; XXX: Tests require root access, see test_linux.sh.
+      #:tests? #f
+      #:import-path "github.com/containernetworking/plugins/plugins/..."
+      #:unpack-path "github.com/containernetworking/plugins"))
     (native-inputs
      (list go-github-com-alexflint-go-filemutex
            go-github-com-buger-jsonparser
