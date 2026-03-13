@@ -7368,6 +7368,7 @@ as is the case with audio plugins.")
                                        (find-files "bin")))))))))
     (inputs
      (list alsa-lib
+           bash-minimal
            ffmpeg
            fluidsynth
            file
