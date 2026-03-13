@@ -11569,6 +11569,48 @@ astrophysics.  It uses a command-line menu but data can be manipulated
 interactively in the plotting window.")
     (license license:gpl2+)))
 
+(define-public spot-nik
+  (package
+    (name "spot-nik")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/naojsoft/spot")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fd7iq6mjv40zcrghl8mbkqhmw8whxi8hmmpk1yxy9b63ws30lza"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Network access is required to get data set from
+      ;; <https://ssd.jpl.nasa.gov/ftp/eph/planets/bsp/de421.bsp>.
+      #:tests? #f))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (inputs
+     (list python-astropy
+           python-astroquery
+           python-ginga
+           python-jplephem
+           python-matplotlib
+           python-pandas
+           python-dateutil
+           python-requests
+           python-skyfield
+           python-pyqt-6
+           python-pyside-6))
+    (home-page "https://github.com/naojsoft/spot")
+    (synopsis "Site Planning and Observation Tool")
+    (description
+     "SPOT (Site Planning and Observation Tool) is a graphical tool for
+planning and conducting astronomical observations at a site. ")
+    (license license:bsd-3)))
+
 (define-public stackistry
   (package
     (name "stackistry")
