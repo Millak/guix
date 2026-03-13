@@ -3870,16 +3870,16 @@ MPEG-2 stream containing VOB packets.")
 (define-public libdvdnav
   (package
     (name "libdvdnav")
-    (version "6.1.1")
+    (version "7.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.videolan.org/videolan/"
                                   "libdvdnav/" version "/"
-                                  "libdvdnav-" version ".tar.bz2"))
+                                  "libdvdnav-" version ".tar.xz"))
               (sha256
                (base32
-                "0j4ds6c4xl34dijkfpw805vj7s0vzg095kw0fvzj7ls7b53sg4f1"))))
-    (build-system gnu-build-system)
+                "07i2gdj4nfah4lwlc6hl14xjbyh6b12bc1lipxs3q4vdsdd8z8d2"))))
+    (build-system meson-build-system)
     (native-inputs (list pkg-config))
     (propagated-inputs (list libdvdread)) ;in 'Requires.private' of dvdnav.pc
     (home-page "http://dvdnav.mplayerhq.hu/")
