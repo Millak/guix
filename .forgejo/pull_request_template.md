@@ -37,6 +37,7 @@ Tick a box by changing it from [ ] to [x].
 
 ```
 - Package **addition**
+  - [ ] The packages includes tests when available.
   - [ ] Fixed errors reported by `guix lint` (`./pre-inst-env guix lint PACKAGE ...`).
   - [ ] Verified cryptographic signature provided by upstream.
   - [ ] The packages don't use bundled copies of software.
