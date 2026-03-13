@@ -58,7 +58,7 @@
 ;;; Copyright © 2021 Robin Templeton <robin@terpri.org>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2021 Pradana Aumars <paumars@courrier.dev>
-;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2022,2026 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Bird <birdsite@airmail.cc>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Chadwain Holness <chadwainholness@gmail.com>
@@ -239,6 +239,7 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages upnp)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages vnc)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wget)
@@ -2545,6 +2546,7 @@ media, 2D/3D graphics and ECMAScript.")
            libupnp
            libva
            libvdpau
+           libvnc
            libvorbis
            libvpx
            libx264
