@@ -1176,6 +1176,15 @@ after their category.")
            #:phases
            #~(modify-phases %standard-phases
                #$@%common-gstreamer-phases
+               (add-after 'unpack 'patch-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "ext/dvdread/dvdreadsrc.c"
+                     ;; `g_module_open' is a wrapper above dlopen; pass it the
+                     ;; absolute file name of the library to ensure it is always
+                     ;; found.
+                     (("\"libdvdcss\"")
+                      (format #f "~s"
+                              (search-input-file inputs "lib/libdvdcss.so"))))))
                (add-before 'check 'pre-check
                  (lambda _
                    ;; Tests require a running X server.
