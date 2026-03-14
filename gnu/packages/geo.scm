@@ -24,7 +24,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Jonathan Brielmaier <jonathan.brielmaier@web.de>
-;;; Copyright © 2025 Mattia Bunel <mattia.bunel@ehess.fr>
+;;; Copyright © 2025, 2026 Mattia Bunel <mattia.bunel@ehess.fr>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2025 Lars Bilke <lars.bilke@ufz.de>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
@@ -1616,7 +1616,7 @@ development.")
 (define-public pdal
   (package
     (name "pdal")
-    (version "2.9.0")
+    (version "2.10.0")
     (source
      (origin
        (method git-fetch)
@@ -1625,13 +1625,17 @@ development.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gckixcykp9di4j7w6zkbhpj2ji1hvk8z3rw58dlqcvi81xcyjfa"))))
+        (base32 "0kbr084qmfkhc6wm76d1vgn2rvl3brzl588r2rd9441pvb19m9ds"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:configure-flags #~(list "-DUSE_EXTERNAL_GTEST=ON")
       #:parallel-tests? #f
-      #:test-exclude "pdal_io_(stac|copc)_reader_test"))
+      ;; Skip the tests using network to get remote data :
+      ;;     - pdal_io_stac_reader_test
+      ;;     - pdal_io_stac_remote_reader_test
+      ;;     - pdal_io_copc_remote_reader_test
+      #:test-exclude "pdal_io_(stac(_remote)?|copc_remote)_reader_test"))
     (native-inputs (list python googletest))
     (inputs (list gdal
                   h3
