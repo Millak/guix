@@ -45,6 +45,7 @@
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2025 Isidor Zeuner <guix@quidecco.pl>
 ;;; Copyright © 2026 John Dawson <dawson.john.andrew@gmail.com>
+;;; Copyright © 2026 Ivan Vilata i Balaguer <ivan@selidor.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -872,7 +873,7 @@ command-line programs (@command{pwqcheck}, @command{pwqfilter}, and
                             (string-append #$output "/share/man/man1")))))))
     (build-system pyproject-build-system)
     (inputs
-     (list bash-minimal gtk+ python-xdo python-gpg python-pygobject))
+     (list bash-minimal gtk gobject-introspection python-xdo python-gpg python-pygobject))
     (propagated-inputs
      (list xclip))
     (native-inputs
