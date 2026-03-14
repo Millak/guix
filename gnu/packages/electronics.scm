@@ -29,6 +29,7 @@
 ;;; Copyright © 2025, 2026 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2026 Thomas Kramer <thomas@f-si.org>
 ;;; Copyright © 2023 pinoaffe <pinoaffe@gmail.com>
+;;; Copyright © 2018, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -94,7 +95,9 @@
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graph)
   #:use-module (gnu packages graphviz)
+  #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages image)
   #:use-module (gnu packages java)
   #:use-module (gnu packages libedit)
@@ -1053,6 +1056,155 @@ chip cross-sections basked on mask data.")
 It simulates the netlists of the cells with ngspice and writes the
 characterization result in a liberty library file.")
     (license license:agpl3+)))
+
+(define-public lepton-eda
+  (package
+    (name "lepton-eda")
+    (version "1.9.18-20220529")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/lepton-eda/lepton-eda/")
+                     (commit version)))
+              (sha256
+               (base32
+                "06plrcab3s2rpyf0qv2gzc1yp33627xi8105niasgixckk6glnc2"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         ;; When running "make", the POT files are built with the build time as
+         ;; their "POT-Creation-Date".  Later on, "make" notices that .pot
+         ;; files were updated and goes on to run "msgmerge"; as a result, the
+         ;; non-deterministic POT-Creation-Date finds its way into .po files,
+         ;; and then in .gmo files.  To avoid that, simply make sure 'msgmerge'
+         ;; never runs.  See <https://bugs.debian.org/792687>.
+         "ac_cv_path_MSGMERGE=true"
+         (string-append "--with-pcb-datadir="
+                        #$(this-package-input "pcb")
+                        "/share")
+         (string-append "--with-pcb-lib-path="
+                        #$(this-package-input "pcb")
+                        "/share/pcb/pcblib-newlib:"
+                        #$(this-package-input "pcb")
+                        "/share/pcb/newlib")
+         "--with-gtk3"
+         "CFLAGS=-fcommon"
+         "--enable-guild"
+         "--enable-contrib")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              ;; For logs and auto-compilation
+              (setenv "HOME" "/tmp")
+
+              ;; Ensure that readline is found by lepton-shell
+              (substitute* "script.in"
+                (("\\(eval-when \\(expand load eval\\)" m)
+                 (string-append "
+(add-to-load-path \"" #$(this-package-input "guile-readline")
+"/share/guile/site/3.0\")
+(set! %load-compiled-path (cons \""
+#$(this-package-input "guile-readline")
+"/lib/guile/3.0/site-ccache/"
+"\" %load-compiled-path))
+" m)))))
+          (add-before 'build 'fix-dynamic-link
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "liblepton/scheme/lepton/ffi/lib.scm"
+                (("\"liblepton\"")
+                 (string-append "\"" #$output "/lib/liblepton.so" "\""))
+                (("\"libleptonattrib\"")
+                 (string-append "\"" #$output "/lib/libleptonattrib.so" "\""))
+                (("\"libleptongui\"")
+                 (string-append "\"" #$output "/lib/libleptongui.so" "\""))
+                (("\"libglib-2.0\"")
+                 (string-append
+                  "\"" (search-input-file inputs "/lib/libglib-2.0.so") "\""))
+                (("\"libgobject-2.0\"")
+                 (string-append
+                  "\"" (search-input-file inputs "/lib/libgobject-2.0.so") "\""))
+                (("\"libgtk-3\"")
+                 (string-append
+                  "\"" (search-input-file inputs "/lib/libgtk-3.so") "\"")))
+
+              ;; For finding libraries when running tests before installation.
+              (setenv "LIBLEPTONGUI"
+                      (string-append (getcwd)
+                                     "/libleptongui/src/.libs/libleptongui.so"))
+              (setenv "LIBLEPTON"
+                      (string-append (getcwd)
+                                     "/libleptongui/src/.libs/liblepton.so"))
+              (setenv "LD_LIBRARY_PATH"
+                      (string-append (getcwd)
+                                     "/libleptonattrib/src/.libs/:"
+                                     (getenv "LIBRARY_PATH")))))
+          (add-before 'bootstrap 'prepare
+            (lambda _
+              ;; Some of the scripts there are invoked by autogen.sh.
+              (for-each patch-shebang
+                        (find-files "build-tools"))
+
+              ;; Make sure 'msgmerge' can modify the PO files.
+              (for-each (lambda (po)
+                          (chmod po #o666))
+                        (find-files "." "\\.po$"))
+
+              ;; This would normally be created by invoking 'git', but it
+              ;; doesn't work here.
+              (call-with-output-file "version.h"
+                (lambda (port)
+                  (format port "#define PACKAGE_DATE_VERSION \"~a\"~%"
+                          #$(string-drop version
+                                         (+ 1
+                                            (string-index version #\-))))
+                  (format port
+                          "#define PACKAGE_DOTTED_VERSION \"~a\"~%"
+                          #$(string-take version
+                                         (string-index version #\-)))
+                  (format port
+                          "#define PACKAGE_GIT_COMMIT \"cabbag3\"~%")))))
+          (add-after 'install 'compile-scheme-files
+            (lambda _
+              (unsetenv "LIBLEPTONGUI")
+              (unsetenv "LIBLEPTON")
+              (unsetenv "LD_LIBRARY_PATH")
+              (invoke "make" "precompile"))))))
+    (native-inputs
+     (list autoconf
+           automake
+           desktop-file-utils
+           flex
+           gettext-minimal
+           groff
+           gawk
+           libtool
+           pkg-config
+           m4
+           perl
+           texinfo))
+    (inputs
+     (list glib
+           gtk+
+           gtksheet
+           guile-3.0
+           guile-readline
+           pcb
+           shared-mime-info))
+    (home-page "https://lepton-eda.github.io/")
+    (synopsis "GPL Electronic Design Automation")
+    (description
+     "Lepton EDA ia an @dfn{electronic design automation} (EDA) tool set
+forked from gEDA/gaf in late 2016.  EDA tools are used for electrical circuit
+design, schematic capture, simulation, prototyping, and production.  Lepton
+EDA includes tools for schematic capture, attribute management, bill of
+materials (BOM) generation, netlisting into over 20 netlist formats, analog
+and digital simulation, and printed circuit board (PCB) layout, and many other
+features.")
+    (license license:gpl2+)))
 
 (define-public libngspice
   ;; Note: The ngspice's build system does not allow us to build both the
