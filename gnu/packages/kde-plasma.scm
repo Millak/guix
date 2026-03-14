@@ -3109,6 +3109,7 @@ hardware management, and a high degree of customizability.")
                   kcrash
                   kdbusaddons
                   kiconthemes
+                  kirigami
                   knotifications
                   kwidgetsaddons
                   kwindowsystem
