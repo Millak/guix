@@ -21328,9 +21328,6 @@ into 22 character URL-safe base64 slug representation.")
 syntax highlighting, markdown and more to the terminal.")
     (license license:expat)))
 
-;; XXX: Deprecated on <2026-01-18>.
-(define-deprecated/public-alias python-rich-next python-rich)
-
 (define-public python-rich-click
   (package
     (name "python-rich-click")
