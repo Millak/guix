@@ -5081,17 +5081,25 @@ PySide2, PyQt6, PySide6) and additional custom QWidgets.")
 (define-public python-qt-py
   (package
     (name "python-qt-py")
-    (version "1.3.7")
+    (version "2.0.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "Qt.py" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mottosso/Qt.py")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "07rvfwzjl378j75j2va0c6xylwx16icxa6dycsjgjc329pgpng40"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pyqt))
+        (base32 "0p3aiskbhy5g9f87mkv1vc0mw155wl5x915lk9ankj6d1djjkfxw"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f)) ; No tests
+     ;; See: <https://github.com/mottosso/Qt.py/issues/395>.
+     (list #:tests? #f))
+    (native-inputs
+     (list python-pyqt-6
+           python-setuptools))
+    (propagated-inputs
+     (list python-types-pyside6))
     (home-page "https://github.com/mottosso/Qt.py")
     (synopsis "Abstraction layer for Python Qt bindings")
     (description
