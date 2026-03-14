@@ -3835,8 +3835,15 @@ platform-specific methods.")
                 "0y5w8pl91xapi49ih1pw7h48lac201cj7fm89hkklmzi9m2715gx"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list "--with-python=no"
-                               "--disable-static")))
+     (list #:configure-flags
+           #~(list #$@(cond ((target-aarch64?)
+                             '("--with-aarch64"))
+                            ((target-arm32?)
+                             '("--with-arm"))
+                            (else
+                             '()))
+                   "--with-python=no"
+                   "--disable-static")))
     (inputs
      (list openldap gnutls cyrus-sasl))
     (synopsis "User-space component to the Linux auditing system")
