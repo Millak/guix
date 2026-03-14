@@ -14,7 +14,7 @@
 ;;; Copyright © 2022, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2019 Amin Bandali <bandali@gnu.org>
-;;; Copyright © 2020, 2021, 2022, 2023, 2024, 2025 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020-2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Andrew Miloradovsky <andrew@interpretmath.pw>
 ;;; Copyright © 2022 Christian Gelinek <cgelinek@radlogic.com.au>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
@@ -64,6 +64,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
@@ -109,6 +110,8 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages networking)
+  #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
@@ -727,6 +730,57 @@ Simulator Trace} files.")
       (home-page "https://github.com/gtkwave/gtkwave")
       ;; Exception against free government use in tcl_np.c and tcl_np.h.
       (license (list license:gpl2+ license:expat license:tcl/tk)))))
+
+(define-public horizon-eda
+  (package
+    (name "horizon-eda")
+    (version "2.7.0")
+    ;; TODO: try to unbundle some of the 3rd parties.
+    ;; We have packages for nlohmann-json, range-v3, catch2 and clipper.
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/horizon-eda/horizon")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sq1d2x9wq168cz91l2rd93gnlq5scknb45bi1njqqcw3jjjhsk3"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:glib-or-gtk? #t))
+    (native-inputs (list cmake-minimal ;; OpenCASCADE is only found by cmake
+                         `(,glib "bin")
+                         gobject-introspection
+                         pkg-config))
+    (inputs (list boost
+                  cairomm
+                  cppzmq
+                  curl
+                  glib
+                  glibmm
+                  glm
+                  gsettings-desktop-schemas
+                  gtk+
+                  gtkmm-3
+                  libarchive
+                  libgit2-glib
+                  librsvg
+                  libspnav
+                  libzip
+                  opencascade-occt
+                  podofo
+                  sqlite
+                  `(,util-linux "lib")
+                  zeromq))
+    (home-page "https://horizon-eda.org/")
+    (synopsis "Electronic Design Automation package")
+    (description "Horizon EDA is an Electronic Design Automation package
+supporting an integrated end-to-end workflow for printed circuit board design
+including parts management and schematic entry.")
+    (license license:gpl3+)))
 
 (define-public iverilog
   (package
