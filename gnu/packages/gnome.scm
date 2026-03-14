@@ -82,7 +82,7 @@
 ;;; Copyright © 2024 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2025 Noé Lopez <noelopez@free.fr>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
-;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025, 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Abra K. <abra_k_332@protonmail.me>
 ;;; Copyright © 2025 Ben Hansen <git@beha.pw>
 ;;; Copyright © 2026 Roman Riabenko <roman@riabenko.com>
@@ -1013,6 +1013,16 @@ and straightforward controls.")
         (base32
          "0b77ipvvi520nv7rr6jb1c3xryhc3m2mywhby7m48kfgag8vvx2w"))))
     (build-system gnu-build-system)
+    (native-inputs (list bison flex))
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'patch-rpcgen-parse
+                          (lambda _
+                            (substitute* "rpcgen_parse.y"
+                              (("#include \"rpcgen_int.h\"")
+                               (string-append
+                                "#include \"rpcgen_int.h\"\n"
+                                "int yylex();\n"))))))))
     (synopsis "External Data Representation Library")
     (description "PortableXDR is an implementation of External Data
 Representation (XDR) Library.  It is a standard data serialization format, for
