@@ -101,6 +101,7 @@
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-maths)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages graphviz)
@@ -3234,6 +3235,7 @@ share/zulip/integrations or in lib/<...>/site-packages/integrations:
        (snippet '(for-each delete-file-recursively
                   ;; TODO: unbundle the rest as well
                   '("vendor/filippo.io"
+                    "vendor/github.com/apex"
                     "vendor/github.com/blang"
                     "vendor/github.com/d5"
                     "vendor/github.com/davecgh"
@@ -3243,25 +3245,31 @@ share/zulip/integrations or in lib/<...>/site-packages/integrations:
                     "vendor/github.com/go-asn1-ber"
                     "vendor/github.com/golang"
                     "vendor/github.com/golang-jwt"
-                    "vendor/github.com/google/uuid"
-                    "vendor/github.com/gorilla/websocket"
+                    "vendor/github.com/gomarkdown"
+                    "vendor/github.com/google"
+                    "vendor/github.com/gorilla"
                     "vendor/github.com/hashicorp"
+                    "vendor/github.com/Jeffail"
                     "vendor/github.com/jpillora"
                     "vendor/github.com/json-iterator"
                     "vendor/github.com/kballard"
                     "vendor/github.com/klauspost"
+                    "vendor/github.com/labstack/echo"
                     "vendor/github.com/magiconair"
-                    "vendor/github.com/mattn/go-colorable"
-                    "vendor/github.com/mattn/go-isatty"
-                    "vendor/github.com/mattn/go-runewidth"
-                    "vendor/github.com/mgutz/ansi"
+                    "vendor/github.com/matterbridge/gomatrix"
+                    "vendor/github.com/mattn"
+                    "vendor/github.com/mgutz"
+                    "vendor/github.com/minio/md5-simd"
                     "vendor/github.com/minio/sha256-simd"
                     "vendor/github.com/mitchellh"
                     "vendor/github.com/modern-go"
                     "vendor/github.com/opentracing"
+                    "vendor/github.com/pborman"
                     "vendor/github.com/pelletier"
+                    "vendor/github.com/philhofer"
                     "vendor/github.com/pkg"
                     "vendor/github.com/pmezard"
+                    "vendor/github.com/remyoudompheng"
                     "vendor/github.com/rivo"
                     "vendor/github.com/russross"
                     "vendor/github.com/sirupsen"
@@ -3269,15 +3277,24 @@ share/zulip/integrations or in lib/<...>/site-packages/integrations:
                     "vendor/github.com/spf13"
                     "vendor/github.com/stretchr"
                     "vendor/github.com/subosito"
-                    "vendor/github.com/valyala/bytebufferpool"
-                    "vendor/github.com/vmihailenco/tagparser"
+                    "vendor/github.com/tinylib"
+                    "vendor/github.com/valyala"
+                    "vendor/github.com/vmihailenco"
+                    "vendor/go.mau.fi"
                     "vendor/go.uber.org"
                     "vendor/golang.org"
-                    "vendor/google.golang.org/protobuf/"
+                    "vendor/google.golang.org"
                     "vendor/gopkg.in/ini.v1"
                     "vendor/gopkg.in/natefinch"
                     "vendor/gopkg.in/yaml.v2"
-                    "vendor/gopkg.in/yaml.v3")))
+                    "vendor/gopkg.in/yaml.v3"
+                    "vendor/lukechampine.com"
+                    "vendor/modernc.org/cc"
+                    "vendor/modernc.org/mathutil"
+                    "vendor/modernc.org/memory"
+                    "vendor/modernc.org/opt"
+                    "vendor/modernc.org/strutil"
+                    "vendor/modernc.org/token")))
        (sha256
         (base32 "0939fiy7z53izznfhlr7c6vaskbmkbj3ncb09fzx5dmz9cjngy80"))))
     (build-system go-build-system)
@@ -3300,12 +3317,13 @@ share/zulip/integrations or in lib/<...>/site-packages/integrations:
              go-golang-org-x-time
              go-golang-org-x-tools
              ;; google.golang.org
+             go-google-golang-org-appengine
              go-google-golang-org-protobuf
              ;; gopkg.in
              go-gopkg-in-ini-v1
+             go-gopkg-in-natefinch-lumberjack-v2
              go-gopkg-in-yaml-v2
              go-gopkg-in-yaml-v3
-             go-gopkg-in-natefinch-lumberjack-v2
              ;; filippo.io
              go-filippo-io-edwards25519
              ;; uber.org
@@ -3313,6 +3331,7 @@ share/zulip/integrations or in lib/<...>/site-packages/integrations:
              go-go-uber-org-multierr
              go-go-uber-org-zap
              ;; github.com
+             go-github-com-apex-log
              go-github-com-blang-semver
              go-github-com-d5-tengo-v2
              go-github-com-davecgh-go-spew
@@ -3322,32 +3341,43 @@ share/zulip/integrations or in lib/<...>/site-packages/integrations:
              go-github-com-go-asn1-ber-asn1-ber
              go-github-com-golang-jwt-jwt
              go-github-com-golang-protobuf
+             go-github-com-gomarkdown-markdown
+             go-github-com-google-gops
              go-github-com-google-uuid
+             go-github-com-gorilla-schema
              go-github-com-gorilla-websocket
              go-github-com-hashicorp-errwrap
              go-github-com-hashicorp-go-multierror
              go-github-com-hashicorp-golang-lru
              go-github-com-hashicorp-hcl
+             go-github-com-jeffail-gabs
              go-github-com-jpillora-backoff
              go-github-com-json-iterator-go
              go-github-com-kballard-go-shellquote
              go-github-com-klauspost-compress
              go-github-com-klauspost-cpuid-v2
+             go-github-com-labstack-echo-v4
              go-github-com-magiconair-properties
+             go-github-com-matterbridge-gomatrix
              go-github-com-mattn-go-colorable
              go-github-com-mattn-go-isatty
              go-github-com-mattn-go-runewidth
+             go-github-com-mattn-godown
              go-github-com-mgutz-ansi
+             go-github-com-minio-md5-simd
              go-github-com-minio-sha256-simd
              go-github-com-mitchellh-go-homedir
              go-github-com-mitchellh-mapstructure
              go-github-com-modern-go-concurrent
              go-github-com-modern-go-reflect2
              go-github-com-opentracing-opentracing-go
+             go-github-com-pborman-uuid
              go-github-com-pelletier-go-toml
              go-github-com-pelletier-go-toml-v2
+             go-github-com-philhofer-fwd
              go-github-com-pkg-errors
              go-github-com-pmezard-go-difflib
+             go-github-com-remyoudompheng-bigfft
              go-github-com-rivo-uniseg
              go-github-com-russross-blackfriday
              go-github-com-sirupsen-logrus
@@ -3359,8 +3389,23 @@ share/zulip/integrations or in lib/<...>/site-packages/integrations:
              go-github-com-spf13-viper
              go-github-com-stretchr-testify
              go-github-com-subosito-gotenv
+             go-github-com-tinylib-msgp
              go-github-com-valyala-bytebufferpool
-             go-github-com-vmihailenco-tagparser))
+             go-github-com-valyala-fasttemplate
+             go-github-com-vmihailenco-msgpack-v5
+             go-github-com-vmihailenco-tagparser
+             ;; go.mau.fi
+             go-go-mau-fi-libsignal
+             go-go-mau-fi-whatsmeow
+             ;; lukechampine.com
+             go-lukechampine-com-uint128
+             ;; modernc.org
+             go-modernc-org-cc-v3
+             go-modernc-org-mathutil
+             go-modernc-org-memory
+             go-modernc-org-opt
+             go-modernc-org-strutil
+             go-modernc-org-token))
     (synopsis "Bridge together various messaging networks and protocols")
     (description
      "Relays messages between different channels from various
