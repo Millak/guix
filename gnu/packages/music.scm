@@ -62,6 +62,7 @@
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Junker <dk@junkeria.club>
+;;; Copyright © 2026 Ivan Vilata i Balaguer <ivan@selidor.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7925,6 +7926,7 @@ streaming audio server.")
     (native-inputs
      (list xorg-server-for-tests
            gettext-minimal
+           gobject-introspection
            python-pytest
            python-setuptools))
     (inputs
