@@ -1420,8 +1420,8 @@ original glmark benchmark by Ben Smith.")
     (license license:bsd-2)))
 
 (define-public piglit
-  (let ((revision "1")
-        (commit "814046fe6942eac660ee4a6cc5fcc54011a49945"))
+  (let ((revision "2")
+        (commit "040ed91f234abb6a502d3a6910f1b0e54bd239a7"))
     (package
      (name "piglit")
      (version (git-version "0.0.0" revision commit))
@@ -1432,7 +1432,7 @@ original glmark benchmark by Ben Smith.")
                     (commit commit)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1bzaalcxskckfnwprw77sbbmfqi59by2j8imaq8ghnlzhlxv7mk7"))))
+               (base32 "1j5dmkym1mmz410xgwygimnjk2aswsqmcpjwz4s98pgmymh1yjvf"))))
      (build-system cmake-build-system)
      (arguments
       (list #:configure-flags #~(list "-DPIGLIT_SSE2=OFF")
@@ -1451,16 +1451,21 @@ original glmark benchmark by Ben Smith.")
                                       "'")))))
                 (add-after 'install 'wrap
                   (lambda* (#:key outputs #:allow-other-keys)
-                    (wrap-script (string-append (assoc-ref outputs "out")
-                                                "/bin/piglit")
+                    (wrap-script (string-append #$output "/bin/piglit")
                       `("GUIX_PYTHONPATH" prefix
                         (,(getenv "GUIX_PYTHONPATH")))))))))
-     (inputs (list guile-3.0            ; for wrap-script
+     (inputs (list glslang
+                   guile-3.0            ; for wrap-script
                    libxkbcommon
-                   python python-lxml python-mako python-numpy-1
-                   glslang vulkan-headers vulkan-loader
+                   python
+                   wayland-protocols
+                   vulkan-headers
+                   vulkan-loader
                    waffle))
-     (native-inputs (list pkg-config))
+     (native-inputs (list pkg-config
+                          python-lxml
+                          python-mako
+                          python-numpy))
      (home-page "https://piglit.freedesktop.org/")
      (synopsis "Test OpenGL implementations")
      (description "Piglit is a collection of automated tests for OpenGL and
