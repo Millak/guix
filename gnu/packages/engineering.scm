@@ -3069,15 +3069,14 @@ extension and customization.")
     (build-system cmake-build-system)
     (inputs (list hdf5 zlib))
     (arguments
-     `(#:parallel-tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'remove-test-output
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (delete-file-recursively
-                (string-append out "/bin/testc"))
-               #t))))))
+     (list
+      #:parallel-tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+        (add-after 'install 'remove-test-output
+          (lambda _
+            (delete-file-recursively
+             (string-append #$output "/bin/testc")))))))
     (home-page "https://www.salome-platform.org")
     (synopsis "Library to read and write MED files")
     (description
