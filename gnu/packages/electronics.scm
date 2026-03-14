@@ -776,10 +776,10 @@ Simulator Trace} files.")
                   `(,util-linux "lib")
                   zeromq))
     (home-page "https://horizon-eda.org/")
-    (synopsis "Electronic Design Automation package")
-    (description "Horizon EDA is an Electronic Design Automation package
-supporting an integrated end-to-end workflow for printed circuit board design
-including parts management and schematic entry.")
+    (synopsis "@acronym{PCB, Printed Circuit Board} design tool")
+    (description "Horizon is an @acronym{EDA, Electronic Design Automation}
+package supporting an integrated end-to-end workflow for PCB design, including
+from parts management and schematic entry to gerber export.")
     (license license:gpl3+)))
 
 (define-public iverilog
