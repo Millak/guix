@@ -30018,6 +30018,8 @@ for embedding context in JSON objects.")
      (license license:mpl2.0)))
 
 (define-public python-json-logger
+  ;; XXX: This project was archived by the owner on Dec 21, 2024. It is now
+  ;; read-only.  See: <https://codeberg.org/guix/guix/issues/7124>.
   (package
     (name "python-json-logger")
     (version "2.0.7")
@@ -30029,7 +30031,19 @@ for embedding context in JSON objects.")
         (base32
          "071f9d62ds1xdp88yzsfpf1pba2f78cp18193smcads2sc1frrr3"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (arguments
+     (list
+      #:test-flags
+      ;; See: <https://github.com/madzak/python-json-logger/issues/185>.
+      #~(list #$@(map (lambda (ls) (string-append "--deselect=tests/"
+                                                  (string-join ls "::")))
+                      '(("test_jsonlogger.py" "TestJsonLogger"
+                         "test_custom_object_serialization")
+                        ("test_jsonlogger.py" "TestJsonLogger"
+                         "test_percentage_format")
+                        ("test_jsonlogger.py" "TestJsonLogger"
+                         "test_rename_reserved_attrs"))))))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/madzak/python-json-logger")
     (synopsis "JSON log formatter in Python")
     (description "This library allows standard Python logging to output log data
