@@ -1253,11 +1253,15 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
            #~(modify-phases #$phases
                (replace 'install
                  (lambda _
-                   (let ((fmw (string-append #$output "/share/firmware")))
+                   (let ((fmw (string-append #$output "/share/firmware"))
+                         (build-dir "Build/ArmVirtQemu-AARCH64/RELEASE_GCC/FV"))
                     (mkdir-p fmw)
-                    (copy-file (string-append "Build/ArmVirtQemu-AARCH64/"
-                                              "RELEASE_GCC/FV/QEMU_EFI.fd")
-                               (string-append fmw "/ovmf_aarch64.bin"))))))))))))
+                    ;; QEMU's virt machine requires 64 MiB pflash devices on
+                    ;; AArch64.  Pad the firmware files to match.
+                    (copy-file (string-append build-dir "/QEMU_EFI.fd")
+                               (string-append fmw "/ovmf_aarch64.bin"))
+                    (truncate-file (string-append fmw "/ovmf_aarch64.bin")
+                                   (* 64 1024 1024))))))))))))
 
 (define-public ovmf-arm
   (let ((base (make-ovmf-firmware "armhf")))
