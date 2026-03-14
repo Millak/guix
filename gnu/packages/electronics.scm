@@ -1195,15 +1195,15 @@ characterization result in a liberty library file.")
            pcb
            shared-mime-info))
     (home-page "https://lepton-eda.github.io/")
-    (synopsis "GPL Electronic Design Automation")
+    (synopsis
+     "Suite of tools for designing @acronym{PCB, Printed Circuit Boards}")
     (description
-     "Lepton EDA ia an @dfn{electronic design automation} (EDA) tool set
+     "Lepton is an @acronym{EDA, Electronic Design Automation} tool set
 forked from gEDA/gaf in late 2016.  EDA tools are used for electrical circuit
 design, schematic capture, simulation, prototyping, and production.  Lepton
 EDA includes tools for schematic capture, attribute management, bill of
 materials (BOM) generation, netlisting into over 20 netlist formats, analog
-and digital simulation, and printed circuit board (PCB) layout, and many other
-features.")
+and digital simulation, and PCB layout, and many other features.")
     (license license:gpl2+)))
 
 (define-public libngspice
