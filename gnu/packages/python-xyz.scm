@@ -25667,13 +25667,22 @@ web frameworks.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08dnn19swfa5lsscj38hil41b3xnqvwgwnx9q2vg9kv26bs1zcah"))))
+        (base32 "08dnn19swfa5lsscj38hil41b3xnqvwgwnx9q2vg9kv26bs1zcah"))
+       (patches
+        (list
+         (origin
+           (method url-fetch)
+           (uri
+            (string-append "https://github.com/flasgger/flasgger/commit/"
+                           "08591b60e988c0002fcf1b1e9f98b78e041d2732.patch"))
+           (sha256
+            (base32 "0a9gprhbm4xjc5pg01agh6i99alkknah7z6281f0z8amjyss91rg")))))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "--ignore=tests/test_examples.py"
-              "-k" "not test_swag")))
+              "tests")))
     (propagated-inputs
      (list python-flask
            python-pyyaml
