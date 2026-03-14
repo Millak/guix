@@ -82,6 +82,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages rsync)
   #:use-module (gnu packages ssh)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages vim)
@@ -2027,3 +2028,69 @@ the @code{lunitx} module for running tests automatically at program exit.")
 
 (define-public lua5.4-lunitx
   (make-lua-lunitx "lua5.4-lunitx" lua-5.4))
+
+(define (make-lua-lsqlite3 name lua lua-lunitx)
+  (package
+    (name name)
+    (version "0.9.6")
+    (source (origin
+              (method url-fetch)
+              (uri "https://lua.sqlite.org/home/zip/lsqlite3_v096.zip")
+              (file-name (string-append "lsqlite3-v" version ".zip"))
+              (sha256
+               (base32
+                "10md6bfvbzflrhz4n75jr1ppmz86mwsip85llny23w2ld9iygipc"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? (not (%current-target-system))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda _
+              (invoke #$(cc-for-target) "-fPIC" "-shared" "-O2"
+                      "-o" "lsqlite3.so"
+                      "lsqlite3.c"
+                      "-llua" "-lsqlite3")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (lua-version
+                      #$(version-major+minor (package-version lua)))
+                     (cmod-dir (string-append out "/lib/lua/" lua-version)))
+                (install-file "lsqlite3.so" cmod-dir))))
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key tests? outputs #:allow-other-keys)
+              (when tests?
+                ;; Built only for the upstream test suite (test-dyld.lua).
+                (invoke #$(cc-for-target) "-fPIC" "-shared" "-O2"
+                        "-o" "extras/libsqlitefunctions.so"
+                        "extras/extension-functions.c"
+                        "-lsqlite3")
+                ;; Only test the dynamic lsqlite3 module; lsqlite3complete
+                ;; (SQLite amalgamation) is not built by this package.
+                (invoke "lua" "test/tests-sqlite3.lua" "lsqlite3")
+                (invoke "lua" "test/test.lua")
+                (invoke "lua" "test/test-dyld.lua")))))))
+    (native-inputs (list unzip lua-lunitx))
+    (inputs (list lua sqlite))
+    (home-page "https://lua.sqlite.org/")
+    (synopsis "SQLite3 binding for Lua")
+    (description "LuaSQLite3 is a thin wrapper around the public domain
+SQLite3 database engine.  It provides a complete binding to the SQLite3 C API
+from within Lua programs.")
+    (license license:expat)))
+
+(define-public lua-lsqlite3
+  (make-lua-lsqlite3 "lua-lsqlite3" lua lua-lunitx))
+
+(define-public lua5.1-lsqlite3
+  (make-lua-lsqlite3 "lua5.1-lsqlite3" lua-5.1 lua5.1-lunitx))
+
+(define-public lua5.2-lsqlite3
+  (make-lua-lsqlite3 "lua5.2-lsqlite3" lua-5.2 lua5.2-lunitx))
+
+(define-public lua5.4-lsqlite3
+  (make-lua-lsqlite3 "lua5.4-lsqlite3" lua-5.4 lua5.4-lunitx))
