@@ -70,8 +70,6 @@
        (sha256
         (base32 "06mx6kk42px0f08k5pazmjawbj19gnpg3pwxrj4c1mjac7x0lanm"))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("python" ,python-2)))
     (arguments
      ;; The build system does not use a configure script but depends on
      ;; `make'.  Hence we should pass parameters to `make' instead and remove
