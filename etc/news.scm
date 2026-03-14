@@ -47,6 +47,7 @@
         (title
          (en "GNOME 48 is now available")
          (fr "GNOME 48 maintenant disponible")
+         (pt "GNOME 48 já está disponível")
          (de "GNOME 48 jetzt verfügbar"))
         (body
          (en "The GNOME desktop was updated from version 46 to 48, bringing
@@ -65,6 +66,14 @@ d’images (Loupe), et plus:
 @itemize
 @item @url{https://release.gnome.org/47/, GNOME 47 release notes}
 @item @url{https://release.gnome.org/48/, GNOME 48 release notes}
+@end itemize")
+         (pt "GNOME desktop foi atualizado da versão 46 para a 48, trazendo
+cores acentuadas, um aplicativo de arquivos (Nautilus) melhorado, um novo
+visualizador de imagens (Loupe), e mais:
+
+@itemize
+@item @url{https://release.gnome.org/47/, Notas de lançamento do GNOME 47}
+@item @url{https://release.gnome.org/48/, Notas de lançamento do GNOME 48}
 @end itemize")
          (de "Die GNOME-Desktopumgebung wurde von Version 46 auf 48
 aktualisiert. Neue Funktionen in dieser Version sind die Möglichkeit, eine
