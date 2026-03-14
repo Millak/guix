@@ -375,7 +375,7 @@ algorithms AES or Twofish.")
 (define-public keepass
   (package
     (name "keepass")
-    (version "2.57.1")
+    (version "2.61")
     (source
      (origin
        (method url-fetch)
@@ -383,7 +383,7 @@ algorithms AES or Twofish.")
         (string-append "mirror://sourceforge/keepass/KeePass%202.x/" version
                        "/KeePass-" version "-Source.zip"))
        (sha256
-        (base32 "11i9h0pbvbmz3a6wkp97qhrc8r4l5a2iwxw6vl0zwcp19ka5gdpp"))))
+        (base32 "1dj45lhy2l22xdf7q031clf894xfigaxcqg5bw3747y59lcz0x51"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -396,10 +396,6 @@ algorithms AES or Twofish.")
               (invoke "unzip" source)))
           (replace 'configure
             (lambda* (#:key inputs #:allow-other-keys)
-              ;; Make reproducible by setting build number to 0.
-              (substitute* "KeePass/Properties/AssemblyInfo.cs"
-                (("AssemblyVersion[(]\"2.57.1.*\"[)]")
-                 "AssemblyVersion(\"2.57.1.0\")"))
               (substitute* "KeePassLib/Native/NativeMethods.Unix.cs"
                 (("libgcrypt.so.20|libglib-2.0.so.0|libgtk-3.so.0" all)
                  (search-input-file inputs (string-append "/lib/" all))))
@@ -419,9 +415,7 @@ algorithms AES or Twofish.")
                 ;; XML Serializer AOT compiler doesn't work here.
                 ;; mono will just fall back to the runtime compiler.
                 (("[$][(]FrameworkSDKDir[)]bin.sgen[.]exe")
-                 "echo")
-                (("<TargetFrameworkVersion>v4\\.8</TargetFrameworkVersion>")
-                 "<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>"))
+                 "echo"))
               (copy-file
                "Ext/Icons_15_VA/LowResIcons/KeePass_LR.ico"
                "KeePass/KeePass.ico")
@@ -455,6 +449,7 @@ algorithms AES or Twofish.")
               (setenv "LC_ALL" "C")
               (invoke
                "xbuild"
+               "KeePass.sln"
                "/target:KeePass"
                "/property:Configuration=Release"
                "/property:CscToolExe=mcs"
