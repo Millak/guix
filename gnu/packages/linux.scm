@@ -546,17 +546,17 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.19)))
 
-(define-public linux-libre-6.18-version "6.18.16")
+(define-public linux-libre-6.18-version "6.18.18")
 (define-public linux-libre-6.18-gnu-revision "gnu")
 (define deblob-scripts-6.18
   (linux-libre-deblob-scripts
    linux-libre-6.18-version
    linux-libre-6.18-gnu-revision
    (base32 "1piyq7183bdf169w66k62yr1vbs0ls7pqx3cyyk7hisw8vhy643j")
-   (base32 "1wnlnds2hgap36a0licjyjzyhhggbgp83dc9xbbw07y8jwmc17ai")))
+   (base32 "0qlih8w8wg4v5cwbmd34rbhb6mjgbx69i9rx3s2vxw7h42q9l0ai")))
 (define-public linux-libre-6.18-pristine-source
   (let ((version linux-libre-6.18-version)
-        (hash (base32 "1qwfsbr315c6qh3hnqmyjwjcj0h8j3w56hbrxnrx3h849lgw08ag")))
+        (hash (base32 "1vw6ljh4jw9i0i8jzr1p1ixxrmdwnmnz7pib0y25qwqv5hw5z1gl")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.18)))
@@ -2158,14 +2158,14 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-pocket-reform.dtb")))))))))))
                              "rk3588-mnt-reform2/0046-arm64-defconfig-Enable-Rockchip-RK3588-DisplayPort-C.patch"
                              "rk3588-mnt-reform2/0055-phy-rockchip-usbdp-move-orientation-handling-further.patch"
                              "rk3588-mnt-reform2/0056-phy-rockchip-usbdp-reset-USB3-and-reinit-on-orientat.patch"
-                             "rk3588-mnt-reform2/0060-PCI-dw-rockchip-Rename-rockchip_pcie_get_ltssm-funct.patch"
-                             "rk3588-mnt-reform2/0061-PCI-dw-rockchip-Support-get_ltssm-operation.patch"
-                             "rk3588-mnt-reform2/0062-PCI-dw-rockchip-Move-devm_phy_get-out-of-phy_init.patch"
-                             "rk3588-mnt-reform2/0063-PCI-dw-rockchip-Add-helper-function-for-enhanced-LTS.patch"
-                             "rk3588-mnt-reform2/0064-PCI-dw-rockchip-Add-helper-function-for-controller-m.patch"
-                             "rk3588-mnt-reform2/0065-PCI-dw-rockchip-Add-helper-function-for-DDL-indicato.patch"
-                             "rk3588-mnt-reform2/0066-PCI-dw-rockchip-Add-pme_turn_off-support.patch"
-                             "rk3588-mnt-reform2/0067-PCI-dw-rockchip-Add-system-PM-support.patch"
+                             ;; "rk3588-mnt-reform2/0060-PCI-dw-rockchip-Rename-rockchip_pcie_get_ltssm-funct.patch"
+                             ;; "rk3588-mnt-reform2/0061-PCI-dw-rockchip-Support-get_ltssm-operation.patch"
+                             ;; "rk3588-mnt-reform2/0062-PCI-dw-rockchip-Move-devm_phy_get-out-of-phy_init.patch"
+                             ;; "rk3588-mnt-reform2/0063-PCI-dw-rockchip-Add-helper-function-for-enhanced-LTS.patch"
+                             ;; "rk3588-mnt-reform2/0064-PCI-dw-rockchip-Add-helper-function-for-controller-m.patch"
+                             ;; "rk3588-mnt-reform2/0065-PCI-dw-rockchip-Add-helper-function-for-DDL-indicato.patch"
+                             ;; "rk3588-mnt-reform2/0066-PCI-dw-rockchip-Add-pme_turn_off-support.patch"
+                             ;; "rk3588-mnt-reform2/0067-PCI-dw-rockchip-Add-system-PM-support.patch"
                              "rk3588-mnt-reform2/0068-drm-bridge-dw-hdmi-qp-Add-CEC-support.patch"
                              "rk3588-mnt-reform2/0069-drm-bridge-dw-hdmi-qp-Fixup-timer-base-setup.patch"
                              "rk3588-mnt-reform2/0070-drm-rockchip-dw_hdmi_qp-Improve-error-handling-with-.patch"
