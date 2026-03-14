@@ -1947,6 +1947,38 @@ typechecker.")
       (list python-setuptools
             python-wheel)))))
 
+;; The python-mypy-for-tests variant should be used only in native-inputs of
+;; packages with a large number of (indirect) dependents. This allows the main,
+;; user-facing, python-mypy package to be refreshed freely without requiring
+;; thousands of packages to be rebuild. python-mypy-for-tests should only be
+;; updated on the python-team branch, and is allowed to lag behind python-mypy on
+;; master.
+(define-public python-mypy-for-tests
+  (hidden-package
+   (package
+     (inherit python-mypy)
+     (version "1.16.1")
+     (name "python-mypy-for-tests")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "mypy" version))
+        (sha256
+         (base32 "1avv8cj0qfhpw4s36bjhg994rml35fs4ndz78xg1r14l4050ml3b"))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-lxml
+           python-psutil
+           python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-types-setuptools))
+    (propagated-inputs
+     (list python-mypy-extensions
+           python-pathspec
+           python-tomli
+           python-typing-extensions)))))
+
 (define-public python-nbmake
   (package
     (name "python-nbmake")
