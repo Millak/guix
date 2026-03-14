@@ -4768,10 +4768,17 @@ temporary files and directories during tests.")
                (base32
                 "0w1m432q3y5v9lkak8yyxadak3z17bsp6afni97i4zjdgfz7niz2"))))
     (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This avoids requiring extra dependencies in Rakefile.
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ruby" "test/run-test.rb")))))))
     (propagated-inputs
      (list ruby-power-assert))
-    (native-inputs
-     (list bundler ruby-packnga ruby-yard))
     (synopsis "Unit testing framework for Ruby")
     (description "@code{Test::Unit} is unit testing framework for Ruby, based
 on xUnit principles.  These were originally designed by Kent Beck, creator of
