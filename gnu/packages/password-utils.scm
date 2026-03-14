@@ -137,6 +137,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages wm)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
@@ -873,7 +874,8 @@ command-line programs (@command{pwqcheck}, @command{pwqfilter}, and
                             (string-append #$output "/share/man/man1")))))))
     (build-system pyproject-build-system)
     (inputs
-     (list bash-minimal gtk gobject-introspection python-xdo python-gpg python-pygobject))
+     (list bash-minimal gtk gobject-introspection python-i3ipc python-xdo
+           python-gpg python-pygobject))
     (propagated-inputs
      (list xclip))
     (native-inputs
