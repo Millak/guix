@@ -988,13 +988,13 @@ lets developers use the functionality of Proj in their own software.")
 (define-public python-obspy
   (package
     (name "python-obspy")
-    (version "1.4.2")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "obspy" version))
        (sha256
-        (base32 "0z1rf1m8dlcwrrc6bwncc6mgdph7vybg0ldm6xwhbgijv9ya34yx"))))
+        (base32 "0vk6mw06vmx9fhhykk80ndw1pp8821nzifrmdjd7igkdc652s848"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1007,8 +1007,7 @@ lets developers use the functionality of Proj in their own software.")
     (native-inputs
      (list python-packaging
            python-pyproj
-           python-pytest
-           python-wheel))
+           python-pytest))
     (propagated-inputs
      (list python-decorator
            python-lxml
