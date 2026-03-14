@@ -41231,7 +41231,7 @@ notebooks.")
       ;; mypy_function_wrapper_fn_t6.py
       #~(list "--deselect=tests/conftest.py::mypy_function_wrapper_fn_t6")))
     (native-inputs
-     (list python-mypy  ;hard dependencies in tests
+     (list python-mypy-for-tests  ;hard dependencies in tests
            python-pytest
            python-setuptools))
     (home-page "https://github.com/GrahamDumpleton/wrapt")
