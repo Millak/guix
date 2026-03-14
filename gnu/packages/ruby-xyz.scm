@@ -4947,7 +4947,7 @@ HTML, and PDF through LaTeX.")
                                  ,(package-version ruby-test-unit)
                                  "/lib\"")))))))))
     (native-inputs
-     (list bundler ruby-test-unit/minimal))
+     (list bundler ruby-test-unit))
     (synopsis "Ruby library adding metaclass method to all objects")
     (description
      "Metaclass is a Ruby library adding a @code{metaclass} method to all Ruby
