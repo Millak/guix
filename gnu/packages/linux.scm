@@ -81,7 +81,7 @@
 ;;; Copyright © 2024 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 ;;; Copyright © 2025 Mathieu Laparie <mlaparie@disr.it>
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
@@ -11623,7 +11623,7 @@ tools for managing PipeWire.")
 (define-public ell
   (package
     (name "ell")
-    (version "0.79")
+    (version "0.83")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11632,7 +11632,7 @@ tools for managing PipeWire.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0l8pbgnza58ivknzl3nd6y46mfminhnb3iwq82msi6g282wv7np4"))
+                "1ywq84jgvf7f86srqwpq31w2kzdp875fx039x5g4lx486plgf526"))
               (modules '((guix build utils)))
               (snippet
                #~(begin
