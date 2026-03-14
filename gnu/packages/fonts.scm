@@ -1283,6 +1283,31 @@ ko (Korean) locales for @code{fontconfig}.")
     ;; GPLv2 with font embedding exception.
     (license license:gpl2)))
 
+(define-public font-raleway
+  (package
+    (name "font-raleway")
+    (version "4.101")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/theleagueof/raleway"
+                                  "/releases/download/"
+                                  version "/Raleway-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1sykwr7s7rhny1m2wv8mdn826mwkigr9nqplg4z25d0q4k9p0c2j"))))
+    (build-system font-build-system)
+    (outputs '("out" "ttf" "woff"))
+    (arguments
+     '(#:license-file-regexp "^(OFL.*|README)\\.md$"))
+    (home-page "https://github.com/theleagueof/raleway")
+    (synopsis "Sans-Serif typeface family")
+    (description
+     "Raleway is a display face that features both old style and lining
+numerals, standard and discretionary ligatures, a pretty complete set of
+diacritics, as well as a stylistic alternate inspired by more geometric
+sans-serif typefaces than its neo-grotesque inspired default character set.")
+    (license license:silofl1.1)))
+
 (define-public font-wqy-microhei
   (package
     (name "font-wqy-microhei")
