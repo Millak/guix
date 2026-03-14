@@ -50,6 +50,7 @@
   #:use-module (guix diagnostics)
   #:use-module (guix store)
   #:use-module (guix i18n)
+  #:autoload   (guix sets) (setq set-insert set-contains?)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-9)
@@ -91,6 +92,8 @@
             channel-instance-channel
             channel-instance-commit
             channel-instance-checkout
+            channel-instance-dependencies
+            (resolve-dependencies . channel-instance-dependency-resolver)
 
             authenticate-channel
             latest-channel-instances
@@ -791,9 +794,24 @@ during this process."
                      #:built-in-builders
                      built-in-builders))
 
+(define (closure node edge)
+  "Return the closure of NODE following EDGE, a one-argument procedure, but
+not NODE itself."
+  (let loop ((nodes (edge node))
+             (visited (setq))
+             (result '()))
+    (match nodes
+      (() result)
+      ((head . tail)
+       (if (set-contains? visited head)
+           (loop tail visited result)
+           (loop (append (edge head) tail)
+                 (set-insert head visited)
+                 (cons head result)))))))
+
 (define (resolve-dependencies instances)
   "Return a procedure that, given one of the elements of INSTANCES, returns
-list of instances it depends on."
+list of instances it depends on, recursively."
   (define channel-instance-name
     (compose channel-name channel-instance-channel))
 
@@ -817,7 +835,13 @@ list of instances it depends on."
           instances))
 
   (lambda (instance)
-    (vhash-foldq* cons '() instance edges)))
+    ;; Return both direct and indirect dependencies of INSTANCE.  That way, if
+    ;; INSTANCE uses a module of one of its direct dependencies, which in turn
+    ;; uses a module of an indirect dependency, INSTANCE will has access to
+    ;; the module of that indirect dependency.
+    (closure instance
+             (lambda (instance)
+               (vhash-foldq* cons '() instance edges)))))
 
 (define* (channel-instance-derivations instances #:key system
                                        built-in-builders)

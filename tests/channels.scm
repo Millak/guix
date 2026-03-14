@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019-2020, 2022, 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2020, 2022, 2024, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -277,6 +277,61 @@
             (latest-channel-instances store (list old)
                                       #:current-channels (list new)
                                       #:validate-pull validate-pull)))))))
+
+(test-equal "channel-instance-dependency-resolver"
+  '((c => (a b)) (b => (a)) (a => ()))
+  ;; Check that channel dependencies propagate.  Here we create three channels
+  ;; that depend on one another: c depends on b, which depends on a.  When
+  ;; resolving dependencies for c, we must get both a and b, such that
+  ;; (use-modules (b)) from channel c finds (a) when building the derivation
+  ;; of channel c.  See <https://issues.guix.gnu.org/68797>.
+  (let ((call-with-channel
+         (lambda (name dependencies channels proc)
+           (with-temporary-git-repository directory
+               `((add ,(string-append (symbol->string name) ".scm")
+                      ,(object->string
+                        `(define-module (,name)
+                           ,@(append-map (lambda (dependency)
+                                           `(#:use-module (,dependency)))
+                                         dependencies))))
+                 (add ".guix-channel"
+                      ,(object->string
+                        `(channel
+                           (version 0)
+                           (dependencies
+                            ,@(map (lambda (dependency)
+                                     `(channel
+                                        (name ,dependency)
+                                        (url "http://example.org")))
+                                   dependencies)))))
+                 (commit "Initial commit."))
+             (proc (cons (channel
+                           (name name)
+                           (url directory))
+                         channels))))))
+    (define-syntax with-channels
+      (syntax-rules (&initialized)
+        ((_ &initialized binding (name dependencies) rest ... exp)
+         (call-with-channel 'name dependencies binding
+                            (lambda (binding)
+                              (with-channels &initialized binding
+                                             rest ... exp))))
+        ((_ &initialized binding exp) exp)
+        ((_ binding rest ...)
+         (let ((binding '()))
+           (with-channels &initialized binding rest ...)))))
+
+    (with-channels
+     channels (a '()) (b '(a)) (c '(b))
+     (with-store store
+       (let* ((instances (latest-channel-instances store channels))
+              (resolve (channel-instance-dependency-resolver instances)))
+         (map (lambda (instance)
+                (list (channel-name (channel-instance-channel instance))
+                      '=>
+                      (map (compose channel-name channel-instance-channel)
+                           (resolve instance))))
+              instances))))))
 
 (test-assert "channel-instances->manifest"
   ;; Compute the manifest for a graph of instances and make sure we get a
