@@ -440,15 +440,12 @@ the namespace @code{/nbclassic/}.")
            python-tornado
            python-traitlets))
     (native-inputs
-     (list python-coverage
-           python-jupyter-server
+     (list python-jupyter-server
            python-nbval
            python-pytest
-           python-pytest-cov
            python-requests
            python-requests-unixsocket2
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://jupyter.org/")
     (synopsis "Web-based notebook environment for interactive computing")
     (description
