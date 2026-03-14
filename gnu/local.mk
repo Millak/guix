@@ -213,6 +213,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/connman.scm			\
   %D%/packages/containers.scm			\
   %D%/packages/convmv.scm			\
+  %D%/packages/codex.scm				\
   %D%/packages/coq.scm				\
   %D%/packages/cpio.scm				\
   %D%/packages/cpp.scm 				\
