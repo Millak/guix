@@ -17476,7 +17476,7 @@ refactoring library.")
 (define-public python-gorilla
   (package
     (name "python-gorilla")
-    (version "0.3.0")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -17485,7 +17485,7 @@ refactoring library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hm5ynswhz6i763s6cjlh8lv5ai0f3x17mjvlihqs8idlk4vbrn0"))))
+        (base32 "1j1ajnav99nlggqcpcpzg6hny3wgpsy4i8f1s9drx003m9ma2j7l"))))
     (build-system pyproject-build-system)
     (arguments (list #:test-backend #~'unittest))
     (native-inputs (list python-setuptools))
