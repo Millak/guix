@@ -310,19 +310,21 @@ prompt the user with the option to go with insecure DNS only.")
     (inputs
      (list dbus))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'install 'install-dbus
-           (lambda _
-             (install-file "dbus/dnsmasq.conf"
-                           (string-append %output "/etc/dbus-1/system.d")))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'install 'install-dbus
+            (lambda _
+              (install-file "dbus/dnsmasq.conf"
+                            (string-append #$output "/etc/dbus-1/system.d")))))
 
-       #:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-                          (string-append "CC=" ,(cc-for-target))
-                          (string-append "PKG_CONFIG=" ,(pkg-config-for-target))
-                          "COPTS=\"-DHAVE_DBUS\"")
-       #:tests? #f))                    ; no ‘check’ target
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
+              "COPTS=\"-DHAVE_DBUS\"")
+      #:tests? #f))                    ; no ‘check’ target
     (home-page "https://www.thekelleys.org.uk/dnsmasq/doc.html")
     (synopsis "Small caching DNS proxy and DHCP/TFTP server")
     (description
