@@ -4787,15 +4787,9 @@ It allows writing tests, checking results and automated testing in Ruby.")
     (home-page "https://test-unit.github.io/")
     (license (list license:psfl license:ruby))))
 
-(define-public ruby-test-unit/minimal
-  (hidden-package
-   (package
-     (inherit ruby-test-unit)
-     (arguments
-      (ensure-keyword-arguments
-       (package-arguments ruby-test-unit)
-       (list #:tests? #f)))
-     (native-inputs '()))))
+;; XXX: Deprecated on <2026-04-03>.
+(define-deprecated/public-alias ruby-test-unit/minimal
+  ruby-test-unit)
 
 (define-public ruby-test-unit-ruby-core
   (package
