@@ -94,6 +94,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
+  #:use-module (guix svn-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -2206,40 +2207,58 @@ and not by the available RAM.")
 (define-public reduce
   (package
     (name "reduce")
-    (version "2024-08-12")
+    (version "2026-03-11")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://sourceforge/reduce-algebra/snapshot_"
-                    version "/Reduce-svn6860-src.tar.gz"))
+              (method svn-fetch)
+              (uri (svn-reference
+                     (url "https://svn.code.sf.net/p/reduce-algebra/code/trunk")
+                     (revision 7333)))
+              (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "13bij9d4dj96vd5di59skz77s2fihj7awmkx403fvh9rd04ly25z"))
+                "04n7z6abfpqxgmdc1vpv2yy4qccvyxdp6klld94wr740dv8r49l2"))
               (modules '((guix build utils)))
               (patches (search-patches "reduce-unbundle-libffi.patch"))
-              ;; remove binaries and unnecessary parts
-              ;; to ensure we build from source files only
               (snippet '(map delete-file-recursively
-                         (append (find-files "csl/generated-c" "\\.img$")
-                          '("psl" "vsl"
-                            "jlisp"
-                            "jslisp"
-                            "libedit"
-                            "macbuild"
-                            "MacPorts"
-                            "mac-universal"
-                            "reduce2"
-                            "winbuild64"
-                            "common-lisp"
-                            "contrib"
-                            "generic/qreduce"
-                            "web/htdocs/images/Thumbs.db")
-                          (find-files "csl"
-                           "^(embedded|new-embedded|winbuild|support-packages)$"
-                           #:directories? #t)
-                          (find-files "libraries"
-                           "^(original|wineditline|libffi|libffi-for-mac)$"
-                           #:directories? #t))))))
+                             (append (find-files "csl/generated-c" "\\.img$")
+                                     '("common-lisp"
+                                       "contrib"
+                                       "csl/embedded"
+                                       "csl/new-embedded"
+                                       "csl/support-packages"
+                                       "csl/winbuild"
+                                       "generic/breduce"
+                                       "generic/casefold"
+                                       "generic/emacs"
+                                       "generic/qreduce"
+                                       "generic/rbench"
+                                       "generic/rlsmt"
+                                       "generic/texmacs"
+                                       "jlisp"
+                                       "jslisp"
+                                       "libedit"
+                                       "libraries/asmjit"
+                                       "libraries/C-Quadratic-Sieve"
+                                       "libraries/core-math"
+                                       ;; "libraries/crlibm"
+                                       ;; "libraries/libedit-20140620-3.1"
+                                       "libraries/libedit-20210216-3.1"
+                                       "libraries/libffi"
+                                       "libraries/original"
+                                       ;; "libraries/SoftFloat-3a"
+                                       "libraries/SoftFloat-3e"
+                                       "libraries/webview"
+                                       "libraries/wineditline"
+                                       "macbuild"
+                                       "MacPorts"
+                                       "mac-universal"
+                                       "psl"
+                                       "reduce2"
+                                       "reduce2-2025"
+                                       "vsl"
+                                       "web"
+                                       "winbuild64"
+                                       "windows-config-cache"))))))
     (build-system gnu-build-system)
     (arguments
      (list #:parallel-build? #f
@@ -2261,6 +2280,13 @@ and not by the available RAM.")
                (add-before 'patch-source-shebangs 'autogen
                  (lambda _
                    (invoke "sh" "autogen.sh")))
+               (add-after 'autogen 'fix-version
+                 (lambda _
+                   (substitute* "csl/cslbase/version.h"
+                     (("(#define VERSION_ID )\"\\$Id\\$\"" all def)
+                      (format #f
+                              "~a \"$Id: version.h ~a ~a 00:00:00Z somebody $\""
+                              def 7333 #$version)))))
                (add-after 'install 'fix-install
                  (lambda _
                    (copy-file "bin/rfcsl"

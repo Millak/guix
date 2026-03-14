@@ -1,11 +1,11 @@
-This patch unbundles libffi.
+Copyright (C) 2025-2026 Nigko Yerden <nigko.yerden@gmail.com>
 
 Index: autogen.sh
 ===================================================================
 diff --git a/autogen.sh b/autogen.sh
---- a/autogen.sh	(revision 6860)
+--- a/autogen.sh	(revision 7333)
 +++ b/autogen.sh	(working copy)
-@@ -142,18 +142,6 @@
+@@ -143,18 +143,6 @@
    ;;
  *--with-csl* | *--with-both*)
    L="$L ./csl ./csl/cslbase ./csl/cslbase-nothrow ./libraries/SoftFloat-3a/source"
@@ -27,23 +27,19 @@ diff --git a/autogen.sh b/autogen.sh
 Index: configure.ac
 ===================================================================
 diff --git a/configure.ac b/configure.ac
---- a/configure.ac	(revision 6860)
+--- a/configure.ac	(revision 7333)
 +++ b/configure.ac	(working copy)
-@@ -1389,37 +1389,6 @@
+@@ -1542,33 +1542,6 @@
    cd "$builddir"
  fi
  
--AC_MSG_NOTICE([About to configure libffi])
--mkdir -p libffi
--if test `uname` = "Darwin" && test "$enable_universal" != "no"
+-# On the Macintosh I will use a version of libffi provided either by
+-# macports or by homebrew, so I do not want to configure to build a
+-# private copy.
+-if test `uname` != "Darwin" 
 -then
--# This is a messy script that arranges to build a universal version of
--# the library on MacOS. It does this by building arm64 and an x86_64
--# separately and then merging the resulting libraries.
--  sed "s+@srcdir@+$abssrcdir+" \
--     < $abssrcdir/libraries/libffi-for-mac/Makefile \
--     > libffi/Makefile
--else
+-  AC_MSG_NOTICE([About to configure libffi])
+-  mkdir -p libffi
 -  cd libffi
 -  setpasscc
 -  doconfig="$SHELL $abssrcdir/libraries/libffi/configure -C $filtered \
@@ -70,11 +66,11 @@ diff --git a/configure.ac b/configure.ac
 Index: csl/cslbase/Makefile.am
 ===================================================================
 diff --git a/csl/cslbase/Makefile.am b/csl/cslbase/Makefile.am
---- a/csl/cslbase/Makefile.am	(revision 6860)
+--- a/csl/cslbase/Makefile.am	(revision 7333)
 +++ b/csl/cslbase/Makefile.am	(working copy)
-@@ -807,35 +807,6 @@
+@@ -897,38 +897,6 @@
  
- endif !crlibm
+ else !mac_framework
  
 -LIBFFIDEPS=../lib/libffi.a ../include/ffi.h
 -
@@ -82,6 +78,7 @@ diff --git a/csl/cslbase/Makefile.am b/csl/cslbase/Makefile.am
 -FFIINC = -I../include
 -AM_CPPFLAGS     += $(FFINC)
 -reduce_CPPFLAGS += $(FFINC)
+-reduce_web_CPPFLAGS += $(FFINC)
 -bootstrapreduce_CPPFLAGS += $(FFINC)
 -csl_CPPFLAGS    += $(FFINC)
 -flatcsl_CPPFLAGS    += $(FFINC)
@@ -90,36 +87,37 @@ diff --git a/csl/cslbase/Makefile.am b/csl/cslbase/Makefile.am
 -# instance, "make csl.o" in a clean tree and libffi building will get
 -# triggered.
 -
--
 -csl_LDADD += ../lib/libffi.a
 -flatcsl_LDADD += ../lib/libffi.a
 -bootstrapreduce_LDADD += ../lib/libffi.a
 -reduce_LDADD += ../lib/libffi.a
+-reduce_web_LDADD += ../lib/libffi.a
 -
 -csl_DEPENDENCIES += $(LIBFFIDEPS)
 -flatcsl_DEPENDENCIES += $(LIBFFIDEPS)
 -bootstrapreduce_DEPENDENCIES += $(LIBFFIDEPS)
 -reduce_DEPENDENCIES += $(LIBFFIDEPS)
+-reduce_web_DEPENDENCIES += $(LIBFFIDEPS)
 -
 -$(LIBFFIDEPS):
 -	@printf "About to build libffi for %s ($@)\n" `pwd`
+-	printf "\n\n=== About to build libffi library\n\n";
 -	-$(TRACE)@$(MAKE) -C ../libffi install
 -
- SOFTFLOATDEPS=../lib/libsoftfloat.a ../include/softfloat.h
+ endif !mac_framework
  
- SOFTFLOATDEP = ../include/softfloat.h
+ SOFTFLOATDEPS=../lib/libsoftfloat.a ../include/softfloat.h
 Index: csl/cslbase/configure.ac
 ===================================================================
 diff --git a/csl/cslbase/configure.ac b/csl/cslbase/configure.ac
---- a/csl/cslbase/configure.ac	(revision 6860)
+--- a/csl/cslbase/configure.ac	(revision 7333)
 +++ b/csl/cslbase/configure.ac	(working copy)
-@@ -146,8 +146,8 @@
+@@ -146,6 +146,8 @@
    AC_DEFINE(WITHOUT_FFI, [1], [remove the foreign function support])
  fi
  
 +AC_SEARCH_LIBS([ffi_call], [ffi])
- 
--
++
  # What host am I on?
  AC_CANONICAL_HOST()
  
