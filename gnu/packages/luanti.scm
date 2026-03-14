@@ -101,7 +101,8 @@
       #:configure-flags
       #~(list "-DBUILD_DOCUMENTATION=OFF" ;not installed anyway
               "-DENABLE_LTO=ON"
-              "-DENABLE_UPDATE_CHECKER=FALSE")
+              "-DENABLE_UPDATE_CHECKER=FALSE"
+              "-DINSTALL_DEVTEST=TRUE")
       #:phases
       #~(modify-phases %standard-phases
           (delete 'check)
@@ -112,9 +113,15 @@
               (when tests?
                 (setenv "HOME" "/tmp")
                 (setenv "LUANTI_GAME_PATH"
-                        (string-append (getcwd) "/../source/games"))
+                        (string-append #$output "/share/luanti/games"))
                 (invoke "../source/bin/luanti" "--run-unittests")
-                (invoke "../source/util/test_multiplayer.sh")))))))
+                (invoke "../source/util/test_multiplayer.sh"))))
+          (add-after 'check 'move-devtest
+            (lambda _
+              (let ((source (string-append #$output "/share/luanti/games/devtest"))
+                    (target (string-append #$output:devtest "/share/luanti/games/devtest")))
+                (mkdir-p (dirname target))
+                (rename-file source target)))))))
     (native-search-paths
      (list (search-path-specification
             (variable "LUANTI_GAME_PATH")
@@ -140,7 +147,7 @@
                   sdl2
                   sqlite
                   `(,zstd "lib")))
-    (outputs '("out" "debug"))
+    (outputs '("out" "debug" "devtest"))
     (synopsis "Voxel game engine")
     (description
      "Luanti is a voxel game engine that supports modding and game creation
@@ -150,7 +157,8 @@ platform, users need to install games themselves (for example,
 @code{luanti-minetest-game}), either through Guix, the built-in interface or other
 sources.")
     (home-page "https://www.luanti.org/")
-    (license license:lgpl2.1+)))
+    (license license:lgpl2.1+)
+    (properties `((output-synopsis "devtest" "Developer test game")))))
 
 (define-public luanti-server
   (package
