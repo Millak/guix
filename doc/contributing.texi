@@ -398,10 +398,12 @@ make check SCM_LOG_DRIVER_FLAGS="--brief=no --show-duration=yes"
 @xref{Parallel Test Harness,,,automake,GNU Automake} for more
 information about the Automake Parallel Test Harness.
 
-Upon failure, please email @email{bug-guix@@gnu.org} and attach the
-@file{test-suite.log} file.  Please specify the Guix version being used
-as well as version numbers of the dependencies (@pxref{Requirements}) in
-your message.
+Upon failure, please see if there already exists an issue which
+describes your problem on @uref{https://codeberg.org/guix/guix/issues,
+Codeberg}, else create a new one and attach the @file{test-suite.log}
+file.  Please specify the Guix version being used as well as version
+numbers of the dependencies (@pxref{Requirements}) in your message by
+running @code{./pre-inst-env guix describe}.
 
 Guix also comes with a whole-system test suite that tests complete
 Guix System instances.  It can only run on systems where
@@ -439,8 +441,9 @@ there may be inconsistencies in the work tree from previous builds.  To
 resolve this, try running @command{make clean-go} followed by
 @command{make}.
 
-Again in case of test failures, please send @email{bug-guix@@gnu.org}
-all the details.
+Again in case of test failures, open an issue on
+@uref{https://codeberg.org/guix/guix/issues, Codeberg} with all the
+details.
 
 @node Running Guix Before It Is Installed
 @section Running Guix Before It Is Installed
