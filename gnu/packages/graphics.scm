@@ -1310,51 +1310,6 @@ basic geometries.")
         (base32 "0gfgzwm5s50caj5s6l7irgmlifpmypd0fnm6ckzli1fdziwjgdwi"))))
     (properties '((hidden? . #f)))))
 
-(define-public python-booleanoperations
-  (package
-    (name "python-booleanoperations")
-    (version "0.9.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/typemytype/booleanOperations")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0ahfgamyq1ndwbr9n8sdx8qhqc2195xnbahylgjpk877hbr2gxav"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; Some tests fail due to small differences in the expected result (see:
-      ;; <https://github.com/typemytype/booleanOperations/issues/69>).
-      #:test-flags
-      #~(list "-k"
-              (string-join
-               (list "not test_QTail_reversed_difference"
-                     "test_QTail_reversed_intersection"
-                     "test_QTail_reversed_union"
-                     "test_QTail_reversed_xor"
-                     "test_Q_difference"
-                     "test_Q_intersection"
-                     "test_Q_union"
-                     "test_Q_xor")
-               " and not "))))
-    (propagated-inputs (list python-fonttools-minimal python-pyclipper))
-    (native-inputs
-     (list python-defcon-bootstrap
-           python-fontpens-bootstrap
-           python-pytest
-           python-setuptools
-           python-setuptools-scm))
-    (home-page "https://github.com/typemytype/booleanOperations")
-    (synopsis "Boolean operations on paths")
-    (description
-     "Boolean operations on paths which uses a super fast
-@url{http://www.angusj.com/delphi/clipper.php, polygon clipper library by
-Angus Johnson}.")
-    (license license:expat)))
-
 (define-public pstoedit
   (package
     (name "pstoedit")
