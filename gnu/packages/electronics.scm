@@ -734,7 +734,7 @@ Simulator Trace} files.")
 (define-public horizon-eda
   (package
     (name "horizon-eda")
-    (version "2.7.0")
+    (version "2.7.2")
     ;; TODO: try to unbundle some of the 3rd parties.
     ;; We have packages for nlohmann-json, range-v3, catch2 and clipper.
     (source
@@ -745,7 +745,7 @@ Simulator Trace} files.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sq1d2x9wq168cz91l2rd93gnlq5scknb45bi1njqqcw3jjjhsk3"))))
+        (base32 "16q22yf407820430cva8i2b3dcmwpjdsbx0wlarj8v2mj5ixs932"))))
     (build-system meson-build-system)
     (arguments
      (list
