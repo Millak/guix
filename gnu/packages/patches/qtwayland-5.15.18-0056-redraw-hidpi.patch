@@ -1,0 +1,35 @@
+From 30ed491e1ea190591260f1b73b9dad2a5926e113 Mon Sep 17 00:00:00 2001
+From: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: Mon, 16 Feb 2026 00:00:00 +0100
+Subject: [PATCH] Client: Force full repaint after output scale change
+See: <https://invent.kde.org/qt/qt/qtwayland/-/merge_requests/89>
+
+In handleScreensChanged(), after ensureSize(), call
+requestUpdate() and sendExposeEvent() for the entire window.
+This forces a full repaint at the new scale.
+---
+ src/client/qwaylandwindow.cpp | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/src/client/qwaylandwindow.cpp b/src/client/qwaylandwindow.cpp
+index 7c338d27a..a8d5fe2e4 100644
+--- a/src/client/qwaylandwindow.cpp
++++ b/src/client/qwaylandwindow.cpp
+@@ -1075,6 +1075,14 @@ void QWaylandWindow::handleScreensChanged()
+         if (mSurface && mDisplay->compositorVersion() >= 3)
+             mSurface->set_buffer_scale(mScale);
+         ensureSize();
++        // The buffer was recreated at the new scale but no widgets
++        // are marked dirty, so it is uninitialized (black).  Force a
++        // full repaint by requesting an update and sending an expose
++        // event for the entire window.
++        if (isExposed()) {
++            window()->requestUpdate();
++            sendExposeEvent(QRect(QPoint(), geometry().size()));
++        }
+     }
+ }
+ 
+-- 
+GitLab
+

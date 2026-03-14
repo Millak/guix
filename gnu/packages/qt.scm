@@ -2290,7 +2290,8 @@ record media, and manage a collection of media content.")
                         "qtwayland-5.15.18-0052-tests-fix-tst_xdgshell-minmaxsize.patch"
                         "qtwayland-5.15.18-0053-client-remove-some-surface-commits.patch"
                         "qtwayland-5.15.18-0054-client-avoid-locking-resizing-in-qwaylandshmbackings.patch"
-                        "qtwayland-5.15.18-0055-bradient-use-qwaylandwindow-actual-window-title.patch"))
+                        "qtwayland-5.15.18-0055-bradient-use-qwaylandwindow-actual-window-title.patch"
+                        "qtwayland-5.15.18-0056-redraw-hidpi.patch"))
               (sha256
                (base32
                 "07gqgd6ixqnsvc9r1c9y92vaxwj11ijrqvnxib8sv6xwhcmhvw43"))))
