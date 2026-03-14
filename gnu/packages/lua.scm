@@ -1977,3 +1977,53 @@ way, following established lisp conventions.")
  language.")
     (home-page "https://git.sr.ht/~xerool/fennel-ls")
     (license license:expat)))
+
+(define (make-lua-lunitx name lua)
+  (package
+    (name name)
+    (version "0.8.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     ;; Upstream repository name is "lunit", but it provides
+                     ;; both lunit and lunitx modules.
+                     (url "https://github.com/dcurrie/lunit")
+                     (commit version)))
+              (file-name (git-file-name "lua-lunitx" version))
+              (sha256
+               (base32
+                "0y9szbd2g8xk63s8781bjmw8sv3s5m6rnv47kh1sk21ml3mxi69y"))))
+    (build-system trivial-build-system)
+    (arguments
+      (list
+       #:modules '((guix build utils))
+       #:builder
+       #~(begin
+            (use-modules (guix build utils))
+            (let* ((lua (string-append #$lua "/bin/lua"))
+                   (lua-version #$(version-major+minor (package-version lua)))
+                   (lua-dir (string-append #$output "/share/lua/" lua-version)))
+              (when #$(not (%current-target-system))
+                (with-directory-excursion (string-append #$source "/lua")
+                  (invoke lua "../test/selftest.lua")))
+              (mkdir-p lua-dir)
+              (copy-recursively (string-append #$source "/lua") lua-dir)))))
+    (native-inputs (list lua))
+    (home-page "https://github.com/dcurrie/lunit")
+    (synopsis "Unit testing framework for Lua")
+    (description "Lunit is a unit testing framework for Lua.  It includes
+lunitx extensions adding Lua 5.2 compatibility via @code{lunit.module} and
+the @code{lunitx} module for running tests automatically at program exit.")
+    (license license:expat)))
+
+(define-public lua-lunitx
+  (make-lua-lunitx "lua-lunitx" lua))
+
+(define-public lua5.1-lunitx
+  (make-lua-lunitx "lua5.1-lunitx" lua-5.1))
+
+(define-public lua5.2-lunitx
+  (make-lua-lunitx "lua5.2-lunitx" lua-5.2))
+
+(define-public lua5.4-lunitx
+  (make-lua-lunitx "lua5.4-lunitx" lua-5.4))
