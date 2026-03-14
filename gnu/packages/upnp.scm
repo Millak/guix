@@ -121,18 +121,8 @@ over IRC, instant messaging, network games, and most server software.")
        (sha256
         (base32 "1kv6dpj93gckvwvgzxl4vdqpwnicb0c8p0xw53m2gh5naiw44ys4"))))))
 
-(define-public miniupnpc-next
-  (package
-    (inherit miniupnpc)
-    (name "miniupnpc-next")
-    (version "2.3.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://miniupnp.tuxfamily.org/files/"
-                           "miniupnpc-" version ".tar.gz"))
-       (sha256
-        (base32 "06mx6kk42px0f08k5pazmjawbj19gnpg3pwxrj4c1mjac7x0lanm"))))))
+;; 2026-03-14
+(define-deprecated-package miniupnpc-next miniupnpc)
 
 (define-public libupnp
   (package
