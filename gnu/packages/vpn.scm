@@ -611,9 +611,8 @@ file for more details.")
                    ;; As the manpage is not generated. Instead install it from
                    ;; the input vpnc package.
                    (when target
-                     (let* ((vpnc (assoc-ref native-inputs "vpnc"))
-                            (man (string-append vpnc
-                                                "/share/man/man8/vpnc.8.gz"))
+                     (let* ((man (search-input-file
+                                  native-inputs "/share/man/man8/vpnc.8.zst"))
                             (output (string-append #$output "/share/man/man8")))
                        (install-file man output))))))))
    (synopsis "Client for Cisco VPN concentrators")
