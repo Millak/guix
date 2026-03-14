@@ -69,7 +69,7 @@
 ;;; Copyright © 2025 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025, 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Jared Klingenberger <jkling@noreply.codeberg.org>
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;;
@@ -4474,7 +4474,7 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
 (define-public iwd
   (package
     (name "iwd")
-    (version "3.10")
+    (version "3.12")
     (source
      (origin
        (method git-fetch)
@@ -4484,7 +4484,7 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1dxzz99fwyf1ssjgx57z4nik1xk4nr2ryywq8mpzbvxsdhs82fmb"))))
+         "1c05ayakg8kf9bxqf5857lkflk4mrzllmhz01cpyfpcx5pz71ipg"))))
     (build-system gnu-build-system)
     (inputs
      (list dbus
