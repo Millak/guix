@@ -2704,7 +2704,7 @@ validating international phone numbers.")
 (define-public chatty
   (package
     (name "chatty")
-    (version "0.8.8")
+    (version "0.8.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2713,35 +2713,36 @@ validating international phone numbers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19x0wyp5285ysxka3hkmzsjx219a3abz8gdfxz3m4i6bi7inbdx4"))))
+                "0hk222c3rx8mfp5mfd097w6hgpm79rja56lljgb2s8mg2j0nzfjw"))))
     (build-system meson-build-system)
     (arguments
-     '(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "meson.build"
-               (("glib_compile_schemas: true")
-                "glib_compile_schemas: false")
-               (("gtk_update_icon_cache: true")
-                "gtk_update_icon_cache: false"))))
-         (add-after 'unpack 'disable-problematic-tests
-           (lambda _
-             (substitute* "tests/meson.build"
-               ;; This test fails with "libEGL warning: DRI3 error: Could not
-               ;; get DRI3 device".
-               ((".*'message-row',.*") ""))))
-         (add-before 'check 'pre-check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; One test requires a running Xorg server.  Start one.
-               (system "Xvfb :1 &")
-               (setenv "DISPLAY" ":1")
-               ;; HOME must be writable for writing configuration files.
-               (setenv "HOME" "/tmp")
-               (setenv "XDG_RUNTIME_DIR" "/tmp")))))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "meson.build"
+                (("glib_compile_schemas: true")
+                 "glib_compile_schemas: false")
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))))
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              (substitute* "tests/meson.build"
+                ;; This test fails with "libEGL warning: DRI3 error: Could not
+                ;; get DRI3 device".
+                ((".*'message-row',.*") ""))))
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; One test requires a running Xorg server.  Start one.
+                (system "Xvfb :1 &")
+                (setenv "DISPLAY" ":1")
+                ;; HOME must be writable for writing configuration files.
+                (setenv "HOME" "/tmp")
+                (setenv "XDG_RUNTIME_DIR" "/tmp")))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
