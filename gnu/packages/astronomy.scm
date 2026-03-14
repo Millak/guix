@@ -11807,7 +11807,7 @@ objects.")
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
-           #~(list "CFLAGS=-fcommon")))
+           #~(list "CFLAGS=-O2 -g -fcommon")))
     (inputs
      (list libtiff zlib libjpeg-turbo))
     (home-page "https://www.astromatic.net/software/stiff/")
