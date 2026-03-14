@@ -450,6 +450,13 @@ integration tests...\n")
                    "dmd/compiler/test/fail_compilation/sarif_test.d"
                    "dmd/compiler/test/fail_compilation/sarifmultiple_test.d"))
 
+                ;; tries to debug 64bit executable
+                ;; not in executable format: file format not recognized
+                #$@(if (target-32bit?)
+                       '((delete-file
+                          "dmd/compiler/test/runnable/gdb_slice_debuginfo_64.d"))
+                       '())
+
                 ;; Locations in stack traces are broken for some reason,
                 ;; causing these tests to fail.
                 ;; XXX: Report upstream.
