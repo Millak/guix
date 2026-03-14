@@ -3638,15 +3638,15 @@ by rclone usable with git-annex.")
 (define-public fossil
   (package
     (name "fossil")
-    (version "2.27")
+    (version "2.28")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-	     "https://fossil-scm.org/home/tarball/version-" version
-	     "/fossil-" version ".tar.gz"))
+             "https://fossil-scm.org/home/tarball/version-" version
+             "/fossil-" version ".tar.gz"))
        (sha256
-        (base32 "0mhlvsfqjc46jbr5gf7r1d1xz0hg7w8swpz5gb12y3s14f1lx1fm"))))
+        (base32 "1lw3ridv2id4hf5ksrpjwf7fv65wzs81wli4ksc0qr4h3xfyi66b"))))
     (build-system gnu-build-system)
     (native-inputs
      (list tcl                          ;for configuration only
@@ -3678,11 +3678,7 @@ by rclone usable with git-annex.")
                   (add-before 'check 'test-setup
                     (lambda _
                       (setenv "USER" "guix")
-                      (setenv "TZ" "UTC")))
-                  (add-after 'test-setup 'disable-broken-test
-                    (lambda _
-                      ;; https://fossil-scm.org/home/info/4619d2efab946460
-                      (delete-file "test/settings.test"))))))
+                      (setenv "TZ" "UTC"))))))
     (home-page "https://fossil-scm.org")
     (synopsis "Software configuration management system")
     (description
