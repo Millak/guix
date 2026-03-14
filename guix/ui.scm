@@ -1378,7 +1378,9 @@ separator between subsequent columns."
                     (if old-versions
                         (map (lambda (old new)
                                (if (string=? old new)
-                                   (G_ "(dependencies or package changed)")
+                                   (string-append
+                                    old " "
+                                    (G_ "(dependencies or package changed)"))
                                    (string-append old " " → " " new)))
                              old-versions versions)
                         versions))
