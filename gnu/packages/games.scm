@@ -13433,7 +13433,9 @@ virtual reality devices.")
      (list
       #:configure-flags
       #~(list "-DUSE_TESTS=ON" "-DOPENGL_BACKEND=OpenGL")))
-    (native-inputs (list python glibc-locales googletest))
+    (native-inputs (list python
+                         (libc-utf8-locales-for-target (%current-system))
+                         googletest))
     (inputs (list freetype
                   libiconv
                   libpng
