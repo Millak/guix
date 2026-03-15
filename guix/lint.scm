@@ -634,7 +634,8 @@ of a package, and INPUT-NAMES, a list of package specifications such as
                       '("python-pip"
                         "python-pre-commit"
                         "tzdata"
-                        "nss-certs")
+                        "nss-certs"
+                        "glibc-locales")
                       (map (cut string-append "python-" <>)
                            pypi-ignored-inputs))))
     (map (lambda (input)
