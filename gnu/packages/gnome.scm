@@ -5617,7 +5617,7 @@ permission from user.")
                       (search-input-directory inputs "lib/locale")))))))
     (native-inputs
      (list `(,glib "bin")               ;for glib-mkenums
-           glibc-locales                ;for tests
+           (libc-utf8-locales-for-target (%current-system))  ;for tests
            gettext-minimal
            gobject-introspection
            gtk-doc/stable
