@@ -4918,77 +4918,79 @@ or unexpected behavior inside an elisp configuration file (typically
 
 (define-public emacs-w3m
   ;; Emacs-w3m follows a "rolling release" model.
-  (package
-    (name "emacs-w3m")
-    (version "20220508.2259")
-    (source (origin
-              ;; "Officially" this is still on cvs.namazu.org, but that repo
-              ;; seems to be unreachable.
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/emacs-w3m/emacs-w3m.git")
-                    (commit "bbcebbe20ebfa807a3e4beaadf40ce6f4be213e7")))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0y892n8jaxzyxi1fgyklc7zfh57ibp4yyywmif69dm28hykj6lmz"))))
-    (build-system gnu-build-system)
-    (native-inputs (list autoconf texinfo emacs-minimal))
-    (inputs (list w3m imagemagick))
-    (arguments
-     (list
-      #:modules '((guix build gnu-build-system)
-                  ((guix build emacs-build-system) #:prefix emacs:)
-                  (guix build utils)
-                  (guix build emacs-utils))
-      #:imported-modules `(,@%default-gnu-imported-modules
-                           (guix build emacs-build-system)
-                           (guix build emacs-utils))
-      #:configure-flags
-      #~(list (string-append "--with-lispdir=" (emacs:elpa-directory #$output))
-              (string-append "--with-icondir="
-                             #$output "/share/images/emacs-w3m")
-              ;; Leave .el files uncompressed, otherwise GC can't
-              ;; identify run-time dependencies.  See
-              ;; <http://lists.gnu.org/archive/html/guix-devel/2015-12/msg00208.html>
-              "--without-compress-install")
-      #:tests? #f                       ; no check target
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'autoconf
-            (lambda _
-              (invoke "autoconf")))
-          (add-before 'configure 'support-emacs!
-            (lambda _
-              ;; For some reason 'AC_PATH_EMACS' thinks that 'Emacs 26' is
-              ;; unsupported.
-              (substitute* "configure"
-                (("EMACS_FLAVOR=unsupported") "EMACS_FLAVOR=emacs"))))
-          (add-before 'build 'patch-exec-paths
-            (lambda* (#:key inputs #:allow-other-keys)
-              (make-file-writable "w3m.el")
-              (emacs-substitute-variables "w3m.el"
-                ("w3m-command" (search-input-file inputs "/bin/w3m"))
-                ("w3m-touch-command" (search-input-file inputs "/bin/touch"))
-                ("w3m-icon-directory"
-                 (string-append #$output "/share/images/emacs-w3m")))
-              (make-file-writable "w3m-image.el")
-              (emacs-substitute-variables "w3m-image.el"
-                ("w3m-imagick-convert-program"
-                 (search-input-file inputs "/bin/convert"))
-                ("w3m-imagick-identify-program"
-                 (search-input-file inputs "/bin/identify")))))
-          (replace 'install
-            (lambda _
-              (invoke "make" "install" "install-icons")
-              (with-directory-excursion (emacs:elpa-directory #$output)
-                (for-each delete-file '("ChangeLog" "ChangeLog.1"))
-                (symlink "w3m-load.el" "w3m-autoloads.el")))))))
-    (home-page "http://emacs-w3m.namazu.org/")
-    (synopsis "Simple Web browser for Emacs based on w3m")
-    (description
-     "Emacs-w3m is an emacs interface for the w3m web browser.")
-    (license license:gpl2+)))
+  (let ((commit "ec18c21418bf7c1be159bd3cf7e79a370d4be1f3")
+        (revision "0"))
+    (package
+      (name "emacs-w3m")
+      (version (git-version "20251229" revision commit)) ;commit date
+      (source (origin
+                ;; "Officially" this is still on cvs.namazu.org, but that repo
+                ;; seems to be unreachable.
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/emacs-w3m/emacs-w3m.git")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "00rkvr6cpisma5r6g88bq0im7qh9l30fy8r4g4wgs1k53lai7k68"))))
+      (build-system gnu-build-system)
+      (native-inputs (list autoconf texinfo emacs-minimal))
+      (inputs (list w3m imagemagick))
+      (arguments
+       (list
+        #:modules '((guix build gnu-build-system)
+                    ((guix build emacs-build-system) #:prefix emacs:)
+                    (guix build utils)
+                    (guix build emacs-utils))
+        #:imported-modules `(,@%default-gnu-imported-modules
+                             (guix build emacs-build-system)
+                             (guix build emacs-utils))
+        #:configure-flags
+        #~(list (string-append "--with-lispdir=" (emacs:elpa-directory #$output))
+                (string-append "--with-icondir="
+                               #$output "/share/images/emacs-w3m")
+                ;; Leave .el files uncompressed, otherwise GC can't
+                ;; identify run-time dependencies.  See
+                ;; <http://lists.gnu.org/archive/html/guix-devel/2015-12/msg00208.html>
+                "--without-compress-install")
+        #:tests? #f                       ; no check target
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'autoconf
+              (lambda _
+                (invoke "autoconf")))
+            (add-before 'configure 'support-emacs!
+              (lambda _
+                ;; For some reason 'AC_PATH_EMACS' thinks that 'Emacs 26' is
+                ;; unsupported.
+                (substitute* "configure"
+                  (("EMACS_FLAVOR=unsupported") "EMACS_FLAVOR=emacs"))))
+            (add-before 'build 'patch-exec-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (make-file-writable "w3m.el")
+                (emacs-substitute-variables "w3m.el"
+                  ("w3m-command" (search-input-file inputs "/bin/w3m"))
+                  ("w3m-touch-command" (search-input-file inputs "/bin/touch"))
+                  ("w3m-icon-directory"
+                   (string-append #$output "/share/images/emacs-w3m")))
+                (make-file-writable "w3m-image.el")
+                (emacs-substitute-variables "w3m-image.el"
+                  ("w3m-imagick-convert-program"
+                   (search-input-file inputs "/bin/convert"))
+                  ("w3m-imagick-identify-program"
+                   (search-input-file inputs "/bin/identify")))))
+            (replace 'install
+              (lambda _
+                (invoke "make" "install" "install-icons")
+                (with-directory-excursion (emacs:elpa-directory #$output)
+                  (for-each delete-file '("ChangeLog" "ChangeLog.1"))
+                  (symlink "w3m-load.el" "w3m-autoloads.el")))))))
+      (home-page "http://emacs-w3m.namazu.org/")
+      (synopsis "Simple Web browser for Emacs based on w3m")
+      (description
+       "Emacs-w3m is an emacs interface for the w3m web browser.")
+      (license license:gpl2+))))
 
 (define-public emacs-wget
   (package
