@@ -591,6 +591,34 @@ tags, drag and drop support, tray icon, node icons, hyperlinks, pdf and html
 export, password protection and auto-saving.")
     (license license:gpl3+)))
 
+(define-public pueue
+  (package
+    (name "pueue")
+    (version "4.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Nukesor/pueue")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zbplfab4glj6f9rip4immca5vabyd132c4k4gch3hrmq7w39x7b"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:cargo-install-paths ''("pueue")
+      #:install-source? #f))
+    (inputs (cargo-inputs 'pueue))
+    (home-page "https://github.com/Nukesor/pueue")
+    (synopsis
+     "Task management for sequential and parallel execution of long-running tasks")
+    (description
+     "Pueue is a tool that processes a queue of shell commands.  On top of that,
+there are a lot of convenient features and abstractions like task groups, task
+scheduling and background process execution.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public wtime
   (package
     (name "wtime")
