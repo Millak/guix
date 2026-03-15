@@ -1551,21 +1551,26 @@ to establish class invariants.")
 (define-public python-inline-snapshot
   (package
     (name "python-inline-snapshot")
-    (version "0.29.1")
+    (version "0.32.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "inline_snapshot" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/15r10nk/inline-snapshot/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "19x5j97i96p3xr9xyjvwh0mmpcnypf8g5hf2jjm6g82ghsv3rrqp"))))
+        (base32 "0zbg9kydbqh51ksvc5qkdf4fap543ff2ay5nb9726lmli4q2hyn6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 518 passed, 88 skipped, 1 xfailed, 903 subtests passed
+      ;; tests: 1329 passed, 7 skipped, 1 xfailed
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               ;; To prevent adding mypy and pyright.
-              "--ignore=tests/test_typing.py")))
+              "--ignore=tests/test_typing.py"
+              ;; Tests require isort.
+              "--ignore=tests/test_docs.py")))
     (native-inputs
      (list python-black         ;XXX: used in tests/conftest.py to self lint
            python-dirty-equals
