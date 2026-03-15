@@ -2439,7 +2439,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/snappy-add-inline-for-GCC.patch		\
   %D%/packages/patches/source-highlight-gcc-compat.patch	\
   %D%/packages/patches/sourcetrail-fix-cmakelists-and-paths.patch		\
-  %D%/packages/patches/softhsm-fix-openssl3-tests.patch		\
   %D%/packages/patches/spectre-meltdown-checker-externalize-fwdb.patch \
   %D%/packages/patches/sphinxbase-fix-doxygen.patch		\
   %D%/packages/patches/spice-vdagent-monitor-size-calculation.patch     \

@@ -223,16 +223,16 @@ the low-level development kit for the Yubico YubiKey authentication device.")
 (define-public softhsm
   (package
     (name "softhsm")
-    (version "2.6.1")
+    (version "2.7.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://dist.opendnssec.org/source/"
-                    "softhsm-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/softhsm/SoftHSMv2.git")
+                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wkmyi6n3z2pak1cj5yk6v6bv9w0m24skycya48iikab0mrr8931"))
-              (patches (search-patches "softhsm-fix-openssl3-tests.patch"))))
+                "0km7pnwp1ny7k317srpagwp3mnb5f5b1d82fj07hqgcmc209s2l3"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -240,7 +240,12 @@ the low-level development kit for the Yubico YubiKey authentication device.")
                    (string-append "--with-p11-kit="
                                   #$output "/share/p11-kit/modules"))))
     (inputs (list openssl))
-    (native-inputs (list pkg-config cppunit))
+    (native-inputs
+     (list autoconf
+           automake
+           cppunit
+           libtool
+           pkg-config))
     (synopsis "Software implementation of a generic cryptographic device")
     (description
      "SoftHSM 2 is a software implementation of a generic cryptographic device
