@@ -5726,7 +5726,9 @@ simultaneous database connections by using this framework.")
     (build-system gnu-build-system)
     (native-inputs
      (list ;; For tests.
-           inetutils glibc-locales mariadb))
+           inetutils
+           (libc-utf8-locales-for-target (%current-system))
+           mariadb))
     (inputs
      `(("libdbi" ,libdbi)
        ("mariadb:dev" ,mariadb "dev")
