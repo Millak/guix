@@ -6070,33 +6070,6 @@ Astronomical Almanac to within 0.0005 arcseconds (half a @emph{mas} or
 milliarcsecond).")
     (license license:expat)))
 
-;; The last compatible version for python-astropy-6.
-(define-public python-jplephem-2.22
-  (hidden-package
-   (package
-     (inherit python-jplephem)
-     (version "2.22")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "jplephem" version))
-        (sha256
-         (base32 "0b2rgb7pvwnl72pqjryf9c812mmdxr69fwiym7mnz05l2xrcr6hd"))))
-    (arguments
-     (list
-      ;; FIXME: OSError: [Errno 30] Read-only file system:
-      ;; '/gnu/store/<hash>-python-3.11.11/lib/python3.11/@test_43_tmpæ.pyc'
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python" "-m" "unittest" "discover" "-s" "test")))))))
-    (native-inputs
-     (list python-setuptools
-           python-wheel)))))
-
 (define-public python-jwst
   (package
     (name "python-jwst")
