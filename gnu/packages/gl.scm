@@ -265,7 +265,8 @@ generate a GL/GLES/EGL/GLX/WGL loader tailored for specific requirements.")
               (lambda _
                 (let ((share (string-append #$output "/share/"
                                             #$(package-name this-package))))
-                  (install-file "cmake/CMakeLists.txt" share))))
+                  (install-file "cmake/CMakeLists.txt" share)
+                  (install-file "cmake/GladConfig.cmake" share))))
             (replace 'check
               (lambda* (#:key tests? #:allow-other-keys)
                 (when tests?
