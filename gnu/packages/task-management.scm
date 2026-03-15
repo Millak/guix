@@ -608,7 +608,35 @@ export, password protection and auto-saving.")
     (arguments
      (list
       #:cargo-install-paths ''("pueue")
-      #:install-source? #f))
+      #:install-source? #f
+      #:modules
+      '((guix build cargo-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-completions
+           (lambda* (#:key native-inputs #:allow-other-keys)
+             (for-each
+              (match-lambda
+                ((shell . path)
+                 (mkdir-p (in-vicinity #$output (dirname path)))
+                 (let ((binary
+                        (if #$(%current-target-system)
+                            (search-input-file native-inputs "bin/pueue")
+                            (in-vicinity #$output "bin/pueue"))))
+                   (with-output-to-file (in-vicinity #$output path)
+                     (lambda _
+                       (invoke binary "completions" shell))))))
+              '(("bash"    . "share/bash-completion/completions/pueue")
+                ("elvish"  . "share/elvish/lib/pueue")
+                ("fish"    . "share/fish/vendor_completions.d/pueue.fish")
+                ("nushell" . "share/nushell/vendor/autoload/pueue")
+                ("zsh"     . "share/zsh/site-functions/_pueue"))))))))
+    (native-inputs
+     (if (%current-target-system)
+         (list this-package)
+         '()))
     (inputs (cargo-inputs 'pueue))
     (home-page "https://github.com/Nukesor/pueue")
     (synopsis
