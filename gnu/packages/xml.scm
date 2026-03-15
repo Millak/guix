@@ -1940,16 +1940,9 @@ The central program included in this package is @code{onsgmls}, which replaces
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-backend #~'unittest
-      #:phases
-      #~(modify-phases %standard-phases
-         ;; 10 tests fail with: locale.Error: unsupported locale setting.
-          (add-before 'check 'set-locales
-            (lambda* (#:key inputs #:allow-other-keys)
-              (setenv "GUIX_LOCPATH"
-                      (search-input-directory inputs "lib/locale")))))))
+      #:test-backend #~'unittest))
     (native-inputs
-     (list glibc-locales
+     (list (libc-utf8-locales-for-target (%current-system))
            python-setuptools
            python-lxml
            python-xmlschema-bootstrap))
