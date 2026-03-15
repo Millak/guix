@@ -3279,30 +3279,27 @@ synchronous execution of all clients, and low latency operation.")
   (package
     (inherit jack-1)
     (name "jack2")
-    (version "1.9.21")
+    ;; 1.9.22 does not compile with Python 3.12, use the latest commit instead.
+    (properties '((commit . "17959465a722225a36a8b612aed26764036f258e")
+                  (revision . "0")))
+    (version (git-version "1.9.22"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/jackaudio/jack2")
-                    (commit (string-append "v" version))))
+                     (url "https://github.com/jackaudio/jack2")
+                     (commit (assoc-ref properties 'commit))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0sbrffmdbajvrk7iqvsvrnwnpvmicvbjyq3f52r6ashdsznsz03b"))))
+                "18dbjq9y8mcp27j9aaqdlg4976hrisr7b88lk84ck09gmzlwqalp"))))
     (build-system waf-build-system)
     (arguments
      `(#:tests? #f                      ; no check target
        #:configure-flags '("--dbus" "--alsa")
        #:phases
        (modify-phases %standard-phases
-         ;; Python 3.11 has removed the 'U' (universal newline) mode.  It has
-         ;; been the default since Python 3.3.
-         (add-after 'unpack 'python-compatibility
-           (lambda _
-             (substitute* '("waflib/Context.py"
-                            "waflib/ConfigSet.py")
-               (("m='rU'") "m='r'")
-               (("read\\('rU'") "read('r'"))))
          (add-before 'configure 'set-linkflags
            (lambda _
              ;; Ensure -lstdc++ is the tail of LDFLAGS or the simdtests.cpp
@@ -3328,7 +3325,7 @@ synchronous execution of all clients, and low latency operation.")
            expat
            libsamplerate
            opus
-           python-dbus-1.2
+           python-dbus
            readline))
     (native-inputs
      (list pkg-config))
