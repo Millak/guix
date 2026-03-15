@@ -14442,7 +14442,7 @@ Features degrade gracefully when viewed from terminal.")
 (define-public emacs-org-supertag
   (package
     (name "emacs-org-supertag")
-    (version "5.6.3")
+    (version "5.8.1")
     (source
      (origin
        (method git-fetch)
@@ -14451,7 +14451,7 @@ Features degrade gracefully when viewed from terminal.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ccr3s4mhk28klizbsb7cqhgg2h3092mpg1qvnzpzf53hwlhds2p"))))
+        (base32 "1hdag8kxn2zxwac0fq14c741k4pwzkwvjh5ybwsqc7220vqzhmhm"))))
     (build-system emacs-build-system)
     (arguments
      (list #:tests? #f                  ;no tests
