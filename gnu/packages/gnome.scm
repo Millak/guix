@@ -6489,6 +6489,78 @@ for application developers.  This package provides plugins for common media
 discovery protocols.")
     (license license:lgpl2.1+)))
 
+(define-public showtime
+  (package
+    (name "showtime")
+    (version "50.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://gitlab.gnome.org/GNOME/showtime")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "190xsv4csdj8xfh1rv3yvls5m63k6aca4sh5pmqk6r18bz03jj40"))
+              (patches (search-patches "showtime-python-3.11-compat.patch"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:imported-modules (append %meson-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules `((guix build meson-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")
+                (("glib_compile_schemas: true")
+                 "glib_compile_schemas: false")
+                (("update_desktop_database: true")
+                 "update_desktop_database: false"))))
+          (add-after 'install 'add-install-to-pythonpath
+            (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
+          (add-after 'add-install-to-pythonpath 'wrap-python
+            (assoc-ref py:%standard-phases 'wrap))
+          (add-after 'wrap-python 'gi-wrap
+            (lambda _
+              (wrap-program (string-append #$output "/bin/showtime")
+                `("GI_TYPELIB_PATH" prefix
+                  (,(getenv "GI_TYPELIB_PATH")))
+                `("GST_PLUGIN_SYSTEM_PATH" prefix
+                  (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
+    (native-inputs
+     (list blueprint-compiler
+           desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")
+           `(,gtk "bin")
+           pkg-config))
+    (inputs
+     (list bash-minimal
+           gstreamer
+           gst-plugins-bad              ;for GstPlay
+           gst-plugins-rs
+           `(,gst-plugins-rs "video")
+           gobject-introspection        ;for cairo-1.0.typelib
+           gtk
+           libadwaita
+           python
+           python-pygobject))
+    (home-page "https://gitlab.gnome.org/GNOME/showtime")
+    (synopsis "Video player")
+    (description "Showtime, also known as Video Player in GNOME, is a modern
+video player that aims to be simple to use, avoiding distractions.  Showtime
+features simple playback controls that fade out of the way when watching,
+fullscreen, adjustable playback speed, multiple language and subtitle tracks
+as well as the ability to take screenshots.")
+    (license license:gpl3+)))
+
 (define-public totem
   (package
     (name "totem")

@@ -1,0 +1,18 @@
+Temporary patch to undo some Python 3.12 specific syntax until we have 3.12+ in Guix.
+
+diff -u /tmp/guix-build-showtime-50.0.drv-0/source/showtime/widgets/window.py.old /tmp/guix-build-showtime-50.0.drv-0/source/showtime/widgets/window.py
+--- a/showtime/widgets/window.py.old	2026-03-15 22:57:05.619357847 +0900
++++ b/showtime/widgets/window.py	2026-03-15 22:56:47.823332531 +0900
+@@ -1057,7 +1057,5 @@
+             return
+
+         Gtk.FileDialog(
+-            initial_name=f"{
+-                get_title(self.play.get_media_info()) or _('Unknown Title')
+-            } {nanoseconds_to_timestamp(self.play.get_position(), hours=True)}.png"
++            initial_name=f"{get_title(self.play.get_media_info()) or _('Unknown Title')} {nanoseconds_to_timestamp(self.play.get_position(), hours=True)}.png"
+         ).save(self, None, self._save_screenshot, texture.save_to_png_bytes())
+
+     def _save_screenshot(
+
+Diff finished.  Sun Mar 15 22:57:13 2026
