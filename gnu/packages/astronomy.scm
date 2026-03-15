@@ -53,6 +53,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -2952,6 +2953,45 @@ of functions to execute the desired steps in the mock-observing process.")
     (description "This package provides tools for machine learning and data
 mining in astronomy.")
     (license license:bsd-2)))
+
+(define-public python-astronify
+  (package
+    (name "python-astronify")
+    (version "0.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "astronify" version))
+       (sha256
+        (base32 "1nl8rbpg6b9v3mny90spv7g9aqx2lfnnrmxv0nm3d458mgikgagc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; TODO: Report upstream: ModuleNotFoundError: No module named
+          ;; 'packagename'.
+          (add-after 'unpack 'fix-setup.cfg
+            (lambda _
+              (substitute* "setup.cfg"
+                (("astropy-package-template-example.*") "")))))))
+    (native-inputs
+     (list python-pytest-astropy
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-notebook
+           python-pyo
+           python-requests
+           python-scipy))
+    (home-page "https://github.com/spacetelescope/astronify")
+    (synopsis "Sonification of astronomical data")
+    (description
+     "Astronify is a Python package for sonifying astronomical data - turning
+telescope observations into sound.")
+    (license license:bsd-3)))
 
 (define-public python-astroplan
   (package
