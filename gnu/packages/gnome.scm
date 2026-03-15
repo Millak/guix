@@ -2127,7 +2127,7 @@ offline sources, providing a centralized place for managing your contacts.")
                                              "lib/locale")))))))
     (native-inputs
      (list `(,glib "bin")                   ;for gdbus-codegen
-           glibc-locales                    ;for tests
+           (libc-utf8-locales-for-target (%current-system)) ;for tests
            gobject-introspection
            itstool
            intltool
