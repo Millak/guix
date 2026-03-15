@@ -366,14 +366,14 @@ your computer.")
 (define-public kaichat
   (package
     (name "kaichat")
-    (version "0.5.1")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde//stable/kaichat/kaichat-" version
                            ".tar.xz"))
        (sha256
-        (base32 "19w31mpbc5c1rfzygmxhmqx8wlwdmi1gfg75i4cfvz49936q0nal"))))
+        (base32 "0bhargyi237zikpwrah95g7sdlf3860y65zlqd0nmanlnqgqklqc"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase))
@@ -396,6 +396,7 @@ your computer.")
            purpose
            python
            sonnet
+           qtspeech
            qtwayland))
     (home-page "https://apps.kde.org/kaichat/")
     (synopsis "Chat interface for AI models")
