@@ -42,7 +42,7 @@
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
-;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023, 2025-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Parnikkapore <poomklao@yahoo.com>
@@ -6357,6 +6357,59 @@ code, used in @code{libtoxcore}.")
 It is currently fairly complete for PCM devices, and has some support for
 mixers.")
     (license license:psfl)))
+
+(define-public python-pyo
+  (package
+    (name "python-pyo")
+    (version "1.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/belangeo/pyo")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1igz75kv94dav28rzz19gckgfgdli05q5ghadlvm03ia7xd9l5zm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+     ;; TODO: collecting ... Fatal Python error: Segmentation fault
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'sanity-check 'set-HOME
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (inputs
+     (list liblo
+           libsndfile
+           portaudio
+           portmidi))
+    (propagated-inputs
+     (list python-wxpython))
+    (home-page "https://github.com/belangeo/pyo")
+    (synopsis "Python module to build digital signal processing program")
+    (description
+     "pyo is a Python module containing classes for a wide variety of audio
+signal processing types.
+
+With pyo, user will be able to include signal processing chains directly in
+Python scripts or projects, and to manipulate them in real time through the
+interpreter.  Tools in pyo module offer primitives, like mathematical
+operations on audio signal, basic signal processing (filters, delays,
+synthesis generators, etc.), but also complex algorithms to create sound
+granulation and others creative audio manipulations.
+
+pyo supports OSC protocol (Open Sound Control), to ease communications between
+softwares, and MIDI protocol, for generating sound events and controlling
+process parameters.  pyo allows creation of sophisticated signal processing
+chains with all the benefits of a mature, and widely used, general programming
+language.")
+    (license license:lgpl3+)))
 
 (define-public ldacbt
   (package
