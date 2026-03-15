@@ -3204,43 +3204,6 @@ much of the core functionality and some common tools needed for performing
 astronomy and astrophysics.")
     (license license:bsd-3)))
 
-(define-public python-astropy-6
-  (package
-    (inherit python-astropy)
-    (name "python-astropy")
-    (version "6.1.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "astropy" version))
-       (sha256
-        (base32 "1vspagb4vbmkl6fm3mr78577dgdq992ggwkd5qawpdh6cccaq1d4"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            (with-directory-excursion "astropy/extern"
-              (for-each delete-file-recursively '("ply" "configobj")))
-            (with-directory-excursion "cextern"
-              (for-each delete-file-recursively '("expat" "wcslib")))))))
-    ;; tests: 28419 passed, 316 skipped, 233 xfailed, 25 warnings
-    (arguments
-     (substitute-keyword-arguments
-         (package-arguments python-astropy)
-       ((#:test-flags test-flags #~(list))
-        #~(list "--pyargs" "astropy"
-                "--numprocesses" (number->string (min 8 (parallel-job-count)))
-                "-k" (string-join
-                      (list "not test_skip_meta"
-                            "test_all_included"
-                            "test_basic_testing_completeness"
-                            "test_ephemeris_local_file_not_ephemeris"
-                            "test_non_linear_lsq_fitter_with_weights[LMLSQFitter]"
-                            "test_testing_completeness")
-                      " and not ")))))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-astropy)
-       (replace "python-jplephem" python-jplephem-2.22)))))
-
 (define-public python-astropy-healpix
   (package
     (name "python-astropy-healpix")
