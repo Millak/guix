@@ -3289,6 +3289,28 @@ import them in their actual tests to use them.")
 requests to be replied to with user provided responses.")
     (license license:expat)))
 
+(define-public python-pytest-instafail
+  (package
+    (name "python-pytest-instafail")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pytest-dev/pytest-instafail")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dxlvvs08ln9y2d3bzs88c303xxgd0n18q9liy9kkdyhy54f70wa"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pytest))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/pytest-dev/pytest-instafail")
+    (synopsis "Pytest plugin to show failures instantly")
+    (description
+     "This package provides a pytest plugin to show failures instantly.")
+    (license license:bsd-3)))
+
 (define-public python-pytest-isort
   (package
     (name "python-pytest-isort")
