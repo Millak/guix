@@ -1952,7 +1952,7 @@ message bus.")
            docbook-xsl
            gettext-minimal
            `(,glib "bin")               ; for gdbus-codegen, etc.
-           glibc-locales                    ;for tests
+           (libc-locales-for-target (%current-system)) ;for tests
            gobject-introspection
            gtk-doc/stable
            libxslt
