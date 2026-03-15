@@ -251,7 +251,8 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
     (native-inputs
      (list autoconf ;for tests
            `(,glib "bin") ;for glib-genmarshal
-           glibc-locales ;for test 1597: tex non-ascii
+           (libc-utf8-locales-for-target
+            (%current-system)) ;for test 1597: tex non-ascii
            perl
            pkg-config
            python-3 ;for tests
