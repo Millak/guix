@@ -4475,8 +4475,8 @@ code to be greatly simplified.")
   (package
     (name "python-drizzlepac")
     ;; 3.10.0 requires astrocut<0.9.
-    (properties '((commit . "6ac0ef1a27b0e2a568b1aa1f24b118ed322db409")
-                  (revision . "1")))
+    (properties '((commit . "d8e4c455575d34e95dc56c77a6f91b3a5fa4b0a6")
+                  (revision . "2")))
     (version (git-version "3.10.0"
                           (assoc-ref properties 'revision)
                           (assoc-ref properties 'commit)))
@@ -4488,22 +4488,13 @@ code to be greatly simplified.")
               (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hbr5scj90b8anhj4vrsaj04c5ygn6b09waha9m4pdcvkqplp462"))))
+        (base32 "00f32b544i9jrgf6phzgbj3as3cfpqn7gl7wn1njl09gbfvy0yvw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; TODO: Tests fail to load with error: E ModuleNotFoundError: No module
       ;; named 'stsci.tools'
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; TODO: Sanity check phase fails a lot on mismatched versions or
-          ;; failed to load "stsci.tools" module.
-          (delete 'sanity-check)
-          (add-before 'build 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                      #$(version-major+minor+point version)))))))
+      #:tests? #f))
     (native-inputs
      (list python-ci-watson
            python-crds-minimal
