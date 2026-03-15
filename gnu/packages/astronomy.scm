@@ -4492,9 +4492,18 @@ code to be greatly simplified.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; TODO: Tests fail to load with error: E ModuleNotFoundError: No module
-      ;; named 'stsci.tools'
-      #:tests? #f))
+      #:test-flags
+      #~(list #$@(map (lambda (ls) (string-append "--deselect=tests/"
+                                                  (string-join ls "::")))
+                      ;; Network access is required.
+                      '(("hap/test_pipeline.py" "TestSingleton"
+                         "test_astrometric_singleton[iaaua1n4q]")
+                        ("hap/test_svm_ci.py" "TestSVMCI" "test_svm_ci"))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "drizzlepac"))))))
     (native-inputs
      (list python-ci-watson
            python-crds-minimal
