@@ -18166,7 +18166,7 @@ Emacs buffers.")
 (define-public emacs-markdown-mode
   (package
     (name "emacs-markdown-mode")
-    (version "2.7")
+    (version "2.8")
     (source
      (origin
        (method git-fetch)
@@ -18175,10 +18175,26 @@ Emacs buffers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w6y18bg0fpvb5xwr827ynzbj0f0nh3dms3n0xq6hg38dcyly46b"))))
+        (base32 "05xcmp744sm1cp38zal5sqzj463igbsfhjn7vhgpzd97df95h9mp"))))
     (build-system emacs-build-system)
-    (arguments (list #:test-command #~(list "make" "test")
-                     #:tests? #f))      ; XXX: 5 unexpected results
+    (arguments
+     (list #:test-command #~(list "make" "test")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'skip-failing-tests
+                 (lambda _
+                   (let ((skip-tests
+                          `("-export/buffer-local-css-path"
+                            "-export/relative-css-path"
+                            "-export/url-css-path"
+                            "/wiki-link-rules"
+                            "/wiki-link-search-under-project")))
+                     (substitute* "tests/markdown-test.el"
+                       (("\\(ert-deftest test-markdown([a-z/-]*) \\(\\)"
+                         all test)
+                        (if (member test skip-tests)
+                            (string-append all "(skip-unless nil)")
+                            all)))))))))
     (home-page "https://jblevins.org/projects/markdown-mode/")
     (synopsis "Emacs Major mode for Markdown files")
     (description
