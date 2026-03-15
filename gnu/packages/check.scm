@@ -3283,7 +3283,7 @@ tests.  The output format is JSON.")
 (define-public tidyall
   (package
     (name "tidyall")
-    (version "0.84")
+    (version "0.85")
     (source
      (origin
        (method url-fetch)
@@ -3291,7 +3291,7 @@ tests.  The output format is JSON.")
              "mirror://cpan/authors/id/D/DR/DROLSKY/Code-TidyAll-" version
              ".tar.gz"))
        (sha256
-        (base32 "1xxil8yfbd4nizwaaris07sp441nhx3ixr4qj13l1x6pxphi9h5k"))))
+        (base32 "1hb3xf07my3szlj5z8my95wcbzv0g17q9dsv7kajc1537g6xc0mr"))))
     (build-system perl-build-system)
     (arguments
      (list
@@ -3310,7 +3310,7 @@ tests.  The output format is JSON.")
                          perl-test-fatal
                          perl-test-warnings
                          perl-lib-relative
-                         php))
+                         php-8.4))
     (inputs (list bash-minimal))
     (propagated-inputs (list perl-capture-tiny
                              perl-config-ini
