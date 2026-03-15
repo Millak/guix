@@ -113,7 +113,11 @@
                 (for-each (lambda (file)
                             (substitute* file
                               (("^CFLAGS=")
-                               "CFLAGS=-D_GNU_SOURCE -fcommon")))
+                               (string-append
+                                "CFLAGS=-D_GNU_SOURCE"
+                                " -Wno-error=implicit-function-declaration"
+                                " -Wno-error=incompatible-pointer-types"
+                                " -fcommon"))))
                           '("mkfiles/mkfile-Linux-386"
                             "mkfiles/mkfile-Linux-arm"
                             "mkfiles/mkfile-Linux-power"
