@@ -21329,7 +21329,7 @@ syntax highlighting, markdown and more to the terminal.")
 (define-public python-rich-click
   (package
     (name "python-rich-click")
-    (version "1.8.9")
+    (version "1.9.7")
      (source
       (origin
         (method git-fetch)
@@ -21338,15 +21338,24 @@ syntax highlighting, markdown and more to the terminal.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0kc2wcb5dpgxhdcz8fy6gfhl7vra03xwgwfg7h0qxxibr8yzhmmq"))))
+         (base32 "1bw3lsj49dln8q7407gv85y8lzdn9a3jcjl9acax6q6x9l73cgqx"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((" --cov --cov-report term") "")))))))
     (native-inputs
-     (list python-pytest
-           python-setuptools))
+     (list python-inline-snapshot
+           python-pytest
+           python-setuptools
+           python-typer))
     (propagated-inputs
      (list python-click
-           python-rich
-           python-typing-extensions))
+           python-rich))
     (home-page "https://github.com/ewels/rich-click")
     (synopsis "Format click help output nicely with rich")
     (description "Click is a \"Python package for creating beautiful command
