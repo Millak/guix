@@ -13251,6 +13251,16 @@ from a program in a @dfn{pager} such as @command{less}.")
 and therefore easier to read and write.")
     (license license:expat)))
 
+(define-public python-dirty-equals-bootstrap
+  (hidden-package
+   (package
+     (inherit python-dirty-equals)
+     (name "python-dirty-equals-bootstrap")
+     (arguments
+      (list #:tests? #f))
+     (native-inputs
+      (list python-hatchling)))))
+
 (define-public python-distutils-extra
   (package
     (name "python-distutils-extra")
