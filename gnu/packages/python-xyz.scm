@@ -10741,7 +10741,7 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
       #~(list "--parallel-threads" (number->string (parallel-job-count)))))
     (native-inputs
      (list tzdata-for-tests
-           python-dirty-equals
+           python-dirty-equals-bootstrap
            python-faker
            python-hatch-fancy-pypi-readme
            python-hatchling
@@ -10750,7 +10750,8 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
            python-pytest-benchmark
            python-pytest-examples
            python-pytest-mock
-           python-pytest-run-parallel))
+           python-pytest-run-parallel
+           python-pytz))
     (propagated-inputs
      (list python-annotated-types
            python-pydantic-core ;it's hard == requirement, keep it in sync
