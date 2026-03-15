@@ -1859,14 +1859,16 @@ HTTP @code{multipart/form-data} parsers and generators.")
 (define-public python-mypy
   (package
     (name "python-mypy")
-    (version "1.16.1")
+    (version "1.18.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "mypy" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/python/mypy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1avv8cj0qfhpw4s36bjhg994rml35fs4ndz78xg1r14l4050ml3b"))))
+        (base32 "1nz5nxbw92milfq71df24p2nisw2q04gi8qh7f2p5az39y0fx1yq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1890,8 +1892,7 @@ HTTP @code{multipart/form-data} parsers and generators.")
            python-pytest
            python-pytest-xdist
            python-setuptools
-           python-types-setuptools
-           python-wheel))
+           python-types-setuptools))
     (propagated-inputs
      (list python-mypy-extensions
            python-pathspec
