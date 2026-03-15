@@ -1497,7 +1497,9 @@ APFS.")
                                  "@libdir@"))))))))
     (home-page "https://snapper.io")
     (native-inputs
-     (list glibc-locales autoconf automake libtool pkg-config))
+     (list
+      (libc-locales-for-target (%current-system))
+      autoconf automake libtool pkg-config))
     (inputs
      (list btrfs-progs
            e2fsprogs
