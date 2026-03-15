@@ -1165,7 +1165,18 @@ application suites.")
               ;; also disabled these, see:
               ;; https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1050075
               "--no-suite=wayland_failing"
-              "--no-suite=wayland_gles2_failing")
+              "--no-suite=wayland_gles2_failing"
+              ;; These suites compare rendering output across different
+              ;; backends (GL, Cairo, NGL, Vulkan) and produce different
+              ;; results depending on the GPU and software rendering
+              ;; stack.  Debian disables them as well:
+              ;; https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1050075
+              #$@(if (target-aarch64?)
+                     '("--no-suite=gsk-compare-gl"
+                       "--no-suite=gsk-compare-cairo"
+                       "--no-suite=gsk-compare-ngl"
+                       "--no-suite=gsk-compare-vulkan")
+                     '()))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
@@ -1197,36 +1208,6 @@ application suites.")
                 (("[ \t]*'label-wrap-justify.ui',") "")
                 (("[ \t]*'wrapping-label-in-nested-boxes.ui',") "")
                 (("[ \t]*'flipping-icons(\\.ref)?\\.ui',") ""))
-              ;; These tests fail on an Apple M1 (aarch64) with the following errors:
-              ;; - MESA: error: ZINK: failed to choose pdev
-              ;; - libEGL warning: egl: failed to create dri2 screen
-              ;; - MESA: error: ZINK: failed to choose pdev
-              ;; - glx: failed to create drisw screen
-              #$@(if (target-aarch64?)
-                     #~((substitute* "testsuite/gsk/meson.build"
-                          (("'border-bottom-right',") "")
-                          (("'border-one-rounded',") "")
-                          (("'border-opacity',") "")
-                          (("'border-zero-width-color',") "")
-                          (("'borders-rotated',") "")
-                          (("'borders-scaled',") "")
-                          (("'clip-in-smaller-rounded-clip',") "")
-                          (("'css-background',") "")
-                          (("'empty-border',") "")
-                          (("'empty-inset-shadow',") "")
-                          (("'empty-outset-shadow',") "")
-                          (("'inset-shadow-multiple',") "")
-                          (("'outset-shadow-scale-offset',") "")
-                          (("'outset_shadow_offset_both',") "")
-                          (("'outset_shadow_offset_x',") "")
-                          (("'outset_shadow_offset_y',") "")
-                          (("'outset_shadow_rounded_top',") "")
-                          (("'outset_shadow_simple',") "")
-                          (("'shadow-offset-clip',") "")
-                          (("'shrink-rounded-border',") ""))
-                        (substitute* "testsuite/css/parser/meson.build"
-                          ((".*color-mix.*") "")))
-                     #~())
               ;; libEGL warning: DRI3 error: Could not get DRI3 device
               ;; libEGL warning: Activate DRI3 at Xorg or build mesa with DRI2
               ;; JIT session error: No HI20 PCREL relocation type be found for
