@@ -3186,7 +3186,7 @@ testing to @code{cocotb}, removing the need of manipulating Makefiles.")
 (define-public python-cocotbext-axi
   (package
     (name "python-cocotbext-axi")
-    (version "0.1.26")
+    (version "0.1.28")
     (source
      (origin
        (method git-fetch)
@@ -3195,7 +3195,7 @@ testing to @code{cocotb}, removing the need of manipulating Makefiles.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xgfvvpff9r7g7fiswv1m0dklyw6c8v2r3qpd6qq3rzvnvrhsrin"))))
+        (base32 "0kwdzz0mq134m0kxhwwj0d1nr1cbrzv36844476knna34xi2riyg"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-cocotb python-cocotb-bus))
