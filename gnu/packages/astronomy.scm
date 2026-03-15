@@ -2317,42 +2317,6 @@ Users should not need to install this directly; instead, install an
 implementation package such as asdf-astropy.")
     (license license:bsd-3)))
 
-(define-public python-asdf-fits-schemas
-  (hidden-package
-   ;; This package was never released and has been archived. The schemas in
-   ;; this package were never removed from and will continue to be maintained
-   ;; in <https://github.com/asdf-format/asdf-standard>.
-   (let ((commit "6321c0ae4e44c9a59ccf81a446f9d9e22fd42b55")
-         (revision "2"))
-     (package
-       (name "python-asdf-fits-schemas")
-       (version (git-version "0.0.1" revision commit))
-       (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                (url "https://github.com/asdf-format/asdf-fits-schemas")
-                (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-           (base32 "0p0m1sgnv9yqk0l0w15skvfshl47x0gc7lg6p2x83158hjyix5q6"))))
-       (build-system pyproject-build-system)
-       (arguments
-        (list
-         #:tests? #f)) ; cycle with python-asdf
-       (native-inputs
-        (list python-setuptools
-              python-setuptools-scm
-              python-wheel))
-       (propagated-inputs
-        (list python-asdf-standard
-              python-importlib-resources))
-       (home-page "https://github.com/asdf-format/asdf-fits-schemas")
-       (synopsis "ASDF schemas to support the FITS format")
-       (description
-        "This package provides ASDF schemas for validating FITS tags.")
-       (license license:bsd-3)))))
-
 (define-public python-asdf-standard
   (package
     (name "python-asdf-standard")
