@@ -244,7 +244,6 @@ generate a GL/GLES/EGL/GLX/WGL loader tailored for specific requirements.")
 
 (define-public glad
   (package
-    (inherit glad-0.1)
     (name "glad")
     (version "2.0.8")
     (source (origin
@@ -258,21 +257,26 @@ generate a GL/GLES/EGL/GLX/WGL loader tailored for specific requirements.")
                 "0c9cygiq35aiq6bpdvbwqs0wxc2dvxsh4jnx50466savscxalsk9"))))
     (build-system pyproject-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments glad-0.1)
-       ((#:phases phases '%standard-phases)
-        #~(modify-phases #$phases
-            (replace 'install-cmakelists.txt
-              (lambda _
-                (let ((share (string-append #$output "/share/"
-                                            #$(package-name this-package))))
-                  (install-file "cmake/CMakeLists.txt" share)
-                  (install-file "cmake/GladConfig.cmake" share))))
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  (invoke "xvfb-run" "utility/test.sh"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-cmakelists.txt
+            (lambda _
+              (let ((share (string-append #$output "/share/"
+                                          #$(package-name this-package))))
+                (install-file "cmake/CMakeLists.txt" share)
+                (install-file "cmake/GladConfig.cmake" share))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "xvfb-run" "utility/test.sh")))))))
     (native-inputs (list python-setuptools python-wheel xvfb-run-for-tests))
-    (propagated-inputs (list python-jinja2))))
+    (propagated-inputs (list python-jinja2))
+    (home-page "https://github.com/Dav1dde/glad")
+    (synopsis "Multi-language GL/GLES/EGL/GLX/WGL loader generator")
+    (description "Glad uses the official Khronos XML specifications to
+generate a GL/GLES/EGL/GLX/WGL loader tailored for specific requirements.")
+    (license license:expat)))
 
 (define-public s2tc
   (package
