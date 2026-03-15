@@ -5133,20 +5133,52 @@ access the technical and tag data for video and audio files.")
 (define-public python-psutil
   (package
     (name "python-psutil")
-    (version "7.0.0")
+    (version "7.2.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "psutil" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/giampaolo/psutil")
+              (commit (string-append "release-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0mn42p9pzh0wynhk9i18iyvp8h54hbcsyczajmjcpv4blgmw7sbv"))))
+        (base32 "1p5j3v78x795dd4xilmnvsswl09pkc81g9ax66akjdr0hkdnyl56"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; FIXME: some tests do not return and time out.  Some tests fail because
-     ;; some processes survive kill().
-     '(#:tests? #f))
+     (list
+      #:test-flags
+      #~(list "--ignore=tests/test_memleaks.py" ; Missing python-psleak
+              "-k" (string-join
+                    ;; Permission errors.
+                    (list "not test_mtu"
+                          "test_comparisons"
+                          "test_disk_partitions_mocked"
+                          "test_serialization"
+                          "test_weird_environ"
+                          "test_who"
+                          "test_users"
+                          "test_disk_io_counters"
+                          ;; Modules not found.
+                          "test_import_all"
+                          "test_invocation"
+                          ;; assert 16363520 < 10485760
+                          "test_against_df")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'prepare-tests
+            (lambda _
+              (delete-file-recursively "psutil")
+              (substitute* "tests/test_linux.py"
+                (("\"(free|vmstat)\"" _ cmd)
+                 (format #f "~s" (which cmd)))))))))
     (native-inputs
-     (list python-setuptools))
+     (list procps
+           python-packaging
+           python-pytest
+           python-pytest-instafail
+           python-pytest-xdist
+           python-setuptools))
     (home-page "https://github.com/giampaolo/psutil")
     (synopsis "Library for retrieving information on running processes")
     (description
