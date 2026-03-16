@@ -40049,15 +40049,6 @@ user-space file systems in Python.")
        (sha256
         (base32 "18292j4p1bvlpbrfj2cgkdby6dpgnl5gbjwly0qb4pj1j914nmzb"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              ;; Drop test coverage requirements.
-              (substitute* "pytest.ini"
-                ((".*--cov.*") "")))))))
     (native-inputs
      (list python-pytest
            python-pytest-asyncio
