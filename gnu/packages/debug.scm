@@ -428,7 +428,7 @@ tool.")
                        (delete 'check))))) ; tests are run during 'install phase
     (package
       (name "aflplusplus")
-      (version "4.35c")
+      (version "4.40c")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -437,7 +437,7 @@ tool.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0mwamvyv2ckfxrrns4cnhx9gf2dn9jjgi9dc1qp3cwjasbghg5lg"))))
+                  "00v174pxkj74pa2rcgkcbvxdq3sax9la33g3ikpjd3x1ck69mla2"))))
       (build-system gnu-build-system)
       (arguments
        (substitute-keyword-arguments arguments-american-fuzzy-lop
