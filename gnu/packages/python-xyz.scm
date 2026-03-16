@@ -36778,13 +36778,7 @@ in Rust, with a nice Python API provided on top.")
     (arguments
      (list
       #:test-flags
-      #~(list "--ignore=doc/")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pytest.ini"
-                (("addopts =.*") "")))))))
+      #~(list "--ignore=doc/")))
     (native-inputs
      (list python-pytest
            python-setuptools))
