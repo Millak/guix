@@ -4036,10 +4036,6 @@ library.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-coverage
-            (lambda _
-              (substitute* "pytest.ini"
-                (("--cov.*") ""))))
           ;; The seaborn styles have different names.
           (add-after 'unpack 'fix-seaborn
             (lambda _
