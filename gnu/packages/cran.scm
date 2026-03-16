@@ -39622,14 +39622,14 @@ compiled by the HGNC Comparison of Orthology Predictions (HCOP).")
 (define-public r-msigdbr
   (package
     (name "r-msigdbr")
-    (version "25.1.1")
+    (version "26.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "msigdbr" version))
        (sha256
         (base32
-         "19m3588nw8nl1d5v2394i79hfrghcaylblqvbrfg5w9dfiw5pxbz"))))
+         "0bz09bxgyvlhryyd25lrgfnzgp5rp9z1iil3l0zgy0kipswy8wn8"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertthat
