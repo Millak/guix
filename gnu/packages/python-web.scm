@@ -570,13 +570,7 @@ and JSON.
               "--ignore=tests/test_azure_specific.py"
               ;; TypeError: Retry.__init__() got an unexpected keyword
               ;; argument 'timeout'
-              "--deselect=tests/test_gs_specific.py::test_timeout_and_retry")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("addopts =.*") "")))))))
+              "--deselect=tests/test_gs_specific.py::test_timeout_and_retry")))
     (native-inputs
      (list ;; python-azure-identity
            python-dotenv
