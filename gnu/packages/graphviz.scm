@@ -167,8 +167,7 @@ interfaces for other technical domains.")
           (add-after 'unpack 'patch-pytest-options
             (lambda _
               (substitute* "setup.cfg"
-                ((".*doctest.*") "")
-                (("--cov.*") ""))))
+                ((".*doctest.*") ""))))
           (replace 'check
             (lambda* (#:key tests? test-flags #:allow-other-keys)
               (when tests?
