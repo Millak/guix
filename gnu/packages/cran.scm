@@ -6037,6 +6037,33 @@ of blocks (groups of samples).  @code{permute} also allows split-plot designs,
 in which the whole-plots or split-plots or both can be freely exchangeable.")
    (license license:gpl2+)))
 
+(define-public r-pingr
+  (package
+    (name "r-pingr")
+    (version "2.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "pingr" version))
+       (sha256
+        (base32 "152zffi2bg5yyjbk7h83fdn1n6ab24m14d69qb2xhs4bydjad2r1"))))
+    (properties `((upstream-name . "pingr")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:skipped-tests
+      ;; In the build container you can't ping anything.
+      '(("test-icmp.R" "We can ping localhost" "We can ping a remote host")
+        ("test-tcp.R" "We can ping a remote host"))))
+    (propagated-inputs (list r-processx))
+    (native-inputs (list r-testthat))
+    (home-page "https://r-lib.github.io/pingr/")
+    (synopsis "Check if a remote computer is up")
+    (description
+     "Check if a remote computer is up.  It can either just call the system
+@command{ping} command, or check a specified TCP port.")
+    (license license:expat)))
+
 (define-public r-pkgconfig
   (package
     (name "r-pkgconfig")
