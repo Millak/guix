@@ -941,13 +941,7 @@ cases.")
                             "test_typecheck_explicit_kwargs"))
               ;; Assertions are not equal.
               "--deselect=tests/test_cli/test_test.py::test_no_violations"
-              "--deselect=tests/test_doctest.py::test_doctest[test5]")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                ((".*--cov.*") "")))))))
+              "--deselect=tests/test_doctest.py::test_doctest[test5]")))
     (native-inputs
      (list python-flit-core
            python-docstring-parser
