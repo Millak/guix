@@ -13398,13 +13398,16 @@ Python list with elements of type @code{PIL.Image} (from the
 (define-public python-pillow
   (package
     (name "python-pillow")
-    (version "11.1.0")
+    (version "12.1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pillow" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/python-pillow/Pillow")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "081abgpz7g013cgzz7pjhmf8m7q626ngza4hnfs76vdk104ag39n"))))
+        (base32 "1g374rklljx0941j6d1gib9pgcq3scmqw9psqaj2c7m8pilqsn9n"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -13420,7 +13423,8 @@ Python list with elements of type @code{PIL.Image} (from the
                 (setenv "HOME" (getcwd))
                 (invoke "python" "selftest.py" "--installed")
                 (invoke "python" "-m" "pytest" "-vv")))))))
-    (native-inputs (list python-defusedxml
+    (native-inputs (list pybind11
+                         python-defusedxml
                          python-markdown2
                          python-olefile
                          python-pytest
@@ -13433,7 +13437,7 @@ Python list with elements of type @code{PIL.Image} (from the
                   libwebp
                   openjpeg
                   zlib))
-    (home-page "https://python-pillow.org")
+    (home-page "https://python-pillow.github.io/")
     (synopsis "Fork of the Python Imaging Library")
     (description
      "The Python Imaging Library adds image processing capabilities to your
@@ -13444,8 +13448,8 @@ stored in a few basic pixel formats.  It should provide a solid foundation for
 a general image processing tool.")
     (properties `((cpe-name . "pillow")))
     (license (license:x11-style
-              "http://www.pythonware.com/products/pil/license.htm"
-              "The PIL Software License"))))
+              "https://github.com/python-pillow/Pillow/blob/12.1.1/LICENSE"
+              "MIT-CMU License"))))
 
 (define-public python-pillow-heif
   (package
