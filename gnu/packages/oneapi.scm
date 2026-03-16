@@ -76,7 +76,7 @@
   ;; See doc/build/build.md.
   (package
     (name "onednn")
-    (version "3.10.2")
+    (version "3.13.2")
     (source
      (origin
        (method git-fetch)
@@ -85,7 +85,7 @@
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1imwsaj4sfsr4m6szhn272f7yikg0ixif4savbzyjdn1haz7pvpx"))
+        (base32 "0abrqhj33prdc17dw9r4mil1x9vg53kq615w0dncqm6vyvgx57ib"))
        (modules '((guix build utils)
                   (ice-9 rdelim)))
        ;; Copyright date used by code generation script
@@ -116,11 +116,11 @@
          "-DONEDNN_BUILD_GRAPH=OFF") ;See scripts/README.md
       #:phases
       #~(modify-phases %standard-phases
-          ;; This test times out after 3600 seconds.
-          (add-after 'unpack 'disable-matmul-testing
+          ;; Benchdnn tests takes hours in a 100 cpu machine.
+          (add-after 'unpack 'disable-benchdnn-testing
             (lambda _
-              (substitute* "tests/benchdnn/benchdnn.cpp"
-                (("matmul::bench.*") ";\n"))))
+              (substitute* "tests/CMakeLists.txt"
+                (("add_subdirectory\\(benchdnn\\)") ""))))
           ;; See scripts/README.md.
           (add-after 'configure 'codegen
             (lambda _
@@ -136,7 +136,7 @@
                 ;; Modifies include/oneapi/dnnl/dnnl.hpp
                 (invoke "python3" "scripts/generate_format_tags.py")))))))
     (native-inputs
-     (list castxml clang-17 googletest python-minimal-wrapper))
+     (list castxml clang googletest python-minimal-wrapper))
     (home-page "https://uxlfoundation.github.io/oneDNN/")
     (synopsis "Deep neural network library")
     (description
