@@ -7815,7 +7815,6 @@ matplotlib plots or supply colors for a web application.")
     ;; tests: 332 passed, 2 skipped
     (native-inputs
      (list python-pytest
-           python-pytest-html
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs

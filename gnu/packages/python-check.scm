@@ -843,7 +843,6 @@ intuitive syntax.")
     (native-inputs
      (list python-path
            python-pytest
-           python-pytest-html
            python-pyyaml
            python-setuptools
            python-setuptools-scm))

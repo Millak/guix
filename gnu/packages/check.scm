@@ -3081,7 +3081,6 @@ possible to write plugins to add your own checks.")
            python-path
            python-pyhamcrest
            python-pytest
-           python-pytest-html
            python-setuptools))
     (propagated-inputs
      (list python-colorama
