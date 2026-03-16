@@ -1853,6 +1853,40 @@ packages.")
 processes, in parallel, in the console, with an interactive TUI.")
     (license license:expat)))
 
+(define-public python-nrepl
+  (package
+    (name "python-nrepl")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~ngraves/nrepl-python")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ns8c5d29vi11qma1nnazsja5nibknp97ig0lg45wfpjbb5ngl2b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count)))))
+    (native-inputs
+     (list python-flit-core
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-xdist))
+    (propagated-inputs
+     (list python-fastbencode
+           python-gevent
+           python-ipython))
+    (home-page "https://git.sr.ht/~ngraves/nrepl-python")
+    (synopsis "NREPL server for Python")
+    (description
+     "This package provides an implementation of the @url{https://nrepl.org,
+NREPL} protocol for Python.")
+    (license license:gpl3+)))
+
 (define-public python-num2words
   (package
     (name "python-num2words")
