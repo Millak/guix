@@ -26842,15 +26842,6 @@ generators and Python 3.7's context managers into Python 3.5.")
        (sha256
         (base32 "1lvparrx5sfnapaq4mwk0ai7kqrwg6h2ykc2gqc5wsjs7mx1lcnr"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              ;; Drop test coverage requirements
-              (substitute* "setup.cfg"
-                ((".*--cov.*") "")))))))
     (native-inputs
      (list python-pytest
            python-pytest-asyncio
