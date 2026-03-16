@@ -2218,13 +2218,7 @@ compilation and is especially performant on multi-core parallelism.")
      (list
       ;; tests: 177 passed, 3 skipped, 2 deselected, 971 warnings
       #:test-flags
-      #~(list "-m" "not benchmark and not slow")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                ((" --cov=numdifftools --cov-report=xml") "")))))))
+      #~(list "-m" "not benchmark and not slow")))
     (native-inputs
      (list python-algopy
            python-line-profiler
