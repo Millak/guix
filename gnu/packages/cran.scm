@@ -12673,13 +12673,13 @@ change in the future.")
 (define-public r-multilevel
   (package
     (name "r-multilevel")
-    (version "2.7.1")
+    (version "2.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "multilevel" version))
        (sha256
-        (base32 "07zr2vpazp61klrdc416x3x5p2sqmwp7y1cnscz1smr1vd5qjz1i"))))
+        (base32 "15g1qrcd4idnqz0af8n7gcakixnh2acf057if66b3x8bx58y6dzq"))))
     (properties `((upstream-name . "multilevel")))
     (build-system r-build-system)
     (propagated-inputs (list r-mass r-nlme))
