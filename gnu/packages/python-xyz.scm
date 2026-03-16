@@ -34297,14 +34297,7 @@ these linters: @code{pycodestlye}, @code{pyflakes}")
                           ;; 12:34:56\u202fPM -0500' == 'January 10, 2006,
                           ;; 12:34:56\u202fPM EST'
                           "test_format_date_timezone")
-                    " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              ;; Drop test coverage requirements.
-              (substitute* "pyproject.toml"
-                (("addopts.*") "")))))))
+                    " and not "))))
     (native-inputs
       (list nss-certs-for-test
             python-feedparser
