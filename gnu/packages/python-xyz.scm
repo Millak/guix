@@ -21241,14 +21241,6 @@ syntax highlighting, markdown and more to the terminal.")
         (sha256
          (base32 "1bw3lsj49dln8q7407gv85y8lzdn9a3jcjl9acax6q6x9l73cgqx"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                ((" --cov --cov-report term") "")))))))
     (native-inputs
      (list python-inline-snapshot
            python-pytest
