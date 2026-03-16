@@ -8656,14 +8656,7 @@ jspacker or CSS tidy.  It also supports URL rewriting in CSS files.")
       #~(list "-k"
               (string-append
                "not .badssl.com"
-               " and not test_assert_fingerprint_in_cert_chain_failure"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              ;; Drop test coverage requirements.
-              (substitute* "setup.cfg"
-                (("--cov(-[^ ]*)?=[^ ]*") "\n")))))))
+               " and not test_assert_fingerprint_in_cert_chain_failure"))))
     (propagated-inputs (list python-certifi python-urllib3))
     (native-inputs (list nss-certs-for-test
                          python-aiohttp
