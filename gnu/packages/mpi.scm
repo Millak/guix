@@ -168,20 +168,17 @@ bind processes, and much more.")
   (package
     (name "hwloc")
     (version "2.13.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://download.open-mpi.org/release/hwloc/v"
-                                  (version-major+minor version)
-                                  "/hwloc-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1aqdznqp7f18yg95vbr5n6ccxxdiywacygvn3wbhzn7bnspkdsaj"))
-              ;; XXX: Remove after updating package from 2.13.0.
-              (patches (search-patches "hwloc-add-with-opencl.patch"))))
-    (properties
-     ;; Tell the 'generic-html' updater to monitor this URL for updates.
-     `((release-monitoring-url
-        . "https://www-lb.open-mpi.org/software/hwloc/current")))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/open-mpi/hwloc")
+              (commit (string-append "hwloc-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1l9skkcizlv0qvw2lzmysndbm528xvszhiqq3569da157qpa5xav"))
+       ;; XXX: Remove after updating package from 2.13.0.
+       (patches (search-patches "hwloc-add-with-opencl.patch"))))
     (build-system gnu-build-system)
     (outputs '("out"           ;'lstopo' & co., depends on Cairo, libx11, etc.
                "lib"           ;small closure
@@ -239,19 +236,17 @@ bind processes, and much more.")
                 (substitute* (string-append lib "/lib/pkgconfig/hwloc.pc")
                   (("^.*prefix=.*$")
                    "")))))
-          (add-after 'install 'move-man3-pages
-            (lambda* (#:key outputs #:allow-other-keys)
-              ;; Move section 3 man pages to the "doc" output.
-              (let ((out (assoc-ref outputs "out"))
-                    (doc (assoc-ref outputs "doc")))
-                (copy-recursively (string-append out "/share/man/man3")
-                                  (string-append doc "/share/man/man3"))
-                (delete-file-recursively
-                 (string-append out "/share/man/man3")))))
-          (add-after 'unpack 'delete-configure
+          (add-after 'install 'move-man-pages
             (lambda _
-              ;; Remove configure file to generate it with patch.
-              (delete-file "configure")))
+              ;; Move section 1 and 3 man pages to the "doc" output.
+              (copy-recursively (string-append #$output "/share/man/man1")
+                                (string-append #$output:doc "/share/man/man1"))
+              (copy-recursively (string-append #$output "/share/man/man7")
+                                (string-append #$output:doc "/share/man/man7"))
+              (delete-file-recursively
+               (string-append #$output "/share/man/man1"))
+              (delete-file-recursively
+               (string-append #$output "/share/man/man7"))))
           (add-before 'check 'skip-tests-that-require-/sys
             (lambda _
               ;; 'test-gather-topology.sh' requires /sys as of 2.9.0; skip it.
