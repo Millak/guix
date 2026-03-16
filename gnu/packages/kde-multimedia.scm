@@ -1205,17 +1205,21 @@ CDs.")
      (list kconfig
            kcoreaddons
            kdbusaddons
+           kdeclarative ; for org.kde.kquickcontrolsaddons
            ki18n
            kirigami
            kirigami-addons
+           kitemmodels
            kwindowsystem
            mpvqt
            purpose
+           qqc2-desktop-style ; for org.kde.desktop
            qtdeclarative
            qtkeychain-qt6
            qtmultimedia
            qtsvg
            qtwayland
+           sonnet
            yt-dlp))
     (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/plasmatube/")
