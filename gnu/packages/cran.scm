@@ -36751,14 +36751,14 @@ a custom text loading screen.")
 (define-public r-shinybs
   (package
     (name "r-shinybs")
-    (version "0.63.0")
+    (version "0.64.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "shinyBS" version))
        (sha256
         (base32
-         "003v0iv93xqx5v8cvg0mfg7d3byi716pyrf41in4w1fmmk6j803i"))))
+         "1l69a8bxksrid47gyzx7ihdqyciqbhwhpfncyfkx6ysa7asjadzj"))))
     (properties `((upstream-name . "shinyBS")))
     (build-system r-build-system)
     ;; The tests spawn Shiny browser apps.  They cannot be run
