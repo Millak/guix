@@ -985,13 +985,13 @@ date/time formats with varying specificity.")
 (define-public r-bma
   (package
     (name "r-bma")
-    (version "3.18.20")
+    (version "3.18.21")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "BMA" version))
        (sha256
-        (base32 "18rhz04ykd4gpf8wkj93x5q64ng0x44w7bakhjrsigrcpxnajwid"))))
+        (base32 "0q2fd0s5mfjx0wzm9x3d5mcsbypixxf0ypklqcf93595iw61n2ym"))))
     (properties `((upstream-name . "BMA")))
     (build-system r-build-system)
     (propagated-inputs (list r-inline r-leaps r-robustbase r-rrcov r-survival))
