@@ -2939,14 +2939,25 @@ functions borrowed from contributed R packages as well.")
 (define-public r-devtools
   (package
     (name "r-devtools")
-    (version "2.4.6")
+    (version "2.5.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "devtools" version))
               (sha256
                (base32
-                "16hbp07y3i4wr6gh2bx2zf1czad7z9c7kfpw5dm6l3hin2ha296l"))))
+                "1vafq6bcyhz3xxqvbs1rpqvck2n83wq6cd7y3ai38yf1l6b7c137"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:skipped-tests
+      ;; These tests all use pak to attempt to contact bioconductor.org
+      '(("test-reload.R" "reload works")
+        ("test-vignettes.R"
+         "Rmarkdown vignettes copied into doc"
+         "extra files copied and removed"
+         ".gitignore updated when building vignettes")
+        ("test-uninstall.R"
+         "uninstall\\(\\) unloads and removes from library"))))
     (propagated-inputs
      (list r-cli
            r-desc
@@ -2955,12 +2966,12 @@ functions borrowed from contributed R packages as well.")
            r-lifecycle
            r-memoise
            r-miniui
+           r-pak
            r-pkgbuild
            r-pkgdown
            r-pkgload
            r-profvis
            r-rcmdcheck
-           r-remotes
            r-rlang
            r-roxygen2
            r-rversions
@@ -2970,7 +2981,7 @@ functions borrowed from contributed R packages as well.")
            r-usethis
            r-withr))
     (native-inputs
-     (list r-knitr r-spelling))
+     (list r-covr r-knitr r-quarto r-remotes r-spelling))
     (home-page "https://github.com/hadley/devtools")
     (synopsis "Tools to make developing R packages easier")
     (description "The devtools package is a collection of package development
