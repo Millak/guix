@@ -2009,16 +2009,7 @@ using the string similarity calculations from FuzzyWuzzy.")
         (base32 "0n9v4zayxp2r6lhmsi4xpk5lnjs4x6h6p7isr86xyhm7mjxd7jp1"))
        (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 222 passed
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                ((" \"pytest-cov\", ") "")
-                ((" --cov-fail-under=90 --cov=cpplint") "")))))))
+    ;; tests: 222 passed
     (native-inputs
      (list python-pytest
            python-pytest-timeout
