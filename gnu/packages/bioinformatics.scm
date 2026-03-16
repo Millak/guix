@@ -3241,7 +3241,11 @@ and gene expression visualization.")
             (lambda _
               ;; Numba needs a writable dir to cache functions.
               (setenv "NUMBA_CACHE_DIR" "/tmp")
-              (delete-file-recursively "metacells"))))))
+              (delete-file-recursively "metacells")))
+          (add-before 'sanity-check 'pre-sanity-check
+            (lambda _
+              ;; Numba needs a writable dir to cache functions.
+              (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (propagated-inputs (list python-anndata
                              python-cvxpy
                              python-fastcluster
@@ -3255,7 +3259,7 @@ and gene expression visualization.")
                              python-threadpoolctl
                              python-umap-learn))
     (native-inputs (list pybind11-2 python-pytest python-setuptools))
-    (home-page "https://github.com/tanaylab/metacells.git")
+    (home-page "https://github.com/tanaylab/metacells")
     (synopsis "Single-cell RNA Sequencing Analysis")
     (description "The metacells package implements the improved metacell
 algorithm for single-cell RNA sequencing (scRNA-seq) data analysis within the
