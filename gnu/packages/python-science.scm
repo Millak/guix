@@ -5368,13 +5368,7 @@ of Pandas
       ;; AssertionError: Arrays are not equal
       #~(list "--deselect=tests/test_pairwise.py::TestPairwise::test_pairwise_tests"
               ;; AssertionError: assert False
-              "--deselect=tests/test_power.py::TestPower::test_power_ttest")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                ((" --cov") "")))))))
+              "--deselect=tests/test_power.py::TestPower::test_power_ttest")))
     (native-inputs
      (list python-pytest
            python-setuptools))
