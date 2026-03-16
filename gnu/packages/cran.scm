@@ -20165,14 +20165,14 @@ solution.  Interfaces to solvers on CRAN and elsewhere are provided.")
 (define-public r-squarem
   (package
     (name "r-squarem")
-    (version "2021.1")
+    (version "2026.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "SQUAREM" version))
        (sha256
         (base32
-         "0n1s32l9p4vdm3h5q6g43s0qbpzry08difsh0yay80wrla6f3rb6"))))
+         "1bgwdkshcml5i6ib4lhqrlh24a9qsznjl9m4drjadcvn90w2mcz9"))))
     (properties `((upstream-name . "SQUAREM")))
     (build-system r-build-system)
     (native-inputs (list r-setrng))
