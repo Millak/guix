@@ -3235,7 +3235,8 @@ celestial-to-terrestrial coordinate transformations.")
            pkg-config
            python-cython
            python-extension-helpers
-           python-setuptools-scm))
+           python-setuptools-scm
+           specification-astropy-data))
     (propagated-inputs
      (list python-astropy-iers-data
            python-configobj      ;to replace custom module
