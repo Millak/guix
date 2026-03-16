@@ -23,8 +23,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-8)
   #:use-module (srfi srfi-26)
-  #:export (@*
-            @@*
+  #:export (@@*
             define-with-docs
 
             %doc-regex
@@ -54,10 +53,6 @@
             include-list\exclude-list
             eval-with-clojure
             create-jar))
-
-(define-syntax-rule (@* module name)
-  "Like (@ MODULE NAME), but resolves at run time."
-  (module-ref (resolve-interface 'module) 'name))
 
 (define-syntax-rule (@@* module name)
   "Like (@@ MODULE NAME), but resolves at run time."
