@@ -1602,10 +1602,6 @@ manage (install/update) them for you.")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("--cov.*") ""))))
           (add-after 'unpack 'correct-python-executable-name
             (lambda _
               (let ((python #$(this-package-input "python-wrapper")))
