@@ -996,7 +996,6 @@ Sphinx documents in web templates and to handle searches.")
            python-plotly
            python-pydata-sphinx-theme
            python-pytest
-           python-pytest-cov
            python-seaborn
            python-setuptools
            python-setuptools-scm

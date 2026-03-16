@@ -1406,7 +1406,7 @@ Built-in integration with @url{http://nedbatchelder.com/code/coverage/, coverage
         (base32 "0j7z54nd72qfc065jgljqx53dhfkfz0922fk8qqczg7swmqf6cqv"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-pytest-cov python-setuptools))
+     (list python-pytest python-setuptools))
     (home-page "https://hiro.readthedocs.io")
     (synopsis "Time manipulation utilities for testing in Python")
     (description
@@ -1463,10 +1463,9 @@ Python software under test, when they make an HTTP query.")
                     ;; XXX: Python/Black versions not as expected.
                     " and not test_black_autoformatter_from_grammar"))))
     (native-inputs
-     (list python-black         ;hard requirements to run tests
+     (list python-black ;hard requirements to run tests
            python-parso
            python-pytest
-           python-pytest-cov
            python-pytest-xdist
            python-setuptools))
     (propagated-inputs
@@ -2578,11 +2577,10 @@ functions.")
               "-k" "not rabbit and not redis")))
     (native-inputs
      (list python-celery-minimal
-           python-memcached             ;optional dependency, needed for tests
+           python-memcached ;optional dependency, needed for tests
            python-poetry-core
-           python-pytest
-           python-pytest-cov            ;coverage options in pyproject.toml
-           python-redis                 ;optional dependency, needed for tests
+           python-pytest ;coverage options in pyproject.toml
+           python-redis ;optional dependency, needed for tests
            python-requests))            ;for python-docker
     (propagated-inputs
      (list python-psutil
@@ -3031,7 +3029,6 @@ variables in the @file{pytest.ini} file.")
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-pytest-cov
            python-pytest-doctestplus
            python-setuptools-scm
            python-setuptools
@@ -4838,7 +4835,6 @@ debugging failures and optimizing the scheduler to improve speed.")
       (native-inputs
        (list python-mock
              python-pytest
-             python-pytest-cov
              python-setuptools
              python-wheel))
       (propagated-inputs
@@ -5117,7 +5113,6 @@ servers.")
     (native-inputs
      (list python-pytest
            python-packaging
-           python-pytest-cov
            python-setuptools
            python-setuptools-scm
            python-trove-classifiers

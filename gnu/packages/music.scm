@@ -3242,7 +3242,6 @@ music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
     (native-inputs
      (list lilypond
            python-pytest
-           python-pytest-cov
            python-setuptools
            python-wheel))
     (propagated-inputs

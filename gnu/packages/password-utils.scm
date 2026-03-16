@@ -1716,9 +1716,7 @@ program.")
             (lambda _
               (setenv "HOME" (getcwd)))))))
     (native-inputs
-     (list python-pytest-cov
-           python-pytest-mock
-           python-setuptools))
+     (list python-pytest-mock python-setuptools))
     (inputs
      (list password-store python-pyxdg))
     (home-page "https://github.com/languitar/pass-git-helper")

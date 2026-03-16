@@ -4654,7 +4654,6 @@ Cesium.")
     (native-inputs
      (list python-pydot
            python-pytest
-           python-pytest-cov
            python-pytest-asdf-plugin
            python-pytest-doctestplus
            python-pytest-filter-subpackage
@@ -5179,7 +5178,6 @@ files.")
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-pytest-cov
            python-setuptools
            python-setuptools-scm
            python-wheel))
@@ -5774,7 +5772,6 @@ across many files.")
      (list python-mock
            python-objgraph
            python-pytest
-           python-pytest-cov
            ;; python-pytest-faulthandler
            python-setuptools
            python-wheel

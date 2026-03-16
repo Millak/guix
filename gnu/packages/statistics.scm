@@ -685,8 +685,7 @@ and a lot more.")
       #:test-flags #~(list "-o" "addopts=''")))
     (native-inputs
      (list python-array-api-strict
-           python-pytest
-           python-pytest-cov    ;test collection fails without
+           python-pytest ;test collection fails without
            python-setuptools))
     (propagated-inputs
      (list python-array-api-compat

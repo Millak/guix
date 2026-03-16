@@ -891,7 +891,6 @@ traversing network address translators (@dfn{NAT}s) and firewalls.")
      (list gnupg
            python-pyotp
            python-pytest
-           python-pytest-cov
            python-pyxdg
            python-setuptools))
     (propagated-inputs
@@ -922,9 +921,7 @@ packages.")
         (base32 "0a2q10z44x75fvz6rmhki0vn6500v0ybi50hbhikhkpfr3a5vsbm"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-setuptools))
+     (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-keyring
            python-proton-core))
@@ -958,7 +955,6 @@ packages.")
     (native-inputs
      (list python-pytest
            python-pytest-asyncio
-           python-pytest-cov
            python-pyxdg
            python-setuptools
            network-manager
@@ -1127,7 +1123,6 @@ LocalAgent, server, and python-bindings for that crate.")
     (native-inputs
      (list python-pytest
            python-pytest-asyncio
-           python-pytest-cov
            python-pyxdg
            python-setuptools))
     (propagated-inputs

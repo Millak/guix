@@ -1945,7 +1945,6 @@ r2ghidra.")
     (native-inputs (list python-gitpython
                          python-pytest
                          python-pytest-asyncio
-                         python-pytest-cov
                          python-pytest-mock
                          python-setuptools))
     (inputs (list bash-minimal

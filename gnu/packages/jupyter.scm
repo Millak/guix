@@ -177,8 +177,7 @@ simulation, statistical modeling, machine learning and much more.")
            python-hatchling
            python-ipyparallel-bootstrap
            python-pytest
-           python-pytest-asyncio-0.26  ;some tests fail with v1
-           python-pytest-cov
+           python-pytest-asyncio-0.26 ;some tests fail with v1
            python-pytest-timeout))
     (home-page "https://ipython.org")
     (synopsis "IPython Kernel for Jupyter")

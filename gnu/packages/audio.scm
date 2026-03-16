@@ -4203,9 +4203,7 @@ one-dimensional sample-rate conversion library.")
                  (string-append "'" #$(this-package-input "libsndfile")
                                 "/lib/libsndfile"))))))))
     (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-setuptools))
+     (list python-pytest python-setuptools))
     (inputs
      (list libsndfile
            portaudio))

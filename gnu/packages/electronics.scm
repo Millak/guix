@@ -3251,7 +3251,6 @@ Numpy arrays for convenience.")
               (setenv "PDM_BUILD_SCM_VERSION" #$version))))))
     (native-inputs
      (list python-pdm-backend
-           python-pytest-cov
            python-setuptools
            python-setuptools-scm
            sby
@@ -3602,9 +3601,7 @@ Standard} data mode.")
         (base32 "15nnydvr1a4ykh8cagi484sfgvdg0dnjxaw6c0ivhjbrbblpaqnw"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest-cov
-           python-setuptools
-           python-setuptools-scm))
+     (list python-setuptools python-setuptools-scm))
     (home-page "http://pyvcd.readthedocs.io/")
     (synopsis "Library to manipulate digital wave files")
     (description
@@ -3881,10 +3878,7 @@ Automation}.")
                          #$output "/share/info/hdlmake-figures")))))
       #:test-flags #~(list "test_all.py")))
     (native-inputs
-     (list python-pytest-cov
-           python-setuptools
-           python-sphinx
-           texinfo))
+     (list python-setuptools python-sphinx texinfo))
     (propagated-inputs (list python-networkx))
     (home-page "https://ohwr.gitlab.io/project/hdl-make/")
     (synopsis "Generate multi-purpose makefiles for HDL projects")

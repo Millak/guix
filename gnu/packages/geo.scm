@@ -1264,7 +1264,6 @@ projections and coordinate transformations library.")
            python-boto3
            python-cython
            python-pytest
-           python-pytest-cov
            python-pytz
            python-setuptools))
     (home-page "https://github.com/Toblerity/Fiona")
@@ -1532,7 +1531,6 @@ street bearings/orientations, and speed/travel time.")
            python-pyproj
            python-pyyaml
            python-pytest
-           python-pytest-cov
            python-pytest-httpserver
            python-pytz
            python-requests

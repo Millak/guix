@@ -614,7 +614,6 @@ services.")
      (list python-bottle
            python-mock
            python-pytest-8
-           python-pytest-cov
            python-pytest-mock
            python-setuptools))
     (propagated-inputs
@@ -2578,10 +2577,7 @@ aiohttp.  It supports SOCKS4(a) and SOCKS5.")
      (list
       #:tests? #f))                     ;tests require internet access
     (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-pytest-asyncio
-           python-setuptools))
+     (list python-pytest python-pytest-asyncio python-setuptools))
     (propagated-inputs (list python-pycares))
     (home-page "https://github.com/saghul/aiodns")
     (synopsis "Simple DNS resolver for asyncio")
@@ -2688,10 +2684,7 @@ comes with a SOCKS proxy client.")
         (base32 "1wf89l9f0ivlv796pklpgykx6j6ksfqrmvzikd8w5j6ldln7bv50"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-pytest-asyncio
-           python-setuptools))
+     (list python-pytest python-pytest-asyncio python-setuptools))
     (propagated-inputs
      (list python-typing-extensions))
     (home-page "https://github.com/vxgmichel/aiostream")
@@ -3532,7 +3525,6 @@ origin than that of the web application.")
      (list python-cryptography
            python-mock
            python-pytest
-           python-pytest-cov
            python-pytest-randomly
            python-pytest-timeout
            python-setuptools))
@@ -3660,7 +3652,6 @@ other HTTP libraries.")
            python-objgraph
            python-path
            python-pytest
-           python-pytest-cov
            python-pytest-forked
            python-pytest-services
            python-pytest-sugar
@@ -3982,7 +3973,6 @@ Context Protocol (MCP).")
      (list python-beautifulsoup4 python-lxml python-requests))
     (native-inputs
      (list python-pytest
-           python-pytest-cov
            python-pytest-flake8
            python-pytest-httpbin
            python-pytest-mock
@@ -5065,10 +5055,7 @@ state-tracking and configuration abstractions.")
      (list
       #:test-flags #~(list "--ignore=tests/test_cli.py")))
     (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-pytest-socket
-           python-setuptools))
+     (list python-pytest python-pytest-socket python-setuptools))
     (propagated-inputs
      (list python-idna))
     (home-page "https://github.com/niksite/url-normalize")
@@ -7733,7 +7720,7 @@ pass private data, and to spawn subprocesses to handle requests.")
        (sha256
         (base32 "15as15mgz9xn33abwrp0x0mbj537ib3q47z8ky5475c05wasznwx"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-pytest-cov python-setuptools))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://pylonsproject.org/")
     (synopsis "Load, configure, and compose WSGI applications and servers")
     (description
@@ -7998,7 +7985,7 @@ mainloop.")
      (list
       #:test-flags
       #~(list "--pyargs" "dpkt")))
-    (native-inputs (list python-pytest python-pytest-cov python-setuptools))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/kbandla/dpkt")
     (synopsis "Packet generator and parser for TCP/IP protocols")
     (description
@@ -8704,7 +8691,6 @@ libraries.")
            python-orjson
            python-pytest
            python-pytest-asyncio
-           python-pytest-cov
            python-pytz
            python-pyyaml
            python-requests
@@ -10842,10 +10828,7 @@ according to the standard set by PasteDeploy")
       ;; file=/tmp/guix-build-python-hupper-1.12.1.drv-0/tmpm9n4697p
       #:test-flags #~(list "--ignore=tests/test_it.py")))
     (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-setuptools
-           python-wheel))
+     (list python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-watchdog))
     (home-page "https://readthedocs.org/projects/hupper")
@@ -11590,9 +11573,7 @@ interpreter written in pure Python.")
          (add-after 'unpack 'change-directory
            (lambda _ (chdir "python") #t)))))
     (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-setuptools))
+     (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-cryptography))
     (home-page "https://github.com/web-push-libs/encrypted-content-encoding")

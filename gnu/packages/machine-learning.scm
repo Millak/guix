@@ -2981,10 +2981,7 @@ Covariance Matrix Adaptation Evolution Strategy (CMA-ES) for Python.")
        (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-hatchling
-           python-pytest
-           python-pytest-cov
-           python-pytest-xdist))
+     (list python-hatchling python-pytest python-pytest-xdist))
     (propagated-inputs
      (list python-future
            python-numpy))
@@ -5604,10 +5601,7 @@ in the audio domain.")
              python-tqdm
              python-xxhash))
       (native-inputs
-       (list openssl
-             python-flit-core
-             python-pytest
-             python-pytest-cov))
+       (list openssl python-flit-core python-pytest))
       (home-page "https://pyg.org")
       (synopsis "Graph Neural Network library for PyTorch")
       (description
@@ -5742,9 +5736,7 @@ as torchvision, torchtext, and others.")
          "16ypci664l54ka6ickwkpaa2id14h9h00y7z24z0bv0szld4mrxg"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest-8
-           python-pytest-cov
-           python-setuptools))
+     (list python-pytest-8 python-setuptools))
     (home-page "https://github.com/magmax/python-readchar")
     (synopsis "Library to easily read single chars and key strokes")
     (description "This package provides a Python library to easily read single

@@ -434,10 +434,7 @@ pybcj provides Python bindings to a BCJ implementation in C.")
         (base32 "1k6h9x8j65hssbgmvhl71sdjj9aq8d81drdibrdflaz7a895sjib"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-setuptools
-           python-setuptools-scm))
+     (list python-pytest python-setuptools python-setuptools-scm))
     (propagated-inputs
      (list python-cffi))
     (home-page "https://github.com/miurahr/bcj-cffi")
@@ -618,10 +615,7 @@ Python's zlib/bz2/lzma modules.")
     (propagated-inputs
      (list python-cffi))
     (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-setuptools
-           python-setuptools-scm))
+     (list python-pytest python-setuptools python-setuptools-scm))
     (home-page "https://github.com/miurahr/ppmd")
     (synopsis "Prediction by Partial Matching compression library")
     (description "PPMd is a compression algorithm library using the Prediction

@@ -620,8 +620,7 @@ mechanism for serializing structured data.")
            python-poetry-dynamic-versioning
            python-pydantic
            python-pytest
-           python-pytest-benchmark
-           python-pytest-cov))
+           python-pytest-benchmark))
     (home-page "https://pypi.org/project/pure-protobuf/")
     (synopsis "Protobuf implementation using dataclasses")
     (description

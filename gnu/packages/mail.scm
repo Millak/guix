@@ -1757,7 +1757,7 @@ and search library.")
                 (("version=VERSION,")
                  (string-append "version='" #$version "',"))))))))
     (propagated-inputs (list python-cffi))
-    (native-inputs (list python-pytest python-pytest-cov python-setuptools))
+    (native-inputs (list python-pytest python-setuptools))
     (synopsis "Pythonic bindings for the notmuch mail database using CFFI")
     (license license:gpl3+)))
 
@@ -4815,10 +4815,7 @@ DKIM and ARC sign messages and output the corresponding signature headers.")
        ;; This QA test requires git.
        (list #:test-flags ''("-k" "not test_ge_master")))
       (native-inputs
-       (list python-pytest
-             python-pytest-cov
-             python-pytest-mock
-             python-setuptools))
+       (list python-pytest python-pytest-mock python-setuptools))
       (propagated-inputs
        (list python-atpublic
              python-attrs))

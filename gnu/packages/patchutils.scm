@@ -679,7 +679,6 @@ patches do not match perfectly.")
     (native-inputs
      (list python-pbr
            python-pytest
-           python-pytest-cov
            python-mock
            python-setuptools))
     (home-page "https://github.com/getpatchwork/pwclient")

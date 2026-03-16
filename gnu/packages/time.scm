@@ -532,10 +532,7 @@ aniso8601.")
           (base32 "1m0zrr60p4brkdwkkhdzhvmd98flklqgbjryjpdcfq1c4gd60j0q"))))
       (build-system pyproject-build-system)
       (native-inputs
-       (list python-poetry-core
-             python-pytest
-             python-pytest-cov
-             python-setuptools))
+       (list python-poetry-core python-pytest python-setuptools))
       (home-page "https://github.com/ErikBjare/timeslot")
       (synopsis "Data type for representing time slots")
       (description

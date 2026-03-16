@@ -1442,7 +1442,6 @@ prompt.")
        (list openbox ;necessary for test_functional.py
              python-pluggy
              python-pytest
-             python-pytest-cov
              python-setuptools
              xorg-server-for-tests))
       (inputs

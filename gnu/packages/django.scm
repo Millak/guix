@@ -313,7 +313,7 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
         (base32 "1a5vd07wrnfbclvf6pz9p8ag9kdd1453lsl9q0bkyc45hq2xqd2a"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-django python-pytest python-pytest-cov python-setuptools))
+     (list python-django python-pytest python-setuptools))
     (home-page "https://github.com/epicserve/django-cache-url")
     (synopsis "Configure Django cache settings from URLs")
     (description
@@ -403,8 +403,7 @@ and adapters that are useful for non-trivial configuration scenarios.")
      (list python-aiosmtpd
            python-factory-boy
            python-pygments
-           python-pytest
-           python-pytest-cov ; runs by default
+           python-pytest ; runs by default
            python-pytest-django
            python-setuptools
            python-shortuuid
@@ -2168,8 +2167,7 @@ templates and not in python-level form definitions.")
         (base32 "02ipa8d8ndnj8bs4dqhk03id4vmrvyr25vkpfqcfhmwipbhx8dc0"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest
-           python-pytest-cov ; runs by default
+     (list python-pytest ; runs by default
            python-pytest-django
            python-setuptools
            python-wheel))

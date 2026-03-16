@@ -1812,7 +1812,6 @@ pandas code.")
       #:test-flags #~(list "-k" "not test_default_dpi")))
     (native-inputs
      (list python-pytest
-           python-pytest-cov
            python-pytest-mpl
            python-setuptools
            python-setuptools-scm
@@ -2377,7 +2376,7 @@ workflows.")
     (build-system pyproject-build-system)
     (propagated-inputs (list python-numpy))
     (native-inputs
-     (list python-pytest python-pytest-cov python-setuptools python-wheel))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/dgasmith/opt_einsum")
     (synopsis "Optimizing numpys einsum function")
     (description
@@ -3809,7 +3808,6 @@ SLURM jobs (meant for internal use by python-snakemake-executor-plugin-slurm).")
     (native-inputs
      (list python-dask
            python-pytest
-           python-pytest-cov ; runs by default
            python-setuptools
            python-setuptools-scm))
     (home-page "https://github.com/pydata/sparse/")
@@ -4788,8 +4786,7 @@ NumPy and does not depend on C++ ROOT.")
     (propagated-inputs
      (list python-matplotlib python-pandas))
     (native-inputs
-     (list python-pytest-runner python-pytest-cov
-           python-setuptools python-wheel))
+     (list python-pytest-runner python-setuptools python-wheel))
     (home-page "https://upsetplot.readthedocs.io")
     (synopsis "Draw UpSet plots with Pandas and Matplotlib")
     (description
@@ -5872,7 +5869,6 @@ visual integration of spatially referenced datasets.")
                          python-numpy
                          python-pyqt-6
                          python-pytest
-                         python-pytest-cov
                          python-pytest-qt
                          python-setuptools
                          python-sphinx-gallery
@@ -6245,7 +6241,6 @@ compagnies.")
            python-pytest
            python-pytest-asyncio
            python-pytest-benchmark
-           python-pytest-cov
            python-pytest-mock
            python-pytest-sugar
            python-reflink
@@ -6284,7 +6279,6 @@ abstractions to use in dvc and dvc-data.")
      (list python-click
            python-pytest
            python-pytest-benchmark
-           python-pytest-cov
            python-pytest-mock
            ;; python-pytest-servers is not packaged in Guix yet
            python-setuptools
