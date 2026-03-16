@@ -23,8 +23,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-8)
   #:use-module (srfi srfi-26)
-  #:export (@@*
-            define-with-docs
+  #:export (define-with-docs
 
             %doc-regex
             install-doc
@@ -53,10 +52,6 @@
             include-list\exclude-list
             eval-with-clojure
             create-jar))
-
-(define-syntax-rule (@@* module name)
-  "Like (@@ MODULE NAME), but resolves at run time."
-  (module-ref (resolve-module 'module) 'name))
 
 (define-syntax-rule (define-with-docs name docs val)
   "Create top-level variable named NAME with doc string DOCS and value VAL."
