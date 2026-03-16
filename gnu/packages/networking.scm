@@ -548,11 +548,13 @@ components.")
            python-wrapper
            python-sphinx
            python-sphinxcontrib-doxylink
-           python-pyyaml))
+           python-pyyaml
+           python-packaging))
     (inputs
      (append
       (list eudev
             glib
+            gstreamer
             gst-plugins-base
             libevent
             libjpeg-turbo
