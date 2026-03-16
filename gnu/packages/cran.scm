@@ -5938,6 +5938,39 @@ extended GCD, Farey series and continued fractions.  It includes Legendre and
 Jacobi symbols, some divisor functions, Euler's Phi function, etc.")
     (license license:gpl3+)))
 
+(define-public r-pak
+  (package
+    (name "r-pak")
+    (version "0.9.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "pak" version))
+       (sha256
+        (base32 "0jx14dkdnry9r5pp7lfn8acpq64jv9sn08il672h8x3qad45lcb7"))))
+    (properties `((upstream-name . "pak")))
+    (build-system r-build-system)
+    (inputs (list curl))
+    (native-inputs (list pkg-config
+                         r-callr
+                         r-cli
+                         r-keyring
+                         r-pingr
+                         r-pkgload
+                         r-testthat
+                         r-withr))
+    (home-page "https://pak.r-lib.org/")
+    (synopsis "Another approach to package installation")
+    (description
+     "The goal of pak is to make package installation faster and more
+reliable.  In particular, it performs all HTTP operations in parallel, so
+metadata resolution and package downloads are fast.  Metadata and package
+files are cached on the local disk as well.  @code{pak} has a dependency
+solver, so it finds version conflicts before performing the installation.
+This version of @code{pak} supports CRAN, Bioconductor and GitHub packages as
+well.")
+    (license license:gpl3)))
+
 (define-public r-pbapply
   (package
     (name "r-pbapply")
