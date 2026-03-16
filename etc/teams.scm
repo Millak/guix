@@ -1197,6 +1197,20 @@ the \"texlive\" importer."
         #:scope (list "etc/news.scm"
                       (make-regexp* "^po/"))))
 
+(define-team vcs
+  (team 'vcs
+        #:name "Version control team"
+        #:description
+        "Version control packages, services, and Guix download backends."
+        #:scope (list "gnu/packages/version-control.scm"
+                      "gnu/services/version-control.scm"
+                      "gnu/tests/version-control.scm"
+                      "guix/build/bzr.scm"
+                      "guix/build/cvs.scm"
+                      "guix/build/git.scm"
+                      "guix/build/hg.scm"
+                      "guix/build/svn.scm")))
+
 (define-team xfce
   (team 'xfce
         #:name "Xfce team"

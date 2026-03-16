@@ -480,6 +480,15 @@ tests/import/texlive\.scm                          @guix/tex
 etc/news\.scm                                      @guix/translations
 po/                                                @guix/translations
 
+gnu/packages/version-control\.scm                  @guix/vcs
+gnu/services/version-control\.scm                  @guix/vcs
+gnu/tests/version-control\.scm                     @guix/vcs
+guix/build/bzr\.scm                                @guix/vcs
+guix/build/cvs\.scm                                @guix/vcs
+guix/build/git\.scm                                @guix/vcs
+guix/build/hg\.scm                                 @guix/vcs
+guix/build/svn\.scm                                @guix/vcs
+
 gnu/packages/xfce\.scm                             @guix/xfce
 
 gnu/packages/zig\.scm                              @guix/zig
