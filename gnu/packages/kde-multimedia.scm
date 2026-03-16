@@ -1192,36 +1192,37 @@ CDs.")
   (package
     (name "plasmatube")
     (version "25.12.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kde/stable/release-service/" version
-                                  "/src/plasmatube-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1jc6iqcxz0zyai26vx80nyfr818r4cj8lpw0b1pbvb1vya12v8zy"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/plasmatube-" version ".tar.xz"))
+       (sha256
+        (base32 "1jc6iqcxz0zyai26vx80nyfr818r4cj8lpw0b1pbvb1vya12v8zy"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules pkg-config python-minimal))
     (inputs
      (list kconfig
            kcoreaddons
            kdbusaddons
+           ki18n
            kirigami
            kirigami-addons
-           ki18n
            kwindowsystem
            mpvqt
            purpose
            qtdeclarative
+           qtkeychain-qt6
            qtmultimedia
            qtsvg
-           qtkeychain-qt6
            qtwayland
            yt-dlp))
     (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/plasmatube/")
-    (synopsis "Kirigami YouTube video player")
-    (description "This package provides YouTube video player based
-on QtMultimedia and @command{yt-dlp}.")
+    (synopsis "YouTube and PeerTube video player")
+    (description
+     "Plasmatube is a YouTube video player that uses Invidious and Piped
+APIs.  It can also play videos from PeerTube sources.")
     (license license:gpl3+)))
 
 (define-public rattlesnake
