@@ -12771,18 +12771,18 @@ Munsell colour system.")
 (define-public r-mvtnorm
   (package
     (name "r-mvtnorm")
-    (version "1.3-3")
+    (version "1.3-6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mvtnorm" version))
               (sha256
                (base32
-                "0wa1zal0q8zawqrjllx70kakn3ynpsm0imb3mmc956y89d9py3p2"))))
+                "0mhnl172fcd0lcqfndw23vmlqp5gdgvpw6jclbhkjr5aqy81f2af"))))
     (build-system r-build-system)
     ;; Do not build vignettes because there are weave errors in lmvnorm_src.R.
     (arguments (list #:test-types '(list "tests")))
     (native-inputs
-     (list gfortran r-numderiv))
+     (list gfortran r-numderiv r-qrng))
     (home-page "https://mvtnorm.R-forge.R-project.org")
     (synopsis "Package for multivariate normal and t-distributions")
     (description "This package can compute multivariate normal and
