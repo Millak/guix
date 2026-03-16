@@ -386,20 +386,13 @@ with heap allocation instead of a flat array to represent a tree.")
        (sha256
         (base32 "0r2cvz99vrvcm399qsfxiak5qb3mbr0kbvdrkbnm20l9lq2g18zr"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                ((".*--cov.*") "")))))))
     (native-inputs
      (list python-hatch-vcs
            python-hatchling
-           python-pytest-8
+           python-pytest
            python-pytest-mock
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-types-requests))
     (propagated-inputs
      (list python-click
            python-packaging
