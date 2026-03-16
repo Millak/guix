@@ -985,13 +985,7 @@ much more.")
               ;; AssertionError: assert <Conclusion.SKIP: 'skipped'> is
               ;; <Conclusion.OK: 'proved!'>
               (string-append "--deselect=tests/test_types/test_set.py"
-                             "::test_expr_asserts_ok[len({4, 5, 5, 6}) >= 3]"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                ((".*--cov.*") "")))))))
+                             "::test_expr_asserts_ok[len({4, 5, 5, 6}) >= 3]"))))
     (native-inputs
      (list python-pytest
            python-pytest-xdist
