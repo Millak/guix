@@ -166,7 +166,7 @@ bind processes, and much more.")
 
 (define-public hwloc-2
   (package
-    (inherit hwloc-1)
+    (name "hwloc")
     (version "2.13.0")
     (source (origin
               (method url-fetch)
@@ -178,58 +178,106 @@ bind processes, and much more.")
                 "1aqdznqp7f18yg95vbr5n6ccxxdiywacygvn3wbhzn7bnspkdsaj"))
               ;; XXX: Remove after updating package from 2.13.0.
               (patches (search-patches "hwloc-add-with-opencl.patch"))))
-
-    (native-inputs (modify-inputs native-inputs
-                     (append autoconf)
-                     (append automake)
-                     (append libtool)
-                     (append opencl-headers)
-                     (append bash)))              ;for completion tests
-    (inputs (modify-inputs inputs
-              ;; XXX: rocm-smi requires libdrm/drm.h but doesn't propagate a
-              ;; package providing these. For now, libdrm is used to provide
-              ;; this header.
-              (append libdrm)
-              (append opencl-icd-loader)
-              (append rocm-smi-lib)
-              (delete "numactl")))               ;libnuma is no longer needed.
-    (propagated-inputs (modify-inputs propagated-inputs
-                         ;; hwloc.pc lists libze_loader and libxml2 in
-                         ;; 'Requires.private' in 'hwloc.pc'.
-                         (append level-zero libxml2)))
+    (properties
+     ;; Tell the 'generic-html' updater to monitor this URL for updates.
+     `((release-monitoring-url
+        . "https://www-lb.open-mpi.org/software/hwloc/current")))
+    (build-system gnu-build-system)
+    (outputs '("out"           ;'lstopo' & co., depends on Cairo, libx11, etc.
+               "lib"           ;small closure
+               "doc"           ;400+ section 3 man pages
+               "debug"))
+    (native-inputs
+     (list autoconf automake libtool opencl-headers bash pkg-config))
+    (inputs
+     (append (if (%current-target-system)
+                 '()              ;fewer dependencies when cross-compiling
+                 (list libx11 cairo ncurses expat))
+             (list
+              ;; XXX: rocm-smi requires libdrm/drm.h but doesn't
+              ;; propagate a package providing these. For now, libdrm is
+              ;; used to provide this header.
+              libdrm
+              opencl-icd-loader
+              rocm-smi-lib)))
+    (propagated-inputs
+     ;; hwloc.pc lists libze_loader and libxml2 in
+     ;; 'Requires.private' in 'hwloc.pc'.
+     (list level-zero libpciaccess libxml2))
     (arguments
-     (substitute-keyword-arguments arguments
-       ((#:configure-flags flags '())
-        #~(cons* (string-append "--with-opencl="
-                                #$(this-package-input "opencl-icd-loader"))
-                 "--enable-rsmi"
-                 (string-append "--with-rocm="
-                                #$(this-package-input "rocm-smi-lib"))
-                 #$flags))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (add-after 'unpack 'delete-configure
-              (lambda _
-                ;; Remove configure file to generate it with patch.
-                (delete-file "configure")))
-            (replace 'skip-linux-libnuma-test
-              (lambda _
-                ;; Arrange to skip 'tests/hwloc/linux-libnuma', which fails on
-                ;; some machines: <https://github.com/open-mpi/hwloc/issues/213>.
-                (substitute* "tests/hwloc/linux-libnuma.c"
-                  (("numa_available\\(\\)")
-                   "-1"))))
-            (add-before 'check 'skip-tests-that-require-/sys
-              (lambda _
-                ;; 'test-gather-topology.sh' requires /sys as of 2.9.0; skip it.
-                (setenv "HWLOC_TEST_GATHER_TOPOLOGY" "0")))
-            (add-before 'check 'skip-test-that-fails-on-qemu
-              (lambda _
-                ;; Skip test that fails on emulated hardware due to QEMU bug:
-                ;; <https://bugs.gnu.org/40342>.
-                (substitute* "tests/hwloc/hwloc_get_last_cpu_location.c"
-                  (("hwloc_topology_init" all)
-                   (string-append "exit (77);\n" all)))))))))))
+     (list
+      #:configure-flags
+      #~(list
+         (string-append
+          "--with-opencl=" #$(this-package-input "opencl-icd-loader"))
+         "--enable-rsmi"
+         (string-append "--with-rocm=" #$(this-package-input "rocm-smi-lib"))
+         "--localstatedir=/var")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'skip-linux-libnuma-test
+            (lambda _
+              ;; Arrange to skip 'tests/hwloc/linux-libnuma', which fails on
+              ;; some machines: <https://github.com/open-mpi/hwloc/issues/213>.
+              (substitute* "tests/hwloc/linux-libnuma.c"
+                (("numa_available\\(\\)")
+                 "-1"))))
+          (add-after 'install 'refine-libnuma
+            ;; Give -L arguments for libraries to avoid propagation
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((out  (assoc-ref outputs "lib"))
+                    (numa (assoc-ref inputs "numactl")))
+                (substitute* (map (lambda (f) (string-append out "/" f))
+                                  '("lib/pkgconfig/hwloc.pc" "lib/libhwloc.la"))
+                  (("-lnuma" lib)
+                   (string-append "-L" numa "/lib " lib))))))
+          (add-after 'install 'avoid-circular-references
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((lib (assoc-ref outputs "lib")))
+                ;; Suppress the 'prefix=' and 'exec_prefix=' lines so that the
+                ;; "lib" output doesn't refer to "out".
+                (substitute* (string-append lib "/lib/pkgconfig/hwloc.pc")
+                  (("^.*prefix=.*$")
+                   "")))))
+          (add-after 'install 'move-man3-pages
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; Move section 3 man pages to the "doc" output.
+              (let ((out (assoc-ref outputs "out"))
+                    (doc (assoc-ref outputs "doc")))
+                (copy-recursively (string-append out "/share/man/man3")
+                                  (string-append doc "/share/man/man3"))
+                (delete-file-recursively
+                 (string-append out "/share/man/man3")))))
+          (add-after 'unpack 'delete-configure
+            (lambda _
+              ;; Remove configure file to generate it with patch.
+              (delete-file "configure")))
+          (add-before 'check 'skip-tests-that-require-/sys
+            (lambda _
+              ;; 'test-gather-topology.sh' requires /sys as of 2.9.0; skip it.
+              (setenv "HWLOC_TEST_GATHER_TOPOLOGY" "0")))
+          (add-before 'check 'skip-test-that-fails-on-qemu
+            (lambda _
+              ;; Skip test that fails on emulated hardware due to QEMU bug:
+              ;; <https://bugs.gnu.org/40342>.
+              (substitute* "tests/hwloc/hwloc_get_last_cpu_location.c"
+                (("hwloc_topology_init" all)
+                 (string-append "exit (77);\n" all))))))))
+    (home-page "https://www.open-mpi.org/projects/hwloc/")
+    (synopsis "Abstraction of hardware architectures")
+    (description
+     "hwloc provides a portable abstraction (across OS,
+versions, architectures, ...) of the hierarchical topology of modern
+architectures, including NUMA memory nodes, sockets, shared caches, cores and
+simultaneous multithreading.  It also gathers various attributes such as cache
+and memory information.  It primarily aims at helping high-performance
+computing applications with gathering information about the hardware so as to
+exploit it accordingly and efficiently.
+
+hwloc may display the topology in multiple convenient formats.  It also offers
+a powerful programming interface to gather information about the hardware,
+bind processes, and much more.")
+    (license license:bsd-3)))
 
 (define-public hwloc
   ;; The latest stable series of hwloc.
