@@ -3160,11 +3160,6 @@ share/zulip/integrations or in lib/<...>/site-packages/integrations:
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                ((" --cov=zulipterminal --no-cov-on-fail")
-                 ""))))
           (add-after 'unpack 'relax-requirements
             (lambda _
               (substitute* "setup.py"
