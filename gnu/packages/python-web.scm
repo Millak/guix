@@ -11090,14 +11090,6 @@ error conditions before indicating a failure to the client.")
        (sha256
         (base32 "173hg16hldfh5n3mn482xx64nldk308dzri31jd0qa4528cx4j41"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "setup.cfg"
-                ((" --cov") "")))))))
     (native-inputs
      (list python-pytest
            python-setuptools
