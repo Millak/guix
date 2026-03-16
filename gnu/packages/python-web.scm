@@ -10420,10 +10420,6 @@ Plus all the standard features of requests:
        (sha256
         (base32 "0zliqd1rkvc0mjppscvqmg8j17hsiwvxn439yhn6qbjvk5ydncz8"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; XXX: Avoids python-pytest-cov dependency.
-      #:test-flags #~(list "-c" "/dev/null")))
     (native-inputs
      (list python-pytest
            python-pytest-asyncio
