@@ -20996,16 +20996,6 @@ for solving the Assignment Problem.")
         (sha256
           (base32 "07s72zfxkznigqdc23k7jp9saq0hgq0gf2kjmmxzcrayyw87s31n"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              ;; Drop test coverage requirements.
-              (substitute* "pyproject.toml"
-                (("\"--cov=codespell_lib\",") "")
-                (("\"--cov-report=\",") "")))))))
     (native-inputs
       (list python-pygments
             python-pytest
