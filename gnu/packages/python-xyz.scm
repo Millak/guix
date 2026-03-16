@@ -8274,7 +8274,7 @@ server.")
               (chdir "tests"))))))
     (propagated-inputs (list python-decorator python-numpy python-scipy))
     (native-inputs (list python-matplotlib
-                         python-pytest ; used by default
+                         python-pytest
                          python-pytest-mpl
                          python-setuptools
                          python-wheel))
@@ -9967,7 +9967,7 @@ decorator for retrying on exceptions.")
        (sha256
         (base32 "08asy80wdplbrfff7q7qb9k3kkaw5jxqvy9jnkfvsqy3831zf964"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest ; used by default
+    (native-inputs (list python-pytest
                          python-setuptools
                          python-wheel))
     (propagated-inputs
@@ -18583,7 +18583,7 @@ Jupyter Notebook format and Python APIs for working with notebooks.")
           (base32 "1pa4m1qn7gx77lg3vy7y7vlyl45cg9ai9z93ds9ax108mbnrbdw7"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-poetry-core
-                         python-pytest ; runs by default
+                         python-pytest
                          python-pytest-mock))
     (propagated-inputs (list python-nbformat))
     (home-page "https://github.com/srstevenson/nb-clean")

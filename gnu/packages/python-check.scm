@@ -1463,7 +1463,7 @@ Python software under test, when they make an HTTP query.")
                     ;; XXX: Python/Black versions not as expected.
                     " and not test_black_autoformatter_from_grammar"))))
     (native-inputs
-     (list python-black ;hard requirements to run tests
+     (list python-black                 ;hard requirements to run tests
            python-parso
            python-pytest
            python-pytest-xdist
@@ -2577,10 +2577,10 @@ functions.")
               "-k" "not rabbit and not redis")))
     (native-inputs
      (list python-celery-minimal
-           python-memcached ;optional dependency, needed for tests
+           python-memcached             ;optional dependency, needed for tests
            python-poetry-core
-           python-pytest ;coverage options in pyproject.toml
-           python-redis ;optional dependency, needed for tests
+           python-pytest
+           python-redis                 ;optional dependency, needed for tests
            python-requests))            ;for python-docker
     (propagated-inputs
      (list python-psutil
