@@ -2558,10 +2558,6 @@ of VT100 terminal.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("--cov --cov-report=term-missing") ""))))
           (add-before 'build 'build-with-cython
             (lambda _
               (setenv "PYTOKENS_USE_MYPYC" "0"))))))
