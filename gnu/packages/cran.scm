@@ -56474,13 +56474,13 @@ using either @code{httpuv} or @code{Rhttpd}.")
 (define-public r-protolite
   (package
     (name "r-protolite")
-    (version "2.3.1")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "protolite" version))
        (sha256
-        (base32 "1k4p2sraxirjq746rx80pbnwjiafyr8r63j29ybky64x7zb6zm7f"))))
+        (base32 "195z9ccj2laj82ixk9h8yny5bnlr143wv1g6r6hkn85zgxmwaad6"))))
     (properties
      `((upstream-name . "protolite")
        (updater-extra-inputs . ("protobuf"))
@@ -56491,7 +56491,7 @@ using either @code{httpuv} or @code{Rhttpd}.")
     (propagated-inputs
      (list r-jsonlite r-rcpp))
     (native-inputs
-     (list pkg-config protobuf r-sf r-testthat))
+     (list pkg-config protobuf r-sf r-spelling r-testthat))
     (home-page "https://github.com/jeroen/protolite")
     (synopsis "Highly optimized protocol buffer serializers")
     (description
