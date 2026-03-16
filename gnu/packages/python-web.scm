@@ -10727,14 +10727,6 @@ language-neutral coding interface compatible with all major web browsers.")))
        (sha256
         (base32 "0h8cdwx5x6i1ydc9s0hxwvy73l6iwlqijn2l77mq74k6anrv6ksk"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "setup.cfg"
-                (("--cov --cov-report=term-missing ") "")))))))
     (native-inputs
      (list python-pytest
            python-setuptools))
