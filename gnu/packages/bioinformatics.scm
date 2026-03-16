@@ -20163,13 +20163,7 @@ fasta subsequences.")
               " and not test_roundtrip"
               ;; This test depends on ipytree, which contains a lot of
               ;; minified JavaScript.
-              " and not test_print_trees"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                ((".*--cov.*") "")))))))
+              " and not test_print_trees"))))
     (native-inputs
      (list python-hatchling
            python-pytest))
