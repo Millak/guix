@@ -11040,14 +11040,6 @@ Pyramid web framework.")
          (sha256
           (base32 "0v0571z2gby4apsalkdk83gs0d5mw79d56518h3bwwxzbq32kkns"))))
       (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'fix-pytest-config
-              (lambda _
-                (substitute* "pyproject.toml"
-                  ((" --cov --cov-report=term-missing") "")))))))
       (native-inputs
        (list python-pytest
              python-setuptools))
