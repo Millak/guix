@@ -478,9 +478,9 @@ Raspberry Pi ISP (PiSP), consisting of the Frontend and Backend hardware
 components.")
     (license license:bsd-2)))
 
-(define-public libcamera
+(define-public libcamera-minimal
   (package
-    (name "libcamera")
+    (name "libcamera-minimal")
     (version "0.6.0")
     (source
      (origin
@@ -491,27 +491,18 @@ components.")
          (commit (string-append "v" version))))
        (patches (search-patches
                  "libcamera-ipa_manager-disable-signature-verification.patch"))
-       (file-name
-        (git-file-name name version))
+       (file-name (git-file-name "libcamera" version))
        (sha256
         (base32 "0g6rphsa1hi9y22l2vw5cj75bf57clq3cggviwd1bnjhpp61nryc"))))
     (build-system meson-build-system)
-    (outputs '("out" "doc" "gst" "tools"))
     (arguments
      (list #:glib-or-gtk? #t         ; To wrap binaries and/or compile schemas
            #:configure-flags
-           #~(list (string-append "-Dbindir=" #$output:tools "/bin")
-                   "-Dudev=enabled"
-                   "-Dv4l2=true"
+           #~(list "-Dudev=enabled"
+                   "-Dv4l2=enabled"
                    "-Dtest=true")
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'set-sphinx-theme
-                 ;; sphinx_book_theme requires node for packaging
-                 ;; use the default sphinx theme instead
-                 (lambda _
-                   (substitute* "Documentation/conf.py.in"
-                     (("sphinx_book_theme") "alabaster"))))
                (add-after 'unpack 'disable-gstreamer-tests
                  ;; these require /dev/udmabuf
                  (lambda _
@@ -530,24 +521,10 @@ components.")
                              (substitute* "test/meson.build"
                                ((".*'name': 'file'.*")
                                 "")))))
-                      #~())
-               (add-after 'install 'move-doc-and-gst
-                 (lambda _
-                   (mkdir-p (string-append #$output:doc "/share"))
-                   (rename-file (string-append #$output "/share/doc")
-                                (string-append #$output:doc "/share/doc"))
-                   (mkdir-p (string-append #$output:gst "/lib"))
-                   (rename-file
-                    (string-append #$output "/lib/gstreamer-1.0")
-                    (string-append #$output:gst "/lib/gstreamer-1.0")))))))
+                      #~()))))
     (native-inputs
-     (list googletest
-           graphviz                     ;for 'dot'
-           doxygen
-           pkg-config
+     (list pkg-config
            python-wrapper
-           python-sphinx
-           python-sphinxcontrib-doxylink
            python-pyyaml
            python-packaging))
     (inputs
@@ -556,15 +533,12 @@ components.")
             glib
             gstreamer
             gst-plugins-base
-            libevent
             libjpeg-turbo
-            libtiff
             libyaml
             libyuv
             pybind11-2
             python-jinja2
-            python-ply
-            qtbase)
+            python-ply)
       ;; libpisp is only needed for the rpi/pisp pipeline on ARM.
       (if (target-arm?)
           (list libpisp)
@@ -574,6 +548,45 @@ components.")
 Android, and ChromeOS.")
     (home-page "https://libcamera.org/")
     (license license:lgpl2.1+)))
+
+;; Drop the documentation and the sample utilities.
+;; The README.rst gives a nice list of what packages are required.
+(define-public libcamera
+  (package/inherit libcamera-minimal
+    (name "libcamera")
+    (outputs '("out" "doc" "gst" "tools"))
+    (arguments
+     (substitute-keyword-arguments (package-arguments libcamera-minimal)
+       ((#:configure-flags flags #~'())
+        #~(cons (string-append "-Dbindir=" #$output:tools "/bin")
+                #$flags))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'set-sphinx-theme
+              ;; sphinx_book_theme requires node for packaging
+              ;; use the default sphinx theme instead
+              (lambda _
+                (substitute* "Documentation/conf.py.in"
+                  (("sphinx_book_theme") "alabaster"))))
+            (add-after 'install 'move-doc-and-gst
+              (lambda _
+                (mkdir-p (string-append #$output:doc "/share"))
+                (rename-file (string-append #$output "/share/doc")
+                             (string-append #$output:doc "/share/doc"))
+                (mkdir-p (string-append #$output:gst "/lib"))
+                (rename-file
+                 (string-append #$output "/lib/gstreamer-1.0")
+                 (string-append #$output:gst "/lib/gstreamer-1.0"))))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs libcamera-minimal)
+       (append googletest
+               doxygen
+               graphviz
+               python-sphinx
+               python-sphinxcontrib-doxylink)))
+    (inputs
+     (modify-inputs (package-inputs libcamera-minimal)
+       (append libevent libtiff qtbase)))))
 
 (define-public libnice
   (package
