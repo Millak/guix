@@ -40411,16 +40411,17 @@ analysis.")
 (define-public r-png
   (package
     (name "r-png")
-    (version "0.1-8")
+    (version "0.1-9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "png" version))
               (sha256
                (base32
-                "077nca3x0l6mq2g6izknzcn994bqs3nfqk7wscrjbfk2dnxzldjs"))))
+                "12c5jwxi872k14g9mbmn2m0xynkg878lzvjd537p6p3g7hv0518b"))))
     (build-system r-build-system)
     (inputs
      (list libpng zlib))
+    (native-inputs (list pkg-config))
     (home-page "https://www.rforge.net/png/")
     (synopsis "Read and write PNG images")
     (description
