@@ -56,25 +56,25 @@
     (guix build clojure-utils)
     (guix build utils)))
 
-(define-with-docs %default-clojure
+(define (default-clojure)
   "The default Clojure package."
-  (delay (@* (gnu packages clojure) clojure)))
+  (@* (gnu packages clojure) clojure))
 
-(define-with-docs %default-jdk
+(define (default-jdk)
   "The default JDK package."
-  (delay (@* (gnu packages java) icedtea)))
+  (@* (gnu packages java) icedtea))
 
-(define-with-docs %default-zip
+(define (default-zip)
   "The default ZIP package."
-  (delay (@* (gnu packages compression) zip)))
+  (@* (gnu packages compression) zip))
 
 (define* (lower name
                 #:key
                 source target
                 inputs native-inputs
-                (clojure (force %default-clojure))
-                (jdk (force %default-jdk))
-                (zip (force %default-zip))
+                (clojure (default-clojure))
+                (jdk (default-jdk))
+                (zip (default-zip))
                 outputs system
                 #:allow-other-keys
                 #:rest arguments)
