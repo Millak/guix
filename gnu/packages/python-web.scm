@@ -11006,13 +11006,7 @@ development.")
      (list
       #:test-flags
       ;; Two tests failed with assertion not equal.
-      #~(list "-k" "not test_it_relative_to_package and not test_options")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "setup.cfg"
-                ((" --cov") "")))))))
+      #~(list "-k" "not test_it_relative_to_package and not test_options")))
     (native-inputs
      (list python-pytest
            python-setuptools
