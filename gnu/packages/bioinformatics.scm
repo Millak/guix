@@ -14242,11 +14242,7 @@ quality control are provided.")
             (lambda _
               (substitute* "setup.cfg"
                 (("intervaltree~=3.0.2") "intervaltree")
-                (("termcolor~=1.1.0") "termcolor"))))
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                ((" --cov=gdc_client --cov-report term") "")))))))
+                (("termcolor~=1.1.0") "termcolor")))))))
     (native-inputs
      (list python-flask
            python-httmock
