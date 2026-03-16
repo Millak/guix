@@ -37,7 +37,7 @@
   #:use-module (guix ui)
   #:use-module ((guix licenses)
                 #:select (gpl3+ license? license-name))
-  #:use-module ((guix utils) #:select (%current-system))
+  #:use-module (guix utils)
   #:use-module ((guix scripts system) #:select (read-operating-system))
   #:use-module ((guix scripts pack)
                 #:select (self-contained-tarball))
@@ -48,9 +48,13 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gdb)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages base)
   #:use-module (gnu packages gawk)
+  #:use-module (gnu packages hurd)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages multiprecision)
@@ -136,19 +140,43 @@ SYSTEM."
                  #:cross? #t
                  #:target target)))
 
+(define %core-packages-for-mingw
+  ;; Core packages that can be built for any target, including MinGW.  This
+  ;; excludes the bootstrap tarballs, which do not support MinGW.
+  (list gcc-10 gcc-11 gcc-12 glibc binutils gdb-minimal
+        gmp mpfr mpc coreutils findutils diffutils patch sed grep
+        gawk gnu-gettext hello guile-2.2 guile-3.0 zlib gzip bzip2 xz zstd))
+
 (define %core-packages
+  ;; General set of core packages.
   ;; Note: Don't put the '-final' package variants because (1) that's
   ;; implicit, and (2) they cannot be cross-built (due to the explicit input
   ;; chain.)
-  (list gcc-10 gcc-11 gcc-12 glibc binutils gdb-minimal
-        gmp mpfr mpc coreutils findutils diffutils patch sed grep
-        gawk gnu-gettext hello guile-2.2 guile-3.0 zlib gzip xz guix
-        %bootstrap-binaries-tarball
-        %binutils-bootstrap-tarball
-        (%glibc-bootstrap-tarball)
-        %gcc-bootstrap-tarball
-        %guile-bootstrap-tarball
-        %bootstrap-tarballs))
+  (append %core-packages-for-mingw
+          (list util-linux procps psmisc which e2fsprogs man-db inetutils
+                guix shepherd
+                %bootstrap-binaries-tarball
+                %binutils-bootstrap-tarball
+                (%glibc-bootstrap-tarball)
+                %gcc-bootstrap-tarball
+                %guile-bootstrap-tarball
+                %bootstrap-tarballs)))
+
+(define %linux-packages
+  ;; Extra Linux-specific packages.
+  (list linux-libre))
+
+(define %hurd-packages
+  ;; Extra Hurd-specific packages
+  (list gnumach mig hurd-minimal hurd netdde rumpkernel))
+
+(define (core-packages system)
+  "Return the 'core' package set suitable for SYSTEM, which might be a system
+type or a GNU triplet."
+  (cond ((target-linux? system) (append %core-packages %linux-packages))
+        ((target-hurd? system) (append %core-packages %hurd-packages))
+        ((target-mingw? system) %core-packages-for-mingw)
+        (else '())))
 
 (define (commencement-packages system)
   "Return the list of bootstrap packages from the commencement module for
@@ -165,10 +193,7 @@ SYSTEM."
 
 (define (packages-to-cross-build target)
   "Return the list of packages to cross-build for TARGET."
-  ;; Don't cross-build the bootstrap tarballs for MinGW.
-  (if (string-contains target "mingw")
-      (drop-right %core-packages 6)
-      %core-packages))
+  (core-packages target))
 
 (define %bare-platform-triplets
   ;; Cross-compilation triplets of platforms that lack a proper user-space and
@@ -546,7 +571,8 @@ names, for each one of SYSTEMS."
            (map (lambda (package)
                   (package-job store (job-name package)
                                package system))
-                (append (commencement-packages system) %core-packages))
+                (append (commencement-packages system)
+                        (core-packages system)))
            (cross-jobs store system)))
          ('guix
           ;; Build Guix modules only.
