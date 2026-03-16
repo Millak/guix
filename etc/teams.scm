@@ -1617,6 +1617,11 @@ the \"texlive\" importer."
                        "folaht")
   documentation)
 
+(define-member (person "Thanos Apollo"
+                       "public@thanosapollo.org"
+                       "thanosapollo")
+  vcs)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
