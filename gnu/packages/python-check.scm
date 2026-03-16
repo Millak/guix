@@ -4619,18 +4619,6 @@ simpler.")
        (sha256
         (base32 "0pl6vlyva837bnz3cy9mwmvvh8fq943rkrbq3mzj34bjf8swnw2g"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              ;; Drop test coverage requirements.
-              (substitute* "setup.cfg"
-                (("--cov(-[^ ]*)?=[^ ]*")
-                 "\n")
-                (("--cov-fail-under [^ ]*")
-                 "\n")))))))
     (propagated-inputs (list python-httpx))
     (native-inputs (list nss-certs-for-test
                          python-starlette
