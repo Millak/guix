@@ -2083,6 +2083,8 @@ generator targetting AMD hardware.")
                          (substitute* "clang/cindex.py"
                            (("libclang\\.so") libclang))))))))
     (inputs (list clang))
+    (native-inputs (modify-inputs (package-native-inputs clang)
+                     (append python-setuptools)))
     (synopsis "Python bindings to libclang")))
 
 (define-public python-clang-12
