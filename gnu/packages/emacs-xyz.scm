@@ -26746,23 +26746,26 @@ in a generalized CSV (character-separated values) format.")
     (license license:gpl3+)))
 
 (define-public emacs-transmission
-  (package
-    (name "emacs-transmission")
-    (version "0.12.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/holomorph/transmission")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "16bn8y2sd7kzihp8bxh4vyay16y91q3yc0gcd0bzywcx3hijqlfc"))))
-    (build-system emacs-build-system)
-    (arguments (list #:tests? #f))      ; no tests
-    (home-page "https://github.com/holomorph/transmission")
-    (synopsis "Emacs interface to a Transmission session")
-    (description "This package provides an Emacs interface to interact with a
+  ;; No release since 2020-12-08.
+  (let ((commit "ae36637fe63e530c7b8baa59bf566a99e40fbfe4")
+        (revision "0"))
+    (package
+      (name "emacs-transmission")
+      (version (git-version "0.12.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/holomorph/transmission")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ilg549gsza7adfwmivw52z5533zirrv17h41xk3ij6igwg1fk8c"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no tests
+      (home-page "https://github.com/holomorph/transmission")
+      (synopsis "Emacs interface to a Transmission session")
+      (description "This package provides an Emacs interface to interact with a
 running session of the Transmission Bittorrent client.
 
 Features:
@@ -26774,7 +26777,7 @@ Features:
 contexts.
 @item Toggle downloading and set priorities for individual files.
 @end itemize\n")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-polymode
   (package
