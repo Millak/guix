@@ -41237,19 +41237,19 @@ files in R.  It is built on top of the libxml2 C library.")
 (define-public r-cyclocomp
   (package
     (name "r-cyclocomp")
-    (version "1.1.1")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cyclocomp" version))
        (sha256
         (base32
-         "0kdinnn6cgkfc94japyyp5qr7imjxddajds3qqxf4q5higahdzws"))))
+         "10ypivszv1sw33ba3hjp1sbi6ff00hd05cmfbrks9r6wrg54sdif"))))
     (properties `((upstream-name . "cyclocomp")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-callr r-crayon r-desc r-remotes r-withr))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-processx r-testthat))
     (home-page "https://github.com/MangoTheCat/cyclocomp")
     (synopsis "Cyclomatic complexity of R code")
     (description
