@@ -10,9 +10,10 @@
 ;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2023-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2023-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2026 Noé Lopez <noelopez@free.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
   #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
@@ -49,6 +51,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages cdrom)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
@@ -84,6 +87,8 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rdf)
+  #:use-module (gnu packages rust)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages video)
@@ -954,6 +959,195 @@ model to base your own plug-in on, here it is.")
      "GStreamer Bad Plug-ins is a set of plug-ins whose quality aren't up to
 par compared to the rest.")
     (license license:lgpl2.0+)))
+
+(define-public gst-plugins-rs
+  (package
+    (name "gst-plugins-rs")
+    (version "1.28.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url (string-append "https://gitlab.freedesktop.org/gstreamer/"
+                                  name ".git"))
+              (commit (string-append "gstreamer-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1sfmjrmzqd87fg1y97ysj2348s256dra8wzh7fsbv6a9jd3k76h4"))))
+    (build-system meson-build-system)
+    (outputs '("out"                    ;mux, text, utils and generic plugins
+               "analytics"
+               "audio"
+               "net"
+               "video"))
+    (properties
+     `((output-synopsis "out" "generic, mux, text and utils plugins")))
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:imported-modules `(,@%meson-build-system-modules
+                           ,@%cargo-build-system-modules)
+      #:modules `(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build meson-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:configure-flags
+      #~(list "-Ddebugseimetainserter=disabled" ;test fails
+              "-Ddoc=disabled"                  ;requires hotdoc
+              "-Delevenlabs=disabled"           ;test fails
+              "-Dexamples=disabled"     ;causes cargo feature conflicts
+              "-Dhlssink3=disabled"     ;test fails
+              "-Disobmff=disabled"      ;test fails
+              "-Dquinn=disabled"        ;test fails
+              "-Dskia=disabled"         ;attempts to download binaries
+              "-Dsodium-source=system"
+              ;; The 'spotify' option causes the build error: "the trait
+              ;; bound `vergen::feature::build::Build:
+              ;; vergen_lib::entries::Add` is not satisfied"
+              "-Dspotify=disabled"
+              "-Dtests=enabled"
+              "-Dtracers=disabled"      ;test fails
+              "-Dthreadshare=disabled"  ;test fails
+              "-Dvalidate=disabled"     ;requires gst-devtools
+              "-Dwebrtc=disabled"       ;test fails
+              ;; The 'whisper' option causes "failed to run custom build
+              ;; command for `whisper-rs-sys v0.14.1`".
+              "-Dwhisper=disabled")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-guix-vendored-dependencies
+            (lambda _
+              (substitute* "Cargo.toml"
+                ;; Prefer to fetch the released crates from crates.io
+                ;; instead of fetching them from Git.
+                (("git =.*, branch = \"[^\"]+\",")
+                 ""))
+              ;; Override dependencies declared with git repos/revisions.
+              (substitute* "mux/flavors/Cargo.toml"
+                (("flavors = .*")
+                 "flavors = \"*\"\n"))
+              (substitute* "video/ffv1/Cargo.toml"
+                (("ffv1 = .*")
+                 "ffv1 = \"*\"\n"))))
+          (add-after 'unpack 'delete-conflicting-cargo-config
+            (lambda _
+              (delete-file ".cargo/config.toml")))
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums))))
+          (add-before 'check 'make-HOME-writable
+            (lambda _
+              ;; Some tests like 'hlssink3' require a writable HOME directory.
+              (setenv "HOME" "/tmp")))
+          (add-after 'install 'split-into-outputs
+            (lambda _
+              (let ((plugins-dir "/lib/gstreamer-1.0/")
+                    (install-plan `((,#$output:analytics
+                                     . ("libgstburn.so"
+                                        "libgstrsanalytics.so"))
+                                    (,#$output:audio
+                                     . ("libgstclaxon.so"
+                                        "libgstdemucs.so"
+                                        "libgstlewton.so"
+                                        "libgstrsaudiofx.so"
+                                        "libgstrsaudioparsers.so"
+                                        "libgstspeechmatics.so"))
+                                    (,#$output:net
+                                     . ("libgstdeepgram.so"
+                                        "libgsthlsmultivariantsink.so"
+                                        "libgsticecast.so"
+                                        "libgstmpegtslive.so"
+                                        "libgstndi.so"
+                                        "libgstraptorq.so"
+                                        "libgstreqwest.so"
+                                        "libgstrsonvif.so"
+                                        "libgstrsrtp.so"
+                                        "libgstrsrtsp.so"
+                                        "libgstwebrtchttp.so"))
+                                    (,#$output:video
+                                     . ("libgstcdg.so"
+                                        "libgstffv1.so"
+                                        "libgstgif.so"
+                                        "libgstgtk4.so"
+                                        "libgsthsv.so"
+                                        "libgstrav1e.so"
+                                        "libgstrsclosedcaption.so"
+                                        "libgstrspng.so"
+                                        "libgstrsvideofx.so"))
+                                    ;; We leave the generic, mux, text and
+                                    ;; utils plugins in the default output, as
+                                    ;; they are often relied on in gstreamer
+                                    ;; pipelines.
+                                    ;; (,#$output:generic
+                                    ;;  . ("libgstrsfile.so"
+                                    ;;     "libgstrsinter.so"
+                                    ;;     "libgstgopbuffer.so"
+                                    ;;     "libgstoriginalbuffer.so"
+                                    ;;     "libgstsodium.so"
+                                    ;;     "libgststreamgrouper.so"))
+                                    ;; (,#$output:mux
+                                    ;;  . ("libgstrsflv.so"))
+                                    ;; (,#$output:text
+                                    ;;  . ("libgstjson.so"
+                                    ;;     "libgstregex.so"
+                                    ;;     "libgsttextaccumulate.so"
+                                    ;;     "libgsttextahead.so"
+                                    ;;     "libgsttextwrap.so"))
+                                    ;; (,#$output:utils
+                                    ;;  . ("libgstfallbackswitch.so"
+                                    ;;     "libgstlivesync.so"
+                                    ;;     "libgsttogglerecord.so"
+                                    ;;     "libgsturiplaylistbin.so"))
+                                    )))
+                (for-each (match-lambda
+                            ((out . plugins)
+                             (let ((src (string-append #$output plugins-dir))
+                                   (dest (string-append out plugins-dir)))
+                               (mkdir-p dest)
+                               (for-each (lambda (p)
+                                           (rename-file (string-append src p)
+                                                        (string-append dest p)))
+                                         plugins))))
+                          install-plan)))))))
+    (home-page "https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs")
+    (native-inputs
+     (list gst-plugins-good             ;provides elements used in some tests
+           nasm
+           pkg-config
+           python
+           rust
+           rust-cargo-c))
+    (inputs
+     (cons* csound
+            gstreamer
+            gst-plugins-bad
+            gst-plugins-base
+            gst-plugins-good
+            gtk
+            libsodium
+            `(,zstd "lib")
+            (cargo-inputs 'gst-plugins-rs)))
+    (synopsis "GStreamer plugins written in Rust")
+    (description "This package provides a collection of GStreamer plugins
+written in Rust.  The plugins cover many areas such as networking, audio,
+video, text, and analytics.  The default output contains the mux, text, utils
+and generic plugins, while the other plugins are grouped in outputs named
+after their category.")
+    ;; The various plugins in the collection are covered by one of the
+    ;; following licneses.
+    (license (list license:mpl2.0
+                   license:asl2.0
+                   license:expat))))
 
 (define-public gst-plugins-ugly
   (package
