@@ -16113,14 +16113,7 @@ tie-resolvement is accelerated by numba.")
       #:test-flags
       #~(list "-k"
               ;; test expects network access
-              "not test_load_statue_names")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "setup.cfg"
-                (("--cov.*")
-                 "")))))))
+              "not test_load_statue_names")))
     (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-beautifulsoup4 python-networkx
                              python-pandas python-regex python-requests))
