@@ -777,13 +777,7 @@ templates language.")
                                                     test))
                       (list "test_sign_root_metadata_dict_via_gpg"
                             "test_sign_root_metadata_via_gpg"
-                            "test_gpg_pubkey_in_ssl_format")))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "setup.cfg"
-                (("--cov.*") "")))))))
+                            "test_gpg_pubkey_in_ssl_format")))))
     (native-inputs
      (list python-hatch-vcs
            python-hatchling
