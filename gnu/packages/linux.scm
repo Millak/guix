@@ -11521,7 +11521,7 @@ found in custom keyboard firmware like QMK.")
                   gstreamer
                   jack-2
                   ldacbt
-                  libcamera
+                  libcamera-minimal
                   libdrm
                   libfdk
                   libfreeaptx
