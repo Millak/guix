@@ -25817,14 +25817,7 @@ executed more than a given number of times during a given period.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "--pyargs" "rbfly")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              ;; Drop test coverage requirements.
-              (substitute* "pyproject.toml"
-                ((".*addopts.*") "")))))))
+      #:test-flags #~(list "-o" "addopts=''" "--pyargs" "rbfly")))
     (native-inputs
      (list python-cython
            python-pytest
