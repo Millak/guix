@@ -4682,31 +4682,31 @@ older EsoReflex environment.")
 (define-public python-ephem
   (package
     (name "python-ephem")
-    (version "4.2")
+    (version "4.2.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ephem" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/brandon-rhodes/pyephem")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0rb0vc3kgmw5rzhfhxffg94bcwasm46sf814hv7l13ry8m7xckrw"))))
+        (base32 "1slb77iqmg3krh43iscpxljp8p41crpvn914gpxcnkgx8njraix1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      #~(list "--deselect=ephem/tests/test_jpl.py::JPLTest::runTest")
+      #:test-backend #~'unittest
+      #:test-flags #~(list "discover" "ephem")
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: See https://codeberg.org/guix/guix/issues/2108
-          (add-after 'install 'remove-installed-tests
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (delete-file-recursively ".")
-              (mkdir-p "ephem")
-              (let* ((site (site-packages inputs outputs))
-                     (tests (string-append site "/ephem/tests")))
-                (copy-recursively tests "ephem/tests")
-                (delete-file-recursively tests)))))))
+          (add-before 'check 'remove-local-source
+            (lambda _
+              ;; See: <https://codeberg.org/guix/guix/issues/7243>.
+              (delete-file-recursively "ephem"))))))
     (native-inputs
-     (list python-pytest python-setuptools tzdata))
+     (list python-pytest
+           python-setuptools
+           tzdata-for-tests))
     (home-page "https://rhodesmill.org/pyephem/")
     (synopsis "Compute positions of the planets and stars")
     (description
