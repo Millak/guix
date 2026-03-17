@@ -22641,28 +22641,23 @@ until the object is actually required, and caches the result of said call.")
 (define-public python-dnspython
   (package
     (name "python-dnspython")
-    (version "2.7.0")
+    (version "2.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dnspython" version))
        (sha256
-        (base32 "1wgsbiz90npdi47cilmwdccm29hl9qddzkm533v1rj8dv8p4776f"))))
+        (base32 "03vdy97rh9kxwzyjymlrw235ljmqk4awcij0khcb2b25jrlkq78q"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1216 passed, 198 skipped, 2 deselected
       #:test-flags
       #~(list
          ;; AssertionError: assert False
          "--deselect=tests/test_features.py::test_have"
          ;; dns.exception.SyntaxError: protocol not found
-         "--deselect=tests/test_rdata.py::RdataTestCase::test_misc_good_WKS_text"
-         ;; ECDSA with deterministic signature (RFC 6979) is not supported by
-         ;; this version of OpenSSL.
-         "-k" (string-append "not testDeterministicSignatureECDSAP256SHA256"
-                             " and not testSignatureECDSAP256SHA256"
-                             " and not testSignatureECDSAP384SHA384"
-                             " and not test_ecdsa"))
+         "--deselect=tests/test_rdata.py::RdataTestCase::test_misc_good_WKS_text")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-getprotobyname-calls
