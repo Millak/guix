@@ -1130,7 +1130,8 @@ application suites.")
        (sha256
         (base32 "1z2mkmazc2d51jbg3qwwdycycqiwswm88nhw6bxscz8j86f5lyyd"))
        (patches
-        (search-patches "gtk4-needs-udmabuf.patch"
+        (search-patches "gtk4-demo-reproducible.patch"
+                        "gtk4-needs-udmabuf.patch"
                         "gtk4-respect-GUIX_GTK4_PATH.patch"))
        (modules '((guix build utils)))))
     (build-system meson-build-system)
