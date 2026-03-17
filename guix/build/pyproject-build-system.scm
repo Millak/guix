@@ -21,7 +21,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix build pyproject-build-system)
-  #:autoload (json builder) (scm->json-string)
+  #:autoload (json builder) (scm->json scm->json-string)
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
   #:use-module (guix build utils)
   #:use-module (guix build toml)
@@ -314,7 +314,8 @@ without errors."
     (with-directory-excursion "/tmp"
       (invoke "python" sanity-check.py (site-packages inputs outputs)))))
 
-(define* (check #:key inputs tests? test-backend test-flags #:allow-other-keys)
+(define* (check #:key inputs tests? test-backend test-flags pytest-guix-options
+                #:allow-other-keys)
   "Run the test suite of a given Python package."
   (if tests?
       ;; Unfortunately with PEP 517 there is no common method to specify test
@@ -347,6 +348,8 @@ without errors."
         (format #t "Using ~a~%" use-test-backend)
         (match use-test-backend
           ('pytest-with-guix-plugin
+           (call-with-output-file ".pytest_guix_options.json"
+             (cut scm->json pytest-guix-options <>))
            (apply invoke pytest "-vv" "-p" "pytest_guix" test-flags))
           ('pytest
            (apply invoke pytest "-vv" test-flags))

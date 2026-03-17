@@ -97,6 +97,28 @@
 build-system level.")
       (license license:gpl3+))))
 
+(define %default-pytest-guix-options
+  #~'(("cov"
+       "--cov"
+       "--cov-reset"
+       "--cov-report"
+       "--cov-config"
+       "--no-cov-on-fail"
+       "--no-cov"
+       "--cov-fail-under"
+       "--cov-append"
+       "--cov-branch"
+       "--cov-context")
+      ("html"
+       "--html" "--self-contained-html" "--css")
+      ("mypy"
+       "--mypy" "--mypy-config-file" "--mypy-ignore-missing-imports")
+      ("isort" "isort")
+      ("flake8" "flake8")
+      ("black" "black")
+      ("flakes" "flakes")
+      ("pep8" "pep8")))
+
 ;; TODO: On the next iteration of python-team, migrate the sanity-check to
 ;; importlib_metadata instead of setuptools.
 (define (default-sanity-check.py)
@@ -153,6 +175,7 @@ build-system level.")
                           (build-backend #f)
                           (test-backend #f)
                           (test-flags ''())
+                          (pytest-guix-options %default-pytest-guix-options)
                           (phases '%standard-phases)
                           (outputs '("out" "wheel"))
                           (search-paths '())
@@ -182,6 +205,11 @@ build-system level.")
                    #:test-backend #$test-backend
                    #:test-flags #$test-flags
                    #:tests? #$tests?
+                   #$@(let ((labels (map car inputs)))
+                        (if (or (member "python-pytest-bootstrap" labels)
+                                (member "python-pytest" labels))
+                            #~(#:pytest-guix-options #$pytest-guix-options)
+                            #~()))
                    #:phases #$(if (pair? phases)
                                   (sexp->gexp phases)
                                   phases)

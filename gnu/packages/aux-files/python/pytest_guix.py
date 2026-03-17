@@ -17,6 +17,7 @@
 # along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 import importlib.util
+import json
 
 
 def pytest_addoption(parser):
@@ -34,35 +35,15 @@ def pytest_addoption(parser):
     time while at the same time avoiding the need to adjust test options in
     pyproject.toml or other configuration files.
     """
-    plugin_options = {
-        "cov": [
-            "--cov",
-            "--cov-reset",
-            "--cov-report",
-            "--cov-config",
-            "--no-cov-on-fail",
-            "--no-cov",
-            "--cov-fail-under",
-            "--cov-append",
-            "--cov-branch",
-            "--cov-context",
-        ],
-        "mypy": ["--mypy", "--mypy-config-file", "--mypy-ignore-missing-imports"],
-        "isort": ["--isort"],
-        "flake8": ["--flake8"],
-        "black": ["--black"],
-        "flakes": ["--flakes"],
-        "pep8": ["--pep8"],
-        "html": ["--html", "--self-contained-html", "--css"],
-    }
+    with open(".pytest_guix_options.json", "r") as options_file:
+        plugin_options = json.load(options_file)
+        group = parser.getgroup(
+            "guix", "Options ignored by the Guix pyproject-build-system"
+        )
 
-    group = parser.getgroup(
-        "guix", "Options ignored by the Guix pyproject-build-system"
-    )
-
-    # Only add options for plugins that are not present.
-    for key, options in plugin_options.items():
-        if importlib.util.find_spec(f"pytest_{key}") is None:
-            # Plugin not found, add stub options
-            for option in options:
-                group.addoption(option, action="append", nargs="?")
+        # Only add options for plugins that are not present.
+        for key, options in plugin_options.items():
+            if importlib.util.find_spec(f"pytest_{key}") is None:
+                # Plugin not found, add stub options
+                for option in options:
+                    group.addoption(option, action="append", nargs="?")
