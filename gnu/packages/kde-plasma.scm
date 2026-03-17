@@ -1854,6 +1854,7 @@ for xdg-desktop-portal that is using Qt/KF5.")
                              colord
                              discover
                              ffmpegthumbs
+                             flatpak ;for discover
                              kactivitymanagerd
                              kdeclarative ;required by sddm breeze theme
                              kde-cli-tools
