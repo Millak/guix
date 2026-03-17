@@ -1290,7 +1290,7 @@ Features:
 (define-public libsecp256k1-bitcoin-cash
   (package
     (name "libsecp256k1-bitcoin-cash")
-    (version "0.22.1")
+    (version "0.27.1")
     (source
      (origin
        (method git-fetch)
@@ -1299,7 +1299,7 @@ Features:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rnif3iny6pz1r3g69bagzr342mm3x0v66b60csnmm1rg44bd5v1"))))
+        (base32 "00g7zdwdk6ij1wv2l3wf389njq3svg0zz09i1kq77sk7p9larnfs"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool))
