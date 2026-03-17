@@ -4352,54 +4352,6 @@ primes and prime k-tuplets up to 264.")
     (home-page "https://github.com/kimwalisch/primesieve")
     (license license:bsd-2)))
 
-(define-public python-accupy
-  (package
-    (name "python-accupy")
-    (version "0.3.6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/diego-hayashi/accupy")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0sxkwpp2xy2jgakhdxr4nh1cspqv8l89kz6s832h05pbpyc0n767"))
-       (patches (search-patches "python-accupy-use-matplotx.patch"
-                                "python-accupy-fix-use-of-perfplot.patch"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 30 passed, 10 warnings
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-eigen-include-dir
-            (lambda _
-              (substitute* "setup.py"
-                (("include_dirs=\\[\"\\/usr\\/include\\/eigen3\\/\"\\]," _)
-                 (string-append "include_dirs=[\""
-                                #$(file-append (this-package-input "eigen")
-                                               "/include/eigen3/")
-                                "\"],"))))))))
-    (native-inputs
-     (list pybind11-2
-           python-matplotx
-           python-perfplot
-           python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list eigen
-           python-mpmath
-           python-numpy-1
-           python-pyfma))
-    (home-page "https://github.com/diego-hayashi/accupy")
-    (synopsis "Accurate calculation of sums and dot products")
-    (description
-     "@code{accupy} is a Python library for accurately computing sums
-and (dot) products.  It implements Kahan summation, Shewchuck's algorithm and
-summation in K-fold precision.")
-    (license license:gpl3+)))
-
 ;; It is unfortunate that we cannot just link with the existing blis package.
 (define-public python-blis
   (package
