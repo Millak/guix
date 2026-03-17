@@ -843,7 +843,7 @@ data on your platform, so the seed itself will be as random as possible.
 (define-public qatlib
   (package
     (name "qatlib")
-    (version "25.08.0")
+    (version "26.02.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -852,17 +852,10 @@ data on your platform, so the seed itself will be as random as possible.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hbhrj0wlr68by7gdvsw4nh35rwg4yngn3m7awkx799pbqsw4iyc"))))
+                "1ly4wjw7mpvgn0270z3242bng7ailvx99mhisymf4qdhq0cvz8n2"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:configure-flags #~(list "--disable-static") ;avoid large .a
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'bootstrap
-                 (lambda _
-                   ;; The script has a broken shebang (see:
-                   ;; <https://github.com/intel/qatlib/issues/128>).
-                   (invoke "sh" "autogen.sh"))))))
+     (list #:configure-flags #~(list "--disable-static"))) ;avoid large .a
     (native-inputs (list autoconf autoconf-archive automake libtool nasm))
     (inputs (list numactl openssl zlib))
     (propagated-inputs (list openssl))  ;in 'Requires' of libqat.pc
