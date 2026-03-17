@@ -604,6 +604,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/regex.scm				\
   %D%/packages/robotics.scm			\
   %D%/packages/rocm.scm				\
+  %D%/packages/rocm-apps.scm			\
   %D%/packages/rocm-libs.scm			\
   %D%/packages/rocm-tools.scm			\
   %D%/packages/rpc.scm				\
@@ -2359,6 +2360,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rlwrap-no-rbgen.patch	\
   %D%/packages/patches/rng-tools-revert-build-randstat.patch	\
   %D%/packages/patches/rocclr-5.6.0-enable-gfx800.patch		\
+  %D%/packages/patches/rochpl-supported-distros.patch		\
   %D%/packages/patches/rocm-opencl-runtime-4.3-noclinfo.patch 	\
   %D%/packages/patches/rocm-bandwidth-test-fix-external-packages-search.patch	\
   %D%/packages/patches/rocm-bandwidth-test-fix-hsa-include-file-lookup.patch	\
