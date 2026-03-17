@@ -4580,56 +4580,6 @@ monomials over such volumes in a fast, numerically stable way, using
 recurrence relations.")
     (license license:gpl3+)))
 
-(define-public python-orthopy
-  (package
-    (name "python-orthopy")
-    (version "0.9.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/diego-hayashi/orthopy")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "00s2rwjdlq38zkf7wl1gvm2aw057r30266lkzfxkrfzr4i705xnq"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 219 passed, 13 deselected
-      #:test-flags
-      ;; These tests fails with unexpected keyword arguments
-      ;; in calls to cplot.
-      #~(list "--deselect" "tests/test_u3.py::test_write_single"
-              "--deselect" "tests/test_u3.py::test_write_tree"
-              "-k" (string-join
-                    ;; Tests fail in arrays comprising.
-                    (list "not test_chebyshev1_p11[2-y2]"
-                          "test_chebyshev1_p11[4-y4]"
-                          "test_eval[1-ref1]"
-                          "test_eval[t2-ref2]"
-                          "test_eval[t3-ref3]")
-                    " and not "))))
-    (native-inputs
-     (list python-matplotx
-           python-meshio
-           python-meshzoo
-           python-pytest
-           python-scipy
-           python-setuptools))
-    (propagated-inputs
-     (list python-ndim
-           python-numpy-1
-           python-sympy))
-    (home-page "https://github.com/diego-hayashi/orthopy")
-    (synopsis "Tools for orthogonal polynomials, Gaussian quadrature")
-    (description "@code{orthopy} provides various orthogonal polynomial
-classes for lines, triangles, quadrilaterals, disks, spheres, hexahedra,
-and n-cubes.  All computations are done using numerically stable
-recurrence schemes.  Furthermore, all functions are fully vectorized and
-can return results in exact arithmetic.")
-    (license license:gpl3+)))
-
 (define-public python-petsc4py
   (package
     (name "python-petsc4py")
