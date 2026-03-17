@@ -4796,6 +4796,51 @@ numerical python, statistics, and file input/output.  Includes specialized
 tools for astronomers.")
     (license license:gpl2+)))
 
+(define-public python-euclidlike
+  (package
+    (name "python-euclidlike")
+    ;; No PyPI release or Git version tags, use the latest commit.
+    (properties '((commit . "55d47fb67aba7c149a6099d89dd7ee0b00305341")
+                  (revision . "0")))
+    (version (git-version "0.9.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/GalSim-developers/GalSim-Euclid-Like")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cyzwbiiwmwj6qy4xpsszzqp97azjwjvqxlnwpadshnqbbq4skcb"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-xdist
+           python-setuptools))
+    (propagated-inputs
+     (list python-astropy
+           python-galsim
+           python-numpy))
+    (home-page "https://galsim-developers.github.io/GalSim-Euclid-Like/")
+    (synopsis "Helper functions to generate simulations of Euclid-Like images")
+    (description
+     "This package provides information about the Euclid space telescope and
+survey that is needed to produce simulations using GalSim.  Some of the
+information provided is approximate, aimed towards fast simulations rather
+than full accuracy in representation of Euclid images.  Places where the
+information is only approximate are flagged and described in the docstring,
+and we particularly highlight that the PSF is only approximate; for details,
+see the docstring of the @code{getPSF()} method.  This library should enable
+generation of Euclid-like images of sufficient fidelity for preliminary
+exploration of object detection, photometry, deblending, and joint analysis
+with ground-based observatories.  For applications requiring high precision
+such as weak lensing, the higher fidelity simulations available within the
+Euclid Consortium should be used.")
+    ;; license = {text = "GalSim"}
+    (license license:bsd-3)))
+
 (define-public python-eventio
   (package
     (name "python-eventio")
