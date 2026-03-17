@@ -357,7 +357,7 @@ that is extensible via a plugin system.")
   (package
     (inherit gimp-2)
     (name "gimp")
-    (version "3.0.4")
+    (version "3.2.0")
     (source
      (origin
        (method url-fetch)
@@ -365,13 +365,15 @@ that is extensible via a plugin system.")
                            (version-major+minor version)
                            "/gimp-" version ".tar.xz"))
        (sha256
-        (base32 "09dbxim6k7pjkk8lbjkw3r4zi0y0mxvc4jk5fmjk42dzfp12xalc"))))
+        (base32 "10z0n9shpqwny6hkwdin7nmp5vb0707gk7nzjg3f66z52qa3j616"))))
     (build-system meson-build-system)
     (arguments
      (list #:modules `((ice-9 popen)
                        (ice-9 rdelim)
                        (guix build meson-build-system)
                        (guix build utils))
+           ;; Test tries to connect to the internet and fails.
+           #:test-options #~(list "--no-suite=desktop")
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'remove-gcc-reference
@@ -412,7 +414,9 @@ that is extensible via a plugin system.")
                                   (eq? 'regular (stat:type stat))))))))))
     (inputs (modify-inputs inputs
               (replace "gtk+" gtk+)
-              (prepend bash-minimal
+              (replace "mypaint-brushes" mypaint-brushes)
+              (prepend appstream
+                       bash-minimal
                        libjxl
                        libxmu
                        libxt
