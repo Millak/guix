@@ -1120,7 +1120,7 @@ application suites.")
 (define-public gtk
   (package
     (name "gtk")
-    (version "4.20.3")
+    (version "4.22.1")
     (source
      (origin
        (method url-fetch)
@@ -1128,9 +1128,10 @@ application suites.")
                            (version-major+minor version)  "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0ly1gqc6ybxv5f2a9hvjp5k6l9mfzy2yv8iy2xqnr9l8628g4wr8"))
+        (base32 "1z2mkmazc2d51jbg3qwwdycycqiwswm88nhw6bxscz8j86f5lyyd"))
        (patches
-        (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"))
+        (search-patches "gtk4-needs-udmabuf.patch"
+                        "gtk4-respect-GUIX_GTK4_PATH.patch"))
        (modules '((guix build utils)))))
     (build-system meson-build-system)
     (outputs '("out" "bin" "doc"))
@@ -1254,8 +1255,10 @@ application suites.")
               (setenv "XDG_CACHE_HOME" (getcwd))))
           (add-before 'check 'pre-check
             (lambda* (#:key inputs #:allow-other-keys)
-              ;; Tests require a running X server.
-              (system "Xvfb :1 +extension GLX &")
+              ;; Tests require a running X server.  The '-noreset' option is
+              ;; necessary to avoid spurious "Failed to open display" test
+              ;; errors.
+              (system "Xvfb :1 +extension GLX -screen 0 1024x768x24 -noreset &")
               (setenv "DISPLAY" ":1")
               ;; Tests write to $HOME.
               (setenv "HOME" (getcwd))
@@ -1298,6 +1301,7 @@ application suites.")
            docbook-xsl
            gettext-minimal
            `(,glib "bin")
+           glibc-utf8-locales           ;some tests require en_US.UTF-8
            gobject-introspection        ;for building introspection data
            graphene
            gtk-doc/stable               ;for building documentation
@@ -1365,8 +1369,8 @@ application suites.")
     (native-search-paths
      (list
       (search-path-specification
-       (variable "GUIX_GTK4_PATH")
-       (files '("lib/gtk-4.0")))))
+        (variable "GUIX_GTK4_PATH")
+        (files '("lib/gtk-4.0")))))
     (search-paths native-search-paths)
     (home-page "https://www.gtk.org/")
     (synopsis "Cross-platform widget toolkit")

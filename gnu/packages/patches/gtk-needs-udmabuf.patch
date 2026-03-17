@@ -1,0 +1,35 @@
+Some udmapbuf relying tests were still selected despite using --no-suite=needs-udmabuf.
+
+Upstream-status: Patch prepared by upstream, not yet committed.
+
+diff --git a/testsuite/gsk/meson.build b/testsuite/gsk/meson.build
+index 0118304bf8..6bf4d4bb93 100644
+--- a/testsuite/gsk/meson.build
++++ b/testsuite/gsk/meson.build
+@@ -275,6 +275,16 @@ compare_render_tests = [
+   'zero-length-path-stroke',
+ ]
+ 
++# These tests use dmabufs and fail in testrunners that have
++# dmabuf support but no access to /dev/udmabuf.
++# For that purpose we add them to the 'needs-udmabuf' suite
++# with this list
++needs_udmabuf = [
++  'yuv-matrix-dmabuf-nv12',
++  'yuv-matrix-dmabuf-rgba',
++  'yuv-matrix-dmabuf-yuyv',
++]
++
+ # These tests are either slow or need lots of memory.
+ # So we don't run them in parallel with other such tests to not
+ # cause CI failures
+@@ -386,6 +396,9 @@ foreach renderer : renderers
+         if test_xfails.contains(variant) or (renderer_name == 'cairo' and variant == 'clip')
+           extra_suites += ['failing']
+         endif
++        if needs_udmabuf.contains(testname)
++          extra_suites += ['needs-udmabuf']
++        endif
+         test('compare ' + renderer_name + ' ' + testname + ' ' + variant, compare_render,
+           protocol: 'tap',
+           args: [
