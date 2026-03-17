@@ -919,22 +919,23 @@ extracting content or merging files.")
 (define-public python-pydyf
   (package
     (name "python-pydyf")
-    (version "0.3.0")
+    (version "0.12.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pydyf" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/CourtBouillon/pydyf")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "18q43g5d9455msipcgd5fvnh8m4a2rz189slzfg80yycjw66rshs"))))
+        (base32 "0fq5d692hpfd7f6n3sb78l0jxq0ivin3867fi4yqjc0swcd35j8b"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags #~'("-c" "/dev/null")))
-    (propagated-inputs (list python-pillow))
     (native-inputs
      (list ghostscript
            python-flit-core
            python-pytest))
+    (propagated-inputs
+     (list python-pillow))
     (home-page "https://github.com/CourtBouillon/pydyf")
     (synopsis "Low-level PDF generator")
     (description "@code{pydyf} is a low-level PDF generator written in Python
