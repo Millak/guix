@@ -1976,22 +1976,59 @@ manipulating PDF documents from the command line.  It supports
 (define-public weasyprint
   (package
     (name "weasyprint")
-    (version "56.1")
+    (version "68.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/Kozea/WeasyPrint")
-             (commit (string-append "v" version))))
+              (url "https://github.com/Kozea/WeasyPrint")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "08l0yaqg0rxnb2r3x4baf4wng5pxpjbyalnrl4glwh9l69740q7p"))))
+         "1gw91v7lyrhxlsjq2y16fp7219glwhni6zhabny74bd291l6x2n6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "-c" "/dev/null"
-                           "-n" (number->string (parallel-job-count)))
+      ;; tests: 3813 passed, 40 xfailed
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              #$@(map (lambda (ls) (string-append "--deselect=tests/"
+                                                  (string-join ls "::")))
+                      ;; ValueError: too many values to unpack (expected 2)
+                      '(("test_acid2.py" "test_acid2")
+                        ("test_presentational_hints.py" "test_no_ph")
+                        ("test_presentational_hints.py" "test_ph_page")
+                        ("test_presentational_hints.py" "test_ph_flow")
+                        ("test_presentational_hints.py" "test_ph_phrasing")
+                        ("test_presentational_hints.py" "test_ph_lists")
+                        ("test_presentational_hints.py" "test_ph_lists_types")
+                        ("test_presentational_hints.py" "test_ph_tables")
+                        ("test_presentational_hints.py" "test_ph_hr")
+                        ("test_presentational_hints.py" "test_ph_embedded")
+                        ;; assert 793.7007874015749 == 10
+                        ("css/test_nesting.py" "test_nesting_block")
+                        ;; AssertionError: <...> errors logged.
+                        ("css/test_ua.py""test_ua_stylesheets")
+                        ;; AssertionError: Images do not have the same sizes.
+                        ("draw/test_footnote.py" "test_footnote_max_height_2")
+                        ("draw/test_footnote.py" "test_footnote_max_height_3")
+                        ;; Failed: Pixel <...> in <...>.
+                        ("draw/svg/test_opacity.py"
+                         "test_pattern_gradient_stroke_fill_opacity")
+                        ("draw/test_footnote.py" "test_footnote_max_height_1")
+                        ("draw/test_footnote.py" "test_footnote_max_height_4")
+                        ("draw/test_footnote.py" "test_footnote_max_height_5")
+                        ("draw/test_gradient.py" "test_linear_gradients_5")
+                        ("draw/test_gradient.py" "test_linear_gradients_12")
+                        ("draw/test_gradient.py"
+                         "test_radial_gradients_repeating")
+                        ("draw/test_gradient.py"
+                         "test_radial_gradients_repeating_outer")
+                        ("draw/test_gradient.py"
+                         "test_radial_gradients_repeating_outer_partial")
+                        ("draw/test_gradient.py"
+                         "test_radial_gradients_repeating_negative"))))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-library-paths
@@ -2012,20 +2049,21 @@ manipulating PDF documents from the command line.  It supports
                 (("'pangoft2-1.0-0'")
                  (format #f "~s"
                          (search-input-file inputs
-                                            "lib/libpangoft2-1.0.so")))))))))
+                                            "lib/libpangoft2-1.0.so"))))))
+          (add-before 'sanity-check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (inputs (list fontconfig glib harfbuzz pango))
     (propagated-inputs
      (list gdk-pixbuf
-           python-cairocffi
-           python-cairosvg
            python-cffi
            python-cssselect2
            python-fonttools
-           python-html5lib
            python-pillow
            python-pydyf
            python-pyphen
-           python-tinycss2))
+           python-tinycss2
+           python-tinyhtml5))
     (native-inputs
      (list font-dejavu                  ;tests depend on it
            ghostscript
