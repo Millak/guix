@@ -17315,78 +17315,72 @@ opening all the files under a given directory recursively, as a single
 lines in the contained files easily.")
     (license license:expat)))
 
+(define-public python-fonttools
+  (package
+    (name "python-fonttools")
+    (version "4.59.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fonttools" version ".tar.gz"))
+       (sha256
+        (base32 "08pgq9nrj3r81gzb6gbf5mcak0xyqrj26cw0rc5za4v1n14hfb77"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? (not (%current-target-system))
+      ;; tests: 4529 passed, 59 skipped, 8 deselected, 2 xfailed, 28 warnings,
+      ;; 3 subtests passed
+      #:test-flags
+      #~(list "--deselect=tfmLib.py::fontTools.tfmLib"
+              #$@(map (lambda (ls) (string-append "--deselect=Tests/"
+                                                  (string-join ls "::")))
+                      ;; XXX: Some test data is not included in PyPI archive,
+                      ;; remove when switched to git-fetch.
+                      '(("cffLib/cffLib_test.py" "CffLibTest"
+                         "test_reading_supplement_encoding")
+                        ("tfmLib/tfmLib_test.py"
+                         "test_read_boundary_char")
+                        ("tfmLib/tfmLib_test.py"
+                         "test_read_fontdimens_vanilla")
+                        ("tfmLib/tfmLib_test.py"
+                         "test_read_fontdimens_mathex")
+                        ("tfmLib/tfmLib_test.py"
+                         "test_read_fontdimens_mathsy")
+                        ("voltLib/volttofea_test.py" "ToFeaTest"
+                         "test_cli_vtp")
+                        ("voltLib/volttofea_test.py" "ToFeaTest"
+                         "test_group_order"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    ;; All of them are listed as extras_require.
+    (propagated-inputs
+     (list python-brotli
+           python-lxml
+           python-unicodedata2
+           python-zopfli))
+    (home-page "https://github.com/fonttools/fonttools")
+    (synopsis "Tools to manipulate font files")
+    (description
+     "FontTools/TTX is a library to manipulate font files from Python.  It
+supports reading and writing of TrueType/OpenType fonts, reading and writing
+of AFM files, reading (and partially writing) of PS Type 1 fonts.  The package
+also contains a tool called “TTX” which converts TrueType/OpenType fonts to and
+from an XML-based format.")
+    (license license:expat)))
+
 ;;; Tests are left out in the main package to avoid cycles.
 ;; XXX: When updating, solve comment in python-cu2qu.
 (define-public python-fonttools-minimal
   (hidden-package
    (package
+     (inherit python-fonttools)
      (name "python-fonttools-minimal")
-     (version "4.59.2")
-     (source (origin
-               (method url-fetch)
-               (uri (pypi-uri "fonttools" version ".tar.gz"))
-               (sha256
-                (base32
-                 "08pgq9nrj3r81gzb6gbf5mcak0xyqrj26cw0rc5za4v1n14hfb77"))))
-     (build-system pyproject-build-system)
+     (arguments '(#:tests? #f))
      (native-inputs
       (list python-setuptools))
-     (arguments '(#:tests? #f))
-     (home-page "https://github.com/fonttools/fonttools")
-     (synopsis "Tools to manipulate font files")
-     (description
-      "FontTools/TTX is a library to manipulate font files from Python.  It
-supports reading and writing of TrueType/OpenType fonts, reading and writing
-of AFM files, reading (and partially writing) of PS Type 1 fonts.  The package
-also contains a tool called “TTX” which converts TrueType/OpenType fonts to and
-from an XML-based format.")
-     (license license:expat))))
-
-(define-public python-fonttools
-  (let ((base python-fonttools-minimal))
-    (package/inherit base
-      (name "python-fonttools")
-      (arguments
-       (substitute-keyword-arguments arguments
-         ((#:tests? _ #f)
-          (not (%current-target-system)))
-         ((#:phases phases '%standard-phases)
-          `(modify-phases ,phases
-             (replace 'check
-               (lambda* (#:key tests? #:allow-other-keys)
-                 (when tests?
-                   (invoke "pytest" "-vv"
-                           "-k"
-                           ;; XXX: These tests need data files that are not
-                           ;; shipped with the PyPI release.
-                           (format #f "not ~a"
-                                   (string-join
-                                    '("test_cli_vtp"
-                                      "test_group_order"
-                                      "test_read_fontdimens_mathsy"
-                                      "test_read_fontdimens_mathex"
-                                      "test_read_fontdimens_vanilla"
-                                      "test_read_boundary_char"
-                                      "test_reading_supplement_encoding"
-                                      "fontTools.tfmLib"
-                                      ;; The MtiTest tests fail for unknown
-                                      ;; reasons (see:
-                                      ;; https://github.com/fonttools/
-                                      ;; fonttools/issues/3078)
-                                      "MtiTest")
-                                    " and not "))))))))))
-      (native-inputs
-       (modify-inputs native-inputs
-         (append python-pytest)))
-      (propagated-inputs
-       (list python-brotli
-             python-fs
-             python-lxml
-             python-lz4
-             python-scipy
-             python-unicodedata2
-             python-zopfli))
-      (properties (alist-delete 'hidden? (package-properties base))))))
+     (propagated-inputs '()))))
 
 (define-public python-ly
   (package
