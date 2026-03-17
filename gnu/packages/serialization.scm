@@ -672,15 +672,16 @@ This package also provides @samp{kdlpp}, a C++20 wrapper around @samp{ckdl}.")
 (define-public capnproto
   (package
     (name "capnproto")
-    (version "1.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://capnproto.org/capnproto-c++-"
-                    version ".tar.gz"))
-              (sha256
-               (base32
-                "0211a9c394l9lfb8ixdsimpwh6kj7xxy05xfaryq66js955853q9"))))
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/capnproto/capnproto")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17dmyq3v6xj2zphbr52rirbq7bwxw9gg0lalwsv03y8lkhw4ms0a"))))
     (build-system cmake-build-system)
     (arguments
      (list
