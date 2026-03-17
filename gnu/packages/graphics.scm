@@ -1566,37 +1566,6 @@ graphics.")
     (home-page "https://www.ogre3d.org/")
     (license license:expat)))
 
-(define-public ogre-next
-  (package
-    (inherit ogre)
-    (name "ogre-next")
-    (version "3.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/OGRECave/ogre-next")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (patches (search-patches "ogre-next-add-riscv64-support.patch"))
-              (sha256
-               (base32
-                "1yrlg3s654xbp95208h9a2b8jcwdk69r6sjvll0aiyvxm4c056cw"))))
-    (arguments (substitute-keyword-arguments (package-arguments ogre)
-                 ((#:tests? _ #f)
-                  ;; The test suite is currently disabled by the build system
-                  ;; (see: https://github.com/OGRECave/ogre-next/issues/466).
-                  #f)
-                 ((#:configure-flags flags #~(list))
-                  (if (target-riscv64?)
-                      #~(cons*
-                         "-DOGRE_SIMD_SSE2=OFF"
-                         "-DOGRE_SIMD_NEON=OFF"
-                         #$flags)
-                      flags))))
-    (inputs
-     (modify-inputs (package-inputs ogre)
-       (append rapidjson)))))
-
 (define-public openexr
   (package
     (name "openexr")
