@@ -2328,28 +2328,51 @@ of use.")
     (license license:expat)))
 
 (define-public mygui-gl
-  ;; Closure size is reduced by some 800 MiB.
-  (package/inherit mygui
+  (package
     (name "mygui-gl")
+    (version "3.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/MyGUI/mygui")
+             (commit (string-append "MyGUI" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nayw5shm5nly9bjp0g372kg5ia64dvn6mrmi1c6mdg0n6vgs9xa"))))
+    (build-system cmake-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments mygui)
-       ((#:configure-flags _)
-        `(cons* "-DMYGUI_RENDERSYSTEM=4" ; 3 is Ogre, 4 is OpenGL.
-                ;; We can't reuse the flags because of the mention to Ogre.
-                (list "-DMYGUI_INSTALL_DOCS=TRUE"
-                      ;; Demos and tools are Windows-specific:
-                      ;; https://github.com/MyGUI/mygui/issues/24.
-                      "-DMYGUI_BUILD_DEMOS=FALSE"
-                      "-DMYGUI_BUILD_TOOLS=FALSE"
-                      "-DMYGUI_DONT_USE_OBSOLETE=TRUE")))))
+     (list
+      #:tests? #f                       ;no test target
+      #:configure-flags
+      #~(list "-DMYGUI_RENDERSYSTEM=4" ; 3 is Ogre, 4 is OpenGL.
+              "-DMYGUI_INSTALL_DOCS=TRUE"
+              ;; Demos and tools are Windows-specific:
+              ;; https://github.com/MyGUI/mygui/issues/24.
+              "-DMYGUI_BUILD_DEMOS=FALSE"
+              "-DMYGUI_BUILD_TOOLS=FALSE"
+              "-DMYGUI_DONT_USE_OBSOLETE=TRUE")))
+    (native-inputs
+     (list boost
+           doxygen
+           pkg-config))
     (inputs
-     (modify-inputs (package-inputs mygui)
-       (delete "ogre")
-       (prepend glu
-                libglvnd                ; for find_package(… GLX)
-                mesa                    ; for find_package(… OpenGL …)
-                (sdl-union (list sdl2 sdl2-image)))))
-    (synopsis "Fast, flexible and simple GUI (OpenGL backend)")))
+     (list font-dejavu
+           freetype
+           glu
+           graphviz
+           libglvnd
+           libx11
+           mesa
+           ois
+           (sdl-union (list sdl2 sdl2-image))))
+    (synopsis "Fast, flexible and simple GUI (OpenGL backend)")
+    (description
+     "MyGUI is a library for creating Graphical User Interfaces (GUIs) for games
+and 3D applications.  The main goals of MyGUI are: speed, flexibility and ease
+of use.")
+    (home-page "http://mygui.info/")
+    (license license:expat)))
 
 (define-public openmw
   (package
