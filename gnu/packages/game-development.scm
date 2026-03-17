@@ -2285,48 +2285,6 @@ It can convert worlds from Minecraft 1.9 and later.")
       (home-page "https://github.com/listia/mc2mt")
       (license license:expat))))
 
-(define-public mygui
-  (package
-    (name "mygui")
-    (version "3.4.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/MyGUI/mygui")
-             (commit (string-append "MyGUI" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0nayw5shm5nly9bjp0g372kg5ia64dvn6mrmi1c6mdg0n6vgs9xa"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ;no test target
-      #:configure-flags
-      #~(list "-DMYGUI_INSTALL_DOCS=TRUE"
-              ;; Demos and tools are Windows-specific:
-              ;; https://github.com/MyGUI/mygui/issues/24.
-              "-DMYGUI_BUILD_DEMOS=FALSE"
-              "-DMYGUI_BUILD_TOOLS=FALSE")))
-    (native-inputs
-     (list boost
-           doxygen
-           pkg-config))
-    (inputs
-     (list font-dejavu
-           freetype
-           graphviz
-           libx11
-           ogre
-           ois))
-    (synopsis "Fast, flexible and simple GUI")
-    (description
-     "MyGUI is a library for creating Graphical User Interfaces (GUIs) for games
-and 3D applications.  The main goals of MyGUI are: speed, flexibility and ease
-of use.")
-    (home-page "http://mygui.info/")
-    (license license:expat)))
-
 (define-public mygui-gl
   (package
     (name "mygui-gl")
