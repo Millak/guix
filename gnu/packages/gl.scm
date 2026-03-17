@@ -427,14 +427,20 @@ panfrost,r300,r600,svga,softpipe,lima,llvmpipe,tegra,v3d,vc4,virgl,zink"))
          "--wrap-mode=nodownload"       ; XXX: disable
 
          #$@(cond
+             ;; Increase the number of vulkan drivers on each architecture:
              ((target-x86-32?)
-              ;; This doesn't include nouveau (which is in "auto") as it needs
-              ;; rust.
-              ;; TODO: Enable nouveau/NVK.
-              '("-Dvulkan-drivers=intel,intel_hasvk,amd,swrast"))
+              ;; TODO: Reenable nouveau/NVK when rust support lands.
+              '("-Dvulkan-drivers=amd,intel,intel_hasvk,swrast,virtio"))
+             ((target-x86-64?)
+              '("-Dvulkan-drivers=amd,intel,intel_hasvk,nouveau,swrast,virtio"))
+             ((target-arm32?)
+              '("-Dvulkan-drivers=swrast,intel,panfrost,freedreno,virtio"))
              ((target-aarch64?)
               ;; This includes more drivers than "auto": amd, broadcom
-              '("-Dvulkan-drivers=freedreno,amd,broadcom,intel,panfrost,swrast,asahi"))
+              '("-Dvulkan-drivers=swrast,intel,panfrost,freedreno,asahi,amd,broadcom,virtio"))
+              ;; The default fallback seems to be amd and swrast.
+             ((target-linux?)
+              '("-Dvulkan-drivers=amd,swrast,virtio"))
              (else
               '("-Dvulkan-drivers=auto")))
 
