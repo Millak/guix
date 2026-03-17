@@ -2005,6 +2005,18 @@ for wlroots-based Wayland compositors.")
         #~(begin
             (use-modules (guix build utils)
                          (srfi srfi-19))
+            ;; TODO: Drop the following substitution in the next release.
+            ;; Fix compatibility with GLib 2.86:
+            ;; https://github.com/awesomeWM/awesome/pull/4022
+            (substitute* '("lib/awful/spawn.lua"
+                           "tests/_client.lua"
+                           "tests/test-spawn.lua")
+              (("local Gio = lgi.Gio" all)
+               (string-append all "\nlocal GioUnix = lgi.GioUnix"))
+              (("Gio\\.UnixInputStream")
+               "GioUnix.InputStream")
+              (("Gio\\.UnixOutputStream")
+               "GioUnix.OutputStream"))
             ;; Remove non-reproducible timestamp and use the date of
             ;; the source file instead.
             (substitute* "common/version.c"
