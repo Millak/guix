@@ -43,10 +43,6 @@
 (define %node-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build node-build-system)
-    (json)
-    (json builder)
-    (json parser)
-    (json record)
     ,@%default-gnu-imported-modules))
 
 (define (default-node)
