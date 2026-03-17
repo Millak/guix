@@ -1179,8 +1179,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/dbacl-icheck-multiple-definitions.patch	\
   %D%/packages/patches/dblatex-inkscape-1.0.patch		\
   %D%/packages/patches/dbus-helper-search-path.patch		\
-  %D%/packages/patches/dbus-c++-gcc-compat.patch		\
-  %D%/packages/patches/dbus-c++-threading-mutex.patch		\
   %D%/packages/patches/ddd-build.patch				\
   %D%/packages/patches/debops-setup-py-avoid-git.patch	\
   %D%/packages/patches/dee-vapi.patch			\
