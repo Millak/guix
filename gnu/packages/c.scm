@@ -2116,3 +2116,35 @@ Curl, Nginx, OpenSSL, Perl, Postgresql, Tcl and many others.   The compiler
 targets x86_64 architecture and System-V AMD64 ABI, supporting Linux, FreeBSD,
 NetBSD an OpenBSD.")
     (license license:gpl3)))
+
+(define-public libsais
+  (package
+    (name "libsais")
+    (version "2.10.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/IlyaGrebnov/libsais")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w488a43rjg9c6w6gr1nap995zshy45s2girh4fxjz63k0ia5c80"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; no tests
+      #:tests? #f
+      #:configure-flags
+      #~(list "-DLIBSAIS_BUILD_SHARED_LIB:bool=ON"
+              "-DLIBSAIS_USE_OPENMP:bool=ON")))
+    (home-page "https://github.com/IlyaGrebnov/libsais")
+    (synopsis "Library for Linear Suffix Array Construction")
+    (description
+     "The libsais library provides fast linear-time construction of
+suffix array (SA), generalized suffix array (GSA), longest common prefix (LCP)
+array, permuted LCP (PLCP) array, Burrows-Wheeler transform (BWT) and inverse
+BWT based on the induced sorting algorithm with OpenMP support for multi-core
+parallel construction.")
+    (properties '((tunable? . #t)))
+    (license license:asl2.0)))
