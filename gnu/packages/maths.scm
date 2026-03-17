@@ -4811,54 +4811,6 @@ are expensive and/or noisy.")
 Mathematics (GLM) library to Python.")
     (license license:zlib)))
 
-(define-public python-quadpy
-  (package
-    (name "python-quadpy")
-    (version "0.16.10")
-    (source
-      (origin
-        (method url-fetch)
-        ; Download zipfile from zenodo, because git checkout is missing
-        ; some data files that are stored via git-lfs.
-        (uri (string-append
-               "https://zenodo.org/records/5541216/files/nschloe/quadpy-v"
-               version
-               ".zip"))
-        (sha256
-          (base32
-            "1f989dipv7lqxvalfrvvlmhlxyl67a87lavyyqrr1mh88glhl592"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 1828 passed, 3 skipped, 1 deselected, 157 warnings
-      #:test-flags
-      ;; AssertionError: Lebedev(047) -- observed: 41, expected: 47 (max err:
-      ;; 4.910e-15).
-      #~(list "--deselect=tests/test_u3.py::test_scheme_spherical[lebedev_047]")))
-    (native-inputs
-     (list python-accupy
-           python-pytest
-           python-setuptools
-           unzip
-           vtk-9.4))
-    (inputs
-     ;; [optional]
-     (list python-matplotlib))
-    (propagated-inputs
-      (list python-numpy-1
-            python-orthopy
-            python-scipy
-            python-sympy))
-    (home-page "https://github.com/diego-hayashi/quadpy")
-    (synopsis "Numerical integration, quadrature for various domains")
-    (description
-      "More than 1500 numerical integration schemes for line segments, circles,
-disks, triangles, quadrilaterals, spheres, balls, tetrahedra, hexahedra,
-wedges, pyramids, n-spheres, n-balls, n-cubes, n-simplices, and the
-1D/2D/3D/nD spaces with weight functions exp(-r) and exp(-r2) for fast
-integration of real-, complex-, and vector-valued functions.")
-    (license license:gpl3+)))
-
 (define-public python-simplesat
   (package
     (name "python-simplesat")
