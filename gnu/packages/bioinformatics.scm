@@ -22768,6 +22768,42 @@ transcriptional derivatives and visualization of the resulting velocity
 patterns.")
       (license license:gpl3))))
 
+(define-public r-voltronstore
+  (let ((commit "781a75ae73571a3a20387cdbf647f23184324a84")
+        (revision "1"))
+    (package
+      (name "r-voltronstore")
+      (version (git-version "0.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/BIMSBbioinfo/VoltRonStore")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "19mi9bbvym6jzlqnyqmzy83fv3wpj1jxq2np71j77l7sf1788cwj"))))
+      (properties `((upstream-name . "VoltRonStore")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-basilisk
+                               r-biocparallel
+                               r-bpcells
+                               r-delayedarray
+                               r-delayedmatrixstats
+                               r-hdf5array
+                               r-hdf5dataframe
+                               r-imagearray
+                               r-rarr
+                               r-reticulate
+                               r-rhdf5
+                               r-zarrdataframe))
+      (home-page "https://github.com/BIMSBbioinfo/VoltRonStore")
+      (synopsis "On-Disk support and dependancies for VoltRon")
+      (description
+       "@code{VoltRonStore} provides utilities and a resource for installing
+dependencies of @code{VoltRon} package.")
+      (license license:expat))))
+
 (define-public r-voltron
   (package
     (name "r-voltron")
