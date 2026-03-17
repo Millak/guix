@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019 Tobias Geerinck-Rice <me@tobias.gr>
+;;; Copyright © 2026 Constantin Tarasov <tarcv@proton.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -144,6 +145,8 @@ groovy submodules.")
          (add-before 'build 'generate-exception-utils
            (lambda _
              (invoke "javac" "-cp" (getenv "CLASSPATH")
+                     ;; Make the JAR usable from Java 8 as per https://groovy.apache.org/download.html#requirements
+                     "-source" "1.8" "-target" "1.8"
                      "config/ant/src/org/codehaus/groovy/ExceptionUtilsGenerator.java")
              (invoke "java" "-cp" (string-append (getenv "CLASSPATH")
                                                  ":config/ant/src")
@@ -155,6 +158,8 @@ groovy submodules.")
              (mkdir-p "target/classes/org/codehaus/groovy/runtime")
              (mkdir-p "target/classes/META-INF")
              (invoke "javac" "-cp" (getenv "CLASSPATH")
+                     ;; Make the JAR usable from Java 8 as per https://groovy.apache.org/download.html#requirements
+                     "-source" "1.8" "-target" "1.8"
                      "src/main/java/org/codehaus/groovy/tools/DgmConverter.java")
              (invoke "java" "-cp" (string-append (getenv "CLASSPATH")
                                                  ":src/main/java")
@@ -179,6 +184,8 @@ groovy submodules.")
                            "-cp" (getenv "CLASSPATH")
                            "-d" "target/classes"
                            "-j"; joint compilation
+                           ;; Make the JAR usable from Java 8 as per https://groovy.apache.org/download.html#requirements
+                           "-Jsource=1.8" "-Jtarget=1.8"
                            (find-files "src/main"
                                        ".*\\.(groovy|java)$"))
              (invoke "jar" "-cf" "build/jar/groovy.jar"
@@ -252,6 +259,8 @@ other groovy submodules.")))
                     "org.codehaus.groovy.tools.FileSystemCompiler"
                     "-cp" (getenv "CLASSPATH")
                     "-d" "build/classes" "-j"
+                    ;; Make the JAR usable from Java 8 as per https://groovy.apache.org/download.html#requirements
+                    "-Jsource=1.8" "-Jtarget=1.8"
                     (append
                       (find-files ,(string-append "subprojects/" name "/src/main/java")
                         ".*\\.(groovy|java)$")
@@ -558,6 +567,8 @@ library used to build graphical interfaces."))))
                           "org.codehaus.groovy.tools.FileSystemCompiler" "-cp"
                           (string-append (getenv "CLASSPATH") ":build/classes")
                           "-d" "build/test-classes" "-j"
+                          ;; Make the JAR usable from Java 8 as per https://groovy.apache.org/download.html#requirements
+                          "-Jsource=1.8" "-Jtarget=1.8"
                           (append
                             (find-files "subprojects/groovy-swing/src/test/java"
                                         ".*\\.(groovy|java)$")
