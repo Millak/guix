@@ -17562,19 +17562,22 @@ reading and writing MessagePack data.")
 (define-public python-openstep-plist
   (package
     (name "python-openstep-plist")
-    (version "0.3.0")
+    (version "0.5.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/fonttools/openstep-plist")
-             (commit (string-append "v" version))))
+              (url "https://github.com/fonttools/openstep-plist")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rxjgzh0p069ncsr2986rn32vhdqyq35irbqg2559jh18456mkca"))))
+        (base32 "0h6d9cm3chfwf05jdw5axf9ck38kpcsyj16bkdh5ipkgz3x4mwr6"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-cython-0 python-pytest python-setuptools-scm
-                         python-setuptools))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools-scm
+           python-setuptools))
     (home-page "https://github.com/fonttools/openstep-plist")
     (synopsis "OpenStep plist parser and writer")
     (description
