@@ -314,6 +314,27 @@ without errors."
     (with-directory-excursion "/tmp"
       (invoke "python" sanity-check.py (site-packages inputs outputs)))))
 
+(define (keywords->alist lst)
+  (let loop ((lst    lst)
+             (result '()))
+    (match lst
+      (()
+       (reverse result))
+      ((kw value rest ...)
+       (cons (symbol->string (keyword->symbol kw)) value)))))
+
+(define (guile->python-keywords args)
+  (map (match-lambda
+         ((head . tail)
+          (cons head
+                (map (match-lambda
+                       ((arg . ())
+                        (cons arg '()))
+                       ((arg . keyword-args)
+                        (cons arg (list (keywords->alist keyword-args)))))
+                     tail))))
+       args))
+
 (define* (check #:key inputs tests? test-backend test-flags pytest-guix-options
                 #:allow-other-keys)
   "Run the test suite of a given Python package."
@@ -349,7 +370,10 @@ without errors."
         (match use-test-backend
           ('pytest-with-guix-plugin
            (call-with-output-file ".pytest_guix_options.json"
-             (cut scm->json pytest-guix-options <>))
+             (lambda (port)
+               (scm->json
+                (guile->python-keywords pytest-guix-options)
+                port)))
            (apply invoke pytest "-vv" "-p" "pytest_guix" test-flags))
           ('pytest
            (apply invoke pytest "-vv" test-flags))

@@ -31,6 +31,12 @@ def pytest_addoption(parser):
       otherwise, --cov is ignored (read by this parser, but nothing is done
       with it).
 
+    Flags can be given with additional keyword arguments in a json object.
+    If the json object is not given, fallback to the default
+    {"action": "append", "nargs": "?"}.  In practice, these arguments are only
+    mandatory for the store_true and store_const actions to avoid eating other
+    arguments.
+
     This allows to remove development packages, which are not required at build
     time while at the same time avoiding the need to adjust test options in
     pyproject.toml or other configuration files.
@@ -45,5 +51,8 @@ def pytest_addoption(parser):
         for key, options in plugin_options.items():
             if importlib.util.find_spec(f"pytest_{key}") is None:
                 # Plugin not found, add stub options
-                for option in options:
-                    group.addoption(option, action="append", nargs="?")
+                for option, kwargs in options.items():
+                    if kwargs:
+                        group.addoption(option, **kwargs)
+                    else:
+                        group.addoption(option, action="append", nargs="?")

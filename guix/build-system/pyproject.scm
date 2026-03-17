@@ -98,26 +98,40 @@ build-system level.")
       (license license:gpl3+))))
 
 (define %default-pytest-guix-options
+  ;; Guile keyword arguments are translated to Python keyword arguments
+  ;; and passed to `group.addoption'. pytest_guix assumes default options
+  ;; '(#:action "append" #:nargs "?")
+  ;; It is required to store at least the store_const and store_true actions
+  ;; to ensure boolean args are not eating the next argument, but it is not
+  ;; necessary to do more than that so keep it minimal for maintainability.
   #~'(("cov"
-       "--cov"
-       "--cov-reset"
-       "--cov-report"
-       "--cov-config"
-       "--no-cov-on-fail"
-       "--no-cov"
-       "--cov-fail-under"
-       "--cov-append"
-       "--cov-branch"
-       "--cov-context")
+       ("--cov")
+       ("--cov-reset" #:action "store_const")
+       ("--cov-report")
+       ("--cov-config")
+       ("--no-cov-on-fail" #:action "store_true")
+       ("--no-cov" #:action "store_true")
+       ("--cov-fail-under")
+       ("--cov-append" #:action "store_true")
+       ("--cov-branch" #:action "store_true")
+       ("--cov-precision")
+       ("--cov-context"))
       ("html"
-       "--html" "--self-contained-html" "--css")
+       ("--html")
+       ("--self-contained-html" #:action "store_true")
+       ("--css"))
       ("mypy"
-       "--mypy" "--mypy-config-file" "--mypy-ignore-missing-imports")
-      ("isort" "isort")
-      ("flake8" "flake8")
-      ("black" "black")
-      ("flakes" "flakes")
-      ("pep8" "pep8")))
+       ("--mypy" #:action "store_true")
+       ("--mypy-ignore-missing-imports" #:action "store_true")
+       ("--mypy-config-file")
+       ("--mypy-report-style")
+       ("--mypy-no-status-check" #:action "store_true")
+       ("--mypy-xfail" #:action "store_true"))
+      ("isort"  ("--isort"  #:action "store_true"))
+      ("flake8" ("--flake8" #:action "store_true"))
+      ("black"  ("--black"  #:action "store_true"))
+      ("flakes" ("--flakes" #:action "store_true"))
+      ("pep8"   ("--pep8"   #:action "store_true"))))
 
 ;; TODO: On the next iteration of python-team, migrate the sanity-check to
 ;; importlib_metadata instead of setuptools.
