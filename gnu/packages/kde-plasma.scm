@@ -1855,6 +1855,7 @@ for xdg-desktop-portal that is using Qt/KF5.")
                              discover
                              ffmpegthumbs
                              flatpak ;for discover
+                             flatpak-kcm ;to manage flatpak app permissions
                              kactivitymanagerd
                              kdeclarative ;required by sddm breeze theme
                              kde-cli-tools
