@@ -36,10 +36,10 @@
   #:use-module (gnu packages web))
 
 (define-public rnp
-  (let ((day-of-release "2024-05-14"))
+  (let ((day-of-release "2025-11-21"))
     (package
       (name "rnp")
-      (version "0.17.1")
+      (version "0.18.1")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -48,18 +48,14 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "052872b6a88vkcc58alxcm532y6dra5qqd997jga41v72h3pnj4d"))))
+                  "07qz51qgi8zq67civiz1bysmclwshav8v77hp4c1da6clf02hj0q"))))
       (build-system cmake-build-system)
       (arguments
        (list
         #:configure-flags
         #~(list "-DBUILD_SHARED_LIBS=on"
                 "-DSYSTEM_LIBSEXPP=on"
-                ;; Lower the minimum tuning ratio from 6 to 4, as suggested
-                ;; upstream to avoid the s2k_iteration_tuning failing.
-                "-DS2K_MINIMUM_TUNING_RATIO=4"
-                "-DDOWNLOAD_GTEST=off"
-                "-DDOWNLOAD_RUBYRNP=off")
+                "-DDOWNLOAD_GTEST=off")
         #:phases
         #~(modify-phases %standard-phases
             (replace 'check
