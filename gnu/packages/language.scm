@@ -15,6 +15,7 @@
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2026 Spencer King <spencer.king@wustl.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,6 +38,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages dbm)
@@ -50,6 +52,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages ibus)
   #:use-module (gnu packages java)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages man)
@@ -88,7 +91,8 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix modules)
-  #:use-module (guix utils))
+  #:use-module (guix utils)
+  #:use-module (srfi srfi-1))
 
 (define-public nimf
   (package
@@ -1108,6 +1112,106 @@ compile_data()")))))
 for longer text sequences.  As it relies on dictionaries,
 if a word is missing or mispelled, the detection will fail.")
     (license license:agpl3)))
+
+;; This package provides the database files created by
+;; The Árni Magnússon Institute for Icelandic Studies which
+;; are needed for building certain packages.
+;; This package is not intended to be installed directly.
+(define arnastofnun-dim
+  (let ((version "May2026"))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+             (url "https://codeberg.org/spencerking/DIM-mirror")
+             (commit version)))
+      (file-name (git-file-name "arnastofnun-dim" version))
+      (sha256
+       (base32 "1ribxkdj9clafdqa572bp0qh73spv4wagyx49jqdivq8r3b631n6")))))
+
+(define-public python-islenska-bootstrap
+  (hidden-package
+   (package
+     (name "python-islenska-bootstrap")
+     (version "1.1.1")
+     ;; Use the git source since this should not include database files.
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/mideind/BinPackage")
+               (commit version)))
+        (file-name (git-file-name "python-islenska" version))
+        (sha256
+         (base32 "1wgv2k41m1jmsqr1sdlj92kw5v3d5r9cg2268vfh8308pncn1fya"))))
+     (build-system pyproject-build-system)
+     (arguments
+      (list
+       #:phases
+       ;; Add two new phases to ensure that the database resource files
+       ;; are included in the installed package. This is necessary for
+       ;; running the bundled build scripts (tools/binpack.py and
+       ;; tools/dawgbuilder.py) when bootstrapping.
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'create-manifest-in
+             (lambda* (#:key inputs #:allow-other-keys)
+               (with-output-to-file "MANIFEST.in"
+                 (lambda ()
+                   (display "graft src/islenska/resources")))))
+           (add-after 'unpack 'patch-setup-py
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "setup.py"
+                 (("(.*)cffi_modules=.*" cffi indent)
+                  (string-append
+                   cffi
+                   indent "package_data={'islenska':['src/resources/*']},\n"
+                   indent "include_package_data=True,\n"))))))
+       ;; Tests will fail since database files have not been bootstrapped yet.
+       #:tests? #f))
+     (propagated-inputs (list python-cffi python-typing-extensions))
+     (native-inputs (list python-cffi python-pytest python-setuptools))
+     (home-page "https://github.com/mideind/BinPackage")
+     (synopsis
+      "The vocabulary of modern Icelandic, encapsulated in a Python package")
+     (description
+      "Islenska is a Python package that embeds the vocabulary of the Database
+of Icelandic Morphology and offers various lookups and queries of the data.
+The database contains over 6.5 million entries, over 3.1 million unique word
+forms, and about 300,000 distinct lemmas.")
+     (license license:expat))))
+
+(define-public python-islenska
+  (package/inherit python-islenska-bootstrap
+    (name "python-islenska")
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Delete the phases added for python-islenska-bootstrap.
+          (delete 'create-manifest-in)
+          (delete 'patch-setup-py)
+          ;; Copy KRISTINsnid.csv to the expected directory
+          ;; for the build scripts.
+          (add-after 'unpack 'unpack-resources
+            (lambda* (#:key inputs #:allow-other-keys)
+              (install-file
+               (search-input-file inputs "KRISTINsnid.csv/KRISTINsnid.csv")
+               "src/islenska/resources")))
+          ;; Run the build scripts
+          (add-before 'build 'build-databases
+            (lambda _
+              (invoke "python" "tools/binpack.py")
+              (invoke "python" "tools/dawgbuilder.py"))))
+      #:tests? #t))
+    (native-inputs (list arnastofnun-dim
+                         python-cffi
+                         python-islenska-bootstrap
+                         python-pytest
+                         python-setuptools
+                         unzip))
+    (license (list license:cc-by4.0     ;resource files
+                   license:expat))
+    (properties
+     (alist-delete 'hidden? (package-properties python-islenska-bootstrap)))))
 
 (define-public python-sacremoses
   (package
