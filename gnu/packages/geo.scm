@@ -412,55 +412,6 @@ hierarchical hexagonal geospatial indexing system")
      (modify-inputs (package-inputs python-h3)
        (replace "h3" h3-3)))))
 
-(define-public memphis
-  (package
-    (name "memphis")
-    (version "0.2.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/jiuka/memphis")
-         (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "068c3943pgbpfjq44pmvn5fmkh005ak5aa67vvrq3fn487c6w54q"))))
-    (build-system glib-or-gtk-build-system)
-    (outputs '("out" "doc"))
-    (arguments
-     `(#:configure-flags
-       (list "--disable-static"
-             "--enable-gtk-doc"
-             "--enable-vala"
-             (string-append "--with-html-dir=" #$output "/share/gtk-doc/html"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-autogen
-           (lambda _
-             (substitute* "autogen.sh"
-               (("\\./configure \"\\$@\"")
-                "")))))))
-    (native-inputs
-     (list autoconf
-           automake
-           docbook-xml-4.3
-           gobject-introspection
-           gtk-doc/stable
-           libtool
-           libxml2                      ;for XML_CATALOG_FILES
-           pkg-config
-           python-wrapper
-           seed
-           vala))
-    (inputs (list expat glib))
-    (propagated-inputs (list cairo))
-    (synopsis "Map-rendering for OpenSteetMap")
-    (description "Memphis is a map-rendering application and a library for
-OpenStreetMap written in C using eXpat, Cairo and GLib.")
-    (home-page "http://trac.openstreetmap.ch/trac/memphis/")
-    (license license:lgpl2.1+)))
-
 (define-public geos
   (package
     (name "geos")
