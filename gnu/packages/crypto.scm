@@ -884,7 +884,7 @@ QuickAssist APIs and sample codes.")
 (define-public crypto++
   (package
     (name "crypto++")
-    (version "8.8.0")
+    (version "8.9.0")
     (source (origin
               (method git-fetch)
               (uri
@@ -896,7 +896,7 @@ QuickAssist APIs and sample codes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11gfnsqbb531zwgzpm0x9hsgshzcj1j049vg0zqsaqf8lvky03l6"))))
+                "153jl84s26nw85vw7hlc84plpja7adq6q2cdydr7g2b445yrlpqx"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
