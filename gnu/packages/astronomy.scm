@@ -4950,7 +4950,7 @@ CFITSIO library.  Among other things, it can
 (define-public python-galsim
   (package
     (name "python-galsim")
-    (version "2.8.3")
+    (version "2.8.4")
     (source
      (origin
        (method git-fetch)
@@ -4959,7 +4959,7 @@ CFITSIO library.  Among other things, it can
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0anirrwhw9vwv58d0v1i289s66a2h68hjjicwccgwfzb5ng5g4s1"))))
+        (base32 "1h6sx95vgn5f3mmrpxj3nyvhn8lbxyaahbrvxnkilhagj1f9bbra"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5013,18 +5013,9 @@ CFITSIO library.  Among other things, it can
                             "test_wcs.py")))
       #:phases
       #~(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* (list "conda_requirements.txt"
-                                "pyproject.toml"
-                                "requirements.txt"
-                                "setup.py")
-               (("setuptools>=38,<72") "setuptools")
-               (("pybind11>=2.2") "pybind11"))))
           (add-before 'check 'remove-local-galsim
             (lambda _
-              ;; This would otherwise interfere with finding the installed
-              ;; galsim when running tests.
+              ;; See: <https://codeberg.org/guix/guix/issues/7243>.
               (delete-file-recursively "galsim"))))))
     (native-inputs
      (list python-pytest
@@ -5034,7 +5025,7 @@ CFITSIO library.  Among other things, it can
      (list eigen
            fftw))
     (propagated-inputs
-     (list pybind11-2     ;XXX: Double check if it needs be here.
+     (list pybind11
            python-astropy
            python-lsstdesc-coord
            python-numpy))
