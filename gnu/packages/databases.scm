@@ -4738,33 +4738,24 @@ PickleShare.")
 (define-public python-apsw
   (package
     (name "python-apsw")
-    (version "3.46.0.0")
-    ;; The compressed release has fetching functionality disabled.
+    (version "3.50.4.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://github.com/rogerbinns/apsw/releases/download/"
-             version "/apsw-" version ".zip"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rogerbinns/apsw")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "10yfbasi4mq63g0svyl1h49ylwn9znjylq78id16dzxzk9q9ipdx"))))
+        (base32 "0r9awjgpl9cmqz5xd4zbqrpiv0rv5c36a18jkqnsfky6n6sgr424"))))
     (build-system pyproject-build-system)
-    (native-inputs
-     (list unzip python-setuptools python-wheel))
-    (inputs (list sqlite-next))         ;SQLite 3.45.1 required.
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'build-extensions
-            (lambda _
-              (invoke "python" "setup.py" "build" "--enable-all-extensions"
-                      "--enable=load_extension")))
-          (add-after 'build 'build-test-helper
-            (lambda _
-              (invoke "gcc" "-fPIC" "-shared" "-o" "./testextension.sqlext"
-                      "-I." "-Isqlite3" "src/testextension.c"))))))
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "-m" "apsw.tests")))
+    (native-inputs
+     (list python-setuptools))
+    (inputs
+     (list sqlite-next))         ;SQLite 3.45.1 required.
     (home-page "https://github.com/rogerbinns/apsw/")
     (synopsis "Another Python SQLite Wrapper")
     (description
