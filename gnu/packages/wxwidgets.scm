@@ -242,17 +242,6 @@ and many other languages.")
                (substitute* "src/unix/mimetype.cpp"
                  (("/usr(/local)?/share/mime") mime))))))))))
 
-(define-public wxwidgets-gtk2-3.0
-  (package/inherit wxwidgets-3.0
-    (name "wxwidgets-gtk2")
-    (inputs (modify-inputs (package-inputs wxwidgets-3.0)
-              (delete "gtk+")
-              (prepend gtk+-2)))
-    (arguments
-     (substitute-keyword-arguments (package-arguments wxwidgets-3.0)
-       ((#:configure-flags flags #~'())
-        #~(append #$flags '("--with-gtk=2")))))))
-
 (define-public prusa-wxwidgets
   ;; There is no proper tag/release, all patches are in separate branches based on
   ;; the wxWidgets release (e.g. this commit is taken from "v3.2.0-patched" branch".)
