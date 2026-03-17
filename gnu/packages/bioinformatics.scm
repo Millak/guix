@@ -22807,7 +22807,7 @@ dependencies of @code{VoltRon} package.")
 (define-public r-voltron
   (package
     (name "r-voltron")
-    (version "0.2.3")
+    (version "0.2.5")
     (source
      (origin
        (method git-fetch)
@@ -22816,7 +22816,7 @@ dependencies of @code{VoltRon} package.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15cfszipvsq2c1gqkvvg5xkwndhjvn8hqjg5ymliwfcz9y9cv9xg"))))
+        (base32 "057n4yipkq3gnlyrb63l2ryi78nlmaas02avargm352g5ra1xl9s"))))
     (properties `((upstream-name . "VoltRon")))
     (build-system r-build-system)
     (arguments
@@ -22928,8 +22928,10 @@ guix_python <- \"~a\";"
                              r-summarizedexperiment
                              r-viridislite
                              r-vitesscer
+                             r-voltronstore
                              r-xml
-                             r-zarrdataframe))
+                             r-zarrdataframe
+                             simpleitk))
     (native-inputs (list pkg-config r-testthat))
     (home-page "https://github.com/BIMSBbioinfo/VoltRon")
     (synopsis "VoltRon for spatial data integration and analysis")
