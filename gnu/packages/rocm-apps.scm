@@ -107,3 +107,4 @@ programming language and optimized for AMD's discrete GPUs.")
      `((amd-gpu-targets . ,%default-amd-gpu-targets)
        (tunable? . #t)))
     (license (list license:bsd-4 license:bsd-3))))
+

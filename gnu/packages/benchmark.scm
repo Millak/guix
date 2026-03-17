@@ -5,7 +5,7 @@
 ;;; Copyright © 2018, 2019, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2019 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2021, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023 Advanced Micro Devices, Inc.
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,6 +38,7 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix git-download)
+  #:use-module (guix amd-gpu)
   #:use-module (guix search-paths)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
@@ -62,6 +64,7 @@
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages opencl)
@@ -76,6 +79,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages rocm)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
@@ -947,3 +951,52 @@ configurable through a set of options.")
      "Microbenchmarks suite to evaluate MPI and PGAS (OpenSHMEM, UPC, and
 UPC++) libraries for CPUs and GPUs.")
     (license license:bsd-3)))
+
+(define-public babelstream-hip
+  (package
+    (name "babelstream-hip")
+    (version "5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/UoB-HPC/BabelStream.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0xkkxkmyi99qly427gkdijm9vwvmhwkgfm283ay6f83r66f712g4"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:build-type "Release"                ;"RelWithDebInfo" is not supported
+      #:tests? #f                           ;no tests
+      #:configure-flags
+      #~(list (string-append "-DMODEL=hip")
+              (string-append "-DCMAKE_CXX_COMPILER="
+                             #$(this-package-input "rocm-hip-runtime")
+                             "/bin/hipcc")
+              (string-append "-DCXX_EXTRA_FLAGS=--offload-arch="
+                             #$(string-join (current-amd-gpu-targets) ",")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'avoid-native-optimizations
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("-march=native")
+                 "-g")))))))
+    (inputs (list rocm-hip-runtime lld-rocm llvm-rocm))
+    (properties
+     `((amd-gpu-targets . ,%default-amd-gpu-targets)
+       (tunable? . #t)))
+    (synopsis "Memory bandwidth benchmark for AMD GPUs")
+    (description
+     "The BabelStream benchmark measures memory transfer rates between main
+memory and GPUs.  This benchmark is similar in spirit, and based on, John
+D. McCalpin's STREAM benchmark for CPUs.  The version of BabelStream is built
+targeting AMD GPUs using HIP.")
+    (home-page "https://github.com/UoB-HPC/BabelStream.git")
+    (license (license:fsf-free
+              "https://github.com/UoB-HPC/BabelStream/blob/main/LICENSE"
+              "Custom permissive license based on John D. McCalpin's \
+original STREAM benchmark."))))
