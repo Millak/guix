@@ -564,6 +564,11 @@ arguments in Groovy using the picocli library."))))
        (substitute-keyword-arguments arguments
          ((#:phases phases)
           `(modify-phases ,phases
+             (add-before 'build 'generate-metadata
+               ,(write-module-descriptor
+                 '("org.apache.groovy.swing.extensions.SwingExtensions")
+                 #f
+                 base))
              (add-before 'check 'fix-test
                (lambda _
                  (substitute*
