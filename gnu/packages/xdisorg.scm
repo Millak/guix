@@ -688,7 +688,7 @@ avoiding password prompts when X11 forwarding has already been setup.")
 (define-public libxkbcommon
   (package
     (name "libxkbcommon")
-    (version "1.11.0")
+    (version "1.13.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -697,7 +697,7 @@ avoiding password prompts when X11 forwarding has already been setup.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1swa6rf63c0wi0qq5r661g63yk2iwa9l66148078xkrwcf05sp91"))))
+                "1440s6w7m7xpxw44d3x9wyn5wy4wxdx33idvklxkhp9irnq32jy1"))))
     (outputs '("out" "doc"))
     (build-system meson-build-system)
     (inputs
@@ -713,6 +713,8 @@ avoiding password prompts when X11 forwarding has already been setup.")
             doxygen
             pkg-config
             python
+            ;; setxkbmap needed for tests.
+            setxkbmap
             ;; wayland-scanner is required at build time.
             wayland
             ;; Xvfb for tests.
