@@ -2484,7 +2484,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/tensile-copy-if-not-exist.patch		\
   %D%/packages/patches/texi2html-document-encoding.patch	\
   %D%/packages/patches/texi2html-i18n.patch			\
-  %D%/packages/patches/texmacs-wayland-hidpi.patch	\
   %D%/packages/patches/tflite-micro_disable_download.patch 	\
   %D%/packages/patches/thefuck-test-environ.patch		\
   %D%/packages/patches/thefuck-remove-broken-tests.patch	\

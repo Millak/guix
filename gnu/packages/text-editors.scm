@@ -133,6 +133,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
@@ -1291,21 +1292,20 @@ interface with CI pipeline UIs.")
 (define-public texmacs
   (package
     (name "texmacs")
-    (version "2.1.4")
+    (version "2.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.texmacs.org/Download/ftp/tmftp/"
                            "source/TeXmacs-" version "-src.tar.gz"))
        (sha256
-        (base32 "11l1q5lmsj9g7yil1dn7n1cgsr8iikx59kg9riahpb6xw0p959l7"))
-       (patches
-        (search-patches "texmacs-wayland-hidpi.patch"))))
+        (base32 "0q3k0asf31mm2jl7fi7244sk6c9lprf434cj4c5h2ycfpayjg8dk"))))
     (build-system qt-build-system)
     (native-inputs
      (list pkg-config xdg-utils))       ;for xdg-icon-resource
     (inputs
      (list freetype
+           gnutls
            guile-1.8
            libjpeg-turbo
            libxcrypt
