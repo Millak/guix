@@ -830,7 +830,13 @@ tests in Groovy."))))
                  (substitute* "build.xml"
                    (("depends=\"compile,") "depends=\""))
                  (invoke "ant" "jar")
-                 #t))))))
+                 #t))
+             (add-before 'copy-resources 'generate-metadata
+               ,(write-module-descriptor
+                 '("org.codehaus.groovy.macro.methods.MacroGroovyMethods"
+                   "org.codehaus.groovy.macro.matcher.ASTMatcher")
+                 #f
+                 base))))))
       (inputs
        `(("groovy-templates" ,groovy-templates)
          ("groovy-xml" ,groovy-xml)
