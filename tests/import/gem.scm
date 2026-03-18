@@ -112,6 +112,19 @@
   \"licenses\": [\"MIT\"]
 }")
 
+(define test-no-homepage-json
+  "{
+  \"name\": \"no-homepage\",
+  \"version\": \"1.0.0\",
+  \"sha\": \"f3676eafca9987cb5fe263df1edf2538bf6dafc712b30e17be3543a9680547a8\",
+  \"info\": \"A gem with no homepage\",
+  \"homepage_uri\": null,
+  \"dependencies\": {
+    \"runtime\": []
+  },
+  \"licenses\": [\"MIT\"]
+}")
+
 (test-begin "gem")
 
 (test-assert "gem->guix-package"
@@ -305,5 +318,32 @@
                                                                   version))))))))
           (list (upstream-source-urls source)
                 (upstream-source-inputs source)))))
+
+(test-assert "gem->guix-package, bald homepage_uri"
+  (mock ((guix http-client) http-fetch
+         (lambda (url . rest)
+           (match url
+             ("https://rubygems.org/api/v1/gems/no-homepage.json"
+              (values (open-input-string test-no-homepage-json)
+                      (string-length test-no-homepage-json)))
+             (_ (error "Unexpected URL: " url)))))
+    (match (gem->guix-package "no-homepage")
+      (`(package
+          (name "ruby-no-homepage")
+          (version "1.0.0")
+          (source (origin
+                    (method url-fetch)
+                    (uri (rubygems-uri "no-homepage" version))
+                    (sha256
+                     (base32
+                      "1a270mlajhrmpqbhxcqjqypnvgrq4pgixpv3w9gwp1wrrapnwrzk"))))
+          (build-system ruby-build-system)
+          (synopsis "A gem with no homepage")
+          (description "This package provides a gem with no homepage.")
+          (home-page #f)
+          (license license:expat))
+       #t)
+      (x
+       (pk 'fail x #f)))))
 
 (test-end "gem")

@@ -98,12 +98,6 @@
         "pytest-isort" "pytest-flake8" "pytest-cov" "pytest-black" ; variants
         "pytest-pep8" "pytest-mypy" "pytest-pep8" "pre-commit"))   ;
 
-(define non-empty-string-or-false
-  (match-lambda
-    ("" #f)
-    ((? string? str) str)
-    ((or 'null #f) #f)))
-
 ;; PyPI project.
 (define-json-mapping <pypi-project> make-pypi-project pypi-project?
   json->pypi-project

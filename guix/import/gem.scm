@@ -63,7 +63,8 @@
   (info          gem-info)
   (sha256        gem-sha256 "sha"                 ;bytevector
                  base16-string->bytevector)
-  (home-page     gem-home-page "homepage_uri")    ;string
+  (home-page     gem-home-page "homepage_uri"     ;string | #f
+                 non-empty-string-or-false)
   (dependencies  gem-dependencies "dependencies"  ;<gem-dependencies>
                  json->gem-dependencies))
 

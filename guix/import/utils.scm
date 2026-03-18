@@ -97,6 +97,7 @@
             spdx-string->license
             license->symbol
 
+            non-empty-string-or-false
             snake-case
             beautify-description
             beautify-synopsis
@@ -469,6 +470,12 @@ object is bound to in the (guix licenses) module, such as 'license:gpl3+, or
     (module-map (lambda (sym var) `(,(variable-ref var) . ,sym))
                 (resolve-interface '(guix licenses) #:prefix 'license:)))
   (assoc-ref licenses license))
+
+(define non-empty-string-or-false
+  (match-lambda
+    ("" #f)
+    ((? string? str) str)
+    ((or 'null #f) #f)))
 
 (define (snake-case str)
   "Return a downcased version of the string STR where underscores and periods
