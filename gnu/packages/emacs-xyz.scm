@@ -11896,8 +11896,8 @@ not hang at all.")
     (license license:gpl3+)))
 
 (define-public emacs-elastic-modes
-  (let ((commit "c577e8921a4d9bd77742729707152bc557fae3e2")
-        (revision "2"))
+  (let ((commit "13c2b94a994717bb1517af0c19b10de33b29a94b")
+        (revision "3"))
     (package
       (name "emacs-elastic-modes")
       (version (git-version "1.0.0" revision commit))
@@ -11909,7 +11909,7 @@ not hang at all.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0r40g7zgz9072x74qbnv8lmql0gajsz2p8b8jckmgyniakmln69v"))))
+                  "1fb7hy65ax288zqc2y1qjmkja1ksdslvsjbz3jzw7cjcb4yvfkpc"))))
       (build-system emacs-build-system)
       (arguments (list #:tests? #false)) ;no tests
       (propagated-inputs (list emacs-dash))
