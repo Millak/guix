@@ -11901,17 +11901,17 @@ not hang at all.")
     (package
       (name "emacs-elastic-modes")
       (version (git-version "1.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/jyp/elastic-modes")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1fb7hy65ax288zqc2y1qjmkja1ksdslvsjbz3jzw7cjcb4yvfkpc"))))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jyp/elastic-modes")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1fb7hy65ax288zqc2y1qjmkja1ksdslvsjbz3jzw7cjcb4yvfkpc"))))
       (build-system emacs-build-system)
-      (arguments (list #:tests? #false)) ;no tests
+      (arguments (list #:tests? #f))    ;no tests
       (propagated-inputs (list emacs-dash))
       (home-page "https://github.com/jyp/elastic-modes")
       (synopsis "Text and code alignment for variable-width fonts")
