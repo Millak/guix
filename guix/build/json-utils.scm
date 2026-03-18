@@ -32,12 +32,16 @@
   #:use-module (ice-9 regex)
   #:use-module (json)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
   #:export (with-atomic-json-file-replacement
             modify-json
             modify-json-fields
             delete-fields
+            delete-json-fields
             replace-fields
-            add-fields))
+            replace-json-fields
+            add-fields
+            add-json-fields))
 
 ;;;
 ;;; JSON modification procedures
@@ -52,21 +56,48 @@ a value to be written as JSON to the replacement FILE."
     (lambda (in out)
       (scm->json (proc (json->scm in #:ordered #t)) out #:pretty #t))))
 
-(define* (modify-json #:key (file "package.json") #:rest all-arguments)
-  "Provide package.json modifying callbacks such as (delete-dependencies ...)"
-  (let ((modifications
-         (let loop ((arguments all-arguments))
-           (cond
-            ((null? arguments) '())
-            ((keyword? (car arguments)) (loop (cddr arguments)))
-            (else (cons (car arguments) (loop (cdr arguments))))))))
-    (with-atomic-json-file-replacement
-     (lambda (package)
-       (fold (lambda (modification package)
-               (modification package))
-             package
-             modifications))
-     file)))
+;; This is the function we eventually want to migrate to.
+(define* (modify-json* file #:rest modifications)
+  "Modify JSON FILE with successive callbacks."
+  (with-atomic-json-file-replacement file
+    (apply compose modifications)))
+
+;; Copied and adapted from (guix utils).
+;; To be removed after modify-json deprecation period.
+(define (delkw kw lst)
+  "Remove KW and its associated value from LST, a keyword/value list such
+as '(#:foo 1 #:bar 2)."
+  (let loop ((lst    lst)
+             (result '()))
+    (match lst
+      (()
+       (reverse result))
+      (((? (cute eq? <> kw)) value . rest)
+       (append (reverse result) rest))
+      ((head . tail)
+       (loop tail (cons* head result))))))
+
+;; This is a deprecated version of the function that ought to be
+;; removed in favor of modify-json*'s content eventually.
+;; On removal, also remove the (guix deprecation) modules and their closures
+;; from node-build-system imported-modules.
+(define modify-json
+  (lambda* args
+    (cond
+     ;; Syntax from modify-json*
+     ((and (pair? args) (string? (car args)) (file-exists? (car args)))
+      (apply modify-json* args))
+     ;; Former syntax, #:file set.
+     ((memq '#:file args)
+      => (lambda (file-args)
+           (warning (G_ "'modify-json' 'file' keyword argument is deprecated,\
+ pass the file as the first argument instead~%"))
+           (let-keywords (take file-args 2) #f ((file "unreached-default"))
+             (apply modify-json* file (delkw #:file args)))))
+     ;; Former syntax, #:file unset.
+     (else
+      (warning (G_ "'modify-json' requires a file as the first argument~%"))
+      (apply modify-json* "package.json" args)))))
 
 (define* (modify-json-fields fields field-modifier
                              #:key
@@ -122,13 +153,13 @@ invalid field value provided, expected string or list of strings, got ~s~%"
      package
      fields)))
 
-(define* (delete-fields fields #:key (strict? #t))
+(define* (delete-json-fields fields #:key (strict? #t))
   "Provides a lambda to supply to modify-json which deletes the specified
  `fields` which is a list of field-paths as mentioned in `modify-json-fields`.
  Examples:
-  (delete-fields '(
-    (\"path\" \"to\" \"field\")
-    \"path.to.other.field\"))"
+  (delete-json-fields
+   '((\"path\" \"to\" \"field\")
+     \"path.to.other.field\"))"
   (modify-json-fields
    fields
    (lambda (_ data key)
@@ -137,14 +168,16 @@ invalid field value provided, expected string or list of strings, got ~s~%"
      (assoc-remove! data key))
    #:strict? strict?))
 
-(define* (replace-fields fields #:key (strict? #t) insert?)
+(define-deprecated/alias delete-fields delete-json-fields)
+
+(define* (replace-json-fields fields #:key (strict? #t) insert?)
   "Provides a lambda to supply to modify-json which replaces the value of the
  supplied field. `fields` is a list of pairs, where the first element is the
  field-path and the second element is the value to replace the target with.
  Examples:
-  (replace-fields '(
-    ((\"path\" \"to\" \"field\") \"new field value\")
-    (\"path.to.other.field\" \"new field value\")))"
+  (replace-json-fields
+   '(((\"path\" \"to\" \"field\") \"new field value\")
+     (\"path.to.other.field\" \"new field value\")))"
   (modify-json-fields
    fields
    (lambda (field data key)
@@ -155,10 +188,15 @@ invalid field value provided, expected string or list of strings, got ~s~%"
    #:insert? insert?
    #:strict? strict?))
 
-(define* (add-fields fields)
-  "Like `replace-fields', but can insert new fields as well."
-  (replace-fields fields #:insert? #t))
+(define-deprecated/alias replace-fields replace-json-fields)
+
+(define* (add-json-fields fields)
+  "Like `replace-json-fields', but can insert new fields as well."
+  (replace-json-fields fields #:insert? #t))
+
+(define-deprecated/alias add-fields add-json-fields)
 
 ;;; Local Variables:
 ;;; eval: (put 'with-atomic-json-file-replacement 'scheme-indent-function 1)
+;;; eval: (put 'modify-json* 'scheme-indent-function 1)
 ;;; End:

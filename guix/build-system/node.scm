@@ -22,14 +22,17 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix build-system node)
+  #:use-module ((guix self) #:select (make-config.scm))
   #:use-module (guix store)
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix gexp)
+  #:use-module (guix modules)
   #:use-module (guix monads)
   #:use-module (guix search-paths)
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
+  #:use-module (ice-9 match)
   #:export (%default-lockfiles
             %node-build-system-modules
             node-build
@@ -40,9 +43,20 @@
         "yarn.lock"
         "npm-shrinkwrap.json"))
 
+(define not-config?
+  ;; Select (guix …) and (gnu …) modules, except (guix config).
+  (match-lambda
+    (('guix 'config) #f)
+    (('guix _ ...) #t)
+    (('gnu _ ...) #t)
+    (_ #f)))
+
 (define %node-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build node-build-system)
+    ((guix config) => ,(make-config.scm))
+    ,@(source-module-closure '((guix deprecation))
+                             #:select? not-config?)
     (guix build json-utils)
     ,@%default-gnu-imported-modules))
 

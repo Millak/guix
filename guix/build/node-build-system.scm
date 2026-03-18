@@ -96,8 +96,8 @@ dependencies."
                               #:dependency-keys %dev-dependency-keys))
 
 (define (delete-dev-dependencies)
-  (delete-fields (list "devDependencies" "peerDependencies")
-                 #:strict? #f))
+  (delete-json-fields (list "devDependencies" "peerDependencies")
+                      #:strict? #f))
 
 ;;;
 ;;; Phases.
