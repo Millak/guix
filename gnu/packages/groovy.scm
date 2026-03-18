@@ -752,8 +752,15 @@ module is used for interaction between Groovy and Java code."))))
     (package
       (inherit base)
       (arguments
-       `(#:tests? #f; Require spock-framework
-         ,@(package-arguments base)))
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:tests? _ #f) #f); Require spock-framework
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-before 'build 'generate-metadata
+                #$(write-module-descriptor
+                   '("org.apache.groovy.nio.extensions.NioExtensions")
+                   #f
+                   base))))))
       (synopsis "Groovy input-output library")
       (description "This package implements an input/output library that extends
 the functionality of the common library of Java."))))
