@@ -2511,6 +2511,10 @@ formats.")
            or-tools
            protobuf-6
            python
+           qtcharts-5
+           qtimageformats-5
+           qtsvg-5
+           qtwayland-5
            re2-next
            scip
            spdlog
@@ -2540,6 +2544,9 @@ clock tree synthesis, routing, parasitic extraction, and timing analysis.")
         ((#:configure-flags flags '())
          #~(cons* "-DBUILD_GUI=OFF"
                   (delete! "-DBUILD_GUI=ON" #$flags))))))
+    (inputs
+     (modify-inputs (package-inputs openroad)
+       (delete "qtcharts-5" "qtimageformats-5" "qtsvg-5" "qtwayland-5")))
     (synopsis
      "Collection of tools for semiconductor digital design, cli version.")))
 
