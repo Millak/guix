@@ -5095,7 +5095,7 @@ CFITSIO library.  Among other things, it can
            python-regions
            python-scipy
            ;; [optional]
-           python-healpy-1.18
+           python-healpy
            python-ipywidgets
            python-naima
            python-numba
@@ -5692,7 +5692,7 @@ Implementations of @url{https://iopscience.iop.org/article/10.1086/505417,
 Blitz & Rosolowsky (2006) and Rahmati et al (2013)}.")
     (license license:gpl3)))
 
-(define-public python-healpy
+(define-public python-healpy-1.19
   (package
     (name "python-healpy")
     (version "1.19.0")
@@ -5738,7 +5738,7 @@ scheme and builds with the HEALPix C++ library.")
 
 (define-public python-healpy-1.18
   (package
-    (inherit python-healpy)
+    (inherit python-healpy-1.19)
     (version "1.18.1")
     (source
      (origin
@@ -5758,6 +5758,9 @@ scheme and builds with the HEALPix C++ library.")
                           "test_rotate_map_polarization_alms")
                     " and not ")
               "test")))))
+
+;; Not all of the dependents released updates supporting v1.19.
+(define-public python-healpy python-healpy-1.18)
 
 (define-public python-hierarc
   (package
@@ -6651,7 +6654,7 @@ will depend on your needs.")
            python-pytest-astropy))
     (propagated-inputs
      (list python-astropy
-           python-healpy-1.18
+           python-healpy
            python-numpy
            python-pixell
            python-pysm3
@@ -7144,7 +7147,7 @@ and the use of a modern programming language, techniques, and libraries
            python-dateutil
            python-ducc0
            python-ephem
-           python-healpy-1.18
+           python-healpy
            python-matplotlib
            python-numba
            python-numpy
