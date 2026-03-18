@@ -769,7 +769,7 @@ for day to day programming.")
 (define-public ocaml-camlpdf
   (package
     (name "ocaml-camlpdf")
-    (version "2.8.1")
+    (version "2.9")
     (source
      (origin
        (method git-fetch)
@@ -778,7 +778,7 @@ for day to day programming.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cbqgwh62cqnsbax4k4iv9gb63k1v545izmbffxj8gj1q6sm0k34"))))
+        (base32 "1jx1k1y0wmjl55gy1lalnb28anzg5pvzffndwdgv25c3n5mnf47k"))))
     (build-system ocaml-build-system)
     (arguments
      (list
