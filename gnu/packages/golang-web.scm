@@ -5240,6 +5240,134 @@ RFC 5321.")
 protocol definition.")
     (license license:expat)))
 
+(define-public go-github-com-envoyproxy-go-control-plane
+  (package
+    (name "go-github-com-envoyproxy-go-control-plane")
+    (version "0.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/envoyproxy/go-control-plane")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "153z0jdbyhbcadiipl5631vnsg74m0fx7h1dmak4mqfjgdahxdvk"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/envoyproxy/go-control-plane/contrib
+            ;; - github.com/envoyproxy/go-control-plane/envoy
+            ;; - github.com/envoyproxy/go-control-plane/examples/dyplomat
+            ;; - github.com/envoyproxy/go-control-plane/internal/tools
+            ;; - github.com/envoyproxy/go-control-plane/ratelimit
+            ;; - github.com/envoyproxy/go-control-plane/xdsmatcher
+            (for-each delete-file-recursively
+                      (list "contrib"
+                            "envoy"
+                            "examples/dyplomat"
+                            "internal/tools"
+                            ;; "ratelimit" ;XXX: has no proper description
+                            "xdsmatcher"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/envoyproxy/go-control-plane"
+      #:test-flags #~(list "-vet=off")))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-go-uber-org-goleak))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-envoyproxy-go-control-plane-envoy-bootstrap
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/envoyproxy/go-control-plane")
+    (synopsis "Go implementation of data-plane-api")
+    (description
+     "This package contains a Go-based implementation of an API server that
+implements the discovery service APIs defined in
+@url{https://github.com/envoyproxy/data-plane-api, data-plane-api}.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-envoyproxy-go-control-plane-bootstrap
+  (hidden-package
+   (package/inherit go-github-com-envoyproxy-go-control-plane
+     (arguments
+      (list #:skip-build? #t
+            #:tests? #f
+            #:import-path "github.com/envoyproxy/go-control-plane"))
+     (propagated-inputs
+      (modify-inputs (package-propagated-inputs
+                      go-github-com-envoyproxy-go-control-plane)
+        (delete "go-github-com-envoyproxy-go-control-plane-envoy"))))))
+
+(define-public go-github-com-envoyproxy-go-control-plane-envoy
+  (package
+    (name "go-github-com-envoyproxy-go-control-plane-envoy")
+    (version "1.37.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/envoyproxy/go-control-plane")
+              (commit (go-version->git-ref version #:subdir "envoy"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ysssv13sykny7x8ajqlm0wyz7r0wplam94gnrjz4xw1jxvqvwpv"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "envoy")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/envoyproxy/go-control-plane/envoy"
+      #:unpack-path "github.com/envoyproxy/go-control-plane"))
+    (propagated-inputs
+     (list go-github-com-cncf-xds-go
+           go-github-com-envoyproxy-go-control-plane-bootstrap
+           go-github-com-envoyproxy-protoc-gen-validate
+           go-github-com-planetscale-vtprotobuf
+           go-github-com-prometheus-client-model
+           go-go-opentelemetry-io-proto-otlp
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/envoyproxy/go-control-plane")
+    (synopsis "Edge and service proxy")
+    (description
+     "This package provides a Golang implementation of
+@url{https://www.envoyproxy.io/, Envoy} proxy.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-envoyproxy-go-control-plane-envoy-bootstrap
+  (hidden-package
+   (package/inherit go-github-com-envoyproxy-go-control-plane-envoy
+     (arguments
+      (list #:skip-build? #t
+            #:tests? #f
+            #:import-path "github.com/envoyproxy/go-control-plane/envoy"
+            #:unpack-path "github.com/envoyproxy/go-control-plane"))
+     (propagated-inputs
+      (modify-inputs (package-propagated-inputs
+                      go-github-com-envoyproxy-go-control-plane-envoy)
+        (delete "go-github-com-envoyproxy-go-control-plane"))))))
+
+
 (define-public go-github-com-evanphx-json-patch
   (package
     (name "go-github-com-evanphx-json-patch")
