@@ -3154,7 +3154,7 @@ wallpaper using mpv.")
 (define-public libvpx
   (package
     (name "libvpx")
-    (version "1.15.2")
+    (version "1.16.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3163,7 +3163,7 @@ wallpaper using mpv.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07c29a5q19613pldp8qm6harqwl7kvqhs7vw4mr8s3dnwyb5jpnl"))
+                "0llik9k5rs9ychw9fnknwrz8662dm370yf76r6d6n07727faylyg"))
               (patches (search-patches "libvpx-CVE-2016-2818.patch"
                                        "libvpx-CVE-2026-2447.patch"))))
     (build-system gnu-build-system)
