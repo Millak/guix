@@ -788,8 +788,15 @@ version of Java servlets."))))
     (package
       (inherit base)
       (arguments
-       `(#:tests? #f;TODO: Requires hsqldb
-         ,@(package-arguments base)))
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:tests? _ #f) #f);TODO: Requires hsqldb
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-before 'build 'generate-metadata
+                #$(write-module-descriptor
+                   '("org.apache.groovy.sql.extensions.SqlExtensions")
+                   #f
+                   base))))))
       (synopsis "Groovy SQL library")
       (description "This package contains a facade over Java's normal JDBC APIs
 providing greatly simplified resource management and result set handling."))))
