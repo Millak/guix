@@ -573,13 +573,44 @@ of a package, and INPUT-NAMES, a list of package specifications such as
                                input))))
                  packages outputs))))
 
+(define %go-native-inputs
+  (list "go-github-com-stretchr-testify"
+        "go-github-com-onsi-ginkgo-v2"
+        "go-gopkg-in-check-v1"
+        "go-go-uber-org-mock"))
+
+(define %python-native-inputs
+  (list "pybind11"
+        "python-cython"
+        "python-docutils"
+        "python-flit-scm"
+        "python-hatch-docstring-description"
+        "python-hatch-fancy-pypi-readme"
+        "python-hatch-requirements-txt"
+        "python-hatch-vcs"
+        "python-hatchling"
+        "python-hypothesis"
+        "python-mock"
+        "python-nose2"
+        "python-pbr"
+        "python-pdm-backend"
+        "python-poetry-core"
+        "python-pynose"
+        "python-pypa-build"
+        "python-pytest"
+        "python-pytest-mock"
+        "python-pytest-xdist"
+        "python-setuptools-scm"
+        "python-xdoctest"))
+
 (define (check-inputs-should-be-native package)
   ;; Emit a warning if some inputs of PACKAGE are likely to belong to its
   ;; native inputs.
   (let ((inputs (append (package-inputs package)
                         (package-propagated-inputs package)))
         (input-names
-         '("pkg-config"
+         (append
+          '("pkg-config"
             "autoconf"
             "automake"
             "bison"
@@ -603,14 +634,6 @@ of a package, and INPUT-NAMES, a list of package specifications such as
             "m4"
             "qttools-5"
             "yasm" "nasm" "fasm"
-            "python-cython"
-            "python-docutils"
-            "python-mock"
-            "python-pynose"
-            "python-pbr"
-            "python-pytest"
-            "python-setuptools-scm"
-            "python-sphinx"
             "scdoc"
             "swig"
             "qmake"
@@ -618,7 +641,9 @@ of a package, and INPUT-NAMES, a list of package specifications such as
             "texinfo"
             "texlive-local-tree"
             "xorg-server-for-tests"
-            "yelp-tools")))
+            "yelp-tools")
+          %go-native-inputs
+          %python-native-inputs)))
     (map (lambda (input)
            (make-warning
             package
