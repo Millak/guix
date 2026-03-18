@@ -910,6 +910,7 @@ the store.")
         "glibc-2.40-dl-cache.patch"
         "glibc-2.37-versioned-locpath.patch"
         ;; "glibc-allow-kernel-2.6.32.patch"
+        "glibc-guix-locpath.patch"
         "glibc-reinstate-prlimit64-fallback.patch"
         "glibc-supported-locales.patch"
         "glibc-2.37-hurd-clock_t_centiseconds.patch"
@@ -940,7 +941,6 @@ the store.")
    (properties `((lint-hidden-cve . ("CVE-2024-2961"
                                      "CVE-2024-33601" "CVE-2024-33602"
                                      "CVE-2024-33600" "CVE-2024-33599"))))
-   (replacement glibc/fixed)
    (build-system gnu-build-system)
 
    ;; Glibc's <limits.h> refers to <linux/limit.h>, for instance, so glibc
@@ -1217,17 +1217,6 @@ The GNU C library is used as the C library in the GNU system and most systems
 with the Linux kernel.")
    (license lgpl2.0+)
    (home-page "https://www.gnu.org/software/libc/")))
-
-(define glibc/fixed
-  (package
-    (inherit glibc)
-    (name "glibc")
-    (source (origin
-              (inherit (package-source glibc))
-              ;; XXX: When ungrafting, add the included patch to
-              ;; %glibc-patches.
-              (patches (cons (search-patch "glibc-guix-locpath.patch")
-                             (origin-patches (package-source glibc))))))))
 
 ;; Define a variation of glibc which uses the default /etc/ld.so.cache, useful
 ;; in FHS containers.
