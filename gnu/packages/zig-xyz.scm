@@ -72,7 +72,7 @@ performance of multiple commands with a colorful terminal user interface.")
 (define-public river
   (package
     (name "river")
-    (version "0.3.12")
+    (version "0.4.8")
     (source
      (origin
        (method git-fetch)
@@ -81,14 +81,20 @@ performance of multiple commands with a colorful terminal user interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jh374v6c0mfrppj0fgz177qxi3ihcisq158ismqnhagnbdk3z2w"))))
+        (base32 "0xj31k5hjdll01rq0z47r61whc3zcv0krwcfczcdhx9cvp4qd8xy"))))
     (build-system zig-build-system)
     (arguments
-     (list #:zig zig-0.15
+     (list #:zig zig-0.16
            #:install-source? #f
            #:zig-release-type "safe"
            #:zig-build-flags
-           #~(list "-Dpie" "-Dxwayland")
+           #~(list "-Dpie" "-Dxwayland"
+                   ;; Explicitly provide paths to C libraries for translate-c
+                   ;; to be able to discover the header files
+                   ;; during the build.
+                   "--search-prefix" #$(or (this-package-input "libinput")
+                                           (this-package-input "libinput-minimal"))
+                   "--search-prefix" #$(this-package-input "eudev"))
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-path
@@ -99,6 +105,7 @@ performance of multiple commands with a colorful terminal user interface.")
                  (lambda _
                    (substitute* "build.zig.zon"
                      (("\\.pixman") ".@\"zig-pixman\"")
+                     (("\\.translate_c") ".@\"zig-translate-c\"")
                      (("\\.wayland") ".@\"zig-wayland\"")
                      (("\\.wlroots") ".@\"zig-wlroots\"")
                      (("\\.xkbcommon") ".@\"zig-xkbcommon\""))))
@@ -106,6 +113,7 @@ performance of multiple commands with a colorful terminal user interface.")
                  (lambda _
                    (substitute* "build.zig.zon"
                      (("\\.@\"zig-pixman\"") ".pixman")
+                     (("\\.@\"zig-translate-c\"") ".translate_c")
                      (("\\.@\"zig-wayland\"") ".wayland")
                      (("\\.@\"zig-wlroots\"") ".wlroots")
                      (("\\.@\"zig-xkbcommon\"") ".xkbcommon"))))
@@ -118,9 +126,12 @@ performance of multiple commands with a colorful terminal user interface.")
                                    wayland-sessions)))))))
     (inputs
      (list libevdev
+           eudev
+           zig-translate-c
            zig-wayland
            zig-wlroots
-           zig-xkbcommon))
+           zig-xkbcommon
+           libinput-minimal))
     (native-inputs
      (list pkg-config
            scdoc))
