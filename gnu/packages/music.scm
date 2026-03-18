@@ -5459,57 +5459,6 @@ implementation library that is easy to integrate into other projects.  A
 standalone JACK client and an LV2 plugin is also available.")
     (license license:lgpl2.1+)))
 
-(define-public sfizz
-  (package
-    (name "sfizz")
-    (version "1.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/sfztools/sfizz"
-                                  "/releases/download/" version
-                                  "/sfizz-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1wsr3dpn7a7whqn480m02kp6n4raamnfi3imhf2q8k58md1yn9jw"))
-              (modules '((guix build utils)))
-              (snippet
-               '(for-each delete-file-recursively
-                          '("external/abseil-cpp"
-                            ;; This package needs an unreleased version of
-                            ;; simde.
-                            ;; "external/simde"
-                            "plugins/editor/external/vstgui4"
-                            "plugins/vst"
-                            "src/external/pugixml")))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      #:configure-flags
-      #~(list "-DSFIZZ_LV2_UI=OFF"
-              "-DSFIZZ_VST=OFF"
-              "-DSFIZZ_VST2=OFF"
-              "-DSFIZZ_TESTS=ON"
-              "-DSFIZZ_USE_SYSTEM_ABSEIL=ON"
-              "-DSFIZZ_USE_SYSTEM_PUGIXML=ON"
-              ;; XXX: Guix SIMDe version 0.7.2 is not enough.
-              ;; "-DSFIZZ_USE_SYSTEM_SIMDE=ON"
-              )))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list abseil-cpp
-           glib
-           jack-2
-           lv2
-           libsamplerate
-           pugixml
-           simde))
-    (home-page "https://sfz.tools/sfizz/")
-    (synopsis "SFZ parser and synth library")
-    (description "Sfizz provides an SFZ parser and synth C++ library.  It
-includes LV2 plugins and a JACK standalone client.")
-    (license license:bsd-2)))
-
 (define-public musescore
   (let ((commit "6ebc98e021ba9d677fffa31255f8a53e60753724")
         (revision "0"))
