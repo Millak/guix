@@ -920,12 +920,12 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
                           (find-files (string-append #$output "/bin")
                                       "^test-")))))))
       (inputs
-       (list curl ggml glslang python-gguf python-minimal spirv-headers
+       (list curl ggml glslang python-minimal spirv-headers
              spirv-tools vulkan-headers vulkan-loader openssl))
       (native-inputs
        (list bash-minimal pkg-config python-minimal-wrapper shaderc))
       (propagated-inputs
-       (list python-numpy python-pytorch python-sentencepiece))
+       (list python-numpy python-jinja2 python-sentencepiece))
       (properties '((tunable? . #true))) ;use AVX512, FMA, etc. when available
       (home-page "https://github.com/ggml-org/llama.cpp")
       (synopsis "Port of Facebook's LLaMA model in C/C++")
