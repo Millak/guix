@@ -3152,6 +3152,10 @@ logic, also known as grey logic.")
               (url "https://github.com/scikit-image/scikit-image")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
+       ;; TODO: Remove patch when refreshing python-scikit-image.
+       ;; Prevent deprecation warning from python-pillow 12.1.1.
+       (patches
+        (search-patches "python-scikit-image-fix-python-pillow.patch"))
        (sha256
         (base32 "1x90jad3jqin8ws1j1i89zrajpcbn1h87nl5yxxf5cs3b7ha13rf"))))
     (build-system pyproject-build-system)
