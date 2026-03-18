@@ -550,7 +550,7 @@ profiler (@pxref{https://tracy.nereid.pl}).")
 (define-public zig-wayland
   (package
     (name "zig-wayland")
-    (version "0.4.0")
+    (version "0.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -559,10 +559,10 @@ profiler (@pxref{https://tracy.nereid.pl}).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0kkmg2gxb03xjrsd4kzxwvchxlcj3mvx0hajzpbcz949k0ihhlms"))))
+                "10chjkhahkjpl9wn308qdasa955rnipsmlrzp3wryl2rv16chvyy"))))
     (build-system zig-build-system)
     (arguments
-     (list #:zig zig-0.15
+     (list #:zig zig-0.16
            #:zig-release-type "safe"
            #:zig-build-flags
            #~(list "-Denable-tests")
