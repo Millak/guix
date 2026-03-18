@@ -341,6 +341,7 @@ guix/build-system/rakudo\.scm                      @guix/perl
 guix/import/cpan\.scm                              @guix/perl
 guix/scripts/import/cpan\.scm                      @guix/perl
 
+gnu/packages/aux-files/python/.*\.py$              @guix/python
 gnu/packages/django\.scm                           @guix/python
 gnu/packages/jupyter\.scm                          @guix/python
 gnu/packages/python(-.+|)\.scm$                    @guix/python

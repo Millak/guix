@@ -984,7 +984,8 @@ perl-build-system as well as the rakudo-build-system."
         #:description
         "Python, Python packages, the \"pypi\" importer, and the python-build-system."
         #:scope
-        (list "gnu/packages/django.scm"
+        (list (make-regexp* "^gnu/packages/aux-files/python/.*\\.py$")
+              "gnu/packages/django.scm"
               "gnu/packages/jupyter.scm"
               (make-regexp* "^gnu/packages/python(-.+|)\\.scm$")
               "gnu/packages/sphinx.scm"
