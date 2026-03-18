@@ -37,7 +37,7 @@
 (define-public python-core-sr-ht
   (package
     (name "python-core-sr-ht")
-    (version "0.69.15")
+    (version "0.83.0")
     (source
      (origin
        (method git-fetch)
@@ -47,8 +47,7 @@
              (recursive? #true)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "00d633lmdiqamyv24szmd441dhkjh1n1qkvf47vn57da0z1rxp2g"))))
+        (base32 "1v8hnphc65kq6p2pv2aicwdfbdrzg0knnzynx4mwx4fi6lp48v04"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -74,7 +73,7 @@
            python-requests
            python-sqlalchemy
            python-sqlalchemy-utils))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     (home-page "https://git.sr.ht/~sircmpwn/core.sr.ht")
     (synopsis "Shared code for all sourcehut projects")
     (description
