@@ -83,7 +83,7 @@
 (define-public python-scm-sr-ht
   (package
     (name "python-scm-sr-ht")
-    (version "0.22.23")
+    (version "0.22.30")
     (source
      (origin
        (method git-fetch)
@@ -92,8 +92,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1p1nlwqfqfb89nky8sp4jh4vjnh8fm2mdx8inziqs3898qw1v7yk"))))
+        (base32 "1qcp5imzjhm8swcdzfgnlcih97d5jq9rm3idw39pxdhpgh6lczcj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -104,7 +103,7 @@
             (lambda _ (setenv "PKGVER" #$version))))))
     (propagated-inputs
      (list python-core-sr-ht))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     (home-page "https://git.sr.ht/~sircmpwn/scm.sr.ht")
     (synopsis "Shared support code for sr.ht source control services")
     (description
