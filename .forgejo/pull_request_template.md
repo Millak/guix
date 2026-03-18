@@ -28,6 +28,7 @@ Tick a box by changing it from [ ] to [x].
   - [ ] i586-gnu
 
 - Package **update**
+  - Closure size increase after update (`./pre-inst-env guix size PACKAGE`).
   - Build status of direct dependents (`./pre-inst-env guix build -k -P1 PACKAGE ...`):
 ```text
 
@@ -38,6 +39,7 @@ Tick a box by changing it from [ ] to [x].
 ```
 - Package **addition**
   - [ ] The packages includes tests when available.
+  - [ ] Closure size given by `guix size`.
   - [ ] Fixed errors reported by `guix lint` (`./pre-inst-env guix lint PACKAGE ...`).
   - [ ] Verified cryptographic signature provided by upstream.
   - [ ] The packages don't use bundled copies of software.
