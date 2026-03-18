@@ -1498,7 +1498,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-hurd-2.41-symlink.patch		\
   %D%/packages/patches/glibc-hurd-xstate.patch  		\
   %D%/packages/patches/glibc-hurd64-gcc-14.2-tls-bug.patch	\
-  %D%/packages/patches/glibc-hurd64-intr-msg-clobber.patch	\
   %D%/packages/patches/glibc-ldd-powerpc.patch			\
   %D%/packages/patches/glibc-ldd-x86_64.patch			\
   %D%/packages/patches/glibc-locales.patch			\
