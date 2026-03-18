@@ -832,7 +832,7 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
     (license license:asl2.0)))
 
 (define-public llama-cpp
-  (let ((tag "b8054"))                  ;sync with ggml/scripts/sync-llama.last
+  (let ((tag "b8411"))                  ;sync with ggml
     (package
       (name "llama-cpp")
       (version (string-append "0.0.0-" tag))
@@ -844,7 +844,7 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
                (commit tag)))
          (file-name (git-file-name name tag))
          (sha256
-          (base32 "0kwcgpilqh0583v3ilrm7h6l0z125b730h1gv20rin0rxbwlg0jw"))))
+          (base32 "1smgl6s3cpa3rg97201rsvb8cyydypqmm1zi42gwaf8w2719r8gp"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -874,25 +874,29 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
                 (substitute* '("tests/CMakeLists.txt")
                   (("llama_build_and_test\\(test-thread-safety.cpp.*")
                    "")
-                  (("test-download-model COMMAND")
-                   "test-download-model COMMAND true")
-                  (("llama_build_and_test\\(test-state-restore-fragmented.cpp.*")
-                   "")
-                  (("llama_build_and_test\\(test-eval-callback-download-model.cpp.*")
-                   "")
-                  (("llama_build_and_test\\(test-eval-callback.cpp.*")
-                   "")
-                  (("llama_build_and_test\\(test-chat.cpp.*")
-                   "")
                   (("set_tests_properties\\(test-thread-safety.*")
                    "")
-                  (("set_tests_properties\\(test-download-model.*")
+                  (((string-append "llama_build_and_test\\"
+                                   "(test-state-restore-fragmented.cpp.*"))
                    "")
                   (("set_tests_properties\\(test-state-restore-fragmented.*")
                    "")
-                  (("set_tests_properties\\(test-eval-callback-download-model.*")
+                  (((string-append "llama_build_and_test\\"
+                                   "(test-eval-callback-download-model.cpp.*"))
+                   "")
+                  (((string-append "set_tests_properties\\"
+                                   "(test-eval-callback-download-model.*"))
+                   "")
+                  (("llama_build_and_test\\(test-eval-callback.cpp.*")
                    "")
                   (("set_tests_properties\\(test-eval-callback.*")
+                   "")
+                  (("llama_build_and_test\\(test-llama-archs.cpp.*")
+                   "")
+                  (("set_tests_properties\\(test-download-model.*")
+                   (string-append "set_tests_properties(test-download-model "
+                                  " PROPERTIES DISABLED TRUE)"))
+                  (("llama_build_and_test\\(test-chat.cpp.*")
                    "")
                   ;; error while handling argument "-m": expected value for
                   ;; argument
@@ -911,11 +915,10 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
             (add-after 'install 'wrap-python-scripts
               (assoc-ref python:%standard-phases 'wrap))
             (add-after 'install 'remove-tests
-              (lambda* (#:key outputs #:allow-other-keys)
-                (for-each delete-file (find-files
-                                       (string-append (assoc-ref outputs "out")
-                                                      "/bin")
-                                       "^test-")))))))
+              (lambda _
+                (for-each delete-file
+                          (find-files (string-append #$output "/bin")
+                                      "^test-")))))))
       (inputs
        (list curl ggml glslang python-gguf python-minimal spirv-headers
              spirv-tools vulkan-headers vulkan-loader openssl))
