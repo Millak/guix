@@ -19,6 +19,7 @@
 
 (define-module (guix build tree-sitter-build-system)
   #:use-module ((guix build node-build-system) #:prefix node:)
+  #:use-module (guix build json-utils)
   #:use-module (guix build utils)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
@@ -48,7 +49,7 @@
   "Rewrite dependencies in 'package.json'.  We remove all runtime dependencies
 and replace development dependencies with tree-sitter grammar node modules."
 
-  (node:with-atomic-json-file-replacement
+  (with-atomic-json-file-replacement "package.json"
    (lambda (pkg-meta-alist)
      (map (match-lambda
             (("dependencies" dependencies ...)

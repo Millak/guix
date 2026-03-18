@@ -268,6 +268,7 @@ MODULES =					\
   guix/build/vim-build-system.scm		\
   guix/build/waf-build-system.scm		\
   guix/build/haskell-build-system.scm		\
+  guix/build/json-utils.scm			\
   guix/build/julia-build-system.scm		\
   guix/build/kconfig.scm			\
   guix/build/linux-module-build-system.scm	\

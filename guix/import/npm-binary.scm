@@ -25,6 +25,7 @@
   #:use-module (gcrypt hash)
   #:use-module (gnu packages)
   #:use-module (guix base32)
+  #:use-module (guix build json-utils)
   #:use-module (guix http-client)
   #:use-module ((guix import git) #:select (get-tags))
   #:use-module (guix import json)

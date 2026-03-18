@@ -43,6 +43,7 @@
 (define %node-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build node-build-system)
+    (guix build json-utils)
     ,@%default-gnu-imported-modules))
 
 (define (default-node)
@@ -99,6 +100,7 @@
                      (guile-json (default-guile-json))
                      (imported-modules %node-build-system-modules)
                      (modules '((guix build node-build-system)
+                                (guix build json-utils)
                                 (guix build utils))))
   "Build SOURCE using NODE and INPUTS."
   (define builder

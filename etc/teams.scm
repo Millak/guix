@@ -910,6 +910,7 @@ and the maven-build-system."
                       "gnu/packages/node-xyz.scm"
                       "gnu/packages/node.scm"
                       "guix/build-system/node.scm"
+                      "guix/build/json-utils.scm"
                       "guix/build/node-build-system.scm"
                       "guix/import/npm-binary.scm"
                       "guix/scripts/import/npm-binary.scm")))

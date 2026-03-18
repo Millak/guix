@@ -289,6 +289,7 @@ gnu/packages/javascript\.scm                       @guix/javascript
 gnu/packages/node-xyz\.scm                         @guix/javascript
 gnu/packages/node\.scm                             @guix/javascript
 guix/build-system/node\.scm                        @guix/javascript
+guix/build/json-utils\.scm                         @guix/javascript
 guix/build/node-build-system\.scm                  @guix/javascript
 guix/import/npm-binary\.scm                        @guix/javascript
 guix/scripts/import/npm-binary\.scm                @guix/javascript
