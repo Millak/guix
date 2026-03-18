@@ -1264,6 +1264,43 @@ for syntax highlighting or a linting tool.")
 (define-public lua5.1-djot
   (make-lua-djot "lua5.1-djot" lua-5.1))
 
+(define-public djot
+  (package
+    (inherit lua5.1-djot)
+    (name "djot")
+    (arguments
+     (substitute-keyword-arguments (package-arguments lua5.1-djot)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'patch-makefile
+              (lambda _
+                (substitute* "Makefile"
+                  (("^all: .*") "all: doc/djot.1\n"))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "luajit" "test.lua"))))
+            (add-after 'install 'install-bin-and-man
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((out-lua (string-append #$output "/share/lua/5.1"))
+                      (out-bin (string-append #$output "/bin/djot")))
+                  (copy-file "bin/main.lua" "bin/djot")
+                  (substitute* "bin/djot"
+                    (("^local djot = require" all)
+                     (string-append
+                      "#!"
+                      (search-input-file inputs "bin/luajit")
+                      "\n"
+                      all)))
+                  (install-file "bin/djot" (string-append #$output "/bin"))
+                  (chmod out-bin #o755)
+                  (wrap-program out-bin
+                    `("GUIX_LUA_PATH" ";" = (,out-lua))))
+                (install-file "doc/djot.1"
+                              (string-append #$output "/share/man/man1"))))))))
+    (native-inputs (list pandoc))
+    (inputs (list luajit))))
+
 (define-public lutok
   (package
     (name "lutok")
