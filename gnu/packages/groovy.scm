@@ -20,6 +20,7 @@
 
 (define-module (gnu packages groovy)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -30,6 +31,28 @@
   #:use-module (gnu packages java-xml)
   #:use-module (gnu packages xml)
   #:use-module (srfi srfi-1))
+
+(define (write-module-descriptor
+         extension-classes static-extension-classes package)
+  #~(lambda _
+      (let* ((dir "build/classes/META-INF/groovy")
+             (ext-file (string-append
+                        dir "/org.codehaus.groovy.runtime.ExtensionModule")))
+        (mkdir-p dir)
+        (call-with-output-file ext-file
+          (lambda (port)
+            (format port "moduleName=~a~%" #$(package-name package))
+            (format port "moduleVersion=~a~%" #$(package-version package))
+            (format port
+                    "extensionClasses=~{~a~^,~}~%"
+                    (if (not (equal? '#$extension-classes '#f))
+                        '#$extension-classes
+                        '()))
+            (format port
+                    "staticExtensionClasses=~{~a~^,~}~%"
+                    (if (not (equal? '#$static-extension-classes '#f))
+                        '#$static-extension-classes
+                        '())))))))
 
 (define-public java-groovy-bootstrap
   (package
@@ -344,6 +367,15 @@ other groovy submodules."))))
   (let ((base (groovy-subproject "groovy-xml")))
     (package
       (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-before 'build 'generate-metadata
+                #$(write-module-descriptor
+                   '("org.apache.groovy.xml.extensions.XmlExtensions")
+                   #f
+                   base))))))
       (native-inputs
        `(("groovy-test" ,groovy-test)
          ("groovy-tests-bootstrap" ,groovy-tests-bootstrap)
