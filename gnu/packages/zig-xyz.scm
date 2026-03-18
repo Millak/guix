@@ -143,6 +143,32 @@ runtime configuration.  It can run nested in an X11/Wayland session or also
 directly from a tty using KMS/DRM.")
     (license license:gpl3)))
 
+(define-public river-classic
+  (package
+    (inherit river)
+    (name "river-classic")
+    (version "0.3.17")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/river/river-classic")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l3zyjfkjqhdfr29wzdnqwrbr2miczzij30ryg0j38md0zfalrzq"))))
+    (inputs
+     (modify-inputs inputs
+       (replace "zig-xkbcommon" zig-xkbcommon-0.3)))
+    (home-page "https://codeberg.org/river/river-classic")
+    (synopsis "Dynamic tiling Wayland compositor")
+    (description
+     "River is a dynamic tiling Wayland compositor with flexible
+runtime configuration.  It can run nested in an X11/Wayland session or also
+directly from a tty using KMS/DRM. This package provides the classic version,
+which continues the work on River 0.3.")
+    (license license:gpl3)))
+
 (define-public tigerbeetle
   ;; Keep in sync with upstream release note.
   (let ((commit "af6cebb66578481b507bf351c0ddb19cfa038cc3")
