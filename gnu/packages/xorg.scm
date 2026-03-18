@@ -2513,7 +2513,7 @@ XC-APPGROUP, XTEST.")
 (define-public libevdev
   (package
     (name "libevdev")
-    (version "1.13.3")
+    (version "1.13.6")
     (source
      (origin
        (method url-fetch)
@@ -2521,11 +2521,11 @@ XC-APPGROUP, XTEST.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1gygrc20d7cw70fdb5mp0ns3pmy8skggyl1mbpfyp3i0hv7amwdb"))))
+         "040ialc9galic1bxgllp9g26fzk8lay0db1p8x0ky8yqrgn1bwkk"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-static")))
-    (native-inputs (list python))
+    (native-inputs (list pkg-config python))
     (home-page "https://www.freedesktop.org/wiki/Software/libevdev/")
     (synopsis "Wrapper library for evdev devices")
     (description
