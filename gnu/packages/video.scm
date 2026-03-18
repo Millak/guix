@@ -3155,7 +3155,6 @@ wallpaper using mpv.")
   (package
     (name "libvpx")
     (version "1.15.2")
-    (replacement libvpx/fixed)
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3165,7 +3164,8 @@ wallpaper using mpv.")
               (sha256
                (base32
                 "07c29a5q19613pldp8qm6harqwl7kvqhs7vw4mr8s3dnwyb5jpnl"))
-              (patches (search-patches "libvpx-CVE-2016-2818.patch"))))
+              (patches (search-patches "libvpx-CVE-2016-2818.patch"
+                                       "libvpx-CVE-2026-2447.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list "--enable-shared"
@@ -3193,11 +3193,6 @@ wallpaper using mpv.")
     (description "libvpx is a codec for the VP8/VP9 video compression format.")
     (license license:bsd-3)
     (home-page "https://www.webmproject.org/")))
-
-(define-public libvpx/fixed
-  (hidden-package
-   (package-with-extra-patches libvpx
-                               (search-patches "libvpx-CVE-2026-2447.patch"))))
 
 (define-public orfondl
   (package
