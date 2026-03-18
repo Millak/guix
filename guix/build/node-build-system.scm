@@ -154,7 +154,7 @@ dependencies."
       (assoc-set! pkg-meta key
                   (resolve-dependencies (getter pkg-meta)))))
 
-  (modify-json
+  (modify-json "package.json"
    (resolve "devDependencies"
             (lambda (pkg-meta)
               (or (assoc-ref pkg-meta "devDependencies") '())))

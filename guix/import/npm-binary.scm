@@ -347,7 +347,8 @@ associated Git repository, if available."
                 ((dev-names ...)
                  `((add-after 'patch-dependencies 'delete-dev-dependencies
                      (lambda _
-                       (modify-json (delete-dev-dependencies))))))))))
+                       (modify-json "package.json"
+                         (delete-dev-dependencies))))))))))
        (values
         `(package
            (name ,name)
