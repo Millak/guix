@@ -8461,39 +8461,6 @@ reasonable amount of time and memory.  For large alignments, FastTree is
 100-1,000 times faster than PhyML 3.0 or RAxML 7.")
    (license license:gpl2+)))
 
-(define-public fastx-toolkit
-  (package
-    (name "fastx-toolkit")
-    (version "0.0.14")
-    (source (origin
-              (method url-fetch)
-              (uri
-               (string-append
-                "https://github.com/agordon/fastx_toolkit/releases/download/"
-                version "/fastx_toolkit-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "01jqzw386873sr0pjp1wr4rn8fsga2vxs1qfmicvx1pjr72007wy"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list libgtextutils))
-    (native-inputs
-     (list gcc-6 ;; doesn't build with later versions
-           pkg-config))
-    (home-page "http://hannonlab.cshl.edu/fastx_toolkit/")
-    (synopsis "Tools for FASTA/FASTQ file preprocessing")
-    (description
-     "The FASTX-Toolkit is a collection of command line tools for Short-Reads
-FASTA/FASTQ files preprocessing.
-
-Next-Generation sequencing machines usually produce FASTA or FASTQ files,
-containing multiple short-reads sequences.  The main processing of such
-FASTA/FASTQ files is mapping the sequences to reference genomes.  However, it
-is sometimes more productive to preprocess the files before mapping the
-sequences to the genome---manipulating the sequences to produce better mapping
-results.  The FASTX-Toolkit tools perform some of these preprocessing tasks.")
-    (license license:agpl3+)))
-
 (define-public flash
   (package
     (name "flash")
