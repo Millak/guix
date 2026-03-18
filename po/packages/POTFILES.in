@@ -431,7 +431,6 @@ gnu/packages/maths.scm
 gnu/packages/matrix.scm
 gnu/packages/maven-parent-pom.scm
 gnu/packages/medical.scm
-gnu/packages/mercury.scm
 gnu/packages/mes.scm
 gnu/packages/messaging.scm
 gnu/packages/mingw.scm
