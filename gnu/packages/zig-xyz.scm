@@ -586,7 +586,7 @@ interface.")
 (define-public zig-wlroots
   (package
     (name "zig-wlroots")
-    (version "0.19.3")
+    (version "0.20.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -595,30 +595,20 @@ interface.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0d21vyrav2vi42kr1gpf4y6i27gspskzb1fma963qp8wyrlrn3dg"))))
+                "16cy0a65jddfhsvgvcmbj5ln7wx37nia6j6rr062k272dhkwgz3i"))))
     (build-system zig-build-system)
     (arguments
-     (list #:zig zig-0.15
+     (list #:zig zig-0.16
            #:zig-release-type "safe"
            #:zig-build-flags
            #~(list "-Denable-tests")
            #:zig-test-flags
-           #~(list "-Denable-tests")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'install 'install-tinywl
-                 (lambda args
-                   (chdir "tinywl")
-                   (apply (assoc-ref %standard-phases 'build)
-                          `(,@args #:zig-build-flags ()))
-                   (apply (assoc-ref %standard-phases 'install)
-                          `(,@args #:install-source? #f))
-                   (chdir ".."))))))
+           #~(list "-Denable-tests")))
     (propagated-inputs
-     (list wlroots-0.19
+     (list wlroots-0.20
            zig-pixman
            zig-wayland
-           zig-xkbcommon))
+           zig-xkbcommon-0.3))
     (native-inputs (list pkg-config))
     (synopsis "Zig bindings for wlroots")
     (description "This package provides Zig bindings for @code{wlroots}.")
