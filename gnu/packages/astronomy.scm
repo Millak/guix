@@ -5541,13 +5541,13 @@ default) to world coordinates.")
 (define-public python-halo-analysis
   (package
     (name "python-halo-analysis")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "halo_analysis" version))
        (sha256
-        (base32 "072s29b73591n26r3i67wflh5sh67bjrnch6wi691v871xcpr4rl"))))
+        (base32 "1kxhfgbblhx8yhyny6gj11z6518k969lmc4nzidmm7yf7ziv0jfq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5561,8 +5561,7 @@ default) to world coordinates.")
               ;; Permission denied: '/homeless-shelter'
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-pytest
-           python-setuptools))
+     (list python-setuptools))
     (propagated-inputs
      (list python-h5py
            python-matplotlib
