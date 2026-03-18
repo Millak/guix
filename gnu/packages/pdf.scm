@@ -171,7 +171,7 @@ convert data in any way.")
 (define-public cpdf
   (package
     (name "cpdf")
-    (version "2.8.1")
+    (version "2.9")
     (source
      (origin
        (method git-fetch)
@@ -180,7 +180,7 @@ convert data in any way.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dn4lxbnj7izrpxshil1wcvpc60yv9mwfy52dndpi9b66rm3rbih"))))
+        (base32 "0gp5c82jmypa0ssdm3bdf3shaf9m0vncjs61bcqnchrxaclcd9vg"))))
     (build-system ocaml-build-system)
     (arguments
      (list
