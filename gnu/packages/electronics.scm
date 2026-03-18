@@ -2469,6 +2469,7 @@ formats.")
      (list
       #:configure-flags
       #~(list "-DBUILD_GUI=ON"
+              (string-append "-DOPENROAD_VERSION=" #$version)
               "-DBUILD_PYTHON=ON"
               "-DUSE_SYSTEM_ABC=OFF"     ;uses a custom fork
               "-DUSE_SYSTEM_OPENSTA=OFF" ;uses a custom fork
