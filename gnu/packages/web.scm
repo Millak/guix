@@ -2753,8 +2753,8 @@ directions.")
         (add-after 'unpack 'chdir (lambda _
           (chdir "npm/esbuild")))
         (add-before 'patch-dependencies 'modify-package (lambda _
-            (modify-json
-              (delete-fields '("optionalDependencies" "scripts")))
+            (modify-json "package.json"
+              (delete-json-fields '("optionalDependencies" "scripts")))
             (substitute* "../../lib/npm/node-platform.ts"
               (("^export var ESBUILD_BINARY_PATH:.+$")
                 (string-append "export var ESBUILD_BINARY_PATH: string"
