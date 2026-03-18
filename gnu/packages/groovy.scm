@@ -654,6 +654,17 @@ environment."))))
   (let ((base (groovy-subproject "groovy-dateutil")))
     (package
       (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-before 'build 'generate-metadata
+                #$(write-module-descriptor
+                   '("org.apache.groovy.dateutil.extensions.DateUtilExtensions")
+                   '((string-append
+                      "org.apache.groovy.dateutil.extensions."
+                      "DateUtilStaticExtensions"))
+                   base))))))
       (native-inputs
        `(("groovy-test" ,groovy-test)
          ,@(package-native-inputs base)))
