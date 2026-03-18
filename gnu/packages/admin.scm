@@ -4166,39 +4166,6 @@ the status of your battery in the system tray.")
     (home-page "https://github.com/valr/cbatticon")
     (license license:gpl2+)))
 
-(define-public interrobang
-  (let ((revision "1")
-        (commit "896543735e1c99144765fdbd7b6e6b5afbd8b881"))
-    (package
-      (name "interrobang")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/TrilbyWhite/interrobang")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1n13m70p1hfba5dy3i8hfclbr6k9q3d9dai3dg4jvhdhmxcpjzdf"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:tests? #f                    ; no tests
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure))         ; no configure script
-         #:make-flags (list (string-append "PREFIX="
-                                           (assoc-ref %outputs "out")))))
-      (inputs
-       (list libx11))
-      (native-inputs
-       (list pkg-config))
-      (synopsis "Scriptable launcher menu")
-      (description "Interrobang is a scriptable launcher menu with a customizable
-shortcut syntax and completion options.")
-      (home-page "https://github.com/TrilbyWhite/interrobang")
-      (license license:gpl3+))))
-
 (define-public pam-hooks
   (package
     (name "pam-hooks")
