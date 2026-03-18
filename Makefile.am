@@ -589,6 +589,7 @@ SCM_TESTS =					\
   tests/http-client.scm				\
   tests/inferior.scm				\
   tests/ipfs.scm				\
+  tests/json-utils.scm				\
   tests/ld-wrapper.scm				\
   tests/lint.scm				\
   tests/modules.scm				\

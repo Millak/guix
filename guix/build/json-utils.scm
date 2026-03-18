@@ -172,7 +172,7 @@ invalid field value provided, expected string or list of strings, got ~s~%")
                   (data (if (and field-missing? insert?)
                             (acons key '() data)
                             data)))
-             (if field-missing?
+             (if (and field-missing? (not insert?))
                  (if strict?
                      (raise (make-compound-condition
                              (condition (&modify-json-missing-key-error

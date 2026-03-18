@@ -913,7 +913,8 @@ and the maven-build-system."
                       "guix/build/json-utils.scm"
                       "guix/build/node-build-system.scm"
                       "guix/import/npm-binary.scm"
-                      "guix/scripts/import/npm-binary.scm")))
+                      "guix/scripts/import/npm-binary.scm"
+                      "tests/json-utils.scm")))
 
 (define-team julia
   (team 'julia

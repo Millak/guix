@@ -293,6 +293,7 @@ guix/build/json-utils\.scm                         @guix/javascript
 guix/build/node-build-system\.scm                  @guix/javascript
 guix/import/npm-binary\.scm                        @guix/javascript
 guix/scripts/import/npm-binary\.scm                @guix/javascript
+tests/json-utils\.scm                              @guix/javascript
 
 gnu/packages/julia(-.+|)\.scm$                     @guix/julia
 guix/build/julia-build-system\.scm                 @guix/julia
