@@ -629,6 +629,19 @@ library used to build graphical interfaces."))))
   (let ((base (groovy-subproject "groovy-datetime")))
     (package
       (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-before 'build 'generate-metadata
+                #$(write-module-descriptor
+                   '((string-append
+                      "org.apache.groovy.datetime.extensions."
+                      "DateTimeExtensions"))
+                   '((string-append
+                      "org.apache.groovy.datetime.extensions."
+                      "DateTimeStaticExtensions"))
+                   base))))))
       (native-inputs
        `(("groovy-test" ,groovy-test)
          ,@(package-native-inputs base)))
