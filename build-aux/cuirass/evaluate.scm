@@ -30,6 +30,7 @@
              (guix ui)
              ((guix ui) #:select (build-notifier))
              (ice-9 match)
+             (ice-9 pretty-print)
              (ice-9 threads))
 
 (define %top-srcdir
@@ -99,7 +100,7 @@
                       (close-inferior inferior)
                       (call-with-output-file file
                         (lambda (port)
-                          (write jobs port)))))))
+                          (pretty-print jobs port)))))))
               %cuirass-supported-systems
               inferiors)))))))
   (x
