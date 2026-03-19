@@ -383,11 +383,13 @@ devices.")
             ;; - cloud.google.com/go/auth/oauth2adapt
             ;; - cloud.google.com/go/compute/metadata
             ;; - cloud.google.com/go/longrunning
+            ;; - cloud.google.com/go/monitoring
             ;; - cloud.google.com/go/storage
             (for-each delete-file-recursively
                       (list "auth"
                             "compute/metadata"
                             "longrunning"
+                            "monitoring"
                             "storage"))))))
     (build-system go-build-system)
     (arguments
@@ -630,6 +632,52 @@ API service accounts for Go.")
      "Package longrunning supports Long Running Operations for the Google
 Cloud Libraries.  See google.golang.org/genproto/googleapis/longrunning for
 its service definition.")
+    (license license:asl2.0)))
+
+(define-public go-cloud-google-com-go-monitoring
+  (package
+    (name "go-cloud-google-com-go-monitoring")
+    (version "1.24.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/google-cloud-go")
+              (commit (go-version->git-ref version #:subdir "monitoring"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13rdnpz6jz5242gfx6xv6q66rr7k2sbrf7s507wq09bxvd4g20p0"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "monitoring")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "cloud.google.com/go/monitoring"
+      #:unpack-path "cloud.google.com/go"))
+    (propagated-inputs
+     (list go-cloud-google-com-go-longrunning
+           go-github-com-googleapis-gax-go-v2
+           go-google-golang-org-api
+           go-google-golang-org-genproto
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://cloud.google.com/go")
+    (synopsis "Cloud Monitoring API")
+    (description
+     "This package provides a Go Client Library for Cloud Monitoring API.")
     (license license:asl2.0)))
 
 (define-public go-cloud-google-com-go-storage
