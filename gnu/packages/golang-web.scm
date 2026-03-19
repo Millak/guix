@@ -7422,7 +7422,7 @@ sanitization, to use in various HTML contexts and with various DOM APIs.")
 (define-public go-github-com-googleapis-enterprise-certificate-proxy
   (package
     (name "go-github-com-googleapis-enterprise-certificate-proxy")
-    (version "0.3.7")
+    (version "0.3.14")
     (source
      (origin
        (method git-fetch)
@@ -7431,17 +7431,21 @@ sanitization, to use in various HTML contexts and with various DOM APIs.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jblnaa4hn9x5gfrsiw007wws7hy4h795xzzrw2bzf297ydrlnyg"))))
+        (base32 "16ypygh5jk2ndwkbdai1z23xn872z6fsj1iis28fp6mgw9s89hl8"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:tests? #f ;; TODO: Tests require additional dependencies
       #:skip-build? #t
-      #:import-path "github.com/googleapis/enterprise-certificate-proxy"))
+      #:import-path "github.com/googleapis/enterprise-certificate-proxy"
+      ;; TODO: Tests require additional dependencies
+      #:test-subdirs
+      #~(list "client"
+              "client/util"
+              "internal/signer/util")))
     (propagated-inputs
-     (list go-golang-org-x-sys go-golang-org-x-crypto
-           ;; go-github-com-google-go-pkcs11
-           ))
+     (list ;; go-github-com-google-go-pkcs11
+           go-golang-org-x-crypto
+           go-golang-org-x-sys))
     (home-page "https://github.com/googleapis/enterprise-certificate-proxy")
     (synopsis "Google Proxies for Enterprise Certificates (GA)")
     (description
