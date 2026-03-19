@@ -59,10 +59,12 @@
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages javascript)
+  #:use-module (gnu packages netpbm)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages qt)
@@ -104,7 +106,7 @@
                        (substitute* "cfgcache.pm"
                          (("/usr/local")
                           #$output)))))))
-    (inputs (list perl))
+    (inputs (list perl netpbm ghostscript))
     (synopsis "LaTeX documents to HTML")
     (description "LaTeX2HTML is a utility that converts LaTeX documents to web
 pages in HTML.")
