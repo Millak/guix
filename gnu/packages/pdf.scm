@@ -1729,20 +1729,19 @@ cropping, and transforming PDF files.")
 (define-public pdfarranger
   (package
     (name "pdfarranger")
-    (version "1.12.1")
+    (version "1.13.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/jeromerobert/pdfarranger")
+             (url "https://github.com/pdfarranger/pdfarranger")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04l74zp0smxzd9yhprdk70sshz3bvib8glla4z0s4zwvzfs65zd1"))))
+        (base32 "0kndvvi6cx2qhkf086zd6b61sp7x5hgrxacx5hlxmmv4chab76wm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f                       ;no tests
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'wrap 'wrap-for-typelib
@@ -1756,8 +1755,8 @@ cropping, and transforming PDF files.")
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list intltool
-           python-setuptools
-           python-wheel))
+           python-pytest
+           python-setuptools))
     (inputs
      (list bash-minimal
            gtk+
@@ -1766,8 +1765,8 @@ cropping, and transforming PDF files.")
            python-dateutil
            python-pikepdf
            python-pycairo
-           python-pygobject))
-    (home-page "https://github.com/jeromerobert/pdfarranger")
+           python-pygobject-3.50))
+    (home-page "https://github.com/pdfarranger/pdfarranger")
     (synopsis "Merge, split and re-arrange pages from PDF documents")
     (description
      "PDF Arranger is a small application which allows one to merge or split
