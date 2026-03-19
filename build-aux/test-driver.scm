@@ -105,7 +105,7 @@ case is shown.\n"))
                           (out-port (current-output-port))
                           (trs-port (%make-void-port "w"))
                           select exclude)
-  "Return an custom SRFI-64 test runner.  TEST-NAME is a string specifying the
+  "Return a custom SRFI-64 test runner.  TEST-NAME is a string specifying the
 file name of the current the test.  COLOR? specifies whether to use colors.
 When BRIEF? is true, the individual test cases results are masked and only the
 summary is shown.  ERRORS-ONLY? reduces the amount of test case metadata
