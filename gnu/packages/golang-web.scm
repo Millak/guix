@@ -457,7 +457,7 @@ Services.")
 (define-public go-cloud-google-com-go-auth
   (package
     (name "go-cloud-google-com-go-auth")
-    (version "0.17.0")
+    (version "0.18.2")
     (source
      (origin
        (method git-fetch)
@@ -467,7 +467,7 @@ Services.")
                                           #:subdir "auth"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0i18wkz04w9wpckw021nawr82dh92krmcsn471rpjx1jrmgsbi5v"))
+        (base32 "1c2i8jhc4rizmwz6716bwxwy04adjmm7k2cigki3m1f00rwblmki"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
@@ -489,25 +489,28 @@ Services.")
       #~(list "-skip"
               (string-join
                ;; These tests all require credentials/tokens
-               '("TestGetGRPCTransportConfigAndEndpoint_S2A"
-                 "TestGetHTTPTransportConfig_S2A"
-                 "TestDownscopedToken"
-                 "TestDialTCPUserTimeout"
-                 "TestFetchTrustBoundaryData"
-                 "TestLogDirectPathMisconfigDirectPathNotSet"
-                 "TestLogDirectPathMisconfigNotOnGCE") "|"))))
+               (list "TestDownscopedToken"
+                     "TestLogDirectPathMisconfigDirectPathNotSet"
+                     "TestLogDirectPathMisconfigNotOnGCE"
+                     ;; Runint OTP instance is required.
+                     "TestDial_OpenTelemetry/telemetry_enabled_success"
+                     "TestDial_OpenTelemetry/telemetry_enabled_error")
+               "|"))))
     (propagated-inputs
-     (list go-google-golang-org-protobuf
-           go-google-golang-org-grpc
-           go-golang-org-x-time
-           go-golang-org-x-net
-           go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
-           go-go-opentelemetry-io-contrib-instrumentation-google-golang-org-grpc-otelgrpc
-           go-github-com-googleapis-gax-go-v2
-           go-github-com-googleapis-enterprise-certificate-proxy
-           go-github-com-google-s2a-go
+     (list go-cloud-google-com-go-compute-metadata
            go-github-com-google-go-cmp
-           go-cloud-google-com-go-compute-metadata))
+           go-github-com-google-s2a-go
+           go-github-com-googleapis-enterprise-certificate-proxy
+           go-github-com-googleapis-gax-go-v2
+           go-go-opentelemetry-io-contrib-instrumentation-google-golang-org-grpc-otelgrpc
+           go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-trace
+           go-golang-org-x-net
+           go-golang-org-x-time
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
     (home-page "https://cloud.google.com/go")
     (synopsis "Google Auth Library for Go")
     (description
