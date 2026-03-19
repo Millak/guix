@@ -7321,22 +7321,24 @@ and the Generalized Lomb-Scargle periodogram
 (define-public python-pyavm
   (package
     (name "python-pyavm")
-    (version "0.9.8")
+    (version "0.9.9")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "PyAVM" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/astrofrog/pyavm")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0vgjqvddq4a5lnmg8msm7fwqs3r6fc748xzvnhyvc387h0z8pdxk"))))
+        (base32 "1xh8f4w8qiynnm4gssnwwwcml7i5v371fd7kp7a6cv9xp4rns1v6"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pillow
-           python-pytest
-           python-setuptools
-           python-setuptools-scm))
-    (propagated-inputs
-     (list python-astropy
-           python-numpy))
+     (list python-astropy-minimal
+           python-hatch-vcs
+           python-hatchling
+           python-numpy
+           python-pillow
+           python-pytest))
     (home-page "https://astrofrog.github.io/pyavm/")
     (synopsis "Simple pure-python AVM meta-data handling")
     (description
