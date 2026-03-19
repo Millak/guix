@@ -646,6 +646,22 @@ interface.")
     (home-page "https://codeberg.org/ifreund/zig-xkbcommon")
     (license license:expat)))
 
+;; Older version needed for `river-classic' and `zig-wlroots'.
+(define-public zig-xkbcommon-0.3
+  (package
+    (inherit zig-xkbcommon)
+    (name "zig-xkbcommon")
+    (version "0.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/ifreund/zig-xkbcommon")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "117nw4b5q14mb6j5yhvydlwllbd7gyxp176as4gj9qb5zh8wz5kv"))))))
+
 (define-public zig-zigimg
   ;; No tagged release.
   (let ((commit "52f10dd3e3b1cd4614fe72a8a8f0eddc7700bc0a")
