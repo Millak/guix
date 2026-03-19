@@ -213,20 +213,6 @@ cases based on their names."
   (lambda (runner)
     (not (string-match regexp (test-runner-test-name runner)))))
 
-;;; XXX: test-match-all is a syntax, which isn't convenient to use with a list
-;;; of test specifiers computed at run time.  Copy this SRFI 64 internal
-;;; definition here, which is the procedural equivalent of 'test-match-all'.
-(define (%test-match-all . pred-list)
-  (lambda (runner)
-    (let ((result #t))
-      (let loop ((l pred-list))
-	(if (null? l)
-	    result
-	    (begin
-	      (if (not ((car l) runner))
-		  (set! result #f))
-	      (loop (cdr l))))))))
-
 
 ;;;
 ;;; Entry point.
@@ -249,7 +235,7 @@ cases based on their names."
                                identity
                                (list (and=> select test-match-name*)
                                      (and=> exclude test-match-name*/negated))))
-             (test-specifier (apply %test-match-all test-specifiers))
+             (test-specifier (apply test-match-all test-specifiers))
              (color-tests (if (assoc 'color-tests opts)
                               (option->boolean opts 'color-tests)
                               #t)))
