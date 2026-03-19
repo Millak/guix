@@ -17226,6 +17226,51 @@ lists)
      "Package sdk provides an auto-instrumentable @code{OpenTelemetry} SDK.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-contrib-detectors-gcp
+  (package
+    (name "go-go-opentelemetry-io-contrib-detectors-gcp")
+    (version "1.42.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/open-telemetry/opentelemetry-go-contrib")
+              (commit (go-version->git-ref version #:subdir "detectors/gcp"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18k9pqwzlcjkiz8cy2hgl5jwal10ypj171hra4zsqizbqjivd4lc"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "detectors" "gcp")
+            (delete-all-but "." "detectors")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "go.opentelemetry.io/contrib/detectors/gcp"
+      #:unpack-path "go.opentelemetry.io/contrib"))
+    (propagated-inputs
+     (list go-cloud-google-com-go-compute-metadata
+           go-github-com-google-go-cmp
+           go-github-com-googlecloudplatform-opentelemetry-operations-go-detectors-gcp
+           go-github-com-stretchr-testify
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-sdk))
+    (home-page "https://go.opentelemetry.io/contrib")
+    (synopsis "GCP Resource detector")
+    (description
+     "Package gcp provides a resource detector for GCP Cloud Function.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-contrib-instrumentation-google-golang-org-grpc-otelgrpc
   (package
     (name
