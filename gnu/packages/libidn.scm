@@ -60,14 +60,14 @@ Java libraries.")
 (define-public libidn2
   (package
     (name "libidn2")
-    (version "2.3.7")
+    (version "2.3.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/libidn/" name "-" version
                                   ".tar.gz"))
               (sha256
                (base32
-                "0r3xzmmrx4hsc53jdncd5yqmkwzjgc4vh4hfkndm3f8hns8sf8ac"))))
+                "0ykqq39yacg9vvf2alyl5sskbfr531dmzwrgyzhj25hpyqdr2mzm"))))
     (inputs
      (list libunistring))
     (build-system gnu-build-system)
