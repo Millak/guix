@@ -2130,7 +2130,7 @@ demos.  It also acts as a nice screen locker.")
 (define-public xssproxy
   (package
     (name "xssproxy")
-    (version "1.1.1")
+    (version "1.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2139,7 +2139,7 @@ demos.  It also acts as a nice screen locker.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "19i5npmbd2kbs96wp2bb79crlwkcf9n0n8cd4v1myvczb0iwbz1q"))))
+                "02sqa5fki82xhrx5m02pw95ych0pq3664f3c0jckm0jw0s0kdkz8"))))
     (build-system gnu-build-system)
     (arguments `(#:make-flags `("bindir=/bin"
                                 "man1dir=/share/man/man1"
