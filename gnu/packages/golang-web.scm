@@ -7427,6 +7427,51 @@ resource detectors.  It exists within this repository to allow for integration
 testing of the detection functions in real GCP environments.")
     (license license:asl2.0)))
 
+(define-public go-github-com-googlecloudplatform-opentelemetry-operations-go-internal-resourcemapping
+  (package
+    (name "go-github-com-googlecloudplatform-opentelemetry-operations-go-internal-resourcemapping")
+    (version "0.55.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/GoogleCloudPlatform/opentelemetry-operations-go")
+              (commit (go-version->git-ref version
+                                           #:subdir "internal/resourcemapping"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a2641mgbc2fv8ramifawpxv9rx99wqknv0xqin3wfapsn2vn5i9"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "internal" "resourcemapping")
+            (delete-all-but "." "internal")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path (string-append "github.com/GoogleCloudPlatform/"
+                                   "opentelemetry-operations-go/"
+                                   "internal/resourcemapping")
+      #:unpack-path "github.com/GoogleCloudPlatform/opentelemetry-operations-go"))
+    (propagated-inputs
+     (list go-go-opentelemetry-io-otel
+           go-google-golang-org-genproto-googleapis-api))
+    (home-page "https://github.com/GoogleCloudPlatform/opentelemetry-operations-go")
+    (synopsis "OpenTelemetry Google Cloud resource mapping module")
+    ;; XXX: Project lacks proper descripton.
+    (description
+     "This package provides an OpenTelemetry Google Cloud resource mapping
+module.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-gopacket-gopacket
   (package
     (name "go-github-com-gopacket-gopacket")
