@@ -9320,21 +9320,16 @@ owners/operators, academia and other entities.")
 (define-public python-specreduce
   (package
     (name "python-specreduce")
-    ;; For specutils>=2.0, switch to tag when released.
-    (properties '((commit . "b0f657c9bd0d297dd19cc13dec4aefe19aec148e")
-                  (revision . "0")))
-    (version (git-version "1.7.0"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/astropy/specreduce")
-              (commit (assoc-ref properties 'commit))))
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fir9hq0s0fv2cilvx7qgqw0f47s4qar9chx87x929qmqrd810s2"))))
+        (base32 "0hs9wax5ri4b17s6d2wfg4c79b6byfivljdlrngfpdxdad5fcaph"))))
     (build-system pyproject-build-system)
     (arguments
      (list
