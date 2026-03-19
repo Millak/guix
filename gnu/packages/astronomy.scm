@@ -9223,17 +9223,39 @@ but has evolved to support other missions as well.")
 (define-public python-space-dolphin
   (package
     (name "python-space-dolphin")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "space_dolphin" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ajshajib/dolphin")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "162899av6mp0wkjbas07xkqjr70qbvirgnnch7hb501gz0rb50bh"))))
+        (base32 "19lxv0ii7y7v14qv43cvfkzgm5rgn42g8jy5z5pnfq7bxl6nc62w"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f ;TODO: Enable when tensorflow is fixed.
+      ;; tests: 77 passed, 4 deselected, 394 warnings
+      #:test-flags
+      #~(list "--ignore=test/test_ai/test_modeler.py"
+              "--ignore=test/test_ai/test_vision.py"
+              "--ignore=test/test_pipeline.py"
+              #$@(map (lambda (ls) (string-append "--deselect=test/"
+                                                  (string-join ls "::")))
+                      ;; AttributeError: `np.string_` was removed in the NumPy
+                      ;; 2.0 release. Use `np.bytes_` instead.
+                      '(("test_analysis/test_output.py" "TestOutput"
+                         "test_load_output")
+                        ("test_processor/test_core.py" "TestProcessor"
+                         "test_swim")
+                        ("test_processor/test_files.py" "TestFileSystem"
+                         "test_save_load_output_h5")
+                        ;; OSError: Could not find a suitable TLS CA
+                        ;; certificate bundle, invalid path:
+                        ;; /etc/ssl/certs/ca-certificates.crt
+                        ("test_processor/test_files.py" "TestFileSystem"
+                         "test_get_trained_model_file_path"))))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
@@ -9242,7 +9264,7 @@ but has evolved to support other missions as well.")
               ;;  available for file '<...>/lenstronomy/Util/util.py'.
               (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (native-inputs
-     (list ;; python-pytest
+     (list python-pytest
            python-setuptools))
     (propagated-inputs
      (list python-astropy
@@ -9256,8 +9278,7 @@ but has evolved to support other missions as well.")
            python-pyyaml
            python-schwimmbad
            python-scipy
-           python-tqdm
-           #;tensorflow)) ;XXX: currenlty broken on master, see guix/guix#1436.
+           python-tqdm))
     (home-page "https://github.com/ajshajib/dolphin")
     (synopsis "Automated pipeline for lens modeling based on lenstronomy")
     (description
