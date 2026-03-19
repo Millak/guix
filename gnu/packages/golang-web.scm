@@ -563,7 +563,7 @@ cloud.google.com/go/auth and golang.org/x/oauth2.")
 (define-public go-cloud-google-com-go-compute-metadata
   (package
     (name "go-cloud-google-com-go-compute-metadata")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -573,7 +573,7 @@ cloud.google.com/go/auth and golang.org/x/oauth2.")
                                           #:subdir "compute/metadata"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02xl6mnw3i1x8zfafrsl2gr0v5a29nn3aiif6ndzssqr0pqfg5dw"))))
+        (base32 "1xhiyv3p9kh6qj007yqd8fic2w48ngrff2vwi9i21v82v5zp51gv"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -581,6 +581,8 @@ cloud.google.com/go/auth and golang.org/x/oauth2.")
       #:unpack-path "cloud.google.com/go"))
     (native-inputs
      (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
     (home-page "https://pkg.go.dev/cloud.google.com/go/compute/metadata")
     (synopsis "Go wrapper for Google Compute Engine metadata service")
     (description
