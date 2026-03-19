@@ -18640,6 +18640,7 @@ an alternative fork of @url{https://github.com/mattbaird/jsonpatch}.")
             ;; Submodules with their own go.mod files and packaged separately:
             ;;
             (delete-file-recursively "googleapis/api")
+            (delete-file-recursively "googleapis/bytestream")
             (delete-file-recursively "googleapis/rpc")))))
     (build-system go-build-system)
     (arguments
@@ -18831,6 +18832,48 @@ interacting with Google's @code{gRPC} APIs.")
     (synopsis "API implementation of Google Cloud Platform in Golang")
     (description
      "This package provides an API to interact with @acronym{GCP, Google Cloud Platform}.")
+    (license license:asl2.0)))
+
+(define-public go-google-golang-org-genproto-googleapis-bytestream
+  (package
+    (name "go-google-golang-org-genproto-googleapis-bytestream")
+    (version "0.0.0-20260316180232-0b37fe3546d5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/go-genproto")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yvcd9xiyarwmzgl70xqiaxxla3qiys1iysqajwmbrf8k4ghr26p"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "googleapis" "bytestream")
+            (delete-all-but "." "googleapis")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.25
+      #:import-path "google.golang.org/genproto/googleapis/bytestream"
+      #:unpack-path "google.golang.org/genproto"))
+    (propagated-inputs
+     (list go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://google.golang.org/genproto")
+    (synopsis "Bytestream implementation of Google Cloud Platform in Golang")
+    (description
+     "This package provides an Bytestream to interact with @acronym{GCP,
+Google Cloud Platform}.")
     (license license:asl2.0)))
 
 (define-public go-google-golang-org-grpc
