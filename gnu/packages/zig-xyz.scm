@@ -188,7 +188,7 @@ mission-critical safety and performance for financial services.")
 (define-public waylock
   (package
     (name "waylock")
-    (version "1.5.0")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)
@@ -197,18 +197,18 @@ mission-critical safety and performance for financial services.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bxs0gbczw8hb42fzl0i51jbzq82gvi3dad7xzhlall6fkl8882d"))))
+        (base32 "1ymdibva88n6j0rzjb6z212sdf59mzm1lm25k2grzm17ia1czx83"))))
     (build-system zig-build-system)
     (arguments
      (list
-      #:zig zig-0.15
+      #:zig zig-0.16
       #:install-source? #f
       ;; No tests.
       #:tests? #f
       #:zig-release-type "safe"
       #:zig-build-flags
       #~(list "-Dpie")))
-    (inputs (list linux-pam zig-wayland zig-xkbcommon))
+    (inputs (list linux-pam zig-wayland zig-xkbcommon-0.3))
     (native-inputs (list pkg-config scdoc))
     (home-page "https://codeberg.org/ifreund/waylock")
     (synopsis "Wayland screen locker")
