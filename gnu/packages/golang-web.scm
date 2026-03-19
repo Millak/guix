@@ -717,14 +717,14 @@ its service definition.")
      (list go-github-com-google-go-cmp))
     (propagated-inputs
      (list go-cloud-google-com-go
-           ;; go-cloud-google-com-go-auth
+           go-cloud-google-com-go-auth
            ;; go-cloud-google-com-go-compute-metadata
            ;; go-cloud-google-com-go-iam
-           ;; go-cloud-google-com-go-longrunning
+           go-cloud-google-com-go-longrunning
            go-github-com-google-uuid
            go-github-com-googleapis-gax-go-v2
-           ;; go-github-com-googlecloudplatform-opentelemetry-operations-go-exporter-metric
-           ;; go-go-opentelemetry-io-contrib-detectors-gcp
+           go-github-com-googlecloudplatform-opentelemetry-operations-go-exporter-metric
+           go-go-opentelemetry-io-contrib-detectors-gcp
            go-go-opentelemetry-io-otel
            ;; go-go-opentelemetry-io-otel-exporters-stdout-stdoutmetric
            go-go-opentelemetry-io-otel-sdk
