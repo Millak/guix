@@ -1513,7 +1513,7 @@ Syntax Tree} at different stages: before transforms, after transforms, etc.")
 (define-public python-nbsphinx
   (package
     (name "python-nbsphinx")
-    (version "0.8.8")
+    (version "0.9.8")
     (source
      (origin
        (method git-fetch)
@@ -1522,7 +1522,7 @@ Syntax Tree} at different stages: before transforms, after transforms, etc.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s98kab9jddy4jskllqcmwr222i85a25asi78f8nf0cpqbsvy1k6"))))
+        (base32 "13z9mcycc7frg45w8sy2lfgzb51h407d38r1y63p4jyjnpfzic02"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ; No tests upstream.
@@ -1534,7 +1534,7 @@ Syntax Tree} at different stages: before transforms, after transforms, etc.")
             python-sphinx
             python-traitlets))
     (native-inputs
-     (list python-setuptools python-wheel))
+     (list python-setuptools))
     (home-page "https://nbsphinx.readthedocs.io/")
     (synopsis "Jupyter Notebook Tools for Sphinx")
     (description "@code{python-nbsphinx} is a Sphinx extension that
