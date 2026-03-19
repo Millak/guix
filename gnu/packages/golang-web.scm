@@ -17427,7 +17427,7 @@ Tracer implementation from the @code{OpenTracing} project.")
 (define-public go-go-opentelemetry-io-otel
   (package
     (name "go-go-opentelemetry-io-otel")
-    (version "1.40.0")
+    (version "1.42.0")
     (source
      (origin
        (method git-fetch)
@@ -17436,7 +17436,7 @@ Tracer implementation from the @code{OpenTracing} project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ag8103mf4j03lspi5rxk161iscbw1wkdk6ri9f746jia1w4qji8"))
+        (base32 "1mxj3gv04lh0lss2fk4c5n23m55qm4zy1caa3fqxmnjhy0yjm6rf"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -17462,13 +17462,15 @@ Tracer implementation from the @code{OpenTracing} project.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.25
       #:tests? #f ;; TODO: Tests require additional dependencies
       #:import-path "go.opentelemetry.io/otel"
       ;; Error: Both arguments must be pointers.
       #:test-flags #~(list "-skip" "TestTraceProviderDelegatesSameInstance")))
     (native-inputs
      (list go-github-com-google-go-cmp
-           go-github-com-stretchr-testify))
+           go-github-com-stretchr-testify
+           #;go-go-opentelemetry-io-collector-pdata))
     (propagated-inputs
      (list go-github-com-cespare-xxhash-v2
            go-github-com-go-logr-logr
@@ -17870,6 +17872,7 @@ logging library.  Instead, install one of the bridges listed in the
     (name "go-go-opentelemetry-io-otel-metric")
     (arguments
      (list
+      #:go go-1.25
       #:import-path "go.opentelemetry.io/otel/metric"
       #:unpack-path "go.opentelemetry.io/otel"))
     (synopsis "OpenTelemetry Metric API")
