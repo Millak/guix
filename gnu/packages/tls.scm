@@ -210,7 +210,7 @@ living in the same process.")
 (define-public gnutls
   (package
     (name "gnutls")
-    (version "3.8.9")
+    (version "3.8.13")
     (source (origin
               (method url-fetch)
               ;; Note: Releases are no longer on ftp.gnu.org since the
@@ -218,10 +218,9 @@ living in the same process.")
               (uri (string-append "mirror://gnupg/gnutls/v"
                                   (version-major+minor version)
                                   "/gnutls-" version ".tar.xz"))
-              (patches (search-patches "gnutls-no-which.patch"))
               (sha256
                (base32
-                "1v9090cbajf02cw01idfbp0cgmgjn5091ff1b96hqryi0bc17qb9"))))
+                "0zn9m5nb3a4r9rh5ws3xaczbals7vrvy7ahl9xnl5hh9pz0qxvgz"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? (not (or (%current-target-system)
