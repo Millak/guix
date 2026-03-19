@@ -2695,14 +2695,17 @@ with your favorite libraries.")
 (define-public python-threadpoolctl
   (package
     (name "python-threadpoolctl")
-    (version "3.1.0")
+    (version "3.6.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "threadpoolctl" version))
-        (sha256
-         (base32
-          "100k76nmajf408lbn5ipis1gilklcs6sbqyqy3hhlh54zanbldd3"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/joblib/threadpoolctl")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1n5gkcw619d9qgnnk46v2v77safj0z8hngb8i75dawq7lan89068"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-flit-core python-pytest))
