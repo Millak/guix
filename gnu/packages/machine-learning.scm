@@ -1609,7 +1609,7 @@ provides an interface for
 (define-public python-sacrebleu
   (package
     (name "python-sacrebleu")
-    (version "2.3.1")
+    (version "2.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1618,7 +1618,7 @@ provides an interface for
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1al4qf9wsq5l453qqb6clims62ns0s07wb9rfbf4hbpr1f2iv7zv"))))
+                "0d1s5f4cv668cjpz7zjxl0mjn7jhl6b0y9mx3cf78frzszglvya7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1642,7 +1642,7 @@ and not test_wmt22_references")
                              python-portalocker
                              python-regex
                              python-tabulate))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools python-setuptools-scm))
     (home-page "https://github.com/mjpost/sacrebleu")
     (synopsis
      "Compute shareable, comparable, and reproducible BLEU, chrF, and TER scores")
