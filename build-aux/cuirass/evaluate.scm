@@ -42,11 +42,6 @@
   ((command directory)
    (let ((real-build-things build-things))
      (with-store store
-       ;; Make sure we don't resort to substitutes.
-       (set-build-options store
-                          #:use-substitutes? #f
-                          #:substitute-urls '())
-
        ;; The evaluation of Guix itself requires building a "trampoline"
        ;; program, and possibly everything it depends on.  Thus, allow builds
        ;; but print a notification.
