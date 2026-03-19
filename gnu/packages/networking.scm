@@ -3486,7 +3486,7 @@ does not use SSH and requires a pre-shared symmetric key.")
                         (delete-file "lib/version.h")
                         (delete-file "vtysh/extract.pl")))))
     (build-system gnu-build-system)
-    (native-inputs (list gawk gcc-9 pkg-config perl dejagnu))
+    (native-inputs (list gawk gcc-7 pkg-config perl dejagnu))
     (inputs (list c-ares libxcrypt readline))
     (synopsis "Routing Software Suite")
     (description "Quagga is a routing software suite, providing implementations
