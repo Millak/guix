@@ -219,53 +219,6 @@ is on expressing the content semantically, avoiding physical markup commands.")
                (base32
                 "1njfwh2z34r2c4r0iqa7v24wmjzvsfyz4vplzry8ln3479lfywal"))))))
 
-(define-public texinfo-4
-  (package (inherit texinfo)
-    (version "4.13a")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://gnu/texinfo/texinfo-"
-                    version
-                    ".tar.lzma"))
-              (sha256
-               (base32
-                "1rf9ckpqwixj65bw469i634897xwlgkm5i9g2hv3avl6mv7b0a3d"))))
-    (inputs (list ncurses xz))
-    (native-inputs
-      (modify-inputs (package-native-inputs texinfo)
-        (prepend automake)))
-    (arguments
-     (append
-      (substitute-keyword-arguments (package-arguments texinfo)
-        ((#:phases phases)
-         `(modify-phases ,phases
-            (add-after 'unpack 'fix-configure
-              (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                ;; Replace outdated config.sub and config.guess.
-                (with-directory-excursion "build-aux"
-                  (for-each
-                   (lambda (file)
-                     (install-file (string-append
-                                    (assoc-ref
-                                     (or native-inputs inputs) "automake")
-                                    "/share/automake-"
-                                    ,(version-major+minor
-                                      (package-version automake))
-                                    "/" file) "."))
-                   '("config.sub" "config.guess")))
-                #t))
-            ;; Build native version of tools before running 'build phase.
-            ,@(if (%current-target-system)
-                  `((add-before 'build 'make-native-gnu-lib
-                      (lambda* (#:key inputs #:allow-other-keys)
-                        (invoke "make" "-C" "tools/gnulib/lib")
-                        #t)))
-                  '()))))
-      ;; Ignore that size_t* and int* are used interchangeably.
-      (list #:configure-flags
-            '(list "CFLAGS=-Wno-error=incompatible-pointer-types"))))))
-
 (define-public info-reader
   ;; The idea of this package is to have the standalone Info reader without
   ;; the dependency on Perl that 'makeinfo' drags.
