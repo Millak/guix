@@ -230,14 +230,14 @@ generate such a compilation database.")
 (define-public bmake
   (package
     (name "bmake")
-    (version "20251111")
+    (version "20260313")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "http://www.crufty.net/ftp/pub/sjg/bmake-" version ".tar.gz"))
        (sha256
-        (base32 "0q30a04lg91g4932xgl0hg4c798inr5ky8fq6cwqzfkpar8zi8s5"))
+        (base32 "0xgryknmv625idw37rq89mpl5rymwdb15j5w8zxwy1gf8b6z7j3n"))
        (patches (search-patches "bmake-run-check-separately.patch"))))
     (build-system gnu-build-system)
     (inputs
