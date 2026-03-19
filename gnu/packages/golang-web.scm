@@ -7520,6 +7520,63 @@ resource detectors.  It exists within this repository to allow for integration
 testing of the detection functions in real GCP environments.")
     (license license:asl2.0)))
 
+(define-public go-github-com-googlecloudplatform-opentelemetry-operations-go-exporter-metric
+  (package
+    (name "go-github-com-googlecloudplatform-opentelemetry-operations-go-exporter-metric")
+    (version "0.55.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/GoogleCloudPlatform/opentelemetry-operations-go")
+              (commit (go-version->git-ref version #:subdir "exporter/metric"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a2641mgbc2fv8ramifawpxv9rx99wqknv0xqin3wfapsn2vn5i9"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "exporter" "metric")
+            (delete-all-but "." "exporter")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f ;TODO: more packaging is required
+      #:import-path "github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric"
+      #:unpack-path "github.com/GoogleCloudPlatform/opentelemetry-operations-go"))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           #;go-github-com-googlecloudplatform-opentelemetry-operations-go-internal-cloudmock))
+    (propagated-inputs
+     (list go-cloud-google-com-go-monitoring
+           go-github-com-googleapis-gax-go-v2
+           go-github-com-googlecloudplatform-opentelemetry-operations-go-internal-resourcemapping
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-go-opentelemetry-io-otel-trace
+           go-golang-org-x-oauth2
+           go-google-golang-org-api
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/GoogleCloudPlatform/opentelemetry-operations-go")
+    (synopsis "OpenTelemetry Google Cloud Monitoring Exporter")
+    (description
+     "@code{OpenTelemetry} Google Cloud Monitoring Exporter allows the user to
+send collected metrics to Google Cloud.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-googlecloudplatform-opentelemetry-operations-go-internal-resourcemapping
   (package
     (name "go-github-com-googlecloudplatform-opentelemetry-operations-go-internal-resourcemapping")
