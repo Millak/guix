@@ -7462,7 +7462,7 @@ Terraform by using the enterprise certificates feature.")
 (define-public go-github-com-googleapis-gax-go-v2
   (package
     (name "go-github-com-googleapis-gax-go-v2")
-    (version "2.15.0")
+    (version "2.19.0")
     (source
      (origin
        (method git-fetch)
@@ -7471,22 +7471,28 @@ Terraform by using the enterprise certificates feature.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mp07716zjb7q9di6sfglscahrg053lsq3j5w68dknxn1fks5j6f"))))
+        (base32 "1nd5qv2dhn6xiw27hmxxyan9v3hiwcqpg9cy2q679v6b0vj7ijmj"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:tests? #f ;; TODO: Tests require additional dependencies
+      #:go go-1.25
       #:skip-build? #t
       #:import-path "github.com/googleapis/gax-go/v2"
-      #:unpack-path "github.com/googleapis/gax-go"))
+      #:unpack-path "github.com/googleapis/gax-go"
+      ;; TODO: Tests require additional dependencies
+      #:test-subdirs #~(list "internallog" "internallog/grpclog")))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
     (propagated-inputs
-     (list go-google-golang-org-protobuf
-           go-google-golang-org-grpc
-           go-google-golang-org-genproto-googleapis-rpc
+     (list go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-sdk-metric
+           ;; go-google-golang-org-api           ;cycles, boostrap is required
+           ;; go-google-golang-org-genproto      ;cycles, boostrap is required
            go-google-golang-org-genproto-googleapis-api
-           ;; go-google-golang-org-genproto
-           ;; go-google-golang-org-api
-           go-github-com-google-go-cmp))
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
     (home-page "https://github.com/googleapis/gax-go")
     (synopsis "Google API Extensions for Go")
     (description
