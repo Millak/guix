@@ -3,7 +3,7 @@ exec guile --no-auto-compile -e main -s "$0" "$@"
 !#
 ;;;; test-driver.scm - Guile test driver for Automake testsuite harness
 
-(define script-version "2026-01-23.07") ;UTC
+(define script-version "2026-03-19.13") ;UTC
 
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim@guixotic.coop>
@@ -95,6 +95,15 @@ case is shown.\n"))
                        "[m")          ;no color
         result)))
 
+(define* (test-result-kind* #:optional (runner (test-runner-current)))
+  ;; TODO: Since Guile 3.0.11, the test-result-kind value of tests not
+  ;; selected by specifiers is #f instead of 'skip, which seems like a bug.
+  ;; Revert to use 'test-result-kind' after
+  ;; <https://codeberg.org/guile/guile/issues/133> is resolved and made and
+  ;; available in Guix.
+  (or (test-result-ref runner 'result-kind)
+      'skip))
+
 
 ;;;
 ;;; SRFI 64 custom test runner.
@@ -125,7 +134,7 @@ cases based on their names."
       (hash-set! test-cases-start-time test-case-name start-time)))
 
   (define (test-skipped? runner)
-    (eq? 'skip (test-result-kind runner)))
+    (eq? 'skip (test-result-kind* runner)))
 
   (define (test-failed? runner)
     (not (or (test-passed? runner)
@@ -146,7 +155,7 @@ cases based on their names."
       (unless (or brief? (and errors-only? (test-skipped? runner)))
         ;; Display the result of each test case on the console.
         (format out-port "~a: ~a - ~a ~@[[~,3fs]~]~%"
-                (result->string (test-result-kind runner) #:colorize? color?)
+                (result->string (test-result-kind* runner) #:colorize? color?)
                 test-name test-case-name
                 (and show-duration? time-elapsed-seconds)))
 
@@ -168,7 +177,7 @@ cases based on their names."
         (newline))
 
       (format trs-port ":test-result: ~A ~A [~,3fs]~%"
-              (result->string (test-result-kind runner))
+              (result->string (test-result-kind* runner))
               (test-runner-test-name runner) time-elapsed-seconds)))
 
   (define (test-on-group-end-gnu runner)
