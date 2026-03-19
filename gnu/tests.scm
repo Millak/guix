@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2020, 2022-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2020, 2022-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -274,7 +274,7 @@ the system under test."
   (operating-system
     (inherit os)
     (services
-     (modify-services (operating-system-user-services os)
+     (modify-services services
        (shepherd-system-log-service-type
         config
         =>

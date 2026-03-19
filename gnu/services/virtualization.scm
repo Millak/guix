@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Ryan Moe <ryan.moe@gmail.com>
-;;; Copyright © 2018, 2020-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2020-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020, 2021, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2022, 2025 Oleg Pykhalov <go.wigust@gmail.com>
@@ -1211,7 +1211,7 @@ that will be listening to receive secret keys on ADDRESS."
      ;; those keys are going to be overwritten by secrets received from the
      ;; host anyway.
      (cons (service secret-service-type address)
-           (modify-services (operating-system-user-services os)
+           (modify-services services
              (openssh-service-type
               config => (openssh-configuration
                          (inherit config)

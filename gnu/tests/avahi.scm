@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2020, 2022, 2024-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2020, 2022, 2024-2026 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,8 +46,7 @@
                      (service dhcpcd-service-type) ;needed for multicast
 
                      ;; Enable heavyweight debugging output.
-                     (modify-services (operating-system-user-services
-                                       %simple-os)
+                     (modify-services services
                        (nscd-service-type config
                                           => (nscd-configuration
                                               (inherit config)

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2017, 2020-2021, 2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2017, 2020-2021, 2025-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -170,7 +170,7 @@
                      %base-file-systems))
       (services
        ;; Enable debugging output.
-       (modify-services (operating-system-user-services os)
+       (modify-services services
          (shepherd-system-log-service-type
           config
           =>
@@ -285,7 +285,7 @@ directories can be mounted.")
                      (exports '(("/export"
                                  "*(rw,insecure,no_subtree_check,\
 crossmnt,fsid=root,no_root_squash,insecure,async)")))))
-           (modify-services (operating-system-user-services os)
+           (modify-services services
              (shepherd-system-log-service-type
               config
               =>

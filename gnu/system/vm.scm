@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -185,7 +185,7 @@ environment with the store shared with the host.  MAPPINGS is a list of
     ;; XXX In 6.14, the kernel renamed the "cirrus" module to "cirrus-qemu", so
     ;; we account for that here. The renaming was done in this commit:
     ;; https://git.kernel.org/pub/scm/linux/kernel/git/sashal/linux-stable.git/commit/?id=5c3c99868aa2e0b68ac69f8050a6b9c994e73397
-    (initrd-modules (let* ((modules (operating-system-initrd-modules os))
+    (initrd-modules (let* ((modules initrd-modules)
                            (kernel-version
                              (package-version (operating-system-kernel os)))
                            (cirrus-module

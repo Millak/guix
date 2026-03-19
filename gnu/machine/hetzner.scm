@@ -152,7 +152,7 @@
       (operating-system
         (inherit os)
         (services
-         (modify-services (operating-system-user-services os)
+         (modify-services services
            (guix-service-type
             config => (guix-configuration
                        (inherit config)
