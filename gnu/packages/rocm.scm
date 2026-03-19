@@ -26,6 +26,7 @@
   #:use-module (guix utils)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix amd-gpu)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
@@ -53,9 +54,9 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages libffi)
   #:use-module (ice-9 match)
-  #:export (%default-amd-gpu-targets
-            current-amd-gpu-targets
-            current-amd-gpu-targets-string))
+  #:re-export (%default-amd-gpu-targets
+               current-amd-gpu-targets
+               current-amd-gpu-targets-string))
 
 ;; The components are tightly integrated and can only be upgraded as a unit. If
 ;; you want to upgrade ROCm, bump this version number and the version number in
@@ -327,18 +328,6 @@ tasks needed for the ROCM software stack.")
 CPUs to execute unmodified HIP code.  It is generic and does not assume a
 particular CPU vendor or architecture.")
       (license license:expat))))
-
-(define %default-amd-gpu-targets
-  '("gfx908" "gfx90a" "gfx942" "gfx1030" "gfx1100" "gfx1101" "gfx1200" "gfx1201"))
-
-(define-syntax-rule (current-amd-gpu-targets)
-  "Return the list of AMD GPU targets for this package, as a list of strings."
-  (or (assoc-ref (package-properties this-package) 'amd-gpu-targets)
-      %default-amd-gpu-targets))
-
-(define-syntax-rule (current-amd-gpu-targets-string)
-  "Return the list of AMD GPU targets for this package, as a string separated by \";\"."
-  (string-join (current-amd-gpu-targets) ";"))
 
 (define-public rocm-bandwidth-test
   (package

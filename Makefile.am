@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2012-2026 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2013 Andreas Enge <andreas@enge.fr>
 # Copyright © 2015, 2017 Alex Kost <alezost@gmail.com>
 # Copyright © 2016, 2018 Mathieu Lirzin <mthl@gnu.org>
@@ -87,6 +87,7 @@ MODULES =					\
   guix/base64.scm				\
   guix/ci.scm					\
   guix/cpio.scm					\
+  guix/amd-gpu.scm				\
   guix/cpu.scm					\
   guix/deprecation.scm				\
   guix/docker.scm	   			\
