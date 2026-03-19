@@ -138,8 +138,8 @@ VERSION, HASH, HOME-PAGE, DESCRIPTION, DEPENDENCIES, and LICENSES."
      (home-page ,home-page)
      (license ,(match licenses
                  (() #f)
-                 ((license) (license->symbol license))
-                 (_ `(list ,@(map license->symbol licenses)))))))
+                 ((license) license)
+                 (_ `(list ,@licenses))))))
 
 (define* (gem->guix-package package-name #:key (repo 'rubygems) version
                             #:allow-other-keys)
@@ -183,15 +183,16 @@ package on RubyGems."
     (substring source-url 31 (string-rindex source-url #\-))))
 
 (define (string->license str)
-  "Convert the string STR into a license object."
-  (match str
-    ("GNU LGPL" license:lgpl2.0)
-    ("GPL" license:gpl3)
-    ((or "BSD" "BSD License") license:bsd-3)
-    ((or "MIT" "MIT license" "Expat license") license:expat)
-    ("Public domain" license:public-domain)
-    ((or "Apache License, Version 2.0" "Apache 2.0") license:asl2.0)
-    (_ #f)))
+  "Convert the string STR into a license symbol."
+  (or (spdx-string->license str)
+      (match str
+        ("GNU LGPL" 'license:lgpl2.0)
+        ("GPL" 'license:gpl3)
+        ((or "BSD" "BSD License") 'license:bsd-3)
+        ((or "MIT" "MIT license" "Expat license") 'license:expat)
+        ("Public domain" 'license:public-domain)
+        ((or "Apache License, Version 2.0" "Apache 2.0") 'license:asl2.0)
+        (_ 'unknown-license!))))
 
 (define gem-package?
   (url-prefix-predicate "https://rubygems.org/downloads/"))

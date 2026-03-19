@@ -125,6 +125,19 @@
   \"licenses\": [\"MIT\"]
 }")
 
+(define test-spdx-json
+  "{
+  \"name\": \"spdx-gem\",
+  \"version\": \"1.0.0\",
+  \"sha\": \"f3676eafca9987cb5fe263df1edf2538bf6dafc712b30e17be3543a9680547a8\",
+  \"info\": \"A gem with SPDX licenses\",
+  \"homepage_uri\": \"https://example.com\",
+  \"dependencies\": {
+    \"runtime\": []
+  },
+  \"licenses\": [\"Ruby\", \"BSD-2-Clause\"]
+}")
+
 (test-begin "gem")
 
 (test-assert "gem->guix-package"
@@ -346,4 +359,85 @@
       (x
        (pk 'fail x #f)))))
 
+(test-assert "gem->guix-package with SPDX license identifiers"
+  (mock ((guix http-client) http-fetch
+         (lambda (url . rest)
+           (match url
+             ("https://rubygems.org/api/v1/gems/spdx-gem.json"
+              (values (open-input-string test-spdx-json)
+                      (string-length test-spdx-json)))
+             (_ (error "Unexpected URL: " url)))))
+    (match (gem->guix-package "spdx-gem")
+      (`(package
+          (name "ruby-spdx-gem")
+          (version "1.0.0")
+          (source (origin
+                    (method url-fetch)
+                    (uri (rubygems-uri "spdx-gem" version))
+                    (sha256
+                     (base32
+                      "1a270mlajhrmpqbhxcqjqypnvgrq4pgixpv3w9gwp1wrrapnwrzk"))))
+          (build-system ruby-build-system)
+          (synopsis "A gem with SPDX licenses")
+          (description "This package provides a gem with SPDX licenses.")
+          (home-page "https://example.com")
+          (license (list license:ruby license:bsd-2)))
+       #t)
+      (x
+       (pk 'fail x #f)))))
+
+(test-assert "gem->guix-package with gibberish license identifiers"
+  (mock ((guix http-client) http-fetch
+         (lambda (url . rest)
+           (match url
+             ("https://rubygems.org/api/v1/gems/gibberish-license-gem.json"
+              (values (open-input-string test-gibberish-licenses-json)
+                      (string-length test-gibberish-licenses-json)))
+             (_ (error "Unexpected URL: " url)))))
+    (match (gem->guix-package "gibberish-license-gem")
+      (`(package
+          (name "ruby-gibberish-license-gem")
+          (version "1.0.0")
+          (source (origin
+                    (method url-fetch)
+                    (uri (rubygems-uri "gibberish-license-gem" version))
+                    (sha256
+                     (base32
+                      "1a270mlajhrmpqbhxcqjqypnvgrq4pgixpv3w9gwp1wrrapnwrzk"))))
+          (build-system ruby-build-system)
+          (synopsis "A gem with gibberish licenses")
+          (description "This package provides a gem with gibberish licenses.")
+          (home-page "https://example.com")
+          (license (list unknown-license! unknown-license!)))
+       #t)
+      (x
+       (pk 'fail x #f)))))
+
+(test-assert "gem->guix-package with mixed valid and gibberish licenses"
+  (mock ((guix http-client) http-fetch
+         (lambda (url . rest)
+           (match url
+             ("https://rubygems.org/api/v1/gems/mixed-license-gem.json"
+              (values (open-input-string test-mixed-licenses-json)
+                      (string-length test-mixed-licenses-json)))
+             (_ (error "Unexpected URL: " url)))))
+    (match (gem->guix-package "mixed-license-gem")
+      (`(package
+          (name "ruby-mixed-license-gem")
+          (version "1.0.0")
+          (source (origin
+                    (method url-fetch)
+                    (uri (rubygems-uri "mixed-license-gem" version))
+                    (sha256
+                     (base32
+                      "1a270mlajhrmpqbhxcqjqypnvgrq4pgixpv3w9gwp1wrrapnwrzk"))))
+          (build-system ruby-build-system)
+          (synopsis "A gem with one valid and one gibberish license")
+          (description "This package provides a gem with one valid \
+and one gibberish license.")
+          (home-page "https://example.com")
+          (license (list license:expat unknown-license!)))
+       #t)
+      (x
+       (pk 'fail x #f)))))
 (test-end "gem")
