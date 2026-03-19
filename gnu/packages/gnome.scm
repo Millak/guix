@@ -5607,17 +5607,10 @@ permission from user.")
     (build-system meson-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "-Dsoup2=false")
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; The tests require a bunch of locales.
-          (add-before 'check 'set-locales
-            (lambda* (#:key inputs #:allow-other-keys)
-              (setenv "GUIX_LOCPATH"
-                      (search-input-directory inputs "lib/locale")))))))
+      #:configure-flags #~(list "-Dsoup2=false")))
     (native-inputs
      (list `(,glib "bin")               ;for glib-mkenums
-           (libc-utf8-locales-for-target (%current-system))  ;for tests
+           (libc-locales-for-target (%current-system))  ;for tests
            gettext-minimal
            gobject-introspection
            gtk-doc/stable
