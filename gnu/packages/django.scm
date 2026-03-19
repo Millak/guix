@@ -13,6 +13,7 @@
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2025 jgart <jgart@dismail.de>
+;;; Copyright © 2026 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1054,6 +1055,39 @@ applications with a @var{SEARCH_URL} variable.")
       "This application provides simple, extensible contact-form functionality
 for Django sites.")
     (license license:bsd-3)))
+
+(define-public python-django-mailer
+  (package
+    (name "python-django-mailer")
+    ;; Include switching from lockfile to filelock and other fixes.
+    (properties '((commit . "e350fb04eec052a7ad27aee310e6d4073012ca2f")
+                  (revision . "0")))
+    (version (git-version "2.3.2"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pinax/django-mailer")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19d8asqai0sxn0y0bzqz03hgm8rzl95rmp787y3ps2lsm4c1an3y"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-django
+           python-setuptools))
+    (propagated-inputs
+     (list python-django
+           python-filelock-next))
+    (home-page "https://github.com/pinax/django-mailer")
+    (synopsis "Mail queuing and management for Django")
+    (description
+     "This is a reusable Django application for queuing the sending of email.
+It works by storing email in the database for later sending.")
+    (license license:expat)))
 
 (define-public python-django-contrib-comments
   (package
