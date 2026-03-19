@@ -249,6 +249,7 @@ commit hash and its date rather than a proper release tag."
                                                   system #:graft? #f)))
     (gexp->derivation name builder
                       #:system system
+                      #:graft? #f
                       #:substitutable? substitutable?
                       #:guile-for-build guile)))
 
