@@ -18549,7 +18549,7 @@ an alternative fork of @url{https://github.com/mattbaird/jsonpatch}.")
 (define-public go-google-golang-org-api
   (package
     (name "go-google-golang-org-api")
-    (version "0.247.0")
+    (version "0.272.0")
     (source
      (origin
        (method git-fetch)
@@ -18558,7 +18558,7 @@ an alternative fork of @url{https://github.com/mattbaird/jsonpatch}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19rj4m4qfc6lfik6p562a2nyf9mhmz0nfargpnvkcvdzi0rh350x"))
+        (base32 "1agvmw1sj2xy2p0ig2xdivn8i5pjnw93d2kq4hix7s5ysiswnpw4"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -18576,25 +18576,16 @@ an alternative fork of @url{https://github.com/mattbaird/jsonpatch}.")
                        (list "TestLogDirectPathMisconfigAttrempDirectPathNotSet"
                              "TestLogDirectPathMisconfigNotOnGCE"
                              "TestNewClient"
-                             "TestNewTokenSource"
-                             "TestNewTokenSource_WithCredentialJSON")
+                             "TestNewTokenSource")
                        "|"))
-      #:test-subdirs
-      ;; XXX: Remove when all dependencies are packaged.
-      #~(list "."
-              "google-api-go-generator/..."
-              "googleapi/..."
-              "impersonate/..."
-              "internal/..."
-              "iterator/..."
-              "option/..."
-              "support/bundler/..."
-              "transport"
-              "transport/grpc"
-              "transport/http"
-              "idtoken/..."
-              "transport/grpc/..."
-              "transport/http/...")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-integration-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              ;; Tests require network access and credential to reach external
+              ;; API.
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "integration-tests")))))))
     (propagated-inputs
      (list go-cloud-google-com-go-auth
            go-cloud-google-com-go-auth-oauth2adapt
@@ -18610,7 +18601,7 @@ an alternative fork of @url{https://github.com/mattbaird/jsonpatch}.")
            go-golang-org-x-oauth2
            go-golang-org-x-sync
            go-golang-org-x-time
-           ;; go-google-golang-org-genproto-googleapis-bytestream
+           go-google-golang-org-genproto-googleapis-bytestream
            go-google-golang-org-genproto-googleapis-rpc
            go-google-golang-org-grpc
            go-google-golang-org-protobuf))
