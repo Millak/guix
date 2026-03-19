@@ -7117,15 +7117,18 @@ and the use of a modern programming language, techniques, and libraries
 (define-public python-pixell
   (package
     (name "python-pixell")
-    (version "0.31.7")
+    (version "0.31.8")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pixell" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/simonsobs/pixell")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0i09gv19mpw0mr3l9yyvmq7x2ln57fmc87qz863d9blw3g1rj5za"))))
+        (base32 "0v0q4i1s8d0z5iigw60v8gvsaqs9xmf2l7bpx0bvg8xysindzwyg"))))
     (build-system pyproject-build-system)
-    ;; tests: 41 passed, 2 warnings
+    ;; tests: 42 passed, 1 warning
     (native-inputs
      (list gfortran
            perl ; fortran/Makefile
