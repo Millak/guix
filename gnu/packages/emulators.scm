@@ -29,6 +29,7 @@
 ;;; Copyright © 2026 Nikita Alkhovik <forgoty13@gmail.com>
 ;;; Copyright © 2026 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2026 Spencer King <spencer.king@wustl.edu>
+;;; Copyright © 2021–2023, 2026 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4714,6 +4715,245 @@ emulator framework based on QEMU.")
        (uri (pypi-uri name version))
        (sha256
         (base32 "0mlfs8qfi0clyncfkbxp6in0cpl747510i6bqymwid43xcirbikz"))))))
+
+(define-public (aemu-postoffice-source commit sha256-hash)
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+           (url "https://github.com/Kethen/aemu_postoffice")
+           (commit commit)))
+    (file-name "aemu-postoffice-source")
+    (sha256 sha256-hash)))
+
+(define-public (libchdr-source commit sha256-hash)
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+           (url "https://github.com/rtissera/libchdr")
+           (commit commit)))
+    (file-name "libchdr-source")
+    (sha256 sha256-hash)))
+
+(define-public (rcheevos-source commit sha256-hash)
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+           (url "https://github.com/RetroAchievements/rcheevos/")
+           (commit commit)))
+    (file-name "rcheevos-source")
+    (sha256 sha256-hash)))
+
+(define-public ppsspp
+  (package
+    (name "ppsspp")
+    (version "1.20.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hrydgard/ppsspp")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "186d2jc6h6xmiqnrifq4xcw0g3fv1slcnvs5mzzxcnfk7ljr6r6p"))
+       (file-name (git-file-name name version))
+       (patches
+        (search-patches "ppsspp-disable-upgrade-and-gold.patch"))
+       (modules '((guix build utils)))
+       (snippet
+        `(begin
+           ;; The following is quite a heavy-handed way of unbundling PPSSPP.
+           ;; There are still a number of external sources, that we don't
+           ;; remove here.  Some may be packaged, others are not.
+           ;; First, we patch existing sources to include the right headers.
+           (substitute* (append (find-files "Common" ".*\\.(h|cpp)")
+                                (find-files "Core" ".*\\.(h|cpp)")
+                                (find-files "GPU" ".*\\.(h|cpp)")
+                                (find-files "SDL" ".*\\.(h|cpp)")
+                                (find-files "UI" ".*\\.(h|cpp)"))
+             ;; These headers are all hard-coded in the original source.
+             (("ext/cityhash/") "")
+             (("ext/cpu_features/include/") "cpu_features/")
+             (("ext/glslang/glslang/") "glslang/")
+             (("ext/glslang/") "glslang/")
+             (("ext/miniupnp/") "")
+             (("ext/nanosvg/src") "nanosvg")
+             (("ext/rapidjson/include/") "")
+             (("ext/SPIRV-Cross/") "spirv_cross/")
+             (("ext/vulkan/") "vulkan/")
+             (("ext/xxhash.h") "xxhash.h")
+             ;; These definitions do not actually exist in the Vulkan headers,
+             ;; but PPSSPP defines them in ext/vulkan.
+             (("VK_FORMAT_BEGIN_RANGE") "VK_FORMAT_UNDEFINED")
+             (("VK_FORMAT_END_RANGE") "VK_FORMAT_ASTC_12x12_SRGB_BLOCK"))
+           ;; Next, we patch CMakeLists.
+           (substitute* "CMakeLists.txt"
+             ;; Drop unnecessary includes and targets.
+             (("include_directories\\(ext/glslang\\)") "")
+             (("target_include_directories\\(.*ext/xxhash\\)") "")
+             (("target_include_directories\\(.*ext/cityhash\\)") "")
+             (("set_target_properties\\(cityhash .*\\)") "")
+             (("target_compile_options\\(cityhash .*\\)") "")
+             ;; Fix linking to GLEW.
+             (("TARGET Ext::GLEW") "true")
+             (("target_link_libraries\\((Common|native) Ext::GLEW\\)" all lib)
+              (string-append "find_package(GLEW)\n"
+                             "target_link_libraries(" lib " GLEW::GLEW)"))
+             (("Ext::Snappy") "snappy")
+             (("OGLCompiler") "")
+             (("OSDependent") "")
+             ;; Don't search for cityhash/xxhash, we already have them.
+             (("add_library\\((city|xx)hash STATIC") "if()\nendif(")
+             (("ext/xxhash\\.[ch]") "")
+             (("ext/cityhash/.*\\.(cpp|h)") "")
+             ;; Drop remaining references to GOLD.
+             (("UI/IAPScreen\\.(cpp|h)") "")
+             ;; Link all of spirv-cross.
+             (("spirv-cross-glsl" all)
+              (string-append all
+                             " spirv-cross-core spirv-cross-cpp"
+                             " spirv-cross-reflect spirv-cross-util")))
+           (substitute* "ext/CMakeLists.txt"
+             (("add_subdirectory\\(cmake.*") "")
+             (("add_subdirectory\\(freetype.*") "")
+             (("add_subdirectory\\(glew.*") "")
+             (("add_subdirectory\\(glslang.*") "")
+             (("add_subdirectory\\(snappy.*") "")
+             (("add_subdirectory\\(SPIRV-Cross-build.*") "")
+             (("add_subdirectory\\(zstd.*") ""))
+           ;; Finally, we can delete the bundled sources…
+           (for-each delete-file-recursively
+                     '("ext/cmake"
+                       "ext/glew"
+                       "ext/glslang" "ext/glslang-build"
+                       "ext/miniupnp" "ext/miniupnp-build"
+                       "ext/native"
+                       "ext/snappy"
+                       "ext/SPIRV-Cross" "ext/SPIRV-Cross-build"
+                       "ext/vulkan"
+                       "ext/xxhash.c"
+                       "ext/xxhash.h"
+                       "ext/zlib"
+                       "ext/zstd"))
+           ;; … as well as the remaining files referencing GOLD.
+           (for-each delete-file
+                     '("UI/IAPScreen.cpp"
+                       "UI/IAPScreen.h"
+                       "ios/IAPManager.mm"
+                       "ios/IAPManager.h"))
+           ;; Since we are not including git as an input, PPSSPP is confused
+           ;; about its version.  Let's fix that here.
+           (substitute* "git-version.cmake"
+             (("unknown") ,version))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:out-of-source? #f
+      #:configure-flags #~(list "-DARMIPS_USE_STD_FILESYSTEM=ON" ; from armips
+                                "-DUSE_DISCORD=OFF"
+                                "-DUSE_SYSTEM_FFMPEG=ON"
+                                "-DUSE_SYSTEM_LIBZIP=ON"
+                                "-DUSE_SYSTEM_MINIUPNPC=ON"
+                                "-DUSE_SYSTEM_ZSTD=ON"
+                                ;; for testing
+                                "-DUNITTEST=ON" "-DHEADLESS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'set-paths 'add-sdl-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "CPLUS_INCLUDE_PATH"
+                      (string-append
+                       (dirname (search-input-file inputs
+                                                   "include/SDL2/SDL.h"))
+                       ":"
+                       (getenv "CPLUS_INCLUDE_PATH")))))
+          (add-after 'unpack 'add-external-sources
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; TODO: unbundle armips.
+              (copy-recursively #$(package-source armips) "ext/armips")
+              ;; XXX: Lua 5.4 is missing lapi.h, so we have to bundle it 😫
+              (with-directory-excursion "ext/lua"
+                (invoke "tar" "xvf" #$(package-source lua-5.4)
+                        "--strip-components=2"))
+              (copy-recursively
+               #$(this-package-native-input "aemu-postoffice-source")
+               "ext/aemu_postoffice")
+              ;; No public release, leave bundled for now.
+              (copy-recursively
+               #$(this-package-native-input "libchdr-source")
+               "ext/libchdr")
+              ;; TODO: Unbundle rcheevos.
+              (copy-recursively
+               #$(this-package-native-input "rcheevos-source")
+               "ext/rcheevos")))
+          (add-after 'unpack 'fix-shader
+            (lambda _
+              (substitute* (find-files "Common/GPU/" "\\.cpp$")
+                (("#include \"glslang/SPIRV/GlslangToSpv\\.h\"" all)
+                 (string-append "#include <glslang/Public/ShaderLang.h>\n"
+                                all)))))
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bin/ppsspp (string-append out "/bin/ppsspp"))
+                     (share (string-append out "/share/ppsspp")))
+                (copy-recursively "icons/hicolor"
+                                  (string-append out "/share/icons/hicolor"))
+                (install-file "PPSSPPSDL" share)
+                (copy-recursively "assets" (string-append share "/assets"))
+
+                (make-desktop-entry-file
+                 (string-append out "/share/applications/ppsspp.desktop")
+                 #:name "PPSSPP"
+                 #:exec (string-append share "/PPSSPPSDL")
+                 #:icon "ppsspp")
+                (mkdir-p (string-append out "/bin"))
+                (with-output-to-file bin/ppsspp
+                  (lambda ()
+                    (format #t "#!~a~%exec ~a/PPSSPPSDL \"$@\""
+                            (search-input-file inputs "/bin/bash") share)))
+                (chmod bin/ppsspp #o755)))))))
+    (native-inputs
+     (list pkg-config python
+           (package-source lua-5.4)
+           (aemu-postoffice-source
+            "2026-03-16"
+            (base32 "072w3jf87s8b00kp8nvscrggn1wq7nv37xfm527h2rg2sm57irp3"))
+           (libchdr-source
+            "8bba7745d758627258b315997a860039244cedaf"
+            (base32 "05syp2mk6m9mdvg7qq0wd612apps615x71kv6im9pxd2f76k1wy3"))
+           (rcheevos-source
+            "v12.3.0"
+            (base32 "09h9n7znl2ajkicshv4scawjb9zz3v9aka8986j9sg5y02a4h3wf"))))
+    (inputs (list bash
+                  cityhash
+                  cpu-features
+                  ffmpeg
+                  glew
+                  glslang
+                  libpng
+                  libzip
+                  ;; lua-5.4
+                  mesa
+                  miniupnpc
+                  nanosvg
+                  openxr
+                  rapidjson
+                  sdl2
+                  sdl2-ttf
+                  snappy
+                  spirv-cross
+                  vulkan-headers
+                  vulkan-loader
+                  wayland
+                  xxhash
+                  zlib
+                  `(,zstd "lib")))
+    (home-page "https://www.ppsspp.org/")
+    (synopsis "PSP emulator")
+    (description
+     "PPSSPP is a ``high-level'' emulator simulating the PSP operating
+system.")
+    (license license:gpl2+)))
 
 (define-public exomizer
   (package

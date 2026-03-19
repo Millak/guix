@@ -1,0 +1,984 @@
+From 82e98cf24808754578ab26adef5c33acc949f75e Mon Sep 17 00:00:00 2001
+From: Liliana Marie Prikler <liliana.prikler@gmail.com>
+Date: Sat, 5 Jun 2021 22:47:00 -0400
+Subject: [PATCH] ppsspp: Remove upgrade code and gold support.
+
+Original patch from Liliana Marie Prikler.
+Rebased on master (commit 69fa20744958aef8da9ca052ba7675fdc1636e46) by
+Maxim Cournoyer.
+Revised again by Liliana Marie Prikler for versions 1.12.3 and 1.14.4.
+Revised again again by Liliana Marie Prikler for version 1.20.3.
+---
+ CMakeLists.txt             |  78 +++++------------------
+ Common/System/Request.cpp  |   2 -
+ Common/System/System.h     |   1 -
+ Core/Config.cpp            | 123 +------------------------------------
+ Core/Config.h              |  11 ----
+ Core/MIPS/IR/IRJit.h       |   5 --
+ Qt/QtMain.cpp              |   6 --
+ Qt/mainwindow.cpp          |   8 +--
+ Qt/mainwindow.h            |   3 +-
+ SDL/SDLMain.cpp            |  11 +---
+ UI/Background.cpp          |   2 +-
+ UI/GameSettingsScreen.cpp  |   7 ---
+ UI/MainScreen.cpp          |  91 +--------------------------
+ UI/MainScreen.h            |   3 -
+ UI/MemStickScreen.cpp      |   9 +--
+ UI/MiscScreens.cpp         |  36 +----------
+ UI/ReportScreen.cpp        |  11 +---
+ UI/UIAtlas.cpp             |   1 -
+ UWP/PPSSPP_UWPMain.cpp     |   8 +--
+ Windows/MainWindowMenu.cpp |   9 ---
+ Windows/main.cpp           |  10 +--
+ Windows/resource.h         |   1 -
+ ios/main.mm                |  33 ++++------
+ 23 files changed, 39 insertions(+), 430 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 070f49b..f206ced 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -137,27 +137,6 @@ if(OPENXR AND NOT ARMV7_DEVICE)
+ 	message("OpenXR enabled")
+ endif()
+ 
+-if(GOLD)
+-	add_compile_definitions(GOLD)
+-	message("Gold Build")
+-	if(IOS_APP_STORE)
+-		message("WARNING: Gold build for iOS is deprecated")
+-	endif()
+-else()
+-	message("Non-gold Build")
+-endif()
+-
+-if(USE_IAP)
+-	if(GOLD)
+-		message(FATAL_ERROR "USE_IAP and GOLD can't be enabled together")
+-	endif()
+-	if(NOT IOS_APP_STORE)
+-		message(FATAL_ERROR "USE_IAP can only be enabled in app store builds")
+-	endif()
+-	message("USE_IAP for iOS enabled")
+-	add_compile_definitions(USE_IAP)
+-endif()
+-
+ if(IOS_APP_STORE)
+ 	add_compile_definitions(PPSSPP_PLATFORM_IOS_APP_STORE)
+ 	add_compile_definitions(GLES_SILENCE_DEPRECATION)
+@@ -211,8 +190,6 @@ option(USE_ASAN "Use address sanitizer" OFF)
+ option(USE_UBSAN "Use undefined behaviour sanitizer" OFF)
+ option(USE_CCACHE "Use ccache if detected" ON)
+ option(USE_NO_MMAP "Disable mmap usage" OFF)
+-option(USE_IAP "IAP enabled" OFF)
+-option(GOLD "Gold build" OFF)
+ 
+ if(USE_CCACHE)
+ 	include(ccache)
+@@ -1462,11 +1439,7 @@ elseif(WIN32)
+ 	set(TargetBin PPSSPPWindows)
+ elseif(LIBRETRO)
+ else()
+-	if(GOLD)
+-		set(TargetBin PPSSPPGold)
+-	else()
+-		set(TargetBin PPSSPPSDL)
+-	endif()
++        set(TargetBin PPSSPPSDL)
+ 	# Require SDL
+ 	add_compile_definitions(SDL)
+ 	list(APPEND nativeExtra
+@@ -2972,17 +2945,10 @@ endif()
+ if(TargetBin)
+ 	if(APPLE)
+ 		if(NOT IOS)
+-			if(GOLD)
+-				set(ICON_PATH_ABS ${CMAKE_CURRENT_SOURCE_DIR}/icons/ppsspp_gold.icns)
+-				set(MACOSX_BUNDLE_ICON_FILE ppsspp_gold.icns)
+-				set(MACOSX_BUNDLE_BUNDLE_NAME "PPSSPP Gold")
+-				set(MACOSX_BUNDLE_GUI_IDENTIFIER org.ppsspp.ppssppgold)
+-			else()
+-				set(ICON_PATH_ABS ${CMAKE_CURRENT_SOURCE_DIR}/icons/ppsspp.icns)
+-				set(MACOSX_BUNDLE_ICON_FILE ppsspp.icns)
+-				set(MACOSX_BUNDLE_BUNDLE_NAME "PPSSPP")
+-				set(MACOSX_BUNDLE_GUI_IDENTIFIER org.ppsspp.ppsspp)
+-			endif()
++			set(ICON_PATH_ABS ${CMAKE_CURRENT_SOURCE_DIR}/icons/ppsspp.icns)
++			set(MACOSX_BUNDLE_ICON_FILE ppsspp.icns)
++			set(MACOSX_BUNDLE_BUNDLE_NAME "PPSSPP")
++			set(MACOSX_BUNDLE_GUI_IDENTIFIER org.ppsspp.ppsspp)
+ 			set_source_files_properties(${ICON_PATH_ABS} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+ 		endif()
+ 
+@@ -3081,25 +3047,15 @@ if(IOS AND NOT LIBRETRO)
+ 	set(PRODUCT_NAME "PPSSPP")
+ 	set(BUNDLE_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/ios/PPSSPP-Info.plist")
+ 	set(BUNDLE_ENTITLEMENTS "${CMAKE_CURRENT_SOURCE_DIR}/ios/App.entitlements")
+-	if(GOLD)
+-		if(IOS_APP_STORE)
+-			set(BUNDLE_IDENTIFIER "org.ppsspp.ppsspp-gold")
+-		else()
+-			set(BUNDLE_IDENTIFIER "org.ppsspp.ppssppgold")
+-		endif()
+-		set(ICON_NAME "PPSSPPGold")
+-		set(DISPLAY_NAME "PPSSPP Gold")
++	if(IOS_APP_STORE)
++		set(BUNDLE_IDENTIFIER "org.ppsspp.ppsspp-free")
+ 	else()
+-		if(IOS_APP_STORE)
+-			set(BUNDLE_IDENTIFIER "org.ppsspp.ppsspp-free")
+-		else()
+-			set(BUNDLE_IDENTIFIER "org.ppsspp.ppsspp")
+-		endif()
+-		set(ICON_NAME "AppIcon")
+-		set(DISPLAY_NAME "PPSSPP")
++		set(BUNDLE_IDENTIFIER "org.ppsspp.ppsspp")
+ 	endif()
++	set(ICON_NAME "AppIcon")
++	set(DISPLAY_NAME "PPSSPP")
+ 	if(IOS_APP_STORE)
+-		message(STATUS "DevTeam: ${DEVELOPMENT_TEAM_ID} Icon: ${ICON_NAME} Target: ${TargetBin} Gold: ${GOLD} IAP: ${USE_IAP}")
++		message(STATUS "DevTeam: ${DEVELOPMENT_TEAM_ID} Icon: ${ICON_NAME} Target: ${TargetBin}")
+ 		message(STATUS "CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
+ 
+ 		# This is for injecting the version into the plist, and also copying resources.
+@@ -3191,15 +3147,9 @@ if(IOS AND NOT LIBRETRO)
+ endif()
+ 
+ if(MACOSX AND NOT IOS)
+-	if(GOLD)
+-		set_target_properties(${TargetBin} PROPERTIES
+-			MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/macOS/InfoGold.plist"
+-		)
+-	else()
+-		set_target_properties(${TargetBin} PROPERTIES
+-			MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/macOS/Info.plist"
+-		)
+-	endif()
++	set_target_properties(${TargetBin} PROPERTIES
++		MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/macOS/Info.plist"
++	)
+ endif()
+ 
+ if(UNIX AND NOT ANDROID AND NOT APPLE)
+diff --git a/Common/System/Request.cpp b/Common/System/Request.cpp
+index 8332529..00035fd 100644
+--- a/Common/System/Request.cpp
++++ b/Common/System/Request.cpp
+@@ -49,8 +49,6 @@ const char *RequestTypeAsString(SystemRequestType type) {
+ 	case SystemRequestType::MICROPHONE_COMMAND: return "MICROPHONE_COMMAND";
+ 	case SystemRequestType::RUN_CALLBACK_IN_WNDPROC: return "RUN_CALLBACK_IN_WNDPROC";
+ 	case SystemRequestType::MOVE_TO_TRASH: return "MOVE_TO_TRASH";
+-	case SystemRequestType::IAP_RESTORE_PURCHASES: return "IAP_RESTORE_PURCHASES";
+-	case SystemRequestType::IAP_MAKE_PURCHASE: return "IAP_MAKE_PURCHASE";
+ 	default: return "N/A";
+ 	}
+ }
+diff --git a/Common/System/System.h b/Common/System/System.h
+index e58a5cc..3c227be 100644
+--- a/Common/System/System.h
++++ b/Common/System/System.h
+@@ -194,7 +194,6 @@ enum SystemProperty {
+ 	SYSPROP_DISPLAY_HAS_CAMERA_CUTOUT,
+ 
+ 	SYSPROP_DEVICE_TYPE,
+-	SYSPROP_APP_GOLD,  // To avoid having #ifdef GOLD other than in main.cpp and similar.
+ 
+ 	// Exposed on Android. Choosing the optimal sample rate for audio
+ 	// will result in lower latencies. Buffer size is automatically matched
+diff --git a/Core/Config.cpp b/Core/Config.cpp
+index 4380e80..afd177a 100644
+--- a/Core/Config.cpp
++++ b/Core/Config.cpp
+@@ -237,7 +237,6 @@ static const ConfigSetting generalSettings[] = {
+ 	ConfigSetting("CurrentDirectory", SETTING(g_Config, currentDirectory), "", CfgFlag::DEFAULT),
+ 	ConfigSetting("ShowDebuggerOnLoad", SETTING(g_Config, bShowDebuggerOnLoad), false, CfgFlag::DEFAULT),
+ 	ConfigSetting("ShowImDebugger", SETTING(g_Config, bShowImDebugger), false, CfgFlag::DONT_SAVE),
+-	ConfigSetting("CheckForNewVersion", SETTING(g_Config, bCheckForNewVersion), true, CfgFlag::DEFAULT),
+ 	ConfigSetting("Language", SETTING(g_Config, sLanguageIni), &DefaultLangRegion, CfgFlag::DEFAULT),
+ 	ConfigSetting("ForceLagSync2", SETTING(g_Config, bForceLagSync), false, CfgFlag::PER_GAME),
+ 	ConfigSetting("DiscordRichPresence", SETTING(g_Config, bDiscordRichPresence), false, CfgFlag::DEFAULT),
+@@ -1112,12 +1111,6 @@ static const ConfigSetting jitSettings[] = {
+ 	ConfigSetting("DiscardRegsOnJRRA", SETTING(g_Config, bDiscardRegsOnJRRA), false, CfgFlag::DONT_SAVE | CfgFlag::REPORT),
+ };
+ 
+-static const ConfigSetting upgradeSettings[] = {
+-	ConfigSetting("UpgradeMessage", SETTING(g_Config, sUpgradeMessage), "", CfgFlag::DEFAULT),
+-	ConfigSetting("UpgradeVersion", SETTING(g_Config, sUpgradeVersion), "", CfgFlag::DEFAULT),
+-	ConfigSetting("DismissedVersion", SETTING(g_Config, sDismissedVersion), "", CfgFlag::DEFAULT),
+-};
+-
+ static const ConfigSetting themeSettings[] = {
+ 	ConfigSetting("ThemeName", SETTING(g_Config, sThemeName), "Default", CfgFlag::DEFAULT),
+ };
+@@ -1156,7 +1149,6 @@ static const ConfigSectionMeta g_sectionMeta[] = {
+ 	{ &g_Config, themeSettings, ARRAY_SIZE(themeSettings), "Theme" },
+ 	{ &g_Config, vrSettings, ARRAY_SIZE(vrSettings), "VR" },
+ 	{ &g_Config, achievementSettings, ARRAY_SIZE(achievementSettings), "Achievements" },
+-	{ &g_Config, upgradeSettings, ARRAY_SIZE(upgradeSettings), "Upgrade" },
+ 	{ &g_Config.displayLayoutLandscape, displayLayoutSettings, ARRAY_SIZE(displayLayoutSettings), "DisplayLayout.Landscape", "Graphics" },  // We read the old settings from [Graphics], since most people played in landscape before.
+ 	{ &g_Config.displayLayoutPortrait, displayLayoutSettings, ARRAY_SIZE(displayLayoutSettings), "DisplayLayout.Portrait"},  // These we don't want to read from the old settings, since for most people, those settings will be bad.
+ 	{ &g_Config.touchControlsLandscape, touchControlSettings, ARRAY_SIZE(touchControlSettings), "TouchControls.Landscape", "Control" },  // We read the old settings from [Control], since most people played in landscape before.
+@@ -1400,8 +1392,6 @@ void Config::Load(const char *iniFileName, const char *controllerIniFilename) {
+ 		}
+ 	}
+ 
+-	CheckForUpdate();
+-
+ 	INFO_LOG(Log::Loader, "Loading controller config: %s", controllerIniFilename_.c_str());
+ 	bSaveSettings = true;
+ 
+@@ -1623,117 +1613,6 @@ void Config::NotifyUpdatedCpuCore() {
+ 	}
+ }
+ 
+-bool Config::SupportsUpgradeCheck() const {
+-#if PPSSPP_PLATFORM(WINDOWS) || PPSSPP_PLATFORM(LINUX) || PPSSPP_PLATFORM(MACOS) || PPSSPP_PLATFORM(ANDROID) || PPSSPP_PLATFORM(IOS_APP_STORE)
+-	return true;
+-#else
+-	return false;
+-#endif
+-}
+-
+-#if 0
+-// Use for debugging the version check without messing with the server
+-#define NEW_VERSION_OVERRIDE "v1.100.3-gaaaaaaaaa"
+-constexpr int UPDATE_CHECK_FREQ = 1;
+-#else
+-constexpr int UPDATE_CHECK_FREQ = 5;
+-#endif
+-
+-void Config::CheckForUpdate() {
+-	if (!bCheckForNewVersion || !SupportsUpgradeCheck()) {
+-		return;
+-	}
+-
+-	const char *gitVer = PPSSPP_GIT_VERSION;
+-	Version installed(gitVer);
+-	Version upgrade(sUpgradeVersion);
+-	const bool versionsValid = installed.IsValid() && upgrade.IsValid();
+-
+-	// Do this regardless of iRunCount to prevent a silly bug where one might use an older
+-	// build of PPSSPP, receive an upgrade notice, then start a newer version, and still receive the upgrade notice,
+-	// even if said newer version is >= the upgrade found online.
+-	if ((sDismissedVersion == sUpgradeVersion) || (versionsValid && (installed >= upgrade))) {
+-		sUpgradeMessage.clear();
+-	}
+-
+-	// Check for new version on every 10 runs.
+-	// Sometimes the download may not be finished when the main screen shows (if the user dismisses the
+-	// splash screen quickly), but then we'll just show the notification next time instead, we store the
+-	// upgrade number in the ini.
+-
+-	const bool checkThisTime = iRunCount % UPDATE_CHECK_FREQ == 0;
+-	if (checkThisTime) {
+-		const char *versionUrl = "http://www.ppsspp.org/version.json";
+-		const char *acceptMime = "application/json, text/*; q=0.9, */*; q=0.8";
+-		g_DownloadManager.StartDownload(versionUrl, Path(), http::RequestFlags::Default, acceptMime, "version", [this](http::Request &download) { VersionJsonDownloadCompleted(download); });
+-	}
+-}
+-
+-void Config::VersionJsonDownloadCompleted(http::Request &download) {
+-	if (download.ResultCode() != 200) {
+-		ERROR_LOG(Log::Loader, "Failed to download %s: %d", download.url().c_str(), download.ResultCode());
+-		return;
+-	}
+-	std::string data;
+-	download.buffer().TakeAll(&data);
+-	if (data.empty()) {
+-		ERROR_LOG(Log::Loader, "Version check: Empty data from server!");
+-		return;
+-	}
+-
+-	json::JsonReader reader(data.c_str(), data.size());
+-	const json::JsonGet root = reader.root();
+-	if (!root) {
+-		ERROR_LOG(Log::Loader, "Failed to parse json");
+-		return;
+-	}
+-
+-	std::string version;
+-	root.getString("version", &version);
+-
+-	#ifdef NEW_VERSION_OVERRIDE
+-	version = NEW_VERSION_OVERRIDE;
+-	#endif
+-
+-	const char *gitVer = PPSSPP_GIT_VERSION;
+-	Version installed(gitVer);
+-	Version upgrade(version);
+-	Version dismissed(g_Config.sDismissedVersion);
+-
+-	if (!installed.IsValid()) {
+-		ERROR_LOG(Log::Loader, "Version check: Local version string invalid. Build problems? %s", PPSSPP_GIT_VERSION);
+-		return;
+-	}
+-	if (!upgrade.IsValid()) {
+-		ERROR_LOG(Log::Loader, "Version check: Invalid server version: %s", version.c_str());
+-		return;
+-	}
+-
+-	if (installed >= upgrade) {
+-		INFO_LOG(Log::Loader, "Version check: Already up to date, erasing any upgrade message");
+-		g_Config.sUpgradeMessage.clear();
+-		g_Config.sUpgradeVersion = upgrade.ToString();
+-		g_Config.sDismissedVersion.clear();
+-		return;
+-	}
+-
+-	if (installed < upgrade && dismissed != upgrade) {
+-		g_Config.sUpgradeMessage = "New version of PPSSPP available!";
+-		g_Config.sUpgradeVersion = upgrade.ToString();
+-		g_Config.sDismissedVersion.clear();
+-	}
+-}
+-
+-bool Config::ShowUpgradeReminder() {
+-	return !sUpgradeMessage.empty() && !sUpgradeVersion.empty() && sUpgradeVersion != sDismissedVersion;
+-}
+-
+-void Config::DismissUpgrade() {
+-	INFO_LOG(Log::Loader, "Upgrade dismissed for version %s", sUpgradeVersion.c_str());
+-	sDismissedVersion = sUpgradeVersion;
+-	sUpgradeMessage.clear();
+-}
+-
+ void Config::SetSearchPath(const Path &searchPath) {
+ 	searchPath_ = searchPath;
+ }
+diff --git a/Core/Config.h b/Core/Config.h
+index 3cb451c..b7f6d10 100644
+--- a/Core/Config.h
++++ b/Core/Config.h
+@@ -679,11 +679,6 @@ struct Config : public ConfigBlock {
+ 
+ 	Path mountRoot;  // Actually, mount as host0. keeping consistent with headless args.
+ 
+-	// Data for upgrade prompt
+-	std::string sUpgradeMessage;  // The actual message from the server is currently not used, need a translation mechanism. So this just acts as a flag.
+-	std::string sUpgradeVersion;
+-	std::string sDismissedVersion;
+-
+ 	void Load(const char *iniFileName = nullptr, const char *controllerIniFilename = nullptr);
+ 	bool Save(const char *saveReason);
+ 	void Reload();
+@@ -706,12 +701,6 @@ struct Config : public ConfigBlock {
+ 
+ 	void UpdateIniLocation(const char *iniFileName = nullptr, const char *controllerIniFilename = nullptr);
+ 
+-	bool SupportsUpgradeCheck() const;
+-	void CheckForUpdate();
+-	void VersionJsonDownloadCompleted(http::Request &download);
+-	void DismissUpgrade();
+-	bool ShowUpgradeReminder();
+-
+ 	void GetReportingInfo(UrlEncoder &data) const;
+ 
+ 	int NextValidBackend();
+diff --git a/Core/MIPS/IR/IRJit.h b/Core/MIPS/IR/IRJit.h
+index 4667043..e3af580 100644
+--- a/Core/MIPS/IR/IRJit.h
++++ b/Core/MIPS/IR/IRJit.h
+@@ -38,11 +38,6 @@
+ //
+ // #define IR_PROFILING
+ 
+-// Try to catch obvious misses of be above rule.
+-#if defined(IR_PROFILING) && defined(GOLD)
+-#error
+-#endif
+-
+ namespace MIPSComp {
+ 
+ // TODO : Use arena allocators. For now let's just malloc.
+diff --git a/Qt/QtMain.cpp b/Qt/QtMain.cpp
+index c7d43a3..4e0786d 100644
+--- a/Qt/QtMain.cpp
++++ b/Qt/QtMain.cpp
+@@ -262,12 +262,6 @@ bool System_GetPropertyBool(SystemProperty prop) {
+ 		return true;
+ 	case SYSPROP_SUPPORTS_OPEN_FILE_IN_EDITOR:
+ 		return true;  // FileUtil.cpp: OpenFileInEditor
+-	case SYSPROP_APP_GOLD:
+-#ifdef GOLD
+-		return true;
+-#else
+-		return false;
+-#endif
+ 	case SYSPROP_CAN_JIT:
+ 		return true;
+ 	case SYSPROP_HAS_KEYBOARD:
+diff --git a/Qt/mainwindow.cpp b/Qt/mainwindow.cpp
+index cbd9fda..670a1ca 100644
+--- a/Qt/mainwindow.cpp
++++ b/Qt/mainwindow.cpp
+@@ -112,7 +112,7 @@ void MainWindow::updateMenus()
+ 		int width = (internalPortrait ? 272 : 480) * action->data().toInt();
+ 		int height = (internalPortrait ? 480 : 272) * action->data().toInt();
+ 		if (g_Config.iWindowWidth == width && g_Config.iWindowHeight == height) {
+-			action->setChecked(true);	
++			action->setChecked(true);
+ 			break;
+ 		}
+ 	}
+@@ -423,11 +423,6 @@ void MainWindow::forumAct()
+ 	QDesktopServices::openUrl(QUrl("https://forums.ppsspp.org/"));
+ }
+ 
+-void MainWindow::goldAct()
+-{
+-	QDesktopServices::openUrl(QUrl("https://www.ppsspp.org/buygold"));
+-}
+-
+ void MainWindow::gitAct()
+ {
+ 	QDesktopServices::openUrl(QUrl("https://github.com/hrydgard/ppsspp/"));
+@@ -680,7 +675,6 @@ void MainWindow::createMenus()
+ 	MenuTree* helpMenu = new MenuTree(this, menuBar(),    QT_TR_NOOP("&Help"));
+ 	helpMenu->add(new MenuAction(this, SLOT(websiteAct()),    QT_TR_NOOP("Visit www.&ppsspp.org")));
+ 	helpMenu->add(new MenuAction(this, SLOT(forumAct()),      QT_TR_NOOP("PPSSPP &forums")));
+-	helpMenu->add(new MenuAction(this, SLOT(goldAct()),       QT_TR_NOOP("Buy &Gold")));
+ 	helpMenu->add(new MenuAction(this, SLOT(gitAct()),        QT_TR_NOOP("Git&Hub")));
+ 	helpMenu->add(new MenuAction(this, SLOT(discordAct()),      QT_TR_NOOP("Discord")));
+ 	helpMenu->addSeparator();
+diff --git a/Qt/mainwindow.h b/Qt/mainwindow.h
+index 5e735ae..55a180f 100644
+--- a/Qt/mainwindow.h
++++ b/Qt/mainwindow.h
+@@ -100,7 +100,7 @@ private slots:
+ 	void stopAct();
+ 	void resetAct();
+ 	void switchUMDAct();
+-	void displayRotationGroup_triggered(QAction *action) { 
++	void displayRotationGroup_triggered(QAction *action) {
+ 		DisplayLayoutConfig &config = g_Config.GetDisplayLayoutConfig(g_display.GetDeviceOrientation());
+ 		config.iInternalScreenRotation = action->data().toInt();
+ 	}
+@@ -187,7 +187,6 @@ private slots:
+ 	// Help
+ 	void websiteAct();
+ 	void forumAct();
+-	void goldAct();
+ 	void gitAct();
+ 	void discordAct();
+ 	void aboutAct();
+diff --git a/SDL/SDLMain.cpp b/SDL/SDLMain.cpp
+index 5eea6e5..9799010 100644
+--- a/SDL/SDLMain.cpp
++++ b/SDL/SDLMain.cpp
+@@ -438,7 +438,7 @@ bool System_MakeRequest(SystemRequestType type, int requestId, const std::string
+ 	case SystemRequestType::SET_WINDOW_TITLE:
+ 	{
+ 		std::lock_guard<std::mutex> guard(g_mutexWindow);
+-		const char *app_name = System_GetPropertyBool(SYSPROP_APP_GOLD) ? "PPSSPP Gold" : "PPSSPP";
++		const char *app_name = "PPSSPP";
+ 		g_windowState.title = param1.empty() ? app_name : param1;
+ 		g_windowState.update = true;
+ 		return true;
+@@ -742,12 +742,6 @@ bool System_GetPropertyBool(SystemProperty prop) {
+ #endif
+ 	case SYSPROP_HAS_KEYBOARD:
+ 		return true;
+-	case SYSPROP_APP_GOLD:
+-#ifdef GOLD
+-		return true;
+-#else
+-		return false;
+-#endif
+ 	case SYSPROP_CAN_JIT:
+ 		return true;
+ 	case SYSPROP_SUPPORTS_OPEN_FILE_IN_EDITOR:
+@@ -777,9 +771,6 @@ case SYSPROP_HAS_FILE_BROWSER:
+ #else
+ 		return false;
+ #endif
+-	// hack for testing - do not commit
+-	case SYSPROP_USE_IAP:
+-		return false;
+ 	default:
+ 		return false;
+ 	}
+diff --git a/UI/Background.cpp b/UI/Background.cpp
+index 73be05b..3d5fb96 100644
+--- a/UI/Background.cpp
++++ b/UI/Background.cpp
+@@ -272,7 +272,7 @@ class BouncingIconAnimation : public Animation {
+ 		// Draw the image.
+ 		float xpos = xbase + dc.GetBounds().x;
+ 		float ypos = ybase + dc.GetBounds().y;
+-		ImageID icon = !color_ix && System_GetPropertyBool(SYSPROP_APP_GOLD) ? ImageID("I_ICON_GOLD") : ImageID("I_ICON");
++		ImageID icon = ImageID("I_ICON");
+ 		ui_draw2d.DrawImage(icon, xpos, ypos, scale, COLORS[color_ix], ALIGN_CENTER);
+ 		dc.Flush();
+ 
+diff --git a/UI/GameSettingsScreen.cpp b/UI/GameSettingsScreen.cpp
+index 85cd7f7..fa0c330 100644
+--- a/UI/GameSettingsScreen.cpp
++++ b/UI/GameSettingsScreen.cpp
+@@ -1439,13 +1439,6 @@ void GameSettingsScreen::CreateSystemSettings(UI::ViewGroup *systemSettings) {
+ 		systemSettings->Add(new CheckBox(&g_Config.bCacheFullIsoInRam, sy->T("Cache full ISO in RAM")))->SetEnabled(!PSP_IsInited());
+ 	}
+ 
+-	CheckBox *checkForUpdate = systemSettings->Add(new CheckBox(&g_Config.bCheckForNewVersion, sy->T("VersionCheck", "Check for new versions of PPSSPP")));
+-	checkForUpdate->OnClick.Add([](UI::EventParams &e) {
+-		// Reset the dismissed version so it will check again.
+-		if (g_Config.bCheckForNewVersion) {
+-			g_Config.sDismissedVersion.clear();
+-		}
+-	});
+ 	systemSettings->Add(new CheckBox(&g_Config.bScreenshotsAsPNG, sy->T("Screenshots as PNG")));
+ 	static const char *screenshotModeChoices[] = { "Final processed image", "Raw game image" };
+ 	systemSettings->Add(new PopupMultiChoice(&g_Config.iScreenshotMode, sy->T("Screenshot mode"), screenshotModeChoices, 0, ARRAY_SIZE(screenshotModeChoices), I18NCat::SYSTEM, screenManager()));
+diff --git a/UI/MainScreen.cpp b/UI/MainScreen.cpp
+index 8e7ca54..6153025 100644
+--- a/UI/MainScreen.cpp
++++ b/UI/MainScreen.cpp
+@@ -57,7 +57,6 @@
+ #include "UI/GameSettingsScreen.h"
+ #include "UI/BaseScreens.h"
+ #include "UI/ControlMappingScreen.h"
+-#include "UI/IAPScreen.h"
+ #include "UI/RemoteISOScreen.h"
+ #include "UI/DisplayLayoutScreen.h"
+ #include "UI/SavedataScreen.h"
+@@ -1280,7 +1279,7 @@ class LogoView : public UI::AnchorLayout {
+ 
+ private:
+ 	ImageID GetIconID() const {
+-		return System_GetPropertyBool(SYSPROP_APP_GOLD) ? ImageID("I_ICON_GOLD") : ImageID("I_ICON");
++		return ImageID("I_ICON");
+ 	}
+ 
+ 	const bool portrait_;
+@@ -1302,16 +1301,6 @@ void MainScreen::CreateMainButtons(UI::ViewGroup *parent, bool portrait) {
+ 		parent->Add(new Choice(mm->T("www.ppsspp.org")))->OnClick.Handle(this, &MainScreen::OnPPSSPPOrg);
+ 	}
+ 
+-	if (!System_GetPropertyBool(SYSPROP_APP_GOLD) && (System_GetPropertyInt(SYSPROP_DEVICE_TYPE) != DEVICE_TYPE_VR)) {
+-		Choice *gold = parent->Add(portrait ? new Choice(ImageID("I_ICON_GOLD"), portrait ? new LinearLayoutParams() : nullptr) : new Choice(mm->T("Buy PPSSPP Gold")));
+-		gold->OnClick.Add([this](UI::EventParams &) {
+-			LaunchBuyGold(this->screenManager());
+-		});
+-		gold->SetIconRight(ImageID("I_ICON_GOLD"), 0.5f);
+-		gold->SetImageScale(0.6f);  // for the left-icon in case of vertical.
+-		gold->SetShine(true);
+-	}
+-
+ 	if (!portrait) {
+ 		parent->Add(new Spacer(16.0));
+ 	}
+@@ -1384,7 +1373,7 @@ void MainScreen::CreateViews() {
+ 		if (g_recentFiles.HasAny()) {
+ 			tabHolder_->SetCurrentTab(std::clamp(g_Config.iDefaultTab, 0, g_Config.bRemoteTab ? 3 : 2), true);
+ 		} else if (g_Config.iMaxRecent > 0) {
+-			tabHolder_->SetCurrentTab(1, true);	
++			tabHolder_->SetCurrentTab(1, true);
+ 		}
+ 
+ 		if (backFromStore_ || showHomebrewTab) {
+@@ -1490,41 +1479,6 @@ void MainScreen::CreateViews() {
+ 	}
+ 
+ 	root_->SetTag("mainroot");
+-
+-	if (!g_Config.sUpgradeMessage.empty()) {
+-		auto di = GetI18NCategory(I18NCat::DIALOG);
+-		Margins margins(0, 0);
+-		if (vertical) {
+-			margins.bottom = ITEM_HEIGHT;
+-		}
+-		UI::LinearLayout *upgradeBar = new LinearLayout(ORIENT_HORIZONTAL, new LinearLayoutParams(FILL_PARENT, WRAP_CONTENT, margins));
+-
+-		UI::Margins textMargins(10, 5);
+-		UI::Margins buttonMargins(5, 0);
+-		UI::Drawable solid(0xFFbd9939);
+-		upgradeBar->SetSpacing(5.0f);
+-		upgradeBar->SetBG(solid);
+-		std::string upgradeMessage(di->T("New version of PPSSPP available"));
+-		if (!vertical) {
+-			// The version only really fits in the horizontal layout.
+-			upgradeMessage += ": " + g_Config.sUpgradeVersion;
+-		}
+-		upgradeBar->Add(new TextView(upgradeMessage, new LinearLayoutParams(1.0f, UI::Gravity::G_VCENTER, textMargins)));
+-		upgradeBar->Add(new Choice(di->T("Download"), new LinearLayoutParams(buttonMargins)))->OnClick.Handle(this, &MainScreen::OnDownloadUpgrade);
+-		Choice *dismiss = upgradeBar->Add(new Choice("", ImageID("I_CROSS"), new LinearLayoutParams(buttonMargins)));
+-		dismiss->OnClick.Add([this](UI::EventParams &e) {
+-			g_Config.DismissUpgrade();
+-			g_Config.Save("dismissupgrade");
+-			RecreateViews();
+-		});
+-
+-		// Slip in under root_
+-		LinearLayout *newRoot = new LinearLayout(ORIENT_VERTICAL);
+-		newRoot->Add(root_);
+-		newRoot->Add(upgradeBar);
+-		root_->ReplaceLayoutParams(new LinearLayoutParams(1.0));
+-		root_ = newRoot;
+-	}
+ }
+ 
+ bool MainScreen::key(const KeyInput &key) {
+@@ -1565,26 +1519,6 @@ void MainScreen::OnAllowStorage(UI::EventParams &e) {
+ 	System_AskForPermission(SYSTEM_PERMISSION_STORAGE);
+ }
+ 
+-// See Config::SupportsUpgradeCheck() if you add more platforms.
+-void MainScreen::OnDownloadUpgrade(UI::EventParams &e) {
+-#if PPSSPP_PLATFORM(ANDROID)
+-	// Go to app store
+-	if (System_GetPropertyBool(SYSPROP_APP_GOLD)) {
+-		System_LaunchUrl(LaunchUrlType::BROWSER_URL, "market://details?id=org.ppsspp.ppssppgold");
+-	} else {
+-		System_LaunchUrl(LaunchUrlType::BROWSER_URL, "market://details?id=org.ppsspp.ppsspp");
+-	}
+-#elif PPSSPP_PLATFORM(WINDOWS)
+-	System_LaunchUrl(LaunchUrlType::BROWSER_URL, "https://www.ppsspp.org/download");
+-#elif PPSSPP_PLATFORM(IOS_APP_STORE)
+-	System_LaunchUrl(LaunchUrlType::BROWSER_URL, "itms-apps://itunes.apple.com/app/id6496972903");
+-#else
+-	// Go directly to ppsspp.org and let the user sort it out
+-	// (for details and in case downloads doesn't have their platform.)
+-	System_LaunchUrl(LaunchUrlType::BROWSER_URL, "https://www.ppsspp.org/");
+-#endif
+-}
+-
+ void MainScreen::sendMessage(UIMessage message, const char *value) {
+ 	// Always call the base class method first to handle the most common messages.
+ 	UIBaseScreen::sendMessage(message, value);
+@@ -1732,24 +1666,6 @@ void MainScreen::OnCredits(UI::EventParams &e) {
+ 	screenManager()->push(new CreditsScreen());
+ }
+ 
+-void LaunchBuyGold(ScreenManager *screenManager) {
+-	if (System_GetPropertyBool(SYSPROP_USE_IAP)) {
+-		screenManager->push(new IAPScreen(true));
+-	} else if (System_GetPropertyBool(SYSPROP_USE_APP_STORE)) {
+-#if PPSSPP_PLATFORM(ANDROID)
+-		LaunchPlayStoreOrWebsiteGold();
+-#else
+-		screenManager->push(new IAPScreen(false));
+-#endif
+-	} else {
+-#if PPSSPP_PLATFORM(IOS_APP_STORE)
+-		System_LaunchUrl(LaunchUrlType::BROWSER_URL, "https://www.ppsspp.org/buygold_ios");
+-#else
+-		System_LaunchUrl(LaunchUrlType::BROWSER_URL, "https://www.ppsspp.org/buygold");
+-#endif
+-	}
+-}
+-
+ void MainScreen::OnPPSSPPOrg(UI::EventParams &e) {
+ 	System_LaunchUrl(LaunchUrlType::BROWSER_URL, "https://www.ppsspp.org");
+ }
+@@ -1785,9 +1701,6 @@ void MainScreen::dialogFinished(const Screen *dialog, DialogResult result) {
+ 		if (gameBrowsers_.size() >= 2) {
+ 			gameBrowsers_[1]->RequestRefresh();
+ 		}
+-	} else if (tag == "IAP") {
+-		// Gold status may have changed.
+-		RecreateViews();
+ 	} else if (tag == "Upload") {
+ 		// Files may have been uploaded.
+ 		RecreateViews();
+diff --git a/UI/MainScreen.h b/UI/MainScreen.h
+index 49d743c..457ccd7 100644
+--- a/UI/MainScreen.h
++++ b/UI/MainScreen.h
+@@ -166,7 +166,6 @@ class MainScreen : public UIBaseScreen {
+ 	void OnCredits(UI::EventParams &e);
+ 	void OnPPSSPPOrg(UI::EventParams &e);
+ 	void OnForums(UI::EventParams &e);
+-	void OnDownloadUpgrade(UI::EventParams &e);
+ 	void OnAllowStorage(UI::EventParams &e);
+ 
+ 	UI::TabHolder *tabHolder_ = nullptr;
+@@ -218,5 +217,3 @@ class GridSettingsPopupScreen : public UI::PopupScreen {
+ 	const float MAX_GAME_GRID_SCALE = 3.0f;
+ 	const float MIN_GAME_GRID_SCALE = 0.8f;
+ };
+-
+-void LaunchBuyGold(ScreenManager *screenManager);
+diff --git a/UI/MemStickScreen.cpp b/UI/MemStickScreen.cpp
+index 69b9d3d..8a02aff 100644
+--- a/UI/MemStickScreen.cpp
++++ b/UI/MemStickScreen.cpp
+@@ -123,12 +123,10 @@ static void AddExplanation(UI::ViewGroup *viewGroup, MemStickScreen::Choice choi
+ 	case MemStickScreen::CHOICE_STORAGE_ROOT:
+ 		// Old school choice
+ 		holder->Add(new TextView(iz->T("DataWillStay", "Data will stay even if you uninstall PPSSPP"), flags, false))->SetBullet(true);
+-		holder->Add(new TextView(iz->T("DataCanBeShared", "Data can be shared between PPSSPP regular/Gold"), flags, false))->SetBullet(true);
+ 		holder->Add(new TextView(iz->T("EasyUSBAccess", "Easy USB access"), flags, false))->SetBullet(true);
+ 		break;
+ 	case MemStickScreen::CHOICE_BROWSE_FOLDER:
+ 		holder->Add(new TextView(iz->T("DataWillStay", "Data will stay even if you uninstall PPSSPP"), flags, false))->SetBullet(true);
+-		holder->Add(new TextView(iz->T("DataCanBeShared", "Data can be shared between PPSSPP regular/Gold"), flags, false))->SetBullet(true);
+ #if !PPSSPP_PLATFORM(UWP)
+ 		holder->Add(new TextView(iz->T("EasyUSBAccess", "Easy USB access"), flags, false))->SetBullet(true);
+ #endif
+@@ -136,13 +134,8 @@ static void AddExplanation(UI::ViewGroup *viewGroup, MemStickScreen::Choice choi
+ 	case MemStickScreen::CHOICE_PRIVATE_DIRECTORY:
+ 		// Consider https://www.compart.com/en/unicode/U+26A0 (unicode warning sign?)? or a graphic?
+ 		holder->Add(new TextView(iz->T("DataWillBeLostOnUninstall", "Warning! Data will be lost when you uninstall PPSSPP!"), flags, false))->SetBullet(true);
+-		holder->Add(new TextView(iz->T("DataCannotBeShared", "Data CANNOT be shared between PPSSPP regular/Gold!"), flags, false))->SetBullet(true);
+ #if !PPSSPP_PLATFORM(UWP)
+-		if (System_GetPropertyBool(SYSPROP_APP_GOLD)) {
+-			holder->Add(new TextView(iz->T("USBAccessThroughGold", "USB access through Android/data/org.ppsspp.ppssppgold/files"), flags, false))->SetBullet(true);
+-		} else {
+-			holder->Add(new TextView(iz->T("USBAccessThrough", "USB access through Android/data/org.ppsspp.ppsspp/files"), flags, false))->SetBullet(true);
+-		}
++                holder->Add(new TextView(iz->T("USBAccessThrough", "USB access through Android/data/org.ppsspp.ppsspp/files"), flags, false))->SetBullet(true);
+ #endif
+ 		break;
+ 	case MemStickScreen::CHOICE_SET_MANUAL:
+diff --git a/UI/MiscScreens.cpp b/UI/MiscScreens.cpp
+index 1dedbef..9c4f965 100644
+--- a/UI/MiscScreens.cpp
++++ b/UI/MiscScreens.cpp
+@@ -441,12 +441,7 @@ void LogoScreen::DrawForeground(UIContext &dc) {
+ 
+ 	// Manually formatting UTF-8 is fun.  \xXX doesn't work everywhere.
+ 	snprintf(temp, sizeof(temp), "%s Henrik Rydg%c%crd", cr->T_cstr("created", "Created by"), 0xC3, 0xA5);
+-	if (System_GetPropertyBool(SYSPROP_APP_GOLD)) {
+-		UI::DrawIconShine(dc, Bounds::FromCenter(bounds.centerX() - 125, startY, 60.0f), 0.7f, true);
+-		dc.Draw()->DrawImage(ImageID("I_ICON_GOLD"), bounds.centerX() - 125, startY, 1.2f, 0xFFFFFFFF, ALIGN_CENTER);
+-	} else {
+-		dc.Draw()->DrawImage(ImageID("I_ICON"), bounds.centerX() - 125, startY, 1.2f, 0xFFFFFFFF, ALIGN_CENTER);
+-	}
++        dc.Draw()->DrawImage(ImageID("I_ICON"), bounds.centerX() - 125, startY, 1.2f, 0xFFFFFFFF, ALIGN_CENTER);
+ 	dc.Draw()->DrawImage(ImageID("I_LOGO"), bounds.centerX() + 45, startY, 1.5f, 0xFFFFFFFF, ALIGN_CENTER);
+ 	//dc.Draw()->DrawTextShadow(UBUNTU48, "PPSSPP", bounds.w / 2, bounds.h / 2 - 30, textColor, ALIGN_CENTER);
+ 	dc.SetFontScale(1.0f, 1.0f);
+@@ -512,15 +507,6 @@ void CreditsScreen::CreateDialogViews(UI::ViewGroup *parent) {
+ 
+ 	const bool portrait = GetDeviceOrientation() == DeviceOrientation::Portrait;
+ 
+-	const bool gold = System_GetPropertyBool(SYSPROP_APP_GOLD);
+-
+-	/*
+-	if (System_GetPropertyBool(SYSPROP_APP_GOLD)) {
+-		root_->Add(new ShinyIcon(ImageID("I_ICON_GOLD"), new AnchorLayoutParams(WRAP_CONTENT, WRAP_CONTENT, 10, 10, NONE, NONE, false)))->SetScale(1.5f);
+-	} else {
+-		root_->Add(new ImageView(ImageID("I_ICON"), "", IS_DEFAULT, new AnchorLayoutParams(WRAP_CONTENT, WRAP_CONTENT, 10, 10, NONE, NONE, false)))->SetScale(1.5f);
+-	}*/
+-
+ 	constexpr float columnWidth = 265.0f;
+ 
+ 	LinearLayout *left;
+@@ -544,18 +530,6 @@ void CreditsScreen::CreateDialogViews(UI::ViewGroup *parent) {
+ 	}
+ 
+ 	int rightYOffset = 0;
+-	if (!System_GetPropertyBool(SYSPROP_APP_GOLD)) {
+-		ScreenManager *sm = screenManager();
+-		Choice *gold = new Choice(mm->T("Buy PPSSPP Gold"));
+-		gold->SetIconRight(ImageID("I_ICON_GOLD"), 0.5f);
+-		gold->SetImageScale(0.6f);  // for the left-icon in case of vertical.
+-		gold->SetShine(true);
+-
+-		left->Add(gold)->OnClick.Add([sm](UI::EventParams) {
+-			LaunchBuyGold(sm);
+-		});
+-		rightYOffset = 74;
+-	}
+ 	left->Add(new Choice(cr->T("PPSSPP Forums"), ImageID("I_LINK_OUT")))->OnClick.Add([](UI::EventParams &e) {
+ 		System_LaunchUrl(LaunchUrlType::BROWSER_URL, "https://forums.ppsspp.org");
+ 	});
+@@ -611,7 +585,7 @@ void CreditsScroller::Draw(UIContext &dc) {
+ 	specialthankssolarmystic += ')';
+ 
+ 	std::string_view credits[] = {
+-		System_GetPropertyBool(SYSPROP_APP_GOLD) ? "PPSSPP Gold" : "PPSSPP",
++		"PPSSPP",
+ 		"",
+ 		cr->T("title", "A fast and portable PSP emulator"),
+ 		"",
+@@ -735,11 +709,7 @@ void CreditsScroller::Draw(UIContext &dc) {
+ 
+ 	// TODO: This is kinda ugly, done on every frame...
+ 	char temp[256];
+-	if (System_GetPropertyBool(SYSPROP_APP_GOLD)) {
+-		snprintf(temp, sizeof(temp), "PPSSPP Gold %s", PPSSPP_GIT_VERSION);
+-	} else {
+-		snprintf(temp, sizeof(temp), "PPSSPP %s", PPSSPP_GIT_VERSION);
+-	}
++        snprintf(temp, sizeof(temp), "PPSSPP %s", PPSSPP_GIT_VERSION);
+ 	credits[0] = (const char *)temp;
+ 
+ 	dc.Begin();
+diff --git a/UI/ReportScreen.cpp b/UI/ReportScreen.cpp
+index 02080aa..7a0e773 100644
+--- a/UI/ReportScreen.cpp
++++ b/UI/ReportScreen.cpp
+@@ -478,11 +478,7 @@ void ReportFinishScreen::ShowSuggestions() {
+ 		bool valid = false;
+ 		for (const auto &item : suggestions) {
+ 			std::string_view suggestion = "";
+-			if (item == "Upgrade") {
+-				suggestion = rp->T("SuggestionUpgrade", "Upgrade to a newer PPSSPP build");
+-			} else if (item == "Downgrade") {
+-				suggestion = rp->T("SuggestionDowngrade", "Downgrade to an older PPSSPP version (please report this bug)");
+-			} else if (item == "VerifyDisc") {
++			if (item == "VerifyDisc") {
+ 				suggestion = rp->T("SuggestionVerifyDisc", "Check your ISO is a good copy of your disc");
+ 			} else if (item == "Config:CPUSpeed:0") {
+ 				suggestion = rp->T("SuggestionCPUSpeed0", "Disable locked CPU speed setting");
+@@ -500,11 +496,6 @@ void ReportFinishScreen::ShowSuggestions() {
+ 				resultItems_->Add(new TextView(std::string(" - ") + std::string(suggestion), FLAG_WRAP_TEXT, false))->SetShadow(true);
+ 			}
+ 		}
+-
+-		if (!valid) {
+-			// No actual valid versions.  Let's just say upgrade and hope the server's not broken.
+-			resultItems_->Add(new TextView(std::string(" - ") + rp->T_cstr("SuggestionUpgrade", "Upgrade to a newer PPSSPP build"), FLAG_WRAP_TEXT, false))->SetShadow(true);
+-		}
+ 	}
+ }
+ 
+diff --git a/UI/UIAtlas.cpp b/UI/UIAtlas.cpp
+index 92b1d3a..50199d2 100644
+--- a/UI/UIAtlas.cpp
++++ b/UI/UIAtlas.cpp
+@@ -75,7 +75,6 @@ static const ImageMeta imageIDs[] = {
+ 	{"I_GRID", false},
+ 	{"I_LOGO", false},
+ 	{"I_ICON", false},
+-	{"I_ICON_GOLD", false},
+ 	{"I_FOLDER", false},
+ 	{"I_UP_DIRECTORY", false},
+ 	{"I_GEAR", false},
+diff --git a/UWP/PPSSPP_UWPMain.cpp b/UWP/PPSSPP_UWPMain.cpp
+index a89ee1f..eed5bdf 100644
+--- a/UWP/PPSSPP_UWPMain.cpp
++++ b/UWP/PPSSPP_UWPMain.cpp
+@@ -478,12 +478,6 @@ bool System_GetPropertyBool(SystemProperty prop) {
+ 		return true;
+ 	case SYSPROP_HAS_ACCELEROMETER:
+ 		return IsMobile();
+-	case SYSPROP_APP_GOLD:
+-#ifdef GOLD
+-		return true;
+-#else
+-		return false;
+-#endif
+ 	case SYSPROP_CAN_JIT:
+ 		return true;
+ 	case SYSPROP_HAS_KEYBOARD:
+@@ -705,7 +699,7 @@ std::string GetCPUBrandString() {
+ 		winrt::hstring dev_filter = L"System.Devices.DeviceInstanceID:=\"" + cpu_id + L"\"";
+ 
+ 		try {
+-			auto collection = winrt::Windows::Devices::Enumeration::DeviceInformation::FindAllAsync(dev_filter, {}, 
++			auto collection = winrt::Windows::Devices::Enumeration::DeviceInformation::FindAllAsync(dev_filter, {},
+ 				winrt::Windows::Devices::Enumeration::DeviceInformationKind::Device).get();
+ 			if (collection.Size() > 0) {
+ 				cpu_name = collection.GetAt(0).Name();
+diff --git a/Windows/MainWindowMenu.cpp b/Windows/MainWindowMenu.cpp
+index 856e39d..cc22d2b 100644
+--- a/Windows/MainWindowMenu.cpp
++++ b/Windows/MainWindowMenu.cpp
+@@ -170,10 +170,6 @@ namespace MainWindow {
+ 		// Don't need to update here, happens later.
+ 
+ 		HMENU helpMenu = GetSubmenuById(hMenu, ID_HELP_MENU);
+-		if (System_GetPropertyBool(SYSPROP_APP_GOLD)) {
+-			RemoveMenu(helpMenu, ID_HELP_BUYGOLD, MF_BYCOMMAND);
+-		}
+-
+ 		HMENU hMenuOptions = GetSubmenuById(hMenu, ID_OPTIONS_MENU);
+ 		g_hMenuBackend = GetSubmenuById(hMenuOptions, ID_OPTIONS_BACKEND_MENU);
+ 	}
+@@ -310,7 +306,6 @@ namespace MainWindow {
+ 		// Help menu: it's translated in CreateHelpMenu.
+ 		TranslateMenuItem(menu, ID_HELP_OPENWEBSITE);
+ 		TranslateMenuItem(menu, ID_HELP_OPENFORUM);
+-		TranslateMenuItem(menu, ID_HELP_BUYGOLD);
+ 		TranslateMenuItem(menu, ID_HELP_GITHUB);
+ 		TranslateMenuItem(menu, ID_HELP_DISCORD);
+ 		TranslateMenuItem(menu, ID_HELP_ABOUT);
+@@ -933,10 +928,6 @@ namespace MainWindow {
+ 			System_LaunchUrl(LaunchUrlType::BROWSER_URL, "https://www.ppsspp.org/");
+ 			break;
+ 
+-		case ID_HELP_BUYGOLD:
+-			System_LaunchUrl(LaunchUrlType::BROWSER_URL, "https://www.ppsspp.org/buygold");
+-			break;
+-
+ 		case ID_HELP_OPENFORUM:
+ 			System_LaunchUrl(LaunchUrlType::BROWSER_URL, "https://forums.ppsspp.org/");
+ 			break;
+diff --git a/Windows/main.cpp b/Windows/main.cpp
+index c7ad098..0280cb9 100644
+--- a/Windows/main.cpp
++++ b/Windows/main.cpp
+@@ -450,12 +450,6 @@ bool System_GetPropertyBool(SystemProperty prop) {
+ 		return true;
+ 	case SYSPROP_HAS_LOGIN_DIALOG:
+ 		return true;
+-	case SYSPROP_APP_GOLD:
+-#ifdef GOLD
+-		return true;
+-#else
+-		return false;
+-#endif
+ 	case SYSPROP_CAN_JIT:
+ 		return true;
+ 	case SYSPROP_HAS_KEYBOARD:
+@@ -478,8 +472,6 @@ bool System_GetPropertyBool(SystemProperty prop) {
+ #endif
+ 	case SYSPROP_HAS_ACCELEROMETER:
+ 		return g_InputManager.AnyAccelerometer();
+-	case SYSPROP_USE_IAP:
+-		return false;  // This should never be set to true on Windows. Only for testing/dev.
+ 	case SYSPROP_USE_APP_STORE:
+ 		return false;
+ 	default:
+@@ -654,7 +646,7 @@ bool System_MakeRequest(SystemRequestType type, int requestId, const std::string
+ 	}
+ 	case SystemRequestType::SET_WINDOW_TITLE:
+ 	{
+-		const char *name = System_GetPropertyBool(SYSPROP_APP_GOLD) ? "PPSSPP Gold " : "PPSSPP ";
++		const char *name = "PPSSPP ";
+ 		std::wstring winTitle = ConvertUTF8ToWString(std::string(name) + PPSSPP_GIT_VERSION);
+ 		if (!param1.empty()) {
+ 			winTitle.append(ConvertUTF8ToWString(" - " + param1));
+diff --git a/Windows/resource.h b/Windows/resource.h
+index 0dee92b..602b2fb 100644
+--- a/Windows/resource.h
++++ b/Windows/resource.h
+@@ -353,7 +353,6 @@
+ // Dummy option to let the buffered rendering hotkey cycle through all the options.
+ #define ID_OPTIONS_BUFFEREDRENDERINGDUMMY 40500
+ #define IDC_STEPOUT                       40501
+-#define ID_HELP_BUYGOLD                   40502
+ 
+ #define IDC_STATIC                      -1
+ 
+diff --git a/ios/main.mm b/ios/main.mm
+index 0407b8b..13aace6 100644
+--- a/ios/main.mm
++++ b/ios/main.mm
+@@ -379,16 +379,6 @@ bool System_GetPropertyBool(SystemProperty prop) {
+ 		case SYSPROP_KEYBOARD_IS_SOFT:
+ 			// If a hardware keyboard is connected, and we add support, we could return false here.
+ 			return true;
+-		case SYSPROP_APP_GOLD:
+-#ifdef GOLD
+-			// This is deprecated.
+-			return true;
+-#elif PPSSPP_PLATFORM(IOS_APP_STORE)
+-			// Check the IAP status.
+-			return [[IAPManager sharedIAPManager] isGoldUnlocked];
+-#else
+-			return false;
+-#endif
+ 		case SYSPROP_USE_IAP:
+ #if PPSSPP_PLATFORM(IOS_APP_STORE) && defined(USE_IAP)
+ 			return true;
+@@ -701,4 +691,3 @@ int main(int argc, char *argv[]) {
+ 		return UIApplicationMain(argc, argv, NSStringFromClass([PPSSPPUIApplication class]), NSStringFromClass([AppDelegate class]));
+ 	}
+ }
+-
+-- 
+2.52.0
+
