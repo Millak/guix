@@ -7395,6 +7395,38 @@ Terraform by using the enterprise certificates feature.")
 for clients and servers based on @code{gRPC} and Google API conventions.")
     (license license:bsd-3)))
 
+(define-public go-github-com-googlecloudplatform-opentelemetry-operations-go-detectors-gcp
+  (package
+    (name
+     "go-github-com-googlecloudplatform-opentelemetry-operations-go-detectors-gcp")
+    (version "1.31.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/GoogleCloudPlatform/opentelemetry-operations-go")
+              (commit (go-version->git-ref version #:subdir "detectors/gcp"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a2641mgbc2fv8ramifawpxv9rx99wqknv0xqin3wfapsn2vn5i9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp"
+      #:unpack-path "github.com/GoogleCloudPlatform/opentelemetry-operations-go"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-cloud-google-com-go-compute-metadata))
+    (home-page
+     "https://github.com/GoogleCloudPlatform/opentelemetry-operations-go")
+    (synopsis "GCP Resource detection library")
+    (description
+     "This is a library intended to be used by Upstream @code{OpenTelemetry}
+resource detectors.  It exists within this repository to allow for integration
+testing of the detection functions in real GCP environments.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-gopacket-gopacket
   (package
     (name "go-github-com-gopacket-gopacket")
