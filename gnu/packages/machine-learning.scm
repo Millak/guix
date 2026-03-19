@@ -6618,13 +6618,13 @@ linear algebra routines needed for structured matrices (or operators).")
 (define-public python-gpytorch
   (package
     (name "python-gpytorch")
-    (version "1.15.1")
+    (version "1.15.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "gpytorch" version))
               (sha256
                (base32
-                "1y8p1mpn00jjimszljmyczcg4bxcvd1n1czihnbykhy4qm74vn3n"))))
+                "0qakfyw9akxbcvjz2rzn5vmy7ln6lsq5yp5jfbvqa6w57zlja1iq"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
