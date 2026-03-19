@@ -77,6 +77,8 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
@@ -891,94 +893,85 @@ is like a time machine for your data.")
 (define-public restic
   (package
     (name "restic")
-    (version "0.9.6")
-    ;; TODO Try packaging the bundled / vendored dependencies in the 'vendor/'
-    ;; directory.
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/restic/restic/releases/download/"
-                    "v" version "/restic-" version ".tar.gz"))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1zmh42aah32ah8w5n6ilz9bci0y2xrf8p7qshy3yf1lzm5gnbj0w"))
-              (patches
-               (search-patches "restic-0.9.6-fix-tests-for-go1.15.patch"))))
+    (version "0.17.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/restic/restic")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wsgq7f0bfi0i5iiwcc3hlf2lhxcnz3zfs8p8bc6l913r9hvyg1x"))))
     (build-system go-build-system)
     (arguments
-     `(;; XXX: Tests failed on a newer version of Golang, newer version of
-       ;; restic does not provide vendor folder any longer which means - a
-       ;; long way of packaging missing inputs.
-       #:go ,go-1.17
-       #:import-path "github.com/restic/restic"
-      ;; We don't need to install the source code for end-user applications.
-       #:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "src/github.com/restic/restic"
-               ;; Disable 'restic self-update'.  It makes little sense in Guix.
-               (substitute* "build.go" (("selfupdate") ""))
-               (setenv "HOME" (getcwd)) ; for $HOME/.cache/go-build
-               (invoke "go" "run" "build.go"))))
+     (list
+      #:go go-1.25
+      #:install-source? #f
+      #:import-path "github.com/restic/restic/cmd/restic"
+      #:unpack-path "github.com/restic/restic"
+      #:embed-files #~(list "children" "nodes" "text")
+      #:test-flags
+      ;; Python is required.
+      #~(list "-skip" "TestStdinFromCommand|TestStdinFromCommandNoOutput")
+      #:test-subdirs #~(list "../../...")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-docs
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (let* ((man "/share/man")
+                       (man-section (string-append man "/man")))
+                  ;; Install all the man pages to "out".
+                  (for-each
+                   (lambda (file)
+                     (install-file file
+                                   (string-append #$output man-section
+                                                  (string-take-right file 1))))
+                   (find-files "doc/man" "\\.[1-9]"))))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "RESTIC_TEST_FUSE" "0"))))))
+    (native-inputs
+     (list go-cloud-google-com-go-storage
+           go-github-com-anacrolix-fuse
+           go-github-com-azure-azure-sdk-for-go-sdk-azcore
+           go-github-com-azure-azure-sdk-for-go-sdk-azidentity
+           go-github-com-azure-azure-sdk-for-go-sdk-storage-azblob
+           go-github-com-backblaze-blazer
+           go-github-com-cenkalti-backoff-v4
+           go-github-com-cespare-xxhash-v2
+           go-github-com-elithrar-simple-scrypt
+           ;; go-github-com-go-ole-go-ole ;windows only
+           go-github-com-google-go-cmp
+           go-github-com-hashicorp-golang-lru-v2
+           go-github-com-klauspost-compress
+           go-github-com-minio-minio-go-v7
+           go-github-com-minio-sha256-simd
+           go-github-com-ncw-swift-v2
+           go-github-com-peterbourgon-unixtransport
+           go-github-com-pkg-errors
+           go-github-com-pkg-profile
+           go-github-com-pkg-sftp
+           go-github-com-pkg-xattr
+           go-github-com-restic-chunker
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-go-uber-org-automaxprocs
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-oauth2
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-text
+           go-golang-org-x-time
+           go-google-golang-org-api
 
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (with-directory-excursion "src/github.com/restic/restic"
-                 ;; Disable FUSE tests.
-                 (setenv "RESTIC_TEST_FUSE" "0")
-                 (invoke "go" "run" "build.go" "--test")))))
-
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (src "src/github.com/restic/restic"))
-               (install-file (string-append src "/restic")
-                             (string-append out "/bin"))
-               #t)))
-
-         (add-after 'install 'install-docs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (man "/share/man")
-                    (man-section (string-append man "/man"))
-                    (src "src/github.com/restic/restic/doc/man/"))
-               ;; Install all the man pages to "out".
-               (for-each
-                 (lambda (file)
-                   (install-file file
-                                 (string-append out man-section
-                                                (string-take-right file 1))))
-                 (find-files src "\\.[1-9]"))
-               #t)))
-
-         (add-after 'install-docs 'install-shell-completion
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (etc (string-append out "/etc"))
-                    (share (string-append out "/share")))
-               (for-each
-                (lambda (shell)
-                  (let* ((shell-name (symbol->string shell))
-                         (dir (string-append "etc/completion/" shell-name)))
-                    (mkdir-p dir)
-                    (invoke (string-append bin "/restic") "generate"
-                            (string-append "--" shell-name "-completion")
-                            (string-append dir "/"
-                                           (case shell
-                                             ((bash) "restic")
-                                             ((zsh) "_restic"))))))
-                '(bash zsh))
-               (with-directory-excursion "etc/completion"
-                 (install-file "bash/restic"
-                               (string-append etc "/bash_completion.d"))
-                 (install-file "zsh/_restic"
-                               (string-append share "/zsh/site-functions")))
-               #t))))))
+           ;; XXX: These packages have to be bootstrapped to break cycle with
+           ;; go-google-golang-org-grpc.
+           go-github-com-envoyproxy-go-control-plane
+           go-github-com-envoyproxy-go-control-plane-envoy))
     (home-page "https://restic.net/")
     (synopsis "Backup program with multiple revisions, encryption and more")
     (description "Restic is a program that does backups right and was designed
