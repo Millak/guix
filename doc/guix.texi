@@ -12614,6 +12614,30 @@ path, and the last one is created from the given file-like object.
 This form has @emph{lexical} scope: it has an effect on the gexps
 directly defined in @var{body}@dots{}, but not on those defined, say, in
 procedures called from @var{body}@dots{}.
+
+@quotation Caveat
+It is important to distinguish between modules available in the build
+environment and modules in scope.  The @code{with-imported-modules} form
+pulls modules in the build environment of the gexp but it does
+@emph{not} import them.  To do so, you still need to use
+@code{use-modules} in the gexp:
+
+@lisp
+(with-imported-modules '((guix build utils))
+  #~(begin
+      (use-modules (guix build utils))
+      @dots{}))
+@end lisp
+
+@xref{Using Guile Modules,,, guile, GNU Guile Reference Manual}, for
+more information on @code{use-modules}.
+
+Likewise, to import a module provided by Guile---e.g., @code{(srfi
+srfi-1)}---add a @code{use-modules} form in your gexp.  Do @emph{not}
+add Guile-provided modules such as @code{(srfi srfi-1)} to a
+@code{with-imported-modules}; doing so would force a potentially
+incompatible version into your environment.
+@end quotation
 @end defmac
 
 @defmac with-extensions extensions body@dots{}
