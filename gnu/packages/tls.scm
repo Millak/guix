@@ -151,14 +151,14 @@ in intelligent transportation networks.")
 (define-public p11-kit
   (package
     (name "p11-kit")
-    (version "0.25.5")
+    (version "0.26.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/p11-glue/p11-kit/releases/"
                            "download/" version "/p11-kit-" version ".tar.xz"))
        (sha256
-        (base32 "1rcq2578aq3ag288qnvdmj4a2wbihncndbr6iw0vxcfda1jail04"))))
+        (base32 "0a7qxkfaj7ayq5b3vw850h6ndr88f37ygmbk3qaa64s8v929zz89"))))
     (build-system gnu-build-system)
     (native-inputs
      (list nss-certs                    ;default certificates
