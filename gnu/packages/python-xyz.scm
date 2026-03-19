@@ -119,7 +119,7 @@
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
-;;; Copyright © 2022, 2024, 2025 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2022, 2024-2026 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2022 drozdov <drozdov@portalenergy.tech>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022, 2023 Wamm K. D. <jaft.r@outlook.com>
@@ -21291,6 +21291,29 @@ format.")
 Protocol) 0-9-1 protocol that tries to stay fairly independent of the underlying
 network support library.")
     (license license:bsd-3)))
+
+(define-public python-pykka
+  (package
+    (name "python-pykka")
+    (version "4.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jodal/pykka")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15z6x31269l0zbxjv8afgi34smrh5fd3iwbjyh1342msry6msgla"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-hatchling python-pytest python-pytest-mock))
+    (home-page "https://pykka.readthedocs.io")
+    (synopsis "Implementation of the actor model")
+    (description
+     "Pykka implements the actor model in Python, which introduces some simple
+rules to control the sharing of state and cooperation between execution units,
+and makes it easier to build concurrent applications.")
+    (license license:asl2.0)))
 
 ;; WARNING: This package is a dependency of mesa.
 (define-public python-ply
