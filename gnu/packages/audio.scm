@@ -8208,33 +8208,6 @@ but it also helps for other programs.  It offers a patchbay for visualizing
 and editing connections.")
     (license license:gpl2+)))
 
-(define-public streamripper
-  (package
-    (name "streamripper")
-    (version "1.64.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://sourceforge.net/projects/streamripper"
-                           "/files/streamripper%20(current)/"
-                           version "/streamripper-" version ".tar.gz"))
-       (sha256
-        (base32 "0hnyv3206r0rfprn3k7k6a0j959kagsfyrmyjm3gsf3vkhp5zmy1"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Delete bundled copy of libmad.
-        '(delete-file-recursively "libmad-0.15.1b"))))
-    (build-system gnu-build-system)
-    (native-inputs (list pkg-config))
-    (inputs (list faad2 glib libmad libvorbis))
-    (home-page "https://streamripper.sourceforge.net")
-    (synopsis "Record audio streams to your hard drive")
-    (description "Streamripper records shoutcast-compatible
-streams.  For shoutcast style streams it finds the “meta data” or track
-separation data, and uses that as a marker for where the track should
-be separated.")
-    (license license:gpl2+)))
-
 (define-public cubeb
   (let ((commit "9e29d728b0025c674904f83f5a13a88d1a6a5edc")
         (revision "1"))
