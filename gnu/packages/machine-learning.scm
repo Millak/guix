@@ -6589,13 +6589,17 @@ inference.")
 (define-public python-linear-operator
   (package
     (name "python-linear-operator")
-    (version "0.6")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "linear_operator" version))
-              (sha256
-               (base32
-                "0m56f3zrm8xh1bpwh4g7jfc79rf4j94g6zmz663b58pig4w6dqm9"))))
+    (version "0.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cornellius-gp/linear_operator/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1pfk4mdkvm75lyyb7zmq9pxclhica7fkk4cyvkpz8jncgimvh5qs"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-jaxtyping
                              python-mpmath
@@ -6604,8 +6608,7 @@ inference.")
     (native-inputs (list python-pytest
                          python-setuptools
                          python-setuptools-scm
-                         python-typeguard
-                         python-wheel))
+                         python-typeguard))
     (home-page "https://github.com/cornellius-gp/linear_operator/")
     (synopsis "Linear operator implementation")
     (description "LinearOperator is a PyTorch package for abstracting away the
