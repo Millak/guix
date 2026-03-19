@@ -3692,47 +3692,46 @@ runs a command whenever it detects modifications.")
     (arguments
      (list
        #:install-source? #f
+       #:modules
+       '((guix build cargo-build-system)
+         (guix build utils)
+         (ice-9 match))
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'install 'install-completions
-             (lambda* (#:key native-inputs #:allow-other-keys)
-               (let ((share (string-append #$output "/share"))
-                     (rbw (if #$(%current-target-system)
-                              (search-input-file native-inputs "/bin/rbw")
-                              (string-append #$output "/bin/rbw"))))
-                 (mkdir-p (string-append #$output "/etc/bash_completion.d"))
-                 (with-output-to-file
-                   (string-append #$output "/etc/bash_completion.d/rbw")
-                   (lambda _ (invoke rbw "gen-completions" "bash")))
-                 (mkdir-p (string-append share "/fish/vendor_completions.d"))
-                 (with-output-to-file
-                   (string-append share "/fish/vendor_completions.d/rbw.fish")
-                   (lambda _ (invoke rbw "gen-completions" "fish")))
-                 (mkdir-p (string-append share "/zsh/site-functions"))
-                 (with-output-to-file
-                   (string-append share "/zsh/site-functions/_rbw")
-                   (lambda _ (invoke rbw "gen-completions" "zsh")))
-                 (mkdir-p (string-append share "/elvish/lib"))
-                 (with-output-to-file
-                   (string-append share "/elvish/lib/rbw")
-                   (lambda _ (invoke rbw "gen-completions" "elvish"))))))
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (for-each
+               (match-lambda
+                 ((shell . path)
+                  (mkdir-p (in-vicinity #$output (dirname path)))
+                  (let ((binary
+                         (if #$(%current-target-system)
+                             (search-input-file native-inputs "bin/rbw")
+                             (in-vicinity #$output "bin/rbw"))))
+                    (with-output-to-file (in-vicinity #$output path)
+                      (lambda _
+                        (invoke binary "gen-completions" shell))))))
+               '(("bash"    . "share/bash-completion/completions/rbw")
+                 ("elvish"  . "share/elvish/lib/rbw")
+                 ("fish"    . "share/fish/vendor_completions.d/rbw.fish")
+                 ("nushell" . "share/nushell/vendor/autoload/rbw")
+                 ("zsh"     . "share/zsh/site-functions/_rbw")))))
            (add-after 'install 'install-scripts
              (lambda* (#:key inputs #:allow-other-keys)
-               (for-each (lambda (file)
-                           (install-file file (string-append #$output:scripts "/bin")))
-                         (find-files "bin"))
-               (for-each (lambda (file)
-                           (wrap-script file
-                             ;; TODO: Do we want to wrap these with more programs?
-                             ;; pass git fzf libsecret xclip rofi
-                             `("PATH" prefix
-                                (,(string-append #$output "/bin")
-                                 ,(dirname (search-input-file inputs "/bin/grep"))
-                                 ,(dirname (search-input-file inputs "/bin/sed"))
-                                 ,(dirname (search-input-file inputs "/bin/perl"))
-                                 ,(dirname (search-input-file inputs "/bin/xargs"))
-                                 ,(dirname (search-input-file inputs "/bin/sort"))))))
-                         (find-files (string-append #$output:scripts "/bin"))))))))
+               (for-each
+                 (lambda (file)
+                   (wrap-script file
+                     ;; TODO: Do we want to wrap these with more programs?
+                     ;; pass git fzf libsecret xclip rofi
+                     `("PATH" prefix
+                       (,(string-append #$output "/bin")
+                        ,(dirname (search-input-file inputs "/bin/grep"))
+                        ,(dirname (search-input-file inputs "/bin/sed"))
+                        ,(dirname (search-input-file inputs "/bin/perl"))
+                        ,(dirname (search-input-file inputs "/bin/xargs"))
+                        ,(dirname (search-input-file inputs "/bin/sort")))))
+                   (install-file file (string-append #$output:scripts "/bin")))
+                 (find-files "bin")))))))
     (native-inputs
      (cons* perl (if (%current-target-system)
                    (list this-package)
