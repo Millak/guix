@@ -382,10 +382,12 @@ devices.")
             ;; - cloud.google.com/go/auth
             ;; - cloud.google.com/go/auth/oauth2adapt
             ;; - cloud.google.com/go/compute/metadata
+            ;; - cloud.google.com/go/longrunning
             ;; - cloud.google.com/go/storage
             (for-each delete-file-recursively
                       (list "auth"
                             "compute/metadata"
+                            "longrunning"
                             "storage"))))))
     (build-system go-build-system)
     (arguments
@@ -421,15 +423,12 @@ devices.")
               "internal/tracecontext"
               "internal/uid"
               "internal/version"
-              "longrunning"
               "pubsub/internal/distribution"
               "pubsub/internal/scheduler"
               "pubsub/internal/testutil"
               "pubsub/v2/internal/distribution"
               "pubsub/v2/internal/scheduler"
               "pubsub/v2/internal/testutil"
-              "pubsublite/internal/test"
-              "pubsublite/internal/wire"
               "rpcreplay"
               "spanner/spansql"
               "translate")))
@@ -585,6 +584,52 @@ cloud.google.com/go/auth and golang.org/x/oauth2.")
     (description
      "This package provides access to Google Compute Engine (GCE) metadata and
 API service accounts for Go.")
+    (license license:asl2.0)))
+
+(define-public go-cloud-google-com-go-longrunning
+  (package
+    (name "go-cloud-google-com-go-longrunning")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/google-cloud-go")
+              (commit (go-version->git-ref version #:subdir "longrunning"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ykr9kj0sbb4w0h190lp9gcxppv18dp0d5ak2g93dky8hjyc2wfa"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-all-but "." "longrunning")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "cloud.google.com/go/longrunning"
+      #:unpack-path "cloud.google.com/go"))
+    (propagated-inputs
+     (list go-cloud-google-com-go
+           go-github-com-googleapis-gax-go-v2
+           go-google-golang-org-api
+           go-google-golang-org-genproto
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://cloud.google.com/go")
+    (synopsis "Helper library for working with long running operations")
+    (description
+     "Package longrunning supports Long Running Operations for the Google
+Cloud Libraries.  See google.golang.org/genproto/googleapis/longrunning for
+its service definition.")
     (license license:asl2.0)))
 
 (define-public go-cloud-google-com-go-storage
