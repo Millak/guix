@@ -105,7 +105,9 @@
                      (lambda* (#:key outputs #:allow-other-keys)
                        (substitute* "cfgcache.pm"
                          (("/usr/local")
-                          #$output)))))))
+                          #$output)
+                         (("\\$cfg\\{'TMPSPACE'\\} = q'[^']*'")
+                          "$cfg{'TMPSPACE'} = q'/tmp'")))))))
     (inputs (list perl netpbm ghostscript))
     (synopsis "LaTeX documents to HTML")
     (description "LaTeX2HTML is a utility that converts LaTeX documents to web
