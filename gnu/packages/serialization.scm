@@ -23,6 +23,7 @@
 ;;; Copyright © 2024, 2025 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2025-2026 Hennadii Stepanov <hebasto@gmail.com>
 ;;; Copyright © 2025 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -59,6 +60,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
@@ -74,7 +76,8 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages qt)
-  #:use-module (gnu packages time))
+  #:use-module (gnu packages time)
+  #:use-module (gnu packages web))
 
 (define-public avro-cpp
   (package
@@ -1180,3 +1183,28 @@ pure Python module.")
     (license license:bsd-3)
     (properties '((tunable? . #t)))))
 
+(define-public vali
+  (package
+    (name "vali")
+    (version "0.1.1")
+    (home-page "https://gitlab.freedesktop.org/emersion/vali")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xycciy9f2iz41w8vrj0w0pan75x3hfgb15g67262kw7ga5lkfxv"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list aml json-c))
+    ;; needed by pkg-config, but guix store paths are not referenced
+    ;; in the output
+    (propagated-inputs (list aml json-c))
+    (synopsis "Varlink C implementation and code generator")
+    (description
+     "This package provides a C implementation of the varlink
+interface description protocol and a code generator.")
+    (license license:expat)))
