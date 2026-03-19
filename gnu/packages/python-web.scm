@@ -9416,6 +9416,32 @@ grammar of CSS but doesn’t know specific rules, properties or values supported
 in various CSS modules.")
     (license license:bsd-3)))
 
+(define-public python-tinyhtml5
+  (package
+    (name "python-tinyhtml5")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/CourtBouillon/tinyhtml5")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1q8z2ym2q6083ky0f9vwf73k3gimffnbfwlpmd69bp6anc4fa81x"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-webencodings))
+    (native-inputs
+     (list python-flit-core
+           python-pytest))
+    (home-page "https://github.com/CourtBouillon/tinyhtml5")
+    (synopsis "Small HTML parser based on the WHATWG HTML specification")
+    (description "This Python module is a HTML5 parser that transforms a
+possibly malformed HTML document into an ElementTree tree.  This module is a
+simplified fork of html5lib.")
+    (license license:expat)))
+
 (define-public python-cssselect2
   (package
     (name "python-cssselect2")
