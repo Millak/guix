@@ -3878,7 +3878,7 @@ compositors that support the layer-shell protocol.")
        (sha256
         (base32 "032mca5sj3nk1dkyjrpr3w5xxm0ig7m3r0sq0s7pnlx0bhs35b0p"))))
     (build-system meson-build-system)
-    (inputs (list libscfg libvarlink wayland))
+    (inputs (list libscfg vali wayland))
     (native-inputs (append (if (%current-target-system)
                                (list pkg-config-for-build)
                                (list))
