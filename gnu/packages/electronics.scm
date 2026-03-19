@@ -206,10 +206,6 @@
                   `("GI_TYPELIB_PATH" ":" prefix
                     (,(getenv "GI_TYPELIB_PATH")))))))))
       (native-inputs
-       ;; XXX: Test runner may be migrated to Pytest
-       ;; <https://docs.pytest.org/en/7.1.x/how-to/nose.html> after report to
-       ;; the upstream to modify them, use deprecated Nose test runner for
-       ;; now.
        (list python-pynose
              python-setuptools
              xvfb-run))
@@ -220,7 +216,7 @@
              python-platformdirs
              python-pycairo
              python-pyclip
-             python-pygobject
+             python-pygobject-3.50
              python-pypubsub))
       (home-page "https://github.com/Blokkendoos/AACircuit")
       (synopsis "Draw electronic circuits with ASCII characters")
