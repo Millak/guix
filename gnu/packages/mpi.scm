@@ -186,15 +186,17 @@ bind processes, and much more.")
                      (append opencl-headers)
                      (append bash)))              ;for completion tests
     (inputs (modify-inputs inputs
-              (append level-zero)
               ;; XXX: rocm-smi requires libdrm/drm.h but doesn't propagate a
               ;; package providing these. For now, libdrm is used to provide
               ;; this header.
               (append libdrm)
-              (append libxml2)
               (append opencl-icd-loader)
               (append rocm-smi-lib)
               (delete "numactl")))               ;libnuma is no longer needed.
+    (propagated-inputs (modify-inputs propagated-inputs
+                         ;; hwloc.pc lists libze_loader and libxml2 in
+                         ;; 'Requires.private' in 'hwloc.pc'.
+                         (append level-zero libxml2)))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:configure-flags flags '())
