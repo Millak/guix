@@ -89,6 +89,7 @@
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages cpio)
   #:use-module (gnu packages cran)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
@@ -11485,7 +11486,7 @@ accessed/downloaded on demand across HTTP.")
                                        "/bin/")))
                (install-file "plink" bin)))))))
     (inputs
-     (list zlib openblas))
+     (list zlib libxcrypt openblas))
     (native-inputs
      (list unzip gcc-8))
     (home-page "http://pngu.mgh.harvard.edu/~purcell/plink/")
