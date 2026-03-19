@@ -2205,119 +2205,120 @@ and not by the available RAM.")
 @code{parform}, a version of FORM parallelized using OpenMPI."))))
 
 (define-public reduce
-  (package
-    (name "reduce")
-    (version "2026-03-11")
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                     (url "https://svn.code.sf.net/p/reduce-algebra/code/trunk")
-                     (revision 7333)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "04n7z6abfpqxgmdc1vpv2yy4qccvyxdp6klld94wr740dv8r49l2"))
-              (modules '((guix build utils)))
-              (patches (search-patches "reduce-unbundle-libffi.patch"))
-              (snippet '(map delete-file-recursively
-                             (append (find-files "csl/generated-c" "\\.img$")
-                                     '("common-lisp"
-                                       "contrib"
-                                       "csl/embedded"
-                                       "csl/new-embedded"
-                                       "csl/support-packages"
-                                       "csl/winbuild"
-                                       "generic/breduce"
-                                       "generic/casefold"
-                                       "generic/emacs"
-                                       "generic/qreduce"
-                                       "generic/rbench"
-                                       "generic/rlsmt"
-                                       "generic/texmacs"
-                                       "jlisp"
-                                       "jslisp"
-                                       "libedit"
-                                       "libraries/asmjit"
-                                       "libraries/C-Quadratic-Sieve"
-                                       "libraries/core-math"
-                                       ;; "libraries/crlibm"
-                                       ;; "libraries/libedit-20140620-3.1"
-                                       "libraries/libedit-20210216-3.1"
-                                       "libraries/libffi"
-                                       "libraries/original"
-                                       ;; "libraries/SoftFloat-3a"
-                                       "libraries/SoftFloat-3e"
-                                       "libraries/webview"
-                                       "libraries/wineditline"
-                                       "macbuild"
-                                       "MacPorts"
-                                       "mac-universal"
-                                       "psl"
-                                       "reduce2"
-                                       "reduce2-2025"
-                                       "vsl"
-                                       "web"
-                                       "winbuild64"
-                                       "windows-config-cache"))))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:parallel-build? #f
-           #:configure-flags
-           #~(list "--without-autogen"
-                   ;; fix conflict with internal build name determination
-                   "--build="
-                   "--with-csl"
-                   (string-append "CPPFLAGS=-I"
-                                  #$freetype
-                                  "/include/freetype2"))
-           #:make-flags #~(list "csl")
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "scripts/testall.sh" "--csl" "--noregressions"))))
-               (add-before 'patch-source-shebangs 'autogen
-                 (lambda _
-                   (invoke "sh" "autogen.sh")))
-               (add-after 'autogen 'fix-version
-                 (lambda _
-                   (substitute* "csl/cslbase/version.h"
-                     (("(#define VERSION_ID )\"\\$Id\\$\"" all def)
-                      (format #f
-                              "~a \"$Id: version.h ~a ~a 00:00:00Z somebody $\""
-                              def 7333 #$version)))))
-               (add-after 'install 'fix-install
-                 (lambda _
-                   (copy-file "bin/rfcsl"
-                              (string-append #$output "/bin/rfcsl"))
-                   (copy-file "generic/newfront/redfront.1"
-                              (string-append #$output
-                                             "/share/man/man1/rfcsl.1"))
-                   (let ((.desktop-file
-                          "debianbuild/reduce/debian/redcsl.desktop")
-                         (icon "debianbuild/reduce/debian/reduce.png"))
-                     (install-file .desktop-file
-                                   (string-append #$output
-                                                  "/share/applications"))
-                     (install-file icon
-                                   (string-append
-                                    #$output
-                                    "/share/icons/hicolor/32x32/apps")))
-                   (with-directory-excursion #$output
-                     (map (lambda (dir)
-                            (map (lambda (file)
-                                   (chmod file #o444))
-                                 (find-files dir)))
-                          '("share/man/man1" "share/reduce/fonts"))))))))
-    (native-inputs (list autoconf automake libtool which))
-    (inputs
-     ;; bundled libraries: fox (adjusted) editline (adjusted)
-     ;; crlibm softfloat
-     (list freetype libffi libx11 libxext libxft ncurses))
-    (synopsis "Portable general-purpose computer algebra system")
-    (description
-     "REDUCE is a portable general-purpose computer algebra system.  It is a
+  (let ((revision 7333))
+    (package
+      (name "reduce")
+      (version "2026-03-11")
+      (source (origin
+                (method svn-fetch)
+                (uri (svn-reference
+                       (url "https://svn.code.sf.net/p/reduce-algebra/code/trunk")
+                       (revision revision)))
+                (file-name (string-append name "-" version "-checkout"))
+                (sha256
+                 (base32
+                  "04n7z6abfpqxgmdc1vpv2yy4qccvyxdp6klld94wr740dv8r49l2"))
+                (modules '((guix build utils)))
+                (patches (search-patches "reduce-unbundle-libffi.patch"))
+                (snippet '(map delete-file-recursively
+                               (append (find-files "csl/generated-c" "\\.img$")
+                                       '("common-lisp"
+                                         "contrib"
+                                         "csl/embedded"
+                                         "csl/new-embedded"
+                                         "csl/support-packages"
+                                         "csl/winbuild"
+                                         "generic/breduce"
+                                         "generic/casefold"
+                                         "generic/emacs"
+                                         "generic/qreduce"
+                                         "generic/rbench"
+                                         "generic/rlsmt"
+                                         "generic/texmacs"
+                                         "jlisp"
+                                         "jslisp"
+                                         "libedit"
+                                         "libraries/asmjit"
+                                         "libraries/C-Quadratic-Sieve"
+                                         "libraries/core-math"
+                                         ;; "libraries/crlibm"
+                                         ;; "libraries/libedit-20140620-3.1"
+                                         "libraries/libedit-20210216-3.1"
+                                         "libraries/libffi"
+                                         "libraries/original"
+                                         ;; "libraries/SoftFloat-3a"
+                                         "libraries/SoftFloat-3e"
+                                         "libraries/webview"
+                                         "libraries/wineditline"
+                                         "macbuild"
+                                         "MacPorts"
+                                         "mac-universal"
+                                         "psl"
+                                         "reduce2"
+                                         "reduce2-2025"
+                                         "vsl"
+                                         "web"
+                                         "winbuild64"
+                                         "windows-config-cache"))))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:parallel-build? #f
+             #:configure-flags
+             #~(list "--without-autogen"
+                     ;; fix conflict with internal build name determination
+                     "--build="
+                     "--with-csl"
+                     (string-append "CPPFLAGS=-I"
+                                    #$freetype
+                                    "/include/freetype2"))
+             #:make-flags #~(list "csl")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (replace 'check
+                   (lambda* (#:key tests? #:allow-other-keys)
+                     (when tests?
+                       (invoke "scripts/testall.sh" "--csl" "--noregressions"))))
+                 (add-before 'patch-source-shebangs 'autogen
+                   (lambda _
+                     (invoke "sh" "autogen.sh")))
+                 (add-after 'autogen 'fix-version
+                   (lambda _
+                     (substitute* "csl/cslbase/version.h"
+                       (("(#define VERSION_ID )\"\\$Id\\$\"" all def)
+                        (format #f
+                                "~a \"$Id: version.h ~a ~a 00:00:00Z somebody $\""
+                                def #$revision #$version)))))
+                 (add-after 'install 'fix-install
+                   (lambda _
+                     (copy-file "bin/rfcsl"
+                                (string-append #$output "/bin/rfcsl"))
+                     (copy-file "generic/newfront/redfront.1"
+                                (string-append #$output
+                                               "/share/man/man1/rfcsl.1"))
+                     (let ((.desktop-file
+                            "debianbuild/reduce/debian/redcsl.desktop")
+                           (icon "debianbuild/reduce/debian/reduce.png"))
+                       (install-file .desktop-file
+                                     (string-append #$output
+                                                    "/share/applications"))
+                       (install-file icon
+                                     (string-append
+                                      #$output
+                                      "/share/icons/hicolor/32x32/apps")))
+                     (with-directory-excursion #$output
+                       (map (lambda (dir)
+                              (map (lambda (file)
+                                     (chmod file #o444))
+                                   (find-files dir)))
+                            '("share/man/man1" "share/reduce/fonts"))))))))
+      (native-inputs (list autoconf automake libtool which))
+      (inputs
+       ;; bundled libraries: fox (adjusted) editline (adjusted)
+       ;; crlibm softfloat
+       (list freetype libffi libx11 libxext libxft ncurses))
+      (synopsis "Portable general-purpose computer algebra system")
+      (description
+       "REDUCE is a portable general-purpose computer algebra system.  It is a
 system for doing scalar, vector and matrix algebra by computer, which also
 supports arbitrary precision numerical approximation and interfaces to
 gnuplot to provide graphics.  It can be used interactively for simple
@@ -2326,9 +2327,9 @@ similar to other modern programming languages.  REDUCE supports alternative
 user interfaces including Run-REDUCE, TeXmacs and GNU Emacs.  This package
 provides the Codemist Standard Lisp (CSL) version of REDUCE.  It uses the
 gnuplot program, if installed, to draw figures.")
-    (home-page "https://reduce-algebra.sourceforge.io/")
-    (license (license:non-copyleft "file://README"
-                                   "See README in the distribution."))))
+      (home-page "https://reduce-algebra.sourceforge.io/")
+      (license (license:non-copyleft "file://README"
+                                     "See README in the distribution.")))))
 
 (define-public msolve
   (package
