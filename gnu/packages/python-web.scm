@@ -9387,7 +9387,7 @@ the non-map-specific features.  It can be used to generate HTML + JS.")
 (define-public python-tinycss2
   (package
     (name "python-tinycss2")
-    (version "1.4.0")
+    (version "1.5.1")
     (source
      (origin
        (method git-fetch)
@@ -9397,15 +9397,14 @@ the non-map-specific features.  It can be used to generate HTML + JS.")
              (recursive? #true)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11m5vhpdz6zlzq2lqqklkhd0h4jxblpvcrdf9cc4s06nhr9acp0r"))))
+        (base32 "1ww5m8rmpva9mq04cz1h9rx76vg2h5nnijzi0vprf5wzp8g9snb5"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-flit
-           python-pytest
-           python-pytest-cov))
+           python-pytest))
     (propagated-inputs
      (list python-webencodings))
-    (home-page "https://tinycss2.readthedocs.io/")
+    (home-page "https://doc.courtbouillon.org/tinycss2/stable/")
     (synopsis "Low-level CSS parser for Python")
     (description "@code{tinycss2} can parse strings, return Python objects
 representing tokens and blocks, and generate CSS strings corresponding to
