@@ -21187,21 +21187,16 @@ polymorphisms) and indels with respect to a reference genome and more.")
 (define-public cnvkit
   (package
     (name "cnvkit")
-    ;; XXX: Compatability with NumPy 2 and Pomegranate 1.
-    (properties '((commit . "52f367bd0edbf55cabaaa2fbcf68c8742dc97b4c")
-                  (revision . "0")))
-    (version (git-version "0.9.12"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "0.9.13")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/etal/cnvkit")
-              (commit (assoc-ref properties 'commit))))
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kr5r2nvvlip6mylwczck7ddn31l2xh9aal1xjzx036h71agrv27"))))
+        (base32 "0w81yl5v37r63d035mxdsycma8fgssyr0857rnvvjfw78wjjnvg9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
