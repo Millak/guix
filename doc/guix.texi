@@ -12528,6 +12528,13 @@ package available on the build side, here's how you would do it:
                         @dots{})))
 @end lisp
 
+@quotation Going Further
+To learn more about the design of g-expressions, read
+@c https://dx.doi.org/10.1145/3136040.3136045 goes to ACM
+@uref{https://arxiv.org/abs/1709.00833, @i{Code Staging in
+GNU@tie{}Guix}} (2017).
+@end quotation
+
 The syntactic form to construct gexps is summarized below.
 
 @defmac #~@var{exp}
