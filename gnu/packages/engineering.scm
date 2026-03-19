@@ -1000,7 +1000,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "9.0.7")
+    (version "9.0.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1008,7 +1008,7 @@ Emacs).")
                     (commit version)))
               (sha256
                (base32
-                "0glsdq5c54d2sif0jmpym79i6vham5w3kzcvcr0yq5nimqig7h0q"))
+                "1b995p0qb9cjpj0n3x3szbqr6d7fxwmrp2nbx37y7ym2bc1lpxd8"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1125,7 +1125,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1b03mc5ad0w3lhgig131jkfa243mlkzk9myjyr78lhqw07k7sxk2"))))
+                "07g80p1igp8j3kh3qpmqd150i9950w1143yhncwik2ypccwjdfjy"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
@@ -1202,7 +1202,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bv1k8i01x7gyayrlkzl3d2nsf7mcdmzx8gjwx1i2va9557rgli9"))))
+                "1j26dmgz7xfixlqrzclb1wpc6zkd10n1fq7rmdrgwwx083p3c7a8"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
