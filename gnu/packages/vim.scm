@@ -1781,9 +1781,10 @@ assuming you have this executable in your path.")
         (base32 "0i7gr33q85mg1znf2383lqan7cbsb2kh7k9hzzb62yjmgj1yvgmg"))))
     (build-system qt-build-system)
     (native-inputs (list doxygen graphviz xvfb-run))
-    (inputs (list msgpack-c neovim python qtbase qtsvg))
+    (inputs (list msgpack-c neovim python qtsvg))
     (arguments
      (list
+      #:qtbase qtbase
       #:configure-flags
       #~(list "-DWITH_QT:STRING=Qt6" "-DUSE_SYSTEM_MSGPACK:BOOL=ON"
               "-DENABLE_TESTS:BOOL=ON")
