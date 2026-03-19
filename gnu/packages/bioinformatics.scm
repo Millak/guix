@@ -11488,7 +11488,7 @@ accessed/downloaded on demand across HTTP.")
     (inputs
      (list zlib libxcrypt openblas))
     (native-inputs
-     (list unzip gcc-8))
+     (list unzip gcc-7))
     (home-page "http://pngu.mgh.harvard.edu/~purcell/plink/")
     (synopsis "Whole genome association analysis toolset")
     (description
