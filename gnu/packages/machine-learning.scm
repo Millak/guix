@@ -1752,7 +1752,7 @@ unsupervised text tokenizer.")))
 (define-public python-sentence-transformers
   (package
     (name "python-sentence-transformers")
-    (version "5.1.2")
+    (version "5.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1762,7 +1762,7 @@ unsupervised text tokenizer.")))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0n873pw0c9mkn3z1i9par6y6c0q6mvgiwvcjy74jv0swc2cpilhl"))))
+         "0cd04d2zd21mbwlb5sjz8h50zpb57z9cmbznl4spyf7vj66nxzn5"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))        ;network access is required
@@ -1775,7 +1775,7 @@ unsupervised text tokenizer.")))
                              python-scipy
                              python-tqdm
                              python-transformers))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://www.SBERT.net")
     (synopsis "Multilingual text embeddings")
     (description "This framework provides an easy method to compute dense
