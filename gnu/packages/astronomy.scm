@@ -8443,13 +8443,16 @@ solar physics.")
 (define-public python-regularizepsf
   (package
     (name "python-regularizepsf")
-    (version "1.1.1")
+    (version "1.1.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "regularizepsf" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/punch-mission/regularizepsf")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1dd50dam227ifhf4d81nr0fgb9gwxrihs80svbwd86f18x5jlnwi"))))
+        (base32 "0xafn4ljzcvwmjl934c74hxrhl73grwyd2i8gng9kpl7xlqky0dk"))))
     (build-system pyproject-build-system)
     ;; tests: 61 passed, 26 warnings
     (native-inputs
