@@ -10091,13 +10091,16 @@ Institute, STScI} utility functions.")
 (define-public python-stsynphot
   (package
     (name "python-stsynphot")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "stsynphot" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spacetelescope/stsynphot_refactor")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1hkpk27wrkhfxngzq1qdpza0i95lcs9bvxsyyf1bn45nw85ljajy"))))
+        (base32 "15jxb2b1172xlh041bvs8316qmqbg26nxjgfyxvl8280zwyqiwvh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -10110,10 +10113,7 @@ Institute, STScI} utility functions.")
       ;; <https://archive.stsci.edu/hlsp/reference-atlases>.
       #:tests? #f))
     (native-inputs
-     (list python-pytest
-           python-pytest-astropy
-           python-pytest-astropy-header
-           python-setuptools
+     (list python-setuptools
            python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
