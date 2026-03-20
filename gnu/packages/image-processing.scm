@@ -1436,21 +1436,20 @@ libraries designed for computer vision research and implementation.")
                 ;; RUNPATHs contain the *build directory* of
                 ;; PY_SITE_PACKAGES_PATH/itk.
                 "-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON"
-                "-DITK_WRAPPING=ON"
-                "-DITK_WRAP_PYTHON=ON"
                 "-DITK_DYNAMIC_LOADING=ON"
-                (let* ((python-version
-                         #$(version-major+minor
-                             (package-version
-                               (this-package-input "python"))))
-                       (python-lib-path (string-append #$output:python
-                                                       "/lib/python"
-                                                       python-version
-                                                       "/site-packages")))
-                  (string-append "-DPY_SITE_PACKAGES_PATH="
-                                 python-lib-path))
-                ;; Python is not built with Py_LIMITED_API.
-                "-DITK_USE_PYTHON_LIMITED_API=OFF"
+                #$@(if (this-package-input "python")
+                       (list "-DITK_WRAPPING=ON"
+                             "-DITK_WRAP_PYTHON=ON"
+                             #~(string-append
+                                "-DPY_SITE_PACKAGES_PATH=" #$output:python
+                                "/lib/python"
+                                #$(version-major+minor
+                                   (package-version
+                                    (this-package-input "python")))
+                                "/site-packages")
+                         ;; Python is not built with Py_LIMITED_API.
+                         "-DITK_USE_PYTHON_LIMITED_API=OFF")
+                       '())
                 "-DModule_MorphologicalContourInterpolation=ON"
                 "-DModule_SimpleITKFilters=ON"
                 "-DModule_GenericLabelInterpolator=ON"
@@ -1595,26 +1594,19 @@ combine the information contained in both.")
 
 ;; Provide variant of insight-toolkit (ITK) built with ITK_LEGACY_REMOVE=OFF.
 ;; ITK-SNAP version 4.2.2 and 4.4.0-alpha3 require ITK >= 5.4 and for ITK to
-;; be built this way.  Note that enabling Python wrapping forces this option
-;; to ON, so Python wrapping is not enabled for this build.
+;; be built this way.  Note that Python wrapping forces ITK_LEGACY_REMOVE=ON,
+;; so ITK_WRAPPING=ON and ITK_WRAP_PYTHON=ON are not set for this build.
 (define-public insight-toolkit-legacy
   (hidden-package
    (package/inherit insight-toolkit
-     ;; Unfortunately we cannot remove the 'python output because it is
-     ;; referenced in #:configure-flags below.
      (name "insight-toolkit-legacy")
+     (outputs (delete "python" (package-outputs insight-toolkit)))
      (arguments
-      (substitute-keyword-arguments (package-arguments insight-toolkit)
+      (substitute-keyword-arguments arguments
         ((#:configure-flags cf '())
          #~(filter (lambda (flag)
                      (not (or
-                           ;; Remove these flags to restore the default
-                           ;; ITK_LEGACY_REMOVE=OFF.
-                           (string=? "-DITK_WRAPPING=ON" flag)
-                           (string=? "-DITK_WRAP_PYTHON=ON" flag)
                            ;; These flags are now unused.
-                           (string-prefix? "-DPY_SITE_PACKAGES_PATH=" flag)
-                           (string-prefix? "-DITK_USE_PYTHON_LIMITED_API=" flag)
                            (string-prefix? "-DITK_USE_SYSTEM_CASTXML=" flag)
                            (string-prefix? "-DITK_USE_SYSTEM_SWIG=" flag))))
                    #$cf))
