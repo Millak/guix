@@ -347,7 +347,6 @@ guix/scripts/import/pypi\.scm                      @guix/python
 tests/import/pypi\.scm                             @guix/python
 tests/toml\.scm                                    @guix/python
 
-gnu/ci\.scm                                        @guix/qa-packages
 gnu/packages/benchmark\.scm                        @guix/qa-packages
 gnu/packages/check\.scm                            @guix/qa-packages
 gnu/packages/ci\.scm                               @guix/qa-packages

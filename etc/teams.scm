@@ -991,8 +991,7 @@ perl-build-system as well as the rakudo-build-system."
         #:description
         "Quality assurance software (CI/CD, testing, analysis;
 no direct relation to Guix's QA)."
-        #:scope (list "gnu/ci.scm"
-                      "gnu/packages/benchmark.scm"
+        #:scope (list "gnu/packages/benchmark.scm"
                       "gnu/packages/check.scm"
                       "gnu/packages/ci.scm"
                       "gnu/packages/code.scm"
