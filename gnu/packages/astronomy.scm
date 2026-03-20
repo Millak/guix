@@ -10150,57 +10150,33 @@ packages for HST.")
 (define-public python-stwcs
   (package
     (name "python-stwcs")
-    (version "1.7.6")
+    (version "1.7.7")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "stwcs" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spacetelescope/stwcs")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1yh65ih4k0lpp4m3jbvrmn91an1gv5khka65yhdv5fhghxbj85bx"))))
+        (base32 "0378c2xf5m7rgsg66nkanfa8xz5chf7rldfj0lld2akm1vs5hqgn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 24 passed, 36 deselected, 1 warning
+      ;; tests: 54 passed, 1 skipped, 5 deselected, 2 warnings
       #:test-flags
-      #~(list "-k" (string-join
-                    ;; XXX: Test requiring network access to download data
-                    ;; from <mast.stsci.edu>, check if the test data may be
-                    ;; obtained programmatically.
-                    (list "not test1SciExt"
-                          "testAllExt"
-                          "testHletFromSimpleFITS"
-                          "testHletFromString"
-                          "testSciExtList"
-                          "testSciExtNumList"
-                          "testWrongD2IMModel"
-                          "testWrongNPOLModel"
-                          "testWrongSIPModel"
-                          "test_add_radesys"
-                          "test_apply_as_alternate_method"
-                          "test_apply_as_primary_method"
-                          "test_apply_d2im"
-                          "test_db_connection"
-                          "test_db_timeout"
-                          "test_default"
-                          "test_new_obs"
-                          "test_no_HDRNAME_no_WCSNAME"
-                          "test_outwcs"
-                          "test_pipeline_sci1"
-                          "test_pipeline_sci2"
-                          "test_remove_d2im_distortion"
-                          "test_remove_npol_distortion"
-                          "test_remove_npol_distortion_hdulist"
-                          "test_repeate"
-                          "test_repeated_updatewcs_use_db"
-                          "test_restore_headerlet"
-                          "test_simple_sci1"
-                          "test_simple_sci2"
-                          "test_success_offsets"
-                          "test_update_d2im_distortion"
-                          "test_update_legacy_file"
-                          "test_update_stis_asn"
-                          "test_update_waiver_wfpc2")
-                    " and not "))))
+      #~(list #$@(map (lambda (ls) (string-append "--deselect=stwcs/tests/"
+                                                  (string-join ls "::")))
+                      ;; Network access is required to reach <mast.stsci.edu>.
+                      '(("test_altwcs.py" "TestAltWCS"
+                         "test_repeated_updatewcs_use_db")
+                        ("test_astrometrydb.py" "TestAstrometryDB"
+                         "test_new_obs")
+                        ("test_astrometrydb.py" "test_db_connection")
+                        ("test_astrometrydb.py" "test_db_timeout")
+                        ;; AssertionError: assert 'GSC240' == None
+                        ("test_astrometrydb.py" "TestAstrometryDB"
+                         "test_success_offsets"))))))
     (native-inputs
      (list nss-certs-for-test
            python-pytest
