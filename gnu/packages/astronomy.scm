@@ -10783,13 +10783,16 @@ cosmological simulations.")
 (define-public python-viresclient
   (package
     (name "python-viresclient")
-    (version "0.15.0")
+    (version "0.15.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "viresclient" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ESA-VirES/VirES-Python-Client")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1nhsn350v7wiys396kc7h5d1hi8wx6kagniplfdb8dz2zbsbaw1g"))))
+        (base32 "1gr8q59ici7plgazi47g9yyhpb48mh08l2qyragnw9m336qiy4dv"))))
     (build-system pyproject-build-system)
     ;; tests: 9 passed
     (native-inputs
