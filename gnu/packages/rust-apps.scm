@@ -49,6 +49,7 @@
 ;;; Copyright © 2025 dan <i@dan.games>
 ;;; Copyright © 2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
+;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3196,6 +3197,37 @@ modules and JavaScript.")
 are parsed concurrently using a thread pool to utilize all cpu cores.  A goal
 of the project is to be runnable on untrusted networks without crashing.")
     (license license:gpl3)))
+
+(define-public soundcloud-tui
+  (package
+    (name "soundcloud-tui")
+    (version "0.1.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/7ito/soundcloud-tui")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f2c98g3dhqh99xw1129jl3qw7ngfgiajhiq2c1vmc08qm0k36lc"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f))
+    (native-inputs
+     (list clang pkg-config))
+    (inputs
+     (cons* alsa-lib ffmpeg
+            (cargo-inputs 'soundcloud-tui)))
+    (home-page "https://github.com/7ito/soundcloud-tui")
+    (synopsis "SoundCloud client for terminal")
+    (description "@command{soundcloud-tui} is a @uref{https://soundcloud.com,
+SoundCloud} client for terminal, written in Rust.  It can search for tracks,
+users and playlists, browse your feed, likes and playlists, play audio with
+bundled native streaming, manage a queue and add tracks to playlists or liked
+songs, and use a fullscreen visualizer and customizable settings and
+keybindings.")
+    (license license:expat)))
 
 (define-public speakersafetyd
   (package
