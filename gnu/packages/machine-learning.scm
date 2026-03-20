@@ -583,15 +583,16 @@ sparsely connected networks.")
 (define-public libsvm
   (package
     (name "libsvm")
-    (version "336")
+    (version "337")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/cjlin1/libsvm/")
              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "03ns6frhfdcyl661ws1yqbzsa6m8wrmba544vlacghry2kg88hn2"))))
+        (base32 "0rd4balgr62jisml6q682klkcxn8f8mjc5rc69rl2bzvdbrk3xia"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -697,7 +698,7 @@ machine learning algorithms based on GPs.")
           (add-before 'build 'chdir
             (lambda _
               (chdir "python"))))))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list libsvm python-scipy))
     (synopsis "Python bindings of libSVM")))
 
