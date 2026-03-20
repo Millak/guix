@@ -46,6 +46,7 @@
 ;;; Copyright © 2024 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Adrien 'neox' Bourmault <neox@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1149,25 +1150,20 @@ simultaneously and therefore appear under the same nickname on IRC.")
 (define-public python-nbxmpp
   (package
     (name "python-nbxmpp")
-    (version "5.0.4")
+    (version "7.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "nbxmpp" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://dev.gajim.org/gajim/python-nbxmpp")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-         (base32 "04fnc743d523gb38mm1inii80agmpb9r6hvn3f8ygnj3yq7s2vhn"))))
+        (base32 "1n7b6yv2k89hsmhmx9pi7m8l3aq97xppaz3hm7mvqgvxnlw0c1kr"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: This probably should be an option for pyproject-build-system
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests? (invoke "python" "-m" "unittest" "-v")))))))
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
+    (arguments (list #:test-backend #~'unittest))
+    (propagated-inputs
+     (list python-setuptools))
     (inputs
      (list glib
            glib-networking
