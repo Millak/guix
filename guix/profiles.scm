@@ -1944,13 +1944,20 @@ MANIFEST."
             ;; but we have two: the one in /tmp containing all packages and
             ;; the one in #$output containing the generated font maps.  To
             ;; avoid having to merge ls-R files, we copy the generated stuff
-            ;; to /tmp and run mktexlsr only once.
+            ;; to /tmp.
+            ;;
+            ;; The ls-R database is generated with a low level call to "ls"
+            ;; command because "mktexlsr" doesn’t preserve alphabetic order,
+            ;; probably due to symlinks.  See also "texlive-local-tree"
+            ;; function from "tex.scm".
             (let ((a (string-append #$output "/share/texmf-dist"))
-                  (b "/tmp/texlive/share/texmf-dist")
-                  (mktexlsr #$(file-append texlive-scripts "/bin/mktexlsr")))
+                  (b "/tmp/texlive/share/texmf-dist"))
               (copy-recursively a b)
-              (invoke mktexlsr b)
-              (install-file (string-append b "/ls-R") a))))))
+              (with-directory-excursion b
+                (with-output-to-file "ls-R"
+                  (lambda ()
+                    (invoke "ls" "-1LAR" "./")))
+                (install-file "ls-R" a)))))))
   (with-monad %store-monad
     ;; `texlive-scripts' brings essential files to generate font maps.
     ;; Therefore, it must be present in the profile.  This check prevents
