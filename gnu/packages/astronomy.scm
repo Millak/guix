@@ -10684,17 +10684,20 @@ in @code{SWIFT} snapshots to enable efficient reading of sub-regions.")
 (define-public python-synphot
   (package
     (name "python-synphot")
-    (version "1.6.1")
+    (version "1.7.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "synphot" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spacetelescope/synphot_refactor")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "12rmm1hr1f0bsgqsqsa7bz4lfijsv4fd978cvgw5xk66a3266z7b"))))
+        (base32 "0dxfwhxv8wnnksj3hgh0k4rqzqwvjndwncbqfzp234hqg9isyz0q"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 406 passed, 29 skipped, 4 xfailed
+      ;; tests: 410 passed, 29 skipped, 4 xfailed
       #:test-flags
       #~(list "--pyargs" "synphot"
               ;; Not harmful deprecation warning as synphot is compatible with
