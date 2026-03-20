@@ -33,6 +33,7 @@
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Nguyễn Gia Phong <cnx@loang.net>
+;;; Copyright © 2025 Adrien 'neox' Bourmault <neox@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -719,7 +720,7 @@ python-axolotl.")
 (define-public python-omemo-dr
   (package
     (name "python-omemo-dr")
-    (version "1.0.1")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -728,7 +729,7 @@ python-axolotl.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gx0znbfvs8jg9s754hha81l8wpghswkfsqx2jzpgv6gigf3sm8z"))))
+        (base32 "18snryk95wyiz5jh5wa5x58yych9d8l9hmnqq828gsb5ncxq3szk"))))
     (build-system pyproject-build-system)
     (arguments (list #:test-backend #~'unittest))
     (propagated-inputs
