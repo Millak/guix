@@ -1183,7 +1183,7 @@ of xmpppy.")
 (define-public gajim
   (package
     (name "gajim")
-    (version "1.9.5")
+    (version "2.4.4")
     (source
      (origin
        (method url-fetch)
@@ -1191,7 +1191,7 @@ of xmpppy.")
                            (version-major+minor version)
                            "/gajim-" version ".tar.gz"))
        (sha256
-         (base32 "0g2nhy6ypj4jbz216sgiy37spq34bwa0ydn2g73fp9qnxfq4vpvz"))
+         (base32 "0s2jryg8c0ifgf88pfj7k1ifhl1l2fw4w8w80g7xh3qpk5gj7ml0"))
        (patches
          (search-patches "gajim-honour-GAJIM_PLUGIN_PATH.patch"))))
     (build-system pyproject-build-system)
@@ -1278,13 +1278,14 @@ of xmpppy.")
            glib-networking
            gsettings-desktop-schemas
            gsound
-           gspell
+           libspelling
+           libadwaita
            gstreamer
            gst-plugins-base
-           gtk+
-           gtksourceview-4
+           gst-plugins-good
+           gtk
+           gtksourceview
            gupnp-igd
-           libappindicator
            libnice
            libomemo
            libsecret
@@ -1295,6 +1296,7 @@ of xmpppy.")
            python-dbus-1.2
            python-emoji
            python-gssapi
+           python-httpx
            python-idna
            python-keyring
            python-nbxmpp
@@ -1306,7 +1308,8 @@ of xmpppy.")
            python-pygobject
            python-pyopenssl
            python-qrcode
-           python-sqlalchemy-2))
+           python-sqlalchemy-2
+           python-truststore))
     (propagated-inputs
      (list dconf))
     (synopsis "Fully-featured XMPP client")
