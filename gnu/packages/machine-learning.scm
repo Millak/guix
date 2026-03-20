@@ -832,7 +832,7 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
     (license license:asl2.0)))
 
 (define-public llama-cpp
-  (let ((tag "b8411"))                  ;sync with ggml
+  (let ((tag "b8445"))                  ;sync with ggml
     (package
       (name "llama-cpp")
       (version (string-append "0.0.0-" tag))
@@ -844,7 +844,7 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
                (commit tag)))
          (file-name (git-file-name name tag))
          (sha256
-          (base32 "1smgl6s3cpa3rg97201rsvb8cyydypqmm1zi42gwaf8w2719r8gp"))))
+          (base32 "1h97kj34b9157ky3c98g8wlmdqvfrg5paw8pyi38xv7faljb0nf4"))))
       (build-system cmake-build-system)
       (arguments
        (list
