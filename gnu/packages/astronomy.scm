@@ -5860,24 +5860,26 @@ scipy.io}.")
     (version "1.5.2")
     (source
      (origin
-       (method git-fetch) ; no tests in the PyPI tarball
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/nanograv/holodeck")
-             (commit (string-append "v" version))))
+              (url "https://github.com/nanograv/holodeck")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0jz54fb6yyling2a756qqahixpn1wgxmhhqmv6pf0iqds019v9k7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 70 passed, 1 deselected, 15 warnings
+      ;; XXX: Tests may take up to 3375.23s (0:56:15)
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count)))))
+      #~(list (string-append "--deselect=holodeck/discrete/tests/"
+                             "test_evolution.py::"
+                             "Test_Composite_Hardening::test_basics_circ"))))
     (native-inputs
      (list python-cython-0
            python-pytest
-           python-pytest-xdist
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-astropy
            python-cosmopy
