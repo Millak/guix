@@ -3689,31 +3689,6 @@ under test to interact with a fake file system instead of the real file
 system.  The code under test requires no modification to work with pyfakefs.")
     (license license:asl2.0)))
 
-(define-public python-aiounittest
-  (package
-    (name "python-aiounittest")
-    (version "1.5.0")
-    (source
-     (origin
-       (method git-fetch) ;no tets in PyPI archive
-       (uri (git-reference
-              (url "https://github.com/kwarunek/aiounittest.git")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0266i5z589jh75hjzakvwcqx5shgv5zis8mr70qa209v7jjclzfd"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list python-wrapt))
-    (home-page "https://github.com/kwarunek/aiounittest")
-    (synopsis "Test asyncio code more easily")
-    (description "Aiounittest is a library that helps write tests using
-asynchronous code in Python (asyncio).")
-    (license license:expat)))
-
 (define-public python-pytest-datadir
   (package
     (name "python-pytest-datadir")

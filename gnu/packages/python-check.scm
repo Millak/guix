@@ -173,6 +173,32 @@ The purpose of this package is to provide an easy way to test asynchronous
 HTTP requests.")
     (license license:expat)))
 
+(define-public python-aiounittest
+  (package
+    (name "python-aiounittest")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kwarunek/aiounittest.git")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0266i5z589jh75hjzakvwcqx5shgv5zis8mr70qa209v7jjclzfd"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-wrapt))
+    (home-page "https://github.com/kwarunek/aiounittest")
+    (synopsis "Test asyncio code more easily")
+    (description
+     "Aiounittest is a library that helps write tests using asynchronous code
+in Python (asyncio).")
+    (license license:expat)))
+
 (define-public python-allpairspy
   (package
     (name "python-allpairspy")
