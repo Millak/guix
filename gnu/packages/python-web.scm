@@ -494,7 +494,15 @@ and JSON.
       ;; tests: 448 passed, 1 deselected, 3 xfailed
       #:test-flags
       #~(list (string-append "--deselect=tests/test_clean.py::"
-                             "test_self_closing_tags_self_close[wbr]"))))
+                             "test_self_closing_tags_self_close[wbr]"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              ;; "tinycss2>=1.1.0,<1.5"
+              ;; The 'sanity-check of python-nbclassic fails without this.
+              (substitute* "setup.py"
+                (("\"tinycss2.*") "")))))))
     (native-inputs
      (list python-pytest
            python-setuptools))
