@@ -1,18 +1,18 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017, 2018 Theodoros Foradis <theodoros@foradis.org>
-;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018-2021, 2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018-2019 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2018, 2021, 2023-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021-2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2025, 2026 Cayetano Santos <csantosb@inventati.org>
-;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 Konstantinos Agiannis <agiannis.kon@gmail.com>
 ;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
-;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
+;;; Copyright © 2016, 2018 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2019 Amin Bandali <bandali@gnu.org>
 ;;; Copyright © 2020-2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Andrew Miloradovsky <andrew@interpretmath.pw>
@@ -24,12 +24,22 @@
 ;;; Copyright © 2022, 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2025, Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2018, 2020-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2025, 2026 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2026 Thomas Kramer <thomas@f-si.org>
 ;;; Copyright © 2023 pinoaffe <pinoaffe@gmail.com>
-;;; Copyright © 2018, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2020-2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2025 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2018 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2021-2026 Peter Polidoro <peter@polidoro.io>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2025 Thomas Guillermo Albers Raviola <thomas@thomaslabs.org>
+;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -76,6 +86,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages embedded)
@@ -131,6 +142,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages shells)
@@ -145,6 +157,7 @@
   #:use-module (gnu packages toolkits)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
@@ -1052,6 +1065,233 @@ chip cross-sections basked on mask data.")
 It simulates the netlists of the cells with ngspice and writes the
 characterization result in a liberty library file.")
     (license license:agpl3+)))
+
+(define-public kicad
+  (package
+    (name "kicad")
+    (version "9.0.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/kicad/code/kicad.git")
+                    (commit version)))
+              (sha256
+               (base32
+                "1b995p0qb9cjpj0n3x3szbqr6d7fxwmrp2nbx37y7ym2bc1lpxd8"))
+              (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:out-of-source? #t
+       #:tests? #f ;no tests
+       #:build-type "Release"
+       #:configure-flags
+       ,#~(list "-DKICAD_SCRIPTING_PYTHON3=ON"
+                (string-append "-DOCC_INCLUDE_DIR="
+                               #$(this-package-input "opencascade-occt")
+                               "/include/opencascade")
+                "-DKICAD_SCRIPTING_WXPYTHON_PHOENIX=ON"
+                "-DKICAD_USE_EGL=OFF"
+                "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE"
+                "-DCMAKE_BUILD_TYPE=RelWithDebInfo")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-ngspice-detection
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "eeschema/CMakeLists.txt"
+               (("NGSPICE_DLL_FILE=\"\\$\\{NGSPICE_DLL_FILE\\}\"")
+                (string-append "NGSPICE_DLL_FILE=\""
+                               (assoc-ref inputs "libngspice")
+                               "/lib/libngspice.so\"")))))
+         (add-after 'install 'wrap-program
+           ;; Ensure correct Python at runtime.
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (python (assoc-ref inputs "python"))
+                    (file (string-append out "/bin/kicad"))
+                    (path (string-append out "/lib/python"
+                                         ,(version-major+minor (package-version
+                                                                python))
+                                         "/site-packages:"
+                                         (getenv "GUIX_PYTHONPATH"))))
+               (wrap-program file
+                 `("GUIX_PYTHONPATH" ":" prefix
+                   (,path))
+                 `("PATH" ":" prefix
+                   (,(string-append python "/bin:"))))))))))
+    (native-search-paths
+     ;; Currently, KiCad environment variables are single-valued
+     ;; (see https://gitlab.com/kicad/code/kicad/-/issues/14792).
+     (list (search-path-specification
+            (variable "KICAD") ;to find kicad-doc
+            (files '(""))
+            (separator #f))
+           (search-path-specification
+            (variable "KICAD9_TEMPLATE_DIR")
+            (files '("share/kicad/template"))
+            (separator #f))
+           (search-path-specification
+            (variable "KICAD9_SYMBOL_DIR")
+            (files '("share/kicad/symbols"))
+            (separator #f))
+           (search-path-specification
+            (variable "KICAD9_FOOTPRINT_DIR")
+            (files '("share/kicad/footprints"))
+            (separator #f))
+           (search-path-specification
+            (variable "KICAD9_3DMODEL_DIR")
+            (files '("share/kicad/3dmodels"))
+            (separator #f))
+           (search-path-specification
+            (variable "KICAD_STOCK_DATA_HOME")
+            (files '("share/kicad"))
+            (separator #f))))
+    (native-inputs (list boost
+                         desktop-file-utils
+                         gettext-minimal
+                         pkg-config
+                         swig-4.0
+                         unixodbc
+                         zlib))
+    (inputs (list bash-minimal
+                  cairo
+                  curl
+                  glew
+                  glm
+                  hicolor-icon-theme
+                  libngspice
+                  libsm
+                  libgit2
+                  libsecret
+                  mesa
+                  opencascade-occt
+                  openssl
+                  python-wrapper
+                  gtk+
+                  wxwidgets-sans-egl
+                  nng
+                  python-wxpython
+                  protobuf
+                  gdk-pixbuf
+                  (list zstd "lib")))
+    (home-page "https://www.kicad.org/")
+    (synopsis "Electronics Design Automation Suite")
+    (description
+     "Kicad is a program for the formation of printed circuit
+boards and electrical circuits.  The software has a number of programs that
+perform specific functions, for example, pcbnew (Editing PCB), eeschema (editing
+electrical diagrams), gerbview (viewing Gerber files) and others.")
+    (license license:gpl3+)))
+
+(define-public kicad-doc
+  (package
+    (name "kicad-doc")
+    (version (package-version kicad))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/kicad/services/kicad-doc.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07g80p1igp8j3kh3qpmqd150i9950w1143yhncwik2ypccwjdfjy"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags (list "-DBUILD_FORMATS=html")
+       #:tests? #f)) ;no test suite
+    (native-inputs (list asciidoc
+                         gettext-minimal
+                         git-minimal
+                         perl
+                         perl-unicode-linebreak
+                         perl-yaml-tiny
+                         po4a
+                         ruby-asciidoctor/minimal
+                         source-highlight))
+    (home-page "https://kicad.org")
+    (synopsis "KiCad official documentation")
+    (description "This repository contains the official KiCad documentation.")
+    (license license:gpl3+)))
+
+(define-public kicad-symbols
+  (package
+    (name "kicad-symbols")
+    (version (package-version kicad))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/kicad/libraries/kicad-symbols.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "08qb4rqxsyhrcvj1k200m2c06jjy7jwjmf9n1qkcm0biqqc5dba4"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f))                    ; no tests exist
+    (home-page (package-home-page kicad))
+    (synopsis "Official KiCad schematic symbol libraries")
+    (description "This package contains the official KiCad schematic symbol
+libraries.")
+    ;; TODO: Exception: "To the extent that the creation of electronic designs
+    ;; that use 'Licensed Material' can be considered to be 'Adapted Material',
+    ;; then the copyright holder waives article 3 of the license with respect to
+    ;; these designs and any generated files which use data provided as part of
+    ;; the 'Licensed Material'."
+    ;; See <https://github.com/KiCad/kicad-symbols/blob/master/LICENSE.md>.
+    (license license:cc-by-sa4.0)))
+
+(define-public kicad-footprints
+  (package
+    (inherit kicad-symbols)
+    (name "kicad-footprints")
+    (version (package-version kicad))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/kicad/libraries/kicad-footprints.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1w7dkb93s84ymi1syxpzacbmkxlnlh0k4z1c62nabspb901nn524"))))
+    (synopsis "Official KiCad footprint libraries")
+    (description "This package contains the official KiCad footprint libraries.")))
+
+(define-public kicad-packages3d
+  (package
+    (inherit kicad-symbols)
+    (name "kicad-packages3d")
+    (version (package-version kicad))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/kicad/libraries/kicad-packages3D.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1j26dmgz7xfixlqrzclb1wpc6zkd10n1fq7rmdrgwwx083p3c7a8"))))
+    (synopsis "Official KiCad 3D model libraries")
+    (description "This package contains the official KiCad 3D model libraries.")))
+
+(define-public kicad-templates
+  (package
+    (inherit kicad-symbols)
+    (name "kicad-templates")
+    (version (package-version kicad))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/kicad/libraries/kicad-templates.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zs29zn8qjgxv0w1vyr8yxmj02m8752zagn4vcraqgik46dwg2id"))))
+    (synopsis "Official KiCad project and worksheet templates")
+    (description "This package contains the official KiCad project and
+worksheet templates.")))
 
 (define-public lepton-eda
   (package
