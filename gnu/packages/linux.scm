@@ -12909,16 +12909,16 @@ This includes access to the System Management Network.")
 (define-public hid-wiimote-plus
   (package
     (name "hid-wiimote-plus")
-    (version "0.9.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/dkosmari/hid-wiimote-plus.git")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1rkp311x60jm73xlqypxsp375rx3fa55jyrspz1aqjga0q6cvswi"))))
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dkosmari/hid-wiimote-plus")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vly8z9876yiaxx77ca9lbf9hfv5xichkkxxczjhbs2qwr819k1k"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f)) ; No tests.
