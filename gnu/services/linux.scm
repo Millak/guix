@@ -9,6 +9,7 @@
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2025 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
+;;; Copyright © 2026 Joan Vilardaga Castro <codeberg-hn80@joanvc.cat>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -52,7 +53,10 @@
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (ice-9 string-fun)
-  #:export (earlyoom-configuration
+  #:export (btrfs-scrub-configuration
+            btrfs-scrub-service-type
+
+            earlyoom-configuration
             earlyoom-configuration?
             earlyoom-configuration-earlyoom
             earlyoom-configuration-minimum-available-memory
@@ -161,6 +165,131 @@
 
 
 ;;;
+;;; BTRFS scrub.
+;;;
+
+(define (btrfs-scrub-shepherd-calendar-event? x)
+  (or (string? x) (gexp? x)))
+
+(define-maybe string (prefix btrfs-scrub-))
+
+(define-maybe list-of-strings (prefix btrfs-scrub-))
+
+(define (btrfs-scrub-serialize-string field-name value)
+  (if (maybe-value-set? value)
+   (list value) '()))
+
+(define (btrfs-scrub-serialize-list-of-string field-name value)
+  (if (maybe-value-set? value)
+    value '()))
+
+(define-configuration btrfs-scrub-configuration
+  (package
+    (file-like btrfs-progs)
+    "The package providing the @command{btrfs} command." empty-serializer)
+  (schedule (btrfs-scrub-shepherd-calendar-event "0 0 1-7 * 0")
+   "Schedule for launching @command{btrfs-scrub}, expressed as a string in
+traditional cron syntax or as a gexp evaluating to a Shepherd calendar
+event (@pxref{Timers,,, shepherd, The GNU Shepherd Manual}).  By default this
+is set to run the 1st Sunday of the month, at 00:00."
+   empty-serializer)
+  ;; The following are btrfs-scrub-related options.
+  (to-scrub (maybe-string "/")
+            "Device to scrub.  It will scrub the root (\"/\") if not given.")
+  (extra-arguments maybe-list-of-strings
+   "Extra options to append to @command{btrfs scrub start}
+   (run @samp{man btrfs-scrub} for more information).  Keep in mind that,
+   by default, this service uses the @option{-B} flag (do not background and
+   print scrub statistics when finished).")
+  (prefix btrfs-scrub-))
+
+(define (serialize-btrfs-scrub-configuration config)
+  (list-transduce (compose (base-transducer config) tconcatenate)
+                   rcons
+                   btrfs-scrub-configuration-fields))
+
+
+(define (btrfs-scrub-template-action-procedure btrfs-bin cmd-args to-scrub)
+  "Template procedure to call the btrfs command, print it's outputs and return
+it's exit code.  Taken from
+https://www.gnu.org/software/guile/manual/html_node/Processes.html#index-spawn"
+  #~(lambda (_ . args)
+      (let* ((stdout-in-out (pipe)) (stderr-in-out (pipe))
+       (argv (append (list #$btrfs-bin) '#$cmd-args '(#$to-scrub)))
+       (pid (spawn #$btrfs-bin argv
+             #:output (cdr stdout-in-out)
+             #:error (cdr stderr-in-out))))
+       (close-port (cdr stdout-in-out))
+       (close-port (cdr stderr-in-out))
+       (display (get-string-all (car stdout-in-out)))
+       ;; Redirect stderr to stdout to make it printable for "herd"
+       (display (get-string-all (car stderr-in-out)))
+       (close-port (car stdout-in-out))
+       (close-port (car stderr-in-out))
+       (let* ((status (waitpid pid)) (exit-val (status:exit-val (cdr status))))
+       (= EXIT_SUCCESS exit-val)))))
+
+
+(define (btrfs-scrub-status-action-procedure btrfs-bin to-scrub)
+  "Return a procedure to check the status of the current BTRFS scrub."
+  (btrfs-scrub-template-action-procedure btrfs-bin '("scrub" "status") to-scrub))
+
+(define (btrfs-scrub-cancel-action-procedure btrfs-bin to-scrub)
+  "Return a procedure to always cancel the current BTRFS scrub."
+  (btrfs-scrub-template-action-procedure btrfs-bin '("scrub" "cancel") to-scrub))
+
+(define (btrfs-scrub-extra-actions btrfs-bin to-scrub)
+  (list shepherd-trigger-action
+        (shepherd-action (name 'scrub-status)
+                         (documentation
+                          "Print the status of the scrubing process.")
+                         (procedure (btrfs-scrub-status-action-procedure
+                                     btrfs-bin
+                                     to-scrub)))
+        (shepherd-action (name 'cancel)
+                         (documentation
+                          "Cancel the current scrub (it's an alias for stop).")
+                         (procedure (btrfs-scrub-cancel-action-procedure
+                                     btrfs-bin
+                                     to-scrub)))))
+
+
+(define (btrfs-scrub-shepherd-services config)
+  (match-record config <btrfs-scrub-configuration>
+    (package schedule to-scrub)
+    (let ((btrfs-bin (file-append package "/bin/btrfs")))
+    (list (shepherd-service
+           (provision (list (string->symbol (string-append "btrfs-scrub-" to-scrub))))
+           (requirement '(user-processes))
+           (modules '((shepherd service timer)
+                      (ice-9 popen)
+                      (ice-9 textual-ports)))
+           (start #~(make-timer-constructor
+                     #$(if (string? schedule)
+                            #~(cron-string->calendar-event #$schedule)
+                            schedule)
+                     (command (list #$btrfs-bin
+                                    "scrub"
+                                    "start"
+                                    "-B"
+                                    #$@(serialize-btrfs-scrub-configuration config)))
+                     #:wait-for-termination? #t))
+           (stop (btrfs-scrub-cancel-action-procedure btrfs-bin to-scrub))
+           (documentation "Periodically run the 'btrfs-scrub' command.")
+           (actions (btrfs-scrub-extra-actions btrfs-bin to-scrub)))))))
+
+
+(define btrfs-scrub-service-type
+  (service-type (name 'btrfs-scrub)
+                (extensions (list (service-extension
+                                   shepherd-root-service-type
+                                   btrfs-scrub-shepherd-services)))
+                (description
+                 "Verify the block checksums of a BTRFS filesystem.")
+                (default-value (btrfs-scrub-configuration))))
+
+
+;;;
 ;;; Early OOM daemon.
 ;;;
 
@@ -251,7 +380,7 @@ representation."
 ;;; fstrim
 ;;;
 
-(define (shepherd-calendar-event? x)
+(define (fstrim-shepherd-calendar-event? x)
   (or (string? x) (gexp? x)))
 
 (define-maybe list-of-strings (prefix fstrim-))
@@ -271,7 +400,7 @@ representation."
     "The package providing the @command{fstrim} command."
     empty-serializer)
   (schedule
-   (shepherd-calendar-event "0 0 * * 0")
+   (fstrim-shepherd-calendar-event "0 0 * * 0")
    "Schedule for launching @command{fstrim}, expressed as a string in
 traditional cron syntax or as a gexp evaluating to a Shepherd calendar
 event (@pxref{Timers,,, shepherd, The GNU Shepherd Manual}).  By default this
