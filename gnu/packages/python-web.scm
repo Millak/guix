@@ -49,7 +49,7 @@
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Pradana Aumars <paumars@courrier.dev>
-;;; Copyright © 2021, 2022, 2024 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2021, 2022, 2024, 2026 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021-2022, 2024-2025 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2021 Mekeor Melire <mekeor.melire@gmail.com>
@@ -1419,6 +1419,29 @@ of a fake DNS resolver.")
     (description
      "@code{httpretty} is a helper for faking web requests,inspired by Ruby's
 @code{fakeweb}.")
+    (license license:expat)))
+
+(define-public python-justhtml
+  (package
+    (name "python-justhtml")
+    (version "1.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/emilstenstrom/justhtml")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hy5w3lr08sj3pivs46nnlfsvrd9ynmicxcrjk4sxbpg7411lyj5"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatchling))
+    (home-page "https://github.com/emilstenstrom/justhtml")
+    (synopsis "Pure Python HTML5 parser")
+    (description
+     "JustHTML is a pure Python HTML5 parser.  It has a simple API and does
+not require C extensions or system dependencies.")
     (license license:expat)))
 
 (define-public python-huggingface-hub
