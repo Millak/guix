@@ -445,16 +445,21 @@ powerful language for representing information.")
 (define-public hdt-cpp
   (package
     (name "hdt-cpp")
-    (version "1.3.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/rdfhdt/hdt-cpp")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1vsq80jnix6cy78ayag7v8ajyw7h8dqyad1q6xkf2hzz3skvr34z"))))
+    ;; 1.3.3 is from 2019 and does not compile on gcc 14.
+    (properties '((commit . "88110cc24d4d7d07080b40325d1905fae999ef95")
+                  (revision . "0")))
+    (version (git-version "1.3.3"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rdfhdt/hdt-cpp")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19n37zpnwa1k5vq1ajw5ahhvcmc8x5m6q4c737k04kpzlnk248ra"))))
     (build-system gnu-build-system)
     (inputs
      (list serd zlib))
