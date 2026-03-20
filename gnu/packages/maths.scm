@@ -2664,7 +2664,7 @@ with the provided training tools.")
                                        ""
                                        ,(format #f "~a/lib/guile/3.0/extensions/" out))))))
                (setenv "NLOPT_UNINSTALLED" "1")))))))
-    (inputs (list guile-3.0 octave))
+    (inputs (list guile-3.0 octave-cli))
     (native-inputs (list pkg-config python python-numpy swig-4.0))
     (home-page "http://ab-initio.mit.edu/wiki/")
     (synopsis "Library for nonlinear optimization")
