@@ -1069,7 +1069,7 @@ characterization result in a liberty library file.")
 (define-public kicad
   (package
     (name "kicad")
-    (version "9.0.8")
+    (version "10.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1077,7 +1077,7 @@ characterization result in a liberty library file.")
                     (commit version)))
               (sha256
                (base32
-                "1b995p0qb9cjpj0n3x3szbqr6d7fxwmrp2nbx37y7ym2bc1lpxd8"))
+                "1470x1276yvd8li3w25zjg73fkpl2qp4dsx7adanafq5c4l47rmc"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1085,12 +1085,12 @@ characterization result in a liberty library file.")
        #:tests? #f ;no tests
        #:build-type "Release"
        #:configure-flags
-       ,#~(list "-DKICAD_SCRIPTING_PYTHON3=ON"
-                (string-append "-DOCC_INCLUDE_DIR="
-                               #$(this-package-input "opencascade-occt")
-                               "/include/opencascade")
-                "-DKICAD_SCRIPTING_WXPYTHON_PHOENIX=ON"
-                "-DKICAD_USE_EGL=OFF"
+       ,#~(list (string-append "-DOCC_INCLUDE_DIR="
+                               #$(file-append opencascade-occt
+                                              "/include/opencascade"))
+                ;; Guix uses 'wxwidgets-sans-egl' for KiCad because
+                ;; wxWidgets' EGL canvas support breaks with glew-2.2.
+                "-DKICAD_WAYLAND=OFF"
                 "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE"
                 "-DCMAKE_BUILD_TYPE=RelWithDebInfo")
        #:phases
@@ -1099,9 +1099,13 @@ characterization result in a liberty library file.")
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "eeschema/CMakeLists.txt"
                (("NGSPICE_DLL_FILE=\"\\$\\{NGSPICE_DLL_FILE\\}\"")
-                (string-append "NGSPICE_DLL_FILE=\""
-                               (assoc-ref inputs "libngspice")
-                               "/lib/libngspice.so\"")))))
+                (string-append "NGSPICE_DLL_FILE=\"libngspice.so\""))
+               (("NGSPICE_DLL_DIR=\"\\$\\{NGSPICE_DLL_DIR\\}\"")
+                (string-append "NGSPICE_DLL_DIR=\""
+                               (dirname
+                                (search-input-file inputs
+                                                   "lib/libngspice.so"))
+                               "\"")))))
          (add-after 'install 'wrap-program
            ;; Ensure correct Python at runtime.
            (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -1126,19 +1130,19 @@ characterization result in a liberty library file.")
             (files '(""))
             (separator #f))
            (search-path-specification
-            (variable "KICAD9_TEMPLATE_DIR")
+            (variable "KICAD10_TEMPLATE_DIR")
             (files '("share/kicad/template"))
             (separator #f))
            (search-path-specification
-            (variable "KICAD9_SYMBOL_DIR")
+            (variable "KICAD10_SYMBOL_DIR")
             (files '("share/kicad/symbols"))
             (separator #f))
            (search-path-specification
-            (variable "KICAD9_FOOTPRINT_DIR")
+            (variable "KICAD10_FOOTPRINT_DIR")
             (files '("share/kicad/footprints"))
             (separator #f))
            (search-path-specification
-            (variable "KICAD9_3DMODEL_DIR")
+            (variable "KICAD10_3DMODEL_DIR")
             (files '("share/kicad/3dmodels"))
             (separator #f))
            (search-path-specification
@@ -1155,23 +1159,25 @@ characterization result in a liberty library file.")
     (inputs (list bash-minimal
                   cairo
                   curl
+                  gdk-pixbuf
                   glew
                   glm
                   hicolor-icon-theme
-                  libngspice
-                  libsm
+                  gtk+
                   libgit2
+                  libngspice
+                  libspnav
                   libsecret
+                  libsm
                   mesa
+                  nng
                   opencascade-occt
                   openssl
-                  python-wrapper
-                  gtk+
-                  wxwidgets-sans-egl
-                  nng
-                  python-wxpython
+                  poppler
                   protobuf
-                  gdk-pixbuf
+                  python-wrapper
+                  python-wxpython
+                  wxwidgets-sans-egl
                   (list zstd "lib")))
     (home-page "https://www.kicad.org/")
     (synopsis "Electronics Design Automation Suite")
@@ -1194,10 +1200,11 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07g80p1igp8j3kh3qpmqd150i9950w1143yhncwik2ypccwjdfjy"))))
+                "1k0ayxsy0nnv9qxkii9yrxs7jx9y3wfjpsv5yl9wql3vdg3qay69"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags (list "-DBUILD_FORMATS=html")
+     `(#:configure-flags (list "-DBUILD_FORMATS=html"
+                               "-DLANGUAGES=en")
        #:tests? #f)) ;no test suite
     (native-inputs (list asciidoc
                          gettext-minimal
@@ -1225,8 +1232,9 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08qb4rqxsyhrcvj1k200m2c06jjy7jwjmf9n1qkcm0biqqc5dba4"))))
+                "0khfnln0f2zsz5hy31nw2rr0nflb2z3s9n9f7g41g03m9l3s43v2"))))
     (build-system cmake-build-system)
+    (native-inputs (list python-wrapper))
     (arguments
      `(#:tests? #f))                    ; no tests exist
     (home-page (package-home-page kicad))
@@ -1254,7 +1262,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1w7dkb93s84ymi1syxpzacbmkxlnlh0k4z1c62nabspb901nn524"))))
+                "0ymmd1rzrczpvcqzw1mld9x8xhbka0vvjy3kdqwysg4ri97f5wrm"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
@@ -1271,7 +1279,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1j26dmgz7xfixlqrzclb1wpc6zkd10n1fq7rmdrgwwx083p3c7a8"))))
+                "0k91iw661fpzb7saryjxdcdvk1kis7dhbcpzp7xzjk84i4jvxrp5"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
