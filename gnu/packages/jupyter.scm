@@ -332,40 +332,24 @@ Jupytext are:
 (define-public python-nbclassic
   (package
     (name "python-nbclassic")
-    (version "1.0.0")
+    (version "1.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "nbclassic" version))
        (sha256
-        (base32 "1qrhzazq10dz64y9mawr3ns595fsdhrj1wvbb42xhmcl66r1xq8a"))))
+        (base32 "1rpflcd8rz5s627apaqdcfpr3c8d6x1glvfd311pbvlc7xv2hhj3"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-argon2-cffi
-                             python-ipykernel
+    (propagated-inputs (list python-ipykernel
                              python-ipython-genutils
-                             python-jinja2
-                             python-jupyter-client
-                             python-jupyter-core
-                             python-jupyter-server
-                             python-nbconvert
-                             python-nbformat
                              python-nest-asyncio
-                             python-notebook-shim
-                             python-prometheus-client
-                             python-pyzmq
-                             python-send2trash
-                             python-terminado
-                             python-tornado
-                             python-traitlets))
-    (native-inputs (list python-nbval
-                         python-jupyter-packaging
+                             python-notebook-shim))
+    (native-inputs (list python-babel
+                         python-hatch-jupyter-builder
+                         python-hatchling
+                         python-nbval
                          python-pytest
-                         python-pytest-cov
-                         python-pytest-jupyter
-                         python-pytest-tornasync
-                         python-requests
-                         python-requests-unixsocket2
-                         python-testpath))
+                         python-pytest-jupyter))
     (home-page "https://github.com/jupyter/nbclassic")
     (synopsis "Jupyter Notebook as a Jupyter Server extension")
     (description "NbClassic provides a backwards compatible Jupyter Notebook
