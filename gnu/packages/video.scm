@@ -4174,11 +4174,7 @@ tools, XML authoring components, and an extensible plug-in based API.")
     (native-inputs
      (list perl pkg-config))
     (inputs
-     (list alsa-lib
-           glu
-           libjpeg-turbo
-           libx11
-           qtbase-5
+     (list libjpeg-turbo
            eudev))
     (synopsis "Realtime video capture utilities for Linux")
     (description "The v4l-utils provide a series of libraries and utilities to
@@ -4189,9 +4185,7 @@ be used for realtime video capture via Linux-specific APIs.")
 
 (define-public v4l-utils-minimal
   (package/inherit v4l-utils
-    (name "v4l-utils-minimal")
-    (inputs (modify-inputs (package-inputs v4l-utils)
-              (delete "qtbase" "glu" "libx11")))))
+    (name "v4l-utils-minimal")))
 
 (define-public obs
   (package
