@@ -370,7 +370,7 @@ This package includes the following programs:
            libjpeg-turbo
            perl
            python
-           v4l-utils-minimal))
+           v4l-utils))
     (propagated-inputs
      ;; These are in 'requires' field of .pc files.
      (list glib gtk+))

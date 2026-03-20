@@ -129,7 +129,7 @@
            libxv
            mesa
            sdl
-           v4l-utils-minimal))
+           v4l-utils))
     (synopsis "1394-Based Digital Camera Control Library")
     (description "LibDC1394 is a library that provides functionality to control
 any camera that conforms to the 1394-Based Digital Camera Specification written
@@ -721,7 +721,7 @@ for the GStreamer multimedia library.")
            speex
            taglib
            twolame
-           v4l-utils-minimal
+           v4l-utils
            wavpack
            zlib))
     (propagated-inputs
@@ -942,7 +942,7 @@ model to base your own plug-in on, here it is.")
             tinyalsa
             transcode
             usrsctp
-            v4l-utils-minimal
+            v4l-utils
             vo-aacenc
             vo-amrwbenc
             vulkan-headers
