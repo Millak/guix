@@ -7100,7 +7100,7 @@ training of deep learning models for inference and training on-device.")
 (define-public python-gguf
   (package
     (name "python-gguf")
-    (version "0.17.1")
+    (version "0.18.0")
     (source
      (origin
        (method git-fetch)
@@ -7109,7 +7109,7 @@ training of deep learning models for inference and training on-device.")
               (commit (string-append "gguf-v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lrvj0ahhyj5paxfzk0brps2m8j7fy47n7k4v4xjg9xqqq6wqc2y"))))
+        (base32 "0rw69ywvr1kfh1jaa42a5q9qfl72wx8442cw578gi2h3iw2vjh3d"))))
     (build-system pyproject-build-system)
     (arguments
      (list
