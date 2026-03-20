@@ -10199,13 +10199,16 @@ Telescope, HST}).")
 (define-public python-sunkit-image
   (package
     (name "python-sunkit-image")
-    (version "0.6.1")
+    (version "0.7.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "sunkit_image" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sunpy/sunkit-image/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0x8w87vwdr78vcq0zha2y7xyfy16amc5aym4v8127xvphq1ff4v3"))))
+        (base32 "11l6vf62b5pmv687rkr9abkwdwcgj2xqydqczziky6v3114106nf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -10228,8 +10231,7 @@ Telescope, HST}).")
            python-pytest-mpl
            python-pytest-xdist
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-matplotlib
