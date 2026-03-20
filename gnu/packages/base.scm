@@ -1315,7 +1315,7 @@ with the Linux kernel.")
 
 (define-public glibc-2.33
   (package
-    (inherit glibc-2.35)
+    (inherit glibc)
     (name "glibc")
     (version "2.33")
     (source (origin
