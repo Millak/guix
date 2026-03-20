@@ -16527,22 +16527,21 @@ TODO notes checker plugin for flake8.")
 (define-public python-flake8-isort
   (package
     (name "python-flake8-isort")
-    (version "6.1.1")
+    (version "7.0.0")
     (source
       (origin
-        (method url-fetch)
-        (uri (pypi-uri "flake8_isort" version))
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/gforcada/flake8-isort")
+               (commit version)))
+        (file-name (git-file-name name version))
         (sha256
-          (base32 "1cvh0d18scgq36gqa2vqbifjarln1r3axgq93lzc303ay0y2zy61"))))
+         (base32 "0d7j2ws59bm9143m69ah6h865i2pn97p4gjpwx6jrwi9sy26kj5z"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #f)) ; no tests in PiPY or git checkout
-    (native-inputs
-     (list python-hatchling))
-    (propagated-inputs
-     (list python-flake8
-           python-isort))
+    (arguments (list #:test-backend #~'custom
+                     #:test-flags #~(list "run_tests.py")))
+    (native-inputs (list python-hatchling python-pytest))
+    (propagated-inputs (list python-flake8 python-isort))
     (home-page "https://github.com/gforcada/flake8-isort")
     (synopsis "Flake8 plugin integrating isort")
     (description
