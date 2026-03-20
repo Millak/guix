@@ -939,7 +939,7 @@ and get radio stream information.")
 (define-public denemo
   (package
     (name "denemo")
-    (version "2.6.44")
+    (version "2.6.49")
     (source
      (origin
        (method git-fetch)
@@ -949,7 +949,7 @@ and get radio stream information.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1vpaiw34f0h0z01r40ln00494l4dwmyc4cy00hz2xggp6pa4abqy"))))
+         "0xpkgyw2nmy4mbq2ilw58nn4cqc39gzni789gjvh5ax1w0c5lisd"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -978,7 +978,7 @@ and get radio stream information.")
                    (search-input-file inputs "/bin/diff")))
                 ;; Denemo's documentation says to use this command to run its
                 ;; test suite.
-                (invoke "make" "-C" "tests" "check"))))
+                (invoke "make" "-C" "tests" "unit"))))
           (add-before 'build 'set-lilypond
             ;; This phase sets the default path for lilypond to its current
             ;; location in the store.
@@ -1007,7 +1007,7 @@ and get radio stream information.")
            glib
            gtk+
            gtksourceview-3
-           guile-3.0
+           guile-3.0-latest
            (librsvg-for-system)
            libsndfile
            libxml2
