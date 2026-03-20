@@ -1138,6 +1138,37 @@ Note: In Guix, this package assumes the environment variable
 to anything else.")
     (license license:expat)))
 
+(define-public python-feedgen
+  (package
+    (name "python-feedgen")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lkiesow/python-feedgen")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1ppwxp9yck29pk2p2dlrrad6rz16l9h4fhcajp9yb7ns94fm5v3l"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-dateutil
+           python-lxml))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://feedgen.kiesow.be")
+    (synopsis "Atom and RSS feed generator")
+    (description
+     "This module can be used to generate web feeds in both Atom and RSS
+format.  It also extensible and comes with an extension to produce podcasts.")
+    ;; The README says that this package is released under both licenses, and
+    ;; permits the user to choose whichever is more convenient to them.
+    (license (list license:bsd-2
+                   license:lgpl3+))))
+
 (define-public python-flask-caching
   (package
     (name "python-flask-caching")
