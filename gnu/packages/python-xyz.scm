@@ -38943,26 +38943,6 @@ numbers with uncertainties.  It can also yield the derivatives of any
 expression.")
     (license license:bsd-3)))
 
-(define-public python-unicodedata2
-  (package
-    (name "python-unicodedata2")
-    (version "16.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "unicodedata2" version))
-       (sha256
-        (base32 "1z3llixb4cd6cc6nmyps5vv2sss14n3x6dzcc65xg75mj9jqsj05"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (home-page "https://github.com/fonttools/unicodedata2")
-    (synopsis "Python unicodedata backport")
-    (description "This package corresponds to the latest @code{unicodedata}
-standard Python module.")
-    (license license:asl2.0)))
-
 (define-public python-unicode-linebreak
   (package
     (name "python-unicode-linebreak")
@@ -39014,6 +38994,26 @@ standard Python module.")
      "This package provides a Markdown paragraph wrapper using Unicode Line
 Breaking Algorithm written in Rust with Python bindings.")
     (license license:expat)))
+
+(define-public python-unicodedata2
+  (package
+    (name "python-unicodedata2")
+    (version "16.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "unicodedata2" version))
+       (sha256
+        (base32 "1z3llixb4cd6cc6nmyps5vv2sss14n3x6dzcc65xg75mj9jqsj05"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/fonttools/unicodedata2")
+    (synopsis "Python unicodedata backport")
+    (description "This package corresponds to the latest @code{unicodedata}
+standard Python module.")
+    (license license:asl2.0)))
 
 (define-public python-unicodeitplus
   (package
@@ -40773,6 +40773,30 @@ based on Adobe XMP Toolkit, ensuring that future updates to the XMP standard
 are easily incorporated into the library with a minimum amount of work.")
     (license license:bsd-3)))
 
+(define-public python-yamlcore
+  (package
+    (name "python-yamlcore")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/perlpunk/pyyaml-core")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03y7fabyky67cw4g71xcbwfdal79wxcnmr303qyllz21x2d4s5ac"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools))
+    (inputs (list python-pyyaml))
+    (home-page "https://github.com/perlpunk/pyyaml-core")
+    (synopsis "YAML 1.2 support for PyYAML")
+    (description "This module can be used on top of PyYAML to load YAML 1.2
+files.")
+    (license license:expat)))
+
+(define-deprecated-package python-yamlcore-0.0.2 python-yamlcore)
+
 (define-public python-yamllint
   (package
     (name "python-yamllint")
@@ -41268,30 +41292,6 @@ you do not want to store entirely on disk or on memory.")
                               (package-inputs python-dbus-1.2))))
     (arguments
      `(#:configure-flags '("PYTHON_VERSION=2")))))
-
-(define-public python-yamlcore
-  (package
-    (name "python-yamlcore")
-    (version "0.0.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/perlpunk/pyyaml-core")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "03y7fabyky67cw4g71xcbwfdal79wxcnmr303qyllz21x2d4s5ac"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools))
-    (inputs (list python-pyyaml))
-    (home-page "https://github.com/perlpunk/pyyaml-core")
-    (synopsis "YAML 1.2 support for PyYAML")
-    (description "This module can be used on top of PyYAML to load YAML 1.2
-files.")
-    (license license:expat)))
-
-(define-deprecated-package python-yamlcore-0.0.2 python-yamlcore)
 
 (define-public shrinkwrap
   (package
