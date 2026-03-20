@@ -10596,7 +10596,7 @@ object.")
 (define-public python-swiftgalaxy
   (package
     (name "python-swiftgalaxy")
-    (version "2.3.2")
+    (version "2.3.3")
     (source
      (origin
        (method git-fetch)
@@ -10605,7 +10605,7 @@ object.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bgh5wb9vzblsp2whjma2d6agpgkd2g7gq5klmk4pi8s9w7lz8mh"))))
+        (base32 "1bcr22gyjpr8blm83p5ycknvdvnlqnayprcz7cspadkww9hhz00r"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ;tests need to download remote datasets
