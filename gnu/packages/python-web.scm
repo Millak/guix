@@ -469,6 +469,44 @@ and JSON.
 @end itemize")
     (license license:expat)))
 
+(define-public python-bleach
+  (package
+    (name "python-bleach")
+    (version "6.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mozilla/bleach")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02abk9ixn010sqpbdsd7nxms0gv4prwv6d3nplb8giq85lpn1kkb"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (substitute* (find-files "." "\\.py$")
+              (("bleach\\._vendor\\.html5lib") "html5lib"))
+            (delete-file-recursively "bleach/_vendor/html5lib")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 448 passed, 1 deselected, 3 xfailed
+      #:test-flags
+      #~(list (string-append "--deselect=tests/test_clean.py::"
+                             "test_self_closing_tags_self_close[wbr]"))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-html5lib
+           python-tinycss2
+           python-webencodings))
+    (home-page "https://github.com/mozilla/bleach")
+    (synopsis "Whitelist-based HTML-sanitizing tool")
+    (description "Bleach is an easy whitelist-based HTML-sanitizing tool.")
+    (license license:asl2.0)))
+
 (define-public python-cloudpathlib
   (package
     (name "python-cloudpathlib")
