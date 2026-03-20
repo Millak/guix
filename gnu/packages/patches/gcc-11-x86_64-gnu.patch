@@ -1,0 +1,173 @@
+For bootstrapping gdc.
+
+The change for gcc/config/i386/t-linux is to fix the libdir on
+x86_64-gnu. It is based on the 'pre-x86-configure phase for gcc-14.
+
+The main part is gcc commit 5f8950b403f6351f125d8281d2e7430a43e7d125
+rebased for gcc 11.5.
+
+From 5f8950b403f6351f125d8281d2e7430a43e7d125 Mon Sep 17 00:00:00 2001
+From: Flavio Cruz <flaviocruz@gmail.com>
+Date: Thu, 26 Jan 2023 22:45:27 -0500
+Subject: [PATCH] Add support for x86_64-*-gnu-* targets to build x86_64
+ gnumach/hurd
+
+Tested by building a toolchain and compiling gnumach for x86_64 [1].
+This is the basic version without unwind support which I think is only
+required to implement exceptions.
+
+[1]
+https://github.com/flavioc/cross-hurd/blob/master/bootstrap-kernel.sh.
+
+gcc/ChangeLog:
+	* config.gcc: Recognize x86_64-*-gnu* targets and include
+	i386/gnu64.h.
+	* config/i386/gnu64.h: Define configuration for new target
+	including ld.so location.
+
+libgcc/ChangeLog:
+	* config.host: Recognize x86_64-*-gnu* targets.
+	* config/i386/gnu-unwind.h: Update to handle __x86_64__ with a
+	TODO for now.
+
+Signed-off-by: Flavio Cruz <flaviocruz@gmail.com>
+---
+ gcc/config.gcc                  |  5 ++++-
+ gcc/config/i386/gnu64.h         | 40 +++++++++++++++++++++++++++++++++
+ libgcc/config.host              |  8 ++++++-
+ libgcc/config/i386/gnu-unwind.h | 10 +++++++++
+ 4 files changed, 61 insertions(+), 2 deletions(-)
+ create mode 100644 gcc/config/i386/gnu64.h
+
+Index: gcc-11.5.0/gcc/config.gcc
+===================================================================
+--- gcc-11.5.0.orig/gcc/config.gcc
++++ gcc-11.5.0/gcc/config.gcc
+@@ -2020,7 +2020,7 @@ i[34567]86-*-linux* | i[34567]86-*-kfree
+ 		;;
+ 	esac
+ 	;;
+-x86_64-*-linux* | x86_64-*-kfreebsd*-gnu)
++x86_64-*-linux* | x86_64-*-kfreebsd*-gnu | x86_64-*-gnu*)
+ 	tm_file="${tm_file} i386/unix.h i386/att.h dbxelf.h elfos.h gnu-user.h glibc-stdint.h \
+ 		 i386/x86-64.h i386/gnu-user-common.h i386/gnu-user64.h"
+ 	case ${target} in
+@@ -2031,6 +2031,9 @@ x86_64-*-linux* | x86_64-*-kfreebsd*-gnu
+ 	x86_64-*-kfreebsd*-gnu)
+ 		tm_file="${tm_file} kfreebsd-gnu.h i386/kfreebsd-gnu64.h"
+ 		;;
++	x86_64-*-gnu*)
++		tm_file="${tm_file} gnu.h i386/gnu64.h"
++		;;
+ 	esac
+ 	tmake_file="${tmake_file} i386/t-linux64"
+ 	x86_multilibs="${with_multilib_list}"
+Index: gcc-11.5.0/gcc/config/i386/gnu64.h
+===================================================================
+--- /dev/null
++++ gcc-11.5.0/gcc/config/i386/gnu64.h
+@@ -0,0 +1,40 @@
++/* Configuration for an x86_64 running GNU with ELF as the target machine.  */
++
++/*
++Copyright (C) 2023 Free Software Foundation, Inc.
++
++This file is part of GCC.
++
++GCC is free software: you can redistribute it and/or modify
++it under the terms of the GNU General Public License as published by
++the Free Software Foundation, either version 3 of the License, or
++(at your option) any later version.
++
++GCC is distributed in the hope that it will be useful,
++but WITHOUT ANY WARRANTY; without even the implied warranty of
++MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++GNU General Public License for more details.
++
++You should have received a copy of the GNU General Public License
++along with GCC.  If not, see <http://www.gnu.org/licenses/>.
++*/
++
++#define GNU_USER_LINK_EMULATION32 "elf_i386"
++#define GNU_USER_LINK_EMULATION64 "elf_x86_64"
++#define GNU_USER_LINK_EMULATIONX32 "elf32_x86_64"
++
++#undef GNU_USER_DYNAMIC_LINKER
++#define GNU_USER_DYNAMIC_LINKER32 "/lib/ld.so.1"
++#define GNU_USER_DYNAMIC_LINKER64 "/lib/ld-x86-64.so.1"
++#define GNU_USER_DYNAMIC_LINKERX32 "/lib/ld-x32.so.1"
++
++#undef	STARTFILE_SPEC
++#if defined HAVE_LD_PIE
++#define STARTFILE_SPEC \
++  "%{!shared: %{pg|p|profile:%{static:gcrt0.o%s;:gcrt1.o%s};pie:Scrt1.o%s;static:crt0.o%s;:crt1.o%s}} \
++   crti.o%s %{static:crtbeginT.o%s;shared|pie:crtbeginS.o%s;:crtbegin.o%s}"
++#else
++#define STARTFILE_SPEC \
++  "%{!shared: %{pg|p|profile:%{static:gcrt0.o%s;:gcrt1.o%s};static:crt0.o%s;:crt1.o%s}} \
++   crti.o%s %{static:crtbeginT.o%s;shared|pie:crtbeginS.o%s;:crtbegin.o%s}"
++#endif
+Index: gcc-11.5.0/libgcc/config.host
+===================================================================
+--- gcc-11.5.0.orig/libgcc/config.host
++++ gcc-11.5.0/libgcc/config.host
+@@ -788,6 +788,12 @@ x86_64-*-kfreebsd*-gnu)
+ 	tmake_file="${tmake_file} i386/t-crtpc t-crtfm i386/t-crtstuff t-dfprules"
+ 	tm_file="${tm_file} i386/elf-lib.h"
+ 	;;
++x86_64-*-gnu*)
++	extra_parts="$extra_parts crtprec32.o crtprec64.o crtprec80.o crtfastmath.o"
++	tmake_file="${tmake_file} i386/t-crtpc t-crtfm i386/t-crtstuff t-dfprules"
++	tm_file="${tm_file} i386/elf-lib.h"
++	md_unwind_header=i386/gnu-unwind.h
++	;;
+ i[34567]86-pc-msdosdjgpp*)
+ 	;;
+ i[34567]86-*-lynxos*)
+@@ -1561,7 +1567,7 @@ esac
+ case ${host} in
+ i[34567]86-*-linux* | x86_64-*-linux* | \
+   i[34567]86-*-kfreebsd*-gnu | x86_64-*-kfreebsd*-gnu | \
+-  i[34567]86-*-gnu*)
++  i[34567]86-*-gnu* | x86_64-*-gnu*)
+ 	tmake_file="${tmake_file} t-tls i386/t-linux i386/t-msabi t-slibgcc-libgcc"
+ 	if test "$libgcc_cv_cfi" = "yes"; then
+ 		tmake_file="${tmake_file} t-stack i386/t-stack-i386"
+Index: gcc-11.5.0/libgcc/config/i386/gnu-unwind.h
+===================================================================
+--- gcc-11.5.0.orig/libgcc/config/i386/gnu-unwind.h
++++ gcc-11.5.0/libgcc/config/i386/gnu-unwind.h
+@@ -30,6 +30,14 @@ see the files COPYING3 and COPYING.RUNTI
+ 
+ #include <signal.h>
+ 
++#ifdef __x86_64__
++
++/*
++ * TODO: support for 64 bits needs to be implemented.
++ */
++
++#else /* ifdef __x86_64__  */
++
+ #define MD_FALLBACK_FRAME_STATE_FOR x86_gnu_fallback_frame_state
+ 
+ static _Unwind_Reason_Code
+@@ -138,4 +146,6 @@ x86_gnu_fallback_frame_state
+   return _URC_NO_REASON;
+ }
+ 
++#endif /* ifdef __x86_64__  */
++
+ #endif /* ifndef inhibit_libc */
+Index: gcc-11.5.0/gcc/config/i386/t-linux64
+===================================================================
+--- gcc-11.5.0.orig/gcc/config/i386/t-linux64
++++ gcc-11.5.0/gcc/config/i386/t-linux64
+@@ -33,6 +33,6 @@
+ comma=,
+ MULTILIB_OPTIONS    = $(subst $(comma),/,$(TM_MULTILIB_CONFIG))
+ MULTILIB_DIRNAMES   = $(patsubst m%, %, $(subst /, ,$(MULTILIB_OPTIONS)))
+-MULTILIB_OSDIRNAMES = m64=../lib64$(call if_multiarch,:x86_64-linux-gnu)
++MULTILIB_OSDIRNAMES = m64=../lib$(call if_multiarch,:x86_64-linux-gnu)
+ MULTILIB_OSDIRNAMES+= m32=$(if $(wildcard $(shell echo $(SYSTEM_HEADER_DIR))/../../usr/lib32),../lib32,../lib)$(call if_multiarch,:i386-linux-gnu)
+ MULTILIB_OSDIRNAMES+= mx32=../libx32$(call if_multiarch,:x86_64-linux-gnux32)
