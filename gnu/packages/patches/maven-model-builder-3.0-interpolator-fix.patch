@@ -1,0 +1,28 @@
+From: Constantin Tarasov <tarcv@proton.me>
+Date: Fri Mar 20 04:09:50 2026 +0000
+Subject: maven-3.0-model-builder: Fix DI metadata for StringSearchInterpolator.
+
+Copy fields from the base class inside a comment. That allows the script
+generating Plexus Container metadata in Guix (components.sh) to see them and
+makes it add previously missing dependency requirements.
+This is needed as otherwise build tools depending on maven-model-builder are not
+able to interpolate variables in POM files in some cases.
+
+Upstream-status: Not presented upstream.
+
+--- a/maven-model-builder/src/main/java/org/apache/maven/model/interpolation/StringSearchModelInterpolator.java
++++ b/maven-model-builder/src/main/java/org/apache/maven/model/interpolation/StringSearchModelInterpolator.java
+@@ -52,6 +52,13 @@
+     private static final Map<Class<?>, Boolean> fieldIsPrimitiveByClass =
+             new ConcurrentHashMap<Class<?>, Boolean>( 62, 0.75f, 2 ); // Empirical data from 3.x, actual 31
+ 
++/*
++    @Requirement
++    private PathTranslator pathTranslator;
++
++    @Requirement
++    private UrlNormalizer urlNormalizer;
++*/
+     public Model interpolateModel( Model model, File projectDir, ModelBuildingRequest config,
+                                    ModelProblemCollector problems )
+     {

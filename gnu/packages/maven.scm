@@ -6,6 +6,7 @@
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2026 Kristiyan Kanchev <skrechy@gmail.com>
 ;;; Copyright © 2026 Mathieu Lirzin <mthl@gnu.org>
+;;; Copyright © 2026 Constantin Tarasov <tarcv@proton.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2467,7 +2468,12 @@ reporting or the build process.")))
   (package
     (inherit maven-model-builder)
     (version (package-version maven-3.0-pom))
-    (source (package-source maven-3.0-pom))
+    (source (origin
+              (inherit (package-source maven-3.0-pom))
+              (patches
+               (cons
+                (search-patch "maven-model-builder-3.0-interpolator-fix.patch")
+                (origin-patches (package-source maven-3.0-pom))))))
     (arguments
       (substitute-keyword-arguments arguments
         ((#:phases phases)

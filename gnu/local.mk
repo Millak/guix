@@ -1944,6 +1944,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/lib-tl-for-telegram-memcpy.patch	\
   %D%/packages/patches/lvm2-no-systemd.patch    		\
   %D%/packages/patches/maturin-no-cross-compile.patch		\
+  %D%/packages/patches/maven-model-builder-3.0-interpolator-fix.patch   \
   %D%/packages/patches/mecab-variable-param.patch		\
   %D%/packages/patches/mediastreamer2-cmake-findgsm.patch	\
   %D%/packages/patches/mediasdk-gcc-14.patch			\
