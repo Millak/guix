@@ -4554,7 +4554,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1n96qjir24pmn2wml42d9l1z265bvdrkrvvh14ymm0bylh10fgaj"))
+                "0dygcx42iijyhgpj5a8lams1avvc4d0cnvrbgzgxvpf3zx50n01a"))
               (patches (search-patches "fbgemm-use-system-libraries.patch"))))
     (build-system cmake-build-system)
     (arguments
