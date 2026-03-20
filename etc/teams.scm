@@ -1639,6 +1639,11 @@ the \"texlive\" importer."
                        "spencerking")
   julia)
 
+(define-member (person "Peter Polidoro"
+                       "peter@polidoro.io"
+                       "peterpolidoro")
+  electronics)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
