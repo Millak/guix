@@ -12,7 +12,7 @@
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Petter <petter@mykolab.ch>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2017, 2026 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2020 André Batista <nandre@riseup.net>
 ;;; Copyright © 2020 Helio Machado <0x2b3bfa0+guix@googlemail.com>
@@ -106,6 +106,7 @@
             tcl/tk
             unicode
             unlicense
+            upl
             vim
             w3c
             x11 x11-style
@@ -760,6 +761,11 @@ at URI, which may be a file:// URI pointing the package's tree."
   (license "Unlicense"
            "https://unlicense.org/"
            "https://www.gnu.org/licenses/license-list.html#Unlicense"))
+
+(define upl
+  (license "Universal Permissive License"
+           "https://directory.fsf.org/wiki/License:Universal_Permissive_License"
+           "http://www.gnu.org/licenses/license-list#UPL"))
 
 (define w3c
   (license "W3C Software Notice and License"
