@@ -9375,23 +9375,6 @@ logo='~a'~%" icon))))))
                        "Comment=This session fails immediately.\n"
                        "NoDisplay=true\n"
                        "Exec=false\n")))))))
-          ;; GDM needs GNOME Session to run these applications.  We link
-          ;; their autostart files in `share/gdm/greeter/autostart'
-          ;; because GDM explicitly tells GNOME Session to look there.
-          ;;
-          ;; XXX: GNOME Shell should be linked here too, but currently
-          ;; GNOME Shell depends on GDM.
-          (add-after 'install 'link-autostart-files
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((autostart (string-append #$output "/share/gdm/"
-                                              "greeter/autostart"))
-                    (settings #$(this-package-input "gnome-settings-daemon")))
-                (mkdir-p autostart)
-                (with-directory-excursion autostart
-                  (for-each (lambda (desktop)
-                              (symlink desktop (basename desktop)))
-                            (find-files
-                             (string-append settings "/etc/xdg")))))))
           ;; GDM needs some additional programs available via XDG_DATA_DIRS,
           ;; to make accessibility settings and related services available.
           (add-after 'install 'wrap-accessibility-dependencies
