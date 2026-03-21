@@ -708,7 +708,7 @@ toolkit)")
     (synopsis "The extensible, customizable, self-documenting text
 editor (without X toolkit)" )
     ;; Using emacs' inputs as base, since it has all the graphical stuff
-    (inputs (modify-inputs inputs
+    (inputs (modify-inputs (package-inputs emacs)
               (delete "gtk+")
               (prepend inotify-tools)))
     (arguments
