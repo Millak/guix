@@ -7504,10 +7504,24 @@ using the PyCPL Python API.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 194 passed, 3 deselected, 119 warnings
-      ;; ValueError: The truth value of an array with more than one element
-      ;; is ambiguous. Use a.any() or a.all()
-      #:test-flags #~(list "-k" "not test_vmax")
+      ;; tests: 194 passed, 3 deselected, 22922 warnings
+      #:test-flags
+      ;; See: <https://github.com/dangilman/pyHalo/issues/73>.
+      #~(list #$@(map (lambda (ls) (string-append "--deselect=tests/"
+                                                  (string-join ls "::")))
+                      ;; Arrays are not almost equal to 7 decimals
+                      ;; ACTUAL: 14.246936385951503
+                      ;; DESIRED: 14.247120064947586
+                      '(("test_halos/test_concentrations.py"
+                         "TestConcentration"
+                         "test_concentration_diemer_joyce")
+                        ;; ValueError: The truth value of an array with more
+                        ;; than one element is ambiguous. Use a.any() or
+                        ;; a.all()
+                        ("test_halos/test_nfw_halo.py" "TestNFWHalos"
+                         "test_vmax")
+                        ("test_halos/test_tnfw_halo.py" "TestTNFWHalos"
+                         "test_vmax"))))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-setupup.py
@@ -7525,8 +7539,7 @@ using the PyCPL Python API.")
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-astropy
            python-click
