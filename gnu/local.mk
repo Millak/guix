@@ -234,6 +234,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/darwin.scm			\
   %D%/packages/data-language.scm		\
   %D%/packages/databases.scm			\
+  %D%/packages/datalog.scm			\
   %D%/packages/datamash.scm			\
   %D%/packages/datastructures.scm		\
   %D%/packages/dav.scm				\
