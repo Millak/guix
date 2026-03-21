@@ -250,18 +250,18 @@ with the editor vim.")))
           #~(modify-phases #$phases
               (add-before 'check 'skip-some-more-tests
                 (lambda _
-                  ;; Fontconfig can't figure out its cache directory
+                  ;; Fontconfig can't figure out its cache directory.
                   (substitute* "src/testdir/test_startup.vim"
                     ((".*Test_progname.*" line)
                      (string-append line "return\n")))))
+              ;; Some tests require an X server, but do not start one.
               (add-before 'check 'start-xserver
-                (lambda* (#:key inputs #:allow-other-keys)
-                  ;; Some tests require an X server, but does not start one.
-                  (let ((xorg-server (assoc-ref inputs "xorg-server"))
-                        (display ":1"))
-                    (setenv "DISPLAY" display)
-                    (zero? (system (string-append xorg-server "/bin/Xvfb "
-                                                  display " &")))))))))))
+                (lambda _
+                  (setenv "DISPLAY" ":1")
+                  (zero? (system #$(file-append
+                                     (this-package-native-input
+                                       "xorg-server")
+                                     "/bin/Xvfb :1 &"))))))))))
     (native-inputs
      (modify-inputs native-inputs
        (prepend pkg-config xorg-server-for-tests)))
@@ -292,8 +292,8 @@ with the editor vim.")))
                python
                ruby
                tcl)))
-    ;; The description shares language with the vim package. When making
-    ;; changes, check if the other description also needs to be updated.
+    ;; This description shares all but the last paragraph with the vim
+    ;; package description.  When changing one, also update the other.
     (description
      "Vim is a highly configurable text editor built to enable efficient text
 editing.  It is an improved version of the vi editor distributed with most UNIX
