@@ -23,6 +23,7 @@
 ;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -257,21 +258,19 @@ firmware from it.")
     (license license:gpl2+)))
 
 (define-public genimage
-  (let ((commit "00009af6e29cfd46909bc8b4180147dda9f82ba8")
-        (revision "0"))
     (package
       (name "genimage")
-      (version (git-version "18" revision commit))
+      (version "19")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                 (url "https://github.com/pengutronix/genimage")
-                (commit commit)))
+                (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1mijyq79cb0yj4jm9ln9smpddq1f6r8cnsa568qca0krcv0p3zag"))))
+           "1n2d4sziq190saa71ms15h0fbk171kqig1jc6kw35pqs4288pnc5"))))
       (build-system gnu-build-system)
       (arguments
        `(#:modules
@@ -305,18 +304,6 @@ firmware from it.")
                (substitute* "util.c"
                  (("\"/bin/sh\"")
                   (string-append "\"" (assoc-ref inputs "bash") "/bin/sh\"")))))
-           (add-before 'check 'disable-failing-tests
-             (lambda _
-               ;; We don't have /etc/passwd so uid 0 is not known as "root".
-               ;; Thus patch it out.
-               (substitute* '("test/flash.test")
-                 (("test_expect_success \"flash\"")
-                  "test_expect_fail \"flash\""))
-               (substitute* '("test/hdimage.test")
-                 (("test_expect_success fdisk,sfdisk \"hdimage\"")
-                  "test_expect_fail fdisk,sfdisk \"hdimage\"")
-                 (("test_expect_success hexdump \"hdimage no-partition\"")
-                  "test_expect_fail hexdump \"hdimage no-partition\""))))
            (add-before 'check 'fix-failing-tests
              (lambda _
                ;; We don't have /etc/passwd so uid 0 is not known as "root".
@@ -366,7 +353,7 @@ firmware from it.")
       (description "@command{genimage} creates Flash images according to a
 specification file.")
       (home-page "https://github.com/pengutronix/genimage")
-      (license license:gpl2))))
+      (license license:gpl2)))
 
 (define-public teensy-loader-cli
   (package
