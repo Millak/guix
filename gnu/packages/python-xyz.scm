@@ -38455,18 +38455,34 @@ functions that aim to reduce boilerplate when working with data.")
 (define-public python-toolz
   (package
     (name "python-toolz")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "toolz" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pytoolz/toolz")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "00ks0jhl1jwm9576c5sh10pnla8ni21yvg4kcxasr627l3cy71ic"))))
+        (base32 "09ams76wl5g0a4v4qiqi9xdagvq1pcwz8nglnhcfarbfivga2rbz"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\\[tool.setuptools-git-versioning\\]" all)
+                 (string-append "[tool.setuptools_scm]\n"
+                                "write_to = \"toolz/_version.py\"\n"
+                                all))))))))
     (native-inputs
      (list python-pytest
            python-setuptools
-           python-wheel))
+           ;; Project expects setuptools-git-versioning to build version, but
+           ;; it does not support envar override as seuptools-scm.
+           python-setuptools-scm))
     (home-page "https://github.com/pytoolz/toolz/")
     (synopsis "List processing tools and functional utilities")
     (description
