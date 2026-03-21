@@ -958,13 +958,6 @@ independently to be able to run a LLaMA model.")
               "-DWHISPER_USE_SYSTEM_GGML=ON")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-paths
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute*
-                  "ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp"
-                (("\"/bin/sh\"")
-                 (string-append
-                  "\"" (search-input-file inputs "/bin/sh") "\"")))))
           #$@(if (target-32bit?)
                  '((add-after 'unpack 'skip-failing-tests
                      (lambda _
@@ -985,15 +978,9 @@ independently to be able to run a LLaMA model.")
                 (("\\$\\{VAD_TEST\\} PROPERTIES LABELS \"base;en\"")
                  "${VAD_TEST} PROPERTIES DISABLED true")))))))
     (native-inputs
-     (list git pkg-config shaderc))
+     (list git-minimal/pinned pkg-config))
     (inputs
-     (list ffmpeg
-           ggml
-           sdl2
-           spirv-headers
-           spirv-tools
-           vulkan-headers
-           vulkan-loader))
+     (list ffmpeg ggml sdl2))
     (synopsis "OpenAI's Whisper model in C/C++")
     (description
      "This package is a high-performance inference of OpenAI's
