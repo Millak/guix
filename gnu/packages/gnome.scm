@@ -9761,6 +9761,10 @@ printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
                                (search-input-file inputs "bin/bash")
                                tool))))
                  '("gnome-shell-extension-tool" "gnome-shell-extension-prefs"))))
+            (add-after 'install 'install-xdg-autostart-service
+              (lambda _
+                (install-file (string-append #$output "/share/applications/org.gnome.Shell.desktop")
+                              (string-append #$output "/etc/xdg/autostart"))))
             (replace 'glib-or-gtk-wrap
               (let ((wrap (assoc-ref %standard-phases 'glib-or-gtk-wrap)))
                 (lambda* (#:key inputs outputs #:allow-other-keys)
