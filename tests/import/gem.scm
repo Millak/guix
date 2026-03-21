@@ -151,6 +151,19 @@
   \"licenses\": [\"foo\", \"bar\"]
 }")
 
+(define test-mixed-licenses-json
+  "{
+  \"name\": \"mixed-license-gem\",
+  \"version\": \"1.0.0\",
+  \"sha\": \"f3676eafca9987cb5fe263df1edf2538bf6dafc712b30e17be3543a9680547a8\",
+  \"info\": \"A gem with one valid and one gibberish license\",
+  \"homepage_uri\": \"https://example.com\",
+  \"dependencies\": {
+    \"runtime\": []
+  },
+  \"licenses\": [\"MIT\", \"nonsense\"]
+}")
+
 (test-begin "gem")
 
 (test-assert "gem->guix-package"
@@ -453,4 +466,5 @@ and one gibberish license.")
        #t)
       (x
        (pk 'fail x #f)))))
+
 (test-end "gem")
