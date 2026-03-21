@@ -111,37 +111,37 @@
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'configure 'patch-absolute-paths
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* '("src/testdir/Makefile"
-                              "src/testdir/test_channel.vim"
-                              "src/testdir/test_filetype.vim"
-                              "src/testdir/test_normal.vim"
-                              "src/testdir/test_plugin_matchparen.vim"
-                              "src/testdir/test_popupwin.vim"
-                              "src/testdir/test_prompt_buffer.vim"
-                              "src/testdir/test_shell.vim"
-                              "src/testdir/test_suspend.vim"
-                              "src/testdir/test_terminal.vim"
-                              "src/testdir/test_terminal2.vim")
-                 (("/bin/sh") (which "sh")))
-               (substitute* "src/testdir/test_autocmd.vim"
-                 (("/bin/kill") (which "kill")))
-               (substitute* '("runtime/syntax/sh.vim"
-                              "src/if_cscope.c")
-                 (("/bin/sh") (search-input-file inputs "/bin/sh")))))
-           (add-before 'check 'set-environment-variables
-             (lambda* (#:key inputs #:allow-other-keys)
-               ;; One of the tests tests timezone-dependent functions.
-               (setenv "TZDIR"
-                       (search-input-directory inputs "share/zoneinfo"))
-
-               ;; Make sure the TERM environment variable is set for the tests.
-               (setenv "TERM" "xterm")))
+             (lambda _
+               (with-directory-excursion "src/testdir"
+                 (substitute* '("Makefile"
+                                "test_channel.vim"
+                                "test_filetype.vim"
+                                "test_normal.vim"
+                                "test_plugin_matchparen.vim"
+                                "test_popupwin.vim"
+                                "test_prompt_buffer.vim"
+                                "test_shell.vim"
+                                "test_suspend.vim"
+                                "test_terminal.vim"
+                                "test_terminal2.vim")
+                   (("/bin/sh") (which "sh")))
+                 (substitute* "test_autocmd.vim"
+                   (("/bin/kill") (which "kill"))))
+               (substitute* '("runtime/syntax/sh.vim" "src/if_cscope.c")
+                 (("/bin/sh" all)
+                  (string-append #$(this-package-input "tcsh") all)))))
            (add-before 'check 'skip-or-fix-failing-tests
              (lambda _
+               ;; One of the tests tests timezone-dependent functions.
+               (setenv "TZDIR"
+                       #$(file-append (this-package-native-input "tzdata")
+                                      "/share/zoneinfo"))
+
+               ;; Make sure the TERM environment variable is set for the tests.
+               (setenv "TERM" "xterm")
+
                ;; These tests try to download from the internet.
-               (setenv "TEST_SKIP_PAT"
-                       "Test_glvs_default")
+               (setenv "TEST_SKIP_PAT" "Test_glvs_default")
 
                ;; Ignore failure of some flaky tests.
                (setenv "TEST_MAY_FAIL"
@@ -171,26 +171,25 @@
            (add-before 'install 'fix-installman.sh
              (lambda _
                (substitute* "src/installman.sh"
-                 (("/bin/sh")
-                  (which "sh")))))
+                 (("/bin/sh") (which "sh")))))
            (add-after 'install 'install-guix.vim
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((vimdir (string-append (assoc-ref outputs "out") "/share/vim")))
+             (lambda _
+               (let ((vimdir (string-append #$output "/share/vim")))
                  (mkdir-p vimdir)
-                 (copy-file (assoc-ref inputs "guix.vim")
+                 (copy-file #$(this-package-native-input "guix.vim")
                             (string-append vimdir "/vimrc"))))))))
     (inputs
      (list gawk ncurses perl tcsh))                 ; For runtime/tools/vim32
     (native-inputs
      `(("libtool" ,libtool)
-       ("guix.vim" ,(search-auxiliary-file "guix.vim"))
+       ("guix.vim" ,(local-file (search-auxiliary-file "guix.vim")))
 
        ;; For tests.
        ("tzdata" ,tzdata-for-tests)))
     (home-page "https://www.vim.org/")
     (synopsis "Text editor based on vi")
-    ;; The description shares language with the vim-full package. When making
-    ;; changes, check if the other description also needs to be updated.
+    ;; This description is a subset of the vim-full package description.
+    ;; When making changes, update the other description as well.
     (description
      "Vim is a highly configurable text editor built to enable efficient text
 editing.  It is an improved version of the vi editor distributed with most UNIX
