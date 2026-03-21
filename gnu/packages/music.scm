@@ -7105,7 +7105,8 @@ MIDI drums and comes as two separate drumkits: Black Pearl and Red Zeppelin.")
     (synopsis "Polyphonic synth with lots of modulation")
     (description "Helm is a cross-platform polyphonic synthesizer available standalone
 and as an LV2 plugin.")
-    (license license:gpl3+)))
+    (license license:gpl3+)
+    (properties '((lint-hidden-cpe-vendors . ("helm"))))))
 
 (define-public zrythm
   (package
