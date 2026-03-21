@@ -417,8 +417,6 @@
          "fixes/libcpp-headers.patch"
          "fixes/rust-clanglib.patch"
          "system/openjpeg.patch"
-         ;; adler2 is not part of our rust toolchain, check on next version.
-         "trixie/adler1.patch"
          ;; Remove after rust is past
          ;; <https://github.com/rust-lang/rust/pull/141061>.
          "trixie/rust-no-alloc-shim.patch")))
@@ -518,8 +516,8 @@
         `(cons "--enable-custom-modes"
                ,flags))))))
 
-(define lld-as-ld-wrapper-19
-  (make-lld-wrapper lld-19 #:lld-as-ld? #t))
+(define lld-as-ld-wrapper-21
+  (make-lld-wrapper lld-21 #:lld-as-ld? #t))
 
 (define-public ungoogled-chromium
   (package
@@ -612,7 +610,7 @@
                              "\"")
 
               (string-append "clang_version="
-                             #$(version-major (package-version clang-19)))
+                             #$(version-major (package-version clang-21)))
 
               (string-append "rust_sysroot_absolute=\""
                              (dirname (dirname (search-input-file %build-inputs
@@ -629,6 +627,22 @@
                              ;; the whole string as if returned from 'rustc --version'
                              ;; invokation and fails if it's just the version number.
                              " (f6e511eec 2024-10-15) (built from a source tarball)\"")
+
+              ;; Chromium's build/rust/std/BUILD.gn has a hardcoded
+              ;; list of stdlib rlibs (stdlib_files) that GN uses to
+              ;; declare build outputs.  GN requires static output
+              ;; declarations, so the list must exactly match what
+              ;; rlibs exist in the Rust sysroot.  Chromium's list
+              ;; includes unicode_width because their bundled
+              ;; toolchain (Rust 1.89) ships it as a dependency of
+              ;; getopts 0.2.23.  Our Rust 1.93 has getopts 0.2.24
+              ;; which dropped that dependency, so unicode_width is
+              ;; not in our sysroot.  This GN arg removes it from
+              ;; the list.  (Chromium's own use of unicode_width via
+              ;; codespan-reporting is a separate vendored copy under
+              ;; third_party/rust/chromium_crates_io/ and is
+              ;; unaffected.)
+              "removed_rust_stdlib_libs=[\"unicode_width\"]"
 
               ;; Prefer system libraries.
               "use_system_freetype=true"
@@ -777,7 +791,7 @@
                         (string-append " -stdlib=libc++"
                                        " -Wl,--stats"))
                 (setenv "CLANG_MVERS" #$(version-major
-                                         (package-version clang-19)))
+                                         (package-version clang-21)))
                 (setenv "RUSTC_BOOTSTRAP" "1")
 
                 ;; TODO: pre-compile instead. Avoids a race condition.
@@ -905,13 +919,13 @@
                    '("24" "48" "64" "128" "256")))))))))
     (native-inputs
      (list bison
-           clang-19
-           clang-runtime-19
-           clang-toolchain-19
+           clang-21
+           clang-runtime-21
+           clang-toolchain-21
            gn
            gperf
-           lld-as-ld-wrapper-19
-           llvm-19
+           lld-as-ld-wrapper-21
+           llvm-21
            ninja
            node-lts
            pkg-config
