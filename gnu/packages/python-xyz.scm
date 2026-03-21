@@ -31408,33 +31408,33 @@ older versions of Python and so are packaged here.")
 (define-public python-loguru
   (package
     (name "python-loguru")
-    (version "0.7.2")
+    (version "0.7.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "loguru" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Delgan/loguru")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1b2ipp8di3y10gd7kiin9fyazv5rijbfwh3383yk8psi48ssawg6"))))
+        (base32 "0vnnhjw8r7d75sy0sdimryanapwh5ivy6v6gci0d2kix7g7h9ixm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list"--numprocesses" (number->string (parallel-job-count))
-             ;; All of these fail with: error: Cannot find implementation or
-             ;; library stub for module named "loguru"
-             "--ignore=tests/typesafety/test_logger.yml")))
+      #~(list"--numprocesses" (number->string (parallel-job-count)))))
     (native-inputs
-     (list python-freezegun
+     (list python-flit-core
+           python-freezegun
            python-pytest
            python-pytest-mypy-plugins
            python-pytest-xdist
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-colorama))
     (home-page "https://github.com/Delgan/loguru")
     (synopsis "Python logging made (stupidly) simple")
-    (description "Python logging made (stupidly) simple")
+    (description "Python logging made (stupidly) simple.")
     (license license:expat)))
 
 (define-public python-helper
