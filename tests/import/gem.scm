@@ -138,6 +138,19 @@
   \"licenses\": [\"Ruby\", \"BSD-2-Clause\"]
 }")
 
+(define test-gibberish-licenses-json
+  "{
+  \"name\": \"gibberish-license-gem\",
+  \"version\": \"1.0.0\",
+  \"sha\": \"f3676eafca9987cb5fe263df1edf2538bf6dafc712b30e17be3543a9680547a8\",
+  \"info\": \"A gem with gibberish licenses\",
+  \"homepage_uri\": \"https://example.com\",
+  \"dependencies\": {
+    \"runtime\": []
+  },
+  \"licenses\": [\"foo\", \"bar\"]
+}")
+
 (test-begin "gem")
 
 (test-assert "gem->guix-package"
