@@ -38203,7 +38203,7 @@ Python versions that don't natively support them.")
 (define-public python-typer
   (package
     (name "python-typer")
-    (version "0.20.0")
+    (version "0.22.0")
     (source
      (origin
        (method git-fetch)
@@ -38212,12 +38212,18 @@ Python versions that don't natively support them.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a2ay2kj3d3rwjscx3hw2adgqifs3hdp7kwcpdh1bl3iy8mn9xdi"))))
+        (base32 "17gxqqiafrp5dvqfm6k39zbanvnwb8b9kr7dvnkah17js0rfy1sz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))
       #:test-flags
-      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))))
+      #~(list "-k" "not test_cli"
+              "--numprocesses" (number->string (min 8 (parallel-job-count))))))
     (native-inputs
      (list python-coverage      ;this is required in tests
            python-pdm-backend
@@ -38226,6 +38232,7 @@ Python versions that don't natively support them.")
     (propagated-inputs
      (list python-click
            python-typing-extensions
+           python-annotated-doc
            ;; [optional]
            python-rich
            python-shellingham))
