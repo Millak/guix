@@ -833,7 +833,7 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
     (license license:asl2.0)))
 
 (define-public llama-cpp
-  (let ((tag "b8445"))                  ;sync with ggml
+  (let ((tag "b8445"))                  ;sync with ggml and python-gguf
     (package
       (name "llama-cpp")
       (version (string-append "0.0.0-" tag))
@@ -7084,19 +7084,13 @@ Brian 2 simulator.")
 training of deep learning models for inference and training on-device.")
     (license license:asl2.0)))
 
+;; This package needs to be in sync with llama-cpp version in use to avoid
+;; incompatibilities.
 (define-public python-gguf
   (package
+    (inherit llama-cpp)
     (name "python-gguf")
-    (version "0.18.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/ggml-org/llama.cpp")
-              (commit (string-append "gguf-v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0rw69ywvr1kfh1jaa42a5q9qfl72wx8442cw578gi2h3iw2vjh3d"))))
+    (version "0.18.0")                  ;from gguf-py/pyproject.toml
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -7105,12 +7099,15 @@ training of deep learning models for inference and training on-device.")
           (add-after 'unpack 'chdir
             (lambda _
               (chdir "gguf-py"))))))
+    (inputs '())
     (propagated-inputs (list python-numpy python-pyyaml python-pyside-6
                              python-sentencepiece python-tqdm))
     (native-inputs (list python-poetry-core python-pytest))
+    (properties '())
     (home-page "https://ggml.ai")
     (synopsis "Read and write ML models in GGUF for GGML")
-    (description "A Python library for reading and writing GGUF & GGML format ML models.")
+    (description "A Python library for reading and writing GGUF & GGML format
+ML models.")
     (license license:expat)))
 
 (define-public python-gymnasium
