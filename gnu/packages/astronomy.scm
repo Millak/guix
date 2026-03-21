@@ -8594,20 +8594,25 @@ pipelines.")
 (define-public python-romancal
   (package
     (name "python-romancal")
-    (version "0.22.0")
+    ;; To support "spherical-geometry>=1.3.3,<1.5"
+    (properties '((commit . "cbdb56a32058a02ee5a42959d2d301fc526e65be")
+                  (revision . "0")))
+    (version (git-version "0.22.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/spacetelescope/romancal")
-              (commit version)))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rj1v07hnl7g1qd6fgv9czy1qa6lqfjf0ckbi5ldyy9yji9drhx1"))))
+        (base32 "1pdlhgz3pl5lzgy918vgxyyisz5h3s0qd00yjg3q36n6mis3jna6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 380 passed, 311 skipped, 18 deselected, 2 warnings
+      ;; tests: 415 passed, 323 skipped, 18 deselected, 2 warnings
       #:test-flags
       #~(list "--color=no"
               ;; Tests requiring calibration data.
