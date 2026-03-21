@@ -7960,63 +7960,6 @@ such as gzip tarballs.")
     (home-page "https://fileroller.sourceforge.net")
     (license license:gpl2+)))
 
-(define-public gnome-session
-  (package
-    (name "gnome-session")
-    (version "48.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major version) "/"
-                                  name "-" version ".tar.xz"))
-              (patches (search-patches "gnome-session-support-elogind.patch"))
-              (sha256
-               (base32
-                "05y48xij8ihq1aifcqayrhy99dfig1ys9wadzjrbvk92bfy9z46x"))))
-    (arguments
-     (list
-      #:glib-or-gtk? #t
-      #:configure-flags
-      #~(list (string-append "-Dsystemduserunitdir="
-                             #$output "/share/systemd"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'wrap-gnome-session
-            (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
-              ;; Make sure 'gnome-session' finds the 'gsettings' program.
-              (wrap-program (search-input-file outputs "bin/gnome-session")
-                `("PATH" ":" prefix
-                  (,(dirname (search-input-file (or native-inputs inputs)
-                                                "bin/gdbus"))))))))))
-    (build-system meson-build-system)
-    (native-inputs
-     (list docbook-xml-4.1.2
-           docbook-xsl
-           `(,glib "bin")               ; for glib-compile-schemas, etc.
-           intltool
-           libxslt
-           pkg-config
-           xmlto))
-    (inputs
-     (list bash-minimal
-           elogind
-           gnome-desktop
-           gsettings-desktop-schemas
-           gtk+
-           json-glib
-           libsm
-           libxcomposite
-           libxtst
-           mesa
-           upower
-           xtrans))
-    (synopsis "Session manager for GNOME")
-    (description
-     "This package contains the GNOME session manager, as well as a
-configuration program to choose applications starting on login.")
-    (home-page "https://wiki.gnome.org/Projects/SessionManagement")
-    (license license:gpl2+)))
-
 (define-public gnome-session-shepherd
   (package
     (name "gnome-session-shepherd")
@@ -8107,6 +8050,9 @@ configuration program to choose applications starting on login.")
     (description "Implementation of gnome-session that manages services using
 the GNU Shepherd.")
     (license license:gpl3+)))
+
+(define-deprecated-package gnome-session
+  gnome-session-shepherd)
 
 (define-public gjs
   (package
@@ -9545,7 +9491,7 @@ logo='~a'~%" icon))))))
            egl-wayland
            elogind
            eudev
-           gnome-session
+           gnome-session-shepherd
            gnome-control-center
            gnome-settings-daemon
            gtk+
@@ -9723,7 +9669,7 @@ Libadwaita.")
            gnome-bluetooth
            gnome-desktop
            gnome-online-accounts
-           gnome-session
+           gnome-session-shepherd
            gnome-settings-daemon
            gnutls
            grilo
@@ -10799,7 +10745,7 @@ playing media, scanning, and much more.")
                             gnome-keyring
                             gnome-menus
                             gnome-remote-desktop
-                            gnome-session
+                            gnome-session-shepherd
                             gnome-settings-daemon
                             gnome-shell
                             gnome-shell-extensions
