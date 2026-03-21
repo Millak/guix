@@ -3,7 +3,7 @@ exec guile --no-auto-compile -e main -s "$0" "$@"
 !#
 ;;;; test-driver.scm - Guile test driver for Automake testsuite harness
 
-(define script-version "2026-03-20.08") ;UTC
+(define script-version "2026-03-21.02") ;UTC
 
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim@guixotic.coop>
@@ -197,7 +197,7 @@ called to do the final reporting."
                     (positive? (test-runner-xpass-count runner))))
           (skip (or (positive? (test-runner-skip-count runner))
                     (positive? (test-runner-xfail-count runner)))))
-      (format trs-port ":test-global-result: ~{~A~^,~}~%"
+      (format trs-port ":global-test-result: ~{~A~^,~}~%"
               (filter-map (λ (proc str)
                             (let ((n (proc runner)))
                               (if (positive? n) str #f)))
