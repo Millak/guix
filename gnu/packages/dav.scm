@@ -169,43 +169,29 @@ clients.")
 (define-public xandikos
   (package
     (name "xandikos")
-    (version "0.3.0")
+    (version "0.3.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "xandikos" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jelmer/xandikos")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "10j7qmwcrwql4ah6q8si3nf1ljwrx99w8ipiy85bzjd3qz2vackj"))))
+        (base32 "0db02hsdrrxpms9xfy8q5kkgsp5gxrgd15rgdjd5aw7lqpnhhmji"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-backend #~'unittest
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'create-entrypoints
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let ((sitedir (site-packages inputs outputs))
-                    (interpreter (which "python"))
-                    (file-path (string-append #$output "/bin/xandikos")))
-                (mkdir-p (string-append #$output "/bin"))
-                (call-with-output-file file-path
-                  (lambda (port)
-                    (format port "#!~a -sP
-# Auto-generated entry point script.
-import sys
-import asyncio
-from xandikos.__main__ import main
-if __name__ == '__main__':
-    sys.exit(asyncio.run(main(sys.argv[1:])))~%" interpreter)))
-                (chmod file-path #o755))))
           (add-before 'check 'check-setup
             (lambda _
               (setenv "XANDIKOSPATH" (mkdtemp "/tmp/xandikospath-XXXXXX")))))))
-    (native-inputs (list python-setuptools))
+    (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-aiohttp
            python-defusedxml
-           python-dulwich-0.24
+           python-dulwich
            python-icalendar
            python-jinja2
            python-multidict
