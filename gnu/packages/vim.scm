@@ -16,6 +16,7 @@
 ;;; Copyright © 2023 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023, 2024 Nguyễn Gia Phong <cnx@loang.net>
+;;; Copyright © 2026 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -264,32 +265,32 @@ with the editor vim.")))
      (modify-inputs native-inputs
        (prepend pkg-config xorg-server-for-tests)))
     (inputs
-     `(("acl" ,acl)
-       ("at-spi2-core" ,at-spi2-core)
-       ("attr" ,attr)
-       ("cairo" ,cairo)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("gdk-pixbuf" ,gdk-pixbuf)
-       ("gettext" ,gettext-minimal)
-       ("glib" ,glib)
-       ("gpm" ,gpm)
-       ("gtk" ,gtk+-2)
-       ("harfbuzz" ,harfbuzz)
-       ("libice" ,libice)
-       ("libpng" ,libpng)
-       ("libsm" ,libsm)
-       ("libx11" ,libx11)
-       ("libxdmcp" ,libxdmcp)
-       ("libxt" ,libxt)
-       ("libxpm" ,libxpm)
-       ("lua" ,lua)
-       ("pango" ,pango)
-       ("pixman" ,pixman)
-       ("python-3" ,python)
-       ("ruby" ,ruby)
-       ("tcl" ,tcl)
-       ,@(package-inputs vim)))
+     (modify-inputs inputs
+       (append acl
+               at-spi2-core
+               attr
+               cairo
+               fontconfig
+               freetype
+               gdk-pixbuf
+               gettext-minimal
+               glib
+               gpm
+               gtk+-2
+               harfbuzz
+               libice
+               libpng
+               libsm
+               libx11
+               libxdmcp
+               libxt
+               libxpm
+               lua
+               pango
+               pixman
+               python
+               ruby
+               tcl)))
     ;; The description shares language with the vim package. When making
     ;; changes, check if the other description also needs to be updated.
     (description "Vim is a highly configurable text editor built to enable efficient text
