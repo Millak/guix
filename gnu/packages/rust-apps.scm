@@ -4506,7 +4506,7 @@ policies, and so on.
 (define-public radicle
   (package
     (name "radicle")
-    (version "1.6.1")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch/tarbomb)
@@ -4514,7 +4514,7 @@ policies, and so on.
              "https://files.radicle.xyz/releases/"
              version "/heartwood-" version ".tar.gz"))
        (sha256
-        (base32 "0490gvb4h2cb8b2lz8k6sm1pmvfzc13c4kx208q2cqpip9bn7054"))
+        (base32 "1a2iv0whkfhsmkigam296mid9ikyjinlqs7di4jcqqh88yg22qrj"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -4532,6 +4532,10 @@ policies, and so on.
       #:cargo-install-paths ''("crates/radicle-cli"
                                "crates/radicle-node"
                                "crates/radicle-remote-helper")
+      #:cargo-test-flags
+      '(list "--"
+             ;; Different order of fields in expected vs actual JSON
+             "--skip=commands::utility::rad_config")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'setenv
@@ -4558,8 +4562,8 @@ policies, and so on.
           '())
       (list pkg-config
             ;; for test
-            git)))
-    (inputs (cons* libgit2-1.8 sqlite (cargo-inputs 'radicle)))
+            git-minimal/pinned)))
+    (inputs (cons* libgit2-1.9 sqlite-next (cargo-inputs 'radicle)))
     (home-page "https://radicle.xyz/")
     (synopsis "Peer-to-peer code collaboration stack")
     (description
