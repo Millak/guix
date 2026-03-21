@@ -94,90 +94,91 @@
   (package
     (name "vim")
     (version "9.2.0232")
-    (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                    (url "https://github.com/vim/vim")
-                    (commit (string-append "v" version))))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "0z5b77qq5rmddf42f8sqd4sbf81y1r8d9i9f0naczb9bz762wx0r"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/vim/vim")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z5b77qq5rmddf42f8sqd4sbf81y1r8d9i9f0naczb9bz762wx0r"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
+     (list
+       #:test-target "test"
        #:parallel-tests? #f
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'patch-absolute-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* '("src/testdir/Makefile"
-                            "src/testdir/test_channel.vim"
-                            "src/testdir/test_filetype.vim"
-                            "src/testdir/test_normal.vim"
-                            "src/testdir/test_plugin_matchparen.vim"
-                            "src/testdir/test_popupwin.vim"
-                            "src/testdir/test_prompt_buffer.vim"
-                            "src/testdir/test_shell.vim"
-                            "src/testdir/test_suspend.vim"
-                            "src/testdir/test_terminal.vim"
-                            "src/testdir/test_terminal2.vim")
-               (("/bin/sh") (which "sh")))
-             (substitute* "src/testdir/test_autocmd.vim"
-               (("/bin/kill") (which "kill")))
-             (substitute* '("runtime/syntax/sh.vim"
-                            "src/if_cscope.c")
-               (("/bin/sh") (search-input-file inputs "/bin/sh")))))
-         (add-before 'check 'set-environment-variables
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; One of the tests tests timezone-dependent functions.
-             (setenv "TZDIR"
-                     (search-input-directory inputs "share/zoneinfo"))
+       #~(modify-phases %standard-phases
+           (add-after 'configure 'patch-absolute-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* '("src/testdir/Makefile"
+                              "src/testdir/test_channel.vim"
+                              "src/testdir/test_filetype.vim"
+                              "src/testdir/test_normal.vim"
+                              "src/testdir/test_plugin_matchparen.vim"
+                              "src/testdir/test_popupwin.vim"
+                              "src/testdir/test_prompt_buffer.vim"
+                              "src/testdir/test_shell.vim"
+                              "src/testdir/test_suspend.vim"
+                              "src/testdir/test_terminal.vim"
+                              "src/testdir/test_terminal2.vim")
+                 (("/bin/sh") (which "sh")))
+               (substitute* "src/testdir/test_autocmd.vim"
+                 (("/bin/kill") (which "kill")))
+               (substitute* '("runtime/syntax/sh.vim"
+                              "src/if_cscope.c")
+                 (("/bin/sh") (search-input-file inputs "/bin/sh")))))
+           (add-before 'check 'set-environment-variables
+             (lambda* (#:key inputs #:allow-other-keys)
+               ;; One of the tests tests timezone-dependent functions.
+               (setenv "TZDIR"
+                       (search-input-directory inputs "share/zoneinfo"))
 
-             ;; Make sure the TERM environment variable is set for the tests.
-             (setenv "TERM" "xterm")))
-         (add-before 'check 'skip-or-fix-failing-tests
-           (lambda _
-             ;; These tests try to download from the internet.
-             (setenv "TEST_SKIP_PAT"
-                     "Test_glvs_default")
+               ;; Make sure the TERM environment variable is set for the tests.
+               (setenv "TERM" "xterm")))
+           (add-before 'check 'skip-or-fix-failing-tests
+             (lambda _
+               ;; These tests try to download from the internet.
+               (setenv "TEST_SKIP_PAT"
+                       "Test_glvs_default")
 
-             ;; Ignore failure of some flaky tests.
-             (setenv "TEST_MAY_FAIL"
-                     (string-join
-                       (list "Test_write_backup_symlink"
-                             ;; These tests compare the output of commands and
-                             ;; expect to run on a FHS-compliant system.
-                             "Test_echo_verbose_system"
-                             "Test_matchparen_ignore_sh_case"
-                             "Test_popup_drag_termwin"
-                             "Test_combining_double_width"
-                             "Test_open_term_from_cmd"
-                             "Test_terminal_postponed_scrollback")
-                       ","))
+               ;; Ignore failure of some flaky tests.
+               (setenv "TEST_MAY_FAIL"
+                       (string-join
+                         '("Test_write_backup_symlink"
+                           ;; These tests compare the output of commands and
+                           ;; expect to run on a FHS-compliant system.
+                           "Test_echo_verbose_system"
+                           "Test_matchparen_ignore_sh_case"
+                           "Test_popup_drag_termwin"
+                           "Test_combining_double_width"
+                           "Test_open_term_from_cmd"
+                           "Test_terminal_postponed_scrollback")
+                         ","))
 
-             ;; These depend on full bash.
-             (with-directory-excursion "runtime/syntax/testdir/input"
-               (for-each delete-file
-                         (list "sh_10.sh"
-                               "sh_11.sh"
-                               "sh_12.sh"
-                               "sh_14.sh"
-                               "sh_15.sh"
-                               "sh_bash.bash"
-                               "sh_bash_alias.sh"
-                               "sh_sundrous.bash")))))
-         (add-before 'install 'fix-installman.sh
-           (lambda _
-             (substitute* "src/installman.sh"
-               (("/bin/sh")
-                (which "sh")))))
-         (add-after 'install 'install-guix.vim
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((vimdir (string-append (assoc-ref outputs "out") "/share/vim")))
-               (mkdir-p vimdir)
-               (copy-file (assoc-ref inputs "guix.vim")
-                          (string-append vimdir "/vimrc"))))))))
+               ;; These depend on full bash.
+               (with-directory-excursion "runtime/syntax/testdir/input"
+                 (for-each delete-file
+                           '("sh_10.sh"
+                             "sh_11.sh"
+                             "sh_12.sh"
+                             "sh_14.sh"
+                             "sh_15.sh"
+                             "sh_bash.bash"
+                             "sh_bash_alias.sh"
+                             "sh_sundrous.bash")))))
+           (add-before 'install 'fix-installman.sh
+             (lambda _
+               (substitute* "src/installman.sh"
+                 (("/bin/sh")
+                  (which "sh")))))
+           (add-after 'install 'install-guix.vim
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let ((vimdir (string-append (assoc-ref outputs "out") "/share/vim")))
+                 (mkdir-p vimdir)
+                 (copy-file (assoc-ref inputs "guix.vim")
+                            (string-append vimdir "/vimrc"))))))))
     (inputs
      (list gawk ncurses perl tcsh))                 ; For runtime/tools/vim32
     (native-inputs
@@ -221,7 +222,8 @@ configuration files.")
     (inputs `())
     (native-inputs `())
     (synopsis "Hexdump utility from vim")
-    (description "This package provides the Hexdump utility xxd that comes
+    (description
+     "This package provides the Hexdump utility xxd that comes
 with the editor vim.")))
 
 (define-public vim-full
@@ -229,38 +231,39 @@ with the editor vim.")))
     (inherit vim)
     (name "vim-full")
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-lua-prefix="
-                            (assoc-ref %build-inputs "lua"))
-             "--with-features=huge"
-             "--enable-python3interp=yes"
-             "--enable-perlinterp=yes"
-             "--enable-rubyinterp=yes"
-             "--enable-tclinterp=yes"
-             "--enable-luainterp=yes"
-             "--enable-cscope"
-             "--enable-sniff"
-             "--enable-multibyte"
-             "--enable-xim"
-             "--disable-selinux"
-             "--enable-gui")
-       ,@(substitute-keyword-arguments arguments
-           ((#:phases phases)
-            `(modify-phases ,phases
-               (add-before 'check 'skip-some-more-tests
-                 (lambda _
-                   ;; Fontconfig can't figure out its cache directory
-                   (substitute* "src/testdir/test_startup.vim"
-                     ((".*Test_progname.*" line)
-                      (string-append line "return\n")))))
-               (add-before 'check 'start-xserver
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   ;; Some tests require an X server, but does not start one.
-                   (let ((xorg-server (assoc-ref inputs "xorg-server"))
-                         (display ":1"))
-                     (setenv "DISPLAY" display)
-                     (zero? (system (string-append xorg-server "/bin/Xvfb "
-                                                    display " &")))))))))))
+     (cons*
+       #:configure-flags
+       #~(list (string-append "--with-lua-prefix="
+                              #$(this-package-input "lua"))
+               "--with-features=huge"
+               "--enable-python3interp=yes"
+               "--enable-perlinterp=yes"
+               "--enable-rubyinterp=yes"
+               "--enable-tclinterp=yes"
+               "--enable-luainterp=yes"
+               "--enable-cscope"
+               "--enable-sniff"
+               "--enable-multibyte"
+               "--enable-xim"
+               "--disable-selinux"
+               "--enable-gui")
+       (substitute-keyword-arguments arguments
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-before 'check 'skip-some-more-tests
+                (lambda _
+                  ;; Fontconfig can't figure out its cache directory
+                  (substitute* "src/testdir/test_startup.vim"
+                    ((".*Test_progname.*" line)
+                     (string-append line "return\n")))))
+              (add-before 'check 'start-xserver
+                (lambda* (#:key inputs #:allow-other-keys)
+                  ;; Some tests require an X server, but does not start one.
+                  (let ((xorg-server (assoc-ref inputs "xorg-server"))
+                        (display ":1"))
+                    (setenv "DISPLAY" display)
+                    (zero? (system (string-append xorg-server "/bin/Xvfb "
+                                                  display " &")))))))))))
     (native-inputs
      (modify-inputs native-inputs
        (prepend pkg-config xorg-server-for-tests)))
@@ -293,7 +296,8 @@ with the editor vim.")))
                tcl)))
     ;; The description shares language with the vim package. When making
     ;; changes, check if the other description also needs to be updated.
-    (description "Vim is a highly configurable text editor built to enable efficient text
+    (description
+     "Vim is a highly configurable text editor built to enable efficient text
 editing.  It is an improved version of the vi editor distributed with most UNIX
 systems.
 
