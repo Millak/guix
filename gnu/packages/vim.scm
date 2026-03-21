@@ -215,9 +215,8 @@ configuration files.")
              (lambda _
                (chdir "src/xxd")))
            (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-                 (install-file "xxd" bin)))))))
+             (lambda _
+               (install-file "xxd" (string-append #$output "/bin")))))))
     (inputs `())
     (native-inputs `())
     (synopsis "Hexdump utility from vim")
