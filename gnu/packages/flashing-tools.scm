@@ -286,7 +286,8 @@ firmware from it.")
                        (((format #f "\\.def = \"(~a)\"" regexp) _ command)
                         (string-append ".def = \"" (assoc-ref inputs input)
                                        "/" directory "/" command "\"")))))
-                  '(("cpio"           "bin"  "cpio")
+                  '(("btrfs-progs"    "bin"  "mkfs.btrfs")
+                    ("cpio"           "bin"  "cpio")
                     ("coreutils"      "bin"  "dd")
                     ("e2fsprogs"      "sbin" "debugfs|e2fsck|mke2fs|tune2fs")
                     ("genext2fs"      "bin"  "genext2fs")
@@ -334,6 +335,7 @@ firmware from it.")
            util-linux)) ; for the tests
     (inputs
      `(("bash" ,bash)
+       ("btrfs-progs" ,btrfs-progs)
        ("cdrkit-libre" ,cdrkit-libre)
        ("cpio" ,cpio)
        ;; Note: invoked by final executable.
