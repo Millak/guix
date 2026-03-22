@@ -518,8 +518,9 @@ return its return value."
                 (location->string (package-location pkg))))
      (match (package-superseded pkg)
        ((? package? new)
-        (info (G_ "package '~a' has been superseded by '~a'~%")
-              (package-name pkg) (package-name new))
+        (unless (assoc-ref (package-properties pkg) 'supress-supersession-info?)
+          (info (G_ "package '~a' has been superseded by '~a'~%")
+                (package-name pkg) (package-name new)))
         new)
        (#f
         pkg)))
