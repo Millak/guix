@@ -319,7 +319,7 @@ Networks and The Calyx Institute, where the former is default.")
              python-pygobject-3.50
              python-urllib3
              python-requests
-             webkitgtk-with-libsoup2))
+             webkitgtk-for-gtk3))
       (propagated-inputs
        (list openconnect))
       (synopsis "Interactively authenticate to GlobalProtect VPNs that require SAML")
