@@ -2219,7 +2219,7 @@ The gnome-about program helps find which version of GNOME is installed.")
 (define-public gnome-font-viewer
   (package
     (name "gnome-font-viewer")
-    (version "48.0")
+    (version "49.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-font-viewer/"
@@ -2227,7 +2227,7 @@ The gnome-about program helps find which version of GNOME is installed.")
                                   "/gnome-font-viewer-" version ".tar.xz"))
               (sha256
                (base32
-                "19vjm2iv1mr01dai27amafm3sf8jprqwxa03mk3zakv23cij89kk"))))
+                "0114ar42akyl40g8gn8f8pbr7hf025bz39nisxainxw5q8jqj0bw"))))
     (build-system meson-build-system)
     (arguments
      (list
