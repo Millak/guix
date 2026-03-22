@@ -896,7 +896,7 @@ e.g. emacs-geiser-guile for Guile.")
 (define-public emacs-gptel
   (package
     (name "emacs-gptel")
-    (version "0.9.9.3")
+    (version "0.9.9.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -905,7 +905,7 @@ e.g. emacs-geiser-guile for Guile.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "080dk0101imvfkxcqlqhy8wf1wc8p2vqyp3cwdi48wn44y1csqy9"))))
+                "1ffh2mwy9znjd0v9mh065lv122xg4nlnkbxwjfrsaqn1j1q2xc0c"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -944,11 +944,11 @@ e.g. emacs-geiser-guile for Guile.")
         (method git-fetch)
         (uri (git-reference
                (url "https://github.com/karthink/gptel-test")
-               (commit "5f5275c32ed240a03f38d9edef26d920d4535a41")))
+               (commit "318c9dda9e6dbb3e61311cf4de23f124c4d2960a")))
         (file-name "emacs-gptel-test-files")
         (sha256
          (base32
-          "0sd1y1m5abfqcm5v9x86xmnnx8ab82bfd0m3cgq9ycszxdf7gf3v")))))
+          "1368qrxxrw5zd2i0gx55r7yvi5xjma1khs8p5f2w76m7c6ms83yg")))))
     (home-page "https://github.com/karthink/gptel")
     (synopsis "GPTel is a simple ChatGPT client for Emacs")
     (description
