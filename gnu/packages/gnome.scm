@@ -1590,21 +1590,16 @@ to preview files on the GNOME desktop.")
 (define-public rygel
   (package
     (name "rygel")
-    (version "0.44.2")
+    (version "45.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version) "/"
+                                  (version-major version) "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "186mfdhamhghgy0l8a8dyiy1rfhlkbwvh01bz0mxqq6z9i4ywvkr"))))
+                "1j0pasaaazyq3k2mhp2dal4jmiw4hjkqpx52fxk9pbwf1ll6wf6g"))))
     (build-system meson-build-system)
-    (arguments
-     ;; Disable the tracker plugin.
-     (list #:configure-flags
-           #~(list "-Dplugins=external,gst-launch,media-export,
-mpris,playbin,ruih,tracker3")))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")               ; for glib-compile-schemas, etc.
@@ -1622,7 +1617,7 @@ mpris,playbin,ruih,tracker3")))
            gstreamer
            gst-plugins-base
            gst-editing-services
-           gtk+
+           gtk
            gupnp
            gupnp-av
            gupnp-dlna
