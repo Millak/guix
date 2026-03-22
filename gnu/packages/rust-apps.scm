@@ -3871,6 +3871,8 @@ consecutive lines and since program start.")
     (description "@code{sd} is an intuitive find & replace CLI with
 JavaScript/Python-style regular expressions, a string-literal mode, and smart,
 common-sense defaults.")
+    ;; CVE rejected by the project.
+    (properties `((lint-hidden-cve . ("CVE-2025-65807"))))
     (license license:expat)))
 
 (define-public skim
