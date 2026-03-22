@@ -10022,7 +10022,7 @@ endpoints for federated queries.")
 (define-public localsearch
   (package
     (name "localsearch")
-    (version "3.9.0")
+    (version "3.10.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/localsearch/"
@@ -10030,7 +10030,7 @@ endpoints for federated queries.")
                                   "/localsearch-" version ".tar.xz"))
               (sha256
                (base32
-                "1f8l1kyvsr4lq18yrsf2p66q3xgc3mgvzax9ymagwa7vqf6l0byl"))))
+                "11d2g3l55kix8bmq161f0g2iwqwgcwrrmv6lp80p2qbnbp48kpdl"))))
     (build-system meson-build-system)
     (arguments
      (list
