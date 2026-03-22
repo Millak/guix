@@ -13984,7 +13984,7 @@ historical battery usage and related statistics.")
 (define-public gnome-remote-desktop
   (package
     (name "gnome-remote-desktop")
-    (version "48.3")
+    (version "49.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -13992,7 +13992,7 @@ historical battery usage and related statistics.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1gpqnayanq88nxnw64kgkmgdhzg9h27vyx2ci1xc868cpg4m3m8p"))))
+                "1b8nv7iacp0xjb74hidbrypli70xzv6i4mpzh0an5qblfhg4xm3k"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
