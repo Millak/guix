@@ -3717,9 +3717,10 @@ memory contents between them.")
               (sha256
                (base32
                 "18c76axcvjnqkx4xkgyifyj3sk08a8maddz6159gpbkhsn5xsgjp"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
-     (list #:tests? #f ;no tests
+     (list #:qtbase qtbase
+           #:tests? #f ;no tests
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-paths
@@ -3727,7 +3728,7 @@ memory contents between them.")
                    (substitute* "lib/CMakeLists.txt"
                      (("(DESTINATION \")/etc/udev/" _ directive)
                       (string-append directive #$output "/lib/udev/"))))))))
-    (inputs (list libusb qtbase qtpositioning qtserialport yaml-cpp))
+    (inputs (list libusb qtbase qtpositioning qtserialport qtwayland yaml-cpp))
     (native-inputs (list qttools (librsvg-for-system)))
     (home-page "https://dm3mat.darc.de/qdmr/")
     (synopsis "GUI application and command line tool to program DMR radios")
