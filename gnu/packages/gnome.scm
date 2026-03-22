@@ -7574,7 +7574,7 @@ principles are simplicity and standards compliance.")
 (define-public d-spy
   (package
     (name "d-spy")
-    (version "48.0")
+    (version "49.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7583,7 +7583,7 @@ principles are simplicity and standards compliance.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gp408mavzq11n9lpx86j968wfy43nnb1drm55sdqrlay0rpgdx2"))))
+                "048bcckhj75b4lbcbpxgsgagd78a1ajahlqaidm1873b4vfahmfq"))))
     (build-system meson-build-system)
     (arguments
      (list
