@@ -7559,7 +7559,7 @@ into the Space Age.")
 (define-public no-more-secrets
   (package
     (name "no-more-secrets")
-    (version "0.3.3")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
@@ -7568,7 +7568,7 @@ into the Space Age.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zfv4qabikf8w9winsr4brxrdvs3f0d7xvydksyx8bydadsm2v2h"))))
+        (base32 "14h34zpgjldw9bf65chb72gnzw5q88djrdasz2828r3ck6k88l21"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
