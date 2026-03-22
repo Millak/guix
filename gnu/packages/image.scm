@@ -145,9 +145,10 @@
               (sha256
                (base32
                 "05nm6h4d2rq0kcf2maz95zvx8hd811wdqxxbzwahq1m2az1b11cn"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:tests? #false                   ;no tests
       #:configure-flags #~(list "-DUSE_QT6=yes")
       #:phases
@@ -169,7 +170,7 @@
     (native-inputs
      (list pkg-config qttools))
     (inputs
-     (list imagemagick qtbase))
+     (list imagemagick qtbase qtwayland))
     (home-page "https://converseen.fasterland.net/")
     (synopsis "Batch image converter and resizer")
     (description
