@@ -2561,7 +2561,7 @@ clock tree synthesis, routing, parasitic extraction, and timing analysis.")
          "1jxbpz1h3m1mgrxw74rnihj8vawgqdpf6c33cqqbyd8v7rxgfhph"))
        (patches (search-patches "pulseview-qt515-compat.patch"
                                 "pulseview-glib-2.68.patch"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list
       #:tests? #f ;format_time_minutes_test is failing
@@ -2582,7 +2582,8 @@ clock tree synthesis, routing, parasitic extraction, and timing analysis.")
            libsigrok
            libsigrokdecode
            qtbase-5
-           qtsvg-5))
+           qtsvg-5
+           qtwayland-5))
     (home-page "https://www.sigrok.org/wiki/PulseView")
     (synopsis "Qt based logic analyzer, oscilloscope and MSO GUI for sigrok")
     (description "PulseView is a Qt based logic analyzer, oscilloscope and MSO
