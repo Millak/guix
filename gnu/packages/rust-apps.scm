@@ -653,14 +653,14 @@ compiling Rust programs.")
 (define-public cargo-show-asm
   (package
     (name "cargo-show-asm")
-    (version "0.2.49")
+    (version "0.2.57")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo-show-asm" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "01dg77r3jbbbvf5icl46l24vhw2x8q13nqw414aj77p95jk2gf2g"))))
+        (base32 "1h2mq0f7ch8a70q7g1z4p01ipknlswx1d003ph8z6kqfsx58vqyr"))))
     (build-system cargo-build-system)
     (inputs
      (cons capstone (cargo-inputs 'cargo-show-asm)))
@@ -668,7 +668,7 @@ compiling Rust programs.")
      `(#:install-source? #f))
     (home-page "https://github.com/pacak/cargo-show-asm")
     (synopsis
-     "cargo subcommand that displays the generated assembly of Rust source code.")
+     "Cargo subcommand that displays the generated assembly of Rust source code")
     (description
      "This package provides a cargo subcommand that displays the generated assembly of
 Rust source code.")
