@@ -304,7 +304,7 @@ extended via Lua scripts.  It is like an enhanced Lynx and Links.")
 (define-public luakit
   (package
     (name "luakit")
-    (version "2.3.3")
+    (version "2.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -313,7 +313,7 @@ extended via Lua scripts.  It is like an enhanced Lynx and Links.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19z6idmjz6y7xmjpqgw65mdfi65lyvy06819dj5bb7rad63v5542"))))
+                "15l0xb8ddv9j8hlrd4d11brngpss77ih9f8m08jfc18ir4rb32y5"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -355,7 +355,7 @@ extended via Lua scripts.  It is like an enhanced Lynx and Links.")
            lua5.1-filesystem
            luajit
            sqlite
-           webkitgtk-with-libsoup2))
+           webkitgtk-for-gtk3))
     (synopsis "Fast, lightweight, and simple browser based on WebKit")
     (description "Luakit is a fast, lightweight, and simple to use
 micro-browser framework extensible by Lua using the WebKit web content engine
