@@ -19,6 +19,7 @@
 (define-module (gnu home services niri)
   #:use-module (gnu home services)
   #:use-module (gnu home services shepherd)
+  #:use-module (gnu home services desktop)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
@@ -40,14 +41,15 @@
 
 (define (home-niri-shepherd-service config)
   "Return a shepherd service that runs Niri, a scrollable tiling Wayland
-compositor.  The service starts Niri in a DBus session with appropriate
-environment variables set for a Wayland desktop session."
+compositor.  The service starts Niri with appropriate environment variables
+set for a Wayland desktop session."
   (list (shepherd-service
           (documentation "Run Niri scrollable tiling Wayland compositor.")
           (provision '(niri))
+          (requirement '(dbus))
           (start #~(make-forkexec-constructor
                     (list #$(file-append bash "/bin/bash") "-l"
-                          "-c" "exec dbus-run-session niri --session")
+                          "-c" "exec niri --session")
                     #:environment-variables
                     (append (list #$@(niri-configuration-environment-variables config))
                             '("DESKTOP_SESSION=niri"
@@ -66,6 +68,8 @@ environment variables set for a Wayland desktop session."
    (extensions
     (list (service-extension home-shepherd-service-type
                              home-niri-shepherd-service)
+          (service-extension home-dbus-service-type
+                             (const '()))
           (service-extension home-profile-service-type
                              (lambda (config)
                                (list dbus
