@@ -7948,7 +7948,7 @@ configuration program to choose applications starting on login.")
 (define-public gjs
   (package
     (name "gjs")
-    (version "1.84.2")
+    (version "1.86.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7956,7 +7956,7 @@ configuration program to choose applications starting on login.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0rh1fkkb35aa1zrhzbizzxllkwc3snkw67i901in61ap6kgjw51m"))
+                "1687l3nshrbc0wn18q6mn974vl14wa85wzqcilm4qkc0axx8yi33"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -8006,16 +8006,16 @@ configuration program to choose applications starting on login.")
            ;; For testing
            dbus
            dconf                        ;required to properly store settings
+           gtk+
            util-linux
            xorg-server-for-tests))
     (propagated-inputs
      ;; These are all in the Requires.private field of gjs-1.0.pc.
      ;; Check the version of mozjs required in meson.build.
-     (list cairo gobject-introspection mozjs-128))
-    (inputs
-     (list gtk+ readline))
+     (list cairo gobject-introspection mozjs))
+    (inputs (list readline))
     (synopsis "Javascript bindings for GNOME")
-    (home-page "https://wiki.gnome.org/Gjs")
+    (home-page "https://gitlab.gnome.org/GNOME/gjs")
     (description
      "Gjs is a javascript binding for GNOME.  It's mainly based on spidermonkey
 javascript engine and the GObject introspection framework.")
