@@ -214,6 +214,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages rust)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages scanner)
   #:use-module (gnu packages sdl)
@@ -3545,7 +3546,7 @@ for dealing with different structured file formats.")
 (define-public librsvg
   (package
     (name "librsvg")
-    (version "2.58.5")
+    (version "2.61.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/librsvg/"
@@ -3553,45 +3554,31 @@ for dealing with different structured file formats.")
                                   "librsvg-" version ".tar.xz"))
               (sha256
                (base32
-                "0ym2yg94sc7ralh1kwqqrhz3wcc51079z90mbx0qrls7wfh36hi2"))))
-    (build-system gnu-build-system)
+                "036afbhd2h4brbd491kmgig0ib1df3s7j9bx8349b3zjs4lfm87w"))))
+    (build-system meson-build-system)
     (outputs '("out" "doc" "debug"))
     (arguments
      (list
       #:configure-flags
-      #~(list "--disable-static"
-              #$@(if (%current-target-system)
-                     #~(;; g-ir-scanner can't import its modules
+      #~(list #$@(if (%current-target-system)
+                     #~( ;; g-ir-scanner can't import its modules
                         ;; and vala currently can't be cross-compiled.
-                        "--enable-introspection=no"
-                        "--enable-vala=no"
-                        ;; These two are necessary for cross-compiling.
-                        (string-append
-                         "--build=" #$(nix-system->gnu-triplet
-                                       (%current-system)))
-                        (string-append
-                         "--host=" #$(%current-target-system))
+                        "-Dintrospection=false"
+                        "-Dvala=false"
                         ;; This is needed when cross-compiling for some
                         ;; architectures as autoconf and rust disagree about
                         ;; the target triplet.
-                        (string-append "RUST_TARGET="
+                        (string-append "-Dtriplet="
                                        #$(platform-rust-target
                                           (lookup-platform-by-target
                                            (%current-target-system)))))
-                     #~("--enable-vala")))
-      #:make-flags
-      #~(list (string-append "CC=" #$(cc-for-target))
-              (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
-              #$@(if (%current-target-system)
-                     #~((string-append "RUST_TARGET="
-                                       #$(platform-rust-target
-                                          (lookup-platform-by-target
-                                           (%current-target-system)))))
-                     #~()))
-      #:imported-modules %cargo-build-system-modules
+                     #~())
+              "-Dpixbuf-loader=enabled") ;disabled since 2.61.2
+      #:imported-modules (append %cargo-build-system-modules
+                                 %meson-build-system-modules)
       #:modules
       '(((guix build cargo-build-system) #:prefix cargo:)
-        (guix build gnu-build-system)
+        (guix build meson-build-system)
         (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
@@ -3608,12 +3595,19 @@ for dealing with different structured file formats.")
             (lambda _
               ;; Something about the build environment resists building
               ;; successfully with the '--locked' flag.
-              (substitute* '("Makefile.am" "Makefile.in")
-                (("--locked") ""))))
-          (add-after 'unpack 'loosen-test-boundaries
+              (substitute* "meson/cargo_wrapper.py"
+                (("\"--locked\",?") ""))
+              ;; This is needed so Cargo embeds the correct RUNPATH
+              ;; information to the binaries it produces,
+              ;; e.g. libpixbufloader_svg.so.
+              (setenv "RUSTFLAGS"
+                      (string-append "-C link-arg=-Wl,-rpath,"
+                                     #$output "/lib"))))
+          (add-after 'unpack 'prepare-for-tests
             (lambda _
+              (setenv "HOME" "/tmp")    ;placate fontconfig errors
               ;; Increase reftest tolerance a bit to account for different
-              ;; harfbuzz, pango, etc.
+              ;; libraries like pango, etc.
               (setenv "RSVG_TEST_TOLERANCE" "20")
               ;; These tests fail even after loosening the tolerance.
               (substitute* "rsvg/tests/reference.rs"
@@ -3621,19 +3615,16 @@ for dealing with different structured file formats.")
                 ((".*rtl_tspan_svg.*") ""))))
           (add-before 'configure 'pre-configure
             (lambda* (#:key outputs #:allow-other-keys)
-              (substitute* "gdk-pixbuf-loader/Makefile.in"
+              (substitute* "gdk-pixbuf-loader/meson.build"
                 ;; By default the gdk-pixbuf loader is installed under
                 ;; gdk-pixbuf's prefix.  Work around that.
-                (("gdk_pixbuf_moduledir = .*$")
-                 (string-append "gdk_pixbuf_moduledir = "
-                                "$(prefix)/"
-                                #$(dirname %gdk-pixbuf-loaders-cache-file) "/"
-                                "loaders\n")))
-              (substitute* "configure"
-                (("gdk_pixbuf_cache_file=.*")
-                 (string-append "gdk_pixbuf_cache_file="
-                                #$output "/"
-                                #$%gdk-pixbuf-loaders-cache-file "\n")))))
+                (("pixbuf_dep.get_variable.*'gdk_pixbuf_moduledir'.*),")
+                 (format #f "get_option('prefix') / '~a',"
+                         #$(dirname %gdk-pixbuf-loaders-cache-file)))
+                (("pixbuf_dep.get_variable.*'gdk_pixbuf_query_loaders'.*),")
+                 (format #f "'~a'," (which "gdk-pixbuf-query-loaders")))
+                (("pixbuf_dep.get_variable.*'gdk_pixbuf_cache_file'.*)")
+                 (format #f "prefix / '~a'" #$%gdk-pixbuf-loaders-cache-file)))))
           (add-after 'unpack 'prepare-cargo-build-system
             (lambda args
               (for-each
@@ -3645,23 +3636,30 @@ for dealing with different structured file formats.")
                '(unpack-rust-crates
                  configure
                  check-for-pregenerated-files
-                 patch-cargo-checksums)))))))
+                 patch-cargo-checksums))))
+          (add-after 'install 'sanitize-pkg-config-files
+            (lambda _
+              (substitute* (find-files #$output "\\.pc$")
+                (("^Requires.private:.*") "")))))))
     (native-inputs
      (append
       (list gdk-pixbuf
+            gi-docgen
             `(,glib "bin")
             gobject-introspection
             pkg-config
+            python
+            python-docutils             ;for rst2man
             rust
-            `(,rust "cargo")
+            rust-cargo-c
             vala)
       (or (and=> (%current-target-system)
                  (compose list make-rust-sysroot))
           '())))
     (inputs
-     (cons* freetype
+     (cons* dav1d
+            freetype
             gobject-introspection
-            harfbuzz
             libxml2
             pango
             (cargo-inputs 'librsvg)))
