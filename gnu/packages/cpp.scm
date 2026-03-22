@@ -4185,7 +4185,7 @@ features:
            ladspa
            libx11
            pkg-config
-           webkitgtk-with-libsoup2))
+           webkitgtk-for-gtk3))
     (inputs (list fontconfig freetype libjpeg-turbo libpng))
     (home-page "https://juce.com")
     (synopsis "C++ application framework for audio plugins and plugin hosts")
