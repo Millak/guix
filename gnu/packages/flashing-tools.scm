@@ -258,102 +258,102 @@ firmware from it.")
     (license license:gpl2+)))
 
 (define-public genimage
-    (package
-      (name "genimage")
-      (version "19")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/pengutronix/genimage")
-                (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1n2d4sziq190saa71ms15h0fbk171kqig1jc6kw35pqs4288pnc5"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:modules
-         ((ice-9 match)
-          ,@%default-gnu-imported-modules)
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'guixify
-             (lambda* (#:key inputs #:allow-other-keys)
-               (map (match-lambda
-                      ((input directory regexp)
-                       (substitute* "config.c"
-                         (((format #f "\\.def = \"(~a)\"" regexp) _ command)
-                          (string-append ".def = \"" (assoc-ref inputs input)
-                                         "/" directory "/" command "\"")))))
-                    '(("cpio"           "bin"  "cpio")
-                      ("coreutils"      "bin"  "dd")
-                      ("e2fsprogs"      "sbin" "debugfs|e2fsck|mke2fs|tune2fs")
-                      ("genext2fs"      "bin"  "genext2fs")
-                      ("cdrkit-libre"   "bin"  "genisoimage")
-                      ("mtools"         "bin"  "mcopy|mmd")
-                      ;; mkcramfs is obsolete.
-                      ("dosfstools"     "sbin" "mkdosfs")
-                      ("mtd-utils"      "sbin" "mkfs.(jffs2|ubifs)|ubinize")
-                      ("f2fs-tools"     "sbin" "(mkfs|sload).f2fs")
-                      ("squashfs-tools" "bin"  "mksquashfs")
-                      ("qemu"           "bin"  "qemu-img")
-                      ;; rauc and fiptool are unsupported.
-                      ("tar"            "bin"  "tar")
-                      ("u-boot-tools"   "bin"  "mkimage")))
-               (substitute* "util.c"
-                 (("\"/bin/sh\"")
-                  (string-append "\"" (assoc-ref inputs "bash") "/bin/sh\"")))))
-           (add-before 'check 'fix-failing-tests
-             (lambda _
-               ;; We don't have /etc/passwd so uid 0 is not known as "root".
-               ;; Thus patch it out.
-               (substitute* '("test/ext2test.2.dump"
-                              "test/ext3test.2.dump"
-                              "test/ext4test.2.dump"
-                              "test/ext2test-percent.2.dump"
-                              "test/mke2fs.2.dump"
-                              "test/mke2fs.3.dump")
-                 (("root") "unknown"))))
-           (add-before 'check 'setenv-check
-             (lambda _
-               ;; Our container doesn't provide access to /etc/mtab
-               (setenv "EXT2FS_NO_MTAB_OK" "1")
-               ;; Make test reproducible
-               (setenv "GENIMAGE_MKFJFFS2" "mkfs.jffs2 -U")
-               (setenv "GENIMAGE_MKE2FS" "mke2fs -E no_copy_xattrs")))
-           (replace 'check
-             (lambda _
-               (invoke "make" "TEST_LOG_COMPILER=" "check"))))))
-      (native-inputs
-       (list autoconf
-             automake
-             ;;; Note: cramfs is obsolete.
-             dtc ; for the tests
-             pkg-config
-             util-linux)) ; for the tests
-      (inputs
-       `(("bash" ,bash)
-         ("cdrkit-libre" ,cdrkit-libre)
-         ("cpio" ,cpio)
-         ;; Note: invoked by final executable.
-         ("coreutils" ,coreutils) ; chmod, dd
-         ("dosfstools" ,dosfstools)
-         ("e2fsprogs" ,e2fsprogs)
-         ("f2fs-tools" ,f2fs-tools)
-         ("genext2fs" ,genext2fs)
-         ("libconfuse" ,libconfuse)
-         ("mtd-utils" ,mtd-utils)
-         ("mtools" ,mtools)
-         ("qemu" ,qemu-minimal)
-         ("squashfs-tools" ,squashfs-tools)
-         ("tar" ,tar)
-         ("u-boot-tools" ,u-boot-tools)))
-      (synopsis "Create Flash images according to specification")
-      (description "@command{genimage} creates Flash images according to a
+  (package
+    (name "genimage")
+    (version "19")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pengutronix/genimage")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1n2d4sziq190saa71ms15h0fbk171kqig1jc6kw35pqs4288pnc5"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:modules
+       ((ice-9 match)
+        ,@%default-gnu-imported-modules)
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'guixify
+           (lambda* (#:key inputs #:allow-other-keys)
+             (map (match-lambda
+                    ((input directory regexp)
+                     (substitute* "config.c"
+                       (((format #f "\\.def = \"(~a)\"" regexp) _ command)
+                        (string-append ".def = \"" (assoc-ref inputs input)
+                                       "/" directory "/" command "\"")))))
+                  '(("cpio"           "bin"  "cpio")
+                    ("coreutils"      "bin"  "dd")
+                    ("e2fsprogs"      "sbin" "debugfs|e2fsck|mke2fs|tune2fs")
+                    ("genext2fs"      "bin"  "genext2fs")
+                    ("cdrkit-libre"   "bin"  "genisoimage")
+                    ("mtools"         "bin"  "mcopy|mmd")
+                    ;; mkcramfs is obsolete.
+                    ("dosfstools"     "sbin" "mkdosfs")
+                    ("mtd-utils"      "sbin" "mkfs.(jffs2|ubifs)|ubinize")
+                    ("f2fs-tools"     "sbin" "(mkfs|sload).f2fs")
+                    ("squashfs-tools" "bin"  "mksquashfs")
+                    ("qemu"           "bin"  "qemu-img")
+                    ;; rauc and fiptool are unsupported.
+                    ("tar"            "bin"  "tar")
+                    ("u-boot-tools"   "bin"  "mkimage")))
+             (substitute* "util.c"
+               (("\"/bin/sh\"")
+                (string-append "\"" (assoc-ref inputs "bash") "/bin/sh\"")))))
+         (add-before 'check 'fix-failing-tests
+           (lambda _
+             ;; We don't have /etc/passwd so uid 0 is not known as "root".
+             ;; Thus patch it out.
+             (substitute* '("test/ext2test.2.dump"
+                            "test/ext3test.2.dump"
+                            "test/ext4test.2.dump"
+                            "test/ext2test-percent.2.dump"
+                            "test/mke2fs.2.dump"
+                            "test/mke2fs.3.dump")
+               (("root") "unknown"))))
+         (add-before 'check 'setenv-check
+           (lambda _
+             ;; Our container doesn't provide access to /etc/mtab
+             (setenv "EXT2FS_NO_MTAB_OK" "1")
+             ;; Make test reproducible
+             (setenv "GENIMAGE_MKFJFFS2" "mkfs.jffs2 -U")
+             (setenv "GENIMAGE_MKE2FS" "mke2fs -E no_copy_xattrs")))
+         (replace 'check
+           (lambda _
+             (invoke "make" "TEST_LOG_COMPILER=" "check"))))))
+    (native-inputs
+     (list autoconf
+           automake
+           ;;; Note: cramfs is obsolete.
+           dtc ; for the tests
+           pkg-config
+           util-linux)) ; for the tests
+    (inputs
+     `(("bash" ,bash)
+       ("cdrkit-libre" ,cdrkit-libre)
+       ("cpio" ,cpio)
+       ;; Note: invoked by final executable.
+       ("coreutils" ,coreutils) ; chmod, dd
+       ("dosfstools" ,dosfstools)
+       ("e2fsprogs" ,e2fsprogs)
+       ("f2fs-tools" ,f2fs-tools)
+       ("genext2fs" ,genext2fs)
+       ("libconfuse" ,libconfuse)
+       ("mtd-utils" ,mtd-utils)
+       ("mtools" ,mtools)
+       ("qemu" ,qemu-minimal)
+       ("squashfs-tools" ,squashfs-tools)
+       ("tar" ,tar)
+       ("u-boot-tools" ,u-boot-tools)))
+    (synopsis "Create Flash images according to specification")
+    (description "@command{genimage} creates Flash images according to a
 specification file.")
-      (home-page "https://github.com/pengutronix/genimage")
-      (license license:gpl2)))
+    (home-page "https://github.com/pengutronix/genimage")
+    (license license:gpl2)))
 
 (define-public teensy-loader-cli
   (package
