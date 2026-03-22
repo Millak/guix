@@ -959,6 +959,36 @@ just one-off queries and multiple independent sessions.  It requires an OpenAI
 API key.")
     (license license:gpl3+)))
 
+(define-public emacs-gptel-agent
+  ;; No releases.
+  (let ((commit "79686c56a1a07a8897301ae043d06c6e87084f7e")
+        (revision "1"))
+    (package
+      (name "emacs-gptel-agent")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (uri (git-reference
+                (url "https://github.com/karthink/gptel-agent")
+                (commit commit)))
+         (method git-fetch)
+         (sha256
+          (base32 "1yrhmr8yivqzx7gc7598l33ngd55c2r1x7hp8a96aczgj8i8k39n"))
+         (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f ; no tests
+        #:include #~(cons "agents" %default-include)))
+      (propagated-inputs
+       (list emacs-compat emacs-gptel emacs-orderless emacs-yaml))
+      (home-page "https://github.com/karthink/gptel-agent")
+      (synopsis "Collection of agents for gptel")
+      (description
+       "This package provides a collection of tools and prompts to use Gptel
+agentically, with any LLM.")
+      (license license:gpl3+))))
+
 (define-public emacs-gptel-prompts
   ;; No releases.
   (let ((commit "f1c29208c1f0b62918ac6682038da5db4184fc51")
