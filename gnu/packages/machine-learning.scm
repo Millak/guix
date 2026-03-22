@@ -852,22 +852,8 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
         #:configure-flags
         #~(list "-DBUILD_SHARED_LIBS=ON"
                 "-DLLAMA_USE_SYSTEM_GGML=ON")
-        #:modules '((ice-9 textual-ports)
-                    (guix build utils)
-                    ((guix build python-build-system) #:prefix python:)
-                    (guix build cmake-build-system))
-        #:imported-modules `(,@%cmake-build-system-modules
-                             (guix build python-build-system))
         #:phases
         #~(modify-phases %standard-phases
-            (add-after 'unpack 'patch-paths
-              (lambda* (#:key inputs #:allow-other-keys)
-                (substitute* (format #f "~a~a"
-                                     "ggml/src/ggml-vulkan/vulkan-shaders/"
-                                     "vulkan-shaders-gen.cpp")
-                  (("\"/bin/sh\"")
-                   (string-append "\"" (search-input-file inputs "/bin/sh")
-                                  "\"")))))
             (add-after 'unpack 'fix-tests
               (lambda _
                 ;; test-thread-safety downloads ML model from network,
@@ -881,16 +867,6 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
                                    "(test-state-restore-fragmented.cpp.*"))
                    "")
                   (("set_tests_properties\\(test-state-restore-fragmented.*")
-                   "")
-                  (((string-append "llama_build_and_test\\"
-                                   "(test-eval-callback-download-model.cpp.*"))
-                   "")
-                  (((string-append "set_tests_properties\\"
-                                   "(test-eval-callback-download-model.*"))
-                   "")
-                  (("llama_build_and_test\\(test-eval-callback.cpp.*")
-                   "")
-                  (("set_tests_properties\\(test-eval-callback.*")
                    "")
                   (("llama_build_and_test\\(test-llama-archs.cpp.*")
                    "")
@@ -913,20 +889,24 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
                 ;; Help it find the test files it needs
                 (substitute* "tests/test-chat.cpp"
                   (("\"\\.\\./\"") "\"../source/\""))))
-            (add-after 'install 'wrap-python-scripts
-              (assoc-ref python:%standard-phases 'wrap))
             (add-after 'install 'remove-tests
               (lambda _
                 (for-each delete-file
                           (find-files (string-append #$output "/bin")
-                                      "^test-")))))))
-      (inputs
-       (list curl ggml glslang python-minimal spirv-headers
-             spirv-tools vulkan-headers vulkan-loader openssl))
+                                      "^test-"))))
+            ;; This phase and coreutils are needed to reduce the closure size
+            ;; of this package. Remove them when not needed anymore.
+            (add-after 'patch-shebangs 'fix-python-shebang
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* (string-append #$output
+                                            "/bin/convert_hf_to_gguf.py")
+                  (("^#!.*/bin/python3")
+                   (string-append "#!" (search-input-file inputs "bin/env")
+                                  " python3"))))))))
+      (inputs (list coreutils ggml openssl))
       (native-inputs
-       (list bash-minimal pkg-config python-minimal-wrapper shaderc))
-      (propagated-inputs
-       (list python-numpy python-jinja2 python-sentencepiece))
+       ;; These are only used in the check phase for test-jinja-py
+       (list python python-jinja2))
       (properties '((tunable? . #true))) ;use AVX512, FMA, etc. when available
       (home-page "https://github.com/ggml-org/llama.cpp")
       (synopsis "Port of Facebook's LLaMA model in C/C++")
