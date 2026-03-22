@@ -2083,7 +2083,7 @@ offline sources, providing a centralized place for managing your contacts.")
 (define-public gnome-desktop
   (package
     (name "gnome-desktop")
-    (version "44.4")
+    (version "44.5")
     (source
      (origin
        (method url-fetch)
@@ -2092,11 +2092,16 @@ offline sources, providing a centralized place for managing your contacts.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1129nh32ga5vv869fwby3n2lvj2chd9wys8j1jdnisr8lg3bk30x"))))
+         "0br33ma7l45nr8yp9bcjqgy9zrj57yy2fnkc0b0yh0rsdrd9kq10"))))
     (build-system meson-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'disable-problematic-tests
+           (lambda _
+             ;; The languages test fails due to Guix defaulting to C.UTF-8.
+             (substitute* "tests/meson.build"
+               ((".*'languages':.*") ""))))
          (add-before 'configure 'patch-path
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "libgnome-desktop/gnome-languages.c"
