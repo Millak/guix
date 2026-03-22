@@ -1487,16 +1487,16 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 (define-public reform-debian-packages-for-6.19
   (package
     (name "reform-debian-packages")
-    (version "2023-07-10-537-g032a28b") ;from git describe
+    (version "2023-07-10-544-g702bad4") ;from git describe
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://source.mnt.re/reform/reform-debian-packages.git")
-             (commit "032a28b6c8b48077523ea1631cde65b763ab3c43")))
+             (commit "702bad4e35b22988d847284534ed308d1f527ed4")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "084xnykhnhpbb0kd5wr4nml08g4gjy7jqzrdb9i0chbfx12fnnyr"))))
+        (base32 "0s5r08sv87mmr5b60mfz7gfpck0qgpcpgy8n6c9978cihm782jhn"))))
     (build-system copy-build-system)
     (arguments
      (list
@@ -1676,7 +1676,7 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                                            ("CONFIG_IMX_IRQSTEER" . #true)
                                            ("CONFIG_PCI_MESON" . #true)
                                            ("CONFIG_DWMAC_MESON" . #true)
-                                           ("CONFIG_MDIO_BUS_MUX_MESON_G12A" . #true)
+                                           ("CONFIG_MDIO_BUS_MUX_MESON_G12A" . m)
                                            ("CONFIG_GPIO_ROCKCHIP" . #true)
                                            ("CONFIG_PL330_DMA" . #true)
                                            ("CONFIG_I2C_MESON" . #true)
@@ -1688,6 +1688,11 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                                            ("CONFIG_RTW88_8822CS" . m)
                                            ("CONFIG_PWM_FSL_FTM" . #true)
                                            ("CONFIG_FSL_RCPM" . #true)
+                                           ("CONFIG_VIDEO_DW100" . m)
+                                           ("CONFIG_IMX_AIPSTZ" . m)
+                                           ("CONFIG_IMX_DSP" . m)
+                                           ("CONFIG_IMX_REMOTEPROC" . m)
+                                           ("CONFIG_IMX_DSP_REMOTEPROC" . m)
                                            ("CONFIG_ARM_ROCKCHIP_CPUFREQ" . m)
                                            ("CONFIG_DRM_PANTHOR" . m)
                                            ("CONFIG_NVMEM_ROCKCHIP_OTP" . #true)
@@ -1797,7 +1802,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                             (list
                              "imx8mp-mnt-pocket-reform/2ghz/0001-imx8mp-2ghz-clk.patch"
                              "imx8mp-mnt-pocket-reform/2ghz/0002-imx8mp-2ghz-opp.patch"
-                             "imx8mp-mnt-pocket-reform/audio/0000-revert-crashy-audiomix-pm-support.patch"
                              "imx8mp-mnt-pocket-reform/mmc-sdio/0001-sdhci-add-no-sd-uhs-sdr104-devicetree-property.patch"
                              "imx8mp-mnt-pocket-reform/mmc-sdio/0002-During-the-card-init-the-host-side-sometimes-may-nee.patch"
                              "imx8mp-mnt-pocket-reform/mmc-sdio/0003-USDHC-IP-has-one-limitation-the-tuning-circuit-can-t.patch"
