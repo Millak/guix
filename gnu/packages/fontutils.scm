@@ -12,7 +12,7 @@
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2020, 2021, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2021-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
@@ -1422,14 +1422,15 @@ Font Format (WOFF).")
   (hidden-package
    (package
      (name "fontconfig-minimal")
-     (version "2.16.0")
+     (version "2.17.1")
      (source (origin
                (method url-fetch)
                (uri (string-append
-                     "https://www.freedesktop.org/software/"
-                     "fontconfig/release/fontconfig-" version ".tar.xz"))
+                     "https://gitlab.freedesktop.org/api/v4/projects/890"
+                     "/packages/generic/fontconfig/" version "/fontconfig-"
+                     version ".tar.xz"))
                (sha256 (base32
-                        "086jdsdxmc9ryr0n0dmgs0vfnkhkxxw5hsgpr888pfn9biaxqcva"))
+                        "0hd5dw15q0i7518w1zqjcvyhvmlcf3ycv6df0ny1zz7zyj9swp4z"))
                (patches (search-patches "fontconfig-cache-ignore-mtime.patch"))))
      (build-system gnu-build-system)
      ;; In Requires or Requires.private of fontconfig.pc.
