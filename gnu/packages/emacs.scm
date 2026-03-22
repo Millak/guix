@@ -389,6 +389,7 @@
                   (lambda ()
                     (display
                      (string-append
+                      ";; -*- lexical-binding: t; -*-\n"
                       "(setq find-function-C-source-directory \"" dest "\")\n\n"
                       "(provide 'guix-emacs-c-source)")))))))
           (add-after 'install 'install-site-start
@@ -415,6 +416,7 @@
                   (lambda ()
                     (display
                      (string-append
+                      ";; -*- lexical-binding: t; -*-\n"
                       "(when (require 'guix-emacs nil t)\n"
                       "  (guix-emacs-autoload-packages 'no-reload)\n"
                       "  (advice-add 'package-load-all-descriptors"
