@@ -11904,9 +11904,10 @@ See related paper
        (file-name (git-file-name name version))
        (sha256
         (base32 "07hiqr6jxmbw2dasbmyvcjmfxw4hjsn7xp269irjgfijsf8ga68n"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:tests? #f ;no test target
       #:phases
       #~(modify-phases %standard-phases
@@ -11930,6 +11931,7 @@ See related paper
            qtbase
            qtcharts
            qtdeclarative
+           qtwayland
            wcslib
            zstd
            (list zstd "lib")))
