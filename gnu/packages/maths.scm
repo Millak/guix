@@ -113,6 +113,7 @@
   #:use-module (guix build-system perl)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system ruby)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages astronomy)
@@ -9515,8 +9516,8 @@ compiled against the nauty library.")
       (sha256
        (base32
         "0vh7cd1915bjqzkdp3sk25ngy8cq624mkh8c53c5bnzk357kb0fk"))))
-    (build-system cmake-build-system)
-    (inputs (list qtbase-5))
+    (build-system qt-build-system)
+    (inputs (list qtbase-5 qtwayland-5))
     (native-inputs (list qttools-5))
     (arguments
      `(#:phases
