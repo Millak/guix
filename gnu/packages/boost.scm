@@ -83,9 +83,6 @@
     (build-system gnu-build-system)
     (arguments
      (list
-      #:imported-modules %pyproject-build-system-modules
-      #:modules `(((guix build pyproject-build-system) #:select (python-version))
-                  ,@%default-gnu-modules)
       #:tests? #f
       #:configure-flags
       #~(let ((icu (dirname (dirname (search-input-file
@@ -94,17 +91,26 @@
            ;; Auto-detection looks for ICU only in traditional
            ;; install locations.
            (string-append "--with-icu=" icu)
-           ;; Ditto for Python.
-           #$@(if (%current-target-system)
-                  #~()
-                  #~((let ((python (dirname (dirname (search-input-file
-                                                      %build-inputs
-                                                      "bin/python")))))
-                       (string-append "--with-python-root=" python)
-                       (string-append "--with-python=" python
-                                      "/bin/python")
-                       (string-append "--with-python-version="
-                                      (python-version python)))))
+           ;; Ditto for Python.  The Gexp can't be evaluated if python is not
+           ;; in the inputs (e.g. boost-for-mysql), so delay its evaluation
+           ;; after checking for python, rather than concurrently.
+           #$@(force
+               (if (or (%current-target-system)
+                       (not (this-package-input "python-minimal-wrapper")))
+                   (delay
+                     #~())
+                   (delay
+                     #~((let ((python (dirname (dirname (search-input-file
+                                                         %build-inputs
+                                                         "bin/python")))))
+                          (string-append "--with-python-root=" python)
+                          (string-append "--with-python=" python
+                                         "/bin/python")
+                          (string-append "--with-python-version="
+                                         #$(version-major+minor
+                                            (package-version
+                                             (this-package-input
+                                              "python-minimal-wrapper")))))))))
            "--with-toolset=gcc"))
       #:make-flags
       #~(list "threading=multi" "link=shared"
@@ -200,29 +206,39 @@
           (replace 'install
             (lambda* (#:key make-flags #:allow-other-keys)
               (apply invoke "./b2" "install" make-flags)))
-          #$@(if (%current-target-system)
-                 #~()
-                 #~((add-after 'install 'provide-libboost_python
-                      (lambda* (#:key make-flags inputs outputs #:allow-other-keys)
-                        (let* ((static? (member "link=static" make-flags))
-                               (libext (if static? ".a" ".so"))
-                               (python (dirname (dirname (search-input-file
-                                                          inputs "bin/python"))))
-                               (python-version (python-version python))
-                               (libboost_pythonNN
-                                (string-append "libboost_python"
-                                               (string-join (string-split
-                                                             python-version #\.)
-                                                            "")
-                                               libext)))
-                          (with-directory-excursion (string-append #$output "/lib")
-                            (symlink libboost_pythonNN
-                                     (string-append "libboost_python" libext))
-                            ;; Some packages only look for the major version.
-                            (symlink libboost_pythonNN
-                                     (string-append "libboost_python"
-                                                    (string-take python-version 1)
-                                                    libext)))))))))))
+          #$@(force  ; See above for why the force is necessary.
+              (if (or (%current-target-system)
+                      (not (this-package-input "python-minimal-wrapper")))
+                  (delay
+                    #~())
+                  (delay
+                    #~((add-after 'install 'provide-libboost_python
+                         (lambda* (#:key make-flags inputs outputs
+                                   #:allow-other-keys)
+                           (let* ((static? (member "link=static" make-flags))
+                                  (ext (if static? ".a" ".so"))
+                                  (python (dirname
+                                           (dirname (search-input-file
+                                                     inputs "bin/python"))))
+                                  (python-version
+                                   #$(version-major+minor
+                                      (package-version
+                                       (this-package-input
+                                        "python-minimal-wrapper"))))
+                                  (NN (string-join (string-split
+                                                    python-version #\.)
+                                                   ""))
+                                  (libboost_pythonNN
+                                   (string-append "libboost_python" NN ext))
+                                  (major (string-take python-version 1)))
+                             (with-directory-excursion
+                                 (string-append #$output "/lib")
+                               (symlink libboost_pythonNN
+                                        (string-append "libboost_python" ext))
+                               ;; Some packages only look for the major version.
+                               (symlink libboost_pythonNN
+                                        (string-append "libboost_python"
+                                                       major ext)))))))))))))
     (inputs
      (append
       (list icu4c zlib)
