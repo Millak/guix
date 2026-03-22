@@ -1276,6 +1276,10 @@ JSON, so you have a lot of control over the search and cleanup process.")
       '(list "--release" "--"
              "--skip=test_owner_root")
       #:install-source? #f
+      #:modules
+      '((guix build cargo-build-system)
+        (guix build utils)
+        (ice-9 match))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'override-jemalloc
@@ -1287,22 +1291,28 @@ JSON, so you have a lot of control over the search and cleanup process.")
                 (setenv "JEMALLOC_OVERRIDE"
                         (string-append jemalloc "/lib/libjemalloc.so")))))
           (add-after 'install 'install-extras
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((out (assoc-ref outputs "out")))
-                ;; Manpages
-                (install-file "doc/fd.1" (string-append out "/share/man/man1"))
-                ;; Completions require running the built binary.
-                (unless #$(%current-target-system)
-                  (invoke "make" "completions")
-                  (install-file "autocomplete/fd.bash"
-                                (string-append out "/share/bash-completion/completions"))
-                  (install-file "autocomplete/fd.fish"
-                                (string-append out "/share/fish/vendor_completions.d"))
-                  (install-file "autocomplete/_fd"
-                                (string-append out "/share/zsh/site-functions"))
-                  (rename-file (string-append out "/share/bash-completion/completions/fd.bash")
-                               (string-append out "/share/bash-completion/completions/fd")))))))))
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (install-file "doc/fd.1" (string-append #$output "/share/man/man1"))
+              (for-each
+               (match-lambda
+                 ((shell . path)
+                  (mkdir-p (in-vicinity #$output (dirname path)))
+                  (let ((binary
+                         (if #$(%current-target-system)
+                             (search-input-file native-inputs "bin/fd")
+                             (in-vicinity #$output "bin/fd"))))
+                    (with-output-to-file (in-vicinity #$output path)
+                      (lambda _
+                        (invoke binary "--gen-completions" shell))))))
+               '(("bash"   . "share/bash-completion/completions/fd")
+                 ("elvish" . "share/elvish/lib/fd")
+                 ("fish"   . "share/fish/vendor_completions.d/fd.fish")
+                 ("zsh"    . "share/zsh/site-functions/_fd"))))))))
      (inputs (cons jemalloc (cargo-inputs 'fd)))
+     (native-inputs
+      (if (%current-target-system)
+          (list this-package)
+          '()))
      (home-page "https://github.com/sharkdp/fd")
      (synopsis "Simple, fast and user-friendly alternative to find")
      (description
