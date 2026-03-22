@@ -10921,7 +10921,7 @@ desktop.  It supports world clock, stop watch, alarms, and count down timer.")
 (define-public gnome-calendar
   (package
     (name "gnome-calendar")
-    (version "48.1")
+    (version "49.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -10929,7 +10929,7 @@ desktop.  It supports world clock, stop watch, alarms, and count down timer.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "00lz50rwla8dnc1xj4nb5zm0mkl24v7iwhhx31cf7s0bq3asvkh6"))))
+                "1hnjhdxa9vfrs6fj0c0l5fiqwgz5mvby0v7m3562qlsd56mia48c"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -10948,7 +10948,8 @@ desktop.  It supports world clock, stop watch, alarms, and count down timer.")
                       (or native-inputs inputs) "share/zoneinfo"))
              (setenv "TZ" "UTC"))))))
     (native-inputs
-     (list gettext-minimal
+     (list blueprint-compiler
+           gettext-minimal
            `(,glib "bin")               ; For glib-compile-schemas
            pkg-config
            tzdata-for-tests))
