@@ -1930,7 +1930,7 @@ to other formats.")
 (define-public gnome-characters
   (package
     (name "gnome-characters")
-    (version "48.0")
+    (version "49.1")
     (source
      (origin
        (method url-fetch)
@@ -1939,12 +1939,17 @@ to other formats.")
                            "/gnome-characters-" version ".tar.xz"))
        (sha256
         (base32
-         "0wcd7j6gyv7nk44d1xdhx3fa54g688s0sd908i0b47ci9njjrhx2"))))
+         "0p0l1bsgdqj0n47j2xya0pmf3n67vcq5iywi6dwdq0p66kj0yp3r"))))
     (build-system meson-build-system)
     (arguments
      (list
       #:glib-or-gtk? #t
       #:phases #~(modify-phases %standard-phases
+                   (delete 'check)      ;moved after install
+                   (add-after 'install 'check
+                     ;; This is done because our typelib reference the
+                     ;; installed libraries in Guix.
+                     (assoc-ref %standard-phases 'check))
                    (add-after 'unpack 'disable-gtk-update-icon-cache
                      (lambda _
                        (substitute* "meson.build"
