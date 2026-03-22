@@ -649,7 +649,7 @@ GUI.  It is based on PyQt6 and QtWebEngine.")
 (define-public vimb
   (package
     (name "vimb")
-    (version "3.7.0")
+    (version "3.7.1")
     (source
      (origin
        (method git-fetch)
@@ -657,7 +657,7 @@ GUI.  It is based on PyQt6 and QtWebEngine.")
              (url "https://github.com/fanglingsu/vimb/")
              (commit version)))
        (sha256
-        (base32 "1yazd0hm6vsz7sqp5qf3zzjmvqs3can6sbm2ijlfcj4v3kz42vrm"))
+        (base32 "13gq6grhkscb0ms35k527fc49yrnkd4p3d1i0hv3pl4h6571s7ny"))
        (file-name (git-file-name name version))))
     (build-system glib-or-gtk-build-system)
     (arguments
@@ -667,18 +667,9 @@ GUI.  It is based on PyQt6 and QtWebEngine.")
                                 (string-append "PREFIX=" #$output))
            #:phases
            #~(modify-phases %standard-phases
-               (delete 'configure)
-               (add-after 'unpack 'fix-config-mk
-                 (lambda* _
-                   (substitute* "config.mk"
-                     (("webkit2gtk-4\\.1")
-                      "webkit2gtk-4.0")))))))
-    (inputs
-     `(("glib-networking" ,glib-networking)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("webkitgtk" ,webkitgtk-with-libsoup2)))
-    (native-inputs
-     (list pkg-config))
+               (delete 'configure))))
+    (inputs (list glib-networking gsettings-desktop-schemas webkitgtk-for-gtk3))
+    (native-inputs (list pkg-config))
     (home-page "https://fanglingsu.github.io/vimb/")
     (synopsis "Fast and lightweight Vim-like web browser")
     (description "Vimb is a fast and lightweight vim like web browser based on
