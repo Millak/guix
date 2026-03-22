@@ -11554,7 +11554,7 @@ kill/reinice processes.")
 (define-public python-pyatspi
   (package
     (name "python-pyatspi")
-    (version "2.46.1")
+    (version "2.58.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -11563,25 +11563,11 @@ kill/reinice processes.")
                     "/pyatspi-" version ".tar.xz"))
               (sha256
                (base32
-                "06q4zca83hk4iify8amcb9hfxs3qvlczhjsw7p8hg72f8dbnl7zr"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'fix-atk-load
-            (lambda _
-              (substitute* "pyatspi/__init__.py"
-                (("from gi.repository import Atspi")
-                 "gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
-from gi.repository import Atspi")))))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list python))
-    (propagated-inputs
-     (list python-pygobject))
+                "0dj5n3k02jsg3w96afwrbhj45swdhlqpap02651mh9pr6nchf7rz"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list python))
+    (propagated-inputs (list python-pygobject))
     (synopsis "Python client bindings for D-Bus AT-SPI")
     (home-page "https://wiki.linuxfoundation.org/accessibility\
 /atk/at-spi/at-spi_on_d-bus")
