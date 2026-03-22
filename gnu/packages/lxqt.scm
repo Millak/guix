@@ -38,6 +38,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
@@ -1007,13 +1008,14 @@ processes currently in existence, much like code{top} or code{ps}.")
                            version "/" name "-" version ".tar.xz"))
        (sha256
         (base32 "1ibx62d8cqvm9ygdbdnp5j06l51d05ip0g2j30ivyhpi4cp1ik62"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (inputs
-     (list layer-shell-qt qtbase qtermwidget))
+     (list layer-shell-qt qtbase qtermwidget qtwayland))
     (native-inputs
      (list lxqt-build-tools))
     (arguments
-     '(#:tests? #f))                      ; no tests
+     (list #:qtbase qtbase
+           #:tests? #f))                      ; no tests
     (home-page "https://lxqt-project.org")
     (synopsis "Lightweight Qt-based terminal emulator")
     (description "QTerminal is a lightweight Qt terminal emulator based on
