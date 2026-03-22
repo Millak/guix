@@ -828,32 +828,14 @@ faster window switching.")
               (sha256
                (base32
                 "0q0v86n832kgqz0x3m0k75m09yy7r8qk3rf3niq06cs00ypm3xl6"))))
-    (build-system gnu-build-system)
+    (build-system copy-build-system)
     (arguments
      (list
-      #:tests? #f
-      #:make-flags #~(list (string-append "INSTALLBASE="
-                                          #$output
-                                          "/share/gnome-shell/extensions")
-                           (string-append "VERSION="
-                                          #$version))
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'bootstrap)
-          (delete 'configure)
-          (add-before 'build 'set-environment-variables
-            (lambda _
-              (setenv "HOME" (getcwd))
-              (setenv "XDG_CACHE_HOME" (string-append (getcwd) "/.cache"))))
-          (replace 'build
-            (lambda* (#:key make-flags #:allow-other-keys)
-              (apply invoke `("make" "build" ,@make-flags))))
-          (replace 'install
-            (lambda* (#:key make-flags #:allow-other-keys)
-              (apply invoke `("make" "install" ,@make-flags)))))))
+      #:install-plan
+      #~'(("dock-ng@ochi12.github.com"
+           "share/gnome-shell/extensions/dock-ng@ochi12.github.com"))))
     (native-inputs
      (list `(,glib "bin")
-           gnome-shell
            intltool
            pkg-config))
     (propagated-inputs
