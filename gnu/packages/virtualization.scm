@@ -634,7 +634,7 @@ server and embedded PowerPC, and S390 guests.")
   ;; QEMU without GUI support, only supporting the host's architecture
   (package/inherit qemu
     (name "qemu-minimal")
-    (outputs '("out" "doc"))
+    (outputs '("out"))
     (synopsis
      "Machine emulator and virtualizer (without GUI or docs) for the host architecture")
     (arguments
@@ -676,10 +676,7 @@ server and embedded PowerPC, and S390 guests.")
             (delete 'configure-user-static)
             (delete 'build-user-static)
             (delete 'install-user-static)
-            ;; We cannot fully remove the "doc" output due to the gexp in qemu.
-            (replace 'move-html-doc
-              (lambda _
-                (mkdir-p #$output:doc)))))))
+            (delete 'move-html-doc)))))
 
     ;; Remove dependencies on optional libraries, notably GUI libraries.
     (native-inputs (filter (lambda (input)
