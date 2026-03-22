@@ -4153,18 +4153,26 @@ Full featured offline client with caching support.")
 (define-public uv
   (package
     (name "uv")
-    (version "0.6.12")
+    (version "0.10.12")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "uv" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astral-sh/uv")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "14ajgsl7zzsrig1vppcgs77q4fqg5w858jxma9hqab4b8nrpzxmn"))
+        (base32 "04jk8d6wzxclx16mdg56afy2nqfv06j5kbxdch6977226gw80i0p"))
        (modules '((guix build utils)))
        (snippet
-        #~(for-each delete-file
-                    (find-files "crates/uv-trampoline/trampolines"
-                                "\\.exe$")))))
+        #~(begin
+            (for-each delete-file
+                      (cons "test/packages/fake-uv/scripts/uv.exe"
+                            (find-files "crates/uv-trampoline-builder/trampolines"
+                                        "\\.exe$")))
+            ;; Our version of maturin doesn't parse this correctly
+            (substitute* "pyproject.toml"
+              (("license-files.*") ""))))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4180,11 +4188,6 @@ Full featured offline client with caching support.")
       #:tests? #f  ; Tests require multiple python versions and network access.
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'use-guix-vendored-dependencies
-            (lambda _
-              (substitute* "Cargo.toml"
-                (("git[^,]*, rev[^,}]*")
-                 "version = \"*\""))))
           (add-after 'unpack 'prepare-cargo-build-system
             (lambda args
               (for-each
@@ -4246,7 +4249,7 @@ Full featured offline client with caching support.")
                       (lambda _
                         (invoke uvx "--generate-shell-completion" shell)))))
                  `(("bash" "uv" "uvx"
-                    ,(string-append #$output "/etc/bash_completion.d"))
+                    ,(string-append #$output "/share/bash-completion/completions"))
                    ("zsh" "_uv" "_uvx"
                     ,(string-append #$output "/share/zsh/site-functions"))
                    ("fish" "uv.fish" "uvx.fish"
