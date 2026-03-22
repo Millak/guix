@@ -1304,13 +1304,15 @@ the 'showing the effect of'-style of operation.")
                                    "tests/test_main.cpp")
                       (("catch\\.hpp")
                        "catch2/catch.hpp"))))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "./valeronoi-tests")))))))
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "./valeronoi-tests")))))))
     (inputs (list boost
                   cgal
                   gmp
@@ -1318,7 +1320,8 @@ the 'showing the effect of'-style of operation.")
                   mpfr
                   openssl
                   qtbase
-                  qtsvg))
+                  qtsvg
+                  qtwayland))
     (native-inputs (list catch2))
     (home-page "https://github.com/ccoors/Valeronoi")
     (synopsis "WiFi mapping companion application for Valetudo")
