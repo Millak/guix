@@ -6552,7 +6552,7 @@ basic eye-candy effects.")
            lz4
            gtk+
            python-pycairo
-           python-pygobject
+           python-pygobject-3.50
            xauth
            xorg-server
            xf86-video-dummy
