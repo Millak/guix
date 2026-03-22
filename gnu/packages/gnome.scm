@@ -8180,7 +8180,7 @@ to display dialog boxes from the commandline and shell scripts.")
 (define-public mutter
   (package
     (name "mutter")
-    (version "48.7")
+    (version "49.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -8188,7 +8188,7 @@ to display dialog boxes from the commandline and shell scripts.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "080gm4gwvvxpqbkfb7b0f1gma52k0nisq9v6400r1qxhrfijl47c"))))
+                "0mbq7pijx29bp0b8nfy6057z6anc5ff973dqbki0nlv10p2nwrn1"))))
     ;; NOTE: Since version 3.21.x, mutter now bundles and exports forked
     ;; versions of cogl and clutter.  As a result, many of the inputs,
     ;; propagated-inputs, and configure flags used in cogl and clutter are
@@ -8241,31 +8241,21 @@ to display dialog boxes from the commandline and shell scripts.")
             (lambda _
               (with-directory-excursion "src/tests"
                 (substitute* "meson.build"
-                  ;; The 'sync' variant of the X11 test fails for unknown reason
-                  ;; (see: https://gitlab.gnome.org/GNOME/mutter/-/issues/3910).
-                  (("foreach mode: \\['', 'sync'\\]")
-                   "foreach mode: []")
                   ;; Many (all?) stacking tests are susceptible to fail
                   ;; non-deterministically under high load (see:
-                  ;; https://gitlab.gnome.org/GNOME/mutter/-/issues/4035).
+                  ;; <https://gitlab.gnome.org/GNOME/mutter/-/issues/4035>).
                   (("foreach stacking_test: stacking_tests")
                    "foreach stacking_test: []"))
                 (substitute* "clutter/conform/meson.build"
-                  ;; TODO: Re-instate the gesture test in a 47+ release.
-                  ;; The conform/gesture test fails non-deterministically on
-                  ;; some machines (see:
-                  ;; https://gitlab.gnome.org/GNOME/mutter/-/issues/3521#note_2385427).
-                  ((".*'gesture',.*") "")
-
                   ;; The 'event-delivery' test fails non-deterministically
                   ;; (see:
-                  ;; https://gitlab.gnome.org/GNOME/mutter/-/issues/4035#note_2402672).
+                  ;; <https://gitlab.gnome.org/GNOME/mutter/-/issues/4035#note_2402672>).
                   ((".*'event-delivery',.*") "")))))
           (replace 'check
             (lambda* (#:key tests? test-options parallel-tests?
                       #:allow-other-keys)
               (when tests?
-                ;; Setup (refer to the 'test-mutter' and its dependents targets
+                ;; Setup (refer to the 'test-mutter' and its dependent targets
                 ;; in the '.gitlab-ci.yml' file.
                 (setenv "HOME" "/tmp")
                 (setenv "XDG_RUNTIME_DIR" (string-append (getcwd)
@@ -8296,7 +8286,8 @@ to display dialog boxes from the commandline and shell scripts.")
                        "--launch=wireplumber"
                        "meson" "test" "-t" "0"
                        "--no-suite=mutter/kvm"
-                       ;; XXX: monitor-unit and monitor-dbus fail.
+                       "--no-suite=gvdb"
+                       ;; XXX: monitor-unit and monitor-dbus fail/hang.
                        "--no-suite=mutter/backend"
                        "--no-suite=mutter/backends/native"
                        "--no-rebuild"
@@ -8307,6 +8298,7 @@ to display dialog boxes from the commandline and shell scripts.")
            `(,glib "bin")               ;for glib-compile-schemas, etc.
            gettext-minimal
            gobject-introspection
+           `(,gtk "bin")
            pkg-config
            xvfb-run
            wayland-protocols
@@ -8321,6 +8313,7 @@ to display dialog boxes from the commandline and shell scripts.")
            python-dbus
            python-dbusmock
            python-docutils
+           umockdev
            wireplumber-minimal
            zenity))
     (propagated-inputs
@@ -8367,7 +8360,9 @@ to display dialog boxes from the commandline and shell scripts.")
       sysprof
       xinput))
     (inputs
-     (list gnome-desktop
+     (list glycin-loaders
+           gnome-desktop
+           libglycin
            python                       ; for gdctl
            upower
            xkeyboard-config
