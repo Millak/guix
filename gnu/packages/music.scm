@@ -2133,9 +2133,10 @@ your own lessons.")
               (sha256
                (base32
                 "1pn8wcmxsvffh8b3slsrbdb6l5s1mdbl3x41i4l170ld0p6fv92n"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:phases
       '(modify-phases %standard-phases
          (replace 'check
@@ -2149,6 +2150,7 @@ your own lessons.")
            pugixml
            qtbase
            qttools ;for QtLinguistTools
+           qtwayland
            rtmidi
            timidity++
            zlib))
