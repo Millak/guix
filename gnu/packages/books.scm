@@ -315,7 +315,7 @@ software, with support for multiple texts and languages.")
                          sword
                          util-linux ;for 'uuidgen'
                          (list util-linux "lib") ;for 'libuuid'
-                         webkitgtk-with-libsoup2
+                         webkitgtk-for-gtk3
                          yelp-tools
                          zip))
     (inputs (list dbus dbus-glib libxml2 python python-lxml))
