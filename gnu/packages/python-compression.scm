@@ -787,12 +787,11 @@ the LZ4 frame format.")
     (build-system pyproject-build-system)
     (arguments
      (list #:test-backend #~'unittest))
-    (native-inputs
-     (list python-cramjam
-           python-setuptools))
+    (native-inputs (list python-setuptools))
     (inputs
      (list snappy))
-    (home-page "https://github.com/andrix/python-snappy")
+    (propagated-inputs (list python-cramjam))
+    (home-page "https://github.com/intake/python-snappy")
     (synopsis "Python bindings for the Snappy compression library")
     (description
      "@code{python-python-snappy} provides bindings to the Snappy library and
