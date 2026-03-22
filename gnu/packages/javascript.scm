@@ -34,8 +34,10 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages java)
   #:use-module (gnu packages node)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages uglifyjs)
+  #:use-module (gnu packages unicode)
   #:use-module (gnu packages web)
   #:use-module (guix gexp)
   #:use-module (guix packages)
@@ -964,29 +966,39 @@ animating a series of images.")
 (define-public mujs
   (package
     (name "mujs")
-    (version "1.3.5")
+    (version "1.3.7")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ccxvii/mujs")
+             (url "https://codeberg.org/ccxvii/mujs")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1p90cb830li6y38m748s4kz2pkimxarbcaym3bwrxnk3jaqcf69q"))
+        (base32 "031raywxz1znh70rvh915bhrcaysxa1kbv4gfhl4ghcqagpd975d"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
             (for-each delete-file
                       (list "astnames.h"
                             "opnames.h"
-                            "one.c"))))))
+                            "one.c"
+                            ;; Also remove utfdata.h
+                            "utfdata.h"))))))
     (build-system gnu-build-system)
     (arguments
      (list
        #:phases
        #~(modify-phases %standard-phases
            (delete 'configure)          ; no configure script
+           (add-before 'build 'copy-unicode-data
+             (lambda* (#:key inputs #:allow-other-keys)
+               (for-each (lambda (file)
+                           (copy-file (search-input-file inputs
+                                                         (string-append
+                                                          "share/ucd/" file))
+                                      file))
+                         '("UnicodeData.txt" "SpecialCasing.txt"))))
            (replace 'install
              (lambda* (#:key (make-flags '()) #:allow-other-keys)
                (apply invoke "make" "install-shared" make-flags))))
@@ -997,6 +1009,8 @@ animating a series of images.")
        #:tests? #f))                    ; no tests
     (inputs
      (list readline))
+    (native-inputs
+     (list python-minimal ucd))
     (home-page "https://mujs.com/")
     (synopsis "JavaScript interpreter written in C")
     (description "MuJS is a lightweight Javascript interpreter designed for
