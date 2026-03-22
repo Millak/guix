@@ -994,7 +994,7 @@ useful for C++.")
 (define-public python-pygobject
   (package
     (name "python-pygobject")
-    (version "3.54.3")
+    (version "3.54.5")
     (source
      (origin
        (method url-fetch)
@@ -1003,7 +1003,7 @@ useful for C++.")
                            "/pygobject-" version ".tar.gz"))
        (sha256
         (base32
-         "1rxsj85xl73a14vz7s30sy8lx9sswd2j2hgj3i4mcz8g989hknm8"))))
+         "11dm5yi80v143dn21bayqxb53w67hk1lishmrw35c97m91inyrdn"))))
     (build-system meson-build-system)
     ;; The tests require mutter, which would introduce a circular dependency.
     (arguments (list #:tests? #f))
