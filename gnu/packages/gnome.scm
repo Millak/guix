@@ -2686,7 +2686,7 @@ and single page document formats like PDF and DejaVu.")
 (define-public gsettings-desktop-schemas
   (package
     (name "gsettings-desktop-schemas")
-    (version "48.0")
+    (version "49.1")
     (source
      (origin
        (method url-fetch)
@@ -2695,7 +2695,7 @@ and single page document formats like PDF and DejaVu.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1lqv5mn7r1c8nxm6dfxgvk56r2sqfgafkj5jm1jzh65z2dc1b3z6"))))
+         "0qqfxml3kqg87ly5w8rhqalin6qv20jcn2gqkdmhga75sn1pyykp"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
