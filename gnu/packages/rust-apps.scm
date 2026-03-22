@@ -3849,22 +3849,23 @@ consecutive lines and since program start.")
     (arguments
      (list
       #:install-source? #f
+      #:imported-modules (append %copy-build-system-modules
+                                 %cargo-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build copy-build-system) #:prefix copy:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'install-extras
-            (lambda _
-              (let ((share (string-append #$output "/share/"))
-                    (bash-dir (string-append #$output "/etc/bash_completion.d/"))
-                    (elvish-dir (string-append #$output "/share/elvish/lib/")))
-                (install-file "gen/sd.1" (string-append share "/man/man1"))
-                (with-directory-excursion "gen/completions"
-                  (install-file "_sd" (string-append share "zsh/site-functions"))
-                  (install-file "sd.fish"
-                                (string-append share "fish/vendor_completions.d"))
-                  (mkdir-p bash-dir)
-                  (mkdir-p elvish-dir)
-                  (copy-file "sd.bash" (string-append bash-dir "sd"))
-                  (copy-file "sd.elv" (string-append elvish-dir "sd")))))))))
+            (lambda args
+               (apply (assoc-ref copy:%standard-phases 'install)
+                      #:install-plan
+                      '(("gen/sd.1" "share/man/man1/")
+                        ("gen/completions/sd.bash" "share/bash-completion/completions/sd")
+                        ("gen/completions/sd.elv" "share/elvish/lib")
+                        ("gen/completions/sd.fish" "share/fish/vendor_completions.d/")
+                        ("gen/completions/_sd" "share/zsh/site-functions/"))
+                      args))))))
     (inputs (cargo-inputs 'sd))
     (home-page "https://github.com/chmln/sd")
     (synopsis "Intuitive find & replace CLI")
