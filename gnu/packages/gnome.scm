@@ -9529,7 +9529,7 @@ Libadwaita.")
 (define-public gnome-control-center
   (package
     (name "gnome-control-center")
-    (version "48.6")
+    (version "49.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9537,7 +9537,7 @@ Libadwaita.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1cx22qg21cinqx4y8f3m2xpfr3z9394l5yab0np611r56gn1wgyz"))))
+                "00jb40sa4hd6hp96ia49nqakzjzqcz3a2rpp60x8y86xzpjpa68k"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -9584,7 +9584,8 @@ Libadwaita.")
                 (invoke "dbus-run-session" "--"
                         "meson" "test" "-t" "0")))))))
     (native-inputs
-     (list docbook-xsl
+     (list blueprint-compiler
+           docbook-xsl
            gettext-minimal
            `(,glib "bin")               ;for glib-mkenums, etc.
            libxslt
