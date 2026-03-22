@@ -10309,7 +10309,7 @@ beautifying border effects.")
 (define-public dconf-editor
   (package
     (name "dconf-editor")
-    (version "45.0.1")
+    (version "49.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -10317,7 +10317,7 @@ beautifying border effects.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1pa1k510qx4v0ywhqwpj3qfjyz8qiiis4565ghhydnpfg1v2k00i"))))
+                "16fkppclv7xzglfafqg8b9nd5cjqlfwlyci800gg7psivzxcra4h"))))
     (build-system meson-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
