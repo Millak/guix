@@ -209,12 +209,13 @@
               (sha256
                (base32
                 "1k67x4l27ac6sb944b42zscm0ffq2fxbghapspgj75g4dr8ip38a"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:tests? #f))                       ;no tests
     (inputs
-     (list qtbase qttools qtserialport))
+     (list qtbase qttools qtserialport qtwayland))
     (home-page "https://gitlab.com/cutecom/cutecom")
     (synopsis "Graphical serial terminal")
     (description
