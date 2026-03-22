@@ -2606,41 +2606,29 @@ server for rapid website iteration.")
     (arguments
      (list
       #:install-source? #f
-      ;; Note: the built target 'rg' binary is required for 'install-extras
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'install 'install-extras
-                     (lambda* (#:key native-inputs outputs #:allow-other-keys)
-                       (let* ((out (assoc-ref outputs "out"))
-                              (share (string-append out "/share"))
-                              (bash-completions-dir
-                                (string-append out "/share/bash-completion/completions"))
-                              (zsh-completions-dir
-                                (string-append share "/zsh/site-functions"))
-                              (fish-completions-dir
-                                (string-append share "/fish/vendor_completions.d"))
-                              (man1 (string-append share "/man/man1"))
-                              (rg (if #$(%current-target-system)
-                                    (search-input-file native-inputs "/bin/rg")
-                                    (string-append out "/bin/rg"))))
-                           (mkdir-p man1)
-                           (with-output-to-file (string-append man1 "/rg.1")
-                             (lambda _
-                               (invoke rg "--generate" "man")))
-                           (mkdir-p bash-completions-dir)
-                           (with-output-to-file (string-append
-                                                  bash-completions-dir "/rg")
-                             (lambda _
-                               (invoke rg "--generate" "complete-bash")))
-                           (mkdir-p zsh-completions-dir)
-                           (with-output-to-file (string-append
-                                                  zsh-completions-dir "/_rg")
-                             (lambda _
-                               (invoke rg "--generate" "complete-zsh")))
-                           (mkdir-p fish-completions-dir)
-                           (with-output-to-file
-                             (string-append fish-completions-dir "/rg.fish")
-                             (lambda _
-                               (invoke rg "--generate" "complete-fish")))))))
+      #:modules
+      '((guix build cargo-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-extras
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (for-each
+               (match-lambda
+                 ((shell . path)
+                  (mkdir-p (in-vicinity #$output (dirname path)))
+                  (let ((binary
+                          (if #$(%current-target-system)
+                              (search-input-file native-inputs "bin/rg")
+                              (in-vicinity #$output "bin/rg"))))
+                    (with-output-to-file (in-vicinity #$output path)
+                      (lambda _
+                        (invoke binary "--generate" shell))))))
+               '(("complete-bash" . "share/bash-completion/completions/rg")
+                 ("complete-fish" . "share/fish/vendor_completions.d/rg.fish")
+                 ("complete-zsh"  . "share/zsh/site-functions/_rg")
+                 ("man"           . "share/man/man1/rg"))))))
       #:features '(list "pcre2")))
     (inputs (cons pcre2 (cargo-inputs 'ripgrep)))
     (native-inputs (cons* pkg-config (if (%current-target-system)
