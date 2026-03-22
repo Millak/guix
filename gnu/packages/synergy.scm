@@ -26,6 +26,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system qt)
   #:use-module (gnu packages)
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages curl)
@@ -60,7 +61,7 @@
        '(begin
           (delete-file-recursively "ext/openssl")
           #t))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      `(#:tests? #f ; there is no test target
        #:phases
@@ -88,7 +89,8 @@
        ("libxi"   ,libxi)
        ("libx11"  ,libx11)
        ("libxtst" ,libxtst)
-       ("qtbase" ,qtbase-5)))
+       ("qtbase" ,qtbase-5)
+       ("qtwayland" ,qtwayland-5)))
     (home-page "https://symless.com/synergy")
     (synopsis "Mouse and keyboard sharing utility")
     (description
