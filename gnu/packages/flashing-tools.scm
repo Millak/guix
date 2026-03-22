@@ -298,7 +298,7 @@ firmware from it.")
                     ("mtd-utils"      "sbin" "mkfs.(jffs2|ubifs)|ubinize")
                     ("f2fs-tools"     "sbin" "(mkfs|sload).f2fs")
                     ("squashfs-tools" "bin"  "mksquashfs")
-                    ("qemu"           "bin"  "qemu-img")
+                    ("qemu-minimal"   "bin"  "qemu-img")
                     ;; rauc and fiptool are unsupported.
                     ("tar"            "bin"  "tar")
                     ("u-boot-tools"   "bin"  "mkimage")))
@@ -334,23 +334,23 @@ firmware from it.")
            pkg-config
            util-linux)) ; for the tests
     (inputs
-     `(("bash" ,bash)
-       ("btrfs-progs" ,btrfs-progs)
-       ("cdrkit-libre" ,cdrkit-libre)
-       ("cpio" ,cpio)
-       ;; Note: invoked by final executable.
-       ("coreutils" ,coreutils) ; chmod, dd
-       ("dosfstools" ,dosfstools)
-       ("e2fsprogs" ,e2fsprogs)
-       ("f2fs-tools" ,f2fs-tools)
-       ("genext2fs" ,genext2fs)
-       ("libconfuse" ,libconfuse)
-       ("mtd-utils" ,mtd-utils)
-       ("mtools" ,mtools)
-       ("qemu" ,qemu-minimal)
-       ("squashfs-tools" ,squashfs-tools)
-       ("tar" ,tar)
-       ("u-boot-tools" ,u-boot-tools)))
+     (list bash
+           btrfs-progs
+           cdrkit-libre
+           cpio
+           ;; Note: invoked by final executable.
+           coreutils
+           dosfstools
+           e2fsprogs
+           f2fs-tools
+           genext2fs
+           libconfuse
+           mtd-utils
+           mtools
+           qemu-minimal
+           squashfs-tools
+           tar
+           u-boot-tools))
     (synopsis "Create Flash images according to specification")
     (description "@command{genimage} creates Flash images according to a
 specification file.")
