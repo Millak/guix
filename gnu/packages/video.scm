@@ -41,7 +41,7 @@
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Alex McGrath <amk@amk.ie>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020, 2021, 2022, 2023, 2025 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023, 2025, 2026 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2020 Ivan Kozlov <kanichos@yandex.ru>
@@ -2352,31 +2352,35 @@ videoformats depend on the configuration flags of ffmpeg.")
 (define-public ffmpeg-progress-yield
   (package
     (name "ffmpeg-progress-yield")
-    (version "0.12.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "ffmpeg_progress_yield" version))
-              (sha256
-               (base32
-                "09xwd1cigm5qhn5jcy16iw1nfvjcvph72jmq1kq3yzxqz351ylwd"))))
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/slhck/ffmpeg-progress-yield")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pmqbd1mprkpak7dh2kdjqqd3d1yxayn95rhg0zzkd9hc62r4b8b"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; Not sure if the test file actually does anything.
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "python" "test/test.py"))))
-                        (add-after 'wrap 'wrap-program
-                          ;; Wrap ffmpeg on the executable.
-                          (lambda* (#:key inputs outputs #:allow-other-keys)
-                            (let ((fpy "bin/ffmpeg-progress-yield")
-                                  (ffm "bin/ffmpeg"))
-                              (wrap-program (search-input-file outputs fpy)
-                                `("PATH" ":" prefix
-                                  (,(search-input-file inputs ffm))))))))))
+     (list
+      #:build-backend "setuptools.build_meta" ; recent versions use uv-build
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'wrap 'wrap-program
+                     ;; Wrap ffmpeg on the executable.
+                     (lambda* (#:key inputs outputs #:allow-other-keys)
+                       (let ((fpy "bin/ffmpeg-progress-yield")
+                             (ffm "bin/ffmpeg"))
+                         (wrap-program (search-input-file outputs fpy)
+                           `("PATH" ":" prefix
+                             (,(search-input-file inputs ffm))))))))))
     (inputs (list bash-minimal ffmpeg))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs (list procps ; for 'pgrep'
+                         python-pytest
+                         python-pytest-asyncio
+                         python-setuptools))
+    (propagated-inputs (list python-tqdm))
     (home-page "https://github.com/slhck/ffmpeg-progress-yield")
     (synopsis "Run an ffmpeg command with progress")
     (description "This package allows an ffmpeg command to run with progress.
