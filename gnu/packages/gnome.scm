@@ -9622,7 +9622,7 @@ properties, screen resolution, and other GNOME parameters.")
 (define-public gnome-shell
   (package
     (name "gnome-shell")
-    (version "48.7")
+    (version "49.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9630,7 +9630,8 @@ properties, screen resolution, and other GNOME parameters.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1hwk6kr01j6y4dv4vs1sqvikni1dgnncl8dwjz4ghabyby6k5zrd"))))
+                "022vb4y0ri7ws6l1ghx63vxi9xhi6r0hfrsg257i230ly2i0qvwx"))))
+    (outputs '("out" "debug"))
     (build-system meson-build-system)
     (arguments
      (let ((disallowed-references
@@ -9657,12 +9658,11 @@ properties, screen resolution, and other GNOME parameters.")
         #~(modify-phases %standard-phases
             (add-after 'unpack 'fix-keysdir
               (lambda _
-                (let ((keysdir
-                       (string-append #$output
-                                      "/share/gnome-control-center/keybindings")))
-                  (substitute* "meson.build"
-                    (("keysdir =.*")
-                     (string-append "keysdir = '" keysdir "'\n"))))))
+                (substitute* "meson.build"
+                  (("keysdir =.*")
+                   (string-append
+                    "keysdir = "
+                    "prefix / 'share/gnome-control-center/keybindings'\n")))))
             (add-after 'unpack 'patch-jasmine
               (lambda _
                 (substitute* (find-files "subprojects/jasmine-gjs/bin")
@@ -9689,18 +9689,6 @@ properties, screen resolution, and other GNOME parameters.")
                   (substitute* "js/ui/status/keyboard.js"
                     (("'tecla'")
                      (string-append "'" tecla "'"))))))
-            (add-before 'check 'pre-check
-              (lambda* (#:key inputs #:allow-other-keys)
-                ;; Tests require a running X server.
-                (system "Xvfb :1 &")
-                (setenv "DISPLAY" ":1")
-                ;; For the missing /var/lib/dbus/machine-id
-                (setenv "DBUS_FATAL_WARNINGS" "0")
-                (setenv "NO_AT_BRIDGE" "1")
-                (setenv "HOME" "/tmp")
-                (setenv "XDG_RUNTIME_DIR" (string-append (getcwd) "/runtime-dir"))
-                (mkdir (getenv "XDG_RUNTIME_DIR"))
-                (chmod (getenv "XDG_RUNTIME_DIR") #o700)))
             (add-after 'install 'wrap-programs
               (lambda* (#:key inputs #:allow-other-keys)
                 (let ((gi-typelib-path  (getenv "GI_TYPELIB_PATH"))
@@ -9737,6 +9725,27 @@ properties, screen resolution, and other GNOME parameters.")
                                     "'" gst-plugin-path "'].filter(v => v).join(':'),"
                                     "true);\n"
                                     all))))))
+            (replace 'check
+              (lambda* (#:key tests? inputs #:allow-other-keys #:rest args)
+                (when tests?
+                  ;; For the missing /var/lib/dbus/machine-id
+                  ;; See explanation of the symlinks workaround in the gjs
+                  ;; package definition.
+                  (let* ((test-libraries (find-files (getcwd)
+                                                     "\\.so(\\.[0-9]*)?$"))
+                         (test-library-links
+                          (map (lambda (x)
+                                 (cons x (string-append
+                                          #$output "/lib/gnome-shell/"
+                                          (basename x))))
+                               test-libraries)))
+                    (mkdir-p (string-append #$output "/lib/gnome-shell"))
+                    (for-each (match-lambda
+                                ((old . new)
+                                 (symlink old new)))
+                              test-library-links)
+                    (apply (assoc-ref %standard-phases 'check) args)
+                    (for-each delete-file (map cdr test-library-links))))))
             (add-after 'install 'rewire
               (lambda* (#:key inputs #:allow-other-keys)
                 (for-each
@@ -9764,7 +9773,8 @@ printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
                                 inputs)
                         #:outputs outputs))))))))
     (native-inputs
-     (list asciidoc
+     (list adwaita-icon-theme           ;for cursor theme
+           asciidoc
            coreutils-minimal            ;for env
            gettext-minimal
            `(,glib "bin")               ;for glib-compile-schemas, etc.
@@ -9780,8 +9790,7 @@ printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
            python-docutils
            ruby-sass
            sassc
-           ;; For tests
-           xorg-server-for-tests))
+           umockdev))
     (inputs
      (list accountsservice
            bash-minimal
@@ -9789,7 +9798,7 @@ printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
            evolution-data-server
            gcr
            gdm
-           librsvg
+           geoclue
            gjs
            gtk
            gnome-autoar
@@ -9804,6 +9813,7 @@ printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
            libcroco
            libgweather
            libnma
+           librsvg
            libsoup
            mesa-headers
            mutter
@@ -9815,11 +9825,7 @@ printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
            startup-notification
            tecla                        ;for keyboard previews
            telepathy-logger
-           upower
-           ;; XXX: These requirements were added in 3.24, but no mention in NEWS.
-           ;; Missing propagation? See also: <https://bugs.gnu.org/27264>
-           librsvg
-           geoclue))
+           upower))
     (synopsis "Desktop shell for GNOME")
     (home-page "https://wiki.gnome.org/Projects/GnomeShell")
     (description
