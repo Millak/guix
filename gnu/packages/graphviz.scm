@@ -152,31 +152,46 @@ interfaces for other technical domains.")
 (define-public python-graphviz
   (package
     (name "python-graphviz")
-    (version "0.20.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "graphviz" version ".zip"))
-              (sha256
-               (base32
-                "0pcjnnhprs1hb4r9jr7r4qjxc7lzsjlka8d5gcp3kym9ws0vrmh9"))))
+    (version "0.21")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/xflr6/graphviz")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00hgh1ab54h2jhqnwn5vrggg0hqbwmjn0cx2a9nw4vi1wmijib53"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "--ignore=tests/backend/")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-pytest-options
             (lambda _
-              (substitute* "setup.cfg"
-                ((".*doctest.*") ""))))
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (substitute* "pyproject.toml"
+                ((".*--cov-report=term.*") ""))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")))
+          (add-after 'check 'test-backend
+            (lambda* (#:key tests? #:allow-other-keys)
+              ;; Running tests together fails with error:
+              ;;
+              ;; import file mismatch:
+              ;; imported module 'conftest' has this __file__ attribute:
+              ;;   /<...>/source/tests/backend/conftest.py
+              ;; which is not the same as the test file we want to collect:
+              ;;   /<...>/source/tests/conftest.py
+              ;;
+              ;; HINT: remove __pycache__ / .pyc files and/or use a unique
+              ;; basename for your test file modules
               (when tests?
-                (setenv "HOME" "/tmp")
-                  (apply invoke "python" "run-tests.py" test-flags)))))))
+                (invoke "pytest" "-v" "tests/backend/")))))))
     (native-inputs
-     (list unzip
-           ;; For tests.
-           graphviz
+     (list graphviz
            python-mock
            python-pytest
            python-pytest-mock
