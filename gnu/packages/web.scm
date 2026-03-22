@@ -7219,29 +7219,33 @@ multicore machines.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://www.nocrew.org/software/httptunnel/"
+       ;; git repository has no tags, so difficult to figure out which commit
+       ;; corresponds to which version.
+       (uri (string-append "https://www.nocrew.org/software/httptunnel/"
                            name "-" version ".tar.gz"))
        (sha256
         (base32
          "0mn5s6p68n32xzadz6ds5i6bp44dyxzkq68r1yljlv470jr84bql"))
        (modules '((guix build utils)))
-       (snippet '(begin
-                   ;; Remove non-free IETF RFC documentation.
-                   (delete-file-recursively "doc")
-                   #t))))
+       ;; Remove non-free IETF RFC documentation.
+       (snippet #~(delete-file-recursively "doc"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; The default configure phase tries to pass environment variables as
-         ;; command-line arguments, which confuses the ./configure script.
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               (setenv "CONFIG_SHELL" (which "bash"))
-               (invoke "./configure"
-                       (string-append "--prefix=" out))))))))
-    (home-page "http://www.nocrew.org/software/httptunnel.html")
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The default configure phase tries to pass environment variables as
+          ;; command-line arguments, which confuses the ./configure script.
+          (replace 'configure
+            (lambda _
+                (setenv "CONFIG_SHELL" (which "bash"))
+                (setenv "CFLAGS" (string-append
+                                  "-O2 -g "
+                                  "-Wno-error=implicit-int "
+                                  "-Wno-error=implicit-function-declaration"))
+                (invoke "./configure"
+                        (string-append "--prefix=" #$output)))))))
+    (home-page "https://www.nocrew.org/software/httptunnel.html")
     (synopsis "Tunnel data connections through HTTP requests")
     (description "httptunnel creates a bidirectional virtual data connection
 tunnelled through HTTP (HyperText Transfer Protocol) requests.  This can be
