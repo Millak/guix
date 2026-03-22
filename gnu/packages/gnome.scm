@@ -3150,7 +3150,7 @@ API.")
   (package
     (inherit libpeas)
     (name "libpeas")
-    (version "2.0.7")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
@@ -3159,19 +3159,42 @@ API.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1jcyfs912h29xpnj3fd2mk7pr1mljs61vhdpypphj88xfrlrv6hy"))))
+         "1214is15w2fnp8nj0pgs9jla4h676zq8sism6zgnw01pnj4wm7jq"))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~(list))
-        #~(cons* "-Dlua51=false" #$flags))))
+        #~(cons* "-Dlua51=false" #$flags))
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'skip-problematic-tests
+              (lambda _
+                ;; XXX: Even with the workaround used in the check phase, it
+                ;; looks like the libraries are doubly loaded because of the
+                ;; LD_LIBRARY_PATH set up by 'meson test', which breaks the
+                ;; loading of the extensions ('cannot register existing type
+                ;; 'PeasExtensionBase', then it hangs).
+                (substitute* "tests/libpeas/meson.build"
+                  ((".*'extension-gjs', .*") "")
+                  ((".*'extension-py', .*") ""))))
+            (delete 'check)
+            (add-after 'install 'check
+              (lambda args
+                ;; This workaround is made necessary by a custom patch to our
+                ;; gobject-introspection package that causes it to always use
+                ;; absolute paths for the shared objects referenced by the
+                ;; typelibs.
+                (let ((src "tests/libpeas/introspection/libintrospection-2.so"))
+                  (install-file src (string-append #$output "/lib/"))
+                  (apply (assoc-ref %standard-phases 'check) args)
+                  (delete-file (string-append #$output "/lib/"
+                                              (basename src))))))))))
     (inputs
-     (list gtk
-           gjs
-           glade3
+     (list gjs
            ;; lua-5.1
            ;; lua5.1-lgi
+           mozjs
            python
-           python-pygobject-3.50))))
+           python-pygobject))))
 
 (define-public gtkglext
   (package
