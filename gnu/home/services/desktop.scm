@@ -34,6 +34,8 @@
   #:use-module (ice-9 match)
   #:export (home-x11-service-type
 
+            home-wayland-service-type
+
             home-redshift-configuration
             home-redshift-configuration?
             home-redshift-service-type
@@ -125,6 +127,68 @@ configurable delay, and sets the @code{DISPLAY} environment variable of
 @command{shepherd} itself accordingly.  If no accessible X11 server shows up
 during that time, the @code{x11-display} service is marked as failing to
 start.")))
+
+
+;;;
+;;; Waiting for Wayland.
+;;;
+
+(define (wayland-shepherd-service delay)
+  (list (shepherd-service
+          (provision '(wayland-display))
+          (modules '((ice-9 ftw)
+                     (ice-9 regex)
+                     (ice-9 match)
+                     (srfi srfi-1)
+                     (shepherd support)))
+          (start
+           #~(lambda* (#:optional display (getenv "WAYLAND_DISPLAY"))
+               (define (find-socket directory regex)
+                 (find (match-lambda
+                         ((or "." "..") #f)
+                         (name
+                          (let ((name (in-vicinity directory name)))
+                            (and (string-match regex name)
+                                 (access? name O_RDWR)))))
+                       ;; Wayland names its sockets 'wayland-n'. With
+                       ;; 'reverse', we pick up on the last Wayland instance
+                       ;; created (essentially what we always want to do).
+                       (or (reverse (scandir directory)) '())))
+
+               (define (find-display delay)
+                 (let loop ((attempts delay))
+                   (let ((display (find-socket %user-runtime-dir "wayland-[0-9]+$")))
+                     (cond (display)
+                           ((positive? attempts)
+                            (sleep 1)
+                            (loop (- attempts 1)))
+                           (else
+                            (format (current-error-port) "Wayland server did not show up; giving up.")
+                            #f)))))
+
+               (let ((display (or display (find-display #$delay))))
+                 (when display
+                   ;; See the note on 'x11-shepherd-service'.
+                   (setenv "WAYLAND_DISPLAY" display))
+                 display)))
+
+          (stop #~(lambda (_)
+                    (unsetenv "WAYLAND_DISPLAY")
+                    #f))
+          (respawn? #f))))
+
+(define home-wayland-service-type
+  (service-type
+    (name 'home-wayland-display)
+    (extensions (list (service-extension home-shepherd-service-type
+                                         wayland-shepherd-service)))
+    (default-value 10)
+    (description
+     "Create a @code{wayland-display} Shepherd service that waits for a Wayland
+compositor to be up and running, up to a configurable delay, and sets the
+@code{WAYLAND_DISPLAY} environment variable of @command{shepherd} itself
+accordingly.  If no accessible Wayland server shows up during that time, the
+@code{wayland-display} service is marked as failing to start.")))
 
 
 ;;;

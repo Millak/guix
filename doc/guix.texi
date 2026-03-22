@@ -55034,6 +55034,43 @@ In the example above, @code{x11-display} is instructed to set
 @env{DISPLAY} to @code{:3}.
 @end defvar
 
+@defvar home-wayland-service-type
+This is the service type representing a Wayland compositor.  It
+functions as an equivalent of @code{x11-service-type} for Wayland.
+
+Wayland compositors are typically started by services like
+@code{gdm-service-type}, described in the system configuration, although
+they can also be specified as a Guix Home service or started manually by
+the user.  This means that we cannot always rely on the Wayland
+compositor being managed by Guix Home to tell whether one is present; we
+must explicitly check for it.  This is what this service does.
+
+As a user, you probably don't need to worry or explicitly instantiate
+@code{home-wayland-service-type}.  Services that require a Wayland
+graphical display instantiate this service and depend on its
+corresponding @code{wayland-display} Shepherd service (@pxref{Shepherd
+Home Service}).
+
+If you're writing a Shepherd service that requires the presence of a
+Wayland compositor, you need to depend on this service to ensure Wayland
+is accessible from your service.
+
+When the Wayland compositor is running, the @code{wayland-display}
+Shepherd service starts and sets the @env{WAYLAND_DISPLAY} environment
+variable of the @command{shepherd} process, using its original value if
+it was already set; otherwise, it fails to start.
+
+The service can also be forced to use a given value for
+@env{WAYLAND_DISPLAY}, like so:
+
+@example
+herd start wayland-display wayland-2
+@end example
+
+In the example above, @code{wayland-display} is instructed to set
+@env{WAYLAND_DISPLAY} to @code{wayland-2}.
+@end defvar
+
 @defvar home-redshift-service-type
 This is the service type for @uref{https://github.com/jonls/redshift,
 Redshift}, a program that adjusts the display color temperature
