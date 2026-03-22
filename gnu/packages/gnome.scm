@@ -7450,7 +7450,7 @@ almost all of them.")
 (define-public epiphany
   (package
     (name "epiphany")
-    (version "48.5")
+    (version "49.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/epiphany/"
@@ -7458,7 +7458,7 @@ almost all of them.")
                                   "epiphany-" version ".tar.xz"))
               (sha256
                (base32
-                "1d5i8s9sz9wi3agns1vi911qqv352psmpvnxld97jg2rsqm5arhg"))))
+                "13ibzgan6jcri7zf82chiy9vb0kvqc05bs1k2wgzi1ry45l3vfmk"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -7533,7 +7533,8 @@ almost all of them.")
                              #$output "/lib/epiphany"))))
     (propagated-inputs (list dconf))
     (native-inputs
-     (list desktop-file-utils           ; for update-desktop-database
+     (list blueprint-compiler
+           desktop-file-utils           ; for update-desktop-database
            gettext-minimal
            `(,glib "bin")               ; for glib-mkenums
            itstool
