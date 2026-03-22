@@ -50,6 +50,7 @@
 ;;; Copyright © 2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3860,7 +3861,7 @@ consecutive lines and since program start.")
                       #:install-plan
                       '(("gen/sd.1" "share/man/man1/")
                         ("gen/completions/sd.bash" "share/bash-completion/completions/sd")
-                        ("gen/completions/sd.elv" "share/elvish/lib")
+                        ("gen/completions/sd.elv" "share/elvish/lib/")
                         ("gen/completions/sd.fish" "share/fish/vendor_completions.d/")
                         ("gen/completions/_sd" "share/zsh/site-functions/"))
                       args))))))
