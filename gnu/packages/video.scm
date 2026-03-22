@@ -2390,35 +2390,49 @@ It is usually a complement to @code{ffmpeg-normalize}.")
 (define-public ffmpeg-normalize
   (package
     (name "ffmpeg-normalize")
-    (version "1.31.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "ffmpeg_normalize" version))
-              (sha256
-               (base32
-                "1mi3w1k1fhmv5acybw4dwas0dx75f7d4dpl192ch1shp2m407v5i"))))
+    (version "1.37.3")
+    (source
+     (origin
+       (method git-fetch) ; no tests in PyPI
+       (uri (git-reference
+             (url "https://github.com/slhck/ffmpeg-normalize")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12m6f7yxa4ksv4hc2slh45cqwzlfr1cdck4xlddxnc4brc30c69a"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "python" "-m" "pytest"
-                             "test/test.py"))))
-               (add-after 'wrap 'wrap-ffmpeg
-                 ;; Wrap ffmpeg on the executable.
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                   (let ((ffn (search-input-file outputs
-                                                 "bin/ffmpeg-normalize"))
-                         (ffm (search-input-file inputs "bin/ffmpeg")))
-                     (wrap-program ffn
-                       `("FFMPEG_PATH" = (,ffm)))))))))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+     (list
+      #:build-backend "setuptools.build_meta" ; recent versions use uv-build
+      #:test-flags
+      #~(list
+         ;; These tests rely on a remote API.
+         "--ignore" "tests/test_api_ground_truth.py"
+         ;; These fail because of missing presets in the source.
+         "--ignore" "tests/test_presets.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-colorlog
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; The only breaking change after 6.7.0 was the removal
+                ;; of Python2 support.
+                (("colorlog==6.7.0") "colorlog"))))
+          (add-after 'wrap 'wrap-ffmpeg
+            ;; Wrap ffmpeg on the executable.
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((ffn (search-input-file outputs
+                                            "bin/ffmpeg-normalize"))
+                    (ffm (search-input-file inputs "bin/ffmpeg")))
+                (wrap-program ffn
+                  `("FFMPEG_PATH" = (,ffm)))))))))
+    (native-inputs (list git-minimal/pinned ; for replaygain tests
+                         python-pytest
+                         python-setuptools))
     (inputs (list bash-minimal ffmpeg))
     (propagated-inputs (list ffmpeg-progress-yield
-                             python-colorama
                              python-colorlog
+                             python-mutagen
                              python-tqdm))
     (home-page "https://github.com/slhck/ffmpeg-normalize")
     (synopsis "Normalize audio via ffmpeg")
