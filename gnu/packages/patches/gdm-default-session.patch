@@ -5,10 +5,10 @@ and not in the directories listed in $XDG_DATA_DIRS.  The latter includes
 
 Fixes <https://bugs.gnu.org/37831>.
 diff --git a/daemon/gdm-session.c b/daemon/gdm-session.c
-index 4b709731..3b83fcd3 100644
+index 644aad022..d54406e93 100644
 --- a/daemon/gdm-session.c
 +++ b/daemon/gdm-session.c
-@@ -362,16 +362,15 @@ get_system_session_dirs (GdmSession *self,
+@@ -378,16 +378,15 @@ get_system_session_dirs (GdmSession *self,
          GArray *search_array = NULL;
          char **search_dirs;
          int i, j;
@@ -27,7 +27,7 @@ index 4b709731..3b83fcd3 100644
  
          search_array = g_array_new (TRUE, TRUE, sizeof (char *));
  
-@@ -380,11 +379,6 @@ get_system_session_dirs (GdmSession *self,
+@@ -396,11 +395,6 @@ get_system_session_dirs (GdmSession *self,
  
                  if (g_str_equal (supported_type, "x11") &&
                      (type == NULL || g_str_equal (type, supported_type))) {
@@ -39,7 +39,7 @@ index 4b709731..3b83fcd3 100644
                          g_array_append_vals (search_array, x_search_dirs, G_N_ELEMENTS (x_search_dirs));
                  }
  
-@@ -392,11 +386,6 @@ get_system_session_dirs (GdmSession *self,
+@@ -408,11 +402,6 @@ get_system_session_dirs (GdmSession *self,
  #ifdef ENABLE_WAYLAND_SUPPORT
                  if (g_str_equal (supported_type, "wayland") &&
                      (type == NULL || g_str_equal (type, supported_type))) {
@@ -52,41 +52,37 @@ index 4b709731..3b83fcd3 100644
                  }
  #endif
 diff --git a/libgdm/gdm-sessions.c b/libgdm/gdm-sessions.c
-index d8b4d5cd..7ed8de91 100644
+index df8e377b7..e80acf7e4 100644
 --- a/libgdm/gdm-sessions.c
 +++ b/libgdm/gdm-sessions.c
-@@ -347,15 +347,10 @@ collect_sessions (void)
+@@ -347,27 +347,21 @@ collect_sessions (void)
                  "/etc/X11/sessions/",
                  DMCONFDIR "/Sessions/",
                  DATADIR "/gdm/BuiltInSessions/",
--                DATADIR "/xsessions/",
 +                "/run/current-system/profile/share/xsessions/",
          };
-         xorg_search_array = g_ptr_array_new_with_free_func (g_free);
  
--        for (i = 0; system_data_dirs[i]; i++) {
--                session_dir = g_build_filename (system_data_dirs[i], "xsessions", NULL);
--                g_ptr_array_add (xorg_search_array, session_dir);
--        }
+         if (!supported_session_types || g_strv_contains ((const char * const *) supported_session_types, "x11")) {
+                 for (i = 0; i < G_N_ELEMENTS (xorg_search_dirs); i++) {
+                         g_ptr_array_add (dirs_search_array, g_strdup (xorg_search_dirs[i]));
+                 }
 -
-         for (i = 0; i < G_N_ELEMENTS (xorg_search_dirs); i++) {
-                 g_ptr_array_add (xorg_search_array, g_strdup (xorg_search_dirs[i]));
+-                for (i = 0; system_data_dirs[i]; i++) {
+-                        session_dir = g_build_filename (system_data_dirs[i], "xsessions", NULL);
+-                        g_ptr_array_add (dirs_search_array, session_dir);
+-                }
          }
-@@ -363,16 +358,11 @@ collect_sessions (void)
+ #endif
  
  #ifdef ENABLE_WAYLAND_SUPPORT
-         const char *wayland_search_dirs[] = {
--                DATADIR "/wayland-sessions/",
-+                "/run/current-system/profile/share/wayland-sessions/",
-         };
- 
-         wayland_search_array = g_ptr_array_new_with_free_func (g_free);
- 
--        for (i = 0; system_data_dirs[i]; i++) {
--                session_dir = g_build_filename (system_data_dirs[i], "wayland-sessions", NULL);
--                g_ptr_array_add (wayland_search_array, session_dir);
--        }
--
-         for (i = 0; i < G_N_ELEMENTS (wayland_search_dirs); i++) {
-                 g_ptr_array_add (wayland_search_array, g_strdup (wayland_search_dirs[i]));
+ #ifdef ENABLE_USER_DISPLAY_SERVER
+         if (!supported_session_types  || g_strv_contains ((const char * const *) supported_session_types, "wayland")) {
+-                for (i = 0; system_data_dirs[i]; i++) {
+-                        session_dir = g_build_filename (system_data_dirs[i], "wayland-sessions", NULL);
+-                        g_ptr_array_add (dirs_search_array, session_dir);
+-                }
++                g_ptr_array_add (dirs_search_array,
++                                 "/run/current-system/profile/share/wayland-sessions/");
          }
+ #endif
+ #endif

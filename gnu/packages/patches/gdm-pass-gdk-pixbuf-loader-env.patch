@@ -1,15 +1,12 @@
-From: Josselin Poiret <dev@jpoiret.xyz>
-Date: Tue, 23 Nov 2021 18:39:39 +0000
-Subject: [PATCH] Make GDM pass GUIX_GDK_PIXBUF_MODULE_FILES to sessions
 diff --git a/daemon/gdm-launch-environment.c b/daemon/gdm-launch-environment.c
-index 932c3e8a..a50dcc8c 100644
+index 67f6c291e..86d8e718f 100644
 --- a/daemon/gdm-launch-environment.c
 +++ b/daemon/gdm-launch-environment.c
-@@ -157,6 +157,7 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
+@@ -294,6 +294,7 @@ build_launch_environment (GdmLaunchEnvironment *launch_environment,
                  "WINDOWPATH",
                  "XCURSOR_PATH",
                  "XDG_CONFIG_DIRS",
 +                "GUIX_GDK_PIXBUF_MODULE_FILES",
                  NULL
          };
-         char *system_data_dirs;
+         g_autofree char *system_data_dirs = NULL;

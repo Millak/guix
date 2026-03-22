@@ -1,10 +1,10 @@
 Get wayland-session wrapper from environment.
 
 diff --git a/daemon/gdm-session.c b/daemon/gdm-session.c
-index 3b83fcd3..e60e6a57 100644
+index b78068d42..644aad022 100644
 --- a/daemon/gdm-session.c
 +++ b/daemon/gdm-session.c
-@@ -2933,8 +2933,9 @@ gdm_session_start_session (GdmSession *self,
+@@ -3172,8 +3172,9 @@ gdm_session_start_session (GdmSession *self,
                                                             allow_remote_connections? "--allow-remote-connections " : "",
                                                             command);
                          } else {
@@ -15,12 +15,12 @@ index 3b83fcd3..e60e6a57 100644
                                                             command);
                          }
                  } else if (run_xsession_script) {
-@@ -2965,8 +2966,9 @@ gdm_session_start_session (GdmSession *self,
+@@ -3190,8 +3191,9 @@ gdm_session_start_session (GdmSession *self,
                                                             register_session ? "--register-session " : "",
                                                             self->selected_program);
                          } else {
--                                program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session %s\"dbus-run-session -- %s\"",
-+                                program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session %s\"dbus-run-session -- %s %s\"",
+-                                program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session %s\"%s\"",
++                                program = g_strdup_printf (LIBEXECDIR "/gdm-wayland-session %s\"%s %s\"",
                                                             register_session ? "--register-session " : "",
 +                                                           g_getenv ("GDM_WAYLAND_SESSION"),
                                                             self->selected_program);
