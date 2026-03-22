@@ -5895,7 +5895,7 @@ services for numerous locations.")
 (define-public gnome-settings-daemon
   (package
     (name "gnome-settings-daemon")
-    (version "48.1")
+    (version "49.1")
     (source
      (origin
        (method url-fetch)
@@ -5904,7 +5904,7 @@ services for numerous locations.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0bh6xsx8fgzfgjjf9hvv10ar4f55b0riwymf01kcpjsd47ma4q1q"))
+         "1hf1dip78sjfsi28w80wkh6i51glprwl2j29gc9bkhwi9zy5g69a"))
        (patches (search-patches "gnome-settings-daemon-gc.patch"))))
     (build-system meson-build-system)
     (arguments
