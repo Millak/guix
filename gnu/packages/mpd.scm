@@ -42,6 +42,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
@@ -552,9 +553,10 @@ MPRIS 2 support.")
                                  "kcategorizedview"
                                  "qtsingleapplication")))
                    (delete-file-recursively "support/fonts")))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
-     `(#:tests? #f)) ; No test suite
+     (list #:qtbase qtbase
+           #:tests? #f)) ; No test suite
     (native-inputs
      (list pkg-config))
     (inputs
@@ -568,6 +570,7 @@ MPRIS 2 support.")
            qtbase
            qtmultimedia
            qtsvg
+           qtwayland
            zlib))
     (synopsis "Graphical MPD Client")
     (description "Cantata is a graphical client for the Music Player Daemon
