@@ -205,6 +205,7 @@
   #:use-module (guix build-system perl)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (guix deprecation)
   #:use-module (guix download)
@@ -308,9 +309,9 @@ example, modify the message headers or body, or encrypt or sign the message.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "14vb3lj8129im0d61d5zsgb1fwmsw9977g3abqhnv0bk6qzjsgxf"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (home-page "https://github.com/gyunaev/birdtray")
-    (inputs (list qtbase-5 qtsvg-5 qtx11extras libx11))
+    (inputs (list qtbase-5 qtsvg-5 qtwayland-5 qtx11extras libx11))
     (arguments
      (list
       #:tests? #f)) ;no test suite.
