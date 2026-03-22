@@ -1009,7 +1009,7 @@ desired format.")
 (define-public git-tools
   (package
     (name "git-tools")
-    (version "2022.12")
+    (version "2025.08")
     (source
      (origin
        (method git-fetch)
@@ -1018,7 +1018,7 @@ desired format.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s8x74ggcr6nqzplr0jfzp3cavq0nmdm35hqywzs2bbq75i1mijd"))))
+        (base32 "1djc40yzyrh4xhj1c717j7sqyhgwapz9mvsn9ja4yph3jxx6zs0f"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan '(("git-branches-rename" "bin/git-branches-rename")
