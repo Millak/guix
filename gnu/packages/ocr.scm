@@ -31,6 +31,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system qt)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
@@ -200,9 +201,10 @@ default.  To add support for more languages, the
              "gimagereader-" version ".tar.xz"))
        (sha256
         (base32 "09f4njwhw7xkyq4pjzjrmypzczijckcbimwq8776hb4milzba126"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:tests? #f                       ;no test
       #:configure-flags #~(list "-DENABLE_VERSIONCHECK=0")))
     (native-inputs
@@ -217,6 +219,7 @@ default.  To add support for more languages, the
            qtbase
            qt5compat
            qtspell
+           qtwayland
            quazip
            tesseract-ocr))
     (home-page "https://github.com/manisandro/gImageReader")
