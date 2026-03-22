@@ -1833,8 +1833,12 @@ and REV-END, two git revision strings."
 # usually suited as a reviewer.\n\n"
              port)
     (for-each (lambda (team)
-                (display (team->codeowners-snippet team) port)
-                (newline port))
+                (let ((scope (team->codeowners-snippet team)))
+                  ;; Some teams, like Mentors and Community have no scope,
+                  ;; which would result in seemingly arbitrary newlines.
+                  (unless (string-null? scope)
+                    (display scope port)
+                    (newline port))))
               teams)))
 
 
