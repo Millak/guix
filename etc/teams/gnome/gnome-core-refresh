@@ -48,8 +48,7 @@
 (define %gnome-releng-versions-uri
   (make-parameter
    (or (getenv "GNOME_RELENG_VERSIONS_URI")
-       "https://gitlab.gnome.org/GNOME/releng/-/raw/master/\
-tools/versions-stable")))
+       "https://gitlab.gnome.org/GNOME/releng/-/raw/master/tools/versions-49")))
 
 (define (fetch-releng-content)
   "Return a string corresponding to the content of the %GNOME-RELENG-VERSIONS-URI
@@ -74,6 +73,7 @@ NL < '\n'")
 
 (define %names
   '(("adwaita-fonts" . "font-adwaita")
+    ("glycin" . "glycin-loaders")
     ("pygobject" . "python-pygobject")
     ("pyatspi" . "python-pyatspi")))
 
