@@ -7563,7 +7563,7 @@ environments.")
 (define-public yelp-xsl
   (package
     (name "yelp-xsl")
-    (version "42.4")
+    (version "49.0")
     (source
      (origin
        (method url-fetch)
@@ -7572,7 +7572,7 @@ environments.")
                        (version-major version) "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "1lfpmdc4y46a528q5filn6xs8add921avrnwl2vpysp6n9zb1szx"))))
+        (base32 "1v7va1xa80pyj0dyfraalvsag4m0lza4v87r2i7phyz6iy7kmm2r"))))
     (build-system meson-build-system)
     (native-inputs
      (list mallard-ducktype
