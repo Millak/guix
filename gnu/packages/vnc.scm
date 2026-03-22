@@ -79,7 +79,7 @@
 (define-public remmina
   (package
     (name "remmina")
-    (version "1.4.35")
+    (version "1.4.43")
     (source
      (origin
        (method git-fetch)
@@ -89,7 +89,7 @@
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wsjhmazmv888a6xs0q6llfj6v81d7y9p18w7xc2116235q9ygfk"))))
+        (base32 "1hk8g26z10illchjr59l5fm2vjps85nnm7ir9l2yx9sn34v3cxpf"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; No target
@@ -147,7 +147,7 @@
            harfbuzz
            json-glib
            libsecret                    ; for secret plugin
-           libsoup-minimal-2
+           libsoup
            libssh                       ; for ssh plugin
            libvnc                       ; for vnc plugin
            openssl
