@@ -1324,7 +1324,7 @@ defaults for 80% of the use cases.")
 (define-public forgejo-cli
   (package
     (name "forgejo-cli")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method git-fetch)
@@ -1333,7 +1333,7 @@ defaults for 80% of the use cases.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xsqcq6fyhvc4q3f79745lmx1afan5a58d2w920j7hmnczpgz6hh"))))
+        (base32 "1279cvdbgvl8yaqrxm8mg1swqn623xdfqjx13s9clrxp923zjrmm"))))
     (build-system cargo-build-system)
     (arguments
      (list
