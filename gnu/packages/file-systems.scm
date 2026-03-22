@@ -427,7 +427,7 @@ ones.")
 (define-public fsarchiver
   (package
     (name "fsarchiver")
-    (version "0.8.7")
+    (version "0.8.9")
     (source
      (origin
        (method git-fetch)
@@ -437,10 +437,10 @@ ones.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vy8ay0fn32i298bx9scqghi7xm9z2101zxk5xshbrkl00b2m4nm"))))
+        (base32 "0wyq140yzhhqzg364ai7m21z2kgvyi6dmqlw5ycblryf0zkvd7vq"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list autoconf automake pkg-config))
+     (list autoconf-2.72 automake pkg-config))
     (inputs
      (list bzip2
            e2fsprogs
