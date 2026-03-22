@@ -7656,8 +7656,8 @@ is an attempt to combine both into something useful.")
       (license license:asl2.0))))
 
 (define-public guile-knots
-  (let ((commit "35f4c16ab0b3846cd10f5209b39a6a3f5bf8a3f1")
-        (revision "29"))
+  (let ((commit "f203a8933a86fed35d23bf9627cd53a91ac1c1b3")
+        (revision "30"))
     (package
     (name "guile-knots")
     (version (git-version "0" revision commit))
@@ -7668,9 +7668,15 @@ is an attempt to combine both into something useful.")
                     (commit commit)))
               (sha256
                (base32
-                "0zd4k5c0v4rdbhlb6fwa51v53s8rs8xjrznvdnw3yhkpiy66x1ki"))
+                "172n673xbjqg1jrjk99slwvd60pq2zf3jwvrahlqfsgiqbclgp4i"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'set-HOME
+                          (lambda _
+                            ;; Enable Guile auto-compilation for the tests
+                            (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list pkg-config
            autoconf
