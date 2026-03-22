@@ -840,7 +840,7 @@ Commit and SemVer specifications.")
 (define-public complgen
   (package
     (name "complgen")
-    (version "0.3.0")
+    (version "0.8.3")
     (source
      (origin
        (method git-fetch)
@@ -849,12 +849,12 @@ Commit and SemVer specifications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v94lg7p79j5706d520jfvidpkw5pqv1a8hgg6cy3fpkghgr375j"))))
+        (base32 "034ld2qxgafm21xlhq93pdmimg08x2x507m5sdvll2zgxgcx326g"))))
     (build-system cargo-build-system)
     (arguments
      (list
       #:install-source? #f))
-    (native-inputs (list git-minimal))
+    (native-inputs (list git-minimal/pinned))
     (inputs (cargo-inputs 'complgen))
     (home-page "https://github.com/adaszko/complgen")
     (synopsis "Declarative bash/fish/zsh completions without writing shell
