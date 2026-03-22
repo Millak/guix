@@ -74,7 +74,7 @@
   (package
     (name "wxwidgets")
     ;; There is a newer versions 3.3, but this is tagged "development".
-    (version "3.2.9")
+    (version "3.2.10")
     (source
      (origin
        (method url-fetch)
@@ -82,7 +82,7 @@
                            "releases/download/v" version
                            "/wxWidgets-" version ".tar.bz2"))
        (sha256
-        (base32 "0aqi3wrf99djdbvwislza2gsyascq6h3f07qvcpa1mpzid9zk47v"))
+        (base32 "15mq8k1z0q9s67xifjaz7slq7nlvk843k5b941cllylld6ar4vnn"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
@@ -125,7 +125,7 @@
            pcre2
            sdl2
            shared-mime-info
-           webkitgtk-with-libsoup2
+           webkitgtk-for-gtk3
            xdg-utils
            zlib))
     (native-inputs
@@ -168,7 +168,7 @@
                        (string-append "CONFIG_SHELL=" sh)
                        (string-append "--prefix=" #$output)
                        configure-flags)))))))
-    (home-page "https://www.wxwidgets.org/")
+    (home-page "https://wxwidgets.org/")
     (synopsis "Widget toolkit for creating graphical user interfaces")
     (description
      "wxWidgets is a C++ library that lets developers create applications with
