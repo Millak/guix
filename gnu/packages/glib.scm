@@ -1344,7 +1344,7 @@ other API remains the same.")
 (define-public template-glib
   (package
     (name "template-glib")
-    (version "3.36.3")
+    (version "3.38.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1352,16 +1352,13 @@ other API remains the same.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "03pj3p78rsgnz4f1bmbzym4b03nvp8py298fwpd0f3pr5idv6a6m"))))
+                "04mk1h2jzij91z5an08irah76wx6qpggf8n45rzypwnw4g10vl20"))))
     (build-system meson-build-system)
-    (arguments
-     (list #:configure-flags #~'("-D" "gtk_doc=true")))
     (inputs (list gettext-minimal glib gobject-introspection))
     (native-inputs
      (list bison
            flex
            `(,glib "bin") ;for glib-mkenums
-           gtk-doc/stable
            pkg-config
            vala))
     (home-page "https://gitlab.gnome.org/GNOME/template-glib")
