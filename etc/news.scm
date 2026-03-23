@@ -45,7 +45,7 @@
 
  (entry (commit "a7c8e68dc51144a6d3981b770aca9c4897fc7c0c")
         (title
-         (en "Records such as packages can refer to inherited values"))
+         (en "Records can refer to inherited values of thunked fields"))
         (body
          (en "A new feature has been added to records—the facility used when
 defining packages, services, operating systems, and many other things—that,
@@ -74,7 +74,7 @@ The same mechanism can be used when changing other input fields or the
 @code{arguments} field.  It is less verbose but also
 @uref{https://issues.guix.gnu.org/50335, more accurate}.
 
-This change applies to all record types produced by
+This change applies to \"thunked\" fields of all record types produced by
 @code{define-record-type*}: @code{package}, @code{origin},
 @code{operating-system}, @code{home-environment}, and so on.
 
