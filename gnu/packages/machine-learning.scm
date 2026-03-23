@@ -5727,7 +5727,7 @@ characters and key strokes.")
 (define-public python-inquirer
   (package
     (name "python-inquirer")
-    (version "3.1.3")
+    (version "3.4.1")
     ;; Pypi has no tests.
     (source (origin
               (method git-fetch)
@@ -5737,7 +5737,7 @@ characters and key strokes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0kp6a0535n9ra5sk8bmb5qvhrv0fbn1zawydi0fkb7104jqcfrzc"))))
+                "10ncdjz0z09m9piqxyk3yxqk1rd9icij46a9djqj7rwdj5sfclf5"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-blessed python-editor python-readchar))
