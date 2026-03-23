@@ -12727,7 +12727,7 @@ and toolbars.")
 (define-public setzer
   (package
     (name "setzer")
-    (version "0.4.8")
+    (version "66")
     (source
      (origin
        (method git-fetch)
@@ -12736,7 +12736,7 @@ and toolbars.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12w58v7qsd3xfmrxhij8dby9xnvd82hxqb4wc6di7lqz1ayg5lzc"))))
+        (base32 "061zqim3ldhpvl1rc9mqkamf7gb7bsjaaanplsbls2k33w6k1b46"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -12759,24 +12759,30 @@ and toolbars.")
            python))
     (inputs
      (list bash-minimal
+           gobject-introspection
            gsettings-desktop-schemas
            gspell
-           gtk+
-           gtksourceview-4
+           gtk
+           gtksourceview
+           libadwaita
+           libportal
            pango
            poppler
+           python-bibtexparser
+           python-numpy
            python-pdfminer-six
            python-pexpect
+           python-pillow
            python-pycairo
            python-pygobject
            python-pyxdg
-           webkitgtk-with-libsoup2
+           webkitgtk
            xdg-utils))
     (home-page "https://www.cvfosammmm.org/setzer/")
-    (synopsis "LaTeX editor written in Python with GTK+")
+    (synopsis "LaTeX editor written in Python with GTK")
     (description
      "Setzer is a simple yet full-featured LaTeX editor written in Python with
-GTK+.  It integrates well with the GNOME desktop environment.")
+GTK.  It integrates well with the GNOME desktop environment.")
     (license license:gpl3+)))
 
 (define-deprecated/public-alias apostrophe
