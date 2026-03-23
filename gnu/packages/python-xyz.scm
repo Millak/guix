@@ -9974,22 +9974,29 @@ decorator for retrying on exceptions.")
 (define-public python-click-repl
   (package
     (name "python-click-repl")
-    (version "0.3.0")
+    ;; To support Python 3.12, see:
+    ;; <https://github.com/click-contrib/click-repl/issues/128>.
+    (properties '((commit . "9a05fe9e58f768ce446f2777d13b4162211131e0")
+                  (revision . "0")))
+    (version (git-version "0.3.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method git-fetch)               ; no tests in PyPI release
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/click-contrib/click-repl")
-             (commit version)))
+              (url "https://github.com/click-contrib/click-repl")
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08asy80wdplbrfff7q7qb9k3kkaw5jxqvy9jnkfvsqy3831zf964"))))
+        (base32 "0kyk3cj4wdckk1sdx0bk19r59sa5bs5s6npx0a99lhsyd92xiv77"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest
-                         python-setuptools
-                         python-wheel))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
-     (list python-click python-prompt-toolkit))
+     (list python-click-8.1
+           python-prompt-toolkit))
     (home-page "https://github.com/click-contrib/click-repl")
     (synopsis "REPL plugin for Click")
     (description "This package provides a REPL plugin for Click.")
