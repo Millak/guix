@@ -4095,32 +4095,20 @@ Markdown.  It also includes initial support for Google-formatted docstrings.")
 (define-public python-mysql-connector-python
   (package
     (name "python-mysql-connector-python")
-    (version "8.0.33")
-    ;; The archive on PyPi does not contain a build system
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://cdn.mysql.com/Downloads/"
-                                  "Connector-Python/mysql-connector-python-"
-                                  version "-src.tar.gz"))
-              (sha256
-               (base32
-                "00j9xgd43yzx5yiijnlmpaqpa58m5lscjglsgzg48dibhr69br0l"))))
-    (build-system python-build-system)
+    (version "8.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mysql/mysql-connector-python")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18jvpnnwmfrn961rvqmsygp7dw3spf3swhxhal4hhj5hqddckj5f"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       ;; tests: 1371 passed
-      #:configure-flags
-      #~(list (string-append "--with-mysql-capi="
-                             #$(this-package-input "mysql"))
-              (string-append "--with-protobuf-include-dir="
-                             #$(this-package-input "protobuf")
-                             "/include/google/protobuf")
-              (string-append "--with-protobuf-lib-dir="
-                             #$(this-package-input "protobuf")
-                             "/lib")
-              (string-append "--with-protoc="
-                             #$(this-package-input "protobuf")
-                             "/bin/protoc"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'compatibility
@@ -4134,10 +4122,15 @@ Markdown.  It also includes initial support for Google-formatted docstrings.")
                  "")
                 ;; The C API does not have mysql_bind_param, so we produce an
                 ;; error here.
-                (("status = mysql_bind_param.*") "status = 1;"))
-              ;; See https://github.com/protocolbuffers/protobuf/issues/9943
-              (substitute* "src/mysqlxpb/mysqlxpb.cc"
-                (("google::protobuf::string") "std::string"))))
+                (("status = mysql_bind_param.*") "status = 1;")
+                (("#include \"mysql_capi_conversion\\.h\"" all)
+                 (string-append all "\n" "#include <stdbool.h>")))))
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "mysql-connector-python")))
+          (add-before 'build 'prepare-build
+            (lambda _
+              (setenv "MYSQL_CAPI" #$(this-package-input "mysql"))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
@@ -4161,19 +4154,13 @@ Markdown.  It also includes initial support for Google-formatted docstrings.")
                    "def _do_not_test_verify_server_name_cext_cnx")
                   (("def test_verify_server_name_pure_cnx")
                    "def _do_not_test_verify_server_name_pure_cnx"))
-                (substitute* "tests/test_connection.py"
+                (substitute* '("tests/test_connection.py"
+                               "tests/test_aio_connection.py")
                   (("def test_allow_local_infile_in_path")
                    "def _do_not_test_allow_local_infile_in_path")
                   ;; This fails because of expired certificates.
                   (("def test_connect_with_unix_socket")
                    "def _do_not_test_connect_with_unix_socket"))
-                (substitute* "tests/test_mysqlx_connection.py"
-                  ;; This fails because of expired certificates.
-                  (("def test_ssl_connection")
-                   "def _do_not_test_ssl_connection")
-                  ;; ValueError: Invalid IPv6 URL
-                  (("def test_connection_uri")
-                   "def _do_not_test_connection_uri"))
                 (substitute* "tests/test_constants.py"
                   (("def test_deprecated")
                    "def _do_not_test_deprecated"))
@@ -4186,6 +4173,7 @@ Markdown.  It also includes initial support for Google-formatted docstrings.")
                         "--unix-socket=/tmp/datadir")))))))
     (propagated-inputs (list python-protobuf))
     (inputs (list mysql protobuf-3.20 openssl-1.1 zlib))
+    (native-inputs (list python-setuptools))
     (home-page "https://dev.mysql.com/doc/connector-python/en/index.html")
     (synopsis "MySQL driver written in Python")
     (description "MySQL Connector/Python enables Python programs to access
