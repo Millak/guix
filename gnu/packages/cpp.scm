@@ -3252,7 +3252,8 @@ and a traversal mechanism.")
                                          (assoc-ref %build-inputs "build")
                                          "/include")
                           (string-append "install_prefix="
-                                         (assoc-ref %outputs "out")))
+                                         (assoc-ref %outputs "out"))
+                          "cxx_options=-std=c++11 -O2 -g")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch
@@ -3270,7 +3271,7 @@ and a traversal mechanism.")
                 (string-append "edge_dispatcher::" all)))))
          (delete 'configure))))
     (native-inputs
-     (list build gcc-10))
+     (list build))
     (inputs
      (list libcutl))
     (synopsis "C++ Command Line Interface (CLI) definition language")
