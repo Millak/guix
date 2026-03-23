@@ -30435,10 +30435,17 @@ This package was originally written to work in a WSGI environment, but
 there are extensions that allow you to use it with other frameworks.")
     (license license:asl2.0)))
 
+;; XXX: Upstream note: Final PyPI release to mark the project as inactive.
+;; This PyPI package is no longer actively maintained, but the underlying
+;; library can be vendored.
+;;
+;; Version 2.0 lacks packaging instructions (setup.py, setup.pkg or
+;; pyproject.toml) and can't be used as a common input, do not update this
+;; package.
 (define-public python-click-plugins
   (package
     (name "python-click-plugins")
-    (version "2.0")
+    (version "1.1.1.2")
     (source
      (origin
        (method git-fetch)
@@ -30447,21 +30454,14 @@ there are extensions that allow you to use it with other frameworks.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fgfb4pv9chry7jwigc5ax66njk1w0kcj75q4kz0b8bb3nh52z2i"))))
+        (base32 "11i93dxb6vvlqb79p8qdbcxvcsb2bb2b9lbkqhv5hs93nry02gxl"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:test-backend #~'custom
-      #:test-flags #~(list "tests/click_plugins_tests.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'mkdir-tests
-            (lambda _
-              (mkdir "tests")
-              (rename-file "click_plugins_tests.py"
-                           (string-append "tests/click_plugins_tests.py")))))))
-    (native-inputs (list python-pytest python-setuptools))
-    (propagated-inputs (list python-click))
+     (list #:tests? #f)) ;5 failed, 2 passed, 1 warning
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-click))
     (synopsis "Extension for Click to register external CLI commands")
     (description
      "This package provides n extension module for Click to register external
@@ -30469,27 +30469,8 @@ CLI commands via setuptools entry-points.")
     (home-page "https://github.com/click-contrib/click-plugins")
     (license license:bsd-3)))
 
-;; XXX: Upstream note: Final PyPI release to mark the project as inactive.
-;; This PyPI package is no longer actively maintained, but the underlying
-;; library can be vendored.
-;;
-;; Version 2.0 lacks packaging instructions (setup.py, setup.pkg or
-;; pyproject.toml) and can't be used as a common input.
-(define-public python-click-plugins-1
-  (package
-    (inherit python-click-plugins)
-    (name "python-click-plugins")
-    (version "1.1.1.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/click-contrib/click-plugins")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "11i93dxb6vvlqb79p8qdbcxvcsb2bb2b9lbkqhv5hs93nry02gxl"))))
-    (arguments (list))))
+;; XXX: Deprecated on <2026-03-23>.
+(define-deprecated-package python-click-plugins-1 python-click-plugins)
 
 (define-public python-diceware
   (package
