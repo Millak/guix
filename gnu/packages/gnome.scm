@@ -7058,7 +7058,8 @@ runtime image loader executables that are used inside the sandbox.")
                           #:vendor-dir "vendor"
                           #:cargo-target #$(cargo-triplet)
                           args))
-                 '(unpack-rust-crates
+                 '(prepare-rust-crates
+                   unpack-rust-crates
                    configure
                    check-for-pregenerated-files
                    patch-cargo-checksums))))
