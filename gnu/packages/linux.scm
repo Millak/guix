@@ -7034,7 +7034,7 @@ and manage nvme devices on a Linux system.")
 (define-public nvme-cli
   (package
     (name "nvme-cli")
-    (version "2.5")
+    (version "2.16")
     (home-page "https://github.com/linux-nvme/nvme-cli")
     (source (origin
               (method git-fetch)
@@ -7042,7 +7042,7 @@ and manage nvme devices on a Linux system.")
                     (url home-page)
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "1jv1xir6gm86yyk5846qqkcjhc1bq103zyxf794fznyinh4nhlbg"))
+               (base32 "1877fvhd4573900zwk7y2mk2vvmgnws2wa37sv176ikxj647jvw1"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (outputs (list "out" "doc"))        ; docs make up ~70% of total size
