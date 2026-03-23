@@ -278,8 +278,11 @@ tests.")
                 "03lg8rz2a9wgwn9axd6gkjiswgxmp62fbxjvrrcvazmwh6ykplx8"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list gcc-10 perl))
-    (arguments '(#:tests? #f)) ; there are no tests
+     (list perl))
+    (arguments
+     (list
+       #:tests? #f   ; there are no tests
+       #:make-flags #~(list "MORECFLAGS=-std=c++11")))
     (home-page "https://doc.coker.com.au/projects/bonnie/")
     (synopsis "Hard drive and file system benchmark suite")
     (description
