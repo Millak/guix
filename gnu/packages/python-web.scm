@@ -3669,13 +3669,16 @@ program would be built.")
 (define-public python-parfive
   (package
     (name "python-parfive")
-    (version "2.2.0")
+    (version "2.3.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "parfive" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Cadair/parfive")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "16rf02jhjr9lij8s2gqmvs01vx8kiv9f2535dnnziqwqv14d21yy"))))
+        (base32 "09kkh7kp9qy8m26zk6p7zc84yrc81pjgsi594kaa1v1n83mprl4b"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3683,22 +3686,23 @@ program would be built.")
       ;; Disable tests requiring network access.
       #~(list "-k" (string-join
                     (list "not test_ftp"
+                          "test_ftp_http"
                           "test_ftp_pasv_command"
-                          "test_ftp_http")
+                          "test_problematic_http_urls")
                     " and not "))))
     (native-inputs
-     (list python-pytest
+     (list python-aiofiles
+           python-pytest
            python-pytest-asyncio
            python-pytest-localserver
            python-pytest-socket
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-aiofiles
-           python-aioftp
-           python-aiohttp
-           python-tqdm))
+     (list python-aiohttp
+           python-tqdm
+           ;; [optional]
+           python-aioftp))
     (home-page "https://parfive.readthedocs.io/")
     (synopsis "HTTP and FTP parallel file downloader")
     (description
