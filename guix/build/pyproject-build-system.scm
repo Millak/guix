@@ -400,48 +400,40 @@ without errors."
   "Install a wheel file according to PEP 427."
   ;; See <https://packaging.python.org/en/latest/specifications/\
   ;; binary-distribution-format/#binary-distribution-format>.
-  (let ((site-dir (site-packages inputs outputs))
-        (python (assoc-ref inputs "python"))
-        (out (assoc-ref outputs "out")))
+  (let* ((site-dir (site-packages inputs outputs))
+         (python (assoc-ref inputs "python"))
+         (version (python-version python))
+         (out (assoc-ref outputs "out")))
+
     (define (extract file)
       "Extract wheel (ZIP file) into site-packages directory"
       ;; Use Python’s zipfile to avoid extra dependency
       (invoke "python" "-m" "zipfile" "-e" file site-dir))
 
-    (define (expand-data-directory directory)
-      "Move files from all .data subdirectories to their respective\ndestinations."
-      ;; Python’s distutils.command.install defines this mapping from source to
-      ;; destination mapping.
-      (let ((source (string-append directory "/scripts"))
-            (destination (string-append out "/bin")))
-        (when (file-exists? source)
-          (copy-recursively source destination)
-          (delete-file-recursively source)
-          (for-each
-           (lambda (file)
-             (chmod file #o755)
-             ;; PEP 427 recommends that installers rewrite
-             ;; this odd shebang, but avoid the binary case.
-             (unless (elf-file? file)
-               (substitute* file
-                 (("#!python")
-                  (string-append "#!" python "/bin/python")))))
-           (find-files destination))))
-      ;; Data can be contained in arbitrary directory structures.  Most
-      ;; commonly it is used for share/.
-      (let ((source (string-append directory "/data"))
-            (destination out))
-        (when (file-exists? source)
-          (copy-recursively source destination)
-          (delete-file-recursively source)))
-      (let* ((distribution (car (string-split (basename directory) #\-)))
-             (source (string-append directory "/headers"))
-             (destination (string-append out "/include/python"
-                                         (python-version python)
-                                         "/" distribution)))
-        (when (file-exists? source)
-          (copy-recursively source destination)
-          (delete-file-recursively source))))
+    (define (install-path key distribution)
+      "Return the path where KEY is supposed to be installed."
+      (match key
+        ((or "purelib" "platlib")
+         site-dir)
+        ("scripts"
+         (string-append out "/bin"))
+        ((or "headers" "include")
+         (string-append out "/include/python" version "/" distribution))
+        ("data"
+         out)))
+
+    (define (fix-scripts directory)
+      "Make scripts executable and rewrite #!python shebangs."
+      (for-each
+       (lambda (file)
+         (chmod file #o755)
+         ;; PEP 427 recommends that installers rewrite
+         ;; this odd shebang, but avoid the binary case.
+         (unless (elf-file? file)
+           (substitute* file
+             (("#!python")
+              (string-append "#!" python "/bin/python")))))
+       (find-files directory)))
 
     (define (list-directories base predicate)
       ;; Cannot use find-files here, because it’s recursive.
@@ -451,6 +443,27 @@ without errors."
                    (and (not (member name '("." "..")))
                         (eq? (stat:type stat) 'directory)
                         (predicate name stat))))))
+
+    (define (distribution-name data-directory)
+      "Extract the distribution name from a .data directory name.
+Per PEP 427, the directory is named {distribution}-{version}.data."
+      (car (string-split (basename data-directory) #\-)))
+
+    (define (expand-data-directory directory)
+      "Move files from all subdirectories of a .data directory to their
+respective destinations according to PEP 427 and sysconfig scheme keys."
+      (let ((distribution (distribution-name directory)))
+        (for-each
+         (lambda (key)
+           (let ((source (string-append directory "/" key))
+                 (destination (install-path key distribution)))
+             (when (file-exists? source)
+               (copy-recursively source destination)
+               (delete-file-recursively source)
+               ;; Scripts need executable permissions and shebang rewriting.
+               (when (string=? key "scripts")
+                 (fix-scripts destination)))))
+         (list-directories directory (const #t)))))
 
     (let* ((wheel-output (assoc-ref outputs "wheel"))
            (wheel-dir (if wheel-output wheel-output "dist"))
