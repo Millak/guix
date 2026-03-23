@@ -3172,12 +3172,11 @@ from C++.")
     (arguments
      `(#:configure-flags (list "--disable-static"
                                ;;"--with-external-boost"
-                               "--with-external-expat")))
+                               "--with-external-expat")
+       #:make-flags (list "CXXFLAGS=-std=c++11 -O2 -g")))
     (inputs
      (list ;;("boost ,boost)
            expat))
-    (native-inputs
-     (list gcc-10)) ;does not build with gcc-12
     (home-page "https://www.codesynthesis.com/projects/libcutl/")
     (synopsis "C++ utility library with generic and independent components")
     (description "libcutl is a C++ utility library.  It contains a collection
