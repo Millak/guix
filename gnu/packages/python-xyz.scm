@@ -8535,6 +8535,25 @@ with sensible defaults out of the box.")
     (native-inputs
      (list python-setuptools))))
 
+(define-public python-click-8.1
+  (package
+    (inherit python-click)
+    (name "python-click")
+    (version "8.1.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pallets/click")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "132frw2g4i3s7kv325ah85wav5h92fv3n00wknhcgr5h3hlqi2pi"))))
+    (native-inputs
+     (list less
+           python-pytest
+           python-setuptools))))
+
 (define-public python-clickgen
   (package
     (name "python-clickgen")
