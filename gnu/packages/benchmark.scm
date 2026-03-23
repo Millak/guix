@@ -281,8 +281,19 @@ tests.")
      (list perl))
     (arguments
      (list
-       #:tests? #f   ; there are no tests
-       #:make-flags #~(list "MORECFLAGS=-std=c++11")))
+       #:make-flags #~(list "MORECFLAGS=-std=c++11")
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (begin
+                   ;; As seen in ./debian/tests/smoke
+                   (mkdir "test-dir")
+                   (invoke "./bonnie++" "-q"
+                           "-d" "test-dir"
+                           "-s" "-0"
+                           "-n" "1"))))))))
     (home-page "https://doc.coker.com.au/projects/bonnie/")
     (synopsis "Hard drive and file system benchmark suite")
     (description
