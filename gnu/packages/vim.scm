@@ -92,7 +92,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "9.1.2110")
+    (version "9.2.0232")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -101,7 +101,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1b0b9wg136xpqxsc5xhl47nygj2xr2rf9lw3j7rwlgh3xkyyr4f6"))))
+               "0z5b77qq5rmddf42f8sqd4sbf81y1r8d9i9f0naczb9bz762wx0r"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -111,6 +111,7 @@
          (add-after 'configure 'patch-absolute-paths
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* '("src/testdir/Makefile"
+                            "src/testdir/test_channel.vim"
                             "src/testdir/test_filetype.vim"
                             "src/testdir/test_normal.vim"
                             "src/testdir/test_plugin_matchparen.vim"
@@ -161,6 +162,7 @@
                                "sh_11.sh"
                                "sh_12.sh"
                                "sh_14.sh"
+                               "sh_15.sh"
                                "sh_bash.bash"
                                "sh_bash_alias.sh"
                                "sh_sundrous.bash")))))
