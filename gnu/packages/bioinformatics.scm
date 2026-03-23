@@ -16396,14 +16396,14 @@ browser.")
       (arguments
        (list
         #:tests? #f
+        #:make-flags
+        #~(list "CXXFLAGS=-std=c++11 -c -O2")
         #:phases
         #~(modify-phases %standard-phases
             (delete 'configure)
             (replace 'install
               (lambda _
                 (install-file "skewer" (string-append #$output "/bin")))))))
-      ;; XXX Fails to build with GCC 11.
-      (native-inputs (list gcc-10))
       (home-page "https://github.com/relipmoc/skewer")
       (synopsis "Bit-masked k-difference matching")
       (description "Skewer implements the bit-masked k-difference matching
