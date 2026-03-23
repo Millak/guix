@@ -8676,7 +8676,7 @@ Compatible with Cisco VPN concentrators configured to use IPsec.")
            lz4
            network-manager
            openconnect
-           webkitgtk-with-libsoup2))
+           webkitgtk-for-gtk3))
     (home-page "https://wiki.gnome.org/Projects/NetworkManager/VPN")
     (synopsis "OpenConnect plug-in for NetworkManager")
     (description
