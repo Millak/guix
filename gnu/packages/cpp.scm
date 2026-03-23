@@ -3303,7 +3303,8 @@ documentation.")
                                          (assoc-ref %build-inputs "build")
                                          "/include/")
                           (string-append "install_prefix="
-                                         (assoc-ref %outputs "out")))
+                                         (assoc-ref %outputs "out"))
+                          "cxx_options=-std=c++11 -O2 -g")
        #:phases (modify-phases %standard-phases
                   (add-after 'install 'move-doc
                     (lambda* (#:key outputs #:allow-other-keys)
@@ -3315,7 +3316,7 @@ documentation.")
                                                     ,version)))))
                   (delete 'configure))))
     (native-inputs
-     (list build cli gcc-10))
+     (list build cli))
     (inputs
      (list libcutl libnsl libxsd-frontend))
     (propagated-inputs
