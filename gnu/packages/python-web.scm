@@ -7227,16 +7227,20 @@ adapter for use with the Requests library.")
   (package
     (name "python-aioftp")
     (version "0.27.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "aioftp" version))
-              (sha256
-               (base32
-                "06i6xfxxrwncmgihp98jxhy7xngsv2gzv9ijk32rc5q840r8q13w"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aio-libs/aioftp")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lshyac5zk1w4x7ygkim3726f8gbkvpvlyiqkn9cs6qjxhxn5bxc"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-async-timeout
            python-pytest
+           python-pytest-mock
            python-pytest-asyncio
            python-setuptools
            python-siosocks
