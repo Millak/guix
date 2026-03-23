@@ -6019,12 +6019,6 @@ natively with GTK-Doc (the API reference system developed for GTK+ and used
 throughout GNOME for API documentation).")
     (license license:gpl2+)))
 
-(define-public devhelp-with-libsoup2
-  (hidden-package
-   (package/inherit devhelp
-     (inputs (modify-inputs inputs
-               (replace "webkitgtk-for-gtk3" webkitgtk-with-libsoup2))))))
-
 (define-public cogl
   (package
     (name "cogl")
@@ -13294,7 +13288,7 @@ GtkTextView widgets.")
      (list bash-minimal                 ;for wrap-program
            cmark
            clang
-           devhelp-with-libsoup2
+           devhelp
            d-spy
            ;; Cyclic modular dependency
            (module-ref
