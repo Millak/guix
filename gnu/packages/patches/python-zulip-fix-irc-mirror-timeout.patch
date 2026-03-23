@@ -1,0 +1,50 @@
+From 1697feef17dff0d5fc873c5271c74bbde5d8af60 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Sergio=20Pastor=20P=C3=A9rez?=
+ <sergio.pastorperez@gmail.com>
+Date: Sun, 24 May 2026 18:03:26 +0200
+Subject: [PATCH 1/2] integrations: Fix IRC mirror timing out when relaying IRC
+ messages.
+
+* zulip/integrations/bridge_with_irc/irc_mirror_backend.py (fresh_session): New
+procedure. Ensure forked processes have a clean client to ensure they don't
+share the SSL sockets of the parent.
+
+This patch won't be needed once the following issue is merged upstream:
+https://github.com/zulip/python-zulip-api/pull/917
+---
+ .../bridge_with_irc/irc_mirror_backend.py            | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/zulip/integrations/bridge_with_irc/irc_mirror_backend.py b/zulip/integrations/bridge_with_irc/irc_mirror_backend.py
+index 8fdd6c98..e9ba1009 100644
+--- a/zulip/integrations/bridge_with_irc/irc_mirror_backend.py
++++ b/zulip/integrations/bridge_with_irc/irc_mirror_backend.py
+@@ -5,6 +5,7 @@ from typing import Any, Dict, Optional
+ 
+ import irc.bot
+ import irc.strings
++import requests
+ from irc.client import Event, ServerConnection, ip_numstr_to_quad
+ 
+ 
+@@ -89,7 +90,16 @@ class IRCBot(irc.bot.SingleServerIRCBot):
+             for line in msg["content"].split("\n"):
+                 send(line)
+ 
+-        z2i = mp.Process(target=self.zulip_client.call_on_each_message, args=(forward_to_irc,))
++        def fresh_session() -> None:
++            # Create a new client so the child doesn't share the parent's SSL
++            # sockets after forking in 'mp.Process'.
++            self.zulip_client.session.close()
++            new_session = requests.Session()
++            new_session.auth = (self.zulip_client.email, self.zulip_client.api_key)
++            self.zulip_client.session = new_session
++            self.zulip_client.call_on_each_message(forward_to_irc)
++
++        z2i = mp.Process(target=fresh_session)
+         z2i.start()
+ 
+     def on_privmsg(self, c: ServerConnection, e: Event) -> None:
+-- 
+2.54.0
+

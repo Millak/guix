@@ -1,0 +1,73 @@
+From 537c09d25e652acfdb305159134a5e0585a0f21d Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Sergio=20Pastor=20P=C3=A9rez?=
+ <sergio.pastorperez@gmail.com>
+Date: Fri, 22 May 2026 10:56:48 +0200
+Subject: [PATCH 2/2] build: make IRC mirror integration script installable.
+
+This change was originally proposed by Sharlatan Hellseher:
+https://codeberg.org/guix/guix/pulls/7418#issuecomment-12239616
+
+* zulip/integrations/bridge_with_irc/irc-mirror.py: Rename file to
+'irc_mirror.py' to make it importable as a Python module.
+
+* zulip/integrations/bridge_with_irc/irc_mirror.py: Introduce `main' entry point
+so it can be used as a setuptools console script entry point.
+
+* zulip/setup.py: Register 'zulip-irc-bridge' as a console script so it's
+installed as part of the package output.
+
+This patch won't be needed once the following issue is merged upstream:
+https://github.com/zulip/python-zulip-api/pull/917
+---
+ .../bridge_with_irc/{irc-mirror.py => irc_mirror.py}       | 7 +++++--
+ zulip/setup.py                                             | 1 +
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+ rename zulip/integrations/bridge_with_irc/{irc-mirror.py => irc_mirror.py} (96%)
+
+diff --git a/zulip/integrations/bridge_with_irc/irc-mirror.py b/zulip/integrations/bridge_with_irc/irc_mirror.py
+similarity index 96%
+rename from zulip/integrations/bridge_with_irc/irc-mirror.py
+rename to zulip/integrations/bridge_with_irc/irc_mirror.py
+index 7aaca7b9..b0d3ff65 100755
+--- a/zulip/integrations/bridge_with_irc/irc-mirror.py
++++ b/zulip/integrations/bridge_with_irc/irc_mirror.py
+@@ -27,7 +27,7 @@ Specify your Zulip API credentials and server in a ~/.zuliprc file or using the
+ Note that "_zulip" will be automatically appended to the IRC nick provided
+ """
+ 
+-if __name__ == "__main__":
++def main():
+     parser = zulip.add_default_arguments(
+         argparse.ArgumentParser(usage=usage), allow_provisioning=True
+     )
+@@ -45,7 +45,7 @@ if __name__ == "__main__":
+     options.client = "irc_mirror"
+     zulip_client = zulip.init_from_options(options)
+     try:
+-        from irc_mirror_backend import IRCBot
++        from .irc_mirror_backend import IRCBot
+     except ImportError:
+         traceback.print_exc()
+         print(
+@@ -70,3 +70,6 @@ if __name__ == "__main__":
+         sasl_password=options.sasl_password,
+     )
+     bot.start()
++
++if __name__ == "__main__":
++    main()
+diff --git a/zulip/setup.py b/zulip/setup.py
+index 097bc684..236e5d74 100755
+--- a/zulip/setup.py
++++ b/zulip/setup.py
+@@ -60,6 +60,7 @@ setup(
+             "zulip-send=zulip.send:main",
+             "zulip-api-examples=zulip.api_examples:main",
+             "zulip-matrix-bridge=integrations.bridge_with_matrix.matrix_bridge:main",
++            "zulip-irc-bridge=integrations.bridge_with_irc.irc_mirror:main",
+             "zulip-api=zulip.cli:cli",
+         ],
+     },
+-- 
+2.54.0
+

@@ -3197,7 +3197,10 @@ utilities.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dy99ma8iqycl5j52zsahlwrgps96sschnn8jqm7pqmy2rz8ijlr"))))
+        (base32 "1dy99ma8iqycl5j52zsahlwrgps96sschnn8jqm7pqmy2rz8ijlr"))
+       (patches (search-patches
+                 "python-zulip-fix-irc-mirror-timeout.patch"
+                 "python-zulip-make-irc-mirror-installable.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3238,7 +3241,7 @@ utilities.")
            python-google-api-client
            python-google-auth-httplib2
            python-google-auth-oauthlib
-           ;; python-irc
+           python-irc
            ;; python-litellm
            python-matrix-nio
            ;; python-mercurial
@@ -3279,7 +3282,10 @@ share/zulip/integrations or in lib/<...>/site-packages/integrations:
 @item trello
 @item twitter
 @item zephyr
-@end itemize")
+@end itemize
+
+The package provides `zulip-irc-bridge' and `zulip-matrix-bridge' as
+standalone scripts.")
     (license license:asl2.0)))
 
 (define-public python-zulip-bots

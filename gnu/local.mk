@@ -2169,6 +2169,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-zeroc-ice-3.6.5-python-3.11-support.patch	\
   %D%/packages/patches/python-zeroc-ice-3.6.5-python-3.12-support.patch	\
   %D%/packages/patches/python-zipfile2-python-3.12-support.patch	\
+  %D%/packages/patches/python-zulip-fix-irc-mirror-timeout.patch	\
+  %D%/packages/patches/python-zulip-make-irc-mirror-installable.patch	\
   %D%/packages/patches/qcodeeditor-qt6.patch			\
   %D%/packages/patches/qtdeclarative-5-disable-qmlcache.patch	\
   %D%/packages/patches/qtdeclarative-disable-qmlcache.patch	\
