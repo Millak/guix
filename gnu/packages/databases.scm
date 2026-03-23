@@ -1279,6 +1279,98 @@ management system that supports the standardized Structured Query
 Language.")
     (license license:gpl2)))
 
+(define-public mysql-connector-python
+  (package
+    (name "mysql-connector-python")
+    (version "8.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mysql/mysql-connector-python")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18jvpnnwmfrn961rvqmsygp7dw3spf3swhxhal4hhj5hqddckj5f"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 1371 passed
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'compatibility
+            (lambda _
+              (substitute* "src/mysql_capi.c"
+                (("res = mysql_options\\(&self->session, MYSQL_OPT_LOAD_DATA_LOCAL_DIR.*")
+                 "res = 0;")
+                (("mysql_options\\(&self->session, MYSQL_OPT_LOAD_DATA_LOCAL_DIR.*")
+                 "")
+                (("mysql_options\\(&self->session, MYSQL_OPT_TLS_CIPHERSUITES.*")
+                 "")
+                ;; The C API does not have mysql_bind_param, so we produce an
+                ;; error here.
+                (("status = mysql_bind_param.*") "status = 1;")
+                (("#include \"mysql_capi_conversion\\.h\"" all)
+                 (string-append all "\n" "#include <stdbool.h>")))))
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "mysql-connector-python")))
+          (add-before 'build 'prepare-build
+            (lambda _
+              (setenv "MYSQL_CAPI" #$(this-package-input "mysql"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Some of these tests might be failing due to the build
+                ;; container's restrictions, others are due to the version
+                ;; mismatch.
+                (substitute* "tests/cext/test_cext_api.py"
+                  (("def test_change_user") "def _do_not_test_change_user")
+                  (("def test_get_character_set_info")
+                   "def _do_not_test_get_character_set_info"))
+                (substitute* "tests/test_bugs.py"
+                  (("def test_change_user") "def _do_not_test_change_user")
+                  (("def test_lost_connection") "def _do_not_test_lost_connection")
+                  (("def test_kill_query") "def _do_not_test_kill_query")
+                  ;; These all fail because of expired certificates.
+                  (("def test_cext_verify_server_certificate")
+                   "def _do_not_test_cext_verify_server_certificate")
+                  (("def test_pure_verify_server_certificate")
+                   "def _do_not_test_pure_verify_server_certificate")
+                  (("def test_verify_server_name_cext_cnx")
+                   "def _do_not_test_verify_server_name_cext_cnx")
+                  (("def test_verify_server_name_pure_cnx")
+                   "def _do_not_test_verify_server_name_pure_cnx"))
+                (substitute* '("tests/test_connection.py"
+                               "tests/test_aio_connection.py")
+                  (("def test_allow_local_infile_in_path")
+                   "def _do_not_test_allow_local_infile_in_path")
+                  ;; This fails because of expired certificates.
+                  (("def test_connect_with_unix_socket")
+                   "def _do_not_test_connect_with_unix_socket"))
+                (substitute* "tests/test_constants.py"
+                  (("def test_deprecated")
+                   "def _do_not_test_deprecated"))
+                (mkdir-p "/tmp/datadir")
+                (invoke "python3" "unittests.py"
+                        "--verbosity=3"
+                        (string-append "--with-mysql=" #$(this-package-input "mysql"))
+                        "--keep"
+                        "--mysql-topdir=/tmp/datadir"
+                        "--unix-socket=/tmp/datadir")))))))
+    (propagated-inputs (list python-protobuf))
+    (inputs (list mysql protobuf-3.20 openssl-1.1 zlib))
+    (native-inputs (list python-setuptools))
+    (home-page "https://dev.mysql.com/doc/connector-python/en/index.html")
+    (synopsis "MySQL driver written in Python")
+    (description "MySQL Connector/Python enables Python programs to access
+MySQL databases, using an API that is compliant with the Python Database API
+Specification v2.0 (PEP 249).")
+    (license license:gpl2)))
+
+(define-deprecated-package python-mysql-connector-python
+  mysql-connector-python)
+
 (define-public mariadb
   (package
     (name "mariadb")

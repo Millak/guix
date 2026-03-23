@@ -8773,7 +8773,8 @@ high-throughput sequencing (HTS) assays")
          ;; Needed by tests
          (add-after 'unpack 'set-HOME
            (lambda _ (setenv "HOME" "/tmp"))))))
-    (propagated-inputs (list python-appdirs
+    (propagated-inputs (list mysql-connector-python
+                             python-appdirs
                              python-biopython
                              python-click
                              python-colorama
@@ -8781,7 +8782,6 @@ high-throughput sequencing (HTS) assays")
                              python-filelock
                              python-loguru
                              python-mygene
-                             python-mysql-connector-python
                              python-norns
                              python-numpy
                              python-pandas
