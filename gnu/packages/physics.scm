@@ -186,41 +186,40 @@ such components.")
      (list
       #:configure-flags
       #~(list
-              ;; Boost.System is header-only since 1.69, but FindBoost looks for
-              ;; libboost_system.so which doesn't exist.
-              "-DHIGHFIVE_USE_BOOST=OFF"
-              ;; Pretend we're doing a scikit-build build to skip Conan.
-              "-DSKBUILD=ON"
-              (string-append "-DSKBUILD_PROJECT_NAME=brille")
-              (string-append "-DSKBUILD_PROJECT_VERSION=" #$version))
-      #:imported-modules `(,@%cmake-build-system-modules
-                           ,@%pyproject-build-system-modules)
+         ;; Boost.System is header-only since 1.69, but FindBoost looks for
+         ;; libboost_system.so which doesn't exist.
+         "-DHIGHFIVE_USE_BOOST=OFF"
+         ;; Pretend we're doing a scikit-build build to skip Conan.
+         "-DSKBUILD=ON"
+         (string-append "-DSKBUILD_PROJECT_NAME=brille")
+         (string-append "-DSKBUILD_PROJECT_VERSION=" #$version))
+      #:imported-modules (append %cmake-build-system-modules
+                                 %pyproject-build-system-modules)
       #:modules '((guix build cmake-build-system)
-                  ((guix build python-build-system) #:select (site-packages))
+                  ((guix build pyproject-build-system) #:select (site-packages))
                   (guix build utils))
       #:phases
-      (with-extensions (list (pyproject-guile-json))
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'create-pkg-info
-              (lambda _
-                ;; Create PKG-INFO so DynamicVersion.cmake finds version without git.
-                (call-with-output-file "PKG-INFO"
-                  (lambda (port)
-                    (format port "Metadata-Version: 2.1
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'create-pkg-info
+            (lambda _
+              ;; Create PKG-INFO so DynamicVersion.cmake finds version without git.
+              (call-with-output-file "PKG-INFO"
+                (lambda (port)
+                  (format port "Metadata-Version: 2.1
 Name: brille
 Version: ~a
 " #$version)))))
-            (add-after 'install 'install-python
-              (lambda* (#:key inputs outputs #:allow-other-keys)
-                (let ((site-packages (site-packages inputs outputs)))
-                  (mkdir-p (string-append site-packages "/brille"))
-                  ;; Install Python source files and compiled extension module.
-                  (for-each (lambda (file)
-                              (install-file file
-                                            (string-append site-packages "/brille")))
-                            (append
-                             (find-files "../source/brille" "\\.py$")
-                             (find-files "." "^_brille\\..*\\.so$"))))))))))
+          (add-after 'install 'install-python
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((site-packages (site-packages inputs outputs)))
+                (mkdir-p (string-append site-packages "/brille"))
+                ;; Install Python source files and compiled extension module.
+                (for-each (lambda (file)
+                            (install-file file
+                                          (string-append site-packages "/brille")))
+                          (append
+                           (find-files "../source/brille" "\\.py$")
+                           (find-files "." "^_brille\\..*\\.so$")))))))))
     (native-inputs
      (list catch2-3
            cmake-minimal
