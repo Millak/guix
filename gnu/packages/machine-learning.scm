@@ -1565,21 +1565,24 @@ support for automatic differentiation.")
 (define-public python-ripser
   (package
     (name "python-ripser")
-    (version "0.6.4")
+    (version "0.6.14")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ripser" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/scikit-tda/ripser.py")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1575nwsn6b29z7w1mjk23ri83bxq2b4ld979hpgm174642a3x6vs"))))
+        (base32
+         "00na7dpvpc5vwjwgh9ndqrqlswgrzgqf1s7rxfv1vy5wn63fz3m7"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-numpy python-persim python-scikit-learn
                              python-scipy))
     (native-inputs
      (list python-cython
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://ripser.scikit-tda.org")
     (synopsis "Persistent homology library for Python")
     (description
