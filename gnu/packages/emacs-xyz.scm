@@ -47316,28 +47316,31 @@ Emacs.")
       (license license:gpl2+))))
 
 (define-public emacs-fpga
-  (package
-    (name "emacs-fpga")
-    (version "0.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/gmlarumbe/fpga")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "107vmjwk74iwp2xlpkx3f2q8a9bbygl15p09sfj0h4k9jzl4ia9m"))))
-    (build-system emacs-build-system)
-    ;;there are no tests
-    (arguments
-     (list #:tests? #f))
-    (home-page "https://github.com/gmlarumbe/fpga")
-    (synopsis "Emacs fpga & asic utilities")
-    (description
-     "Emacs-fpga provides emacs facilities to interface with fpga & asic
+  ;; Includes support for cadence genus.
+  (let ((commit "48ec1572ab3c96cbc20d0c542cfe56124e05d48b")
+        (revision "0"))
+    (package
+      (name "emacs-fpga")
+      (version (git-version "0.3.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/gmlarumbe/fpga")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0j1573m59iadip4qpg457jdl22gdgx1w41irdd0s300yqsrjxyms"))))
+      (build-system emacs-build-system)
+      ;;there are no tests
+      (arguments
+       (list #:tests? #f))
+      (home-page "https://github.com/gmlarumbe/fpga")
+      (synopsis "Emacs fpga & asic utilities")
+      (description
+       "Emacs-fpga provides emacs facilities to interface with fpga & asic
 tools from major vendors.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-semi-epg
   ;; No release since Dec 24, 2003.
