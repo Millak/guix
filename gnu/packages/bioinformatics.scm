@@ -5203,9 +5203,14 @@ easy-to-perform steps.")
        (sha256
         (base32 "0ma2cl677l7s0n5sffh66cy9lxp5wycm50f121g8rx85p95vkgwv"))))
     (build-system cmake-build-system)
-    ;; XXX: does not build with later GCC:
-    ;; error: ‘numeric_limits’ was not declared in this scope
-    (native-inputs (list gcc-10))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'add-missing-header
+                 (lambda _
+                   (substitute* "src/Bpp/Graph/GlobalGraph.cpp"
+                     (("include <vector>" all)
+                      (string-append all "\n#include <limits>"))))))))
     (home-page "https://pbil.univ-lyon1.fr/bpp-doc/bpp-core/html/index.html")
     (synopsis "C++ libraries for Bioinformatics")
     (description
