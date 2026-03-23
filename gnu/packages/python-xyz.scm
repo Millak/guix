@@ -28400,7 +28400,7 @@ for manual interpretation.")
 (define-public python-bibtexparser
   (package
     (name "python-bibtexparser")
-    (version "2.0.0b8")
+    (version "2.0.0b9")
     (source
      (origin
        (method git-fetch)
@@ -28409,9 +28409,9 @@ for manual interpretation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "065b6267ygphacfc9aawckv0yz9x3pzd4ivdbsr8cla3zs3lqzg7"))))
+        (base32 "1ym3lnvm02j2qxvm3qwbw8a10b6wc70wrfwqiqgppcap2vd5h85y"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-pyparsing))
+    (propagated-inputs (list python-pylatexenc python-pyparsing))
     (native-inputs
      (list python-pylatexenc python-pytest python-setuptools))
     (home-page "https://github.com/sciunto-org/python-bibtexparser")
