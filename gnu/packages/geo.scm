@@ -1223,7 +1223,7 @@ projections and coordinate transformations library.")
 (define-public python-fiona
   (package
     (name "python-fiona")
-    (version "1.9.6")
+    (version "1.10.1")
     (source
      (origin
        (method git-fetch)
@@ -1232,24 +1232,38 @@ projections and coordinate transformations library.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08whhjrspp194qasjhr9kf70fl342ms47k78rwpcf5q6ikf0rfii"))))
+        (base32 "0xribbcy5wvrm5y3bq281dry86vhjcnphg9772yp9s3y30y7mlz4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 757 passed, 161 skipped, 24 deselected, 1 xfailed, 6 xpassed
       #:test-flags
       #~(list "-m" "not network and not wheel"
-              ;; FIXME: Find why the
-              ;; test_no_append_driver_cannot_append[PCIDSK] test is failing.
-              "-k" "not test_no_append_driver_cannot_append")
+              #$@(map (lambda (test) (string-append "--deselect=tests/" test))
+                      ;; UserWarning: The parameter --where is used more than
+                      ;; once. Remove its duplicate as parameters should be
+                      ;; unique.
+                      (list "test_fio_cat.py::test_bbox_json_yes"
+                            "test_fio_cat.py::test_bbox_no"
+                            "test_fio_cat.py::test_bbox_where"
+                            "test_fio_cat.py::test_bbox_yes"
+                            "test_fio_cat.py::test_bbox_yes_two_files"
+                            "test_fio_cat.py::test_dst_crs_epsg3857"
+                            "test_fio_cat.py::test_multi_layer"
+                            "test_fio_cat.py::test_one"
+                            "test_fio_cat.py::test_two"
+                            "test_fio_cat.py::test_vfs"
+                            "test_fio_cat.py::test_where_no"
+                            "test_fio_cat.py::test_where_yes"
+                            "test_fio_cat.py::test_where_yes_two_files"
+                            ;; FileNotFoundError:
+                            ;; https://github.com/Toblerity/Fiona/files/\
+                            ;; 11151652/coutwildrnp.zip
+                            "test_pyopener.py::test_opener_fsspec_zip_http_fs")))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'set-configure-flags
+          (add-before 'check 'remove-local-source
             (lambda _
-              (setenv "CFLAGS" "-Wno-error=incompatible-pointer-types")))
-          (add-before 'check 'remove-local-fiona
-            (lambda _
-              ;; This would otherwise interfere with finding the installed
-              ;; fiona when running tests.
               (delete-file-recursively "fiona"))))))
     (inputs
      (list gdal))
@@ -1257,18 +1271,19 @@ projections and coordinate transformations library.")
      (list python-attrs
            python-certifi
            python-click
-           python-click-plugins-1
+           python-click-plugins
            python-cligj))
     (native-inputs
      (list gdal ; for gdal-config
            python-boto3
            python-cython
+           python-fsspec
            python-pytest
            python-pytz
-           python-setuptools))
+           python-setuptools
+           python-shapely))
     (home-page "https://github.com/Toblerity/Fiona")
-    (synopsis
-     "Fiona reads and writes spatial data files")
+    (synopsis "Fiona reads and writes spatial data files")
     (description
      "Fiona is GDAL’s neat and nimble vector API for Python programmers. Fiona
 is designed to be simple and dependable.  It focuses on reading and writing
