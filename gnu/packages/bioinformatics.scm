@@ -16377,40 +16377,38 @@ browser.")
               "The contents of this package are free for all uses."))))
 
 (define-public skewer
-  (let ((commit "978e8e46cba44595ece623e5387749284a86b74b")
-        (revision "1"))
-    (package
-      (name "skewer")
-      (version (git-version "0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/relipmoc/skewer")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1b3skfnj3zmd2065fiyxjrg4k6xsxfy6nxz80vmajd830mk6vr69"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:tests? #f
-        #:make-flags
-        #~(list "CXXFLAGS=-std=c++11 -c -O2")
-        #:phases
-        #~(modify-phases %standard-phases
-            (delete 'configure)
-            (replace 'install
-              (lambda _
-                (install-file "skewer" (string-append #$output "/bin")))))))
-      (home-page "https://github.com/relipmoc/skewer")
-      (synopsis "Bit-masked k-difference matching")
-      (description "Skewer implements the bit-masked k-difference matching
+  (package
+    (name "skewer")
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/relipmoc/skewer")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1b3skfnj3zmd2065fiyxjrg4k6xsxfy6nxz80vmajd830mk6vr69"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:make-flags
+      #~(list "CXXFLAGS=-std=c++11 -c -O2")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (install-file "skewer" (string-append #$output "/bin")))))))
+    (home-page "https://github.com/relipmoc/skewer")
+    (synopsis "Bit-masked k-difference matching")
+    (description "Skewer implements the bit-masked k-difference matching
 algorithm dedicated to the task of adapter trimming and it is specially
 designed for processing next-generation sequencing (NGS) paired-end
 sequences.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public f-seq
   (let ((commit "6ccded34cff38cf432deed8503648b4a66953f9b")
