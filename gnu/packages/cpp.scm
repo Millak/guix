@@ -3207,7 +3207,8 @@ pointers, containers, compiler building blocks, etc.")
                   (guix build utils))
        #:make-flags (list (string-append "--include-dir="
                                          (assoc-ref %build-inputs "build")
-                                         "/include/"))
+                                         "/include/")
+                          "cxx_options=-std=c++11 -O2 -g")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
@@ -3221,7 +3222,7 @@ pointers, containers, compiler building blocks, etc.")
                        #:include-regexp ("\\.so$")))
                     args))))))
     (native-inputs
-     (list build gcc-10))
+     (list build))
     (inputs
      `(("libcutl" ,libcutl)
        ("libxerces-c" ,xerces-c)))
