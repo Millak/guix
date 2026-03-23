@@ -24,6 +24,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
   #:use-module (ice-9 rdelim)
+  #:autoload   (system syntax) (syntax-local-binding)
   #:export (define-record-type*
             this-record
 
@@ -206,6 +207,23 @@ of TYPE matches the expansion-time ABI."
                       index
                       (loop rest (+ 1 index))))))))
 
+         (define (check-shadowing identifier)
+           ;; Warn if IDENTIFIER shadows a local binding.
+           ;; Note: not using (guix diagnostics) to remain independent of
+           ;; other Guix modules.
+           (when (eq? 'lexical (syntax-local-binding identifier))
+             (format (current-warning-port)
+                     "~a: inherited field binding '~a' of \
+record type '~a' shadows local variable~%"
+                     (match (syntax-source identifier)
+                       (#f "<unknown-location>")
+                       (lst (format #f "~a:~a:~a"
+                                    (assq-ref lst 'filename)
+                                    (and=> (assq-ref lst 'line) 1+)
+                                    (assq-ref lst 'column))))
+                     (syntax->datum identifier)
+                     (syntax->datum #'type))))
+
          (define* (wrap-field-value f value #:optional parent)
            ;; Wrap VALUE, the value of field F, such that its sanitizer is
            ;; called and its properties (thunked, delayed) honored.  When
@@ -222,6 +240,7 @@ of TYPE matches the expansion-time ABI."
                                        #`((struct-ref #,parent
                                                       #,(field-index f))
                                           #,this-identifier)))
+                          (check-shadowing f)
                           #`(lambda (x)
                               (syntax-parameterize ((#,this-identifier
                                                      (lambda (s)

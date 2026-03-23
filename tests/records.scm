@@ -302,6 +302,26 @@
         =>
         (,(foo-bar child) ,(foo-baz child))))))
 
+(test-assert "define-record-type* & inherited value shadowing"
+  (let ((exp '(begin
+                (define-record-type* <foo> foo make-foo
+                  foo?
+                  (bar foo-bar)
+                  (baz foo-baz (thunked)))
+
+                (let ((x (foo (bar 1) (baz 2)))
+                      (baz 123))
+                  ;; Below, the 'baz' binding for the inherited field value
+                  ;; shadows the 'baz' above, which should trigger a warning.
+                  (foo (inherit x)
+                       (baz (* baz 2)))))))
+    (string-contains
+     (call-with-output-string
+       (lambda (port)
+         (parameterize ((current-warning-port port))
+           (eval exp (test-module)))))
+     "shadows local variable")))
+
 (test-assert "define-record-type* & delayed"
   (begin
     (define-record-type* <foo> foo make-foo
