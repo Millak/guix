@@ -65,7 +65,7 @@
 (define-public plover
   (package
     (name "plover")
-    (version "4.0.0")
+    (version "4.0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -74,7 +74,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vipma8jqn0ypjy5zm185ld10kxnz7c8ywr4cz5qdwa5p80yr07n"))))
+                "0d7vkxdz7g9jvlrn5wx9502yqcdyqmalk4yn7lkla0am9hzqp14l"))))
     (build-system pyproject-build-system)
     (arguments
      (list
