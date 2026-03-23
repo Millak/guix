@@ -4,7 +4,7 @@
 ;;; Copyright © 2016, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2019, 2022, 2023, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2019, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Prafulla Giri <pratheblackdiamond@gmail.com>
 ;;; Copyright © 2020 Christopher Lam <christopher.lck@gmail.com>
@@ -68,14 +68,19 @@
   ;; directory.
   (package
     (name "gnucash")
-    (version "5.13")
+    (version "5.14")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/gnucash/gnucash%20%28stable%29/"
-                           version "/gnucash-" version ".tar.bz2"))
+       ;; Install from git, as the some test files contained in the release
+       ;; appear to corrupted, causing test failures.
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Gnucash/gnucash")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1xdfci26av2jhyg40p5g9bwn7vz5xck2clgjsciz48mp6b1yqbh8"))))
+        (base32
+         "066l5p25ywbv89ygrpd04xwzjqrfjvap9fmkjr0gaf3z8c4qxhc0"))))
     (outputs '("out" "doc" "debug" "python"))
     (build-system cmake-build-system)
     (arguments
@@ -91,11 +96,19 @@
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-changelog-from-install-target
+            (lambda _
+              ;; We are building from git, but without the metadata, so the
+              ;; build system assumes we build from a tarball containing a
+              ;; pre-generated ChangeLog file.
+              (substitute* "CMakeLists.txt"
+                ((".*install.*CMAKE_SOURCE_DIR.*") ""))))
           (add-after 'unpack 'disable-online-test
             (lambda _
               (call-with-output-file "libgnucash/app-utils/test/CMakeLists.txt"
                 (lambda (port)
-                  (display "set(CTEST_CUSTOM_TESTS_IGNORE online_wiggle test-lots)" port)))))
+                  (display "set(CTEST_CUSTOM_TESTS_IGNORE \
+online_wiggle test-lots)" port)))))
           (add-after 'unpack 'set-env-vars
             (lambda* (#:key inputs #:allow-other-keys)
               ;; At least one test is time-related and requires this
@@ -116,6 +129,11 @@
               (invoke "localedef" "-i" "en_US" "-f" "UTF-8" "./en_US.UTF-8")
               (invoke "localedef" "-i" "en_GB" "-f" "UTF-8" "./en_GB.UTF-8")
               (invoke "localedef" "-i" "fr_FR" "-f" "UTF-8" "./fr_FR.UTF-8")))
+          (add-before 'check 'set-GNC_DBD_DIR
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Otherwise, some tests fail with SIGTRAP errors.
+              (setenv "GNC_DBD_DIR"
+                      (search-input-directory inputs "lib/dbd"))))
           (replace 'check (assoc-ref gnu:%standard-phases 'check))
           ;; There is about 100 MiB of documentation.
           (add-after 'install 'install-docs
@@ -159,7 +177,8 @@
                '("gnucash"
                  "gnucash-cli"))))
           (add-after 'install 'glib-or-gtk-compile-schemas
-            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
+            (assoc-ref glib-or-gtk:%standard-phases
+                       'glib-or-gtk-compile-schemas))
           (add-after 'install 'glib-or-gtk-wrap
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
           (add-before 'glib-or-gtk-wrap 'delete-gnc-fq-update
@@ -186,7 +205,8 @@
            intltool
            (libc-utf8-locales-for-target)
            pkg-config
-           swig-4.0))
+           swig-4.0
+           tzdata-for-tests))
     (inputs
      (list aqbanking
            bash-minimal
@@ -204,8 +224,7 @@
            perl-json
            perl-json-parse
            python
-           tzdata-for-tests
-           webkitgtk-with-libsoup2))
+           webkitgtk-for-gtk3))
     (propagated-inputs
      ;; dconf is required at runtime according to README.dependencies.
      (list dconf))
@@ -232,11 +251,12 @@ installed as well as Yelp, the Gnome help browser.")
       (source
        (origin
          (method url-fetch)
+         ;; Fetch the releases from Github as Sourceforge is unreliable.
          (uri (string-append
-               "mirror://sourceforge/gnucash/gnucash%20%28stable%29/"
-               version "/gnucash-docs-" version revision ".tar.gz"))
+               "https://github.com/Gnucash/gnucash/releases/download/"
+               version "/gnucash-docs-" version ".tar.gz"))
          (sha256
-          (base32 "0lv3gh47crjyjfv84xrfgz833hv9hhcyi4qkkpj097qn0l0dg5k7"))))
+          (base32 "0nhvg11zkp7v6cd8j0g1gg00pmrn0jvf7n9qjl5b6m2hw6sfw34i"))))
       (build-system cmake-build-system)
       ;; These are native-inputs because they are only required for building the
       ;; documentation.
