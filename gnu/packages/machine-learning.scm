@@ -5594,13 +5594,13 @@ Neural Networks for a wide range of applications related to structured data.")
 (define-public python-lightning-cloud
   (package
     (name "python-lightning-cloud")
-    (version "0.5.70")
+    (version "0.6.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "lightning_cloud" version))
               (sha256
                (base32
-                "11xx7w7ypyf6bzwz7pbdakap68a1lnsv3icis8wm8magkfglash2"))))
+                "1g3zwn8r33gkmx529mvyddbrx0wqwf6125qimj4xfchf53g0qkn4"))))
     (arguments (list #:tests? #f))      ; no tests in PyPI archive.
     (build-system pyproject-build-system)
     (propagated-inputs (list python-boto3
@@ -5615,7 +5615,7 @@ Neural Networks for a wide range of applications related to structured data.")
                              python-urllib3
                              python-uvicorn
                              python-websocket-client))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     (home-page "https://lightning.ai")
     (synopsis "Lightning Cloud command line client")
     (description "This package provides a command line interface for Lightning
