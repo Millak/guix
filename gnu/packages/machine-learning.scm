@@ -4664,7 +4664,6 @@ the tensors contained therein.")
                     zlib
                     zstd))
       (native-inputs (list bash-minimal
-                           gcc-14
                            googletest
                            (module-ref (resolve-interface '(gnu packages debug))
                                        'libbacktrace)
