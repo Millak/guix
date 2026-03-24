@@ -3986,23 +3986,14 @@ string values and to directly encode characters in OCaml Buffer.t values.")
                (("test/NormalizationTest.txt") "-"))))
          (add-before 'check 'check-data
            (lambda* (#:key inputs #:allow-other-keys)
-             (copy-file (assoc-ref inputs "NormalizationTest.txt")
-                        "test/NormalizationTest.txt")
-             #t)))))
+             (copy-file (search-input-file inputs "share/ucd/NormalizationTest.txt")
+                        "test/NormalizationTest.txt"))))))
     (native-inputs
      `(("ocamlbuild" ,ocamlbuild)
        ("opam-installer" ,opam-installer)
        ("topkg" ,ocaml-topkg)
        ;; Test data is otherwise downloaded with curl
-       ("NormalizationTest.txt"
-        ,(origin
-           (method url-fetch)
-           (uri (string-append "https://www.unicode.org/Public/"
-                               version
-                               "/ucd/NormalizationTest.txt"))
-           (file-name (string-append "NormalizationTest-" version ".txt"))
-           (sha256
-              (base32 "09pkawfqpgy2xnv2nkkgmxv53rx4anprg65crbbcm02a2p6ci6pv"))))))
+       ("unicode" ,ucd)))
     (propagated-inputs (list ocaml-uutf))
     (home-page "https://erratique.ch/software/uunf")
     (synopsis "Unicode text normalization for OCaml")
