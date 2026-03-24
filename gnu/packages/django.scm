@@ -37,7 +37,6 @@
   #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
   #:use-module (guix deprecation)
   #:use-module (guix search-paths)
   #:use-module (guix utils)

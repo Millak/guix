@@ -44,7 +44,6 @@
   #:use-module (guix hg-download)
   #:use-module (guix gexp)
   #:use-module (guix utils)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)

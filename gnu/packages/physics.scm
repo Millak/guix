@@ -21,7 +21,6 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
-  #:use-module ((guix build-system python) #:select (pypi-uri))
   #:use-module (guix build-system qt)
   #:use-module (guix download)
   #:use-module (guix gexp)

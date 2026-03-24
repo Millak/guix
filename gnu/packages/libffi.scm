@@ -45,7 +45,6 @@
   #:use-module (gnu packages sphinx)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
-  #:use-module ((guix build-system python) #:select (pypi-uri))
   #:use-module (guix build-system ruby))
 
 (define-public libffi

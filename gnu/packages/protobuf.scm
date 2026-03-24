@@ -33,7 +33,6 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system ruby)
   #:use-module ((guix licenses) #:prefix license:)

@@ -61,7 +61,6 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system ocaml)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (gnu packages)
   #:use-module (gnu packages aidc)

@@ -62,7 +62,6 @@
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system python)
   #:use-module (ice-9 match))
 
 (define-public treecc

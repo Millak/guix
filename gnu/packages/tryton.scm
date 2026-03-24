@@ -47,7 +47,6 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix utils)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject))
 
 (define (guix-trytonpath-search-path version)

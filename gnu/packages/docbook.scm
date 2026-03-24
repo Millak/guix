@@ -53,7 +53,6 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
   #:use-module (srfi srfi-26))
 
 ;; The fetch-plan, install-plan and phases for docbook-xml tend to vary

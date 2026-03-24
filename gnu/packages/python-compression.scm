@@ -38,7 +38,6 @@
   #:use-module (guix gexp)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (gnu packages)
   #:use-module (gnu packages libffi)

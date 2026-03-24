@@ -71,7 +71,6 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system waf)
   #:use-module (gnu packages)

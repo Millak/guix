@@ -35,7 +35,6 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages apr)
   #:use-module (gnu packages autotools)

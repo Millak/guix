@@ -45,7 +45,6 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module ((guix build utils) #:select (alist-replace delete-file-recursively))
   #:use-module (gnu packages)

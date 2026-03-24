@@ -27,7 +27,6 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (guix utils)
   #:use-module (gnu packages check)

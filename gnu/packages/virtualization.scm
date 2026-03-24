@@ -186,7 +186,6 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system ruby)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)

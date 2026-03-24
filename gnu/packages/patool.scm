@@ -23,7 +23,6 @@
   #:use-module (guix download)
   #:use-module (guix packages)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
   #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages backup)

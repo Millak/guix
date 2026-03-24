@@ -31,7 +31,6 @@
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system emacs)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages bison)

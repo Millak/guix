@@ -52,7 +52,6 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system meson)

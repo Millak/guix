@@ -105,7 +105,6 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)

@@ -31,7 +31,6 @@
   #:use-module (guix tests)
   #:use-module (guix tests http)
   #:use-module ((guix download) #:select (url-fetch))
-  #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module ((guix build utils)
                 #:select (delete-file-recursively

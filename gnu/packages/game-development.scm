@@ -70,7 +70,6 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system renpy)
   #:use-module (guix build-system scons)
   #:use-module (gnu packages)

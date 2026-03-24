@@ -27,7 +27,6 @@
 (define-module (gnu packages dav)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (guix download)
   #:use-module (guix gexp)

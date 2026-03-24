@@ -37,7 +37,6 @@
 
 (define-module (gnu packages astronomy)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module ((guix build-system python) #:select (pypi-uri)) ;to be removed soon
   #:use-module (guix build-system ant)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)

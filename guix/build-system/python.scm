@@ -21,6 +21,7 @@
 
 (define-module (guix build-system python)
   #:use-module ((gnu packages) #:select (search-auxiliary-file))
+  #:use-module (guix deprecation)
   #:use-module (guix gexp)
   #:use-module (guix store)
   #:use-module (guix utils)
@@ -47,13 +48,8 @@
 ;;
 ;; Code:
 
-(define* (pypi-uri name version #:optional (extension ".tar.gz"))
-  "Return a URI string for the Python package hosted on the Python Package
-Index (PyPI) corresponding to NAME and VERSION.  EXTENSION is the file name
-extension, such as '.tar.gz'."
-  (string-append "https://files.pythonhosted.org/packages/source/"
-                 (string-take name 1) "/" name "/"
-                 name "-" version extension))
+(define-deprecated/alias pypi-uri
+  (@ (guix build-system pyproject) pypi-uri))
 
 (define %python-build-system-modules
   ;; Build-side modules imported by default.

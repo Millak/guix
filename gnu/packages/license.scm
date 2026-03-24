@@ -37,7 +37,6 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (guix build-system perl)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (guix download)
   #:use-module (guix gexp)

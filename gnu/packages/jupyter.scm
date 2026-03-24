@@ -47,7 +47,6 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
   #:use-module (guix utils)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages bash)

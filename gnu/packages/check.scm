@@ -131,7 +131,6 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))

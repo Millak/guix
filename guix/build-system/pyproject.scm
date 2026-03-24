@@ -29,14 +29,14 @@
   #:use-module (guix search-paths)
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
   #:export (%pyproject-build-system-modules
-            default-python
             default-pytest-guix-plugin
+            default-python
             default-sanity-check.py
+            pypi-uri
             pyproject-build
             pyproject-build-system
             pyproject-guile-json))
@@ -47,6 +47,14 @@
 ;; This is implemented as an extension of 'python-build-system'.
 ;;
 ;; Code:
+
+(define* (pypi-uri name version #:optional (extension ".tar.gz"))
+  "Return a URI string for the Python package hosted on the Python Package
+Index (PyPI) corresponding to NAME and VERSION.  EXTENSION is the file name
+extension, such as '.tar.gz'."
+  (string-append "https://files.pythonhosted.org/packages/source/"
+                 (string-take name 1) "/" name "/"
+                 name "-" version extension))
 
 (define %pyproject-build-system-modules
   ;; Build-side modules imported by default.

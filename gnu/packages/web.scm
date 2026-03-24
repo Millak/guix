@@ -231,7 +231,6 @@
   #:use-module (guix build-system node)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system scons)
   #:use-module (guix build-system trivial)

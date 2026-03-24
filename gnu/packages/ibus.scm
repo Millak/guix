@@ -43,7 +43,6 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages anthy)

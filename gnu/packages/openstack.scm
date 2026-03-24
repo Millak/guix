@@ -48,7 +48,6 @@
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages xml)
   #:use-module (guix gexp)
-  #:use-module ((guix build-system python) #:select (pypi-uri))
   #:use-module (guix build-system pyproject)
   #:use-module (guix download)
   #:use-module (guix git-download)
