@@ -920,34 +920,37 @@ to generate and parse.  The two primary functions are @code{cbor.loads} and
     (license license:asl2.0)))
 
 (define-public flatbuffers
+  ;; python-flatbuffers inherits version of flatbuffers, make sure to refresh
+  ;; hash after update it here.
   (package
     (name "flatbuffers")
-    (version "25.2.10")               ; Keep in sync with python-flatbuffers.
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/google/flatbuffers")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name "flatbuffers" version))
-              (sha256
-               (base32
-                "1wcpaj4k9dwccb752pl8p54pqwajr51sxjym32q2bpm9ny6ib45v"))))
+    (version "25.2.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/flatbuffers")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name "flatbuffers" version))
+       (sha256
+        (base32 "1wcpaj4k9dwccb752pl8p54pqwajr51sxjym32q2bpm9ny6ib45v"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:build-type "Release"
-       #:configure-flags
-       (list "-DFLATBUFFERS_BUILD_SHAREDLIB=ON"
-             (string-append "-DCMAKE_INSTALL_LIBDIR="
-                            (assoc-ref %outputs "out") "/lib"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-writable
-           (lambda _ (for-each make-file-writable (find-files ".")))))))
+     (list
+      #:build-type "Release"
+      #:configure-flags
+      #~(list "-DFLATBUFFERS_BUILD_SHAREDLIB=ON"
+              (string-append "-DCMAKE_INSTALL_LIBDIR=" #$output "/lib"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-writable
+            (lambda _ (for-each make-file-writable (find-files ".")))))))
     (home-page "https://google.github.io/flatbuffers/")
     (synopsis "Memory-efficient serialization library")
-    (description "FlatBuffers is a cross-platform serialization library for C++,
-C#, C, Go, Java, JavaScript, PHP, and Python.  It was originally created for
-game development and other performance-critical applications.")
+    (description
+     "FlatBuffers is a cross-platform serialization library for C++,C#, C, Go,
+Java, JavaScript, PHP, and Python.  It was originally created for game
+development and other performance-critical applications.")
     (license license:asl2.0)))
 
 (define-public flatbuffers-23.5
