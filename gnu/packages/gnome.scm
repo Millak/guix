@@ -10271,7 +10271,7 @@ associations for GNOME.")
 (define-public gnome-weather
   (package
     (name "gnome-weather")
-    (version "48.0")
+    (version "50.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -10279,7 +10279,7 @@ associations for GNOME.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1dfv9cxq2rf8jhdd71pi1xj40qq5sg5k8wfl2sa2zbhmv2rnj1ac"))))
+                "04xmzmkh39z71k3k6apli2y0axfv71vwwl8582mzk4azc1w7bpjp"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -10317,6 +10317,7 @@ associations for GNOME.")
            gettext-minimal
            `(,glib "bin")
            gobject-introspection
+           node-typescript
            pkg-config))
     (inputs
      (list appstream-glib
