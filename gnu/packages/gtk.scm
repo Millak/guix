@@ -24,7 +24,7 @@
 ;;; Copyright © 2019 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2020-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -980,7 +980,7 @@ application suites.")
   (package
     (inherit gtk+-2)
     (name "gtk+")
-    (version "3.24.51")
+    (version "3.24.52")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -989,10 +989,11 @@ application suites.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07vw0rani9d65px36fzzj7sprv5r48shyjdgzipkihzqaldd98yh"))
+                "197w1mb5vqm5d07sgdqkg54can7f1p4yjh42zx0y8z6m9p43shck"))
               (patches (search-patches
                         "gtk3-respect-GUIX_GTK3_PATH.patch"
-                        "gtk3-respect-GUIX_GTK3_IM_MODULE_FILE.patch"))))
+                        "gtk3-respect-GUIX_GTK3_IM_MODULE_FILE.patch"
+                        "gtk3-treeview-test-fix.patch"))))
     ;; There is no "doc" output, because adding gtk-doc here would introduce a
     ;; dependency cycle with itself.
     (outputs '("out" "bin"))
@@ -1068,22 +1069,20 @@ application suites.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-failing-tests
             (lambda _
-                ;; These tests fail only in the containerized environment, for
-                ;; unknown reasons.
-                (substitute* "testsuite/gtk/meson.build"
-                  ((".*\\['defaultvalue'],.*") "")
-                  ((".*\\['objects-finalize',.*") ""))
-                ;; The 'flipping-icons.ui' and 'gtk-icontheme-sizing.ui' tests
-                ;; fail for unknown reasons (see:
-                ;; <https://gitlab.gnome.org/GNOME/gtk/-/issues/7679>).
-                (substitute* "testsuite/reftests/meson.build"
-                  (("  'flipping-icons.ui',.*") "")
-                  (("  'gtk-icontheme-sizing.ui',.*") ""))
-                ;; This test fails just on i686-linux, for unknown reasons.
-                #$@(if (target-x86-32?)
-                       #~((substitute* "testsuite/reftests/meson.build"
-                            (("  'linear-gradient.ui',.*") "")))
-                       #~())))
+              (substitute* "testsuite/gtk/meson.build"
+                ((".*\\['defaultvalue'],.*") "")
+                ((".*\\['objects-finalize',.*") ""))
+              ;; The 'flipping-icons.ui' and 'gtk-icontheme-sizing.ui' tests
+              ;; fail for unknown reasons (see:
+              ;; <https://gitlab.gnome.org/GNOME/gtk/-/issues/7679>).
+              (substitute* "testsuite/reftests/meson.build"
+                (("  'flipping-icons.ui',.*") "")
+                (("  'gtk-icontheme-sizing.ui',.*") ""))
+              ;; This test fails just on i686-linux, for unknown reasons.
+              #$@(if (target-x86-32?)
+                     #~((substitute* "testsuite/reftests/meson.build"
+                          (("  'linear-gradient.ui',.*") "")))
+                     #~())))
           (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
             (assoc-ref glib-or-gtk:%standard-phases
                        'generate-gdk-pixbuf-loaders-cache-file))
@@ -1107,8 +1106,8 @@ application suites.")
                                           "/share/applications")))))))
     (native-search-paths
      (list (search-path-specification
-            (variable "GUIX_GTK3_PATH")
-            (files '("lib/gtk-3.0")))))))
+             (variable "GUIX_GTK3_PATH")
+             (files '("lib/gtk-3.0")))))))
 
 (define-public gtk
   (package
