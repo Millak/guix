@@ -45,7 +45,8 @@
 
  (entry (commit "a7c8e68dc51144a6d3981b770aca9c4897fc7c0c")
         (title
-         (en "Records can refer to inherited values of thunked fields"))
+         (en "Records can refer to inherited values of thunked fields")
+         (de "Vererbung in Verbundsobjekten erlaubt Verweise auf geerbte Werte verzögert ausgewerteter Felder"))
         (body
          (en "A new feature has been added to records—the facility used when
 defining packages, services, operating systems, and many other things—that,
@@ -79,7 +80,41 @@ This change applies to \"thunked\" fields of all record types produced by
 @code{operating-system}, @code{home-environment}, and so on.
 
 Note that this is an incompatible change: the newly introduced
-bindings—@code{inputs} in the example above—could shadow same-named bindings.")))
+bindings—@code{inputs} in the example above—could shadow same-named bindings.")
+         (de "Als neue Funktionalität kann man in Verbundsobjekten – also beim
+Definieren von Paketen, Diensten, Betriebssystemen und vielem anderen – beim
+Erben von einem anderen Verbundsobjekt auf die geerbten Werte verweisen. Zum
+Definieren von Paketvarianten wurde früher etwas geschrieben wie:
+
+@lisp
+(package
+  (inherit gdb)
+  (inputs (modify-inputs (package-inputs gdb)
+            (delete \"guile\"))))
+@end lisp
+
+Das lässt sich jetzt schreiben als:
+
+@lisp
+(package
+  (inherit gdb)
+  (inputs (modify-inputs inputs ;<- hier ändert sich was
+            (delete \"guile\"))))
+@end lisp
+
+Innerhalb des @code{inputs}-Rumpfes ist der Bezeichner @code{inputs} jetzt
+an den @dfn{geerbten Wert} gebunden, d.h. an den Wert, den das Feld von
+@code{gdb} erbt. Derselbe Mechanismus kann beim Ändern anderer Felder mit
+Eingaben oder im Feld @code{arguments} benutzt werden. Das spart Platz und
+@uref{https://issues.guix.gnu.org/50335, verhält sich richtiger}.
+
+Die Änderung wirkt sich auf verzögert ausgewertete \"thunked\"-Felder aller
+Verbundstypen aus, die mit @code{define-record-type*} erstellt wurden:
+@code{package}, @code{origin}, @code{operating-system}, @code{home-environment}
+und so weiter.
+
+Hinweis: das ist eine inkompatible Änderung. Die neu eingeführte Bindung –
+@code{inputs} im obigen Beispiel – kann gleichnamige Bindungen überschatten.")))
 
  (entry (commit "b52ce9041ad58aeababd2d50d3e72bc23dffff60")
         (title
