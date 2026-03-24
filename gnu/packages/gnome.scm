@@ -10582,7 +10582,7 @@ Microsoft SkyDrive and Hotmail, using their REST protocols.")
 (define-public gnome-clocks
   (package
     (name "gnome-clocks")
-    (version "48.0")
+    (version "50.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -10590,7 +10590,7 @@ Microsoft SkyDrive and Hotmail, using their REST protocols.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0qkw10wbz0yg3cqr3x501z5604vmaklijqknp4k1y2rhfpxy2vk1"))))
+                "1illwzfghcxq3dmf4wchwhb9xwm1kcn6a5j79m1gpwpl8izpy5mz"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -10608,7 +10608,8 @@ Microsoft SkyDrive and Hotmail, using their REST protocols.")
            `(,glib "bin")               ; for glib-compile-resources
            itstool
            pkg-config
-           vala))
+           vala
+           vorbis-tools))
     (inputs
      (list geoclue
            geocode-glib
