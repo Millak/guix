@@ -891,12 +891,12 @@ user-level language.")
 
 ;; TODO: Keep in sync with radare2.
 (define-public iaito
-  ;; Commit "Switch to use r2 6.1"
-  (let ((commit "5f44a3259bb91ac849749436b06fe2501a4d8a2a")
+  ;; Commit "Release 6.1.2"
+  (let ((commit "790878048ecb62f4d2f1b5f848948059dd5bb8fe")
         (revision "1"))
     (package
       (name "iaito")
-      (version (git-version "6.0.8" revision commit))
+      (version (git-version "6.1.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -904,7 +904,7 @@ user-level language.")
                        (commit commit)))
                 (sha256
                  (base32
-                  "0qg22hlra75sz1a2c6dhxfbq0dgiqm00d3xpsr30wz90nmz6dzf5"))
+                  "00nqn3mx2fj5higz4niwl0nx04vnjwzccw6zjx3rhwf6fj5yfamm"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
