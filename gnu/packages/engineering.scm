@@ -1947,7 +1947,7 @@ bootloader in Espressif ESP8266 & ESP32 series chips.")
 (define-public radare2
   (package
     (name "radare2")
-    (version "6.1.0")                   ;keep in sync with iaito
+    (version "6.1.2")                   ;keep in sync with iaito
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1955,7 +1955,7 @@ bootloader in Espressif ESP8266 & ESP32 series chips.")
                     (commit version)))
               (sha256
                (base32
-                "0949q61l9c5b1f62ilvqs3lh4c98my7wkj43di2x7wrs4rz0qv1q"))
+                "1d4sslhjxm00fchqcszfa59wf51v632jvf7aj4af0vdhl9f9n8k2"))
               (file-name (git-file-name name version))
               (patches
                (search-patches "radare2-fix-meson-build-to-use-sys-sdb.patch"
