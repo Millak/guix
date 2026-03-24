@@ -6074,6 +6074,15 @@ commonly used storage backends.")
         (base32
          "0snprxdnh3m45r3b0az4v0l28h90ycmfbybzla6xg1qviwv9w1ak"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* "tests/test_match.py"
+                (("assertRaisesRegexp")
+                 "assertRaisesRegex")))))))
     (native-inputs
      (list python-pytest python-setuptools))
     (inputs
