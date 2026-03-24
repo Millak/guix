@@ -32356,10 +32356,11 @@ binding @code{*debugger-hook*} is not enough -- most notably, for
      '(#:tests? #f))))
 
 (define-public sbcl-trivial-do
-  (let ((commit "03a1729f1e71bad3ebcf6cf098a0cce52dfa1163"))
+  (let ((commit "a19f93227cb80a6bec8846655ebcc7998020bd7e")
+        (revision "2"))
     (package
       (name "sbcl-trivial-do")
-      (version (git-version "0.1" "1" commit))
+      (version (git-version "0.1" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -32368,7 +32369,7 @@ binding @code{*debugger-hook*} is not enough -- most notably, for
                (commit commit)))
          (file-name (git-file-name name commit))
          (sha256
-          (base32 "1ffva79nkicc7wc8c2ic5nayis3b2rk5sxzj74yjkymkjgbpcrgd"))))
+          (base32 "0vql7am4zyg6zav3l6n6q3qgdxlnchdxpgdxp8lr9sm7jra7sdsf"))))
       (build-system asdf-build-system/sbcl)
       (home-page "https://github.com/yitzchak/trivial-do")
       (synopsis "Additional dolist style macros for Common Lisp")
