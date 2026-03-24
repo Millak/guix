@@ -549,26 +549,28 @@ remove spurious artifacts in the data.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mantidproject/quasielasticbayes")
-             (commit (string-append "v" version))))
+              (url "https://github.com/mantidproject/quasielasticbayes")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "05va9qygw4a9app61spw6hqmbn9cq09w0dik9g6xvzpwcmfb7yx4"))))
     (build-system meson-build-system)
     (arguments
      (list
-      #:imported-modules `((guix build python-build-system)
-                           ,@%meson-build-system-modules)
+      #:imported-modules (append %pyproject-build-system-modules
+                                 %meson-build-system-modules)
       #:modules '((guix build meson-build-system)
-                  ((guix build python-build-system) #:prefix py:)
+                  ((guix build pyproject-build-system) #:prefix py:)
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'install 'check
-            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-              (when tests?
-                (py:add-installed-pythonpath inputs outputs)
-                (invoke "pytest" "../source/src/quasielasticbayes/test")))))))
+          (add-after 'install 'add-install-to-pythonpath
+            (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
+          (add-after 'add-install-to-pythonpath 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              ((assoc-ref py:%standard-phases 'check)
+               #:tests? tests?
+               #:test-flags `("../source/src/quasielasticbayes/test")))))))
     (native-inputs
      (list gfortran
            python
