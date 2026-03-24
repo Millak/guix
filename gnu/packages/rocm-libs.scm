@@ -17,7 +17,7 @@
 
 (define-module (gnu packages rocm-libs)
   #:use-module (guix build-system cmake)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -273,9 +273,11 @@ configurations deterministically based on compute and memory latencies.")
          "1wff80vd1x1vcg3n56qlc9hdabk9svz6qk0sznycjwzbsmpfb0mr"))
        (patches
         (search-patches "tensile-copy-if-not-exist.patch"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "Tensile/Tests" "-m" "unit" "-k" "not test_prepAsm")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-rocm-directory
@@ -295,12 +297,7 @@ configurations deterministically based on compute and memory latencies.")
                     "availableArchs = ['"
                     (string-join (current-amd-gpu-targets) "', '") "']")))
               (setenv "TENSILE_ROCM_ASSEMBLER_PATH"
-                      (string-append (which "clang")))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "Tensile/Tests" "-m" "unit"
-                        "-k" "not test_prepAsm")))))))
+                      (string-append (which "clang"))))))))
     (native-inputs
      (list python-filelock
            python-pandas
