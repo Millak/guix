@@ -589,25 +589,29 @@ timezone for given coordinates on earth entirely offline.")
        (sha256
         (base32 "0b12bh9v9gwkm89kxbidxw2z81lg8fx1v5fzgs313v1wgx6qb09p"))))
     (build-system pyproject-build-system)
-    ;; TODO: Convert to #:test-flags on the next python-team cycle.
     (arguments
      (list
+      #:test-backend #~'unittest
+      #:test-flags #~(list "discover")
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv"
-                        ;; The timestamp to local offset tests fail due to
-                        ;; missing timezone data (see:
-                        ;; https://github.com/danielrichman/strict-rfc3339/issues/9).
-                        "-k"
-                        #$@(if (or (target-x86-32?) (target-arm32?))
-                               ;; On 32-bit platforms the size of time_t is
-                               ;; too small for these tests.
-                               '("not LocalOffset and not TestTimestampToRFC3339UTCOffset")
-                               '("not LocalOffset")))))))))
-    (native-inputs (list python-pytest python-setuptools))
+          (add-after 'unpack 'skip-bad-tests
+            (lambda _
+              ;; The timestamp to local offset tests fail due to missing
+              ;; timezone data (see:
+              ;; https://github.com/danielrichman/strict-rfc3339/issues/9).
+              (substitute* "test_strict_rfc3339.py"
+                ((#$(if (or (target-x86-32?) (target-arm32?))
+                        ;; On 32-bit platforms the size of time_t is too small
+                        ;; for these tests.
+                        (string-append "(test_dst_transition|test_float|"
+                                       "test_now|test_simple_cases|"
+                                       "test_leap_year|test_y2038)")
+                        (string-append "(test_dst_transition|test_float|"
+                                       "test_now|test_simple_cases)"))
+                  match)
+                 (string-append "__off_" match))))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/danielrichman/strict-rfc3339")
     (synopsis "RFC3339 procedures library")
     (description
