@@ -157,7 +157,7 @@ by Cython."
           (format #t "Possible Cythonized file found: ~a~%" generated-file))))
     (find-files "." "\\.pyx$")))
 
-(define* (set-version #:key name inputs #:allow-other-keys)
+(define* (set-version #:key name source inputs #:allow-other-keys)
   "Provide the package version to Python build backend
 that expects it to be derived from the version control information
 that is not present in the source."
@@ -182,7 +182,8 @@ that is not present in the source."
                                   "python-setuptools-scm-bootstrap"
                                   "python-versioneer"))))
         ;; Both git and hg use -checkout suffixes.
-        (version (and (string-suffix? "-checkout" (assoc-ref inputs "source"))
+        (version (and source
+                      (string-suffix? "-checkout" source)
                       (public-version-identifier name))))
     (cond ((null? version-backends)
            (format #t "Detected no Python build backend that expects")

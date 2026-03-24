@@ -25,7 +25,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build gnu-build-system)
   #:use-module (guix build utils)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix store)
   #:use-module (guix monads)
   #:use-module (guix utils)
@@ -37,6 +37,7 @@
   #:use-module (guix tests git)
   #:use-module (guix packages)
   #:use-module (gnu packages bootstrap)
+  #:use-module (gnu packages python-build)
   #:use-module ((ice-9 ftw) #:select (scandir))
   #:use-module (ice-9 match)
   #:use-module (ice-9 textual-ports)
@@ -148,17 +149,16 @@
 
 
 ;;;
-;;; Test the sanity-check phase of the Python build system.
+;;; Test the sanity-check phase of the Pyproject build system.
 ;;;
 
 (define* (make-python-dummy name #:key (setup-py-extra "")
-                            (init-py "") (use-setuptools? #t))
+                            (init-py ""))
   (dummy-package (string-append "python-dummy-" name)
     (version "0.1")
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f
-       #:use-setuptools? ,use-setuptools?
        #:phases
        (modify-phases %standard-phases
          (replace 'unpack
@@ -170,26 +170,18 @@
              (with-output-to-file "setup.py"
                (lambda _
                  (format #t "\
-~a
+from setuptools import setup
 setup(
      name='dummy-~a',
      version='0.1',
      packages=['dummy'],
      ~a
      )"
-                         (if ,use-setuptools?
-                             "from setuptools import setup"
-                             "from distutils.core import setup")
-                         ,name ,setup-py-extra))))))))))
+                         ,name ,setup-py-extra))))))))
+    (native-inputs (list python-setuptools))))
 
 (define python-dummy-ok
   (make-python-dummy "ok"))
-
-;; distutil won't install any metadata, so make sure our script does not fail
-;; on a otherwise fine package.
-(define python-dummy-no-setuptools
-  (make-python-dummy
-   "no-setuptools" #:use-setuptools? #f))
 
 (define python-dummy-fail-requirements
   (make-python-dummy "fail-requirements"
@@ -205,13 +197,13 @@ setup(
 
 (define (check-build-success store p)
   (unless store (test-skip 1))
-  (test-assert (string-append "python-build-system: " (package-name p))
+  (test-assert (string-append "pyproject-build-system: " (package-name p))
     (let* ((drv (package-derivation store p)))
       (build-derivations store (list drv)))))
 
 (define (check-build-failure store p)
   (unless store (test-skip 1))
-  (test-assert (string-append "python-build-system: " (package-name p))
+  (test-assert (string-append "pyproject-build-system: " (package-name p))
     (let ((drv (package-derivation store p)))
       (guard (c ((store-protocol-error? c)
                  (pk 'failure c #t)))             ;good!
@@ -221,8 +213,7 @@ setup(
 (with-external-store store
   (for-each (lambda (p) (check-build-success store p))
             (list
-             python-dummy-ok
-             python-dummy-no-setuptools))
+             python-dummy-ok))
   (for-each (lambda (p) (check-build-failure store p))
             (list
              python-dummy-fail-requirements
