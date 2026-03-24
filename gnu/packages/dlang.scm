@@ -372,6 +372,7 @@ integration tests...\n")
               ;; Do not build the shared libphobos2.so library, to avoid
               ;; retaining a reference to gcc:lib.
               "SHARED=0"
+              "DIFFABLE=1"              ;constant timestamp
               "VERBOSE=1")
       #:modules
       `(,@%default-gnu-modules
@@ -476,6 +477,15 @@ integration tests...\n")
               (phase-in-sub-dir 'build "dmd"))
             (add-after 'build 'build-phobos
               (phase-in-sub-dir 'build "phobos"))
+            (add-after 'build-phobos 'build-man
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (with-directory-excursion "dmd/compiler/docs"
+                  (let ((dmd (or (which "gdmd")
+                                 (which "dmd"))))
+                    ((assoc-ref %standard-phases 'build)
+                     #:make-flags (cons
+                                   (string-append "DMD=" dmd)
+                                   make-flags))))))
             (replace 'check
               (phase-in-sub-dir 'check "dmd"))
             (add-after 'check 'check-phobos
@@ -501,7 +511,7 @@ integration tests...\n")
                       (for-each (cut install-file <> lib-lib)
                                 (find-files "." "^libdruntime\\.so[.0-9]*$")))
                     (copy-recursively "druntime/import" out-include)
-                    (copy-recursively "compiler/docs/man" out-man))
+                    (copy-recursively "generated/docs/man" out-man))
                   (with-directory-excursion "phobos"
                     (with-directory-excursion build-sub-dir
                       (install-file "libphobos2.a" out-lib)
