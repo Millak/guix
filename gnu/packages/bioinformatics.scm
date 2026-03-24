@@ -7083,7 +7083,7 @@ documents.")
 (define-public cwltool
   (package
     (name "cwltool")
-    (version "3.1.20250925164626")
+    (version "3.1.20260315121657")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7092,7 +7092,7 @@ documents.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13mv7qcl64gng8bq0y9garp0vvn9851n98vzi75ppl16pjkkziks"))))
+                "07glkzm9af9n1jsmqk6vgrjkxhgjask9jy56g7zca20sz7hpmiyi"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -7110,7 +7110,9 @@ documents.")
                ;; Tries to write to /tmp/guix-build-cwltool-3.fastq
                " and not test_iwdr_writable_secondaryfiles"
                ;; Tries to use cwl-runners.
-               " and not test_v1_0_arg_empty_prefix_separate_false"))
+               " and not test_v1_0_arg_empty_prefix_separate_false"
+               ;; Tries to connect to the internet.
+               " and not test_issue_1765_print_deps_with_workflows_having_namespace_location_steps"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'loosen-version-restrictions
