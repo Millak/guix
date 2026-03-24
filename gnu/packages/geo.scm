@@ -339,28 +339,22 @@ subdivisions.")
 (define-public python-h3
   (package
     (name "python-h3")
-    (version "4.0.0b2")
+    (version "4.4.2")
     (source
      (origin
-       (method git-fetch) ; no tests data in PyPi package
+       (method git-fetch)
        (uri (git-reference
              (url "https://github.com/uber/h3-py")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1k1n256hhlh05gjcj64pqh08zlaz6962jkb6nk1aazsgg8p41zs0"))
+        (base32 "02gry51hn8x2bl80y1ipcyrg0ghcif4vjch26qil215wdzz1yrzv"))
        (modules '((guix build utils)))
        ;; Remove bundled H3 lib.
        (snippet #~(begin (delete-file-recursively "src/h3lib")))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; FIXME: Check why these tests are failing.
-      ;; test_versions - assert (4, 1) == (4, 0)
-      ;; test_resolution - h3._cy.error_system.H3Failed
-      #:test-flags #~(list "-k" (string-append
-                                 "not test_versions"
-                                 " and not test_resolution"))
       #:phases
       #~(modify-phases %standard-phases
           ;; Use packaged in Guix h3 source.
@@ -381,10 +375,7 @@ subdivisions.")
            python-cython
            python-numpy
            python-pytest
-           python-scikit-build
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-scikit-build-core))
     (inputs (list h3))
     (home-page "https://uber.github.io/h3-py")
     (synopsis "Python bindings for H3")
