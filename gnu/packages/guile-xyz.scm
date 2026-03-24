@@ -4694,7 +4694,7 @@ serializing continuations or delimited continuations.")
                   `("GUILE_LOAD_COMPILED_PATH" prefix
                     ,(map (lambda (dep) (string-append dep go)) deps)))))))))
     (native-inputs (list autoconf automake pkg-config texinfo))
-    (inputs (list bash-minimal guile-next node))
+    (inputs (list bash-minimal guile-3.0-latest node))
     (propagated-inputs (list guile-fibers guile-websocket))
     (native-search-paths
      (list (search-path-specification
