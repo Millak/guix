@@ -8158,12 +8158,6 @@ to display dialog boxes from the commandline and shell scripts.")
     (build-system meson-build-system)
     (arguments
      (list
-      #:modules '((guix build meson-build-system)
-                  ((guix build python-build-system) #:prefix python:)
-                  (guix build utils)
-                  (ice-9 match))
-      #:imported-modules `(,@%meson-build-system-modules
-                           (guix build python-build-system))
       #:glib-or-gtk? #t
       #:configure-flags
       #~(list
