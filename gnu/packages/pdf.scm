@@ -154,7 +154,6 @@
                   libpng
                   zlib))
     (native-inputs (list font-google-noto
-                         gcc-14         ; for std::format
                          ghostscript
                          pkg-config
                          python
