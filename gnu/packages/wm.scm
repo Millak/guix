@@ -4491,7 +4491,7 @@ Well-tested and fuzzed.
 (define-public libucl
   (package
     (name "libucl")
-    (version "0.8.2")
+    (version "0.9.4")
     (source
      (origin
        (method git-fetch)
@@ -4500,12 +4500,10 @@ Well-tested and fuzzed.
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j8npymjhcnzbwhx1wggr88148cga921438flf1sn7mw1b9dr55f"))))
+        (base32 "149iapbqa8xwcwx27q4ydi71bjdwvbnxmkwkxs9sz6saafs539cv"))))
     (native-inputs
-     (list autoconf automake pkg-config libtool))
+     (list autoconf-2.72 automake pkg-config libtool))
     (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f)) ;; no tests
     (home-page "https://github.com/vstakhov/libucl")
     (synopsis "Universal configuration language (UCL) parser")
      (description "libucl implements a configuration language that is easy to
