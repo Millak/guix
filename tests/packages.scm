@@ -43,7 +43,7 @@
   #:use-module (guix build-system)
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix memoization)
   #:use-module (guix profiles)
   #:use-module (guix scripts package)
@@ -1548,8 +1548,8 @@
 (test-eq "package-input-rewriting, deep"
   (derivation-file-name (package-derivation %store sed))
   (let* ((p0      (dummy-package "chbouib"
-                    (build-system python-build-system)
-                    (arguments `(#:python ,python))))
+                    (build-system pyproject-build-system)
+                    (arguments (list #:python python))))
          (rewrite (package-input-rewriting `((,python . ,sed))))
          (p1      (rewrite p0)))
     (match (bag-direct-inputs (package->bag p1))
@@ -1682,9 +1682,9 @@
                     (build-system trivial-build-system)
                     (propagated-inputs `(("python" ,python)))))
          (p0      (dummy-package "chbouib"
-                    (build-system python-build-system)
-                    (arguments `(#:python ,python))
-                    (inputs `(("dep0" ,dep0)))))
+                    (build-system pyproject-build-system)
+                    (arguments (list #:python python))
+                    (inputs (list dep0))))
          (rewrite (package-input-rewriting/spec '() #:deep? #t))
          (p1      (rewrite p0))
          (bag1    (package->bag p1))
