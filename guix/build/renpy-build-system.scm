@@ -18,7 +18,6 @@
 
 (define-module (guix build renpy-build-system)
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
-  #:use-module ((guix build python-build-system) #:prefix python:)
   #:use-module (guix build utils)
   #:use-module (ice-9 match)
   #:use-module (ice-9 ftw)
@@ -27,6 +26,12 @@
   #:use-module (srfi srfi-26)
   #:export (%standard-phases
             renpy-build))
+
+(define* (enable-bytecode-determinism #:rest _)
+  "Improve determinism of pyc and rpyc files."
+  ;; Same reasoning as in pyproject-build-system, see there…
+  (setenv "PYTHONHASHSEED" "0")
+  (setenv "PYTHONDONTWRITEBYTECODE" "1"))
 
 (define* (build #:key game #:allow-other-keys)
   (for-each make-file-writable
@@ -96,7 +101,7 @@
 (define %standard-phases
   (modify-phases gnu:%standard-phases
     (add-after 'unpack 'enable-bytecode-determinism
-      (assoc-ref python:%standard-phases 'enable-bytecode-determinism))
+      enable-bytecode-determinism)
     (delete 'bootstrap)
     (delete 'configure)
     (replace 'build build)

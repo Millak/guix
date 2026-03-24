@@ -44,7 +44,6 @@
 (define %renpy-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build renpy-build-system)
-    (guix build python-build-system)
     ,@%default-gnu-imported-modules))
 
 (define* (lower name
