@@ -298,7 +298,7 @@ than 600 operators available.")
 (define-public h3
   (package
     (name "h3")
-    (version "4.1.0")
+    (version "4.4.1")
     (source
      (origin
        (method git-fetch)
@@ -307,7 +307,7 @@ than 600 operators available.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x764xzna8ka6yhgv2y4hb158a61y3g9a6835qckqp7wfkpqvb7f"))))
+        (base32 "1ijnbr4a54ph7bkn8waqwgnxmxlylv9yly9mwjdj69lkmdfjgaml"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")))
