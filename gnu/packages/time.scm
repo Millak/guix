@@ -61,6 +61,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages)
@@ -544,31 +545,41 @@ time, a duration, a timezone, but not a range or interval.")
 (define-public python-timezonefinder
   (package
     (name "python-timezonefinder")
-    (version "6.2.0")
+    (version "8.2.1")
     (source
      (origin
        (method git-fetch)
-       ;; The PyPi distribution doesn't include the tests.
        (uri (git-reference
-             (url "https://github.com/jannikmi/timezonefinder")
-             (commit version)))
+              (url "https://github.com/jannikmi/timezonefinder")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qv9rh6j8c1cqwh4sxrfl1m1ah4aqrf0w2kyrf5cgrpfxi6xr94z"))))
+        (base32 "0madqryxm3ynij1n285vakp8l2mz8mzlfg5slcy0mbbz5vh4kqrs"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 106 passed, 1 deselected
-      ;;
-      ;; TODO: Guix has lower python-pytz than required in the latest
-      ;; version:  pytz.exceptions.UnknownTimeZoneError:
-      ;; 'America/Ciudad_Juarez'
-      ;; It's optional, remove this constrain where python-pytz is updated.
-      #:test-flags #~(list "-k" "not test_with_pytz")))
+      ;; tests: 1995 passed, 1 deselected
+      #:test-flags
+      ;; FileNotFoundError: [Errno 2] No such file or directory: 'uv'
+      #~(list "--ignore=tests/test_package_contents.py"
+              "--ignore=tests/test_integration.py"
+              ;; ValueError: Trying to use the clang implementation of the
+              ;; point in polygon algorithm while the C extension in not
+              ;; loaded.
+              "--ignore=tests/utils_test.py"
+              ;; pytz.exceptions.UnknownTimeZoneError: 'America/Coyhaique'
+              (string-append "--deselect=tests/test_compatibility.py::"
+                             "TestCompatibility::test_with_pytz"))))
     (native-inputs
-     (list python-poetry-core python-pytest python-setuptools))
+     (list python-pytest
+           python-pytz
+           python-setuptools))
     (propagated-inputs
-     (list python-cffi python-h3-3 python-numba python-numpy-1 python-pytz))
+     (list python-cffi
+           python-h3
+           python-flatbuffers
+           python-numpy
+           python-pydantic))
     (home-page "https://timezonefinder.michelfe.it/gui")
     (synopsis "Finding the timezone of any coordinates on Earth offline")
     (description "This is a python package for looking up the corresponding
