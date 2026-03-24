@@ -11072,12 +11072,7 @@ configuration files.  It supports data files in ASCII, MBCS and Unicode.")
            (lambda* (#:key make-flags #:allow-other-keys)
              (apply invoke "make" "install-dev" make-flags))))))
     (native-inputs
-     ;; riscv64 needs >= gcc-13.3.0 for liburcu.
-     (append
-       (if (target-riscv64?)
-           (list gcc-14)
-           '())
-       (list gettext-minimal)))
+     (list gettext-minimal))
     (inputs
      `(("libinih" ,libinih)
        ("liburcu" ,liburcu)
