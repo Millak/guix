@@ -5442,7 +5442,7 @@ in the audio domain.")
     (name "python-pytorch")
     (version %python-pytorch-for-r-torch-version)
     (source %python-pytorch-for-r-torch-src)
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (inputs
      (modify-inputs inputs
        (replace "gloo" gloo-for-r-torch)))
