@@ -12856,24 +12856,25 @@ to build scalable network services based on a cluster of two or more nodes.")
   (package
     (name "ryzenadj")
     (version "0.17.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/flygoat/ryzenadj/archive/refs/tags/"
-                                  "v" version ".tar.gz"))
-                   (sha256
-                    (base32 "0i2x6kbn2ix52vjz1mmh0c0g3w0k4sn0lq68wbsk0pgndzcck2l4"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin (delete-file-recursively "win32")
-                 #t))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/flygoat/ryzenadj")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dpznl4h1f5syq5464a0h9grqlvlp0qmjxr59nq3gp363gr5vjfv"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (delete-file-recursively "win32")))))
     (build-system cmake-build-system)
     (inputs (list pciutils))
     (arguments
-     (list #:tests? #f ; No test suite
-           #:phases #~(modify-phases %standard-phases
-                        (add-before 'install 'build
-                          (lambda _
-                            (invoke "cmake" "-DCMAKE_BUILD_TYPE=Release" "."))))))
+     (list
+      #:tests? #f ;No test suite
+      #:build-type "Release"))
     (home-page "https://github.com/flygoat/ryzenadj")
     (synopsis "Power management tool for AMD Ryzen APUs")
     (description
