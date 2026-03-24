@@ -9182,9 +9182,20 @@ something with a bit more flair than the Modus themes.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15mmpab2nh7imdza8p4wy27x4ckfi9dnqjm5a1k9ix02d0i3b3yz"))))
+        (base32 "15mmpab2nh7imdza8p4wy27x4ckfi9dnqjm5a1k9ix02d0i3b3yz"))
+       (modules '((guix build utils)))
+       (snippet #~(begin
+                  ;; This variable is only mentioned in the tests. See
+                  ;; https://github.com/protesilaos/doric-themes/issues/25
+                  (substitute* "tests/doric-themes-test.el"
+                    (("doric-themes-success-background-faces") ""))))))
     (build-system emacs-build-system)
-    (arguments (list #:tests? #f))      ;no tests
+    (arguments
+     (list #:test-command
+           #~(list "emacs" "--batch" "-Q"
+                   "-l" "tests/doric-themes-test.el"
+                   "-f" "ert-run-tests-batch-and-exit")))
+    (native-inputs (list emacs-ert-runner))
     (home-page "https://github.com/protesilaos/doric-themes")
     (synopsis "Highly readable minimalist Emacs themes")
     (description
