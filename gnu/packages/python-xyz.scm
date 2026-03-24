@@ -5130,44 +5130,6 @@ module and then similar looking characters are removed.")
 and function call return values in a human-readable way.")
     (license license:asl2.0)))
 
-(define-public python-clyent
-  (package
-    (name "python-clyent")
-    (version "1.2.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/Anaconda-Platform/clyent")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0vi9nkd4hnvycwwpz9xip1drc5zn7bdwff1pz3azmyvh8v4hsias"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-backend #~'unittest
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; Replace version manually because clyent uses
-          ;; versioneer, which requires git metadata.
-          (add-after 'unpack 'versioneer
-            (lambda _
-              (invoke "versioneer" "install")
-              (substitute* "setup.py"
-                (("version=versioneer.get_version\\(),")
-                 (string-append "version='" #$version "',"))))))))
-    (native-inputs
-     (list python-mock
-           python-setuptools
-           python-versioneer))
-    (home-page "https://github.com/Anaconda-Platform/clyent")
-    (synopsis "Command line client library")
-    (description
-     "Clyent is a Python command line utility library.  It is used by
-@code{binstar}, @code{binstar-build}, and @code{chalmers}.")
-    (license license:bsd-3)))
-
 (define-public python-babel
   (package
     (name "python-babel")
