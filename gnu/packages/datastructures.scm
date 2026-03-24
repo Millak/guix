@@ -302,12 +302,7 @@ allows multiple concurrent reader and writer threads.")
                 "0ks1mj5r11ir9ssbxgm13pj9wix7gny9g3qfqzrfn4gbjqh1j2w5"))))
     (build-system gnu-build-system)
     (native-inputs
-     ;; riscv64 needs >= gcc-13.3.0
-     (append
-       (if (target-riscv64?)
-           (list gcc-14)
-           '())
-       (list perl)))            ; for tests
+     (list perl))               ; for tests
     (home-page "https://liburcu.org/")
     (synopsis "User-space RCU data synchronisation library")
     (description "liburcu is a user-space @dfn{Read-Copy-Update} (RCU) data
