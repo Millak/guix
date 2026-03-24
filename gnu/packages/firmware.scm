@@ -584,8 +584,8 @@ utilities used to process FCODE, OpenFirmware's byte code, consisting of:
                                            "\\.elf$"))))))))
     (native-inputs
      (append (if (string-prefix? (%current-system) target)
-                 (list gcc-10)
-                 (list (cross-gcc target #:xgcc gcc-10) (cross-binutils target)))
+                 '()
+                 (list (cross-gcc target) (cross-binutils target)))
              (list fcode-utils libxslt which)))
     (home-page "https://openfirmware.info/Welcome_to_OpenBIOS")
     (synopsis "Open Firmware implementation")
