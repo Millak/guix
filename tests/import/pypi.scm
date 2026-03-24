@@ -32,6 +32,7 @@
   #:use-module (guix tests http)
   #:use-module ((guix download) #:select (url-fetch))
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module ((guix build utils)
                 #:select (delete-file-recursively
                           which mkdir-p dump-port
@@ -555,7 +556,7 @@ files specified by SPECS.  Return its file name."
                         (source (dummy-origin
                                  (method url-fetch)
                                  (uri (pypi-uri "foo" version))))
-                        (build-system python-build-system))
+                        (build-system pyproject-build-system))
          (list %pypi-updater)))
 
       (list (map basename (upstream-source-urls source))
