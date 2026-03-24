@@ -13331,10 +13331,6 @@ GtkTextView widgets.")
      (list desktop-file-utils           ;for desktop-file-validate
            `(,glib "bin")
            gettext-minimal
-           ;; GCC 14 seems to be required to not end up in a compilation
-           ;; failure.
-           ;; See <https://gitlab.gnome.org/GNOME/gnome-builder/-/issues/2176>.
-           gcc-14
            gi-docgen
            pkg-config
            python                       ;for meson scripts
