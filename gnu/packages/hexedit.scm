@@ -373,8 +373,7 @@ for specifying patterns in the ImHex Hex Editor.")
              pkg-config
              python
              python-wrapper
-             ruby
-             gcc-14))
+             ruby))
       (inputs
        (list yara
              boost
