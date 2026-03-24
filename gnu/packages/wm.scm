@@ -1315,8 +1315,7 @@ your own layouts, widgets, and built-in commands.")
               (wrap-program (string-append #$output "/bin/quickshell")
                 `("QML_IMPORT_PATH" ":" = (,(getenv "QML_IMPORT_PATH")))))))))
     (native-inputs
-     (list gcc-14
-           ninja
+     (list ninja
            pkg-config
            qtshadertools
            spirv-tools))
