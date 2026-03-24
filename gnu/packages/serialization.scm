@@ -922,7 +922,7 @@ to generate and parse.  The two primary functions are @code{cbor.loads} and
 (define-public flatbuffers
   (package
     (name "flatbuffers")
-    (version "24.12.23")               ; Keep in sync with python-flatbuffers.
+    (version "25.2.10")               ; Keep in sync with python-flatbuffers.
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -931,7 +931,7 @@ to generate and parse.  The two primary functions are @code{cbor.loads} and
               (file-name (git-file-name "flatbuffers" version))
               (sha256
                (base32
-                "01g64kmjw8dfhj12j5fgyx70avix9p1ml4w25lm726dixmpq9gp8"))))
+                "1wcpaj4k9dwccb752pl8p54pqwajr51sxjym32q2bpm9ny6ib45v"))))
     (build-system cmake-build-system)
     (arguments
      '(#:build-type "Release"
@@ -981,6 +981,7 @@ game development and other performance-critical applications.")
       #:import-path "github.com/google/flatbuffers"))))
 
 (define-public python-flatbuffers
+  ;; TODO: Build from source the same way as go-github-com-google-flatbuffers.
   (package
     (name "python-flatbuffers")
     (version (package-version flatbuffers))
@@ -989,7 +990,7 @@ game development and other performance-critical applications.")
        (method url-fetch)
        (uri (pypi-uri "flatbuffers" version))
        (sha256
-        (base32 "1b1dqa2hgcx2lf3g51amzd0a56vhl2vx061bvmwdpdp9dayb0419"))))
+        (base32 "0vnj03mr5bx421j9djyq0g61ad0k6v45qaflkf6jy9j1g8vm3r4p"))))
     (build-system pyproject-build-system)
     ;; XXX: No tests on Pypi.  Even in the upstream repository, it's unclear
     ;; if there is a way to run tests for the python library only.
