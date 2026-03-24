@@ -236,7 +236,7 @@ and is themeable.")
               (with-directory-excursion "../source"
                 (invoke "python3" "tests/integration/integration.py"
                         "../build/cli/plcli")))))))
-    (native-inputs (list cli11 gcc-14 fmt-10 nlohmann-json python))
+    (native-inputs (list cli11 fmt-10 nlohmann-json python))
     (home-page "https://imhex.werwolv.net")
     (synopsis "Pattern language used by the ImHex Hex Editor")
     (description "This package provides a C-like domain-specific language used
