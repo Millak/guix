@@ -15435,7 +15435,8 @@ recommended way to use GLib from Python.")
         (base32 "0q3jrw515z98mqdk9x822nd95rky455zz9876f1nqna5igkd3gcj"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config))
+     (list pkg-config
+           python-setuptools))
     (inputs
      `(("python" ,python-wrapper)
        ("dbus-glib" ,dbus-glib)))
