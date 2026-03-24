@@ -77,6 +77,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages unicode)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
@@ -2151,7 +2152,8 @@ work well with other GTK desktop environments.")
      `(#:tests? #f ; There are no tests.
        #:configure-flags
        (list (string-append
-              "-DUNICODE_BLOCKS=" (assoc-ref %build-inputs "unicode-blocks")))
+              "-DUNICODE_BLOCKS=" (assoc-ref %build-inputs "ucd")
+              "/share/ucd/Blocks.txt"))
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'set-library-path
@@ -2180,16 +2182,7 @@ work well with other GTK desktop environments.")
        ("perl" ,perl)                   ;needed for pdfoutline
        ("perl-pdf-api2" ,perl-pdf-api2)
        ("perl-libintl-perl" ,perl-libintl-perl)
-       ("unicode-blocks"
-        ,(let ((version "14.0.0"))
-           (origin
-             (method url-fetch)
-             (uri (string-append "https://unicode.org/Public/"
-                                 version "/ucd/Blocks.txt"))
-             (file-name (string-append "unicode-blocks-" version ".txt"))
-             (sha256
-              (base32
-               "05vzgrvfp35mgxjgkm4wnxjjgzva8n6545i9jxd4pczpvvfp122r")))))))
+       ("ucd" ,ucd)))
     (home-page "https://github.com/eugmes/fntsample")
     (synopsis "PDF and PostScript font samples generator")
     (description "This package provides a tool that can be used to make font
