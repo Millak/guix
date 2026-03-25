@@ -1257,30 +1257,8 @@ is not available for Guile 2.0.")
      (modify-inputs native-inputs
        (replace "guile" guile-2.2)))))
 
-(define-public guile-fibers-next
-  (let ((commit "297359f0ad655378bcc3ff0d4e96101965ef39b4")
-        (revision "0"))
-    (package
-      (inherit guile-fibers)
-      (name "guile-fibers-next")
-      (version (git-version "1.4.2"
-                            revision
-                            commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://codeberg.org/guile/fibers.git")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0qh0czz5qvk5mmrc8x2gmvl5psdfd22q2rhzj4jrpan6k3d55bl8"))))
-      (inputs
-       (modify-inputs inputs
-         (replace "guile" guile-next)))
-      (native-inputs
-       (modify-inputs native-inputs
-         (replace "guile" guile-next))))))
+;; Deprecated on 2026-04-23
+(define-deprecated-package guile-fibers-next guile-fibers)
 
 (define-public guile-kracht
   (package
