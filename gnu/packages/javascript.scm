@@ -1041,18 +1041,24 @@ roots, or wrestle with obscure build systems.")
                                     "doc/quickjs.html"))))))
     (build-system gnu-build-system)
     (arguments
-     (list #:make-flags
-           #~(list (string-append "PREFIX=" #$output)
-                   #$@(if (or (target-riscv64?)
-                              (target-ppc32?))
-                          '("LDFLAGS=-latomic")
-                          '()))
-           #:phases #~(modify-phases %standard-phases
-                        (delete 'configure)
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "make" "microbench")))))))
+     (list
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              #$@(if (or (target-riscv64?)
+                         (target-ppc32?))
+                     '("LDFLAGS=-latomic")
+                     '()))
+      #:test-target (if (target-x86-32?)
+                        "microbench"
+                        "test")
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (add-before 'check 'pre-check
+                     (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                       (substitute* "tests/test_std.js"
+                         (("/bin/sh") (search-input-file
+                                        (or native-inputs inputs)
+                                        "bin/sh"))))))))
     (home-page "https://bellard.org/quickjs/")
     (synopsis "Small embeddable Javascript engine")
     (description "QuickJS supports the ES2023 specification including modules,
