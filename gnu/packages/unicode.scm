@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
-;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -113,9 +113,49 @@ test data for conformance to several important Unicode algorithms.")
 (define-public unicode-emoji
   (package
     (name "unicode-emoji")
-    (version "12.0")
+    (version "15.1")
     (source #f)
     (build-system trivial-build-system)
+    (arguments
+     `(#:modules ((guix build utils))
+       #:builder
+       (let ((out (string-append %output "/share/unicode/emoji")))
+         (use-modules (guix build utils))
+         (mkdir-p out)
+         (for-each
+          (lambda (input)
+            (copy-file
+             (cdr input)
+             (string-append out "/"
+                            (substring (car input) 8) ; strip "unicode-"
+                            ".txt")))
+          %build-inputs))))
+    (inputs
+     `(("unicode-emoji-sequences"
+        ,(unicode-emoji-file
+          "sequences" version
+          "1lahs35c3dqpai22yvn5ri31livrz0cvc8c63jzgn11mbq8wjwpb"))
+       ("unicode-emoji-test"
+        ,(unicode-emoji-file
+          "test" version
+          "1nby2gl5wffhcpa8i91a0qxx3a2751qampx6rxvam3m2k8jfwxnq"))
+       ("unicode-emoji-zwj-sequences"
+        ,(unicode-emoji-file
+          "zwj-sequences" version
+          "0mqfzcz1ka78jjk8gk6bfywq4ldmj26rri08zsdqzkfgr8ys0xls"))))
+    (home-page "https://www.unicode.org")
+    (synopsis "Unicode Emoji data")
+    (description
+     "This package includes data files listing characters and sequences, that
+Unicode emoji supporting fonts or keyboards should support according to the
+Unicode Technological Standard #51.")
+    (license unicode)))
+
+(define-public unicode-emoji-12
+  (package
+    (inherit unicode-emoji)
+    (name "unicode-emoji")
+    (version "12.0")
     (arguments
      `(#:modules ((guix build utils))
        #:builder
@@ -151,14 +191,7 @@ test data for conformance to several important Unicode algorithms.")
        ("unicode-emoji-zwj-sequences"
         ,(unicode-emoji-file
           "zwj-sequences" version
-          "1l791nbijmmhwa7kmvfn8gp26ban512l6mgqpz1mnbq3xm19181n"))))
-    (home-page "https://www.unicode.org")
-    (synopsis "Unicode Emoji data")
-    (description
-     "This package includes data files listing characters and sequences, that
-Unicode emoji supporting fonts or keyboards should support according to the
-Unicode Technological Standard #51.")
-    (license unicode)))
+          "1l791nbijmmhwa7kmvfn8gp26ban512l6mgqpz1mnbq3xm19181n"))))))
 
 (define-public unicode-cldr-common
   (package

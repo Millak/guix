@@ -200,7 +200,7 @@
            setxkbmap
            ucd
            unicode-cldr-common
-           unicode-emoji
+           unicode-emoji-12
            wayland
            xmodmap))
     (native-inputs
