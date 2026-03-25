@@ -25718,14 +25718,14 @@ contain lags, diffs and missing values.")
 (define-public r-dyngen
   (package
     (name "r-dyngen")
-    (version "1.0.5")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dyngen" version))
        (sha256
         (base32
-         "095jqn1rd83qm3ayca9hmv6bhlaa2c338020l46vniq8n38kbnra"))))
+         "0wi068nz7c6278k1n81pm40sgs6rqgca223bvnz74s98swmrmr8s"))))
     (properties `((upstream-name . "dyngen")))
     (build-system r-build-system)
     (arguments
@@ -25741,7 +25741,6 @@ contain lags, diffs and missing values.")
            r-dynutils
            r-ggplot2
            r-ggraph
-           r-ggrepel
            r-gillespiessa2
            r-igraph
            r-lmds
@@ -25753,6 +25752,7 @@ contain lags, diffs and missing values.")
            r-tibble
            r-tidygraph
            r-tidyr
+           r-tidyselect
            r-viridis))
     (native-inputs (list r-r-rsp r-testthat))
     (home-page "https://github.com/dynverse/dyngen")
