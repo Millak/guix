@@ -44300,18 +44300,19 @@ to age using B-splines and P-splines.")
 (define-public r-acfmperiod
   (package
     (name "r-acfmperiod")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "acfMPeriod" version))
        (sha256
         (base32
-         "1yww8isfrbs2v9s94hx7p2imyszcgadwafdgpj438n2ik0q6p9d5"))))
+         "0dxniwp8g9n3hmjgzwq6d7243nmym0i4nany9rj34ikhar2gba7g"))))
     (properties `((upstream-name . "acfMPeriod")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-mass))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/acfMPeriod/")
     (synopsis "Estimation of the ACF from the M-periodogram")
     (description
