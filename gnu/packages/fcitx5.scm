@@ -707,7 +707,7 @@ output.")
 (define-public fcitx5-hangul
   (package
     (name "fcitx5-hangul")
-    (version "5.1.7")
+    (version "5.1.9")
     (source
      (origin
        (method git-fetch)
@@ -716,7 +716,7 @@ output.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02lkbwg25jr4hazjyxcy69midfsmxc0ksbdrfwbmqcfa3kz5d9gb"))))
+        (base32 "0ja5faara4xz8waccpa5gbi3prh02hh3gpf915czhbkihffby6ng"))))
     (build-system cmake-build-system)
     (native-inputs (list extra-cmake-modules pkg-config gettext-minimal))
     (inputs (list fcitx5 libhangul))
