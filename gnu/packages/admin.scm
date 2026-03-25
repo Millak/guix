@@ -5603,68 +5603,60 @@ representation to stdout.")
   (package
     (name "hosts")
     (version "3.6.5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/xwmx/hosts")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1kzd4lxlflam87dhbx1jx7bj6v6sa4f2024mfxj2768kp9qapraj"))))
-    (build-system trivial-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/xwmx/hosts")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kzd4lxlflam87dhbx1jx7bj6v6sa4f2024mfxj2768kp9qapraj"))))
+    (build-system copy-build-system)
+    (native-inputs
+     (list bats)) ;for tests
     (inputs
-     `(("bats" ,bats) ;for test
-       ("awk" ,gawk)
-       ("bash" ,bash)
-       ("coreutils" ,coreutils)
-       ("diffutils" ,diffutils)
-       ("grep" ,grep)
-       ("ncurses" ,ncurses) ;tput
-       ("sed" ,sed)))
+     (list gawk
+           bash-minimal
+           coreutils
+           diffutils
+           grep
+           ncurses ;for tput
+           sed))
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         ;; copy source
-         (copy-recursively (assoc-ref %build-inputs "source") ".")
-         ;; patch-shebang phase
-         (setenv "PATH"
-                 (string-append (assoc-ref %build-inputs "bash") "/bin"
-                                ":" (assoc-ref %build-inputs "awk") "/bin"
-                                ":" (assoc-ref %build-inputs "coreutils") "/bin"
-                                ":" (assoc-ref %build-inputs "diffutils") "/bin"
-                                ":" (assoc-ref %build-inputs "grep") "/bin"
-                                ":" (assoc-ref %build-inputs "ncurses") "/bin"
-                                ":" (assoc-ref %build-inputs "sed") "/bin"
-                                ":" "/run/privileged/bin"
-                                ":" (getenv "PATH")))
-         (substitute* "hosts"
-           (("#!/usr/bin/env bash")
-            (string-append "#!" (which "bash")
-                           "\nPATH=" (getenv "PATH"))))
-         ;; check phase
-         (setenv "TERM" "linux") ;set to tty for test
-         (invoke (search-input-file %build-inputs "/bin/bats")
-                 "test")
-         ;; install phase
-         (install-file "hosts" (string-append %output "/bin"))
-         (let ((bash-completion
-                (string-append %output "/etc/bash_completion.d")))
-           (mkdir-p bash-completion)
-           (copy-file "etc/hosts-completion.bash"
-                      (string-append bash-completion "/hosts")))
-         (let ((zsh-completion
-                (string-append %output "/share/zsh/site-functions")))
-           (mkdir-p zsh-completion)
-           (copy-file "etc/hosts-completion.zsh"
-                      (string-append zsh-completion "/_hosts")))
-         (let ((doc (string-append %output "/share/doc/" ,name "-" ,version)))
-           (mkdir-p doc)
-           (install-file "LICENSE" doc)
-           (install-file "README.md" doc))
-         #t)))
+     (list
+      #:install-plan
+      #~'(("hosts" "bin/hosts")
+          ("etc/hosts-completion.bash" "/etc/bash_completion.d/hosts")
+          ("etc/hosts-completion.zsh" "/share/zsh/site-functions/_hosts")
+          ("README.md"
+           #$(string-append "/share/doc/" name "-" version "/README.md")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-hosts
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "test/test_helper.bash"
+                (("export _HOSTS=.*")
+                 (string-append "export _HOSTS=" #$output "/bin/hosts")))
+              (substitute* (cons* "hosts"
+                            ;; *.bash and *.bats.
+                            (find-files "test" "\\.bat?sh?.*$"))
+                (("\\btput\\b") (search-input-file inputs "bin/tput"))
+                (("\\bsed\\b") (search-input-file inputs "bin/sed"))
+                (("\\bawk\\b") (search-input-file inputs "bin/awk"))
+                (("\\bgrep\\b") (search-input-file inputs "bin/grep"))
+                (("\\bdiff\\b") (search-input-file inputs "bin/diff"))
+                (("\\bcp\\b") (search-input-file inputs "bin/cp"))
+                (("\\bchmod\\b") (search-input-file inputs "bin/chmod")))))
+          (add-after 'install 'check
+            (lambda* (#:key tests? inputs #:allow-other-keys)
+              (if tests?
+                  (begin
+                    (delete-file "hosts") ;Ensure installed hosts is checked.
+                    (setenv "PATH" "") ;Ensure substitutions were correct.
+                    (setenv "TERM" "linux") ;Set to tty for test.
+                    (invoke (search-input-file inputs "/bin/bats")
+                            "test"))))))))
     (home-page "https://github.com/xwmx/hosts/")
     (synopsis "Script for editing a foreign distro's @file{/etc/hosts} file")
     (description "Hosts is a command line program for managing
