@@ -13576,14 +13576,14 @@ of the points.")
 (define-public r-tsne
   (package
     (name "r-tsne")
-    (version "0.1-3.1")
+    (version "0.2-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tsne" version))
        (sha256
         (base32
-         "126q6ha25wx9mdsfngzkyp8j2fj81ri1knjdq1iyvwx3q1dwdaql"))))
+         "1wn5d3a6aw1av18d6lx9l7bpzf1vj58w81gg9vclrc7vccfaqk5x"))))
     (build-system r-build-system)
     (home-page "https://github.com/jdonaldson/rtsne/")
     (synopsis "t-Distributed Stochastic Neighbor Embedding for R")
