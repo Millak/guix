@@ -1412,7 +1412,11 @@ Library.")
      (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
         #~(append #$flags
-                  (list "-DLLVM_TARGETS_TO_BUILD=AMDGPU;X86"
+                  (list #$(string-append
+                           "-DLLVM_TARGETS_TO_BUILD=AMDGPU;X86"
+                           (if (string=? "X86" (system->llvm-target))
+                               ""
+                               (string-append ";" (system->llvm-target))))
                         "-DLLVM_VERSION_SUFFIX=")))))
     (properties `((hidden? . #t)
                   ,@(package-properties llvm-base)))
