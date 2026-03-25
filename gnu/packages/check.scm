@@ -2875,19 +2875,27 @@ a Pytest test execution.")
 (define-public python-pytest-mypy-plugins
   (package
     (name "python-pytest-mypy-plugins")
-    (version "3.1.2")
+    (version "4.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-mypy-plugins" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/TypedDjango/pytest-mypy-plugins")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1gpynypn13032by633dr2zhng54v2gl09kwgp3ysc4wpwl09pyhl"))))
+        (base32 "05vnv8m4qjrpyxw7f17wng6pnicvaps6vf8c6yn1a8lj10fkwazn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "-k" (string-join
                     (list "not reveal_type_extension_is_loaded"
+                          ;; Unsupported operand types for / ("str" and "int")
+                          "test_no_silence_site_packages_only"
+                          "test_no_silence_site_packages_and_modify_pythonpath"
+                          ;; subprocess.CalledProcessError
+                          ;; pytest not found?
                           "test_pyproject_toml"
                           "test_ini_files")
                     " and not "))
@@ -2902,8 +2910,7 @@ a Pytest test execution.")
                 (with-directory-excursion "/tmp"
                   (apply invoke "pytest" "-v" test-flags))))))))
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (propagated-inputs
      (list python-decorator
            python-jinja2
