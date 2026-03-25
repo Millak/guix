@@ -1026,14 +1026,14 @@ roots, or wrestle with obscure build systems.")
 (define-public quickjs
   (package
     (name "quickjs")
-    (version "2025-04-26")
+    (version "2025-09-13-2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://bellard.org/quickjs/quickjs-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1gw39jazggpbrjmkkmkhsj2wn0mmaw6wb0gkh7vzcvhn4m60f81g"))
+                "1d5hz1ykzmcb870aanl21jh8adkirglx09k4s3a5m5gw3186nv4r"))
               (snippet
                #~(begin (use-modules (guix build utils))
                         (for-each delete-file
