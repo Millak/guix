@@ -8683,13 +8683,13 @@ larger than memory.")
 (define-public r-bipartite
   (package
     (name "r-bipartite")
-    (version "2.23")
+    (version "2.24")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bipartite" version))
        (sha256
-        (base32 "127xhpgaz8mcmx2whn27iiqlyc71rpv9axmkl4ykrp9zv84vgnic"))))
+        (base32 "1cac2jghh04f3hn1nl44xabi21wph6rz6jqmzn0qxinfc25vglj0"))))
     (properties `((upstream-name . "bipartite")))
     (build-system r-build-system)
     (propagated-inputs (list r-corpcor
