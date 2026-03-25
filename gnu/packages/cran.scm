@@ -14564,13 +14564,13 @@ that can be distributed without access to a live server.")
 (define-public r-httpuv
   (package
     (name "r-httpuv")
-    (version "1.6.16")
+    (version "1.6.17")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "httpuv" version))
               (sha256
                (base32
-                "0r1gxmxscw1znda2mjp9wl1rxkbdsn3mq826qjs13529z6p43wsi"))
+                "0wv23lna87cyj19332xy5dn7ik1l8hsbhss44b8brf266phhd1fi"))
               (modules '((guix build utils)))
               ;; Cannot unbundle http-parser, because it contains local
               ;; modifications.
