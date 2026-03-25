@@ -503,7 +503,6 @@ other MPD frontends.")
                (base32
                 "17ys8ccr3h6vix0agvhz859slz0phhk7lwqn5bg4az8s7zgqm3nm"))))
     (build-system gnu-build-system)
-    ;; Manually wrap the binary, because we’re not using python-build-system.
     (arguments
      (list
       #:phases

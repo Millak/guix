@@ -1033,21 +1033,18 @@ firmware blobs.  You can
                                        ;; absolute file name, which is why we
                                        ;; run everything through 'basename'.
                                       (match (string-split line #\ )
-                                        ((commands ... prog)
-                                         (cons (basename prog) progs))))
-                                (loop (read-line port) progs)))))))))))
-         ;; Wrap all executables with GUIX_PYTHONPATH.  We can't borrow
-         ;; the phase from python-build-system because we also need to wrap
-         ;; the scripts in $out/lib/ganeti such as "node-daemon-setup".
-         (add-after 'install 'wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (sbin (string-append out "/sbin"))
-                    (lib (string-append out "/lib"))
-                    (PYTHONPATH (string-append (site-packages inputs outputs)
-                                               ":" (getenv "GUIX_PYTHONPATH"))))
-               (define (shell-script? file)
-                 (call-with-ascii-input-file file
+                                         ((commands ... prog)
+                                          (cons (basename prog) progs))))
+                                 (loop (read-line port) progs)))))))))))
+          (add-after 'install 'wrap
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (sbin (string-append out "/sbin"))
+                     (lib (string-append out "/lib"))
+                     (PYTHONPATH (string-append (site-packages inputs outputs)
+                                                ":" (getenv "GUIX_PYTHONPATH"))))
+                (define (shell-script? file)
+                  (call-with-ascii-input-file file
                    (lambda (port)
                      (let ((shebang (false-if-exception (read-line port))))
                        (and shebang

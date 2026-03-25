@@ -5961,7 +5961,6 @@ Unicode-to-LaTeX conversion.")
        (sha256
         (base32
          "03gyss1rhj4in7pgysg4q0hxp3230whinlpy1532ljs99lrx0ywx"))))
-    ;(build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases

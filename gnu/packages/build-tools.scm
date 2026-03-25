@@ -432,9 +432,8 @@ files and generates build instructions for the Ninja build system.")
     (arguments
      (list
       #:tests? #f                       ;disabled to avoid extra dependencies
-      ;; Essentially a lighter copy of the former python-build-system.
-      ;; Using it rather than pyproject-build-system allows to edit the latter
-      ;; without a C++ world rebuild.
+      ;; Custom build steps to prevent using pyproject-build-system which
+      ;; allows to edit the latter without a C++ world rebuild.
       #:phases
       #~(modify-phases %standard-phases
           (delete 'bootstrap)

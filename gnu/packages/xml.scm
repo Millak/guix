@@ -1998,9 +1998,8 @@ libxml2 and libxslt.")
     (build-system gnu-build-system)
     (arguments
      (list
-      ;; Essentially a lighter copy of the former python-build-system.
-      ;; Using it rather than pyproject-build-system allows to edit the latter
-      ;; without a texlive + haskell world rebuild.
+      ;; Custom build steps to prevent using pyproject-build-system which
+      ;; allows to edit the latter without a texlive + haskell world rebuild.
       #:test-target "test"
       #:phases
       #~(modify-phases %standard-phases

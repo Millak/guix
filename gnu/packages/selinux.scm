@@ -271,7 +271,6 @@ binary policies.")
             (add-after 'enter-dir 'fix-target-path
               (lambda* (#:key inputs #:allow-other-keys)
                 (let ((get-python-version
-                       ;; FIXME: copied from python-build-system
                        (lambda (python)
                          (let* ((version     (last (string-split python #\-)))
                                 (components  (string-split version #\.))

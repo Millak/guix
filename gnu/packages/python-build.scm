@@ -834,9 +834,9 @@ facilitate packaging Python projects, where packaging includes:
     (arguments
      (list
       #:tests? #f                       ;disabled to avoid extra dependencies
-      ;; Essentially a lighter copy of the former python-build-system.
-      ;; Using it rather than pyproject-build-system allows to edit the latter
-      ;; without a world rebuild (for the meson package in particular).
+      ;; Custom build steps to prevent using pyproject-build-system which
+      ;; allows to edit the latter without a world rebuild (for the meson
+      ;; package in particular).
       #:phases
       #~(modify-phases %standard-phases
           (delete 'bootstrap)

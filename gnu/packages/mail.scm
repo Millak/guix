@@ -1736,8 +1736,6 @@ and search library.")
           ;; tree, so chdir into it before building.
           (add-after 'unpack 'enter-python-dir
             (lambda _ (chdir "bindings/python-cffi")))
-          ;; python-build-system does not invoke the configure script
-          ;; so _notmuch_config.py is missing
           (add-after 'enter-python-dir 'create-notmuch-config
             (lambda* (#:key inputs #:allow-other-keys)
               (with-output-to-file "_notmuch_config.py"
