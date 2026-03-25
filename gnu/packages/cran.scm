@@ -23151,14 +23151,14 @@ automatically.")
 (define-public r-tinytest
   (package
     (name "r-tinytest")
-    (version "1.4.1")
+    (version "1.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tinytest" version))
        (sha256
         (base32
-         "0x0w1fiqd98vmpz8yrp9ig0ry1wfr16g6bkjzd2a8sq9gn417z7n"))))
+         "0xc3qcrwqnr5jyw9f59g0v2jsq4byzhpf4bw29qclwhfd6ca7hzc"))))
     (properties `((upstream-name . "tinytest")))
     (build-system r-build-system)
     ;; Vignettes complain about a missing file, which is in fact there.
