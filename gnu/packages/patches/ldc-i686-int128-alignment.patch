@@ -1,0 +1,40 @@
+Description: Adjust int128 alignment
+Author: Walter Bright <WalterBright@users.noreply.github.com>
+Origin: backport, https://github.com/ldc-developers/ldc/commit/f634e2a6542a8b563d9ba1b680afd5337b4c09ea
+Bug: https://github.com/ldc-developers/ldc/issues/1356
+Last-Update: 2024-12-30
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/dmd/common/int128.d
++++ b/dmd/common/int128.d
+@@ -20,7 +20,29 @@
+ alias U = ulong;
+ enum Ubits = uint(U.sizeof * 8);
+ 
+-align(16) struct Cent
++version (DigitalMars)
++{
++    /* The alignment should follow target.stackAlign(),
++     * which is `isXmmSupported() ? 16 : (is64bit ? 8 : 4)
++     */
++    version (D_SIMD)
++        private enum Cent_alignment = 16;
++    else version (X86_64)
++        private enum Cent_alignment = 8;
++    else
++        private enum Cent_alignment = 4;
++}
++else
++{
++    version (LDC) version (X86) version = LDC_X86;
++
++    version (X86_64)       private enum Cent_alignment = 16;
++    // 32-bit x86: need default alignment due to https://github.com/ldc-developers/ldc/issues/1356
++    else version (LDC_X86) private enum Cent_alignment = U.alignof;
++    else                   private enum Cent_alignment = (size_t.sizeof * 2);
++}
++
++align(Cent_alignment) struct Cent
+ {
+     U lo;      // low 64 bits
+     U hi;      // high 64 bits

@@ -75,7 +75,8 @@
        (uri (string-append "https://github.com/ldc-developers/ldc/releases"
                            "/download/v" version "/ldc-" version "-src.tar.gz"))
        (sha256
-        (base32 "13pkg69wjj4ali4ikijicccpg8y6f2hghhb70z9lrqr2w3pkhqna"))))
+        (base32 "13pkg69wjj4ali4ikijicccpg8y6f2hghhb70z9lrqr2w3pkhqna"))
+       (patches (search-patches "ldc-i686-int128-alignment.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:disallowed-references (,tzdata-for-tests)
