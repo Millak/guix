@@ -584,8 +584,11 @@
                   (set! (@ (guile) set-port-encoding!) (const #t))
 
                   (let-values (((response body)
+                                ;; Note: www.gnu.org returns 403 when
+                                ;; 'User-Agent' is missing.
                                 (http-get "http://www.gnu.org/licenses/gpl-3.0.txt"
-                                          #:decode-body? #f)))
+                                          #:decode-body? #f
+                                          #:headers '((user-agent . "GNU Guile")))))
                     (call-with-output-file %output
                       (lambda (port)
                         (put-bytevector port body)))))
