@@ -28,7 +28,7 @@
 ;;; Copyright © 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Attila Lendvai <attila@lendvai.name>
-;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2022, 2026 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022-2025 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2022-2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022-2024, 2026 Maxim Cournoyer <maxim@guixotic.coop>
@@ -936,6 +936,44 @@ mathematical functions operating on batches.")
 inspired by the @url{https://github.com/gruns/icecream, Python library} of the
 same name.")
     (license license:expat)))
+
+(define-public tinyformat
+  (package
+    (name "tinyformat")
+    (version "2.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/c42f/tinyformat")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0j8bxrg7i4rn98iqpfh03krshgcbwh8hq8nm0p3sfdqpira3vi3y"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install
+                 (lambda _
+                   (install-file "../source/tinyformat.h"
+                                 (string-append #$output "/include")))))))
+    (home-page "https://github.com/c42f/tinyformat")
+    (synopsis "Minimal, type-safe printf replacement library for C++")
+    (description "@code{tinyformat} is a type-safe @code{printf} replacement
+library in a single C++ header file.  Design goals include:
+
+@itemize
+@item Type-safety and extensibility for user defined types
+@item C99 @code{printf} compatibility, to the extent possible using
+@code{std::ostream}
+@item POSIX extension for positional arguments
+@item Simplicity and minimalism; a single header file to include and
+distribute with your projects
+@item Augment rather than replace the standard stream formatting mechanism
+@item C++98 support, with optional C++11 niceties
+@end itemize")
+    (license license:boost1.0)))
 
 (define-public google-highway
   (package
