@@ -135,6 +135,7 @@
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages javascript)
   #:use-module (gnu packages jupyter)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages libevent)
@@ -2720,16 +2721,17 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
 (define-public freecad
   (package
     (name "freecad")
-    (version "1.0.2")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/FreeCAD/FreeCAD")
-             (commit version)))
+             (commit version)
+             (recursive? #t)))          ;needed for the AddonManager
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zyz473fzrz9h073wp4k65qq4bkhqsp245nsv6nv186sl78l99xa"))
+        (base32 "029ndw1dypx0xhs4fyiinf7gpk8am0vm9b24idvdsx9x7ghrqz4j"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
@@ -2746,7 +2748,7 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
       #:configure-flags
       #~(list
          "-DBUILD_FLAT_MESH:BOOL=ON"
-         "-DBUILD_ENABLE_CXX_STD:STRING=C++17"
+         "-DBUILD_ENABLE_CXX_STD:STRING=C++20"  ; FreeCAD 1.1 requires C++20
          "-DENABLE_DEVELOPER_TESTS=OFF"  ;; see the above: #:tests? comment
          "-DFREECAD_QT_VERSION=6"  ;; Build with Qt6
          "-DFREECAD_USE_EXTERNAL_ONDSELSOLVER=ON"  ;; unbundle ondsel-solver
@@ -2768,12 +2770,13 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
      (list c++-gsl
            doxygen
            graphviz
+           pybind11
            qttools
            pkg-config
-           swig-4.0))
+           swig-4.4))
     (inputs
      (list bash-minimal
-           boost-1.83
+           boost
            coin3d
            double-conversion
            eigen
@@ -2783,6 +2786,7 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
            gl2ps
            glew
            hdf5-1.10
+           icu4c
            jsoncpp
            libarea
            libjpeg-turbo
@@ -2805,16 +2809,14 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
            python-ply
            python-pyside-6
            python-pyyaml
-           python-shiboken-6
            python-wrapper
            qtsvg
            qtwebchannel
            qtwebengine
            qtwayland
-           qtx11extras
            sqlite
            onetbb                       ;same version as opencascade-occt
-           vtk-9.5
+           vtk
            xerces-c
            yaml-cpp
            zlib))
