@@ -1644,6 +1644,11 @@ the \"texlive\" importer."
                        "peterpolidoro")
   electronics)
 
+(define-member (person "Thomas Kramer"
+                       "thomas@f-si.org"
+                       "tok")
+  electronics)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
