@@ -668,7 +668,7 @@ for Fcitx 5 with following color variants:
 (define-public fcitx5-rime
   (package
     (name "fcitx5-rime")
-    (version "5.1.12")
+    (version "5.1.13")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.fcitx-im.org/fcitx5"
@@ -676,7 +676,7 @@ for Fcitx 5 with following color variants:
                                   ".tar.zst"))
               (sha256
                (base32
-                "1blqfk8zpzd5v2r7gwjy12jbnsh26pcvad8q4mmhlg5j10yppg03"))))
+                "03wcdgdhkvw5341vjv3idyksykm65y0873vkcrsi16dsp8w0h7i8"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f ;no tests
