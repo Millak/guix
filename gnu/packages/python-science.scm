@@ -4076,7 +4076,7 @@ tissue-specificity metrics for gene expression.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 174115 passed, 24224 skipped, 990 xfailed, 77 xpassed, 110 warnings
+      ;; tests: 174059 passed, 24280 skipped, 990 xfailed, 77 xpassed, 110 warnings
       #:test-flags
       #~(list "-m" (string-join
                     (list "not db" "network" "single_cpu" "slow" "slow_arm")
@@ -4089,12 +4089,14 @@ tissue-specificity metrics for gene expression.")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'version-set-by-guix
+          (add-after 'unpack 'patch-generate-version
             (lambda _
-              (with-output-to-file "_version.py"
-                (lambda _
-                  (display
-                   (string-append "__version__ = \"" #$version "\""))))))
+              ;; See: <https://github.com/pandas-dev/pandas/issues/59459>.
+              (substitute* "generate_version.py"
+                (("version =.*")
+                 (format #f "version = ~s~%" #$version))
+                (("git_version =.*")
+                 (format #f "git_version = ~s~%" #$version)))))
           (replace 'check
             (lambda* (#:key inputs outputs test-flags tests? #:allow-other-keys)
               (when tests?
