@@ -1336,35 +1336,6 @@ installed, will expose packages in a local directory on @code{sys.path} in
 reflected in the package visible to Python, without needing a reinstall.")
     (license license:expat)))
 
-;; This package may be removed when we have Python 3.11 on board.
-(define-public python-exceptiongroup
-  (package
-    (name "python-exceptiongroup")
-    (version "1.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/agronholm/exceptiongroup")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1kygngc6j7hm68w8q327jvym2z4gpyh93g2af6g419qaqqv7axkg"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #f       ;to keep dependencies to a minimum
-      #:build-backend "setuptools.build_meta"))
-    (native-inputs
-     (list python-flit-scm))
-    (propagated-inputs
-     (list python-typing-extensions))
-    (home-page "https://github.com/agronholm/exceptiongroup")
-    (synopsis "PEP 654 backport from Python 3.11")
-    (description "This is a backport of the @code{BaseExceptionGroup} and
-@code{ExceptionGroup} classes from Python 3.11.")
-    (license license:expat)))
-
 (define-public python-hatchling
   (package
     (name "python-hatchling")
