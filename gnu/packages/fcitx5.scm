@@ -370,7 +370,7 @@ for Qt based application.")
 (define-public fcitx5-anthy
   (package
     (name "fcitx5-anthy")
-    (version "5.1.8")
+    (version "5.1.10")
     (source
      (origin
        (method url-fetch)
@@ -378,7 +378,7 @@ for Qt based application.")
                            "/fcitx5-anthy/fcitx5-anthy-"
                            version ".tar.zst"))
        (sha256
-        (base32 "1kv930nxz6q8ijb319fnnkzdyigbi36f2cwijnv4sy3rd0nykxrv"))))
+        (base32 "11h7b687xj2k1hp7dqj6wh5y6i55cm8m5pqbi5vbflgg0cy5v1mp"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f)) ;; no tests
