@@ -583,7 +583,6 @@ of a package, and INPUT-NAMES, a list of package specifications such as
   (list "pybind11"
         "python-cython"
         "python-docutils"
-        "python-flit-scm"
         "python-hatch-docstring-description"
         "python-hatch-fancy-pypi-readme"
         "python-hatch-requirements-txt"

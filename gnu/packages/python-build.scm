@@ -1191,44 +1191,6 @@ specified by PEP 517, @code{flit_core.buildapi}.")
        (delete "python-toml")
        (prepend python-tomli)))))
 
-(define-public python-flit-scm
-  (package
-    (name "python-flit-scm")
-    (version "1.7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "flit_scm" version))
-       (sha256
-        (base32 "1ckbkykfr7f7wzjzgh0gm7h6v3pqzx2l28rw6dsvl6zk4kxxc6wn"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #f        ;no tests in PyPI archive or Git checkout
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-backend
-            ;; flit_scm imports flit_core's buildapi and tries to make it
-            ;; available as "flit_scm:buildapi", see comment in
-            ;; <flit_scm/__init__.py>; but it fails during build phase with
-            ;; error: ModuleNotFoundError: No module named
-            ;; 'flit_scm:buildapi'.
-            ;;
-            ;; Use flit_core.buildapi directly to build flit_scm.
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("flit_scm:buildapi") "flit_core.buildapi")))))))
-    (propagated-inputs
-     (list python-flit-core
-           python-setuptools-scm
-           python-tomli))
-    (home-page "https://gitlab.com/WillDaSilva/flit_scm")
-    (synopsis "PEP 518 build backend combining flit_core and setuptools_scm")
-    (description "This package provides a PEP 518 build backend that uses
-@code{setuptools_scm} to generate a version file from your version control
-system, then @code{flit_core} to build the package.")
-    (license license:expat)))
-
 (define-public python-setuptools-scm
   (package
     (name "python-setuptools-scm")
