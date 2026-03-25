@@ -25560,19 +25560,29 @@ popular cloud service providers using a unified API.")
 (define-public python-regex
   (package
     (name "python-regex")
-    (version "2024.11.6")
+    (version "2026.2.28")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "regex" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mrabarnett/mrab-regex")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "06amb1sxhbab03cy73q7wcp131bsingngr44r0rh6an5cfq5kcbs"))))
+        (base32 "10pyq4b2a0qbvmfn0ip6h51lqf4g59kgca4zn3g8hg62ha5kwf13"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-backend #~'unittest))
+     (list
+      #:test-backend #~'unittest
+      #:test-flags #~(list "-v" "regex.tests.test_regex")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "regex"))))))
     (native-inputs
      (list python-setuptools))
-    (home-page "https://bitbucket.org/mrabarnett/mrab-regex")
+    (home-page "https://github.com/mrabarnett/mrab-regex")
     (synopsis "Alternative regular expression module")
     (description
      "This regular expression implementation is backwards-compatible with the
