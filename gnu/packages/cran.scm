@@ -34011,21 +34011,22 @@ sparse vectors.")
 (define-public r-spatialreg
   (package
     (name "r-spatialreg")
-    (version "1.4-2")
+    (version "1.4-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spatialreg" version))
        (sha256
-        (base32 "17ykmajpls6ri9wkw195nqamqpykaavh6dp2as1288bnnrgnv39n"))))
+        (base32 "1rlc69nx1l3xbm1jlb6mn6wv28lmp42gzgywkqsc0s7mksr1mkf9"))))
     (properties `((upstream-name . "spatialreg")))
     (build-system r-build-system)
     (propagated-inputs (list r-boot
                              r-coda
                              r-learnbayes
-                             r-mass
+                             r-marginaleffects
                              r-matrix
                              r-multcomp
+                             r-mvtnorm
                              r-nlme
                              r-sf
                              r-spdata
