@@ -6070,17 +6070,16 @@ subgroups.")
 (define-public python-pysam
   (package
     (name "python-pysam")
-    (version "0.23.0")
+    (version "0.23.3")
     (source (origin
               (method git-fetch)
-              ;; Test data is missing on PyPi.
               (uri (git-reference
                     (url "https://github.com/pysam-developers/pysam")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hk0ks6kqsm8252d0v1lw2d22x1awmxcr165nnhyacwbqh246skl"))
+                "1kb70fp9mnjl4czhwiahb192lwkq1j357b774ddg533ibj3h7gcz"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; FIXME: Unbundle samtools and bcftools.
@@ -6118,10 +6117,9 @@ subgroups.")
     (inputs
      (list ncurses curl zlib))
     (native-inputs
-     (list python-cython-0
+     (list python-cython
            python-pytest
            python-setuptools
-           python-wheel
            ;; Dependencies below are are for tests only.
            samtools
            bcftools))
