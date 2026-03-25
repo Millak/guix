@@ -220,6 +220,7 @@ testing InfiniBand networks.")
                            "--disable-assertions"
                            "--disable-params-check"
 
+                           "--enable-mt"
                            (string-append "--with-verbs="
                                           #$(this-package-input "rdma-core"))
 
