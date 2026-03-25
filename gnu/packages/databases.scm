@@ -3079,7 +3079,7 @@ temporary directory, and destroys it when the perl script exits.")
 (define-public unixodbc
   (package
    (name "unixodbc")
-   (version "2.3.9")
+   (version "2.3.14")
    (source (origin
             (method url-fetch)
             (uri
@@ -3087,7 +3087,7 @@ temporary directory, and destroys it when the perl script exits.")
               "ftp://ftp.unixodbc.org/pub/unixODBC/unixODBC-"
               version ".tar.gz"))
             (sha256
-             (base32 "01xj65d02i3yjy7p9z08y9jakcs5szmz4rask868n7387nn3x0sj"))))
+             (base32 "0wa7a82h5dsba23155gfhh1sp4dsbaxq6pppp6q31z017vg18a2f"))))
    (build-system gnu-build-system)
    (synopsis "Data source abstraction library")
    (description "Unixodbc is a library providing an API with which to access
