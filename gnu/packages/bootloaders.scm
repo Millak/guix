@@ -716,78 +716,84 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
     (license (package-license grub-efi))))
 
 (define-public syslinux
-  (let ((commit "bb41e935cc83c6242de24d2271e067d76af3585c"))
+  (let ((commit "bb41e935cc83c6242de24d2271e067d76af3585c")
+        (revision "1"))
     (package
       (name "syslinux")
-      (version (git-version "6.04-pre" "1" commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/geneC/syslinux")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0k8dvafd6410kqxf3kyr4y8jzmpmrih6wbjqg6gklak7945yflrc"))
-                (patches
-                 (search-patches "syslinux-gcc10.patch"
-                                 "syslinux-strip-gnu-property.patch"))))
+      (version (git-version "6.04-pre1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://git.zytor.com/syslinux/syslinux")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0k8dvafd6410kqxf3kyr4y8jzmpmrih6wbjqg6gklak7945yflrc"))
+         (patches
+          (search-patches "syslinux-gcc10.patch"
+                          "syslinux-strip-gnu-property.patch"))))
       (build-system gnu-build-system)
       (native-inputs
-       (list nasm perl python))
+       (list coreutils
+             nasm
+             perl
+             python))
       (inputs
-       `(("libuuid" ,util-linux "lib")
-         ("mtools" ,mtools)))
+       (list `(,util-linux "lib")
+             mtools))
       (arguments
-       `(#:parallel-build? #f
-         #:make-flags
-         (list (string-append "BINDIR=" %output "/bin")
-               (string-append "SBINDIR=" %output "/sbin")
-               (string-append "LIBDIR=" %output "/lib")
-               (string-append "INCDIR=" %output "/include")
-               (string-append "DATADIR=" %output "/share")
-               (string-append "MANDIR=" %output "/share/man")
-               "PERL=perl"
-               "PYTHON=python3"
-               "bios")
-         #:strip-flags '("--strip-debug" "--enable-deterministic-archives")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-files
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* (find-files "." "Makefile.*|ppmtolss16")
-                 (("/bin/pwd") (which "pwd"))
-                 (("/bin/echo") (which "echo"))
-                 (("/usr/bin/perl") (which "perl")))
-               (let ((mtools (assoc-ref inputs "mtools")))
-                 (substitute* (find-files "." "\\.c$")
-                   (("mcopy")
-                    (string-append mtools "/bin/mcopy"))
-                   (("mattrib")
-                    (string-append mtools "/bin/mattrib"))))
-               #t))
-           (delete 'configure)
-           (add-before 'build 'set-permissions
-             (lambda _
-               (invoke "chmod" "a+w" "utils/isohybrid.in")))
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 (setenv "CC" "gcc")
-                 (substitute* "tests/unittest/include/unittest/unittest.h"
-                   ;; Don't look up headers under /usr.
-                   (("/usr/include/") ""))
-                 (invoke "make" "unittest")))))))
-      (home-page "https://www.syslinux.org")
+       (list
+        #:make-flags
+        #~(list (string-append "BINDIR=" #$output "/bin")
+                (string-append "SBINDIR=" #$output "/sbin")
+                (string-append "LIBDIR=" #$output "/lib")
+                (string-append "INCDIR=" #$output "/include")
+                (string-append "DATADIR=" #$output "/share")
+                (string-append "MANDIR=" #$output "/share/man")
+                "PERL=perl"
+                "PYTHON=python3"
+                "bios")
+        #:strip-flags
+        #~(list "--enable-deterministic-archives"
+                "--strip-debug")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-files
+              (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                (substitute* "tests/unittest/include/unittest/unittest.h"
+                  ;; Don't look up headers under /usr.
+                  (("^(#include <)/usr/include/" all keep) keep))
+                (substitute* "Makefile"
+                  (("/bin/pwd") "pwd"))
+                (substitute* (find-files "." "\\.c$")
+                  (("mcopy")
+                   (search-input-file inputs "bin/mcopy"))
+                  (("mattrib")
+                   (search-input-file inputs "bin/mattrib")))))
+            (delete 'configure)
+            (replace 'check
+              (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+                (when tests?
+                  ;; INFO: The Makefile has a test target, but it requires
+                  ;; sudo.
+                  (apply invoke "make" "unittest"
+                         (append (if parallel-tests?
+                                     (list "-j" (number->string (parallel-job-count)))
+                                     (list))
+                                 (list (string-append "CC=" #$(cc-for-target)))))))))))
+      (home-page "https://wiki.syslinux.org/wiki/index.php?title=The_Syslinux_Project")
       (synopsis "Lightweight Linux bootloader")
       (description "Syslinux is a lightweight Linux bootloader.")
-      ;; The Makefile specifically targets i386 and x86_64 using nasm.
-      (supported-systems '("i686-linux" "x86_64-linux"))
       (license (list license:gpl2+
                      license:bsd-3 ; gnu-efi/*
                      license:bsd-4 ; gnu-efi/inc/* gnu-efi/lib/*
-                     ;; Also contains:
-                     license:expat license:isc license:zlib)))))
+                     license:expat
+                     license:isc
+                     license:zlib))
+      ;; The Makefile specifically targets i386 and x86_64 using nasm.
+      (supported-systems (list "i686-linux" "x86_64-linux")))))
 
 (define-public dtc
   (package
