@@ -5602,7 +5602,7 @@ representation to stdout.")
 (define-public hosts
   (package
     (name "hosts")
-    (version "3.6.3")
+    (version "3.6.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5611,7 +5611,7 @@ representation to stdout.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ni4z89kxzgwm26hhx908g04f2h0fypy7lgfa0rvsz8d0wslgcsn"))))
+                "1kzd4lxlflam87dhbx1jx7bj6v6sa4f2024mfxj2768kp9qapraj"))))
     (build-system trivial-build-system)
     (inputs
      `(("bats" ,bats) ;for test
