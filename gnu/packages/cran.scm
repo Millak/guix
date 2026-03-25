@@ -23860,13 +23860,13 @@ rules with R.")
 (define-public r-leaflet-providers
   (package
     (name "r-leaflet-providers")
-    (version "2.0.0")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "leaflet.providers" version))
        (sha256
-        (base32 "0rl69bfx2l10x80rl8cppqch3fnd05sk9w29h8589jc8h3ffmkn5"))))
+        (base32 "07pn22is40zv9xpnshfrwpza4fa6csnsg6zidqxccj6xinkq5smg"))))
     (properties `((upstream-name . "leaflet.providers")))
     (build-system r-build-system)
     (propagated-inputs (list r-htmltools))
