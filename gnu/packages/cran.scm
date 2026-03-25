@@ -31834,20 +31834,22 @@ repositories.")
 (define-public r-fs
   (package
     (name "r-fs")
-    (version "1.6.7")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fs" version))
        (sha256
         (base32
-         "04g49f3abg181d85bv05gx322m3h70p95k9hjmn1cxsin7saiw78"))))
+         "1hp00xy895hk12nmzy4r269vnj0rfry6czwb3byicbbp93bhc5qx"))))
     (properties
      '((updater-ignored-native-inputs
-        . ("r-testthat" "r-spelling" "r-vctrs" "r-withr"))))
+        . ("r-testthat" "r-spelling" "r-vctrs" "r-withr"))
+       (updater-extra-inputs . ("libuv"))))
     (build-system r-build-system)
     ;; Tests require r-testthat, which indirectly depends on this package.
     (arguments (list #:tests? #false))
+    (inputs (list libuv))
     (native-inputs
      (list pkg-config r-knitr))
     (home-page "https://fs.r-lib.org")
