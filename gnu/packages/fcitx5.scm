@@ -430,14 +430,14 @@ backend.")
 (define-public fcitx5-unikey
   (package
     (name "fcitx5-unikey")
-    (version "5.1.8")
+    (version "5.1.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/fcitx/fcitx5-unikey")
                     (commit version)))
               (sha256
-               (base32 "1nai5v6r367iwj8yxg4flv41my57l88l9vy0id9wr3hvrvls9v31"))
+               (base32 "1ddg5648r8jbdr8khawfhl26020snvrlgjwppw5rlh4iw3a4m143"))
               (file-name (git-file-name name version))))
     (build-system qt-build-system)
     (arguments
