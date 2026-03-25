@@ -1815,14 +1815,16 @@ For more information, refer to
 (define-public os-prober
   (package
     (name "os-prober")
-    (version "1.81")
+    (version "1.84")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "mirror://debian/pool/main/o/os-prober/os-prober_"
-                           version ".tar.xz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://salsa.debian.org/installer-team/os-prober.git")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "10w8jz6mqhp0skdcam9mpgv79vx1sv7lkpra3rqjg0jkhvn2in9g"))))
+        (base32 "1bji3w6nbqaz8zqrbmy8b1j5dph9xn7bdh1cd2z8ia1q125i6mgp"))))
     (build-system gnu-build-system)
     (arguments
      (list
