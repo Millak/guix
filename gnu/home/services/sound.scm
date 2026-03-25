@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2023, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2023 Brian Cully <bjc@spork.org>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
@@ -193,8 +193,10 @@ PulseAudio clients to use PipeWire transparently.")
 load-module module-null-sink \
 sink_name=rtp sink_properties=\"device.description='RTP network output'\"\n"
                               sock)
+                     ;; Use a fixed sample rate to match what the receiving
+                     ;; end is likely to expect.
                      (display (string-append "\
-load-module module-rtp-send source=rtp.monitor"
+load-module module-rtp-send source=rtp.monitor rate=44100"
                                              (if destination-ip
                                                  (string-append
                                                   " destination_ip="
