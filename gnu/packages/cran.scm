@@ -10151,13 +10151,13 @@ working with dates easy and fun.")
 (define-public r-ggpmisc
   (package
     (name "r-ggpmisc")
-    (version "0.6.3")
+    (version "0.7.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggpmisc" version))
               (sha256
                (base32
-                "0ybwdhsbi4gcw6wyqpgxcssmd012g1axiz5b2sw50s7djkp0vq3r"))))
+                "08msa3ixkilcgdgx6y6favqyfb0hld38ndwy2hq9dyqki4qiaddx"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-catools
@@ -10166,13 +10166,7 @@ working with dates easy and fun.")
            r-generics
            r-ggplot2
            r-ggpp
-           r-lmodel2
            r-lubridate
-           r-mass
-           r-mixtools
-           r-multcomp
-           r-multcompview
-           r-nlme
            r-plyr
            r-polynom
            r-quantreg
@@ -10185,6 +10179,8 @@ working with dates easy and fun.")
      (list r-broom
            r-ggtext
            r-knitr
+           r-mass
+           r-nlme
            r-robustbase
            r-testthat
            r-vdiffr))
