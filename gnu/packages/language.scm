@@ -378,7 +378,8 @@ method, one of the most popular choices for Traditional Chinese users.")
            texinfo
            perl
            pkg-config
-           python-minimal))
+           python-minimal
+           python-setuptools))
     (synopsis "Braille translator and back-translator")
     (description "Liblouis is a braille translator and back-translator named in
 honor of Louis Braille.  It features support for computer and literary braille,
