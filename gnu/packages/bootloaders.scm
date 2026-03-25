@@ -1825,53 +1825,56 @@ For more information, refer to
         (base32 "10w8jz6mqhp0skdcam9mpgv79vx1sv7lkpra3rqjg0jkhvn2in9g"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:modules ((guix build gnu-build-system)
+     (list
+      #:tests? #f                       ; No tests.
+      #:modules '((guix build gnu-build-system)
                   (guix build utils)
-                  (ice-9 regex)         ; for string-match
-                  (srfi srfi-26))       ; for cut
-       #:make-flags
-       (list ,(string-append "CC=" (cc-for-target)))
-       #:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* (find-files ".")
-               (("/usr") (assoc-ref outputs "out")))
-             (substitute* (find-files "." "50mounted-tests$")
-               (("mkdir") "mkdir -p"))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (define (find-files-non-recursive directory)
-               (find-files directory
-                           (lambda (file stat)
-                             (string-match (string-append "^" directory "/[^/]*$")
-                                           file))
-                           #:directories? #t))
+                  (ice-9 regex)         ; string-match
+                  (srfi srfi-26))       ; cut
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (substitute* (find-files ".")
+                (("/usr") #$output))
+              (substitute* (find-files "." "50mounted-tests$")
+                (("mkdir") "mkdir -p -v"))))
+          (replace 'install
+            (lambda _
+              (define (find-files-non-recursive directory)
+                (find-files directory
+                            (lambda (file stat)
+                              (string-match (string-append "^" directory "/[^/]*$")
+                                            file))
+                            #:directories? #t))
 
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (lib (string-append out "/lib"))
-                    (share (string-append out "/share")))
-               (for-each (cut install-file <> bin)
-                         (list "linux-boot-prober" "os-prober"))
-               (install-file "newns" (string-append lib "/os-prober"))
-               (install-file "common.sh" (string-append share "/os-prober"))
-               (install-file "os-probes/mounted/powerpc/20macosx"
-                             (string-append lib "/os-probes/mounted"))
-               (for-each
-                (lambda (directory)
-                  (for-each
-                   (lambda (file)
-                     (let ((destination (string-append lib "/" directory
-                                                       "/" (basename file))))
-                       (mkdir-p (dirname destination))
-                       (copy-recursively file destination)))
-                   (append (find-files-non-recursive (string-append directory "/common"))
-                           (find-files-non-recursive (string-append directory "/x86")))))
-                (list "os-probes" "os-probes/mounted" "os-probes/init"
-                      "linux-boot-probes" "linux-boot-probes/mounted"))))))))
-    (home-page "https://joeyh.name/code/os-prober")
+              (let ((bin (string-append #$output "/bin"))
+                     (lib (string-append #$output "/lib"))
+                     (share (string-append #$output "/share")))
+                (for-each (cut install-file <> bin)
+                          (list "linux-boot-prober" "os-prober"))
+                (install-file "newns" (string-append lib "/os-prober"))
+                (install-file "common.sh" (string-append share "/os-prober"))
+                (install-file "os-probes/mounted/powerpc/20macosx"
+                              (string-append lib "/os-probes/mounted"))
+                (for-each
+                 (lambda (directory)
+                   (for-each
+                    (lambda (file)
+                      (let ((destination (string-append lib "/" directory
+                                                        "/" (basename file))))
+                        (mkdir-p (dirname destination))
+                        (copy-recursively file destination)))
+                    (append (find-files-non-recursive (string-append directory "/common"))
+                            (find-files-non-recursive (string-append directory "/x86")))))
+                 (list "linux-boot-probes"
+                       "linux-boot-probes/mounted"
+                       "os-probes"
+                       "os-probes/init"
+                       "os-probes/mounted"))))))))
+    (home-page "https://joeyh.name/code/os-prober/")
     (synopsis "Detect other operating systems")
     (description "os-prober probes disks on the system for other operating
 systems so that they can be added to the bootloader.  It also works out how to
