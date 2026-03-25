@@ -22662,14 +22662,14 @@ operations and statistical functions are provided.")
 (define-public r-tsp
   (package
     (name "r-tsp")
-    (version "1.2.6")
+    (version "1.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "TSP" version))
        (sha256
         (base32
-         "158g2kplbzfnhy07fa733p9ydjy29gzd8mnxzfmx8yvfmqg7l7bd"))))
+         "0wsz2cdb8adsjxc1jwq5bpv0qbwlxjh9zy9ny7yjq7a1i2a9r4j9"))))
     (properties `((upstream-name . "TSP")))
     (build-system r-build-system)
     (propagated-inputs (list r-foreach))
