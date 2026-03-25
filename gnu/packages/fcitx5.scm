@@ -394,7 +394,7 @@ the Anthy input method.")
 (define-public fcitx5-skk
   (package
     (name "fcitx5-skk")
-    (version "5.1.8")
+    (version "5.1.10")
     (source
      (origin
        (method git-fetch)
@@ -403,14 +403,14 @@ the Anthy input method.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11h6y7rv6yppp7iy8csy7r2pi2mlnjgl8h4h8ghfwab1gm7v32fn"))))
+        (base32 "1fjiyx6dyiqxlypr1k4024lnc077xsnx4qwrwx9hj3yjdni5f2p0"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f      ; no tests
            #:configure-flags
-           #~(list (string-append "-DSKK_DEFAULT_PATH="
+           #~(list (string-append "-DSKK_PATH="
                                   #$(this-package-input "skk-jisyo")
-                                  "/share/skk/SKK-JISYO.L"))))
+                                  "/share/skk"))))
     (native-inputs
      (list extra-cmake-modules gobject-introspection
            pkg-config gettext-minimal))
