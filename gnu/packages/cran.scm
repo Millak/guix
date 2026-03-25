@@ -54038,13 +54038,13 @@ supported.  Partial scoring of multivariate filter methods is supported.")
 (define-public r-mlr3fselect
   (package
     (name "r-mlr3fselect")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3fselect" version))
        (sha256
-        (base32 "1bjqc43lnmg4dm964j3jknizfvnnjil02k7lbnl6yk79g05cpny0"))))
+        (base32 "0w5nv5dgnvzdshr9q46w9nz4pzbxl169m3xzrrnk8hvj3q0a1x3v"))))
     (properties
      '((upstream-name . "mlr3fselect")
        (updater-extra-native-inputs . ("r-rpart"))))
@@ -54059,7 +54059,13 @@ supported.  Partial scoring of multivariate filter methods is supported.")
                              r-paradox
                              r-r6
                              r-stabm))
-    (native-inputs (list r-mirai r-mlr3pipelines r-rpart r-rush r-testthat))
+    (native-inputs (list r-mirai
+                         r-mlr3pipelines
+                         r-processx
+                         r-redux
+                         r-rpart
+                         r-rush
+                         r-testthat))
     (home-page "https://mlr3fselect.mlr-org.com")
     (synopsis "Feature selection for mlr3")
     (description
