@@ -10017,13 +10017,13 @@ axis} (SMA), and @dfn{ranged major axis} (RMA).")
 (define-public r-lmom
   (package
     (name "r-lmom")
-    (version "3.2")
+    (version "3.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lmom" version))
        (sha256
-        (base32 "165dqz8yv3wak77935shz8axcck6jg5h7fnyy0ih9dzin3npng6s"))))
+        (base32 "0n7lyx4a9414f1iwy26cxjfj5gidkpsxi7x8yivlcajlnacaghzx"))))
     (properties `((upstream-name . "lmom")))
     (build-system r-build-system)
     (native-inputs (list gfortran))
