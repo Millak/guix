@@ -4658,7 +4658,7 @@ automatically generate the interface code.")
 (define-public python-rapidfuzz
   (package
     (name "python-rapidfuzz")
-    (version "3.14.1")
+    (version "3.14.3")
     (source
      (origin
        (method git-fetch)
@@ -4667,11 +4667,13 @@ automatically generate the interface code.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kqy9paxri1ih47mwmsxwz7a222sn2si5n8qd7gxhdf1wdrpdrm7"))))
+        (base32 "1vnm1yx12am0ffbh0fj4nd8l1h0m299hdsw6kcp0pmgnl1jxxr8c"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list cmake-minimal
            python-cython
+           python-numpy
+           python-pandas
            python-pytest
            python-scikit-build-core
            rapidfuzz-cpp
