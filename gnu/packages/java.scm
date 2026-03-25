@@ -9732,6 +9732,12 @@ generated sources by ANTLR.")))
           (add-after 'unpack 'chdir
             (lambda _
               (chdir "runtime/Python3")))
+          ;; TODO: Remove when updating ANTLR4:
+          ;; https://github.com/antlr/antlr4/pull/4593
+          (add-after 'chdir 'fix-python-3.12-compatibility
+            (lambda _
+              (substitute* "tests/TestIntervalSet.py"
+                (("assertEquals") "assertEqual"))))
           (add-after 'chdir 'regenerate-parsers
             (lambda _
               (invoke "antlr4" "-no-listener" "-Dlanguage=Python3"
