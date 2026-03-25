@@ -1914,69 +1914,6 @@ XML output")
 decorators from external files.")
     (license license:expat)))
 
-(define-public python-pytest-random-order
-  (package
-    (name "python-pytest-random-order")
-    (version "1.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/jbasko/pytest-random-order")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "044cq8bk3815xckm75yfsjd4x7ykksss9r0r1bb6xi2pnwz3cvvk"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; Tests depending on python-py and python-pytest-xdist, deselect them
-      ;; to reduce closure size.
-      #~(list #$@(map (lambda (test)
-                        (string-append "--deselect=tests/"
-                                       "test_actual_test_runs.py::"
-                                       test))
-                      (list "test_it_works_with_actual_tests[class-2-5]"
-                            "test_it_works_with_actual_tests[module-2-5]"
-                            "test_it_works_with_actual_tests[package-2-5]"
-                            "test_it_works_with_actual_tests[global-2-5]"
-                            "test_it_works_with_actual_tests[none-1-1]"
-                            "test_it_works_with_actual_tests[parent-1-5]"
-                            "test_it_works_with_actual_tests[grandparent-1-5]"
-                            "test_failed_first[global]"
-                            "test_failed_first[package]"
-                            "test_failed_first[module]"
-                            "test_failed_first[class]"
-                            "test_failed_first[parent]"
-                            "test_failed_first[grandparent]"
-                            "test_failed_first[none]"))
-              #$@(map (lambda (test)
-                        (string-append "--deselect=tests/"
-                                       "test_doctests.py::"
-                                       test))
-                      (list "test_doctests[global]"
-                            "test_doctests[package]"
-                            "test_doctests[module]"
-                            "test_doctests[class]"
-                            "test_doctests[parent]"
-                            "test_doctests[grandparent]"
-                            "test_doctests[none]"))
-              "--deselect=tests/test_xdist.py::test_xdist_not_broken")))
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (home-page "https://github.com/jbasko/pytest-random-order")
-    (synopsis "Pytest plugin to randomize the order of tests")
-    (description "@code{pytest-random-order} is a Pytest plugin that
-randomizes the order of tests.  This can be useful to detect a test that
-passes just because it happens to run after an unrelated test that leaves the
-system in a favourable state.  The plugin allows user to control the level of
-randomness they want to introduce and to disable reordering on subsets of
-tests.  Tests can be rerun in a specific order by passing a seed value
-reported in a previous test run.")
-    (license license:expat)))
-
 (define-public python-pytest-runner
   (package
     (name "python-pytest-runner")
