@@ -382,21 +382,19 @@ write-only counterpart to Tomli, which is a read-only TOML parser.")
 (define-public python-pygments
   (package
     (name "python-pygments")
-    ;; XXX: When updating, drop python-textual 'relax-requirements phase.
-    (version "2.19.1")
+    (version "2.19.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pygments" version))
        (sha256
         (base32
-         "07qm8mx3y5r8ri6zpn0hp9zx5g02bydhi7pkv54hdp3nhlm6vhb1"))))
+         "11xqsnnh0iip4vh2lfbh5xa46dy47d9vqw39ad98jzzcgi3v4v33"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 4570 passed, 16 skipped, 597 deselected
       #:test-flags
-      ;; 4568 passed, 16 skipped, 597 deselected
-      ;;
       ;; Ignore tests requiring "wcag_contrast_ratio"
       #~(list "--ignore=tests/contrast/test_contrasts.py"
               ;; Tests fail with not matched diff.
