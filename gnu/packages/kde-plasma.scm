@@ -2426,6 +2426,7 @@ integration of Qt applications when running on a KDE Plasma workspace.")
                   knotifications
                   kirigami
                   libplasma
+                  lz4
                   mobile-broadband-provider-info
                   modemmanager-qt
                   network-manager
@@ -2439,6 +2440,7 @@ integration of Qt applications when running on a KDE Plasma workspace.")
                   ksvg
                   qcoro-qt6
                   openconnect
+                  qtwebengine
                   qtdeclarative))
     (synopsis "Plasma applet for managing network connections")
     (description "This package provides Plasma applet for managing network
