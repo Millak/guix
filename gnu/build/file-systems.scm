@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2018, 2020-2022, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Guillaume Le Vaillant <glv@posteo.net>
@@ -1455,9 +1455,14 @@ corresponds to the symbols listed in FLAGS."
                (raise c)))
             ((system-error? c)
              (format (current-error-port)
-                     "could not mount partition ~a: ~a~%"
+                     "could not mount partition '~a': ~a~%"
                      (file-system-device fs)
-                     (exception-message c))
+                     (string-trim-both
+                      (call-with-output-string
+                        (lambda (port)
+                          (print-exception port #f
+                                           (exception-kind c)
+                                           (exception-args c))))))
              (unless (file-system-mount-may-fail? fs)
                (raise c))))
       (let* ((type    (file-system-type fs))
