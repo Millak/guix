@@ -29,6 +29,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages swig)
@@ -92,6 +93,7 @@
            libtool
            perl
            python-minimal
+           python-setuptools
            ruby
            swig-4.0
            which))
