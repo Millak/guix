@@ -34333,14 +34333,14 @@ contains a C++ head-only library integrated with Rcpp.")
 (define-public r-splitstackshape
   (package
     (name "r-splitstackshape")
-    (version "1.4.8")
+    (version "1.4.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "splitstackshape" version))
        (sha256
         (base32
-         "0mpyf2kkfdl69pdc6brl1r6101vyc6pgr7z17s55ppg3y71k4q35"))))
+         "1s7k4yhmg2dv967vdl9sgk4jjqk06046w10745ixxh8kqj7mqxg5"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-data-table))
