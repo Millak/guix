@@ -3584,23 +3584,22 @@ allows you to use all four.")
 (define-public python-pytest-pycodestyle
   (package
     (name "python-pytest-pycodestyle")
-    (version "2.4.1")
+    (version "2.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest_pycodestyle" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/henry0312/pytest-pycodestyle")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1jdm5arsh150fvph0960kycb1cwj728mksfwxb65bbbl4zaypkr7"))))
+        (base32 "1zkzxz37s9ki822q8rfj5wyxwl5wxxna4xjnmb452i1l29rxmysz"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; XXX: pytest failed to import 'py.io', while python can.
-      #:tests? #f))
-    (propagated-inputs
-     (list python-py python-pycodestyle python-pytest))
     (native-inputs
-     (list python-pytest-isort python-setuptools python-wheel))
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-pycodestyle))
     (home-page "https://github.com/henry0312/pytest-pycodestyle")
     (synopsis "Pytest plugin to run pycodestyle")
     (description "This package provides a plugin to run @code{pycodestyle}
