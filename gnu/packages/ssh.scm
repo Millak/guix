@@ -24,6 +24,7 @@
 ;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2026 Patrick Norton <patrick.147.norton@gmail.com>
+;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -446,7 +447,7 @@ of the ssh protocol.  It was originally developed to address performance issues 
 (define-public guile-ssh
   (package
     (name "guile-ssh")
-    (version "0.18.0")
+    (version "1.0.0")
     (home-page "https://github.com/artyom-poptsov/guile-ssh")
     (source (origin
               (method git-fetch)
@@ -456,7 +457,7 @@ of the ssh protocol.  It was originally developed to address performance issues 
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zh1spkjl5q778y4rd6ml68fvz1r62xmk03khi4kp74z2rxgzcxb"))))
+                "02n6d631720vvc70bhldvfbyfz06ymyzy4yim46s3x7s351qb841"))))
     (build-system gnu-build-system)
     (outputs '("out" "debug"))
     (arguments
