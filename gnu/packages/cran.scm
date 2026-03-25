@@ -21100,14 +21100,14 @@ for certain use cases.")
 (define-public r-ggrepel
   (package
     (name "r-ggrepel")
-    (version "0.9.7")
+    (version "0.9.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggrepel" version))
        (sha256
         (base32
-         "0dy228x6qqr5rs0z69l9k3lz0s9if08yf6rkmsn3sn3szybyalbd"))))
+         "09y04h3nf989k67cjnjkgpfbx8bfw57pkhfm4mrax78xw7sxy5q3"))))
     (build-system r-build-system)
     (properties
      '((updater-extra-native-inputs . ("r-vdiffr"))))
