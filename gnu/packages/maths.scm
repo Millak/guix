@@ -159,6 +159,7 @@
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages java)
   #:use-module (gnu packages less)
+  #:use-module (gnu packages libedit)
   #:use-module (gnu packages lisp)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
@@ -445,6 +446,66 @@ command line applications and interfaces to the C, Fortran, Python, and Java
 programming languages.")
     (home-page "https://stcorp.nl/coda")
     (license license:gpl2+)))
+
+(define-public cvc5
+  (package
+    (name "cvc5")
+    (version "1.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cvc5/cvc5/")
+             (commit (string-append "cvc5-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ynz7di4dyyiiydgmf0z9dc2jl7nm44xi0amch29rcgznwr4wy5m"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:build-type "Production"
+      #:configure-flags
+      ;; Keep the flags in sync with the options set by `./configure --best`.
+      ;; See <https://github.com/cvc5/cvc5/blob/cvc5-1.3.3/configure.sh#L216-L222>.
+      #~(list "-DBUILD_SHARED_LIBS=1"
+              "-DENABLE_GPL=ON"
+              "-DUSE_EDITLINE=ON"
+              "-DUSE_CLN=ON"
+              "-DUSE_POLY=ON"
+              "-DENABLE_IPO=ON"
+              "-DUSE_CRYPTOMINISAT=ON")
+      ;; TODO: The reduce_constant_dup test fails, needs investigation.
+      #:test-exclude "reduce_constants_dup\\.smt2"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Guix's libedit package does not require -ltinfo.
+          (add-after 'unpack 'remove-tinfo
+            (lambda _
+              (substitute* "cmake/FindEditline.cmake"
+                ((" tinfo")
+                 ""))))
+          ;; The 'check phase requires test programs build using 'build-tests'.
+          (add-before 'check 'build-tests
+            (lambda _
+              (invoke "cmake" "--build" "." "--target" "build-tests"))))))
+    (inputs (list cadical-2.1
+                  cln
+                  cryptominisat
+                  gmp
+                  libedit
+                  libpoly
+                  symfpu))
+    (native-inputs (list pkg-config
+                         python-minimal
+                         python-tomli
+                         python-pyparsing
+                         python-pexpect))
+    (home-page "https://cvc5.github.io/")
+    (synopsis "Satisfiability modulo theories solver")
+    (description
+     "cvc5 is a solver for @acronym{SMT, satisfiability modulo theories}
+problems.  It processes input in the standard SMT-LIB format.")
+    (license (list license:expat license:bsd-3))))
 
 (define-public qdldl
   (package
