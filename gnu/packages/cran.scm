@@ -54555,13 +54555,13 @@ annealing.")
 (define-public r-mlr3tuning
   (package
     (name "r-mlr3tuning")
-    (version "1.5.1")
+    (version "1.6.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3tuning" version))
               (sha256
                (base32
-                "0ni106500pqlml1bph7s2b12cx91lj3cxgbsbq2qnpdsav8pdf3p"))))
+                "1d4vxyrzgly7qxv8yl7l7f6v1ihnwcaafw1915vfzh9790cgsbsk"))))
     (properties
      '((updater-extra-native-inputs . ("r-rpart"))))
     (build-system r-build-system)
@@ -54581,6 +54581,8 @@ annealing.")
            r-knitr
            r-mirai
            r-mlr3pipelines
+           r-processx
+           r-redux
            r-rpart
            r-rush
            r-testthat))
