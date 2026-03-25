@@ -1038,7 +1038,8 @@ roots, or wrestle with obscure build systems.")
                #~(begin (use-modules (guix build utils))
                         (for-each delete-file
                                   '("doc/quickjs.pdf"
-                                    "doc/quickjs.html"))))))
+                                    "doc/quickjs.html"
+                                    "libunicode-table.h"))))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1051,14 +1052,28 @@ roots, or wrestle with obscure build systems.")
       #:test-target (if (target-x86-32?)
                         "microbench"
                         "test")
-      #:phases #~(modify-phases %standard-phases
-                   (delete 'configure)
-                   (add-before 'check 'pre-check
-                     (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                       (substitute* "tests/test_std.js"
-                         (("/bin/sh") (search-input-file
-                                        (or native-inputs inputs)
-                                        "bin/sh"))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'prepare-unicode
+            (lambda* (#:key inputs #:allow-other-keys)
+              (mkdir-p "unicode")
+              (copy-recursively
+                (string-append #$(this-package-native-input "ucd") "/share/ucd")
+                "unicode")
+              (rename-file "unicode/emoji/emoji-data.txt"
+                           "unicode/emoji-data.txt")
+              (copy-recursively
+                (string-append #$(this-package-native-input "unicode-emoji")
+                               "/share/unicode/emoji")
+                "unicode")))
+          (add-before 'check 'pre-check
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (substitute* "tests/test_std.js"
+                (("/bin/sh") (search-input-file
+                               (or native-inputs inputs) "bin/sh"))))))))
+    (native-inputs
+     (list ucd unicode-emoji))
     (home-page "https://bellard.org/quickjs/")
     (synopsis "Small embeddable Javascript engine")
     (description "QuickJS supports the ES2023 specification including modules,
