@@ -54150,17 +54150,18 @@ the comparison of different learning algorithms.")
 (define-public r-mlr3mbo
   (package
     (name "r-mlr3mbo")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3mbo" version))
        (sha256
-        (base32 "0s6k85w0v29g91pcrf5zbwpflcfhlh02dapil19xcbc7zar6lwka"))))
+        (base32 "1qxbmca6ck865ksir425i39f87f61dwyx2p6aacws2a421i5gix1"))))
     (properties
      '((upstream-name . "mlr3mbo")
        (updater-extra-native-inputs
-        . ("r-dicekriging" "r-emoa" "r-fastghquad" "r-ranger" "r-rgenoud"))))
+        . ("r-dicekriging" "r-emoa" "r-fastghquad" "r-nloptr"
+           "r-ranger" "r-rgenoud"))))
     (build-system r-build-system)
     (propagated-inputs (list r-bbotk
                              r-checkmate
