@@ -6001,7 +6001,7 @@ tools for styling them, including a built-in real-time video preview.")
            python-numpy
            python-matplotlib
            python-pycairo
-           python-pygobject))
+           python-pygobject-3.50))      ; bump along with libpeas
     ;; Propagate librsvg so that is is registered in GDK_PIXBUF_MODULE_FILE,
     ;; otherwise pitivi fails to launch.
     (propagated-inputs (list (librsvg-for-system)))
