@@ -1254,7 +1254,7 @@ an embedded event driven algorithm.")
 (define-public librelane
   (package
     (name "librelane")
-    (version "3.0.0rc1")
+    (version "3.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1263,18 +1263,12 @@ an embedded event driven algorithm.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1593qrpsczdlml5cqqrx51fvlpxr9k85l2aba2dj0fv7gink4hx0"))))
+                "01zi2v5qi26h09hwjafsq9k0anrc5g5fc6q5vg87k9lcwyfsi685"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'fix-build
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "librelane/steps/verilator.py"
-                (("\"verilator\"")
-                 (format #f "~s"
-                         (search-input-file inputs "/bin/verilator"))))))
           (add-after 'compress-documentation 'wrap-program
             (lambda _
               (wrap-program (string-append #$output "/bin/librelane")
@@ -1292,7 +1286,9 @@ an embedded event driven algorithm.")
                    ,(string-append
                      #$(this-package-input "ruby") "/bin")
                    ,(string-append
-                     #$(this-package-input "yosys") "/bin")))))))))
+                     #$(this-package-input "yosys") "/bin")
+                   ,(string-append
+                     #$(this-package-input "verilator") "/bin")))))))))
     (native-inputs
      (list python-customtkinter
            python-poetry-core
