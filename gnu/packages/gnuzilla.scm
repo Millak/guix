@@ -604,6 +604,7 @@ in the case of Firefox, it is browser/locales/all-locales."
     "zh-CN"
     "zh-TW"))
 
+;;; Please keep these versions in sync with icedove.
 (define %icecat-base-version "140.9.0")
 (define %icecat-version (string-append %icecat-base-version "-gnu1"))
 (define %icecat-build-id "20260324000000") ;must be of the form YYYYMMDDhhmmss
@@ -1248,24 +1249,29 @@ testing.")
        (cpe-name . "firefox_esr")
        (cpe-version . ,(first (string-split version #\-)))))))
 
-(define %icedove-build-id "20260224000000") ;must be of the form YYYYMMDDhhmmss
+(define %icedove-build-id "20260324000000") ;must be of the form YYYYMMDDhhmmss
 ;;; See <https://product-details.mozilla.org/1.0/thunderbird_versions.json>
 ;;; for the source of truth regarding Thunderbird releases.
-(define %icedove-version "140.8.0")
+;;; Please keep these version numbers in sync with icecat.
+;;; Please also update thunderbird-comm-source and thunderbird-comm-l10n to
+;;; the icedove version.
+(define %icedove-version "140.9.0")
 
 ;; Provides the "comm" folder which is inserted into the icecat source.
 ;; Avoids the duplication of Icecat's source tarball.  Pick the changeset that
 ;; matches the most recent tag of the form 'THUNDERBIRD_140_2_0esr_RELEASE'.
+;; Please also update the commit of thunderbird-comm-l10n to match the
+;; changeset used by thunderbird-comm-source.
 (define thunderbird-comm-source
   (origin
     (method hg-fetch)
     (uri (hg-reference
           (url "https://hg.mozilla.org/releases/comm-esr140")
-          (changeset "aa377fbf351e6b10b053e6afa421755c82d5fcf7")))
+          (changeset "8be9f2d3072c225a1e5f153745a18984c2babf8f")))
     (file-name (string-append "thunderbird-" %icedove-version "-checkout"))
     (sha256
      (base32
-      "0595jg1qbwclzi9qssljqkisrm2dn99rzxzaz2mcfi7b1kvbfaki"))
+      "04j35957x03m5x7mhh8zxa86mwjy0is2vb614sr4inkvvz4rs2hg"))
     (patches (search-patches "icedove-observer-fix.patch"))))
 
 ;;; To regenerate, see the `format-locales' helper defined above.
@@ -1342,7 +1348,8 @@ testing.")
   ;; The commit to use can be found in the mail/locales/l10n-changesets.json
   ;; file in Thunderbird's source (e.g.:
   ;; <https://hg-edge.mozilla.org/releases/comm-esr140/file/efb07defaa2d56105675dc1d936af581ebfd8ffa/mail/locales/l10n-changesets.json>)
-  (let* ((commit "b6fd3d6c75ba35d91fe131a654df76ca86f35ac5")
+  ;; where the hash in the URL is the changeset from thunderbird-comm-source.
+  (let* ((commit "7c86eab97e77f00ca7ed8f224d38338a3ed46693")
          (revision "0")
          (version (git-version %icedove-version revision commit)))
     (origin
@@ -1353,7 +1360,7 @@ testing.")
       (file-name (git-file-name "thunderbird-l10n" version))
       (sha256
        (base32
-        "0n4df6kv70a6mxxsqwc83nhj8vl7acv9bcbf07nkcsjjxh3szvqc")))))
+        "1navma2gwcgbbiwcwrc5lrx2jk3qmrnrc6i8pvhb8156pz4cg5nd")))))
 
 (define icedove-source
   (let ((name (string-append "icedove-" %icedove-version)))
