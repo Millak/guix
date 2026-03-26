@@ -2073,7 +2073,6 @@ parts of speech and entities, do syntactic analysis, and more.")
             python-fb-re2
             python-parameterized
             python-pytest
-            python-pytest-runner
             python-setuptools
             python-wheel)
       (filter
