@@ -6084,10 +6084,10 @@ generate Python bindings for your C or C++ code.")
 
 (define-public python-pyside-6
   (package
-    (inherit python-pyside-2)
     (name "python-pyside-6")
     (version (package-version python-shiboken-6))
     (source (package-source python-shiboken-6))
+    (build-system cmake-build-system)
     ;; TODO: Add more Qt components if available.
     (inputs
      (list qtbase
@@ -6148,6 +6148,7 @@ generate Python bindings for your C or C++ code.")
                                 (string-append "-I" dir))
                               dirs)
                          " "))))))))
+    (home-page "https://wiki.qt.io/Qt_for_Python")
     (synopsis
      "The Qt for Python product enables the use of Qt6 APIs in Python applications")
     (description
@@ -6156,7 +6157,17 @@ applications.  It lets Python developers utilize the full potential of Qt,
 using the PySide6 module.  The PySide6 module provides access to the
 individual Qt modules such as QtCore, QtGui,and so on.  Qt for Python also
 comes with the Shiboken6 CPython binding code generator, which can be used to
-generate Python bindings for your C or C++ code.")))
+generate Python bindings for your C or C++ code.")
+    (license (list
+              license:lgpl3
+              ;;They state that:
+              ;; this file may be used under the terms of the GNU General
+              ;; Public License version 2.0 or (at your option) the GNU
+              ;; General Public license version 3 or any later version
+              ;; approved by the KDE Free Qt Foundation.
+              ;; Thus, it is currently v2 or v3, but no "+".
+              license:gpl3
+              license:gpl2))))
 
 (define-public libqglviewer
   (package
