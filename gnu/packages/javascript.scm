@@ -966,16 +966,14 @@ animating a series of images.")
 (define-public mujs
   (package
     (name "mujs")
-    (version "1.3.8")
+    (version "1.3.9")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://codeberg.org/ccxvii/mujs")
-             (commit version)))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "https://mujs.com/downloads/mujs-"
+                           version ".tar.gz"))
        (sha256
-        (base32 "0k365drffxj02846cr0l7qjbw2j6k2z7caby6g1gqm275vbn9q1k"))
+        (base32 "17fq82h1z4p1j1g5hqmzz5ar4lz2p63qfmbkhsjmmzjfvlh5lvcm"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
