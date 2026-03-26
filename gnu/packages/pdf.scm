@@ -944,21 +944,27 @@ and based on PDF specification 1.7.")
 (define-public mupdf
   (package
     (name "mupdf")
-    (version "1.26.8")
+    (version "1.27.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mupdf.com/downloads/archive/"
                            "mupdf-" version "-source.tar.lz"))
        (sha256
-        (base32 "1ajs2s5lcyjrwwlm0njcx2c60ac757zwhpyjx9s333vr4jgd5hw2"))
+        (base32 "0j183r32hifygcxk76a7sh71x9a1dfylpsx1rki1nm0s1g6rs11m"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-1)))
        (snippet
         ;; Remove bundled software.  Keep patched variants.
         #~(with-directory-excursion "thirdparty"
-            (let ((keep '("README" "extract" "freeglut" "lcms2")))
+            (let ((keep '("README"
+                          "extract"
+                          "freeglut"
+                          ;; As of 1.27.x contains required non-public headers
+                          ;; This now is always statically compiled in.
+                          "mujs"
+                          "lcms2")))
               (for-each delete-file-recursively
                         (lset-difference string=?
                                          (scandir ".")
@@ -978,7 +984,6 @@ and based on PDF specification 1.7.")
            libjpeg-turbo
            libx11
            libxext
-           mujs
            openjpeg
            openssl
            tesseract-ocr
@@ -1003,7 +1008,6 @@ and based on PDF specification 1.7.")
               "USE_SYSTEM_JPEGXR=no # not available"
               "USE_SYSTEM_LCMS2=no # lcms2mt is strongly preferred"
               "USE_SYSTEM_LIBJPEG=yes"
-              "USE_SYSTEM_MUJS=yes"
               "USE_SYSTEM_OPENJPEG=yes"
               "USE_SYSTEM_ZLIB=yes"
               "USE_SYSTEM_GLUT=no"
