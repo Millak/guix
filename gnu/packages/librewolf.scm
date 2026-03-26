@@ -238,23 +238,23 @@
 ;;; but since in Guix only the latest packaged Rust is officially supported,
 ;;; it is a tradeoff worth making.
 ;;; 0: https://firefox-source-docs.mozilla.org/writing-rust-code/update-policy.html
-(define rust-librewolf rust-1.92)
+(define rust-librewolf rust-1.93)
 
 ;; Update this id with every update to its release date.
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
 ;; or: (format-time-string "%Y%m%d%H%M%S")
-(define %librewolf-build-id "20260319204056")
+(define %librewolf-build-id "20260326135749")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "148.0.2-3")
+    (version "149.0-1")
     (source
      (make-librewolf-source
       #:version version
-      #:firefox-hash "142f4k4ykcm65kbvj60p472103r4k79v9fdsfljdav2rbr6qxjx6"
-      #:librewolf-hash "193yh89chifcvqn03h9xs39g0pdiiamzb4wjf8f7qczgc23b7y8w"
+      #:firefox-hash "12jb930qhqhpzjpn5smms7g4n6y40zvxcrg8w42696wxk7pgsqdq"
+      #:librewolf-hash "0igv0fr0vl2nf5rlgnidfz2a3gh55bsqwcray0jg7x2kl6qnkzwm"
       #:l10n firefox-l10n))
     (build-system gnu-build-system)
     (arguments
