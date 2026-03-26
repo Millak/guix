@@ -2968,6 +2968,7 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
     (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase                   ;for Qt 6
       #:tests? #f  ;; Project has tests, but they are a pain to build
       #:configure-flags
       #~(list
@@ -3033,14 +3034,11 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
            python-pyyaml
            python-shiboken-6
            python-wrapper
-           qtbase
-           qtdeclarative
            qtsvg
            qtwebchannel
            qtwebengine
            qtwayland
            qtx11extras
-           qtxmlpatterns-5
            sqlite
            onetbb                       ;same version as opencascade-occt
            vtk-9.5
