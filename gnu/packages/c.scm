@@ -1784,8 +1784,8 @@ SIMD (Single Instruction, Multiple Data) instructions.")
 
 (define-public utest-h
   ;; The latest commit is used as there is no release.
-  (let ((commit   "54458e248f875f1a51f0af8bec8ca6ae7761b9d1")
-        (revision "0"))
+  (let ((commit   "b9c006f31b266408bd53079ce7ad57939a237d9a")
+        (revision "1"))
     (package
       (name "utest-h")
       (version (git-version "0.0.0" revision commit))
@@ -1797,7 +1797,7 @@ SIMD (Single Instruction, Multiple Data) instructions.")
                 (file-name (git-file-name "utest.h" version))
                 (sha256
                  (base32
-                  "1ikl5jwmjdw1mblqyl2kvnqwkjgaz78c1h7mjcfmzjc0d3h8kh44"))))
+                  "0zsi5bv85gnvq40hfw2vdphrv8bjxns6xs8v0rjhvddafwb1b7il"))))
       (build-system cmake-build-system)
       (arguments
        `(#:phases (modify-phases %standard-phases
@@ -1814,7 +1814,7 @@ SIMD (Single Instruction, Multiple Data) instructions.")
                         (let ((out (assoc-ref outputs "out")))
                           (install-file "utest.h"
                                         (string-append out "/include"))))))))
-      (home-page "https://www.duskborn.com/utest_h/")
+      (home-page "https://www.neilhenning.dev/utest_h/")
       (synopsis "Single-header unit testing framework for C and C++")
       (description
        "This package provides a header-only unit testing library for C/C++.")
