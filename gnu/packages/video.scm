@@ -5983,12 +5983,13 @@ tools for styling them, including a built-in real-time video preview.")
            gstreamer
            gst-plugins-base
            gst-plugins-good
-           ;; TODO: Add the 'cvtracker' plugin after our gstreamer packages
-           ;; has been upgraded to version 1.20.
-           (gst-plugins/selection gst-plugins-bad #:plugins
-                                  '("debugutils" "transcode")
-                                  #:configure-flags
-                                  #~'("-Dintrospection=enabled"))
+           (package
+             (inherit (gst-plugins/selection
+                       gst-plugins-bad
+                       #:plugins '("debugutils" "opencv" "transcode")
+                       #:configure-flags
+                       #~'("-Dintrospection=enabled")))
+             (inputs (modify-inputs inputs (prepend opencv))))
            gst-libav
            gsound
            gtk+
