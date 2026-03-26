@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
-;;; Copyright © 2015-2018, 2020-2021, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2018, 2020-2021, 2023, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
@@ -183,18 +183,21 @@ REPO."
 (define (elpa-version->string elpa-version repo name)
   "Convert the package version as used in Emacs package files into a string."
   (if (pair? elpa-version)
-      (if (every positive? elpa-version)
+      (if (every (cut >= <> 0) elpa-version)
           (let-values (((ms rest) (match elpa-version
                                     ((ms . rest)
                                      (values ms rest)))))
             (fold (lambda (n s) (string-append s "." (number->string n)))
                   (number->string ms) rest))
-          (begin
-            (info (G_ "Package version for ~s contains non numeric part.~%") name)
-            (if (eq? 'gnu-devel repo)
-                (version-from-elpa-devel-feed name)
-                #f)))
-      #f))
+          (if (eq? 'gnu-devel repo)
+              (version-from-elpa-devel-feed name)
+              (raise
+               (formatted-message
+                (G_ "invalid ELPA package version ~s for '~a'")
+                elpa-version name))))
+      (raise (formatted-message
+              (G_ "invalid ELPA package version ~s for '~a' in repository '~a'")
+              elpa-version repo name))))
 
 (define (package-home-page alist)
   "Extract the package home-page from ALIST."
