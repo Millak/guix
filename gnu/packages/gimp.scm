@@ -512,6 +512,26 @@ brushstrokes which is used by MyPaint and GIMP.")
     (home-page "http://mypaint.org")
     (license license:isc)))
 
+;; To update mypaint, remove when a fresh version is released.
+(define-public libmypaint-next
+  (package
+    (inherit libmypaint)
+    (name "libmypaint")
+    (properties '((commit . "551dfb9ca5d2b82f2361a5a8a9e7f386f35fd320")
+                  (revision . "0")))
+    (version (git-version "1.6.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mypaint/libmypaint")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pl8cma6gfkrqx364fs1xw7f491f7y6pzxqjq1cdqlrf9r8gg0sk"))))))
+
 (define-public mypaint-brushes
   (package
     (name "mypaint-brushes")
