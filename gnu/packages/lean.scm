@@ -70,7 +70,7 @@
            python-wrapper
            tzdata-for-tests))
     (inputs
-     (list cadical gmp libuv llvm))
+     (list cadical-2.1 gmp libuv llvm))
     (arguments
      (list
       #:make-flags

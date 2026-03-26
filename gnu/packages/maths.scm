@@ -9944,6 +9944,21 @@ also included.")
 clause learning.")
     (license license:expat)))
 
+(define-public cadical-2.1
+  (package
+    (inherit cadical)
+    (name "cadical")
+    (version "2.1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/arminbiere/cadical")
+                    (commit (string-append "rel-" version))))
+              (file-name (git-file-name name version))
+              (patches (search-patches "cadical-add-shared-library.patch"))
+              (sha256 (base32
+                       "1gl0xd6zyxb127w8k0mps9m2izaqb7im7j91by4lkknmm7xhwyav"))))))
+
 (define-public cadiback
   (let ((commit "789329d8fcda851085ed72f1b07d8c3f46243b8a")
         (revision "1"))
