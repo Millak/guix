@@ -3691,7 +3691,7 @@ script files.")
       ;; 'Automated Testing System', which may be accessed after
       ;; installation via the draw.sh script.  draw.sh is located in
       ;; the bin directory. For details see:
-      ;; https://www.opencascade.com/doc/occt-7.3.0/overview/html/\
+      ;; https://dev.opencascade.org/doc/occt-7.3.0/overview/html/\
       ;; occt_dev_guides__tests.html
       #:tests? #f
       #:configure-flags
@@ -3700,7 +3700,7 @@ script files.")
               "-DUSE_FREEIMAGE:BOOL=ON"
               "-DUSE_RAPIDJSON:BOOL=ON"
               "-DUSE_TBB:BOOL=ON"
-              "-DUSE_VTK:BOOL=OFF"
+              "-DUSE_VTK:BOOL=ON"
               "-DBUILD_DOC_Overview:BOOL=OFF"
               "-DCMAKE_EXPORT_NO_PACKAGE_REGISTRY=ON"
               "-DCMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY=ON"
@@ -3718,9 +3718,10 @@ script files.")
            onetbb
            rapidjson
            tcl
-           tk))
+           tk
+           vtk))
     ;; TODO: build Overview documentation and add 'doc' output.
-    (home-page "https://www.opencascade.com")
+    (home-page "https://dev.opencascade.org")
     (synopsis "Libraries for 3D modeling and numerical simulation")
     (description
      "Open CASCADE is a set of libraries for the development of applications
@@ -3790,7 +3791,7 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
         ;; 'Automated Testing System', which may be accessed after
         ;; installation via the draw.sh script.  draw.sh is located in
         ;; the bin directory. For details see:
-        ;; https://www.opencascade.com/doc/occt-7.3.0/overview/html/\
+        ;; https://dev.opencascade.org/doc/occt-7.3.0/overview/html/\
         ;; occt_dev_guides__tests.html
         #:tests? #f
                  ;; Configure without freeimage: attempting to link against the
@@ -3800,7 +3801,7 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
                  (list "-DCMAKE_CXX_FLAGS=-fpermissive" ;from unsigned char* to char*
                        "-DUSE_FREEIMAGE:BOOL=OFF"
                        "-DUSE_TBB:BOOL=ON"
-                       "-DUSE_VTK:BOOL=OFF"
+                       "-DUSE_VTK:BOOL=ON"
                        "-DBUILD_DOC_Overview:BOOL=OFF"
                        "-DCMAKE_EXPORT_NO_PACKAGE_REGISTRY=ON"
                        "-DCMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY=ON"
@@ -3816,9 +3817,10 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
             mesa
             tbb-2020
             tcl
-            tk))
+            tk
+            vtk))
      ;; TODO: build Overview documentation and add 'doc' output.
-     (home-page "https://www.opencascade.com")
+     (home-page "https://dev.opencascade.org")
      (synopsis "Libraries for 3D modeling and numerical simulation")
      (description
       "Open CASCADE is a set of libraries for the development of applications
